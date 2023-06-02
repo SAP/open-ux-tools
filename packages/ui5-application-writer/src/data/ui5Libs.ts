@@ -21,10 +21,7 @@ export const ui5TSSupport = {
         name: 'ui5-tooling-transpile-task',
         afterTask: 'replaceVersion',
         configuration: {
-            debug: true,
-            removeConsoleStatements: true,
-            transpileAsync: true,
-            transpileTypeScript: true
+            debug: true
         }
     },
     middleware: {
@@ -32,8 +29,6 @@ export const ui5TSSupport = {
         afterMiddleware: 'compression',
         configuration: {
             debug: true,
-            transpileAsync: true,
-            transpileTypeScript: true,
             excludePatterns: ['/Component-preload.js']
         }
     }

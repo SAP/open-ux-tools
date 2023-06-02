@@ -1,5 +1,22 @@
 # @sap-ux/ui5-application-writer
 
+## 0.23.0
+
+### Minor Changes
+
+-   31207b95: abstract ui5-app-writer functions into appropriate modules
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-config@0.17.0
+
+## 0.22.3
+
+### Patch Changes
+
+-   906b7fea: Fix: incorrect settings for ui5-middleware-transpile
+
 ## 0.22.2
 
 ### Patch Changes

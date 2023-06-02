@@ -1,5 +1,37 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.8
+
+### Patch Changes
+
+-   7aed929c: disable search in flpSandbox
+
+## 0.12.7
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-application-writer@0.23.0
+    -   @sap-ux/ui5-config@0.17.0
+    -   @sap-ux/fe-fpm-writer@0.20.1
+    -   @sap-ux/odata-service-writer@0.14.21
+    -   @sap-ux/ui5-test-writer@0.1.7
+
+## 0.12.6
+
+### Patch Changes
+
+-   0aa02ab0: TBI - Clean up eslint warnings in generated projects
+-   Updated dependencies [0aa02ab0]
+    -   @sap-ux/fe-fpm-writer@0.20.1
+
+## 0.12.5
+
+### Patch Changes
+
+-   Updated dependencies [906b7fea]
+    -   @sap-ux/ui5-application-writer@0.22.3
+
 ## 0.12.4
 
 ### Patch Changes

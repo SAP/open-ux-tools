@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.20.1
+
+### Patch Changes
+
+-   0aa02ab0: TBI - Clean up eslint warnings in generated projects
+
 ## 0.20.0
 
 ### Minor Changes

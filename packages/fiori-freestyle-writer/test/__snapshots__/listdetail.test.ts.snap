@@ -4,8 +4,11 @@ exports[`Fiori freestyle template: listDetailTemplate Generate files for templat
 Object {
   ".babelrc.json": Object {
     "contents": "{
-    \\"ignore\\": [\\"**/*.d.ts\\"],
+    \\"ignore\\": [
+        \\"**/*.d.ts\\"
+    ],
     \\"presets\\": [
+        \\"@babel/preset-env\\",
         [
             \\"transform-ui5\\",
             {
@@ -13,7 +16,17 @@ Object {
             }
         ],
         \\"@babel/preset-typescript\\"
-    ]
+    ],
+    \\"plugins\\": [
+        \\"transform-remove-console\\",
+        [
+            \\"transform-async-to-promises\\",
+            {
+                \\"inlineHelpers\\": true
+            }
+        ]
+    ],
+    \\"sourceMaps\\": true
 }",
     "state": "modified",
   },
@@ -55,7 +68,7 @@ archive.zip
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.7.8\\",
+    \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
@@ -81,30 +94,28 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-  \\"compilerOptions\\": {
-    \\"target\\": \\"es2015\\",
-    \\"module\\": \\"es2015\\",
-    \\"skipLibCheck\\": true,
-    \\"preserveConstEnums\\": true,
-    \\"inlineSourceMap\\": true,
-    \\"allowJs\\": true,
-    \\"strict\\": true,
-    \\"strictNullChecks\\": true,
-    \\"strictPropertyInitialization\\": false,
-    \\"moduleResolution\\": \\"node\\",
-    \\"rootDir\\": \\"webapp\\",
-    \\"outDir\\": \\"./dist\\",
-    \\"baseUrl\\": \\"./\\",
-    \\"paths\\": {
-      \\"test/me/*\\": [
-        \\"webapp/*\\"
-      ]
+    \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
+        \\"module\\": \\"es2022\\",
+        \\"skipLibCheck\\": true,
+        \\"allowJs\\": true,
+        \\"strict\\": true,
+        \\"strictPropertyInitialization\\": false,
+        \\"moduleResolution\\": \\"node\\",
+        \\"rootDir\\": \\"./webapp\\",
+        \\"baseUrl\\": \\"./\\",
+        \\"paths\\": {
+            \\"test/me/*\\": [
+                \\"./webapp/*\\"
+            ]
+        },
+        \\"types\\": [
+            \\"@sapui5/ts-types-esm\\"
+        ]
     },
-    \\"types\\": [ \\"@sapui5/ts-types-esm\\" ]
-  },
-  \\"include\\": [
-    \\"webapp/**/*\\"
-  ]
+    \\"include\\": [
+        \\"./webapp/**/*\\"
+    ]
 }",
     "state": "modified",
   },
@@ -135,8 +146,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
     - name: fiori-tools-proxy
@@ -162,9 +171,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -199,8 +205,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
     - name: sap-fe-mockserver
@@ -219,9 +223,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -256,8 +257,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
 builder:
@@ -266,9 +265,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -462,7 +458,7 @@ export default class BaseController extends Controller {
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         } else {
             this.getRouter().navTo(\\"list\\", {});
@@ -2120,7 +2116,8 @@ export function createDeviceModel () {
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
@@ -2674,8 +2671,11 @@ exports[`Fiori freestyle template: listDetailTemplate Generate files for templat
 Object {
   ".babelrc.json": Object {
     "contents": "{
-    \\"ignore\\": [\\"**/*.d.ts\\"],
+    \\"ignore\\": [
+        \\"**/*.d.ts\\"
+    ],
     \\"presets\\": [
+        \\"@babel/preset-env\\",
         [
             \\"transform-ui5\\",
             {
@@ -2683,7 +2683,17 @@ Object {
             }
         ],
         \\"@babel/preset-typescript\\"
-    ]
+    ],
+    \\"plugins\\": [
+        \\"transform-remove-console\\",
+        [
+            \\"transform-async-to-promises\\",
+            {
+                \\"inlineHelpers\\": true
+            }
+        ]
+    ],
+    \\"sourceMaps\\": true
 }",
     "state": "modified",
   },
@@ -2725,7 +2735,7 @@ archive.zip
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.7.8\\",
+    \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
@@ -2751,30 +2761,28 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-  \\"compilerOptions\\": {
-    \\"target\\": \\"es2015\\",
-    \\"module\\": \\"es2015\\",
-    \\"skipLibCheck\\": true,
-    \\"preserveConstEnums\\": true,
-    \\"inlineSourceMap\\": true,
-    \\"allowJs\\": true,
-    \\"strict\\": true,
-    \\"strictNullChecks\\": true,
-    \\"strictPropertyInitialization\\": false,
-    \\"moduleResolution\\": \\"node\\",
-    \\"rootDir\\": \\"webapp\\",
-    \\"outDir\\": \\"./dist\\",
-    \\"baseUrl\\": \\"./\\",
-    \\"paths\\": {
-      \\"test/me/*\\": [
-        \\"webapp/*\\"
-      ]
+    \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
+        \\"module\\": \\"es2022\\",
+        \\"skipLibCheck\\": true,
+        \\"allowJs\\": true,
+        \\"strict\\": true,
+        \\"strictPropertyInitialization\\": false,
+        \\"moduleResolution\\": \\"node\\",
+        \\"rootDir\\": \\"./webapp\\",
+        \\"baseUrl\\": \\"./\\",
+        \\"paths\\": {
+            \\"test/me/*\\": [
+                \\"./webapp/*\\"
+            ]
+        },
+        \\"types\\": [
+            \\"@sapui5/ts-types-esm\\"
+        ]
     },
-    \\"types\\": [ \\"@sapui5/ts-types-esm\\" ]
-  },
-  \\"include\\": [
-    \\"webapp/**/*\\"
-  ]
+    \\"include\\": [
+        \\"./webapp/**/*\\"
+    ]
 }",
     "state": "modified",
   },
@@ -2805,8 +2813,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
     - name: fiori-tools-proxy
@@ -2832,9 +2838,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -2869,8 +2872,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
     - name: sap-fe-mockserver
@@ -2889,9 +2890,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -2926,8 +2924,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
 builder:
@@ -2936,9 +2932,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -3132,7 +3125,7 @@ export default class BaseController extends Controller {
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         } else {
             this.getRouter().navTo(\\"list\\", {});
@@ -4790,7 +4783,8 @@ export function createDeviceModel () {
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
@@ -5406,15 +5400,15 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-  \\"compilerOptions\\": {
-    \\"module\\": \\"none\\",
-    \\"noEmit\\": true,
-    \\"checkJs\\": true,
-    \\"allowJs\\": true,
-    \\"types\\": [
-      \\"@sapui5/ts-types\\"
-    ]
-  }
+    \\"compilerOptions\\": {
+        \\"module\\": \\"none\\",
+        \\"noEmit\\": true,
+        \\"checkJs\\": true,
+        \\"allowJs\\": true,
+        \\"types\\": [
+            \\"@sapui5/ts-types\\"
+        ]
+    }
 }",
     "state": "modified",
   },
@@ -5593,7 +5587,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
         getContentDensityClass : function() {
             if (this._sContentDensityClass === undefined) {
                 // check whether FLP has already set the content density class; do nothing in this case
-                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
+                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api, fiori-custom/sap-browser-api-warning
                 if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                     this._sContentDensityClass = \\"\\";
                 } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -6234,7 +6228,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
          * @public
          */
         onNavBack: function() {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         },
 
@@ -7364,7 +7358,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
@@ -7860,8 +7855,11 @@ exports[`Fiori freestyle template: listDetailTemplate Generate files for templat
 Object {
   ".babelrc.json": Object {
     "contents": "{
-    \\"ignore\\": [\\"**/*.d.ts\\"],
+    \\"ignore\\": [
+        \\"**/*.d.ts\\"
+    ],
     \\"presets\\": [
+        \\"@babel/preset-env\\",
         [
             \\"transform-ui5\\",
             {
@@ -7869,7 +7867,17 @@ Object {
             }
         ],
         \\"@babel/preset-typescript\\"
-    ]
+    ],
+    \\"plugins\\": [
+        \\"transform-remove-console\\",
+        [
+            \\"transform-async-to-promises\\",
+            {
+                \\"inlineHelpers\\": true
+            }
+        ]
+    ],
+    \\"sourceMaps\\": true
 }",
     "state": "modified",
   },
@@ -7911,7 +7919,7 @@ archive.zip
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.7.8\\",
+    \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
@@ -7937,30 +7945,28 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-  \\"compilerOptions\\": {
-    \\"target\\": \\"es2015\\",
-    \\"module\\": \\"es2015\\",
-    \\"skipLibCheck\\": true,
-    \\"preserveConstEnums\\": true,
-    \\"inlineSourceMap\\": true,
-    \\"allowJs\\": true,
-    \\"strict\\": true,
-    \\"strictNullChecks\\": true,
-    \\"strictPropertyInitialization\\": false,
-    \\"moduleResolution\\": \\"node\\",
-    \\"rootDir\\": \\"webapp\\",
-    \\"outDir\\": \\"./dist\\",
-    \\"baseUrl\\": \\"./\\",
-    \\"paths\\": {
-      \\"test/me/*\\": [
-        \\"webapp/*\\"
-      ]
+    \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
+        \\"module\\": \\"es2022\\",
+        \\"skipLibCheck\\": true,
+        \\"allowJs\\": true,
+        \\"strict\\": true,
+        \\"strictPropertyInitialization\\": false,
+        \\"moduleResolution\\": \\"node\\",
+        \\"rootDir\\": \\"./webapp\\",
+        \\"baseUrl\\": \\"./\\",
+        \\"paths\\": {
+            \\"test/me/*\\": [
+                \\"./webapp/*\\"
+            ]
+        },
+        \\"types\\": [
+            \\"@sapui5/ts-types-esm\\"
+        ]
     },
-    \\"types\\": [ \\"@sapui5/ts-types-esm\\" ]
-  },
-  \\"include\\": [
-    \\"webapp/**/*\\"
-  ]
+    \\"include\\": [
+        \\"./webapp/**/*\\"
+    ]
 }",
     "state": "modified",
   },
@@ -7991,8 +7997,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
     - name: fiori-tools-proxy
@@ -8018,9 +8022,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -8055,8 +8056,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
     - name: sap-fe-mockserver
@@ -8075,9 +8074,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -8112,8 +8108,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
 builder:
@@ -8122,9 +8116,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -8318,7 +8309,7 @@ export default class BaseController extends Controller {
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         } else {
             this.getRouter().navTo(\\"list\\", {});
@@ -9887,7 +9878,8 @@ export function createDeviceModel () {
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
