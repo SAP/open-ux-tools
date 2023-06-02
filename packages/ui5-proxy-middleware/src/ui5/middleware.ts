@@ -1,7 +1,7 @@
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
 import type { Options } from 'http-proxy-middleware';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import type { MiddlewareParameters, Ui5MiddlewareConfig, ProxyConfig } from '../base';
+import type { ProxyConfig } from '../base';
 import {
     getCorporateProxyServer,
     HTML_MOUNT_PATHS,
@@ -13,6 +13,8 @@ import {
 import dotenv from 'dotenv';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
+import type { MiddlewareParameters } from '@ui5/server';
+import type { ReaderCollection } from '@ui5/fs';
 
 /**
  * Create proxy options based on the middleware config.
@@ -48,23 +50,33 @@ function createRequestHandler(routes: { route: string; handler: RequestHandler }
 }
 
 /**
+ * Search the project for the manifest.json.
  *
- * @param rootProject
+ * @param rootProject @ui5/fs reader collection with access to the project files
+ * @returns manifest.json as object or undefined if not found
  */
-async function loadManifest(rootProject: any): Promise<Manifest | undefined> {
+async function loadManifest(rootProject: ReaderCollection): Promise<Manifest | undefined> {
     const files = await rootProject.byGlob('**/manifest.json');
     if (files.length > 0) {
-        return JSON.parse(await files.pop().getString());
+        return JSON.parse(await files[0].getString());
+    } else {
+        return undefined;
     }
 }
 
-module.exports = async ({ resources, options }: MiddlewareParameters<Ui5MiddlewareConfig>): Promise<RequestHandler> => {
+module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
+
+    if (!options.configuration) {
+        logger.error('Configuration missing, no proxy created.');
+        return (_req, _res, next) => next();
+    }
+
     dotenv.config();
     const config = options.configuration;
-    const manifest = await loadManifest((resources as any).rootProject);
+    const manifest = await loadManifest(resources.rootProject);
     const ui5Version = await resolveUI5Version(config.version, logger, manifest);
     const envUI5Url = process.env.FIORI_TOOLS_UI5_URI;
     const directLoad = !!config.directLoad;

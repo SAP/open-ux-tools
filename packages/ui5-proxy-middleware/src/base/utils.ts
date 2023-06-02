@@ -195,7 +195,7 @@ export const setHtmlResponse = (res: any, html: string): void => {
  * @param args list of runtime arguments
  * @returns The content of the manifest.json
  */
-export const getManifest = async (args: string[]): Promise<Manifest | undefined> => {
+export async function getManifest(args: string[]): Promise<Manifest | undefined> {
     const projectRoot = process.cwd();
     const yamlFileName = getYamlFile(args);
     const ui5YamlPath = join(projectRoot, yamlFileName);
@@ -203,14 +203,16 @@ export const getManifest = async (args: string[]): Promise<Manifest | undefined>
     const manifestPath = join(projectRoot, webAppFolder, 'manifest.json');
     if (existsSync(manifestPath)) {
         return JSON.parse(readFileSync(manifestPath, { encoding: 'utf8' }));
+    } else {
+        return undefined;
     }
-};
+}
 
 /**
  * Gets the minUI5Version from the manifest.json.
  *
  * @param args list of runtime args
- * @param manifest
+ * @param manifest optional already loaded manifest.json
  * @returns The minUI5Version from manifest.json or undefined otherwise
  */
 export async function getUI5VersionFromManifest(args: string[], manifest?: Manifest): Promise<string | undefined> {
@@ -223,7 +225,7 @@ export async function getUI5VersionFromManifest(args: string[], manifest?: Manif
  *
  * @param version ui5 version as defined in the yaml or via cli argument
  * @param log logger for outputing information from where ui5 version config is coming
- * @param manifest
+ * @param manifest optional already loaded manifest.json
  * @returns The UI5 version with which the application will be started
  */
 export async function resolveUI5Version(version?: string, log?: ToolsLogger, manifest?: Manifest): Promise<string> {
