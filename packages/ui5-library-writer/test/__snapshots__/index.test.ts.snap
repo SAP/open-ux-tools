@@ -2,7 +2,7 @@
 
 exports[`Reuse lib templates generates files correctly 1`] = `
 Object {
-  "com.sap.myUI5Lib/.gitignore": Object {
+  "com.sap.myui5lib/.gitignore": Object {
     "contents": "node_modules/
 dist/
 .scp/
@@ -14,7 +14,7 @@ archive.zip
 .*_mta_build_tmp",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/karma.conf.js": Object {
+  "com.sap.myui5lib/karma.conf.js": Object {
     "contents": "// karma-ui5 usage: https://github.com/SAP/karma-ui5
 module.exports = function (config) {
     config.set({
@@ -24,9 +24,9 @@ module.exports = function (config) {
 };",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/package.json": Object {
+  "com.sap.myui5lib/package.json": Object {
     "contents": "{
-  \\"name\\": \\"myUI5Lib\\",
+  \\"name\\": \\"myui5lib\\",
   \\"version\\": \\"1.0.0\\",
   \\"private\\": true,
   \\"devDependencies\\": {
@@ -39,23 +39,23 @@ module.exports = function (config) {
   },
   \\"scripts\\": {
     \\"build\\": \\"ui5 build --clean-dest\\",
-    \\"start\\": \\"fiori run --open test-resources/com/sap/myUI5Lib/Example.html\\",
-    \\"testsuite\\": \\"fiori run --open test-resources/com/sap/myUI5Lib/qunit/testsuite.qunit.html\\",
+    \\"start\\": \\"fiori run --open test-resources/com/sap/myui5lib/Example.html\\",
+    \\"testsuite\\": \\"fiori run --open test-resources/com/sap/myui5lib/qunit/testsuite.qunit.html\\",
     \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\"
   }
 }
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/.library": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/.library": Object {
     "contents": "<?xml version=\\"1.0\\" ?>
 <library xmlns=\\"http://www.sap.com/sap.ui.library.xsd\\">
-	<name>com.sap.myUI5Lib</name>
+	<name>com.sap.myui5lib</name>
 	<vendor>Cian Morrin</vendor>
 	<version>\${version}</version>
 	<copyright>\${copyright}</copyright>
-	<title>myUI5Lib</title>
-	<documentation>Some description about myUI5Lib</documentation>
+	<title>myui5lib</title>
+	<documentation>Some description about myui5lib</documentation>
 	<dependencies>
 		<dependency>
 			<libraryName>sap.ui.core</libraryName>
@@ -65,12 +65,12 @@ module.exports = function (config) {
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/Example.js": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/Example.js": Object {
     "contents": "/*!
  * \${copyright}
  */
 
-// Provides control com.sap.myUI5Lib.Example.
+// Provides control com.sap.myui5lib.Example.
 sap.ui.define([
 	\\"./library\\", 
 	\\"sap/ui/core/Control\\", 
@@ -82,7 +82,7 @@ sap.ui.define([
 	var ExampleColor = library.ExampleColor;
 
 	/**
-	 * Constructor for a new <code>com.sap.myUI5Lib.Example</code> control.
+	 * Constructor for a new <code>com.sap.myui5lib.Example</code> control.
 	 *
 	 * @param {string} [sId] id for the new control, generated automatically if no id is given
 	 * @param {object} [mSettings] initial settings for the new control
@@ -96,11 +96,11 @@ sap.ui.define([
 	 *
 	 * @constructor
 	 * @public
-	 * @alias com.sap.myUI5Lib.Example
+	 * @alias com.sap.myui5lib.Example
 	 */
-	var Example = Control.extend(\\"com.sap.myUI5Lib.Example\\", /** @lends com.sap.myUI5Lib.Example.prototype */ {
+	var Example = Control.extend(\\"com.sap.myui5lib.Example\\", /** @lends com.sap.myui5lib.Example.prototype */ {
 		metadata: {
-			library: \\"com.sap.myUI5Lib\\",
+			library: \\"com.sap.myui5lib\\",
 			properties: {
 				/**
 				 * The text to display.
@@ -114,7 +114,7 @@ sap.ui.define([
 				 * The color to use (default to \\"Default\\" color).
 				 */
 				color: {
-					type: \\"com.sap.myUI5Lib.ExampleColor\\",
+					type: \\"com.sap.myui5lib.ExampleColor\\",
 					group: \\"Appearance\\",
 					defaultValue: ExampleColor.Default
 				}
@@ -137,7 +137,7 @@ sap.ui.define([
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/ExampleRenderer.js": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/ExampleRenderer.js": Object {
     "contents": "/*!
  * \${copyright}
  */
@@ -168,7 +168,7 @@ sap.ui.define([
 	 */
 	ExampleRenderer.render = function (rm, control) {
 
-		var i18n = Core.getLibraryResourceBundle(\\"com.sap.myUI5Lib\\");
+		var i18n = Core.getLibraryResourceBundle(\\"com.sap.myui5lib\\");
 
 		rm.openStart(\\"div\\", control);
 		if (control.getColor() === ExampleColor.Highlight) {
@@ -188,13 +188,13 @@ sap.ui.define([
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/library.js": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/library.js": Object {
     "contents": "/*!
  * \${copyright}
  */
 
 /**
- * Initialization Code and shared classes of library com.sap.myUI5Lib.
+ * Initialization Code and shared classes of library com.sap.myui5lib.
  */
 sap.ui.define([
 	\\"sap/ui/core/library\\"
@@ -204,35 +204,35 @@ sap.ui.define([
 	// delegate further initialization of this library to the Core
 	// Hint: sap.ui.getCore() must still be used to support preload with sync bootstrap!
 	sap.ui.getCore().initLibrary({
-		name: \\"com.sap.myUI5Lib\\",
+		name: \\"com.sap.myui5lib\\",
 		version: \\"\${version}\\",
 		dependencies: [ // keep in sync with the ui5.yaml and .library files
 			\\"sap.ui.core\\"
 		],
 		types: [
-			\\"com.sap.myUI5Lib.ExampleColor\\"
+			\\"com.sap.myui5lib.ExampleColor\\"
 		],
 		interfaces: [],
 		controls: [
-			\\"com.sap.myUI5Lib.Example\\"
+			\\"com.sap.myui5lib.Example\\"
 		],
 		elements: [],
 		noLibraryCSS: false // if no CSS is provided, you can disable the library.css load here
 	});
 
 	/**
-	 * Some description about <code>myUI5Lib</code>
+	 * Some description about <code>myui5lib</code>
 	 *
 	 * @namespace
-	 * @name com.sap.myUI5Lib
+	 * @name com.sap.myui5lib
 	 * @author Cian Morrin
 	 * @version \${version}
 	 * @public
 	 */
-	var thisLib = com.sap.myUI5Lib;
+	var thisLib = com.sap.myui5lib;
 
 	/**
-	 * Semantic Colors of the <code>com.sap.myUI5Lib.Example</code>.
+	 * Semantic Colors of the <code>com.sap.myui5lib.Example</code>.
 	 *
 	 * @enum {string}
 	 * @public
@@ -259,13 +259,13 @@ sap.ui.define([
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/messagebundle.properties": Object {
-    "contents": "# Translation file of library com.sap.myUI5Lib.
+  "com.sap.myui5lib/src/com/sap/myui5lib/messagebundle.properties": Object {
+    "contents": "# Translation file of library com.sap.myui5lib.
 ANY_TEXT=AnyText
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/base/Example.less": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/themes/base/Example.less": Object {
     "contents": "/* Theme Parameter Toolbox: https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/theming/webapp/index.html */
 
 .myLibPrefixExample,
@@ -288,7 +288,7 @@ ANY_TEXT=AnyText
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/base/library.source.less": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/themes/base/library.source.less": Object {
     "contents": "@import \\"/resources/sap/ui/core/themes/base/base.less\\";
 @import \\"/resources/sap/ui/core/themes/base/global.less\\";
 
@@ -296,90 +296,90 @@ ANY_TEXT=AnyText
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize/library.source.less": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/themes/sap_belize/library.source.less": Object {
     "contents": "@import \\"../base/library.source.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_belize/base.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_belize/global.less\\";
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize_hcb/library.source.less": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/themes/sap_belize_hcb/library.source.less": Object {
     "contents": "@import \\"../base/library.source.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_belize_hcb/base.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_belize_hcb/global.less\\";
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize_hcw/library.source.less": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/themes/sap_belize_hcw/library.source.less": Object {
     "contents": "@import \\"../base/library.source.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_belize_hcw/base.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_belize_hcw/global.less\\";
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize_plus/library.source.less": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/themes/sap_belize_plus/library.source.less": Object {
     "contents": "@import \\"../sap_belize/library.source.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_belize_plus/base.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_belize_plus/global.less\\";
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3/library.source.less": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/themes/sap_fiori_3/library.source.less": Object {
     "contents": "@import \\"../base/library.source.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_fiori_3/base.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_fiori_3/global.less\\";
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3_dark/library.source.less": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/themes/sap_fiori_3_dark/library.source.less": Object {
     "contents": "@import \\"../base/library.source.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_fiori_3_dark/base.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_fiori_3_dark/global.less\\";
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3_hcb/library.source.less": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/themes/sap_fiori_3_hcb/library.source.less": Object {
     "contents": "@import \\"../base/library.source.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcb/base.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcb/global.less\\";
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3_hcw/library.source.less": Object {
+  "com.sap.myui5lib/src/com/sap/myui5lib/themes/sap_fiori_3_hcw/library.source.less": Object {
     "contents": "@import \\"../base/library.source.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/base.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/global.less\\";
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/Example.html": Object {
+  "com.sap.myui5lib/test/com/sap/myui5lib/Example.html": Object {
     "contents": "<!DOCTYPE html>
 <html>
 <head>
 		<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\" />
-		<title>Test Page for com.sap.myUI5Lib.Example</title>
+		<title>Test Page for com.sap.myui5lib.Example</title>
 		<base href=\\"../../../../\\">
 		<script src=\\"resources/sap-ui-core.js\\"
 				id=\\"sap-ui-bootstrap\\"
 				data-sap-ui-async=\\"true\\"
 				data-sap-ui-oninit=\\"module:local/Example\\"
-				data-sap-ui-libs=\\"sap.ui.core,com.sap.myUI5Lib\\"
+				data-sap-ui-libs=\\"sap.ui.core,com.sap.myui5lib\\"
 				data-sap-ui-theme=\\"sap_fiori_3\\"
-				data-sap-ui-resourceroots='{\\"local\\" : \\"./test-resources/com/sap/myUI5Lib/\\"}'>
+				data-sap-ui-resourceroots='{\\"local\\" : \\"./test-resources/com/sap/myui5lib/\\"}'>
 		</script>
 </head>
 <body class=\\"sapUiBody\\">
-		<h1 id=\\"header\\">Test Page for <code>com.sap.myUI5Lib.Example</code></h1>
+		<h1 id=\\"header\\">Test Page for <code>com.sap.myui5lib.Example</code></h1>
 		<div id=\\"content\\"></div>
 </body>
 </html>
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/Example.js": Object {
+  "com.sap.myui5lib/test/com/sap/myui5lib/Example.js": Object {
     "contents": "sap.ui.define([
-	\\"com/sap/myUI5Lib/library\\",
-	\\"com/sap/myUI5Lib/Example\\"
+	\\"com/sap/myui5lib/library\\",
+	\\"com/sap/myui5lib/Example\\"
 ], function(library, Example) {
 	\\"use strict\\";
 
@@ -397,13 +397,13 @@ ANY_TEXT=AnyText
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/qunit/Example.qunit.js": Object {
+  "com.sap.myui5lib/test/com/sap/myui5lib/qunit/Example.qunit.js": Object {
     "contents": "/*global QUnit */
 sap.ui.define([
 	\\"sap/ui/qunit/QUnitUtils\\",
 	\\"sap/ui/qunit/utils/createAndAppendDiv\\",
-	\\"com/sap/myUI5Lib/library\\",
-	\\"com/sap/myUI5Lib/Example\\"
+	\\"com/sap/myui5lib/library\\",
+	\\"com/sap/myui5lib/Example\\"
 ], function(qutils, createAndAppendDiv, library, Example) {
 	\\"use strict\\";
 
@@ -465,16 +465,16 @@ sap.ui.define([
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/qunit/testsuite.qunit.html": Object {
+  "com.sap.myui5lib/test/com/sap/myui5lib/qunit/testsuite.qunit.html": Object {
     "contents": "<!DOCTYPE html>
 <html>
 	<head>
 		<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
 		<meta charset=\\"utf-8\\">
     <base href=\\"../../../../../\\">
-		<title>QUnit TestSuite for com.sap.myUI5Lib</title>
+		<title>QUnit TestSuite for com.sap.myui5lib</title>
 		<script src=\\"resources/sap/ui/test/starter/createSuite.js\\"
-				data-sap-ui-testsuite=\\"test-resources/com/sap/myUI5Lib/qunit/testsuite.qunit\\"></script>
+				data-sap-ui-testsuite=\\"test-resources/com/sap/myui5lib/qunit/testsuite.qunit\\"></script>
 	</head>
 	<body>
 	</body>
@@ -482,16 +482,16 @@ sap.ui.define([
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/qunit/testsuite.qunit.js": Object {
+  "com.sap.myui5lib/test/com/sap/myui5lib/qunit/testsuite.qunit.js": Object {
     "contents": "sap.ui.define(function() {
 	\\"use strict\\";
 
 	return {
-		name: \\"QUnit TestSuite for com.sap.myUI5Lib\\",
+		name: \\"QUnit TestSuite for com.sap.myui5lib\\",
 		defaults: {
 			bootCore: true,
 			ui5: {
-				libs: \\"sap.ui.core,com.sap.myUI5Lib\\",
+				libs: \\"sap.ui.core,com.sap.myui5lib\\",
 				theme: \\"sap_fiori_3\\",
 				noConflict: true,
 				preload: \\"auto\\"
@@ -511,7 +511,7 @@ sap.ui.define([
 			// test file for the Example control
 			Example: {
 				title: \\"QUnit Test for Example\\",
-				_alternativeTitle: \\"QUnit tests: com.sap.myUI5Lib.Example\\"
+				_alternativeTitle: \\"QUnit tests: com.sap.myui5lib.Example\\"
 			}
 		}
 	};
@@ -520,10 +520,10 @@ sap.ui.define([
 ",
     "state": "modified",
   },
-  "com.sap.myUI5Lib/ui5.yaml": Object {
+  "com.sap.myui5lib/ui5.yaml": Object {
     "contents": "specVersion: '2.2'
 metadata:
-  name: \\"myUI5Lib\\"
+  name: \\"myui5lib\\"
 type: library
 framework:
   name: SAPUI5
@@ -563,8 +563,8 @@ exports[`Reuse lib templates generates files correctly 2`] = `
           \\"./node_modules/@sapui5/ts-types-esm\\"
       ],
       \\"paths\\": {
-          \\"com/sap/myUI5TSLib/*\\": [
-              \\"./src/com/sap/myUI5TSLib/*\\"
+          \\"com/sap/myui5tslib/*\\": [
+              \\"./src/com/sap/myui5tslib/*\\"
           ]
       }
   },

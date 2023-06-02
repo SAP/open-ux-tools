@@ -26,7 +26,7 @@ describe('Reuse lib templates', () => {
     });
 
     const ui5LibConfig: UI5LibConfig = {
-        libraryName: 'myUI5Lib',
+        libraryName: 'myui5lib',
         namespace: 'com.sap',
         framework: 'SAPUI5',
         frameworkVersion: '1.102.19',
@@ -41,16 +41,16 @@ describe('Reuse lib templates', () => {
         // with typescript
         const ui5LibTSConfig: UI5LibConfig = {
             ...ui5LibConfig,
-            libraryName: 'myUI5TSLib',
+            libraryName: 'myui5tslib',
             typescript: true
         };
         await generate(outputDir, ui5LibTSConfig, fs);
-        expect(fs.read(join(outputDir, 'com.sap.myUI5TSLib', 'tsconfig.json'))).toMatchSnapshot();
-        expect(fs.read(join(outputDir, 'com.sap.myUI5TSLib', 'src', '.babelrc.json'))).toMatchSnapshot();
+        expect(fs.read(join(outputDir, 'com.sap.myui5tslib', 'tsconfig.json'))).toMatchSnapshot();
+        expect(fs.read(join(outputDir, 'com.sap.myui5tslib', 'src', '.babelrc.json'))).toMatchSnapshot();
 
         // with typescript and version 1.113.1
-        await generate(outputDir, { ...ui5LibTSConfig, libraryName: 'myUI5TSLib2', frameworkVersion: '1.113.1' }, fs);
-        const pkgData = fs.read(join(outputDir, 'com.sap.myUI5TSLib2', 'package.json'));
+        await generate(outputDir, { ...ui5LibTSConfig, libraryName: 'myui5tslib', frameworkVersion: '1.113.1' }, fs);
+        const pkgData = fs.read(join(outputDir, 'com.sap.myui5tslib', 'package.json'));
         const packageJson = JSON.parse(pkgData);
         expect(packageJson.devDependencies).toHaveProperty('@sapui5/types');
     });
@@ -66,7 +66,7 @@ describe('Reuse lib templates', () => {
                 libraryName: 'test"AppId'
             })
         ).rejects.toThrowErrorMatchingInlineSnapshot(
-            `"Please use alpha numeric characters only for the property libraryName"`
+            `"Please use lowercase alpha numeric characters only for the property libraryName"`
         );
 
         // Ensure undefined, null or '' cannot be used

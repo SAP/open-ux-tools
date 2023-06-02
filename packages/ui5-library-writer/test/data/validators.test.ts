@@ -4,7 +4,7 @@ import { t } from '../../src/i18n';
 describe('validators', () => {
     describe('validateLibName', () => {
         it('should return true for a valid library name', () => {
-            const libName = 'myLib';
+            const libName = 'mylib';
             const result = validateLibName(libName);
             expect(result).toBe(true);
         });

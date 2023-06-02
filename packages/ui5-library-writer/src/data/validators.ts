@@ -14,7 +14,7 @@ export function validateLibName(libName: string): boolean {
         throw new Error(t('error.missingRequiredProperty', { propertyName: 'libraryName' }));
     }
 
-    if (!/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(libName)) {
+    if (!/^[a-z][a-z0-9]*$/g.test(libName)) {
         throw new Error(t('error.useAlphaNumeric', { propertyName: 'libraryName' }));
     }
 
