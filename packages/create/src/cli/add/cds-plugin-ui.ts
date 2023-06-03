@@ -39,7 +39,7 @@ async function addCdsPluginUi5(basePath: string, simulate: boolean, skipInstall:
         await traceChanges(fs);
         if (!simulate) {
             fs.commit(() => {
-                logger.info(`Changes written`);
+                logger.info(`Changes to enable cds-plugin-ui5 written`);
                 if (skipInstall) {
                     logger.warn('To finish enablement of cds-plugin-ui5 run commands:');
                     const relPath = relative(basePath, process.cwd());
