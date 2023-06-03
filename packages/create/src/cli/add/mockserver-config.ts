@@ -72,7 +72,7 @@ async function addMockserverConfig(
                     logger.info('npm install -D @sap-ux/ui5-middleware-fe-mockserver');
                 } else {
                     logger.debug('Running npm install command');
-                    runNpmInstall(basePath);
+                    runNpmInstallMiddlewareFeMockserver(basePath);
                 }
             });
         }
@@ -87,8 +87,8 @@ async function addMockserverConfig(
  *
  * @param basePath - path to application root
  */
-function runNpmInstall(basePath: string): void {
-    const npmCommand = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
+function runNpmInstallMiddlewareFeMockserver(basePath: string): void {
+    const npmCommand = process.platform.startsWith('win') ? 'npm.cmd' : 'npm';
     spawnSync(npmCommand, ['install', '--save-dev', '@sap-ux/ui5-middleware-fe-mockserver'], {
         cwd: basePath,
         stdio: [0, 1, 2]
