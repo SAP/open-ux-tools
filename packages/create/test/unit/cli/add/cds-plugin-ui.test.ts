@@ -52,7 +52,7 @@ describe('Test command add cds-plugin-ui5', () => {
         expect(loggerMock.warn).not.toBeCalled();
         expect(loggerMock.error).not.toBeCalled();
         expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).toBeCalledWith(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['install'], {
+        expect(spawnSpy).toBeCalledWith(process.platform.startsWith('win') ? 'npm.cmd' : 'npm', ['install'], {
             cwd: __dirname,
             stdio: [0, 1, 2]
         });
