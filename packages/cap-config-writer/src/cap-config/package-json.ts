@@ -11,7 +11,7 @@ const minCdsVersion = '6.8.2';
  */
 export function ensureMinCdsVersion(packageJson: Package): void {
     if (!hasMinCdsVersion(packageJson)) {
-        packageJson.dependencies ||= {};
+        packageJson.dependencies ??= {};
         packageJson.dependencies['@sap/cds'] = `^${minCdsVersion}`;
     }
 }
@@ -25,7 +25,7 @@ export function ensureMinCdsVersion(packageJson: Package): void {
 export async function enableWorkspaces(basePath: string, packageJson: Package): Promise<void> {
     const { appWorkspace, workspaceEnabled } = await getWorkspaceInfo(basePath, packageJson);
     if (!workspaceEnabled) {
-        packageJson.workspaces ||= [];
+        packageJson.workspaces ??= [];
         if (Array.isArray(packageJson.workspaces)) {
             packageJson.workspaces.push(appWorkspace);
         }
@@ -39,7 +39,7 @@ export async function enableWorkspaces(basePath: string, packageJson: Package): 
  */
 export function addCdsPluginUi5(packageJson: Package): void {
     if (!hasCdsPluginUi5(packageJson)) {
-        packageJson.devDependencies ||= {};
+        packageJson.devDependencies ??= {};
         packageJson.devDependencies['cds-plugin-ui5'] = 'latest';
     }
 }
