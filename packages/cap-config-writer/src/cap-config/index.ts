@@ -24,7 +24,7 @@ export async function enabledCdsUi5Plugin(basePath: string, fs?: Editor): Promis
         fs = create(createStorage());
     }
     const packageJsonPath = join(basePath, 'package.json');
-    const packageJson = (fs.readJSON(packageJsonPath) || {}) as Package;
+    const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
 
     ensureMinCdsVersion(packageJson);
     await enableWorkspaces(basePath, packageJson);

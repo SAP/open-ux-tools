@@ -65,7 +65,7 @@ async function addCdsPluginUi5(basePath: string, simulate: boolean, skipInstall:
  * @param basePath - path to application root
  */
 function runNpmInstall(basePath: string): void {
-    const npmCommand = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
+    const npmCommand = process.platform.startsWith('win') ? 'npm.cmd' : 'npm';
     spawnSync(npmCommand, ['install'], {
         cwd: basePath,
         stdio: [0, 1, 2]
