@@ -57,7 +57,7 @@ function createRequestHandler(routes: { route: string; handler: RequestHandler }
  */
 async function loadManifest(rootProject: ReaderCollection): Promise<Manifest | undefined> {
     const files = await rootProject.byGlob('**/manifest.json');
-    if (files.length > 0) {
+    if (files?.length > 0) {
         return JSON.parse(await files[0].getString());
     } else {
         return undefined;
