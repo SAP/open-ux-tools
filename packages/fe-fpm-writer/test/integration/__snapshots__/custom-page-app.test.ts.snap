@@ -1,0 +1,399 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test FPM features using a pre-generated Custom Page app generate building blocks generateBuildingBlock:Table in custom page 1`] = `
+Object {
+  "js/webapp/ext/main/Main.controller.js": Object {
+    "contents": "sap.ui.define(
+    [
+        'sap/fe/core/PageController'
+    ],
+    function(PageController) {
+        'use strict';
+
+        return PageController.extend('sap.fe.demo.customPageAppJs.ext.main.Main', {
+            /**
+             * Called when a controller is instantiated and its View controls (if available) are already created.
+             * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+             * @memberOf sap.fe.demo.customPageAppJs.ext.main.Main
+             */
+            //  onInit: function () {
+            //
+            //  },
+
+            /**
+             * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
+             * (NOT before the first rendering! onInit() is used for that one!).
+             * @memberOf sap.fe.demo.customPageAppJs.ext.main.Main
+             */
+            //  onBeforeRendering: function() {
+            //
+            //  },
+
+            /**
+             * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
+             * This hook is the same one that SAPUI5 controls get after being rendered.
+             * @memberOf sap.fe.demo.customPageAppJs.ext.main.Main
+             */
+            //  onAfterRendering: function() {
+            //
+            //  },
+
+            /**
+             * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
+             * @memberOf sap.fe.demo.customPageAppJs.ext.main.Main
+             */
+            //  onExit: function() {
+            //
+            //  }
+        });
+    }
+);
+",
+    "state": "modified",
+  },
+  "js/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"sap.fe.demo.customPageAppJs.ext.main.Main\\">
+    <Page id=\\"Main\\" title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"@com.sap.vocabularies.UI.v1.SelectionFields\\"/>
+            <macros:Chart id=\\"testChart\\" metaPath=\\"@com.sap.vocabularies.UI.v1.Chart#testChart\\" filterBar=\\"testFilterBar\\" personalization=\\"Type,Item,Sort\\" selectionMode=\\"Single\\"/>
+            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" enableAutoColumnWidth=\\"true\\" enableExport=\\"true\\" enableFullScreen=\\"true\\" enablePaste=\\"true\\" filterBar=\\"testFilterBar\\" header=\\"Test Header\\" headerVisible=\\"true\\" isSearchable=\\"true\\" menu=\\"testMenuActionKey\\" personalization=\\"Column\\" readOnly=\\"true\\" type=\\"ResponsiveTable\\" variantManagement=\\"None\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "js/webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.49.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"sap.fe.demo.customPageAppJs\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"0.0.1\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"@sap/generator-fiori:fpm\\",
+            \\"version\\": \\"1.10.1-pre-20230602095551-9b2dfe255.0\\",
+            \\"toolsId\\": \\"21e819fd-306a-4ebc-8157-8631a5dd8575\\"
+        },
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/here/goes/your/serviceurl/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"annotations\\": [
+                        \\"annotation\\"
+                    ],
+                    \\"localUri\\": \\"localService/metadata.xml\\",
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            },
+            \\"annotation\\": {
+                \\"type\\": \\"ODataAnnotation\\",
+                \\"uri\\": \\"annotations/annotation.xml\\",
+                \\"settings\\": {
+                    \\"localUri\\": \\"annotations/annotation.xml\\"
+                }
+            }
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"flexEnabled\\": true,
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.114.0\\",
+            \\"libs\\": {
+                \\"sap.m\\": {},
+                \\"sap.ui.core\\": {},
+                \\"sap.ushell\\": {},
+                \\"sap.fe.templates\\": {}
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        },
+        \\"models\\": {
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"settings\\": {
+                    \\"bundleName\\": \\"sap.fe.demo.customPageAppJs.i18n.i18n\\"
+                }
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            },
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            }
+        },
+        \\"resources\\": {
+            \\"css\\": []
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"name\\": \\"BookedFlightsMain\\",
+                    \\"pattern\\": \\":?query:\\",
+                    \\"target\\": \\"BookedFlightsMain\\"
+                }
+            ],
+            \\"targets\\": {
+                \\"BookedFlightsMain\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"BookedFlightsMain\\",
+                    \\"name\\": \\"sap.fe.core.fpm\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"sap.fe.demo.customPageAppJs.ext.main.Main\\",
+                            \\"contextPath\\": \\"/BookedFlights\\"
+                        }
+                    }
+                }
+            }
+        },
+        \\"extends\\": {
+            \\"extensions\\": {
+                \\"sap.ui.controllerExtensions\\": {}
+            }
+        }
+    }
+}",
+    "state": "modified",
+  },
+  "ts/webapp/Component.ts": Object {
+    "contents": "import BaseComponent from \\"sap/fe/core/AppComponent\\";
+
+/**
+ * @namespace sap.fe.demo.customPageAppTs
+ */
+export default class Component extends BaseComponent {
+
+	public static metadata = {
+		manifest: \\"json\\"
+	};
+
+    /**
+     * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
+     * @public
+     * @override
+     */
+	//public init() : void {
+    //    super.init();
+	//}
+}",
+    "state": "modified",
+  },
+  "ts/webapp/ext/main/Main.controller.ts": Object {
+    "contents": "import Controller from \\"sap/fe/core/PageController\\";
+
+/**
+ * @namespace sap.fe.demo.customPageAppTs.ext.main.Main.controller
+ */
+export default class Main extends Controller {
+
+    /**
+     * Called when a controller is instantiated and its View controls (if available) are already created.
+     * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+     * @memberOf sap.fe.demo.customPageAppTs.ext.main.Main
+     */
+    // public onInit(): void {
+    //
+    //}
+
+    /**
+     * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
+     * (NOT before the first rendering! onInit() is used for that one!).
+     * @memberOf sap.fe.demo.customPageAppTs.ext.main.Main
+     */
+    // public  onBeforeRendering(): void {
+    //
+    //  }
+
+    /**
+     * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
+     * This hook is the same one that SAPUI5 controls get after being rendered.
+     * @memberOf sap.fe.demo.customPageAppTs.ext.main.Main
+     */
+    // public  onAfterRendering(): void {
+    //
+    //  }
+
+    /**
+     * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
+     * @memberOf sap.fe.demo.customPageAppTs.ext.main.Main
+     */
+    // public onExit(): void {
+    //
+    //  }
+}",
+    "state": "modified",
+  },
+  "ts/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"sap.fe.demo.customPageAppTs.ext.main.Main\\">
+    <Page id=\\"Main\\" title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"@com.sap.vocabularies.UI.v1.SelectionFields\\"/>
+            <macros:Chart id=\\"testChart\\" metaPath=\\"@com.sap.vocabularies.UI.v1.Chart#testChart\\" filterBar=\\"testFilterBar\\" personalization=\\"Type,Item,Sort\\" selectionMode=\\"Single\\"/>
+            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" enableAutoColumnWidth=\\"true\\" enableExport=\\"true\\" enableFullScreen=\\"true\\" enablePaste=\\"true\\" filterBar=\\"testFilterBar\\" header=\\"Test Header\\" headerVisible=\\"true\\" isSearchable=\\"true\\" menu=\\"testMenuActionKey\\" personalization=\\"Column\\" readOnly=\\"true\\" type=\\"ResponsiveTable\\" variantManagement=\\"None\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "ts/webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.49.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"sap.fe.demo.customPageAppTs\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"0.0.1\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"@sap/generator-fiori:fpm\\",
+            \\"version\\": \\"1.10.1-pre-20230602095551-9b2dfe255.0\\",
+            \\"toolsId\\": \\"253ece54-873d-4b35-a0d6-7efec148b6ea\\"
+        },
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/here/goes/your/serviceurl/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"annotations\\": [
+                        \\"annotation\\"
+                    ],
+                    \\"localUri\\": \\"localService/metadata.xml\\",
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            },
+            \\"annotation\\": {
+                \\"type\\": \\"ODataAnnotation\\",
+                \\"uri\\": \\"annotations/annotation.xml\\",
+                \\"settings\\": {
+                    \\"localUri\\": \\"annotations/annotation.xml\\"
+                }
+            }
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"flexEnabled\\": true,
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.114.0\\",
+            \\"libs\\": {
+                \\"sap.m\\": {},
+                \\"sap.ui.core\\": {},
+                \\"sap.ushell\\": {},
+                \\"sap.fe.templates\\": {}
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        },
+        \\"models\\": {
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"settings\\": {
+                    \\"bundleName\\": \\"sap.fe.demo.customPageAppTs.i18n.i18n\\"
+                }
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            },
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            }
+        },
+        \\"resources\\": {
+            \\"css\\": []
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"name\\": \\"BookedFlightsMain\\",
+                    \\"pattern\\": \\":?query:\\",
+                    \\"target\\": \\"BookedFlightsMain\\"
+                }
+            ],
+            \\"targets\\": {
+                \\"BookedFlightsMain\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"BookedFlightsMain\\",
+                    \\"name\\": \\"sap.fe.core.fpm\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"sap.fe.demo.customPageAppTs.ext.main.Main\\",
+                            \\"contextPath\\": \\"/BookedFlights\\"
+                        }
+                    }
+                }
+            }
+        },
+        \\"extends\\": {
+            \\"extensions\\": {
+                \\"sap.ui.controllerExtensions\\": {}
+            }
+        }
+    }
+}",
+    "state": "modified",
+  },
+}
+`;

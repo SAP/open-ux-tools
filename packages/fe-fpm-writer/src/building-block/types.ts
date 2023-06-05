@@ -6,7 +6,8 @@
 export enum BuildingBlockType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
-    Field = 'field'
+    Field = 'field',
+    Table = 'table'
 }
 
 /**
@@ -39,7 +40,7 @@ export interface BuildingBlock {
  * Usually, a contextPath and metaPath is expected.
  *
  * @example
- * <macro:Chart id="Mychart" contextPath="/RootEntity" metaPath="@com.sap.vocabularies.UI.v1.Chart" />
+ * <macro:Chart id="MyChart" contextPath="/RootEntity" metaPath="@com.sap.vocabularies.UI.v1.Chart" />
  * @extends {BuildingBlock}
  */
 export interface Chart extends BuildingBlock {

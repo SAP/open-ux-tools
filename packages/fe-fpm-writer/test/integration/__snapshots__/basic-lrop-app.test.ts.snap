@@ -2,7 +2,7 @@
 
 exports[`use FPM with existing apps extend UI5 application with FPM generateCustomSubSection in ObjectPage 1`] = `
 Object {
-  "lrop/webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
+  "js/webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -20,7 +20,7 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/myControllerExtension/MyControllerExtension.controller.js": Object {
+  "js/webapp/ext/myControllerExtension/MyControllerExtension.controller.js": Object {
     "contents": "sap.ui.define(['sap/ui/core/mvc/ControllerExtension'], function (ControllerExtension) {
 	'use strict';
 
@@ -42,7 +42,7 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/myCustomAction/MyCustomAction.js": Object {
+  "js/webapp/ext/myCustomAction/MyCustomAction.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -57,7 +57,7 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/myCustomPage/MyCustomPage.controller.js": Object {
+  "js/webapp/ext/myCustomPage/MyCustomPage.controller.js": Object {
     "contents": "sap.ui.define(
     [
         'sap/fe/core/PageController'
@@ -106,7 +106,7 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
+  "js/webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.myCustomPage.MyCustomPage\\">
     <Page id=\\"MyCustomPage\\" title=\\"MyCustomPage\\">
@@ -115,13 +115,13 @@ Object {
 </mvc:View>",
     "state": "modified",
   },
-  "lrop/webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
+  "js/webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
     "state": "modified",
   },
-  "lrop/webapp/ext/myCustomSection/MyCustomSection.js": Object {
+  "js/webapp/ext/myCustomSection/MyCustomSection.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -136,13 +136,13 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/myCustomSubSection/MyCustomSubSection.fragment.xml": Object {
+  "js/webapp/ext/myCustomSubSection/MyCustomSubSection.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSubSection/MyCustomSubSection'}\\" text=\\"MyCustomSubSection\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
     "state": "modified",
   },
-  "lrop/webapp/ext/myCustomSubSection/MyCustomSubSection.js": Object {
+  "js/webapp/ext/myCustomSubSection/MyCustomSubSection.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -157,13 +157,13 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
+  "js/webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
     "state": "modified",
   },
-  "lrop/webapp/ext/newCustomColumn/NewCustomColumn.js": Object {
+  "js/webapp/ext/newCustomColumn/NewCustomColumn.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -178,7 +178,7 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/newCustomFilter/NewCustomFilter.fragment.xml": Object {
+  "js/webapp/ext/newCustomFilter/NewCustomFilter.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
         <ComboBox
             id=\\"testID\\"
@@ -194,7 +194,7 @@ Object {
 </core:FragmentDefinition>",
     "state": "modified",
   },
-  "lrop/webapp/ext/newCustomFilter/NewCustomFilter.js": Object {
+  "js/webapp/ext/newCustomFilter/NewCustomFilter.js": Object {
     "contents": "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
     \\"use strict\\";
     return {
@@ -219,7 +219,7 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/newCustomView/NewCustomView.controller.js": Object {
+  "js/webapp/ext/newCustomView/NewCustomView.controller.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -234,13 +234,13 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/newCustomView/NewCustomView.fragment.xml": Object {
+  "js/webapp/ext/newCustomView/NewCustomView.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomView/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
     "state": "modified",
   },
-  "lrop/webapp/manifest.json": Object {
+  "js/webapp/manifest.json": Object {
     "contents": "{
   \\"_version\\": \\"1.32.0\\",
   \\"sap.app\\": {
