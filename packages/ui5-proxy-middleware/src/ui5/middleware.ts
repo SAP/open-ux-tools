@@ -76,7 +76,7 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
 
     dotenv.config();
     const config = options.configuration;
-    let ui5Version: string | undefined;
+    let ui5Version: string = '';
     try {
         const manifest = await loadManifest(resources.rootProject);
         ui5Version = await resolveUI5Version(config.version, logger, manifest);

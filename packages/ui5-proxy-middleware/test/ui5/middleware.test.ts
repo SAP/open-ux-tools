@@ -227,7 +227,16 @@ describe('middleware', () => {
             }]);
             await getTestServer(config);
             expect(ui5ProxySpy).toBeCalledWith(
-                expect.objectContaining({ version: undefined }),
+                expect.objectContaining({ version: '' }),
+                expect.objectContaining({})
+            );
+        });
+
+        test("no manifest.json", async () => {
+            rootProjectMock.byGlob.mockResolvedValueOnce([]);
+            await getTestServer(config);
+            expect(ui5ProxySpy).toBeCalledWith(
+                expect.objectContaining({ version: '' }),
                 expect.objectContaining({})
             );
         });
