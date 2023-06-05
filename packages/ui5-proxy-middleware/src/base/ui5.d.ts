@@ -1,6 +1,6 @@
 declare module '@ui5/fs' {
     /**
-     * https://sap.github.io/ui5-tooling/api/module-@ui5_fs.Resource.html
+     * https://sap.github.io/ui5-tooling/v2/api/module-@ui5_fs.Resource.html
      */
     export class Resource {
         /**
@@ -20,7 +20,7 @@ declare module '@ui5/fs' {
     }
 
     /**
-     * https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_ReaderCollection.html
+     * https://sap.github.io/ui5-tooling/v2/api/module-@ui5_fs.ReaderCollection.html
      */
     export class ReaderCollection {
         /**
@@ -35,12 +35,12 @@ declare module '@ui5/fs' {
     }
 
     /**
-     * https://sap.github.io/ui5-tooling/stable/api/module-@ui5_fs.DuplexCollection.html
+     * https://sap.github.io/ui5-tooling/v2/api/module-@ui5_fs.DuplexCollection.html
      */
     export class DuplexCollection extends ReaderCollection {}
 
     /**
-     * https://sap.github.io/ui5-tooling/api/module-@ui5_fs.AbstractReader.html
+     * https://sap.github.io/ui5-tooling/v2/api/module-@ui5_fs.AbstractReader.html
      */
     export class AbstractReader {}
 }
@@ -75,7 +75,7 @@ declare module '@ui5/server' {
 
 declare module '@ui5/builder' {
     /**
-     * https://sap.github.io/ui5-tooling/api/module-@ui5_builder.tasks.TaskUtil.html
+     * https://sap.github.io/ui5-tooling/v2/api/module-@ui5_builder.tasks.TaskUtil.html
      */
     export class TaskUtil {}
 
