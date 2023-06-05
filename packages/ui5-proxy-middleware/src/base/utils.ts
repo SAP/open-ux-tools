@@ -216,8 +216,8 @@ export async function getManifest(args: string[]): Promise<Manifest | undefined>
  * @returns The minUI5Version from manifest.json or undefined otherwise
  */
 export async function getUI5VersionFromManifest(args: string[], manifest?: Manifest): Promise<string | undefined> {
-    manifest ??= await getManifest(args);
-    return manifest?.['sap.ui5']?.dependencies?.minUI5Version;
+    const mf = manifest ?? await getManifest(args);
+    return mf?.['sap.ui5']?.dependencies?.minUI5Version;
 }
 
 /**
