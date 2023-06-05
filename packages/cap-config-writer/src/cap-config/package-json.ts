@@ -24,12 +24,20 @@ export function ensureMinCdsVersion(packageJson: Package): void {
  */
 export async function enableWorkspaces(basePath: string, packageJson: Package): Promise<void> {
     const { appWorkspace, workspaceEnabled } = await getWorkspaceInfo(basePath, packageJson);
-    if (!workspaceEnabled) {
+    if (workspaceEnabled) {
+        return;
+    }
+    let workspacePackages = getWorkspacePackages(packageJson);
+    if (!workspacePackages) {
         packageJson.workspaces ??= [];
         if (Array.isArray(packageJson.workspaces)) {
-            packageJson.workspaces.push(appWorkspace);
+            workspacePackages = packageJson.workspaces;
+        } else {
+            packageJson.workspaces.packages = [];
+            workspacePackages = packageJson.workspaces.packages;
         }
     }
+    workspacePackages.push(appWorkspace);
 }
 
 /**
@@ -67,8 +75,27 @@ export async function getWorkspaceInfo(
 ): Promise<{ appWorkspace: string; workspaceEnabled: boolean }> {
     const capPaths = await getCapCustomPaths(basePath);
     const appWorkspace = capPaths.app.endsWith('/') ? `${capPaths.app}*` : `${capPaths.app}/*`;
-    const workspaceEnabled = Array.isArray(packageJson.workspaces) && packageJson.workspaces.includes(appWorkspace);
+    const workspacePackages = getWorkspacePackages(packageJson) ?? [];
+    const workspaceEnabled = workspacePackages.includes(appWorkspace);
     return { appWorkspace, workspaceEnabled };
+}
+
+/**
+ * Return the reference to the array of workspace packages or undefined if not defined.
+ * The workspace packages can either be defined directly as workspaces in package.json
+ * or in workspaces.packages, e.g. in yarn workspaces.
+ *
+ * @param packageJson - the parsed package.json
+ * @returns ref to the packages in workspaces or undefined
+ */
+function getWorkspacePackages(packageJson: Package): string[] | undefined {
+    let workspacePackages: string[] | undefined;
+    if (Array.isArray(packageJson.workspaces)) {
+        workspacePackages = packageJson.workspaces;
+    } else if (Array.isArray(packageJson.workspaces?.packages)) {
+        workspacePackages = packageJson.workspaces?.packages;
+    }
+    return workspacePackages;
 }
 
 /**

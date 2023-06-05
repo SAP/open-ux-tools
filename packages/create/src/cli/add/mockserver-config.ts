@@ -1,4 +1,4 @@
-import { spawnSync } from 'child_process';
+import { relative } from 'path';
 import type { Command } from 'commander';
 import { prompt } from 'prompts';
 import { getWebappPath } from '@sap-ux/project-access';
@@ -6,7 +6,7 @@ import { generateMockserverConfig, getMockserverConfigQuestions } from '@sap-ux/
 import type { MockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
-import { relative } from 'path';
+import { runNpmInstallCommand } from '../../common';
 
 /**
  * Add the "add mockserver config" command to a passed command.
@@ -72,7 +72,7 @@ async function addMockserverConfig(
                     logger.info('npm install -D @sap-ux/ui5-middleware-fe-mockserver');
                 } else {
                     logger.debug('Running npm install command');
-                    runNpmInstallMiddlewareFeMockserver(basePath);
+                    runNpmInstallCommand(basePath, ['--save-dev', '@sap-ux/ui5-middleware-fe-mockserver']);
                 }
             });
         }
@@ -80,17 +80,4 @@ async function addMockserverConfig(
         logger.error(`Error while executing add mockserver-config '${(error as Error).message}'`);
         logger.debug(error as Error);
     }
-}
-
-/**
- * Run npm install for mockserver middleware in the root folder of application.
- *
- * @param basePath - path to application root
- */
-function runNpmInstallMiddlewareFeMockserver(basePath: string): void {
-    const npmCommand = process.platform.startsWith('win') ? 'npm.cmd' : 'npm';
-    spawnSync(npmCommand, ['install', '--save-dev', '@sap-ux/ui5-middleware-fe-mockserver'], {
-        cwd: basePath,
-        stdio: [0, 1, 2]
-    });
 }

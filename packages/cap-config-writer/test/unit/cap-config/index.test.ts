@@ -1,3 +1,4 @@
+import { promises } from 'fs';
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
@@ -21,6 +22,14 @@ describe('Test enabledCdsUi5Plugin()', () => {
         });
     });
 
+    test('Enable on project that has already enabled, should not change anything', async () => {
+        const fs = await enabledCdsUi5Plugin(join(fixturesPath, 'cap-valid-cds-plugin-ui'));
+        const originalPackageJson = JSON.parse(
+            (await promises.readFile(join(fixturesPath, 'cap-valid-cds-plugin-ui/package.json'))).toString()
+        );
+        expect(fs.readJSON(join(fixturesPath, 'cap-valid-cds-plugin-ui/package.json'))).toEqual(originalPackageJson);
+    });
+
     test('Project with missing dependencies', async () => {
         const fs = await enabledCdsUi5Plugin(join(fixturesPath, 'cap-no-cds-plugin-ui'));
         const packageJson = fs.readJSON(join(fixturesPath, 'cap-no-cds-plugin-ui/package.json'));
@@ -35,6 +44,18 @@ describe('Test enabledCdsUi5Plugin()', () => {
         });
     });
 
+    test('Project with missing devDependencies, pass mem-fs editor', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.8.2' },
+            devDependencies: {},
+            workspaces: ['app/*']
+        });
+        const fs = await enabledCdsUi5Plugin(__dirname, memFs);
+        const packageJson = fs.readJSON(join(__dirname, 'package.json')) as projectAccessMock.Package;
+        expect(packageJson.devDependencies).toEqual({ 'cds-plugin-ui5': 'latest' });
+    });
+
     test('CAP with custom app path and mem-fs editor', async () => {
         jest.spyOn(projectAccessMock, 'getCapCustomPaths').mockResolvedValueOnce({
             app: 'customAppPath',
@@ -45,6 +66,16 @@ describe('Test enabledCdsUi5Plugin()', () => {
         const fs = await enabledCdsUi5Plugin(__dirname, memFs);
         const packageJson = fs.readJSON(join(__dirname, 'package.json')) as projectAccessMock.Package;
         expect(packageJson.workspaces).toEqual(['customAppPath/*']);
+    });
+
+    test('CAP with yarn workspace but missing app folder', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), { workspaces: {} });
+        await enabledCdsUi5Plugin(__dirname, memFs);
+        const packageJson = memFs.readJSON(join(__dirname, 'package.json')) as projectAccessMock.Package;
+        expect(packageJson.workspaces).toEqual({
+            packages: ['app/*']
+        });
     });
 });
 
@@ -60,10 +91,32 @@ describe('Test checkCdsUi5PluginEnabled()', () => {
     test('CAP project with missing apps folder in workspaces', async () => {
         const memFs = create(createStorage());
         memFs.writeJSON(join(__dirname, 'package.json'), {
-            dependency: { '@sap/cds': '6.8.2' },
-            devDependency: { 'cds-plugin-ui5': '0.0.1' },
+            dependencies: { '@sap/cds': '6.8.2' },
+            devDependencies: { 'cds-plugin-ui5': '0.0.1' },
             workspaces: []
         });
         expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(false);
+    });
+
+    test('CAP project with workspaces config as object, but no apps folder', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.8.2' },
+            devDependencies: { 'cds-plugin-ui5': '0.0.1' },
+            workspaces: {}
+        });
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(false);
+    });
+
+    test('CAP project with workspaces config as object, app folder in workspace', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.8.2' },
+            devDependencies: { 'cds-plugin-ui5': '0.0.1' },
+            workspaces: {
+                packages: ['app/*']
+            }
+        });
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(true);
     });
 });

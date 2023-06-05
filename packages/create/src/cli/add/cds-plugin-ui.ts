@@ -1,8 +1,8 @@
-import { spawnSync } from 'child_process';
 import { relative } from 'path';
 import type { Command } from 'commander';
+import { enabledCdsUi5Plugin } from '@sap-ux/cap-config-writer';
 import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
-import { enabledCdsUi5Plugin } from '../../../../cap-config-writer/dist';
+import { runNpmInstallCommand } from '../../common';
 
 /**
  * Add the "add cds-plugin-ui5" command to passed command.
@@ -12,7 +12,7 @@ import { enabledCdsUi5Plugin } from '../../../../cap-config-writer/dist';
 export function addAddCdsPluginUi5Command(cmd: Command): void {
     cmd.command('cds-plugin-ui5 [path]')
         .option('-n, --skip-install', 'skip npm install step')
-        .option('-s, --simulate', 'simulate only do not write or install; sets also --verbose')
+        .option('-s, --simulate', 'simulate only, do not write or install; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
@@ -49,7 +49,7 @@ async function addCdsPluginUi5(basePath: string, simulate: boolean, skipInstall:
                     logger.info('npm install');
                 } else {
                     logger.debug('Running npm install command');
-                    runNpmInstall(basePath);
+                    runNpmInstallCommand(basePath);
                 }
             });
         }
@@ -57,17 +57,4 @@ async function addCdsPluginUi5(basePath: string, simulate: boolean, skipInstall:
         logger.error(`Error while adding cds-plugin-ui5 '${error?.toString()}'`);
         logger.debug(error as Error);
     }
-}
-
-/**
- * Run npm install in root folder of CAP.
- *
- * @param basePath - path to application root
- */
-function runNpmInstall(basePath: string): void {
-    const npmCommand = process.platform.startsWith('win') ? 'npm.cmd' : 'npm';
-    spawnSync(npmCommand, ['install'], {
-        cwd: basePath,
-        stdio: [0, 1, 2]
-    });
 }
