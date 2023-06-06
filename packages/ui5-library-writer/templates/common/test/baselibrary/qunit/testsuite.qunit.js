@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 sap.ui.define(function() {
 	"use strict";
 

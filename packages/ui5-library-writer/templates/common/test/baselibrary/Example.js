@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 sap.ui.define([
 	"<%= libraryNamespaceURI %>/library",
 	"<%= libraryNamespaceURI %>/Example"

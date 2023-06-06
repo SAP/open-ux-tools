@@ -1,4 +1,5 @@
 /*global QUnit */
+// eslint-disable-next-line no-undef
 sap.ui.define([
 	"sap/ui/qunit/QUnitUtils",
 	"sap/ui/qunit/utils/createAndAppendDiv",

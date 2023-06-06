@@ -10,10 +10,9 @@
       "rootDir": "./",
       "outDir": "./src-gen",
       "baseUrl": "./",
-      "typeRoots": [
-          "./node_modules/@types",
-          "./node_modules/<%= tsTypes %>"
-      ],
+      "types": [
+        "<%= tsTypes %>"
+    ],
       "paths": {
           "<%= libraryNamespaceURI %>/*": [
               "./src/<%= libraryNamespaceURI %>/*"

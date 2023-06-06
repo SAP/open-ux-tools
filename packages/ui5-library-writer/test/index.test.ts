@@ -6,23 +6,11 @@ import type { UI5LibConfig } from '../src';
 import { generate } from '../src';
 
 describe('Reuse lib templates', () => {
-    const fs = create(createStorage());
     const debug = !!process.env['UX_DEBUG'];
     const outputDir = join(__dirname, '/test-output');
 
     beforeAll(() => {
         removeSync(outputDir); // even for in memory
-    });
-
-    afterAll(() => {
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
     });
 
     const ui5LibConfig: UI5LibConfig = {
@@ -33,26 +21,55 @@ describe('Reuse lib templates', () => {
         author: 'Cian Morrin',
         typescript: false
     };
+    const V1_113_1 = '1.113.1';
+    const configuration = [
+        {
+            name: 'lib-js',
+            config: { ...ui5LibConfig }
+        },
+        {
+            name: 'lib-ts',
+            config: {
+                ...ui5LibConfig,
+                libraryName: 'myui5tslib',
+                typescript: true
+            }
+        },
+        {
+            name: 'lib-t-1.113.1',
+            config: {
+                ...ui5LibConfig,
+                libraryName: 'myui5tslib113',
+                typescript: true,
+                frameworkVersion: V1_113_1
+            }
+        }
+    ];
 
-    it('generates files correctly', async () => {
-        await generate(outputDir, ui5LibConfig, fs);
+    test.each(configuration)('Generate files for config: $name', async ({ name, config }) => {
+        const fs = await generate(outputDir, config);
         expect(fs.dump(join(outputDir))).toMatchSnapshot();
-
-        // with typescript
-        const ui5LibTSConfig: UI5LibConfig = {
-            ...ui5LibConfig,
-            libraryName: 'myui5tslib',
-            typescript: true
-        };
-        await generate(outputDir, ui5LibTSConfig, fs);
-        expect(fs.read(join(outputDir, 'com.sap.myui5tslib', 'tsconfig.json'))).toMatchSnapshot();
-        expect(fs.read(join(outputDir, 'com.sap.myui5tslib', 'src', '.babelrc.json'))).toMatchSnapshot();
-
-        // with typescript and version 1.113.1
-        await generate(outputDir, { ...ui5LibTSConfig, libraryName: 'myui5tslib', frameworkVersion: '1.113.1' }, fs);
-        const pkgData = fs.read(join(outputDir, 'com.sap.myui5tslib', 'package.json'));
+        const projectFolder =
+            config.namespace && config.namespace.length > 0
+                ? `${config.namespace}.${config.libraryName}`
+                : `${config.libraryName}`;
+        const pkgData = fs.read(join(outputDir, projectFolder, 'package.json'));
         const packageJson = JSON.parse(pkgData);
-        expect(packageJson.devDependencies).toHaveProperty('@sapui5/types');
+        if (config.typescript === true) {
+            if (config.frameworkVersion === V1_113_1) {
+                expect(packageJson.devDependencies).toHaveProperty('@sapui5/types');
+            } else {
+                expect(packageJson.devDependencies).toHaveProperty('@sapui5/ts-types-esm');
+            }
+        }
+        return new Promise(async (resolve) => {
+            // write out the files for debugging
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
     });
 
     // Test to ensure generation will throw error when input is invalid

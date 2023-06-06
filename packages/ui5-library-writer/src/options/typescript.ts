@@ -54,11 +54,12 @@ export async function enableTypescript(libInput: UI5LibInput, basePath: string, 
     });
 
     ui5Config.updateCustomMiddleware({
-        name: 'ui5-middleware-livereload',
+        name: 'fiori-tools-appreload',
         afterMiddleware: 'compression',
         configuration: {
-            extraExts: 'xml,json,properties',
-            path: ['src-gen', 'test-gen']
+            path: 'src-gen',
+            port: 35729,
+            delay: 300
         }
     });
 
