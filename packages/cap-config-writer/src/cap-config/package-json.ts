@@ -3,6 +3,7 @@ import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { Package } from '@sap-ux/project-access';
 
 const minCdsVersion = '6.8.2';
+const minCdsPluginUi5Version = '0.1.1';
 
 /**
  * Ensure a minimum version of @sap/cds in dependencies.
@@ -48,7 +49,7 @@ export async function enableWorkspaces(basePath: string, packageJson: Package): 
 export function addCdsPluginUi5(packageJson: Package): void {
     if (!hasCdsPluginUi5(packageJson)) {
         packageJson.devDependencies ??= {};
-        packageJson.devDependencies['cds-plugin-ui5'] = 'latest';
+        packageJson.devDependencies['cds-plugin-ui5'] = `^${minCdsPluginUi5Version}`;
     }
 }
 
