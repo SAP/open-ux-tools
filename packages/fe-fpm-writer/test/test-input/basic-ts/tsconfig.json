@@ -17,7 +17,7 @@
     },
     "types": [ 
         "@sapui5/ts-types-esm" 
-    ]
+    ],
     "include": [
         "./webapp/**/*"
     ]

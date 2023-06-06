@@ -1,5 +1,13 @@
 # @sap-ux/deploy-tooling
 
+## 0.2.10
+
+### Patch Changes
+
+-   2d279633: handle 401 for undeployment
+-   Updated dependencies [2d279633]
+    -   @sap-ux/axios-extension@1.2.6
+
 ## 0.2.9
 
 ### Patch Changes
