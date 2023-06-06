@@ -47,4 +47,5 @@ async function generate(basePath: string, ui5LibConfig: UI5LibConfig, fs?: Edito
     return fs;
 }
 
-export { generate, UI5LibConfig };
+export { generate };
+export { UI5LibConfig };
