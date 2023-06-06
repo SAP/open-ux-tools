@@ -565,7 +565,7 @@ export function onAppended() {
  */
 declare module 'sap/ui/core/mvc/ControllerExtension' {
     export default class ControllerExtension<API> {
-        static override: unknown;
+        static overrides: unknown;
         base: {
             getExtensionAPI(): API;
         }
@@ -583,7 +583,7 @@ import ExtensionAPI from 'sap/fe/templates/ObjectPage/ExtensionAPI';
  * @controller
  */
 export default class MyControllerExtension extends ControllerExtension<ExtensionAPI> {
-	static override = {
+	static overrides = {
 		/**
 		 * Called when a controller is instantiated and its View controls (if available) are already created.
 		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
