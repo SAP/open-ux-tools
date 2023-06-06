@@ -1,5 +1,35 @@
 # @sap-ux/create
 
+## 0.1.14
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.0.16
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/project-access@1.7.0
+    -   @sap-ux/app-config-writer@0.0.15
+    -   @sap-ux/mockserver-config-writer@0.1.3
+
+## 0.1.12
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.0.14
+
+## 0.1.11
+
+### Patch Changes
+
+-   Updated dependencies [71a06864]
+    -   @sap-ux/project-access@1.6.0
+    -   @sap-ux/app-config-writer@0.0.13
+    -   @sap-ux/mockserver-config-writer@0.1.2
+
 ## 0.1.10
 
 ### Patch Changes

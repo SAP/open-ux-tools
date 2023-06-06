@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.2.6
+
+### Patch Changes
+
+-   2d279633: handle 401 for undeployment
+
+## 1.2.5
+
+### Patch Changes
+
+-   aeb4cd83: handle entry severity in logging
+
 ## 1.2.4
 
 ### Patch Changes

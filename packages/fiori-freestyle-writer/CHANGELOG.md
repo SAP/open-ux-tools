@@ -1,5 +1,20 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.19.6
+
+### Patch Changes
+
+-   7aed929c: disable search in flpSandbox
+
+## 0.19.5
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-application-writer@0.23.0
+    -   @sap-ux/ui5-config@0.17.0
+    -   @sap-ux/odata-service-writer@0.14.21
+
 ## 0.19.4
 
 ### Patch Changes

@@ -13,7 +13,6 @@ import {
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath
 } from './common';
-import { UI5_DEFAULT } from '@sap-ux/ui5-application-writer/src/data/defaults';
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {

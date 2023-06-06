@@ -1,5 +1,22 @@
 # @sap-ux/project-access
 
+## 1.7.0
+
+### Minor Changes
+
+-   31207b95: abstract ui5-app-writer functions into appropriate modules
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-config@0.17.0
+
+## 1.6.0
+
+### Minor Changes
+
+-   71a06864: Add path to manifest.appdescr_variant to search results of search for adaptation projects
+
 ## 1.5.1
 
 ### Patch Changes

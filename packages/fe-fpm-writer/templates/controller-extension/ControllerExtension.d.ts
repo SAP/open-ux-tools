@@ -3,7 +3,7 @@
  */
 declare module 'sap/ui/core/mvc/ControllerExtension' {
     export default class ControllerExtension<API> {
-        static override: unknown;
+        static overrides: unknown;
         base: {
             getExtensionAPI(): API;
         }
