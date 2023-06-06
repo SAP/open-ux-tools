@@ -96,18 +96,14 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
                 ],
                 iconContainer: [
                     {
-                        boxSizing: 'border-box',
                         alignItems: 'flex-start',
                         marginLeft: 5,
                         height: 16,
                         width: 23,
                         cursor: 'text',
-                        paddingTop: 3,
+                        paddingTop: 5,
                         transition: 'width 0.167s ease 0s',
                         selectors: {
-                            i: {
-                                height: 16
-                            },
                             svg: {
                                 width: 16
                             },
