@@ -62,10 +62,13 @@ describe('cli', () => {
             '--yes'
         ];
 
+        const cliCmdsWithUaa = [...cliCmds, '--cloud-service-env'];
+
         test.each([
             { params: minimumConfigCmds, writeFileSyncCalled: 1 },
             { params: overwriteConfigCmds, writeFileSyncCalled: 1 },
-            { params: cliCmds, writeFileSyncCalled: 0 }
+            { params: cliCmds, writeFileSyncCalled: 0 },
+            { params: cliCmdsWithUaa, writeFileSyncCalled: 0 }
         ])('successful deploy with different options', async ({ params, writeFileSyncCalled }) => {
             process.argv = params;
             await runDeploy();
@@ -77,6 +80,26 @@ describe('cli', () => {
         });
     });
 
+    describe('deploy | undeploy should handle exception', () => {
+        test.each([runDeploy, runUndeploy])(
+            'unsuccessful deploy | undeploy, help options is shown if no parameters are passed in $param',
+            async (method) => {
+                // Dont exit the jest process
+                const mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => {
+                    throw new Error('process.exit: ' + number);
+                });
+                const errorMock = jest.spyOn(Command.prototype, 'error').mockImplementation();
+                const helpMock = jest.spyOn(Command.prototype, 'help');
+                process.argv = ['node', 'test'];
+                await method();
+                expect(helpMock).toBeCalled();
+                expect(errorMock).toBeCalled();
+                expect(mockExit).toHaveBeenCalledWith(0);
+                mockExit.mockRestore();
+            }
+        );
+    });
+
     describe('runUndeploy', () => {
         test('successful undeploy with configuration file', async () => {
             const target = 'https://target.example';
@@ -85,19 +108,21 @@ describe('cli', () => {
             expect(mockedUi5RepoService.undeploy).toBeCalled();
         });
 
-        test('unsuccessful undeploy, help options is shown if no parameters are passed in', async () => {
-            // Dont exit the jest process
-            const mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => {
-                throw new Error('process.exit: ' + number);
-            });
-            const errorMock = jest.spyOn(Command.prototype, 'error').mockImplementation();
-            const helpMock = jest.spyOn(Command.prototype, 'help');
-            process.argv = ['node', 'test'];
+        test('successful undeploy with environment variable and no config file', async () => {
+            const target = 'https://target.example';
+            process.argv = [
+                'node',
+                'test',
+                '--test',
+                '--yes',
+                '--url',
+                target,
+                '--name',
+                'MyAppName',
+                '--cloud-service-env'
+            ];
             await runUndeploy();
-            expect(helpMock).toBeCalled();
-            expect(errorMock).toBeCalled();
-            expect(mockExit).toHaveBeenCalledWith(0);
-            mockExit.mockRestore();
+            expect(mockedUi5RepoService.undeploy).toBeCalled();
         });
     });
 

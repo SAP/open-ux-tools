@@ -35,6 +35,12 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
                 'JSON file location with the ABAP cloud service key.'
             ).conflicts('destination')
         )
+        .addOption(
+            new Option(
+                '--cloud-service-env',
+                'Read ABAP cloud service properties from environment variables or .env file'
+            ).conflicts(['cloudServiceKey', 'destination'])
+        )
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
         .option('--name <bsp-name>', 'Project name of the app')
         .option('--strict-ssl', 'Perform certificate validation (use --no-strict-ssl to deactivate it)')

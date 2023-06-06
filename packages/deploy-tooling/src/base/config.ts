@@ -31,13 +31,17 @@ export function getConfigForLogging(
     }
 }
 
+export function loadEnv(): void {
+    config();
+}
+
 /**
  * Replace environment variable references of pattern `env:VAR_NAME` with the value of the corresponding environment variable.
  *
  * @param obj - any object structure
  */
 export function replaceEnvVariables(obj: object): void {
-    config();
+    loadEnv();
     for (const key in obj) {
         const value = (obj as Record<string, unknown>)[key];
         if (typeof value === 'object') {

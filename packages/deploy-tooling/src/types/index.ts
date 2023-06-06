@@ -83,4 +83,5 @@ export interface CliOptions
     archiveUrl?: string;
     cloudServiceKey?: string;
     queryParams?: string;
+    cloudServiceEnv?: boolean;
 }
