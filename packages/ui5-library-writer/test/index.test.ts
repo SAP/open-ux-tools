@@ -21,7 +21,7 @@ describe('Reuse lib templates', () => {
         author: 'Cian Morrin',
         typescript: false
     };
-    const V1_113_1 = '1.113.1';
+    const V1_113_0 = '1.113.0';
     const configuration = [
         {
             name: 'lib-js',
@@ -36,12 +36,12 @@ describe('Reuse lib templates', () => {
             }
         },
         {
-            name: 'lib-t-1.113.1',
+            name: 'lib-t-1.113.0',
             config: {
                 ...ui5LibConfig,
                 libraryName: 'myui5tslib113',
                 typescript: true,
-                frameworkVersion: V1_113_1
+                frameworkVersion: V1_113_0
             }
         }
     ];
@@ -56,7 +56,7 @@ describe('Reuse lib templates', () => {
         const pkgData = fs.read(join(outputDir, projectFolder, 'package.json'));
         const packageJson = JSON.parse(pkgData);
         if (config.typescript === true) {
-            if (config.frameworkVersion === V1_113_1) {
+            if (config.frameworkVersion === V1_113_0) {
                 expect(packageJson.devDependencies).toHaveProperty('@sapui5/types');
             } else {
                 expect(packageJson.devDependencies).toHaveProperty('@sapui5/ts-types-esm');

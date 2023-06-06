@@ -548,7 +548,7 @@ server:
 }
 `;
 
-exports[`Reuse lib templates Generate files for config: lib-t-1.113.1 1`] = `
+exports[`Reuse lib templates Generate files for config: lib-t-1.113.0 1`] = `
 Object {
   "com.sap.myui5tslib113/.eslintrc": Object {
     "contents": "{
@@ -601,7 +601,7 @@ module.exports = function (config) {
     \\"@babel/core\\": \\"^7.17.8\\",
     \\"@babel/preset-env\\": \\"^7.16.11\\",
     \\"@babel/preset-typescript\\": \\"^7.16.7\\",
-    \\"@sapui5/types\\": \\"1.113.1\\",
+    \\"@sapui5/types\\": \\"1.113.0\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
     \\"@ui5/ts-interface-generator\\": \\"^0.6.2\\",
@@ -1187,7 +1187,7 @@ metadata:
 type: library
 framework:
   name: SAPUI5
-  version: 1.113.1
+  version: 1.113.0
   libraries:
     - name: sap.ui.core
     - name: themelib_sap_belize
