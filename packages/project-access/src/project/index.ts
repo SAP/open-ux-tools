@@ -1,4 +1,5 @@
 export {
+    getCapCustomPaths,
     getCapModelAndServices,
     getCapProjectType,
     isCapJavaProject,
