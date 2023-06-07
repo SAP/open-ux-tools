@@ -1,16 +1,16 @@
-import { create as createStorage } from 'mem-fs';
 import { removeSync } from 'fs-extra';
-import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import type { UI5LibConfig } from '../src';
 import { generate } from '../src';
+import { debug, projectChecks, testOutputDir } from './common';
+
+if (debug?.enabled) {
+    jest.setTimeout(360000);
+}
 
 describe('Reuse lib templates', () => {
-    const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(__dirname, '/test-output');
-
     beforeAll(() => {
-        removeSync(outputDir); // even for in memory
+        removeSync(testOutputDir); // even for in memory
     });
 
     const ui5LibConfig: UI5LibConfig = {
@@ -47,13 +47,14 @@ describe('Reuse lib templates', () => {
     ];
 
     test.each(configuration)('Generate files for config: $name', async ({ name, config }) => {
-        const fs = await generate(outputDir, config);
-        expect(fs.dump(join(outputDir))).toMatchSnapshot();
+        const projectPath = join(testOutputDir, `${config.namespace}.${config.libraryName}`);
+        const fs = await generate(testOutputDir, config);
+        expect(fs.dump(join(testOutputDir))).toMatchSnapshot();
         const projectFolder =
             config.namespace && config.namespace.length > 0
                 ? `${config.namespace}.${config.libraryName}`
                 : `${config.libraryName}`;
-        const pkgData = fs.read(join(outputDir, projectFolder, 'package.json'));
+        const pkgData = fs.read(join(testOutputDir, projectFolder, 'package.json'));
         const packageJson = JSON.parse(pkgData);
         if (config.typescript === true) {
             if (config.frameworkVersion === V1_113_0) {
@@ -69,12 +70,14 @@ describe('Reuse lib templates', () => {
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(projectPath, config, debug?.debugFull);
         });
     });
 
     // Test to ensure generation will throw error when input is invalid
     it('validate input', async () => {
-        const projectDir = join(outputDir, 'testapp-fail');
+        const projectDir = join(testOutputDir, 'testapp-fail');
 
         // Ensure double-quote cannot be used
         await expect(
