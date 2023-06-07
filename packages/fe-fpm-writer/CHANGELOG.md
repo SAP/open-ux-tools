@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.20.2
+
+### Patch Changes
+
+-   2fc69d95: Fix: generated typescript controller extension does not work with latest ui5-application-writer version
+
 ## 0.20.1
 
 ### Patch Changes
