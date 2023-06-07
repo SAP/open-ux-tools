@@ -35,7 +35,7 @@ describe('Test command add cds-plugin-ui5', () => {
             dump: jest.fn(),
             commit: jest.fn().mockImplementation((callback) => callback())
         } as Partial<Editor> as Editor;
-        jest.spyOn(capConfigWriterMock, 'enabledCdsUi5Plugin').mockResolvedValue(fsMock);
+        jest.spyOn(capConfigWriterMock, 'enableCdsUi5Plugin').mockResolvedValue(fsMock);
         spawnSpy = jest.spyOn(childProcess, 'spawnSync');
         command = new Command('add');
         addAddCdsPluginUi5Command(command);
@@ -98,7 +98,7 @@ describe('Test command add cds-plugin-ui5', () => {
 
     test('Error handling with --verbose', async () => {
         // Mock setup
-        jest.spyOn(capConfigWriterMock, 'enabledCdsUi5Plugin').mockRejectedValueOnce('ENABLE_ERROR');
+        jest.spyOn(capConfigWriterMock, 'enableCdsUi5Plugin').mockRejectedValueOnce('ENABLE_ERROR');
 
         // Test execution
         await command.parseAsync(getArgv(['cds-plugin-ui5']));
@@ -110,7 +110,7 @@ describe('Test command add cds-plugin-ui5', () => {
 
     test('Error handling with non-string error', async () => {
         // Mock setup
-        jest.spyOn(capConfigWriterMock, 'enabledCdsUi5Plugin').mockRejectedValueOnce(undefined);
+        jest.spyOn(capConfigWriterMock, 'enableCdsUi5Plugin').mockRejectedValueOnce(undefined);
 
         // Test execution
         await command.parseAsync(getArgv(['cds-plugin-ui5']));

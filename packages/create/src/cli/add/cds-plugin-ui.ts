@@ -1,6 +1,6 @@
 import { relative } from 'path';
 import type { Command } from 'commander';
-import { enabledCdsUi5Plugin } from '@sap-ux/cap-config-writer';
+import { enableCdsUi5Plugin } from '@sap-ux/cap-config-writer';
 import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
 import { runNpmInstallCommand } from '../../common';
 
@@ -35,7 +35,7 @@ async function addCdsPluginUi5(basePath: string, simulate: boolean, skipInstall:
         logger.debug(
             `Called add cds-plugin-ui5 for path '${basePath}', simulate is '${simulate}', skip install is '${skipInstall}'`
         );
-        const fs = await enabledCdsUi5Plugin(basePath);
+        const fs = await enableCdsUi5Plugin(basePath);
         await traceChanges(fs);
         if (!simulate) {
             fs.commit(() => {

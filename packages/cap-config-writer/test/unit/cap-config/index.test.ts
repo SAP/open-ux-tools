@@ -3,13 +3,13 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import * as projectAccessMock from '@sap-ux/project-access';
-import { checkCdsUi5PluginEnabled, enabledCdsUi5Plugin } from '../../../src//cap-config';
+import { checkCdsUi5PluginEnabled, enableCdsUi5Plugin } from '../../../src//cap-config';
 
 const fixturesPath = join(__dirname, '../../fixture');
 
-describe('Test enabledCdsUi5Plugin()', () => {
+describe('Test enableCdsUi5Plugin()', () => {
     test('Empty project', async () => {
-        const fs = await enabledCdsUi5Plugin(__dirname);
+        const fs = await enableCdsUi5Plugin(__dirname);
         const packageJson = fs.readJSON(join(__dirname, 'package.json'));
         expect(packageJson).toEqual({
             'dependencies': {
@@ -23,7 +23,7 @@ describe('Test enabledCdsUi5Plugin()', () => {
     });
 
     test('Enable on project that has already enabled, should not change anything', async () => {
-        const fs = await enabledCdsUi5Plugin(join(fixturesPath, 'cap-valid-cds-plugin-ui'));
+        const fs = await enableCdsUi5Plugin(join(fixturesPath, 'cap-valid-cds-plugin-ui'));
         const originalPackageJson = JSON.parse(
             (await promises.readFile(join(fixturesPath, 'cap-valid-cds-plugin-ui/package.json'))).toString()
         );
@@ -31,7 +31,7 @@ describe('Test enabledCdsUi5Plugin()', () => {
     });
 
     test('Project with missing dependencies', async () => {
-        const fs = await enabledCdsUi5Plugin(join(fixturesPath, 'cap-no-cds-plugin-ui'));
+        const fs = await enableCdsUi5Plugin(join(fixturesPath, 'cap-no-cds-plugin-ui'));
         const packageJson = fs.readJSON(join(fixturesPath, 'cap-no-cds-plugin-ui/package.json'));
         expect(packageJson).toEqual({
             'dependencies': {
@@ -51,7 +51,7 @@ describe('Test enabledCdsUi5Plugin()', () => {
             devDependencies: {},
             workspaces: ['app/*']
         });
-        const fs = await enabledCdsUi5Plugin(__dirname, memFs);
+        const fs = await enableCdsUi5Plugin(__dirname, memFs);
         const packageJson = fs.readJSON(join(__dirname, 'package.json')) as projectAccessMock.Package;
         expect(packageJson.devDependencies).toEqual({ 'cds-plugin-ui5': '^0.1.1' });
     });
@@ -63,7 +63,7 @@ describe('Test enabledCdsUi5Plugin()', () => {
             srv: 'srv'
         });
         const memFs = create(createStorage());
-        const fs = await enabledCdsUi5Plugin(__dirname, memFs);
+        const fs = await enableCdsUi5Plugin(__dirname, memFs);
         const packageJson = fs.readJSON(join(__dirname, 'package.json')) as projectAccessMock.Package;
         expect(packageJson.workspaces).toEqual(['customAppPath/*']);
     });
@@ -71,7 +71,7 @@ describe('Test enabledCdsUi5Plugin()', () => {
     test('CAP with yarn workspace but missing app folder', async () => {
         const memFs = create(createStorage());
         memFs.writeJSON(join(__dirname, 'package.json'), { workspaces: {} });
-        await enabledCdsUi5Plugin(__dirname, memFs);
+        await enableCdsUi5Plugin(__dirname, memFs);
         const packageJson = memFs.readJSON(join(__dirname, 'package.json')) as projectAccessMock.Package;
         expect(packageJson.workspaces).toEqual({
             packages: ['app/*']

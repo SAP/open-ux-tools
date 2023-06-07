@@ -14,9 +14,9 @@ Pnpm
 
 ## Usage
 ```Typescript
-import { enabledCdsUi5Plugin } from '@sap-ux/cap-config-writer';
+import { enableCdsUi5Plugin } from '@sap-ux/cap-config-writer';
 
-const fs = await enabledCdsUi5Plugin('path/to/cap-project');
+const fs = await enableCdsUi5Plugin('path/to/cap-project');
 
 fs.commit();
 ```

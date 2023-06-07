@@ -19,7 +19,7 @@ import {
  * @param [fs] - optional: the memfs editor instance
  * @returns Promise<Editor> - memfs editor instance with updated files
  */
-export async function enabledCdsUi5Plugin(basePath: string, fs?: Editor): Promise<Editor> {
+export async function enableCdsUi5Plugin(basePath: string, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }

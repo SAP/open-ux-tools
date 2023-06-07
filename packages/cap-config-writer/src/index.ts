@@ -1,1 +1,1 @@
-export { checkCdsUi5PluginEnabled, enabledCdsUi5Plugin } from './cap-config';
+export { checkCdsUi5PluginEnabled, enableCdsUi5Plugin } from './cap-config';
