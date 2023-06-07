@@ -64,8 +64,8 @@ describe('Reuse lib templates', () => {
             }
         }
         return new Promise(async (resolve) => {
-            // write out the files for debugging
             if (debug) {
+                // write out the files for debugging
                 fs.commit(resolve);
             } else {
                 resolve(true);
