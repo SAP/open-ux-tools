@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { exec as execCP } from 'child_process';
 import { promisify } from 'util';
-import { UI5LibConfig } from '../src/types';
+import type { UI5LibConfig } from '../src/types';
 
 const exec = promisify(execCP);
 
