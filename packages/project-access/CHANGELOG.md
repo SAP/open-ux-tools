@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.8.0
+
+### Minor Changes
+
+-   61f4ecc7: Add cds-plugin-ui5 to CAP project
+
 ## 1.7.0
 
 ### Minor Changes

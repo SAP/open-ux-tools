@@ -1,5 +1,19 @@
 # @sap-ux/create
 
+## 0.2.0
+
+### Minor Changes
+
+-   61f4ecc7: Add cds-plugin-ui5 to CAP project
+
+### Patch Changes
+
+-   Updated dependencies [61f4ecc7]
+    -   @sap-ux/project-access@1.8.0
+    -   @sap-ux/cap-config-writer@0.0.1
+    -   @sap-ux/app-config-writer@0.0.17
+    -   @sap-ux/mockserver-config-writer@0.1.3
+
 ## 0.1.14
 
 ### Patch Changes
