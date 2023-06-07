@@ -1,0 +1,5 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"<%- typeof dependencies !== 'undefined' ? Object.entries(dependencies).map((dependency) => ` ${dependency[0]}="${dependency[1]}"`).join('') : '' %>>
+	<VBox>
+		<%- content %>
+	</VBox>
+</core:FragmentDefinition>
