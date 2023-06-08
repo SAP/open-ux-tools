@@ -3,8 +3,8 @@ export interface UI5LibConfig {
     namespace: string;
     framework: 'SAPUI5' | 'OpenUI5';
     frameworkVersion: string;
-    author: string;
-    typescript: boolean;
+    author?: string;
+    typescript?: boolean;
 }
 
 export interface UI5LibInput extends UI5LibConfig {

@@ -10,8 +10,10 @@ import { validate } from './validators';
 export function mergeWithDefaults(libConfig: UI5LibConfig): UI5LibInput {
     validate(libConfig);
     const libraryNamespace = `${libConfig.namespace}.${libConfig.libraryName}`;
+    const author = libConfig.author ?? 'UX Tools';
     const libInput: UI5LibInput = {
         ...libConfig,
+        author,
         namespaceURI: libConfig.namespace.split('.').join('/'),
         libraryNamespace,
         libraryNamespaceURI: libraryNamespace.split('.').join('/'),

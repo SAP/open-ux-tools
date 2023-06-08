@@ -666,7 +666,7 @@ module.exports = function (config) {
     "contents": "<?xml version=\\"1.0\\" ?>
 <library xmlns=\\"http://www.sap.com/sap.ui.library.xsd\\">
 	<name>com.sap.myui5tslib113</name>
-	<vendor>UI5 Lib Author</vendor>
+	<vendor>UX Tools</vendor>
 	<version>\${version}</version>
 	<copyright>\${copyright}</copyright>
 	<title>myui5tslib113</title>

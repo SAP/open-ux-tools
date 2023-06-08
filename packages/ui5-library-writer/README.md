@@ -28,7 +28,7 @@ const exampleWriter = async () => {
     namespace: 'com.myorg';
     framework: 'SAPUI5'; // SAPUI5 | OpenUI5
     frameworkVersion: '1.102.19';
-    author: 'New User';
+    author: 'UX Tools';
     typescript: false;
   };
 
