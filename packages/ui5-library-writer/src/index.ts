@@ -31,7 +31,8 @@ async function generate(basePath: string, ui5LibConfig: UI5LibConfig, fs?: Edito
 
     fs.copyTpl(join(tmplPath, 'common', '**/*.*'), basePath, libInput, undefined, {
         globOptions: { dot: true, ignore },
-        processDestinationPath: (filePath: string) => filePath.replace('baselibrary', libInput.libraryNamespaceURI)
+        processDestinationPath: (filePath: string) =>
+            filePath.replace('baselibrary', libInput.libraryNamespaceURI).replace(/gitignore.tmpl/g, '.gitignore')
     });
 
     if (reuseLib.typescript) {
