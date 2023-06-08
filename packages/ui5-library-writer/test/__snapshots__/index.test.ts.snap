@@ -1004,30 +1004,23 @@ ANY_TEXT=AnyText
 ",
     "state": "modified",
   },
-  "com.sap.myui5tslib113/test/com/sap/myui5tslib113/Example.js": Object {
-    "contents": "// eslint-disable-next-line no-undef
-sap.ui.define([
-	\\"com/sap/myui5tslib113/library\\",
-	\\"com/sap/myui5tslib113/Example\\"
-], function(library, Example) {
-	\\"use strict\\";
+  "com.sap.myui5tslib113/test/com/sap/myui5tslib113/Example.ts": Object {
+    "contents": "import { ExampleColor } from 'com/sap/myui5tslib113/library';
+import Example from 'com/sap/myui5tslib113/Example';
 
-	// refer to library types
-	var ExampleColor = library.ExampleColor;
-
-	// create a new instance of the Example control and
-	// place it into the DOM element with the id \\"content\\"
-	new Example({
-			text: \\"Example\\",
-			color: ExampleColor.Highlight
-	}).placeAt(\\"content\\");
-
-});
+// Create a new instance of the Example control and
+// place it into the DOM element with the id \\"content\\"
+new Example({
+  text: 'Example',
+  color: ExampleColor.Highlight,
+}).placeAt('content');
 ",
     "state": "modified",
   },
-  "com.sap.myui5tslib113/test/com/sap/myui5tslib113/qunit/Example.qunit.js": Object {
-    "contents": "/*global QUnit */
+  "com.sap.myui5tslib113/test/com/sap/myui5tslib113/qunit/Example.qunit.ts": Object {
+    "contents": "// @ts-nocheck
+
+/*global QUnit */
 // eslint-disable-next-line no-undef
 sap.ui.define([
 	\\"sap/ui/qunit/QUnitUtils\\",
@@ -1112,7 +1105,7 @@ sap.ui.define([
 ",
     "state": "modified",
   },
-  "com.sap.myui5tslib113/test/com/sap/myui5tslib113/qunit/testsuite.qunit.js": Object {
+  "com.sap.myui5tslib113/test/com/sap/myui5tslib113/qunit/testsuite.qunit.ts": Object {
     "contents": "// eslint-disable-next-line no-undef
 sap.ui.define(function() {
 	\\"use strict\\";
@@ -1667,30 +1660,23 @@ ANY_TEXT=AnyText
 ",
     "state": "modified",
   },
-  "com.sap.myui5tslib/test/com/sap/myui5tslib/Example.js": Object {
-    "contents": "// eslint-disable-next-line no-undef
-sap.ui.define([
-	\\"com/sap/myui5tslib/library\\",
-	\\"com/sap/myui5tslib/Example\\"
-], function(library, Example) {
-	\\"use strict\\";
+  "com.sap.myui5tslib/test/com/sap/myui5tslib/Example.ts": Object {
+    "contents": "import { ExampleColor } from 'com/sap/myui5tslib/library';
+import Example from 'com/sap/myui5tslib/Example';
 
-	// refer to library types
-	var ExampleColor = library.ExampleColor;
-
-	// create a new instance of the Example control and
-	// place it into the DOM element with the id \\"content\\"
-	new Example({
-			text: \\"Example\\",
-			color: ExampleColor.Highlight
-	}).placeAt(\\"content\\");
-
-});
+// Create a new instance of the Example control and
+// place it into the DOM element with the id \\"content\\"
+new Example({
+  text: 'Example',
+  color: ExampleColor.Highlight,
+}).placeAt('content');
 ",
     "state": "modified",
   },
-  "com.sap.myui5tslib/test/com/sap/myui5tslib/qunit/Example.qunit.js": Object {
-    "contents": "/*global QUnit */
+  "com.sap.myui5tslib/test/com/sap/myui5tslib/qunit/Example.qunit.ts": Object {
+    "contents": "// @ts-nocheck
+
+/*global QUnit */
 // eslint-disable-next-line no-undef
 sap.ui.define([
 	\\"sap/ui/qunit/QUnitUtils\\",
@@ -1775,7 +1761,7 @@ sap.ui.define([
 ",
     "state": "modified",
   },
-  "com.sap.myui5tslib/test/com/sap/myui5tslib/qunit/testsuite.qunit.js": Object {
+  "com.sap.myui5tslib/test/com/sap/myui5tslib/qunit/testsuite.qunit.ts": Object {
     "contents": "// eslint-disable-next-line no-undef
 sap.ui.define(function() {
 	\\"use strict\\";

@@ -26,13 +26,15 @@ async function generate(basePath: string, ui5LibConfig: UI5LibConfig, fs?: Edito
     basePath = join(basePath, libInput.libraryNamespace);
 
     const tmplPath = join(__dirname, '..', 'templates');
-    const ignoreJSFiles = ['**/src/baselibrary/Example.js', '**/ExampleRenderer.js', '**/library.js'];
-    const ignore = reuseLib.typescript ? ignoreJSFiles : ['**/*.ts'];
+    const ignore = [reuseLib.typescript ? '**/*.js' : '**/*.ts'];
 
     fs.copyTpl(join(tmplPath, 'common', '**/*.*'), basePath, libInput, undefined, {
         globOptions: { dot: true, ignore },
         processDestinationPath: (filePath: string) =>
-            filePath.replace('baselibrary', libInput.libraryNamespaceURI).replace(/gitignore.tmpl/g, '.gitignore')
+            filePath
+                .replace('baselibrary', libInput.libraryNamespaceURI)
+                .replace(/gitignore.tmpl/g, '.gitignore')
+                .replace(/karma.conf.tmpl/g, 'karma.conf.js')
     });
 
     if (reuseLib.typescript) {
