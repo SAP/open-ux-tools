@@ -329,7 +329,6 @@ describe('Building Blocks', () => {
                     header: 'Test Header',
                     headerVisible: true,
                     isSearchable: true,
-                    menu: 'testMenuActionKey',
                     personalization: 'Column',
                     readOnly: true,
                     type: 'ResponsiveTable',

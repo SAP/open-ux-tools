@@ -57,7 +57,7 @@ Object {
         <content>
             <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"@com.sap.vocabularies.UI.v1.SelectionFields\\"/>
             <macros:Chart id=\\"testChart\\" metaPath=\\"@com.sap.vocabularies.UI.v1.Chart#testChart\\" filterBar=\\"testFilterBar\\" personalization=\\"Type,Item,Sort\\" selectionMode=\\"Single\\"/>
-            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" enableAutoColumnWidth=\\"true\\" enableExport=\\"true\\" enableFullScreen=\\"true\\" enablePaste=\\"true\\" filterBar=\\"testFilterBar\\" header=\\"Test Header\\" headerVisible=\\"true\\" isSearchable=\\"true\\" menu=\\"testMenuActionKey\\" personalization=\\"Column\\" readOnly=\\"true\\" type=\\"ResponsiveTable\\" variantManagement=\\"None\\"/>
+            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" enableAutoColumnWidth=\\"true\\" enableExport=\\"true\\" enableFullScreen=\\"true\\" enablePaste=\\"true\\" filterBar=\\"testFilterBar\\" header=\\"Test Header\\" headerVisible=\\"true\\" isSearchable=\\"true\\" personalization=\\"Column\\" readOnly=\\"true\\" type=\\"ResponsiveTable\\" variantManagement=\\"None\\"/>
         </content>
     </Page>
 </mvc:View>",
@@ -263,7 +263,7 @@ export default class Main extends Controller {
         <content>
             <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"@com.sap.vocabularies.UI.v1.SelectionFields\\"/>
             <macros:Chart id=\\"testChart\\" metaPath=\\"@com.sap.vocabularies.UI.v1.Chart#testChart\\" filterBar=\\"testFilterBar\\" personalization=\\"Type,Item,Sort\\" selectionMode=\\"Single\\"/>
-            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" enableAutoColumnWidth=\\"true\\" enableExport=\\"true\\" enableFullScreen=\\"true\\" enablePaste=\\"true\\" filterBar=\\"testFilterBar\\" header=\\"Test Header\\" headerVisible=\\"true\\" isSearchable=\\"true\\" menu=\\"testMenuActionKey\\" personalization=\\"Column\\" readOnly=\\"true\\" type=\\"ResponsiveTable\\" variantManagement=\\"None\\"/>
+            <macros:Table id=\\"testTable\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" enableAutoColumnWidth=\\"true\\" enableExport=\\"true\\" enableFullScreen=\\"true\\" enablePaste=\\"true\\" filterBar=\\"testFilterBar\\" header=\\"Test Header\\" headerVisible=\\"true\\" isSearchable=\\"true\\" personalization=\\"Column\\" readOnly=\\"true\\" type=\\"ResponsiveTable\\" variantManagement=\\"None\\"/>
         </content>
     </Page>
 </mvc:View>",

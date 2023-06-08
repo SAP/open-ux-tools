@@ -86,7 +86,6 @@ describe('Test FPM features using a pre-generated Fiori Custom Page app', () => 
                         header: 'Test Header',
                         headerVisible: true,
                         isSearchable: true,
-                        menu: 'testMenuActionKey',
                         personalization: 'Column',
                         readOnly: true,
                         type: 'ResponsiveTable',

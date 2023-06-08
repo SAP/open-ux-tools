@@ -309,10 +309,6 @@ export interface Table extends BuildingBlock {
      */
     isSearchable?: boolean;
     /**
-     * Groups menu actions by key.
-     */
-    menu?: string;
-    /**
      * Controls which options should be enabled for the table personalization dialog.
      * If it is set to `true`, all possible options for this kind of table are enabled.
      * If it is set to `false`, personalization is disabled.

@@ -10,8 +10,7 @@
     filterBar="<%- data.filterBar %>"<% } %><% if (data.header) { %>
     header="<%- data.header %>"<% } %><% if (data.headerVisible) { %>
     headerVisible="<%- data.headerVisible %>"<% } %><% if (data.isSearchable) { %>
-    isSearchable="<%- data.isSearchable %>"<% } %><% if (data.menu) { %>
-    menu="<%- data.menu %>"<% } %><% if (data.personalization) { %>
+    isSearchable="<%- data.isSearchable %>"<% } %><% if (data.personalization) { %>
     personalization="<%- data.personalization %>"<% } %><% if (data.readOnly) { %>
     readOnly="<%- data.readOnly %>"<% } %><% if (data.selectionMode) { %>
     selectionMode="<%- data.selectionMode %>"<% } %><% if (data.type) { %>
