@@ -4,4 +4,7 @@ test('Smoke test', () => {
     expect(capConfigWriter).toBeDefined();
     expect(typeof capConfigWriter.checkCdsUi5PluginEnabled).toBe('function');
     expect(typeof capConfigWriter.enableCdsUi5Plugin).toBe('function');
+    expect(typeof capConfigWriter.getWorkspaceInfo).toBe('function');
+    expect(typeof capConfigWriter.hasCdsPluginUi5).toBe('function');
+    expect(typeof capConfigWriter.hasMinCdsVersion).toBe('function');
 });
