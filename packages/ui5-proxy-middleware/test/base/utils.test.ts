@@ -2,7 +2,6 @@ import {
     filterCompressedHtmlFiles,
     getCorporateProxyServer,
     getHtmlFile,
-    getManifest,
     getWebAppFolderFromYaml,
     getYamlFile,
     hideProxyCredentials,
@@ -20,6 +19,7 @@ import * as baseUtils from '../../src/base/utils';
 import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import { Manifest } from '@sap-ux/project-access';
 
 describe('utils', () => {
     const existsMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
@@ -321,64 +321,6 @@ describe('utils', () => {
         expect(mockSend).toHaveBeenCalledWith(html);
     });
 
-    test('getManifest: returns manifest.json', async () => {
-        const manifest = {
-            _version: '1.32.0'
-        };
-        readFileMock.mockImplementation((path) =>
-            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
-        );
-        const result = await getManifest([]);
-        expect(result).toEqual(manifest);
-    });
-
-    test('getUI5VersionFromManifest: return undefined if sap.ui5 section is missing in manifest.json', async () => {
-        const manifest = {
-            _version: '1.32.0'
-        };
-        readFileMock.mockImplementation((path) =>
-            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
-        );
-        const result = await baseUtils.getUI5VersionFromManifest([]);
-        expect(result).toBeUndefined();
-    });
-
-    test('getUI5VersionFromManifest: return undefined if sap.ui5.dependencies section is missing in manifest.json', async () => {
-        const manifest = {
-            _version: '1.32.0',
-            'sap.ui5': {}
-        };
-        readFileMock.mockImplementation((path) =>
-            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
-        );
-        const result = await baseUtils.getUI5VersionFromManifest([]);
-        expect(result).toBeUndefined();
-    });
-
-    test('getUI5VersionFromManifest: return undefined if sap.ui5.dependencies.minUI5Version is missing in manifest.json', async () => {
-        const manifest = {
-            _version: '1.32.0',
-            'sap.ui5': { dependencies: {} }
-        };
-        readFileMock.mockImplementation((path) =>
-            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
-        );
-        const result = await baseUtils.getUI5VersionFromManifest([]);
-        expect(result).toBeUndefined();
-    });
-
-    test('getUI5VersionFromManifest: return minUI5Version from manifest.json', async () => {
-        const manifest = {
-            _version: '1.32.0',
-            'sap.ui5': { dependencies: { minUI5Version: '1.86.4' } }
-        };
-        readFileMock.mockImplementation((path) =>
-            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
-        );
-        const result = await baseUtils.getUI5VersionFromManifest([]);
-        expect(result).toBe('1.86.4');
-    });
-
     test('setUI5Version: take version from YAML', async () => {
         const version = '1.90.0';
         const log: any = {
@@ -410,11 +352,8 @@ describe('utils', () => {
         const manifest = {
             _version: '1.32.0',
             'sap.ui5': { dependencies: { minUI5Version: '1.96.0' } }
-        };
-        readFileMock.mockImplementation((path) =>
-            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
-        );
-        const result = await baseUtils.resolveUI5Version(undefined, log);
+        } as Manifest;
+        const result = await baseUtils.resolveUI5Version(undefined, log, manifest);
         expect(result).toEqual('1.96.0');
         expect(log.info).toBeCalledTimes(1);
         expect(log.info).toHaveBeenCalledWith('Using UI5 version 1.96.0 based on manifest.json');

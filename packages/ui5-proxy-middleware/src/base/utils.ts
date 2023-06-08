@@ -190,37 +190,6 @@ export const setHtmlResponse = (res: any, html: string): void => {
 };
 
 /**
- * Gets the manifest.json for a given application.
- *
- * @param args list of runtime arguments
- * @returns The content of the manifest.json
- */
-export async function getManifest(args: string[]): Promise<Manifest | undefined> {
-    const projectRoot = process.cwd();
-    const yamlFileName = getYamlFile(args);
-    const ui5YamlPath = join(projectRoot, yamlFileName);
-    const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
-    const manifestPath = join(projectRoot, webAppFolder, 'manifest.json');
-    if (existsSync(manifestPath)) {
-        return JSON.parse(readFileSync(manifestPath, { encoding: 'utf8' }));
-    } else {
-        return undefined;
-    }
-}
-
-/**
- * Gets the minUI5Version from the manifest.json.
- *
- * @param args list of runtime args
- * @param manifest optional already loaded manifest.json
- * @returns The minUI5Version from manifest.json or undefined otherwise
- */
-export async function getUI5VersionFromManifest(args: string[], manifest?: Manifest): Promise<string | undefined> {
-    const mf = manifest ?? (await getManifest(args));
-    return mf?.['sap.ui5']?.dependencies?.minUI5Version;
-}
-
-/**
  * Determines which UI5 version to use when previewing the application.
  *
  * @param version ui5 version as defined in the yaml or via cli argument
@@ -240,7 +209,7 @@ export async function resolveUI5Version(version?: string, log?: ToolsLogger, man
         ui5Version = version ? version : '';
         ui5VersionLocation = getYamlFile(process.argv);
     } else {
-        const minUI5Version = await getUI5VersionFromManifest(process.argv, manifest);
+        const minUI5Version = manifest?.['sap.ui5']?.dependencies?.minUI5Version;
         ui5Version = minUI5Version && !isNaN(parseFloat(minUI5Version)) ? minUI5Version : '';
         ui5VersionLocation = 'manifest.json';
     }
