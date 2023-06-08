@@ -2,7 +2,7 @@
     "extends": ["../../.eslintrc", "plugin:react/recommended"],
     "parserOptions": {
         "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true,
-        "project": "./tsconfig.esbuild.json"
+        "project": "./tsconfig.eslint.json"
     },
     "overrides": [
         {

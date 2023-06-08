@@ -1,5 +1,4 @@
 {
     "extends": "./tsconfig.json",
-    "parserOptions": { "project": "./tsconfig.esbuild.json" },
     "include": ["src", "test"]
 }
