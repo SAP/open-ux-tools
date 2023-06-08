@@ -7,8 +7,8 @@ sap.ui.require(
     function(JourneyRunner, opaJourney, <%- pages.map(function(page) {return page.targetKey;}).join(', ')%>) {
         'use strict';
         var JourneyRunner = new JourneyRunner({
-            // start index.html in web folder
-            launchUrl: sap.ui.require.toUrl('<%- appPath %>') + '/index.html'
+            // start <%- htmlName %> in web folder
+            launchUrl: sap.ui.require.toUrl('<%- appPath %>') + '/<%- htmlName %>'
         });
 
        

@@ -93,4 +93,13 @@ describe('ui5-test-writer - Integration tests', () => {
 
         expect(fs.dump(projectDir)).toMatchSnapshot();
     });
+
+    it('Generate initial OPA test files without using the index.html file', async () => {
+        const projectDir = prepareTestFiles('RestaurantApp');
+
+        // Create initial OPA test files on an LROP project
+        fs = await generateOPAFiles(projectDir, { htmlName: 'flpSandbox.html' }, fs);
+
+        expect(fs.dump(projectDir)).toMatchSnapshot();
+    });
 });

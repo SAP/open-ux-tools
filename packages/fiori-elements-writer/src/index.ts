@@ -161,7 +161,11 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     fs.writeJSON(packagePath, packageJson);
 
     if (addTest) {
-        generateOPAFiles(basePath, {}, fs);
+        generateOPAFiles(
+            basePath,
+            { htmlName: feApp.appOptions?.generateIndex ? 'index.html' : 'flpSandbox.html' },
+            fs
+        );
     }
 
     return fs;

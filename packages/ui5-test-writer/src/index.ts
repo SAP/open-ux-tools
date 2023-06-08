@@ -108,10 +108,14 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
  * @param manifest - the app descriptor of the target app
  * @param opaConfig - parameters for the generation
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
+ * @param opaConfig.htmlName - the name of the html file that will be used in the OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
  * @returns OPA test configuration object
  */
-function createConfig(manifest: Manifest, opaConfig: { scriptName?: string; appID?: string }): FEV4OPAConfig {
+function createConfig(
+    manifest: Manifest,
+    opaConfig: { scriptName?: string; appID?: string; htmlName?: string }
+): FEV4OPAConfig {
     // General application info
     const { appID, appPath } = getAppFromManifest(manifest, opaConfig.appID);
 
@@ -119,7 +123,8 @@ function createConfig(manifest: Manifest, opaConfig: { scriptName?: string; appI
         appID,
         appPath,
         pages: [],
-        opaJourneyFileName: opaConfig.scriptName || 'FirstJourney'
+        opaJourneyFileName: opaConfig.scriptName || 'FirstJourney',
+        htmlName: opaConfig.htmlName || 'index.html'
     };
 
     // Identify startup targets from the routes
@@ -237,13 +242,14 @@ function writePageObject(
  * @param basePath - the absolute target path where the application will be generated
  * @param opaConfig - parameters for the generation
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
+ * @param opaConfig.htmlName - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
 export function generateOPAFiles(
     basePath: string,
-    opaConfig: { scriptName?: string; appID?: string },
+    opaConfig: { scriptName?: string; appID?: string; htmlName?: string },
     fs?: Editor
 ): Editor {
     const editor = fs || create(createStorage());
