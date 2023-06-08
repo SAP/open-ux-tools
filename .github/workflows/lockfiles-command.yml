@@ -21,7 +21,6 @@ jobs:
               uses: pnpm/action-setup@v2.2.4
               if: success()
               with:
-                  version: 8.6.0
                   run_install: false
 
             - name: Pnpm Install recursive

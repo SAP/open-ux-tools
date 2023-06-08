@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { addAddMockserverConfigCommand } from './mockserver-config';
 import { addAddSmartLinksConfigCommand } from './smartlinks-config';
+import { addAddCdsPluginUi5Command } from './cds-plugin-ui';
 
 /**
  * Return 'create-fiori add *' commands. Commands include also the handler action.
@@ -13,5 +14,7 @@ export function getAddCommands(): Command {
     addAddMockserverConfigCommand(addCommands);
     // create-fiori add smartlinks-config
     addAddSmartLinksConfigCommand(addCommands);
+    // create-fiori add cds-plugin-ui5
+    addAddCdsPluginUi5Command(addCommands);
     return addCommands;
 }
