@@ -23,7 +23,8 @@
     "@sap-ux/ui5-middleware-fe-mockserver": "2"
   },
   "scripts": {
-    "start-mock": "fiori run --config ./ui5-mock.yaml --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#sapfedemocustomPageAppTs-tile\""
+    "build": "ui5 build --config=ui5-mock.yaml --clean-dest --dest dist",
+    "start": "fiori run --config ./ui5-mock.yaml --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#sapfedemocustomPageAppTs-tile\""
   },
   "sapux": true
 }

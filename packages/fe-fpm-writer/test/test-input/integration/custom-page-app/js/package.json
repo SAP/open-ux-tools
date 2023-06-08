@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
-    "start-mock": "fiori run --config ./ui5-mock.yaml --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#sapfedemocustomPageAppJs-tile\""
+    "start": "fiori run --config ./ui5-mock.yaml --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#sapfedemocustomPageAppJs-tile\""
   },
   "sapux": true
 }
