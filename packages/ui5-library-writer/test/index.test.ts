@@ -18,7 +18,7 @@ describe('Reuse lib templates', () => {
         namespace: 'com.sap',
         framework: 'SAPUI5',
         frameworkVersion: '1.102.19',
-        author: 'Cian Morrin',
+        author: 'UI5 Lib Author',
         typescript: false
     };
     const V1_113_0 = '1.113.0';

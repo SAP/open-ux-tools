@@ -29,9 +29,7 @@ export async function enableTypescript(libInput: UI5LibInput, basePath: string, 
         const outPath = join(basePath, relPath);
         // Extend or add
         if (!fs.exists(outPath)) {
-            const separator = process.platform === 'win32' ? '\\' : '/';
-            const processedPath = outPath.replace(/^_/, '').replace(new RegExp(`\\${separator}_`), separator);
-            fs.copyTpl(tsTmplFilePath, processedPath, tsLibInput, undefined, {
+            fs.copyTpl(tsTmplFilePath, outPath, tsLibInput, undefined, {
                 globOptions: { dot: true }
             });
         } else {

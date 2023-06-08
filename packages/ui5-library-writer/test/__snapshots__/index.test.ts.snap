@@ -51,7 +51,7 @@ module.exports = function (config) {
     "contents": "<?xml version=\\"1.0\\" ?>
 <library xmlns=\\"http://www.sap.com/sap.ui.library.xsd\\">
 	<name>com.sap.myui5lib</name>
-	<vendor>Cian Morrin</vendor>
+	<vendor>UI5 Lib Author</vendor>
 	<version>\${version}</version>
 	<copyright>\${copyright}</copyright>
 	<title>myui5lib</title>
@@ -91,7 +91,7 @@ sap.ui.define([
 	 * Some class description goes here.
 	 * @extends sap.ui.core.Control
 	 *
-	 * @author Cian Morrin
+	 * @author UI5 Lib Author
 	 * @version \${version}
 	 *
 	 * @constructor
@@ -225,7 +225,7 @@ sap.ui.define([
 	 *
 	 * @namespace
 	 * @name com.sap.myui5lib
-	 * @author Cian Morrin
+	 * @author UI5 Lib Author
 	 * @version \${version}
 	 * @public
 	 */
@@ -666,7 +666,7 @@ module.exports = function (config) {
     "contents": "<?xml version=\\"1.0\\" ?>
 <library xmlns=\\"http://www.sap.com/sap.ui.library.xsd\\">
 	<name>com.sap.myui5tslib113</name>
-	<vendor>Cian Morrin</vendor>
+	<vendor>UI5 Lib Author</vendor>
 	<version>\${version}</version>
 	<copyright>\${copyright}</copyright>
 	<title>myui5tslib113</title>
@@ -1329,7 +1329,7 @@ module.exports = function (config) {
     "contents": "<?xml version=\\"1.0\\" ?>
 <library xmlns=\\"http://www.sap.com/sap.ui.library.xsd\\">
 	<name>com.sap.myui5tslib</name>
-	<vendor>Cian Morrin</vendor>
+	<vendor>UI5 Lib Author</vendor>
 	<version>\${version}</version>
 	<copyright>\${copyright}</copyright>
 	<title>myui5tslib</title>

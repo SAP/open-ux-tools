@@ -1,9 +1,0 @@
-node_modules/
-dist/
-.scp/
-Makefile*.mta
-mta_archives
-mta-*
-resources
-archive.zip
-.*_mta_build_tmp
