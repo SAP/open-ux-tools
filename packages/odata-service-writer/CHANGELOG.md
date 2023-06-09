@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.22
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+
 ## 0.14.21
 
 ### Patch Changes

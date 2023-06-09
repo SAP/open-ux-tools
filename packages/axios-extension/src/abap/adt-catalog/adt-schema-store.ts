@@ -36,19 +36,20 @@ export class AdtSchemaStore {
             this.adtSchema = {};
             const workspaces = schemaData.service.workspace;
             for (const workspace of workspaces) {
-                if (!workspace.collection) {
+                const collections = workspace.collection;
+                if (!collections) {
                     continue;
                 }
-                if (Array.isArray(workspace.collection)) {
-                    workspace.collection.forEach((collection) => {
+                if (Array.isArray(collections)) {
+                    collections.forEach((collection) => {
                         collection.workspaceTitle = workspace.title;
                         const id = this.serializeAdtCategory(collection.category);
                         this.adtSchema[id] = collection;
                     });
                 } else {
-                    const collection = workspace.collection;
+                    const collection = collections;
                     const id = this.serializeAdtCategory(collection.category);
-                    this.adtSchema[id] = workspace.collection;
+                    this.adtSchema[id] = collections;
                 }
             }
         }
