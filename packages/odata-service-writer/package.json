@@ -34,7 +34,7 @@
     "dependencies": {
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.7",
-        "fast-xml-parser": "4.0.1",
+        "fast-xml-parser": "4.2.4",
         "i18next": "20.3.2",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
