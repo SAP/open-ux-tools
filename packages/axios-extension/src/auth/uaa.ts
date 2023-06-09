@@ -86,20 +86,10 @@ export class Uaa {
         return this.serviceInfo.systemid;
     }
 
-    /**
-     * Getter for resource owner.
-     *
-     * @returns username
-     */
     private get username(): string {
         return this.serviceInfo.uaa.username;
     }
 
-    /**
-     * Getter for resource owner password.
-     *
-     * @returns password
-     */
     private get password(): string {
         return this.serviceInfo.uaa.password;
     }
@@ -301,9 +291,11 @@ export class Uaa {
     }
 
     /**
+     * Retrieve an access token using the client credentials.
+     *
      * @returns an access token using the BTP UAA credentials
      */
-    public async getAccessTokenUsingClientCredentials(): Promise<string> {
+    public async getAccessTokenWithClientCredentials(): Promise<string> {
         const tokenRequest = this.getTokenRequestForClientCredential();
         const response: AxiosResponse = await axios.request(tokenRequest);
         this.log.info('Got access token successfully using client credentials');

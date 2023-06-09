@@ -37,7 +37,7 @@ export function attachUaaAuthInterceptor(
     let token: string;
     const getToken = async (): Promise<string> => {
         return service.uaa?.username
-            ? await uaa.getAccessTokenUsingClientCredentials()
+            ? await uaa.getAccessTokenWithClientCredentials()
             : await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb);
     };
 

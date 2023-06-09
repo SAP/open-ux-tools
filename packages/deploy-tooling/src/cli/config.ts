@@ -4,7 +4,6 @@ import { readFileSync } from 'fs';
 import { dirname, isAbsolute, join } from 'path';
 import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types';
 import { NAME } from '../types';
-import { loadEnv } from '../base';
 
 /**
  * Tries to read the version of the modules package.json but in case of an error, it returns the manually maintained version matching major.minor of the module.
@@ -57,7 +56,6 @@ function readServiceKeyFromFile(path: string): ServiceInfo {
  * @returns service key as js object
  */
 function getServiceFromEnv(targetUrl: string | undefined): ServiceInfo {
-    loadEnv();
     return {
         uaa: {
             clientid: process.env.SERVICE_CLIENT_ID,

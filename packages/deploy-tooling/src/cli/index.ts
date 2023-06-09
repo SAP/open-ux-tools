@@ -5,6 +5,7 @@ import type { CliOptions, AbapDeployConfig } from '../types';
 import { NAME } from '../types';
 import { getArchive } from './archive';
 import { getDeploymentConfig, getVersion, mergeConfig } from './config';
+import { config as loadEnvConfig } from 'dotenv';
 
 /**
  * Create an instance of a command runner for deployment.
@@ -96,6 +97,7 @@ async function prepareRun(cmd: Command) {
     if (process.argv.length < 3) {
         cmd.help();
     }
+    loadEnvConfig();
     const options = cmd.parse().opts<CliOptions>();
     const logLevel = options.verbose ? LogLevel.Silly : LogLevel.Info;
     const logger = new ToolsLogger({

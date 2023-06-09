@@ -84,7 +84,7 @@ describe('cli', () => {
         test.each([runDeploy, runUndeploy])(
             'unsuccessful deploy | undeploy, help options is shown if no parameters are passed in $param',
             async (method) => {
-                // Dont exit the jest process
+                // Don't exit the jest process
                 const mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => {
                     throw new Error('process.exit: ' + number);
                 });
@@ -109,14 +109,13 @@ describe('cli', () => {
         });
 
         test('successful undeploy with environment variable and no config file', async () => {
-            const target = 'https://target.example';
             process.argv = [
                 'node',
                 'test',
                 '--test',
                 '--yes',
                 '--url',
-                target,
+                'https://target.example',
                 '--name',
                 'MyAppName',
                 '--cloud-service-env'

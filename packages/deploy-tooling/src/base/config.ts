@@ -1,4 +1,3 @@
-import { config } from 'dotenv';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { AbapDeployConfig, AbapTarget, UrlAbapTarget } from '../types';
 
@@ -31,17 +30,12 @@ export function getConfigForLogging(
     }
 }
 
-export function loadEnv(): void {
-    config();
-}
-
 /**
  * Replace environment variable references of pattern `env:VAR_NAME` with the value of the corresponding environment variable.
  *
  * @param obj - any object structure
  */
 export function replaceEnvVariables(obj: object): void {
-    loadEnv();
     for (const key in obj) {
         const value = (obj as Record<string, unknown>)[key];
         if (typeof value === 'object') {
