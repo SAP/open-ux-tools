@@ -6,5 +6,6 @@
     "env": {
         "browser": true,
         "node": true
-      }
+      },
+    "ignorePatterns": ["dist"]
 }

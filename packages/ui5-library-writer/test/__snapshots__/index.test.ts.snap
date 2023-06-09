@@ -559,7 +559,8 @@ Object {
     \\"env\\": {
         \\"browser\\": true,
         \\"node\\": true
-      }
+      },
+    \\"ignorePatterns\\": [\\"dist\\"]
 }",
     "state": "modified",
   },
@@ -619,9 +620,7 @@ module.exports = function (config) {
     \\"build-app\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"build-interface\\": \\"npx @ui5/ts-interface-generator\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
-    \\"lint:src\\": \\"eslint src\\",
-    \\"lint:test\\": \\"eslint test\\",
-    \\"lint\\": \\"run-s lint:src lint:test\\"
+    \\"lint\\": \\"eslint .\\"
   }
 }
 ",
@@ -1216,7 +1215,8 @@ Object {
     \\"env\\": {
         \\"browser\\": true,
         \\"node\\": true
-      }
+      },
+    \\"ignorePatterns\\": [\\"dist\\"]
 }",
     "state": "modified",
   },
@@ -1276,9 +1276,7 @@ module.exports = function (config) {
     \\"build-app\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"build-interface\\": \\"npx @ui5/ts-interface-generator\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
-    \\"lint:src\\": \\"eslint src\\",
-    \\"lint:test\\": \\"eslint test\\",
-    \\"lint\\": \\"run-s lint:src lint:test\\"
+    \\"lint\\": \\"eslint .\\"
   }
 }
 ",
