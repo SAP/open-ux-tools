@@ -1,5 +1,13 @@
 # @sap-ux/odata-cli
 
+## 0.11.19
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/axios-extension@1.2.7
+
 ## 0.11.18
 
 ### Patch Changes

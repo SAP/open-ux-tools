@@ -1,5 +1,13 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.55
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/axios-extension@1.2.7
+
 ## 0.6.54
 
 ### Patch Changes

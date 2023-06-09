@@ -217,8 +217,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       fast-xml-parser:
-        specifier: 3.12.20
-        version: 3.12.20
+        specifier: 4.2.4
+        version: 4.2.4
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -737,8 +737,8 @@ importers:
         specifier: 3.1.7
         version: 3.1.7
       fast-xml-parser:
-        specifier: 4.0.1
-        version: 4.0.1
+        specifier: 4.2.4
+        version: 4.2.4
       i18next:
         specifier: 20.3.2
         version: 20.3.2
@@ -9988,16 +9988,8 @@ packages:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
     dev: true
 
-  /fast-xml-parser@3.12.20:
-    resolution: {integrity: sha512-viadHdefuuqkyJWUhF2r2Ymb5LJ0T7uQhzSRv4OZzYxpoPQnY05KtaX0pLkolabD7tLzIE8q/OytIAEhqPyYbw==}
-    hasBin: true
-    requiresBuild: true
-    dependencies:
-      nimnjs: 1.3.2
-    dev: false
-
-  /fast-xml-parser@4.0.1:
-    resolution: {integrity: sha512-EN1yOXDmMqpHrqkwTlCJDvFjepJBoBxjLRDtDxFmqrBILGV3NyFWpmcsofSKCCzc+YxhvNreB5rcKzG+TlyWpg==}
+  /fast-xml-parser@4.2.4:
+    resolution: {integrity: sha512-fbfMDvgBNIdDJLdLOwacjFAPYt67tr31H9ZhWSm45CDAxvd0I6WTlSOUo7K2P/K5sA5JgMKG64PI3DMcaFdWpQ==}
     hasBin: true
     dependencies:
       strnum: 1.0.5
@@ -13454,21 +13446,6 @@ packages:
   /nice-try@1.0.5:
     resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
     dev: true
-
-  /nimn-date-parser@1.0.0:
-    resolution: {integrity: sha512-1Nf+x3EeMvHUiHsVuEhiZnwA8RMeOBVTQWfB1S2n9+i6PYCofHd2HRMD+WOHIHYshy4T4Gk8wQoCol7Hq3av8Q==}
-    dev: false
-
-  /nimn_schema_builder@1.1.0:
-    resolution: {integrity: sha512-DK5/B8CM4qwzG2URy130avcwPev4uO0ev836FbQyKo1ms6I9z/i6EJyiZ+d9xtgloxUri0W+5gfR8YbPq7SheA==}
-    dev: false
-
-  /nimnjs@1.3.2:
-    resolution: {integrity: sha512-TIOtI4iqkQrUM1tiM76AtTQem0c7e56SkDZ7sj1d1MfUsqRcq2ZWQvej/O+HBTZV7u/VKnwlKTDugK/75IRPPw==}
-    dependencies:
-      nimn-date-parser: 1.0.0
-      nimn_schema_builder: 1.1.0
-    dev: false
 
   /no-case@3.0.4:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}

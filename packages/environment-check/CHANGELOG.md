@@ -1,5 +1,13 @@
 # @sap-ux/environment-check
 
+## 0.15.26
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/axios-extension@1.2.7
+
 ## 0.15.25
 
 ### Patch Changes
