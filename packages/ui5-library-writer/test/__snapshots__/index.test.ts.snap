@@ -1018,7 +1018,8 @@ new Example({
     "state": "modified",
   },
   "com.sap.myui5tslib113/test/com/sap/myui5tslib113/qunit/Example.qunit.ts": Object {
-    "contents": "// @ts-nocheck
+    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 
 /*global QUnit */
 // eslint-disable-next-line no-undef
@@ -1031,7 +1032,7 @@ sap.ui.define([
 	\\"use strict\\";
 
 	// refer to library types
-	var ExampleColor = library.ExampleColor;
+	const ExampleColor = library.ExampleColor;
 
 	// prepare DOM
 	createAndAppendDiv(\\"uiArea1\\");
@@ -1060,7 +1061,7 @@ sap.ui.define([
 	// some basic control checks
 	QUnit.test(\\"Test get properties\\", function(assert) {
 		assert.expect(2);
-		var oExample = new Example({
+		const oExample = new Example({
 			text: \\"Example\\"
 		});
 		assert.equal(oExample.getText(), \\"Example\\", \\"Check text equals 'Example'\\");
@@ -1070,7 +1071,7 @@ sap.ui.define([
 	// some basic eventing check
 	QUnit.test(\\"Test click event\\", function(assert) {
 		assert.expect(1);
-		var oExample = new Example(\\"example\\", {
+		const oExample = new Example(\\"example\\", {
 			text: \\"Example\\",
 			press: function() {
 				assert.ok(true, \\"Event has been fired!\\")
@@ -1674,7 +1675,8 @@ new Example({
     "state": "modified",
   },
   "com.sap.myui5tslib/test/com/sap/myui5tslib/qunit/Example.qunit.ts": Object {
-    "contents": "// @ts-nocheck
+    "contents": "// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 
 /*global QUnit */
 // eslint-disable-next-line no-undef
@@ -1687,7 +1689,7 @@ sap.ui.define([
 	\\"use strict\\";
 
 	// refer to library types
-	var ExampleColor = library.ExampleColor;
+	const ExampleColor = library.ExampleColor;
 
 	// prepare DOM
 	createAndAppendDiv(\\"uiArea1\\");
@@ -1716,7 +1718,7 @@ sap.ui.define([
 	// some basic control checks
 	QUnit.test(\\"Test get properties\\", function(assert) {
 		assert.expect(2);
-		var oExample = new Example({
+		const oExample = new Example({
 			text: \\"Example\\"
 		});
 		assert.equal(oExample.getText(), \\"Example\\", \\"Check text equals 'Example'\\");
@@ -1726,7 +1728,7 @@ sap.ui.define([
 	// some basic eventing check
 	QUnit.test(\\"Test click event\\", function(assert) {
 		assert.expect(1);
-		var oExample = new Example(\\"example\\", {
+		const oExample = new Example(\\"example\\", {
 			text: \\"Example\\",
 			press: function() {
 				assert.ok(true, \\"Event has been fired!\\")

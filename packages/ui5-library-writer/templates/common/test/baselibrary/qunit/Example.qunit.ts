@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
 /*global QUnit */
@@ -11,7 +12,7 @@ sap.ui.define([
 	"use strict";
 
 	// refer to library types
-	var ExampleColor = library.ExampleColor;
+	const ExampleColor = library.ExampleColor;
 
 	// prepare DOM
 	createAndAppendDiv("uiArea1");
@@ -40,7 +41,7 @@ sap.ui.define([
 	// some basic control checks
 	QUnit.test("Test get properties", function(assert) {
 		assert.expect(2);
-		var oExample = new Example({
+		const oExample = new Example({
 			text: "Example"
 		});
 		assert.equal(oExample.getText(), "Example", "Check text equals 'Example'");
@@ -50,7 +51,7 @@ sap.ui.define([
 	// some basic eventing check
 	QUnit.test("Test click event", function(assert) {
 		assert.expect(1);
-		var oExample = new Example("example", {
+		const oExample = new Example("example", {
 			text: "Example",
 			press: function() {
 				assert.ok(true, "Event has been fired!")
