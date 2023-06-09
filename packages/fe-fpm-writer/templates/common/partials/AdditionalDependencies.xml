@@ -1,1 +1,0 @@
-<%- typeof dependencies !== 'undefined' ? Object.entries(dependencies).map((dependency) => ` ${dependency[0]}="${dependency[1]}"`).join('') : '' %>
