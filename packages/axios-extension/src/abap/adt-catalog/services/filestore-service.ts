@@ -1,6 +1,6 @@
 import { AdtService } from './adt-service';
 import type { AdtCategory, ArchiveFileNode, ArchiveFileNodeType, ArchiveFileContentType } from '../../types';
-import XmlParser from 'fast-xml-parser';
+import { XMLParser, XMLValidator } from 'fast-xml-parser';
 import type { AdtFileNode } from 'abap/types/adt-internal-types';
 
 /**
@@ -82,17 +82,18 @@ export class FileStoreService extends AdtService {
             return responseData as ArchiveFileContentType<T>;
         }
         // A list of file/folder items in the response data as xml string.
-        if (XmlParser.validate(responseData) !== true) {
+        if (XMLValidator.validate(responseData) !== true) {
             throw new Error('Invalid XML content');
         }
         const options = {
             attributeNamePrefix: '',
             ignoreAttributes: false,
             ignoreNameSpace: true,
-            parseAttributeValue: true
+            parseAttributeValue: true,
+            removeNSPrefix: true
         };
-        const obj = XmlParser.getTraversalObj(responseData, options);
-        const parsed = XmlParser.convertToJson(obj, options);
+        const parser: XMLParser = new XMLParser(options);
+        const parsed = parser.parse(responseData, true);
 
         let fileNodeArray: AdtFileNode[] = [];
 
