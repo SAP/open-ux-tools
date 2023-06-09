@@ -2,7 +2,7 @@ import { removeSync } from 'fs-extra';
 import { join } from 'path';
 import type { UI5LibConfig } from '../src';
 import { generate } from '../src';
-import { debug, projectChecks, testOutputDir } from './common';
+import { debug, projectChecks, testOutputDir, updatePackageJSONDependencyToUseLocalPath } from './common';
 
 if (debug?.enabled) {
     jest.setTimeout(360000);
@@ -66,6 +66,7 @@ describe('Reuse lib templates', () => {
         }
         return new Promise(async (resolve) => {
             if (debug) {
+                await updatePackageJSONDependencyToUseLocalPath(projectPath, fs);
                 // write out the files for debugging
                 fs.commit(resolve);
             } else {

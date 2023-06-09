@@ -1,7 +1,8 @@
-import { join } from 'path';
+import { dirname, join } from 'path';
 import { exec as execCP } from 'child_process';
 import { promisify } from 'util';
 import type { UI5LibConfig } from '../src/types';
+import type { Editor } from 'mem-fs-editor';
 
 const exec = promisify(execCP);
 
@@ -47,4 +48,15 @@ export const projectChecks = async (rootPath: string, config: UI5LibConfig, debu
             expect(error).toBeUndefined();
         }
     }
+};
+
+export const updatePackageJSONDependencyToUseLocalPath = async (rootPath: string, fs: Editor): Promise<void> => {
+    const packagePath = join(rootPath, 'package.json');
+    const packageJson = fs.readJSON(packagePath) as any;
+    if (packageJson?.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']) {
+        packageJson.devDependencies['@sap-ux/eslint-plugin-fiori-tools'] = dirname(
+            require.resolve('@sap-ux/eslint-plugin-fiori-tools/package.json')
+        );
+    }
+    fs.writeJSON(packagePath, packageJson);
 };
