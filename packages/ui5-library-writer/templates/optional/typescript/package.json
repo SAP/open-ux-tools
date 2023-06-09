@@ -24,22 +24,15 @@
       "ui5-tooling-transpile": "^0.7.10"
     },
     "scripts": {
-        "build": "run-s build:ts build:test-ts build:ui5",
-        "build:ts": "babel src --out-dir src-gen --extensions \".ts,.js\" --copy-files --include-dotfiles",
-        "build:test-ts": "babel test --out-dir test-gen --extensions \".ts,.js\" --copy-files --include-dotfiles",
-        "build:ui5": "ui5 build --clean-dest",
-        "watch": "run-p watch:controls watch:ts watch:test-ts start",
-        "watch:ts": "babel src --out-dir src-gen --extensions \".ts,.js\" --copy-files --include-dotfiles  --watch",
-        "watch:test-ts": "babel test --out-dir test-gen --extensions \".ts,.js\" --copy-files --include-dotfiles  --watch",
-        "watch:controls": "npx @ui5/ts-interface-generator --watch",
-        "start": "run-p watch:ts watch:test-ts start:ui5",
-        "start:ui5": "ui5 serve --open test-resources/<%= libraryNamespaceURI %>/Example.html",
-        "testsuite": "ui5 serve --open test-resources/<%= libraryNamespaceURI %>/qunit/testsuite.qunit.html",
+        "build": "run-p -l build-app build-interface",
+        "build-app": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
+        "build-interface": "npx @ui5/ts-interface-generator",
+        "start": "fiori run --open \"test-resources/<%= libraryNamespaceURI %>/Example.html\"",
+        "testsuite": "fiori run --open test-resources/<%= libraryNamespaceURI %>/qunit/testsuite.qunit.html",
         "test": "karma start --browsers=ChromeHeadless --singleRun=true",
         "ts-typecheck": "tsc --noEmit",
         "lint:src": "eslint src",
         "lint:test": "eslint test",
         "lint": "run-s lint:src lint:test"
-    },
-    "license": "UNLICENSED"
+    }
   }

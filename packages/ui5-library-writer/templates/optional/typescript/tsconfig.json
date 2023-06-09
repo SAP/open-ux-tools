@@ -8,7 +8,7 @@
       "strict": true,
       "strictPropertyInitialization": false,
       "rootDir": "./",
-      "outDir": "./src-gen",
+      "outDir": "./dist",
       "baseUrl": "./",
       "types": [
         "<%= tsTypes %>"

@@ -612,24 +612,17 @@ module.exports = function (config) {
     \\"ui5-tooling-transpile\\": \\"^0.7.10\\"
   },
   \\"scripts\\": {
-    \\"build\\": \\"run-s build:ts build:test-ts build:ui5\\",
-    \\"start\\": \\"run-p watch:ts watch:test-ts start:ui5\\",
-    \\"testsuite\\": \\"ui5 serve --open test-resources/com/sap/myui5tslib113/qunit/testsuite.qunit.html\\",
+    \\"build\\": \\"run-p -l build-app build-interface\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test-resources/com/sap/myui5tslib113/Example.html\\\\\\"\\",
+    \\"testsuite\\": \\"fiori run --open test-resources/com/sap/myui5tslib113/qunit/testsuite.qunit.html\\",
     \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\",
-    \\"build:ts\\": \\"babel src --out-dir src-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles\\",
-    \\"build:test-ts\\": \\"babel test --out-dir test-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles\\",
-    \\"build:ui5\\": \\"ui5 build --clean-dest\\",
-    \\"watch\\": \\"run-p watch:controls watch:ts watch:test-ts start\\",
-    \\"watch:ts\\": \\"babel src --out-dir src-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles  --watch\\",
-    \\"watch:test-ts\\": \\"babel test --out-dir test-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles  --watch\\",
-    \\"watch:controls\\": \\"npx @ui5/ts-interface-generator --watch\\",
-    \\"start:ui5\\": \\"ui5 serve --open test-resources/com/sap/myui5tslib113/Example.html\\",
+    \\"build-app\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"build-interface\\": \\"npx @ui5/ts-interface-generator\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"lint:src\\": \\"eslint src\\",
     \\"lint:test\\": \\"eslint test\\",
     \\"lint\\": \\"run-s lint:src lint:test\\"
-  },
-  \\"license\\": \\"UNLICENSED\\"
+  }
 }
 ",
     "state": "modified",
@@ -1156,7 +1149,7 @@ sap.ui.define(function() {
       \\"strict\\": true,
       \\"strictPropertyInitialization\\": false,
       \\"rootDir\\": \\"./\\",
-      \\"outDir\\": \\"./src-gen\\",
+      \\"outDir\\": \\"./dist\\",
       \\"baseUrl\\": \\"./\\",
       \\"types\\": [
         \\"@sapui5/types\\"
@@ -1191,14 +1184,21 @@ server:
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
-        path: src-gen
+        path: src
         port: 35729
         delay: 300
-resources:
-  configuration:
-    paths:
-      src: src-gen
-      test: test-gen
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        excludePatterns:
+          - /Component-preload.js
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
 ",
     "state": "modified",
   },
@@ -1269,24 +1269,17 @@ module.exports = function (config) {
     \\"ui5-tooling-transpile\\": \\"^0.7.10\\"
   },
   \\"scripts\\": {
-    \\"build\\": \\"run-s build:ts build:test-ts build:ui5\\",
-    \\"start\\": \\"run-p watch:ts watch:test-ts start:ui5\\",
-    \\"testsuite\\": \\"ui5 serve --open test-resources/com/sap/myui5tslib/qunit/testsuite.qunit.html\\",
+    \\"build\\": \\"run-p -l build-app build-interface\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test-resources/com/sap/myui5tslib/Example.html\\\\\\"\\",
+    \\"testsuite\\": \\"fiori run --open test-resources/com/sap/myui5tslib/qunit/testsuite.qunit.html\\",
     \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\",
-    \\"build:ts\\": \\"babel src --out-dir src-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles\\",
-    \\"build:test-ts\\": \\"babel test --out-dir test-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles\\",
-    \\"build:ui5\\": \\"ui5 build --clean-dest\\",
-    \\"watch\\": \\"run-p watch:controls watch:ts watch:test-ts start\\",
-    \\"watch:ts\\": \\"babel src --out-dir src-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles  --watch\\",
-    \\"watch:test-ts\\": \\"babel test --out-dir test-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles  --watch\\",
-    \\"watch:controls\\": \\"npx @ui5/ts-interface-generator --watch\\",
-    \\"start:ui5\\": \\"ui5 serve --open test-resources/com/sap/myui5tslib/Example.html\\",
+    \\"build-app\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"build-interface\\": \\"npx @ui5/ts-interface-generator\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"lint:src\\": \\"eslint src\\",
     \\"lint:test\\": \\"eslint test\\",
     \\"lint\\": \\"run-s lint:src lint:test\\"
-  },
-  \\"license\\": \\"UNLICENSED\\"
+  }
 }
 ",
     "state": "modified",
@@ -1813,7 +1806,7 @@ sap.ui.define(function() {
       \\"strict\\": true,
       \\"strictPropertyInitialization\\": false,
       \\"rootDir\\": \\"./\\",
-      \\"outDir\\": \\"./src-gen\\",
+      \\"outDir\\": \\"./dist\\",
       \\"baseUrl\\": \\"./\\",
       \\"types\\": [
         \\"@sapui5/ts-types-esm\\"
@@ -1848,14 +1841,21 @@ server:
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
-        path: src-gen
+        path: src
         port: 35729
         delay: 300
-resources:
-  configuration:
-    paths:
-      src: src-gen
-      test: test-gen
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        excludePatterns:
+          - /Component-preload.js
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
 ",
     "state": "modified",
   },

@@ -44,22 +44,33 @@ export async function enableTypescript(libInput: UI5LibInput, basePath: string, 
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
 
-    ui5Config.setConfiguration({
-        paths: {
-            src: 'src-gen',
-            test: 'test-gen'
-        }
-    });
-
     ui5Config.updateCustomMiddleware({
         name: 'fiori-tools-appreload',
         afterMiddleware: 'compression',
         configuration: {
-            path: 'src-gen',
+            path: 'src',
             port: 35729,
             delay: 300
         }
     });
+    ui5Config.updateCustomMiddleware({
+        name: 'ui5-tooling-transpile-middleware',
+        afterMiddleware: 'compression',
+        configuration: {
+            debug: true,
+            excludePatterns: ['/Component-preload.js']
+        }
+    });
+
+    ui5Config.addCustomTasks([
+        {
+            name: 'ui5-tooling-transpile-task',
+            afterTask: 'replaceVersion',
+            configuration: {
+                debug: true
+            }
+        }
+    ]);
 
     // write ts ui5 yaml
     fs.write(ui5ConfigPath, ui5Config.toString());
