@@ -1,7 +1,7 @@
 import { AdtService } from './adt-service';
 import { LocalPackageText } from '../../types';
 import type { AdtCategory, AdtTransportStatus, TransportRequest } from '../../types';
-import XmlParser from 'fast-xml-parser';
+import { XMLValidator } from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
 
@@ -71,7 +71,7 @@ export class TransportChecksService extends AdtService {
      * @returns a list of valid transport requests can be used for deploy config
      */
     private getTransportRequestList(xml: string): TransportRequest[] {
-        if (XmlParser.validate(xml) !== true) {
+        if (XMLValidator.validate(xml) !== true) {
             this.log.warn(`Invalid XML: ${xml}`);
             return [];
         }

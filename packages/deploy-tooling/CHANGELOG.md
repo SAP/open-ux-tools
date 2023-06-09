@@ -1,5 +1,13 @@
 # @sap-ux/deploy-tooling
 
+## 0.2.11
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/axios-extension@1.2.7
+
 ## 0.2.10
 
 ### Patch Changes
