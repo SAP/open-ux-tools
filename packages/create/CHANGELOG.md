@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.2.1
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/app-config-writer@0.0.18
+
 ## 0.2.0
 
 ### Minor Changes
