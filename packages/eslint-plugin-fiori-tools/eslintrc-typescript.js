@@ -10,9 +10,6 @@ const overrides = [
         'extends': ['plugin:@typescript-eslint/recommended'],
         'parserOptions': {
             'project': ['./tsconfig.json']
-        },
-        'rules': {
-            '@typescript-eslint/no-unused-vars': 'off'
         }
     }
 ];
