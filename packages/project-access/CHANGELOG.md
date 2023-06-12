@@ -1,5 +1,13 @@
 # @sap-ux/project-access
 
+## 1.8.1
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/ui5-config@0.17.1
+
 ## 1.8.0
 
 ### Minor Changes

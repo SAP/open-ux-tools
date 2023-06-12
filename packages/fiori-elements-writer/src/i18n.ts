@@ -32,4 +32,6 @@ export function t(key: string, options?: TOptions): string {
     return i18next.t(key, options);
 }
 
-initI18n();
+initI18n().catch(() => {
+    // Ignore any errors since the write will still work
+});
