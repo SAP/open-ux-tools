@@ -1,5 +1,18 @@
 # @sap-ux/environment-check
 
+## 0.15.27
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/axios-extension@1.2.8
+    -   @sap-ux/btp-utils@0.11.6
+    -   @sap-ux/logger@0.3.6
+    -   @sap-ux/project-access@1.8.1
+    -   @sap-ux/store@0.3.11
+    -   @sap-ux/ui5-config@0.17.1
+
 ## 0.15.26
 
 ### Patch Changes

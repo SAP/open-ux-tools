@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.11
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/fe-fpm-writer@0.20.3
+    -   @sap-ux/odata-service-writer@0.14.23
+    -   @sap-ux/ui5-application-writer@0.23.1
+    -   @sap-ux/ui5-config@0.17.1
+    -   @sap-ux/ui5-test-writer@0.1.8
+
 ## 0.12.10
 
 ### Patch Changes

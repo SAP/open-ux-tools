@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.8.2
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
 ## 1.8.1
 
 ### Patch Changes

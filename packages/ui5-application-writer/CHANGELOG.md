@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 0.23.1
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/ui5-config@0.17.1
+
 ## 0.23.0
 
 ### Minor Changes

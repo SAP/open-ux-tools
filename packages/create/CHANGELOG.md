@@ -1,5 +1,17 @@
 # @sap-ux/create
 
+## 0.2.2
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/app-config-writer@0.0.19
+    -   @sap-ux/logger@0.3.6
+    -   @sap-ux/mockserver-config-writer@0.1.4
+    -   @sap-ux/project-access@1.8.1
+    -   @sap-ux/cap-config-writer@0.0.2
+
 ## 0.2.1
 
 ### Patch Changes
