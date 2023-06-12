@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.21.0
+
+### Minor Changes
+
+-   2de44bb9: Feature. Add VBox wrapper container to generated content for custom section and sub section
+
 ## 0.20.3
 
 ### Patch Changes
