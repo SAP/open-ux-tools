@@ -86,10 +86,20 @@ export class Uaa {
         return this.serviceInfo.systemid;
     }
 
+    /**
+     * Getter for username.
+     *
+     * @returns system id
+     */
     private get username(): string {
         return this.serviceInfo.uaa.username;
     }
 
+    /**
+     * Getter for password.
+     *
+     * @returns system id
+     */
     private get password(): string {
         return this.serviceInfo.uaa.password;
     }
