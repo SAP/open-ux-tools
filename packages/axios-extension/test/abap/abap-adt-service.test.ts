@@ -12,7 +12,6 @@ import {
 import * as auth from '../../src/auth';
 import type { ArchiveFileNode } from '../../src/abap/types';
 import fs from 'fs';
-import open from 'open';
 import cloneDeep from 'lodash/cloneDeep';
 import { Uaa } from '../../src/auth/uaa';
 
