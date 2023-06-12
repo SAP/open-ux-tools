@@ -105,8 +105,8 @@ export function updateProxyEnv(proxyFromConfig?: string): void {
     });
 
     if (proxyFromArgs || process.env.FIORI_TOOLS_PROXY) {
-        process.env.npm_config_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
-        process.env.npm_config_https_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env['npm_config_proxy'] = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env['npm_config_https_proxy'] = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
     } else {
         const proxyFromEnv =
             process.env.npm_config_proxy ||
@@ -117,8 +117,8 @@ export function updateProxyEnv(proxyFromConfig?: string): void {
             process.env.HTTPS_PROXY;
 
         if (!proxyFromEnv && proxyFromConfig) {
-            process.env.npm_config_proxy = proxyFromConfig;
-            process.env.npm_config_https_proxy = proxyFromConfig;
+            process.env['npm_config_proxy'] = proxyFromConfig;
+            process.env['npm_config_https_proxy'] = proxyFromConfig;
         }
     }
 }

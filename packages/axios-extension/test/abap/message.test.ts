@@ -11,7 +11,7 @@ describe('message helpers', () => {
             const msg: SuccessMessage = {
                 code: '200',
                 message: '~message',
-                longtext_url: '/abc/de',
+                'longtext_url': '/abc/de',
                 details: [
                     { code: '1', message: '~message', severity: 'info' },
                     { code: '2', message: '~message', severity: 'warning' }
@@ -43,7 +43,7 @@ describe('message helpers', () => {
             innererror: {
                 transactionid: '~id',
                 timestamp: '~time',
-                Error_Resolution: {
+                'Error_Resolution': {
                     abc: '~message',
                     def: '~message'
                 },

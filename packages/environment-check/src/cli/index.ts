@@ -164,4 +164,4 @@ export async function cli(): Promise<void> {
 /**
  * Execute directly when this file is loaded.
  */
-cli();
+cli().catch((error) => console.error(error));
