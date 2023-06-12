@@ -42,7 +42,7 @@ describe('Reuse lib templates', () => {
                 libraryName: 'myui5tslib113',
                 typescript: true,
                 frameworkVersion: V1_113_0,
-                author: undefined // to ensure default is added instead
+                author: undefined // to test default is added instead
             }
         }
     ];
