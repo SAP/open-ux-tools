@@ -22,6 +22,7 @@
                         "argsIgnorePattern": "^_"
                     }
                 ],
+                "@typescript-eslint/no-floating-promises": ["error"],
                 "@typescript-eslint/consistent-type-imports": [
                     "error",
                     {
@@ -88,9 +89,11 @@
             "files": ["**/test/**/*.js", "**/test/**/*.ts", "**/test/**/*.tsx"],
             "rules": {
                 "no-console": "off",
+                "jsdoc/require-jsdoc": "off",
                 "jsdoc/require-returns-description": "off",
                 "jsdoc/require-param-description": "off",
-                "max-nested-callbacks": ["warn", 5]
+                "max-nested-callbacks": ["warn", 5],
+                "sonarjs/cognitive-complexity": "off"
             }
         }
     ],

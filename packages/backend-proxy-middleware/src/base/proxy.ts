@@ -324,7 +324,7 @@ export async function generateProxyMiddlewareOptions(
                 await enhanceConfigForSystem(proxyOptions, system, backend.scp, (refreshToken?: string) => {
                     if (refreshToken) {
                         logger.info('Updating refresh token for: ' + localBackend.url);
-                        systemStore.write({ ...system, refreshToken });
+                        systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
                     }
                 });
             }

@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.3.6
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
 ## 0.3.5
 
 ### Patch Changes

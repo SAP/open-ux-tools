@@ -1,5 +1,13 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.1.4
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/ui5-config@0.17.1
+
 ## 0.1.3
 
 ### Patch Changes

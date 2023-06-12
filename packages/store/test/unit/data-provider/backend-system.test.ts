@@ -19,7 +19,7 @@ describe('Backend system data provider', () => {
         mockGetHybridStore.mockReturnValue(mockHybridStore);
     });
 
-    it('read delegates to the data accessor', () => {
+    it('read delegates to the data accessor', async () => {
         const expectedSystem: BackendSystem = {
             name: 'sys',
             url: 'url',
@@ -28,12 +28,12 @@ describe('Backend system data provider', () => {
             password: 'pass'
         };
         mockHybridStore.read.mockResolvedValueOnce(expectedSystem);
-        expect(
+        await expect(
             new SystemDataProvider(logger).read(new BackendSystemKey({ url: 'url', client: 'client' }))
         ).resolves.toBe(expectedSystem);
     });
 
-    it('write delegates to the data accessor', () => {
+    it('write delegates to the data accessor', async () => {
         const expectedSystem: BackendSystem = Object.freeze({
             name: 'sys',
             url: 'url',
@@ -42,7 +42,9 @@ describe('Backend system data provider', () => {
             password: 'pass'
         });
         mockHybridStore.write.mockResolvedValueOnce(expectedSystem);
-        expect(new SystemDataProvider(logger).write(new BackendSystem(expectedSystem))).resolves.toBe(expectedSystem);
+        await expect(new SystemDataProvider(logger).write(new BackendSystem(expectedSystem))).resolves.toBe(
+            expectedSystem
+        );
         expect(mockHybridStore.write).toBeCalledWith({
             entityName: Entities.BackendSystem,
             id: BackendSystemKey.from(expectedSystem).getId(),
@@ -50,7 +52,7 @@ describe('Backend system data provider', () => {
         });
     });
 
-    it('write creates an object of the correct class (to init annotations)', () => {
+    it('write creates an object of the correct class (to init annotations)', async () => {
         const expectedSystem: BackendSystem = Object.freeze({
             name: 'sys',
             url: 'url',
@@ -59,7 +61,9 @@ describe('Backend system data provider', () => {
             password: 'pass'
         });
         mockHybridStore.write.mockResolvedValueOnce(expectedSystem);
-        expect(new SystemDataProvider(logger).write(new BackendSystem(expectedSystem))).resolves.toBe(expectedSystem);
+        await expect(new SystemDataProvider(logger).write(new BackendSystem(expectedSystem))).resolves.toBe(
+            expectedSystem
+        );
         expect(mockHybridStore.write).toBeCalledWith({
             entityName: Entities.BackendSystem,
             id: BackendSystemKey.from(expectedSystem).getId(),
@@ -76,14 +80,14 @@ describe('Backend system data provider', () => {
             password: 'pass'
         });
         mockHybridStore.del.mockResolvedValueOnce(true);
-        expect(new SystemDataProvider(logger).delete(new BackendSystem(expectedSystem))).resolves.toBe(true);
+        await expect(new SystemDataProvider(logger).delete(new BackendSystem(expectedSystem))).resolves.toBe(true);
         expect(mockHybridStore.del).toBeCalledWith({
             entityName: Entities.BackendSystem,
             id: BackendSystemKey.from(expectedSystem).getId()
         });
     });
 
-    it('getAll delegates to the data accessor', () => {
+    it('getAll delegates to the data accessor', async () => {
         const sys1: BackendSystem = Object.freeze({
             name: 'sys1',
             url: 'url1',
@@ -106,13 +110,13 @@ describe('Backend system data provider', () => {
             password: 'pass'
         });
         mockHybridStore.readAll.mockResolvedValueOnce({ sys1, sys2, sys3 });
-        expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1, sys2, sys3]);
+        await expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1, sys2, sys3]);
         expect(mockHybridStore.readAll).toBeCalledWith({
             entityName: Entities.BackendSystem
         });
     });
 
-    it('getAll culls systems with empty urls', () => {
+    it('getAll culls systems with empty urls', async () => {
         const sys1: BackendSystem = Object.freeze({
             name: 'sys1',
             url: 'url1',
@@ -142,7 +146,7 @@ describe('Backend system data provider', () => {
             password: 'pass'
         }) as unknown as BackendSystem; // We want url to be undefined for the test
         mockHybridStore.readAll.mockResolvedValueOnce({ sys1, sys2, sys3, sys4, sys5: undefined });
-        expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1]);
+        await expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1]);
         expect(mockHybridStore.readAll).toBeCalledWith({
             entityName: Entities.BackendSystem
         });
