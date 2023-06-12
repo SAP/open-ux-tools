@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.28
+
+### Patch Changes
+
+-   7f1971c1: Fix: handle missing manifest.json
+
 ## 1.1.27
 
 ### Patch Changes
