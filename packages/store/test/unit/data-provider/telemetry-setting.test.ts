@@ -18,24 +18,24 @@ describe('TelemetrySetting data provider', () => {
         mockGetFilesystemStore.mockReturnValue(mockFsStore);
     });
 
-    it('read delegates to the data accessor', () => {
+    it('read delegates to the data accessor', async () => {
         const expectedTelemetrySetting: TelemetrySetting = {
             enableTelemetry: true
         };
         mockFsStore.read.mockResolvedValueOnce(expectedTelemetrySetting);
-        expect(new TelemetryDataProvider(logger).read(new TelemetrySettingKey())).resolves.toBe(
+        await expect(new TelemetryDataProvider(logger).read(new TelemetrySettingKey())).resolves.toBe(
             expectedTelemetrySetting
         );
     });
 
-    it('write delegates to the data accessor', () => {
+    it('write delegates to the data accessor', async () => {
         const expectedTelemetrySetting: TelemetrySetting = {
             enableTelemetry: true
         };
         mockFsStore.write.mockResolvedValueOnce(expectedTelemetrySetting);
-        expect(new TelemetryDataProvider(logger).write(new TelemetrySetting(expectedTelemetrySetting))).resolves.toBe(
-            expectedTelemetrySetting
-        );
+        await expect(
+            new TelemetryDataProvider(logger).write(new TelemetrySetting(expectedTelemetrySetting))
+        ).resolves.toBe(expectedTelemetrySetting);
         expect(mockFsStore.write).toBeCalledWith({
             entityName: Entities.TelemetrySetting,
             id: new TelemetrySettingKey().getId(),
@@ -43,14 +43,14 @@ describe('TelemetrySetting data provider', () => {
         });
     });
 
-    it('delete delegates to the data accessor', () => {
+    it('delete delegates to the data accessor', async () => {
         const expectedTelemetrySetting: TelemetrySetting = {
             enableTelemetry: true
         };
         mockFsStore.del.mockResolvedValueOnce(expectedTelemetrySetting);
-        expect(new TelemetryDataProvider(logger).delete(new TelemetrySetting(expectedTelemetrySetting))).resolves.toBe(
-            expectedTelemetrySetting
-        );
+        await expect(
+            new TelemetryDataProvider(logger).delete(new TelemetrySetting(expectedTelemetrySetting))
+        ).resolves.toBe(expectedTelemetrySetting);
         expect(mockFsStore.del).toBeCalledWith({
             entityName: Entities.TelemetrySetting,
             id: new TelemetrySettingKey().getId()
@@ -62,7 +62,7 @@ describe('TelemetrySetting data provider', () => {
             enableTelemetry: true
         };
         mockFsStore.getAll.mockResolvedValueOnce(expectedTelemetrySetting);
-        expect(new TelemetryDataProvider(logger).getAll()).resolves.toBe(expectedTelemetrySetting);
+        await expect(new TelemetryDataProvider(logger).getAll()).resolves.toBe(expectedTelemetrySetting);
         expect(mockFsStore.getAll).toBeCalledWith({
             entityName: Entities.TelemetrySetting
         });

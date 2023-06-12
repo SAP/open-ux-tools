@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.20.3
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
 ## 0.20.2
 
 ### Patch Changes

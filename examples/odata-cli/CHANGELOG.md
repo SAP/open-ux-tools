@@ -1,5 +1,15 @@
 # @sap-ux/odata-cli
 
+## 0.11.20
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/axios-extension@1.2.8
+    -   @sap-ux/btp-utils@0.11.6
+    -   @sap-ux/logger@0.3.6
+
 ## 0.11.19
 
 ### Patch Changes
