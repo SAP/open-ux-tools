@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.13.6
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
 ## 0.13.5
 
 ### Patch Changes
