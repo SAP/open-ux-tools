@@ -47,7 +47,7 @@ describe('Reuse lib templates', () => {
         }
     ];
 
-    test.each(configuration)('Generate files for config: $name', async ({ name, config }) => {
+    test.each(configuration)('Generate files for config: $name', async ({ config }) => {
         const projectPath = join(testOutputDir, `${config.namespace}.${config.libraryName}`);
         const fs = await generate(testOutputDir, config);
         expect(fs.dump(join(testOutputDir))).toMatchSnapshot();
