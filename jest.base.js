@@ -15,7 +15,12 @@ module.exports = {
             }
         ]
     ],
-    modulePathIgnorePatterns: ['<rootDir>/dist', '<rootDir>/coverage'],
+    modulePathIgnorePatterns: [
+        '<rootDir>/dist',
+        '<rootDir>/coverage',
+        '<rootDir>/test/test-input',
+        '<rootDir>/test/test-output'
+    ],
     verbose: true,
     snapshotFormat: {
         escapeString: true,

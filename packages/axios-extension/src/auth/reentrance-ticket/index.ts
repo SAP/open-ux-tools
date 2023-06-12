@@ -38,6 +38,6 @@ export async function getReentranceTicket({
 
         // Open browser to handle SAML flow and return the reentrance ticket
         const url = `${backend.uiHostname()}${ADT_REENTRANCE_ENDPOINT}?redirect-url=${redirectUrl(redirectPort)}`;
-        open(url);
+        open(url)?.catch((error) => logger.error(error));
     });
 }
