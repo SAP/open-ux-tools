@@ -68,7 +68,11 @@
         data-sap-ui-resourceroots='{"sap.fe.demo.customPageAppTs": "../"}'
         data-sap-ui-frameOptions="allow">
     </script>
-    <script id="locate-reuse-libs" src="./locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
+    <script id="startup">
+        sap.ui.getCore().attachInit(function () {
+            // initialize the ushell sandbox component
+            sap.ushell.Container.createRenderer().placeAt("content");
+        });
     </script>
 </head>
 
