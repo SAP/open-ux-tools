@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.2.7
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+
 ## 1.2.6
 
 ### Patch Changes

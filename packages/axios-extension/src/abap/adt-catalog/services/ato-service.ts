@@ -1,6 +1,6 @@
 import { AdtService } from './adt-service';
 import type { AdtCategory, AtoSettings } from 'abap/types';
-import XmlParser from 'fast-xml-parser';
+import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
 /**
  * AtoService implements ADT requests for fetching ATO settings.
@@ -44,7 +44,7 @@ export class AtoService extends AdtService {
      * @returns parsed ATO settings
      */
     private parseAtoResponse(xml: string): AtoSettings {
-        if (XmlParser.validate(xml) !== true) {
+        if (XMLValidator.validate(xml) !== true) {
             this.log.warn(`Invalid XML: ${xml}`);
             return {};
         }
@@ -52,10 +52,11 @@ export class AtoService extends AdtService {
             attributeNamePrefix: '',
             ignoreAttributes: false,
             ignoreNameSpace: true,
-            parseAttributeValue: true
+            parseAttributeValue: true,
+            removeNSPrefix: true
         };
-        const obj = XmlParser.getTraversalObj(xml, options);
-        const parsed = XmlParser.convertToJson(obj, options);
+        const parser: XMLParser = new XMLParser(options);
+        const parsed = parser.parse(xml, true);
         return parsed.settings ? (parsed.settings as AtoSettings) : {};
     }
 }

@@ -1,5 +1,15 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.115
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/axios-extension@1.2.7
+    -   @sap-ux/fiori-elements-writer@0.12.10
+    -   @sap-ux/fiori-freestyle-writer@0.19.7
+
 ## 0.2.114
 
 ### Patch Changes
