@@ -21,7 +21,6 @@ export const getResourcePaths = (): { sourceCodePath: string; testCodePath?: str
                 testCodePath = ui5Yaml.resources.configuration.paths.test;
             }
         } else {
-            sourceCodePath = 'webapp';
             if (ui5Yaml.resources?.configuration?.paths?.webapp) {
                 sourceCodePath = ui5Yaml.resources.configuration.paths.webapp;
             }
