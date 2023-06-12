@@ -117,7 +117,9 @@ Object {
   },
   "lrop/webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
+	<VBox>
+		<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
+	</VBox>
 </core:FragmentDefinition>",
     "state": "modified",
   },
@@ -138,7 +140,9 @@ Object {
   },
   "lrop/webapp/ext/myCustomSubSection/MyCustomSubSection.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSubSection/MyCustomSubSection'}\\" text=\\"MyCustomSubSection\\" press=\\"handler.onPress\\" />
+	<VBox>
+		<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSubSection/MyCustomSubSection'}\\" text=\\"MyCustomSubSection\\" press=\\"handler.onPress\\" />
+	</VBox>
 </core:FragmentDefinition>",
     "state": "modified",
   },
@@ -669,7 +673,9 @@ export default class MyCustomPage extends Controller {
   },
   "ts/webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
+	<VBox>
+		<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
+	</VBox>
 </core:FragmentDefinition>",
     "state": "modified",
   },
@@ -691,7 +697,9 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
   },
   "ts/webapp/ext/myCustomSubSection/MyCustomSubSection.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSubSection/MyCustomSubSection'}\\" text=\\"MyCustomSubSection\\" press=\\"handler.onPress\\" />
+	<VBox>
+		<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSubSection/MyCustomSubSection'}\\" text=\\"MyCustomSubSection\\" press=\\"handler.onPress\\" />
+	</VBox>
 </core:FragmentDefinition>",
     "state": "modified",
   },

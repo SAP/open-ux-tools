@@ -1,3 +1,5 @@
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"<%- typeof dependencies !== 'undefined' ? ` ${dependencies}` : '' %>>
-	<%- content %>
+	<VBox>
+		<%- content %>
+	</VBox>
 </core:FragmentDefinition>
