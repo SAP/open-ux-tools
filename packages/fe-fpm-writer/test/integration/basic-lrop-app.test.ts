@@ -19,8 +19,8 @@ import { generateListReport, generateObjectPage } from '../../src/page';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
 
 describe('use FPM with existing apps', () => {
-    const testInput = join(__dirname, '../test-input');
-    const testOutput = join(__dirname, '../test-output/integration');
+    const testInput = join(__dirname, '../test-input/integration/basic-lrop-app');
+    const testOutput = join(__dirname, '../test-output/integration/basic-lrop-app');
     const fs = create(createStorage());
 
     beforeAll(() => {
@@ -35,7 +35,7 @@ describe('use FPM with existing apps', () => {
         const mainEntity = 'Travel';
 
         const basicConfig = {
-            path: join(testOutput, 'lrop'),
+            path: join(testOutput, 'js'),
             settings: {}
         };
         const tsConfig = {
@@ -48,8 +48,8 @@ describe('use FPM with existing apps', () => {
         const configs: { path: string; settings: { typescript?: boolean } }[] = [basicConfig, tsConfig];
 
         beforeAll(() => {
-            fs.copy(join(testInput, 'basic-lrop'), basicConfig.path, { globOptions: { dot: true } });
-            fs.copy(join(testInput, 'basic-ts'), tsConfig.path, { globOptions: { dot: true } });
+            fs.copy(join(testInput, 'js'), basicConfig.path, { globOptions: { dot: true } });
+            fs.copy(join(testInput, 'ts'), tsConfig.path, { globOptions: { dot: true } });
         });
 
         test.each(configs)('enableFpm', (config) => {
@@ -317,7 +317,10 @@ describe('use FPM with existing apps', () => {
 
         afterAll(() => {
             expect(
-                fs.dump(testOutput, '**/test-output/**/webapp/{manifest.json,Component.ts,ext/**/*}')
+                fs.dump(
+                    testOutput,
+                    '**/test-output/integration/basic-lrop-app/**/webapp/{manifest.json,Component.ts,ext/**/*}'
+                )
             ).toMatchSnapshot();
         });
     });
