@@ -435,8 +435,7 @@ describe('CustomSection', () => {
                     string,
                     any
                 >;
-                const section =
-                    options?.['settings']?.['content']?.['body']?.['sections']?.['NewCustomSection'];
+                const section = options?.['settings']?.['content']?.['body']?.['sections']?.['NewCustomSection'];
                 expect(section).toMatchSnapshot();
             });
         });
