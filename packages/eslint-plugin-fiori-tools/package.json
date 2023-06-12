@@ -20,7 +20,7 @@
     "eslint": "7.32.0"
   },
   "dependencies": {
-    "eslint-plugin-fiori-custom": "2.6.7",
+    "eslint-plugin-fiori-custom": "^2.6.7",
     "yaml": "2.2.2"
   },
   "peerDependencies": {
