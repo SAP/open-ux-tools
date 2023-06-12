@@ -11,24 +11,19 @@ export const getResourcePaths = (): { sourceCodePath: string; testCodePath?: str
     if (existsSync(ui5YamlPath)) {
         const ui5Yaml = parseDocument(readFileSync(ui5YamlPath, { encoding: 'utf8' })).toJSON();
 
-        switch (ui5Yaml.type) {
-            case 'library': {
-                sourceCodePath = 'src';
-                testCodePath = 'test';
-                if (ui5Yaml.resources?.configuration?.paths?.src) {
-                    sourceCodePath = ui5Yaml.resources.configuration.paths.src;
-                }
-                if (ui5Yaml.resources?.configuration?.paths?.test) {
-                    testCodePath = ui5Yaml.resources.configuration.paths.test;
-                }
-                break;
+        if (ui5Yaml.type === 'library') {
+            sourceCodePath = 'src';
+            testCodePath = 'test';
+            if (ui5Yaml.resources?.configuration?.paths?.src) {
+                sourceCodePath = ui5Yaml.resources.configuration.paths.src;
             }
-            default: {
-                sourceCodePath = 'webapp';
-                if (ui5Yaml.resources?.configuration?.paths?.webapp) {
-                    sourceCodePath = ui5Yaml.resources.configuration.paths.webapp;
-                }
-                break;
+            if (ui5Yaml.resources?.configuration?.paths?.test) {
+                testCodePath = ui5Yaml.resources.configuration.paths.test;
+            }
+        } else {
+            sourceCodePath = 'webapp';
+            if (ui5Yaml.resources?.configuration?.paths?.webapp) {
+                sourceCodePath = ui5Yaml.resources.configuration.paths.webapp;
             }
         }
     }
