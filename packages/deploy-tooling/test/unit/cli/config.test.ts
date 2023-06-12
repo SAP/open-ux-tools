@@ -5,17 +5,16 @@ import { readFileSync } from 'fs';
 
 describe('cli/config', () => {
     describe('getDeploymentConfig', () => {
-        test('valid config path', () => {
-            const getConfigPromise = getDeploymentConfig(join(__dirname, '../../test-input/ui5-deploy.yaml'));
-            expect(getConfigPromise).resolves.toBeDefined();
+        test('valid config path', async () => {
+            expect(await getDeploymentConfig(join(__dirname, '../../test-input/ui5-deploy.yaml'))).toBeDefined();
         });
-        test('invalid config', () => {
-            const getConfigPromise = getDeploymentConfig(join(__dirname, '../../test-input/ui5.yaml'));
-            expect(getConfigPromise).rejects.toThrowError();
+        test('invalid config', async () => {
+            await expect(getDeploymentConfig(join(__dirname, '../../test-input/ui5.yaml'))).rejects.toThrowError();
         });
-        test('invalid path', () => {
-            const getConfigPromise = getDeploymentConfig(join(__dirname, '../../test-input/ui5-invalid.yaml'));
-            expect(getConfigPromise).rejects.toThrowError();
+        test('invalid path', async () => {
+            await expect(
+                getDeploymentConfig(join(__dirname, '../../test-input/ui5-invalid.yaml'))
+            ).rejects.toThrowError();
         });
     });
 

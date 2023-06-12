@@ -106,9 +106,9 @@ export class Uaa {
             this.url +
             '/oauth/authorize?' +
             qs.stringify({
-                response_type: 'code',
-                redirect_uri: redirectUri,
-                client_id: this.clientid
+                'response_type': 'code',
+                'redirect_uri': redirectUri,
+                'client_id': this.clientid
             })
         );
     }
@@ -124,9 +124,9 @@ export class Uaa {
             url: `${this.url}/oauth/token`,
             method: 'POST',
             data: qs.stringify({
-                grant_type: 'password',
-                username: this.username,
-                password: this.password
+                'grant_type': 'password',
+                'username': this.username,
+                'password': this.password
             }),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -151,9 +151,9 @@ export class Uaa {
             method: 'POST',
             data: qs.stringify({
                 code: authCode,
-                grant_type: 'authorization_code',
-                redirect_uri: redirectUri,
-                response_type: 'token'
+                'grant_type': 'authorization_code',
+                'redirect_uri': redirectUri,
+                'response_type': 'token'
             }),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -174,8 +174,8 @@ export class Uaa {
             auth: { username: this.clientid, password: this.clientsecret },
             method: 'POST',
             data: qs.stringify({
-                grant_type: 'refresh_token',
-                refresh_token: refreshToken
+                'grant_type': 'refresh_token',
+                'refresh_token': refreshToken
             }),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -236,8 +236,7 @@ export class Uaa {
             server.listen();
             redirect = new Redirect((server.address() as AddressInfo).port);
             const oauthUrl = this.getAuthCodeUrl({ redirectUri: redirect.url() });
-
-            open(oauthUrl);
+            open(oauthUrl)?.catch((error) => this.log.error(error));
         });
     }
 
@@ -283,7 +282,7 @@ export class Uaa {
 
         if (newRefreshToken && refreshTokenChangedCb) {
             this.log.info('Sending notification that refresh token changed');
-            refreshTokenChangedCb(newRefreshToken);
+            await refreshTokenChangedCb(newRefreshToken);
         }
 
         this.log.info('Got access token successfully');

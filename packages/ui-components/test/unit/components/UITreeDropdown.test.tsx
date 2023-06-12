@@ -238,22 +238,22 @@ describe('<UITreeDropdown />', () => {
         });
 
         it('Test input change when submenu closed with arrow left', async () => {
-            triggerWindowKeydownWithFocus('Title');
-            triggerWindowKeydownWithFocus('Title.Draft', 'ArrowRight');
-            triggerWindowKeydownWithFocus('Title', 'ArrowLeft');
+            await triggerWindowKeydownWithFocus('Title');
+            await triggerWindowKeydownWithFocus('Title.Draft', 'ArrowRight');
+            await triggerWindowKeydownWithFocus('Title', 'ArrowLeft');
             expect(wrapper.state('valueChanged')).toEqual(true);
             expect(wrapper.state('value')).toEqual('Title');
         });
 
         it('Test input change with path and arrow right - value used from submenu', async () => {
-            triggerWindowKeydownWithFocus('Title');
-            triggerWindowKeydownWithFocus('Title.Draft', 'ArrowRight');
+            await triggerWindowKeydownWithFocus('Title');
+            await triggerWindowKeydownWithFocus('Title.Draft', 'ArrowRight');
             expect(wrapper.state('value')).toEqual('Title.Draft');
         });
 
         it('Test input change with path when submenu opened', async () => {
-            triggerWindowKeydownWithFocus('Title');
-            triggerWindowKeydownWithFocus('Title.SAP__Messages', 'ArrowRight');
+            await triggerWindowKeydownWithFocus('Title');
+            await triggerWindowKeydownWithFocus('Title.SAP__Messages', 'ArrowRight');
             expect(wrapper.state('value')).toEqual('Title.SAP__Messages');
             wrapper.find('.ms-ContextualMenu-list').simulate('keyDown', { key: 'Enter' });
             expect(wrapper.state('valueChanged')).toEqual(true);
@@ -279,7 +279,7 @@ describe('<UITreeDropdown />', () => {
         });
 
         it('Test submenu item click', async () => {
-            triggerWindowKeydownWithFocus('Title');
+            await triggerWindowKeydownWithFocus('Title');
             await new Promise((resolve) => setTimeout(resolve, 100));
             wrapper.find('button.ms-ContextualMenu-splitMenu').simulate('click', document.createEvent('Events'));
             expect(wrapper.find(`div${selectors.treeContextMenu}`).length).toEqual(2);
@@ -319,7 +319,6 @@ describe('<UITreeDropdown />', () => {
             Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
                 value: originalClientHeight
             });
-            //Object.defineProperty(HTMLElement.prototype, 'offsetWidth', originalOffsetWidth);
             Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
                 value: originalClientWidth
             });
@@ -378,7 +377,7 @@ describe('<UITreeDropdown />', () => {
                 // Check first result
                 expect(wrapper.find('.ms-ContextualMenu-container').length).toEqual(1);
                 expect(wrapper.find('div.ms-Callout').length).toEqual(1);
-                // Trigger sumbenu expand
+                // Trigger submenu expand
                 wrapper.find('button.ms-ContextualMenu-splitMenu').simulate('click', document.createEvent('Events'));
                 // Check submenu offset
                 expect(wrapper.find('div.ms-Callout').length).toEqual(2);
@@ -392,7 +391,7 @@ describe('<UITreeDropdown />', () => {
     });
 
     describe('Circular navigation should be disabled', () => {
-        const clossestMock = (at: number) => {
+        const closestMock = (at: number) => {
             return (selector: string): HTMLElement | undefined => {
                 if (selector === 'ul') {
                     return wrapper.find('ul.ms-ContextualMenu-list').getDOMNode() as HTMLElement;
@@ -427,7 +426,7 @@ describe('<UITreeDropdown />', () => {
             it('ArrowDown', () => {
                 openDropdown();
                 const node = document.createElement('div');
-                jest.spyOn(node, 'closest').mockImplementation(clossestMock(0));
+                jest.spyOn(node, 'closest').mockImplementation(closestMock(0));
                 jest.spyOn(document, 'activeElement', 'get').mockImplementation(() => node);
                 const event = {
                     key: 'ArrowDown',
@@ -444,7 +443,7 @@ describe('<UITreeDropdown />', () => {
             it('ArrowUp', () => {
                 openDropdown();
                 const node = document.createElement('div');
-                jest.spyOn(node, 'closest').mockImplementation(clossestMock(0));
+                jest.spyOn(node, 'closest').mockImplementation(closestMock(0));
                 jest.spyOn(document, 'activeElement', 'get').mockImplementation(() => node);
                 const event = {
                     key: 'ArrowUp',
@@ -535,7 +534,7 @@ describe('<UITreeDropdown />', () => {
                 it(testCase.name, () => {
                     openDropdown();
                     const node = document.createElement('div');
-                    jest.spyOn(node, 'closest').mockImplementation(clossestMock(testCase.index));
+                    jest.spyOn(node, 'closest').mockImplementation(closestMock(testCase.index));
                     jest.spyOn(document, 'activeElement', 'get').mockImplementation(() => node);
                     const event = {
                         key: testCase.key,

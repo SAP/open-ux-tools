@@ -1,5 +1,20 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.28
+
+### Patch Changes
+
+-   7f1971c1: Fix: handle missing manifest.json
+
+## 1.1.27
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/logger@0.3.6
+    -   @sap-ux/ui5-config@0.17.1
+
 ## 1.1.26
 
 ### Patch Changes

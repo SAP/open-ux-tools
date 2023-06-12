@@ -1,5 +1,16 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.56
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/axios-extension@1.2.8
+    -   @sap-ux/btp-utils@0.11.6
+    -   @sap-ux/logger@0.3.6
+    -   @sap-ux/store@0.3.11
+
 ## 0.6.55
 
 ### Patch Changes

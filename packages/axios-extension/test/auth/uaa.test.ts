@@ -59,8 +59,8 @@ describe('UAA', () => {
         const refreshToken = 'refreshToken';
         const mockedResponse = {
             data: {
-                access_token: accessToken,
-                refresh_token: refreshToken
+                'access_token': accessToken,
+                'refresh_token': refreshToken
             }
         };
 
@@ -79,11 +79,15 @@ describe('UAA', () => {
                 expect(params.get('response_type')).toBe('code');
                 const openedUri = params.get('redirect_uri');
                 expect(openedUri).toBeDefined();
-                axios.get(openedUri, {
-                    params: {
-                        code: 'authCode'
-                    }
-                });
+                if (openedUri) {
+                    axios
+                        .get(openedUri, {
+                            params: {
+                                code: 'authCode'
+                            }
+                        })
+                        .catch((error) => console.error(error));
+                }
             };
 
             await expect(uaaInstance().getAccessToken()).resolves.toEqual(accessToken);

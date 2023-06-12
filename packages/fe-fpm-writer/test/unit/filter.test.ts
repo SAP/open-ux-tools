@@ -24,7 +24,7 @@ describe('CustomFilter', () => {
         const getExpectedFragmentPath = (newFilter: CustomFilter): string =>
             join(testDir, `webapp/${newFilter.folder}/${newFilter.fragmentFile}.fragment.xml`);
 
-        const getManifest = (extensions: unknown = undefined): string => {
+        const getManifest = (_: unknown = undefined): string => {
             const manifest = {
                 'sap.app': {
                     id: 'myTestApp'
