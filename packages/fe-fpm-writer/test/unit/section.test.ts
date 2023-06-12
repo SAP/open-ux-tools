@@ -379,5 +379,66 @@ describe('CustomSection', () => {
                 expect(result).toEqual(expectedAfterSave);
             });
         });
+
+        const positionTests = [
+            {
+                name: 'Create with anchor - latest ui5',
+                position: {
+                    placement: Placement.Before,
+                    anchor: 'Dummy'
+                }
+            },
+            {
+                name: 'Create without anchor - latest ui5',
+                position: {
+                    placement: Placement.Before
+                }
+            },
+            {
+                name: 'Create without position - latest ui5',
+                position: undefined
+            },
+            {
+                name: 'Create with anchor - 1.85 ui5',
+                position: {
+                    placement: Placement.Before,
+                    anchor: 'Dummy'
+                },
+                minUI5Version: '1.85.1'
+            },
+            {
+                name: 'Create without anchor - 1.85 ui5',
+                position: {
+                    placement: Placement.Before
+                },
+                minUI5Version: '1.85.1'
+            },
+            {
+                name: 'Create without position - 1.85 ui5',
+                position: undefined,
+                minUI5Version: '1.85.1'
+            }
+        ];
+        positionTests.forEach((testCase) => {
+            test(`Test 'position' property. ${testCase.name}`, () => {
+                generateCustomSection(
+                    testDir,
+                    {
+                        ...customSection,
+                        position: testCase.position,
+                        minUI5Version: testCase.minUI5Version
+                    },
+                    fs
+                );
+                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+                const options = manifest?.['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<
+                    string,
+                    any
+                >;
+                const section =
+                    options?.['settings']?.['content']?.['body']?.['sections']?.['NewCustomSection'];
+                expect(section).toMatchSnapshot();
+            });
+        });
     });
 });
