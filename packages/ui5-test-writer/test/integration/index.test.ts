@@ -98,7 +98,11 @@ describe('ui5-test-writer - Integration tests', () => {
         const projectDir = prepareTestFiles('RestaurantApp');
 
         // Create initial OPA test files on an LROP project
-        fs = await generateOPAFiles(projectDir, { htmlName: 'flpSandbox.html' }, fs);
+        fs = await generateOPAFiles(
+            projectDir,
+            { htmlTarget: 'test/flpSandbox.html?sap-ui-xx-viewCache=false#restaurantApp-tile' },
+            fs
+        );
 
         expect(fs.dump(projectDir)).toMatchSnapshot();
     });

@@ -163,7 +163,11 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     if (addTest) {
         generateOPAFiles(
             basePath,
-            { htmlName: feApp.appOptions?.generateIndex ? 'index.html' : 'flpSandbox.html' },
+            {
+                htmlTarget: feApp.appOptions?.generateIndex
+                    ? 'index.html'
+                    : join('test', `flpSandbox.html?sap-ui-xx-viewCache=false#${feApp.app.flpAppId}`)
+            },
             fs
         );
     }

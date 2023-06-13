@@ -19,7 +19,7 @@ export type FEV4OPAConfig = {
     appPath: string;
     pages: FEV4OPAPageConfig[];
     opaJourneyFileName: string;
-    htmlName: string;
+    htmlTarget: string;
 };
 
 export type FEV4ManifestTarget = {
