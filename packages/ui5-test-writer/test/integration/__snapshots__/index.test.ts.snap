@@ -1201,8 +1201,8 @@ appDescription=Restaurant List",
     function(JourneyRunner, opaJourney, RestaurantList, RestaurantObjectPage) {
         'use strict';
         var JourneyRunner = new JourneyRunner({
-            // start flpSandbox.html in web folder
-            launchUrl: sap.ui.require.toUrl('restaurantapp') + '/flpSandbox.html'
+            // start test/flpSandbox.html?sap-ui-xx-viewCache=false#restaurantApp-tile in web folder
+            launchUrl: sap.ui.require.toUrl('restaurantapp') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#restaurantApp-tile'
         });
 
        
