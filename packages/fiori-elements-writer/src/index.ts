@@ -22,7 +22,7 @@ export const V2_FE_TYPES_AVAILABLE = '1.108.0';
  * Get TypeScript Ignore Glob Pattern.
  *
  * @param feApp  to generate the Fiori elements application
- * @param coercedUI5Version
+ * @param coercedUI5Version the coerced UI5 version
  * @returns ignore pattern
  */
 function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coercedUI5Version: semVer.SemVer): string[] {

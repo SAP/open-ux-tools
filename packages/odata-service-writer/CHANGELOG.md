@@ -1,5 +1,19 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.23
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/ui5-config@0.17.1
+
+## 0.14.22
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+
 ## 0.14.21
 
 ### Patch Changes

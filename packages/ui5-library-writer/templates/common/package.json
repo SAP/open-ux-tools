@@ -1,0 +1,19 @@
+{
+  "name": "<%= libraryName %>",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@ui5/cli": "^3.0.0",
+    "karma": "6.3.17",
+    "karma-chrome-launcher": "^3.1.1",
+    "karma-cli": "^2.0.0",
+    "karma-ui5": "^3.0.3",
+    "@sap/ux-ui5-tooling": "1"
+  },
+  "scripts": {
+    "build": "ui5 build --clean-dest",
+    "start": "fiori run --open test-resources/<%= libraryNamespaceURI %>/Example.html",
+    "testsuite": "fiori run --open test-resources/<%= libraryNamespaceURI %>/qunit/testsuite.qunit.html",
+    "test": "karma start --browsers=ChromeHeadless --singleRun=true"
+  }
+}

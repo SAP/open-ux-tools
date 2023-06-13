@@ -57,7 +57,10 @@ describe('KeytarStore', () => {
         const entry2 = { account: 'url2', password: JSON.stringify(password2) };
 
         mockedKeytar.findCredentials.mockResolvedValueOnce([entry1, entry2]);
-        expect(store.getAll(service)).resolves.toEqual({ [entry1.account]: password1, [entry2.account]: password2 });
+        await expect(store.getAll(service)).resolves.toEqual({
+            [entry1.account]: password1,
+            [entry2.account]: password2
+        });
     });
 
     describe('On error', () => {

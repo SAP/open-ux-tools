@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.1.8
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
 ## 0.1.7
 
 ### Patch Changes

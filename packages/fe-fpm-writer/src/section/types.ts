@@ -14,7 +14,7 @@ export interface CustomSection extends CustomElement, EventHandler {
     /**
      * Defines the position of the section relative to other sections.
      */
-    position: Position;
+    position?: Position;
 
     /**
      * Optional control XML that will be generated into the fragment of section. If the property isn't provided then a sample control will be generated.
@@ -22,13 +22,9 @@ export interface CustomSection extends CustomElement, EventHandler {
     control?: string;
 }
 
-export interface CustomSectionDependencies {
-    [key: string]: string;
-}
-
 export interface InternalCustomSection extends CustomSection, CustomSubSection, InternalCustomElement {
     content: string;
-    dependencies?: CustomSectionDependencies;
+    dependencies?: string;
 }
 
 export interface CustomSubSection extends CustomSection {

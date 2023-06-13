@@ -1,5 +1,20 @@
 # @sap-ux/axios-extension
 
+## 1.2.8
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/btp-utils@0.11.6
+    -   @sap-ux/logger@0.3.6
+
+## 1.2.7
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+
 ## 1.2.6
 
 ### Patch Changes
