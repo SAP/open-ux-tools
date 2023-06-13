@@ -54,7 +54,8 @@ export function addCdsPluginUi5(packageJson: Package): void {
 }
 
 /**
- * Check if the min version of @sap/cds is present in the package.json.
+ * Check if package.json has dependency to the minimum min version of @sap/cds,
+ * that is required to enable cds-plugin-ui.
  *
  * @param packageJson - the parsed package.json
  * @returns - true: min cds version is present; false: cds version needs update

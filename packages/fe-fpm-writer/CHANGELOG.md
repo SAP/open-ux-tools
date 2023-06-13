@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.22.0
+
+### Minor Changes
+
+-   36ccc8eb: Add support to generate table building blocks
+
 ## 0.21.0
 
 ### Minor Changes
