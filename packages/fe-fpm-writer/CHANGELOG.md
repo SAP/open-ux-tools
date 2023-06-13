@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.22.1
+
+### Patch Changes
+
+-   b7b25d00: Fix. Allow to create custom section or subsection without 'position' property.
+
 ## 0.22.0
 
 ### Minor Changes
