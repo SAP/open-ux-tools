@@ -22,7 +22,7 @@
       "typescript": "^4.6.3",
       "@sap/ux-ui5-tooling": "1",
       "ui5-tooling-transpile": "^0.7.10",
-      "@sap-ux/eslint-plugin-fiori-tools": "^0.1.0"
+      "@sap-ux/eslint-plugin-fiori-tools": "^0.2.0"
     },
     "scripts": {
         "build": "run-p -l build-app build-interface",
