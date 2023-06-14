@@ -123,8 +123,8 @@ function createConfig(
         appID,
         appPath,
         pages: [],
-        opaJourneyFileName: opaConfig.scriptName || 'FirstJourney',
-        htmlTarget: opaConfig.htmlTarget || 'index.html'
+        opaJourneyFileName: opaConfig.scriptName ?? 'FirstJourney',
+        htmlTarget: opaConfig.htmlTarget ?? 'index.html'
     };
 
     // Identify startup targets from the routes
