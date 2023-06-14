@@ -151,7 +151,7 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
         provider = createForDestination(options, destination) as AbapServiceProvider;
     } else if (isUrlTarget(config.target)) {
         if (config.target.cloud) {
-            provider = await createAbapCloudServiceProvider(options, config.target, config.noRetry, logger);
+            provider = await createAbapCloudServiceProvider(options, config.target, config.abortRetry, logger);
         } else {
             provider = await createAbapServiceProvider(options, config.target);
         }
@@ -179,7 +179,7 @@ async function handleError(
     logger: Logger,
     archive: Buffer
 ): Promise<void> {
-    if (!config.noRetry && isAxiosError(error)) {
+    if (!config.abortRetry && isAxiosError(error)) {
         const success = await handleAxiosError(command, error.response, service, config, logger, archive);
         if (success) {
             return;
@@ -234,7 +234,12 @@ async function handleAxiosError(
         case 412:
             logger.warn('An app in the same repository with different sap app id found.');
             if (config.yes || (await promptConfirmation('Do you want to overwrite (Y/n)?'))) {
-                await deploymentCommands[command](service, { ...config, safe: false, noRetry: true }, logger, archive);
+                await deploymentCommands[command](
+                    service,
+                    { ...config, safe: false, abortRetry: true },
+                    logger,
+                    archive
+                );
                 return true;
             } else {
                 return false;

@@ -63,7 +63,7 @@ export interface CommonOptions {
     /**
      * If set to true then do not retry if a deployment fails.
      */
-    noRetry?: boolean;
+    abortRetry?: boolean;
 }
 
 export interface AbapDeployConfig extends CommonOptions {

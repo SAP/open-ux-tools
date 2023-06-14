@@ -1,9 +1,11 @@
 import type { ParseOptions } from 'commander';
 import { join } from 'path';
 import { createCommand, runDeploy, runUndeploy } from '../../../src/cli';
+import * as cliArchive from '../../../src/cli/archive';
 import { mockedUi5RepoService } from '../../__mocks__';
 import { Command } from 'commander';
 import fs from 'fs';
+import { ToolsLogger } from '@sap-ux/logger';
 
 describe('cli', () => {
     const fixture = join(__dirname, '../../test-input/');
@@ -15,7 +17,8 @@ describe('cli', () => {
     });
 
     describe('runDeploy', () => {
-        const spy = jest.spyOn(fs, 'writeFileSync');
+        const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync');
+        const cliArchiveSpy = jest.spyOn(cliArchive, 'getArchive');
         // Command for deploying with a configuration file, assumes 'dist' is the target archive folder if no archive-folder or archive-path is specified;
         // npx deploy -c ui5-deploy.yaml --archive-folder webapp
         const minimumConfigCmds = [
@@ -59,24 +62,27 @@ describe('cli', () => {
             'SAP20230433',
             '--archive-folder',
             join(fixture, 'webapp'),
-            '--yes'
+            '--yes',
+            '--abort-retry'
         ];
 
         const cliCmdsWithUaa = [...cliCmds, '--cloud-service-env'];
 
         test.each([
-            { params: minimumConfigCmds, writeFileSyncCalled: 1 },
-            { params: overwriteConfigCmds, writeFileSyncCalled: 1 },
-            { params: cliCmds, writeFileSyncCalled: 0 },
-            { params: cliCmdsWithUaa, writeFileSyncCalled: 0 }
-        ])('successful deploy with different options', async ({ params, writeFileSyncCalled }) => {
+            { params: minimumConfigCmds, writeFileSyncCalled: 1, object: { abortRetry: false } },
+            { params: overwriteConfigCmds, writeFileSyncCalled: 1, object: { abortRetry: false } },
+            { params: cliCmds, writeFileSyncCalled: 0, object: { abortRetry: true } },
+            { params: cliCmdsWithUaa, writeFileSyncCalled: 0, object: { abortRetry: true } }
+        ])('successful deploy with different options', async ({ params, writeFileSyncCalled, object }) => {
             process.argv = params;
             await runDeploy();
             expect(mockedUi5RepoService.deploy).toBeCalled();
-            expect(spy).toHaveBeenCalledTimes(writeFileSyncCalled);
+            expect(writeFileSyncSpy).toHaveBeenCalledTimes(writeFileSyncCalled);
             if (writeFileSyncCalled > 0) {
-                expect(spy.mock.calls[0][0]).toBe('archive.zip');
+                expect(writeFileSyncSpy.mock.calls[0][0]).toBe('archive.zip');
             }
+            expect(cliArchiveSpy).toBeCalled();
+            expect(cliArchiveSpy).toBeCalledWith(expect.any(ToolsLogger), expect.objectContaining(object));
         });
     });
 
@@ -118,7 +124,8 @@ describe('cli', () => {
                 'https://target.example',
                 '--name',
                 'MyAppName',
-                '--cloud-service-env'
+                '--cloud-service-env',
+                '--abort-retry'
             ];
             await runUndeploy();
             expect(mockedUi5RepoService.undeploy).toBeCalled();

@@ -17,7 +17,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
     const command = new Command(name)
         .option('-c, --config <path-to-yaml>', 'Path to config yaml file')
         .option('-y, --yes', 'yes to all questions', false)
-        .option('-n, --no-retry', `do not retry if ${name} fails for any reason`, false)
+        .option('-n, --abort-retry', `do not retry if ${name} fails for any reason`, false)
         .option('--verbose', 'verbose log output', false);
 
     // options to set (or overwrite) values that are otherwise read from the `ui5*.yaml`

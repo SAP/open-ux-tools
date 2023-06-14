@@ -53,7 +53,7 @@ Usage: deploy [options]
 Options:
   -c, --config <path-to-yaml>          Path to config yaml file
   -y, --yes                            yes to all questions (default: false)
-  -n, --no-retry                       do not retry if deploy fails for any reason
+  -n, --abort-retry                    do not retry if deploy fails for any reason (default: false)
   --verbose                            verbose log output (default: false)
   --destination  <destination>         Destination in SAP BTP pointing to an ABAP system
   --url <target-url>                   URL of target ABAP system
@@ -85,7 +85,7 @@ Usage: undeploy [options]
 Options:
   -c, --config <path-to-yaml>          Path to config yaml file
   -y, --yes                            yes to all questions (default: false)
-  -n, --no-retry                       do not retry if undeploy fails for any reason
+  -n, --abort-retry                       do not retry if undeploy fails for any reason (default: false)
   --verbose                            verbose log output (default: false)
   --destination  <destination>         Destination in SAP BTP pointing to an ABAP system
   --url <target-url>                   URL of target ABAP system
