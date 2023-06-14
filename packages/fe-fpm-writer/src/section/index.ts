@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { CustomSection, InternalCustomSection, CustomSectionDependencies, CustomSubSection } from './types';
+import type { CustomSection, InternalCustomSection, CustomSubSection } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
@@ -34,11 +34,11 @@ export function getManifestRoot(folderName: string, ui5Version?: string): string
  * Get additional dependencies for fragment.xml template based on passed ui5 version.
  *
  * @param ui5Version required UI5 version.
- * @returns Additional dependencies for fragment.xml
+ * @returns String with additional dependencies to add for "FragmentDefinition" element in fragment.xml
  */
-function getAdditionalDependencies(ui5Version?: string): CustomSectionDependencies | undefined {
+function getAdditionalDependencies(ui5Version?: string): string | undefined {
     const minVersion = coerce(ui5Version);
-    return !minVersion || gte(minVersion, '1.90.0') ? { 'xmlns:macros': 'sap.fe.macros' } : undefined;
+    return !minVersion || gte(minVersion, '1.90.0') ? 'xmlns:macros="sap.fe.macros"' : undefined;
 }
 
 /**
@@ -110,7 +110,7 @@ function generate(
     // add fragment
     const viewPath = join(completeSection.path, `${completeSection.name}.fragment.xml`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeSection);
+        fs.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, completeSection);
     }
 
     return fs;

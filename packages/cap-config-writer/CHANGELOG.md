@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.1.0
+
+### Minor Changes
+
+-   44f4a098: Export prerequisite check for enabling CDS UI plugin
+
 ## 0.0.2
 
 ### Patch Changes

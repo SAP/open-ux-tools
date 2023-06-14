@@ -1,0 +1,24 @@
+{
+  "name": "customPageAppJs",
+  "version": "0.0.1",
+  "private": true,
+  "description": "A Fiori application.",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "@ui5/cli": "^3.0.0",
+    "@sap/ux-ui5-tooling": "1",
+    "@sap/ux-specification": "UI5-1.114",
+    "@sap-ux/ui5-middleware-fe-mockserver": "2"
+  },
+  "scripts": {
+    "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
+    "start": "fiori run --config ./ui5-mock.yaml --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#sapfedemocustomPageAppJs-tile\""
+  },
+  "sapux": true
+}

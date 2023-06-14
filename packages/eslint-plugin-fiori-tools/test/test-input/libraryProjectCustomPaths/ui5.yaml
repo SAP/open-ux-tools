@@ -1,0 +1,9 @@
+specVersion: "3.0"
+type: library
+metadata:
+  name: some.library.custom.paths.name
+resources:
+  configuration:
+    paths:
+      src: mySrc
+      test: myTest  
