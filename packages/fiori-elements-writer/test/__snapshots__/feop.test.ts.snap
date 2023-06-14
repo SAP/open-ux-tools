@@ -3680,7 +3680,7 @@ archive.zip
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
-    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.1.0\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
