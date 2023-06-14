@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.15
+
+### Patch Changes
+
+-   080f89ac: Opa tests to use flpSandbox.html when index.html is not generated
+-   Updated dependencies [080f89ac]
+    -   @sap-ux/ui5-test-writer@0.1.9
+
 ## 0.12.14
 
 ### Patch Changes

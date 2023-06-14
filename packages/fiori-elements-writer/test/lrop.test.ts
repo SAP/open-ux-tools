@@ -66,6 +66,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     },
                     appOptions: {
                         ...feBaseConfig('lropV4AddTests').appOptions,
+                        generateIndex: true,
                         addTests: true
                     }
                 }),
