@@ -63,17 +63,17 @@ describe('cli', () => {
             '--archive-folder',
             join(fixture, 'webapp'),
             '--yes',
-            '--abort-retry'
+            '--no-retry'
         ];
 
         const cliCmdsWithUaa = [...cliCmds, '--cloud-service-env'];
 
         test.each([
-            { params: minimumConfigCmds, writeFileSyncCalled: 1, object: { abortRetry: false } },
-            { params: overwriteConfigCmds, writeFileSyncCalled: 1, object: { abortRetry: false } },
-            { params: cliCmds, writeFileSyncCalled: 0, object: { abortRetry: true } },
-            { params: cliCmdsWithUaa, writeFileSyncCalled: 0, object: { abortRetry: true } }
-        ])('successful deploy with different options', async ({ params, writeFileSyncCalled, object }) => {
+            { params: minimumConfigCmds, writeFileSyncCalled: 1, object: { retry: true } },
+            { params: overwriteConfigCmds, writeFileSyncCalled: 1, object: { retry: true } },
+            { params: cliCmds, writeFileSyncCalled: 0, object: { retry: false } },
+            { params: cliCmdsWithUaa, writeFileSyncCalled: 0, object: { retry: false } }
+        ])('successful deploy with different options %s', async ({ params, writeFileSyncCalled, object }) => {
             process.argv = params;
             await runDeploy();
             expect(mockedUi5RepoService.deploy).toBeCalled();
@@ -125,7 +125,7 @@ describe('cli', () => {
                 '--name',
                 'MyAppName',
                 '--cloud-service-env',
-                '--abort-retry'
+                '--no-retry'
             ];
             await runUndeploy();
             expect(mockedUi5RepoService.undeploy).toBeCalled();

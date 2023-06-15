@@ -182,7 +182,7 @@ describe('base/deploy', () => {
             const sameIdError = axiosError(412);
             mockedUi5RepoService.deploy.mockRejectedValueOnce(sameIdError);
             try {
-                await deploy(archive, { app, target, abortRetry: true }, nullLogger);
+                await deploy(archive, { app, target, retry: false }, nullLogger);
                 fail('Should have thrown an error');
             } catch (error) {
                 expect(error).toBe(sameIdError);
