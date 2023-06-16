@@ -61,7 +61,7 @@ export interface CommonOptions {
     verbose?: boolean;
 
     /**
-     * If set to false then do not retry if a deployment fails, true by default
+     * '--no-retry' cli param negates the retry value which is true by default
      */
     retry?: boolean;
 }
