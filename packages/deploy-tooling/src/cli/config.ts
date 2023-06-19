@@ -50,6 +50,26 @@ function readServiceKeyFromFile(path: string): ServiceInfo {
 }
 
 /**
+ * Read the environment variables to generate a service object.
+ *
+ * @param targetUrl target endpoint where app is being deployed to
+ * @returns service key as js object
+ */
+function getServiceFromEnv(targetUrl: string | undefined): ServiceInfo {
+    return {
+        uaa: {
+            clientid: process.env.SERVICE_CLIENT_ID,
+            clientsecret: process.env.SERVICE_CLIENT_SECRET,
+            url: process.env.SERVICE_UAA_URL,
+            username: process.env.SERVICE_USERNAME,
+            password: process.env.SERVICE_PASSWORD
+        },
+        url: targetUrl ?? process.env.SERVICE_URL,
+        systemid: process.env.SERVICE_SYSTEM_ID
+    } as ServiceInfo;
+}
+
+/**
  * Boolean merger.
  *
  * @param cli - optional flag from CLI
@@ -79,6 +99,23 @@ function parseQueryParams(query: string): AxiosRequestConfig['params'] {
 }
 
 /**
+ * Generate the service object using either a service.json file or environment variables.
+ *
+ * @param options additional options
+ * @param targetUrl target endpoint where app is being deployed to
+ * @returns service key as js object
+ */
+function getServiceKey(options: CliOptions, targetUrl: string | undefined): undefined | ServiceInfo {
+    let serviceKey;
+    if (options.cloudServiceKey) {
+        serviceKey = readServiceKeyFromFile(options.cloudServiceKey);
+    } else if (options.cloudServiceEnv) {
+        serviceKey = getServiceFromEnv(targetUrl);
+    }
+    return serviceKey;
+}
+
+/**
  * Merge CLI options into a base target configuration.
  *
  * @param baseTarget base target config
@@ -86,12 +123,13 @@ function parseQueryParams(query: string): AxiosRequestConfig['params'] {
  * @returns merged target object
  */
 function mergeTarget(baseTarget: AbapTarget, options: CliOptions) {
+    const targetUrl = options.url ?? baseTarget?.url;
     return {
-        url: options.url ?? baseTarget?.url,
+        url: targetUrl,
         client: options.client ?? baseTarget?.client,
         cloud: options.cloud !== undefined ? options.cloud : baseTarget?.cloud,
         destination: options.destination ?? baseTarget?.destination,
-        serviceKey: options.cloudServiceKey ? readServiceKeyFromFile(options.cloudServiceKey) : undefined,
+        serviceKey: getServiceKey(options, targetUrl),
         params: options.queryParams ? parseQueryParams(options.queryParams) : undefined
     } as AbapTarget;
 }
@@ -117,6 +155,7 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     config.keep = mergeFlag(options.keep, taskConfig.keep);
     config.strictSsl = mergeFlag(options.strictSsl, taskConfig.strictSsl);
     config.yes = mergeFlag(options.yes, taskConfig.yes);
+    config.retry = process.env.NO_RETRY ? !process.env.NO_RETRY : mergeFlag(options.retry, taskConfig.retry);
 
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
         options.archiveFolder = 'dist';

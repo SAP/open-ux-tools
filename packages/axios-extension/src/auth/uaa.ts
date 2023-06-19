@@ -87,6 +87,24 @@ export class Uaa {
     }
 
     /**
+     * Getter for username.
+     *
+     * @returns system id
+     */
+    private get username(): string {
+        return this.serviceInfo.uaa.username;
+    }
+
+    /**
+     * Getter for password.
+     *
+     * @returns system id
+     */
+    private get password(): string {
+        return this.serviceInfo.uaa.password;
+    }
+
+    /**
      * Generates a request url based on the provided redirect url.
      *
      * @param params config parameters
@@ -106,6 +124,29 @@ export class Uaa {
     }
 
     /**
+     * Generate an access token using grant_type password to the authorization service (XSUAA).
+     *
+     * @returns an axios request config
+     */
+    protected getTokenRequestForClientCredential(): AxiosRequestConfig {
+        const secret = `${this.clientid}:${this.clientsecret}`;
+        return {
+            url: `${this.url}/oauth/token`,
+            method: 'POST',
+            data: qs.stringify({
+                'grant_type': 'password',
+                'username': this.username,
+                'password': this.password
+            }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Accept: 'application/json',
+                Authorization: `Basic ${Buffer.from(secret).toString('base64')}`
+            }
+        };
+    }
+
+    /**
      * Generate an Axios token request configuration for fetching a token.
      *
      * @param params config parameters
@@ -115,7 +156,7 @@ export class Uaa {
      */
     protected getTokenRequestForAuthCode({ redirectUri, authCode }): AxiosRequestConfig {
         return {
-            url: this.url + '/oauth/token',
+            url: `${this.url}/oauth/token`,
             auth: { username: this.clientid, password: this.clientsecret },
             method: 'POST',
             data: qs.stringify({
@@ -139,7 +180,7 @@ export class Uaa {
      */
     protected getTokenRequestForRefreshToken(refreshToken): AxiosRequestConfig {
         return {
-            url: this.url + '/oauth/token',
+            url: `${this.url}/oauth/token`,
             auth: { username: this.clientid, password: this.clientsecret },
             method: 'POST',
             data: qs.stringify({
@@ -161,7 +202,7 @@ export class Uaa {
      */
     public async getUserInfo(accessToken: string): Promise<string | undefined> {
         const userInfoResp = await axios.request({
-            url: this.url + '/userinfo',
+            url: `${this.url}/userinfo`,
             method: 'GET',
             headers: {
                 authorization: `bearer ${accessToken}`
@@ -255,6 +296,18 @@ export class Uaa {
         }
 
         this.log.info('Got access token successfully');
+        return response?.data?.access_token;
+    }
+
+    /**
+     * Retrieve an access token using the client credentials.
+     *
+     * @returns an access token using the BTP UAA credentials
+     */
+    public async getAccessTokenWithClientCredentials(): Promise<string> {
+        const tokenRequest = this.getTokenRequestForClientCredential();
+        const response: AxiosResponse = await axios.request(tokenRequest);
+        this.log.info('Got access token successfully using client credentials');
         return response?.data?.access_token;
     }
 }

@@ -5,6 +5,7 @@ import type { CliOptions, AbapDeployConfig } from '../types';
 import { NAME } from '../types';
 import { getArchive } from './archive';
 import { getDeploymentConfig, getVersion, mergeConfig } from './config';
+import { config as loadEnvConfig } from 'dotenv';
 
 /**
  * Create an instance of a command runner for deployment.
@@ -16,7 +17,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
     const command = new Command(name)
         .option('-c, --config <path-to-yaml>', 'Path to config yaml file')
         .option('-y, --yes', 'yes to all questions', false)
-        .option('-n, --no-retry', `do not retry if ${name} fails for any reason`, false)
+        .option('-n, --no-retry', `do not retry if ${name} fails for any reason`, true) // retry by default when true, if passed from cli, will set to false
         .option('--verbose', 'verbose log output', false);
 
     // options to set (or overwrite) values that are otherwise read from the `ui5*.yaml`
@@ -34,6 +35,12 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
                 '--cloud-service-key <file-location>',
                 'JSON file location with the ABAP cloud service key.'
             ).conflicts('destination')
+        )
+        .addOption(
+            new Option(
+                '--cloud-service-env',
+                'Read ABAP cloud service properties from environment variables or .env file'
+            ).conflicts(['cloudServiceKey', 'destination'])
         )
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
         .option('--name <bsp-name>', 'Project name of the app')
@@ -90,6 +97,7 @@ async function prepareRun(cmd: Command) {
     if (process.argv.length < 3) {
         cmd.help();
     }
+    loadEnvConfig();
     const options = cmd.parse().opts<CliOptions>();
     const logLevel = options.verbose ? LogLevel.Silly : LogLevel.Info;
     const logger = new ToolsLogger({

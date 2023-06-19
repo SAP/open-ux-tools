@@ -1,4 +1,3 @@
-import { config } from 'dotenv';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { AbapDeployConfig, AbapTarget, UrlAbapTarget } from '../types';
 
@@ -37,7 +36,6 @@ export function getConfigForLogging(
  * @param obj - any object structure
  */
 export function replaceEnvVariables(obj: object): void {
-    config();
     for (const key in obj) {
         const value = (obj as Record<string, unknown>)[key];
         if (typeof value === 'object') {

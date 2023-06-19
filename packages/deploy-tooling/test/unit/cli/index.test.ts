@@ -1,9 +1,11 @@
 import type { ParseOptions } from 'commander';
 import { join } from 'path';
 import { createCommand, runDeploy, runUndeploy } from '../../../src/cli';
+import * as cliArchive from '../../../src/cli/archive';
 import { mockedUi5RepoService } from '../../__mocks__';
 import { Command } from 'commander';
 import fs from 'fs';
+import { ToolsLogger } from '@sap-ux/logger';
 
 describe('cli', () => {
     const fixture = join(__dirname, '../../test-input/');
@@ -15,7 +17,8 @@ describe('cli', () => {
     });
 
     describe('runDeploy', () => {
-        const spy = jest.spyOn(fs, 'writeFileSync');
+        const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync');
+        const cliArchiveSpy = jest.spyOn(cliArchive, 'getArchive');
         // Command for deploying with a configuration file, assumes 'dist' is the target archive folder if no archive-folder or archive-path is specified;
         // npx deploy -c ui5-deploy.yaml --archive-folder webapp
         const minimumConfigCmds = [
@@ -59,22 +62,48 @@ describe('cli', () => {
             'SAP20230433',
             '--archive-folder',
             join(fixture, 'webapp'),
-            '--yes'
+            '--yes',
+            '--no-retry'
         ];
 
+        const cliCmdsWithUaa = [...cliCmds, '--cloud-service-env'];
+
         test.each([
-            { params: minimumConfigCmds, writeFileSyncCalled: 1 },
-            { params: overwriteConfigCmds, writeFileSyncCalled: 1 },
-            { params: cliCmds, writeFileSyncCalled: 0 }
-        ])('successful deploy with different options', async ({ params, writeFileSyncCalled }) => {
+            { params: minimumConfigCmds, writeFileSyncCalled: 1, object: { retry: true } },
+            { params: overwriteConfigCmds, writeFileSyncCalled: 1, object: { retry: true } },
+            { params: cliCmds, writeFileSyncCalled: 0, object: { retry: false } },
+            { params: cliCmdsWithUaa, writeFileSyncCalled: 0, object: { retry: false } }
+        ])('successful deploy with different options %s', async ({ params, writeFileSyncCalled, object }) => {
             process.argv = params;
             await runDeploy();
             expect(mockedUi5RepoService.deploy).toBeCalled();
-            expect(spy).toHaveBeenCalledTimes(writeFileSyncCalled);
+            expect(writeFileSyncSpy).toHaveBeenCalledTimes(writeFileSyncCalled);
             if (writeFileSyncCalled > 0) {
-                expect(spy.mock.calls[0][0]).toBe('archive.zip');
+                expect(writeFileSyncSpy.mock.calls[0][0]).toBe('archive.zip');
             }
+            expect(cliArchiveSpy).toBeCalled();
+            expect(cliArchiveSpy).toBeCalledWith(expect.any(ToolsLogger), expect.objectContaining(object));
         });
+    });
+
+    describe('deploy | undeploy should handle exception', () => {
+        test.each([runDeploy, runUndeploy])(
+            'unsuccessful deploy | undeploy, help options is shown if no parameters are passed in $param',
+            async (method) => {
+                // Don't exit the jest process
+                const mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => {
+                    throw new Error('process.exit: ' + number);
+                });
+                const errorMock = jest.spyOn(Command.prototype, 'error').mockImplementation();
+                const helpMock = jest.spyOn(Command.prototype, 'help');
+                process.argv = ['node', 'test'];
+                await method();
+                expect(helpMock).toBeCalled();
+                expect(errorMock).toBeCalled();
+                expect(mockExit).toHaveBeenCalledWith(0);
+                mockExit.mockRestore();
+            }
+        );
     });
 
     describe('runUndeploy', () => {
@@ -85,19 +114,21 @@ describe('cli', () => {
             expect(mockedUi5RepoService.undeploy).toBeCalled();
         });
 
-        test('unsuccessful undeploy, help options is shown if no parameters are passed in', async () => {
-            // Dont exit the jest process
-            const mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => {
-                throw new Error('process.exit: ' + number);
-            });
-            const errorMock = jest.spyOn(Command.prototype, 'error').mockImplementation();
-            const helpMock = jest.spyOn(Command.prototype, 'help');
-            process.argv = ['node', 'test'];
+        test('successful undeploy with environment variable and no config file', async () => {
+            process.argv = [
+                'node',
+                'test',
+                '--test',
+                '--yes',
+                '--url',
+                'https://target.example',
+                '--name',
+                'MyAppName',
+                '--cloud-service-env',
+                '--no-retry'
+            ];
             await runUndeploy();
-            expect(helpMock).toBeCalled();
-            expect(errorMock).toBeCalled();
-            expect(mockExit).toHaveBeenCalledWith(0);
-            mockExit.mockRestore();
+            expect(mockedUi5RepoService.undeploy).toBeCalled();
         });
     });
 

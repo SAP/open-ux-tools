@@ -4,6 +4,12 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 
 describe('cli/config', () => {
+    const env = process.env;
+
+    afterAll(() => {
+        process.env = env;
+    });
+
     describe('getDeploymentConfig', () => {
         test('valid config path', async () => {
             expect(await getDeploymentConfig(join(__dirname, '../../test-input/ui5-deploy.yaml'))).toBeDefined();
@@ -67,8 +73,35 @@ describe('cli/config', () => {
             const merged = await mergeConfig(config, {
                 cloud: true,
                 cloudServiceKey
-            });
+            } as CliOptions);
             expect(merged.target.serviceKey).toEqual(JSON.parse(readFileSync(cloudServiceKey, 'utf-8')));
+        });
+
+        test('validate reading of environment variables', async () => {
+            process.env.SERVICE_URL = 'http://service-url';
+            process.env.SERVICE_UAA_URL = 'http://uaa-url';
+            process.env.SERVICE_CLIENT_ID = 'MyClientId';
+            process.env.SERVICE_CLIENT_SECRET = 'MyClientPassword';
+            process.env.SERVICE_SYSTEM_ID = 'Y11';
+            process.env.SERVICE_USERNAME = 'MyUsername';
+            process.env.SERVICE_PASSWORD = 'MyPassword';
+            process.env.NO_RETRY = 'true';
+            const merged = await mergeConfig(config, {
+                cloud: true,
+                cloudServiceEnv: true
+            } as CliOptions);
+            expect(merged.retry).toEqual(false);
+            expect(merged.target.serviceKey).toMatchObject({
+                systemid: 'Y11',
+                uaa: {
+                    clientid: 'MyClientId',
+                    clientsecret: 'MyClientPassword',
+                    password: 'MyPassword',
+                    url: 'http://uaa-url',
+                    username: 'MyUsername'
+                },
+                url: config.target.url
+            });
         });
     });
 });
