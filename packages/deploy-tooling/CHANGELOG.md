@@ -1,5 +1,16 @@
 # @sap-ux/deploy-tooling
 
+## 0.3.0
+
+### Minor Changes
+
+-   42dc7395: handle btp uaa credentials
+
+### Patch Changes
+
+-   Updated dependencies [42dc7395]
+    -   @sap-ux/axios-extension@1.3.0
+
 ## 0.2.12
 
 ### Patch Changes
