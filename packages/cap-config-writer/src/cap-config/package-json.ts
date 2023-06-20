@@ -1,4 +1,4 @@
-import { coerce, gte } from 'semver';
+import { coerce, gte, satisfies } from 'semver';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { Package } from '@sap-ux/project-access';
 
@@ -62,6 +62,16 @@ export function addCdsPluginUi5(packageJson: Package): void {
  */
 export function hasMinCdsVersion(packageJson: Package): boolean {
     return gte(coerce(packageJson.dependencies?.['@sap/cds']) ?? '0.0.0', minCdsVersion);
+}
+
+/**
+ * Check if package.json has version or version range that satisfies the minimum version of @sap/cds.
+ *
+ * @param packageJson  - the parsed package.json
+ * @returns - true: cds version satisfies the min cds version; false: cds version does not satisfy min cds version
+ */
+export function satisfiesMinCdsVersion(packageJson: Package): boolean {
+    return hasMinCdsVersion(packageJson) || satisfies(minCdsVersion, packageJson.dependencies?.['@sap/cds'] ?? '0.0.0');
 }
 
 /**

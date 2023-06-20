@@ -3,7 +3,7 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import * as projectAccessMock from '@sap-ux/project-access';
-import { checkCdsUi5PluginEnabled, enableCdsUi5Plugin } from '../../../src//cap-config';
+import { checkCdsUi5PluginEnabled, enableCdsUi5Plugin } from '../../../src/cap-config';
 
 const fixturesPath = join(__dirname, '../../fixture');
 
