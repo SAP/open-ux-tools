@@ -45,7 +45,7 @@ archive.zip
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"1.71.15\\",
+    \\"@sapui5/ts-types\\": \\"~1.76.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.6.7\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\"
