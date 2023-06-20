@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.1.1
+
+### Patch Changes
+
+-   9b684c29: Enhance check for min @sap/cds version in 'hasMinCdsVersion'
+
 ## 0.1.0
 
 ### Minor Changes
