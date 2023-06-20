@@ -121,14 +121,16 @@ describe('Test checkCdsUi5PluginEnabled()', () => {
         });
         expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(true);
     });
+});
 
+describe('Test hasMinCdsVersion()', () => {
     test('CAP project with valid @sap/cds version using caret(^)', async () => {
         const memFs = create(createStorage());
         memFs.writeJSON(join(__dirname, 'package.json'), {
             dependencies: { '@sap/cds': '^6.7.0' }
         });
         const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
-        expect(hasMinCdsVersion(packageJson)).toBe(true);
+        expect(hasMinCdsVersion(packageJson)).toBe(false);
     });
 
     test('CAP project with invalid @sap/cds version using caret(^)', async () => {
@@ -146,7 +148,7 @@ describe('Test checkCdsUi5PluginEnabled()', () => {
             dependencies: { '@sap/cds': '6.x' }
         });
         const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
-        expect(hasMinCdsVersion(packageJson)).toBe(true);
+        expect(hasMinCdsVersion(packageJson)).toBe(false);
     });
 
     test('CAP project with invalid @sap/cds version using x-range', async () => {
@@ -164,7 +166,7 @@ describe('Test checkCdsUi5PluginEnabled()', () => {
             dependencies: { '@sap/cds': '>4.0.0' }
         });
         const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
-        expect(hasMinCdsVersion(packageJson)).toBe(true);
+        expect(hasMinCdsVersion(packageJson)).toBe(false);
     });
 
     test('CAP project with invalid @sap/cds version containing semver with letters', async () => {
@@ -201,5 +203,88 @@ describe('Test checkCdsUi5PluginEnabled()', () => {
         });
         const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
         expect(hasMinCdsVersion(packageJson)).toBe(true);
+    });
+});
+
+describe('Test hasMinCdsVersion() including ranges', () => {
+    test('CAP project with valid @sap/cds version using caret(^)', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '^6.7.0' }
+        });
+        const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
+        expect(hasMinCdsVersion(packageJson, true)).toBe(true);
+    });
+
+    test('CAP project with invalid @sap/cds version using caret(^)', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '^4' }
+        });
+        const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
+        expect(hasMinCdsVersion(packageJson, true)).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using x-range', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.x' }
+        });
+        const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
+        expect(hasMinCdsVersion(packageJson, true)).toBe(true);
+    });
+
+    test('CAP project with invalid @sap/cds version using x-range', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '4.x' }
+        });
+        const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
+        expect(hasMinCdsVersion(packageJson, true)).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using greater than (>)', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '>4.0.0' }
+        });
+        const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
+        expect(hasMinCdsVersion(packageJson, true)).toBe(true);
+    });
+
+    test('CAP project with invalid @sap/cds version containing semver with letters', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': 'a.b.c' }
+        });
+        const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
+        expect(hasMinCdsVersion(packageJson, true)).toBe(false);
+    });
+
+    test('CAP project with invalid @sap/cds version containing text', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': 'test' }
+        });
+        const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
+        expect(hasMinCdsVersion(packageJson, true)).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using higher version', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.8.4' }
+        });
+        const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
+        expect(hasMinCdsVersion(packageJson, true)).toBe(true);
+    });
+
+    test('CAP project with valid @sap/cds version using higher version with caret (^)', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '^7' }
+        });
+        const packageJson: Package = (memFs.readJSON(join(__dirname, 'package.json')) ?? {}) as Package;
+        expect(hasMinCdsVersion(packageJson, true)).toBe(true);
     });
 });

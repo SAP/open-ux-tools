@@ -9,9 +9,10 @@ const minCdsPluginUi5Version = '0.1.1';
  * Ensure a minimum version of @sap/cds in dependencies.
  *
  * @param packageJson - the parsed package.json
+ * @param [useRange] - optional: use ranges in min @sap/cds version check
  */
-export function ensureMinCdsVersion(packageJson: Package): void {
-    if (!hasMinCdsVersion(packageJson)) {
+export function ensureMinCdsVersion(packageJson: Package, useRange?: boolean): void {
+    if (!hasMinCdsVersion(packageJson, useRange)) {
         packageJson.dependencies ??= {};
         packageJson.dependencies['@sap/cds'] = `^${minCdsVersion}`;
     }
@@ -58,12 +59,13 @@ export function addCdsPluginUi5(packageJson: Package): void {
  * that is required to enable cds-plugin-ui.
  *
  * @param packageJson - the parsed package.json
+ * @param useRange - boolean to allow a semver range to be used in check, if false version will be coerced to an absolute version. Initialised to false.
  * @returns - true: min cds version is present; false: cds version needs update
  */
-export function hasMinCdsVersion(packageJson: Package): boolean {
+export function hasMinCdsVersion(packageJson: Package, useRange = false): boolean {
     const packageCdsVersion = packageJson.dependencies?.['@sap/cds'];
     return (
-        satisfies(minCdsVersion, packageCdsVersion ?? '0.0.0') ||
+        (useRange && satisfies(minCdsVersion, packageCdsVersion ?? '0.0.0')) ||
         gte(coerce(packageCdsVersion) ?? '0.0.0', minCdsVersion)
     );
 }

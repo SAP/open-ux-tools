@@ -18,16 +18,17 @@ export { hasMinCdsVersion } from './package-json';
  *
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance
+ * @param [useRange] - optional: use ranges in min @sap/cds version check
  * @returns Promise<Editor> - memfs editor instance with updated files
  */
-export async function enableCdsUi5Plugin(basePath: string, fs?: Editor): Promise<Editor> {
+export async function enableCdsUi5Plugin(basePath: string, fs?: Editor, useRange?: boolean): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
 
-    ensureMinCdsVersion(packageJson);
+    ensureMinCdsVersion(packageJson, !!useRange);
     await enableWorkspaces(basePath, packageJson);
     addCdsPluginUi5(packageJson);
 
