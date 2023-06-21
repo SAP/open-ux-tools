@@ -1,5 +1,12 @@
 # @sap-ux/deploy-tooling
 
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+
 ## 0.3.0
 
 ### Minor Changes

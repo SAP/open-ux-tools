@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.18.0
+
+### Minor Changes
+
+-   59863d93: Removed types determination workaround.
+
 ## 0.17.1
 
 ### Patch Changes
