@@ -11,7 +11,7 @@ import {
     hasCdsPluginUi5,
     hasMinCdsVersion
 } from './package-json';
-export { hasMinCdsVersion } from './package-json';
+export { satisfiesMinCdsVersion } from './package-json';
 
 /**
  * Enable workspace and cds-plugin-ui5 for given CAP project.

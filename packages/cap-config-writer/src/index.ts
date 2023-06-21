@@ -1,1 +1,1 @@
-export { checkCdsUi5PluginEnabled, enableCdsUi5Plugin, hasMinCdsVersion } from './cap-config';
+export { checkCdsUi5PluginEnabled, enableCdsUi5Plugin, satisfiesMinCdsVersion } from './cap-config';
