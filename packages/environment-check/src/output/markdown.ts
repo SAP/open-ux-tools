@@ -42,7 +42,6 @@ const destinationTableFields = new Map<string, string>([
 
 /**
  * Convert enum UrlServiceType to text.
- *
  * @param urlServiceType - classifaction of destination from getUrlServiceTypeForDest
  * @returns - meaningful text
  */
@@ -70,7 +69,6 @@ const urlServiceTypeToText = (urlServiceType: UrlServiceType): string => {
 
 /**
  * Return a markdown writer objbect that allows to add captions, text, tables, etc.
- *
  * @returns markdown writer
  */
 function getMarkdownWriter(): MarkdownWriter {
@@ -110,7 +108,6 @@ function getMarkdownWriter(): MarkdownWriter {
 
 /**
  * Write the results for environment check.
- *
  * @param writer - markdown writter
  * @param environment - environment results, like development environment, node version, etc
  */
@@ -131,7 +128,6 @@ function writeEnvironment(writer: MarkdownWriter, environment?: Environment): vo
 
 /**
  * Write the results for environment check.
- *
  * @param writer - markdown writter
  * @param toolsExts - environment results - node version, extension versions etc
  * @param nodeVersion version of node
@@ -150,7 +146,6 @@ function writeToolsExtensionsResults(writer: MarkdownWriter, toolsExts?: ToolsEx
 
 /**
  * Write the details of one destination.
- *
  * @param writer - markdown writter
  * @param catalogService - results of catalog service request v2/v4
  */
@@ -177,7 +172,6 @@ function writeCatalogServiceResults(writer: MarkdownWriter, catalogService: Cata
 
 /**
  * Write the details of one destination.
- *
  * @param writer - markdown writter
  * @param destName - name of the destination
  * @param destDetails - details, like V2/V4 catalog results
@@ -211,7 +205,6 @@ function writeDestinationDetails(
 
 /**
  * Write the details of one SAP system.
- *
  * @param writer - markdown writter
  * @param sapSystemName - name of the SAP system
  * @param sapSystemDetails - details, like V2/V4 catalog results, ato catalog
@@ -241,7 +234,6 @@ function writeSapSystemDetails(writer: MarkdownWriter, sapSystemName: string, sa
 
 /**
  * Write the results for SAP system checks.
- *
  * @param writer - markdown writter
  * @param sapSystemResults - results of SAP system checks that include the catalog services
  */
@@ -262,7 +254,6 @@ function writeStoredSystemResults(
 
 /**
  * Write the results for destination checks.
- *
  * @param writer - markdown writter
  * @param destinationResults - results of destination checks that include the catalog services
  * @param destinations - list of all destinations
@@ -291,7 +282,6 @@ function writeDestinationResults(
 
 /**
  * Write the table of destinations.
- *
  * @param writer - markdown writer
  * @param destinations - array of destinations
  */
@@ -311,7 +301,6 @@ function writeDestinations(writer: MarkdownWriter, destinations: Endpoint[] = []
 
 /**
  * Write the messages that were collected during check.
- *
  * @param writer - markdown writter
  * @param messages - array of messages
  */
@@ -333,7 +322,6 @@ function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): 
 
 /**
  * Converts the envcheck results to markdown report.
- *
  * @param results - envcheck results
  * @returns - markdown report
  */

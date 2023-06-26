@@ -137,10 +137,9 @@ export async function findFileUp(fileName: string, startPath: string, fs?: Edito
         return dirname(startPath) !== startPath ? findFileUp(fileName, dirname(startPath), fs) : undefined;
     }
 }
-
 /**
  * @description Returns a flat list of all file paths under a directory tree,
- * recursing through all subdirectories
+ * recursing through all subdirectories.
  * @param {string} dir - the directory to walk
  * @returns {string[]} - array of file path strings
  * @throws if an error occurs reading a file path

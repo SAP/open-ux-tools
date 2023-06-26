@@ -56,6 +56,7 @@ export async function enhanceYaml(
  * @param fs - Editor instance to read existing information
  * @param ui5MockYamlPath - path to ui5-mock.yaml file
  * @param [path] - optional url path the mockserver listens to
+ * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
  */
 async function updateUi5MockYamlConfig(fs: Editor, ui5MockYamlPath: string, path?: string): Promise<UI5Config> {
     const existingUi5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
@@ -69,6 +70,7 @@ async function updateUi5MockYamlConfig(fs: Editor, ui5MockYamlPath: string, path
  * @param fs - Editor instance to read existing information
  * @param basePath -
  * @param [path] - optional path for mockserver config
+ * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
  */
 async function generateUi5MockYamlBasedOnUi5Yaml(fs: Editor, basePath: string, path?: string): Promise<UI5Config> {
     const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(join(basePath, 'ui5.yaml')));
@@ -81,6 +83,7 @@ async function generateUi5MockYamlBasedOnUi5Yaml(fs: Editor, basePath: string, p
  *
  * @param appId - application id
  * @param [path] - optional url path the mockserver listens to
+ * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
  */
 async function generateNewUi5MockYamlConfig(appId: string, path?: string): Promise<UI5Config> {
     const ui5MockYaml = await UI5Config.newInstance(

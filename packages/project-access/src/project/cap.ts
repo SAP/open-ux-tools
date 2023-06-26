@@ -91,6 +91,7 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
  * Return the CAP model and all services.
  *
  * @param projectRoot - CAP project root where package.json resides
+ * @returns {*}  {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
  */
 export async function getCapModelAndServices(projectRoot: string): Promise<{ model: csn; services: ServiceInfo[] }> {
     const cds = await loadModuleFromProject<CdsFacade>(projectRoot, '@sap/cds');

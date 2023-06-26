@@ -12,7 +12,6 @@ class Logger extends ToolsLogger implements ILogger {
 
     /**
      * Log multiple messages at once.
-     *
      * @param newMessages - messages to be logged
      */
     push(...newMessages: ResultMessage[]): void {
@@ -23,7 +22,6 @@ class Logger extends ToolsLogger implements ILogger {
 
     /**
      * Return all logged messages.
-     *
      * @returns - messages with severity
      */
     getMessages(): ResultMessage[] {
@@ -42,7 +40,6 @@ class Logger extends ToolsLogger implements ILogger {
 /**
  * Return a logger to log messages. Once done adding messages, call getMessages()
  * to retrive an array of logged messages.
- *
  * @returns logger to log messages
  */
 export function getLogger(): Logger {

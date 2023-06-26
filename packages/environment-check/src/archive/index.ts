@@ -14,11 +14,11 @@ interface ArchiveProjectOptions {
 
 /**
  * Archive a project to zip file. Result file is written to parent of the project root folder.
- *
  * @param options - archive project options
  * @param options.projectRoot - root of the project, where package.json is located
  * @param options.targetFolder - optional, target folder where to create the archive
  * @param options.targetFileName - optional file name, defaults to project folder + timestamp + .zip
+ * @returns {*}  {Promise<{ path: string; size: string }>}
  */
 export async function archiveProject({
     projectRoot,
@@ -62,7 +62,6 @@ export async function archiveProject({
 /**
  * Get list of files to be added to archive. Depending on the existence of file {cwd}/.gitignore, we use either a default filter
  * or the .gitignore content.
- *
  * @param cwd - working directory, usually the project root
  * @returns - list of files to add to the archive, relative to cwd
  */

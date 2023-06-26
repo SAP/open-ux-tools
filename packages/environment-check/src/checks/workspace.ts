@@ -9,7 +9,6 @@ import { t } from '../i18n';
 
 /**
  * Internal function to return the ui5 middleware settings of a given Fiori elements project (v2 or v4).
- *
  * @param root string - path to the SAP UX project (where the ui5.yaml is)
  * @returns middleware proxy
  */
@@ -21,7 +20,6 @@ async function getUi5CustomMiddleware(root: string): Promise<CustomMiddleware<Fi
 
 /**
  * Retrieve destination from the app.
- *
  * @param appRoot root of app
  * @returns destination
  */
@@ -42,7 +40,6 @@ async function getDestinationFromApp(appRoot: string): Promise<string[]> {
 
 /**
  * Retrieve destinations from workspace.
- *
  * @param wsFolders workspace folders
  * @returns messages, destinations
  */

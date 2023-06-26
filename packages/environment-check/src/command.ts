@@ -14,7 +14,6 @@ const spawnOptions = /^win/.test(process.platform)
 
 /**
  * Execute a command with arguments.
- *
  * @param command - command
  * @param commandArgs - command arguments, like --global
  * @returns output

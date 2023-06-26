@@ -21,7 +21,6 @@ import { t } from '../i18n';
 
 /**
  * Return the environment.
- *
  * @param extensions - installed extensions passed from vscode
  * @returns environment, including ide, versions, ...
  */
@@ -62,7 +61,6 @@ export async function getEnvironment(
 
 /**
  * Returns extensions and versions.
- *
  * @param extensions to be checked
  * @returns extension with version numbers
  */
@@ -91,7 +89,6 @@ function getExtVersions(extensions: { [id: string]: { version: string } }): { [i
 
 /**
  * Returns the tools and extensions installed.
- *
  * @param extensions - installed extensions passed from vscode
  * @returns tools and extension versions
  */
@@ -133,7 +130,6 @@ async function getToolsExtensions(extensions?: readonly Extension<any>[]): Promi
 
 /**
  * Internal function to check an SAP system or BAS Destination.
- *
  * @param endpoint - the endpoint to get detailed results for
  * @param credentialCallback - callback in case user credentials are required to query a destination
  * @returns - messages and detailed destination check results
@@ -176,7 +172,6 @@ async function getEndpointResults(
 
 /**
  * Check a set of endpoints (SAP systems and BAS Destinations) (deep dive into them).
- *
  * @param deepDiveEndpoints - endpoints selected for a closer look
  * @param endpoints - array of all endpoints found
  * @param credentialCallback - callback in case user credentials are required to query a destination
@@ -220,7 +215,6 @@ export async function getEndpointsResults(
 
 /**
  * Check environment includes process.env, list of SAP systems or BAS Destinations and their details.
- *
  * @param options - see type CheckEnvironmentOptions, includes endpoint for deep dive, workspace roots, ...
  * @returns the result, currently as JSON
  */
