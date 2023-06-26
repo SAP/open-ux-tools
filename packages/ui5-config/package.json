@@ -33,7 +33,7 @@
     "dependencies": {
         "@sap-ux/yaml": "workspace:*",
         "lodash": "4.17.21",
-        "semver": "7.3.5"
+        "semver": "7.5.3"
     },
     "devDependencies": {
         "mem-fs": "2.1.0",
