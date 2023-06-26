@@ -2,7 +2,7 @@
 This document lists the version overrides for vulnerable (nested) dependencies and the reason.
 
 ## semver
-| Override:           | >=7.5.3 |
+| Override:           | >=7.5.2 |
 |:--------------------| :-------------|
 |                     | |
 | **moderate**        | Regular Expression Denial of Service in semver  |
