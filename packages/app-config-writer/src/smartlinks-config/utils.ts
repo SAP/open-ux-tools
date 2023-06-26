@@ -35,7 +35,6 @@ const UrlParameters = {
 
 /**
  * Check the secure storage if it has credentials for the entered url.
- *
  * @param url target system url
  * @param client optional sap-client parameter
  * @param logger Logger for user output
@@ -60,7 +59,6 @@ export async function getLocalStoredCredentials(
 
 /**
  * Creates and returns a service provider.
- *
  * @param config configuration with target, authentication and ignoreCertErrors flag
  * @returns service provider
  */
@@ -83,7 +81,6 @@ function createSmartLinksProvider(config: TargetConfig) {
 
 /**
  * Sends a request to a target and returns the result.
- *
  * @param config target and credentials to be used for request
  * @param logger logger to report info to the user
  * @returns response from service provider
@@ -107,7 +104,6 @@ export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): P
 
 /**
  * Get target definition of deploy system as source for smartlinks configuration.
- *
  * @param basePath - path to project root, where ui5-deploy.yaml is
  * @param logger - logger
  * @returns target definition
@@ -127,7 +123,6 @@ export async function getTargetDefinition(basePath: string, logger?: ToolsLogger
 
 /**
  * Sends a request and returns the target mappings.
- *
  * @param config service and credentials to be used for request
  * @param logger logger
  * @returns target mappings result from service
@@ -145,7 +140,6 @@ async function getTargetMappings(
 
 /**
  * Receives and maps targets from service to template for further consumption.
- *
  * @param config service and credentials to be used for request
  * @param logger logger
  * @returns config with targets to be used for template mapping
@@ -175,7 +169,6 @@ export async function getTargetMappingsConfig(
 
 /**
  * Maps service targets to existing targets in appconfig sandboxConfig file.
- *
  * @param appConfigPath path to apps appconfig/fioriSandboxConfig.json file
  * @param inboundTargets returned targets from service
  * @param fs - the memfs editor instance
@@ -199,7 +192,6 @@ function mergeTargetMappings(
 
 /**
  * Add or enhance appconfig smartlinks configuration.
- *
  * @param basePath - the base path of the application
  * @param config - configuration of the target system for smartlinks
  * @param fs - the memfs editor instance

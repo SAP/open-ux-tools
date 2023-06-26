@@ -6,7 +6,6 @@ import './UIIcon.scss';
 /**
  * UIIcon component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/button
- *
  * @exports
  * @class UIIcon
  * @extends {React.Component<IIconProps, {}>}
@@ -14,7 +13,6 @@ import './UIIcon.scss';
 export class UIIcon extends React.Component<IIconProps, {}> {
     /**
      * Initializes component properties.
-     *
      * @param {IIconProps} props
      */
     public constructor(props: IIconProps) {

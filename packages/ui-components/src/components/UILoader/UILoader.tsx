@@ -12,7 +12,6 @@ export interface UILoaderProps extends ISpinnerProps {
 /**
  * UILoader component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/spinner
- *
  * @exports
  * @class UILoader
  * @extends {React.Component<ISpinnerProps, {}>}
@@ -20,7 +19,6 @@ export interface UILoaderProps extends ISpinnerProps {
 export class UILoader extends React.Component<UILoaderProps, {}> {
     /**
      * Initializes component properties.
-     *
      * @param {UILoaderProps} props
      */
     public constructor(props: UILoaderProps) {

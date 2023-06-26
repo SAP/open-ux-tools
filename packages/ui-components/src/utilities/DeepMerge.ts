@@ -4,7 +4,6 @@ import React from 'react';
  * Performs deep merge on two objects.
  * Parameters are not mutated.
  * Arrays are copied as references and are not merged.
- *
  * @param a
  * @param b
  * @returns  Record<string, unknown>
@@ -29,7 +28,6 @@ export function deepMerge(a: any, b: any): Record<string, unknown> {
 
 /**
  * Method checks item is object.
- *
  * @param item
  * @returns boolean
  */

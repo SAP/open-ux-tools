@@ -90,7 +90,6 @@ const KEYBOARD_KEYS = {
 
 /**
  * UITreeDropdown component.
- *
  * @exports
  * @class UIVerticalDivider
  * @extends {React.Component<UITreeDropdownProps, UITreeDropdownState>}
@@ -114,7 +113,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     private originalValue?: string;
     /**
      * Initializes component properties.
-     *
      * @param {UITreeDropdownProps} props
      */
     public constructor(props: UITreeDropdownProps) {
@@ -164,7 +162,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Map the payload.
-     *
      * @param {ItemsProps[]} items
      */
     buildItems = (items: ItemsProps[]): void => {
@@ -182,7 +179,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Sub items values and style.
-     *
      * @param {ItemsProps} item
      * @returns {ItemsProps}
      */
@@ -206,7 +202,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Map GD payload to ContextMenu payload.
-     *
      * @param {ItemsProps[]} items
      * @param {number} level
      * @returns {IContextualMenuItem[]}
@@ -251,7 +246,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Handle the selected value.
-     *
      * @param {string} value
      */
     handleSelection = (value: string): void => {
@@ -261,7 +255,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     };
     /**
      * Handle the keypress value.
-     *
      * @param {React.KeyboardEvent<HTMLInputElement>} event
      */
     handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -297,7 +290,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     };
     /**
      * Handle ContextMenu focus.
-     *
      * @param {React.KeyboardEvent<HTMLInputElement>} event
      * @param {string} key
      */
@@ -314,7 +306,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     };
     /**
      * Custom handle the render from subMenu to control the highlight and the .is-selected.
-     *
      * @param {IContextualMenuListProps} props
      * @param {IContextualMenuItemRenderFunctions} defaultRenders
      * @returns { React.ReactNode | null}
@@ -332,7 +323,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Custom handle the render to control the highlight and the .is-selected.
-     *
      * @param {IContextualMenuListProps} props
      * @param {IRenderFunction<IContextualMenuListProps>} defaultRender
      * @returns {JSX.Element | null}
@@ -363,7 +353,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Handle on/off ContextualMenu.
-     *
      * @param {boolean} status
      * @param {React.KeyboardEvent<HTMLInputElement>} event
      */
@@ -386,7 +375,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Highlight the search string.
-     *
      * @param {string} text
      * @param {string} query
      * @returns {JSX.Element}
@@ -397,7 +385,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Filter all options that match the query string.
-     *
      * @param {string} input
      * @param {IContextualMenuItem} item
      * @returns {boolean}
@@ -418,7 +405,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Update the query string and the prop value.
-     *
      * @param {React.FormEvent<HTMLInputElement | HTMLTextAreaElement>} event
      */
     handleOnChangeValue = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
@@ -451,7 +437,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Method reset states.
-     *
      * @param {Event | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent} event
      */
     handleDismiss = (event?: Event | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent): void => {
@@ -473,7 +458,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     /**
      * Method applies additional styling for submnu callout.
      * It is used to apply scroll width offset - in result submenu should be displayed on the edge of root menu.
-     *
      * @param {IContextualMenuItem} item Context menu item.
      */
     applySubmenuPosition = (item: IContextualMenuItem): void => {
@@ -513,7 +497,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     };
     /**
      * Method updates state, if focus visible, using arrow keys.
-     *
      * @param {HTMLElement|React.FocusEvent<HTMLElement>} ev
      */
     onFocusElementChanged = (ev: any): void => {
@@ -530,7 +513,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * Method handles window keydown event.
      * 1. Stores last keyboard pressed event.
      * 2. Disables CircularNavigation for menus.
-     *
      * @param {KeyboardEvent | React.KeyboardEvent<HTMLInputElement>} event
      */
     onWindowKeyDown = (event: KeyboardEvent | React.KeyboardEvent<HTMLInputElement>) => {
@@ -557,7 +539,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     };
     /**
      * Method handles focus logic if arrow key was pressed.
-     *
      * @param {FocusEvent} event
      */
     handleCustomDownKey = (event: FocusEvent) => {
@@ -584,7 +565,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Method receives any menu child element and returns edge positions if item is first or last in rendered menu.
-     *
      * @param {Element} itemElement Item's DOM to check position.
      * @returns {EdgePosition[]} Returns positions if element is first or last in menu - also can be both.
      */
@@ -605,11 +585,10 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Recursive method finds menu item info object in tree menu items by passed value/key of item.
-     *
      * @param {string} [value] Value/key of item.
-     * @param {IContextualMenuItem[]} [items=[]] Menu items.
+     * @param {IContextualMenuItem[]} [items] Menu items.
      * @param {TreeItemInfo} [parent] Item's parent object.
-     * @param {number} [level=0] Level of item in tree structure.
+     * @param {number} [level] Level of item in tree structure.
      * @returns {TreeItemInfo | undefined} Found menu item.
      */
     findItemByValue = (
@@ -641,7 +620,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Method finds DOM node of menu item based on received item object and container DOM.
-     *
      * @param {HTMLElement} container Menu container DOM.
      * @param {TreeItemInfo} item Menu item info object.
      * @returns {HTMLElement | undefined} Found DOM element of item.
@@ -660,9 +638,8 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     /**
      * Method focuses context menu item based on recieved value/key and menude data(items and hoisted object).
      * Method works with any level menu.
-     *
      * @param {string} [value] Value/key of item.
-     * @param {IContextualMenuItem[]} [items=[]] Target menu items.
+     * @param {IContextualMenuItem[]} [items] Target menu items.
      */
     focusItemWithValue = (value?: string, items: IContextualMenuItem[] = []): void => {
         const selectedItem = this.findItemByValue(value, items);
@@ -695,7 +672,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Generate unique id for menu component references.
-     *
      * @param {string} value Value of item.
      * @param {number} level Level of item in tree structure.
      * @returns {string} Id containing value andf level in format "${value}__${level}".
@@ -706,7 +682,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
 
     /**
      * Method returns class names for wrapper element depending on props and component state.
-     *
      * @returns {string} Class names of wrapper element.
      */
     private getClassNames(): string {

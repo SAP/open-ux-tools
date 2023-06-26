@@ -15,7 +15,6 @@ import { extendJSON } from '../common/file';
 
 /**
  * Enhances the provided custom page configuration with default data.
- *
  * @param data - a custom page configuration object
  * @param manifestPath - path to the application manifest
  * @param fs - mem-fs reference to be used for file access
@@ -43,7 +42,6 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
 
 /**
  * Validate the UI5 version and if valid return the root folder for the templates to be used.
- *
  * @param ui5Version - optional minimum required UI5 version
  * @returns root folder  containg the templates if the version is supported otherwise throws an error
  */
@@ -58,7 +56,6 @@ export function getTemplateRoot(ui5Version?: string): string {
 
 /**
  * Add a custom page to an existing UI5 application.
- *
  * @param {string} basePath - the base path
  * @param {CustomPage} data - the custom page configuration
  * @param {Editor} [fs] - the memfs editor instance

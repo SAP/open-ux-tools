@@ -15,7 +15,6 @@ export { satisfiesMinCdsVersion } from './package-json';
 
 /**
  * Enable workspace and cds-plugin-ui5 for given CAP project.
- *
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance
  * @returns Promise<Editor> - memfs editor instance with updated files
@@ -37,7 +36,6 @@ export async function enableCdsUi5Plugin(basePath: string, fs?: Editor): Promise
 
 /**
  * Check if cds-plugin-ui5 is enabled on a CAP project. Checks also all prerequisites, like minimum @sap/cds version.
- *
  * @param basePath - root path of the CAP project, where package.json is located
  * @param [fs] - optional: the memfs editor instance
  * @returns true: cds-plugin-ui5 and all prerequisites are fulfilled; false: cds-plugin-ui5 is not enabled or not all prerequisites are fulfilled

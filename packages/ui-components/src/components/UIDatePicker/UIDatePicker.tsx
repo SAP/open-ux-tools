@@ -18,7 +18,6 @@ export type UIDatePickerProps = {
 
 /**
  * UIDatePicker component.
- *
  * @exports
  * @class {UIDatePicker}
  * @extends {React.Component<UIDatePickerProps>}
@@ -33,7 +32,6 @@ export class UIDatePicker extends React.Component<UIDatePickerProps> {
 
     /**
      * Initializes component properties.
-     *
      * @param {UIDatePickerProps} props
      */
     public constructor(props: UIDatePickerProps) {
@@ -47,7 +45,6 @@ export class UIDatePicker extends React.Component<UIDatePickerProps> {
 
     /**
      * On input change event.
-     *
      * @param {React.FormEvent<HTMLInputElement | HTMLTextAreaElement>} e
      * @param {string} newValue
      */
@@ -59,7 +56,6 @@ export class UIDatePicker extends React.Component<UIDatePickerProps> {
 
     /**
      * On Date picker change.
-     *
      * @param {React.FormEvent<HTMLInputElement | HTMLTextAreaElement>} e
      */
     private onPickerChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {

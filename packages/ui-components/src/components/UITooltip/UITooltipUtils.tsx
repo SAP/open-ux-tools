@@ -6,13 +6,11 @@ import { CALLOUT_STYLES } from '../UICallout';
 
 /**
  * UITooltipUtil class for rendering content
- *
  * @class UITooltipUtils
  */
 export class UITooltipUtils {
     /**
      * Method returns styles for tooltip content.
-     *
      * @returns {ITooltipStyles} Object with tooltip styles.
      */
     public static getStyles(): ITooltipStyles {

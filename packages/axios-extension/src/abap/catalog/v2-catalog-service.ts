@@ -38,7 +38,6 @@ export class V2CatalogService extends CatalogService {
 
     /**
      * Map the V2 service information to a version independent structure.
-     *
      * @param services v2 services information
      * @returns version independent information
      */
@@ -56,7 +55,6 @@ export class V2CatalogService extends CatalogService {
 
     /**
      * Fetch all services from the backend.
-     *
      * @returns version independent service information
      */
     protected async fetchServices(): Promise<ODataServiceInfo[]> {
@@ -84,7 +82,6 @@ export class V2CatalogService extends CatalogService {
 
     /**
      * Find a specific service by title.
-     *
      * @param filter filter options
      * @param filter.title filter by title
      * @param filter.path filter by path
@@ -131,7 +128,6 @@ export class V2CatalogService extends CatalogService {
 
     /**
      * Get service annotations for the service matching the given filter.
-     *
      * @param filter filter options
      * @param filter.id filter by id
      * @param filter.title filter by title
@@ -163,7 +159,6 @@ export class V2CatalogService extends CatalogService {
 
     /**
      * Get all annotations available for the service matching one of the below filter options.
-     *
      * @param filter filter options
      * @param filter.id filter by id
      * @param filter.title filter by title

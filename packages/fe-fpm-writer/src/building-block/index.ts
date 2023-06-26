@@ -12,7 +12,6 @@ import { getTemplatePath } from '../templates';
 
 /**
  * Generates a building block into the provided xml view file.
- *
  * @param {string} basePath - the base path
  * @param {BuildingBlockConfig} config - the building block configuration parameters
  * @param {Editor} [fs] - the memfs editor instance
@@ -42,7 +41,6 @@ export function generateBuildingBlock<T extends BuildingBlock>(
 
 /**
  * Returns the UI5 xml file document (view/fragment).
- *
  * @param {string} basePath - the base path
  * @param {string} viewPath - the path of the xml view relative to the base path
  * @param {Editor} fs - the memfs editor instance
@@ -72,7 +70,6 @@ function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): Docu
 }
 /**
  * Returns the macros namespace from the xml document if it exists or creates a new one and returns it.
- *
  * @param {Document} ui5XmlDocument - the view/fragment xml file document
  * @returns {string} the macros namespace
  */
@@ -88,7 +85,6 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
 
 /**
  * Returns the template xml file document.
- *
  * @param {BuildingBlock} buildingBlockData - the building block data
  * @param {Document} viewDocument - the view xml file document
  * @param {Editor} fs - the memfs editor instance
@@ -126,7 +122,6 @@ function getTemplateDocument<T extends BuildingBlock>(
 
 /**
  * Updates the view file by inserting the template as a child of the element specified in the aggregated xpath.
- *
  * @param {string} basePath - the base path
  * @param {string} viewPath - the path of the xml view relative to the base path
  * @param {string} aggregationPath - the aggregation xpath

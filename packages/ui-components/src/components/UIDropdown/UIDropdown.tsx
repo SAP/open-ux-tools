@@ -38,7 +38,6 @@ const ERROR_BORDER_COLOR = 'var(--vscode-inputValidation-errorBorder)';
 /**
  * UIDropdown component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/dropdown
- *
  * @exports
  * @class UIDropdown
  * @extends {React.Component<UIDropdownProps, UIDropdownState>}
@@ -46,7 +45,6 @@ const ERROR_BORDER_COLOR = 'var(--vscode-inputValidation-errorBorder)';
 export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState> {
     /**
      * Initializes component properties.
-     *
      * @param {UIDropdownProps} props
      */
     public constructor(props: UIDropdownProps) {
@@ -97,7 +95,6 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
 
     /**
      * Method stops event propagation.
-     *
      * @param {React.MouseEvent<HTMLDivElement>} event Mouse event.
      */
     stopEventPropagation = (event: React.MouseEvent<HTMLDivElement>): void => {
@@ -107,7 +104,6 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
     /**
      * Method used as workaround to separate focus and hover.
      * Default behaviour of fluent ui is that focus follows hover, but we need separe them.
-     *
      * @param {IDropdownOption} [props] Dropdown props.
      * @param {(props?: IDropdownOption) => JSX.Element | null} [defaultRender] Default option renderer.
      * @returns {JSX.Element | null} Returns dropdown option element.
@@ -131,7 +127,6 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
     /**
      * Method called on combobox item render.
      * We should pass query to it and avoid rendering if it is hidden.
-     *
      * @param {IComboBoxOption} props Combobox item props.
      * @param {Function} defaultRender Combobox item default renderer.
      * @returns {JSX.Element | null} Element to render.
@@ -157,7 +152,6 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
      * 1. Min width of callout is equals to width of droipdown input box;
      * 2. Max width equals to windows size minus 10px;
      * 3. Width is auto - it allows to make callout wider if menu option size exceeds size of dropdown input(min-width).
-     *
      * @param {ICalloutContentStyleProps} calloutStyleProps Current callout styles.
      * @returns {Partial<ICalloutContentStyles>} Styles for callout.
      */
@@ -173,7 +167,6 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
 
     /**
      * Method returns class names string depending on props and component state.
-     *
      * @param {InputValidationMessageInfo} messageInfo Error/warning message if applied
      * @returns {string} Class names of root dropdown element.
      */
@@ -202,7 +195,6 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
 
     /**
      * Method returns additional component properties for accessibility.
-     *
      * @returns {AccessibilityProps} Additional properties.
      */
     private getAccessibilityProps(): AccessibilityProps {

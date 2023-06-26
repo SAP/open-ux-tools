@@ -12,7 +12,6 @@ interface RowDataCellsProps<T> {
 
 /**
  * Get cell title element.
- *
  * @param {UIFlexibleTableProps<T>} tableProps
  * @param {React.ReactNode} title
  * @param {boolean} inRowLayout
@@ -40,7 +39,6 @@ function getCellTitleElement<T>(
 
 /**
  * Gets row data cells.
- *
  * @param {RowDataCellsProps<T>} props
  * @returns {Array<React.ReactNode>}
  */
@@ -89,7 +87,6 @@ function getRowDataCells<T>(props: RowDataCellsProps<T>): Array<React.ReactNode>
 
 /**
  * RowDataCells component.
- *
  * @param {RowDataCellsProps<T>} props
  * @returns {React.ReactElement}
  */

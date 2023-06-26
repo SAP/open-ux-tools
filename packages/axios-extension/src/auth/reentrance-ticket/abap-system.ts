@@ -15,7 +15,6 @@ export class ABAPSystem {
     }
     /**
      * Removes any `-api` suffix in the first label of the hostname.
-     *
      * @returns UI hostname
      */
     uiHostname(): string {
@@ -30,7 +29,6 @@ export class ABAPSystem {
 
     /**
      * Adds a `-api` suffix to the first label of the hostname.
-     *
      * @returns API hostname
      */
     apiHostname(): string {

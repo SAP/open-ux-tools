@@ -14,7 +14,6 @@ export {
 /**
  * UIVirtualList component.
  * based on https://github.com/bvaughn/react-virtualized/tree/master/source/List.
- *
  * @exports
  * @class UIVirtualList
  * @extends {React.Component<ListProps, {}>}
@@ -23,7 +22,6 @@ export class UIVirtualList extends React.Component<ListProps, {}> {
     private listRef = React.createRef<List>();
     /**
      * Initializes component properties.
-     *
      * @param {CellMeasurerProps} props
      */
     public constructor(props: ListProps) {
@@ -38,7 +36,6 @@ export class UIVirtualList extends React.Component<ListProps, {}> {
 
     /**
      * Scrolls to the row based on index.
-     *
      * @param index
      */
     public scrollToRow(index?: number) {
@@ -49,7 +46,6 @@ export class UIVirtualList extends React.Component<ListProps, {}> {
 
     /**
      * Method to compute row height.
-     *
      * @param {number} index
      */
     public recomputeRowHeights(index?: number): void {
@@ -60,7 +56,6 @@ export class UIVirtualList extends React.Component<ListProps, {}> {
 
     /**
      * Method returns state of component isScrolling.
-     *
      * @returns {boolean}
      */
     public isScrolling(): boolean {

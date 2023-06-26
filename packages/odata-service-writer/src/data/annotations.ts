@@ -4,7 +4,6 @@ import type { NamespaceAlias, OdataService } from '../types';
 
 /**
  * Returns the namespaces parsed from the specified metadata and annotations.
- *
  * @param {Partial<OdataService>} service - an odata service where at least metadata and annotations properties are defined
  * @param {string} service.metadata - OData service metadata xml
  * @param {string} service.annotations - OData service annotations xml
@@ -33,7 +32,6 @@ export function getAnnotationNamespaces({ metadata, annotations }: Partial<Odata
 
 /**
  * Convert specified xml string to JSON.
- *
  * @param xml - the schema to parse
  * @returns parsed object representation of passed XML
  */
@@ -55,7 +53,6 @@ function xmlToJson(xml: string): any | void {
 
 /**
  * Gets all the schema namespaces and their aliases from the provided metadata.
- *
  * @param metadata - odata service metadata
  * @returns Array of namespaces and their aliases
  */
@@ -82,7 +79,6 @@ function getNamespaces(metadata: string): NamespaceAlias[] {
 
 /**
  * Gets namespace aliases from the specified annotations xml.
- *
  * @param annotations - annotations definition as json
  * @param namespace - the namespace to search
  * @returns An alias for the specified namespace or empty string

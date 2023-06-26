@@ -16,7 +16,6 @@ export enum TemplateType {
 export class ValidationError extends Error {
     /**
      * ValidationError constructor.
-     *
      * @param message - the error message
      */
     constructor(message: string) {

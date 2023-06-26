@@ -16,7 +16,6 @@ interface UIToggleGroupState {
 
 /**
  * UIToggleGroup component.
- *
  * @exports
  * @class UIToggleGroup
  * @extends {React.Component<UIToggleGroupProps, UIToggleGroupState>}
@@ -26,7 +25,6 @@ export class UIToggleGroup extends React.Component<UIToggleGroupProps, UIToggleG
 
     /**
      * Initializes component properties.
-     *
      * @param {UIToggleGroupProps} props
      */
     public constructor(props: UIToggleGroupProps) {

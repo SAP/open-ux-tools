@@ -25,7 +25,6 @@ type Class<T> = new (...args: any[]) => T;
 
 /**
  * Create a new instance of given type and set default configuration merged with the given config.
- *
  * @param ProviderType class that will be instantiated
  * @param config axios config with additional extension specific properties
  * @returns instance of the provided class
@@ -43,7 +42,6 @@ function createInstance<T extends ServiceProvider>(
 
     /**
      * Make axios throw an error for 4xx errors.
-     *
      * @param status - http response status
      * @returns success (true) or error (false)
      */
@@ -73,7 +71,6 @@ function createInstance<T extends ServiceProvider>(
 
 /**
  * Create an instance of a basic service provider.
- *
  * @param config axios config with additional extension specific properties
  * @returns instance of the basic service provider
  */
@@ -89,7 +86,6 @@ export function create(config: string | (AxiosRequestConfig & Partial<ProviderCo
 
 /**
  * Create an instance of an ABAP service provider.
- *
  * @param config axios config with additional extension specific properties
  * @returns instance of an ABAP service provider
  */
@@ -130,7 +126,6 @@ type AbapCloudOptions = AbapCloudStandaloneOptions | AbapEmbeddedSteampunkOption
 
 /**
  * Create an instance of an ABAP service provider for a Cloud ABAP system.
- *
  * @param options {@link AbapCloudOptions}
  * @returns instance of an {@link AbapServiceProvider}
  */
@@ -174,7 +169,6 @@ export type MinimalDestinationConfig = Pick<Destination, 'Name'> & Partial<Desti
 
 /**
  * Create an instance of a service provider for the given destination.
- *
  * @param options axios config with additional extension specific properties
  * @param destination destination config
  * @param destinationServiceInstance optional id of a destination service instance providing the destination
@@ -223,7 +217,6 @@ export function createForDestination(
 
 /**
  * Create an instance of a basic service provider and then generate an extension for a service based on the given url.
- *
  * @param url full url pointing to a service
  * @param config axios config with additional extension specific properties
  * @returns instance of a service

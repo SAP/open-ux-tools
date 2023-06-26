@@ -29,7 +29,6 @@ export interface InputValidationMessageInfo {
 
 /**
  * Private method to get common styling for coloring by applying incoming colors.
- *
  * @param {string} bgColor Background color.
  * @param {string} borderColor Border color.
  * @returns {IRawStyle} Object with styles for message.
@@ -87,7 +86,6 @@ export const MESSAGE_TYPES_CLASSNAME_MAP = new Map<ErrorMessageType | undefined,
 /**
  * Method returns input message styles for passed message type.
  * Default style is for Error message.
- *
  * @param {ErrorMessageType} [type] Message type.
  * @returns {IRawStyle} Object with styles for message.
  */
@@ -112,7 +110,6 @@ const getMessageStyle = (type?: ErrorMessageType): IRawStyle => {
 
 /**
  * Method returns error message type depends on properties of UIComponentMessagesProps.
- *
  * @param {UIComponentMessagesProps} [props] Component props.
  * @returns {ErrorMessageType} Message type.
  */
@@ -131,7 +128,6 @@ const getMessageType = (props?: UIComponentMessagesProps): ErrorMessageType => {
 
 /**
  * Method returns error message string by handling property of all messages like Error Warning and Info.
- *
  *  @param {UIComponentMessagesProps} [props] Component props.
  * @returns {string | undefined} Message string.
  */
@@ -141,7 +137,6 @@ const getErrorMessage = (props?: UIComponentMessagesProps): string | undefined =
 
 /**
  * Method returns object containing data to display message for component.
- *
  * @param {UIMessagesExtendedProps} [props] Component props.
  * @returns {InputValidationMessageInfo} Message info.
  */

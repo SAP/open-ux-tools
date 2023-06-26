@@ -32,7 +32,6 @@ export const MIN_VERSION = '1.94.0';
 
 /**
  * Enable the flexible programming model for an application.
- *
  * @param {string} basePath - the base path
  * @param {FPMConfig} config - the FPM configuration
  * @param {Editor} [fs] - the mem-fs editor instance

@@ -14,7 +14,6 @@ import { coerce, gte } from 'semver';
 
 /**
  * Get the template folder for the given UI5 version.
- *
  * @param ui5Version required UI5 version.
  * @returns path to the template folder containing the manifest.json ejs template
  */
@@ -31,7 +30,6 @@ export function getManifestRoot(ui5Version?: string): string {
 
 /**
  * Enhances the provided custom table column configuration with default data.
- *
  * @param {Editor} fs - the mem-fs editor instance
  * @param {CustomTableColumn} data - a custom column configuration object
  * @param {string} manifestPath - path to the project's manifest.json
@@ -65,7 +63,6 @@ function enhanceConfig(
 
 /**
  * Add a custom column to an existing UI5 application.
- *
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  * @param {string} basePath - the base path
  * @param {CustomTableColumn} customColumn - the custom column configuration

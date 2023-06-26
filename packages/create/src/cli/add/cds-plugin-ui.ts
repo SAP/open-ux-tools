@@ -6,7 +6,6 @@ import { runNpmInstallCommand } from '../../common';
 
 /**
  * Add the "add cds-plugin-ui5" command to passed command.
- *
  * @param cmd - commander command for adding cds-plugin-ui5 command
  */
 export function addAddCdsPluginUi5Command(cmd: Command): void {
@@ -24,7 +23,6 @@ export function addAddCdsPluginUi5Command(cmd: Command): void {
 
 /**
  * Add cds-plugin-ui5 and all prerequisites to a CAP project.
- *
  * @param basePath - CAP project root
  * @param simulate - if true, do not write but just show what would be change; otherwise write
  * @param skipInstall - if true, skip execution of npm install

@@ -9,7 +9,6 @@ export type UIPersonaProps = IPersonaProps;
 /**
  * UIPersona component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/persona
- *
  * @exports
  * @class UIPersona
  * @extends {React.Component<IPersonaProps, {}>}
@@ -17,7 +16,6 @@ export type UIPersonaProps = IPersonaProps;
 export class UIPersona extends React.Component<IPersonaProps, {}> {
     /**
      * Initializes component properties.
-     *
      * @param props
      */
     public constructor(props: IPersonaProps) {

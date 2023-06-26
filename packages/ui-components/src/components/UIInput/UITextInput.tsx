@@ -38,7 +38,6 @@ type InputRenderProps = React.InputHTMLAttributes<HTMLInputElement> & React.RefA
 /**
  * UITextInput component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/textfield
- *
  * @exports
  * @class UITextInput
  * @extends {React.Component<ITextFieldProps, {}>}
@@ -46,7 +45,6 @@ type InputRenderProps = React.InputHTMLAttributes<HTMLInputElement> & React.RefA
 export class UITextInput extends React.Component<UITextInputProps> {
     /**
      * Initializes component properties.
-     *
      * @param {UITextInputProps} props
      */
     public constructor(props: UITextInputProps) {
@@ -57,7 +55,6 @@ export class UITextInput extends React.Component<UITextInputProps> {
 
     /**
      * Method returns value for CSS property "border" for focus state.
-     *
      * @param {InputValidationMessageInfo} messageInfo
      * @returns {string} Value for CSS "border" property.
      */
@@ -71,7 +68,6 @@ export class UITextInput extends React.Component<UITextInputProps> {
 
     /**
      * Method returns styles for text field.
-     *
      * @param {ITextFieldStyleProps} props Component properties.
      * @returns {Partial<ITextFieldStyles>} Styles to apply for text field.
      */
@@ -221,7 +217,6 @@ export class UITextInput extends React.Component<UITextInputProps> {
     /**
      * Method to render HTML input element.
      * Custom rendering is used to use "readonly" attribute instead of "disabled" to make disabled field focusable.
-     *
      * @param {InputRenderProps} [props] Input props.
      * @param {(props?: InputRenderProps) => JSX.Element | null} [defaultRender] Default renderer.
      * @returns {JSX.Element | null} Input element to render.

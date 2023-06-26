@@ -7,7 +7,6 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 
 /**
  * Replace calls to manifest.appdescr file if we are running the FLP embedded flow.
- *
  * @param bsp path of the BSP page
  * @returns a path rewrite function
  */
@@ -18,7 +17,6 @@ export function convertAppDescriptorToManifest(bsp: string): (path: string) => s
 
 /**
  * Prompts the user for credentials.
- *
  * @param log logger to report info to the user
  * @returns prompted user and password serialized for a basic auth header
  */
@@ -78,7 +76,6 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
 
 /**
  * Add additional options required for the special use case embedded FLP.
- *
  * @param bspPath path of the BSP hosting the app
  * @param proxyOptions existing http-proxy-middleware options
  * @param logger logger to report info to the user

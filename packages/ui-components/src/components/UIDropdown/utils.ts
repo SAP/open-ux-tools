@@ -2,7 +2,6 @@ import type { IDropdownProps, IComboBoxProps } from '@fluentui/react';
 
 /**
  * Method checks if drodpown or combobox is empty or any value is selected.
- *
  * @param {Partial<IDropdownProps | IComboBoxProps>} props Dropdown or combobox props.
  * @returns {boolean} Is dropdown or combobox empty.
  */

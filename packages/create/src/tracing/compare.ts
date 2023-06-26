@@ -5,7 +5,6 @@ import { getLogger } from './logger';
 
 /**
  * Compare two json files.
- *
  * @param a - First object to compare
  * @param b - Second object to compare
  */
@@ -18,7 +17,6 @@ export function compareJson(a: object, b: object): void {
 
 /**
  * Compare two strings.
- *
  * @param a - First object to compare
  * @param b - Second object to compare
  */
@@ -31,7 +29,6 @@ export function compareStrings(a: string, b: string): void {
 
 /**
  * Get the diff results as colored string.
- *
  * @param diffChanges - array of changes, result from diff
  * @returns - diff results as colored string
  */

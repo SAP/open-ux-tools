@@ -7,7 +7,6 @@ export class Redirect {
 
     /**
      * Constructor with a port number.
-     *
      * @param port port on which the redirect service is listening.
      */
     constructor(port: number) {
@@ -16,7 +15,6 @@ export class Redirect {
 
     /**
      * Get the url for the redirect service.
-     *
      * @returns a string representing the redirect url.
      */
     public url(): string {

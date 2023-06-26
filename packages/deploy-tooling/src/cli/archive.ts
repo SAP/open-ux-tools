@@ -9,7 +9,6 @@ import { Agent } from 'https';
 
 /**
  * Get/read zip file from the given path.
- *
  * @param logger - reference to the logger instance
  * @param path - path to the zip file
  * @returns Buffer containing the zip file
@@ -30,7 +29,6 @@ function getArchiveFromPath(logger: Logger, path: string): Promise<Buffer> {
 
 /**
  * Fetch/get zip file from the given url.
- *
  * @param logger - reference to the logger instance
  * @param url - url to the zip file
  * @param rejectUnauthorized - strict SSL handling or not
@@ -54,7 +52,6 @@ async function fetchArchiveFromUrl(logger: Logger, url: string, rejectUnauthoriz
 
 /**
  * Create a zipped file containing all files in the given folder.
- *
  * @param logger - reference to the logger instance
  * @param path - path to the folder that is to be zipped
  * @returns Buffer containing the zip file
@@ -78,7 +75,6 @@ function createArchiveFromFolder(logger: Logger, path: string): Promise<Buffer> 
 
 /**
  * Get a zipped archived based on the given options.
- *
  * @param logger - reference to the logger instance
  * @param options - options provided via CLI
  * @returns Buffer containing the zip file

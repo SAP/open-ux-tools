@@ -16,7 +16,6 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
 
 /**
  * Function for proxying UI5 sources.
- *
  * @param config - proxy configuration
  * @param options - additional configuration options
  * @param filter - custom filter function which will be applied to all requests

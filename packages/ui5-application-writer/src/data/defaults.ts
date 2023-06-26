@@ -9,7 +9,6 @@ import merge from 'lodash/mergeWith';
 
 /**
  * Returns a package instance with default properties.
- *
  * @param {string} [version] - the package version
  * @param {string} [description] - the package description
  * @returns {Partial<Package>} the package instance
@@ -32,7 +31,6 @@ export function packageDefaults(version?: string, description?: string): Partial
 
 /**
  * Returns an app instance merged with default properties.
- *
  * @param {App} app - specifies the application properties
  * @returns {Partial<App>} the App instance
  */
@@ -59,7 +57,6 @@ export const defaultUI5Libs = ['sap.m', 'sap.ui.core'];
 /**
  * Merges version properties with the provided UI5 instance.
  * Coerces provided UI5 versions to valid semantic versions.
- *
  * @param {UI5} [ui5] - the UI5 instance
  * @param options - application options
  * @returns {UI5} the updated copy of UI5 instance (does not change `ui5`)
@@ -87,7 +84,6 @@ export function mergeUi5(ui5: Partial<UI5>, options?: Partial<AppOptions>): UI5 
 
 /**
  * Gets the miminum UI5 version based on the specified version.
- *
  * @param ui5Version - the ui5 version
  * @param minUI5Version - optional minimum ui5 version
  * @returns minimum UI5 version for manifest
@@ -100,7 +96,6 @@ function getMinUI5Version(ui5Version: string, minUI5Version?: string) {
  * Get the manifest descriptor version from the specified UI5 version.
  * Snapshots are handled by coercion to proper versions. If the version does not exist as an exact match
  * the nearest version lower will be used.
- *
  * @param ui5Version - the ui5 version to be used to map to the manifest descriptor version
  * @param manifestVersion - optional manifest descriptor version to be used if provided
  * @returns - the manifest descriptor version
@@ -111,7 +106,6 @@ function getManifestVersion(ui5Version: string, manifestVersion?: string): strin
     /**
      * Finds the closest manifest version for the specified ui5 version. This is determined
      * by finding the closest lower ui5 version and returning its corresponding manifest version.
-     *
      * @example For a version to manifest json containing :
      * ```
      * ...
@@ -154,7 +148,6 @@ function getManifestVersion(ui5Version: string, manifestVersion?: string): strin
 
 /**
  * If a specific local version is provided, use it, otherwise, sync with version but keep minimum versions in mind.
- *
  * @param inputObj input object
  * @param inputObj.framework UI framework
  * @param inputObj.version UI version
@@ -194,7 +187,6 @@ function getLocalVersion({
 
 /**
  * Retrieve the tag version of the @sap/ux-specification based on the given version.
- *
  * @param ui5Version UI5 version used in the project
  * @returns version tag
  */

@@ -6,7 +6,6 @@ import { coerce, lt } from 'semver';
 
 /**
  * Validate that the UI5 version requirement is valid.
- *
  * @param ui5Version - optional minimum required UI5 version
  * @returns true if the version is supported otherwise throws an error
  */
@@ -20,7 +19,6 @@ export function validateVersion(ui5Version?: string): boolean {
 
 /**
  * Validates the provided base path.
- *
  * @param {string} basePath - the base path
  * @param {Editor} fs - the memfs editor instance
  * @returns true if the path is valid, otherwise, throws and error
@@ -47,7 +45,6 @@ export function validateBasePath(basePath: string, fs?: Editor): boolean {
 
 /**
  * Returns the message property if the error is an instance of `Error` else a string representation of the error.
- *
  * @param error {Error | unknown} - the error instance
  * @returns {string} the error message
  */

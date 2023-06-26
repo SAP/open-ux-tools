@@ -64,7 +64,6 @@ type Layer = 'VENDOR' | 'CUSTOMER_BASE';
 
 /**
  * Returns the namespace as string.
- *
  * @param namespace either as string or as object
  * @returns serialized namespace
  */
@@ -87,7 +86,6 @@ export class LayeredRepositoryService extends Axios implements Service {
 
     /**
      * Check whether a variant with the given namespace already exists.
-     *
      * @param namespace either as string or as object
      * @returns the Axios response object for futher processing
      */
@@ -113,7 +111,6 @@ export class LayeredRepositoryService extends Axios implements Service {
 
     /**
      * Deploy the given archive either by creating a new folder in the layered repository or updating an existing one.
-     *
      * @param archivePath path to a zip archive containing the adaptation project
      * @param config adataption project deployment configuration
      * @returns the Axios response object for futher processing
@@ -148,7 +145,6 @@ export class LayeredRepositoryService extends Axios implements Service {
 
     /**
      * Undeploy the archive identified by the configuration.
-     *
      * @param config adataption project deployment configuration
      * @returns the Axios response object for futher processing
      */
@@ -172,7 +168,6 @@ export class LayeredRepositoryService extends Axios implements Service {
 
     /**
      * Try parsing the response and log the result. If the parsing fails and an alternative is provided, log it instead.
-     *
      * @param response axios response from the LREP service
      * @param alternativeMessage optional alternative message if the response cannot be parsed
      */
@@ -195,7 +190,6 @@ export class LayeredRepositoryService extends Axios implements Service {
 
     /**
      * Log a message from the backend.
-     *
      * @param msg message to be logged
      */
     private logMessage(msg: Message) {

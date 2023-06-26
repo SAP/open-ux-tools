@@ -60,7 +60,6 @@ export function attachUaaAuthInterceptor(
 
 /**
  * Get the reentrace ticket from the backend and add it to the header.
- *
  * @param options options
  * @param options.provider an instance of an ABAP service provider
  */
@@ -76,7 +75,6 @@ export function attachReentranceTicketAuthInterceptor({ provider }: { provider: 
 
 /**
  * Get the interceptor that fetches and uses reentrance tickets from the backend.
- *
  * @param options options
  * @param options.provider an instance of an ABAP service provider
  * @param options.ejectCallback  eject Callback Function

@@ -5,7 +5,6 @@ import { validateBasePath } from '../../validation';
 
 /**
  * Add the "add smartlinks config" command to a passed command.
- *
  * @param cmd - commander command for adding smartlinks config command
  */
 export function addAddSmartLinksConfigCommand(cmd: Command): void {
@@ -22,7 +21,6 @@ export function addAddSmartLinksConfigCommand(cmd: Command): void {
 
 /**
  * Adds a smartLinks config to an app or project.
- *
  * @param basePath - path to application root
  * @param simulate - if true, do not write but just show what would be change; otherwise write
  */

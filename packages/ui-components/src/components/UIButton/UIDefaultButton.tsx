@@ -6,7 +6,6 @@ import { UIContextualMenu } from '../UIContextualMenu';
 /**
  * UIDefaultButton component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/button
- *
  * @exports
  * @class UIDefaultButton
  * @extends {React.Component<IButtonProps, {}>}
@@ -14,7 +13,6 @@ import { UIContextualMenu } from '../UIContextualMenu';
 export class UIDefaultButton extends React.Component<IButtonProps, {}> {
     /**
      * Initializes component properties.
-     *
      * @param {IButtonProps} props
      */
     public constructor(props: IButtonProps) {

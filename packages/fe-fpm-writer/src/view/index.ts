@@ -13,7 +13,6 @@ import { getTemplatePath } from '../templates';
 
 /**
  * Merge the new view into the list of existing views (if any).
- *
  * @param {CustomView & Partial<InternalCustomView>} config - config for the template, views property gets updated
  * @param {Manifest} manifest - the application manifest
  */
@@ -45,7 +44,6 @@ function mergeViews(config: CustomView & Partial<InternalCustomView>, manifest: 
 
 /**
  * Enhances the provided custom view configuration with default data.
- *
  * @param {Editor} fs - the mem-fs editor instance
  * @param {CustomView} data - a custom view configuration object
  * @param {string} manifestPath - path to the project's manifest.json
@@ -76,7 +74,6 @@ function enhanceConfig(fs: Editor, data: CustomView, manifestPath: string, manif
 
 /**
  * Add a custom view to an existing UI5 application.
- *
  * @param {string} basePath - the base path
  * @param {CustomView} customView - the custom view configuration
  * @param {Editor} [fs] - the mem-fs editor instance

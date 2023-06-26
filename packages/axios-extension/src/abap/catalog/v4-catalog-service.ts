@@ -36,7 +36,6 @@ export class V4CatalogService extends CatalogService {
 
     /**
      * Map the V4 service information to a version independent structure.
-     *
      * @param groups v4 service groups
      * @param entitySet entity set used for service selection
      * @returns version independent information
@@ -64,7 +63,6 @@ export class V4CatalogService extends CatalogService {
 
     /**
      * Fetch all services from the backend.
-     *
      * @returns version independent service information
      */
     protected async fetchServices(): Promise<ODataServiceInfo[]> {
@@ -99,7 +97,6 @@ export class V4CatalogService extends CatalogService {
 
     /**
      * For OData v4, all annotations are already included in the metadata and no additional request is required.
-     *
      * @returns an empty array
      */
     public getAnnotations(): Promise<Annotations[]> {

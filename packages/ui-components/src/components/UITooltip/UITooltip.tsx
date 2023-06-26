@@ -23,7 +23,6 @@ export interface UITooltipProps extends ITooltipHostProps {
  * UITooltip component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/tooltip
  * it can be used like <UITooltip tooltipProps={TooltipUtils.renderContent(value.name)}>{value.name}</UITooltip>
- *
  * @exports
  * @class UITooltip
  * @extends {React.Component<UITooltipProps, {}>}
@@ -31,7 +30,6 @@ export interface UITooltipProps extends ITooltipHostProps {
 export class UITooltip extends React.Component<UITooltipProps, {}> {
     /**
      * Initializes component properties.
-     *
      * @param {UITooltipProps} props
      */
     public constructor(props: UITooltipProps) {

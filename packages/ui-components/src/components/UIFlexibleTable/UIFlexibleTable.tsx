@@ -27,7 +27,6 @@ declare class ResizeObserver {
 
 /**
  * UIFlexibleTable component.
- *
  * @exports
  * @param {UIFlexibleTableProps<T>} props
  * @returns {React.ReactElement}
@@ -143,7 +142,6 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
 
     /**
      * Renders row.
-     *
      * @param {NodeDragAndDropSortingParams} params
      * @returns {React.ReactElement<UIFlexibleTableRowProps<T>, 'UIFlexibleTableRow'>}
      */
@@ -297,7 +295,6 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
 
 /**
  * Gets table body.
- *
  * @param {UIFlexibleTableProps<T>} props
  * @param {(params: { children: React.ReactNode; isDragged: boolean; props: { ref?: React.RefObject<any>; }; }) => React.ReactNode} renderTable
  * @param {( params: NodeDragAndDropSortingParams) => React.ReactElement<UIFlexibleTableRowProps<T>, 'UIFlexibleTableRow'>} renderRow
@@ -356,7 +353,6 @@ function getTableBody<T>(
 
 /**
  * Restores focus.
- *
  * @param {string} currentFocusedRowAction
  * @param {number | undefined} currentFocusedRowIndex
  * @param {string} tableId
@@ -393,7 +389,6 @@ function restoreFocus(
 
 /**
  * Check row fit container.
- *
  * @param {number | undefined} propThreshold
  * @param {React.MutableRefObject<HTMLDivElement | null>} containerRef
  * @returns {boolean}

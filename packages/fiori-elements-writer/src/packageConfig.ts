@@ -3,7 +3,6 @@ import type { PackageJsonScripts } from './types';
 
 /**
  * Get an object reflecting the scripts that need to be added to the package.json.
- *
  * @param options Collection of mostly optional settings.
  * @param options.localOnly no server available
  * @param options.addMock add a script for using the mockserver

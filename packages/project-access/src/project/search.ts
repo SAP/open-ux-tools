@@ -41,7 +41,6 @@ type FileMapAndCache = { [path: string]: null | string | object };
 const excludeFolders = ['.git', 'node_modules', 'dist'];
 /**
  * WorkspaceFolder type guard.
- *
  * @param value - value to type check
  * @returns - true: is a vscode workspace array; no: not a vscode workspace array
  */
@@ -51,7 +50,6 @@ function isWorkspaceFolder(value: WorkspaceFolder[] | string[]): value is Worksp
 
 /**
  * Convert workspace root folders to root paths.
- *
  * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @returns - root paths
  */
@@ -73,7 +71,6 @@ function wsFoldersToRootPaths(wsFolders: WorkspaceFolder[] | string[] | undefine
 
 /**
  * Find root folder of the project containing the given file.
- *
  * @param path path of a project file
  * @param sapuxRequired if true, only find sapux projects
  * @param silent if true, then does not throw an error but returns an empty path
@@ -103,8 +100,6 @@ export async function findProjectRoot(path: string, sapuxRequired = true, silent
 
 /**
  * Find app root and project root from given paths and sapux entry.
- *
- *
  * @param sapux - value of sapux in package.json, either boolean or string array
  * @param path - path where the search started from
  * @param root - root of the app or project, where package.json is located
@@ -139,7 +134,6 @@ function findRootsWithSapux(
 
 /**
  * Get the application root for a given webapp path.
- *
  * @param webappPath - path to webapp folder, where manifest.json is
  * @returns - root path of the application, where usually ui5.yaml and package.json are
  */
@@ -167,7 +161,6 @@ export async function getAppRootFromWebappPath(webappPath: string): Promise<stri
  * - All applications have a package.json in root folder.
  * - If sapux=true in package.json the app is NOT inside a CAP project.
  * - Freestyle application (non CAP) has in package.json dependency to @sap/ux-ui5-tooling and <appRoot>/ui5-local.yaml.
- *
  * @param path - path to check, e.g. to the manifest.json
  * @returns - in case a supported app is found this function returns the appRoot and projectRoot path
  */
@@ -228,7 +221,6 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
  * Find all app that are supported by Fiori tools for a given list of roots (workspace folders).
  * This is a convenient function to retrieve all apps. Same result can be achieved with call
  * findFioriArtifacts({ wsFolders, artifacts: ['applications'] }); from same module.
- *
  * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
@@ -239,7 +231,6 @@ export async function findAllApps(wsFolders: WorkspaceFolder[] | string[] | unde
 
 /**
  * Filter Fiori apps from a list of files.
- *
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
@@ -267,7 +258,6 @@ async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResul
 
 /**
  * Filter adaptation projects from a list of files.
- *
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
  * @returns - results as array of found adaptation projects.
  */
@@ -285,7 +275,6 @@ async function filterAdaptations(pathMap: FileMapAndCache): Promise<AdaptationRe
 
 /**
  * Filter extensions projects from a list of files.
- *
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
  * @returns - results as array of found extension projects.
  */
@@ -324,7 +313,6 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
 
 /**
  * Filter extensions projects from a list of files.
- *
  * @param pathMap - path to files
  * @returns - results as array of found library projects.
  */
@@ -351,7 +339,6 @@ async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults
 
 /**
  * Get the files to search for according to requested artifact type.
- *
  * @param artifacts - requests artifacts like apps, adaptations, extensions
  * @returns - array of filenames to search for
  */
@@ -366,7 +353,6 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
 }
 /**
  * Find all requested Fiori artifacts like apps, adaptations, extensions, that are supported by Fiori tools, for a given list of roots (workspace folders).
- *
  * @param options - find options
  * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @param options.artifacts - list of artifacts to search for: 'application', 'adaptation', 'extension' see FioriArtifactTypes

@@ -5,7 +5,6 @@ import type { PackageJsonMockConfig } from '../types';
 
 /**
  * Enhance the package.json with dependency for mockserver.
- *
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to application root, where package.json is
  * @param config - optional config for mockserver
@@ -21,7 +20,6 @@ export function enhancePackageJson(fs: Editor, basePath: string, config?: Packag
 /**
  * Add mockserver dependencies to package.json content.
  * Takes also care of removing deprecated old module.
- *
  * @param packageJson - parsed package.json content
  * @param mockserverModule - npm name of the mockserver module
  * @param version - npm version string
@@ -51,7 +49,6 @@ function enhanceDependencies(
 
 /**
  * Add or update start-mock script to package.json.
- *
  * @param fs - mem-fs reference to be used for file access
  * @param packageJson - path to package.json
  */
@@ -64,7 +61,6 @@ function enhanceScripts(fs: Editor, packageJson: Package): void {
 /**
  * Return a copy of package.json's 'start' script with added or replaced config pointing to ui5-mock.yaml.
  * In case start script can't be copied or is undefined, return undefined.
- *
  * @param startScript - start script from package.json
  * @returns - copy of start script with config to ui5.yaml, undefined if start script can't be copied
  */
@@ -87,7 +83,6 @@ function copyStartScript(startScript: string | undefined): string | undefined {
 
 /**
  * Check if package.json has devDependency to @ui5/cli version  > 2.
- *
  * @param devDependencies - parsed devDependencies from package.json
  * @returns - true: @ui/cli higher version 2; false: @ui/cli
  */
@@ -107,7 +102,6 @@ function isUi5CliHigherTwo(devDependencies: Partial<Record<string, string>>): bo
 
 /**
  * Replace the --config <any/path> in script with --config ./ui5-mock.yaml and return as new string.
- *
  * @param startScript - script that contains --config path/to/any.yaml
  * @param configStartIndex - index in string where --config starts (first after fiori run)
  * @returns - new script string with replaced --config
@@ -130,7 +124,6 @@ function replaceConfig(startScript: string, configStartIndex: number): string {
 /**
  * Remove mockserver middleware from ui5.dependencies in package.json. If no ui5.dependencies
  * are left, remove the complete property dependencies or respective also the ui5 property.
- *
  * @param packageJson - parsed package.json content
  */
 function removeMockserverUi5Dependencies(packageJson: Package) {
@@ -148,7 +141,6 @@ function removeMockserverUi5Dependencies(packageJson: Package) {
 
 /**
  * Remove mockserver script and dependencies from package.json.
- *
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to application root, where package.json is
  */
