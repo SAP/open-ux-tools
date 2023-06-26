@@ -147,7 +147,7 @@ jobs:
                 echo "$EOF" >> $GITHUB_ENV
             - name: Send Slack notification
               if: steps.changesetPublish.outputs.published == 'true'
-              uses: slackapi/slack-github-action@v1.23.0
+              uses: slackapi/slack-github-action@v1.24.0
               with:
                 payload: |
                   {"text": ":rocket: The following packages were published to npmjs.com:\n${{ env.PUBLISHED_PACKAGES_MESSAGE }}" }
