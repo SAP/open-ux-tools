@@ -1,5 +1,15 @@
 # @sap-ux/ui5-library-writer
 
+## 0.1.3
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+-   Updated dependencies [d9355692]
+    -   @sap-ux/ui5-application-writer@0.23.4
+    -   @sap-ux/ui5-config@0.18.1
+    -   @sap-ux/project-access@1.8.3
+
 ## 0.1.2
 
 ### Patch Changes

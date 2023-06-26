@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.3.1
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+
 ## 1.3.0
 
 ### Minor Changes
