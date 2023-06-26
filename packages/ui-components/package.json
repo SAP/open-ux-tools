@@ -19,7 +19,7 @@
     ],
     "main": "dist/index.js",
     "scripts": {
-        "clean": "rimraf dist coverage *.tsbuildinfo storybook",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo storybook",
         "build": "npm-run-all -l -p build:extension build:copyfiles build:storybook",
         "build:extension": "tsc --build --pretty",
         "build:copyfiles": "copyfiles --up 1 \"./src/**/*.scss\" ./dist/",
