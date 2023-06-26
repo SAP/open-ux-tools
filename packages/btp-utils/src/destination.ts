@@ -42,7 +42,6 @@ export interface Destination extends Partial<AdditionalDestinationProperties> {
 
 /**
  * Checks whether the provided destination is configured to point to an ABAP system (both cloud and on-premise).
- *
  * @param destination destination info
  * @returns true of the destination is configured for an ABAP system
  */
@@ -56,7 +55,6 @@ export function isAbapSystem(destination: Partial<Destination>): boolean {
 
 /**
  * Checks whether the provided destination is configured to point to an ABAP environment on BTP (aka steampunk).
- *
  * @param destination destination info
  * @returns true of the destination is configured for a steampunk system
  */
@@ -71,7 +69,6 @@ export function isAbapEnvironmentOnBtp(destination: Destination): boolean {
  * Checks if the destination attributes WebIDEUsage is configured with odata_gen, and not odata_abap
  * We want to maintain existing destinations, perhaps accidentally configured with both, continue
  * working as abap catalogs.
- *
  * @param destination destination info
  * @returns true, if this destination has the the 'odata_gen', and not the 'odata_abap' attribute set
  */
@@ -84,7 +81,6 @@ export function isGenericODataDestination(destination: Destination): boolean {
 
 /**
  * A destination configured as generic odata without the 'full_url' attribute are considered partial url destinations.
- *
  * @param destination destination info
  * @returns true, if this destination is generic odata and 'full_url' attribute is not set
  */
@@ -97,7 +93,6 @@ export function isPartialUrlDestination(destination: Destination): boolean {
 
 /**
  * A destination configured as generic odata WITH the 'full_url' attribute are considered full url destinations.
- *
  * @param destination destination info
  * @returns true, if this destination has the generic odata and 'full_url' attribute is set
  */

@@ -13,7 +13,6 @@ import { UI5Config } from '@sap-ux/ui5-config';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
- *
  * @param basePath - the absolute target path where the application will be generated
  * @param data - configuration to generate the freestyle application
  * @param fs - an optional reference to a mem-fs editor

@@ -9,7 +9,6 @@ import { mergeWithDefaults } from './data';
 
 /**
  * Writes the template to the memfs editor instance.
- *
  * @param basePath - the base path
  * @param ui5LibConfig - the Ui5 lib instance
  * @param fs - the memfs editor instance

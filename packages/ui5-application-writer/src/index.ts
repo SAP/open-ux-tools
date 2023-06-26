@@ -12,7 +12,6 @@ import { Ui5App } from './types';
 
 /**
  * Writes the template to the memfs editor instance.
- *
  * @param basePath - the base path
  * @param ui5AppConfig - the Ui5App instance
  * @param fs - the memfs editor instance
@@ -70,7 +69,6 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
 
 /**
  * Check if Typescript is enabled for the given path.
- *
  * @param basePath - the base path
  * @param fs - the memfs editor instance
  * @returns true is the project is ready for typescript code
@@ -94,7 +92,6 @@ async function isTypescriptEnabled(basePath: string, fs?: Editor): Promise<boole
 
 /**
  * Enable typescript in an existing valid UI5 project.
- *
  * @param basePath - the base path
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance

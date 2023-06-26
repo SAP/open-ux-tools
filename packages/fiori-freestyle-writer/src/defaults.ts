@@ -4,7 +4,6 @@ import { TemplateType } from './types';
 
 /**
  * Set defaults for missing parameters on the given Fiori/UI5 app instance.
- *
  * @param app Fiori application configuration
  */
 function setAppDefaults(app: FioriApp): void {
@@ -14,7 +13,6 @@ function setAppDefaults(app: FioriApp): void {
 
 /**
  * Set defaults for the basic template on the given instance.
- *
  * @param settings settings for the basic template
  */
 function setBasicTemplateDefaults(settings: BasicAppSettings): void {
@@ -24,7 +22,6 @@ function setBasicTemplateDefaults(settings: BasicAppSettings): void {
 /**
  * Set defaults for missing parameters on the given instance of the overal config.
  * Adds source template info.
- *
  * @param ffApp full config object used by the generate method
  */
 export function setDefaults(ffApp: FreestyleApp<unknown>): void {

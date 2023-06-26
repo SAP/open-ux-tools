@@ -8,7 +8,6 @@ import { gte } from 'semver';
 
 /**
  * Enable typescript for the given input.
- *
  * @param libInput Input required to enable the optional typescript features
  * @param basePath - the base path
  * @param tmplPath - the template path
@@ -78,7 +77,6 @@ export async function enableTypescript(libInput: UI5LibInput, basePath: string, 
 
 /**
  * Returns the types package depending on ui5 version.
- *
  * @param framework SAPUI5 or OpenUI5
  * @param version ui5 version
  * @returns types package

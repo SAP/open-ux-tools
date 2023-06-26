@@ -2,7 +2,6 @@ import { defaultUI5Libs } from './defaults';
 
 /**
  * Merges the specified ui5 libs with the defaults.
- *
  * @param ui5Libs - The ui5 libraries to be merged with the defaults
  * @returns UI5 libs with defaults
  */

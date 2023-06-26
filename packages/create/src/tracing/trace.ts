@@ -6,7 +6,6 @@ import { getLogger } from './logger';
 
 /**
  * Compare changes from mem-fs-editor and write to logger.
- *
  * @param fs - mem-fs-editor
  */
 export async function traceChanges(fs: Editor): Promise<void> {

@@ -11,7 +11,6 @@ export interface UIFlexibleTableRowNoDataProps {
 
 /**
  * Visualize a table row without data.
- *
  * @param props {UIFlexibleTableRowNoDataProps}
  * @returns {React.Component}
  */

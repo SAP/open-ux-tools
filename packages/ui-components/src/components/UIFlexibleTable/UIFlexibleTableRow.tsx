@@ -16,7 +16,6 @@ export interface UIFlexibleTableRowProps<T> {
 
 /**
  * Render row title.
- *
  * @param {UIFlexibleTableProps<T>} props
  * @param {UIFlexibleTableRowType<T>} row
  * @param {number | undefined} rowIndex
@@ -71,7 +70,6 @@ function getActionsContainer(
 
 /**
  * On render title row.
- *
  * @param {UIFlexibleTableProps<T>} props
  * @param {number} paddingRight
  * @returns {React.ReactNode}
@@ -191,7 +189,6 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
 
 /**
  * UIFlexibleTableRow component.
- *
  * @exports
  * @param {UIFlexibleTableRowProps} props
  * @returns {JSX.Element}

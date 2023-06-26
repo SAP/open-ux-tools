@@ -16,7 +16,6 @@ export interface UIFlexibleTableActionProps {
 
 /**
  * UIFlexibleTableActionButton component.
- *
  * @exports
  * @param {UIFlexibleTableActionProps} props
  * @returns { React.ReactElement}

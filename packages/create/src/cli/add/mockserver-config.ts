@@ -10,7 +10,6 @@ import { runNpmInstallCommand } from '../../common';
 
 /**
  * Add the "add mockserver config" command to a passed command.
- *
  * @param cmd - commander command for adding mockserver config command
  */
 export function addAddMockserverConfigCommand(cmd: Command): void {
@@ -34,7 +33,6 @@ export function addAddMockserverConfigCommand(cmd: Command): void {
 
 /**
  * Adds a mockserver config to an app or project.
- *
  * @param basePath - path to application root
  * @param simulate - if true, do not write but just show what would be change; otherwise write
  * @param skipInstall - if true, skip execution of npm install

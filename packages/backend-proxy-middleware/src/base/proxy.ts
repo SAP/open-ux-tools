@@ -32,7 +32,6 @@ import { getProxyForUrl } from 'proxy-from-env';
 export const ProxyEventHandlers = {
     /**
      * Modifies the request to the proxy server if the `FioriLaunchpad.html` is requested to add a required header.
-     *
      * @param proxyReq request to the proxy server that can be modified
      * @param _req (not used) original request
      * @param _res (not used)
@@ -46,7 +45,6 @@ export const ProxyEventHandlers = {
 
     /**
      * Retrieve the set-cookie headers from the response and transform secure cookies to insecure ones.
-     *
      * @param proxyRes request to the proxy server that can be modified
      * @param _req (not used) original request
      * @param _res (not used)
@@ -64,7 +62,6 @@ export const ProxyEventHandlers = {
 
 /**
  * Specifically handling errors due to unsigned certificates and empty errors.
- *
  * @param err the error thrown when proxying the request or processing the response
  * @param req request causing the error
  * @param logger logger instance
@@ -98,7 +95,6 @@ export function proxyErrorHandler(
 /**
  * Return the SAP API Hub key either provided as environment variable (including .env file) or from the secure store when not running in AppStudio.
  * not found or error while extracting the key.
- *
  * @param logger - logger to report errors
  * @returns {*}  {(Promise<string | undefined>)} - ApiHubKey
  */
@@ -121,7 +117,6 @@ async function getApiHubKey(logger: Logger): Promise<string | undefined> {
 export const PathRewriters = {
     /**
      * Generates a rewrite funtion that replace the match string with the prefix in the given string.
-     *
      * @param match part of the path that is to be replaced
      * @param prefix new path that is used as replacement
      * @returns a path rewrite function
@@ -132,7 +127,6 @@ export const PathRewriters = {
 
     /**
      * Add or replace the sap-client url parameter if missing or inocrrect in the original request path.
-     *
      * @param client sap-client as string
      * @returns a path rewrite function
      */
@@ -149,7 +143,6 @@ export const PathRewriters = {
 
     /**
      * Create a chain of rewrite function calls based on the provided configuration.
-     *
      * @param config backend configuration
      * @param log logger instance
      * @returns a path rewrite function
@@ -203,7 +196,6 @@ export async function initI18n(): Promise<void> {
 
 /**
  * Enhance the proxy options and backend configurations for the usage of destinations in SAP Business Application Studio.
- *
  * @param proxyOptions reference to a proxy options object that the function will enhance
  * @param backend reference to the backend configuration that the the function may enhance
  */
@@ -233,7 +225,6 @@ export async function enhanceConfigsForDestination(
 
 /**
  * Enhance the proxy options with information read from the store.
- *
  * @param proxyOptions reference to a proxy options object that the function will enhance
  * @param system backend system information (most likely) read from the store
  * @param oAuthRequired if true then the OAuth flow is triggered to get cookies
@@ -274,7 +265,6 @@ export async function enhanceConfigForSystem(
 
 /**
  * Generate options for the proxy middleware based on the input.
- *
  * @param backend backend system specific configuration
  * @param options optional base options for the http-proxy-middleware
  * @param logger optional logger instance
@@ -369,7 +359,6 @@ export async function generateProxyMiddlewareOptions(
 
 /**
  * Generate an instance of the proxy middleware based on the input.
- *
  * @param backend backend system specific configuration
  * @param options optional base options for the http-proxy-middleware
  * @param logger optional logger instance

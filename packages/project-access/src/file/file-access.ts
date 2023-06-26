@@ -3,7 +3,6 @@ import type { Editor } from 'mem-fs-editor';
 
 /**
  * Read file asynchronously. Throws error if file does not exist.
- *
  * @param path - path to file
  * @param memFs - optional mem-fs-editor instance
  * @returns - file content as string
@@ -18,7 +17,6 @@ export async function readFile(path: string, memFs?: Editor): Promise<string> {
 
 /**
  * Read JSON file asynchronously. Throws error if file does not exist or is malformatted.
- *
  * @param path - path to JSON file
  * @param memFs - optional mem-fs-editor instance
  * @returns - file content as object of type T
@@ -33,7 +31,6 @@ export async function readJSON<T>(path: string, memFs?: Editor): Promise<T> {
 
 /**
  * Checks if the provided file exists in the file system.
- *
  * @param path - the file path to check
  * @param memFs - optional mem-fs-editor instance
  * @returns - true if the file exists; false otherwise.

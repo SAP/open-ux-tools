@@ -7,7 +7,6 @@ import semVer from 'semver';
 
 /**
  * Internal function that updates the manifest.json based on the given service configuration.
- *
  * @param basePath - the root path of an existing UI5 application
  * @param service - the OData service instance
  * @param fs - the memfs editor instance
@@ -36,7 +35,6 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
 
 /**
  * Update the package.json with the required middlewares.
- *
  * @param path path to the package.json
  * @param fs - the memfs editor instance
  * @param addMockServer true if the mocksever middleware needs to be added as well
@@ -76,7 +74,6 @@ export function updatePackageJson(path: string, fs: Editor, addMockServer: boole
 
 /**
  * Check if dev dependencies contains @ui5/cli version greater than 2.
- *
  * @param devDependencies dev dependencies from package.json
  * @returns boolean
  */

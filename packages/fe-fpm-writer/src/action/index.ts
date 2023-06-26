@@ -14,7 +14,6 @@ import { getJsonSpace } from '../common/file';
 
 /**
  * Enhances the provided custom action configuration with default data.
- *
  * @param {CustomAction} data - a custom action configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
@@ -38,7 +37,6 @@ function enhanceConfig(data: CustomAction, manifestPath: string, manifest: Manif
 
 /**
  * Enhance the target object in the manifest with the required nested objects and return a reference to it.
- *
  * @param {Manifest} manifest - the application manifest
  * @param {CustomActionTarget} target - target element
  * @returns Actions object of the given target element.
@@ -68,7 +66,6 @@ export function enhanceManifestAndGetActionsElementReference(manifest: any, targ
 
 /**
  * Add a custom page to an existing UI5 application.
- *
  * @param {string} basePath - the base path
  * @param {CustomAction} actionConfig - the custom action configuration
  * @param {Editor} [fs] - the memfs editor instance

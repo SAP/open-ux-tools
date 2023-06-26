@@ -87,7 +87,6 @@ const xmlReplaceRegex = /[<>&"']/g;
 
 /**
  * Escape invalid characters for XML values.
- *
  * @param xmlValue xml string
  * @returns escaped xml value
  */
@@ -104,7 +103,6 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Extension of the base constructor to set preferred response format if not provided by caller.
-     *
      * @param config optional base configuration for Axios appended with optional fields
      */
     public constructor(config?: AxiosRequestConfig & { publicUrl?: string }) {
@@ -118,7 +116,6 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Get information about a deployed application. Returns undefined if the application cannot be found.
-     *
      * @param app application id (BSP application name)
      * @returns application information or undefined
      */
@@ -137,7 +134,6 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Deploy the given archive either by creating a new BSP or updating an existing one.
-     *
      * @param config deployment config
      * @param config.archive zip archive containing the application files as buffer
      * @param config.bsp BSP configuration
@@ -189,7 +185,6 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Undeploy an existing app.
-     *
      * @param config undeploy config
      * @param config.bsp BSP configuration
      * @param config.testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
@@ -218,7 +213,6 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Translate the technical ABAP on BTP URL to the frontend URL.
-     *
      * @returns url to be used in the browser.
      */
     protected getAbapFrontendUrl(): string {
@@ -231,7 +225,6 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Internal helper method to generate a request configuration (headers, parameters).
-     *
      * @param transport optional transport request id
      * @param testMode optional url parameter to enable test mode
      * @param safeMode optional url parameter to disable the safe model (safemode=false)
@@ -272,7 +265,6 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Create the request payload for a deploy request.
-     *
      * @param archive archive as buffer
      * @param name application name
      * @param description description for the deployed app
@@ -308,7 +300,6 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Send a request to the backed to create or update an application.
-     *
      * @param isExisting app has already been deployed
      * @param appName application name
      * @param payload request payload
@@ -360,7 +351,6 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Send a request to the backend to delete an application.
-     *
      * @param appName application name
      * @param config additional request config
      * @param tryCount number of attempted deploys (sometimes a repo request fails with a known timeout issue, so we retry)
@@ -391,7 +381,6 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Log errors more user friendly if it is a standard Gateway error.
-     *
      * @param e error thrown by Axios after sending a request
      * @param e.error error from Axios
      * @param e.host hostname
@@ -410,7 +399,6 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Get ErrorMessage object from response contain an error as a string.
-     *
      * @param data string value
      * @returns undefined if an error object is not found or populated ErrorMessage object
      */

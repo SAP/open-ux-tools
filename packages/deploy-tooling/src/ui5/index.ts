@@ -7,7 +7,6 @@ import { createUi5Archive } from './archive';
 
 /**
  * Custom task to upload the build result to the UI5 ABAP Repository.
- *
  * @param params - destructured input parameters
  * @param params.workspace - reference to the UI5 tooling workspace object
  * @param params.options - project properties and configuration

@@ -31,7 +31,6 @@ interface ManifestControllerExtensions {
 
 /**
  * A function appends passed array of values with new value if value does not exist in array.
- *
  * @param values - array of values
  * @param value - value to append
  * @returns Array of values
@@ -45,7 +44,6 @@ function appendUniqueEntryToArray<T>(values: T[], value: T): T[] {
 
 /**
  * A function returns existing controller extension from manifest for passed extension id.
- *
  * @param {Manifest} manifest - manifest
  * @param {string} extensionId - extension id
  * @returns {ManifestControllerExtension | undefined} Existing controller extension
@@ -69,7 +67,6 @@ function getExistingControllerExtension(
  * 1. Handles public property "overwrite" - if we should append or overwrite existing controller names.
  * 2. Detects transition from "controllerName" to "controllerNames" when new controller is appended to exiusting entry with property "controllerNames".
  * 3. Adds new controller entry to "controllerNames" array.
- *
  * @param {ManifestControllerExtension} manifestExtension - controller extension from manifest
  * @param {InternalControllerExtension} config - internal controller extension configuration
  * @param {string} controllerName - full name of new controller to add or replace/overwrite
@@ -104,7 +101,6 @@ function handleExistingManifestExtension(
 
 /**
  * Method enhances the provided controller extension configuration with default and additional data.
- *
  * @param {string} extensionName - a controller extension configuration object
  * @returns {ControllerExtensionPageTarget | undefined} Page configuration object if extension name is assigned to supported page type.
  */
@@ -121,7 +117,6 @@ function resolvePageDataFromExtension(extensionName: string): ControllerExtensio
 
 /**
  * Method enhances the provided controller extension configuration with default and additional data.
- *
  * @param {ControllerExtension} data - a controller extension configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
@@ -174,7 +169,6 @@ function enhanceConfig(
 /**
  * A function that transforms JSON object during JSON.stringify call.
  * Method is used to remove 'controllerName' or 'controllerNames' properties from manifest in case when we have transition from 'controllerName' to 'controllerNames'.
- *
  * @param {InternalControllerExtension} config - a controller extension configuration object
  * @returns Json replacer method
  */
@@ -202,7 +196,6 @@ function getManifestReplacer(
 
 /**
  * Add a controller extension to an existing UI5 application.
- *
  * @param {string} basePath - the base path
  * @param {ControllerExtension} controllerConfig - the controller extension configuration
  * @param {Editor} [fs] - the memfs editor instance

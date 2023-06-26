@@ -5,7 +5,6 @@ import type { ListReport, InternalListReport } from './types';
 
 /**
  * Enhances the provided list report configuration with default data.
- *
  * @param data - a list report configuration object
  * @param manifest - application manifest
  * @returns enhanced configuration
@@ -35,7 +34,6 @@ function enhanceData(data: ListReport, manifest: Manifest): InternalListReport {
 
 /**
  * Add a ListReport to an existing UI5 application.
- *
  * @param basePath - the base path
  * @param data - the object page configuration
  * @param fs - the memfs editor instance

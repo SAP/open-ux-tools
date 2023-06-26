@@ -13,7 +13,6 @@ import { t } from '../i18n';
 /**
  * Handler for the proxy response event.
  * Sets an Etag which will be used for re-validation of the cached UI5 sources.
- *
  * @param proxyRes - proxy response object
  * @param etag - ETag for the cached sources, normally the UI5 version
  */
@@ -26,7 +25,6 @@ export const proxyResponseHandler = (proxyRes: IncomingMessage, etag: string): v
  * Handler for the proxy request event.
  * Re-validates the cached UI5 sources based on the ETag.
  * Logs the requests made by the proxy.
- *
  * @param proxyReq - proxy request object
  * @param res - server response object
  * @param etag - Etag of the cached UI5 sources, normally the UI5 version
@@ -47,7 +45,6 @@ export const proxyRequestHandler = (
 
 /**
  * Get user's proxy configuration.
- *
  * @param yamlProxyServer - proxy server config from yaml file
  * @returns User's proxy configuration or undefined
  */
@@ -74,7 +71,6 @@ export const getCorporateProxyServer = (yamlProxyServer: string | undefined): st
 
 /**
  * Hides the proxy credentials for displaying the proxy configuration in the console.
- *
  * @param proxy - user's proxy server
  * @returns proxy with hidden credentials for displaying in the console
  */
@@ -93,7 +89,6 @@ export const hideProxyCredentials = (proxy: string | undefined): string | undefi
 
 /**
  * Updates the proxy configuration with values from runtime args (highest priority), environment variables or given config value.
- *
  * @param proxyFromConfig - optional proxy string from configuration
  */
 export function updateProxyEnv(proxyFromConfig?: string): void {
@@ -125,7 +120,6 @@ export function updateProxyEnv(proxyFromConfig?: string): void {
 
 /**
  * Returns the name of html file, which is used to preview the application, from the URL.
- *
  * @param url - html request url
  * @returns Name of the html file
  */
@@ -144,7 +138,6 @@ export const getHtmlFile = (url: string): string => {
 
 /**
  * Returns the name of the yaml file, which is used to for the server configuration, from the runtime arguments.
- *
  * @param args - runtime arguments
  * @returns Name of the YAML file
  */
@@ -161,7 +154,6 @@ export const getYamlFile = (args: string[]): string => {
 
 /**
  * Gets the path to the webapp folder from the YAML file.
- *
  * @param ui5YamlPath - path to the yaml file
  * @returns Path to the webapp folder
  */
@@ -176,7 +168,6 @@ export const getWebAppFolderFromYaml = async (ui5YamlPath: string): Promise<stri
 
 /**
  * Sends HTML content as a response.
- *
  * @param res - The http response object
  * @param html - The HTML content
  */
@@ -191,7 +182,6 @@ export const setHtmlResponse = (res: any, html: string): void => {
 
 /**
  * Determines which UI5 version to use when previewing the application.
- *
  * @param version ui5 version as defined in the yaml or via cli argument
  * @param log logger for outputing information from where ui5 version config is coming
  * @param manifest optional already loaded manifest.json
@@ -224,7 +214,6 @@ export async function resolveUI5Version(version?: string, log?: ToolsLogger, man
 
 /**
  * Injects the absolute UI5 urls into the html file, which is used to preview the application.
- *
  * @param htmlFilePath - path to the html file which is used for previwing the application
  * @param ui5Configs - the configuration of the ui5-proxy-middleware
  * @returns The modified html file content
@@ -254,7 +243,6 @@ export function injectUI5Url(htmlFilePath: string, ui5Configs: ProxyConfig[]): s
 
 /**
  * Injects scripts into the html file, which is used to preview the application.
- *
  * @param req - the http request object
  * @param res - the http response object
  * @param next - the next function, used to forward the request to the next available handler
@@ -290,7 +278,6 @@ export const injectScripts = async (
  * Filters comressed html files from UI5 CDN.
  * Avoid ERR_CONTENT_DECODING_FAILED on http request for gzip'd html files.
  * e.g. /test-resources/sap/ui/qunit/testrunner.html?testpage=%2Ftest%2Ftestsuite.qunit.html&autostart=true.
- *
  * @param _pathname - the request path
  * @param req - the http request object
  * @returns True, indicating that the request should be proxied
@@ -308,7 +295,6 @@ export const filterCompressedHtmlFiles = (_pathname: string, req: IncomingMessag
 
 /**
  * Specifically handling errors due to undefined and empty errors.
- *
  * @param err the error thrown when proxying the request or processing the response
  * @param req request causing the error
  * @param logger logger instance

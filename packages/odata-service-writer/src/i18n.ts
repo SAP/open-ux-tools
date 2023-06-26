@@ -23,7 +23,6 @@ export async function initI18n(): Promise<void> {
 
 /**
  * Helper function facading the call call to i18next.
- *
  * @param key i18n key
  * @param options additional options
  * @returns {string} localized string stored for the given key

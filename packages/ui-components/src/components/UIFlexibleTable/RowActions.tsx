@@ -13,7 +13,6 @@ export interface RowActionsProps<T> {
 
 /**
  * RowActions component.
- *
  * @param {RowActionsProps<T>} props
  * @returns {React.ReactElement}
  */
@@ -108,7 +107,6 @@ export function RowActions<T>(props: RowActionsProps<T>): React.ReactElement {
 
 /**
  * Get delete row action.
- *
  * @param {UIFlexibleTableProps<T>} props
  * @param {TableRowEventHandlerParameters<T>} params
  * @returns {React.ReactNode}

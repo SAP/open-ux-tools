@@ -34,7 +34,6 @@ export const PATTERN_SUFFIX = ':?query:';
 
 /**
  * Generates the pattern for a new route based on the input.
- *
  * @param routes existing routes
  * @param targetEntity entity of the target
  * @param nav navigation object
@@ -73,7 +72,6 @@ export function generateRoutePattern(
 
 /**
  * Generates the target property for a route based on exiting routes, configurations and the target's name.
- *
  * @param routes existing routes
  * @param name name of the target page
  * @param fcl optional flag if FCL is enabled
@@ -98,7 +96,6 @@ export function generateRouteTarget(
 
 /**
  * Create a function that can be used as JsonReplace when calling extendJson.
- *
  * @param config page configuration
  * @returns a JsonReplacer function for the usage in ejs
  */
@@ -127,7 +124,6 @@ export function getManifestJsonExtensionHelper(
 
 /**
  * Get the configuration parameters for the flexible column layout based on the given manifest and navigation config.
- *
  * @param manifest existing manifest
  * @param navigation navigation configuration that is to be added
  * @returns fcl configuration
@@ -151,7 +147,6 @@ export function getFclConfig(manifest: Manifest, navigation?: Navigation): FCL {
 
 /**
  * Create target settings for a Fiori elements page.
- *
  * @param data - incoming configuration
  * @param addSettings - optional arbitrary settings
  * @returns version aware settings object
@@ -176,7 +171,6 @@ export function initializeTargetSettings(
 
 /**
  * Validate the input parameters for the generation of a custom or an object page.
- *
  * @param basePath - the base path
  * @param config - the custom page configuration
  * @param fs - the memfs editor instance
@@ -214,7 +208,6 @@ export function validatePageConfig(basePath: string, config: CustomPage | Object
 /**
  * Add an generic page to an existing UI5 application.
  * Supported pages - ListReport or ObjectPage.
- *
  * @param basePath - the base path
  * @param data - the page configuration
  * @param enhanceDataFn - Callback function for data enhancement

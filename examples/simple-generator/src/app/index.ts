@@ -26,7 +26,6 @@ export default class extends Generator {
 
     /**
      * Enables the CLI parameter --typescript and then calls the base constructor.
-     *
      * @param args yo args
      * @param options yo options
      * @param features yo features

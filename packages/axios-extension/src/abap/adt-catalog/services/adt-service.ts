@@ -28,7 +28,6 @@ export abstract class AdtService extends Axios implements AdtServiceExtension {
 
     /**
      * Attach schema to AdtService subclass.
-     *
      * @param serviceSchema ADT schema for this particular ADT service catalog.
      */
     attachAdtSchema(serviceSchema: AdtCollection): void {

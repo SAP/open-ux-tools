@@ -1,6 +1,5 @@
 /**
  * Updates the proxy configuration with values from runtime args (highest priority), given config value or environment variables.
- *
  * @param proxyFromConfig - optional proxy string from configuration
  */
 export function updateProxyEnv(proxyFromConfig?: string): void {

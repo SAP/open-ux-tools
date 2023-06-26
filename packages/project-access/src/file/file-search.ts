@@ -6,7 +6,6 @@ import { promises as fs } from 'fs';
 
 /**
  * Get deleted and modified files from mem-fs editor filtered by query and 'by' (name|extension).
- *
  * @param changes - memfs editor changes, usually retrieved by fs.dump()
  * @param fileNames - array of file names to search for
  * @param extensionNames - array of extensions names to search for
@@ -35,7 +34,6 @@ function getMemFsChanges(
 
 /**
  * Find function to search for files by names or file extensions.
- *
  * @param options - find options
  * @param [options.fileNames] - optional array of file names to search for
  * @param [options.extensionNames] - optional array of file extensions to search for
@@ -86,7 +84,6 @@ export function findBy(options: {
 
 /**
  * Search for 'filename' starting from 'root'. Returns array of paths that contain the file.
- *
  * @param filename - filename to search
  * @param root - root folder to start search
  * @param excludeFolders - list of folder names to exclude (search doesn't traverse into these folders)
@@ -105,7 +102,6 @@ export async function findFiles(
 
 /**
  * Search for 'filename' starting from 'root'. Returns array of paths that contain the file.
- *
  * @param extension - file extension to search for including '.', e.g. '.ts'
  * @param root - root folder to start search
  * @param excludeFolders - list of folder names to exclude (search doesn't traverse into these folders)
@@ -123,7 +119,6 @@ export function findFilesByExtension(
 
 /**
  * Find a file by name in parent folders starting from 'startPath'.
- *
  * @param fileName - file name to look for
  * @param startPath - path for start searching up
  * @param fs - optional mem-fs-editor instance

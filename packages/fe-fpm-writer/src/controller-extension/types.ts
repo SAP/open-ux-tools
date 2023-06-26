@@ -2,7 +2,6 @@ import type { CustomElement, InternalCustomElement } from '../common/types';
 
 /**
  * Controller extension's associated page type.
- *
  * @enum {string}
  */
 export enum ControllerExtensionPageType {

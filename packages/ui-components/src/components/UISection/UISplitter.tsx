@@ -64,7 +64,6 @@ export class UISplitter extends React.Component<UISplitterProps> {
     /**
      * Method called on mousedown over splitter.
      * Method would start resize session.
-     *
      * @param {React.MouseEvent} event Mouse.
      */
     private startSplitterMove(event: React.MouseEvent): void {
@@ -78,7 +77,6 @@ export class UISplitter extends React.Component<UISplitterProps> {
 
     /**
      * Method called when resize session is in progress and user moves mouse.
-     *
      * @param {React.MouseEvent} event Mouse event.
      */
     private doMousemoveResize(event: MouseEvent): void {
@@ -91,7 +89,6 @@ export class UISplitter extends React.Component<UISplitterProps> {
 
     /**
      * Method which receives new delta position of splitter and updates DOM with calling callback.
-     *
      * @param {number} deltaPosition Delta position of splitter.
      */
     private doResize(deltaPosition: number): void {
@@ -121,7 +118,6 @@ export class UISplitter extends React.Component<UISplitterProps> {
 
     /**
      * Method to update splitter DOM and events depending on if resize started or ended.
-     *
      * @param {boolean} start Resize is started or ended.
      */
     private updateSplitterEvents(start: boolean): void {
@@ -154,7 +150,6 @@ export class UISplitter extends React.Component<UISplitterProps> {
 
     /**
      * Gets icon.
-     *
      * @param type
      * @param splitterLayoutType
      * @returns {string}
@@ -175,7 +170,6 @@ export class UISplitter extends React.Component<UISplitterProps> {
     /**
      * Method called when keydown events fired while splitter is focused.
      * Method enables support for resize using keyboard.
-     *
      * @param {React.KeyboardEvent<HTMLDivElement>} event KeyDown event.
      */
     private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
@@ -206,7 +200,6 @@ export class UISplitter extends React.Component<UISplitterProps> {
 
     /**
      * Method returns class names string depending on props and component state.
-     *
      * @returns {number} Minimal size of section.
      */
     getClassNames(): string {

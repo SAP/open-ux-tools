@@ -20,7 +20,6 @@ import semVer from 'semver';
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
  * Get TypeScript Ignore Glob Pattern.
- *
  * @param feApp  to generate the Fiori elements application
  * @param coercedUI5Version the coerced UI5 version
  * @returns ignore pattern
@@ -46,7 +45,6 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
 }
 /**
  * Generate a UI5 application based on the specified Fiori Elements floorplan template.
- *
  * @param basePath - the absolute target path where the application will be generated
  * @param data - configuration to generate the Fiori elements application
  * @param fs - an optional reference to a mem-fs editor

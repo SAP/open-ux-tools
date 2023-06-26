@@ -12,7 +12,6 @@ let logger: ToolsLogger;
 
 /**
  * Return the logger.
- *
  * @returns - Logger
  */
 export function getLogger(): ToolsLogger {
@@ -25,7 +24,6 @@ export function getLogger(): ToolsLogger {
 
 /**
  * Set custom formatting to the logger. Needs better solution, perhaps proxy transport in @sap-ux/logger.
- *
  * @param logger - instance of the logger
  */
 function setCustomFormatter(logger: ToolsLogger): void {
@@ -49,7 +47,6 @@ function setCustomFormatter(logger: ToolsLogger): void {
 
 /**
  * Initialize the logger with a certain log level.
- *
  * @param logLevel - see @sap-ux/logger -> LogLevel
  */
 function updateLogLevel(logLevel: LogLevel): void {

@@ -21,7 +21,6 @@ const linkStyle = {
 /**
  * UILink component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/link
- *
  * @exports
  * @class UILink
  * @extends {React.Component<UILinkProps, {}>}
@@ -29,7 +28,6 @@ const linkStyle = {
 export class UILink extends React.Component<UILinkProps, {}> {
     /**
      * Initializes component properties.
-     *
      * @param {UILinkProps} props
      */
     public constructor(props: UILinkProps) {

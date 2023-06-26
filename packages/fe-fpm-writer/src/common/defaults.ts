@@ -4,7 +4,6 @@ import { join, dirname } from 'path';
 export const FCL_ROUTER = 'sap.f.routing.Router';
 /**
  * Sets the common default values for all custom elements.
- *
  * @param config custom element configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
@@ -27,7 +26,6 @@ export function setCommonDefaults<T extends CustomElement & Partial<InternalCust
 
 /**
  * Method to generate default content for xml fragment.
- *
  * @param {string} text - text of button or label
  * @param {string} [eventHandler] - event handler path
  *      if value is passed then "Button" control with 'press' event would be generated

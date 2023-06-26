@@ -6,7 +6,6 @@ import { SearchBox } from '@fluentui/react';
 /**
  * UISearchBox component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/searchbox
- *
  * @exports
  * @class UISearchBox
  * @extends {React.Component<ISearchBoxProps, {}>}
@@ -14,7 +13,6 @@ import { SearchBox } from '@fluentui/react';
 export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
     /**
      * Initializes component properties.
-     *
      * @param {ISearchBoxProps} props
      */
     public constructor(props: ISearchBoxProps) {

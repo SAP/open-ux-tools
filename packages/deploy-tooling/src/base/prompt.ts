@@ -4,7 +4,6 @@ import prompts from 'prompts';
 
 /**
  * Prompt for confirmation.
- *
  * @param message - the message to be shown for confirmation.
  * @returns true if confirmed, otherwise false
  */
@@ -29,7 +28,6 @@ export async function promptConfirmation(message: string): Promise<boolean> {
 
 /**
  * Prompt for username and password.
- *
  * @param username - optional username that is to be offered as default
  * @returns credentials object with username/password
  */
@@ -52,7 +50,6 @@ export async function promptCredentials(username?: string) {
 
 /**
  * Prompt for the location of the service keys.
- *
  * @returns credentials object with service keys
  */
 export async function promptServiceKeys() {

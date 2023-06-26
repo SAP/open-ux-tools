@@ -4,7 +4,6 @@ import type { ZipFile } from 'yazl';
 
 /**
  * Helper function to recursively get a list of all files in a given folder and its sub folders.
- *
  * @param path - path to the folder that is to be searched
  * @returns list of files names
  */
@@ -25,7 +24,6 @@ export function getFileNames(path: string): string[] {
 
 /**
  * Create a zip file based on the given object.
- *
  * @param zip zip file as object
  * @returns the zip file as buffer
  */
