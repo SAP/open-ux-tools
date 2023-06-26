@@ -1,5 +1,12 @@
 # @sap-ux/cap-config-writer
 
+## 0.1.3
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+    -   @sap-ux/project-access@1.8.3
+
 ## 0.1.2
 
 ### Patch Changes
