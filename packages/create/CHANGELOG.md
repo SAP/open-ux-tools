@@ -1,5 +1,107 @@
 # @sap-ux/create
 
+## 0.2.6
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.0.21
+-   @sap-ux/mockserver-config-writer@0.1.5
+-   @sap-ux/project-access@1.8.2
+-   @sap-ux/cap-config-writer@0.1.2
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [9b684c29]
+    -   @sap-ux/cap-config-writer@0.1.1
+
+## 0.2.4
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.0.20
+
+## 0.2.3
+
+### Patch Changes
+
+-   Updated dependencies [44f4a098]
+    -   @sap-ux/cap-config-writer@0.1.0
+
+## 0.2.2
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/app-config-writer@0.0.19
+    -   @sap-ux/logger@0.3.6
+    -   @sap-ux/mockserver-config-writer@0.1.4
+    -   @sap-ux/project-access@1.8.1
+    -   @sap-ux/cap-config-writer@0.0.2
+
+## 0.2.1
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/app-config-writer@0.0.18
+
+## 0.2.0
+
+### Minor Changes
+
+-   61f4ecc7: Add cds-plugin-ui5 to CAP project
+
+### Patch Changes
+
+-   Updated dependencies [61f4ecc7]
+    -   @sap-ux/project-access@1.8.0
+    -   @sap-ux/cap-config-writer@0.0.1
+    -   @sap-ux/app-config-writer@0.0.17
+    -   @sap-ux/mockserver-config-writer@0.1.3
+
+## 0.1.14
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.0.16
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/project-access@1.7.0
+    -   @sap-ux/app-config-writer@0.0.15
+    -   @sap-ux/mockserver-config-writer@0.1.3
+
+## 0.1.12
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.0.14
+
+## 0.1.11
+
+### Patch Changes
+
+-   Updated dependencies [71a06864]
+    -   @sap-ux/project-access@1.6.0
+    -   @sap-ux/app-config-writer@0.0.13
+    -   @sap-ux/mockserver-config-writer@0.1.2
+
+## 0.1.10
+
+### Patch Changes
+
+-   Updated dependencies [7ed591a8]
+    -   @sap-ux/project-access@1.5.1
+    -   @sap-ux/app-config-writer@0.0.12
+    -   @sap-ux/mockserver-config-writer@0.1.2
+
 ## 0.1.9
 
 ### Patch Changes

@@ -53,13 +53,14 @@ Usage: deploy [options]
 Options:
   -c, --config <path-to-yaml>          Path to config yaml file
   -y, --yes                            yes to all questions (default: false)
-  -n, --no-retry                       do not retry if deploy fails for any reason
+  -n, --no-retry                       do not retry if deploy fails for any reason, for CI/CD pipeline flows this option needs to be included (default: false)
   --verbose                            verbose log output (default: false)
   --destination  <destination>         Destination in SAP BTP pointing to an ABAP system
   --url <target-url>                   URL of target ABAP system
   --client <sap-client>                Client number of target ABAP system
   --cloud                              target is an ABAP Cloud system
   --cloud-service-key <file-location>  JSON file location with the ABAP cloud service key.
+  --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables. Secrets in your .env should not be committed to source control.
   --transport <transport-request>      Transport number to record the change in the ABAP system
   --name <bsp-name>                    Project name of the app
   --strict-ssl                         Perform certificate validation (use --no-strict-ssl to deactivate it)
@@ -84,13 +85,14 @@ Usage: undeploy [options]
 Options:
   -c, --config <path-to-yaml>          Path to config yaml file
   -y, --yes                            yes to all questions (default: false)
-  -n, --no-retry                       do not retry if undeploy fails for any reason
+  -n, --no-retry                       do not retry if undeploy fails for any reason, for CI/CD pipeline flows this option needs to be included (default: false)
   --verbose                            verbose log output (default: false)
   --destination  <destination>         Destination in SAP BTP pointing to an ABAP system
   --url <target-url>                   URL of target ABAP system
   --client <sap-client>                Client number of target ABAP system
   --cloud                              target is an ABAP Cloud system
   --cloud-service-key <file-location>  JSON file location with the ABAP cloud service key.
+  --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables
   --transport <transport-request>      Transport number to record the change in the ABAP system
   --name <bsp-name>                    Project name of the app
   --strict-ssl                         Perform certificate validation (use --no-strict-ssl to deactivate it)

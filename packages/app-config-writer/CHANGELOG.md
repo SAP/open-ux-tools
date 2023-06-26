@@ -1,5 +1,84 @@
 # @sap-ux/app-config-writer
 
+## 0.0.21
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+    -   @sap-ux/project-access@1.8.2
+
+## 0.0.20
+
+### Patch Changes
+
+-   Updated dependencies [42dc7395]
+    -   @sap-ux/axios-extension@1.3.0
+
+## 0.0.19
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/axios-extension@1.2.8
+    -   @sap-ux/btp-utils@0.11.6
+    -   @sap-ux/logger@0.3.6
+    -   @sap-ux/project-access@1.8.1
+    -   @sap-ux/store@0.3.11
+    -   @sap-ux/ui5-config@0.17.1
+
+## 0.0.18
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/axios-extension@1.2.7
+
+## 0.0.17
+
+### Patch Changes
+
+-   Updated dependencies [61f4ecc7]
+    -   @sap-ux/project-access@1.8.0
+
+## 0.0.16
+
+### Patch Changes
+
+-   Updated dependencies [2d279633]
+    -   @sap-ux/axios-extension@1.2.6
+
+## 0.0.15
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/project-access@1.7.0
+    -   @sap-ux/ui5-config@0.17.0
+
+## 0.0.14
+
+### Patch Changes
+
+-   Updated dependencies [aeb4cd83]
+    -   @sap-ux/axios-extension@1.2.5
+
+## 0.0.13
+
+### Patch Changes
+
+-   Updated dependencies [71a06864]
+    -   @sap-ux/project-access@1.6.0
+
+## 0.0.12
+
+### Patch Changes
+
+-   Updated dependencies [7ed591a8]
+    -   @sap-ux/project-access@1.5.1
+
 ## 0.0.11
 
 ### Patch Changes

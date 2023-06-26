@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.11.6
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
 ## 0.11.5
 
 ### Patch Changes

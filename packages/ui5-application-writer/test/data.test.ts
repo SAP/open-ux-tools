@@ -1,6 +1,7 @@
-import { UI5_DEFAULT, mergeUi5, defaultUI5Libs, mergeApp, getSpecTagVersion, mergeObjects } from '../src/data/defaults';
+import { UI5_DEFAULT } from '@sap-ux/ui5-config';
+import { mergeUi5, defaultUI5Libs, mergeApp, getSpecTagVersion } from '../src/data/defaults';
 import { mergeWithDefaults } from '../src/data/index';
-import type { App, Package, UI5, Ui5App } from '../src/types';
+import type { App, UI5, Ui5App } from '../src/types';
 
 const mockSpecVersions = JSON.stringify({ latest: '1.102.3', 'UI5-1.71': '1.71.64', 'UI5-1.92': '1.92.1' });
 jest.mock('child_process', () => ({
@@ -15,50 +16,6 @@ jest.mock('child_process', () => ({
     })
 }));
 
-describe('mergeObjects', () => {
-    const base: Partial<Package> = {
-        scripts: {
-            first: 'first'
-        },
-        ui5: {
-            dependencies: ['module-1']
-        }
-    };
-
-    test('additional ui5 dependencies (array merge)', () => {
-        const extension: Package = {
-            name: 'test',
-            ui5: {
-                dependencies: ['module-2']
-            }
-        };
-        const merged = mergeObjects(base, extension);
-        expect(merged.ui5?.dependencies).toStrictEqual(['module-1', 'module-2']);
-    });
-
-    test('duplicated ui5 dependencies (array merge)', () => {
-        const extension: Package = {
-            name: 'test',
-            ui5: {
-                dependencies: ['module-1', 'module-2']
-            }
-        };
-        const merged = mergeObjects(base, extension);
-        expect(merged.ui5?.dependencies).toStrictEqual(['module-1', 'module-2']);
-    });
-
-    test('overwrite property', () => {
-        const extension: Package = {
-            name: 'test',
-            scripts: {
-                first: 'second'
-            }
-        };
-        const merged = mergeObjects(base, extension);
-        expect(merged.scripts?.first).toBe(extension.scripts?.first);
-    });
-});
-
 describe('Setting defaults', () => {
     const testData: { input: Partial<UI5>; expected: UI5 }[] = [
         // 0
@@ -71,7 +28,7 @@ describe('Setting defaults', () => {
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
                 descriptorVersion: '1.12.0',
-                typesVersion: `${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`,
+                typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -86,7 +43,7 @@ describe('Setting defaults', () => {
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
                 descriptorVersion: '1.12.0',
-                typesVersion: `${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`,
+                typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -101,7 +58,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.72.0',
                 minUI5Version: '1.72.0',
                 descriptorVersion: '1.17.0',
-                typesVersion: `${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`,
+                typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -118,7 +75,7 @@ describe('Setting defaults', () => {
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
                 descriptorVersion: '1.12.0',
-                typesVersion: `${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`,
+                typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`,
                 ui5Theme: 'sap_fiori_3_dark',
                 ui5Libs: defaultUI5Libs
             }
@@ -229,7 +186,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.199.0',
                 minUI5Version: '1.199.0',
                 descriptorVersion: '1.49.0',
-                typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_BEST}`,
+                typesVersion: `~1.199.0`,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -263,7 +220,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.76.0',
                 minUI5Version: '1.28.0',
                 descriptorVersion: '1.12.0',
-                typesVersion: `${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`,
+                typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }

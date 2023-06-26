@@ -105,8 +105,8 @@ export function updateProxyEnv(proxyFromConfig?: string): void {
     });
 
     if (proxyFromArgs || process.env.FIORI_TOOLS_PROXY) {
-        process.env.npm_config_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
-        process.env.npm_config_https_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env['npm_config_proxy'] = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env['npm_config_https_proxy'] = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
     } else {
         const proxyFromEnv =
             process.env.npm_config_proxy ||
@@ -117,8 +117,8 @@ export function updateProxyEnv(proxyFromConfig?: string): void {
             process.env.HTTPS_PROXY;
 
         if (!proxyFromEnv && proxyFromConfig) {
-            process.env.npm_config_proxy = proxyFromConfig;
-            process.env.npm_config_https_proxy = proxyFromConfig;
+            process.env['npm_config_proxy'] = proxyFromConfig;
+            process.env['npm_config_https_proxy'] = proxyFromConfig;
         }
     }
 }
@@ -190,41 +190,14 @@ export const setHtmlResponse = (res: any, html: string): void => {
 };
 
 /**
- * Gets the manifest.json for a given application.
- *
- * @param args list of runtime arguments
- * @returns The content of the manifest.json
- */
-export const getManifest = async (args: string[]): Promise<Manifest> => {
-    const projectRoot = process.cwd();
-    const yamlFileName = getYamlFile(args);
-    const ui5YamlPath = join(projectRoot, yamlFileName);
-    const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
-    const manifestPath = join(projectRoot, webAppFolder, 'manifest.json');
-    const manifest: Manifest = JSON.parse(readFileSync(manifestPath, { encoding: 'utf8' }));
-
-    return manifest;
-};
-
-/**
- * Gets the minUI5Version from the manifest.json.
- *
- * @param args list of runtime args
- * @returns The minUI5Version from manifest.json or undefined otherwise
- */
-export async function getUI5VersionFromManifest(args: string[]): Promise<string | undefined> {
-    const manifest = await getManifest(args);
-    return manifest['sap.ui5']?.dependencies?.minUI5Version;
-}
-
-/**
  * Determines which UI5 version to use when previewing the application.
  *
  * @param version ui5 version as defined in the yaml or via cli argument
  * @param log logger for outputing information from where ui5 version config is coming
+ * @param manifest optional already loaded manifest.json
  * @returns The UI5 version with which the application will be started
  */
-export async function resolveUI5Version(version?: string, log?: ToolsLogger): Promise<string> {
+export async function resolveUI5Version(version?: string, log?: ToolsLogger, manifest?: Manifest): Promise<string> {
     let ui5Version: string;
     let ui5VersionInfo: string;
     let ui5VersionLocation: string;
@@ -236,7 +209,7 @@ export async function resolveUI5Version(version?: string, log?: ToolsLogger): Pr
         ui5Version = version ? version : '';
         ui5VersionLocation = getYamlFile(process.argv);
     } else {
-        const minUI5Version = await getUI5VersionFromManifest(process.argv);
+        const minUI5Version = manifest?.['sap.ui5']?.dependencies?.minUI5Version;
         ui5Version = minUI5Version && !isNaN(parseFloat(minUI5Version)) ? minUI5Version : '';
         ui5VersionLocation = 'manifest.json';
     }

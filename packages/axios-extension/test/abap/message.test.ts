@@ -11,17 +11,19 @@ describe('message helpers', () => {
             const msg: SuccessMessage = {
                 code: '200',
                 message: '~message',
-                longtext_url: '/abc/de',
+                'longtext_url': '/abc/de',
                 details: [
                     { code: '1', message: '~message', severity: 'info' },
-                    { code: '2', message: '~message', severity: 'info' }
+                    { code: '2', message: '~message', severity: 'warning' }
                 ]
             };
 
             const infoMock = (log.info = jest.fn());
+            const warningMock = (log.warn = jest.fn());
             prettyPrintMessage({ msg: JSON.stringify(msg), log, host });
             // log main message, two messages for the full url, and each detail
-            expect(infoMock).toBeCalledTimes(1 + 2 + msg.details.length);
+            expect(infoMock).toBeCalledTimes(4);
+            expect(warningMock).toBeCalledTimes(1);
         });
 
         test('log none JSON message for debugging', () => {
@@ -41,7 +43,7 @@ describe('message helpers', () => {
             innererror: {
                 transactionid: '~id',
                 timestamp: '~time',
-                Error_Resolution: {
+                'Error_Resolution': {
                     abc: '~message',
                     def: '~message'
                 },

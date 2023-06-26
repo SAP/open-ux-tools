@@ -1,5 +1,45 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.57
+
+### Patch Changes
+
+-   Updated dependencies [42dc7395]
+    -   @sap-ux/axios-extension@1.3.0
+
+## 0.6.56
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/axios-extension@1.2.8
+    -   @sap-ux/btp-utils@0.11.6
+    -   @sap-ux/logger@0.3.6
+    -   @sap-ux/store@0.3.11
+
+## 0.6.55
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/axios-extension@1.2.7
+
+## 0.6.54
+
+### Patch Changes
+
+-   Updated dependencies [2d279633]
+    -   @sap-ux/axios-extension@1.2.6
+
+## 0.6.53
+
+### Patch Changes
+
+-   Updated dependencies [aeb4cd83]
+    -   @sap-ux/axios-extension@1.2.5
+
 ## 0.6.52
 
 ### Patch Changes

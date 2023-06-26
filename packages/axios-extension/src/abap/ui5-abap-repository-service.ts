@@ -198,8 +198,8 @@ export class Ui5AbapRepositoryService extends ODataService {
     public async undeploy({ bsp, testMode = false }: UndeployConfig): Promise<AxiosResponse | undefined> {
         const config = this.createConfig(bsp.transport, testMode);
         const host = this.getAbapFrontendUrl();
+        const info: AppInfo = await this.getInfo(bsp.name);
         try {
-            const info: AppInfo = await this.getInfo(bsp.name);
             if (info) {
                 const response = await this.deleteRepoRequest(bsp.name, config);
                 if (response?.headers?.['sap-message']) {

@@ -1,5 +1,49 @@
 # @sap-ux/project-access
 
+## 1.8.2
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+
+## 1.8.1
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/ui5-config@0.17.1
+
+## 1.8.0
+
+### Minor Changes
+
+-   61f4ecc7: Add cds-plugin-ui5 to CAP project
+
+## 1.7.0
+
+### Minor Changes
+
+-   31207b95: abstract ui5-app-writer functions into appropriate modules
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-config@0.17.0
+
+## 1.6.0
+
+### Minor Changes
+
+-   71a06864: Add path to manifest.appdescr_variant to search results of search for adaptation projects
+
+## 1.5.1
+
+### Patch Changes
+
+-   7ed591a8: properly handle "@sap/cds" dynamic import
+
 ## 1.5.0
 
 ### Minor Changes

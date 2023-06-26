@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.8.2
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
+## 1.8.1
+
+### Patch Changes
+
+-   e315fd8a: fix: make icon positioning consistent in searchbox inputs
+
 ## 1.8.0
 
 ### Minor Changes

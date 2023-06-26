@@ -1,5 +1,38 @@
 # @sap-ux/axios-extension
 
+## 1.3.0
+
+### Minor Changes
+
+-   42dc7395: handle btp uaa credentials
+
+## 1.2.8
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/btp-utils@0.11.6
+    -   @sap-ux/logger@0.3.6
+
+## 1.2.7
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+
+## 1.2.6
+
+### Patch Changes
+
+-   2d279633: handle 401 for undeployment
+
+## 1.2.5
+
+### Patch Changes
+
+-   aeb4cd83: handle entry severity in logging
+
 ## 1.2.4
 
 ### Patch Changes

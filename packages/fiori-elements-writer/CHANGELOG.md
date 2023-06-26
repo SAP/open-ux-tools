@@ -1,5 +1,111 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.17
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+    -   @sap-ux/odata-service-writer@0.14.24
+    -   @sap-ux/ui5-application-writer@0.23.3
+    -   @sap-ux/fe-fpm-writer@0.22.1
+    -   @sap-ux/ui5-test-writer@0.1.9
+
+## 0.12.16
+
+### Patch Changes
+
+-   743a5dc7: Chore - bump version of @sap-ux/eslint-plugin-fiori-tools used in templates
+-   Updated dependencies [743a5dc7]
+    -   @sap-ux/ui5-application-writer@0.23.2
+
+## 0.12.15
+
+### Patch Changes
+
+-   080f89ac: Opa tests to use flpSandbox.html when index.html is not generated
+-   Updated dependencies [080f89ac]
+    -   @sap-ux/ui5-test-writer@0.1.9
+
+## 0.12.14
+
+### Patch Changes
+
+-   Updated dependencies [b7b25d00]
+    -   @sap-ux/fe-fpm-writer@0.22.1
+
+## 0.12.13
+
+### Patch Changes
+
+-   Updated dependencies [36ccc8eb]
+    -   @sap-ux/fe-fpm-writer@0.22.0
+
+## 0.12.12
+
+### Patch Changes
+
+-   Updated dependencies [2de44bb9]
+    -   @sap-ux/fe-fpm-writer@0.21.0
+
+## 0.12.11
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/fe-fpm-writer@0.20.3
+    -   @sap-ux/odata-service-writer@0.14.23
+    -   @sap-ux/ui5-application-writer@0.23.1
+    -   @sap-ux/ui5-config@0.17.1
+    -   @sap-ux/ui5-test-writer@0.1.8
+
+## 0.12.10
+
+### Patch Changes
+
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/odata-service-writer@0.14.22
+
+## 0.12.9
+
+### Patch Changes
+
+-   Updated dependencies [2fc69d95]
+    -   @sap-ux/fe-fpm-writer@0.20.2
+
+## 0.12.8
+
+### Patch Changes
+
+-   7aed929c: disable search in flpSandbox
+
+## 0.12.7
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-application-writer@0.23.0
+    -   @sap-ux/ui5-config@0.17.0
+    -   @sap-ux/fe-fpm-writer@0.20.1
+    -   @sap-ux/odata-service-writer@0.14.21
+    -   @sap-ux/ui5-test-writer@0.1.7
+
+## 0.12.6
+
+### Patch Changes
+
+-   0aa02ab0: TBI - Clean up eslint warnings in generated projects
+-   Updated dependencies [0aa02ab0]
+    -   @sap-ux/fe-fpm-writer@0.20.1
+
+## 0.12.5
+
+### Patch Changes
+
+-   Updated dependencies [906b7fea]
+    -   @sap-ux/ui5-application-writer@0.22.3
+
 ## 0.12.4
 
 ### Patch Changes

@@ -1,5 +1,25 @@
 # @sap-ux/ui5-config
 
+## 0.18.0
+
+### Minor Changes
+
+-   59863d93: Removed types determination workaround.
+
+## 0.17.1
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/yaml@0.13.6
+
+## 0.17.0
+
+### Minor Changes
+
+-   31207b95: abstract ui5-app-writer functions into appropriate modules
+
 ## 0.16.6
 
 ### Patch Changes

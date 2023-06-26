@@ -113,8 +113,8 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
                         }
                     },
                     props.hasFocus && {
-                        width: 4,
-                        marginLeft: 0
+                        width: 0,
+                        marginLeft: 5
                     }
                 ],
                 clearButton: [

@@ -1,5 +1,43 @@
 # @sap-ux/ui5-application-writer
 
+## 0.23.3
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+
+## 0.23.2
+
+### Patch Changes
+
+-   743a5dc7: Chore - bump version of @sap-ux/eslint-plugin-fiori-tools used in templates
+
+## 0.23.1
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/ui5-config@0.17.1
+
+## 0.23.0
+
+### Minor Changes
+
+-   31207b95: abstract ui5-app-writer functions into appropriate modules
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-config@0.17.0
+
+## 0.22.3
+
+### Patch Changes
+
+-   906b7fea: Fix: incorrect settings for ui5-middleware-transpile
+
 ## 0.22.2
 
 ### Patch Changes

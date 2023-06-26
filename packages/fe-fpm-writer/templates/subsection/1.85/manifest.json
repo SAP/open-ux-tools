@@ -13,14 +13,14 @@
                                                 "<%- name %>": {
                                                     "name": "<%- ns %>.<%- name %>",
                                                     "type": "XMLFragment",
-                                                    "position": {
+                                                    <%if (typeof position !== 'undefined') {%>"position": {
                                                         <% if (position.placement) { %> 
-                                                            "placement": "<%- position.placement %>", 
+                                                            "placement": "<%- position.placement %>"<% if (position.anchor) { %>,<% } %>
                                                         <% } %>
                                                         <% if (position.anchor) { %> 
-                                                            "anchor": "<%- position.anchor %>" 
+                                                            "anchor": "<%- position.anchor %>"
                                                         <% } %>
-                                                    },
+                                                    },<% } %>
                                                     "title": "<%- title %>"
                                                 }
                                             }

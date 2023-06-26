@@ -22,7 +22,7 @@ export const V2_FE_TYPES_AVAILABLE = '1.108.0';
  * Get TypeScript Ignore Glob Pattern.
  *
  * @param feApp  to generate the Fiori elements application
- * @param coercedUI5Version
+ * @param coercedUI5Version the coerced UI5 version
  * @returns ignore pattern
  */
 function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coercedUI5Version: semVer.SemVer): string[] {
@@ -161,7 +161,15 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     fs.writeJSON(packagePath, packageJson);
 
     if (addTest) {
-        generateOPAFiles(basePath, {}, fs);
+        generateOPAFiles(
+            basePath,
+            {
+                htmlTarget: feApp.appOptions?.generateIndex
+                    ? 'index.html'
+                    : join('test', `flpSandbox.html?sap-ui-xx-viewCache=false#${feApp.app.flpAppId}`)
+            },
+            fs
+        );
     }
 
     return fs;
