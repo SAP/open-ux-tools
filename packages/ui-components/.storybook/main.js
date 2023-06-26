@@ -1,9 +1,5 @@
 const path = require('path');
-
 module.exports = {
-    core: {
-        builder: 'webpack5'
-    },
     stories: ['../stories/*.story.tsx'],
     addons: [
         {
@@ -42,5 +38,12 @@ module.exports = {
         });
         config.resolve.extensions.push('.ts', '.tsx');
         return config;
+    },
+    framework: {
+        name: '@storybook/react-webpack5',
+        options: {}
+    },
+    docs: {
+        autodocs: true
     }
 };
