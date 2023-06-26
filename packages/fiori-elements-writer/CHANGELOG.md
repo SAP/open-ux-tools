@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.18
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+-   Updated dependencies [d9355692]
+    -   @sap-ux/fe-fpm-writer@0.22.2
+    -   @sap-ux/odata-service-writer@0.14.25
+    -   @sap-ux/ui5-application-writer@0.23.4
+    -   @sap-ux/ui5-config@0.18.1
+    -   @sap-ux/ui5-test-writer@0.1.9
+
 ## 0.12.17
 
 ### Patch Changes
