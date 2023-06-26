@@ -15,7 +15,7 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Override:           | >=0.0.3 |
 |:--------------------| :-------------|
 |                     | |
-| **high**        | Regular Expression Denial of Service in trim  |
+| **high**            | Regular Expression Denial of Service in trim  |
 | Package             | trim |
 | Vulnerable versions | <0.0.3 |
 | Patched versions    | >=0.0.3 |
@@ -25,7 +25,7 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Override:           | >=3.0.1 |
 |:--------------------| :-------------|
 |                     | |
-| **high**        | Uncontrolled Resource Consumption in trim-newlines |
+| **high**            | Uncontrolled Resource Consumption in trim-newlines |
 | Package             | trim-newlines |
 | Vulnerable versions | <3.0.1 |
 | Patched versions    | >=3.0.1 |
@@ -35,7 +35,7 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Override:           | >=5.1.2 |
 |:--------------------| :-------------|
 |                     | |
-| **high**        | glob-parent before 5.1.2 vulnerable to Regular Expression Denial of Service in enclosure regex |
+| **high**            | glob-parent before 5.1.2 vulnerable to Regular Expression Denial of Service in enclosure regex |
 | Package             | glob-parent |
 | Vulnerable versions | <5.1.2 |
 | Patched versions    | >=5.1.2 |
