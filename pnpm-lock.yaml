@@ -976,9 +976,6 @@ importers:
       storybook:
         specifier: 7.0.23
         version: 7.0.23
-      storybook-addon-turbo-build:
-        specifier: 2.0.1
-        version: 2.0.1(webpack@5.76.0)
       style-loader:
         specifier: 3.3.1
         version: 3.3.1(webpack@5.76.0)
@@ -8983,18 +8980,6 @@ packages:
     resolution: {integrity: sha512-MEl9uirslVwqQU369iHNWZXsI8yaZYGg/D65aOgZkeyFJwHYSxilf7rQzXKI7DdDuBPrBXbfk3sl9hJhmd5AUw==}
     dev: true
 
-  /esbuild-loader@3.0.1(webpack@5.76.0):
-    resolution: {integrity: sha512-aZfGybqTeuyCd4AsVvWOOfkhIuN+wfZFjMyh3gyQEU1Uvsl8L6vye9HqP93iRa0iTA+6Jclap514PJIC3cLnMA==}
-    peerDependencies:
-      webpack: ^4.40.0 || ^5.0.0
-    dependencies:
-      esbuild: 0.17.19
-      get-tsconfig: 4.6.0
-      loader-utils: 2.0.4
-      webpack: 5.76.0(esbuild@0.17.19)
-      webpack-sources: 1.4.3
-    dev: true
-
   /esbuild-plugin-alias@0.2.1:
     resolution: {integrity: sha512-jyfL/pwPqaFXyKnj8lP8iLk6Z0m099uXR45aSN8Av1XD4vhvQutxxPzgA2bTcAwQpa1zCXDcWOlhFgyP3GKqhQ==}
     dev: true
@@ -14706,10 +14691,6 @@ packages:
       is-plain-obj: 2.1.0
     dev: false
 
-  /source-list-map@2.0.1:
-    resolution: {integrity: sha512-qnQ7gVMxGNxsiL4lEuJwe/To8UnK7fAnmbGEEH8RpLouuKbeEm0lhbQVFIrNSuB+G7tVrAlVsZgETT5nljf+Iw==}
-    dev: true
-
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
     engines: {node: '>=0.10.0'}
@@ -14831,14 +14812,6 @@ packages:
 
   /store2@2.14.2:
     resolution: {integrity: sha512-siT1RiqlfQnGqgT/YzXVUNsom9S0H1OX+dpdGN1xkyYATo4I6sep5NmsRD/40s3IIOvlCq6akxkqG82urIZW1w==}
-    dev: true
-
-  /storybook-addon-turbo-build@2.0.1(webpack@5.76.0):
-    resolution: {integrity: sha512-NP9e42fOmhkRe93okDlmIJ+2m+j4c9HZSa8EQJPJiJBQiAZ6MrjL6v0jzMukcwhIlu91RtHSkjlACm3xbi9jWQ==}
-    dependencies:
-      esbuild-loader: 3.0.1(webpack@5.76.0)
-    transitivePeerDependencies:
-      - webpack
     dev: true
 
   /storybook@7.0.23:
@@ -15860,13 +15833,6 @@ packages:
       ansi-html-community: 0.0.8
       html-entities: 2.3.3
       strip-ansi: 6.0.1
-    dev: true
-
-  /webpack-sources@1.4.3:
-    resolution: {integrity: sha512-lgTS3Xhv1lCOKo7SA5TjKXMjpSM4sBjNV5+q2bqesbSPs5FjGmU6jjtBSkX9b4qW87vDIsCIlUPOEhbZrMdjeQ==}
-    dependencies:
-      source-list-map: 2.0.1
-      source-map: 0.6.1
     dev: true
 
   /webpack-sources@3.2.3:
