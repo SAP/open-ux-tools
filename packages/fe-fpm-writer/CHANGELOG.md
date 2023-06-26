@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.22.2
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+
 ## 0.22.1
 
 ### Patch Changes

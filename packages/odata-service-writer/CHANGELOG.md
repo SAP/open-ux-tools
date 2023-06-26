@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.25
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+-   Updated dependencies [d9355692]
+    -   @sap-ux/ui5-config@0.18.1
+
 ## 0.14.24
 
 ### Patch Changes

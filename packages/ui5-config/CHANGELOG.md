@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.18.1
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+
 ## 0.18.0
 
 ### Minor Changes
