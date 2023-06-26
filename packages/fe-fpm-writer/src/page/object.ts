@@ -5,6 +5,7 @@ import type { ObjectPage, InternalObjectPage } from './types';
 
 /**
  * Enhances the provided list report configuration with default data.
+ *
  * @param data - a list report configuration object
  * @param manifest - application manifest
  * @returns enhanced configuration
@@ -26,6 +27,7 @@ function enhanceData(data: ObjectPage, manifest: Manifest): InternalObjectPage {
 
 /**
  * Add an object page to an existing UI5 application.
+ *
  * @param basePath - the base path
  * @param data - the object page configuration
  * @param fs - the memfs editor instance

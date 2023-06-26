@@ -10,6 +10,7 @@ import { render } from 'ejs';
  * Extend the manifest.json file passed via the fs reference with the template and settings specified.
  * This extends by combining the version specific common manifest with the floorplan/template type
  * specific settings.
+ *
  * @param fs - A reference to the in memory file system
  * @param targetPath - The target application path
  * @param rootTemplatesPath - The root path where the manifest templates will be found

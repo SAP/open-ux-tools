@@ -15,6 +15,7 @@ const submenuIconProps = { iconName: UiIcons.ArrowDown };
 
 /**
  * ContextualMenu styles prop generator.
+ *
  * @returns - consumable styles property for ContextualMenu
  */
 export function getUIcontextualMenuStyles(): Partial<IContextualMenuStyles> {
@@ -29,6 +30,7 @@ export function getUIcontextualMenuStyles(): Partial<IContextualMenuStyles> {
 
 /**
  * ContextualMenu subcomponent styles prop generator.
+ *
  * @returns - consumable styles property for ContextualMenuItem
  */
 export function getUIContextualMenuItemStyles(): Partial<IContextualMenuItemStyles> {
@@ -65,6 +67,7 @@ export function getUIContextualMenuItemStyles(): Partial<IContextualMenuItemStyl
 
 /**
  * ContextualMenu sub-component styles prop generator.
+ *
  * @param {number} maxWidth
  * @returns consumable styles property for Callout
  */
@@ -83,6 +86,7 @@ export function getUIcontextualMenuCalloutStyles(maxWidth?: number): Partial<ICa
 /**
  * Recursively applies corresponding styles generator to each,
  * IContextualMenuItem, ICallourProps and IContxualMenuProps item in props tree.
+ *
  * @param items - IContextualMenu list
  * @returns - mutated IContextualMenuItem prop with styles props generators applied to each menu tree node
  */

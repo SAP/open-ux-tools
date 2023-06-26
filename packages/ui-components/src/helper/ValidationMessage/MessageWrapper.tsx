@@ -20,6 +20,7 @@ export const MESSAGE_ICONS_MAP = new Map<ErrorMessageType | undefined, UiIcons>(
 
 /**
  * Method return MessageWrapper react element.
+ *
  * @param props
  * @returns {React.ReactElement}
  */

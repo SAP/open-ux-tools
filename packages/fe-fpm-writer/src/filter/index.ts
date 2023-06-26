@@ -15,6 +15,7 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Enhances the provided custom filter configuration with default data.
+ *
  * @param {CustomFilter} data - a custom filter configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
@@ -42,6 +43,7 @@ function enhanceConfig(data: CustomFilter, manifestPath: string, manifest: Manif
 
 /**
  * Add a custom filter to the filter bar of an existing UI5 application.
+ *
  * @param {string} basePath - the base path
  * @param {CustomFilter} filterConfig - the custom filter configuration
  * @param {Editor} [fs] - the memfs editor instance
@@ -84,6 +86,7 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
 
 /**
  * Enhance the target object in the manifest with the required nested objects and return a reference to it.
+ *
  * @param {Manifest} manifest - the application manifest
  * @returns Filters object of the first page
  */

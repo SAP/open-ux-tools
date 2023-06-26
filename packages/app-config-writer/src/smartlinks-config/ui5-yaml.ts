@@ -16,6 +16,7 @@ import { DeployConfig } from '../types';
 
 /**
  * Reads and returns target information from ui5-deploy.yaml, if existing.
+ *
  * @param basePath - path to project root, where ui5-deploy.yaml is
  * @returns {TargetConfig} target definition for deploy configuration
  */
@@ -31,6 +32,7 @@ export async function readUi5DeployConfigTarget(basePath: string): Promise<Targe
 
 /**
  * Checks if 'fiori-tools-servestatic' configuration is already existing.
+ *
  * @param existingPaths existing configuration paths under 'fiori-tools-servestatic'
  * @param existingFioriToolsProxy - flag if fiori tools proxy middleware is already existing
  * @returns 'fiori-tools-servestatic' configuration, if not existing yet
@@ -56,6 +58,7 @@ const getFioriToolsServeStaticMiddlewareConfig = (
 
 /**
  * Reads and adds servestatic configuration to ui5/-local/-mock.yaml files.
+ *
  * @param basePath - path to project root, where ui5.yaml is
  * @param fs - mem-fs reference to be used for file access
  * @param logger - logger

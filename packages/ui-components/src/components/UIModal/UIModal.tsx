@@ -5,6 +5,7 @@ import { Modal } from '@fluentui/react';
 /**
  * UIModal component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/Modal
+ *
  * @exports
  * @class UIModal
  * @extends {React.Component<IModalProps, {}>}
@@ -12,6 +13,7 @@ import { Modal } from '@fluentui/react';
 export class UIModal extends React.Component<IModalProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {IModalProps} props
      */
     public constructor(props: IModalProps) {

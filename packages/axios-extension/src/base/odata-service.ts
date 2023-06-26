@@ -21,6 +21,7 @@ export interface ODataServiceExtension {
 
 /**
  * Parse a JSON based OData response and extract the content from the OData structure.
+ *
  * @returns an object of the provided type
  */
 function parseODataResponse<T>(): T {
@@ -60,6 +61,7 @@ export class ODataService extends Axios implements ODataServiceExtension {
 
     /**
      * Get the service description document.
+     *
      * @returns a service description containing all exposed entities
      */
     public async document(): Promise<ServiceDocument> {
@@ -79,6 +81,7 @@ export class ODataService extends Axios implements ODataServiceExtension {
 
     /**
      * Get the metadata of the service.
+     *
      * @returns service metadata
      */
     public async metadata(): Promise<string> {
@@ -91,6 +94,7 @@ export class ODataService extends Axios implements ODataServiceExtension {
 
     /**
      * Send a get request to the OData service with some preset always used parameters.
+     *
      * @param url relative url to the service
      * @param config additional axios request config
      * @returns a response enhanced with an OData parse method

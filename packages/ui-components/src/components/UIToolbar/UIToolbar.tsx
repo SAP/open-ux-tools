@@ -16,11 +16,13 @@ export interface UIToolbarState {
 
 /**
  * Resize observer.
+ *
  * @class {ResizeObserver}
  */
 declare class ResizeObserver {
     /**
      * Initialize class props.
+     *
      * @param {any} callback
      */
     constructor(callback: any);
@@ -28,6 +30,7 @@ declare class ResizeObserver {
 
 /**
  * UIToolbar component.
+ *
  * @exports
  * @class {UIToolbar}
  * @extends {React.Component<UIToolbarProps, UIToolbarState>}
@@ -38,6 +41,7 @@ export class UIToolbar extends React.Component<UIToolbarProps, UIToolbarState> {
 
     /**
      * Initializes component properties.
+     *
      * @param props
      */
     constructor(props: UIToolbarProps) {

@@ -2,6 +2,7 @@ import { spawnSync } from 'child_process';
 
 /**
  * Run npm install command.
+ *
  * @param basePath - path to application root
  * @param [installArgs] - optional string array of arguments
  */

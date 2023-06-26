@@ -26,6 +26,7 @@ export interface UISectionProps {
 
 /**
  * Section Component.
+ *
  * @exports
  * @class {UISection}
  * @extends {React.Component<UISectionProps>}

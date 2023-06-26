@@ -29,6 +29,7 @@ Following <OPTIONS> are available:
 
 /**
  * Convert command line arguments into environment check options.
+ *
  * @param cliArgs - parsed command line arguments from minimist
  * @returns - options to check enviroment
  */
@@ -46,6 +47,7 @@ function getOptions(cliArgs: minimist.ParsedArgs): CheckEnvironmentOptions | und
 
 /**
  * Writes to file.
+ *
  * @param filename name of file
  * @param content file content
  */
@@ -62,6 +64,7 @@ async function writeToFile(filename: string, content: string): Promise<void> {
 
 /**
  * Output the results according to the selected output method.
+ *
  * @param result - the data structure containing the results
  * @param mode output (JSON, markdown, zip)
  */
@@ -113,6 +116,7 @@ async function outputResults(result: EnvironmentCheckResult, mode?: OutputMode):
 
 /**
  * Callback in case user credentials are required.
+ *
  * @param destination - destination info with Name, Host, ...
  * @returns user input for username and password
  */

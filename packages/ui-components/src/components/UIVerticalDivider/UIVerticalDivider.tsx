@@ -6,6 +6,7 @@ import { VerticalDivider } from '@fluentui/react';
 /**
  * UIVerticalDivider component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/verticalDivider
+ *
  * @exports
  * @class UIVerticalDivider
  * @extends {React.Component<IVerticalDividerProps, {}>}
@@ -13,6 +14,7 @@ import { VerticalDivider } from '@fluentui/react';
 export class UIVerticalDivider extends React.Component<IVerticalDividerProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {IVerticalDividerProps} props
      */
     public constructor(props: IVerticalDividerProps) {

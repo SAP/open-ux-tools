@@ -13,6 +13,7 @@ export interface NodeComment<T> {
 
 /**
  * Represents a yaml document with utility functions to manipulate the document.
+ *
  * @class YamlDocument
  */
 export class YamlDocument {
@@ -20,6 +21,7 @@ export class YamlDocument {
 
     /**
      * Returns a new instance of YamlDocument.
+     *
      * @static
      * @param {string} serializedYaml - the serialized yaml string
      * @returns {YamlDocument} the YamlDocument instance
@@ -31,6 +33,7 @@ export class YamlDocument {
 
     /**
      * Creates an instance of YamlDocument.
+     *
      * @param {string} serializedYaml - the serialized yaml string
      * @memberof YamlDocument
      */
@@ -55,6 +58,7 @@ export class YamlDocument {
 
     /**
      * Returns a string representation of the yaml document.
+     *
      * @returns {string} the string representation
      * @memberof YamlDocument
      */
@@ -64,6 +68,7 @@ export class YamlDocument {
 
     /**
      * Adds a comment to the yaml document.
+     *
      * @param root0 - the comment object
      * @param root0.comment - the comment object's comment
      * @param root0.location - the comment object's location
@@ -92,6 +97,7 @@ export class YamlDocument {
 
     /**
      * Set the value at a given path.
+     *
      * @param path - hierarchical path where the node will be inserted/updated
      * @param path.path - the path object's path
      * @param path.value - the path object's value
@@ -146,6 +152,7 @@ export class YamlDocument {
     }
     /**
      * Appends a node to a sequence in the document.
+     *
      * @param path - hierarchical path where the node will be inserted/updated
      * @param {string} path.path - the path object's path
      * @param {object} path.value - the path object's value
@@ -219,6 +226,7 @@ export class YamlDocument {
 
     /**
      * Updates a node in a sequence in the document.
+     *
      * @param path - hierarchical path where the node will be inserted/updated
      * @param {string} path.path - the path object's path
      * @param {object} path.matcher - key/value pair identifying the object
@@ -262,6 +270,7 @@ export class YamlDocument {
 
     /**
      * Deletes a node in a sequence in the document.
+     *
      * @param path - hierarchical path where the node will be deleted
      * @param {string} path.path - the path object's path
      * @param {object} path.matcher - key/value pair identifying the object
@@ -359,6 +368,7 @@ export class YamlDocument {
 
     /**
      * Converts to a path object to an array.
+     *
      * @private
      * @template T
      * @param {string} path - string path

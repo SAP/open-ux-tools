@@ -64,6 +64,7 @@ interface ComboBoxRef extends IComboBox {
 
 /**
  * UIComboBox component.
+ *
  * @exports
  * @class {UIComboBox}
  * @extends {React.Component<UIComboBoxProps, UIComboBoxState>}
@@ -80,6 +81,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Initializes component properties.
+     *
      * @param {UIComboBoxProps} props
      */
     public constructor(props: UIComboBoxProps) {
@@ -121,6 +123,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Updates hidden options.
+     *
      * @param {IComboBoxOption[]} opts
      */
     private updateHiddenOptions(opts: IComboBoxOption[]): void {
@@ -135,6 +138,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Method filters options and hides unmatched options.
+     *
      * @param {React.FormEvent<IComboBox>} event Combobox event object
      */
     private onInput(event: React.FormEvent<IComboBox>): void {
@@ -166,6 +170,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * Method handles keydown event and does following.
      * 1. Fix for bug(in fluentui sources) regarding keyboard navigation when last item is not visible.
      * 2. Opens list when user enters any key.
+     *
      * @param {React.FormEvent<HTMLInputElement>} event Keydown event
      */
     private onKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
@@ -202,6 +207,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     /**
      * Method called on combobox option resolvation.
      * We should not allow to add any custom option.
+     *
      * @returns {IComboBoxOption[]} Array of combobox items.
      */
     private onResolveOptions = (): IComboBoxOption[] => {
@@ -211,6 +217,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     /**
      * Method called on combobox item render.
      * We should pass query to it and avoid rendering if it is hidden.
+     *
      * @param {IComboBoxOption} props Combobox item props.
      * @param {Function} defaultRender Combobox item default renderer.
      * @returns {JSX.Element | null} Element to render.
@@ -242,6 +249,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Method to get current selected index.
+     *
      * @returns {number | undefined} Selected item index.
      */
     private getCurrentSelectedIndex = (): number | undefined => {
@@ -257,6 +265,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Return a value for the placeholder.
+     *
      * @returns {string}
      */
     private getPlaceholder = (): string => {
@@ -271,6 +280,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     /**
      * Method called on combobox item's option/label render.
      * We should use different componenet which support highlighting - 'ComboboxSearchOption'.
+     *
      * @param {IComboBoxOption} props Combobox item props.
      * @param {Function} defaultRender Combobox item default renderer.
      * @returns {JSX.Element | null} Element to render.
@@ -287,6 +297,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Method which determines what is next visible item - it is used to fix bug in fluentui sources..
+     *
      * @param {number} index Current index.
      * @param {boolean} forward Dirrection to look up.
      * @returns {ComboboxItemInfo | null} Combobox item object.
@@ -307,6 +318,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Method is used as fix for bug(in fluentui sources) regarding keyboard navigation when last item is not visible.
+     *
      * @param {boolean} forward Dirrection to look up.
      * @returns {boolean} Returs true if method changed navigation.
      */
@@ -437,6 +449,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     /**
      * Handle multiselect change by avoiding 'blur' event.
      * Problem is that blur event uses suggested value and toggles selection for it.
+     *
      * @param {React.FormEvent<IComboBox>} event on change
      * @param {IComboBoxOption} option changed option
      * @param {number} index option index
@@ -485,6 +498,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Method returns class names string depending on props and component state.
+     *
      * @param {InputValidationMessageInfo} messageInfo Error/warning message if applied
      * @returns {string} Class names of root combobox element.
      */
@@ -507,6 +521,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     /**
      * Method returns properties for Autofill component(combobox's inner compnent for text input).
      * Method handles 'highlight' and 'readOnly' properties.
+     *
      * @returns {IAutofillProps} Properties for Autofill component.
      */
     private getAutofillProps(): IAutofillProps {

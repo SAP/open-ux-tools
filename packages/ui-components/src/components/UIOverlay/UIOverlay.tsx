@@ -5,6 +5,7 @@ import { Overlay } from '@fluentui/react';
 /**
  * UILoader component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/overlay
+ *
  * @exports
  * @class UIOverlay
  * @extends {React.Component<IOverlayProps, {}>}
@@ -12,6 +13,7 @@ import { Overlay } from '@fluentui/react';
 export class UIOverlay extends React.Component<IOverlayProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {IOverlayProps} props
      */
     public constructor(props: IOverlayProps) {

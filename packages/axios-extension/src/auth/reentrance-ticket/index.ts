@@ -13,6 +13,7 @@ const ADT_REENTRANCE_ENDPOINT = '/sap/bc/adt/core/http/reentranceticket';
 
 /**
  * Get the reentrance ticket from the backend.
+ *
  * @param options options
  * @param options.backendUrl backend Url
  * @param options.logger  logger

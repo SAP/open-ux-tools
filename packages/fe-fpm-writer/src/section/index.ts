@@ -16,6 +16,7 @@ type CustomSectionUnion = CustomSection | CustomSubSection;
 
 /**
  * Get the template folder for the given UI5 version.
+ *
  * @param folderName template folder name.
  * @param ui5Version required UI5 version.
  * @returns path to the template folder containing the manifest.json ejs template
@@ -31,6 +32,7 @@ export function getManifestRoot(folderName: string, ui5Version?: string): string
 
 /**
  * Get additional dependencies for fragment.xml template based on passed ui5 version.
+ *
  * @param ui5Version required UI5 version.
  * @returns String with additional dependencies to add for "FragmentDefinition" element in fragment.xml
  */
@@ -41,6 +43,7 @@ function getAdditionalDependencies(ui5Version?: string): string | undefined {
 
 /**
  * Enhances the provided custom section configuration with additonal data.
+ *
  * @param {Editor} fs - the mem-fs editor instance
  * @param {CustomSection} data - a custom section configuration object
  * @param {string} manifestPath - path to the project's manifest.json
@@ -71,6 +74,7 @@ function enhanceConfig(
 
 /**
  * Add a custom section or sub section to an existing UI5 application.
+ *
  * @param {string} basePath - the base path
  * @param {CustomSection} customSection - the custom section configuration
  * @param {string} manifestTemplateRoot - path to the template folder containing the manifest.json ejs template
@@ -114,6 +118,7 @@ function generate(
 
 /**
  * Add a custom section to an existing UI5 application.
+ *
  * @param {string} basePath - the base path
  * @param {CustomSection} customSection - the custom section configuration
  * @param {Editor} [fs] - the mem-fs editor instance
@@ -126,6 +131,7 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
 
 /**
  * Add a custom sub section to an existing UI5 application.
+ *
  * @param {string} basePath - the base path
  * @param {CustomSubSection} customSubSection - the custom sub section configuration
  * @param {Editor} [fs] - the mem-fs editor instance

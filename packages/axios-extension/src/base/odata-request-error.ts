@@ -2,6 +2,7 @@ import type { AxiosError } from 'axios';
 
 /**
  * Type guard to narrow an unknown exception to the AxiosError type if it is compatible.
+ *
  * @param e unknown error
  * @returns exception cast to AxiosError if it is one
  */
@@ -24,6 +25,7 @@ export interface ODataError {
 export class ODataRequestError extends Error {
     /**
      * Helper function to check if a parsed OData response contains an error.
+     *
      * @param odata odata object
      * @returns boolean
      */
@@ -37,6 +39,7 @@ export class ODataRequestError extends Error {
 
     /**
      * Constructor extracting message and code from the error and putting them into an error message.
+     *
      * @param responseData response Data
      */
     constructor(responseData: unknown) {

@@ -19,6 +19,7 @@ export class AdtCatalogService extends Axios {
     /**
      * Adt Catalog Service which fetches the Adt service
      * specification for a given ADT service.
+     *
      * @param adtCategory Adt service Id
      * @returns Service schema of the input Adt service
      */
@@ -57,6 +58,7 @@ export class AdtCatalogService extends Axios {
     /**
      * Check if discover schema is in the local cache. If not, fetch it by
      * calling discover service request.
+     *
      * @returns Promise<void>
      */
     private async checkOrLoadAdtDiscoverySchema(): Promise<void> {

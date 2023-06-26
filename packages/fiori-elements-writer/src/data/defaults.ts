@@ -9,6 +9,7 @@ const defaultModelName = 'mainModel'; // UI5 default model name is '' but some f
 
 /**
  * Updates the template settings to defaults if not provided.
+ *
  * @param template - The template to be updated
  * @param odataVersion - may be used to determine the default properties set
  * @returns Updated template settings
@@ -46,6 +47,7 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
 
 /**
  * Sets defaults for the specified Fiori elements application.
+ *
  * @param feApp - Fiori elements application config
  * @returns Fiori elements app config with updated defaults for unspecified properties
  */

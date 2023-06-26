@@ -3,6 +3,7 @@ import { toolsExtensionListVSCode } from '../types';
 
 /**
  * Formats the environment check results into a string for copying.
+ *
  * @param envcheckResults environment check results to be parsed
  * @returns stringified results
  */

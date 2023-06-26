@@ -44,6 +44,7 @@ describe('ODataService templates', () => {
 
     /**
      * Helper function to create app directories for testing in mem-fs.
+     *
      * @param name testDir name
      * @returns testDir Path
      */

@@ -22,6 +22,7 @@ export interface UITranslationButtonProps<T extends TranslationEntry> extends UI
 /**
  * Method to resolve button component text strings for passed key.
  * Component has default texts which can be overwritten using property `strings`.
+ *
  * @param property Property.
  * @param strings Map with all text properties.
  * @returns Resolved text.
@@ -32,6 +33,7 @@ const getStringText = (property: keyof TranslationInputStrings, strings?: Transl
 
 /**
  * Component to render translation button to provide helper callout with i18n generation option.
+ *
  * @param props Component properties.
  * @returns Component to render translation button with callout.
  */

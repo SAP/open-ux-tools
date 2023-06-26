@@ -46,6 +46,7 @@ export type FEV4ManifestTarget = {
 export class ValidationError extends Error {
     /**
      * ValidationError constructor.
+     *
      * @param message - the error message
      */
     constructor(message: string) {

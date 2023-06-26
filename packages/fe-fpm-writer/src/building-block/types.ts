@@ -1,5 +1,6 @@
 /**
  * Building block type.
+ *
  * @enum {string}
  */
 export enum BuildingBlockType {
@@ -37,6 +38,7 @@ export interface BuildingBlock {
 /**
  * Represents a Chart building block control.
  * Usually, a contextPath and metaPath is expected.
+ *
  * @example
  * <macro:Chart id="MyChart" contextPath="/RootEntity" metaPath="@com.sap.vocabularies.UI.v1.Chart" />
  * @extends {BuildingBlock}
@@ -97,6 +99,7 @@ export interface FilterField {
 /**
  * Represents a Filter Bar building block control.
  * Usually, a SelectionFields annotation is expected.
+ *
  * @example
  * <macro:FilterBar id="MyFilterBar" metaPath="@com.sap.vocabularies.UI.v1.SelectionFields" />
  * @extends {BuildingBlock}
@@ -150,6 +153,7 @@ export interface FieldFormatOptions {
  * Building block for creating a field based on the metadata provided by OData V4.
  * Usually, a DataField or DataPoint annotation is expected, but the field can also be used to display
  * a property from the entity type.
+ *
  * @example
  * <macro:Field id="MyField" metaPath="MyProperty" />
  * @extends {BuildingBlock}
@@ -177,6 +181,7 @@ export interface Field extends BuildingBlock {
  * Building block for creating a Form based on the metadata provided by OData V4.
  * It is designed to work based on a FieldGroup annotation but can also work if you provide a
  * ReferenceFacet or a CollectionFacet.
+ *
  * @example
  * <macro:Form id="MyForm" metaPath="@com.sap.vocabularies.UI.v1.FieldGroup#GeneralInformation" />
  * @extends {BuildingBlock}
@@ -190,6 +195,7 @@ export interface Form extends BuildingBlock {
 
 /**
  * Building block used to create a form element containing a label and a field.
+ *
  * @extends {BuildingBlock}
  */
 export interface FormElement extends BuildingBlock {
@@ -205,6 +211,7 @@ export interface FormElement extends BuildingBlock {
 
 /**
  * Building block used to create a micro chart based on the metadata provided by OData V4.
+ *
  * @extends {BuildingBlock}
  */
 export interface MicroChart extends BuildingBlock {
@@ -229,6 +236,7 @@ export interface MicroChart extends BuildingBlock {
 
 /**
  * Building block used to create a paginator control.
+ *
  * @example
  * <macro:Paginator id="someID" />
  * @extends {BuildingBlock}
@@ -240,6 +248,7 @@ export type Paginator = BuildingBlock;
  * Please note that the 'Share in SAP Jam' option is only available on platforms that are integrated with SAP Jam.
  * If you are consuming this macro in an environment where the SAP Fiori launchpad is not available,
  * then the 'Save as Tile' option is not visible.
+ *
  * @example
  * <macro:Share id="someID" visible="true" />
  * @extends {BuildingBlock}
@@ -255,6 +264,7 @@ export interface Share extends BuildingBlock {
  * Building block used to create a table based on the metadata provided by OData V4.
  * Usually, a LineItem or PresentationVariant annotation is expected,
  * but the table building block can also be used to display an EntitySet.
+ *
  * @example
  * <macro:Table id="MyTable" metaPath="@com.sap.vocabularies.UI.v1.LineItem" />
  * @extends {BuildingBlock}

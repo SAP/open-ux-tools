@@ -12,6 +12,7 @@ import { logger } from './types';
 
 /**
  * Read the required values for connecting to an on-premise SAP system from the env variable, create a provider instance and execute the system agnostic example script.
+ *
  * @param env object reprensenting the content of the .env file.
  * @param env.TEST_SYSTEM base url of the test system
  * @param env.TEST_USER optional username
@@ -40,6 +41,7 @@ export async function testWithAbapSystem(
 
 /**
  * Read the required values for connecting to an ABAP environment on BTP from the env variable, create a provider instance and execute the system agnostic example script.
+ *
  * @param env object reprensenting the content of the .env file.
  * @param env.TEST_SERVICE_INFO_PATH path to a local copy of the service configuration file
  * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
@@ -80,6 +82,7 @@ export async function testWithAbapBtpSystem(
 
 /**
  * Read the required values for connecting to a Cloud ABAP environment from the env variable, create a provider instance and execute the system agnostic example script.
+ *
  * @param env object reprensenting the content of the .env file.
  * @param env.TEST_SYSTEM base url of the test system
  * @param env.TEST_IGNORE_CERT_ERRORS optional, ignore certifcate errors or not
@@ -100,6 +103,7 @@ export async function testWithCloudAbapSystem(
 
 /**
  * Read the required values for connecting to a destination from the env variable, create a provider instance and execute the system agnostic example script.
+ *
  * @param env object reprensenting the content of the .env file.
  * @param env.TEST_DESTINATION name of destination
  * @param env.TEST_USER optional username

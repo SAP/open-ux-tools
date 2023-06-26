@@ -11,6 +11,7 @@ export {
 /**
  * UIFocusZone component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/focuszone
+ *
  * @exports
  * @class UIFocusZone
  * @extends {React.Component<IFocusZoneProps, {}>}
@@ -18,6 +19,7 @@ export {
 export class UIFocusZone extends React.Component<IFocusZoneProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {IFocusZoneProps} props
      */
     public constructor(props: IFocusZoneProps) {

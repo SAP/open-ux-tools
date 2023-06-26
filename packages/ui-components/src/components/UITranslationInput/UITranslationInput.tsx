@@ -42,6 +42,7 @@ export interface UITranslationInputProps<T extends TranslationEntry> extends ITe
 
 /**
  * Method returns suggestion object with message and tooltip based on passed translation button props.
+ *
  * @param props Properties of translation input component.
  * @returns Translation suggestion object.
  */
@@ -133,6 +134,7 @@ const getTranslationSuggestion = <T extends TranslationEntry>(
 
 /**
  * Component to render translation input with button to provide helper callout with i18n generation option.
+ *
  * @param props Component properties.
  * @returns Component to render translation input.
  */

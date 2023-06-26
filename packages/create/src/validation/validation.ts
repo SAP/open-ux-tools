@@ -4,6 +4,7 @@ import { join } from 'path';
 
 /**
  * Validate base path of app, throw error if file is missing.
+ *
  * @param basePath - base path of the app, where package.json and ui5.yaml resides
  */
 export function validateBasePath(basePath: string): void {
@@ -20,6 +21,7 @@ export function validateBasePath(basePath: string): void {
 
 /**
  * Return if an instance of mem-fs editor recorded any deletion.
+ *
  * @param fs - the memfs editor instance
  * @returns - true if fs contains deletions; false otherwise
  */

@@ -94,6 +94,7 @@ const templateLibs: TemplateLibs = {
 
 /**
  * Gets the base UI5 component path that supports the specified template.
+ *
  * @param type - The template type of the required base component
  * @param version - The odata service version determines the appropriate base component to use
  * @returns The base component library path
@@ -104,6 +105,7 @@ export function getBaseComponent(type: TemplateType, version: OdataVersion): str
 
 /**
  * Gets the required UI5 libs for the specified template type and OData version.
+ *
  * @param type - The template type of the required base component
  * @param version - The odata service version determines the appropriate base component to use
  * @returns The Ui5 libs required by the specified template type and OData version

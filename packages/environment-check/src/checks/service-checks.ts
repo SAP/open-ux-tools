@@ -23,6 +23,7 @@ const catalogMessages = {
 
 /**
  * Internal function to create a service provider.
+ *
  * @param endpoint - the SAP system
  * @param username - username for endpoint
  * @param password - password for endpoint
@@ -73,6 +74,7 @@ export function getServiceProvider(
 
 /**
  * Checks for services from catalog requests.
+ *
  * @param provider the AbapServiceProvider to be used
  * @param systemName name of SAP system or destination
  * @returns Result messages and results of catalog requests
@@ -102,6 +104,7 @@ export async function checkCatalogServices(
 
 /**
  * Performs a catalog request for the given odata version and destination.
+ *
  * @param odataVersion odataVersion to be used
  * @param provider the AbapServiceProvider to be used
  * @param systemName name of SAP system or destination
@@ -156,6 +159,7 @@ async function catalogRequest(
 
 /**
  * Checks if ATO catalog is available.
+ *
  * @param provider the AbapServiceProvider to be used
  * @returns Result messages and result of ato catalog request
  */
@@ -186,6 +190,7 @@ export async function checkAtoCatalog(
 
 /**
  * Checks for an existing instance of the UI5 ABAP repository service or creates one.
+ *
  * @param provider the AbapServiceProvider to be used
  * @returns Result messages and result of the request
  */
@@ -222,6 +227,7 @@ export async function checkUi5AbapRepository(
 
 /**
  * Checks for the ability to retrieve available transport requests.
+ *
  * @param provider the AbapServiceProvider to be used
  * @returns Result messages and result of the request
  */

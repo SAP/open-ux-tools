@@ -63,6 +63,7 @@ function logLevel(severity: string, msg: string, log: Logger, error = false): vo
 
 /**
  * Log a Gateway response.
+ *
  * @param options  options
  * @param options.msg message string returned from gateway
  * @param options.log logger to be used
@@ -103,6 +104,7 @@ function logFullURL({ host, path, log }: { host: string; path?: string; log: Log
 /**
  * Log Gateway errors returned from the S_MGW_ODATA_INNER_ERROR table which is a store of OData Inner Error data. In certain flows,
  * for example, when test mode is enabled, not all error details should be displayed to the user and need to be restricted.
+ *
  * @param  options options
  * @param options.error error message returned from gateway
  * @param options.log logger to be used
@@ -133,6 +135,7 @@ export function prettyPrintError(
 
 /**
  * Print a user friendly time string.
+ *
  * @param ms time in ms
  * @returns user friendly string
  */

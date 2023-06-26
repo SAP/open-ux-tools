@@ -9,6 +9,7 @@ import { t } from '..';
 
 /**
  * Return the list of questions to configure mockserver.
+ *
  * @param params - optional parameters used to fill default values
  * @param params.webappPath - optional path to webapp folder, where manifest is
  * @param params.fs - optional memfs editor instance

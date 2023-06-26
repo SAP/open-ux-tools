@@ -5,6 +5,7 @@ import { addAddCdsPluginUi5Command } from './cds-plugin-ui';
 
 /**
  * Return 'create-fiori add *' commands. Commands include also the handler action.
+ *
  * @returns - commander command containing add <feature> commands
  */
 export function getAddCommands(): Command {

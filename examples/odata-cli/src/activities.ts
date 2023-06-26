@@ -12,6 +12,7 @@ import { logger } from './types';
 
 /**
  * Execute a sequence of test calls using the given provider.
+ *
  * @param provider instance of a service provider
  * @param env object reprensenting the content of the .env file.
  * @param env.TEST_OUTPUT target directory for output
@@ -56,6 +57,7 @@ export async function useCatalogAndFetchSomeMetadata(
 
 /**
  * Execute a sequence of test calls using the given provider.
+ *
  * @param provider instance of a service provider
  * @param env object representing the content of the .env file.
  * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
@@ -133,6 +135,7 @@ export async function useAdtServices(
 
 /**
  * Execute a sequence of check, deploy and undeploy requests for a DTA project.
+ *
  * @param provider instance of a service provider
  * @param env object representing the content of the .env file.
  * @param env.TEST_ZIP path to a zipped webapp folder of an adaptation project that should be deployed

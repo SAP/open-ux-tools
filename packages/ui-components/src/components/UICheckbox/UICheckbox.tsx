@@ -12,6 +12,7 @@ export interface UICheckboxProps extends ICheckboxProps, UIComponentMessagesProp
 /**
  * UICheckbox component.
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/checkbox
+ *
  * @exports
  * @class UICheckbox
  * @extends {React.Component<ICheckboxProps, {}>}
@@ -27,6 +28,7 @@ export class UICheckbox extends React.Component<UICheckboxProps, {}> {
 
     /**
      * Initializes component properties.
+     *
      * @param {UICheckboxProps} props
      */
     public constructor(props: UICheckboxProps) {

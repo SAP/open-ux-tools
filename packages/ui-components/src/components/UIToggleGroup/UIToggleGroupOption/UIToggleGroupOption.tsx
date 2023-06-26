@@ -9,6 +9,7 @@ import './UIToggleGroupOption.scss';
 
 /**
  * UIToggleGroupOption component
+ *
  * @exports
  * @class UIToggleGroupOption
  * @extends {React.Component<UIToggleGroupOptionProps, {}>}
@@ -16,6 +17,7 @@ import './UIToggleGroupOption.scss';
 export class UIToggleGroupOption extends React.Component<UIToggleGroupOptionProps> {
     /**
      * Initializes component properties.
+     *
      * @param {UIToggleGroupOptionProps} props
      */
     public constructor(props: UIToggleGroupOptionProps) {

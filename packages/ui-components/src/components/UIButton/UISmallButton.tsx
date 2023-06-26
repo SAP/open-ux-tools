@@ -10,6 +10,7 @@ export class UISmallButton extends React.Component<IButtonProps, {}> {
 
     /**
      * Initializes component properties.
+     *
      * @param {IButtonProps} props The props of the component.
      */
     public constructor(props: IButtonProps) {
@@ -18,6 +19,7 @@ export class UISmallButton extends React.Component<IButtonProps, {}> {
 
     /**
      * Method which returns the correct css color.
+     *
      * @param {string} color First choise color.
      * @returns {string} CSS value for background color with fallback.
      */
@@ -27,6 +29,7 @@ export class UISmallButton extends React.Component<IButtonProps, {}> {
 
     /**
      * Method which returns the correct css color with a fallback value.
+     *
      * @param {string} color First choise color.
      * @param {string} fallbackColor fallback choise color.
      * @returns {string} CSS value for background color with fallback.

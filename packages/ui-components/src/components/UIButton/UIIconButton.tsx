@@ -16,6 +16,7 @@ export interface ButtonProps extends IBaseButtonProps {
 /**
  * UIIconButton component.
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/button
+ *
  * @exports
  * @class UIIconButton
  * @extends {React.Component<ButtonProps, {}>}
@@ -23,6 +24,7 @@ export interface ButtonProps extends IBaseButtonProps {
 export class UIIconButton extends React.Component<ButtonProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {ButtonProps} props
      */
     public constructor(props: ButtonProps) {
@@ -31,6 +33,7 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
 
     /**
      * Method which returns button interaction background with including fallback for old VSCode or BAS versions.
+     *
      * @param {string} color First choise color.
      * @returns {string} CSS value for background color with fallback.
      */

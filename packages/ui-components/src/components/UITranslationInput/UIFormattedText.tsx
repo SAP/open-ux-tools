@@ -20,6 +20,7 @@ const PLACEHOLDER_END = '}}}';
 
 /**
  * Method find all matching values.
+ *
  * @param text Text to parse.
  * @param values Map with values to search.
  * @returns Array containing matched regex expressions.
@@ -42,6 +43,7 @@ const matchAllValues = (text: string, values: MessageTextValues): Array<RegExpEx
 
 /**
  * Method separates given text between found values and rest unformatted text.
+ *
  * @param text Text to parse.
  * @param values Map with values to search.
  * @returns Object containing separated `texts` and `formatted` arrays.
@@ -79,6 +81,7 @@ export const parseText = (text: string, values: MessageTextValues): ParseResult 
 
 /**
  * Method formats text with callback method to provide option to use different markup to highligh matching result in text.
+ *
  * @param text Text to parse.
  * @param values Map with values to search.
  * @param cb Callback method to apply text highlight.
@@ -102,6 +105,7 @@ export function formatTextGeneric<T>(
 
 /**
  * Method formats string text with replacing matching values with same string without any highlight.
+ *
  * @param text Text to parse.
  * @param values Map with values to search.
  * @returns Formatted text string.
@@ -116,6 +120,7 @@ export function formatText(text: string, values: MessageTextValues): string {
 /**
  * Component to show formatted text with highlighting matching entries.
  * Entries with '{{{key}}}' will be replaced with passed value and wrapped in bold.
+ *
  * @param props Component properties.
  * @returns Component to render formatted text.
  */

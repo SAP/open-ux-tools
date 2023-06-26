@@ -43,6 +43,7 @@ export abstract class CatalogService extends ODataService {
 
     /**
      * Returns list of services from the catalog service.
+     *
      * @returns list of services
      */
     async listServices(): Promise<ODataServiceInfo[]> {

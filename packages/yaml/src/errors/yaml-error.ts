@@ -6,6 +6,7 @@ export class YAMLError extends Error {
 
     /**
      * Constructor taking a message and any object.
+     *
      * @param message human readable error message
      * @param code error code
      */

@@ -63,6 +63,7 @@ export enum UIDialogScrollArea {
  * UIDialog component.
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/dialog
  * and https://app.abstract.com/projects/42046ab5-889d-4a59-88e6-1089e98cba67/branches/master/commits/f1fcd77447bb2b32aab3498311c1c39517e47e49/files/1455D538-559B-48EF-8D9F-1C2884ED540B/layers/AFDAAFD3-BFA6-4E96-BB6D-057DD13753E5
+ *
  * @exports
  * @class UIDialog
  * @extends {React.Component<IDialogProps, {}>}
@@ -72,6 +73,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
     static defaultProps = { isOpenAnimated: true };
     /**
      * Initializes component properties.
+     *
      * @param {DialogProps} props
      */
     public constructor(props: DialogProps) {
@@ -90,6 +92,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
 
     /**
      * Called when component is rerendered.
+     *
      * @param {Readonly<DialogProps>} prevProps
      */
     componentDidUpdate(prevProps: Readonly<DialogProps>): void {
@@ -150,6 +153,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
 
     /**
      * Method returns maximal height for dialog content "scrollArea=Content" mode.
+     *
      * @returns {number} Max size of dialog.
      */
     private getResizeMaxHeight(): number {
@@ -162,6 +166,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
      * 1. Accept/Decline buttons.
      * 2. Custom content of footer.
      * 3. No footer.
+     *
      * @returns {JSX.Element | null} Footer element to render.
      */
     getFooter(): JSX.Element | undefined {
@@ -214,6 +219,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
      * Method handles mousedown event for dialog header area.
      * Method added to handle scenario when we open dropdown menu and move dialog.
      * Code in method sets focus to focuszone's placeholder - it triggers close for opened dropdown menu.
+     *
      * @param {React.MouseEvent} event Mousedown event
      */
     onHeaderMouseDown(event: React.MouseEvent): void {

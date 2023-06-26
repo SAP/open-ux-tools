@@ -36,6 +36,7 @@ export const contextParameter: EventHandlerTypescriptParameters = {
 
 /**
  * Method creates or updates handler js file and update 'settings.eventHandler' entry with namespace path entry to method.
+ *
  * @param fs - the memfs editor instance
  * @param config - configuration
  * @param eventHandler - eventHandler for creation

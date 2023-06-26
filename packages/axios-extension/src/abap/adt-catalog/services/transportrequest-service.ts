@@ -43,6 +43,7 @@ export class TransportRequestService extends AdtService {
 
     /**
      * TransportRequestService API function to create a new transport number.
+     *
      * @param reqParam Request parameter for creating a new transport request for an UI5 app object.
      * @returns Newly created transport request number
      */
@@ -74,6 +75,7 @@ export class TransportRequestService extends AdtService {
 
     /**
      * Read the newly created transport number from response XML data.
+     *
      * @param text XML response of create transport request.
      * @returns Newly created transport number or null
      */

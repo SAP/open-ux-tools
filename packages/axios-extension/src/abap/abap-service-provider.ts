@@ -28,6 +28,7 @@ export class AbapServiceProvider extends ServiceProvider {
     /**
      * Get the name of the currently logged in user. This is the basic implementation that could be overwritten by subclasses.
      * The function returns a promise because it may be required to fetch the information from the backend.
+     *
      * @returns the username
      */
     public user(): Promise<string | undefined> {
@@ -36,6 +37,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Set the ATO settings for the provider so that it does not try to fetch them with the first request.
+     *
      * @param atoSettings ABAP Transport Organizer settings
      */
     public setAtoInfo(atoSettings: AtoSettings) {
@@ -44,6 +46,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Get the ATO settings either locally or from the server if not yet available.
+     *
      * @returns ABAP Transport Organizer settings
      */
     public async getAtoInfo(): Promise<AtoSettings> {
@@ -66,6 +69,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Set the public facing URL, typically used for a destination related flows.
+     *
      * @param host
      */
     public set publicUrl(host: string) {
@@ -74,6 +78,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Retrieve the public facing URL, default to Axios base URL if not configured.
+     *
      * @returns string Axios baseUrl if public URL is not configured by a destination
      */
     public get publicUrl(): string {
@@ -82,6 +87,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Detect if the given configuration points to an S/4HANA Cloud system.
+     *
      * @returns true if it an S/4HANA cloud system
      */
     public async isS4Cloud(): Promise<boolean> {
@@ -104,6 +110,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Create or get an existing instance of AdtCatalogService for fetching ADT schema.
+     *
      * @returns AdtCatalogService
      */
     private getAdtCatalogService(): AdtCatalogService {
@@ -120,6 +127,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Create or get an existing instance of the catalog service for the given OData version.
+     *
      * @param version OData version of the requested catalog service
      * @returns an instance of the catalog service.
      */
@@ -144,6 +152,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Create or get an existing instance of the UI5 ABAP repository service.
+     *
      * @param alias - optional alias path on which the UI5Repository service is exposed
      * @returns an instance of the UI5 ABAP repository service.
      */
@@ -158,6 +167,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Create or get an existing instance of the app index service.
+     *
      * @returns an instance of the app index service.
      */
     public getAppIndex(): AppIndexService {
@@ -172,6 +182,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Create or get an existing instance of design time adaptation service.
+     *
      * @returns an instance of the design time adaptation service.
      */
     public getLayeredRepository(): LayeredRepositoryService {
@@ -186,6 +197,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Retrieve singleton instance of AdtService subclass to serve the specific ADT request query.
+     *
      * @example
      * ```ts
      * const transportRequestService = abapServiceProvider.getAdtService<TransportRequestService>(TransportRequestService);

@@ -5,6 +5,7 @@ import type { PackageInfo } from '../../types/adt-internal-types';
 
 /**
  * Structure of input parameter for `listPackages` method.
+ *
  * @see {@link ListPackageService#listPackages}
  */
 export interface ListPackageParams {
@@ -15,6 +16,7 @@ export interface ListPackageParams {
 /**
  * ListPackageService implements ADT requests for fetching a list of available package names
  * from ABAP backend system.
+ *
  * @class
  */
 export class ListPackageService extends AdtService {
@@ -28,6 +30,7 @@ export class ListPackageService extends AdtService {
 
     /**
      * Get ADT scheme ID.
+     *
      * @returns AdtCategory
      */
     public static getAdtCatagory(): AdtCategory {
@@ -42,6 +45,7 @@ export class ListPackageService extends AdtService {
      * the package name, typing the prefix (namespace) of the package, the backend
      * returns few package names that match the prefix, and finally developer selects
      * a package name to minimize risk of typo introduced by manual input.
+     *
      * @param params
      *  maxResults Maxmium number of records to be returned by the ADT service.
      *             Based on explanation above, it is suggested to use a relatively small number like 50.
@@ -71,6 +75,7 @@ export class ListPackageService extends AdtService {
 
     /**
      * Parse the XML document of package info entries from ADT service.
+     *
      * @param xml xml document containing package info entries.
      * @returns A list of package names.
      */

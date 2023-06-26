@@ -17,6 +17,7 @@ export class Cookies {
     private readonly cookies: { [key: string]: string } = {};
     /**
      * Update the cookies based on 'set-cookie' headers of a response.
+     *
      * @param response http response containing a headers object
      * @returns cookies object
      */
@@ -29,6 +30,7 @@ export class Cookies {
 
     /**
      * Update cookies based on a string representing a cookie.
+     *
      * @param cookieString string representing a cookie
      * @returns cookies object
      */
@@ -46,6 +48,7 @@ export class Cookies {
 
     /**
      * Serialize all cookies as string formatted for the 'Cookie' header.
+     *
      * @returns serialized cookies
      */
     public toString(): string {
@@ -59,6 +62,7 @@ export class Cookies {
 
 /**
  * Check the response if SAML is required.
+ *
  * @param response response from the backend
  * @returns true if SAML is required
  */
@@ -73,6 +77,7 @@ function isSamlLogonNeeded(response: AxiosResponse): boolean {
 
 /**
  * SAP systems can choose to respond with a 200 and an HTML login page that the module cannot handle, therefore, convert it into a 401.
+ *
  * @param response response from the backend
  * @throws an error with status 401 if an HTML form is returned
  */
@@ -125,6 +130,7 @@ function getContentType(contentTypeHeader: string | undefined, responseData: any
 
 /**
  * Attach a connection handler to the given service provider.
+ *
  * @param provider any service provider
  */
 export function attachConnectionHandler(provider: ServiceProvider) {

@@ -4,6 +4,7 @@ import type { UI5LibConfig } from '../types';
 
 /**
  * Validates the specified lib name to ensure we do not create malformed documents.
+ *
  * @param libName name for library
  * @throws Error with validation message, if the app id is not valid
  * @returns true, if app id is validated
@@ -22,6 +23,7 @@ export function validateLibName(libName: string): boolean {
 
 /**
  * Validates the namespace using regex pattern.
+ *
  * @param namespace namespace specified
  * @param libName name for library
  * @throws Error with validation message, if the namespace is not valid
@@ -55,6 +57,7 @@ function validateNamespacePattern(namespace: string, libName?: string): boolean 
 
 /**
  * Validates the namespace to ensure we do not create malformed libs.
+ *
  * @param namespace namespace specified
  * @param libName name for library
  * @throws Error with validation message, if the namespace is not valid
@@ -71,6 +74,7 @@ export function validateNamespace(namespace: string, libName?: string): boolean 
  * Validates by throwing if the specified version does not have a coercible semantic version.
  * Currently we have special handling for empty string and undefined otherwise see: https://github.com/npm/node-semver#coercion.
  * Example: 'snapshot-1.2.4' can be coerced to '1.2.4' and so is considered valid.
+ *
  * @param version - the UI5 version string to validate
  * @returns - true if the specified UI5 version is considered valid
  */
@@ -83,6 +87,7 @@ export function validateUI5Version(version: string | undefined): boolean {
 
 /**
  * Validates the specified ui5Lib config.
+ *
  * @param ui5Lib configuration object given to the generate method conataining everything required to generate a UI5 application
  * @returns true, if the ui5Lib is valid
  * @throws Error with validation message, if the ui5App is not valid

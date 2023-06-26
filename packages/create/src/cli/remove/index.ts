@@ -3,6 +3,7 @@ import { addRemoveMockserverConfigCommand } from './mockserver-config';
 
 /**
  * Return 'create-fiori remove *' commands. Commands include also the handler action.
+ *
  * @returns - commander command containing remove <feature> commands
  */
 export function getRemoveCommands(): Command {

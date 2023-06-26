@@ -7,6 +7,7 @@ export type UISeparatorProps = ISeparatorProps;
 /**
  * UISeparator component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/separator
+ *
  * @exports
  * @class UISeparator
  * @extends {React.Component<ISeparatorProps, {}>}
@@ -14,6 +15,7 @@ export type UISeparatorProps = ISeparatorProps;
 export class UISeparator extends React.Component<ISeparatorProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {ISeparatorProps} props The props
      */
     public constructor(props: ISeparatorProps) {
@@ -22,6 +24,7 @@ export class UISeparator extends React.Component<ISeparatorProps, {}> {
 
     /**
      * Render the component.
+     *
      * @returns {JSX.Element} return a rendered component
      */
     render(): JSX.Element {

@@ -23,6 +23,7 @@ export interface ListProps {
 /**
  * UIList component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/groupedlist
+ *
  * @exports
  * @class UIList
  * @extends {React.Component<ListProps, {}>}
@@ -30,6 +31,7 @@ export interface ListProps {
 export class UIList extends React.Component<ListProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {ListProps} props
      */
     public constructor(props: ListProps) {

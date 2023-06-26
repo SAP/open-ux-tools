@@ -2,6 +2,7 @@ import type { ODataServiceInfo } from '@sap-ux/axios-extension';
 
 /**
  * Count the number of services from the result of a catalog call.
+ *
  * @param catalogResult - V2 or V4 result of catalog call
  * @returns - number of services
  */
@@ -15,6 +16,7 @@ export function countNumberOfServices(catalogResult?: ODataServiceInfo[]): numbe
 
 /**
  * Format string to write number of services, e.g. 1 service or 123 services.
+ *
  * @param count - number of service
  * @returns - string with number of services
  */
@@ -25,6 +27,7 @@ export function getServiceCountText(count: number) {
 /**
  * Returns replacer function that can be used with JSON.stringify to detect
  * and replace circular structures.
+ *
  * @example JSON.stringify(object, getCircularReplacer());
  * @returns - replacer that replaces circular structures
  */
@@ -43,6 +46,7 @@ export function getCircularReplacer(): (key: string, value: any) => any {
 
 /**
  * Convert an int byte number to a nice output format like 1.23 KB.
+ *
  * @param byteNumber - int number of bytes
  * @returns output string
  */

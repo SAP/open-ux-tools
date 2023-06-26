@@ -7,6 +7,7 @@ import type { FioriElementsApp } from './types';
 
 /**
  * Validates a selection of specified app settings.
+ *
  * @param feApp - Fiori elements application configuration
  */
 export function validateApp<T>(feApp: FioriElementsApp<T>): void {
@@ -75,6 +76,7 @@ export function validateApp<T>(feApp: FioriElementsApp<T>): void {
 
 /**
  * Validates the specified FioriElementsApp contains the required properties.
+ *
  * @param feApp - Fiori elements application configuration
  */
 export function validateRequiredProperties<T>(feApp: FioriElementsApp<T>): void {

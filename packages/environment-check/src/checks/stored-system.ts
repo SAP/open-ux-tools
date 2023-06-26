@@ -14,6 +14,7 @@ import {
 
 /**
  * Check a stored SAP system for service endpoints.
+ *
  * @param storedSystem - stored system to be checked
  * @returns messages and sapSystem results
  */
@@ -81,6 +82,7 @@ export async function checkStoredSystem(storedSystem: Endpoint): Promise<{
 
 /**
  * Checks the stored SAP systems and returns a list.
+ *
  * @returns messages, destinations
  */
 export async function checkStoredSystems(): Promise<{
@@ -112,6 +114,7 @@ export async function checkStoredSystems(): Promise<{
 
 /**
  * Transforms the systems format to Endpoint type.
+ *
  * @param systems SAP systems retrieved from the store
  * @returns list of destinations in new format
  */

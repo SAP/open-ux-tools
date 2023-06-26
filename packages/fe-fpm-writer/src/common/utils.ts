@@ -9,6 +9,7 @@ import type { FileContentPosition } from '../common/types';
  * Method inserts passed text into content by char index position.
  * In case if position is out of range, then whitespaces would be created.
  * Negative positions are not supported.
+ *
  * @param {string} text - text to insert
  * @param {string} content - target content for update
  * @param {number} position - Char index position to insert in
@@ -30,6 +31,7 @@ export function insertTextAtAbsolutePosition(text: string, content: string, posi
  * Method inserts passed text into content by line and char position.
  * In case if position is out of range, then whitespaces would be created.
  * Negative positions are not supported.
+ *
  * @param {string} text - text to insert
  * @param {string} content - target content for update
  * @param {FileContentPosition} position - Line and char position to insert in
@@ -54,6 +56,7 @@ export function insertTextAtPosition(text: string, content: string, position: Fi
 /**
  * Adds type extensions for sap.fe types if an older version is used.
  * The types were fixed in 1.108 and downported to 1.102.
+ *
  * @param basePath - the base path
  * @param minUI5Version - minimal required UI5 version
  * @param fs - the memfs editor instance

@@ -21,6 +21,7 @@ interface ServiceInfo {
 
 /**
  * Returns true if the project is a CAP Node.js project.
+ *
  * @param packageJson - the parsed package.json object
  * @returns - true if the project is a CAP Node.js project
  */
@@ -30,6 +31,7 @@ export function isCapNodeJsProject(packageJson: Package): boolean {
 
 /**
  * Returns true if the project is a CAP Java project.
+ *
  * @param projectRoot - the root path of the project
  * @returns - true if the project is a CAP project
  */
@@ -40,6 +42,7 @@ export async function isCapJavaProject(projectRoot: string): Promise<boolean> {
 
 /**
  * Returns the CAP project type, undefined if it is not a CAP project.
+ *
  * @param projectRoot - root of the project, where the package.json resides.
  * @returns - CAPJava for Java based CAP projects; CAPNodejs for node.js based CAP projects; undefined if it is no CAP project
  */
@@ -61,6 +64,7 @@ export async function getCapProjectType(projectRoot: string): Promise<CapProject
 
 /**
  * Get CAP CDS project custom paths for project root.
+ *
  * @param capProjectPath - project root of cap project
  * @returns - paths to app, db, and srv for CAP project
  */
@@ -85,6 +89,7 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
 
 /**
  * Return the CAP model and all services.
+ *
  * @param projectRoot - CAP project root where package.json resides
  * @returns {*}  {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
  */
@@ -107,6 +112,7 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
 
 /**
  * Get CAP CDS project environment config for project root.
+ *
  * @param capProjectPath - project root of a CAP project
  * @returns - environment config for CAP project
  */

@@ -49,6 +49,7 @@ import './UITable.scss';
 /**
  * UITable component
  * based on: https://developer.microsoft.com/en-us/fluentui#/controls/web/detailslist
+ *
  * @exports
  * @class {UITable}
  * @extends {React.Component<UITableProps, UITableState>}
@@ -67,6 +68,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * Initializes component properties.
+     *
      * @param props
      */
     constructor(props: UITableProps) {
@@ -121,6 +123,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * On component update.
+     *
      * @param prevProps
      * @param prevState
      */
@@ -217,6 +220,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * On render row fields event.
+     *
      * @param props
      * @returns {JSX.Element}
      */
@@ -237,6 +241,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * On render field event.
+     *
      * @param props
      * @param defaultRender
      * @returns {null | JSX.Element}
@@ -280,6 +285,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     // just sets the active element property on the table, to track it later
     /**
      * On cell activation event.
+     *
      * @param item
      * @param rowIndex
      * @param ev
@@ -326,6 +332,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * On render item  column event.
+     *
      * @param {UIDocument} item
      * @param {number} index
      * @param {UIColumn} column
@@ -341,6 +348,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     // Replace weird radio-button-checkboxes with proper checkboxes
     /**
      * On render checkbox event.
+     *
      * @param {IDetailsListCheckboxProps | undefined} props
      * @returns {React.ReactElement}
      */
@@ -351,6 +359,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     // COLUMN HEADER SORT
     /**
      * On column click event.
+     *
      * @param ev
      * @param column
      */
@@ -375,6 +384,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     // CELL EDITING
     /**
      * On start edit event call.
+     *
      * @param rowIndex
      * @param item
      * @param column
@@ -423,6 +433,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * On save cell event.
+     *
      * @param cancelEdit
      * @param value
      */
@@ -472,6 +483,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * On mouse down event.
+     *
      * @param e
      */
     private onDocumentMousedown(e: React.MouseEvent): void {
@@ -493,6 +505,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * On key down event.
+     *
      * @param {React.KeyboardEvent<Element | IDropdown>} e
      * @returns {void}
      */
@@ -532,6 +545,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * On ComboBox keydown event call.
+     *
      * @param e
      */
     private onComboBoxKeyDownCapture(e: React.KeyboardEvent<Element | IDropdown>): void {
@@ -546,6 +560,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * On Edit next cell.
+     *
      * @param key
      * @param shiftKey
      */
@@ -580,6 +595,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * On Cell click.
+     *
      * @param e
      * @param item
      * @param rowIndex
@@ -625,6 +641,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * Validates cell.
+     *
      * @param value
      */
     private validateCell(value: string): void {
@@ -654,6 +671,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * On Text input change.
+     *
      * @param e
      * @param newValue
      */
@@ -709,6 +727,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * Gets input ref.
+     *
      * @param rowIndex
      * @param column
      * @returns { React.RefObject<ITextField | IDropdown | HTMLDivElement> | undefined}
@@ -724,6 +743,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * Renders dropdown.
+     *
      * @param item
      * @param rowIndex
      * @param column
@@ -751,6 +771,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * Renders combobox.
+     *
      * @param item
      * @param rowIndex
      * @param column
@@ -793,6 +814,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * Renders date picker.
+     *
      * @param item
      * @param rowIndex
      * @param column
@@ -828,6 +850,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * Renders text input.
+     *
      * @param item
      * @param rowIndex
      * @param column
@@ -863,6 +886,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * On cell render.
+     *
      * @param item
      * @param rowIndex
      * @param column

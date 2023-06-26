@@ -2,6 +2,7 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Get the main service data source entry from manifest.json.
+ *
  * @param manifest - Parsed manifest.json
  * @returns - data source entry from manifest.json, parsed
  */
@@ -20,6 +21,7 @@ export function getMainServiceDataSource(manifest: Manifest): ManifestNamespace.
 
 /**
  * Get the data sources of type 'OData' from manifest.
+ *
  * @param manifest - the parsed manifest.json
  * @returns data sources of type 'OData'
  */

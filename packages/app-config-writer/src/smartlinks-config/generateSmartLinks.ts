@@ -7,6 +7,7 @@ import { writeSmartLinksConfig } from './utils';
 
 /**
  * Add smartlinks configuration to a UI5 application.
+ *
  * @param basePath - the base path where the ui5-deploy/ui5.yaml is
  * @param config - configuration of the target system for smartlinks
  * @param logger - logger

@@ -6,6 +6,7 @@ import type { UIColumn, EditedCell, UITableProps, UITableState } from '.';
 
 /**
  * Method to copy and sort.
+ *
  * @param {T[]} items
  * @param {string }columnKey
  * @param {boolean} isSortedDescending
@@ -18,6 +19,7 @@ export function _copyAndSort<T>(items: T[], columnKey: string, isSortedDescendin
 
 /**
  * Focus edited cell.
+ *
  * @param {EditedCell | undefined} editedCell
  * @param {UITableProps} props
  * @param {string} direction
@@ -75,6 +77,7 @@ export function focusEditedCell(
 
 /**
  * Get cell from coordinates.
+ *
  * @param {number} rowIdx
  * @param {string} columnKey
  * @param {UIColumn} columns
@@ -93,6 +96,7 @@ export function getCellFromCoords(rowIdx: number, columnKey: string, columns: UI
 // manual workaround due to the lack of API for selecting columns
 /**
  * Scrolls to column.
+ *
  * @param {string} columnKey
  * @param {UIColumn[]} columns
  * @param {number} selectedRow
@@ -118,6 +122,7 @@ export function scrollToColumn(
 
 /**
  * Scrolls to row.
+ *
  * @param {number} idx
  * @param {IDetailsList | null} table
  */
@@ -141,6 +146,7 @@ export function scrollToRow(idx = 0, table: IDetailsList | null) {
 
 /**
  * Wait for selector.
+ *
  * @param {string} selector
  * @returns {Promise<Element>}
  */
@@ -163,6 +169,7 @@ export async function waitFor(selector: string) {
 
 /**
  * Adds row numbers.
+ *
  * @param {any} columns
  * @param {boolean} showRowNumbers
  * @returns {any}
@@ -219,6 +226,7 @@ export const _onHeaderRender: IRenderFunction<IDetailsHeaderProps> = (props, def
 
 /**
  * Gets styles for selected cell.
+ *
  * @param state
  * @returns {Partial<IDetailsListStyles>}
  */
@@ -263,6 +271,7 @@ export function hideFocus(): void {
 
 /**
  * Gets ComboBox input.
+ *
  * @param ref
  * @returns {HTMLInputElement | undefined }
  */

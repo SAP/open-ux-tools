@@ -16,6 +16,7 @@ interface ExtendJsonParams {
 
 /**
  * Method returns tab info for passed line.
+ *
  * @param line - line with tab spacing
  * @returns tab size information
  */
@@ -38,6 +39,7 @@ function getLineTabInfo(line: string): TabInfo | undefined {
 
 /**
  * Method calculates tab space info for passed file content.
+ *
  * @param content - file content.
  * @returns tab size information.
  */
@@ -56,6 +58,7 @@ export function detectTabSpacing(content: string): TabInfo | undefined {
 
 /**
  * Method calculates tab spacing parameter for 'JSON.stringify' method.
+ *
  * @param fs - the mem-fs editor instance.
  * @param filePath - path to file to read.
  * @param tabInfo - External tab configuration.
@@ -84,6 +87,7 @@ export function getJsonSpace(fs: Editor, filePath: string, tabInfo?: TabInfo | u
 /**
  * Method extends target JSON file with passed JSOn content.
  * Method uses 'fs.extendJSON', but applies additional calculation to reuse existing content tab sizing information.
+ *
  * @param fs - the mem-fs editor instance.
  * @param params - options for JSON extend.
  */

@@ -3,6 +3,7 @@ import type { AbapDeployConfig, AbapTarget, UrlAbapTarget } from '../types';
 
 /**
  * Check if it is a url or destination target.
+ *
  * @param target target configuration
  * @returns true is it is a UrlAbapTarget
  */
@@ -12,6 +13,7 @@ export function isUrlTarget(target: AbapTarget): target is UrlAbapTarget {
 
 /**
  * Clones the given config and removes secrets so that it can be printed to a log file.
+ *
  * @param config - config object
  * @returns config object that can be logged
  */
@@ -30,6 +32,7 @@ export function getConfigForLogging(
 
 /**
  * Replace environment variable references of pattern `env:VAR_NAME` with the value of the corresponding environment variable.
+ *
  * @param obj - any object structure
  */
 export function replaceEnvVariables(obj: object): void {
@@ -46,6 +49,7 @@ export function replaceEnvVariables(obj: object): void {
 
 /**
  * Helper function for throwing a missing property error.
+ *
  * @param property Invalid missing property
  */
 function throwConfigMissingError(property: string): void {
@@ -54,6 +58,7 @@ function throwConfigMissingError(property: string): void {
 
 /**
  * Validate the given target config. If anything mandatory is missing throw an error.
+ *
  * @param target - target configuration to be validated
  * @returns reference to the given target config
  */
@@ -70,6 +75,7 @@ function validateTarget(target: AbapTarget): AbapTarget {
 
 /**
  * Validate the given config. If anything mandatory is missing throw an error.
+ *
  * @param config - the config to be validated
  * @returns reference to the given config
  */

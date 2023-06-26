@@ -3,6 +3,7 @@ import { TranslationKeyGenerator, TranslationTextPattern } from './UITranslation
 
 /**
  * Method extracts i18n binding and returns key of i18n entry.
+ *
  * @param value Binding value.
  * @param patterns Check if method should resolve syntax annotation based i18n binding.
  * @param prefixes Allowed prefixes for single bracket pattern.
@@ -32,6 +33,7 @@ export const extractI18nKey = (
 /**
  * Convert to camel case.
  * It gets input like 'product details info' and convert it to 'productDetailsInfo'.
+ *
  * @param input Value to convert.
  * @param maxWord Maximal cxount of words to convert.
  * @returns Canverted value.
@@ -59,6 +61,7 @@ export const convertToCamelCase = (input = '', maxWord = 4): string => {
 /**
  * Convert to pascal case.
  * It gets input like 'product details info' and convert it to 'ProductDetailsInfo'.
+ *
  * @param input Value to convert.
  * @param maxWord Maximal cxount of words to convert.
  * @returns Canverted value.
@@ -83,6 +86,7 @@ export const convertToPascalCase = (input: string, maxWord = 4): string => {
 /**
  * Get unique key.
  * If the key is not unique, it increment key by one and recheck.
+ *
  * @param key new key and it is incremented.
  * @param i18nData I18n entries.
  * @param originalKey original key without any index increment.
@@ -102,6 +106,7 @@ const getI18nUniqueKey = (key: string, i18nData: I18nBundle, originalKey = key, 
 /**
  * Generates a unique i18n key for the text.
  * It considers currently active bundle and translation key generator.
+ *
  * @param text
  * @param translationKeyGenerator
  * @param bundle
@@ -124,6 +129,7 @@ export function generateI18nKey(
 
 /**
  * Method to apply passed pattern for passed key.
+ *
  * @param key I18n key.
  * @param pattern I18n pattern.
  * @param prefix Prefix for single bracket pattern.
@@ -135,6 +141,7 @@ export const applyI18nPattern = (key: string, pattern: TranslationTextPattern, p
 
 /**
  * Method finds first existing i18n key searching by key.
+ *
  * @param {I18nBundle} bundle Search for value.
  * @param {string} key Search for key.
  * @returns {TranslationEntry | undefined} Key if value is found.
@@ -149,6 +156,7 @@ export const getTranslationByKey = <T extends TranslationEntry>(bundle: I18nBund
 
 /**
  * Method finds existing i18n key searching by value.
+ *
  * @param {I18nBundle} bundle Search for value.
  * @param {string} value Search for value.
  * @returns {TranslationEntry | undefined} Key if value is found.

@@ -55,6 +55,7 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
 
     /**
      * Initializes component properties.
+     *
      * @param {ActionCalloutProps} props
      */
     public constructor(props: ActionCalloutProps) {

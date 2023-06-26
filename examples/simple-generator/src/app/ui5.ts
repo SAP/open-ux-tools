@@ -3,6 +3,7 @@ import localVersionSupport from './version-support.json';
 
 /**
  * Fetch a JSON object from the given url.
+ *
  * @param url target url
  * @returns any serialized JSON object
  */
@@ -40,6 +41,7 @@ let ui5VersionSupport: UI5SupportVersions;
 
 /**
  * Fetch a list of available UI5 version from ui5.sap.com.
+ *
  * @returns a promise with a list of available versions.
  */
 export async function getUI5Versions(): Promise<UI5SupportVersions> {

@@ -10,6 +10,7 @@ export const BAS_DEST_INSTANCE_CRED_HEADER = 'bas-destination-instance-cred';
 
 /**
  * Check if this is exectued in SAP Business Application Studio.
+ *
  * @returns true if yes
  */
 export function isAppStudio(): boolean {
@@ -18,6 +19,7 @@ export function isAppStudio(): boolean {
 
 /**
  * Read and return the BAS proxy url.
+ *
  * @returns the proxy url or undefined if called outside of BAS.
  */
 export function getAppStudioProxyURL(): string | undefined {
@@ -26,6 +28,7 @@ export function getAppStudioProxyURL(): string | undefined {
 
 /**
  * Asynchronously creates a base64 encoded credentials for the given destination service instance based on the client information fetched from BTP.
+ *
  * @param instance name/id of the destination service instance
  * @returns the base64 encoded user
  */
@@ -52,6 +55,7 @@ export async function getCredentialsForDestinationService(instance: string): Pro
 
 /**
  * Returns a url for AppStudio for the given url with the given destination.
+ *
  * @param name name of the destination
  * @param path optional path
  * @returns destination url working in BAS
@@ -65,6 +69,7 @@ export type Destinations = { [name: string]: Destination };
 
 /**
  * Get a list of available destinations in SAP Business Application Studio.
+ *
  * @returns the list of destinations
  */
 export async function listDestinations(): Promise<Destinations> {

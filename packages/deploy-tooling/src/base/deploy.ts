@@ -38,6 +38,7 @@ const enum TryCommands {
 
 /**
  * Check the secure storage if it has credentials for the given target.
+ *
  * @param target - ABAP target
  * @returns {*}  {(Promise<T | undefined>)} - Credentials
  */
@@ -59,6 +60,7 @@ export async function getCredentials<T extends BasicAuth | ServiceAuth | undefin
 
 /**
  * Enhance axios options and create a service provider instance for an ABAP Cloud system.
+ *
  * @param options - predefined axios options
  * @param target - url target configuration
  * @param noPrompt - only if not truthy prompt for anything
@@ -96,6 +98,7 @@ async function createAbapCloudServiceProvider(
 
 /**
  * Enhance axios options and create a service provider instance for an on-premise ABAP system.
+ *
  * @param options - predefined axios options
  * @param target - url target configuration
  * @returns {*}  {(Promise<AbapServiceProvider>)}
@@ -122,6 +125,7 @@ async function createAbapServiceProvider(
 
 /**
  * Create an instance of a UI5AbapRepository service connected to the given target configuration.
+ *
  * @param config - deployment configuration
  * @param logger - optional reference to the logger instance
  * @returns service instance
@@ -162,6 +166,7 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
 
 /**
  * Handle exceptions thrown, in some cases we to retry them.
+ *
  * @param command - the request type deploy | undeploy
  * @param error - thrown error object
  * @param service - instance of the axios-extension deployment service
@@ -196,6 +201,7 @@ async function handleError(
 
 /**
  * Main function for different deploy retry handling.
+ *
  * @param command - the request type deploy | undeploy
  * @param response - response of that triggered and axios error
  * @param service - instance of the axios-extension deployment service
@@ -244,6 +250,7 @@ async function handleAxiosError(
 
 /**
  * Generate a Ui5AbapRepositoryService instance from the supplied deployment config.
+ *
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  * @returns service returns the UI5 ABAP Repository service
@@ -261,6 +268,7 @@ async function getAbapService(config: AbapDeployConfig, logger: Logger): Promise
 
 /**
  * Generic method to run the deployment request i.e. deploy | undeploy.
+ *
  * @param command - the request type deploy | undeploy to be executed
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
@@ -283,6 +291,7 @@ async function runCommand(
 
 /**
  * Try executing the deployment command and handle known errors.
+ *
  * @param service - instance of the axios-extension deployment service
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
@@ -310,6 +319,7 @@ async function tryDeploy(
 
 /**
  * Deploy the given archive to the given target using the given app description.
+ *
  * @param archive - archive file that is to be deployed
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
@@ -323,6 +333,7 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
 
 /**
  * Try executing the undeployment command and handle known errors.
+ *
  * @param service - instance of the axios-extension deployment service
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
@@ -344,6 +355,7 @@ async function tryUndeploy(service: Ui5AbapRepositoryService, config: AbapDeploy
 
 /**
  * Undeploy the given project from the given target using the given app name.
+ *
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  */

@@ -28,6 +28,7 @@ export class TransportChecksService extends AdtService {
 
     /**
      * TransportChecksService API function to fetch a list of available transport requests.
+     *
      * @param packageName Package name for deployment
      * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed
      * @returns A list of transport requests that can be used for deploy
@@ -65,6 +66,7 @@ export class TransportChecksService extends AdtService {
     /**
      * Get a list of valid transport requests
      * from ADT transportcheckes response response.
+     *
      * @param xml Raw XML string from ADT transportcheckes reponse data
      * @returns a list of valid transport requests can be used for deploy config
      */
@@ -89,6 +91,7 @@ export class TransportChecksService extends AdtService {
     /**
      * Provide a list of transport requests available for the input package name and project name
      * in a ADT CTS request.
+     *
      * @param doc document
      * @returns
      * - For local package, return [].
@@ -112,6 +115,7 @@ export class TransportChecksService extends AdtService {
     /**
      * This function processes ADT response for new project name that have not been deployed before,
      * all the available transport requests are returned.
+     *
      * @param doc document
      * @returns transport numbers
      */
@@ -132,6 +136,7 @@ export class TransportChecksService extends AdtService {
     /**
      * This function processes ADT response for existing project name that has been locked.
      * A single, previously provided transport requests is returned in the list.
+     *
      * @param doc document
      * @returns transport numbers
      */
@@ -148,6 +153,7 @@ export class TransportChecksService extends AdtService {
 
     /**
      * Convert transport request in XML element of ADT response to typed object.
+     *
      * @param transportReqEle XML element of transport request data in ADT response
      * @returns JSON object format of input XML element
      */

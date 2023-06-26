@@ -7,6 +7,7 @@ import { enhanceYaml, removeUi5MockYaml } from './ui5-mock-yaml';
 
 /**
  *  Add mockserver configuration to a UI5 application.
+ *
  * @param basePath - the base path where the package.json and ui5.yaml is
  * @param data - configuration of the mockserver
  * @param fs - the memfs editor instance
@@ -23,6 +24,7 @@ export async function generateMockserverConfig(basePath: string, data: Mockserve
 
 /**
  * Remove mockserver configuration.
+ *
  * @param basePath - the base path where the package.json and ui5.yaml is
  * @param fs - the memfs editor instance
  * @returns Promise<Editor> - memfs editor instance with updated files

@@ -21,6 +21,7 @@ import {
 
 /**
  * Represents a UI5 config file in yaml format (ui5(-*).yaml) with utility functions to manipulate the yaml document.
+ *
  * @class UI5Config
  */
 export class UI5Config {
@@ -28,6 +29,7 @@ export class UI5Config {
 
     /**
      * Returns a new instance of UI5Config.
+     *
      * @static
      * @param {string} serializedYaml - the serialized yaml string
      * @returns {UI5Config} the UI5Config instance
@@ -41,6 +43,7 @@ export class UI5Config {
 
     /**
      * Tries reading the resources/configuration object from the config.
+     *
      * @returns resources/configuration object from config or an empty object
      * @memberof UI5Config
      */
@@ -56,6 +59,7 @@ export class UI5Config {
 
     /**
      * Adds or replaces the resources/configuration object in the config.
+     *
      * @param config configuration object that is to be written to the config
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -71,6 +75,7 @@ export class UI5Config {
     /**
      * Set the metadata object in the yaml file.
      * See also https://sap.github.io/ui5-tooling/pages/Configuration/#metadata for reference.
+     *
      * @param {Ui5Document['metadata']} value metadata of the project or application
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -83,6 +88,7 @@ export class UI5Config {
     /**
      * Set the type in the yaml file.
      * See also https://sap.github.io/ui5-tooling/pages/Configuration/#general-configuration for reference.
+     *
      * @param {Ui5Document['type']} value - type of the application
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -94,6 +100,7 @@ export class UI5Config {
 
     /**
      * Adds a UI5 Framework entry to the yaml file.
+     *
      * @param {string} ui5Framework - whether to user SAPUI5 or OpenUI5
      * @param {string} ui5Version - ui5 version
      * @param {string[]} ui5Libraries - a list of libraries
@@ -123,6 +130,7 @@ export class UI5Config {
 
     /**
      * Adds a list of custom tasks to the config.
+     *
      * @param {CustomTask<any>[]} tasks - the list of custom tasks
      * @param {NodeComment<CustomMiddleware<any>>[]} comments - a list of comments
      * @returns {UI5Config} the UI5Config instance
@@ -137,6 +145,7 @@ export class UI5Config {
 
     /**
      * Adds a list of custom middlewares to the config.
+     *
      * @param {CustomMiddleware<any>[]} middlewares - the list of custom middlewares
      * @param {NodeComment<CustomMiddleware<any>>[]} comments - a list of comments
      * @returns {UI5Config} the UI5Config instance
@@ -154,6 +163,7 @@ export class UI5Config {
 
     /**
      * Adds a instance of the Fiori tools app-reload middleware to the config.
+     *
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
@@ -167,6 +177,7 @@ export class UI5Config {
 
     /**
      * Adds a instance of the Fiori tools proxy middleware to the config.
+     *
      * @param proxyConfig proxy configuration containing an optional array of backend and an option UI5 host configuration
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -183,6 +194,7 @@ export class UI5Config {
 
     /**
      * Adds a backend configuration to an existing fiori-tools-proxy middleware. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     *
      * @param backend config of backend that is to be proxied
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -202,6 +214,7 @@ export class UI5Config {
 
     /**
      * Adds a ui configuration to an existing fiori-tools-proxy middleware. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     *
      * @param ui5 config of backend that is to be proxied
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -222,6 +235,7 @@ export class UI5Config {
 
     /**
      * Adds a instance of the mockserver middleware to the config.
+     *
      * @param path option path that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -236,6 +250,7 @@ export class UI5Config {
 
     /**
      * Adds the ABAP deployment task to the config.
+     *
      * @param target system that this app is to be deployed to
      * @param app application configuration for the deployment to ABAP
      * @returns {UI5Config} the UI5Config instance
@@ -261,6 +276,7 @@ export class UI5Config {
 
     /**
      * Remove a middleware form the UI5 config.
+     *
      * @param name name of the middleware that is to be removed
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -275,6 +291,7 @@ export class UI5Config {
 
     /**
      * Remove a task form the UI5 config.
+     *
      * @param name name of the task that is to be removed
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -289,6 +306,7 @@ export class UI5Config {
 
     /**
      * Find a custom item in the UI5 config.
+     *
      * @param name name of the item (task or middlewre) that is to be looked for
      * @param path path to the root of the sequence that is to be searched
      * @returns the configuration as object or undefined if not found
@@ -311,6 +329,7 @@ export class UI5Config {
 
     /**
      * Find a middleware in the UI5 config.
+     *
      * @param name name of the middleware that is to be looked for
      * @returns the middleware configuration as object or undefined if not found
      * @memberof UI5Config
@@ -321,6 +340,7 @@ export class UI5Config {
 
     /**
      * Find a task in the UI5 config.
+     *
      * @param name name of the task that is to be looked for
      * @returns the middleware configuration as object or undefined if not found
      * @memberof UI5Config
@@ -332,6 +352,7 @@ export class UI5Config {
     /**
      * Update an existing custom middleware or create it. Existing custom middleware be overwritten, not merged.
      * If the custom middleware doesn't exist, it will be added.
+     *
      * @param middleware - middleware config
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -353,6 +374,7 @@ export class UI5Config {
 
     /**
      * Returns a string representation of the config.
+     *
      * @returns {string} the string representation
      * @memberof UI5Config
      */

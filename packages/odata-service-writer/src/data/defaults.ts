@@ -4,6 +4,7 @@ import { DEFAULT_DATASOURCE_NAME } from './constants';
 /**
  * Enhances the provided OData service object with path, name and model information.
  * Directly modifies the passed object reference.
+ *
  * @param {OdataService} service - the OData service object
  */
 export function enhanceData(service: OdataService): void {

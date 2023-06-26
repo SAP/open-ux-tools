@@ -12,6 +12,7 @@ import { OdataService, OdataVersion } from './types';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
+ *
  * @param basePath - the root path of an existing UI5 application
  * @param files - list of files that need to exist
  * @param fs - the memfs editor instance
@@ -26,6 +27,7 @@ function ensureExists(basePath: string, files: string[], fs: Editor) {
 
 /**
  * Try finding a package.json and a ui5.yaml for the given project by looking upwards in the folder hierachy.
+ *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {Editor} [fs] - the memfs editor instance
  * @returns an object with the optional locations of the package.json and ui5.yaml
@@ -53,6 +55,7 @@ export async function findProjectFiles(
 
 /**
  * Writes the odata service related file updates to an existing UI5 project specified by the base path.
+ *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
  * @param {Editor} [fs] - the memfs editor instance

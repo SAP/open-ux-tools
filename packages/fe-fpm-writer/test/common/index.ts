@@ -3,6 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 
 /**
  * Reusable function to reset/delete the test-output folder before running tests.
+ *
  * @param path - folder to be deleted
  */
 export function clearTestOutput(path: string) {
@@ -13,6 +14,7 @@ export function clearTestOutput(path: string) {
 
 /**
  * Write the test results to the file system if UX_DEBUG is activated.
+ *
  * @param fs - reference to the mem-fs editor instance
  * @returns a promise when the files are written to the file system.
  */

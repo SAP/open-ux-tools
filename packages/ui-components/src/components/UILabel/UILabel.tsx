@@ -16,6 +16,7 @@ export const labelGlobalStyle = {
 /**
  * UILabel component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/label
+ *
  * @exports
  * @class UILabel
  * @extends {React.Component<ILabelProps, {}>}
@@ -23,6 +24,7 @@ export const labelGlobalStyle = {
 export class UILabel extends React.Component<UILabelProps> {
     /**
      * Initializes component properties.
+     *
      * @param {UILabelProps} props
      */
     public constructor(props: UILabelProps) {

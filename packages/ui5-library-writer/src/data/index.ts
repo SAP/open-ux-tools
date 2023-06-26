@@ -3,6 +3,7 @@ import { validate } from './validators';
 
 /**
  * Merges UI5LibConfig instance with default properties.
+ *
  * @param {UI5LibConfig} libConfig - the UI5LibConfig instance
  * @returns {UI5LibInput} - a new UI5LibInput instance with all required defaults set
  */

@@ -5,6 +5,7 @@ export { Index, OnScrollParams } from 'react-virtualized';
 /**
  * UIVirtualList component
  * based on https://github.com/bvaughn/react-virtualized/tree/master/source/List
+ *
  * @exports
  * @class UIVirtualList
  * @extends {React.Component<CellMeasurerProps, {}>}
@@ -12,6 +13,7 @@ export { Index, OnScrollParams } from 'react-virtualized';
 export class UICellMeasurer extends React.Component<CellMeasurerProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {CellMeasurerProps} props
      */
     public constructor(props: CellMeasurerProps) {

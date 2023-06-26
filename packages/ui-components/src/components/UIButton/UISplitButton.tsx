@@ -23,6 +23,7 @@ export interface UISplitButtonState {
 
 /**
  * UISplitButton component
+ *
  * @exports
  * @class UISplitButton
  * @extends {React.Component<UISplitButtonProps, UISplitButtonState>}
@@ -31,6 +32,7 @@ export class UISplitButton extends React.Component<UISplitButtonProps, UISplitBu
     id = this.props.id ? this.props.id : getUIId('ui-split-button-');
     /**
      * Initializes component properties.
+     *
      * @param {UISplitButtonProps} props
      */
     public constructor(props: UISplitButtonProps) {

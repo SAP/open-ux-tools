@@ -19,6 +19,7 @@ export class UILoadButton extends React.Component<UILoadButtonProps, UILoadButto
     private minLoaderTimer: number | undefined = undefined;
     /**
      * Constructor method for load button.
+     *
      * @param props Component properties.
      */
     constructor(props: UILoadButtonProps) {
@@ -28,6 +29,7 @@ export class UILoadButton extends React.Component<UILoadButtonProps, UILoadButto
 
     /**
      * Method handles component update to refresh busy state.
+     *
      * @param prevProps Component previous properties.
      */
     componentDidUpdate(prevProps: UILoadButtonProps): void {
@@ -61,6 +63,7 @@ export class UILoadButton extends React.Component<UILoadButtonProps, UILoadButto
 
     /**
      * Method returns latest busy state by checking current state and props.
+     *
      * @param props Current props.
      * @param state Current state.
      * @returns Busy state.
@@ -90,6 +93,7 @@ export class UILoadButton extends React.Component<UILoadButtonProps, UILoadButto
 
     /**
      * Method returns minimal waiting time for loader depending on passed 'useMinWaitingTime' property.
+     *
      * @returns Minimal waiting time for busy loader.
      */
     private getMinimalWaitingTime(): number {
@@ -99,6 +103,7 @@ export class UILoadButton extends React.Component<UILoadButtonProps, UILoadButto
 
     /**
      * Method to render load button component.
+     *
      * @returns Load button component.
      */
     render(): React.ReactElement {

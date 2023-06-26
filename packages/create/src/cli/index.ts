@@ -15,6 +15,7 @@ import { getRemoveCommands } from './remove';
 
 /**
  * Run the command line interface.
+ *
  * @param argv - arguments, typically 'process.argv'
  */
 export function handleCreateFioriCommand(argv: string[]): void {
@@ -33,6 +34,7 @@ export function handleCreateFioriCommand(argv: string[]): void {
 
 /**
  * Returns an instance of the command line program (commander command) ready to be executed (parsed), like 'program.parse(argv)'.
+ *
  * @returns - commander program
  */
 function getCommanderProgram(): Command {
@@ -55,6 +57,7 @@ function getCommanderProgram(): Command {
 
 /**
  * Return the version from package.json.
+ *
  *  @returns - version from package.json
  */
 function getVersion(): string {

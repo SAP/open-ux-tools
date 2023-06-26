@@ -43,6 +43,7 @@ export class Uaa {
 
     /**
      * Getter for uaa url.
+     *
      * @returns uaa url
      */
     protected get url(): string {
@@ -51,6 +52,7 @@ export class Uaa {
 
     /**
      * Getter for client id.
+     *
      * @returns client id
      */
     protected get clientid(): string {
@@ -59,6 +61,7 @@ export class Uaa {
 
     /**
      * Getter for client secret.
+     *
      * @returns client secret
      */
     protected get clientsecret(): string {
@@ -67,6 +70,7 @@ export class Uaa {
 
     /**
      * Getter for logout url.
+     *
      * @returns logout url
      */
     protected get logoutUrl(): string {
@@ -75,6 +79,7 @@ export class Uaa {
 
     /**
      * Getter for system id.
+     *
      * @returns system id
      */
     protected get systemId(): string {
@@ -83,6 +88,7 @@ export class Uaa {
 
     /**
      * Getter for username.
+     *
      * @returns system id
      */
     private get username(): string {
@@ -91,6 +97,7 @@ export class Uaa {
 
     /**
      * Getter for password.
+     *
      * @returns system id
      */
     private get password(): string {
@@ -99,6 +106,7 @@ export class Uaa {
 
     /**
      * Generates a request url based on the provided redirect url.
+     *
      * @param params config parameters
      * @param params.redirectUri redirect url
      * @returns authentication code request url
@@ -117,6 +125,7 @@ export class Uaa {
 
     /**
      * Generate an access token using grant_type password to the authorization service (XSUAA).
+     *
      * @returns an axios request config
      */
     protected getTokenRequestForClientCredential(): AxiosRequestConfig {
@@ -139,6 +148,7 @@ export class Uaa {
 
     /**
      * Generate an Axios token request configuration for fetching a token.
+     *
      * @param params config parameters
      * @param params.redirectUri redirect url
      * @param params.authCode authentication code
@@ -164,6 +174,7 @@ export class Uaa {
 
     /**
      * Generate an Axios token request configuration for fetching a token.
+     *
      * @param refreshToken existing refresh token
      * @returns an axios request config
      */
@@ -185,6 +196,7 @@ export class Uaa {
 
     /**
      * Get user information.
+     *
      * @param accessToken valid access token
      * @returns user name or undefined
      */
@@ -201,6 +213,7 @@ export class Uaa {
 
     /**
      * Get an authentication code.
+     *
      * @param timeout timeout
      * @returns an object containing an authentication code and a redirect object
      */
@@ -288,6 +301,7 @@ export class Uaa {
 
     /**
      * Retrieve an access token using the client credentials.
+     *
      * @returns an access token using the BTP UAA credentials
      */
     public async getAccessTokenWithClientCredentials(): Promise<string> {

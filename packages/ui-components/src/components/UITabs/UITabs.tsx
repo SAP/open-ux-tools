@@ -11,6 +11,7 @@ export interface UITabsProps extends IPivotProps {
 /**
  * UITabs component.
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/pivot
+ *
  * @exports
  * @class UITabs
  * @extends {React.Component<IPivotProps, {}>}
@@ -18,6 +19,7 @@ export interface UITabsProps extends IPivotProps {
 export class UITabs extends React.Component<UITabsProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {UITabsProps} props
      */
     public constructor(props: UITabsProps) {

@@ -7,6 +7,7 @@ import { t } from '../i18n';
 
 /**
  * Checks the endpoints (SAP Systems or BAS Destinations) and returns a list.
+ *
  * @returns messages, SAP systems
  */
 export async function checkEndpoints(): Promise<{
@@ -34,6 +35,7 @@ export async function checkEndpoints(): Promise<{
 
 /**
  * Check an endpoint for information including results of v2 & v4 catalog service requests.
+ *
  * @param endpoint - endpoint from list of all endpoints
  * @param username - destination username
  * @param password - destination password

@@ -7,6 +7,7 @@ import { NAME } from '../types';
 
 /**
  * Tries to read the version of the modules package.json but in case of an error, it returns the manually maintained version matching major.minor of the module.
+ *
  * @returns the version of the deploy tooling.
  */
 export function getVersion() {
@@ -20,6 +21,7 @@ export function getVersion() {
 
 /**
  * Read the deployment configuration from a ui5*.yaml file.
+ *
  * @param path - path to the ui5*.yaml file
  * @returns the configuration object or throws an error if it cannot be read.
  */
@@ -35,6 +37,7 @@ export async function getDeploymentConfig(path: string): Promise<AbapDeployConfi
 
 /**
  * Try reading a service key object from the given path an parse it as js object.
+ *
  * @param path path to the service key json file
  * @returns service key as js object.
  */
@@ -48,6 +51,7 @@ function readServiceKeyFromFile(path: string): ServiceInfo {
 
 /**
  * Read the environment variables to generate a service object.
+ *
  * @param targetUrl target endpoint where app is being deployed to
  * @returns service key as js object
  */
@@ -67,6 +71,7 @@ function getServiceFromEnv(targetUrl: string | undefined): ServiceInfo {
 
 /**
  * Boolean merger.
+ *
  * @param cli - optional flag from CLI
  * @param file - optional flag from file
  * @returns merged flag
@@ -77,6 +82,7 @@ function mergeFlag(cli?: boolean, file?: boolean): boolean | undefined {
 
 /**
  * Parse a query string and return an object.
+ *
  * @param query query string
  * @returns params object ready for axios requests
  */
@@ -94,6 +100,7 @@ function parseQueryParams(query: string): AxiosRequestConfig['params'] {
 
 /**
  * Generate the service object using either a service.json file or environment variables.
+ *
  * @param options additional options
  * @param targetUrl target endpoint where app is being deployed to
  * @returns service key as js object
@@ -110,6 +117,7 @@ function getServiceKey(options: CliOptions, targetUrl: string | undefined): unde
 
 /**
  * Merge CLI options into a base target configuration.
+ *
  * @param baseTarget base target config
  * @param options additional options
  * @returns merged target object
@@ -128,6 +136,7 @@ function mergeTarget(baseTarget: AbapTarget, options: CliOptions) {
 
 /**
  * Merge the configuration from the ui5*.yaml with CLI options.
+ *
  * @param taskConfig - base configuration from the file
  * @param options - CLI options
  * @returns the merged config

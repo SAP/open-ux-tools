@@ -21,6 +21,7 @@ import { getMainServiceDataSource } from '../app-info';
  * If ui5.yaml exists, copy it and add/update the 'sap-fe-mockserver' middleware configuration.
  * If ui5.yaml does not exist, create a new ui5-mock.yaml file with 'sap-fe-mockserver' middleware
  * configuration and basic default configuration for 'fiori-tools-proxy' and 'fiori-tools-appreload'.
+ *
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to project root, where package.json and ui5.yaml is
  * @param webappPath - path to webapp folder, where manifest.json is
@@ -51,6 +52,7 @@ export async function enhanceYaml(
 /**
  * Update existing ui5-mock.yaml config. This will add or replace existing middleware configuration
  * 'sap-fe-mockserver' with state of the art config.
+ *
  * @param fs - Editor instance to read existing information
  * @param ui5MockYamlPath - path to ui5-mock.yaml file
  * @param [path] - optional url path the mockserver listens to
@@ -64,6 +66,7 @@ async function updateUi5MockYamlConfig(fs: Editor, ui5MockYamlPath: string, path
 
 /**
  * Create a new ui5-mock.yaml based on existing ui5.yaml.
+ *
  * @param fs - Editor instance to read existing information
  * @param basePath -
  * @param [path] - optional path for mockserver config
@@ -77,6 +80,7 @@ async function generateUi5MockYamlBasedOnUi5Yaml(fs: Editor, basePath: string, p
 
 /**
  * Create fresh ui5-mock.yaml configuration which can be stringified and written.
+ *
  * @param appId - application id
  * @param [path] - optional url path the mockserver listens to
  * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
@@ -95,6 +99,7 @@ async function generateNewUi5MockYamlConfig(appId: string, path?: string): Promi
 
 /**
  * Return new mockserver middleware.
+ *
  * @param [path] - optional path for mockserver config
  * @returns - mockserver middleware
  */
@@ -110,6 +115,7 @@ async function getNewMockserverMiddleware(path?: string): Promise<CustomMiddlewa
 
 /**
  * Delete ui5-mock.yaml file from mem-fs.
+ *
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to project root, where package.json and ui5.yaml is
  */

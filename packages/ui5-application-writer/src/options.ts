@@ -20,6 +20,7 @@ export interface FeatureInput {
 
 /**
  * Copy all template files into the target project.
+ *
  * @param name the name of the optional feature
  * @param input collection of input properties
  * @param input.ui5App ui5 app config
@@ -62,6 +63,7 @@ const factories: { [key: string]: (input: FeatureInput) => Promise<void> } = {
 
 /**
  * Enable typescript for the given input.
+ *
  * @param input Input required to enable the optional typescript features
  * @param keepOldComponent if set to true then the old Component.js will be renamed but kept.
  */
@@ -82,6 +84,7 @@ export async function enableTypescript(input: FeatureInput, keepOldComponent: bo
 
 /**
  * Enable npm module import for the given input.
+ *
  * @param input Input required to enable the optional npm modules import
  */
 export async function enableNpmPackageConsumption(input: FeatureInput) {
@@ -94,6 +97,7 @@ export async function enableNpmPackageConsumption(input: FeatureInput) {
 
 /**
  * Check if the ui5 app config requires optional features to be enabled and if yes, enable them.
+ *
  * @param ui5App ui5 app config
  * @param fs reference to the mem-fs instance
  * @param basePath project base path

@@ -2,6 +2,7 @@ export type StringMap = { [key: string]: any };
 
 /**
  * Perform string interpolation on the given template string.
+ *
  * @param {string} template - template string
  * @param {StringMap} [replacements] - a list of options for translation interpolation
  * @returns {string} the interpolated string

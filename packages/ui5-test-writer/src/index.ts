@@ -9,6 +9,7 @@ import { t } from './i18n';
 
 /**
  * Reads the manifest for an app.
+ *
  * @param fs - a reference to a mem-fs editor
  * @param basePath - the root folder of the app
  * @returns the manifest object. An exception is thrown if the manifest cannot be read.
@@ -28,6 +29,7 @@ function readManifest(fs: Editor, basePath: string): Manifest {
 
 /**
  * Retrieves the application type of the main datasource (FreeStyle, FE V2 or FE V4).
+ *
  * @param manifest - the app descriptor of the app
  * @returns the application type. An exception is thrown if it can't be found or if it's not supported
  */
@@ -50,6 +52,7 @@ function getAppTypeFromManifest(manifest: Manifest): string {
 
 /**
  * Retrieves appID and appPath from the manifest.
+ *
  * @param manifest - the app descriptor of the app
  * @param forcedAppID - the appID in case we don't want to read it from the manifest
  * @returns appID and appPath
@@ -67,6 +70,7 @@ function getAppFromManifest(manifest: Manifest, forcedAppID?: string): { appID: 
 
 /**
  * Create the page configuration object from the app descriptor and the target key.
+ *
  * @param manifest - the app descriptor of the app
  * @param targetKey - the key of the target in the manifest
  * @param forcedAppID - the appID in case we don't want to read it from the manifest
@@ -100,6 +104,7 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
 
 /**
  * Create the configuration object from the app descriptor.
+ *
  * @param manifest - the app descriptor of the target app
  * @param opaConfig - parameters for the generation
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
@@ -148,6 +153,7 @@ function createConfig(
 
 /**
  * Finds the initial ListReport page and the first Object page from the app.
+ *
  * @param pages - the page configs of the app
  * @param manifest - the app descriptor of the target app
  * @returns the page fonfigs for the LR and the OP if they're found
@@ -206,6 +212,7 @@ function findLROP(
 
 /**
  * Writes a page object in a mem-fs-editor.
+ *
  * @param pageConfig - the page configuration object
  * @param rootTemplateDirPath - template root directory
  * @param testOutDirPath - output test directory (.../webapp/test)
@@ -231,6 +238,7 @@ function writePageObject(
 /**
  * Generate OPA test files for a Fiori elements for OData V4 application.
  * Note: this can potentially overwrite existing files in the webapp/test folder.
+ *
  * @param basePath - the absolute target path where the application will be generated
  * @param opaConfig - parameters for the generation
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
@@ -298,6 +306,7 @@ export function generateOPAFiles(
 /**
  * Generate a page object file for a Fiori elements for OData V4 application.
  * Note: this doesn't modify other existing files in the webapp/test folder.
+ *
  * @param basePath - the absolute target path where the application will be generated
  * @param pageObjectParameters - parameters for the page
  * @param pageObjectParameters.targetKey - the key of the target in the manifest file corresponding to the page

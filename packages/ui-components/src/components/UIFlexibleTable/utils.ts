@@ -1,5 +1,6 @@
 /**
  * Get row actions button id.
+ *
  * @param {string} tableId
  * @param {number | undefined} rowNumber
  * @param {string} actionName
@@ -11,6 +12,7 @@ export function getRowActionButtonId(tableId: string, rowNumber: number | undefi
 
 /**
  * Gets table actions button id.
+ *
  * @param {string} tableId
  * @param {string} actionName
  * @returns {string}
@@ -21,6 +23,7 @@ export function getTableActionButtonId(tableId: string, actionName: string): str
 
 /**
  * Composes class name.
+ *
  * @param {string} initialClass
  * @param {string | string[]} additionalClassNames
  * @returns {string}

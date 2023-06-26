@@ -6,6 +6,7 @@ import { convertResultsToMarkdown } from './markdown';
 
 /**
  * Store output results to zip archive. This includes the markdown report and the raw JSON.
+ *
  * @param results - environment check results
  * @param targetFile - path and filename of target zip archive. Default is 'envcheck-results.zip'.
  */

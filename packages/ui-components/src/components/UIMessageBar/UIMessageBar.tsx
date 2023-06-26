@@ -9,6 +9,7 @@ export { MessageBarType as UIMessageBarType };
 /**
  * UIMessageBar component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/MessageBar
+ *
  * @exports
  * @class UIMessageBar
  * @extends {React.Component<IMessageBarProps, {}>}
@@ -16,6 +17,7 @@ export { MessageBarType as UIMessageBarType };
 export class UIMessageBar extends React.Component<IMessageBarProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {IMessageBarProps} props
      */
     public constructor(props: IMessageBarProps) {

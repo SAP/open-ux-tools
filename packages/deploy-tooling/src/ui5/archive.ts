@@ -5,6 +5,7 @@ import { createBuffer } from '../base';
 
 /**
  * Create an archive of files in the workspace.
+ *
  * @param logger - reference to the logger instance
  * @param workspace - reference to the UI5 tooling workspace object
  * @param projectName - project properties and configuration

@@ -7,6 +7,7 @@ import { getWebappPath } from './ui5-config';
 
 /**
  * Get the used programming language of an application.
+ *
  * @param appRoot - root folder of the application
  * @param [memFs] - optional mem-fs editor instance
  * @returns - used language, JavaScript or TypeScript

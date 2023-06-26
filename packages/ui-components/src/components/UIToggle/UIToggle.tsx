@@ -86,6 +86,7 @@ const COLORS = {
 /**
  * UIToggle component.
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/toggle
+ *
  * @exports
  * @class UIToggle
  * @extends {React.Component<IToggleProps, {}>}
@@ -93,6 +94,7 @@ const COLORS = {
 export class UIToggle extends React.Component<UIToggleProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {UIToggleProps} props
      */
     public constructor(props: UIToggleProps) {
@@ -101,6 +103,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
 
     /**
      * Method returns size of margin bottom for root container depending on current props state.
+     *
      * @param {string} [message] Validation message.
      * @returns {number | undefined} Value for margin bottom.
      */

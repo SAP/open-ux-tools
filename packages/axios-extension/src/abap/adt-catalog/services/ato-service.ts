@@ -24,6 +24,7 @@ export class AtoService extends AdtService {
 
     /**
      * Send ADT request to fetch ATO settings.
+     *
      * @returns AtoSettings
      */
     public async getAtoInfo(): Promise<AtoSettings> {
@@ -38,6 +39,7 @@ export class AtoService extends AdtService {
 
     /**
      * Parse an XML document for ATO (Adaptation Transport Organizer) settings.
+     *
      * @param xml xml document containing ATO settings
      * @returns parsed ATO settings
      */

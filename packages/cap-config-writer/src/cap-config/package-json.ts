@@ -7,6 +7,7 @@ const minCdsPluginUi5Version = '0.1.1';
 
 /**
  * Ensure a minimum version of @sap/cds in dependencies.
+ *
  * @param packageJson - the parsed package.json
  */
 export function ensureMinCdsVersion(packageJson: Package): void {
@@ -18,6 +19,7 @@ export function ensureMinCdsVersion(packageJson: Package): void {
 
 /**
  * Enable workspaces for app/* folders.
+ *
  * @param basePath - root path of the CAP project, where package.json is located
  * @param packageJson - the parsed package.json
  */
@@ -41,6 +43,7 @@ export async function enableWorkspaces(basePath: string, packageJson: Package): 
 
 /**
  * Add devDependency to cds-plugin-ui5.
+ *
  * @param packageJson - the parsed package.json
  */
 export function addCdsPluginUi5(packageJson: Package): void {
@@ -53,6 +56,7 @@ export function addCdsPluginUi5(packageJson: Package): void {
 /**
  * Check if package.json has dependency to the minimum min version of @sap/cds,
  * that is required to enable cds-plugin-ui.
+ *
  * @param packageJson - the parsed package.json
  * @returns - true: min cds version is present; false: cds version needs update
  */
@@ -62,6 +66,7 @@ export function hasMinCdsVersion(packageJson: Package): boolean {
 
 /**
  * Check if package.json has version or version range that satisfies the minimum version of @sap/cds.
+ *
  * @param packageJson  - the parsed package.json
  * @returns - true: cds version satisfies the min cds version; false: cds version does not satisfy min cds version
  */
@@ -71,6 +76,7 @@ export function satisfiesMinCdsVersion(packageJson: Package): boolean {
 
 /**
  * Get information about the workspaces in the CAP project.
+ *
  * @param basePath - root path of the CAP project, where package.json is located
  * @param packageJson - the parsed package.json
  * @returns - appWorkspace containing the path to the appWorkspace including wildcard; workspaceEnabled: boolean that states whether workspace for apps are enabled
@@ -90,6 +96,7 @@ export async function getWorkspaceInfo(
  * Return the reference to the array of workspace packages or undefined if not defined.
  * The workspace packages can either be defined directly as workspaces in package.json
  * or in workspaces.packages, e.g. in yarn workspaces.
+ *
  * @param packageJson - the parsed package.json
  * @returns ref to the packages in workspaces or undefined
  */
@@ -105,6 +112,7 @@ function getWorkspacePackages(packageJson: Package): string[] | undefined {
 
 /**
  * Check if devDependency to cds-plugin-ui5 is present in package.json.
+ *
  * @param packageJson - the parsed package.json
  * @returns true: devDependency to cds-plugin-ui5 exists; false: devDependency to cds-plugin-ui5 does not exist
  */

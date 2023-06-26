@@ -7,6 +7,7 @@ import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
 
 /**
  * Hides the proxy credentials for displaying the proxy configuration in the console.
+ *
  * @param proxy - user's proxy server
  * @returns proxy with hidden credentials for displaying in the console
  */
@@ -24,6 +25,7 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
 
 /**
  * UI5 middleware allowing to to proxy backends.
+ *
  * @param params input parameters for UI5 middleware
  * @param params.options configuration options
  * @returns {*}  {(Promise<RequestHandler>)}

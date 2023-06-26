@@ -31,6 +31,7 @@ const CALLOUT_CONTENT_PADDING = new Map<UICalloutContentPadding, number>([[UICal
 
 /**
  * Method receives callout style and extracts into raw styles object.
+ *
  * @param {IStyleFunctionOrObject<ICalloutContentStyleProps, ICalloutContentStyles> | undefined} styles Callout styles.
  * @param {keyof ICalloutContentStyles} name Callout style type.
  * @returns {IRawStyle} Raw style object.
@@ -79,6 +80,7 @@ export const getCalloutStyle = (props: UICalloutProps): ICalloutContentStyles =>
 /**
  * UICallout component.
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/callout
+ *
  * @exports
  * @class UICallout
  * @extends {React.Component<ICalloutProps, {}>}
@@ -86,6 +88,7 @@ export const getCalloutStyle = (props: UICalloutProps): ICalloutContentStyles =>
 export class UICallout extends React.Component<UICalloutProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {UICalloutProps} props
      */
     public constructor(props: UICalloutProps) {

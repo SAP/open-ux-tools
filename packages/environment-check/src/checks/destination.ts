@@ -9,6 +9,7 @@ import { getServiceProvider, checkCatalogServices } from './service-checks';
 
 /**
  * Check a BAS destination, like catalog service v2 & v4.
+ *
  * @param destination - Destination from list of all destinations
  * @param username - username
  * @param password - password
@@ -51,6 +52,7 @@ export async function checkBASDestination(
 
 /**
  * Returns whether a given destination requires username/password.
+ *
  * @param destination - the destination to check
  * @returns boolean if basic auth is required
  */
@@ -60,6 +62,7 @@ export function needsUsernamePassword(destination: Endpoint): boolean {
 
 /**
  * Checks the destinations and returns a list.
+ *
  * @returns messages, destinations
  */
 export async function checkBASDestinations(): Promise<{
@@ -118,6 +121,7 @@ export async function checkBASDestinations(): Promise<{
 
 /**
  * Transforms the destination format into generic Endpoint type.
+ *
  * @param destinationInfo DestinationListInfo[] from '@sap/bas-sdk'
  * @returns list of destinations in new (flat) format
  */
@@ -158,6 +162,7 @@ function transformDestinations(destinationInfo): Endpoint[] {
 
 /**
  * Return the URL service type for a given destination.
+ *
  * @param destination - destination to check
  * @returns - URL service type, like 'Full Service URL', 'Catalog Service', 'Partial URL'
  */

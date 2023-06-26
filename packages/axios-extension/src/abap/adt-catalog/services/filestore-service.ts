@@ -18,6 +18,7 @@ export class FileStoreService extends AdtService {
 
     /**
      * Get ADT scheme ID.
+     *
      * @returns AdtCategory
      */
     public static getAdtCatagory(): AdtCategory {
@@ -28,6 +29,7 @@ export class FileStoreService extends AdtService {
      * If target `path` is a file, the file content is returned as string type.
      * If target `path` is a folder, files and folders in this folder are returned as an array
      * of ArchiveFileNode objects.
+     *
      * @see ArchiveFileNode
      * @param type
      *  Specifies if input `path` refers to a file or a folder. When starting exploring
@@ -63,6 +65,7 @@ export class FileStoreService extends AdtService {
      * Parse response data from ADT service. If the content is XML document of
      * folder structure, this method returns a list of `ArchiveFileNode` object. If the content
      * is text string, this method returns the text cotent.
+     *
      * @see ArchiveFileNode
      * @param appName Deployed Fiori app name
      * @param responseData Response from ADT service

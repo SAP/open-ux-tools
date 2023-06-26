@@ -11,6 +11,7 @@ const pluginsDirBAS = join('/extbin/plugins');
 
 /**
  * Checks if vsix/extension is required for results.
+ *
  * @param vsixFile - file to be checked
  * @returns boolean if file is required
  */
@@ -25,6 +26,7 @@ function isExtensionRequired(vsixFile: string): boolean {
 
 /**
  * Reads the list of extensions installed in BAS.
+ *
  * @returns list of extension ids and versions
  */
 async function getExtensionsBAS(): Promise<{ [id: string]: { version: string } }> {
@@ -45,6 +47,7 @@ async function getExtensionsBAS(): Promise<{ [id: string]: { version: string } }
 
 /**
  * Internal function to check if the module is being ran in VSCode Insiders.
+ *
  * @returns boolean - if ran in insiders
  */
 async function checkIsInsiders(): Promise<boolean> {
@@ -58,6 +61,7 @@ async function checkIsInsiders(): Promise<boolean> {
 
 /**
  * Reads the list of extensions installed in vscode.
+ *
  * @returns list of extension ids and versions
  */
 async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string } }> {
@@ -80,6 +84,7 @@ async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string 
 
 /**
  * Reads the list of extensions installed and returns the id and version.
+ *
  * @param extensions - installed extensions passed from vscode
  * @param logger - logger to report errors
  * @returns list of extension ids and versions
@@ -113,6 +118,7 @@ export async function getInstalledExtensions(
 
 /**
  * Read the version of the cloud foundry CLI.
+ *
  * @returns version
  */
 export async function getCFCliToolVersion(): Promise<string> {
@@ -128,6 +134,7 @@ export async function getCFCliToolVersion(): Promise<string> {
 
 /**
  * Get the path of the fiori generator.
+ *
  * @returns version
  */
 async function getFioriGenGlobalPath(): Promise<string> {
@@ -149,6 +156,7 @@ async function getFioriGenGlobalPath(): Promise<string> {
 
 /**
  * Read the version of the fiori generator.
+ *
  * @returns version
  */
 export async function getFioriGenVersion(): Promise<string> {
@@ -185,6 +193,7 @@ export async function getFioriGenVersion(): Promise<string> {
 
 /**
  * Returns the versions of node.js modules.
+ *
  * @param logger - logger to report errors
  * @returns modules and versions
  */

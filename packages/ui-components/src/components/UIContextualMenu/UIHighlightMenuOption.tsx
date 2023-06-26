@@ -8,6 +8,7 @@ export interface UIHighlightMenuOptionProps {
 
 /**
  * UIHighlightMenuOption component.
+ *
  * @exports
  * @class UIHighlightMenuOption
  * @extends {React.Component<UIHighlightMenuOptionProps>}

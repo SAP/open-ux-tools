@@ -16,6 +16,7 @@ export interface ServiceInfo {
 
 /**
  * Prompts the user for a service url and tries connecting to it to fetch metadata.
+ *
  * @param generator an instance of a yeoman generator
  * @returns a service configuration
  */
@@ -49,6 +50,7 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
 
 /**
  * Check the secure storage if it has credentials for teh entered url.
+ *
  * @param url target system url
  * @param client optional sap-client parameter
  * @returns credentials or undefined
@@ -61,6 +63,7 @@ async function getCredentials(url: string, client?: string): Promise<AxiosBasicC
 
 /**
  * Ask the user whether the credentials should be stored. If yes, store them in the secure storage.
+ *
  * @param generator generator reference used for prompting
  * @param provider service provider for which the credentials should be stored
  */
@@ -99,6 +102,7 @@ async function storeCredentials(generator: Generator, provider: AbapServiceProvi
 
 /**
  * Prompts the user for a destination and tries connecting to it to fetch metadata.
+ *
  * @param generator an instance of a yeoman generator
  * @returns a service configuration
  */
@@ -130,6 +134,7 @@ export async function getServiceInfoInBAS(generator: Generator): Promise<Service
 
 /**
  * Tries fetching metadata from the given service and prompts for user/password if a 401 is returned.
+ *
  * @param generator an instance of a yeoman generator
  * @param provider service provider
  * @param path path of the service

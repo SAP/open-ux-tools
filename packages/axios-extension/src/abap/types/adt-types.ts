@@ -104,6 +104,7 @@ export interface ArchiveFileNode {
     /**
      * Path to the file or folder. Ready to be passed to the `path`
      * argument of FileStoreService.getAppArchiveContent() method.
+     *
      * @see FileStoreService.getAppArchiveContent
      */
     path: string;

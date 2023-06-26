@@ -60,6 +60,7 @@ interface SizeCalculationInfo {
 
 /**
  * UISections component.
+ *
  * @exports
  * @class {UISections}
  * @extends {React.Component<UISectionsProps, UISectionsState>}
@@ -79,6 +80,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Initializes component properties.
+     *
      * @param {UISectionsProps} props
      */
     constructor(props: UISectionsProps) {
@@ -98,6 +100,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Updates state sizes.
+     *
      * @param {number} layoutSize
      * @param {Array<number | UISectionSize | undefine>} sizes
      * @returns {UISectionSize[]}
@@ -160,6 +163,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Gets derived state from properties.
+     *
      * @param {UISectionProps} nextProps
      * @param {UISectionsState} prevState
      * @returns {UISectionsState | null}
@@ -200,6 +204,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Validates state min sizes.
+     *
      * @param {UISectionSize[]} sizes
      */
     private validateStateMinSizes(sizes: UISectionSize[]): void {
@@ -257,6 +262,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method returns indices of visible sections.
+     *
      * @param {React.ReactNodeArray} sections Section elements.
      * @returns {number[]} Indices of visible sections.
      */
@@ -272,6 +278,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method checks is passed child section visible or not.
+     *
      * @param {React.ReactElement | undefined} node React child node.
      * @returns {boolean} True if section visible.
      */
@@ -312,6 +319,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method called when resizing of section is happening.
+     *
      * @param {number} position Delta position in pixels.
      * @returns {boolean} If resizing was happened - it can return false when splitter meets resizing limitation.
      */
@@ -357,6 +365,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method returns corrected position based on boundary and size.
+     *
      * @param {number} position Delta position in pixels.
      * @param {number} boundary Boundary position.
      * @param {number} size Section size.
@@ -396,6 +405,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method returns visible children sections count.
+     *
      * @returns {number} Count of visible children sections.
      */
     private getVisibleChildrenCount(): number {
@@ -405,6 +415,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method returns size of section in percents.
+     *
      * @param {number} index Target section index.
      * @param {number} childrenCount Count of children.
      * @param {boolean} [reverse] Reverse calculation(width vs right).
@@ -431,6 +442,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method gets section size when section size is not percent based and 'sizes' prop is passed from outside.
+     *
      * @param {number} index Section index to look up.
      * @param {number} childrenCount Count of visible children.
      * @returns {React.CSSProperties | undefined} CSS Style object or undefined if no style from 'sizes' prop.
@@ -460,6 +472,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Gets position style value.
+     *
      * @param {number} childrenCount
      * @param {string} value
      * @returns {string}
@@ -473,6 +486,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * Method calculates size of section depending on several points.
      * 1. Section - resized or not.
      * 2. Animation - off or on.
+     *
      * @param {number} index Index of section.
      * @returns {SectionStyleCalculation} Object which contains visibility state and styles to apply.
      */
@@ -516,6 +530,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * Method calculates size of section depending on several points.
      * 1. Section - resized or not.
      * 2. Animation - off or on.
+     *
      * @param {number} index Index of section.
      * @returns {SectionStyleCalculation} Object which contains visibility state and styles to apply.
      */
@@ -567,6 +582,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method returns minimal size for passed section.
+     *
      * @param {number} index Index of section.
      * @returns {number} Minimal size of section.
      */
@@ -581,6 +597,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method returns class names string depending on props and component state.
+     *
      * @param {boolean} fullSizeMode Is full size mode - only ine sction visible.
      * @returns {number} Minimal size of section.
      */
@@ -596,6 +613,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method returns section's react element based on passed section index.
+     *
      * @param {number} index Section index.
      * @param {boolean} isSectionHidden Is section hidden.
      * @returns {React.ReactElement | undefined} Section's react element.
@@ -642,6 +660,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method checks if animation enabled with current state.
+     *
      * @returns {boolean} True if animation is enabled.
      */
     private isAnimationEnabled() {
@@ -650,6 +669,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method returns index of dynamicly sized section.
+     *
      * @returns {number} Index of dynamicly sized section.
      */
     private getDynamicSectionIndex(): number {
@@ -658,6 +678,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method converts passed positions to section position object.
+     *
      * @param {UISectionSize} section Section size.
      * @returns Position object.
      */
@@ -667,6 +688,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method calculates spare size for passed section.
+     *
      * @param {SizeCalculationInfo} origin Section size.
      * @param {SizeCalculationInfo[]} sizes All section sizes.
      * @returns {number} Spare size.
@@ -696,6 +718,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method converts SizeCalculationInfo into UISectionSize before applying sizes to state.
+     *
      * @param {SizeCalculationInfo[]} sizes Section sizes.
      * @returns {UISectionSize[]} Section sizes applyable for state.
      */
@@ -732,6 +755,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method recalculates "start" and "end" position based on size property.
+     *
      * @param {UISectionSize[]} sizes Section sizes.
      */
     private recalculatePositions(sizes: UISectionSize[]): void {
@@ -753,6 +777,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
     /**
      * Method returns size of sections container.
+     *
      * @returns {UISectionSize[]} Size of sections container.
      */
     private getRootSize(): number {

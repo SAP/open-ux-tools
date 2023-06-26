@@ -18,6 +18,7 @@ import type { ReaderCollection } from '@ui5/fs';
 
 /**
  * Create proxy options based on the middleware config.
+ *
  * @param logger logger to be used when running the middleware
  * @param config middleware configuration
  * @returns options object
@@ -32,6 +33,7 @@ function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Option
 
 /**
  * Creates a function handling the routes the need to be rerouted to a UI5 provider.
+ *
  * @param routes routes that need to be handled
  * @returns handler function
  */
@@ -49,6 +51,7 @@ function createRequestHandler(routes: { route: string; handler: RequestHandler }
 
 /**
  * Search the project for the manifest.json.
+ *
  * @param rootProject @ui5/fs reader collection with access to the project files
  * @returns manifest.json as object or undefined if not found
  */

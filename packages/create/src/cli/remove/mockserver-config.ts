@@ -6,6 +6,7 @@ import { hasFileDeletes, validateBasePath } from '../../validation';
 
 /**
  * Add the "add mockserver config" command to a passed command.
+ *
  * @param cmd - commander command for adding mockserver config command
  */
 export function addRemoveMockserverConfigCommand(cmd: Command): void {
@@ -22,6 +23,7 @@ export function addRemoveMockserverConfigCommand(cmd: Command): void {
 
 /**
  * Removes a mockserver config from an app or project.
+ *
  * @param basePath - path to application root
  * @param force - if true, do not ask before deleting files; otherwise ask
  */
