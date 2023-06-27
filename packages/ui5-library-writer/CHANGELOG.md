@@ -1,5 +1,15 @@
 # @sap-ux/ui5-library-writer
 
+## 0.1.4
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-application-writer@0.23.5
+    -   @sap-ux/project-access@1.8.4
+    -   @sap-ux/ui5-config@0.18.2
+
 ## 0.1.3
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.31
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-config@0.18.2
+    -   @sap-ux/logger@0.3.7
+
 ## 1.1.30
 
 ### Patch Changes

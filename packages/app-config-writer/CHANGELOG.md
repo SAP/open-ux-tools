@@ -1,5 +1,18 @@
 # @sap-ux/app-config-writer
 
+## 0.0.23
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/axios-extension@1.3.2
+    -   @sap-ux/project-access@1.8.4
+    -   @sap-ux/ui5-config@0.18.2
+    -   @sap-ux/btp-utils@0.11.7
+    -   @sap-ux/logger@0.3.7
+    -   @sap-ux/store@0.3.12
+
 ## 0.0.22
 
 ### Patch Changes

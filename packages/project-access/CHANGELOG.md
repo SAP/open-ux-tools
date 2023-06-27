@@ -1,5 +1,13 @@
 # @sap-ux/project-access
 
+## 1.8.4
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-config@0.18.2
+
 ## 1.8.3
 
 ### Patch Changes

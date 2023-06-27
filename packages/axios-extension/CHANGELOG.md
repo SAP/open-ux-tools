@@ -1,5 +1,14 @@
 # @sap-ux/axios-extension
 
+## 1.3.2
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/btp-utils@0.11.7
+    -   @sap-ux/logger@0.3.7
+
 ## 1.3.1
 
 ### Patch Changes
