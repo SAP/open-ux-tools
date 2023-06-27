@@ -38,6 +38,13 @@
                     {
                         "destructuring": "all"
                     }
+                ],
+                "jsdoc/tag-lines": [
+                    "error",
+                    "never",
+                    {
+                        "startLines": 1
+                    }
                 ]
             },
             "settings": {

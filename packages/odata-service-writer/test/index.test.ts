@@ -46,6 +46,7 @@ describe('ODataService templates', () => {
      * Helper function to create app directories for testing in mem-fs.
      *
      * @param name testDir name
+     * @returns testDir Path
      */
     async function createTestDir(name: string): Promise<string> {
         const testDir = join(outputDir, name);

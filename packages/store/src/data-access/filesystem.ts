@@ -194,6 +194,7 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
 
 /**
  * Trims, lowercases and returns plural if a non-empty string
+ *
  * @param s
  */
 function toPersistenceName(s: string): string | undefined {
