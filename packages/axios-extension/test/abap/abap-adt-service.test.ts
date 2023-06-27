@@ -64,6 +64,7 @@ const testLocalPackage = '$TMP';
 const testNewPakcage = 'NEWPACKAGE';
 const testNewProject = 'zdummyexample';
 const testExistProject = 'zdummyexist';
+const testProjectNamespace = '/test/project';
 
 // Discovery schema is cached, so separate this test suite from other ADT service tests
 describe('ADT Services unavailable in discovery', () => {
@@ -269,6 +270,32 @@ describe('Transport checks', () => {
                 client: '100'
             })
         ]);
+    });
+
+    test('Valid package name, existing project name with namespace', async () => {
+        const provider = createForAbap(config);
+        const postSpy = jest.spyOn(TransportChecksService.prototype, 'post');
+
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_CHECKS)
+            .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-2.xml'));
+
+        const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+
+        expect(await transportChecksService?.getTransportRequests(testPackage, testProjectNamespace));
+        expect(postSpy).toBeCalledWith(
+            expect.any(String),
+            expect.stringContaining(`<URI>/sap/bc/adt/filestore/ui5-bsp/objects/%2Ftest%2Fproject/$create</URI>`),
+            expect.objectContaining({
+                headers: expect.objectContaining({
+                    Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
+                    'content-type':
+                        'application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.transport.service.checkData'
+                })
+            })
+        );
     });
 });
 
