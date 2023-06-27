@@ -8,7 +8,7 @@ import { initIcons } from '../src/components/Icons';
 
 initIcons();
 
-export default { title: 'Basic Inputs/DatePicker' };
+export default { title: 'Basic Inputs/DatePicker', component: UIDatePicker };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const defaultUsage = (): JSX.Element => {

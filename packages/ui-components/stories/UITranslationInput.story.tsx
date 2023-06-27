@@ -10,7 +10,7 @@ import type { UIColumn } from '../src/components/UITable';
 import { UIIconButton } from '../src/components/UIButton';
 import { UICheckbox } from '../src/components/UICheckbox';
 
-export default { title: 'Basic Inputs/Input' };
+export default { title: 'Basic Inputs/Input', component: UITranslationInput };
 
 interface I18nTableRow {
     key: string;

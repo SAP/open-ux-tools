@@ -29,7 +29,7 @@ import { initIcons } from '../src/components/Icons';
 
 initIcons();
 
-export default { title: 'Tables/UIFlexibleTable' };
+export default { title: 'Tables/UIFlexibleTable', component: UIFlexibleTable };
 const tableIds = ['table1', 'table2'];
 
 const columns: UIFlexibleTableColumnType[] = Array.from({ length: 10 }).map((item, index) => {

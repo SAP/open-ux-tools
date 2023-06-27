@@ -2,7 +2,7 @@ import React from 'react';
 import { Stack } from '@fluentui/react';
 import { UITreeDropdown } from '../src/components/UITreeDropdown';
 
-export default { title: 'Dropdowns/TreeDropdown' };
+export default { title: 'Dropdowns/TreeDropdown', component: UITreeDropdown };
 
 const data = [
     {

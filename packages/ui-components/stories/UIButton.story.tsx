@@ -15,7 +15,7 @@ import { initIcons, UiIcons } from '../src/components/Icons';
 
 initIcons();
 
-export default { title: 'Basic Inputs/Buttons' };
+export default { title: 'Basic Inputs/Buttons', component: UIDefaultButton };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const defaultUsage = (): JSX.Element => {

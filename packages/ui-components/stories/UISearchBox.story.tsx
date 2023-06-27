@@ -5,7 +5,7 @@ import { Text, Stack } from '@fluentui/react';
 import { UISearchBox } from '../src/components/UISearchBox';
 import { initIcons } from '../src/components/Icons';
 
-export default { title: 'Basic Inputs/Search' };
+export default { title: 'Basic Inputs/Search', component: UISearchBox };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 initIcons();

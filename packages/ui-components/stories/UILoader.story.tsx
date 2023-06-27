@@ -7,7 +7,7 @@ import { initIcons } from '../src/components/Icons';
 import { UIDefaultButton } from '../src/components/UIButton';
 import { UIDialog } from '../src/components/UIDialog';
 
-export default { title: 'Progress/Loader' };
+export default { title: 'Progress/Loader', component: UILoader };
 
 initIcons();
 const stackTokens: IStackTokens = { childrenGap: 40 };

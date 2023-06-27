@@ -8,7 +8,7 @@ import { initIcons } from '../src/components/Icons';
 
 initIcons();
 
-export default { title: 'Basic Inputs/Checkbox' };
+export default { title: 'Basic Inputs/Checkbox', component: UICheckbox };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const defaultUsage = (): JSX.Element => {

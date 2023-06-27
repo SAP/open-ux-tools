@@ -8,7 +8,7 @@ import { initIcons, UiIcons } from '../src/components/Icons';
 
 initIcons();
 
-export default { title: 'Dropdowns/ContextualMenu' };
+export default { title: 'Dropdowns/ContextualMenu', component: UIContextualMenu };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 const items = [

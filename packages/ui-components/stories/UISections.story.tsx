@@ -6,7 +6,7 @@ import type { UIDropdownOption } from '../src/components/UIDropdown';
 import { UIDropdown } from '../src/components/UIDropdown';
 import { UIDefaultButton } from '../src/components/UIButton';
 
-export default { title: 'Utilities/Splitter' };
+export default { title: 'Utilities/Splitter', component: UISections };
 
 const css = `
     .componentOptions {

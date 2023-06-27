@@ -9,7 +9,7 @@ import { initIcons } from '../src/components/Icons';
 
 initIcons();
 
-export default { title: 'Dropdowns/Dropdown' };
+export default { title: 'Dropdowns/Dropdown', component: UIDropdown };
 
 export const Basic = (): JSX.Element => (
     <div style={{ width: '300px' }}>

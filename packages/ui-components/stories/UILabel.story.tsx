@@ -6,7 +6,7 @@ import { initIcons } from '../src/components/Icons';
 
 initIcons();
 
-export default { title: 'Basic Inputs/Label' };
+export default { title: 'Basic Inputs/Label', component: UILabel };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const defaultUsage = (): JSX.Element => {

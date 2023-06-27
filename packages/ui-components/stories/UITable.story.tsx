@@ -11,7 +11,7 @@ import { ColumnControlType, RenderInputs } from '../src/components/UITable/types
 
 import { items, items2 } from '../test/__mock__/table-data';
 
-export default { title: 'Tables/UITable' };
+export default { title: 'Tables/UITable', component: UITable };
 
 const columns: UIColumn[] = Array.from({ length: 10 }).map((item, index) => {
     const col = {

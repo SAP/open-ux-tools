@@ -4,7 +4,7 @@ import { DetailsList, SelectionMode } from '@fluentui/react';
 import { UIIcon } from '../src/components/UIIcon';
 import { initIcons, UiIcons } from '../src/components/Icons';
 
-export default { title: 'Utilities/Icons' };
+export default { title: 'Utilities/Icons', component: UIIcon };
 
 initIcons();
 

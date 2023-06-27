@@ -8,7 +8,7 @@ import { initIcons } from '../src/components/Icons';
 
 initIcons();
 
-export default { title: 'Basic Inputs/ChoiceGroup' };
+export default { title: 'Basic Inputs/ChoiceGroup', component: UIChoiceGroup };
 
 const props: any = {
     options: [

@@ -3,7 +3,7 @@ import type { IStackTokens } from '@fluentui/react';
 import { Stack } from '@fluentui/react';
 import { UIPersona, UIPersonaSize, UIPersonaPresence } from '../src/components/UIPersona';
 
-export default { title: 'Utilities/Persona' };
+export default { title: 'Utilities/Persona', component: UIPersona };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const defaultUsage = (): JSX.Element => {

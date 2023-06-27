@@ -5,7 +5,7 @@ import { initIcons, UiIcons } from '../src/components/Icons';
 
 initIcons();
 
-export default { title: 'Dropdowns/Callout' };
+export default { title: 'Dropdowns/Callout', component: UICallout };
 
 export const Callout = (): JSX.Element => {
     const id = 'callout-test-id';

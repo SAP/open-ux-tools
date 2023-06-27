@@ -3,7 +3,7 @@ import type { IStackTokens } from '@fluentui/react';
 import { Stack, MessageBarType } from '@fluentui/react';
 import { UIMessageBar } from '../src/components/UIMessageBar';
 
-export default { title: 'Utilities/MessageBar' };
+export default { title: 'Utilities/MessageBar', component: UIMessageBar };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const defaultUsage = (): JSX.Element => {

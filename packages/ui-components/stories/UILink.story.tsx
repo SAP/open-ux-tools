@@ -4,7 +4,7 @@ import { Text, Stack } from '@fluentui/react';
 
 import { UILink } from '../src/components/UILink';
 
-export default { title: 'Basic Inputs/Link' };
+export default { title: 'Basic Inputs/Link', component:  UILink};
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const defaultUsage = (): JSX.Element => {

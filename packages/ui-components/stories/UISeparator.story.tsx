@@ -3,7 +3,7 @@ import type { IStackTokens } from '@fluentui/react';
 import { Text, Stack } from '@fluentui/react';
 import { UISeparator } from '../src/components/UISeparator';
 
-export default { title: 'Utilities/Separator' };
+export default { title: 'Utilities/Separator', component: UISeparator };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const defaultUsage = (): JSX.Element => {

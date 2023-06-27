@@ -6,7 +6,7 @@ import { initIcons } from '../src/components/Icons';
 
 initIcons();
 
-export default { title: 'Basic Inputs/Toggle/Group' };
+export default { title: 'Basic Inputs/Toggle/Group', component: UIToggleGroup };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const defaultUsage = (): JSX.Element => {

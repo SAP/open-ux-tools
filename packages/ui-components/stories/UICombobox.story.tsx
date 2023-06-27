@@ -11,7 +11,7 @@ import { initIcons } from '../src/components/Icons';
 
 initIcons();
 
-export default { title: 'Dropdowns/Combobox' };
+export default { title: 'Dropdowns/Combobox', component: UIComboBox };
 
 export const SearchHighlight = (): JSX.Element => (
     <div style={{ width: '300px' }}>

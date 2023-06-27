@@ -14,7 +14,7 @@ import { initIcons } from '../src/components/Icons';
 
 initIcons();
 
-export default { title: 'Dialogs/Dialogs' };
+export default { title: 'Dialogs/Dialogs', component: UIDialog };
 
 const stackTokens: IStackTokens = { childrenGap: 40 };
 

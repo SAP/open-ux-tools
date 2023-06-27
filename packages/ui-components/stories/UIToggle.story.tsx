@@ -4,7 +4,7 @@ import { Text, Stack } from '@fluentui/react';
 
 import { UIToggle, UIToggleSize } from '../src/components/UIToggle';
 
-export default { title: 'Basic Inputs/Toggle/Buttons' };
+export default { title: 'Basic Inputs/Toggle/Buttons', component: UIToggle };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const defaultUsage = (): JSX.Element => {

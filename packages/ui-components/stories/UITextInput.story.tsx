@@ -6,7 +6,7 @@ import { UITextInput } from '../src/components/UIInput';
 import { UICheckbox } from '../src/components/UICheckbox';
 import { initIcons } from '../src/components/Icons';
 
-export default { title: 'Basic Inputs/Input' };
+export default { title: 'Basic Inputs/Input', component: UITextInput };
 
 initIcons();
 
