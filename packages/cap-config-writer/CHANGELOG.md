@@ -1,5 +1,13 @@
 # @sap-ux/cap-config-writer
 
+## 0.1.5
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/project-access@1.8.4
+
 ## 0.1.4
 
 ### Patch Changes

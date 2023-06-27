@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.19
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-application-writer@0.23.5
+    -   @sap-ux/odata-service-writer@0.14.26
+    -   @sap-ux/ui5-test-writer@0.1.10
+    -   @sap-ux/fe-fpm-writer@0.22.3
+    -   @sap-ux/ui5-config@0.18.2
+
 ## 0.12.18
 
 ### Patch Changes

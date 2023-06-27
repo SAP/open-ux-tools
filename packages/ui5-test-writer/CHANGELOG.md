@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.1.10
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
 ## 0.1.9
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.8.3
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
 ## 1.8.2
 
 ### Patch Changes

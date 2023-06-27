@@ -1,5 +1,17 @@
 # @sap-ux/create
 
+## 0.2.9
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/mockserver-config-writer@0.1.7
+    -   @sap-ux/app-config-writer@0.0.23
+    -   @sap-ux/cap-config-writer@0.1.5
+    -   @sap-ux/project-access@1.8.4
+    -   @sap-ux/logger@0.3.7
+
 ## 0.2.8
 
 ### Patch Changes
