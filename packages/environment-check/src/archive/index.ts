@@ -19,6 +19,7 @@ interface ArchiveProjectOptions {
  * @param options.projectRoot - root of the project, where package.json is located
  * @param options.targetFolder - optional, target folder where to create the archive
  * @param options.targetFileName - optional file name, defaults to project folder + timestamp + .zip
+ * @returns {*}  {Promise<{ path: string; size: string }>}
  */
 export async function archiveProject({
     projectRoot,

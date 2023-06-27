@@ -77,6 +77,7 @@ function wsFoldersToRootPaths(wsFolders: WorkspaceFolder[] | string[] | undefine
  * @param path path of a project file
  * @param sapuxRequired if true, only find sapux projects
  * @param silent if true, then does not throw an error but returns an empty path
+ * @returns {*}  {Promise<string>} - Project Root
  */
 export async function findProjectRoot(path: string, sapuxRequired = true, silent = false): Promise<string> {
     const packageJson = await findFileUp(FileName.Package, path);
@@ -102,7 +103,6 @@ export async function findProjectRoot(path: string, sapuxRequired = true, silent
 
 /**
  * Find app root and project root from given paths and sapux entry.
- *
  *
  * @param sapux - value of sapux in package.json, either boolean or string array
  * @param path - path where the search started from

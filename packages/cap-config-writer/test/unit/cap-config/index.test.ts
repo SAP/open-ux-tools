@@ -17,7 +17,7 @@ describe('Test enableCdsUi5Plugin()', () => {
             },
             'workspaces': ['app/*'],
             'devDependencies': {
-                'cds-plugin-ui5': '^0.1.1'
+                'cds-plugin-ui5': '^0.1.4'
             }
         });
     });
@@ -39,7 +39,7 @@ describe('Test enableCdsUi5Plugin()', () => {
             },
             'workspaces': ['app/*'],
             'devDependencies': {
-                'cds-plugin-ui5': '^0.1.1'
+                'cds-plugin-ui5': '^0.1.4'
             }
         });
     });
@@ -53,7 +53,7 @@ describe('Test enableCdsUi5Plugin()', () => {
         });
         const fs = await enableCdsUi5Plugin(__dirname, memFs);
         const packageJson = fs.readJSON(join(__dirname, 'package.json')) as projectAccessMock.Package;
-        expect(packageJson.devDependencies).toEqual({ 'cds-plugin-ui5': '^0.1.1' });
+        expect(packageJson.devDependencies).toEqual({ 'cds-plugin-ui5': '^0.1.4' });
     });
 
     test('CAP with custom app path and mem-fs editor', async () => {

@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.1.4
+
+### Patch Changes
+
+-   c1f30abc: Update minimum version of cds-plugin-ui5 to 0.1.4
+
 ## 0.1.3
 
 ### Patch Changes
