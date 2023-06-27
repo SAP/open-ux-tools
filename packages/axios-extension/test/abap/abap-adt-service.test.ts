@@ -284,7 +284,8 @@ describe('Transport checks', () => {
 
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
 
-        expect(await transportChecksService?.getTransportRequests(testPackage, testProjectNamespace));
+        await transportChecksService?.getTransportRequests(testPackage, testProjectNamespace);
+
         expect(postSpy).toBeCalledWith(
             expect.any(String),
             expect.stringContaining(`<URI>/sap/bc/adt/filestore/ui5-bsp/objects/%2Ftest%2Fproject/$create</URI>`),
