@@ -1,6 +1,12 @@
 import React from 'react';
-import type { IContextualMenuStyles, IContextualMenuItemStyles, ICalloutContentStyles } from '@fluentui/react';
-import { ContextualMenu, ContextualMenuItemType, IContextualMenuProps, IContextualMenuItem } from '@fluentui/react';
+import type {
+    IContextualMenuStyles,
+    IContextualMenuItemStyles,
+    ICalloutContentStyles,
+    IContextualMenuProps,
+    IContextualMenuItem
+} from '@fluentui/react';
+import { ContextualMenu, ContextualMenuItemType } from '@fluentui/react';
 export { IContextualMenuItem } from '@fluentui/react';
 
 export { IContextualMenuItem as UIContextualMenuItem };

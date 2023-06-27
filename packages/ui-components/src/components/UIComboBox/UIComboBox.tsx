@@ -1,13 +1,13 @@
 import React from 'react';
-import type { IComboBoxProps, IComboBoxState, IAutofillProps } from '@fluentui/react';
-import {
-    ComboBox,
+import type {
     IComboBox,
     IComboBoxOption,
-    initializeComponentRef,
-    KeyCodes,
+    IComboBoxProps,
+    IComboBoxState,
+    IAutofillProps,
     IOnRenderComboBoxLabelProps
 } from '@fluentui/react';
+import { ComboBox, initializeComponentRef, KeyCodes } from '@fluentui/react';
 import { UIHighlightMenuOption } from '../UIContextualMenu/UIHighlightMenuOption';
 import './UIComboBox.scss';
 import './Callout.scss';
