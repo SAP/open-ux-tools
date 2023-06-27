@@ -2,10 +2,14 @@ const path = require('path');
 module.exports = {
     stories: ['../stories/*.story.tsx'],
     addons: [
+        '@storybook/addon-essentials',
         {
-            name: 'storybook-addon-turbo-build',
+            name: '@storybook/addon-styling',
             options: {
-                optimizationLevel: 3
+                sass: {
+                    // Require your Sass preprocessor here
+                    implementation: require('sass')
+                }
             }
         }
     ],
@@ -22,20 +26,6 @@ module.exports = {
                 }
             ]
         });
-        config.module.rules.push({
-            test: /\.scss$/,
-            use: [
-                'style-loader',
-                {
-                    loader: 'css-loader',
-                    options: {
-                        esModule: false
-                    }
-                },
-                'sass-loader'
-            ],
-            include: path.resolve(__dirname, '../')
-        });
         config.resolve.extensions.push('.ts', '.tsx');
         return config;
     },
@@ -44,6 +34,6 @@ module.exports = {
         options: {}
     },
     docs: {
-        autodocs: true
+        autodocs: false
     }
 };
