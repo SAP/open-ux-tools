@@ -6,11 +6,16 @@ import { mockedUi5RepoService, mockedProvider } from '../../__mocks__';
 import { Command } from 'commander';
 import fs from 'fs';
 import { ToolsLogger } from '@sap-ux/logger';
+import ProcessEnv = NodeJS.ProcessEnv;
 
 describe('cli', () => {
     const fixture = join(__dirname, '../../test-input/');
     const target = 'https://target.example';
-    const env = process.env;
+    let env: ProcessEnv;
+
+    beforeAll(() => {
+        env = process.env;
+    });
 
     beforeEach(() => {
         mockedUi5RepoService.deploy.mockReset();
@@ -57,8 +62,6 @@ describe('cli', () => {
             'test',
             '--url',
             target,
-            '--service',
-            '/bc/my/service',
             '--name',
             'Z_TEST',
             '--description',
@@ -73,13 +76,28 @@ describe('cli', () => {
             '--no-retry'
         ];
 
-        const cliCmdsWithUaa = [...cliCmds, '--cloud-service-env'];
+        const cliCmdsWithUaa = [...cliCmds, '--cloud-service-env', '--service', '/bc/my/uaa/deploy/service'];
 
         test.each([
-            { params: minimumConfigCmds, writeFileSyncCalled: 1, object: { retry: true } },
-            { params: overwriteConfigCmds, writeFileSyncCalled: 1, object: { retry: true } },
-            { params: cliCmds, writeFileSyncCalled: 0, object: { retry: false }, provider: '/bc/my/service' },
-            { params: cliCmdsWithUaa, writeFileSyncCalled: 0, object: { retry: false }, provider: '/bc/my/service' }
+            {
+                params: minimumConfigCmds,
+                writeFileSyncCalled: 1,
+                object: { retry: true },
+                provider: '/bc/my/deploy/service'
+            },
+            {
+                params: overwriteConfigCmds,
+                writeFileSyncCalled: 1,
+                object: { retry: true },
+                provider: '/bc/my/deploy/service'
+            },
+            { params: cliCmds, writeFileSyncCalled: 0, object: { retry: false } },
+            {
+                params: cliCmdsWithUaa,
+                writeFileSyncCalled: 0,
+                object: { retry: false },
+                provider: '/bc/my/uaa/deploy/service'
+            }
         ])('successful deploy with different options %s', async ({ params, writeFileSyncCalled, object, provider }) => {
             process.argv = params;
             await runDeploy();
