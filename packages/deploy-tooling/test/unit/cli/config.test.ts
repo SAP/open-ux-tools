@@ -2,9 +2,14 @@ import type { AbapDeployConfig, CliOptions } from '../../../src/types';
 import { getDeploymentConfig, mergeConfig } from '../../../src/cli/config';
 import { join } from 'path';
 import { readFileSync } from 'fs';
+import ProcessEnv = NodeJS.ProcessEnv;
 
 describe('cli/config', () => {
-    const env = process.env;
+    let env: ProcessEnv;
+
+    beforeAll(() => {
+        env = process.env;
+    });
 
     afterAll(() => {
         process.env = env;

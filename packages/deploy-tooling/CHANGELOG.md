@@ -1,5 +1,18 @@
 # @sap-ux/deploy-tooling
 
+## 0.4.0
+
+### Minor Changes
+
+-   7acea374: support service parameter
+
+## 0.3.4
+
+### Patch Changes
+
+-   Updated dependencies [1599efac]
+    -   @sap-ux/axios-extension@1.3.3
+
 ## 0.3.3
 
 ### Patch Changes

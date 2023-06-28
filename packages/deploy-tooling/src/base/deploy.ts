@@ -161,7 +161,7 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
     } else {
         throw new Error('Unable to handle the configuration in the current environment.');
     }
-    return provider.getUi5AbapRepository();
+    return provider.getUi5AbapRepository(config.target?.service);
 }
 
 /**

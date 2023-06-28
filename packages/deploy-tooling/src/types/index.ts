@@ -6,6 +6,7 @@ export const NAME = 'abap-deploy-task';
 export interface UrlAbapTarget {
     url: string;
     client?: string;
+    service?: string;
     cloud?: boolean;
     serviceKey?: ServiceInfo;
     params?: AxiosRequestConfig['params'];
