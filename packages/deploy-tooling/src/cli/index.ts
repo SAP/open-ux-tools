@@ -29,7 +29,8 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         )
         .addOption(new Option('--url <target-url>', 'URL of target ABAP system').conflicts('destination'))
         .addOption(new Option('--client <sap-client>', 'Client number of target ABAP system').conflicts('destination'))
-        .addOption(new Option('--cloud', 'target is an ABAP Cloud system').conflicts('destination'))
+        .addOption(new Option('--cloud', 'Target is an ABAP Cloud system').conflicts('destination'))
+        .addOption(new Option('--service <service-path>', 'Target SAPUI5 Repository OData Service'))
         .addOption(
             new Option(
                 '--cloud-service-key <file-location>',

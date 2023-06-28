@@ -57,6 +57,7 @@ Options:
   --verbose                            verbose log output (default: false)
   --destination  <destination>         Destination in SAP BTP pointing to an ABAP system
   --url <target-url>                   URL of target ABAP system
+  --service                            Target SAPUI5 Respository OData Service
   --client <sap-client>                Client number of target ABAP system
   --cloud                              target is an ABAP Cloud system
   --cloud-service-key <file-location>  JSON file location with the ABAP cloud service key.
@@ -89,6 +90,7 @@ Options:
   --verbose                            verbose log output (default: false)
   --destination  <destination>         Destination in SAP BTP pointing to an ABAP system
   --url <target-url>                   URL of target ABAP system
+  --service                            Target SAPUI5 Respository OData Service
   --client <sap-client>                Client number of target ABAP system
   --cloud                              target is an ABAP Cloud system
   --cloud-service-key <file-location>  JSON file location with the ABAP cloud service key.
