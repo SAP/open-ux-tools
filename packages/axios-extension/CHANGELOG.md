@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.3.3
+
+### Patch Changes
+
+-   1599efac: encode app name for tr requests
+
 ## 1.3.2
 
 ### Patch Changes
