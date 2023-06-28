@@ -2,18 +2,28 @@ import type { ParseOptions } from 'commander';
 import { join } from 'path';
 import { createCommand, runDeploy, runUndeploy } from '../../../src/cli';
 import * as cliArchive from '../../../src/cli/archive';
-import { mockedUi5RepoService } from '../../__mocks__';
+import { mockedUi5RepoService, mockedProvider } from '../../__mocks__';
 import { Command } from 'commander';
 import fs from 'fs';
 import { ToolsLogger } from '@sap-ux/logger';
+import ProcessEnv = NodeJS.ProcessEnv;
 
 describe('cli', () => {
     const fixture = join(__dirname, '../../test-input/');
     const target = 'https://target.example';
+    let env: ProcessEnv;
+
+    beforeAll(() => {
+        env = process.env;
+    });
 
     beforeEach(() => {
         mockedUi5RepoService.deploy.mockReset();
         jest.clearAllMocks();
+    });
+
+    afterAll(() => {
+        process.env = env;
     });
 
     describe('runDeploy', () => {
@@ -66,17 +76,33 @@ describe('cli', () => {
             '--no-retry'
         ];
 
-        const cliCmdsWithUaa = [...cliCmds, '--cloud-service-env'];
+        const cliCmdsWithUaa = [...cliCmds, '--cloud-service-env', '--service', '/bc/my/uaa/deploy/service'];
 
         test.each([
-            { params: minimumConfigCmds, writeFileSyncCalled: 1, object: { retry: true } },
-            { params: overwriteConfigCmds, writeFileSyncCalled: 1, object: { retry: true } },
+            {
+                params: minimumConfigCmds,
+                writeFileSyncCalled: 1,
+                object: { retry: true },
+                provider: '/bc/my/deploy/service'
+            },
+            {
+                params: overwriteConfigCmds,
+                writeFileSyncCalled: 1,
+                object: { retry: true },
+                provider: '/bc/my/deploy/service'
+            },
             { params: cliCmds, writeFileSyncCalled: 0, object: { retry: false } },
-            { params: cliCmdsWithUaa, writeFileSyncCalled: 0, object: { retry: false } }
-        ])('successful deploy with different options %s', async ({ params, writeFileSyncCalled, object }) => {
+            {
+                params: cliCmdsWithUaa,
+                writeFileSyncCalled: 0,
+                object: { retry: false },
+                provider: '/bc/my/uaa/deploy/service'
+            }
+        ])('successful deploy with different options %s', async ({ params, writeFileSyncCalled, object, provider }) => {
             process.argv = params;
             await runDeploy();
             expect(mockedUi5RepoService.deploy).toBeCalled();
+            expect(mockedProvider.getUi5AbapRepository).toBeCalledWith(provider);
             expect(writeFileSyncSpy).toHaveBeenCalledTimes(writeFileSyncCalled);
             if (writeFileSyncCalled > 0) {
                 expect(writeFileSyncSpy.mock.calls[0][0]).toBe('archive.zip');
@@ -125,7 +151,9 @@ describe('cli', () => {
                 '--name',
                 'MyAppName',
                 '--cloud-service-env',
-                '--no-retry'
+                '--no-retry',
+                '--service',
+                '/bc/my/service'
             ];
             await runUndeploy();
             expect(mockedUi5RepoService.undeploy).toBeCalled();

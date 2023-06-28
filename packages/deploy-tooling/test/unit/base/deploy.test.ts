@@ -111,7 +111,7 @@ describe('base/deploy', () => {
             mockIsAppStudio.mockReturnValueOnce(true);
             mockListDestinations.mockReturnValue({ testDestination: { Name: destination } as Destination });
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
-            await deploy(archive, { app, target: { destination } }, nullLogger);
+            await deploy(archive, { app, target: { destination, service: '/bc/my/service' } }, nullLogger);
             expect(mockedUi5RepoService.deploy).toBeCalledWith({
                 archive,
                 bsp: app,

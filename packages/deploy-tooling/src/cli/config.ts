@@ -130,7 +130,8 @@ function mergeTarget(baseTarget: AbapTarget, options: CliOptions) {
         cloud: options.cloud !== undefined ? options.cloud : baseTarget?.cloud,
         destination: options.destination ?? baseTarget?.destination,
         serviceKey: getServiceKey(options, targetUrl),
-        params: options.queryParams ? parseQueryParams(options.queryParams) : undefined
+        params: options.queryParams ? parseQueryParams(options.queryParams) : undefined,
+        service: options.service ?? baseTarget?.service
     } as AbapTarget;
 }
 
