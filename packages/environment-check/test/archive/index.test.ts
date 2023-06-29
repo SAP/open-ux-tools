@@ -67,7 +67,8 @@ describe('Test for archive project, archiveProject()', () => {
         expect(globOptions.dot).toBe(false);
         expect(globOptions.mark).toEqual(true);
         expect(globOptions.skip).toEqual(['**/node_modules/**']);
-        expect(globOptions.ignore._rules.length).toBe(2);
+        expect(globOptions.ignore._rules.length).toBe(3);
+        expect(globOptions.ignore._rules[0].pattern).toBe('**/.git');
     });
 
     test('Archive sample project with default name and .gitignore (mocked, no real zip is created)', async () => {
@@ -117,10 +118,11 @@ describe('Test for archive project, archiveProject()', () => {
         expect(globOptions.dot).toBe(true);
         expect(globOptions.mark).toEqual(true);
         expect(globOptions.skip).toBe(undefined);
-        expect(globOptions.ignore._rules.length).toBe(3);
+        expect(globOptions.ignore._rules.length).toBe(4);
         expect(globOptions.ignore._rules[0].pattern).toBe('excludedir/');
         expect(globOptions.ignore._rules[1].pattern).toBe('excludefile');
         expect(globOptions.ignore._rules[2].pattern).toBe('**/nm');
+        expect(globOptions.ignore._rules[3].pattern).toBe('**/.git');
     });
 
     test('Archive sample project TEST (mocked, no real zip is created), should write to TEST.zip', async () => {
