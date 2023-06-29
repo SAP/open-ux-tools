@@ -68,7 +68,7 @@ describe('Test for archive project, archiveProject()', () => {
         expect(globOptions.mark).toEqual(true);
         expect(globOptions.skip).toEqual(['**/node_modules/**']);
         expect(globOptions.ignore._rules.length).toBe(3);
-        expect(globOptions.ignore._rules[0].pattern).toBe('**/.git');
+        expect(globOptions.ignore._rules[1].pattern).toBe('**/.git');
     });
 
     test('Archive sample project with default name and .gitignore (mocked, no real zip is created)', async () => {
