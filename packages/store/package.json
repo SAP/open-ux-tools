@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/store",
-    "version": "0.3.11",
+    "version": "0.3.12",
     "description": "NPM module for storing persistent data",
     "repository": {
         "type": "git",
@@ -16,7 +16,7 @@
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf dist coverage *.tsbuildinfo",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",

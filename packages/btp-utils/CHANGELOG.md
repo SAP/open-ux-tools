@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.11.7
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
 ## 0.11.6
 
 ### Patch Changes

@@ -11,6 +11,7 @@ type MockedStore = {
 export const mockedStoreService = (mockedStore as unknown as MockedStore).mockedService;
 
 type MockedAxiosExtension = {
+    mockedProvider: { getUi5AbapRepository: jest.Mock };
     mockedUi5AbapRepositoryService: {
         deploy: jest.Mock;
         undeploy: jest.Mock;
@@ -18,6 +19,8 @@ type MockedAxiosExtension = {
 };
 export const mockedUi5RepoService = (mockedAxiosExtension as unknown as MockedAxiosExtension)
     .mockedUi5AbapRepositoryService;
+
+export const mockedProvider = (mockedAxiosExtension as unknown as MockedAxiosExtension).mockedProvider;
 
 export const mockIsAppStudio = isAppStudio as jest.Mock;
 

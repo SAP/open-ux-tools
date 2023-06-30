@@ -1,5 +1,13 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.1.7
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-config@0.18.2
+
 ## 0.1.6
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.13.7
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
 ## 0.13.6
 
 ### Patch Changes

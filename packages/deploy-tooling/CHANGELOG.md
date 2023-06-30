@@ -1,5 +1,30 @@
 # @sap-ux/deploy-tooling
 
+## 0.4.0
+
+### Minor Changes
+
+-   7acea374: support service parameter
+
+## 0.3.4
+
+### Patch Changes
+
+-   Updated dependencies [1599efac]
+    -   @sap-ux/axios-extension@1.3.3
+
+## 0.3.3
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/axios-extension@1.3.2
+    -   @sap-ux/ui5-config@0.18.2
+    -   @sap-ux/btp-utils@0.11.7
+    -   @sap-ux/logger@0.3.7
+    -   @sap-ux/store@0.3.12
+
 ## 0.3.2
 
 ### Patch Changes

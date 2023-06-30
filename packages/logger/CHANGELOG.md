@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.3.7
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
 ## 0.3.6
 
 ### Patch Changes

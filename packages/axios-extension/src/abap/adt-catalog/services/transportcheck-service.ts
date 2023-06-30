@@ -53,7 +53,7 @@ export class TransportChecksService extends AdtService {
                         <DEVCLASS>${packageName}</DEVCLASS>
                         <SUPER_PACKAGE/>
                         <OPERATION>I</OPERATION>
-                        <URI>/sap/bc/adt/filestore/ui5-bsp/objects/${appName}/$create</URI>
+                        <URI>/sap/bc/adt/filestore/ui5-bsp/objects/${encodeURIComponent(appName)}/$create</URI>
                         </DATA>
                     </asx:values>
                 </asx:abap>

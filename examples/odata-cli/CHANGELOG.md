@@ -1,5 +1,22 @@
 # @sap-ux/odata-cli
 
+## 0.11.24
+
+### Patch Changes
+
+-   Updated dependencies [1599efac]
+    -   @sap-ux/axios-extension@1.3.3
+
+## 0.11.23
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/axios-extension@1.3.2
+    -   @sap-ux/btp-utils@0.11.7
+    -   @sap-ux/logger@0.3.7
+
 ## 0.11.22
 
 ### Patch Changes

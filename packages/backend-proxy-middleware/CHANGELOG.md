@@ -1,5 +1,23 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.60
+
+### Patch Changes
+
+-   Updated dependencies [1599efac]
+    -   @sap-ux/axios-extension@1.3.3
+
+## 0.6.59
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/axios-extension@1.3.2
+    -   @sap-ux/btp-utils@0.11.7
+    -   @sap-ux/logger@0.3.7
+    -   @sap-ux/store@0.3.12
+
 ## 0.6.58
 
 ### Patch Changes

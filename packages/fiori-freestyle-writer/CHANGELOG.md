@@ -1,5 +1,15 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.19.12
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-application-writer@0.23.5
+    -   @sap-ux/odata-service-writer@0.14.26
+    -   @sap-ux/ui5-config@0.18.2
+
 ## 0.19.11
 
 ### Patch Changes

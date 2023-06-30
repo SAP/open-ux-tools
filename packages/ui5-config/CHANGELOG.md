@@ -1,5 +1,13 @@
 # @sap-ux/ui5-config
 
+## 0.18.2
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/yaml@0.13.7
+
 ## 0.18.1
 
 ### Patch Changes

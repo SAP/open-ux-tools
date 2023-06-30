@@ -73,6 +73,7 @@ const decorateLevel = (level: string) => {
 /**
  * Return a colored label if label and color are specified, _if_ we running on a TTY.
  * Else return `''`
+ *
  * @param label
  * @param labelColor
  * @returns {string} decorated label
@@ -100,7 +101,7 @@ const consoleFormat = format.combine(
 
 /**
  * Take a @type {Transport} and return the corresponding @type {WinstonTransport}
- *  Will throw an error if the transport is not recognized
+ * Will throw an error if the transport is not recognized
  *
  * @param transport
  * @returns {WinstonTransport} winston transport

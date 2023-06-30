@@ -7,12 +7,13 @@ const mockedUi5AbapRepositoryService = {
 };
 
 const mockedProvider = {
-    getUi5AbapRepository: () => mockedUi5AbapRepositoryService
+    getUi5AbapRepository: jest.fn().mockReturnValue(mockedUi5AbapRepositoryService)
 };
 
 module.exports = {
     ...axiosExt,
     mockedUi5AbapRepositoryService,
+    mockedProvider,
     createForAbap: jest.fn().mockReturnValue(mockedProvider),
     createForAbapOnCloud: jest.fn((options: unknown) => {
         const provider = axiosExt.createForAbapOnCloud(options);

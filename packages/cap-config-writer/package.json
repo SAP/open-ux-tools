@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/cap-config-writer",
     "description": "Add or update configuration for SAP CAP projects",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -14,7 +14,7 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc --build",
-        "clean": "rimraf dist coverage *.tsbuildinfo",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",

@@ -40,6 +40,7 @@ const enum TryCommands {
  * Check the secure storage if it has credentials for the given target.
  *
  * @param target - ABAP target
+ * @returns {*}  {(Promise<T | undefined>)} - Credentials
  */
 export async function getCredentials<T extends BasicAuth | ServiceAuth | undefined>(
     target: UrlAbapTarget
@@ -64,6 +65,7 @@ export async function getCredentials<T extends BasicAuth | ServiceAuth | undefin
  * @param target - url target configuration
  * @param noPrompt - only if not truthy prompt for anything
  * @param logger - reference to the logger instance
+ * @returns {*}  {(Promise<AbapServiceProvider>)} - ABAP Service Provider
  */
 async function createAbapCloudServiceProvider(
     options: AxiosRequestConfig,
@@ -99,6 +101,7 @@ async function createAbapCloudServiceProvider(
  *
  * @param options - predefined axios options
  * @param target - url target configuration
+ * @returns {*}  {(Promise<AbapServiceProvider>)}
  */
 async function createAbapServiceProvider(
     options: AxiosRequestConfig,
@@ -158,7 +161,7 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
     } else {
         throw new Error('Unable to handle the configuration in the current environment.');
     }
-    return provider.getUi5AbapRepository();
+    return provider.getUi5AbapRepository(config.target?.service);
 }
 
 /**
