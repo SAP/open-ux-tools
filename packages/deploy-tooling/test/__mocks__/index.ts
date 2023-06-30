@@ -27,3 +27,5 @@ export const mockIsAppStudio = isAppStudio as jest.Mock;
 export const mockListDestinations = listDestinations as jest.Mock;
 
 export const mockCreateForAbap = mockedAxiosExtension.createForAbap as jest.Mock;
+
+export const mockCreateForAbapOnCloud = mockedAxiosExtension.createForAbapOnCloud as jest.Mock;

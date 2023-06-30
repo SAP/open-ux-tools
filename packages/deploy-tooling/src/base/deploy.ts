@@ -23,7 +23,7 @@ import type { AbapDeployConfig, UrlAbapTarget } from '../types';
 import { getConfigForLogging, isUrlTarget } from './config';
 import { promptConfirmation, promptCredentials, promptServiceKeys } from './prompt';
 
-type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
+type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password' | 'name'>>;
 type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> & { refreshToken?: string };
 
 const deploymentCommands = { tryUndeploy, tryDeploy };
@@ -101,26 +101,45 @@ async function createAbapCloudServiceProvider(
  *
  * @param options - predefined axios options
  * @param target - url target configuration
+ * @param logger - reference to the logger instance
  * @returns {*}  {(Promise<AbapServiceProvider>)}
  */
 async function createAbapServiceProvider(
     options: AxiosRequestConfig,
-    target: UrlAbapTarget
+    target: UrlAbapTarget,
+    logger?: Logger
 ): Promise<AbapServiceProvider> {
+    let abapServiceProvider: AbapServiceProvider | undefined;
     options.baseURL = target.url;
     if (target.client) {
         options.params['sap-client'] = target.client;
     }
     if (!options.auth) {
-        const storedOpts = await getCredentials<BasicAuth>(target);
-        if (storedOpts?.password) {
-            options.auth = {
-                username: storedOpts.username,
-                password: storedOpts.password
-            };
+        const storedOpts = await getCredentials(target);
+        if (storedOpts) {
+            let systemName = '';
+            if ((storedOpts as BasicAuth).password) {
+                options.auth = {
+                    username: (storedOpts as BasicAuth).username,
+                    password: (storedOpts as BasicAuth).password
+                };
+                systemName = (storedOpts as BasicAuth).name;
+            } else if ((storedOpts as ServiceAuth).serviceKeys) {
+                const providerConfig: Partial<AbapCloudStandaloneOptions & ProviderConfiguration> = {
+                    ...options,
+                    environment: AbapCloudEnvironment.Standalone
+                };
+                providerConfig.service = (storedOpts as ServiceAuth).serviceKeys as ServiceInfo;
+                providerConfig.refreshToken = (storedOpts as ServiceAuth).refreshToken;
+                abapServiceProvider = createForAbapOnCloud(providerConfig as AbapCloudStandaloneOptions);
+                systemName = (storedOpts as ServiceAuth).name;
+            }
+            if (logger) {
+                logger.info(`Using system [${systemName}] from System store`);
+            }
         }
     }
-    return createForAbap(options);
+    return abapServiceProvider ?? createForAbap(options);
 }
 
 /**
@@ -156,7 +175,7 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
         if (config.target.cloud) {
             provider = await createAbapCloudServiceProvider(options, config.target, config.retry, logger);
         } else {
-            provider = await createAbapServiceProvider(options, config.target);
+            provider = await createAbapServiceProvider(options, config.target, logger);
         }
     } else {
         throw new Error('Unable to handle the configuration in the current environment.');

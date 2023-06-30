@@ -8,7 +8,8 @@ import {
     mockIsAppStudio,
     mockedUi5RepoService,
     mockListDestinations,
-    mockCreateForAbap
+    mockCreateForAbap,
+    mockCreateForAbapOnCloud
 } from '../../__mocks__';
 import { join } from 'path';
 import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
@@ -90,6 +91,35 @@ describe('base/deploy', () => {
             );
             expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
             expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
+        });
+
+        test('Deploy with target object and existing URL in system store', async () => {
+            const credentials = {
+                name: '~name',
+                serviceKeys: {
+                    uaa: {
+                        clientid: '~client',
+                        clientsecret: '~clientsecret',
+                        url: target.url
+                    }
+                },
+                refreshToken: '~refreshToken',
+                url: target.url
+            };
+            mockedStoreService.read.mockImplementation(() => credentials);
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+
+            await deploy(archive, { app, target }, nullLogger);
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: undefined,
+                safeMode: undefined
+            });
+            expect(mockedStoreService.read).toBeCalled();
+            expect(mockCreateForAbapOnCloud).toBeCalled();
+            mockedUi5RepoService.deploy.mockClear();
+            mockedStoreService.read.mockClear();
         });
 
         test('Throw error in AppStudio if destination not found', async () => {
