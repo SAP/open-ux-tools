@@ -72,7 +72,9 @@ async function getFileList(cwd: string): Promise<string[]> {
     const hasGitignore = existsSync(gitignorePath);
     const globPattern = hasGitignore ? ['**'] : ['**', '.cdsrc.json', '.extconfig.json'];
     const dot = hasGitignore;
-    const ignores = hasGitignore ? (await promises.readFile(gitignorePath)).toString() : ['**/.env', '**/node_modules'];
+    const ignores = hasGitignore
+        ? `${(await promises.readFile(gitignorePath)).toString()}\n**/.git`
+        : ['**/.env', '**/.git', '**/node_modules'];
     const skip = hasGitignore ? undefined : ['**/node_modules/**'];
 
     const files = await glob(globPattern, {
