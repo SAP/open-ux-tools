@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.15.33
+
+### Patch Changes
+
+-   852d5887: exclude `.git` folder in archive
+
 ## 0.15.32
 
 ### Patch Changes
