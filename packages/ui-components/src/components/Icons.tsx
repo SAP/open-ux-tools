@@ -1658,8 +1658,8 @@ export function initIcons(): void {
                     />
                     <path d="M12 11H8V12H12V11Z" fill={COLORS.default} />
                     <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
                         d="M1 2C1 1.44772 1.44772 1 2 1H14C14.5523 1 15 1.44772 15 2V14C15 14.5523 14.5523 15 14 15H2C1.44772 15 1 14.5523 1 14V2ZM14 4H2V14H14V4Z"
                         fill={COLORS.default}
                     />
