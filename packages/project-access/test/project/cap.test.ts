@@ -1,10 +1,11 @@
-import { join } from 'path';
+import { join, sep } from 'path';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
 import { isCapNodeJsProject, isCapJavaProject, getCapModelAndServices, getCapProjectType } from '../../src';
-import { getCapCustomPaths, getCapEnvironment } from '../../src/project/cap';
-import { readJSON } from '../../src/file';
+import { getCapCustomPaths, getCapEnvironment, toReferenceUri } from '../../src/project/cap';
+import * as file from '../../src/file';
+import os from 'os';
 
 describe('Test getCapProjectType()', () => {
     test('Test if valid CAP Node.js project is recognized', async () => {
@@ -30,7 +31,7 @@ describe('Test getCapProjectType()', () => {
 
 describe('Test isCapNodeJsProject()', () => {
     test('Test if valid CAP node.js project is recognized', async () => {
-        const packageJson = await readJSON<Package>(
+        const packageJson = await file.readJSON<Package>(
             join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix', FileName.Package)
         );
         expect(isCapNodeJsProject(packageJson)).toBeTruthy();
@@ -171,5 +172,47 @@ describe('Test getCapEnvironment', () => {
         });
         await getCapEnvironment('PROJECT_ROOT');
         expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
+    });
+});
+
+describe('toReferenceUri', () => {
+    beforeEach(async () => {
+        jest.restoreAllMocks();
+    });
+    test('toReferenceUri with refUri starting with "../"', async () => {
+        // mock reading of package json in root folder of sibling project
+        const packageJson = '{"name": "@capire/bookshop"}';
+        const buf = Buffer.from(packageJson, 'utf-8');
+        jest.spyOn(file, 'readFile').mockImplementation(async (uri) => {
+            return uri ===
+                (os.platform() === 'win32'
+                    ? '\\globalRoot\\monoRepo\\bookshop\\package.json'
+                    : '/globalRoot/monoRepo/bookshop/package.json')
+                ? buf.toString()
+                : '';
+        });
+        // prepare
+        const projectRoot = '/globalRoot/monoRepo/fiori'.split('/').join(sep); // root folder of fiori project within monorepo
+        const relUriFrom = './app/admin/fiori.cds'.split('/').join(sep); // relative (to project root) uri of file for which the using statement should be generated
+        const relUriTo = '../bookshop/srv/admin.cds'.split('/').join(sep); // relative (to project root) Uri to the file that would be referenced with using statement (goes to sibling project in monorepo)
+        // execute
+        const refUri = await toReferenceUri(projectRoot, relUriFrom, relUriTo);
+        // check
+        expect(refUri).toBe('@capire/bookshop/srv/admin');
+    });
+
+    test('toReferenceUri with refUri starting with "../" custom cds paths', async () => {
+        // mock reading of package json in root folder of sibling project
+        jest.spyOn(file, 'readFile').mockImplementation(async () => {
+            return '';
+        });
+        // prepare
+        const projectRoot = join(__dirname, '..', 'test-data', 'cap-nodejs-1');
+        const relUriFrom = 'sap/app/admin/fiori.cds'.split('/').join(sep); // relative (to project root) uri of file for which the using statement should be generated
+        const relUriTo = 'sap/srv/admin'.split('/').join(sep); // relative (to project root) Uri to the file that would be referenced with using statement (goes to sibling project in monorepo)
+        // execute
+        const refUri = await toReferenceUri(projectRoot, relUriFrom, relUriTo);
+        // check
+        expect(refUri).toBe('../../srv/admin');
     });
 });
