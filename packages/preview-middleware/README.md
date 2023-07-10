@@ -1,2 +1,36 @@
 #  `@sap-ux/preview-middleware`
-TBD
+
+The `@sap-ux/preview-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for previewing an application in a local Fiori launchpad . It can be used either with the `ui5 serve` or the `fiori run` commands.
+
+## Configuration Options
+| Option       | Default Value | Description |
+| ------------ | ------------- | ----------- |
+| `flp`        |               | Optional configuration object for the FLP sandbox |
+| `flp.path`   | `/test/flpSandbox.html`   | The mount point of the generated local Fiori launchpad. |
+| `flp.apps`   | `[]`          | Allows defining additional apps that available in the local Fiori launchpage |
+| `debug`      | false         | Enables debug output |
+
+## Usage
+In order to use the middleware this is the minimal configuration that you need to provide in the `ui5.yaml` of your application.
+
+### Minimal Configuration
+
+```Yaml
+server:
+  customMiddleware:
+  - name: ui5-proxy-middleware
+    afterMiddleware: compression
+```
+
+### Different Path and Debugging enabled
+
+```Yaml
+server:
+  customMiddleware:
+  - name: ui5-proxy-middleware
+    afterMiddleware: compression
+    configuration:
+      flp: 
+        path: /preview.html
+      debug: true
+```
