@@ -10,7 +10,7 @@ class FlpSandbox extends FlpSandboxUnderTest {
 describe('FlpSandbox', () => {
     describe('single app', () => {
         test('default (no) config', () => {
-            const flp = new FlpSandbox({}, {} as any, {} as any);
+            const flp = new FlpSandbox({}, {} as any, {} as any, {} as any);
             expect(flp.config.apps).toBeDefined();
             expect(flp.config.apps).toHaveLength(0);
             expect(flp.config.path).toBe('/test/flpSandbox.html');

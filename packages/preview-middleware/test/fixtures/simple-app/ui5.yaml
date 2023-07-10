@@ -30,7 +30,7 @@ server:
                     mockdataPath: ./webapp/localService/data
                     generateMockData: true
 ---
-specVersion: '2.6'
+specVersion: '3.0'
 metadata:
     name: preview-middleware
 kind: extension

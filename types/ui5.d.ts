@@ -17,6 +17,11 @@ declare module '@ui5/fs' {
          * Gets a string with the resource content.
          */
         getString(): Promise<string>;
+
+        /**
+         * Gets the resource name.
+         */
+        getName(): string;
     }
 
     /**
@@ -95,6 +100,23 @@ declare module '@ui5/builder' {
 }
 
 declare module '@ui5/server' {
+    export interface MiddlewareUtils {
+        /**
+         * Get project utilities.
+         */
+        getProject(): {
+            /**
+             * Get the full path of the project.
+             */
+            getRootPath(): string;
+
+            /**
+             * Get the full path of the source (webapp in case of an app) folder.
+             */
+            getSourcePath(): string;
+        }
+    };
+
     export interface MiddlewareParameters<C> {
         /**
          * DuplexCollection to read and write files
@@ -114,5 +136,7 @@ declare module '@ui5/server' {
              */
             configuration?: C;
         };
+
+        middlewareUtil: MiddlewareUtils;
     }
 }

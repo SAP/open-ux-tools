@@ -2,11 +2,13 @@ import type { ReaderCollection } from '@ui5/fs';
 import { render } from 'ejs';
 import type { Request, Response } from 'express';
 import { readFileSync } from 'fs';
-import { basename, join } from 'path';
+import { join } from 'path';
 import type { App, FlpConfig } from '../types';
 import { Router as createRouter, static as serveStatic } from 'express';
 import type { Logger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import { readChanges, writeChanges } from './flex';
+import type { MiddlewareUtils } from '@ui5/server';
 
 type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 
@@ -48,11 +50,13 @@ export class FlpSandbox {
      *
      * @param config
      * @param project
+     * @param utils
      * @param logger
      */
     constructor(
         config: Partial<FlpConfig>,
         private readonly project: ReaderCollection,
+        private readonly utils: MiddlewareUtils,
         private readonly logger: Logger
     ) {
         this.config = {
@@ -120,11 +124,20 @@ export class FlpSandbox {
         });
         const api = '/preview/api/changes';
         this.router.get(api, async (_req: Request, res: Response) => {
-            res.status(200).send(await this.getChanges());
+            res.status(200).send(await readChanges(this.project, this.logger));
         });
-        this.router.post(api, async (_req: Request, res: Response) => {
-            // TBD
-            res.status(500);
+        this.router.post(api, async (req: Request, res: Response) => {
+            try {
+                const data = JSON.parse(req.body);
+                const { success, message } = await writeChanges(data, this.utils.getProject().getSourcePath());
+                if (success) {
+                    res.status(200).send(message);
+                } else {
+                    res.send(400).send('INVALID_DATA');
+                }
+            } catch (error) {
+                res.status(500).send(error.message);
+            }
         });
 
         return [
@@ -155,19 +168,5 @@ export class FlpSandbox {
             applicationType: 'URL',
             url: app.target
         };
-    }
-
-    /**
-     * Read changes from the file system and return them.
-     *
-     * @returns object with the file name as key and the file content as value
-     */
-    private async getChanges(): Promise<Record<string, unknown>> {
-        const changes: Record<string, unknown> = {};
-        const files = await this.project.byGlob('/**/*.change');
-        for (const file of files) {
-            changes[`sap.ui.fl.${basename(file.getPath(), '.change')}`] = JSON.parse(await file.getString());
-        }
-        return changes;
     }
 }

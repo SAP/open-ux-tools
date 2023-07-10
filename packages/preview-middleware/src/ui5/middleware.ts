@@ -9,16 +9,17 @@ import type { Config } from '../types';
  * @param param0
  * @param param0.resources
  * @param param0.options
+ * @param param0.middlewareUtil
  * @param logger
  * @returns
  */
-async function createRouter({ resources, options }: MiddlewareParameters<Config>, logger: ToolsLogger) {
+async function createRouter({ resources, options, middlewareUtil }: MiddlewareParameters<Config>, logger: ToolsLogger) {
     // setting defaults
     const config = options.configuration ?? {};
     config.flp ??= {};
 
     // configure the FLP sandbox based on information from the manifest
-    const flp = new FlpSandbox(config.flp, resources.rootProject, logger);
+    const flp = new FlpSandbox(config.flp, resources.rootProject, middlewareUtil, logger);
     const files = await resources.rootProject.byGlob('/manifest.json');
     if (files.length === 1) {
         flp.init(JSON.parse(await files[0].getString()));
@@ -32,17 +33,15 @@ async function createRouter({ resources, options }: MiddlewareParameters<Config>
 /**
  * Exporting the middleware for usage in the UI5 tooling.
  *
- * @param root0 middleware configuration
- * @param root0.resources available project resources
- * @param root0.options project options
+ * @param params middleware configuration
  * @returns a promise for the request handler
  */
-module.exports = async ({ resources, options }: MiddlewareParameters<Config>): Promise<RequestHandler> => {
+module.exports = async (params: MiddlewareParameters<Config>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'preview-middleware' })]
     });
     try {
-        return await createRouter({ resources, options }, logger);
+        return await createRouter(params, logger);
     } catch (error) {
         logger.error('Could not start preview-middleware.');
         logger.error(error.message);
