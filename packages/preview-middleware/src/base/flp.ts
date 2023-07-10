@@ -13,7 +13,7 @@ type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & {
 /**
  * Internal structure used to fill the sandbox.html template
  */
-interface TemplateConfig {
+export interface TemplateConfig {
     apps: Record<
         string,
         {
@@ -37,11 +37,11 @@ interface TemplateConfig {
 }
 
 /**
- *
+ * Class handling preview of a sandbox FLP.
  */
 export class FlpSandbox {
-    private templateConfig: TemplateConfig;
-    private readonly config: FlpConfig;
+    protected templateConfig: TemplateConfig;
+    protected readonly config: FlpConfig;
     public readonly router: any;
 
     /**
