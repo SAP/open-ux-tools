@@ -1,4 +1,4 @@
-import { join, sep } from 'path';
+import { join } from 'path';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
@@ -181,20 +181,18 @@ describe('toReferenceUri', () => {
     });
     test('toReferenceUri with refUri starting with "../"', async () => {
         // mock reading of package json in root folder of sibling project
-        const packageJson = '{"name": "@capire/bookshop"}';
-        const buf = Buffer.from(packageJson, 'utf-8');
         jest.spyOn(file, 'readFile').mockImplementation(async (uri) => {
             return uri ===
                 (os.platform() === 'win32'
                     ? '\\globalRoot\\monoRepo\\bookshop\\package.json'
                     : '/globalRoot/monoRepo/bookshop/package.json')
-                ? buf.toString()
+                ? '{"name": "@capire/bookshop"}'
                 : '';
         });
         // prepare
-        const projectRoot = '/globalRoot/monoRepo/fiori'.split('/').join(sep); // root folder of fiori project within monorepo
-        const relUriFrom = './app/admin/fiori.cds'.split('/').join(sep); // relative (to project root) uri of file for which the using statement should be generated
-        const relUriTo = '../bookshop/srv/admin.cds'.split('/').join(sep); // relative (to project root) Uri to the file that would be referenced with using statement (goes to sibling project in monorepo)
+        const projectRoot = join(' ', 'globalRoot', 'monoRepo', 'fiori').trim(); // root folder of fiori project within monorepo
+        const relUriFrom = join('.', 'app', 'admin', 'fiori.cds'); // relative (to project root) uri of file for which the using statement should be generated
+        const relUriTo = join('..', 'bookshop', 'srv', 'admin.cds'); // relative (to project root) Uri to the file that would be referenced with using statement (goes to sibling project in monorepo)
         // execute
         const refUri = await toReferenceUri(projectRoot, relUriFrom, relUriTo);
         // check
@@ -208,8 +206,8 @@ describe('toReferenceUri', () => {
         });
         // prepare
         const projectRoot = join(__dirname, '..', 'test-data', 'cap-nodejs-1');
-        const relUriFrom = 'sap/app/admin/fiori.cds'.split('/').join(sep); // relative (to project root) uri of file for which the using statement should be generated
-        const relUriTo = 'sap/srv/admin'.split('/').join(sep); // relative (to project root) Uri to the file that would be referenced with using statement (goes to sibling project in monorepo)
+        const relUriFrom = join('sap', 'app', 'admin', 'fiori.cds'); // relative (to project root) uri of file for which the using statement should be generated
+        const relUriTo = join('sap', 'srv', 'admin'); // relative (to project root) Uri to the file that would be referenced with using statement (goes to sibling project in monorepo)
         // execute
         const refUri = await toReferenceUri(projectRoot, relUriFrom, relUriTo);
         // check
