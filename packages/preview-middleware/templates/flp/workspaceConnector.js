@@ -14,19 +14,19 @@ sap.ui.define(
             rtaMode === 'forAdaptation'
                 ? 'changeUtils: SAPFioriTools-propertyEditor'
                 : 'changeUtils: SAPFioriTools-variants';
-
+        var path = '/preview/api/changes'; 
         var WorkspaceConnector = merge({}, ObjectStorageConnector, {
             layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
             storage: {
                 _itemsStoredAsObjects: true,
-                setItem: function (sKey, vValue) {
+                setItem: function (_sKey, vValue) {
                     // update generator
                     if (vValue && vValue.support) {
                         vValue.support.generator = generator;
                     }
                     $.ajax({
                         type: 'POST',
-                        url: '/FioriTools/api/writeChanges',
+                        url: path,
                         data: JSON.stringify(vValue, null, 2),
                         contentType: 'application/json'
                     });
@@ -34,7 +34,7 @@ sap.ui.define(
                 removeItem: function (sKey) {
                     $.ajax({
                         type: 'DELETE',
-                        url: '/FioriTools/api/removeChanges',
+                        url: path,
                         data: JSON.stringify({ fileName: sKey }),
                         contentType: 'application/json'
                     });
@@ -42,12 +42,12 @@ sap.ui.define(
                 clear: function () {
                     // not implemented
                 },
-                getItem: function (sKey) {
+                getItem: function (_sKey) {
                     // not implemented
                 },
                 getItems: async function () {
                     const changes = await $.ajax({
-                        url: '/FioriTools/api/getChanges',
+                        url: path,
                         type: 'GET',
                         cache: false,
                         dataType: 'json'

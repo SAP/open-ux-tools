@@ -1,11 +1,19 @@
 import { ReaderCollection } from '@ui5/fs';
 import { render } from 'ejs';
-import { NextFunction, Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import { basename, join } from 'path';
-import { App, Config } from '../types';
+import { App, FlpConfig } from '../types';
+import { Router as createRouter, static as serveStatic } from 'express';
+import { Logger } from '@sap-ux/logger';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
-interface FlpConfig {
+type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
+
+/**
+ * Internal structure used to fill the sandbox.html template
+ */
+interface TemplateConfig {
     apps: Record<
         string,
         {
@@ -29,24 +37,25 @@ interface FlpConfig {
 }
 
 export class FlpSandbox {
-    private flpConfig: FlpConfig;
+    private templateConfig: TemplateConfig;
+    private readonly config: FlpConfig;
+    public readonly router: any;
 
-    constructor(private readonly config: Config['flp'], private readonly project: ReaderCollection) {}
+    constructor(config: Partial<FlpConfig>, private readonly project: ReaderCollection, private readonly logger: Logger) {
+        this.config = {
+            path: config.path ?? '/test/flpSandbox.html',
+            apps: config.apps ?? []
+        };
+        this.router = createRouter();
+    }
 
-    init(manifest: any, resources: Record<string, string> = {}): void {
-        const workspaceConnectorPath = `${manifest['sap.app'].id.replace(/\./g, '/')}/WorkspaceConnector`;
-        const flex = [
-            {
-                applyConnector: workspaceConnectorPath,
-                writeConnector: workspaceConnectorPath,
-                custom: true
-            }
-        ];
-        this.flpConfig = {
+    init(manifest: Manifest, resources: Record<string, string> = {}): void {
+        const flex = this.createFlexHandler();
+        this.templateConfig = {
             apps: {},
             ui5: {
-                libs: Object.keys(manifest['sap.ui5'].dependencies.libs).join(','),
-                theme: manifest['sap.ui5'].theme ?? 'sap_horizon',
+                libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? []).join(','),
+                theme: manifest['sap.ui5']?.theme as string ?? 'sap_horizon',
                 flex,
                 resources: { ...resources }
             }
@@ -58,6 +67,50 @@ export class FlpSandbox {
                 action: 'preview'
             }
         });
+
+        // add route for the sandbox.html
+        this.router.get(this.config!.path, (_req: Request, res: Response) => {
+            const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
+            res.status(200);
+            res.send(render(template, this.templateConfig));
+        });
+        this.addRoutesForAdditionalApps();
+    }
+
+    private addRoutesForAdditionalApps() {
+        for (const app of this.config.apps) {
+            if (app.local) {
+                const manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
+                this.addApp(manifest, app);
+                this.router.use(app.target, serveStatic(join(app.local, 'webapp')));
+                this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
+            }
+        }
+    }
+
+    private createFlexHandler() {
+        const workspaceConnectorPath = '/preview/WorkspaceConnector';
+        this.router.get(`/resources${workspaceConnectorPath}.js`, (_req: Request, res: Response) => {
+            res.status(200)
+                .contentType('text/javascript')
+                .send(readFileSync(join(__dirname, '../../templates/flp/workspaceConnector.js'), 'utf-8'));
+        });
+        const api = '/preview/api/changes';
+        this.router.get(api, async (_req: Request, res: Response) => {
+            res.status(200).send(await this.getChanges());
+        });
+        this.router.post(api, async (_req: Request, res: Response) => {
+            // TBD
+            res.status(500);
+        });
+ 
+        return [
+            {
+                applyConnector: workspaceConnectorPath,
+                writeConnector: workspaceConnectorPath,
+                custom: true
+            }
+        ];
     }
 
     addApp(manifest: any, app: App) {
@@ -66,8 +119,8 @@ export class FlpSandbox {
             object: id.replace(/\./g, ''),
             action: 'preview'
         };
-        this.flpConfig.ui5.resources[id] = '../';
-        this.flpConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
+        this.templateConfig.ui5.resources[id] = '../';
+        this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
             title: manifest['sap.app'].title,
             description: manifest['sap.app'].description,
             additionalInformation: `SAPUI5.Component=${id}`,
@@ -83,21 +136,5 @@ export class FlpSandbox {
             changes[`sap.ui.fl.${basename(file.getPath(), '.change')}`] = JSON.parse(await file.getString());
         }
         return changes;
-    }
-
-    public async proxy(req: Request, res: Response, next: NextFunction): Promise<void> {
-        if (req.path === this.config!.path) {
-            const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-            res.status(200);
-            res.send(render(template, this.flpConfig));
-        } else if (req.path.endsWith('/WorkspaceConnector.js')) {
-            res.status(200)
-                .contentType('text/javascript')
-                .send(readFileSync(join(__dirname, '../../templates/flp/workspaceConnector.js'), 'utf-8'));
-        } else if (req.path === '/FioriTools/api/getChanges') {
-            res.status(200).send(await this.getChanges());
-        } else {
-            next();
-        }
     }
 }

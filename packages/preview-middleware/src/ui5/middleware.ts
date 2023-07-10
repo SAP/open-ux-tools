@@ -5,7 +5,7 @@ import { FlpSandbox } from '../base/flp';
 import { Config } from '../types';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { Router, static as serveStatic } from 'express';
+import { static as serveStatic } from 'express';
 
 /**
  *
@@ -17,11 +17,9 @@ async function createRouter({ resources, options }: MiddlewareParameters<Config>
     // setting defaults
     const config = options.configuration ?? {};
     config.flp ??= {};
-    config.flp.path ??= '/test/flpSandbox.html';
-    config.flp.apps ??= [];
 
     // configure the FLP sandbox based on information from the manifest
-    const flp = new FlpSandbox(config.flp, resources.rootProject);
+    const flp = new FlpSandbox(config.flp, resources.rootProject, logger);
     const files = await resources.rootProject.byGlob('/manifest.json');
     if (files.length === 1) {
         flp.init(JSON.parse(await files[0].getString()));
@@ -29,19 +27,7 @@ async function createRouter({ resources, options }: MiddlewareParameters<Config>
         throw new Error('No manifest.json found.');
     }
 
-    // allow adding further applications for testing app to app navigation
-    const router = Router();
-    router.use(flp.proxy.bind(flp));
-
-    for (const app of config.flp.apps) {
-        if (app.local) {
-            const manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
-            flp.addApp(manifest, app);
-            router.use(app.target, serveStatic(join(app.local, 'webapp')));
-            logger.info(`Serving additional application at ${app.target} from ${app.local}`);
-        }
-    }
-    return router;
+    return flp.router;
 }
 
 /**

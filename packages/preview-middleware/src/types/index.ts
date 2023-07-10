@@ -1,3 +1,6 @@
+/**
+ * Configuration for additional applications
+ */
 export interface App {
     target: string;
     local?: string;
@@ -7,9 +10,17 @@ export interface App {
     };
 }
 
+/**
+ * FLP preview configuration.
+ */
+export interface FlpConfig {
+    path: string;
+    apps: App[];
+}
+
+/**
+ * Middleware configuration.
+ */
 export interface Config {
-    flp?: {
-        path?: string;
-        apps?: App[];
-    };
+    flp?: Partial<FlpConfig>;
 }
