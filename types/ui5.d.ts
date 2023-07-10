@@ -1,6 +1,6 @@
 declare module '@ui5/fs' {
     /**
-     * https://sap.github.io/ui5-tooling/api/module-@ui5_fs.Resource.html
+     * https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_Resource.html
      */
     export class Resource {
         /**
@@ -20,8 +20,8 @@ declare module '@ui5/fs' {
     }
 
     /**
-     * https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_ReaderCollection.html
-     */
+    * https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_ReaderCollection.html
+    */
     export class ReaderCollection {
         /**
          * Locates resources by matching glob patterns.
@@ -35,21 +35,26 @@ declare module '@ui5/fs' {
     }
 
     /**
-     * https://sap.github.io/ui5-tooling/stable/api/module-@ui5_fs.DuplexCollection.html
+     * https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_DuplexCollection.html
      */
-    export class DuplexCollection extends ReaderCollection {}
+    export class DuplexCollection {
+        /**
+         *
+         */
+        byGlob(virPattern: string | string[], options?: object): Promise<Resource[]>;
+    }
 
     /**
-     * https://sap.github.io/ui5-tooling/api/module-@ui5_fs.AbstractReader.html
+     * https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_AbstractReader.html
      */
-    export class AbstractReader {}
+    export class AbstractReader { }
 }
 
 declare module '@ui5/builder' {
     /**
-     * https://sap.github.io/ui5-tooling/api/module-@ui5_builder.tasks.TaskUtil.html
+     * https://sap.github.io/ui5-tooling/stable/api/@ui5_project_build_helpers_TaskUtil.html
      */
-    export class TaskUtil {}
+    export class TaskUtil { }
 
     export interface TaskParameters<C> {
         /**
