@@ -1,11 +1,11 @@
-import { ReaderCollection } from '@ui5/fs';
+import type { ReaderCollection } from '@ui5/fs';
 import { render } from 'ejs';
 import type { Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import { basename, join } from 'path';
-import { App, FlpConfig } from '../types';
+import type { App, FlpConfig } from '../types';
 import { Router as createRouter, static as serveStatic } from 'express';
-import { Logger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
 type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
@@ -36,12 +36,25 @@ interface TemplateConfig {
     };
 }
 
+/**
+ *
+ */
 export class FlpSandbox {
     private templateConfig: TemplateConfig;
     private readonly config: FlpConfig;
     public readonly router: any;
 
-    constructor(config: Partial<FlpConfig>, private readonly project: ReaderCollection, private readonly logger: Logger) {
+    /**
+     *
+     * @param config
+     * @param project
+     * @param logger
+     */
+    constructor(
+        config: Partial<FlpConfig>,
+        private readonly project: ReaderCollection,
+        private readonly logger: Logger
+    ) {
         this.config = {
             path: config.path ?? '/test/flpSandbox.html',
             apps: config.apps ?? []
@@ -49,13 +62,18 @@ export class FlpSandbox {
         this.router = createRouter();
     }
 
+    /**
+     *
+     * @param manifest
+     * @param resources
+     */
     init(manifest: Manifest, resources: Record<string, string> = {}): void {
         const flex = this.createFlexHandler();
         this.templateConfig = {
             apps: {},
             ui5: {
                 libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? []).join(','),
-                theme: manifest['sap.ui5']?.theme as string ?? 'sap_horizon',
+                theme: (manifest['sap.ui5']?.theme as string) ?? 'sap_horizon',
                 flex,
                 resources: { ...resources }
             }
@@ -88,7 +106,12 @@ export class FlpSandbox {
         }
     }
 
-    private createFlexHandler() {
+    /**
+     * Create required routes for flex.
+     *
+     * @returns template configuration for flex.
+     */
+    private createFlexHandler(): TemplateConfig['ui5']['flex'] {
         const workspaceConnectorPath = '/preview/WorkspaceConnector';
         this.router.get(`/resources${workspaceConnectorPath}.js`, (_req: Request, res: Response) => {
             res.status(200)
@@ -103,7 +126,7 @@ export class FlpSandbox {
             // TBD
             res.status(500);
         });
- 
+
         return [
             {
                 applyConnector: workspaceConnectorPath,
@@ -113,6 +136,11 @@ export class FlpSandbox {
         ];
     }
 
+    /**
+     *
+     * @param manifest
+     * @param app
+     */
     addApp(manifest: any, app: App) {
         const id = manifest['sap.app'].id as string;
         app.intent ??= {
@@ -129,7 +157,12 @@ export class FlpSandbox {
         };
     }
 
-    private async getChanges() {
+    /**
+     * Read changes from the file system and return them.
+     *
+     * @returns object with the file name as key and the file content as value
+     */
+    private async getChanges(): Promise<Record<string, unknown>> {
         const changes: Record<string, unknown> = {};
         const files = await this.project.byGlob('/**/*.change');
         for (const file of files) {

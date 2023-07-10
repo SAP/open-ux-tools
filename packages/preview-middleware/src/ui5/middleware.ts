@@ -2,14 +2,13 @@ import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import type { MiddlewareParameters } from '@ui5/server';
 import { FlpSandbox } from '../base/flp';
-import { Config } from '../types';
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import { static as serveStatic } from 'express';
+import type { Config } from '../types';
 
 /**
  *
  * @param param0
+ * @param param0.resources
+ * @param param0.options
  * @param logger
  * @returns
  */
@@ -31,7 +30,12 @@ async function createRouter({ resources, options }: MiddlewareParameters<Config>
 }
 
 /**
- * Exporting the middleware for usage in the UI5 tooling
+ * Exporting the middleware for usage in the UI5 tooling.
+ *
+ * @param root0 middleware configuration
+ * @param root0.resources available project resources
+ * @param root0.options project options
+ * @returns a promise for the request handler
  */
 module.exports = async ({ resources, options }: MiddlewareParameters<Config>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
