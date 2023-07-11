@@ -33,10 +33,10 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
  * @param webappPath
  * @returns object with success flag and optional message
  */
-export async function writeChanges(
-    data: { fileName?: string; fileType?: string },
+export function writeChange(
+    data: object & { fileName?: string; fileType?: string },
     webappPath: string
-): Promise<{ success: boolean; message?: string }> {
+): { success: boolean; message?: string } {
     const fileName = data.fileName;
     const fileType = data.fileType;
     if (fileName && fileType) {

@@ -7,7 +7,7 @@ import type { App, FlpConfig } from '../types';
 import { Router as createRouter, static as serveStatic } from 'express';
 import type { Logger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import { readChanges, writeChanges } from './flex';
+import { readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 
 type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
@@ -129,7 +129,7 @@ export class FlpSandbox {
         this.router.post(api, async (req: Request, res: Response) => {
             try {
                 const data = JSON.parse(req.body);
-                const { success, message } = await writeChanges(data, this.utils.getProject().getSourcePath());
+                const { success, message } = writeChange(data, this.utils.getProject().getSourcePath());
                 if (success) {
                     res.status(200).send(message);
                 } else {
