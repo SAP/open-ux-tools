@@ -72,14 +72,14 @@ export class FlpSandbox {
      */
     init(manifest: Manifest): void {
         const flex = this.createFlexHandler();
-        const supportedThemes: string[] = manifest['sap.ui5']?.supportedThemes as [] ?? [DEFAULT_THEME];
+        const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         this.templateConfig = {
             apps: {},
             ui5: {
                 libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
                 theme: supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0],
                 flex,
-                resources: { }
+                resources: {}
             }
         };
         this.addApp(manifest, {

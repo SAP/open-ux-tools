@@ -799,9 +799,15 @@ importers:
       '@types/express':
         specifier: 4.17.13
         version: 4.17.13
+      '@types/supertest':
+        specifier: 2.0.12
+        version: 2.0.12
       express:
         specifier: 4.18.2
         version: 4.18.2
+      supertest:
+        specifier: 6.3.2
+        version: 6.3.2
 
   packages/project-access:
     dependencies:

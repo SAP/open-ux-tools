@@ -24,4 +24,3 @@ export interface FlpConfig {
 export interface Config {
     flp?: Partial<FlpConfig>;
 }
-
