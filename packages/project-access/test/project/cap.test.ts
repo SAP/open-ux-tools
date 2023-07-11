@@ -93,8 +93,8 @@ describe('Test getCapModelAndServices()', () => {
     });
 
     test('cds v7 exports', async () => {
-          // Mock setup
-           const cdsMock = {
+        // Mock setup
+        const cdsMock = {
             env: {
                 'for': () => ({
                     folders: {
@@ -112,7 +112,7 @@ describe('Test getCapModelAndServices()', () => {
                 default: cdsMock
             });
         });
-         // Test execution
+        // Test execution
         const capMS = await getCapModelAndServices('PROJECT_ROOT');
 
         // Check results

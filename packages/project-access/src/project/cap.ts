@@ -121,17 +121,16 @@ export async function getCapEnvironment(capProjectPath: string): Promise<CdsEnvi
     return cds.env.for('cds', capProjectPath);
 }
 
-/*
-* Load CAP CDS module for a project based on its root.
-*
-* @param capProjectPath - project root of a CAP project
-* @returns - CAP CDS module for a CAP project
-*/
+/**
+ * Load CAP CDS module for a project based on its root.
+ *
+ * @param capProjectPath - project root of a CAP project
+ * @returns - CAP CDS module for a CAP project
+ */
 async function loadCdsModuleFromProject(capProjectPath: string): Promise<CdsFacade> {
-   const module = await loadModuleFromProject<CdsFacade | { default: CdsFacade }>(capProjectPath, '@sap/cds');
-  return 'default' in module ? module.default : module;
+    const module = await loadModuleFromProject<CdsFacade | { default: CdsFacade }>(capProjectPath, '@sap/cds');
+    return 'default' in module ? module.default : module;
 }
-
 
 /**
  * Get absolute path to a resource.
