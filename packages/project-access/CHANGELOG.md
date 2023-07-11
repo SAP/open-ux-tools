@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.9.0
+
+### Minor Changes
+
+-   42b1de7b: Add utils method for getting absolute and reference uri for cap resources
+
 ## 1.8.4
 
 ### Patch Changes
