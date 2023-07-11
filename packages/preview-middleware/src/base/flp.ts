@@ -11,7 +11,11 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest } from '@sap-ux/project-access';
 import { json } from 'express';
 
+/**
+ * Default theme
+ */
 const DEFAULT_THEME = 'sap_horizon';
+
 /**
  * Internal structure used to fill the sandbox.html template
  */
@@ -47,11 +51,12 @@ export class FlpSandbox {
     public readonly router: any;
 
     /**
+     * Constructor setting defaults and keeping reference to workspace resources.
      *
-     * @param config
-     * @param project
-     * @param utils
-     * @param logger
+     * @param config configuration from the ui5.yaml
+     * @param project reference to the project provided by the UI5 CLI
+     * @param utils middleware utilities provided by the UI5 CLI
+     * @param logger logger instance
      */
     constructor(
         config: Partial<FlpConfig>,
@@ -63,12 +68,14 @@ export class FlpSandbox {
             path: config.path ?? '/test/flpSandbox.html',
             apps: config.apps ?? []
         };
+        logger.debug(`Config: ${JSON.stringify(this.config)}`);
         this.router = createRouter();
     }
 
     /**
+     * Initialize the FLP sandbox router.
      *
-     * @param manifest
+     * @param manifest application manifest
      */
     init(manifest: Manifest): void {
         const flex = this.createFlexHandler();
@@ -92,12 +99,14 @@ export class FlpSandbox {
         });
 
         // add route for the sandbox.html
-        this.router.get(this.config!.path, (_req: Request, res: Response) => {
+        this.router.get(this.config.path, (_req: Request, res: Response) => {
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             res.status(200);
             res.send(render(template, this.templateConfig));
         });
         this.addRoutesForAdditionalApps();
+        this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
+        this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
 
     private addRoutesForAdditionalApps() {
@@ -151,9 +160,10 @@ export class FlpSandbox {
     }
 
     /**
+     * Add an application to the local FLP preview.
      *
-     * @param manifest
-     * @param app
+     * @param manifest manifest of the additional target app
+     * @param app configuration for the preview
      */
     addApp(manifest: Manifest, app: App) {
         const id = manifest['sap.app'].id as string;

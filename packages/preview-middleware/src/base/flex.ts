@@ -6,8 +6,8 @@ import { join, parse } from 'path';
 /**
  * Read changes from the file system and return them.
  *
- * @param project
- * @param logger
+ * @param project reference to the UI5 project
+ * @param logger logger instance
  * @returns object with the file name as key and the file content as value
  */
 export async function readChanges(project: ReaderCollection, logger: Logger): Promise<Record<string, unknown>> {
@@ -27,10 +27,10 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
 /**
  * Writes flex changes to the user's workspace.
  *
- * @param data
- * @param data.fileName
- * @param data.fileType
- * @param webappPath
+ * @param data JS object to be stored as change
+ * @param data.fileName file name that is required for a valid change
+ * @param data.fileType file type that is required
+ * @param webappPath path to the webapp folder
  * @returns object with success flag and optional message
  */
 export function writeChange(
