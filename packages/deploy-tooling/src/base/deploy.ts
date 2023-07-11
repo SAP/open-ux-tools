@@ -119,6 +119,11 @@ async function createAbapServiceProvider(
                 password: storedOpts.password
             };
         }
+        if ((storedOpts as unknown as ServiceAuth)?.serviceKeys) {
+            throw new Error(
+                'This is an ABAP Cloud system, please add the --cloud arg to ensure the correct deployment flow.'
+            );
+        }
     }
     return createForAbap(options);
 }
