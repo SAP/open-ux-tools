@@ -1,7 +1,7 @@
-import { join } from 'path';
+import { dirname, join, normalize, relative, sep } from 'path';
 import { FileName } from '../constants';
 import type { CapCustomPaths, CapProjectType, CdsEnvironment, csn, Package } from '../types';
-import { fileExists, readJSON } from '../file';
+import { fileExists, readFile, readJSON } from '../file';
 import { loadModuleFromProject } from './module-loader';
 
 interface CdsFacade {
@@ -120,4 +120,106 @@ export async function getCapEnvironment(capProjectPath: string): Promise<CdsEnvi
     const module = await loadModuleFromProject<CdsFacade | { default: CdsFacade }>(capProjectPath, '@sap/cds');
     const cds: CdsFacade = 'default' in module ? module.default : module;
     return cds.env.for('cds', capProjectPath);
+}
+
+/**
+ * Get absolute path to a resource.
+ *
+ * @param projectRoot - project root of a CAP project
+ * @param relativeUri - relative resource path.
+ * @returns {string} - absolute path.
+ */
+export const toAbsoluteUri = (projectRoot: string, relativeUri: string): string => join(projectRoot, relativeUri);
+
+/**
+ * Converts to referenced uri to be used in using statements.
+ *
+ * @param projectRoot - project root of a CAP project
+ * @param relativeUriFrom - relative uri of from directory
+ * @param relativeUriTo - relative uri of to directory
+ * @returns {Promise<string>} - reference uri
+ */
+export const toReferenceUri = async (
+    projectRoot: string,
+    relativeUriFrom: string,
+    relativeUriTo: string
+): Promise<string> => {
+    let relativeUri = '';
+    const indexNodeModules = relativeUriTo.lastIndexOf('node_modules');
+    if (indexNodeModules >= 0) {
+        // extract module name from fileUri - e.g. '@sap/cds/common' from '../../node_modules/@sap/cds/common.cds'
+        const indexLastDot = relativeUriTo.lastIndexOf('.');
+        if (indexLastDot > indexNodeModules + 13) {
+            relativeUri = relativeUriTo.slice(indexNodeModules + 13, indexLastDot);
+        } else {
+            relativeUri = relativeUriTo.slice(indexNodeModules + 13);
+        }
+    } else if (relativeUriTo.startsWith('../') || relativeUriTo.startsWith('..\\')) {
+        // file outside current project (e.g. mono repo)
+        const result = await getPackageNameInFolder(projectRoot, relativeUriTo);
+        if (result.packageName) {
+            relativeUri = result.packageName + relativeUriTo.slice(result.packageFolder.length);
+        }
+    }
+    if (!relativeUri) {
+        // build relative path
+        const fromDir = dirname(toAbsoluteUri(projectRoot, relativeUriFrom));
+        relativeUri = relative(fromDir, toAbsoluteUri(projectRoot, relativeUriTo));
+        if (!relativeUri.startsWith('.')) {
+            relativeUri = './' + relativeUri;
+        }
+    }
+    // remove file extension
+    const fileExtension = relativeUri.lastIndexOf('.') > 0 ? relativeUri.slice(relativeUri.lastIndexOf('.') + 1) : '';
+    if (['CDS', 'JSON'].includes(fileExtension.toUpperCase())) {
+        relativeUri = relativeUri.slice(0, relativeUri.length - fileExtension.length - 1);
+    }
+
+    // always use '/' instead of platform specific separator
+    return relativeUri.split(sep).join('/');
+};
+
+/**
+ * Gets package name from the folder.
+ *
+ * @param baseUri - base uri of the cap project
+ * @param relativeUri - relative uri to the resource folder
+ * @returns {Promise<{ packageName: string; packageFolder: string }>} - package name and folder
+ */
+async function getPackageNameInFolder(
+    baseUri: string,
+    relativeUri: string
+): Promise<{ packageName: string; packageFolder: string }> {
+    const refUriParts = relativeUri.split(sep);
+    const result = { packageName: '', packageFolder: relativeUri };
+    for (let i = refUriParts.length - 1; i >= 0 && !result.packageName; i--) {
+        const currentFolder = refUriParts.slice(0, i).join(sep);
+        result.packageName = await readPackageNameForFolder(baseUri, currentFolder);
+        if (result.packageName) {
+            result.packageFolder = currentFolder;
+        }
+    }
+    return result;
+}
+
+/**
+ * Reads package name from package json of the folder.
+ *
+ * @param baseUri - base uri of the cap project
+ * @param relativeUri - relative uri to the resource folder
+ * @returns {Promise<string>} - package name
+ */
+async function readPackageNameForFolder(baseUri: string, relativeUri: string): Promise<string> {
+    let packageName = '';
+    try {
+        const path = normalize(baseUri + '/' + relativeUri + '/' + 'package.json');
+        const content = await readFile(path);
+        if (content) {
+            const parsed = JSON.parse(content);
+            packageName = parsed.name;
+        }
+    } catch (e) {
+        packageName = '';
+    }
+    return packageName;
 }
