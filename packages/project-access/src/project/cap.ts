@@ -94,7 +94,7 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
  * @returns {*}  {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
  */
 export async function getCapModelAndServices(projectRoot: string): Promise<{ model: csn; services: ServiceInfo[] }> {
-    const cds = await loadModuleFromProject<CdsFacade>(projectRoot, '@sap/cds');
+    const cds = await loadCdsModuleFromProject(projectRoot);
     const capProjectPaths = await getCapCustomPaths(projectRoot);
     const modelPaths = [
         join(projectRoot, capProjectPaths.app),
@@ -114,13 +114,24 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
  * Get CAP CDS project environment config for project root.
  *
  * @param capProjectPath - project root of a CAP project
- * @returns - environment config for CAP project
+ * @returns - environment config for a CAP project
  */
 export async function getCapEnvironment(capProjectPath: string): Promise<CdsEnvironment> {
-    const module = await loadModuleFromProject<CdsFacade | { default: CdsFacade }>(capProjectPath, '@sap/cds');
-    const cds: CdsFacade = 'default' in module ? module.default : module;
+    const cds = await loadCdsModuleFromProject(capProjectPath);
     return cds.env.for('cds', capProjectPath);
 }
+
+/*
+* Load CAP CDS module for a project based on its root.
+*
+* @param capProjectPath - project root of a CAP project
+* @returns - CAP CDS module for a CAP project
+*/
+async function loadCdsModuleFromProject(capProjectPath: string): Promise<CdsFacade> {
+   const module = await loadModuleFromProject<CdsFacade | { default: CdsFacade }>(capProjectPath, '@sap/cds');
+  return 'default' in module ? module.default : module;
+}
+
 
 /**
  * Get absolute path to a resource.
