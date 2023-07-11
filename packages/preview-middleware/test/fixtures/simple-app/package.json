@@ -10,6 +10,6 @@
     "scripts": {
         "build": "ui5 build",
         "prestart": "cd ../../.. && pnpm build",
-        "start": "ui5 serve --open /preview.html#app-preview"
+        "start": "ui5 serve --open /my/custom/path/preview.html#app-preview"
     }
 }

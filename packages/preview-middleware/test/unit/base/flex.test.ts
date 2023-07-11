@@ -2,9 +2,8 @@ import type { ReaderCollection } from '@ui5/fs';
 import { readChanges, writeChange } from '../../../src/base/flex';
 import { ToolsLogger } from '@sap-ux/logger';
 import { tmpdir } from 'os';
-import { existsSync, mkdirSync, readFileSync } from 'fs';
+import { mkdirSync, readFileSync } from 'fs';
 import { join } from 'path';
-import { readFile } from '@sap-ux/project-access/dist/file';
 
 describe('flex', () => {
     const logger = new ToolsLogger();

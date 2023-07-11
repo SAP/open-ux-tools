@@ -8,7 +8,7 @@ server:
           afterMiddleware: compression
           configuration:
               flp:
-                  path: /preview.html
+                  path: /my/custom/path/preview.html
         - name: ui5-proxy-middleware
           afterMiddleware: preview-middleware
           configuration:

@@ -6,12 +6,12 @@ import { join } from 'path';
 import type { App, FlpConfig } from '../types';
 import { Router as createRouter, static as serveStatic } from 'express';
 import type { Logger } from '@sap-ux/logger';
-import type { ManifestNamespace } from '@sap-ux/project-access';
 import { readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
+import type { Manifest } from '@sap-ux/project-access';
+import { json } from 'express';
 
-type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
-
+const DEFAULT_THEME = 'sap_horizon';
 /**
  * Internal structure used to fill the sandbox.html template
  */
@@ -69,21 +69,22 @@ export class FlpSandbox {
     /**
      *
      * @param manifest
-     * @param resources
      */
-    init(manifest: Manifest, resources: Record<string, string> = {}): void {
+    init(manifest: Manifest): void {
         const flex = this.createFlexHandler();
+        const supportedThemes: string[] = manifest['sap.ui5']?.supportedThemes as [] ?? [DEFAULT_THEME];
         this.templateConfig = {
             apps: {},
             ui5: {
-                libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? []).join(','),
-                theme: (manifest['sap.ui5']?.theme as string) ?? 'sap_horizon',
+                libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
+                theme: supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0],
                 flex,
-                resources: { ...resources }
+                resources: { }
             }
         };
         this.addApp(manifest, {
-            target: resources[manifest['sap.app'].id] ?? '../',
+            target: '/',
+            local: '.',
             intent: {
                 object: 'app',
                 action: 'preview'
@@ -126,7 +127,7 @@ export class FlpSandbox {
         this.router.get(api, async (_req: Request, res: Response) => {
             res.status(200).send(await readChanges(this.project, this.logger));
         });
-        this.router.post(api, async (req: Request, res: Response) => {
+        this.router.post(api, json(), async (req: Request, res: Response) => {
             try {
                 const data = JSON.parse(req.body);
                 const { success, message } = writeChange(data, this.utils.getProject().getSourcePath());
@@ -154,16 +155,16 @@ export class FlpSandbox {
      * @param manifest
      * @param app
      */
-    addApp(manifest: any, app: App) {
+    addApp(manifest: Manifest, app: App) {
         const id = manifest['sap.app'].id as string;
         app.intent ??= {
             object: id.replace(/\./g, ''),
             action: 'preview'
         };
-        this.templateConfig.ui5.resources[id] = '../';
+        this.templateConfig.ui5.resources[id] = app.target;
         this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
-            title: manifest['sap.app'].title,
-            description: manifest['sap.app'].description,
+            title: manifest['sap.app'].title ?? id,
+            description: manifest['sap.app'].description ?? '',
             additionalInformation: `SAPUI5.Component=${id}`,
             applicationType: 'URL',
             url: app.target

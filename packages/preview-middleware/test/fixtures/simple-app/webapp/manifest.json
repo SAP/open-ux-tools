@@ -47,6 +47,10 @@
     },
     "sap.ui5": {
         "flexEnabled": true,
+        "supportedThemes": [
+            "sap_horizon_dark",
+            "sap_belize"
+        ],   
         "dependencies": {
             "minUI5Version": "1.115.0",
             "libs": {

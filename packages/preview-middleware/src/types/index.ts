@@ -3,7 +3,7 @@
  */
 export interface App {
     target: string;
-    local?: string;
+    local: string;
     intent?: {
         object: string;
         action: string;
@@ -24,3 +24,4 @@ export interface FlpConfig {
 export interface Config {
     flp?: Partial<FlpConfig>;
 }
+
