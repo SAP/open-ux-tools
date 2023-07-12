@@ -315,7 +315,7 @@ async function tryDeploy(
                 'Deployment in TestMode completed. A successful TestMode execution does not necessarily mean that your upload will be successful.'
             );
         } else {
-            logger.info('Successfully deployed.');
+            logger.info('Deployment Successful.');
         }
     } catch (error) {
         await handleError(TryCommands.Deploy, error, service, config, logger, archive);
@@ -351,7 +351,7 @@ async function tryUndeploy(service: Ui5AbapRepositoryService, config: AbapDeploy
                 'Undeployment in TestMode completed. A successful TestMode execution does not necessarily mean that your undeploy will be successful.'
             );
         } else {
-            logger.info('Successfully undeployed.');
+            logger.info('Undeployment Successful.');
         }
     } catch (error) {
         await handleError(TryCommands.UnDeploy, error, service, config, logger, Buffer.from(''));
