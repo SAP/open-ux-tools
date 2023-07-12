@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.9.1
+
+### Patch Changes
+
+-   5ab0638f: Fix "getCapModelAndServices" for CDS v7
+
 ## 1.9.0
 
 ### Minor Changes
