@@ -97,6 +97,16 @@ async function createAbapCloudServiceProvider(
 }
 
 /**
+ * Checks if credentials are of basic auth type.
+ *
+ * @param authOpts credential options
+ * @returns boolean
+ */
+function isBasicAuth(authOpts: BasicAuth | ServiceAuth | undefined): authOpts is BasicAuth {
+    return !!authOpts && (authOpts as BasicAuth).password !== undefined;
+}
+
+/**
  * Enhance axios options and create a service provider instance for an on-premise ABAP system.
  *
  * @param options - predefined axios options
@@ -112,14 +122,14 @@ async function createAbapServiceProvider(
         options.params['sap-client'] = target.client;
     }
     if (!options.auth) {
-        const storedOpts = await getCredentials<BasicAuth>(target);
-        if (storedOpts?.password) {
+        const storedOpts = await getCredentials<BasicAuth | ServiceAuth>(target);
+        if (isBasicAuth(storedOpts)) {
             options.auth = {
                 username: storedOpts.username,
                 password: storedOpts.password
             };
         }
-        if ((storedOpts as unknown as ServiceAuth)?.serviceKeys) {
+        if ((storedOpts as ServiceAuth)?.serviceKeys) {
             throw new Error(
                 'This is an ABAP Cloud system, please add the --cloud arg to ensure the correct deployment flow.'
             );
