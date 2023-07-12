@@ -97,6 +97,16 @@ async function createAbapCloudServiceProvider(
 }
 
 /**
+ * Checks if credentials are of basic auth type.
+ *
+ * @param authOpts credential options
+ * @returns boolean
+ */
+function isBasicAuth(authOpts: BasicAuth | ServiceAuth | undefined): authOpts is BasicAuth {
+    return !!authOpts && (authOpts as BasicAuth).password !== undefined;
+}
+
+/**
  * Enhance axios options and create a service provider instance for an on-premise ABAP system.
  *
  * @param options - predefined axios options
@@ -112,12 +122,17 @@ async function createAbapServiceProvider(
         options.params['sap-client'] = target.client;
     }
     if (!options.auth) {
-        const storedOpts = await getCredentials<BasicAuth>(target);
-        if (storedOpts?.password) {
+        const storedOpts = await getCredentials<BasicAuth | ServiceAuth>(target);
+        if (isBasicAuth(storedOpts)) {
             options.auth = {
                 username: storedOpts.username,
                 password: storedOpts.password
             };
+        }
+        if ((storedOpts as ServiceAuth)?.serviceKeys) {
+            throw new Error(
+                'This is an ABAP Cloud system, please add the --cloud arg to ensure the correct deployment flow.'
+            );
         }
     }
     return createForAbap(options);
@@ -310,7 +325,7 @@ async function tryDeploy(
                 'Deployment in TestMode completed. A successful TestMode execution does not necessarily mean that your upload will be successful.'
             );
         } else {
-            logger.info('Successfully deployed.');
+            logger.info('Deployment Successful.');
         }
     } catch (error) {
         await handleError(TryCommands.Deploy, error, service, config, logger, archive);
@@ -346,7 +361,7 @@ async function tryUndeploy(service: Ui5AbapRepositoryService, config: AbapDeploy
                 'Undeployment in TestMode completed. A successful TestMode execution does not necessarily mean that your undeploy will be successful.'
             );
         } else {
-            logger.info('Successfully undeployed.');
+            logger.info('Undeployment Successful.');
         }
     } catch (error) {
         await handleError(TryCommands.UnDeploy, error, service, config, logger, Buffer.from(''));

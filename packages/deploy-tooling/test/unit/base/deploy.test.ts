@@ -169,6 +169,26 @@ describe('base/deploy', () => {
             });
         });
 
+        test('Throws error when cloud system read from store but cloud target is not specified in params', async () => {
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+            await deploy(archive, { app, target, yes: true }, nullLogger);
+            mockedStoreService.read.mockResolvedValueOnce({
+                serviceKeys: {
+                    'uaa': {},
+                    'url': 'https://mock-url.com'
+                }
+            });
+
+            try {
+                await deploy(archive, { app, target, yes: true }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error.message).toBe(
+                    'This is an ABAP Cloud system, please add the --cloud arg to ensure the correct deployment flow.'
+                );
+            }
+        });
+
         test('Successful retry after known axios error', async () => {
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(412));
