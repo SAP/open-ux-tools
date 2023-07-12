@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.4.1
+
+### Patch Changes
+
+-   891bbe4e: improve error handling for abap service provider
+
 ## 0.4.0
 
 ### Minor Changes
