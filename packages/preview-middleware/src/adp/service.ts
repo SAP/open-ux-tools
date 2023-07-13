@@ -13,11 +13,17 @@ import type {
 import { AbapCloudEnvironment, createForAbap, createForDestination } from '@sap-ux/axios-extension';
 import { createForAbapOnCloud } from '@sap-ux/axios-extension';
 import { promptServiceKeys } from './prompt';
-import { ZipFile } from 'yazl';
+import type { ZipFile } from 'yazl';
 
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
 type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> & { refreshToken?: string };
 
+/**
+ * Create a buffer based on the given zip file object.
+ *
+ * @param zip object representing a zip file
+ * @returns a buffer
+ */
 export async function createBuffer(zip: ZipFile): Promise<Buffer> {
     await new Promise<void>((resolve) => {
         zip.end({ forceZip64Format: false }, () => {

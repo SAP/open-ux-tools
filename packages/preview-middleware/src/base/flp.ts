@@ -79,7 +79,7 @@ export class FlpSandbox {
      * @param componentId optional componentId e.g. for adaptation projects
      * @param resources optional additional resource mappings
      */
-    init(manifest: Manifest, componentId?: string,  resources: Record<string, string> = {}): void {
+    init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): void {
         const flex = this.createFlexHandler();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         this.templateConfig = {

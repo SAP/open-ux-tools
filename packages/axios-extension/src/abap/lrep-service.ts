@@ -106,6 +106,12 @@ export class LayeredRepositoryService extends Axios implements Service {
 
     public log: Logger;
 
+    /**
+     * Merge a given app descriptor variant with the stord app descriptor.
+     *
+     * @param appDescriptorVariant
+     * @returns a promise with an object containing merged app descriptors with their id as keys.
+     */
     public async mergeAppDescriptorVariant(
         appDescriptorVariant: Buffer
     ): Promise<{ [key: string]: MergedAppDescriptor }> {

@@ -3,14 +3,17 @@ import { ZipFile } from 'yazl';
 import type { AdaptationProjectConfig } from '../types';
 import { createBuffer, createProvider } from './service';
 import type { NextFunction, Request, Response } from 'express';
-import { MergedAppDescriptor } from '@sap-ux/axios-extension';
-import { DescriptorVariant } from './types';
-import { Resource } from '@ui5/fs';
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+import type { DescriptorVariant } from './types';
+import type { Resource } from '@ui5/fs';
 
 /**
- *
+ * Instance of an adaptation project handling requests and data transformation.
  */
 export class AdaptationProject {
+    /**
+     * Merged descriptor variant with reference app manifest
+     */
     private mergedDescriptor: MergedAppDescriptor;
 
     /**
@@ -33,7 +36,7 @@ export class AdaptationProject {
                 [this.descriptor.name]: this.descriptor.url,
                 [this.descriptor.manifest['sap.app'].id]: this.descriptor.url
             };
-            this.descriptor.asyncHints.libs.forEach(lib => {
+            this.descriptor.asyncHints.libs.forEach((lib) => {
                 if (lib.url?.url) {
                     resources[lib.name] = lib.url.url;
                 }
@@ -45,15 +48,18 @@ export class AdaptationProject {
     }
 
     /**
+     * Constructor taking the config and a logger as input.
      *
-     * @param config
-     * @param logger
+     * @param config adp config
+     * @param logger logger instance
      */
     constructor(private readonly config: AdaptationProjectConfig, private readonly logger: ToolsLogger) {}
 
     /**
+     * Fetch all required configurations from the backend and initialize all configurations.
      *
-     * @param descriptorVariant
+     * @param descriptorVariant descriptor variant from the project
+     * @param files all relevant project files (e.g. webapp content)
      */
     async init(descriptorVariant: DescriptorVariant, files: Resource[]) {
         const provider = await createProvider(this.config, this.logger);
@@ -71,14 +77,18 @@ export class AdaptationProject {
     }
 
     /**
-     * Initialize the proxy handler.
+     * Proxy for the merged application manifest.json and blocking of preload files.
      *
-     * @param host target (backend) host.
+     * @param req incoming request
+     * @param res outgoing response object
+     * @param next next middleware that is to be called if the request cannot be handled
      */
     async proxy(req: Request, res: Response, next: NextFunction) {
         if (req.path.endsWith('/manifest.json')) {
             res.status(200);
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
+        } else if (req.path.endsWith('/Component-preload.js')) {
+            res.status(404);
         } else {
             next();
         }
