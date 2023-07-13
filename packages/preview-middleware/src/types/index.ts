@@ -19,7 +19,6 @@ export type AbapTarget =
 
 export interface AdaptationProjectConfig {
     target: AbapTarget;
-    credentials?: AxiosRequestConfig['auth'];
 
     /**
      * If set to true only only servers with validated identities are accepted

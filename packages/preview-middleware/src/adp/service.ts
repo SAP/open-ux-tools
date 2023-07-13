@@ -147,12 +147,6 @@ export async function createProvider(config: AdaptationProjectConfig, logger?: L
     if (config.strictSsl === false) {
         options.ignoreCertErrors = true;
     }
-    if (config.credentials?.password) {
-        options.auth = {
-            username: config.credentials?.username,
-            password: config.credentials?.password
-        };
-    }
     options.params = config.target.params || {};
     // Destination only supported on Business Application studio
     if (isAppStudio() && config.target.destination) {

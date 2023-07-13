@@ -64,8 +64,6 @@ export class AdaptationProject {
     async init(descriptorVariant: DescriptorVariant, files: Resource[]) {
         const provider = await createProvider(this.config, this.logger);
         const lrep = provider.getLayeredRepository();
-        // the result does not matter, we just need an XSRF token
-        await lrep.isExistingVariant(descriptorVariant.namespace);
 
         const zip = new ZipFile();
         for (const file of files) {
@@ -73,6 +71,8 @@ export class AdaptationProject {
         }
         const buffer = await createBuffer(zip);
 
+        // validate namespace & layer combination and fetch csrf token
+        await lrep.isExistingVariant(descriptorVariant.namespace, descriptorVariant.layer);
         this.mergedDescriptor = (await lrep.mergeAppDescriptorVariant(buffer))[descriptorVariant.id];
     }
 

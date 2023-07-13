@@ -8,7 +8,7 @@ import { Router as createRouter, static as serveStatic } from 'express';
 import type { Logger } from '@sap-ux/logger';
 import { readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
-import type { Manifest } from '@sap-ux/project-access';
+import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { json } from 'express';
 
 /**
@@ -37,6 +37,7 @@ export interface TemplateConfig {
             applyConnector: string;
             writeConnector: string;
             custom: boolean;
+            layers: UI5FlexLayer[];
         }[];
         resources: Record<string, string>;
     };
@@ -157,7 +158,8 @@ export class FlpSandbox {
             {
                 applyConnector: workspaceConnectorPath,
                 writeConnector: workspaceConnectorPath,
-                custom: true
+                custom: true,
+                layers: ['CUSTOMER_BASE', 'VENDOR']
             }
         ];
     }

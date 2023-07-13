@@ -30,6 +30,10 @@ Object {
       Object {
         "applyConnector": "/preview/WorkspaceConnector",
         "custom": true,
+        "layers": Array [
+          "CUSTOMER_BASE",
+          "VENDOR",
+        ],
         "writeConnector": "/preview/WorkspaceConnector",
       },
     ],
@@ -60,6 +64,10 @@ Object {
       Object {
         "applyConnector": "/preview/WorkspaceConnector",
         "custom": true,
+        "layers": Array [
+          "CUSTOMER_BASE",
+          "VENDOR",
+        ],
         "writeConnector": "/preview/WorkspaceConnector",
       },
     ],
@@ -88,6 +96,10 @@ Object {
       Object {
         "applyConnector": "/preview/WorkspaceConnector",
         "custom": true,
+        "layers": Array [
+          "CUSTOMER_BASE",
+          "VENDOR",
+        ],
         "writeConnector": "/preview/WorkspaceConnector",
       },
     ],
@@ -241,7 +253,7 @@ exports[`FlpSandbox router preview.html 1`] = `
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true,\\"layers\\":[\\"CUSTOMER_BASE\\",\\"VENDOR\\"]}]'
         data-sap-ui-resourceroots='{\\"test.fe.v2.app\\":\\"/\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\">

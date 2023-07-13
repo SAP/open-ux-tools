@@ -46,6 +46,11 @@ export interface AdaptationConfig {
      * Optional transport request
      */
     transport?: string;
+
+    /**
+     * Optional layer (default: CUSTOMER_BASE)
+     */
+    layer?: Layer
 }
 
 /**
@@ -106,6 +111,7 @@ export class LayeredRepositoryService extends Axios implements Service {
 
     public log: Logger;
 
+
     /**
      * Merge a given app descriptor variant with the stord app descriptor.
      *
@@ -134,14 +140,15 @@ export class LayeredRepositoryService extends Axios implements Service {
      * Check whether a variant with the given namespace already exists.
      *
      * @param namespace either as string or as object
+     * @param [layer='CUSTOMER_BASE'] optional layer
      * @returns the Axios response object for further processing
      */
-    public async isExistingVariant(namespace: Namespace): Promise<AxiosResponse> {
+    public async isExistingVariant(namespace: Namespace, layer: Layer = 'CUSTOMER_BASE'): Promise<AxiosResponse> {
         try {
             const response = await this.get(DTA_PATH_SUFFIX, {
                 params: {
                     name: getNamespaceAsString(namespace),
-                    layer: 'CUSTOMER_BASE' as Layer,
+                    layer,
                     timestamp: Date.now()
                 }
             });
@@ -171,7 +178,7 @@ export class LayeredRepositoryService extends Axios implements Service {
         const checkResponse = await this.isExistingVariant(config.namespace);
         const params: object = {
             name: getNamespaceAsString(config.namespace),
-            layer: 'CUSTOMER_BASE' as Layer
+            layer: config.layer ?? 'CUSTOMER_BASE'
         };
 
         params['package'] = config.package ?? '$TMP';
@@ -206,7 +213,7 @@ export class LayeredRepositoryService extends Axios implements Service {
         }
         const params: object = {
             name: getNamespaceAsString(config.namespace),
-            layer: 'CUSTOMER_BASE' as Layer
+            layer: config.layer ?? 'CUSTOMER_BASE'
         };
         if (config.transport) {
             params['changelist'] = config.transport;
