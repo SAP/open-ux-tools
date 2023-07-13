@@ -151,8 +151,8 @@ function findServiceByUri(
     services: { name: string; urlPath: string }[],
     uri: string
 ): { name: string; urlPath: string } | undefined {
-    const searchUri = uri.replace(/[\\\/]/g, '/'); // replace all \ and / in service uri due to issues on Windows with backslashes
-    return services.find((srv: { name: string; urlPath: string }) => srv.urlPath.replace(/[\\\/]/g, '/') === searchUri);
+    const searchUri = uri.replace(/[\\/]/g, '/'); // replace all \ and / in service uri due to issues on Windows with backslashes
+    return services.find((srv: { name: string; urlPath: string }) => srv.urlPath.replace(/[\\/]/g, '/') === searchUri);
 }
 
 /**
