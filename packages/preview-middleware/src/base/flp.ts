@@ -76,8 +76,9 @@ export class FlpSandbox {
      * Initialize the FLP sandbox router.
      *
      * @param manifest application manifest
+     * @param resources optional additional resource mappings
      */
-    init(manifest: Manifest): void {
+    init(manifest: Manifest, resources: Record<string, string> = {}): void {
         const flex = this.createFlexHandler();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         this.templateConfig = {
@@ -86,11 +87,11 @@ export class FlpSandbox {
                 libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
                 theme: supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0],
                 flex,
-                resources: {}
+                resources: { ...resources }
             }
         };
         this.addApp(manifest, {
-            target: '/',
+            target: resources[manifest['sap.app'].id] ?? '/',
             local: '.',
             intent: {
                 object: 'app',

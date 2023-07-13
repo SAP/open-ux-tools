@@ -5,6 +5,7 @@ import { LogLevel } from '@sap-ux/logger';
 import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'fs';
 import { isAxiosError } from '../base/odata-request-error';
+import type { Manifest } from '@sap-ux/project-access';
 
 /**
  * Object structure representing a namespace: containing an id (variant id) and a reference (base application id).
@@ -78,18 +79,34 @@ function getNamespaceAsString(namespace: Namespace): string {
 const DTA_PATH_SUFFIX = '/dta_folder/';
 
 /**
- * A class respresenting the design time adaptation service allowing to deploy adaptation projects to an ABAP system.
+ * A class representing the design time adaptation service allowing to deploy adaptation projects to an ABAP system.
  */
 export class LayeredRepositoryService extends Axios implements Service {
     public static readonly PATH = '/sap/bc/lrep';
 
     public log: Logger;
 
+    public async mergeAppDescriptorVariant(appDescriptorVariant: Buffer): Promise<Manifest> {
+        try {
+            const response = await this.put('/appdescr_variant_preview/', appDescriptorVariant, {
+                headers: {
+                    'Content-Type': 'application/zip'
+                }
+            });
+            return JSON.parse(response.data);
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+            }
+            throw error;
+        }
+    }
+
     /**
      * Check whether a variant with the given namespace already exists.
      *
      * @param namespace either as string or as object
-     * @returns the Axios response object for futher processing
+     * @returns the Axios response object for further processing
      */
     public async isExistingVariant(namespace: Namespace): Promise<AxiosResponse> {
         try {
@@ -103,11 +120,13 @@ export class LayeredRepositoryService extends Axios implements Service {
             this.tryLogResponse(response);
             return response;
         } catch (error) {
-            if (isAxiosError(error) && error.response?.status === 404) {
-                return error.response;
-            } else {
-                throw error;
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+                if (error.response?.status === 404) {
+                    return error.response;
+                }
             }
+            throw error;
         }
     }
 

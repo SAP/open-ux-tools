@@ -233,6 +233,9 @@ importers:
         specifier: 0.0.32
         version: 0.0.32
     devDependencies:
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@types/lodash':
         specifier: 4.14.176
         version: 4.14.176
@@ -783,12 +786,33 @@ importers:
 
   packages/preview-middleware:
     dependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      dotenv:
+        specifier: 10.0.0
+        version: 10.0.0
       ejs:
         specifier: 3.1.7
         version: 3.1.7
+      http-proxy-middleware:
+        specifier: 2.0.1
+        version: 2.0.1
+      prompts:
+        specifier: 2.4.2
+        version: 2.4.2
+      yazl:
+        specifier: 2.5.1
+        version: 2.5.1
     devDependencies:
       '@sap-ux/project-access':
         specifier: workspace:*
@@ -799,9 +823,15 @@ importers:
       '@types/express':
         specifier: 4.17.13
         version: 4.17.13
+      '@types/prompts':
+        specifier: 2.0.14
+        version: 2.0.14
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
+      '@types/yazl':
+        specifier: 2.4.2
+        version: 2.4.2
       express:
         specifier: 4.18.2
         version: 4.18.2
