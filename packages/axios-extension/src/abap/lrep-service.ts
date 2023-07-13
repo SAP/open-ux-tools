@@ -5,8 +5,9 @@ import { LogLevel } from '@sap-ux/logger';
 import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'fs';
 import { isAxiosError } from '../base/odata-request-error';
-import type { Manifest } from '@sap-ux/project-access';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
+export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 /**
  * Object structure representing a namespace: containing an id (variant id) and a reference (base application id).
  */
@@ -48,6 +49,25 @@ export interface AdaptationConfig {
 }
 
 /**
+ * Resulting structure after merging an app descriptor variant with the original app descriptor.
+ */
+export interface MergedAppDescriptor {
+    name: string;
+    url: string;
+    manifest: Manifest;
+    asyncHints: {
+        libs: {
+            name: string;
+            lazy?: boolean;
+            url?: {
+                url: string;
+                final: boolean;
+            };
+        }[];
+    };
+}
+
+/**
  * Structure of the result message.
  */
 export interface Message {
@@ -86,7 +106,9 @@ export class LayeredRepositoryService extends Axios implements Service {
 
     public log: Logger;
 
-    public async mergeAppDescriptorVariant(appDescriptorVariant: Buffer): Promise<Manifest> {
+    public async mergeAppDescriptorVariant(
+        appDescriptorVariant: Buffer
+    ): Promise<{ [key: string]: MergedAppDescriptor }> {
         try {
             const response = await this.put('/appdescr_variant_preview/', appDescriptorVariant, {
                 headers: {

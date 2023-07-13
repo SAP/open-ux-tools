@@ -18,7 +18,6 @@ import { ZipFile } from 'yazl';
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
 type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> & { refreshToken?: string };
 
-
 export async function createBuffer(zip: ZipFile): Promise<Buffer> {
     await new Promise<void>((resolve) => {
         zip.end({ forceZip64Format: false }, () => {

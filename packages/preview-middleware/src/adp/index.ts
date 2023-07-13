@@ -2,28 +2,23 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { ZipFile } from 'yazl';
 import type { AdaptationProjectConfig } from '../types';
 import { createBuffer, createProvider } from './service';
-import { createProxyMiddleware } from 'http-proxy-middleware';
-import type { NextFunction, Request, RequestHandler, Response } from 'express';
-
-interface PreviewData {
-    id: string;
-    name: string;
-    url: string;
-    manifest: any;
-}
+import type { NextFunction, Request, Response } from 'express';
+import { MergedAppDescriptor } from '@sap-ux/axios-extension';
+import { DescriptorVariant } from './types';
+import { Resource } from '@ui5/fs';
 
 /**
  *
  */
 export class AdaptationProject {
-    private previewData: PreviewData;
+    private mergedDescriptor: MergedAppDescriptor;
 
     /**
      * @returns Merged manifest.
      */
-    get manifest() {
-        if (this.previewData) {
-            return this.previewData.manifest;
+    get descriptor() {
+        if (this.mergedDescriptor) {
+            return this.mergedDescriptor;
         } else {
             throw new Error('Not initialized');
         }
@@ -33,27 +28,21 @@ export class AdaptationProject {
      * @returns a list of resources required to the adaptation project as well as the original app.
      */
     get resources() {
-        if (this.previewData) {
-            return {
-                [this.previewData.name]: this.previewData.url,
-                [this.previewData.id]: this.previewData.url
+        if (this.descriptor) {
+            const resources = {
+                [this.descriptor.name]: this.descriptor.url,
+                [this.descriptor.manifest['sap.app'].id]: this.descriptor.url
             };
+            this.descriptor.asyncHints.libs.forEach(lib => {
+                if (lib.url?.url) {
+                    resources[lib.name] = lib.url.url;
+                }
+            });
+            return resources;
         } else {
             throw new Error('Not initialized');
         }
     }
-
-    /**
-     * @returns the required routing.
-     */
-    get proxy(): RequestHandler {
-        if (this.proxyFn) {
-            return this.proxyFn;
-        } else {
-            throw new Error('Not initialized');
-        }
-    }
-    private proxyFn: RequestHandler;
 
     /**
      *
@@ -64,21 +53,21 @@ export class AdaptationProject {
 
     /**
      *
-     * @param appDescriptor
+     * @param descriptorVariant
      */
-    async init(appDescriptor: any) {
+    async init(descriptorVariant: DescriptorVariant, files: Resource[]) {
         const provider = await createProvider(this.config, this.logger);
         const lrep = provider.getLayeredRepository();
-        // quick & dirty to get xsrf token
-        await lrep.isExistingVariant(appDescriptor);
+        // the result does not matter, we just need an XSRF token
+        await lrep.isExistingVariant(descriptorVariant.namespace);
 
         const zip = new ZipFile();
-        zip.addBuffer(Buffer.from(JSON.stringify(appDescriptor)), 'manifest.appdescr_variant');
+        for (const file of files) {
+            zip.addBuffer(await file.getBuffer(), file.getPath().substring(1));
+        }
         const buffer = await createBuffer(zip);
 
-        this.previewData = ((await lrep.mergeAppDescriptorVariant(buffer)) as any)[appDescriptor.id] as PreviewData;
-        this.previewData.id = appDescriptor.id;
-        await this.initProxy(provider.defaults!.baseURL!);
+        this.mergedDescriptor = (await lrep.mergeAppDescriptorVariant(buffer))[descriptorVariant.id];
     }
 
     /**
@@ -86,22 +75,12 @@ export class AdaptationProject {
      *
      * @param host target (backend) host.
      */
-    async initProxy(host: string) {
-        const proxy = createProxyMiddleware({
-            target: host,
-            secure: this.config.strictSsl === true
-        });
-        this.proxyFn = (req: Request, res: Response, next: NextFunction) => {
-            if (req.path.startsWith(this.previewData.url)) {
-                if (req.path.endsWith('/manifest.json')) {
-                    res.status(200);
-                    res.send(JSON.stringify(this.manifest, undefined, 2));
-                } else {
-                    proxy(req, res, next);
-                }
-            } else {
-                next();
-            }
-        };
+    async proxy(req: Request, res: Response, next: NextFunction) {
+        if (req.path.endsWith('/manifest.json')) {
+            res.status(200);
+            res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
+        } else {
+            next();
+        }
     }
 }

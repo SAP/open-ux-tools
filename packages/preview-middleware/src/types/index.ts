@@ -33,6 +33,10 @@ export interface AdaptationProjectConfig {
 export interface App {
     target: string;
     local: string;
+    /**
+     * Optional component id if it differs from the manifest (e.g. for adaptation projects)
+     */
+    componentId?: string;
     intent?: {
         object: string;
         action: string;

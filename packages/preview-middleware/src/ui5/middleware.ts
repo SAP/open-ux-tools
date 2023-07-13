@@ -23,9 +23,9 @@ async function initAdp(
     const files = await rootProject.byGlob('/manifest.appdescr_variant');
     if (files.length === 1) {
         const adp = new AdaptationProject(config, logger);
-        await adp.init(JSON.parse(await files[0].getString()));
-        flp.init(adp.manifest, adp.resources);
-        flp.router.use(adp.proxy);
+        await adp.init(JSON.parse(await files[0].getString()), await rootProject.byGlob('**/*.*'));
+        flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
+        flp.router.use(adp.descriptor.url, adp.proxy.bind(adp));
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
     }
