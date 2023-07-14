@@ -4,7 +4,8 @@ export {
     getCapProjectType,
     isCapJavaProject,
     isCapNodeJsProject,
-    getCapEnvironment
+    getCapEnvironment,
+    readCapServiceMetadataEdmx
 } from './cap';
 export { getAppProgrammingLanguage } from './info';
 export { loadModuleFromProject } from './module-loader';

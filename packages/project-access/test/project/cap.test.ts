@@ -3,7 +3,12 @@ import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
 import { isCapNodeJsProject, isCapJavaProject, getCapModelAndServices, getCapProjectType } from '../../src';
-import { getCapCustomPaths, getCapEnvironment, toReferenceUri } from '../../src/project/cap';
+import {
+    getCapCustomPaths,
+    getCapEnvironment,
+    readCapServiceMetadataEdmx,
+    toReferenceUri
+} from '../../src/project/cap';
 import * as file from '../../src/file';
 import os from 'os';
 
@@ -123,6 +128,83 @@ describe('Test getCapModelAndServices()', () => {
             join('PROJECT_ROOT', 'DB')
         ]);
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
+    });
+});
+
+describe('Test readCapServiceMetadataEdmx()', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    const getCdsMock = () => ({
+        load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+        compile: {
+            to: {
+                serviceinfo: jest.fn().mockImplementation(() => [
+                    { name: 'ServiceOne', urlPath: 'service/one' },
+                    { name: 'ServiceTwo', urlPath: 'service\\two' }
+                ]),
+                edmx: jest.fn().mockImplementation(() => 'EDMX')
+            }
+        }
+    });
+
+    test('Convert service to EDMX', async () => {
+        // Mock setup
+        const cdsMock = getCdsMock();
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue({ default: cdsMock });
+
+        // Test execution
+        const result = await readCapServiceMetadataEdmx('root', 'service/two');
+
+        // Check results
+        expect(result).toBe('EDMX');
+        expect(cdsMock.compile.to.edmx).toBeCalledWith('MODEL', { service: 'ServiceTwo', version: 'v4' });
+        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'root' });
+    });
+
+    test('Convert v2 service with backslash to EDMX', async () => {
+        // Mock setup
+        const cdsMock = getCdsMock();
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue({ default: cdsMock });
+
+        // Test execution
+        const result = await readCapServiceMetadataEdmx('root', 'service\\one', 'v2');
+
+        // Check results
+        expect(result).toBe('EDMX');
+        expect(cdsMock.compile.to.edmx).toBeCalledWith('MODEL', { service: 'ServiceOne', version: 'v2' });
+    });
+
+    test('Convert none existing service to EDMX, should throw error', async () => {
+        // Mock setup
+        const cdsMock = getCdsMock();
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue({ default: cdsMock });
+
+        // Test execution and check
+        try {
+            await readCapServiceMetadataEdmx('root', 'INVALID/SERVICE_URI');
+            fail('Call to readCapServiceMetadataEdmx() with invalid service should have thrown error but did not.');
+        } catch (error) {
+            expect(error.toString()).toContain('INVALID/SERVICE_URI');
+        }
+    });
+
+    test('Convert service to EDMX, compile throws error', async () => {
+        // Mock setup
+        const cdsMock = getCdsMock();
+        cdsMock.compile.to.edmx = jest.fn().mockImplementationOnce(() => {
+            throw 'COMPILE_ERROR';
+        });
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue({ default: cdsMock });
+
+        // Test execution and check
+        try {
+            await readCapServiceMetadataEdmx('', 'service/one');
+            fail('Call to readCapServiceMetadataEdmx() should have thrown error but did not.');
+        } catch (error) {
+            expect(error.toString()).toContain('COMPILE_ERROR');
+        }
     });
 });
 

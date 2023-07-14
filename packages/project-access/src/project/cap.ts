@@ -10,6 +10,7 @@ interface CdsFacade {
     compile: {
         to: {
             serviceinfo: (model: csn, options?: { root?: string }) => ServiceInfo[];
+            edmx: (model: csn, options?: { service?: string; version?: 'v2' | 'v4' }) => Promise<string>;
         };
     };
 }
@@ -108,6 +109,50 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
         model,
         services
     };
+}
+
+/**
+ * Return the EDMX string of a CAP service.
+ *
+ * @param root - CAP project root where package.json resides
+ * @param uri - service path, e.g 'incident/'
+ * @param version - optional OData version v2 or v4
+ * @returns - string containing the edmx
+ */
+export async function readCapServiceMetadataEdmx(
+    root: string,
+    uri: string,
+    version: 'v2' | 'v4' = 'v4'
+): Promise<string> {
+    try {
+        const { model, services } = await getCapModelAndServices(root);
+        const service = findServiceByUri(services, uri);
+        if (!service) {
+            throw Error(`Service for uri: '${uri}' not found. Available services: ${JSON.stringify(services)}`);
+        }
+        const cds = await loadCdsModuleFromProject(root);
+        const edmx = cds.compile.to.edmx(model, { service: service.name, version });
+        return edmx;
+    } catch (error) {
+        throw Error(
+            `Error while reading CAP service metadata. Path: '${root}', service uri: '${uri}', error: '${error.toString()}'}`
+        );
+    }
+}
+
+/**
+ * Find a service in a list of services.
+ *
+ * @param services - list of services from cds.compile.to['serviceinfo'](model)
+ * @param uri - search uri (usually from data source in manifest.json)
+ * @returns - name and uri of the service, undefined if service not found
+ */
+function findServiceByUri(
+    services: { name: string; urlPath: string }[],
+    uri: string
+): { name: string; urlPath: string } | undefined {
+    const searchUri = uri.replace(/[\\/]/g, '/'); // replace all \ and / in service uri due to issues on Windows with backslashes
+    return services.find((srv: { name: string; urlPath: string }) => srv.urlPath.replace(/[\\/]/g, '/') === searchUri);
 }
 
 /**
