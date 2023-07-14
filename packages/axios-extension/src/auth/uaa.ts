@@ -47,7 +47,7 @@ export class Uaa {
      * @returns uaa url
      */
     protected get url(): string {
-        return this.serviceInfo.uaa.url;
+        return this.serviceInfo.uaa.url.replace(/\/?$/, '');
     }
 
     /**
