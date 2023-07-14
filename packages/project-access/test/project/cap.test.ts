@@ -169,7 +169,7 @@ describe('Test readCapServiceMetadataEdmx()', () => {
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue({ default: cdsMock });
 
         // Test execution
-        const result = await readCapServiceMetadataEdmx('root', 'service\\one', 'v2');
+        const result = await readCapServiceMetadataEdmx('root', '/service\\one/', 'v2');
 
         // Check results
         expect(result).toBe('EDMX');
