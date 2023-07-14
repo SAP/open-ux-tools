@@ -151,7 +151,7 @@ function findServiceByUri(
     services: { name: string; urlPath: string }[],
     uri: string
 ): { name: string; urlPath: string } | undefined {
-    const uniformUri = (uri: string) => uri.replace(/[\\/]/g, '/').replace(/^\/|\/$/g, '');
+    const uniformUri = (uri: string) => uri.replace(/[\\/]/g, '/').replace(/(?:^\/)|(?:\/$)/g, '');
     const searchUri = uniformUri(uri);
     return services.find((srv) => uniformUri(srv.urlPath) === searchUri);
 }
