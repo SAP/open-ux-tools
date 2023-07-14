@@ -1,5 +1,13 @@
 # @sap-ux/deploy-tooling
 
+## 0.4.2
+
+### Patch Changes
+
+-   da6fbb04: remove trailing slash from uaa url
+-   Updated dependencies [da6fbb04]
+    -   @sap-ux/axios-extension@1.3.4
+
 ## 0.4.1
 
 ### Patch Changes
