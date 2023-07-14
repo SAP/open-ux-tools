@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.10.0
+
+### Minor Changes
+
+-   ff74ee09: Add functionality to convert CDS into EDMX
+
 ## 1.9.1
 
 ### Patch Changes

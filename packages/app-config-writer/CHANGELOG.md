@@ -1,5 +1,12 @@
 # @sap-ux/app-config-writer
 
+## 0.0.27
+
+### Patch Changes
+
+-   Updated dependencies [ff74ee09]
+    -   @sap-ux/project-access@1.10.0
+
 ## 0.0.26
 
 ### Patch Changes
