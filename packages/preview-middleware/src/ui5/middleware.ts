@@ -2,8 +2,9 @@ import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import type { MiddlewareParameters } from '@ui5/server';
 import { FlpSandbox } from '../base/flp';
-import type { AdaptationProjectConfig, Config } from '../types';
-import { AdaptationProject } from '../adp';
+import type { AdaptationProjectConfig } from "@sap-ux/adp-tooling";
+import type { Config } from '../types';
+import { AdpPreview } from "@sap-ux/adp-tooling";
 import type { ReaderCollection } from '@ui5/fs';
 
 /**
@@ -22,7 +23,7 @@ async function initAdp(
 ) {
     const files = await rootProject.byGlob('/manifest.appdescr_variant');
     if (files.length === 1) {
-        const adp = new AdaptationProject(config, logger);
+        const adp = new AdpPreview(config, logger);
         await adp.init(JSON.parse(await files[0].getString()), await rootProject.byGlob('**/*.*'));
         flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp));

@@ -2,8 +2,7 @@
     "extends": "../../tsconfig.json",
     "include": [
         "../../types/ui5.d.ts",
-        "src",
-        "src/**/*.json"
+        "src"
     ],
     "compilerOptions": {
         "rootDir": "src",
@@ -11,13 +10,19 @@
     },
     "references": [
         {
-            "path": "../adp-tooling"
+            "path": "../axios-extension"
+        },
+        {
+            "path": "../btp-utils"
         },
         {
             "path": "../logger"
         },
         {
             "path": "../project-access"
+        },
+        {
+            "path": "../store"
         }
     ]
 }

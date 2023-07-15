@@ -4,13 +4,13 @@ import type { AdaptationProjectConfig } from '../types';
 import { createBuffer, createProvider } from './service';
 import type { NextFunction, Request, Response } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
-import type { DescriptorVariant } from './types';
+import type { DescriptorVariant } from '../types';
 import type { Resource } from '@ui5/fs';
 
 /**
  * Instance of an adaptation project handling requests and data transformation.
  */
-export class AdaptationProject {
+export class AdpPreview {
     /**
      * Merged descriptor variant with reference app manifest
      */

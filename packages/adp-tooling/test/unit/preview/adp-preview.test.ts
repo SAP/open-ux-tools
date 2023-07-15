@@ -1,5 +1,5 @@
 import { ToolsLogger } from '@sap-ux/logger';
-import { AdaptationProject } from '../../../src/adp';
+import { AdpPreview } from '../../../src/preview/adp-preview';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { Resource } from '@ui5/fs';
@@ -19,7 +19,7 @@ describe('AdaptationProject', () => {
     const logger = new ToolsLogger();
     describe('init', () => {
         test('default (no) config', async () => {
-            const adp = new AdaptationProject(
+            const adp = new AdpPreview(
                 {
                     target: {
                         url: backend

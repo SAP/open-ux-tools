@@ -142,6 +142,46 @@ importers:
         specifier: 0.24.0
         version: 0.24.0
 
+  packages/adp-tooling:
+    dependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      prompts:
+        specifier: 2.4.2
+        version: 2.4.2
+      yazl:
+        specifier: 2.5.1
+        version: 2.5.1
+    devDependencies:
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@types/express':
+        specifier: 4.17.13
+        version: 4.17.13
+      '@types/yazl':
+        specifier: 2.4.2
+        version: 2.4.2
+      express:
+        specifier: 4.18.2
+        version: 4.18.2
+      nock:
+        specifier: 13.2.1
+        version: 13.2.1
+      supertest:
+        specifier: 6.3.2
+        version: 6.3.2
+
   packages/app-config-writer:
     dependencies:
       '@sap-ux/axios-extension':
@@ -786,33 +826,18 @@ importers:
 
   packages/preview-middleware:
     dependencies:
-      '@sap-ux/axios-extension':
+      '@sap-ux/adp-tooling':
         specifier: workspace:*
-        version: link:../axios-extension
-      '@sap-ux/btp-utils':
-        specifier: workspace:*
-        version: link:../btp-utils
+        version: link:../adp-tooling
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
       dotenv:
         specifier: 10.0.0
         version: 10.0.0
       ejs:
         specifier: 3.1.7
         version: 3.1.7
-      http-proxy-middleware:
-        specifier: 2.0.1
-        version: 2.0.1
-      prompts:
-        specifier: 2.4.2
-        version: 2.4.2
-      yazl:
-        specifier: 2.5.1
-        version: 2.5.1
     devDependencies:
       '@sap-ux/project-access':
         specifier: workspace:*
@@ -829,9 +854,6 @@ importers:
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
-      '@types/yazl':
-        specifier: 2.4.2
-        version: 2.4.2
       express:
         specifier: 4.18.2
         version: 4.18.2
@@ -5998,7 +6020,7 @@ packages:
   /@types/yazl@2.4.2:
     resolution: {integrity: sha512-T+9JH8O2guEjXNxqmybzQ92mJUh2oCwDDMSSimZSe1P+pceZiFROZLYmcbqkzV5EUwz6VwcKXCO2S2yUpra6XQ==}
     dependencies:
-      '@types/node': 17.0.9
+      '@types/node': 12.12.6
     dev: true
 
   /@types/yeoman-environment@2.10.6:
