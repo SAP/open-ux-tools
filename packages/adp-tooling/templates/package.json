@@ -1,0 +1,20 @@
+{
+    "name": "<%= package.name.toLowerCase() %>",
+    "version": "0.1.0",
+    "private": true,
+    "description": "<%= package.description %>",
+    "keywords": [
+        "ui5",
+        "openui5",
+        "sapui5"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        "@sap-ux/ui5-proxy-middleware": "1.1.24",
+        "@ui5/cli": "^3.3.2"
+    },
+    "scripts": {
+        "build": "ui5 build",
+        "start": "ui5 serve --open /preview.html#app-preview"
+    }
+}

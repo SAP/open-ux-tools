@@ -3,7 +3,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
-import type { AbapTarget, AdaptationProjectConfig, UrlAbapTarget } from '../types';
+import type { AbapTarget, AdpPreviewConfig, UrlAbapTarget } from '../types';
 import type {
     AbapCloudStandaloneOptions,
     AbapServiceProvider,
@@ -141,7 +141,7 @@ export function isUrlTarget(target: AbapTarget): target is UrlAbapTarget {
  * @param logger - optional reference to the logger instance
  * @returns service instance
  */
-export async function createProvider(config: AdaptationProjectConfig, logger?: Logger): Promise<AbapServiceProvider> {
+export async function createProvider(config: AdpPreviewConfig, logger?: Logger): Promise<AbapServiceProvider> {
     let provider: AbapServiceProvider;
     const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {};
     if (config.strictSsl === false) {

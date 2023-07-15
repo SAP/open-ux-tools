@@ -1,4 +1,4 @@
-import { AdaptationProjectConfig } from "@sap-ux/adp-tooling";
+import type { AdpPreviewConfig } from "@sap-ux/adp-tooling";
 
 /**
  * Configuration for additional applications
@@ -29,6 +29,6 @@ export interface FlpConfig {
  */
 export interface Config {
     flp?: Partial<FlpConfig>;
-    adp?: AdaptationProjectConfig;
+    adp?: AdpPreviewConfig;
     debug?: boolean;
 }

@@ -156,6 +156,15 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      ejs:
+        specifier: 3.1.7
+        version: 3.1.7
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
       prompts:
         specifier: 2.4.2
         version: 2.4.2
@@ -166,9 +175,18 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@types/ejs':
+        specifier: 3.1.0
+        version: 3.1.0
       '@types/express':
         specifier: 4.17.13
         version: 4.17.13
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
       '@types/yazl':
         specifier: 2.4.2
         version: 2.4.2
@@ -5741,7 +5759,7 @@ packages:
     resolution: {integrity: sha512-aixqlCy0k0fZa+J4k7SZ7ZQCuJUmD4YuuMk42Q86YrGNBTZOSSnqkV8QcedBgLF5uR78PXj8HDWIFpXn+eOJbw==}
     dependencies:
       '@types/ejs': 3.1.0
-      '@types/glob': 7.2.0
+      '@types/glob': 8.1.0
       '@types/json-schema': 7.0.9
       '@types/mem-fs': 1.1.2
       '@types/node': 12.12.6

@@ -26,11 +26,17 @@ export type AbapTarget =
     | (UrlAbapTarget & Partial<DestinationAbapTarget>)
     | (DestinationAbapTarget & Partial<UrlAbapTarget>);
 
-export interface AdaptationProjectConfig {
+export interface AdpPreviewConfig {
     target: AbapTarget;
 
     /**
      * If set to true only only servers with validated identities are accepted
      */
     strictSsl?: boolean;
+}
+
+export interface AdpWriterConfig {
+    app: any;
+    ui5: any;
+    package: any;
 }

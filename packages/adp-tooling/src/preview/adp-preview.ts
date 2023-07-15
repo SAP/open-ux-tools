@@ -1,6 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import { ZipFile } from 'yazl';
-import type { AdaptationProjectConfig } from '../types';
+import type { AdpPreviewConfig } from '../types';
 import { createBuffer, createProvider } from './service';
 import type { NextFunction, Request, Response } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
@@ -53,7 +53,7 @@ export class AdpPreview {
      * @param config adp config
      * @param logger logger instance
      */
-    constructor(private readonly config: AdaptationProjectConfig, private readonly logger: ToolsLogger) {}
+    constructor(private readonly config: AdpPreviewConfig, private readonly logger: ToolsLogger) {}
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.

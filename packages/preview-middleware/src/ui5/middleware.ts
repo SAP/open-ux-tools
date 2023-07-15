@@ -2,7 +2,7 @@ import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import type { MiddlewareParameters } from '@ui5/server';
 import { FlpSandbox } from '../base/flp';
-import type { AdaptationProjectConfig } from "@sap-ux/adp-tooling";
+import type { AdpPreviewConfig } from "@sap-ux/adp-tooling";
 import type { Config } from '../types';
 import { AdpPreview } from "@sap-ux/adp-tooling";
 import type { ReaderCollection } from '@ui5/fs';
@@ -17,7 +17,7 @@ import type { ReaderCollection } from '@ui5/fs';
  */
 async function initAdp(
     rootProject: ReaderCollection,
-    config: AdaptationProjectConfig,
+    config: AdpPreviewConfig,
     flp: FlpSandbox,
     logger: ToolsLogger
 ) {
