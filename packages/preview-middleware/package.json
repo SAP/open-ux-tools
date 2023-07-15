@@ -36,7 +36,6 @@
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/adp-tooling": "workspace:*",
-        "dotenv": "10.0.0",
         "ejs": "3.1.7"
     },
     "devDependencies": {
