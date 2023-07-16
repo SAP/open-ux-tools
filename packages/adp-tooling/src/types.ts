@@ -36,7 +36,17 @@ export interface AdpPreviewConfig {
 }
 
 export interface AdpWriterConfig {
-    app: any;
-    ui5: any;
-    package: any;
+    app: {
+        id: string;
+        reference: string;
+        title?: string;
+    };
+    target: AbapTarget;
+    ui5?: {
+        minVersion?: string;
+    };
+    package?: {
+        name?: string;
+        description?: string;
+    };
 }
