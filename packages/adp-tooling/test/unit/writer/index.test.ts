@@ -40,7 +40,6 @@ describe('ADP writer', () => {
             let projectDir = join(outputDir, 'minimal');
             await generate(projectDir, config, fs);
             expect(fs.dump(projectDir)).toMatchSnapshot();
-    
         });
     });
 });

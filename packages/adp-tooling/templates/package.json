@@ -17,6 +17,6 @@
     },
     "scripts": {
         "build": "ui5 build --clean-dest",
-        "start": "ui5 serve --open /preview.html#app-preview"
+        "start": "ui5 serve --open /test/flpSandbox.html#app-preview"
     }
 }
