@@ -71,7 +71,7 @@ describe('flex', () => {
             const changeId = 'mychange';
             const fullPath = join(path, 'changes', `${changeId}.change`);
             writeFileSync(fullPath, JSON.stringify({ hello: 'world'}));
-            const result = deleteChange({ fileName: changeId }, path, logger);
+            const result = deleteChange({ fileName: `sap.ui.fl.${changeId}` }, path, logger);
             expect(result.success).toBe(true);
             expect(result.message).toBeDefined();
             expect(existsSync(fullPath)).toBe(false);
