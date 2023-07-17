@@ -197,6 +197,7 @@ exports[`FlpSandbox router test/flp.html 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
     <meta charset=\\"UTF-8\\">
@@ -221,14 +222,6 @@ exports[`FlpSandbox router test/flp.html 1`] = `
     <script type=\\"text/javascript\\">
         window[\\"sap-ushell-config\\"] = {
             defaultRenderer: \\"fiori2\\",
-            bootstrapPlugins: {
-                \\"RuntimeAuthoringPlugin\\": {
-                    component: \\"sap.ushell.plugins.rta\\",
-                    config: {
-                        validateAppVersion: false
-                    }
-                }
-            },
             renderers: {
                 fiori2: {
                     componentData: {
@@ -269,6 +262,5 @@ exports[`FlpSandbox router test/flp.html 1`] = `
 <body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
 
-</html>
-"
+</html>"
 `;

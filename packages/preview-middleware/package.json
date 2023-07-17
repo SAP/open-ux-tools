@@ -29,6 +29,7 @@
     "files": [
         "LICENSE",
         "dist",
+        "templates",
         "ui5.yaml",
         "!dist/*.map",
         "!dist/**/*.map"

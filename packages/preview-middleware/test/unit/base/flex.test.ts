@@ -48,7 +48,7 @@ describe('flex', () => {
 
         test('valid change', () => {
             const change = { fileName: 'id', fileType: 'ctrl_variant' };
-            const result = writeChange(change, path);
+            const result = writeChange(change, path, logger);
             expect(result.success).toBe(true);
             expect(result.message).toBeDefined();
             expect(
@@ -57,7 +57,7 @@ describe('flex', () => {
         });
 
         test('invalid change', () => {
-            const result = writeChange({}, path);
+            const result = writeChange({}, path, logger);
             expect(result.success).toBe(false);
         });
     });
