@@ -151,13 +151,22 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
         });
 
-        test.skip('POST /preview/api/changes', async () => {
+        test('POST /preview/api/changes', async () => {
             const response = await server
                 .post('/preview/api/changes')
                 .set('Content-Type', 'application/json')
                 .send({ fileName: 'id', fileType: 'ctrl_variant' })
                 .expect(200);
-            expect(response.text).toMatchSnapshot();
+            expect(response.text).toMatchInlineSnapshot(`"FILE_CREATED id.ctrl_variant"`);
+        });
+
+        test('DELETE /preview/api/changes', async () => {
+            const response = await server
+                .delete('/preview/api/changes')
+                .set('Content-Type', 'application/json')
+                .send({ fileName: 'id' })
+                .expect(200);
+            expect(response.text).toMatchInlineSnapshot(`"FILE_DELETED id.ctrl_variant"`);
         });
     });
 });
