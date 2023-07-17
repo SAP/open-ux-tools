@@ -42,7 +42,12 @@ describe('ADP integration test', () => {
                   });
             });
             // run npm start
-            exec('npm start', { cwd: projectDir});
+            await new Promise<void>((resolve) => {
+                exec('npm start', { cwd: projectDir}, function callback(error, stdout, stderr) {
+                    console.log(stdout);
+                    resolve();
+                  });
+            });
         });
     });
 });
