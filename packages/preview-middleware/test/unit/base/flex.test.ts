@@ -12,7 +12,7 @@ describe('flex', () => {
     beforeAll(() => {
         mkdirSync(path);
         mkdirSync(join(path, 'changes'));
-    })
+    });
 
     describe('readChanges', () => {
         const byGlobMock = jest.fn();
@@ -70,7 +70,7 @@ describe('flex', () => {
         test('existing change', () => {
             const changeId = 'mychange';
             const fullPath = join(path, 'changes', `${changeId}.change`);
-            writeFileSync(fullPath, JSON.stringify({ hello: 'world'}));
+            writeFileSync(fullPath, JSON.stringify({ hello: 'world' }));
             const result = deleteChange({ fileName: changeId }, path, logger);
             expect(result.success).toBe(true);
             expect(result.message).toBeDefined();
