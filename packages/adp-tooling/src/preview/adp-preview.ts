@@ -1,10 +1,9 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import { ZipFile } from 'yazl';
-import type { AdpPreviewConfig } from '../types';
+import type { AdpPreviewConfig, DescriptorVariant } from '../types';
 import { createBuffer, createProvider } from './service';
 import type { NextFunction, Request, Response } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
-import type { DescriptorVariant } from '../types';
 import type { Resource } from '@ui5/fs';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 
@@ -18,7 +17,7 @@ export class AdpPreview {
     private mergedDescriptor: MergedAppDescriptor;
 
     /**
-     * @returns Merged manifest.
+     * @returns merged manifest.
      */
     get descriptor() {
         if (this.mergedDescriptor) {
@@ -32,12 +31,12 @@ export class AdpPreview {
      * @returns a list of resources required to the adaptation project as well as the original app.
      */
     get resources() {
-        if (this.descriptor) {
+        if (this.mergedDescriptor) {
             const resources = {
-                [this.descriptor.name]: this.descriptor.url,
-                [this.descriptor.manifest['sap.app'].id]: this.descriptor.url
+                [this.mergedDescriptor.name]: this.mergedDescriptor.url,
+                [this.mergedDescriptor.manifest['sap.app'].id]: this.mergedDescriptor.url
             };
-            this.descriptor.asyncHints.libs.forEach((lib) => {
+            this.mergedDescriptor.asyncHints.libs.forEach((lib) => {
                 if (lib.url?.url) {
                     resources[lib.name] = lib.url.url;
                 }
@@ -87,12 +86,12 @@ export class AdpPreview {
      * @param res outgoing response object
      * @param next next middleware that is to be called if the request cannot be handled
      */
-    async proxy(req: Request, res: Response, next: NextFunction) {
-        if (req.path.endsWith('/manifest.json')) {
+    proxy(req: Request, res: Response, next: NextFunction) {
+        if (req.path.endsWith('manifest.json')) {
             res.status(200);
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
-        } else if (req.path.endsWith('/Component-preload.js')) {
-            res.status(404);
+        } else if (req.path.endsWith('Component-preload.js')) {
+            res.status(404).send();
         } else {
             next();
         }

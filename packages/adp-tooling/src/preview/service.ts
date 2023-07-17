@@ -10,8 +10,12 @@ import type {
     AxiosRequestConfig,
     ProviderConfiguration
 } from '@sap-ux/axios-extension';
-import { AbapCloudEnvironment, createForAbap, createForDestination } from '@sap-ux/axios-extension';
-import { createForAbapOnCloud } from '@sap-ux/axios-extension';
+import {
+    AbapCloudEnvironment,
+    createForAbap,
+    createForAbapOnCloud,
+    createForDestination
+} from '@sap-ux/axios-extension';
 import { promptServiceKeys } from './prompt';
 import type { ZipFile } from 'yazl';
 
