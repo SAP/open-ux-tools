@@ -39,14 +39,14 @@ async function getTestServer(fixture?: string, configuration: Partial<Config> = 
 describe('ui5/middleware', () => {
     test('no config', async () => {
         const server = await getTestServer('simple-app');
-        await server.get('/test/flpSandbox.html').expect(200);
+        await server.get('/test/flp.html').expect(200);
     });
 
     test('simple config', async () => {
         const path = '/my/preview/is/here.html';
         const server = await getTestServer('simple-app', { flp: { path } });
         await server.get(path).expect(200);
-        await server.get('/test/flpSandbox.html').expect(404);
+        await server.get('/test/flp.html').expect(404);
     });
 
     test('exception thrown on error', async () => {
