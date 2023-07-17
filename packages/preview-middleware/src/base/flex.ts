@@ -31,15 +31,18 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
  * @param data.fileName file name that is required for a valid change
  * @param data.fileType file type that is required
  * @param webappPath path to the webapp folder
+ * @param logger logger instance
  * @returns object with success flag and optional message
  */
 export function writeChange(
     data: object & { fileName?: string; fileType?: string },
-    webappPath: string
+    webappPath: string,
+    logger: Logger
 ): { success: boolean; message?: string } {
     const fileName = data.fileName;
     const fileType = data.fileType;
     if (fileName && fileType) {
+        logger.debug(`Write change ${fileName}.${fileType}`);
         const path = join(webappPath, 'changes');
         if (!existsSync(path)) {
             mkdirSync(path);
@@ -59,11 +62,13 @@ export function writeChange(
  * @param data JS object of the change to be deleted
  * @param data.fileName file name that is required for a valid change
  * @param webappPath path to the webapp folder
+ * @param logger logger instance
  * @returns object with success flag and optional message
  */
 export function deleteChange(
     data: object & { fileName?: string },
-    webappPath: string
+    webappPath: string,
+    logger: Logger
 ): { success: boolean; message?: string } {
     const fileName = data.fileName;
     if (fileName) {
@@ -71,8 +76,8 @@ export function deleteChange(
         if (existsSync(path)) {
             const files = readdirSync(path);
             const file = files.find((element) => element.includes(fileName));
-
             if (file) {
+                logger.debug(`Write change ${file}`);
                 const filePath = join(path, file);
                 unlinkSync(filePath);
                 return { success: true, message: `FILE_DELETED ${file}` };

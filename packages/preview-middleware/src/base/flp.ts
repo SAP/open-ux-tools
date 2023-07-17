@@ -150,7 +150,7 @@ export class FlpSandbox {
         this.router.post(api, json(), async (req: Request, res: Response) => {
             try {
                 const data = JSON.parse(req.body);
-                const { success, message } = writeChange(data, this.utils.getProject().getSourcePath());
+                const { success, message } = writeChange(data, this.utils.getProject().getSourcePath(), this.logger);
                 if (success) {
                     res.status(200).send(message);
                 } else {
@@ -162,7 +162,7 @@ export class FlpSandbox {
         });
         this.router.delete(api, json(), async (req: Request, res: Response) => {
             try {
-                const { success, message } = writeChange(JSON.parse(req.body), this.utils.getProject().getSourcePath());
+                const { success, message } = writeChange(JSON.parse(req.body), this.utils.getProject().getSourcePath(), this.logger);
                 if (success) {
                     res.status(200).send(message);
                 } else {
