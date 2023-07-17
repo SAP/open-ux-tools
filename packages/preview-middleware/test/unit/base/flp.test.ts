@@ -19,13 +19,13 @@ class FlpSandbox extends FlpSandboxUnderTest {
 
 describe('FlpSandbox', () => {
     const mockProject = {
-        byGlob: jest.fn().mockReturnValue([
+        byGlob: jest.fn().mockImplementation((glob) => Promise.resolve(glob.includes('changes') ? [
             {
                 getPath: () => 'test/changes/myid.change',
                 getName: () => 'myid.change',
                 getString: () => Promise.resolve(JSON.stringify({ id: 'myId' }))
             }
-        ])
+        ] : []))
     } as unknown as ReaderCollection;
     const mockUtils = {
         getProject() {
@@ -64,23 +64,23 @@ describe('FlpSandbox', () => {
     });
 
     describe('init', () => {
-        test('minimal manifest', () => {
+        test('minimal manifest', async () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            flp.init(manifest);
+            await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
-        test('optional configurations', () => {
+        test('optional configurations', async () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
-            flp.init(manifest);
+            await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
-        test('additional apps', () => {
+        test('additional apps', async () => {
             const flp = new FlpSandbox(
                 {
                     apps: [
@@ -105,7 +105,7 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            flp.init(manifest);
+            await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
         });
     });
@@ -128,7 +128,7 @@ describe('FlpSandbox', () => {
                 logger
             );
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
-            flp.init(manifest);
+            await flp.init(manifest);
 
             const app = express();
             app.use(flp.router);

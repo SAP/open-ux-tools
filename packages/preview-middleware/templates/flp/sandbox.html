@@ -54,7 +54,9 @@
         data-sap-ui-resourceroots='<%- JSON.stringify(ui5.resources) %>'
         data-sap-ui-frameOptions="allow"
         data-sap-ui-xx-componentPreload="off">
-    </script>
+    </script><% if (locals.locateReuseLibsScript) { %>
+	<script id="locate-reuse-libs" src="<%- locateReuseLibsScript %>" data-sap-ui-manifest-uri="/manifest.json">
+	</script><% } %>
     <script>
         sap.ui.getCore().attachInit(function () {<% if (locals.flex) { %>
             sap.ushell.Container.attachRendererCreatedEvent(function () {
@@ -75,7 +77,8 @@
                     })
                 });
             });<% } %>
-            sap.ushell.Container.createRenderer().placeAt("content");
+            <% if (!locals.locateReuseLibsScript) { %>
+			sap.ushell.Container.createRenderer().placeAt("content");<% } %>
         });
     </script>
 </head>

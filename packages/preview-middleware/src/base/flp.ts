@@ -48,6 +48,7 @@ export interface TemplateConfig {
         layer: UI5FlexLayer;
         developerMode: boolean;
     };
+    locateReuseLibsScript?: string;
 }
 
 /**
@@ -86,7 +87,7 @@ export class FlpSandbox {
      *
      * @param manifest application manifest
      */
-    init(manifest: Manifest): void {
+    async init(manifest: Manifest): Promise<void> {
         const flex = this.createFlexHandler();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         this.templateConfig = {
@@ -96,7 +97,8 @@ export class FlpSandbox {
                 theme: supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0],
                 flex,
                 resources: {}
-            }
+            },
+            locateReuseLibsScript: await this.findLocateReuseLibsScript()
         };
         this.addApp(manifest, {
             target: '/',
@@ -133,6 +135,20 @@ export class FlpSandbox {
         this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
+    }
+
+    /**
+     * Try finding the locate-reuse-libs script.
+     *
+     * @returns the location of the locate-reuse-libs script or undefined.
+     */
+    private async findLocateReuseLibsScript(): Promise<string | undefined> {
+        const files = await this.project.byGlob('**/locate-reuse-libs.js');
+        if (files.length > 0) {
+            return files[0].getPath();
+        } else {
+            return undefined;
+        }
     }
 
     private addRoutesForAdditionalApps() {
