@@ -47,7 +47,7 @@ export interface TemplateConfig {
     flex?: {
         layer: UI5FlexLayer;
         developerMode: boolean;
-    }
+    };
 }
 
 /**
@@ -114,7 +114,7 @@ export class FlpSandbox {
                 config.flex = {
                     layer: this.config.rta?.layer ?? 'CUSTOMER_BASE',
                     developerMode: false
-                }
+                };
             }
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             const html = render(template, config);
@@ -157,11 +157,17 @@ export class FlpSandbox {
         const api = '/preview/api/changes';
         this.router.use(api, json());
         this.router.get(api, async (_req: Request, res: Response) => {
-            res.status(200).contentType('application/json').send(await readChanges(this.project, this.logger));
+            res.status(200)
+                .contentType('application/json')
+                .send(await readChanges(this.project, this.logger));
         });
         this.router.post(api, async (req: Request, res: Response) => {
             try {
-                const { success, message } = writeChange(req.body, this.utils.getProject().getSourcePath(), this.logger);
+                const { success, message } = writeChange(
+                    req.body,
+                    this.utils.getProject().getSourcePath(),
+                    this.logger
+                );
                 if (success) {
                     res.status(200).send(message);
                 } else {
@@ -173,7 +179,11 @@ export class FlpSandbox {
         });
         this.router.delete(api, async (req: Request, res: Response) => {
             try {
-                const { success, message } = deleteChange(req.body, this.utils.getProject().getSourcePath(), this.logger);
+                const { success, message } = deleteChange(
+                    req.body,
+                    this.utils.getProject().getSourcePath(),
+                    this.logger
+                );
                 if (success) {
                     res.status(200).send(message);
                 } else {
