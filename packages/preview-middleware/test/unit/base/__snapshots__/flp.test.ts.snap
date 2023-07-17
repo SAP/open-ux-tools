@@ -25,6 +25,7 @@ Object {
       "url": "/simple/app",
     },
   },
+  "locateReuseLibsScript": undefined,
   "ui5": Object {
     "flex": Array [
       Object {
@@ -59,6 +60,7 @@ Object {
       "url": "/",
     },
   },
+  "locateReuseLibsScript": undefined,
   "ui5": Object {
     "flex": Array [
       Object {
@@ -91,6 +93,7 @@ Object {
       "url": "/",
     },
   },
+  "locateReuseLibsScript": undefined,
   "ui5": Object {
     "flex": Array [
       Object {
@@ -253,7 +256,8 @@ exports[`FlpSandbox router test/flp.html 1`] = `
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {
-            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+            
+			sap.ushell.Container.createRenderer().placeAt(\\"content\\");
         });
     </script>
 </head>

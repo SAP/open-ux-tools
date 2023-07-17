@@ -55,12 +55,11 @@ async function createRouter({ resources, options, middlewareUtil }: MiddlewarePa
     } else {
         const files = await resources.rootProject.byGlob('/manifest.json');
         if (files.length === 1) {
-            flp.init(JSON.parse(await files[0].getString()));
+            await flp.init(JSON.parse(await files[0].getString()));
         } else {
             throw new Error('No manifest.json found.');
         }
     }
-
     return flp.router;
 }
 

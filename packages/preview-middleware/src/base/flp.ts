@@ -4,12 +4,12 @@ import type { Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { App, FlpConfig } from '../types';
-import { Router as createRouter, static as serveStatic } from 'express';
+import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
-import { json } from 'express';
+
 /**
  * Default theme
  */
@@ -49,6 +49,7 @@ export interface TemplateConfig {
         layer: UI5FlexLayer;
         developerMode: boolean;
     };
+    locateReuseLibsScript?: string;
 }
 
 /**
@@ -89,7 +90,7 @@ export class FlpSandbox {
      * @param componentId optional componentId e.g. for adaptation projects
      * @param resources optional additional resource mappings
      */
-    init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): void {
+    async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
         const flex = this.createFlexHandler();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         this.templateConfig = {
@@ -99,7 +100,8 @@ export class FlpSandbox {
                 theme: supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0],
                 flex,
                 resources: { ...resources }
-            }
+            },
+            locateReuseLibsScript: await this.findLocateReuseLibsScript()
         };
         this.addApp(manifest, {
             componentId,
@@ -115,10 +117,14 @@ export class FlpSandbox {
         this.router.get(this.config.path, (req: Request, res: Response & { _livereload?: boolean }) => {
             const config = { ...this.templateConfig };
             if (req.query['fiori-tools-rta-mode']) {
-                config.flex = {
-                    layer: this.config.rta?.layer ?? 'CUSTOMER_BASE',
-                    developerMode: false
-                };
+                if (this.config.rta?.layer) {
+                    config.flex = {
+                        layer: this.config.rta?.layer,
+                        developerMode: false
+                    };
+                } else {
+                    this.logger.error('Fiori tools RTA mode could not be started because the RTA layer is missing.');
+                }
             }
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             const html = render(template, config);
@@ -133,6 +139,20 @@ export class FlpSandbox {
         this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
+    }
+
+    /**
+     * Try finding the locate-reuse-libs script.
+     *
+     * @returns the location of the locate-reuse-libs script or undefined.
+     */
+    private async findLocateReuseLibsScript(): Promise<string | undefined> {
+        const files = await this.project.byGlob('**/locate-reuse-libs.js');
+        if (files.length > 0) {
+            return files[0].getPath();
+        } else {
+            return undefined;
+        }
     }
 
     private addRoutesForAdditionalApps() {
@@ -215,7 +235,7 @@ export class FlpSandbox {
      * @param app configuration for the preview
      */
     addApp(manifest: Manifest, app: App) {
-        const id = manifest['sap.app'].id as string;
+        const id = manifest['sap.app'].id;
         app.intent ??= {
             object: id.replace(/\./g, ''),
             action: 'preview'

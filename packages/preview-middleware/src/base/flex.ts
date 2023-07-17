@@ -70,7 +70,7 @@ export function deleteChange(
     webappPath: string,
     logger: Logger
 ): { success: boolean; message?: string } {
-    const fileName = data.fileName;
+    const fileName = data.fileName?.replace('sap.ui.fl.', '');
     if (fileName) {
         const path = join(webappPath, 'changes');
         if (existsSync(path)) {
