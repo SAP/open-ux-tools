@@ -10,15 +10,16 @@ The `@sap-ux/preview-middleware` is a [Custom UI5 Server Middleware](https://sap
 | `flp.apps`   | `[]`          | Allows defining additional apps that available in the local Fiori launchpage |
 | `debug`      | false         | Enables debug output |
 
-# Usage
-In order to use the middleware this is the minimal configuration that you need to provide in the `ui5.yaml` of your application.
+## Usage
+The middleware can be used without configuration. However, since the middleware intercepts a few requests that might otherwise be handled by a different middleware, it is strongly recommended to run other file serving middlewares after the `preview-middleware` e.g. `backend-proxy-middleware` and `ui5-proxy-middleware` (and the corresponding middlewares in the `@sap/ux-ui5-tooling`).
+Example: [./test/fixtures//simple-app/ui5.yaml](./test/fixtures//simple-app/ui5.yaml) 
 
 ### Minimal Configuration
 
 ```Yaml
 server:
   customMiddleware:
-  - name: ui5-proxy-middleware
+  - name: preview-middleware
     afterMiddleware: compression
 ```
 
@@ -27,7 +28,7 @@ server:
 ```Yaml
 server:
   customMiddleware:
-  - name: ui5-proxy-middleware
+  - name: preview-middleware
     afterMiddleware: compression
     configuration:
       flp: 
@@ -41,7 +42,7 @@ If you want to test cross application navigation, then you can add additional ap
 ```Yaml
 server:
   customMiddleware:
-  - name: ui5-proxy-middleware
+  - name: preview-middleware
     afterMiddleware: compression
     configuration:
       apps: 
