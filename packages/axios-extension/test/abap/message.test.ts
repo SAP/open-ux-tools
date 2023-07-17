@@ -48,28 +48,39 @@ describe('message helpers', () => {
                     def: '~message'
                 },
                 errordetails: [
-                    { code: '1', message: '~message', severity: 'error' },
+                    {
+                        code: '1',
+                        message: '~message',
+                        severity: 'error',
+                        longtext_url: '~longtext_url'
+                    },
                     { code: '2', message: '~message', severity: 'error' }
                 ]
             }
         };
         const errorMock = (log.error = jest.fn());
+        const infoMock = (log.info = jest.fn());
         prettyPrintError({ error, log, host });
         // log message, each resolution and each error detail
         expect(errorMock).toBeCalledTimes(
             1 + Object.keys(error.innererror.Error_Resolution).length + error.innererror.errordetails.length
         );
+        expect(infoMock).toBeCalledTimes(2);
 
         // Restrict to only errordetails, typical for deployment with test mode enabled
         errorMock.mockReset();
+        infoMock.mockReset();
         prettyPrintError({ error, log, host }, false);
         expect(errorMock).toBeCalledTimes(Object.keys(error.innererror.Error_Resolution).length);
+        expect(infoMock).toBeCalledTimes(2);
 
         delete error.message;
         delete error.innererror;
         errorMock.mockReset();
+        infoMock.mockReset();
         prettyPrintError({ error, log, host });
         expect(errorMock).toBeCalledTimes(1);
+        expect(infoMock).toBeCalledTimes(0);
     });
 
     test('prettyPrintTimeInMs', () => {
