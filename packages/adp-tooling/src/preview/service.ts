@@ -76,20 +76,20 @@ async function createAbapCloudServiceProvider(
 ): Promise<AbapServiceProvider> {
     const providerConfig: Partial<AbapCloudStandaloneOptions & ProviderConfiguration> = {
         ...options,
-        environment: AbapCloudEnvironment.Standalone,
-        service: target.serviceKey
+        environment: AbapCloudEnvironment.Standalone
     };
-    if (!target.serviceKey) {
-        const storedOpts = await getCredentials<ServiceAuth>(target);
-        if (logger && storedOpts) {
-            providerConfig.service = storedOpts.serviceKeys as ServiceInfo;
-            providerConfig.refreshToken = storedOpts.refreshToken;
-            logger.info(`Using system [${storedOpts.name}] from System store`);
-        }
-        if (!storedOpts) {
-            providerConfig.service = await promptServiceKeys();
-        }
+    // first try reading the keys from the store
+    const storedOpts = await getCredentials<ServiceAuth>(target);
+    if (logger && storedOpts) {
+        providerConfig.service = storedOpts.serviceKeys as ServiceInfo;
+        providerConfig.refreshToken = storedOpts.refreshToken;
+        logger.info(`Using system [${storedOpts.name}] from System store`);
     }
+    // next prompt the user for the keys
+    if (!storedOpts) {
+        providerConfig.service = await promptServiceKeys();
+    }
+    // if no keys are available throw and error
     if (providerConfig.service) {
         return createForAbapOnCloud(providerConfig as AbapCloudStandaloneOptions);
     } else {
@@ -143,11 +143,10 @@ export function isUrlTarget(target: AbapTarget): target is UrlAbapTarget {
  */
 export async function createProvider(config: AdpPreviewConfig, logger?: Logger): Promise<AbapServiceProvider> {
     let provider: AbapServiceProvider;
-    const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {};
-    if (config.strictSsl === false) {
-        options.ignoreCertErrors = true;
-    }
-    options.params = config.target.params || {};
+    const options: AxiosRequestConfig & Partial<ProviderConfiguration> = { 
+        params: {},
+        ignoreCertErrors: config.ignoreCertErrors
+    };
     // Destination only supported on Business Application studio
     if (isAppStudio() && config.target.destination) {
         // Need additional properties to determine the type of destination we are dealing with
@@ -158,7 +157,7 @@ export async function createProvider(config: AdpPreviewConfig, logger?: Logger):
         }
         provider = createForDestination(options, destination) as AbapServiceProvider;
     } else if (isUrlTarget(config.target)) {
-        if (config.target.cloud) {
+        if (config.target.scp) {
             provider = await createAbapCloudServiceProvider(options, config.target, logger);
         } else {
             provider = await createAbapServiceProvider(options, config.target);

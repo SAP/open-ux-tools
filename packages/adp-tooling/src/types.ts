@@ -13,9 +13,7 @@ export interface DescriptorVariant {
 export interface UrlAbapTarget {
     url: string;
     client?: string;
-    cloud?: boolean;
-    serviceKey?: ServiceInfo;
-    params?: AxiosRequestConfig['params'];
+    scp?: boolean;
 }
 
 export interface DestinationAbapTarget {
@@ -30,9 +28,9 @@ export interface AdpPreviewConfig {
     target: AbapTarget;
 
     /**
-     * If set to true only only servers with validated identities are accepted
+     * If set to true then certification validation errors are ignored.
      */
-    strictSsl?: boolean;
+    ignoreCertErrors?: boolean;
 }
 
 export interface AdpWriterConfig {
