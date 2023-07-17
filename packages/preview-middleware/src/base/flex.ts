@@ -52,3 +52,48 @@ export function writeChange(
         return { success: false };
     }
 }
+
+export function deleteChange(
+    data: object & { fileName?: string },
+    webappPath: string
+): { success: boolean; message?: string } {
+    const fileName = data.fileName;
+    if (fileName) {
+        const path = join(webappPath, 'changes');
+        if (existsSync(path)) {
+           // TODO
+
+        }
+        return { success: true };
+    } else {
+        return { success: false };
+    }
+}
+
+/**
+ try {
+        const path = join(APP_ROOT, 'changes');
+        const fileName = req.body.fileName.replace('sap.ui.fl.', '');
+
+        if (existsSync(path)) {
+            const files = await promises.readdir(path);
+            const file = files.find((element) => {
+                return element.indexOf(fileName) !== -1;
+            });
+
+            if (file) {
+                const filePath = join(path, file);
+                await promises.unlink(filePath);
+                res.sendStatus(200);
+            } else {
+                const message = 'INVALID_DATA';
+                res.status(400).send(message);
+            }
+        } else {
+            const message = 'INVALID_DATA';
+            res.status(400).send(message);
+        }
+    } catch (error) {
+        next(error);
+    }
+ */

@@ -104,10 +104,16 @@ export class FlpSandbox {
         });
 
         // add route for the sandbox.html
-        this.router.get(this.config.path, (_req: Request, res: Response) => {
+        this.router.get(this.config.path, (_req: Request, res: Response & { _livereload?: boolean}) => {
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-            res.status(200);
-            res.send(render(template, this.templateConfig));
+            const html = render(template, this.templateConfig);
+            // if livereload is enabled, don't send it but let other middleware modify the content
+            if (res._livereload) {
+                res.write(html);
+                res.end();
+            } else {
+                res.status(200).contentType('html').send(html);
+            }
         });
         this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
