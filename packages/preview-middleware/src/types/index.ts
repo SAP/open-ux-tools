@@ -1,4 +1,4 @@
-import type { UI5FlexLayer } from "@sap-ux/project-access";
+import type { UI5FlexLayer } from '@sap-ux/project-access';
 
 /**
  * Configuration for additional applications
