@@ -12,7 +12,7 @@ describe('ADP writer', () => {
 
     beforeAll(async () => {
         await rimraf(outputDir);
-    });
+    }, 10000);
 
     afterAll(() => {
         return new Promise((resolve) => {

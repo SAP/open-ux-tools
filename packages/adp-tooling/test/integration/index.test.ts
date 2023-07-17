@@ -4,6 +4,9 @@ import type { AdpWriterConfig } from '../../src/types';
 import { rimraf } from 'rimraf';
 import { config } from 'dotenv';
 import type { Editor } from 'mem-fs-editor';
+import { exec } from 'child_process';
+
+jest.setTimeout(999999)
 
 describe('ADP integration test', () => {
     const outputDir = join(__dirname, '../fixtures/test');
@@ -17,7 +20,8 @@ describe('ADP integration test', () => {
         const writerConfig = {
             app: {
                 id: process.env['ADP_APP_ID'],
-                reference: process.env['ADP_APP_REFERENCE']
+                reference: process.env['ADP_APP_REFERENCE'],
+                layer: process.env['ADP_APP_LAYER']
             },
             target: {
                 url: process.env['ADP_TARGET_URL']
@@ -25,10 +29,20 @@ describe('ADP integration test', () => {
         } as AdpWriterConfig;
 
         test('minimal config', async () => {
+            // create the project
             const projectDir = join(outputDir, 'from-env');
             const fs = await generate(projectDir, writerConfig);
             amendProjectToUseUnreleasedVersion(projectDir, fs);
             await new Promise((resolve) => fs.commit(resolve));
+            // run npm install
+            await new Promise<void>((resolve) => {
+                exec('npm i', { cwd: projectDir}, function callback(error, stdout, stderr) {
+                    console.log(stdout);
+                    resolve();
+                  });
+            });
+            // run npm start
+            exec('npm start', { cwd: projectDir});
         });
     });
 });
@@ -50,6 +64,8 @@ middleware:
     path: ../../../../../preview-middleware/dist/ui5/middleware.js`;
     fs.write(
         join(projectDir, 'ui5.yaml'),
-        ui5.replace('ignoreCertErrors: false', 'ignoreCertErrors: true') + ui5Extension
+        ui5
+            .replace('secure: true', 'secure: false')
+            .replace('ignoreCertErrors: false', 'ignoreCertErrors: true') + ui5Extension
     );
 }

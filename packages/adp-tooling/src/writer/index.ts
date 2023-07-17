@@ -21,7 +21,7 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
     configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
 
     configWithDefaults.package ??= config.package ? { ...config.package } : {};
-    configWithDefaults.package.name ??= config.app.id.toLowerCase().replace(/./g, '-');
+    configWithDefaults.package.name ??= config.app.id.toLowerCase().replace(/\./g, '-');
     configWithDefaults.package.description ??= configWithDefaults.app.title;
 
     return configWithDefaults;
@@ -78,6 +78,9 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
                 backend: {
                     ...fullConfig.target,
                     path: '/sap'
+                },
+                options: {
+                    secure: true
                 }
             }
         }
