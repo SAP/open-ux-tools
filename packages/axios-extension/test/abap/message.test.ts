@@ -73,6 +73,7 @@ describe('message helpers', () => {
         prettyPrintError({ error, log, host }, false);
         expect(errorMock).toBeCalledTimes(Object.keys(error.innererror.Error_Resolution).length);
         expect(infoMock).toBeCalledTimes(2);
+        expect(infoMock).toHaveBeenLastCalledWith(expect.stringMatching('http://host.example/~longtext_url'));
 
         delete error.message;
         delete error.innererror;
