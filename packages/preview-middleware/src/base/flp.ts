@@ -4,12 +4,12 @@ import type { Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { App, FlpConfig } from '../types';
-import { Router as createRouter, static as serveStatic } from 'express';
+import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
-import { json } from 'express';
+
 /**
  * Default theme
  */
@@ -214,7 +214,7 @@ export class FlpSandbox {
      * @param app configuration for the preview
      */
     addApp(manifest: Manifest, app: App) {
-        const id = manifest['sap.app'].id as string;
+        const id = manifest['sap.app'].id;
         app.intent ??= {
             object: id.replace(/\./g, ''),
             action: 'preview'
