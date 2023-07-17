@@ -181,7 +181,7 @@ exports[`FlpSandbox router WorkspaceConnector.js 1`] = `
 );"
 `;
 
-exports[`FlpSandbox router preview.html 1`] = `
+exports[`FlpSandbox router test/flp.html 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->

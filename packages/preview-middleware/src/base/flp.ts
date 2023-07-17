@@ -17,6 +17,11 @@ import { json } from 'express';
 const DEFAULT_THEME = 'sap_horizon';
 
 /**
+ * Default path for mounting the local FLP.
+ */
+const DEFAULT_PATH = '/test/flp.html'
+
+/**
  * Internal structure used to fill the sandbox.html template
  */
 export interface TemplateConfig {
@@ -65,7 +70,7 @@ export class FlpSandbox {
         private readonly logger: Logger
     ) {
         this.config = {
-            path: config.path ?? '/test/flpSandbox.html',
+            path: config.path ?? DEFAULT_PATH,
             apps: config.apps ?? []
         };
         logger.debug(`Config: ${JSON.stringify(this.config)}`);

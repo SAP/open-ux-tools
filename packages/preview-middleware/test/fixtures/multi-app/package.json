@@ -10,12 +10,6 @@
     "scripts": {
         "build": "ui5 build",
         "prestart": "cd ../../.. && pnpm build",
-        "start": "ui5 serve --open /preview.html"
-    },
-    "ui5": {
-        "dependencies": [
-            "@sap-ux/ui5-proxy-middleware",
-            "@sap-ux/ui5-middleware-fe-mockserver"
-        ]
+        "start": "ui5 serve --open /test/flp.html"
     }
 }

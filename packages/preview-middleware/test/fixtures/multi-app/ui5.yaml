@@ -1,6 +1,6 @@
 specVersion: '1.0'
 metadata:
-    name: test-project
+    name: test-multi-app
 type: application
 server:
     customMiddleware:
@@ -16,7 +16,6 @@ server:
           afterMiddleware: compression
           configuration:
               flp:
-                  path: /preview.html
                   apps:
                       - local: ../simple-app
                         target: /apps/other-simple-app
