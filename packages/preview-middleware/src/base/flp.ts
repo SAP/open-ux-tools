@@ -19,7 +19,7 @@ const DEFAULT_THEME = 'sap_horizon';
 /**
  * Default path for mounting the local FLP.
  */
-const DEFAULT_PATH = '/test/flp.html'
+const DEFAULT_PATH = '/test/flp.html';
 
 /**
  * Internal structure used to fill the sandbox.html template
