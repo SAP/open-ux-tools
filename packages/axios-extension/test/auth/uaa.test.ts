@@ -93,4 +93,29 @@ describe('UAA', () => {
             await expect(uaaInstance().getAccessToken()).resolves.toEqual(accessToken);
         });
     });
+
+    describe('getAccessTokenWithClientCredentials', () => {
+        const accessToken = 'accessToken';
+        const refreshToken = 'refreshToken';
+        const mockedResponse = {
+            data: {
+                'access_token': accessToken,
+                'refresh_token': refreshToken
+            }
+        };
+
+        it('returns an access token using client credentials', async () => {
+            const axiosRequestSpy = jest.spyOn(axios, 'request').mockResolvedValueOnce(mockedResponse);
+            const uaaUrlSlash = 'https://some.url.with.slash/';
+            await expect(uaaInstance({ url: uaaUrlSlash }).getAccessTokenWithClientCredentials()).resolves.toEqual(
+                accessToken
+            );
+            expect(axiosRequestSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'POST',
+                    'url': 'https://some.url.with.slash/oauth/token'
+                })
+            );
+        });
+    });
 });
