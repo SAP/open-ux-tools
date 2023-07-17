@@ -12,10 +12,10 @@ The `@sap-ux/preview-middleware` is a [Custom UI5 Server Middleware](https://sap
 
 ## Usage
 The middleware can be used without configuration. However, since the middleware intercepts a few requests that might otherwise be handled by a different middleware, it is strongly recommended to run other file serving middlewares after the `preview-middleware` e.g. `backend-proxy-middleware` and `ui5-proxy-middleware` (and the corresponding middlewares in the `@sap/ux-ui5-tooling`).
-Example: [./test/fixtures//simple-app/ui5.yaml](./test/fixtures//simple-app/ui5.yaml) 
+Example: [./test/fixtures/simple-app/ui5.yaml](./test/fixtures/simple-app/ui5.yaml) 
 
 ### Minimal Configuration
-
+With no configuration provided, the app will be local FLP will be available at `/test/flp.html` and the log level is `info`.
 ```Yaml
 server:
   customMiddleware:
@@ -24,7 +24,7 @@ server:
 ```
 
 ### Different Path and Debugging enabled
-
+With this configuration, the app will be local FLP will be available at `/preview.html` and the log level is `debug`.
 ```Yaml
 server:
   customMiddleware:
@@ -38,15 +38,14 @@ server:
 
 ### Additional Applications
 If you want to test cross application navigation, then you can add additional applications into the local FLP.
-
+With this configuration, an application that is locally available in `../local-folder` will be available at `/apps/other-app` and will also be added as tile to the local FLP.
 ```Yaml
 server:
   customMiddleware:
   - name: preview-middleware
     afterMiddleware: compression
     configuration:
-      apps: 
-        # adds an application that is locally available in ../local-folder at /apps/other-app
+      apps:
         - local: ../local-folder
           target: /apps/other-app
 ```
