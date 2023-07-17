@@ -144,4 +144,24 @@ describe('LayeredRepositoryService', () => {
             }
         });
     });
+
+    describe('mergeAppDescriptorVariant', () => {
+        const mockResult = { hello: 'world' };
+        test('merge valid app variant', async () => {
+            nock(server).put(`${LayeredRepositoryService.PATH}/appdescr_variant_preview/`).reply(200, mockResult);
+
+            const mergedDescriptor = await service.mergeAppDescriptorVariant(Buffer.from('~test'));
+            expect(mergedDescriptor).toEqual(mockResult);
+        });
+
+        test('error is thrown', async () => {
+            nock(server).put(`${LayeredRepositoryService.PATH}/appdescr_variant_preview/`).reply(500);
+            try {
+                await service.mergeAppDescriptorVariant(Buffer.from('~test'));
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
+        });
+    });
 });

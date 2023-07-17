@@ -50,7 +50,7 @@ export interface AdaptationConfig {
     /**
      * Optional layer (default: CUSTOMER_BASE)
      */
-    layer?: Layer
+    layer?: Layer;
 }
 
 /**
@@ -111,11 +111,10 @@ export class LayeredRepositoryService extends Axios implements Service {
 
     public log: Logger;
 
-
     /**
      * Merge a given app descriptor variant with the stord app descriptor.
      *
-     * @param appDescriptorVariant
+     * @param appDescriptorVariant zip file containing an app descriptor variant
      * @returns a promise with an object containing merged app descriptors with their id as keys.
      */
     public async mergeAppDescriptorVariant(
@@ -140,7 +139,7 @@ export class LayeredRepositoryService extends Axios implements Service {
      * Check whether a variant with the given namespace already exists.
      *
      * @param namespace either as string or as object
-     * @param [layer='CUSTOMER_BASE'] optional layer
+     * @param [layer] optional layer
      * @returns the Axios response object for further processing
      */
     public async isExistingVariant(namespace: Namespace, layer: Layer = 'CUSTOMER_BASE'): Promise<AxiosResponse> {
