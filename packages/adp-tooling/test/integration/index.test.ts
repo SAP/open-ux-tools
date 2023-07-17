@@ -3,7 +3,7 @@ import { generate } from '../../src';
 import type { AdpWriterConfig } from '../../src/types';
 import { rimraf } from 'rimraf';
 import { config } from 'dotenv';
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 
 describe('ADP integration test', () => {
     const outputDir = join(__dirname, '../fixtures/test');
@@ -35,7 +35,7 @@ describe('ADP integration test', () => {
 
 function amendProjectToUseUnreleasedVersion(projectDir: string, fs: Editor) {
     // remove preview dependency from package.json
-    const pckg = fs.readJSON(join(projectDir, 'package.json')) as { devDependencies: {[key: string]: string}};
+    const pckg = fs.readJSON(join(projectDir, 'package.json')) as { devDependencies: { [key: string]: string } };
     delete pckg.devDependencies['@sap-ux/preview-middleware'];
     fs.writeJSON(join(projectDir, 'package.json'), pckg);
     // ui5 module dependency pointing to the version in this repo
@@ -48,5 +48,8 @@ kind: extension
 type: server-middleware
 middleware:
     path: ../../../../../preview-middleware/dist/ui5/middleware.js`;
-    fs.write(join(projectDir, 'ui5.yaml'), ui5.replace('ignoreCertErrors: false', 'ignoreCertErrors: true') + ui5Extension);
+    fs.write(
+        join(projectDir, 'ui5.yaml'),
+        ui5.replace('ignoreCertErrors: false', 'ignoreCertErrors: true') + ui5Extension
+    );
 }

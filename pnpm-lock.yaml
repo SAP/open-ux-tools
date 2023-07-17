@@ -190,6 +190,9 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
+      '@types/prompts':
+        specifier: 2.0.14
+        version: 2.0.14
       '@types/yazl':
         specifier: 2.4.2
         version: 2.4.2
@@ -5849,7 +5852,7 @@ packages:
   /@types/prompts@2.0.14:
     resolution: {integrity: sha512-HZBd99fKxRWpYCErtm2/yxUZv6/PBI9J7N4TNFffl5JbrYMHBwF25DjQGTW3b3jmXq+9P6/8fCIb2ee57BFfYA==}
     dependencies:
-      '@types/node': 17.0.9
+      '@types/node': 12.12.6
     dev: true
 
   /@types/prop-types@15.7.5:
