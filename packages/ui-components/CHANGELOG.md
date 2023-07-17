@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.8.4
+
+### Patch Changes
+
+-   deb06c73: `terminal` icon added
+
 ## 1.8.3
 
 ### Patch Changes
