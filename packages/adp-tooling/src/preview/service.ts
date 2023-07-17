@@ -143,7 +143,7 @@ export function isUrlTarget(target: AbapTarget): target is UrlAbapTarget {
  */
 export async function createProvider(config: AdpPreviewConfig, logger?: Logger): Promise<AbapServiceProvider> {
     let provider: AbapServiceProvider;
-    const options: AxiosRequestConfig & Partial<ProviderConfiguration> = { 
+    const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {
         params: {},
         ignoreCertErrors: config.ignoreCertErrors
     };

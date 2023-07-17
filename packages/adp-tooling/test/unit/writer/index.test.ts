@@ -3,7 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { generate } from '../../../src';
 import type { AdpWriterConfig } from '../../../src/types';
-import { rimraf } from 'rimraf'
+import { rimraf } from 'rimraf';
 
 describe('ADP writer', () => {
     const fs = create(createStorage());
@@ -37,7 +37,7 @@ describe('ADP writer', () => {
 
     describe('generate', () => {
         test('minimal config', async () => {
-            let projectDir = join(outputDir, 'minimal');
+            const projectDir = join(outputDir, 'minimal');
             await generate(projectDir, config, fs);
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });

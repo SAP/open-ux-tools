@@ -57,7 +57,7 @@ export interface TemplateConfig {
  */
 export class FlpSandbox {
     protected templateConfig: TemplateConfig;
-    protected readonly config: FlpConfig;
+    public readonly config: FlpConfig;
     public readonly router: any;
 
     /**

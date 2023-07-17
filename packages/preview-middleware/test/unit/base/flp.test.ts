@@ -19,13 +19,19 @@ class FlpSandbox extends FlpSandboxUnderTest {
 
 describe('FlpSandbox', () => {
     const mockProject = {
-        byGlob: jest.fn().mockImplementation((glob) => Promise.resolve(glob.includes('changes') ? [
-            {
-                getPath: () => 'test/changes/myid.change',
-                getName: () => 'myid.change',
-                getString: () => Promise.resolve(JSON.stringify({ id: 'myId' }))
-            }
-        ] : []))
+        byGlob: jest.fn().mockImplementation((glob) =>
+            Promise.resolve(
+                glob.includes('changes')
+                    ? [
+                          {
+                              getPath: () => 'test/changes/myid.change',
+                              getName: () => 'myid.change',
+                              getString: () => Promise.resolve(JSON.stringify({ id: 'myId' }))
+                          }
+                      ]
+                    : []
+            )
+        )
     } as unknown as ReaderCollection;
     const mockUtils = {
         getProject() {

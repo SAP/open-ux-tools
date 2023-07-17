@@ -1,6 +1,4 @@
 import type { UI5FlexLayer } from '@sap-ux/project-access';
-import type { AxiosRequestConfig } from '@sap-ux/axios-extension';
-import type { ServiceInfo } from '@sap-ux/btp-utils';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;

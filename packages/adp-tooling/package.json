@@ -39,6 +39,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/store": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.7",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",

@@ -6,6 +6,7 @@ import type { NextFunction, Request, Response } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 import type { DescriptorVariant } from '../types';
 import type { Resource } from '@ui5/fs';
+import type { UI5FlexLayer } from '@sap-ux/project-access';
 
 /**
  * Instance of an adaptation project handling requests and data transformation.
@@ -60,8 +61,9 @@ export class AdpPreview {
      *
      * @param descriptorVariant descriptor variant from the project
      * @param files all relevant project files (e.g. webapp content)
+     * @returns the UI5 flex layer for which editing is enabled
      */
-    async init(descriptorVariant: DescriptorVariant, files: Resource[]) {
+    async init(descriptorVariant: DescriptorVariant, files: Resource[]): Promise<UI5FlexLayer> {
         const provider = await createProvider(this.config, this.logger);
         const lrep = provider.getLayeredRepository();
 
@@ -74,6 +76,8 @@ export class AdpPreview {
         // validate namespace & layer combination and fetch csrf token
         await lrep.isExistingVariant(descriptorVariant.namespace, descriptorVariant.layer);
         this.mergedDescriptor = (await lrep.mergeAppDescriptorVariant(buffer))[descriptorVariant.id];
+
+        return descriptorVariant.layer;
     }
 
     /**
