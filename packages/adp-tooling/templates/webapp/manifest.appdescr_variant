@@ -1,6 +1,6 @@
 {
   "fileName": "manifest",
-  "layer": "VENDOR",
+  "layer": "<%- app.layer %>",
   "fileType": "appdescr_variant",
   "reference": "<%- app.reference %>",
   "id": "<%- app.id %>",

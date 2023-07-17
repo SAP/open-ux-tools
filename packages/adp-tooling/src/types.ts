@@ -35,6 +35,7 @@ export interface AdpWriterConfig {
     app: {
         id: string;
         reference: string;
+        layer?: UI5FlexLayer;
         title?: string;
     };
     target: AbapTarget;

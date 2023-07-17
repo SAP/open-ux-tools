@@ -18,6 +18,7 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         ui5: { ...config.ui5 }
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
+    configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
 
     configWithDefaults.package ??= config.package ? { ...config.package } : {};
     configWithDefaults.package.name ??= config.app.id.toLowerCase().replace(/./g, '-');
@@ -51,15 +52,12 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
     ui5Config.addCustomMiddleware([
         {
-            name: 'fiori-tools-appreload',
-            configuration: {}
-        },
-        {
             name: 'preview-middleware',
+            afterMiddleware: 'compression',
             configuration: {
                 adp: {
                     target: fullConfig.target,
-                    strictSsl: false
+                    ignoreCertErrors: false
                 } as AdpPreviewConfig
             }
         },
