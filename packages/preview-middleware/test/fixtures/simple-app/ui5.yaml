@@ -7,15 +7,8 @@ server:
         - name: preview-middleware
           afterMiddleware: compression
           configuration:
-              debug: true
-        - name: preview-middleware
-          afterMiddleware: compression
-          configuration:
               flp:
-                  path: /rta.html
-                  rta:
-                    layer: CUSTOMER_BASE
-                    mode: variant
+                path: /my/custom/path/preview.html
               debug: true
         - name: ui5-proxy-middleware
           afterMiddleware: preview-middleware

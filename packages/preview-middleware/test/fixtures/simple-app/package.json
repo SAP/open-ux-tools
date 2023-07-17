@@ -10,7 +10,7 @@
     "scripts": {
         "build": "ui5 build",
         "prestart": "cd ../../.. && pnpm build",
-        "start": "ui5 serve --open /test/flp.html#app-preview",
-        "rta": "ui5 serve --open /rta.html#app-preview"
+        "start": "pnpm prestart && ui5 serve --open /my/custom/path/preview.html#app-preview",
+        "rta": "pnpm prestart && ui5 serve --open /my/custom/path/preview.html?fiori-tools-rta-mode=true#app-preview"
     }
 }

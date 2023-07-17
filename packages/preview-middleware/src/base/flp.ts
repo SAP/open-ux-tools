@@ -98,12 +98,6 @@ export class FlpSandbox {
                 resources: {}
             }
         };
-        if (this.config.rta) {
-            this.templateConfig.flex = {
-                layer: this.config.rta.layer ?? 'CUSTOMER_BASE',
-                developerMode: false
-            }
-        }
         this.addApp(manifest, {
             target: '/',
             local: '.',
@@ -114,9 +108,16 @@ export class FlpSandbox {
         });
 
         // add route for the sandbox.html
-        this.router.get(this.config.path, (_req: Request, res: Response & { _livereload?: boolean }) => {
+        this.router.get(this.config.path, (req: Request, res: Response & { _livereload?: boolean }) => {
+            const config = { ...this.templateConfig };
+            if (req.query['fiori-tools-rta-mode']) {
+                config.flex = {
+                    layer: this.config.rta?.layer ?? 'CUSTOMER_BASE',
+                    developerMode: false
+                }
+            }
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-            const html = render(template, this.templateConfig);
+            const html = render(template, config);
             // if livereload is enabled, don't send it but let other middleware modify the content
             if (res._livereload) {
                 res.write(html);
