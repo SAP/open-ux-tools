@@ -5,6 +5,7 @@ import type { Config } from '../../../src/types';
 import type { Resource } from '@ui5/fs';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import nock from 'nock';
 
 // middleware function wrapper for testing to simplify tests
 async function getTestServer(fixture?: string, configuration: Partial<Config> = {}): Promise<any> {
@@ -14,12 +15,17 @@ async function getTestServer(fixture?: string, configuration: Partial<Config> = 
             rootProject: {
                 byGlob: (glob: string) => {
                     const files: Partial<Resource>[] = [];
-                    if (glob.includes('manifest.json') && fixture) {
+                    if (glob.includes(fixture === 'adp' ? 'manifest.appdescr_variant' : 'manifest.json') && fixture) {
                         files.push({
                             getString: () =>
                                 Promise.resolve(
                                     readFileSync(
-                                        join(__dirname, `../../fixtures/${fixture}/webapp/manifest.json`),
+                                        join(
+                                            __dirname,
+                                            `../../fixtures/${fixture}/webapp/manifest.${
+                                                fixture === 'adp' ? 'appdescr_variant' : 'json'
+                                            }`
+                                        ),
                                         'utf-8'
                                     )
                                 )
@@ -37,6 +43,28 @@ async function getTestServer(fixture?: string, configuration: Partial<Config> = 
 }
 
 describe('ui5/middleware', () => {
+    const url = 'http://sap.example';
+    beforeAll(() => {
+        nock(url)
+            .get(() => true)
+            .reply(200)
+            .persist();
+        nock(url)
+            .put(() => true)
+            .reply(200, {
+                'my.f1873': {
+                    name: 'cus.sd.salesorders.manage',
+                    manifest: {
+                        'sap.app': {
+                            id: 'my.f1873'
+                        }
+                    },
+                    asyncHints: { libs: [] },
+                    url: '/my/f1873'
+                }
+            })
+            .persist();
+    });
     test('no config', async () => {
         const server = await getTestServer('simple-app');
         await server.get('/test/flp.html').expect(200);
@@ -47,6 +75,21 @@ describe('ui5/middleware', () => {
         const server = await getTestServer('simple-app', { flp: { path } });
         await server.get(path).expect(200);
         await server.get('/test/flp.html').expect(404);
+    });
+
+    test('adp config', async () => {
+        const server = await getTestServer('adp', { adp: { target: { url } } });
+        await server.get('/test/flp.html').expect(200);
+    });
+
+    test('invalid adp config', async () => {
+        const url = 'http://sap.example';
+        try {
+            await getTestServer('simple-app', { adp: { target: { url } } });
+            fail('Should have thrown an error.');
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
     });
 
     test('exception thrown on error', async () => {
