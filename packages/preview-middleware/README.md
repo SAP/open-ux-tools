@@ -20,14 +20,6 @@ Array of additional application configurations:
 | `intent.object` | `string` | `(calculated)`| Optional intent object, if it is not provided then it will be calculated based on the application id |
 | `intent.action` | `string` | `preview` | Optional intent action |
 
-    target: string;
-    local: string;
-    intent?: {
-        object: string;
-        action: string;
-    };
-
-
 ## Usage
 The middleware can be used without configuration. However, since the middleware intercepts a few requests that might otherwise be handled by a different middleware, it is strongly recommended to run other file serving middlewares after the `preview-middleware` e.g. `backend-proxy-middleware` and `ui5-proxy-middleware` (and the corresponding middlewares in the `@sap/ux-ui5-tooling`).
 Example: [./test/fixtures/simple-app/ui5.yaml](./test/fixtures/simple-app/ui5.yaml) 
