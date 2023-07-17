@@ -30,7 +30,8 @@ dist/
     },
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --clean-dest\\",
-        \\"start\\": \\"ui5 serve --open /test/flpSandbox.html#app-preview\\"
+        \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
+        \\"editor\\": \\"ui5 serve --open /test/flp.html?fiori-tools-rta-mode=true#app-preview\\"
     }
 }
 ",
@@ -45,14 +46,13 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
-      configuration: {}
     - name: preview-middleware
+      afterMiddleware: compression
       configuration:
         adp:
           target:
             url: http://sap.example
-          strictSsl: false
+          ignoreCertErrors: false
     - name: ui5-proxy-middleware
       afterMiddleware: preview-middleware
       configuration:
@@ -82,7 +82,7 @@ my.test.app_sap.app.title==Adaptation of the.original.app",
   "webapp/manifest.appdescr_variant": Object {
     "contents": "{
   \\"fileName\\": \\"manifest\\",
-  \\"layer\\": \\"VENDOR\\",
+  \\"layer\\": \\"CUSTOMER_BASE\\",
   \\"fileType\\": \\"appdescr_variant\\",
   \\"reference\\": \\"the.original.app\\",
   \\"id\\": \\"my.test.app\\",

@@ -41,7 +41,6 @@ export interface TemplateConfig {
             applyConnector: string;
             writeConnector: string;
             custom: boolean;
-            layers: UI5FlexLayer[];
         }[];
         resources: Record<string, string>;
     };
@@ -222,8 +221,7 @@ export class FlpSandbox {
             {
                 applyConnector: workspaceConnectorPath,
                 writeConnector: workspaceConnectorPath,
-                custom: true,
-                layers: ['CUSTOMER_BASE', 'VENDOR']
+                custom: true
             }
         ];
     }
