@@ -104,7 +104,7 @@ export class FlpSandbox {
         });
 
         // add route for the sandbox.html
-        this.router.get(this.config.path, (_req: Request, res: Response & { _livereload?: boolean}) => {
+        this.router.get(this.config.path, (_req: Request, res: Response & { _livereload?: boolean }) => {
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             const html = render(template, this.templateConfig);
             // if livereload is enabled, don't send it but let other middleware modify the content
@@ -151,6 +151,18 @@ export class FlpSandbox {
             try {
                 const data = JSON.parse(req.body);
                 const { success, message } = writeChange(data, this.utils.getProject().getSourcePath());
+                if (success) {
+                    res.status(200).send(message);
+                } else {
+                    res.send(400).send('INVALID_DATA');
+                }
+            } catch (error) {
+                res.status(500).send(error.message);
+            }
+        });
+        this.router.delete(api, json(), async (req: Request, res: Response) => {
+            try {
+                const { success, message } = writeChange(JSON.parse(req.body), this.utils.getProject().getSourcePath());
                 if (success) {
                     res.status(200).send(message);
                 } else {

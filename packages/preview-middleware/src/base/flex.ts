@@ -1,6 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'fs';
 import { join, parse } from 'path';
 
 /**
@@ -53,6 +53,14 @@ export function writeChange(
     }
 }
 
+/**
+ * Deletes an existing flex change from the file system if it exists.
+ *
+ * @param data JS object of the change to be deleted
+ * @param data.fileName file name that is required for a valid change
+ * @param webappPath path to the webapp folder
+ * @returns object with success flag and optional message
+ */
 export function deleteChange(
     data: object & { fileName?: string },
     webappPath: string
@@ -61,39 +69,15 @@ export function deleteChange(
     if (fileName) {
         const path = join(webappPath, 'changes');
         if (existsSync(path)) {
-           // TODO
-
-        }
-        return { success: true };
-    } else {
-        return { success: false };
-    }
-}
-
-/**
- try {
-        const path = join(APP_ROOT, 'changes');
-        const fileName = req.body.fileName.replace('sap.ui.fl.', '');
-
-        if (existsSync(path)) {
-            const files = await promises.readdir(path);
-            const file = files.find((element) => {
-                return element.indexOf(fileName) !== -1;
-            });
+            const files = readdirSync(path);
+            const file = files.find((element) => element.includes(fileName));
 
             if (file) {
                 const filePath = join(path, file);
-                await promises.unlink(filePath);
-                res.sendStatus(200);
-            } else {
-                const message = 'INVALID_DATA';
-                res.status(400).send(message);
+                unlinkSync(filePath);
+                return { success: true, message: `FILE_DELETED ${file}` };
             }
-        } else {
-            const message = 'INVALID_DATA';
-            res.status(400).send(message);
         }
-    } catch (error) {
-        next(error);
     }
- */
+    return { success: false };
+}
