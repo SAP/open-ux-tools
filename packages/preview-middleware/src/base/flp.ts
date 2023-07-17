@@ -6,11 +6,10 @@ import { join } from 'path';
 import type { App, FlpConfig } from '../types';
 import { Router as createRouter, static as serveStatic } from 'express';
 import type { Logger } from '@sap-ux/logger';
-import { readChanges, writeChange } from './flex';
+import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
-import type { Manifest } from '@sap-ux/project-access';
+import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { json } from 'express';
-
 /**
  * Default theme
  */
@@ -45,6 +44,10 @@ export interface TemplateConfig {
         }[];
         resources: Record<string, string>;
     };
+    flex?: {
+        layer: UI5FlexLayer;
+        developerMode: boolean;
+    }
 }
 
 /**
@@ -71,7 +74,8 @@ export class FlpSandbox {
     ) {
         this.config = {
             path: config.path ?? DEFAULT_PATH,
-            apps: config.apps ?? []
+            apps: config.apps ?? [],
+            rta: config.rta
         };
         logger.debug(`Config: ${JSON.stringify(this.config)}`);
         this.router = createRouter();
@@ -94,6 +98,12 @@ export class FlpSandbox {
                 resources: {}
             }
         };
+        if (this.config.rta) {
+            this.templateConfig.flex = {
+                layer: this.config.rta.layer ?? 'CUSTOMER_BASE',
+                developerMode: false
+            }
+        }
         this.addApp(manifest, {
             target: '/',
             local: '.',
@@ -144,29 +154,29 @@ export class FlpSandbox {
                 .send(readFileSync(join(__dirname, '../../templates/flp/workspaceConnector.js'), 'utf-8'));
         });
         const api = '/preview/api/changes';
+        this.router.use(api, json());
         this.router.get(api, async (_req: Request, res: Response) => {
-            res.status(200).send(await readChanges(this.project, this.logger));
+            res.status(200).contentType('application/json').send(await readChanges(this.project, this.logger));
         });
-        this.router.post(api, json(), async (req: Request, res: Response) => {
+        this.router.post(api, async (req: Request, res: Response) => {
             try {
-                const data = JSON.parse(req.body);
-                const { success, message } = writeChange(data, this.utils.getProject().getSourcePath(), this.logger);
+                const { success, message } = writeChange(req.body, this.utils.getProject().getSourcePath(), this.logger);
                 if (success) {
                     res.status(200).send(message);
                 } else {
-                    res.send(400).send('INVALID_DATA');
+                    res.status(400).send('INVALID_DATA');
                 }
             } catch (error) {
                 res.status(500).send(error.message);
             }
         });
-        this.router.delete(api, json(), async (req: Request, res: Response) => {
+        this.router.delete(api, async (req: Request, res: Response) => {
             try {
-                const { success, message } = writeChange(JSON.parse(req.body), this.utils.getProject().getSourcePath(), this.logger);
+                const { success, message } = deleteChange(req.body, this.utils.getProject().getSourcePath(), this.logger);
                 if (success) {
                     res.status(200).send(message);
                 } else {
-                    res.send(400).send('INVALID_DATA');
+                    res.status(400).send('INVALID_DATA');
                 }
             } catch (error) {
                 res.status(500).send(error.message);
