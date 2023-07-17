@@ -9,6 +9,8 @@ server:
           configuration:
               flp:
                 path: /my/custom/path/preview.html
+                rta:
+                  layer: CUSTOMER_BASE
               debug: true
         - name: ui5-proxy-middleware
           afterMiddleware: preview-middleware

@@ -111,10 +111,14 @@ export class FlpSandbox {
         this.router.get(this.config.path, (req: Request, res: Response & { _livereload?: boolean }) => {
             const config = { ...this.templateConfig };
             if (req.query['fiori-tools-rta-mode']) {
-                config.flex = {
-                    layer: this.config.rta?.layer ?? 'CUSTOMER_BASE',
-                    developerMode: false
-                };
+                if (this.config.rta?.layer) {
+                    config.flex = {
+                        layer: this.config.rta?.layer,
+                        developerMode: false
+                    };
+                } else {
+                    this.logger.error('Fiori tools RTA mode could not be started because the RTA layer is missing.');
+                }
             }
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             const html = render(template, config);
