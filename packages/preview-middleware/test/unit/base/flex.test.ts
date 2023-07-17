@@ -12,7 +12,7 @@ describe('flex', () => {
     beforeAll(() => {
         mkdirSync(path);
         mkdirSync(join(path, 'changes'));
-    })
+    });
 
     describe('readChanges', () => {
         const byGlobMock = jest.fn();
