@@ -1,29 +1,36 @@
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { existsSync, readFileSync } from 'fs';
 import prompts from 'prompts';
-import { AdpWriterConfig } from '../types';
+import type { AdpWriterConfig } from '../types';
 
 /**
  * Prompt the user for the required properties for an adaptation project.
  *
  * @param defaults optional default values for the prompts
- * @returns a configuration for the adp writer 
+ * @param defaults.id
+ * @param defaults.reference
+ * @param defaults.url
+ * @returns a configuration for the adp writer
  */
-export async function promptGeneratorInput({ id, reference, url }: { id?: string, reference?: string, url?: string} = {}): Promise<AdpWriterConfig> {
+export async function promptGeneratorInput({
+    id,
+    reference,
+    url
+}: { id?: string; reference?: string; url?: string } = {}): Promise<AdpWriterConfig> {
     const app = await prompts([
         {
             type: 'text',
             name: 'id',
             message: 'New adaptation id:',
             initial: id,
-            validate: (input) => input?.length > 0 
+            validate: (input) => input?.length > 0
         },
         {
             type: 'text',
             name: 'reference',
             message: 'Original application id:',
             initial: reference,
-            validate: (input) => input?.length > 0 
+            validate: (input) => input?.length > 0
         },
         {
             type: 'select',
@@ -44,10 +51,10 @@ export async function promptGeneratorInput({ id, reference, url }: { id?: string
             name: 'url',
             message: 'Target system url:',
             initial: url,
-            validate: (input) => input?.length > 0 
+            validate: (input) => input?.length > 0
         }
     ]);
-    return { app, target};
+    return { app, target };
 }
 
 /**
