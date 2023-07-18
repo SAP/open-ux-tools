@@ -50,7 +50,7 @@ export class TransportChecksService extends AdtService {
                         <PGMID/>
                         <OBJECT/>
                         <OBJECTNAME/>
-                        <DEVCLASS>${packageName}</DEVCLASS>
+                        <DEVCLASS>${encodeURIComponent(packageName)}</DEVCLASS>
                         <SUPER_PACKAGE/>
                         <OPERATION>I</OPERATION>
                         <URI>/sap/bc/adt/filestore/ui5-bsp/objects/${encodeURIComponent(appName)}/$create</URI>
