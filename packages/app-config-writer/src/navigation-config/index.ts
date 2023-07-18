@@ -50,8 +50,8 @@ export async function generateInboundNavigationConfig(
         [inboundKey]: {
             semanticObject,
             action,
-            title: title || '',
-            subTitle: subTitle || '',
+            title: title ?? '',
+            subTitle: subTitle ?? '',
             signature: {
                 parameters: {},
                 additionalParameters: 'allowed'
@@ -59,7 +59,7 @@ export async function generateInboundNavigationConfig(
         }
     };
     const crossNavigation: Manifest['sap.app']['crossNavigation'] = Object.assign(
-        manifest['sap.app'].crossNavigation || {},
+        manifest['sap.app'].crossNavigation ?? {},
         {
             inbounds: mergeObjects(manifest['sap.app'].crossNavigation?.inbounds, inbound)
         }

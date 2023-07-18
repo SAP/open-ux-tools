@@ -30,7 +30,7 @@ export async function promptInboundNavigationConfig(
     }
 
     const inbounds = manifest?.['sap.app']?.crossNavigation?.inbounds;
-    let config = await prompt(getPrompts(Object.keys(inbounds || {})));
+    let config = await prompt(getPrompts(Object.keys(inbounds ?? {})));
     // Exit if overwrite is false
     if (config?.overwrite === false) {
         config = undefined;
