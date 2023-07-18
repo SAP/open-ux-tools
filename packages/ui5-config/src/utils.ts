@@ -8,7 +8,7 @@ import { UI5_DEFAULT } from './defaults';
  *
  * @param base - any object definition
  * @param extension - another object definition
- * @returns -  Returns the mnerged `object`
+ * @returns - a merged package defintion
  */
 export function mergeObjects<B, E>(base: B, extension: E): B & E {
     return merge({}, base, extension, (objValue: unknown, srcValue: unknown) => {
