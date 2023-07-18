@@ -1,7 +1,7 @@
 {
     "error": {
         "sapAppNotDefined": "Manifest is missing required section 'sap.app'",
-        "manifestNotFound": "Manifest not found at path: {{-path}}",
+        "manifestNotFound": "Manifest not found at path: {{- path}}",
         "inboundExists": "Inbound definition already exists for key: {{inboundKey}}"
     },
     "prompt": {

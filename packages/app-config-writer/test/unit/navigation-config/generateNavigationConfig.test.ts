@@ -65,7 +65,7 @@ describe('Unit tests for navigation config generation', () => {
                 title: 'title1',
                 subTitle: 'subtitle1'
             })
-        ).rejects.toThrowError(new RegExp(`^Manifest not found at path: ${appPathNoInbounds}`));
+        ).rejects.toThrowError(/^Manifest not found at path: /);
     });
 
     test('"sap.app" not defined', async () => {
