@@ -18,6 +18,6 @@
     "scripts": {
         "build": "ui5 build --clean-dest",
         "start": "ui5 serve --open /test/flp.html#app-preview",
-        "editor": "ui5 serve --open /test/flp.html?fiori-tools-rta-mode=true#app-preview"
+        "editor": "ui5 serve --open /test/flp.html?fiori-tools-rta-mode=forAdaptation#app-preview"
     }
 }
