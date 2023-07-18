@@ -103,8 +103,16 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
         join(projectRoot, capProjectPaths.db)
     ];
     const model = await cds.load(modelPaths);
-    const services = cds.compile.to['serviceinfo'](model, { root: projectRoot });
-
+    let services = cds.compile.to['serviceinfo'](model, { root: projectRoot });
+    if (services?.map) {
+        services = services?.map((value) => {
+            return {
+                // Remove rogue '\\' - cds windows if needed
+                name: value.name,
+                urlPath: value.urlPath.replace(/\\/g, '/').replace(/\/\//g, '/')
+            };
+        });
+    }
     return {
         model,
         services
