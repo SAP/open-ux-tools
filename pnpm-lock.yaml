@@ -426,6 +426,9 @@ importers:
 
   packages/create:
     dependencies:
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
       '@sap-ux/app-config-writer':
         specifier: workspace:*
         version: link:../app-config-writer

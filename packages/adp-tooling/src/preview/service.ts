@@ -16,7 +16,7 @@ import {
     createForAbapOnCloud,
     createForDestination
 } from '@sap-ux/axios-extension';
-import { promptServiceKeys } from './prompt';
+import { promptServiceKeys } from '../base/prompt';
 import type { ZipFile } from 'yazl';
 
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;

@@ -34,6 +34,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/app-config-writer": "workspace:*",
         "@sap-ux/cap-config-writer": "workspace:*",
         "@sap-ux/logger": "workspace:*",
