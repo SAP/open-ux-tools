@@ -1,4 +1,4 @@
-import { UI5_DEFAULT, getEsmTypesVersion, getTypesVersion } from '@sap-ux/ui5-config';
+import { UI5_DEFAULT, getEsmTypesVersion, getTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
 import type { App, AppOptions, Package, UI5, UI5Framework } from '../types';
 import versionToManifestDescMapping from '@ui5/manifest/mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 import { getUI5Libs } from './ui5Libs';
@@ -6,7 +6,6 @@ import semVer from 'semver';
 import type { SemVer } from 'semver';
 import { t } from '../i18n';
 import merge from 'lodash/mergeWith';
-import { getTypesPackage } from '@sap-ux/ui5-config/src/utils';
 
 /**
  * Returns a package instance with default properties.
