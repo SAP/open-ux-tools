@@ -15,7 +15,6 @@ describe('generate adaptation-project', () => {
     const appRoot = join(__dirname, '../../../fixtures');
     let loggerMock: ToolsLogger;
     let fsMock: Editor;
-    let logLevelSpy: jest.SpyInstance;
     let spawnSpy: jest.SpyInstance;
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
@@ -31,7 +30,6 @@ describe('generate adaptation-project', () => {
             error: jest.fn()
         } as Partial<ToolsLogger> as ToolsLogger;
         jest.spyOn(logger, 'getLogger').mockImplementation(() => loggerMock);
-        logLevelSpy = jest.spyOn(logger, 'setLogLevelVerbose').mockImplementation(() => undefined);
         fsMock = {
             dump: jest.fn(),
             commit: jest.fn().mockImplementation((callback) => callback())
@@ -49,25 +47,35 @@ describe('generate adaptation-project', () => {
 
         // Result check
         expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).toBeCalledWith(
-            /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
-            ['install'],
-            { cwd: appRoot, stdio: [0, 1, 2] }
-        );
+        expect(promptSpy).toBeCalled();
+        expect(spawnSpy).toBeCalledWith(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['install'], {
+            cwd: appRoot,
+            stdio: [0, 1, 2]
+        });
     });
 
     test('<appRoot> --id --reference --url', async () => {
         // Test execution
         const command = new Command('generate');
         addGenerateAdaptationProjectCommand(command);
-        await command.parseAsync(getArgv(['adaptation-project', appRoot, '--id', 'my.id', '--reference', 'my.reference', '--url', 'http://sap.example']));
+        await command.parseAsync(
+            getArgv([
+                'adaptation-project',
+                appRoot,
+                '--id',
+                'my.id',
+                '--reference',
+                'my.reference',
+                '--url',
+                'http://sap.example'
+            ])
+        );
 
         // Result check
         expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).toBeCalledWith(
-            /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
-            ['install'],
-            { cwd: appRoot, stdio: [0, 1, 2] }
-        );
+        expect(spawnSpy).toBeCalledWith(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['install'], {
+            cwd: appRoot,
+            stdio: [0, 1, 2]
+        });
     });
 });
