@@ -6,8 +6,9 @@ import { runNpmInstallCommand } from '../../common';
 import { join } from 'path';
 
 /**
+ * Add a new sub-command to generate SAP UI5 adaptation projects the given command.
  *
- * @param cmd
+ * @param cmd main command that is to be enhanced
  */
 export function addGenerateAdaptationProjectCommand(cmd: Command): void {
     cmd.command('adaptation-project [path]')
@@ -22,14 +23,15 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
 }
 
 /**
+ * Generate an SAP UI5 adaptation project based on the given parameters.
  *
- * @param basePath
- * @param defaults
- * @param defaults.id
- * @param defaults.reference
- * @param defaults.url
- * @param simulate
- * @param skipInstall
+ * @param basePath target folder of the new project
+ * @param defaults optional defaults
+ * @param defaults.id id of the new adaptation project
+ * @param defaults.reference id of the referenced original app
+ * @param defaults.url url of the target system
+ * @param simulate if set to true, then no files will be written to the filesystem
+ * @param skipInstall if set to true then `npm i` is not executed in the new project
  */
 async function generateAdaptationProject(
     basePath: string,
