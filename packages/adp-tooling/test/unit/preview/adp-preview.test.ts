@@ -8,6 +8,17 @@ import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
 import express from 'express';
 
+jest.mock('@sap-ux/store', () => {
+    return {
+        ...jest.requireActual('@sap-ux/store'),
+        getService: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                read: jest.fn().mockReturnValue({ username: '~user', password: '~pass' })
+            })
+        )
+    };
+});
+
 describe('AdaptationProject', () => {
     const backend = 'https://sap.example';
     const descriptorVariant = readFileSync(

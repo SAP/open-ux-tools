@@ -16,7 +16,7 @@ import {
     createForAbapOnCloud,
     createForDestination
 } from '@sap-ux/axios-extension';
-import { promptServiceKeys } from '../base/prompt';
+import { promptCredentials, promptServiceKeys } from '../base/prompt';
 import type { ZipFile } from 'yazl';
 
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
@@ -76,7 +76,7 @@ export async function getCredentials<T extends BasicAuth | ServiceAuth | undefin
 async function createAbapCloudServiceProvider(
     options: AxiosRequestConfig,
     target: UrlAbapTarget,
-    logger?: Logger
+    logger: Logger
 ): Promise<AbapServiceProvider> {
     const providerConfig: Partial<AbapCloudStandaloneOptions & ProviderConfiguration> = {
         ...options,
@@ -106,23 +106,33 @@ async function createAbapCloudServiceProvider(
  *
  * @param options predefined axios options
  * @param target url target configuration
+ * @param logger reference to the logger instance
  * @returns an ABAPServiceProvider instance
  */
 async function createAbapServiceProvider(
     options: AxiosRequestConfig,
-    target: UrlAbapTarget
+    target: UrlAbapTarget,
+    logger: Logger
 ): Promise<AbapServiceProvider> {
     options.baseURL = target.url;
     if (target.client) {
         options.params['sap-client'] = target.client;
     }
     if (!options.auth) {
-        const storedOpts = await getCredentials<BasicAuth>(target);
-        if (storedOpts?.password) {
+        let storedOpts: BasicAuth | undefined;
+        try {
+            storedOpts = await getCredentials<BasicAuth>(target);
+        } catch (error) {
+            logger.debug('Could not read credentials from store.');
+            // something went wrong but it doesn't matter, we just prompt the user
+        }
+        if (storedOpts?.username && storedOpts?.password) {
             options.auth = {
                 username: storedOpts.username,
                 password: storedOpts.password
             };
+        } else {
+            options.auth = await promptCredentials(storedOpts?.username);
         }
     }
     return createForAbap(options);
@@ -145,7 +155,7 @@ export function isUrlTarget(target: AbapTarget): target is UrlAbapTarget {
  * @param logger - optional reference to the logger instance
  * @returns service instance
  */
-export async function createProvider(config: AdpPreviewConfig, logger?: Logger): Promise<AbapServiceProvider> {
+export async function createProvider(config: AdpPreviewConfig, logger: Logger): Promise<AbapServiceProvider> {
     let provider: AbapServiceProvider;
     const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {
         params: {},
@@ -164,7 +174,7 @@ export async function createProvider(config: AdpPreviewConfig, logger?: Logger):
         if (config.target.scp) {
             provider = await createAbapCloudServiceProvider(options, config.target, logger);
         } else {
-            provider = await createAbapServiceProvider(options, config.target);
+            provider = await createAbapServiceProvider(options, config.target, logger);
         }
     } else {
         throw new Error('Unable to handle the configuration in the current environment.');

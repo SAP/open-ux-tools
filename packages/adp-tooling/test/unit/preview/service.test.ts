@@ -43,6 +43,10 @@ describe('service', () => {
 
     describe('createProvider', () => {
         test('on-premise url', async () => {
+            mockedStoreService.read.mockResolvedValueOnce({
+                username: '~user',
+                password: '~pass'
+            });
             expect(await createProvider({ target }, logger)).toBeDefined();
         });
         test('steampunk url', async () => {
