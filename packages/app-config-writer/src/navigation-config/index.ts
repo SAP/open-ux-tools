@@ -14,8 +14,8 @@ import { NAV_CONFIG_NS, t } from '../i18n';
  * @param inboundConfig the inbound configuration to be written
  * @param inboundConfig.semanticObject semantic object
  * @param inboundConfig.action action
- * @param inboundConfig.title Represents a title; to make this property language dependent (recommended), use a key in double curly brackets '{{key}}'
- * @param inboundConfig.subTitle optional, Represents a subtitle; to make this property language dependent (recommended), use a key in double curly brackets '{{key}}'
+ * @param inboundConfig.title Represents a title; to make this property language dependent (recommended), use a key in double curly brackets '{{key}}' and add to i18n file
+ * @param inboundConfig.subTitle optional, Represents a subtitle; to make this property language dependent (recommended), use a key in double curly brackets '{{key}}' and add to i18n file
  * @param overwrite overwrite existing config
  * @param fs file system reference
  * @returns file system reference

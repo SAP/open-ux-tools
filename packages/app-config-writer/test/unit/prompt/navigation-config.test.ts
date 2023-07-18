@@ -25,16 +25,16 @@ describe('Test promptInboundNavigationConfig', () => {
         const promptSpy = jest.spyOn(prompts, 'prompt').mockResolvedValue({
             semanticObject: 'so1',
             action: 'act1',
-            title: 'title1',
-            subTitle: 'st1'
+            title: '{{titleKey}}',
+            subTitle: '{{subTitleKey}}'
         });
         await expect(promptInboundNavigationConfig(basePath)).resolves.toEqual(
             expect.objectContaining({
                 'config': {
                     'action': 'act1',
                     'semanticObject': 'so1',
-                    'subTitle': 'st1',
-                    'title': 'title1'
+                    'title': '{{titleKey}}',
+                    'subTitle': '{{subTitleKey}}'
                 },
                 'fs': expect.anything()
             })

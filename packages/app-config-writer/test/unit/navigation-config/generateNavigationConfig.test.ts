@@ -14,6 +14,15 @@ describe('Unit tests for navigation config generation', () => {
         });
         expect(fs.readJSON(join(appPathNoInbounds, 'webapp', 'manifest.json'))).toMatchSnapshot();
 
+        // Ensure ui5 paraneters escaping is respected
+        fs = await generateInboundNavigationConfig(appPathNoInbounds, {
+            semanticObject: 'semanticObject1',
+            action: 'action1',
+            title: '{{title1}}',
+            subTitle: '{{subtitle1}}'
+        });
+        expect(fs.readJSON(join(appPathNoInbounds, 'webapp', 'manifest.json'))).toMatchSnapshot();
+
         // Inbounds extended
         const appPathInbounds = join(fixturePath, '/ui5-app-inbounds');
         fs = await generateInboundNavigationConfig(appPathInbounds, {

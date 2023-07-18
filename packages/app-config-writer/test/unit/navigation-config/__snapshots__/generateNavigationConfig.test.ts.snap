@@ -196,6 +196,190 @@ Object {
         "semanticObject1-action1": Object {
           "action": "action1",
           "semanticObject": "semanticObject1",
+          "signature": Object {
+            "additionalParameters": "allowed",
+            "parameters": Object {},
+          },
+          "subTitle": "{{subtitle1}}",
+          "title": "{{title1}}",
+        },
+      },
+    },
+    "dataSources": Object {
+      "SEPMRA_ALP_SO_ANA_SRV": Object {
+        "settings": Object {
+          "localUri": "localService/SEPMRA_ALP_SO_ANA_SRV.xml",
+        },
+        "type": "ODataAnnotation",
+        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_ALP_SO_ANA_SRV',Version='0001')/$value/",
+      },
+      "annotation": Object {
+        "settings": Object {
+          "localUri": "annotations/annotation.xml",
+        },
+        "type": "ODataAnnotation",
+        "uri": "annotations/annotation.xml",
+      },
+      "mainService": Object {
+        "settings": Object {
+          "annotations": Array [
+            "SEPMRA_ALP_SO_ANA_SRV",
+            "annotation",
+          ],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "2.0",
+        },
+        "type": "OData",
+        "uri": "/sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV/",
+      },
+    },
+    "description": "{{appDescription}}",
+    "i18n": "i18n/i18n.properties",
+    "id": "testNameSpace.alpv2",
+    "resources": "resources.json",
+    "sourceTemplate": Object {
+      "id": "@sap-ux/fiori-elements-writer:alp",
+      "toolsId": "5627e189-334e-479d-8f6b-4a94f9132aab",
+      "version": "0.3.2",
+    },
+    "title": "{{appTitle}}",
+    "type": "application",
+  },
+  "sap.fiori": Object {
+    "archeType": "analytical",
+    "registrationIds": Array [],
+  },
+  "sap.ui": Object {
+    "deviceTypes": Object {
+      "desktop": true,
+      "phone": true,
+      "tablet": true,
+    },
+    "icons": Object {
+      "favIcon": "",
+      "icon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": "",
+    },
+    "technology": "UI5",
+  },
+  "sap.ui.generic.app": Object {
+    "_version": "1.3.0",
+    "pages": Object {
+      "AnalyticalListPage|SEPMRA_C_ALP_SlsOrdItemCubeALPResults": Object {
+        "component": Object {
+          "list": true,
+          "name": "sap.suite.ui.generic.template.AnalyticalListPage",
+          "settings": Object {
+            "autoHide": true,
+            "condensedTableLayout": true,
+            "keyPerformanceIndicators": Object {},
+            "qualifier": "DefaultVariant",
+            "showGoButtonOnFilterBar": true,
+            "smartVariantManagement": true,
+            "tableSettings": Object {
+              "multiSelect": true,
+            },
+            "tableType": "GridTable",
+          },
+        },
+        "entitySet": "SEPMRA_C_ALP_SlsOrdItemCubeALPResults",
+        "pages": Object {
+          "ObjectPage|SEPMRA_C_ALP_SlsOrdItemCubeALPResults": Object {
+            "component": Object {
+              "name": "sap.suite.ui.generic.template.ObjectPage",
+            },
+            "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+            "entitySet": "SEPMRA_C_ALP_SlsOrdItemCubeALPResults",
+            "pages": Object {
+              "ObjectPage|to_SalesOrderItem": Object {
+                "component": Object {
+                  "name": "sap.suite.ui.generic.template.ObjectPage",
+                },
+                "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+                "entitySet": "SEPMRA_C_ALP_SalesOrderItem",
+                "navigationProperty": "to_SalesOrderItem",
+              },
+            },
+          },
+        },
+      },
+    },
+    "settings": Object {
+      "considerAnalyticalParameters": true,
+      "forceGlobalRefresh": false,
+      "objectPageHeaderType": "Dynamic",
+      "showDraftToggle": false,
+    },
+  },
+  "sap.ui5": Object {
+    "contentDensities": Object {
+      "compact": true,
+      "cozy": true,
+    },
+    "dependencies": Object {
+      "libs": Object {
+        "sap.f": Object {},
+        "sap.m": Object {},
+        "sap.suite.ui.generic.template": Object {},
+        "sap.ui.comp": Object {},
+        "sap.ui.core": Object {},
+        "sap.ui.generic.app": Object {},
+        "sap.ushell": Object {},
+      },
+      "minUI5Version": "1.98.0",
+    },
+    "flexEnabled": true,
+    "models": Object {
+      "": Object {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": Object {
+          "defaultBindingMode": "TwoWay",
+          "defaultCountMode": "Inline",
+          "metadataUrlParams": Object {
+            "sap-value-list": "none",
+          },
+          "refreshAfterChange": false,
+        },
+      },
+      "@i18n": Object {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties",
+      },
+      "i18n": Object {
+        "settings": Object {
+          "bundleName": "testNameSpace.alpv2.i18n.i18n",
+        },
+        "type": "sap.ui.model.resource.ResourceModel",
+      },
+    },
+    "resources": Object {
+      "css": Array [],
+    },
+    "routing": Object {
+      "config": Object {},
+      "routes": Array [],
+      "targets": Object {},
+    },
+  },
+}
+`;
+
+exports[`Unit tests for navigation config generation generate inbound nav config entries 3`] = `
+Object {
+  "_version": "1.38.0",
+  "sap.app": Object {
+    "applicationVersion": Object {
+      "version": "0.0.1",
+    },
+    "crossNavigation": Object {
+      "inbounds": Object {
+        "semanticObject1-action1": Object {
+          "action": "action1",
+          "semanticObject": "semanticObject1",
           "subTitle": "subtitle1",
           "title": "title1",
         },
@@ -374,7 +558,7 @@ Object {
 }
 `;
 
-exports[`Unit tests for navigation config generation generate inbound nav config entries 4`] = `
+exports[`Unit tests for navigation config generation generate inbound nav config entries 5`] = `
 Object {
   "_version": "1.38.0",
   "sap.app": Object {
