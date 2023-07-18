@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.3.5
+
+### Patch Changes
+
+-   69b88bcc: TransportChecksService API method `getTransportRequests` now encodes the packageName within its implementation.
+
 ## 1.3.4
 
 ### Patch Changes
