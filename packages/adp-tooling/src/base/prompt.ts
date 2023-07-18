@@ -7,9 +7,9 @@ import type { AdpWriterConfig } from '../types';
  * Prompt the user for the required properties for an adaptation project.
  *
  * @param defaults optional default values for the prompts
- * @param defaults.id
- * @param defaults.reference
- * @param defaults.url
+ * @param defaults.id initial id to be used for the new adaptation id prompt
+ * @param defaults.reference initial id used for the original application id prompt
+ * @param defaults.url initial url used for the target url prompt
  * @returns a configuration for the adp writer
  */
 export async function promptGeneratorInput({
@@ -34,9 +34,12 @@ export async function promptGeneratorInput({
         },
         {
             type: 'select',
-            choices: [{ title: 'CUSTOMER_BASE' }, { title: 'VENDOR' }],
+            choices: [
+                { title: 'CUSTOMER_BASE', value: 'CUSTOMER_BASE' },
+                { title: 'VENDOR', value: 'VENDOR' }
+            ],
             name: 'layer',
-            initial: 0,
+            initial: 'CUSTOMER_BASE',
             message: 'Flex layer:'
         },
         {
