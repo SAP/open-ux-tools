@@ -151,7 +151,19 @@ function findServiceByUri(
     services: { name: string; urlPath: string }[],
     uri: string
 ): { name: string; urlPath: string } | undefined {
-    const uniformUri = (uri: string) => uri.replace(/[\\/]/g, ''); // replace all \ and / in service uri due to issues on Windows with backslashes
+    /**
+     * Local arrow function to replace all \ and / in service uri due to issues on Windows with backslashes.
+     * Function removes leading, trailing, and double slashes.
+     *
+     * @param uri - uri
+     * @returns - uniform uri
+     */
+    const uniformUri = (uri: string) =>
+        uri
+            .replace(/[\\/]/g, '/')
+            .split('/')
+            .filter((u) => u)
+            .join('/');
     const searchUri = uniformUri(uri);
     return services.find((srv) => uniformUri(srv.urlPath) === searchUri);
 }

@@ -142,6 +142,7 @@ describe('Test readCapServiceMetadataEdmx()', () => {
             to: {
                 serviceinfo: jest.fn().mockImplementation(() => [
                     { name: 'ServiceOne', urlPath: 'service/one' },
+                    { name: 'Service', urlPath: 'serviceone' },
                     { name: 'ServiceTwo', urlPath: 'service\\two' }
                 ]),
                 edmx: jest.fn().mockImplementation(() => 'EDMX')
@@ -174,6 +175,19 @@ describe('Test readCapServiceMetadataEdmx()', () => {
         // Check results
         expect(result).toBe('EDMX');
         expect(cdsMock.compile.to.edmx).toBeCalledWith('MODEL', { service: 'ServiceOne', version: 'v2' });
+    });
+
+    test('Convert service with leading double backslashes', async () => {
+        // Mock setup
+        const cdsMock = getCdsMock();
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue({ default: cdsMock });
+
+        // Test execution
+        const result = await readCapServiceMetadataEdmx('root', '\\\\serviceone');
+
+        // Check results
+        expect(result).toBe('EDMX');
+        expect(cdsMock.compile.to.edmx).toBeCalledWith('MODEL', { service: 'Service', version: 'v4' });
     });
 
     test('Convert none existing service to EDMX, should throw error', async () => {
