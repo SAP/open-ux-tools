@@ -6,6 +6,7 @@ import semVer from 'semver';
 import type { SemVer } from 'semver';
 import { t } from '../i18n';
 import merge from 'lodash/mergeWith';
+import { getTypesPackage } from '@sap-ux/ui5-config/src/utils';
 
 /**
  * Returns a package instance with default properties.
@@ -79,6 +80,7 @@ export function mergeUi5(ui5: Partial<UI5>, options?: Partial<AppOptions>): UI5 
     merged.descriptorVersion = getManifestVersion(merged.minUI5Version, ui5.descriptorVersion);
     merged.typesVersion =
         ui5.typesVersion ?? (options?.typescript ? getEsmTypesVersion : getTypesVersion)(merged.minUI5Version);
+    merged.typesPackage = getTypesPackage(merged.typesVersion);
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
 
