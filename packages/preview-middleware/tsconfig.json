@@ -18,6 +18,9 @@
         },
         {
             "path": "../project-access"
+        },
+        {
+            "path": "../store"
         }
     ]
 }

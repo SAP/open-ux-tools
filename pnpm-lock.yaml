@@ -875,6 +875,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@types/ejs':
         specifier: 3.1.0
         version: 3.1.0

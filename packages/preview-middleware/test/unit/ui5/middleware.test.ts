@@ -7,6 +7,17 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import nock from 'nock';
 
+jest.mock('@sap-ux/store', () => {
+    return {
+        ...jest.requireActual('@sap-ux/store'),
+        getService: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+                read: jest.fn().mockReturnValue({ username: '~user', password: '~pass' })
+            })
+        )
+    };
+});
+
 // middleware function wrapper for testing to simplify tests
 async function getTestServer(fixture?: string, configuration: Partial<Config> = {}): Promise<any> {
     const router = await (previewMiddleware as any).default({
