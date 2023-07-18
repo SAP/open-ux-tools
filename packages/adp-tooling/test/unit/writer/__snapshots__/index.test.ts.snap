@@ -23,9 +23,9 @@ dist/
     ],
     \\"dependencies\\": {},
     \\"devDependencies\\": {
-        \\"@sap-ux/backend-proxy-middleware\\": \\"0.6.61\\",
-        \\"@sap-ux/preview-middleware\\": \\"0.1.0\\",
-        \\"@sap-ux/ui5-proxy-middleware\\": \\"1.1.24\\",
+        \\"@sap-ux/backend-proxy-middleware\\": \\"^0.6.61\\",
+        \\"@sap-ux/preview-middleware\\": \\"^0.2.0\\",
+        \\"@sap-ux/ui5-proxy-middleware\\": \\"^1.1.31\\",
         \\"@ui5/cli\\": \\"^3.3.2\\"
     },
     \\"scripts\\": {
@@ -67,6 +67,8 @@ server:
         backend:
           url: http://sap.example
           path: /sap
+        options:
+          secure: true
 ",
     "state": "modified",
   },
@@ -76,7 +78,7 @@ server:
 #Texts for manifest.json
 
 #XTIT: Application name
-my.test.app_sap.app.title==Adaptation of the.original.app",
+my.test.app_sap.app.title=Adaptation of the.original.app",
     "state": "modified",
   },
   "webapp/manifest.appdescr_variant": Object {
