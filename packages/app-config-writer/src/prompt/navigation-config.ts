@@ -34,9 +34,7 @@ export async function promptInboundNavigationConfig(
     // Exit if overwrite is false
     if (config?.overwrite === false) {
         config = undefined;
-    } /*  else {
-        delete config.overwrite; //overwrite is not a property of ManifestNamespace.Inbound
-    } */
+    }
 
     return {
         config,
