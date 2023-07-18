@@ -153,7 +153,7 @@ function findServiceByUri(
 ): { name: string; urlPath: string } | undefined {
     /**
      * Local arrow function to replace all \ and / in service uri due to issues on Windows with backslashes.
-     * Function removes leading, trailing, and double slashes.
+     * Function removes leading, trailing, and multiple slashes, like \\\\one/two///three/ => one/two/three.
      *
      * @param uri - uri
      * @returns - uniform uri
