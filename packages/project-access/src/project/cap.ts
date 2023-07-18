@@ -107,9 +107,8 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
     if (services?.map) {
         services = services?.map((value) => {
             return {
-                // Remove rogue '\\' - cds windows if needed
                 name: value.name,
-                urlPath: value.urlPath.replace(/\\/g, '/').replace(/\/\//g, '/')
+                urlPath: uniformUrl(value.urlPath)
             };
         });
     }
@@ -117,6 +116,16 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
         model,
         services
     };
+}
+
+/**
+ * Remove rogue '\\' - cds windows if needed.
+ *
+ * @param url - url to uniform
+ * @returns - uniform url
+ */
+function uniformUrl(url: string) {
+    return url.replace(/\\/g, '/').replace(/\/\//g, '/');
 }
 
 /**
@@ -149,7 +158,7 @@ export async function readCapServiceMetadataEdmx(
 }
 
 /**
- * Find a service in a list of services.
+ * Find a service in a list of services ignoring leading and trailing slashes.
  *
  * @param services - list of services from cds.compile.to['serviceinfo'](model)
  * @param uri - search uri (usually from data source in manifest.json)
@@ -159,21 +168,8 @@ function findServiceByUri(
     services: { name: string; urlPath: string }[],
     uri: string
 ): { name: string; urlPath: string } | undefined {
-    /**
-     * Local arrow function to replace all \ and / in service uri due to issues on Windows with backslashes.
-     * Function removes leading, trailing, and multiple slashes, like \\\\one/two///three/ => one/two/three.
-     *
-     * @param uri - uri
-     * @returns - uniform uri
-     */
-    const uniformUri = (uri: string) =>
-        uri
-            .replace(/[\\/]/g, '/')
-            .split('/')
-            .filter((u) => u)
-            .join('/');
-    const searchUri = uniformUri(uri);
-    return services.find((srv) => uniformUri(srv.urlPath) === searchUri);
+    const searchUri = uniformUrl(uri).replace(/(?:^\/)|(?:\/$)/g, '');
+    return services.find((srv) => srv.urlPath.replace(/(?:^\/)|(?:\/$)/g, '') === searchUri);
 }
 
 /**
