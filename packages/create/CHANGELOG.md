@@ -1,5 +1,16 @@
 # @sap-ux/create
 
+## 0.3.0
+
+### Minor Changes
+
+-   804e2a18: Feature added: Inbound config writing
+
+### Patch Changes
+
+-   Updated dependencies [804e2a18]
+    -   @sap-ux/app-config-writer@0.1.0
+
 ## 0.2.16
 
 ### Patch Changes
