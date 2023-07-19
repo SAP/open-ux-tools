@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.1.0
+
+### Minor Changes
+
+-   804e2a18: Feature added: Inbound config writing
+
 ## 0.0.30
 
 ### Patch Changes
