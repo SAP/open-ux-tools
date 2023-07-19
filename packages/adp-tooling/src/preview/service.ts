@@ -132,7 +132,10 @@ async function createAbapServiceProvider(
                 password: storedOpts.password
             };
         } else {
-            options.auth = await promptCredentials(storedOpts?.username);
+            const credentials = await promptCredentials(storedOpts?.username);
+            options.auth = credentials;
+            process.env.FIORI_TOOLS_USER = credentials.username;
+            process.env.FIORI_TOOLS_PASSWORD = credentials.password;
         }
     }
     return createForAbap(options);
