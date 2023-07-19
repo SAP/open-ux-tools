@@ -304,7 +304,7 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test('local settings', () => {
+        test('updates local settings', () => {
             ui5Config.addAbapDeployTask({ url, client }, app);
             // update deploy config with new transport request
             ui5Config.updateAbapDeployTask({ url, client }, { ...app, transport: '~transport123' });

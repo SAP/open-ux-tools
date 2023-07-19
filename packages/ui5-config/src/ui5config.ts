@@ -290,7 +290,16 @@ export class UI5Config {
                 matcher: { key: 'name', value: 'deploy-to-abap' },
                 value: {
                     ...deployToAbap,
-                    configuration: { target, app }
+                    configuration: {
+                        ...deployToAbap.configuration,
+                        app: app,
+                        target: {
+                            url: target.url,
+                            client: target.client,
+                            destination: target.destination,
+                            scp: target.scp
+                        }
+                    }
                 },
                 mode: 'overwrite'
             });

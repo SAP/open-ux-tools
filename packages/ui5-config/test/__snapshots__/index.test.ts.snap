@@ -107,7 +107,7 @@ exports[`UI5Config addAbapDeployTask and updateAbapDeployTask local settings 1`]
 "
 `;
 
-exports[`UI5Config addAbapDeployTask and updateAbapDeployTask local settings 2`] = `
+exports[`UI5Config addAbapDeployTask and updateAbapDeployTask updates local settings 1`] = `
 "builder:
   resources:
     - excludes:
