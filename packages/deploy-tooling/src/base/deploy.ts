@@ -354,13 +354,13 @@ async function createTransportRequest(
             const transportRequest = await adtService.createTransportRequest(createTransportParams);
             if (transportRequest) {
                 config.app.transport = transportRequest;
-                logger.info(`New transport request created : ${transportRequest}`);
+                logger.info(`Transport request ${transportRequest} created for deployment.`);
                 await updateYaml(config, logger, configPath);
-            } else {
-                logger.warn('Transport request was not created');
             }
         } catch (e) {
-            logger.error(`Failed to create transport request during deployment. Error was ${e.message}`);
+            logger.error(
+                'Transport request could not be created. Please create it manually and re-run deployment configuration for this project'
+            );
         }
     }
     return;
