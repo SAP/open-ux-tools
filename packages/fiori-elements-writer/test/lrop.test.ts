@@ -213,6 +213,24 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
+            name: 'lropV2_ts_ui5_1_113',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_113'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.113.0'
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
             name: 'lropV2_without_start-noflp',
             config: {
                 ...Object.assign(feBaseConfig('lropV2_ts'), {
