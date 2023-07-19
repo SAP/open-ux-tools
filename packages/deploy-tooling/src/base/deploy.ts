@@ -11,7 +11,8 @@ import {
     createForAbap,
     createForDestination,
     createForAbapOnCloud,
-    isAxiosError
+    isAxiosError,
+    TransportRequestService
 } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
@@ -139,13 +140,13 @@ async function createAbapServiceProvider(
 }
 
 /**
- * Create an instance of a UI5AbapRepository service connected to the given target configuration.
+ * Create an instance of an AbapServiceProvider connected to the given target configuration.
  *
  * @param config - deployment configuration
  * @param logger - optional reference to the logger instance
  * @returns service instance
  */
-async function createDeployService(config: AbapDeployConfig, logger?: Logger): Promise<Ui5AbapRepositoryService> {
+async function getAbapServiceProvider(config: AbapDeployConfig, logger?: Logger): Promise<AbapServiceProvider> {
     let provider: AbapServiceProvider;
     const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {};
     if (config.strictSsl === false) {
@@ -176,7 +177,7 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
     } else {
         throw new Error('Unable to handle the configuration in the current environment.');
     }
-    return provider.getUi5AbapRepository(config.target?.service);
+    return provider;
 }
 
 /**
@@ -184,7 +185,7 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
  *
  * @param command - the request type deploy | undeploy
  * @param error - thrown error object
- * @param service - instance of the axios-extension deployment service
+ * @param provider - instance of the axios-extension abap service provider
  * @param config - configuration used for the previous request
  * @param logger - reference to the logger instance
  * @param archive - archive file that is to be deployed
@@ -192,14 +193,14 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
 async function handleError(
     command: TryCommands,
     error: Error,
-    service: Ui5AbapRepositoryService,
+    provider: AbapServiceProvider,
     config: AbapDeployConfig,
     logger: Logger,
     archive: Buffer
 ): Promise<void> {
     const retry = config.retry === undefined ? true : config.retry;
     if (retry && isAxiosError(error)) {
-        const success = await handleAxiosError(command, error.response, service, config, logger, archive);
+        const success = await handleAxiosError(command, error.response, provider, config, logger, archive);
         if (success) {
             return;
         }
@@ -219,7 +220,7 @@ async function handleError(
  *
  * @param command - the request type deploy | undeploy
  * @param response - response of that triggered and axios error
- * @param service - instance of the axios-extension deployment service
+ * @param provider - instance of the axios-extension abap service provider
  * @param config - configuration used for the previous request
  * @param logger - reference to the logger instance
  * @param archive - archive file that is to be deployed
@@ -228,7 +229,7 @@ async function handleError(
 async function handleAxiosError(
     command: TryCommands,
     response: AxiosError['response'],
-    service: Ui5AbapRepositoryService,
+    provider: AbapServiceProvider,
     config: AbapDeployConfig,
     logger: Logger,
     archive: Buffer
@@ -242,10 +243,11 @@ async function handleAxiosError(
                 'Please maintain correct credentials to avoid seeing this error\n\t(see help: https://www.npmjs.com/package/@sap/ux-ui5-tooling#setting-environment-variables-in-a-env-file)'
             );
             logger.info('Please enter your credentials.');
+            const service = getUi5AbapRepositoryService(provider, config, logger);
             const credentials = await promptCredentials(service.defaults.auth?.username);
             if (Object.keys(credentials).length) {
                 service.defaults.auth = credentials;
-                await deploymentCommands[command](service, config, logger, archive);
+                await deploymentCommands[command](provider, config, logger, archive);
                 return true;
             } else {
                 return false;
@@ -253,7 +255,7 @@ async function handleAxiosError(
         case 412:
             logger.warn('An app in the same repository with different sap app id found.');
             if (config.yes || (await promptConfirmation('Do you want to overwrite (Y/n)?'))) {
-                await deploymentCommands[command](service, { ...config, safe: false, retry: false }, logger, archive);
+                await deploymentCommands[command](provider, { ...config, safe: false, retry: false }, logger, archive);
                 return true;
             } else {
                 return false;
@@ -270,8 +272,12 @@ async function handleAxiosError(
  * @param logger - reference to the logger instance
  * @returns service returns the UI5 ABAP Repository service
  */
-async function getAbapService(config: AbapDeployConfig, logger: Logger): Promise<Ui5AbapRepositoryService> {
-    const service = await createDeployService(config, logger);
+function getUi5AbapRepositoryService(
+    provider: AbapServiceProvider,
+    config: AbapDeployConfig,
+    logger: Logger
+): Ui5AbapRepositoryService {
+    const service = provider.getUi5AbapRepository(config.target?.service);
     service.log = logger;
     if (!config.strictSsl) {
         logger.warn(
@@ -279,6 +285,41 @@ async function getAbapService(config: AbapDeployConfig, logger: Logger): Promise
         );
     }
     return service;
+}
+
+/**
+ * Creates a new transport request using adt service.
+ *
+ * @param provider - instance of the axios-extension abap service provider
+ * @param config - deployment configuration
+ * @param logger - reference to the logger instance
+ */
+async function createTransportRequest(
+    provider: AbapServiceProvider,
+    config: AbapDeployConfig,
+    logger: Logger
+): Promise<void> {
+    const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
+    if (adtService) {
+        const createTransportParams = {
+            packageName: config.app.package || '',
+            ui5AppName: config.app.name,
+            description: 'Created by @sap-ux/deploy-tooling'
+        };
+
+        try {
+            const transportRequest = await adtService.createTransportRequest(createTransportParams);
+            if (transportRequest) {
+                config.app.transport = transportRequest;
+                logger.info(`New transport request created : ${transportRequest}`);
+            } else {
+                logger.warn('Transport request was not created');
+            }
+        } catch (e) {
+            logger.error(`Failed to create transport request during deployment. Error was ${e.message}`);
+        }
+    }
+    return;
 }
 
 /**
@@ -295,29 +336,34 @@ async function runCommand(
     logger: Logger,
     archive: Buffer = Buffer.from('')
 ): Promise<void> {
-    const service = await getAbapService(config, logger);
+    const provider = await getAbapServiceProvider(config, logger);
     logger.info(
         `Starting to ${command === TryCommands.Deploy ? 'deploy' : 'undeploy'}${
             config.test === true ? ' in test mode' : ''
         }.`
     );
-    await deploymentCommands[command](service, config, logger, archive);
+    await deploymentCommands[command](provider, config, logger, archive);
 }
 
 /**
  * Try executing the deployment command and handle known errors.
  *
- * @param service - instance of the axios-extension deployment service
+ * @param provider - instance of the axios-extension abap service provider
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  * @param archive - archive file that is to be deployed
  */
 async function tryDeploy(
-    service: Ui5AbapRepositoryService,
+    provider: AbapServiceProvider,
     config: AbapDeployConfig,
     logger: Logger,
     archive: Buffer
 ): Promise<void> {
+    const service = getUi5AbapRepositoryService(provider, config, logger);
+    if (config.createTransport) {
+        await createTransportRequest(provider, config, logger);
+    }
+
     try {
         await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
         if (config.test === true) {
@@ -328,7 +374,7 @@ async function tryDeploy(
             logger.info('Deployment Successful.');
         }
     } catch (error) {
-        await handleError(TryCommands.Deploy, error, service, config, logger, archive);
+        await handleError(TryCommands.Deploy, error, provider, config, logger, archive);
     }
 }
 
@@ -349,12 +395,13 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
 /**
  * Try executing the undeployment command and handle known errors.
  *
- * @param service - instance of the axios-extension deployment service
+ * @param provider - instance of the axios-extension abap service provider
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  */
-async function tryUndeploy(service: Ui5AbapRepositoryService, config: AbapDeployConfig, logger: Logger): Promise<void> {
+async function tryUndeploy(provider: AbapServiceProvider, config: AbapDeployConfig, logger: Logger): Promise<void> {
     try {
+        const service = getUi5AbapRepositoryService(provider, config, logger);
         await service.undeploy({ bsp: config.app, testMode: config.test });
         if (config.test === true) {
             logger.info(
@@ -364,7 +411,7 @@ async function tryUndeploy(service: Ui5AbapRepositoryService, config: AbapDeploy
             logger.info('Undeployment Successful.');
         }
     } catch (error) {
-        await handleError(TryCommands.UnDeploy, error, service, config, logger, Buffer.from(''));
+        await handleError(TryCommands.UnDeploy, error, provider, config, logger, Buffer.from(''));
     }
 }
 

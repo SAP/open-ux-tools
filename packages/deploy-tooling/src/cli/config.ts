@@ -3,7 +3,7 @@ import type { AxiosRequestConfig, BspConfig, ServiceInfo } from '@sap-ux/axios-e
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, join } from 'path';
 import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types';
-import { NAME } from '../types';
+import { CREATE_TR_DURING_DEPLOY, NAME } from '../types';
 
 /**
  * Tries to read the version of the modules package.json but in case of an error, it returns the manually maintained version matching major.minor of the module.
@@ -157,6 +157,11 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     config.strictSsl = mergeFlag(options.strictSsl, taskConfig.strictSsl);
     config.yes = mergeFlag(options.yes, taskConfig.yes);
     config.retry = process.env.NO_RETRY ? !process.env.NO_RETRY : mergeFlag(options.retry, taskConfig.retry);
+    config.createTransport = mergeFlag(options.createTransport, taskConfig.createTransport);
+
+    if (!config.createTransport && app.transport === CREATE_TR_DURING_DEPLOY) {
+        config.createTransport = true;
+    }
 
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
         options.archiveFolder = 'dist';

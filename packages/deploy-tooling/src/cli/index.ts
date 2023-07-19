@@ -60,6 +60,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         command
             .option('--package <abap-package>', 'Package name for deploy target ABAP system')
             .option('--description <description>', 'Project description of the app')
+            .option('--create-transport <description>', 'Create transport request during deployment')
             // SafeMode: Example: If the deployment would overwrite a repository that contains an app with a different sap.app/id and SafeMode is true, HTTP status code 412 (Precondition Failed) with further information would be returned.
             .option('--safe', 'Prevents accidentally breaking deployments.')
             .option('--keep', 'Keep a copy of the deployed archive in the project folder.');

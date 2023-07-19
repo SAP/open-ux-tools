@@ -65,6 +65,11 @@ export interface CommonOptions {
      * '--no-retry' cli param negates the retry value which is true by default
      */
     retry?: boolean;
+
+    /**
+     * If set to true, a transport request will be created during deployment, and written to the ui5-deploy.yaml
+     */
+    createTransport?: boolean;
 }
 
 export interface AbapDeployConfig extends CommonOptions {
@@ -86,3 +91,9 @@ export interface CliOptions
     queryParams?: string;
     cloudServiceEnv?: boolean;
 }
+
+/**
+ * Constant value to be filled in ui5-deploy.yaml configuration when
+ * user choose to dynamically create transport request during deployment.
+ */
+export const CREATE_TR_DURING_DEPLOY = '#REPLACE_WITH_TRANSPORT#';
