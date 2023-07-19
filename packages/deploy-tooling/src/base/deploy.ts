@@ -304,7 +304,15 @@ function getUi5AbapRepositoryService(
     return service;
 }
 
-async function updateYaml(config: AbapDeployConfig, logger: Logger, configPath?: string) {
+/**
+ * Updates the config (ui5-deploy.yaml) file with the new transport request.
+ *
+ * @param config - deployment configuration
+ * @param logger - reference to the logger instance
+ * @param configPath - path to the config file
+ * @returns
+ */
+async function updateYaml(config: AbapDeployConfig, logger: Logger, configPath?: string): Promise<void> {
     const deployYamlPath = configPath ? configPath : join(process.cwd(), 'ui5-deploy.yaml');
     if (existsSync(deployYamlPath)) {
         try {
