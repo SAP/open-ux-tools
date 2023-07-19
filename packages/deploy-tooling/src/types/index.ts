@@ -96,4 +96,4 @@ export interface CliOptions
  * Constant value to be filled in ui5-deploy.yaml configuration when
  * user choose to dynamically create transport request during deployment.
  */
-export const CREATE_TR_DURING_DEPLOY = '#REPLACE_WITH_TRANSPORT#';
+export const CREATE_TR_DURING_DEPLOY = 'REPLACE_WITH_TRANSPORT';

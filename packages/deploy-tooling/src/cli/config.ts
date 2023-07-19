@@ -174,5 +174,9 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
         options.archivePath = join(dirname(options.config), options.archivePath);
     }
 
+    if (!options.config && options.archivePath) {
+        options.config = join(options.archivePath.replace('archive.zip', ''), 'ui5-deploy.yaml');
+    }
+
     return config;
 }

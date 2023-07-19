@@ -128,7 +128,7 @@ export async function runDeploy(): Promise<void> {
     try {
         const { logger, options, config } = await prepareRun(cmd);
         const archive = await getArchive(logger, options);
-        await deploy(archive, config, logger);
+        await deploy(archive, config, logger, options.config);
     } catch (error) {
         cmd.error((error as Error).message);
     }

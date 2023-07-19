@@ -23,6 +23,11 @@ import { writeFileSync } from 'fs';
 import type { AbapDeployConfig, UrlAbapTarget } from '../types';
 import { getConfigForLogging, isUrlTarget } from './config';
 import { promptConfirmation, promptCredentials, promptServiceKeys } from './prompt';
+import { create as createStorage } from 'mem-fs';
+import { UI5Config, AbapTarget } from '@sap-ux/ui5-config';
+import { create } from 'mem-fs-editor';
+import { join } from 'path';
+import { existsSync } from 'fs';
 
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
 type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> & { refreshToken?: string };
@@ -189,6 +194,7 @@ async function getAbapServiceProvider(config: AbapDeployConfig, logger?: Logger)
  * @param config - configuration used for the previous request
  * @param logger - reference to the logger instance
  * @param archive - archive file that is to be deployed
+ * @param configPath - path to config file
  */
 async function handleError(
     command: TryCommands,
@@ -196,11 +202,12 @@ async function handleError(
     provider: AbapServiceProvider,
     config: AbapDeployConfig,
     logger: Logger,
-    archive: Buffer
+    archive: Buffer,
+    configPath?: string
 ): Promise<void> {
     const retry = config.retry === undefined ? true : config.retry;
     if (retry && isAxiosError(error)) {
-        const success = await handleAxiosError(command, error.response, provider, config, logger, archive);
+        const success = await handleAxiosError(command, error.response, provider, config, logger, archive, configPath);
         if (success) {
             return;
         }
@@ -224,6 +231,7 @@ async function handleError(
  * @param config - configuration used for the previous request
  * @param logger - reference to the logger instance
  * @param archive - archive file that is to be deployed
+ * @param configPath - path to config file
  * @returns true if the error was handled otherwise false is return or an error is raised
  */
 async function handleAxiosError(
@@ -232,7 +240,8 @@ async function handleAxiosError(
     provider: AbapServiceProvider,
     config: AbapDeployConfig,
     logger: Logger,
-    archive: Buffer
+    archive: Buffer,
+    configPath?: string
 ): Promise<boolean> {
     switch (response?.status) {
         case 401:
@@ -247,7 +256,7 @@ async function handleAxiosError(
             const credentials = await promptCredentials(service.defaults.auth?.username);
             if (Object.keys(credentials).length) {
                 service.defaults.auth = credentials;
-                await deploymentCommands[command](provider, config, logger, archive);
+                await deploymentCommands[command](provider, config, logger, archive, configPath);
                 return true;
             } else {
                 return false;
@@ -255,7 +264,13 @@ async function handleAxiosError(
         case 412:
             logger.warn('An app in the same repository with different sap app id found.');
             if (config.yes || (await promptConfirmation('Do you want to overwrite (Y/n)?'))) {
-                await deploymentCommands[command](provider, { ...config, safe: false, retry: false }, logger, archive);
+                await deploymentCommands[command](
+                    provider,
+                    { ...config, safe: false, retry: false },
+                    logger,
+                    archive,
+                    configPath
+                );
                 return true;
             } else {
                 return false;
@@ -287,17 +302,45 @@ function getUi5AbapRepositoryService(
     return service;
 }
 
+async function updateYaml(config: AbapDeployConfig, logger: Logger, configPath?: string) {
+    const deployYamlPath = configPath ? configPath : join(process.cwd(), 'ui5-deploy.yaml');
+    if (existsSync(deployYamlPath)) {
+        try {
+            const fs = create(createStorage());
+            const ui5DeployConfig = await UI5Config.newInstance(fs.read(deployYamlPath));
+            const abapTarget = {
+                ...config.target,
+                scp: config.target.cloud
+            } as AbapTarget;
+            ui5DeployConfig.updateAbapDeployTask(abapTarget, config.app);
+            fs.write(deployYamlPath, ui5DeployConfig.toString());
+            return new Promise((resolve) => {
+                fs.commit(resolve);
+                logger.info('Updated the ui5-deploy.yaml');
+            });
+        } catch {
+            logger.error(
+                `Failed to update the ui5-deploy.yaml, please manually update with new transport: ${config.app.transport}`
+            );
+        }
+    } else {
+        logger.error('No ui5-deploy.yaml found');
+    }
+}
+
 /**
  * Creates a new transport request using adt service.
  *
  * @param provider - instance of the axios-extension abap service provider
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
+ * @param configPath - path to config file
  */
 async function createTransportRequest(
     provider: AbapServiceProvider,
     config: AbapDeployConfig,
-    logger: Logger
+    logger: Logger,
+    configPath?: string
 ): Promise<void> {
     const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
     if (adtService) {
@@ -312,6 +355,7 @@ async function createTransportRequest(
             if (transportRequest) {
                 config.app.transport = transportRequest;
                 logger.info(`New transport request created : ${transportRequest}`);
+                await updateYaml(config, logger, configPath);
             } else {
                 logger.warn('Transport request was not created');
             }
@@ -329,12 +373,14 @@ async function createTransportRequest(
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  * @param archive - archive file that is to be deployed
+ * @param configPath - path to config file
  */
 async function runCommand(
     command: TryCommands,
     config: AbapDeployConfig,
     logger: Logger,
-    archive: Buffer = Buffer.from('')
+    archive: Buffer = Buffer.from(''),
+    configPath?: string
 ): Promise<void> {
     const provider = await getAbapServiceProvider(config, logger);
     logger.info(
@@ -342,7 +388,7 @@ async function runCommand(
             config.test === true ? ' in test mode' : ''
         }.`
     );
-    await deploymentCommands[command](provider, config, logger, archive);
+    await deploymentCommands[command](provider, config, logger, archive, configPath);
 }
 
 /**
@@ -352,18 +398,19 @@ async function runCommand(
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  * @param archive - archive file that is to be deployed
+ * @param configPath - path to config file
  */
 async function tryDeploy(
     provider: AbapServiceProvider,
     config: AbapDeployConfig,
     logger: Logger,
-    archive: Buffer
+    archive: Buffer,
+    configPath?: string
 ): Promise<void> {
     const service = getUi5AbapRepositoryService(provider, config, logger);
     if (config.createTransport) {
-        await createTransportRequest(provider, config, logger);
+        await createTransportRequest(provider, config, logger, configPath);
     }
-
     try {
         await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
         if (config.test === true) {
@@ -374,7 +421,7 @@ async function tryDeploy(
             logger.info('Deployment Successful.');
         }
     } catch (error) {
-        await handleError(TryCommands.Deploy, error, provider, config, logger, archive);
+        await handleError(TryCommands.Deploy, error, provider, config, logger, archive, configPath);
     }
 }
 
@@ -384,12 +431,18 @@ async function tryDeploy(
  * @param archive - archive file that is to be deployed
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
+ * @param configPath - path to config file
  */
-export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger): Promise<void> {
+export async function deploy(
+    archive: Buffer,
+    config: AbapDeployConfig,
+    logger: Logger,
+    configPath?: string
+): Promise<void> {
     if (config.keep) {
         writeFileSync(`archive.zip`, archive);
     }
-    await runCommand(TryCommands.Deploy, config, logger, archive);
+    await runCommand(TryCommands.Deploy, config, logger, archive, configPath);
 }
 
 /**
