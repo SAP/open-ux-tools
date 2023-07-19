@@ -17,7 +17,6 @@ import { NAV_CONFIG_NS, t } from '../i18n';
  * @param inboundConfig.title Represents a title; to make this property language dependent (recommended), use a key in double curly brackets '{{key}}' and add to i18n file
  * @param inboundConfig.subTitle optional, Represents a subtitle; to make this property language dependent (recommended), use a key in double curly brackets '{{key}}' and add to i18n file
  * @param overwrite overwrite existing config
- * @param skipValidation skip validation that the application structure is suitable for inbound navigation addition, for example, if validation is previously done
  * @param fs file system reference
  * @returns file system reference
  */
@@ -25,25 +24,12 @@ export async function generateInboundNavigationConfig(
     appRootPath: string,
     { semanticObject, action, title, subTitle }: Partial<ManifestNamespace.Inbound[string]>,
     overwrite = false,
-    skipValidation = false,
     fs?: Editor
 ): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
-    const manifestPath = join(await getWebappPath(appRootPath), FileName.Manifest);
-    const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
-
-    if (!skipValidation) {
-        if (!manifest) {
-            throw Error(t('error.manifestNotFound', { path: manifestPath, ns: NAV_CONFIG_NS }));
-        }
-
-        if (!manifest['sap.app']) {
-            throw Error(t('error.sapAppNotDefined', { ns: NAV_CONFIG_NS }));
-        }
-    }
-
+    const { manifest, manifestPath } = await readManifest(appRootPath, fs);
     const inboundKey = `${semanticObject}-${action}`;
 
     if (!overwrite && manifest['sap.app'].crossNavigation?.inbounds[inboundKey]) {
@@ -71,4 +57,30 @@ export async function generateInboundNavigationConfig(
 
     fs.extendJSON(manifestPath, { 'sap.app': Object.assign(manifest['sap.app'], { crossNavigation }) });
     return fs;
+}
+
+/**
+ * Validates the basic manifest structure and existence required for inbound navigation addition.
+ *
+ * @param appPath path to the application
+ * @param fs Editor instance
+ * @throws an error specifiying the validation failure
+ * @returns the manifest object and manifest path
+ */
+export async function readManifest(appPath: string, fs: Editor): Promise<{ manifest: Manifest; manifestPath: string }> {
+    const manifestPath = join(await getWebappPath(appPath), FileName.Manifest);
+    const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
+
+    if (!manifest) {
+        throw Error(t('error.manifestNotFound', { path: manifestPath, ns: NAV_CONFIG_NS }));
+    }
+
+    if (!manifest['sap.app']) {
+        throw Error(t('error.sapAppNotDefined', { ns: NAV_CONFIG_NS }));
+    }
+
+    return {
+        manifest,
+        manifestPath
+    };
 }

@@ -79,22 +79,4 @@ describe('Unit tests for navigation config generation', () => {
             })
         ).rejects.toThrowErrorMatchingInlineSnapshot(`"Manifest is missing required section 'sap.app'"`);
     });
-
-    test('skips basic validation', async () => {
-        const appPathNoInbounds = join(fixturePath, '/not-existing-app');
-        // Since we are skipping validation, but there is no app an error will be thrown later
-        await expect(() =>
-            generateInboundNavigationConfig(
-                appPathNoInbounds,
-                {
-                    semanticObject: 'semanticObject1',
-                    action: 'action1',
-                    title: 'title1',
-                    subTitle: 'subtitle1'
-                },
-                false,
-                true
-            )
-        ).rejects.toThrowError(`Cannot read properties of undefined (reading 'sap.app')`);
-    });
 });

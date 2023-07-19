@@ -1,12 +1,11 @@
 import type { PromptObject } from 'prompts';
 import { prompt } from 'prompts';
 import { NAV_CONFIG_NS, t } from '../i18n';
-import { FileName, getWebappPath } from '@sap-ux/project-access';
-import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
-import { join } from 'path';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
+import { readManifest } from '../navigation-config';
 
 /**
  * Prompt for inbound navigation configuration values.
@@ -17,17 +16,8 @@ import type { Editor } from 'mem-fs-editor';
 export async function promptInboundNavigationConfig(
     basePath: string
 ): Promise<{ config: Partial<ManifestNamespace.Inbound[string]> | undefined; fs: Editor }> {
-    const manifestPath = join(await getWebappPath(basePath), FileName.Manifest);
     const fs = create(createStorage());
-    const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
-
-    if (!manifest) {
-        throw Error(t('error.manifestNotFound', { path: basePath, ns: NAV_CONFIG_NS }));
-    }
-
-    if (!manifest?.['sap.app']) {
-        throw Error(t('error.sapAppNotDefined', { ns: NAV_CONFIG_NS }));
-    }
+    const { manifest } = await readManifest(basePath, fs);
 
     const inbounds = manifest?.['sap.app']?.crossNavigation?.inbounds;
     let config = await prompt(getPrompts(Object.keys(inbounds ?? {})));
