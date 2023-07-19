@@ -17,6 +17,7 @@ import { NAV_CONFIG_NS, t } from '../i18n';
  * @param inboundConfig.title Represents a title; to make this property language dependent (recommended), use a key in double curly brackets '{{key}}' and add to i18n file
  * @param inboundConfig.subTitle optional, Represents a subtitle; to make this property language dependent (recommended), use a key in double curly brackets '{{key}}' and add to i18n file
  * @param overwrite overwrite existing config
+ * @param skipValidation skip validation that the application structure is suitable for inbound navigation addition, for example, if validation is previously done
  * @param fs file system reference
  * @returns file system reference
  */
@@ -24,6 +25,7 @@ export async function generateInboundNavigationConfig(
     appRootPath: string,
     { semanticObject, action, title, subTitle }: Partial<ManifestNamespace.Inbound[string]>,
     overwrite = false,
+    skipValidation = false,
     fs?: Editor
 ): Promise<Editor> {
     if (!fs) {
@@ -32,12 +34,14 @@ export async function generateInboundNavigationConfig(
     const manifestPath = join(await getWebappPath(appRootPath), FileName.Manifest);
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
 
-    if (!manifest) {
-        throw Error(t('error.manifestNotFound', { path: manifestPath, ns: NAV_CONFIG_NS }));
-    }
+    if (!skipValidation) {
+        if (!manifest) {
+            throw Error(t('error.manifestNotFound', { path: manifestPath, ns: NAV_CONFIG_NS }));
+        }
 
-    if (!manifest['sap.app']) {
-        throw Error(t('error.sapAppNotDefined', { ns: NAV_CONFIG_NS }));
+        if (!manifest['sap.app']) {
+            throw Error(t('error.sapAppNotDefined', { ns: NAV_CONFIG_NS }));
+        }
     }
 
     const inboundKey = `${semanticObject}-${action}`;

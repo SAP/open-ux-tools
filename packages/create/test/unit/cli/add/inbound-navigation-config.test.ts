@@ -122,6 +122,13 @@ describe('Test command add navigation-config', () => {
         const command = new Command('add');
         addInboundNavigationConfigCommand(command);
         await command.parseAsync(getArgv(['inbound-navigation', appRoot]));
-        expect(genNavSpy).toBeCalledWith(expect.stringContaining('bare-minimum'), promptingResult.config, true, fsMock);
+        // Should be called skipping validation as this is done while prompting in some cases
+        expect(genNavSpy).toBeCalledWith(
+            expect.stringContaining('bare-minimum'),
+            promptingResult.config,
+            true,
+            true,
+            fsMock
+        );
     });
 });

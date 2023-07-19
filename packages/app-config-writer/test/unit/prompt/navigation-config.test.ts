@@ -76,7 +76,7 @@ describe('Test promptInboundNavigationConfig', () => {
         ]);
     });
 
-    test('prompting returns undefined config when "overwrite" false', async () => {
+    test('prompting returns undefined config when "overwrite" false and inbound exists', async () => {
         const basePath = join(__dirname, '../../fixtures/navigation-config/ui5-app-inbounds');
         jest.spyOn(prompts, 'prompt').mockResolvedValue({
             semanticObject: 'so1',

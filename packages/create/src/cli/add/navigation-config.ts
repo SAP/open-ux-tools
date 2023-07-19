@@ -34,7 +34,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
 
         const { config, fs } = await promptInboundNavigationConfig(basePath);
         if (config) {
-            await generateInboundNavigationConfig(basePath, config, true, fs);
+            await generateInboundNavigationConfig(basePath, config, true, true, fs);
         }
         await traceChanges(fs);
         if (!simulate) {
