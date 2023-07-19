@@ -15,7 +15,7 @@
             ]
         },
         "types": [
-            "@sapui5/ts-types-esm"
+            "<%- ui5.typesPackage %>"
         ]
     },
     "include": [

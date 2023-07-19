@@ -1,4 +1,4 @@
-import { UI5_DEFAULT, getEsmTypesVersion, getTypesVersion } from '@sap-ux/ui5-config';
+import { UI5_DEFAULT, getEsmTypesVersion, getTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
 import type { App, AppOptions, Package, UI5, UI5Framework } from '../types';
 import versionToManifestDescMapping from '@ui5/manifest/mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 import { getUI5Libs } from './ui5Libs';
@@ -79,6 +79,7 @@ export function mergeUi5(ui5: Partial<UI5>, options?: Partial<AppOptions>): UI5 
     merged.descriptorVersion = getManifestVersion(merged.minUI5Version, ui5.descriptorVersion);
     merged.typesVersion =
         ui5.typesVersion ?? (options?.typescript ? getEsmTypesVersion : getTypesVersion)(merged.minUI5Version);
+    merged.typesPackage = getTypesPackage(merged.typesVersion);
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
 

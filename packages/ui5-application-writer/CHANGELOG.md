@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.24.0
+
+### Minor Changes
+
+-   eba8741e: Use @sapui5/types with UI5 1.113 and newer
+
 ## 0.23.5
 
 ### Patch Changes

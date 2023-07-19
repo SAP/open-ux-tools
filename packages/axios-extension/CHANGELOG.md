@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.3.6
+
+### Patch Changes
+
+-   23059e62: log longtext_url as clickable link
+
 ## 1.3.5
 
 ### Patch Changes
