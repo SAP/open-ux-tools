@@ -19,7 +19,7 @@ import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { Logger } from '@sap-ux/logger';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
-import { writeFileSync } from 'fs';
+import { writeFileSync, existsSync } from 'fs';
 import type { AbapDeployConfig, UrlAbapTarget } from '../types';
 import { getConfigForLogging, isUrlTarget } from './config';
 import { promptConfirmation, promptCredentials, promptServiceKeys } from './prompt';
@@ -28,7 +28,6 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { AbapTarget } from '@sap-ux/ui5-config';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { existsSync } from 'fs';
 
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
 type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> & { refreshToken?: string };
@@ -313,7 +312,7 @@ function getUi5AbapRepositoryService(
  * @returns
  */
 async function updateYaml(config: AbapDeployConfig, logger: Logger, configPath?: string): Promise<void> {
-    const deployYamlPath = configPath ? configPath : join(process.cwd(), 'ui5-deploy.yaml');
+    const deployYamlPath = configPath ?? join(process.cwd(), 'ui5-deploy.yaml');
     if (existsSync(deployYamlPath)) {
         try {
             const fs = create(createStorage());
@@ -355,7 +354,7 @@ async function createTransportRequest(
     const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
     if (adtService) {
         const createTransportParams = {
-            packageName: config.app.package || '',
+            packageName: config.app.package ?? '',
             ui5AppName: config.app.name,
             description: 'Created by @sap-ux/deploy-tooling'
         };
@@ -373,7 +372,6 @@ async function createTransportRequest(
             );
         }
     }
-    return;
 }
 
 /**

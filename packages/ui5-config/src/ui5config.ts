@@ -282,7 +282,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public updateAbapDeployTask(target: AbapTarget, app: AbapApp): UI5Config {
+    public updateAbapDeployTask(target: AbapTarget, app: AbapApp): this {
         const deployToAbap = this.findCustomTask('deploy-to-abap');
         if (deployToAbap) {
             this.document.updateAt({
