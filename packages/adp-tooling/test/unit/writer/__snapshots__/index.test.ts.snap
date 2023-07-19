@@ -87,8 +87,8 @@ my.test.app_sap.app.title=Adaptation of the.original.app",
   \\"layer\\": \\"CUSTOMER_BASE\\",
   \\"fileType\\": \\"appdescr_variant\\",
   \\"reference\\": \\"the.original.app\\",
-  \\"id\\": \\"my.test.app\\",
-  \\"namespace\\": \\"apps/the.original.app/appVariants/my.test.app/\\",
+  \\"id\\": \\"customer.my.test.app\\",
+  \\"namespace\\": \\"apps/the.original.app/appVariants/customer.my.test.app/\\",
   \\"version\\": \\"0.1.0\\",
   \\"content\\": [
     {
