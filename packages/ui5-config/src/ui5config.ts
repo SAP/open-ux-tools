@@ -275,6 +275,30 @@ export class UI5Config {
     }
 
     /**
+     * Updates the ABAP deployment config.
+     *
+     * @param target system that this app is to be deployed to
+     * @param app application configuration for the deployment to ABAP
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public updateAbapDeployTask(target: AbapTarget, app: AbapApp): UI5Config {
+        const deployToAbap = this.findCustomTask('deploy-to-abap');
+        if (deployToAbap) {
+            this.document.updateAt({
+                path: 'builder.customTasks',
+                matcher: { key: 'name', value: 'deploy-to-abap' },
+                value: {
+                    ...deployToAbap,
+                    configuration: { target, app }
+                },
+                mode: 'overwrite'
+            });
+        }
+        return this;
+    }
+
+    /**
      * Remove a middleware form the UI5 config.
      *
      * @param name name of the middleware that is to be removed
