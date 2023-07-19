@@ -24,7 +24,8 @@ import type { AbapDeployConfig, UrlAbapTarget } from '../types';
 import { getConfigForLogging, isUrlTarget } from './config';
 import { promptConfirmation, promptCredentials, promptServiceKeys } from './prompt';
 import { create as createStorage } from 'mem-fs';
-import { UI5Config, AbapTarget } from '@sap-ux/ui5-config';
+import { UI5Config } from '@sap-ux/ui5-config';
+import type { AbapTarget } from '@sap-ux/ui5-config';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import { existsSync } from 'fs';
@@ -283,6 +284,7 @@ async function handleAxiosError(
 /**
  * Generate a Ui5AbapRepositoryService instance from the supplied deployment config.
  *
+ * @param provider - instance of the axios-extension abap service provider
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  * @returns service returns the UI5 ABAP Repository service
