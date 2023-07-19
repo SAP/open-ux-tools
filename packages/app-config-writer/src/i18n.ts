@@ -1,8 +1,10 @@
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/smartlinks-config.json';
+import smartLinksRes from './translations/smartlinks-config.json';
+import navConfigRes from './translations/navigation-config.json';
 
-const NS = 'app-config-writer';
+export const SMART_LINKS_NS = 'app-config-writer:smartLinksConfig';
+export const NAV_CONFIG_NS = 'app-config-writer:navConfig';
 
 /**
  * Initialize i18next with the translations for this module.
@@ -11,13 +13,14 @@ export async function initI18n(): Promise<void> {
     await i18next.init({
         resources: {
             en: {
-                [NS]: translations
+                [SMART_LINKS_NS]: smartLinksRes,
+                [NAV_CONFIG_NS]: navConfigRes
             }
         },
         lng: 'en',
         fallbackLng: 'en',
-        defaultNS: NS,
-        ns: [NS]
+        defaultNS: SMART_LINKS_NS, // Default since first to add translations
+        ns: [SMART_LINKS_NS, NAV_CONFIG_NS]
     });
 }
 
