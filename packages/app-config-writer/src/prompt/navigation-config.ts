@@ -43,12 +43,13 @@ export async function promptInboundNavigationConfig(
 }
 
 /**
- * Validate a text input based on the passed parameters.
+ * Validates that text input does not have zero length and optionally is less than the specified maximum length.
+ * Returns an end user message if validation fails.
  *
  * @param input the text input to validate
  * @param inputName the name of the input as seen by the user
  * @param maxLength optional, the maximum length of text to allow
- * @returns true, if all validation checks pass or a message explainging the validation failure
+ * @returns true, if all validation checks pass or a message explaining the validation failure
  */
 function validateText(input: string, inputName: string, maxLength = 0): boolean | string {
     if (input?.trim().length === 0) {
