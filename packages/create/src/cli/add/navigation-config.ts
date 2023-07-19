@@ -4,7 +4,7 @@ import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
 
 /**
- * Add the "add navigation config" command to a passed command.
+ * Add the "add inbound-navigation" command to a passed command.
  *
  * @param cmd - commander command for adding navigation inbounds config command
  */
@@ -21,7 +21,7 @@ export function addInboundNavigationConfigCommand(cmd: Command): void {
 }
 
 /**
- * Adds an inbound navigation config to an app or project. To prevent overwriting existing inbounds will be checked.
+ * Adds an inbound navigation config to an app. To prevent overwriting existing inbounds will be checked.
  *
  * @param basePath - path to application root
  * @param simulate - if true, do not write but just show what would be change; otherwise write
@@ -41,7 +41,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
             fs.commit(() => logger.info(`Inbound navigation configuration complete.`));
         }
     } catch (error) {
-        logger.error(`Error while executing add inbound navigation-config '${(error as Error).message}'`);
+        logger.error(`Error while executing add inbound navigation configuration '${(error as Error).message}'`);
         logger.debug(error as Error);
     }
 }

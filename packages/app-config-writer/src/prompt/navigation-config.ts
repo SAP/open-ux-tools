@@ -16,7 +16,7 @@ import type { Editor } from 'mem-fs-editor';
  */
 export async function promptInboundNavigationConfig(
     basePath: string
-): Promise<{ config: Partial<ManifestNamespace.Inbound>; fs: Editor }> {
+): Promise<{ config: Partial<ManifestNamespace.Inbound[string]> | undefined; fs: Editor }> {
     const manifestPath = join(await getWebappPath(basePath), FileName.Manifest);
     const fs = create(createStorage());
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
