@@ -375,7 +375,7 @@ async function updateYaml(config: AbapDeployConfig, logger: Logger, configPath?:
             fs.write(deployYamlPath, ui5DeployConfig.toString());
             return new Promise((resolve) => {
                 fs.commit(resolve);
-                logger.info('Updated the ui5-deploy.yaml');
+                logger.info('Updated the ui5-deploy.yaml with the new transport request');
             });
         } catch {
             logger.error(
@@ -420,6 +420,7 @@ async function createTransportRequest(
             logger.error(
                 'Transport request could not be created. Please create it manually and re-run deployment configuration for this project'
             );
+            throw new Error(e);
         }
     }
 }
