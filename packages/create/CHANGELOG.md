@@ -1,5 +1,17 @@
 # @sap-ux/create
 
+## 0.4.0
+
+### Minor Changes
+
+-   d2fd9a58: New generate adaptation-project sub command
+
+### Patch Changes
+
+-   Updated dependencies [d2fd9a58]
+    -   @sap-ux/adp-tooling@0.1.0
+    -   @sap-ux/app-config-writer@0.1.2
+
 ## 0.3.1
 
 ### Patch Changes
