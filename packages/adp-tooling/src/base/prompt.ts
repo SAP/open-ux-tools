@@ -48,7 +48,8 @@ export async function promptGeneratorInput({
                 } else {
                     return input;
                 }
-            }
+            },
+            validate: (input) => input?.length > 0
         },
         {
             type: 'text',
