@@ -1,5 +1,5 @@
 import prompts from 'prompts';
-import { deploy, getCredentials, undeploy } from '../../../src/base/deploy';
+import { createTransportRequest, deploy, getCredentials, undeploy } from '../../../src/base/deploy';
 import type { BackendSystemKey } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../../../src/types';
@@ -14,7 +14,6 @@ import {
 import { join } from 'path';
 import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
 import { readFileSync } from 'fs';
-import fs from 'fs';
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -238,7 +237,6 @@ describe('base/deploy', () => {
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
-            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);
 
             await deploy(
                 archive,
@@ -279,6 +277,14 @@ describe('base/deploy', () => {
             expect(mockedUi5RepoService.undeploy).toBeCalledWith({ bsp: app, testMode: undefined });
             await undeploy({ app, target, test: true }, nullLogger);
             expect(mockedUi5RepoService.undeploy).toBeCalledWith({ bsp: app, testMode: true });
+        });
+    });
+
+    describe('createTransportRequest', () => {
+        test('Returns a new transport request during deployment', async () => {
+            mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
+            const transportRequest = await createTransportRequest({ app, target }, nullLogger);
+            expect(transportRequest).toBe('~transport123');
         });
     });
 });

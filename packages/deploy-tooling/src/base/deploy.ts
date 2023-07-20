@@ -19,15 +19,10 @@ import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { Logger } from '@sap-ux/logger';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
-import { writeFileSync, existsSync } from 'fs';
+import { writeFileSync } from 'fs';
 import type { AbapDeployConfig, UrlAbapTarget } from '../types';
 import { getConfigForLogging, isUrlTarget } from './config';
 import { promptConfirmation, promptCredentials, promptServiceKeys } from './prompt';
-import { create as createStorage } from 'mem-fs';
-import { UI5Config } from '@sap-ux/ui5-config';
-import type { AbapTarget } from '@sap-ux/ui5-config';
-import { create } from 'mem-fs-editor';
-import { join } from 'path';
 
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
 type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> & { refreshToken?: string };
@@ -337,12 +332,13 @@ function getUi5AbapRepositoryService(
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  * @param provider - instance of the axios-extension abap service provider (it is created if not passed in)
+ * @returns transportRequest
  */
 export async function createTransportRequest(
     config: AbapDeployConfig,
     logger: Logger,
     provider?: AbapServiceProvider
-): Promise<void> {
+): Promise<string | void> {
     if (!provider) {
         provider = await getAbapServiceProvider(config, logger);
     }
@@ -360,6 +356,7 @@ export async function createTransportRequest(
             if (transportRequest) {
                 config.app.transport = transportRequest;
                 logger.info(`Transport request ${transportRequest} created for deployment.`);
+                return transportRequest;
             }
         } catch (e) {
             logger.error(
