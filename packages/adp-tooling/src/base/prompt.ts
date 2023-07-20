@@ -30,7 +30,6 @@ export async function promptGeneratorInput({
             ],
             name: 'layer',
             message: 'Flex layer:'
-            // initial: 0
         },
         {
             type: 'text',
