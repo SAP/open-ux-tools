@@ -8,11 +8,13 @@ import {
     mockIsAppStudio,
     mockedUi5RepoService,
     mockListDestinations,
-    mockCreateForAbap
+    mockCreateForAbap,
+    mockedAdtService
 } from '../../__mocks__';
 import { join } from 'path';
 import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
 import { readFileSync } from 'fs';
+import fs from 'fs';
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -229,6 +231,126 @@ describe('base/deploy', () => {
             } catch (error) {
                 expect(error).toBe(unknownError);
             }
+        });
+
+        test('Creates new transport request during deployment', async () => {
+            const credentials = { username: '~username', password: '~password' };
+            mockedStoreService.read.mockResolvedValueOnce(credentials);
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+            mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
+            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);
+            await deploy(archive, { app, target }, nullLogger);
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: undefined,
+                safeMode: undefined
+            });
+            mockedUi5RepoService.deploy.mockClear();
+
+            await deploy(
+                archive,
+                { app, target, test: true, safe: false, credentials, createTransport: true },
+                nullLogger,
+                'mock/path/ui5-deploy.yaml'
+            );
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
+            mockedUi5RepoService.deploy.mockClear();
+            mockCreateForAbap.mockClear();
+
+            const params = { hello: 'world' };
+            await deploy(
+                archive,
+                { app, target: { ...target, params }, test: true, safe: false, credentials },
+                nullLogger
+            );
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: { ...app, transport: '~transport123' },
+                testMode: true,
+                safeMode: false
+            });
+            expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
+        });
+
+        test('Creates new transport request during deployment, does not update yaml file', async () => {
+            const credentials = { username: '~username', password: '~password' };
+            mockedStoreService.read.mockResolvedValueOnce(credentials);
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+            mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
+            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false);
+
+            await deploy(archive, { app, target }, nullLogger);
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: undefined,
+                safeMode: undefined
+            });
+            mockedUi5RepoService.deploy.mockClear();
+
+            await deploy(
+                archive,
+                { app, target, test: true, safe: false, credentials, createTransport: true },
+                nullLogger,
+                'mock/path/ui5-deploy.yaml'
+            );
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
+            mockedUi5RepoService.deploy.mockClear();
+            mockCreateForAbap.mockClear();
+
+            const params = { hello: 'world' };
+            await deploy(
+                archive,
+                { app, target: { ...target, params }, test: true, safe: false, credentials },
+                nullLogger
+            );
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: { ...app, transport: '~transport123' },
+                testMode: true,
+                safeMode: false
+            });
+            expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
+        });
+
+        test('Throws error creating new transport request during deployment', async () => {
+            const credentials = { username: '~username', password: '~password' };
+            mockedStoreService.read.mockResolvedValueOnce(credentials);
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+            mockedAdtService.createTransportRequest.mockRejectedValueOnce(new Error());
+
+            await deploy(archive, { app, target }, nullLogger);
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: undefined,
+                safeMode: undefined
+            });
+            mockedUi5RepoService.deploy.mockClear();
+
+            await deploy(
+                archive,
+                { app, target, test: true, safe: false, credentials, createTransport: true },
+                nullLogger
+            );
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
+            mockedUi5RepoService.deploy.mockClear();
+            mockCreateForAbap.mockClear();
+
+            const params = { hello: 'world' };
+            await deploy(
+                archive,
+                { app, target: { ...target, params }, test: true, safe: false, credentials },
+                nullLogger
+            );
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: true,
+                safeMode: false
+            });
+            expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
         });
     });
 

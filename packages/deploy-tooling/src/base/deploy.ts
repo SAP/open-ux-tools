@@ -207,7 +207,15 @@ async function handleError(
 ): Promise<void> {
     const retry = config.retry === undefined ? true : config.retry;
     if (retry && isAxiosError(error)) {
-        const success = await handleAxiosError(command, error.response, provider, config, logger, archive, configPath);
+        const success = await axiosErrorRetryHandler(
+            command,
+            error.response,
+            provider,
+            config,
+            logger,
+            archive,
+            configPath
+        );
         if (success) {
             return;
         }
@@ -223,6 +231,75 @@ async function handleError(
 }
 
 /**
+ * Handler for 412 error code.
+ *
+ * @param command - the request type deploy | undeploy
+ * @param provider - instance of the axios-extension abap service provider
+ * @param config - configuration used for the previous request
+ * @param logger - reference to the logger instance
+ * @param archive - archive file that is to be deployed
+ * @param configPath - path to config file
+ * @returns true if the error was handled otherwise false is returned
+ */
+async function handle412Error(
+    command: TryCommands,
+    provider: AbapServiceProvider,
+    config: AbapDeployConfig,
+    logger: Logger,
+    archive: Buffer,
+    configPath?: string
+) {
+    logger.warn('An app in the same repository with different sap app id found.');
+    if (config.yes || (await promptConfirmation('Do you want to overwrite (Y/n)?'))) {
+        await deploymentCommands[command](
+            provider,
+            { ...config, safe: false, retry: false },
+            logger,
+            archive,
+            configPath
+        );
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Handler for 401 error code.
+ *
+ * @param command - the request type deploy | undeploy
+ * @param provider - instance of the axios-extension abap service provider
+ * @param config - configuration used for the previous request
+ * @param logger - reference to the logger instance
+ * @param archive - archive file that is to be deployed
+ * @param configPath - path to config file
+ * @returns true if the error was handled otherwise false is returned
+ */
+async function handle401Error(
+    command: TryCommands,
+    provider: AbapServiceProvider,
+    config: AbapDeployConfig,
+    logger: Logger,
+    archive: Buffer,
+    configPath?: string
+) {
+    logger.warn(`${command === TryCommands.Deploy ? 'Deployment' : 'Undeployment'} failed with authentication error.`);
+    logger.info(
+        'Please maintain correct credentials to avoid seeing this error\n\t(see help: https://www.npmjs.com/package/@sap/ux-ui5-tooling#setting-environment-variables-in-a-env-file)'
+    );
+    logger.info('Please enter your credentials.');
+    const service = getUi5AbapRepositoryService(provider, config, logger);
+    const credentials = await promptCredentials(service.defaults.auth?.username);
+    if (Object.keys(credentials).length) {
+        service.defaults.auth = credentials;
+        await deploymentCommands[command](provider, config, logger, archive, configPath);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
  * Main function for different deploy retry handling.
  *
  * @param command - the request type deploy | undeploy
@@ -234,7 +311,7 @@ async function handleError(
  * @param configPath - path to config file
  * @returns true if the error was handled otherwise false is return or an error is raised
  */
-async function handleAxiosError(
+async function axiosErrorRetryHandler(
     command: TryCommands,
     response: AxiosError['response'],
     provider: AbapServiceProvider,
@@ -245,36 +322,9 @@ async function handleAxiosError(
 ): Promise<boolean> {
     switch (response?.status) {
         case 401:
-            logger.warn(
-                `${command === TryCommands.Deploy ? 'Deployment' : 'Undeployment'} failed with authentication error.`
-            );
-            logger.info(
-                'Please maintain correct credentials to avoid seeing this error\n\t(see help: https://www.npmjs.com/package/@sap/ux-ui5-tooling#setting-environment-variables-in-a-env-file)'
-            );
-            logger.info('Please enter your credentials.');
-            const service = getUi5AbapRepositoryService(provider, config, logger);
-            const credentials = await promptCredentials(service.defaults.auth?.username);
-            if (Object.keys(credentials).length) {
-                service.defaults.auth = credentials;
-                await deploymentCommands[command](provider, config, logger, archive, configPath);
-                return true;
-            } else {
-                return false;
-            }
+            return handle401Error(command, provider, config, logger, archive, configPath);
         case 412:
-            logger.warn('An app in the same repository with different sap app id found.');
-            if (config.yes || (await promptConfirmation('Do you want to overwrite (Y/n)?'))) {
-                await deploymentCommands[command](
-                    provider,
-                    { ...config, safe: false, retry: false },
-                    logger,
-                    archive,
-                    configPath
-                );
-                return true;
-            } else {
-                return false;
-            }
+            return handle412Error(command, provider, config, logger, archive, configPath);
         default:
             return false;
     }
@@ -309,7 +359,7 @@ function getUi5AbapRepositoryService(
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  * @param configPath - path to the config file
- * @returns
+ * @returns Promise<void>
  */
 async function updateYaml(config: AbapDeployConfig, logger: Logger, configPath?: string): Promise<void> {
     const deployYamlPath = configPath ?? join(process.cwd(), 'ui5-deploy.yaml');
