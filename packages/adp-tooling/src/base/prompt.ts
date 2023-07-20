@@ -29,7 +29,7 @@ export async function promptGeneratorInput({
                 { title: flexLayer.VENDOR, value: flexLayer.VENDOR }
             ],
             name: 'layer',
-            message: 'Flex layer:',
+            message: 'Flex layer:'
             // initial: 0
         },
         {
