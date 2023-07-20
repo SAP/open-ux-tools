@@ -108,5 +108,19 @@ describe('cli/config', () => {
                 url: config.target.url
             });
         });
+
+        test('validate setting createTransport if bookmark found', async () => {
+            const merged = await mergeConfig(
+                { ...config, app: { ...config.app, transport: 'REPLACE_WITH_TRANSPORT' } },
+                {}
+            );
+            expect(merged.createTransport).toEqual(true);
+        });
+
+        test('validate setting config path if not passed', async () => {
+            const options = { archivePath: 'test/folder/archive.zip' } as CliOptions;
+            await mergeConfig({ ...config, createTransport: true }, options);
+            expect(options.config).toEqual('test/folder/ui5-deploy.yaml');
+        });
     });
 });
