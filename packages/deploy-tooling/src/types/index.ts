@@ -67,7 +67,7 @@ export interface CommonOptions {
     retry?: boolean;
 
     /**
-     * If set to true, a transport request will be created during deployment, and written to the ui5-deploy.yaml
+     * If set to true, a transport request will be created during deployment
      */
     createTransport?: boolean;
 }
