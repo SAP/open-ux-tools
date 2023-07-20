@@ -115,11 +115,12 @@ export class FlpSandbox {
         // add route for the sandbox.html
         this.router.get(this.config.path, (req: Request, res: Response & { _livereload?: boolean }) => {
             const config = { ...this.templateConfig };
-            if (req.query['fiori-tools-rta-mode']) {
+            const fioriToolsRtaMode = req.query['fiori-tools-rta-mode'];
+            if (fioriToolsRtaMode) {
                 if (this.config.rta?.layer) {
                     config.flex = {
                         layer: this.config.rta?.layer,
-                        developerMode: false
+                        developerMode: fioriToolsRtaMode === 'forAdaptation' ? true : false
                     };
                 } else {
                     this.logger.error('Fiori tools RTA mode could not be started because the RTA layer is missing.');

@@ -155,6 +155,11 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
         });
 
+        test('test/flp.html?fiori-tools-rta-mode=forAdaptation', async () => {
+            const response = await server.get('/test/flp.html?fiori-tools-rta-mode=forAdaptation').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
         test('WorkspaceConnector.js', async () => {
             const response = await server.get('/resources/preview/WorkspaceConnector.js').expect(200);
             expect(response.text).toMatchSnapshot();
