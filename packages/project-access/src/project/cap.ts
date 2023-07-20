@@ -103,12 +103,29 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
         join(projectRoot, capProjectPaths.db)
     ];
     const model = await cds.load(modelPaths);
-    const services = cds.compile.to['serviceinfo'](model, { root: projectRoot });
-
+    let services = cds.compile.to['serviceinfo'](model, { root: projectRoot });
+    if (services?.map) {
+        services = services?.map((value) => {
+            return {
+                name: value.name,
+                urlPath: uniformUrl(value.urlPath)
+            };
+        });
+    }
     return {
         model,
         services
     };
+}
+
+/**
+ * Remove rogue '\\' - cds windows if needed.
+ *
+ * @param url - url to uniform
+ * @returns - uniform url
+ */
+function uniformUrl(url: string) {
+    return url.replace(/\\/g, '/').replace(/\/\//g, '/');
 }
 
 /**
@@ -141,7 +158,7 @@ export async function readCapServiceMetadataEdmx(
 }
 
 /**
- * Find a service in a list of services.
+ * Find a service in a list of services ignoring leading and trailing slashes.
  *
  * @param services - list of services from cds.compile.to['serviceinfo'](model)
  * @param uri - search uri (usually from data source in manifest.json)
@@ -151,8 +168,8 @@ function findServiceByUri(
     services: { name: string; urlPath: string }[],
     uri: string
 ): { name: string; urlPath: string } | undefined {
-    const searchUri = uri.replace(/[\\/]/g, '/'); // replace all \ and / in service uri due to issues on Windows with backslashes
-    return services.find((srv: { name: string; urlPath: string }) => srv.urlPath.replace(/[\\/]/g, '/') === searchUri);
+    const searchUri = uniformUrl(uri).replace(/(?:^\/)|(?:\/$)/g, '');
+    return services.find((srv) => srv.urlPath.replace(/(?:^\/)|(?:\/$)/g, '') === searchUri);
 }
 
 /**

@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.10.1
+
+### Patch Changes
+
+-   95a8daae: Ignore leading or trailing slashes when searching for services in CAP project
+
 ## 1.10.0
 
 ### Minor Changes
