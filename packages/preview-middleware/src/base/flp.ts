@@ -120,7 +120,7 @@ export class FlpSandbox {
                 if (this.config.rta?.layer) {
                     config.flex = {
                         layer: this.config.rta?.layer,
-                        developerMode: fioriToolsRtaMode === 'forAdaptation' ? true : false
+                        developerMode: fioriToolsRtaMode === 'forAdaptation' || false
                     };
                 } else {
                     this.logger.error('Fiori tools RTA mode could not be started because the RTA layer is missing.');
