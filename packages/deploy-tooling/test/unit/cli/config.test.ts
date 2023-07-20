@@ -118,9 +118,9 @@ describe('cli/config', () => {
         });
 
         test('validate setting config path if not passed', async () => {
-            const options = { archivePath: 'test/folder/archive.zip' } as CliOptions;
+            const options = { archivePath: join('test/folder/archive.zip') } as CliOptions;
             await mergeConfig({ ...config, createTransport: true }, options);
-            expect(options.config).toEqual('test/folder/ui5-deploy.yaml');
+            expect(options.config).toEqual(join('test/folder/ui5-deploy.yaml'));
         });
     });
 });
