@@ -3,6 +3,10 @@ import { existsSync, readFileSync } from 'fs';
 import prompts from 'prompts';
 import type { AdpWriterConfig } from '../types';
 
+const enum flexLayer {
+    CUSTOMER_BASE = 'CUSTOMER_BASE',
+    VENDOR = 'VENDOR'
+}
 /**
  * Prompt the user for the required properties for an adaptation project.
  *
@@ -19,11 +23,33 @@ export async function promptGeneratorInput({
 }: { id?: string; reference?: string; url?: string } = {}): Promise<AdpWriterConfig> {
     const app = await prompts([
         {
+            type: 'select',
+            choices: [
+                { title: flexLayer.CUSTOMER_BASE, value: flexLayer.CUSTOMER_BASE },
+                { title: flexLayer.VENDOR, value: flexLayer.VENDOR }
+            ],
+            name: 'layer',
+            message: 'Flex layer:',
+            // initial: 0
+        },
+        {
             type: 'text',
             name: 'id',
-            message: 'New adaptation id:',
+            message: (_prev, values) => {
+                if (values.layer === flexLayer.CUSTOMER_BASE) {
+                    return 'New adaptation id (CUSTOMER_BASE selected, customer prefix will be automatically added to the id):';
+                } else {
+                    return 'New adaptation id:';
+                }
+            },
             initial: id,
-            validate: (input) => input?.length > 0
+            format: (input, values) => {
+                if (values.layer === flexLayer.CUSTOMER_BASE && !input.startsWith('customer.')) {
+                    return `customer.${input}`;
+                } else {
+                    return input;
+                }
+            }
         },
         {
             type: 'text',
@@ -31,15 +57,6 @@ export async function promptGeneratorInput({
             message: 'Original application id:',
             initial: reference,
             validate: (input) => input?.length > 0
-        },
-        {
-            type: 'select',
-            choices: [
-                { title: 'CUSTOMER_BASE', value: 'CUSTOMER_BASE' },
-                { title: 'VENDOR', value: 'VENDOR' }
-            ],
-            name: 'layer',
-            message: 'Flex layer:'
         },
         {
             type: 'text',

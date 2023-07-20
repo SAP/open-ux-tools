@@ -38,12 +38,11 @@ describe('base/prompts', () => {
         };
 
         test('defaults provided', async () => {
-            prompts.inject([undefined, undefined, undefined, undefined, undefined]);
             const config = await promptGeneratorInput(defaults);
             expect(config).toEqual({
                 app: {
                     id: defaults.id,
-                    layer: 'CUSTOMER_BASE',
+                    layer: undefined,
                     reference: defaults.reference,
                     title: undefined
                 },
@@ -54,7 +53,7 @@ describe('base/prompts', () => {
         });
 
         test('prompt everything', async () => {
-            prompts.inject([defaults.id, defaults.reference, 'VENDOR', 'My Title', defaults.url]);
+            prompts.inject(['VENDOR', defaults.id, defaults.reference, 'My Title', defaults.url]);
             const config = await promptGeneratorInput();
             expect(config).toEqual({
                 app: {

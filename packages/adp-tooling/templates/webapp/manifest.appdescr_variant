@@ -3,8 +3,8 @@
   "layer": "<%- app.layer %>",
   "fileType": "appdescr_variant",
   "reference": "<%- app.reference %>",
-  "id": "<%- app.layer.toLowerCase().replace(/_base/g, '') %>.<%- app.id %>",
-  "namespace": "apps/<%- app.reference %>/appVariants/<%- app.layer.toLowerCase().replace(/_base/g, '') %>.<%- app.id %>/",
+  "id": "<%- app.id %>",
+  "namespace": "apps/<%- app.reference %>/appVariants/<%- app.id %>/",
   "version": "0.1.0",
   "content": [
     {
