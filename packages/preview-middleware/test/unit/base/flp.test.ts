@@ -127,7 +127,10 @@ describe('FlpSandbox', () => {
                             target: '/yet/another/app',
                             local: join(fixtures, 'multi-app')
                         }
-                    ]
+                    ],
+                    rta: {
+                        layer: 'CUSTOMER_BASE'
+                    }
                 },
                 mockProject,
                 mockUtils,
@@ -144,6 +147,16 @@ describe('FlpSandbox', () => {
 
         test('test/flp.html', async () => {
             const response = await server.get('/test/flp.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('test/flp.html?fiori-tools-rta-mode=true', async () => {
+            const response = await server.get('/test/flp.html?fiori-tools-rta-mode=true').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('test/flp.html?fiori-tools-rta-mode=forAdaptation', async () => {
+            const response = await server.get('/test/flp.html?fiori-tools-rta-mode=forAdaptation').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
@@ -164,6 +177,12 @@ describe('FlpSandbox', () => {
                 .send({ fileName: 'id', fileType: 'ctrl_variant' })
                 .expect(200);
             expect(response.text).toMatchInlineSnapshot(`"FILE_CREATED id.ctrl_variant"`);
+
+            await server
+                .post('/preview/api/changes')
+                .set('Content-Type', 'application/json')
+                .send({ hello: 'world' })
+                .expect(400);
         });
 
         test('DELETE /preview/api/changes', async () => {
@@ -173,6 +192,12 @@ describe('FlpSandbox', () => {
                 .send({ fileName: 'id' })
                 .expect(200);
             expect(response.text).toMatchInlineSnapshot(`"FILE_DELETED id.ctrl_variant"`);
+
+            await server
+                .delete('/preview/api/changes')
+                .set('Content-Type', 'application/json')
+                .send({ hello: 'world' })
+                .expect(400);
         });
     });
 });

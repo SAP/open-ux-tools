@@ -142,6 +142,79 @@ importers:
         specifier: 0.24.0
         version: 0.24.0
 
+  packages/adp-tooling:
+    dependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      ejs:
+        specifier: 3.1.7
+        version: 3.1.7
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+      prompts:
+        specifier: 2.4.2
+        version: 2.4.2
+      yazl:
+        specifier: 2.5.1
+        version: 2.5.1
+    devDependencies:
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@types/ejs':
+        specifier: 3.1.0
+        version: 3.1.0
+      '@types/express':
+        specifier: 4.17.13
+        version: 4.17.13
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/prompts':
+        specifier: 2.0.14
+        version: 2.0.14
+      '@types/supertest':
+        specifier: 2.0.12
+        version: 2.0.12
+      '@types/yazl':
+        specifier: 2.4.2
+        version: 2.4.2
+      dotenv:
+        specifier: 16.0.0
+        version: 16.0.0
+      express:
+        specifier: 4.18.2
+        version: 4.18.2
+      nock:
+        specifier: 13.2.1
+        version: 13.2.1
+      rimraf:
+        specifier: 5.0.1
+        version: 5.0.1
+      supertest:
+        specifier: 6.3.2
+        version: 6.3.2
+
   packages/app-config-writer:
     dependencies:
       '@sap-ux/axios-extension':
@@ -233,6 +306,9 @@ importers:
         specifier: 0.0.32
         version: 0.0.32
     devDependencies:
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@types/lodash':
         specifier: 4.14.176
         version: 4.14.176
@@ -350,6 +426,9 @@ importers:
 
   packages/create:
     dependencies:
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
       '@sap-ux/app-config-writer':
         specifier: workspace:*
         version: link:../app-config-writer
@@ -783,6 +862,9 @@ importers:
 
   packages/preview-middleware:
     dependencies:
+      '@sap-ux/adp-tooling':
+        specifier: workspace:*
+        version: link:../adp-tooling
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -793,18 +875,27 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@types/ejs':
         specifier: 3.1.0
         version: 3.1.0
       '@types/express':
         specifier: 4.17.13
         version: 4.17.13
+      '@types/prompts':
+        specifier: 2.0.14
+        version: 2.0.14
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
       express:
         specifier: 4.18.2
         version: 4.18.2
+      nock:
+        specifier: 13.2.1
+        version: 13.2.1
       supertest:
         specifier: 6.3.2
         version: 6.3.2
@@ -5689,7 +5780,7 @@ packages:
     resolution: {integrity: sha512-aixqlCy0k0fZa+J4k7SZ7ZQCuJUmD4YuuMk42Q86YrGNBTZOSSnqkV8QcedBgLF5uR78PXj8HDWIFpXn+eOJbw==}
     dependencies:
       '@types/ejs': 3.1.0
-      '@types/glob': 7.2.0
+      '@types/glob': 8.1.0
       '@types/json-schema': 7.0.9
       '@types/mem-fs': 1.1.2
       '@types/node': 12.12.6
@@ -5770,7 +5861,7 @@ packages:
   /@types/prompts@2.0.14:
     resolution: {integrity: sha512-HZBd99fKxRWpYCErtm2/yxUZv6/PBI9J7N4TNFffl5JbrYMHBwF25DjQGTW3b3jmXq+9P6/8fCIb2ee57BFfYA==}
     dependencies:
-      '@types/node': 17.0.9
+      '@types/node': 12.12.6
     dev: true
 
   /@types/prop-types@15.7.5:
@@ -5965,7 +6056,7 @@ packages:
   /@types/yazl@2.4.2:
     resolution: {integrity: sha512-T+9JH8O2guEjXNxqmybzQ92mJUh2oCwDDMSSimZSe1P+pceZiFROZLYmcbqkzV5EUwz6VwcKXCO2S2yUpra6XQ==}
     dependencies:
-      '@types/node': 17.0.9
+      '@types/node': 12.12.6
     dev: true
 
   /@types/yeoman-environment@2.10.6:
@@ -9005,7 +9096,6 @@ packages:
   /dotenv@16.0.0:
     resolution: {integrity: sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==}
     engines: {node: '>=12'}
-    dev: false
 
   /dotenv@8.6.0:
     resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
