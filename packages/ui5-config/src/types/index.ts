@@ -3,9 +3,9 @@ export * from './middlewares';
 
 export interface AbapApp {
     name: string;
-    description?: string;
-    package?: string;
-    transport?: string;
+    description: string;
+    package: string;
+    transport: string;
 }
 
 export interface AbapTarget {

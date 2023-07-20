@@ -243,31 +243,8 @@ describe('base/deploy', () => {
             await deploy(
                 archive,
                 { app, target, test: true, safe: false, credentials, createTransport: true },
-                nullLogger,
-                'mock/path/ui5-deploy.yaml'
+                nullLogger
             );
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
-                archive,
-                bsp: { ...app, transport: '~transport123' },
-                testMode: true,
-                safeMode: false
-            });
-        });
-
-        test('Creates new transport request during deployment, does not update yaml file', async () => {
-            const credentials = { username: '~username', password: '~password' };
-            mockedStoreService.read.mockResolvedValueOnce(credentials);
-            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
-            mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
-            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false);
-
-            await deploy(
-                archive,
-                { app, target, test: true, safe: false, credentials, createTransport: true },
-                nullLogger,
-                'mock/path/ui5-deploy.yaml'
-            );
-
             expect(mockedUi5RepoService.deploy).toBeCalledWith({
                 archive,
                 bsp: { ...app, transport: '~transport123' },

@@ -65,7 +65,7 @@ exports[`UI5Config add/find/update/removeCustomMiddleware updateMiddleware that 
 "
 `;
 
-exports[`UI5Config addAbapDeployTask and updateAbapDeployTask AppStudio + Steampunk settings 1`] = `
+exports[`UI5Config addAbapDeployTask AppStudio + Steampunk settings 1`] = `
 "builder:
   resources:
     - excludes:
@@ -86,7 +86,7 @@ exports[`UI5Config addAbapDeployTask and updateAbapDeployTask AppStudio + Steamp
 "
 `;
 
-exports[`UI5Config addAbapDeployTask and updateAbapDeployTask local settings 1`] = `
+exports[`UI5Config addAbapDeployTask local settings 1`] = `
 "builder:
   resources:
     - excludes:
@@ -104,27 +104,6 @@ exports[`UI5Config addAbapDeployTask and updateAbapDeployTask local settings 1`]
           description: ~description
           package: ~package
           transport: ~transport
-"
-`;
-
-exports[`UI5Config addAbapDeployTask and updateAbapDeployTask updates local settings 1`] = `
-"builder:
-  resources:
-    - excludes:
-        - /test/**
-        - /localService/**
-  customTasks:
-    - name: deploy-to-abap
-      afterTask: generateCachebusterInfo
-      configuration:
-        target:
-          url: http://localhost:8080
-          client: '012'
-        app:
-          name: ~name
-          description: ~description
-          package: ~package
-          transport: ~transport123
 "
 `;
 

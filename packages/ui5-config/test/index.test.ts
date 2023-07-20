@@ -280,7 +280,7 @@ describe('UI5Config', () => {
         });
     });
 
-    describe('addAbapDeployTask and updateAbapDeployTask', () => {
+    describe('addAbapDeployTask', () => {
         const app: AbapApp = {
             name: '~name',
             description: '~description',
@@ -301,13 +301,6 @@ describe('UI5Config', () => {
                 },
                 app
             );
-            expect(ui5Config.toString()).toMatchSnapshot();
-        });
-
-        test('updates local settings', () => {
-            ui5Config.addAbapDeployTask({ url, client }, app);
-            // update deploy config with new transport request
-            ui5Config.updateAbapDeployTask({ url, client }, { ...app, transport: '~transport123' });
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
