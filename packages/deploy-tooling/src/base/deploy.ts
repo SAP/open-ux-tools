@@ -332,6 +332,7 @@ function getUi5AbapRepositoryService(
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  * @param provider - instance of the axios-extension abap service provider (it is created if not passed in)
+ * @throws error if transport request creation fails
  * @returns transportRequest
  */
 export async function createTransportRequest(
