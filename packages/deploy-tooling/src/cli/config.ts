@@ -159,11 +159,11 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     config.retry = process.env.NO_RETRY ? !process.env.NO_RETRY : mergeFlag(options.retry, taskConfig.retry);
 
     // Support CLI params and|or dotenv file
-    if (options.serviceUsername || process.env.SERVICE_USERNAME) {
+    if (options.username || process.env.SERVICE_USERNAME) {
         config.credentials = {
             ...(config.credentials || {}),
-            username: options.serviceUsername || process.env.SERVICE_USERNAME || '',
-            password: options.servicePassword || process.env.SERVICE_PASSWORD || ''
+            username: options.username || process.env.SERVICE_USERNAME || '',
+            password: options.password || process.env.SERVICE_PASSWORD || ''
         };
     }
 

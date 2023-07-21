@@ -45,14 +45,14 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         )
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
         .addOption(
-            new Option('--service-username <service-username>', 'ABAP System username').conflicts([
+            new Option('--username <username>', 'ABAP System username').conflicts([
                 'cloudServiceKey',
                 'cloudServiceEnv',
                 'destination'
             ])
         )
         .addOption(
-            new Option('--service-password <service-password>', 'ABAP System password').conflicts([
+            new Option('--password <password>', 'ABAP System password').conflicts([
                 'cloudServiceKey',
                 'cloudServiceEnv',
                 'destination'

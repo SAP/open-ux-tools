@@ -115,8 +115,8 @@ describe('cli/config', () => {
             const merged = await mergeConfig(
                 { ...config, credentials: { username: '~ShouldBeRemoved', password: '~ShouldBeRemoved' } },
                 {
-                    serviceUsername: '~MyUsername',
-                    servicePassword: '~MyPassword'
+                    username: '~MyUsername',
+                    password: '~MyPassword'
                 } as CliOptions
             );
             expect(merged.credentials).toMatchObject({
