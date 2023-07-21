@@ -354,9 +354,7 @@ export async function createTransportRequest(
         try {
             const transportRequest = await adtService.createTransportRequest(createTransportParams);
             if (transportRequest) {
-                config.app.transport = transportRequest;
                 logger.info(`Transport request ${transportRequest} created for deployment.`);
-                config.createTransport = false;
                 return transportRequest;
             }
         } catch (e) {
@@ -406,9 +404,15 @@ async function tryDeploy(
     archive: Buffer
 ): Promise<void> {
     const service = getUi5AbapRepositoryService(provider, config, logger);
+
     if (config.createTransport) {
-        await createTransportRequest(config, logger, provider);
+        const transportRequest = await createTransportRequest(config, logger, provider);
+        if (transportRequest) {
+            config.app.transport = transportRequest;
+            config.createTransport = false;
+        }
     }
+
     try {
         await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
         if (config.test === true) {
