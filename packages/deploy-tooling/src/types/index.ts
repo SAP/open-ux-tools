@@ -85,4 +85,6 @@ export interface CliOptions
     cloudServiceKey?: string;
     queryParams?: string;
     cloudServiceEnv?: boolean;
+    serviceUsername?: string;
+    servicePassword?: string;
 }

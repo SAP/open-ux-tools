@@ -62,6 +62,8 @@ Options:
   --cloud                              target is an ABAP Cloud system
   --cloud-service-key <file-location>  JSON file location with the ABAP cloud service key.
   --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables. Secrets in your .env should not be committed to source control.
+  --service-username                   ABAP Service username
+  --service-password                   ABAP Service password
   --transport <transport-request>      Transport number to record the change in the ABAP system
   --name <bsp-name>                    Project name of the app
   --strict-ssl                         Perform certificate validation (use --no-strict-ssl to deactivate it)
@@ -95,6 +97,8 @@ Options:
   --cloud                              target is an ABAP Cloud system
   --cloud-service-key <file-location>  JSON file location with the ABAP cloud service key.
   --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables
+  --service-username                   ABAP Service username
+  --service-password                   ABAP Service password
   --transport <transport-request>      Transport number to record the change in the ABAP system
   --name <bsp-name>                    Project name of the app
   --strict-ssl                         Perform certificate validation (use --no-strict-ssl to deactivate it)

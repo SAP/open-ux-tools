@@ -158,6 +158,15 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     config.yes = mergeFlag(options.yes, taskConfig.yes);
     config.retry = process.env.NO_RETRY ? !process.env.NO_RETRY : mergeFlag(options.retry, taskConfig.retry);
 
+    // Support CLI params and|or dotenv file
+    if (options.serviceUsername || process.env.SERVICE_USERNAME) {
+        config.credentials = {
+            ...(config.credentials || {}),
+            username: options.serviceUsername || process.env.SERVICE_USERNAME || '',
+            password: options.servicePassword || process.env.SERVICE_PASSWORD || ''
+        };
+    }
+
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
         options.archiveFolder = 'dist';
     }

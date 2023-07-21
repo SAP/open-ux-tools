@@ -82,7 +82,7 @@ describe('cli/config', () => {
             expect(merged.target.serviceKey).toEqual(JSON.parse(readFileSync(cloudServiceKey, 'utf-8')));
         });
 
-        test('validate reading of environment variables', async () => {
+        test('validate reading of environment variables supporting UAA', async () => {
             process.env.SERVICE_URL = 'http://service-url';
             process.env.SERVICE_UAA_URL = 'http://uaa-url';
             process.env.SERVICE_CLIENT_ID = 'MyClientId';
@@ -106,6 +106,34 @@ describe('cli/config', () => {
                     username: 'MyUsername'
                 },
                 url: config.target.url
+            });
+        });
+
+        test('Validate credentials using CLI', async () => {
+            // Reset env variables
+            process.env = env;
+            const merged = await mergeConfig(
+                { ...config, credentials: { username: '~ShouldBeRemoved', password: '~ShouldBeRemoved' } },
+                {
+                    serviceUsername: '~MyUsername',
+                    servicePassword: '~MyPassword'
+                } as CliOptions
+            );
+            expect(merged.credentials).toMatchObject({
+                username: '~MyUsername',
+                password: '~MyPassword'
+            });
+        });
+
+        test('Validate credentials using dotenv', async () => {
+            // Reset env variables
+            process.env = env;
+            process.env.SERVICE_USERNAME = '~DotEnvMyUsername';
+            process.env.SERVICE_PASSWORD = '~DotEnvMyPassword';
+            const merged = await mergeConfig(config, {} as CliOptions);
+            expect(merged.credentials).toMatchObject({
+                username: '~DotEnvMyUsername',
+                password: '~DotEnvMyPassword'
             });
         });
     });
