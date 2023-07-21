@@ -180,7 +180,8 @@ describe('cli', () => {
         test.each([
             { params: ['--url', '~url', '--destination', '~dest'] },
             { params: ['--client', '001', '--destination', '~dest'] },
-            { params: ['--cloud', '--destination', '~dest'] }
+            { params: ['--cloud', '--destination', '~dest'] },
+            { params: ['--transport', '~transport', '--create-transport', 'true'] }
         ])('conflicting options $params', ({ params }) => {
             cmd.parse(params, opts);
             expect(errorMock).toBeCalled();
