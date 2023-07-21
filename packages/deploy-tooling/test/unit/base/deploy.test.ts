@@ -232,23 +232,20 @@ describe('base/deploy', () => {
             }
         });
 
-        test('Creates new transport request during deployment', async () => {
+        test('Creates new transport request during deployment and resets createTransport param', async () => {
             const credentials = { username: '~username', password: '~password' };
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
-
-            await deploy(
-                archive,
-                { app, target, test: true, safe: false, credentials, createTransport: true },
-                nullLogger
-            );
+            const config = { app, target, test: true, safe: false, credentials, createTransport: true };
+            await deploy(archive, config, nullLogger);
             expect(mockedUi5RepoService.deploy).toBeCalledWith({
                 archive,
                 bsp: { ...app, transport: '~transport123' },
                 testMode: true,
                 safeMode: false
             });
+            expect(config.createTransport).toBe(false);
         });
 
         test('Throws error creating new transport request during deployment', async () => {

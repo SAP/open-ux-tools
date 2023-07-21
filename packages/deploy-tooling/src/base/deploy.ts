@@ -356,6 +356,7 @@ export async function createTransportRequest(
             if (transportRequest) {
                 config.app.transport = transportRequest;
                 logger.info(`Transport request ${transportRequest} created for deployment.`);
+                config.createTransport = false;
                 return transportRequest;
             }
         } catch (e) {
