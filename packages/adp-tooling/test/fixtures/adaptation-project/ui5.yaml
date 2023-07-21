@@ -1,0 +1,32 @@
+specVersion: '3.0'
+metadata:
+    name: adaptation-project
+type: application
+server:
+    customMiddleware:
+        - name: ui5-proxy-middleware
+          afterMiddleware: compression
+          configuration:
+            ui5:
+              path: 
+              - /resources
+              - /test-resources
+              url: https://ui5.sap.com
+        - name: preview-middleware
+          afterMiddleware: ui5-proxy-middleware
+          configuration:
+            flp:
+              path: /preview.html
+            adp:
+              target:
+                url: https://sap.example
+                client: 123
+                destination: EXAMPLE_DEST
+---
+specVersion: '3.0'
+metadata:
+    name: preview-middleware
+kind: extension
+type: server-middleware
+middleware:
+    path: ../../../dist/ui5/middleware.js

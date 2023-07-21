@@ -56,7 +56,7 @@ export interface TemplateConfig {
  */
 export class FlpSandbox {
     protected templateConfig: TemplateConfig;
-    protected readonly config: FlpConfig;
+    public readonly config: FlpConfig;
     public readonly router: any;
 
     /**
@@ -86,8 +86,10 @@ export class FlpSandbox {
      * Initialize the FLP sandbox router.
      *
      * @param manifest application manifest
+     * @param componentId optional componentId e.g. for adaptation projects
+     * @param resources optional additional resource mappings
      */
-    async init(manifest: Manifest): Promise<void> {
+    async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
         const flex = this.createFlexHandler();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         this.templateConfig = {
@@ -96,12 +98,13 @@ export class FlpSandbox {
                 libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
                 theme: supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0],
                 flex,
-                resources: {}
+                resources: { ...resources }
             },
             locateReuseLibsScript: await this.findLocateReuseLibsScript()
         };
         this.addApp(manifest, {
-            target: '/',
+            componentId,
+            target: resources[componentId ?? manifest['sap.app'].id] ?? '/',
             local: '.',
             intent: {
                 object: 'app',
@@ -112,11 +115,12 @@ export class FlpSandbox {
         // add route for the sandbox.html
         this.router.get(this.config.path, (req: Request, res: Response & { _livereload?: boolean }) => {
             const config = { ...this.templateConfig };
-            if (req.query['fiori-tools-rta-mode']) {
+            const fioriToolsRtaMode = req.query['fiori-tools-rta-mode'];
+            if (fioriToolsRtaMode) {
                 if (this.config.rta?.layer) {
                     config.flex = {
                         layer: this.config.rta?.layer,
-                        developerMode: false
+                        developerMode: fioriToolsRtaMode === 'forAdaptation'
                     };
                 } else {
                     this.logger.error('Fiori tools RTA mode could not be started because the RTA layer is missing.');
@@ -239,7 +243,7 @@ export class FlpSandbox {
         this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
             title: manifest['sap.app'].title ?? id,
             description: manifest['sap.app'].description ?? '',
-            additionalInformation: `SAPUI5.Component=${id}`,
+            additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
             url: app.target
         };

@@ -8,6 +8,8 @@ The `@sap-ux/preview-middleware` is a [Custom UI5 Server Middleware](https://sap
 | `flp`        |           |                  |Optional configuration object for the local Fiori launchpad |
 | `flp.path`   | `string`  | `/test/flp.html` | The mount point of the local Fiori launchpad. |
 | `flp.apps`   | `array`   | `[]`          | Optional additional local apps that are available in local Fiori launchpad |
+| `adp.target` |           |               | Required configuration for adaptation projects defining the connected backend
+| `adp.ignoreCertErrors` |  `boolean`  | `false`              | Optional setting to ignore certification validation errors when working with e.g. development systems with self signed certificates |
 | `debug`      | `boolean` | false         | Enables debug output |
 
 ### `flp.apps`
@@ -19,6 +21,14 @@ Array of additional application configurations:
 | `intent`        |          |  | Optional intent to be used for the application |
 | `intent.object` | `string` | `(calculated)`| Optional intent object, if it is not provided then it will be calculated based on the application id |
 | `intent.action` | `string` | `preview` | Optional intent action |
+
+### `adp.target`
+| Option        | Type | Description |
+| ------------- | ------------- | ----------- |
+| `url`         | `string` mandatory (local)  | Mandatory URL pointing to the backend system. *Not required if destination is provided and the proxy is running SAP Business Application Studio |
+| `destination` | `string` mandatory (if no url) | Required if the backend system is available as destination in SAP Business Application Studio. |
+| `client`      | `string` optional      | sap-client parameter |
+| `scp`         | `boolean` optional      | If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP |
 
 ## Usage
 The middleware can be used without configuration. However, since the middleware intercepts a few requests that might otherwise be handled by a different middleware, it is strongly recommended to run other file serving middlewares after the `preview-middleware` e.g. `backend-proxy-middleware` and `ui5-proxy-middleware` (and the corresponding middlewares in the `@sap/ux-ui5-tooling`).
@@ -58,4 +68,18 @@ server:
       apps:
         - local: ../local-folder
           target: /apps/other-app
+```
+
+### Adaptation Project
+If you want to use the middleware in an adaption project, the additional `adp` object needs to be configured. This example would preview a local adaptation project merged with its reference application from the target system at `http://sap.example` and it will ignore certification validation errors.
+```Yaml
+server:
+  customMiddleware:
+  - name: preview-middleware
+    afterMiddleware: compression
+    configuration:
+      adp: 
+        target: 
+          url: http://sap.example
+        ignoreCertErrors: true
 ```

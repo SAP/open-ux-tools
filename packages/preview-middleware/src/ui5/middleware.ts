@@ -2,7 +2,31 @@ import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import type { MiddlewareParameters } from '@ui5/server';
 import { FlpSandbox } from '../base/flp';
+import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import type { Config } from '../types';
+import { AdpPreview } from '@sap-ux/adp-tooling';
+import type { ReaderCollection } from '@ui5/fs';
+
+/**
+ * Initialize the preview for an adaptation project.
+ *
+ * @param rootProject reference to the project
+ * @param config configuration from the ui5.yaml
+ * @param flp FlpSandbox instance
+ * @param logger logger instance
+ */
+async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, flp: FlpSandbox, logger: ToolsLogger) {
+    const files = await rootProject.byGlob('/manifest.appdescr_variant');
+    if (files.length === 1) {
+        const adp = new AdpPreview(config, logger);
+        const layer = await adp.init(JSON.parse(await files[0].getString()), await rootProject.byGlob('**/*.*'));
+        flp.config.rta = { layer };
+        await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
+        flp.router.use(adp.descriptor.url, adp.proxy.bind(adp));
+    } else {
+        throw new Error('ADP configured but no manifest.appdescr_variant found.');
+    }
+}
 
 /**
  * Create the router that is to be exposed as UI5 middleware.
@@ -21,13 +45,17 @@ async function createRouter({ resources, options, middlewareUtil }: MiddlewarePa
 
     // configure the FLP sandbox based on information from the manifest
     const flp = new FlpSandbox(config.flp, resources.rootProject, middlewareUtil, logger);
-    const files = await resources.rootProject.byGlob('/manifest.json');
-    if (files.length === 1) {
-        await flp.init(JSON.parse(await files[0].getString()));
-    } else {
-        throw new Error('No manifest.json found.');
-    }
 
+    if (config.adp) {
+        await initAdp(resources.rootProject, config.adp, flp, logger);
+    } else {
+        const files = await resources.rootProject.byGlob('/manifest.json');
+        if (files.length === 1) {
+            await flp.init(JSON.parse(await files[0].getString()));
+        } else {
+            throw new Error('No manifest.json found.');
+        }
+    }
     return flp.router;
 }
 
