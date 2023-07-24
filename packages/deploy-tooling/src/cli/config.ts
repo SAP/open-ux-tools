@@ -147,7 +147,7 @@ function mergeCredentials(taskConfig: AbapDeployConfig, options: CliOptions) {
     // Support CLI params and|or dotenv file
     if (options.username || process.env.SERVICE_USERNAME) {
         credentials = {
-            ...(credentials || {}),
+            ...(credentials ?? {}),
             username: options.username ?? process.env.SERVICE_USERNAME ?? '',
             password: options.password ?? process.env.SERVICE_PASSWORD ?? ''
         };
