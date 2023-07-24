@@ -331,7 +331,7 @@ function getUi5AbapRepositoryService(
  *
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
- * @param provider - instance of the axios-extension abap service provider (it is created if not passed in)
+ * @param provider - optional instance of the axios-extension abap service provider
  * @throws error if transport request creation fails
  * @returns transportRequest
  */
@@ -339,31 +339,28 @@ export async function createTransportRequest(
     config: AbapDeployConfig,
     logger: Logger,
     provider?: AbapServiceProvider
-): Promise<string | void> {
-    if (!provider) {
-        provider = await getAbapServiceProvider(config, logger);
-    }
-
-    const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
-    if (adtService) {
-        const createTransportParams = {
+): Promise<string> {
+    try {
+        if (!provider) {
+            provider = await getAbapServiceProvider(config, logger);
+        }
+        const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
+        logger.debug(`ADTService created for application ${config.app.name}, ${!adtService}.`);
+        const transportRequest = await adtService?.createTransportRequest({
             packageName: config.app.package ?? '',
             ui5AppName: config.app.name,
             description: 'Created by @sap-ux/deploy-tooling'
-        };
-
-        try {
-            const transportRequest = await adtService.createTransportRequest(createTransportParams);
-            if (transportRequest) {
-                logger.info(`Transport request ${transportRequest} created for deployment.`);
-                return transportRequest;
-            }
-        } catch (e) {
-            logger.error(
-                'Transport request could not be created. Please create it manually and re-run deployment configuration for this project'
-            );
-            throw new Error(e);
+        });
+        if (transportRequest) {
+            logger.info(`Transport request ${transportRequest} created for application ${config.app.name}.`);
+            return transportRequest;
         }
+        throw new Error(`Transport request could not be created for application ${config.app.name}.`);
+    } catch (e) {
+        logger.error(
+            `Transport request could not be created for application ${config.app.name}. Please create it manually and re-run deployment configuration for this project.`
+        );
+        throw e;
     }
 }
 
@@ -404,17 +401,13 @@ async function tryDeploy(
     logger: Logger,
     archive: Buffer
 ): Promise<void> {
-    const service = getUi5AbapRepositoryService(provider, config, logger);
-
-    if (config.createTransport) {
-        const transportRequest = await createTransportRequest(config, logger, provider);
-        if (transportRequest) {
-            config.app.transport = transportRequest;
+    try {
+        if (config.createTransport) {
+            config.app.transport = await createTransportRequest(config, logger, provider);
+            // Reset as we dont want other flows kicking it off again!
             config.createTransport = false;
         }
-    }
-
-    try {
+        const service = getUi5AbapRepositoryService(provider, config, logger);
         await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
         if (config.test === true) {
             logger.info(

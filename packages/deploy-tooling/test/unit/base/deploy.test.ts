@@ -27,6 +27,7 @@ describe('base/deploy', () => {
         url: 'http://target.example',
         client: '001'
     };
+    const credentials = { username: '~username', password: '~password' };
 
     describe('getCredentials', () => {
         test('AppStudio - no place to get credentials', async () => {
@@ -62,10 +63,10 @@ describe('base/deploy', () => {
 
         beforeEach(() => {
             mockedUi5RepoService.deploy.mockReset();
+            mockedAdtService.createTransportRequest.mockReset();
         });
 
         test('No errors locally with url', async () => {
-            const credentials = { username: '~username', password: '~password' };
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
 
@@ -232,8 +233,7 @@ describe('base/deploy', () => {
             }
         });
 
-        test('Creates new transport request during deployment and resets createTransport param', async () => {
-            const credentials = { username: '~username', password: '~password' };
+        test('Creates new transport request during deployment and reset createTransport param', async () => {
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
@@ -246,13 +246,11 @@ describe('base/deploy', () => {
                 safeMode: false
             });
             expect(config.createTransport).toBe(false);
+            expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
         });
 
-        test('Throws error creating new transport request during deployment', async () => {
-            const credentials = { username: '~username', password: '~password' };
-            mockedStoreService.read.mockResolvedValueOnce(credentials);
-            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
-            mockedAdtService.createTransportRequest.mockRejectedValueOnce(new Error('500'));
+        test('Throws error if transport is not returned from ADT service', async () => {
+            mockedAdtService.createTransportRequest.mockResolvedValueOnce(undefined);
 
             try {
                 await deploy(
@@ -262,8 +260,27 @@ describe('base/deploy', () => {
                 );
                 fail('Should have thrown an error');
             } catch (error) {
-                expect(error.message).toBe('Error: 500');
+                expect(error.message).toBe('Transport request could not be created for application ~name.');
             }
+            expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
+        });
+
+        test('Throws error creating new transport request during deployment', async () => {
+            mockedStoreService.read.mockResolvedValueOnce(credentials);
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+            mockedAdtService.createTransportRequest.mockRejectedValueOnce(new Error('ADT Service Not Found'));
+
+            try {
+                await deploy(
+                    archive,
+                    { app, target, test: true, safe: false, credentials, createTransport: true },
+                    nullLogger
+                );
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error.message).toBe('ADT Service Not Found');
+            }
+            expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
         });
     });
 
