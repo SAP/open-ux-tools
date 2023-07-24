@@ -46,6 +46,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
         .option('--name <bsp-name>', 'Project name of the app')
         .option('--strict-ssl', 'Perform certificate validation (use --no-strict-ssl to deactivate it)')
+        .option('--no-strict-ssl', 'Deactivate certificate validation')
         .option(
             '--query-params <param1=value&param2=value>',
             'Additional parameters that are to be added to calls to the target.'

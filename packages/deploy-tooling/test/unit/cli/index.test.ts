@@ -37,7 +37,8 @@ describe('cli', () => {
             '-c',
             join(fixture, 'ui5-deploy.yaml'),
             '--archive-folder',
-            'webapp'
+            'webapp',
+            '--strict-ssl'
         ];
         // Command for deploying with a configuration file but overwriting parts of the configuration file
         // npx deploy -c ui5-deploy.yaml --archive-folder webapp --test --yes --url https://target.example
@@ -73,7 +74,8 @@ describe('cli', () => {
             '--archive-folder',
             join(fixture, 'webapp'),
             '--yes',
-            '--no-retry'
+            '--no-retry',
+            '--no-strict-ssl'
         ];
 
         const cliCmdsWithUaa = [...cliCmds, '--cloud-service-env', '--service', '/bc/my/uaa/deploy/service'];
@@ -82,7 +84,7 @@ describe('cli', () => {
             {
                 params: minimumConfigCmds,
                 writeFileSyncCalled: 1,
-                object: { retry: true },
+                object: { retry: true, strictSsl: true },
                 provider: '/bc/my/deploy/service'
             },
             {
@@ -91,7 +93,7 @@ describe('cli', () => {
                 object: { retry: true },
                 provider: '/bc/my/deploy/service'
             },
-            { params: cliCmds, writeFileSyncCalled: 0, object: { retry: false } },
+            { params: cliCmds, writeFileSyncCalled: 0, object: { retry: false, strictSsl: false } },
             {
                 params: cliCmdsWithUaa,
                 writeFileSyncCalled: 0,
