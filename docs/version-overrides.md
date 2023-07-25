@@ -1,6 +1,28 @@
 # Version Overrides
 This document lists the version overrides for vulnerable (nested) dependencies and the reason.
-
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ tough-cookie Prototype Pollution vulnerability         │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ tough-cookie                                           │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <4.1.3                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=4.1.3                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-72xf-g2v4-qvf3      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ word-wrap vulnerable to Regular Expression Denial of   │
+│                     │ Service                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ word-wrap                                              │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <1.2.4                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=1.2.4                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-j8xg-fqg3-53r7      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
 ## semver
 | Override:           | >=7.5.2 |
 |:--------------------| :-------------|
@@ -44,3 +66,5 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 :warning: Attention :warning: 
 * `trim`, `trim-newlines` and `glob-parent` are dependencies of `storybook` that is used in `@sap-ux/ui-components`. Once a new version without the vulnerable dependency is available, it is to be used and this override can be removed.
 * `semver` is used by too many modules. Override can be removed or kept for specific dependencies after we have cleaned up our devDependencies.
+* `tough-cookie` no fix available yet for jest-environment-jsdom
+*  `word-wrap` no fix available yet for @typescript-eslint/* modules.
