@@ -64,7 +64,7 @@ Options:
   --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables. Secrets in your .env should not be committed to source control.
   --transport <transport-request>      Transport number to record the change in the ABAP system
   --name <bsp-name>                    Project name of the app
-  --strict-ssl                         Perform certificate validation (use --no-strict-ssl to deactivate it)
+  --no-strict-ssl                      Deactivate SSL certificate validation, enabled by default
   --test                               Run in test mode. ABAP backend reports deployment errors without actually deploying. (use --no-test to deactivate it)
   --package <abap-package>             Package name for deploy target ABAP system
   --description <description>          Project description of the app
@@ -97,7 +97,7 @@ Options:
   --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables
   --transport <transport-request>      Transport number to record the change in the ABAP system
   --name <bsp-name>                    Project name of the app
-  --strict-ssl                         Perform certificate validation (use --no-strict-ssl to deactivate it)
+  --no-strict-ssl                      Deactivate SSL certificate validation, enabled by default
   --test                               Run in test mode. ABAP backend reports undeployment errors without actually undeploying (use --no-test to deactivate it).
   -v, --version                        version of the deploy tooling
   -h, --help                           display help for command
