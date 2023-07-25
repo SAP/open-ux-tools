@@ -1,6 +1,17 @@
 # Version Overrides
 This document lists the version overrides for vulnerable (nested) dependencies and the reason.
-
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ word-wrap vulnerable to Regular Expression Denial of   │
+│                     │ Service                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ word-wrap                                              │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <1.2.4                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=1.2.4                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-j8xg-fqg3-53r7      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
 ## semver
 | Override:           | >=7.5.2 |
 |:--------------------| :-------------|
@@ -44,3 +55,4 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 :warning: Attention :warning: 
 * `trim`, `trim-newlines` and `glob-parent` are dependencies of `storybook` that is used in `@sap-ux/ui-components`. Once a new version without the vulnerable dependency is available, it is to be used and this override can be removed.
 * `semver` is used by too many modules. Override can be removed or kept for specific dependencies after we have cleaned up our devDependencies.
+*  `word-wrap` no fix available yet for @typescript-eslint/* modules.
