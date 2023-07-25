@@ -44,6 +44,20 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
             ).conflicts(['cloudServiceKey', 'destination'])
         )
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
+        .addOption(
+            new Option('--username <username>', 'ABAP System username').conflicts([
+                'cloudServiceKey',
+                'cloudServiceEnv',
+                'destination'
+            ])
+        )
+        .addOption(
+            new Option('--password <password>', 'ABAP System password').conflicts([
+                'cloudServiceKey',
+                'cloudServiceEnv',
+                'destination'
+            ])
+        )
         .option('--name <bsp-name>', 'Project name of the app')
         .option('--strict-ssl', 'Perform certificate validation (use --no-strict-ssl to deactivate it)')
         .option(
