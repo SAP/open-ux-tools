@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.5.0
+
+### Minor Changes
+
+-   3fb2d5c4: support cli credentials
+
 ## 0.4.5
 
 ### Patch Changes
