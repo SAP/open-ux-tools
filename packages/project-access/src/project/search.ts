@@ -45,7 +45,7 @@ const excludeFolders = ['.git', 'node_modules', 'dist'];
  * @param value - value to type check
  * @returns - true: is a vscode workspace array; no: not a vscode workspace array
  */
-function isWorkspaceFolder(value: WorkspaceFolder[] | string[]): value is WorkspaceFolder[] {
+function isWorkspaceFolder(value: readonly WorkspaceFolder[] | string[]): value is WorkspaceFolder[] {
     return value && (value as WorkspaceFolder[]).length > 0 && (value as WorkspaceFolder[])[0].uri !== undefined;
 }
 
@@ -55,7 +55,7 @@ function isWorkspaceFolder(value: WorkspaceFolder[] | string[]): value is Worksp
  * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @returns - root paths
  */
-function wsFoldersToRootPaths(wsFolders: WorkspaceFolder[] | string[] | undefined): string[] {
+function wsFoldersToRootPaths(wsFolders: readonly WorkspaceFolder[] | string[] | undefined): string[] {
     // extract root path if provided as VSCode folder
     let wsRoots: string[];
     if (wsFolders && isWorkspaceFolder(wsFolders)) {
@@ -66,7 +66,7 @@ function wsFoldersToRootPaths(wsFolders: WorkspaceFolder[] | string[] | undefine
                 wsRoots.push(folder.uri.fsPath);
             });
     } else {
-        wsRoots = wsFolders || [];
+        wsRoots = (wsFolders ?? []) as string[];
     }
     return wsRoots;
 }
@@ -231,7 +231,9 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
  * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
-export async function findAllApps(wsFolders: WorkspaceFolder[] | string[] | undefined): Promise<AllAppResults[]> {
+export async function findAllApps(
+    wsFolders: readonly WorkspaceFolder[] | string[] | undefined
+): Promise<AllAppResults[]> {
     const findResults = await findFioriArtifacts({ wsFolders, artifacts: ['applications'] });
     return findResults.applications ?? [];
 }
@@ -372,7 +374,7 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
  * @returns - data structure containing the search results, for app e.g. as path to app plus files already parsed, e.g. manifest.json
  */
 export async function findFioriArtifacts(options: {
-    wsFolders?: WorkspaceFolder[] | string[];
+    wsFolders?: readonly WorkspaceFolder[] | string[];
     artifacts: FioriArtifactTypes[];
 }): Promise<FoundFioriArtifacts> {
     const results: FoundFioriArtifacts = {};

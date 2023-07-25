@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.10.2
+
+### Patch Changes
+
+-   c18f957a: add readonly for WorkspaceFolder usage
+
 ## 1.10.1
 
 ### Patch Changes
