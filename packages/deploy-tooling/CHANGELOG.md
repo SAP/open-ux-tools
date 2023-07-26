@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.7.0
+
+### Minor Changes
+
+-   f159d02b: handle toggling of strict-ssl
+
 ## 0.6.0
 
 ### Minor Changes
