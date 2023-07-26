@@ -176,6 +176,7 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     config.keep = mergeFlag(options.keep, taskConfig.keep);
     config.strictSsl = mergeFlag(options.strictSsl, taskConfig.strictSsl);
     config.yes = mergeFlag(options.yes, taskConfig.yes);
+    config.createTransport = mergeFlag(options.createTransport, taskConfig.createTransport);
     config.retry = process.env.NO_RETRY ? !process.env.NO_RETRY : mergeFlag(options.retry, taskConfig.retry);
 
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {

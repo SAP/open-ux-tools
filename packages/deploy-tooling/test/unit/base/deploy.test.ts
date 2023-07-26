@@ -1,5 +1,5 @@
 import prompts from 'prompts';
-import { deploy, getCredentials, undeploy } from '../../../src/base/deploy';
+import { createTransportRequest, deploy, getCredentials, undeploy } from '../../../src/base/deploy';
 import type { BackendSystemKey } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../../../src/types';
@@ -8,7 +8,8 @@ import {
     mockIsAppStudio,
     mockedUi5RepoService,
     mockListDestinations,
-    mockCreateForAbap
+    mockCreateForAbap,
+    mockedAdtService
 } from '../../__mocks__';
 import { join } from 'path';
 import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
@@ -26,6 +27,7 @@ describe('base/deploy', () => {
         url: 'http://target.example',
         client: '001'
     };
+    const credentials = { username: '~username', password: '~password' };
 
     describe('getCredentials', () => {
         test('AppStudio - no place to get credentials', async () => {
@@ -61,10 +63,10 @@ describe('base/deploy', () => {
 
         beforeEach(() => {
             mockedUi5RepoService.deploy.mockReset();
+            mockedAdtService.createTransportRequest.mockReset();
         });
 
         test('No errors locally with url', async () => {
-            const credentials = { username: '~username', password: '~password' };
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
 
@@ -230,6 +232,56 @@ describe('base/deploy', () => {
                 expect(error).toBe(unknownError);
             }
         });
+
+        test('Creates new transport request during deployment and reset createTransport param', async () => {
+            mockedStoreService.read.mockResolvedValueOnce(credentials);
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+            mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
+            const config = { app, target, test: true, safe: false, credentials, createTransport: true };
+            await deploy(archive, config, nullLogger);
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: { ...app, transport: '~transport123' },
+                testMode: true,
+                safeMode: false
+            });
+            expect(config.createTransport).toBe(false);
+            expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
+        });
+
+        test('Throws error if transport is not returned from ADT service', async () => {
+            mockedAdtService.createTransportRequest.mockResolvedValueOnce(undefined);
+
+            try {
+                await deploy(
+                    archive,
+                    { app, target, test: true, safe: false, credentials, createTransport: true },
+                    nullLogger
+                );
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error.message).toBe('Transport request could not be created for application ~name.');
+            }
+            expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
+        });
+
+        test('Throws error creating new transport request during deployment', async () => {
+            mockedStoreService.read.mockResolvedValueOnce(credentials);
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+            mockedAdtService.createTransportRequest.mockRejectedValueOnce(new Error('ADT Service Not Found'));
+
+            try {
+                await deploy(
+                    archive,
+                    { app, target, test: true, safe: false, credentials, createTransport: true },
+                    nullLogger
+                );
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error.message).toBe('ADT Service Not Found');
+            }
+            expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
+        });
     });
 
     describe('undeploy', () => {
@@ -239,6 +291,14 @@ describe('base/deploy', () => {
             expect(mockedUi5RepoService.undeploy).toBeCalledWith({ bsp: app, testMode: undefined });
             await undeploy({ app, target, test: true }, nullLogger);
             expect(mockedUi5RepoService.undeploy).toBeCalledWith({ bsp: app, testMode: true });
+        });
+    });
+
+    describe('createTransportRequest', () => {
+        test('Returns a new transport request during deployment', async () => {
+            mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
+            const transportRequest = await createTransportRequest({ app, target }, nullLogger);
+            expect(transportRequest).toBe('~transport123');
         });
     });
 });

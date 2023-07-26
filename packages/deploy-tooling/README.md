@@ -64,6 +64,7 @@ Options:
   --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables. Secrets in your .env should not be committed to source control.
   --username                           ABAP Service username
   --password                           ABAP Service password
+  --create-transport                   Create a transport request during deployment
   --transport <transport-request>      Transport number to record the change in the ABAP system
   --name <bsp-name>                    Project name of the app
   --no-strict-ssl                      Deactivate SSL certificate validation, enabled by default
