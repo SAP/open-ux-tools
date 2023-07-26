@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.6.0
+
+### Minor Changes
+
+-   b1a2e3a9: exposes function and adds param to create transport requests
+
 ## 0.5.0
 
 ### Minor Changes
