@@ -73,7 +73,8 @@ describe('cli', () => {
             '--archive-folder',
             join(fixture, 'webapp'),
             '--yes',
-            '--no-retry'
+            '--no-retry',
+            '--no-strict-ssl'
         ];
 
         const cliCmdsWithUaa = [...cliCmds, '--cloud-service-env', '--service', '/bc/my/uaa/deploy/service'];
@@ -82,20 +83,20 @@ describe('cli', () => {
             {
                 params: minimumConfigCmds,
                 writeFileSyncCalled: 1,
-                object: { retry: true },
+                object: { retry: true, strictSsl: true },
                 provider: '/bc/my/deploy/service'
             },
             {
                 params: overwriteConfigCmds,
                 writeFileSyncCalled: 1,
-                object: { retry: true },
+                object: { retry: true, strictSsl: true },
                 provider: '/bc/my/deploy/service'
             },
-            { params: cliCmds, writeFileSyncCalled: 0, object: { retry: false } },
+            { params: cliCmds, writeFileSyncCalled: 0, object: { retry: false, strictSsl: false } },
             {
                 params: cliCmdsWithUaa,
                 writeFileSyncCalled: 0,
-                object: { retry: false },
+                object: { retry: false, strictSsl: false },
                 provider: '/bc/my/uaa/deploy/service'
             }
         ])('successful deploy with different options %s', async ({ params, writeFileSyncCalled, object, provider }) => {
