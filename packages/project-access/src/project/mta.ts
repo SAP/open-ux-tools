@@ -20,9 +20,7 @@ export async function getMtaPath(projectPath: string, fs?: Editor): Promise<MtaP
     if (!mtaPath) {
         return undefined;
     } else {
-        console.log('before', mtaPath);
         const mtaFolderPath = dirname(mtaPath);
-        console.log('after', mtaFolderPath);
         return {
             mtaPath,
             hasRoot: mtaFolderPath !== projectPath
