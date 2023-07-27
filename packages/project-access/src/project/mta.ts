@@ -1,8 +1,8 @@
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import { findFileUp } from '../file/file-search';
 import { FileName } from '../constants';
 import { dirname } from 'path';
-import { MtaPath } from '../types/mta';
+import type { MtaPath } from '../types/mta';
 
 /**
  * Searches `projectPath` and parent folders.
@@ -10,8 +10,10 @@ import { MtaPath } from '../types/mta';
  * that created in Fiori generator (Standalone App Router). E.g. Creating a new project that doesn't have
  * a parent root folder for MTA project, and this project itself is configured
  * to have deploy target CF and user answered yes to "add to Managed App Router" question.
+ *
  * @param projectPath Fiori app root folder
- * @return MtaPath
+ * @param fs
+ * @returns MtaPath
  */
 export async function getMtaPath(projectPath: string, fs?: Editor): Promise<MtaPath | undefined> {
     const mtaPath = await findFileUp(FileName.MtaYaml, projectPath, fs);
