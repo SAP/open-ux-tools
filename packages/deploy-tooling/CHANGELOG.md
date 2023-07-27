@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.7.1
+
+### Patch Changes
+
+-   1fa8b879: fix issue cloud target systems
+
 ## 0.7.0
 
 ### Minor Changes
