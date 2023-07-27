@@ -136,7 +136,7 @@ function mergeTarget(baseTarget: AbapTarget, options: CliOptions) {
 }
 
 /**
- * Merge CLI and environment credentials.
+ * Merge CLI credentials.
  *
  * @param taskConfig - base configuration from the file
  * @param options - CLI options
@@ -144,12 +144,11 @@ function mergeTarget(baseTarget: AbapTarget, options: CliOptions) {
  */
 function mergeCredentials(taskConfig: AbapDeployConfig, options: CliOptions) {
     let credentials = taskConfig.credentials;
-    // Support CLI params and|or dotenv file
-    if (options.username || process.env.SERVICE_USERNAME) {
+    if (options.username || options.password) {
         credentials = {
             ...(credentials ?? {}),
-            username: options.username ?? process.env.SERVICE_USERNAME ?? '',
-            password: options.password ?? process.env.SERVICE_PASSWORD ?? ''
+            username: options.username ?? '',
+            password: options.password ?? ''
         };
     }
     return credentials;

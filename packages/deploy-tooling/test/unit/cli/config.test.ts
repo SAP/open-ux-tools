@@ -109,9 +109,7 @@ describe('cli/config', () => {
             });
         });
 
-        test('Validate credentials using CLI', async () => {
-            // Reset env variables
-            process.env = env;
+        test('Validate merging credentials using config and cli options', async () => {
             const merged = await mergeConfig(
                 { ...config, credentials: { username: '~ShouldBeRemoved', password: '~ShouldBeRemoved' } },
                 {
@@ -125,15 +123,14 @@ describe('cli/config', () => {
             });
         });
 
-        test('Validate credentials using dotenv', async () => {
-            // Reset env variables
-            process.env = env;
-            process.env.SERVICE_USERNAME = '~DotEnvMyUsername';
-            process.env.SERVICE_PASSWORD = '~DotEnvMyPassword';
-            const merged = await mergeConfig(config, {} as CliOptions);
+        test('Validate credentials using only cli options', async () => {
+            const merged = await mergeConfig(config, {
+                username: 'env:DotEnvMyUsername',
+                password: 'env:DotEnvMyPassword'
+            } as CliOptions);
             expect(merged.credentials).toMatchObject({
-                username: '~DotEnvMyUsername',
-                password: '~DotEnvMyPassword'
+                username: 'env:DotEnvMyUsername',
+                password: 'env:DotEnvMyPassword'
             });
         });
     });
