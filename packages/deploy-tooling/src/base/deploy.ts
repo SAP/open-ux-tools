@@ -266,7 +266,12 @@ async function handle401Error(
     const service = getUi5AbapRepositoryService(provider, config, logger);
     const credentials = await promptCredentials(service.defaults.auth?.username);
     if (Object.keys(credentials).length) {
-        service.defaults.auth = credentials;
+        if (config.target.serviceKey) {
+            config.target.serviceKey.uaa.username = credentials.username;
+            config.target.serviceKey.uaa.password = credentials.password;
+        } else {
+            service.defaults.auth = credentials;
+        }
         await deploymentCommands[command](provider, config, logger, archive);
         return true;
     } else {
