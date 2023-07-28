@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.11.0
+
+### Minor Changes
+
+-   1c267b37: Adding getMtaPath(appRoot: string, fs: Editor) utility function. It helps to identify if the input Fiori app is part of a MTA project or not.
+
 ## 1.10.2
 
 ### Patch Changes
