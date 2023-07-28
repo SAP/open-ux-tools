@@ -15,8 +15,6 @@ import { join } from 'path';
 import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
 import { readFileSync } from 'fs';
 
-jest.setTimeout(360000);
-
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
     const app: AbapDeployConfig['app'] = {
