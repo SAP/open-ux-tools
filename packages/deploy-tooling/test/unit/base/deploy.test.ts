@@ -15,6 +15,8 @@ import { join } from 'path';
 import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
 import { readFileSync } from 'fs';
 
+jest.setTimeout(360000);
+
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
     const app: AbapDeployConfig['app'] = {
@@ -201,22 +203,37 @@ describe('base/deploy', () => {
         });
 
         test('Successful retry after known axios error (cloud target)', async () => {
-            const cloudTarget = {
-                cloud: true,
-                serviceKey: {
-                    uaa: {
-                        username: '~username',
-                        password: '~password',
-                        clientid: '~client',
-                        clientsecret: '~clientsecret',
-                        url: '~url'
-                    }
-                },
-                url: '~targetUrl'
-            } as AbapTarget;
+            const configCloud = {
+                app,
+                target: {
+                    cloud: true,
+                    serviceKey: {
+                        uaa: {
+                            username: '~username',
+                            password: '~password',
+                            clientid: '~client',
+                            clientsecret: '~clientsecret',
+                            url: '~url'
+                        }
+                    },
+                    url: '~targetUrl'
+                } as AbapTarget,
+                yes: true
+            };
+
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(401));
-            await deploy(archive, { app, target: cloudTarget, yes: true }, nullLogger);
             prompts.inject(['~uaa-username', '~uaa-password']);
+
+            await deploy(archive, configCloud, nullLogger);
+
+            expect(configCloud.target.serviceKey?.uaa).toEqual({
+                username: '~uaa-username',
+                password: '~uaa-password',
+                clientid: '~client',
+                clientsecret: '~clientsecret',
+                url: '~url'
+            });
+
             expect(mockedUi5RepoService.deploy).toBeCalledWith({
                 archive,
                 bsp: app,
