@@ -1,6 +1,6 @@
 import type { ReaderCollection } from '@ui5/fs';
 import type { TemplateConfig } from '../../../src/base/flp';
-import { FlpSandbox as FlpSandboxUnderTest } from '../../../src/base/flp';
+import { FlpSandbox as FlpSandboxUnderTest } from '../../../src';
 import type { FlpConfig } from '../../../src/types';
 import type { MiddlewareUtils } from '@ui5/server';
 import { ToolsLogger } from '@sap-ux/logger';
