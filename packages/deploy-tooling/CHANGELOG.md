@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.7.2
+
+### Patch Changes
+
+-   523510a2: update uaa params for 401 errors
+
 ## 0.7.1
 
 ### Patch Changes

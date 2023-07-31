@@ -2,7 +2,7 @@ import prompts from 'prompts';
 import { createTransportRequest, deploy, getCredentials, undeploy } from '../../../src/base/deploy';
 import type { BackendSystemKey } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import type { AbapDeployConfig } from '../../../src/types';
+import type { AbapDeployConfig, AbapTarget } from '../../../src/types';
 import {
     mockedStoreService,
     mockIsAppStudio,
@@ -198,6 +198,46 @@ describe('base/deploy', () => {
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(401));
             prompts.inject(['~username', '~password']);
             await deploy(archive, { app, target, yes: true }, nullLogger);
+        });
+
+        test('Successful retry after known axios error (cloud target)', async () => {
+            const configCloud = {
+                app,
+                target: {
+                    cloud: true,
+                    serviceKey: {
+                        uaa: {
+                            username: '~username',
+                            password: '~password',
+                            clientid: '~client',
+                            clientsecret: '~clientsecret',
+                            url: '~url'
+                        }
+                    },
+                    url: '~targetUrl'
+                } as AbapTarget,
+                yes: true
+            };
+
+            mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(401));
+            prompts.inject(['~uaa-username', '~uaa-password']);
+
+            await deploy(archive, configCloud, nullLogger);
+
+            expect(configCloud.target.serviceKey?.uaa).toEqual({
+                username: '~uaa-username',
+                password: '~uaa-password',
+                clientid: '~client',
+                clientsecret: '~clientsecret',
+                url: '~url'
+            });
+
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: undefined,
+                safeMode: undefined
+            });
         });
 
         test('Axios Error and no retry', async () => {
