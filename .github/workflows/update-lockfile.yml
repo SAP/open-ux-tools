@@ -11,7 +11,7 @@ jobs:
             pull-requests: write
             contents: write
         steps:
-            - uses: pnpm/action-setup@v2.2.4
+            - uses: pnpm/action-setup@v2.4.0
             - uses: actions/checkout@v3
               with:
                   ref: ${{ github.event.pull_request.head.ref }}
