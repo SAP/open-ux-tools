@@ -9,6 +9,7 @@ export {
     getCapEnvironment,
     getCapModelAndServices,
     getCapProjectType,
+    getMtaPath,
     getWebappPath,
     isCapJavaProject,
     isCapNodeJsProject,
