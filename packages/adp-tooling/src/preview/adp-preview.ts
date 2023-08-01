@@ -53,7 +53,11 @@ export class AdpPreview {
      * @param project reference to the root of the project
      * @param logger logger instance
      */
-    constructor(private readonly config: AdpPreviewConfig, private readonly project: ReaderCollection, private readonly logger: ToolsLogger) {}
+    constructor(
+        private readonly config: AdpPreviewConfig,
+        private readonly project: ReaderCollection,
+        private readonly logger: ToolsLogger
+    ) {}
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
@@ -87,7 +91,6 @@ export class AdpPreview {
      * @param next next middleware that is to be called if the request cannot be handled
      */
     async proxy(req: Request, res: Response, next: NextFunction) {
-        
         if (req.path === '/manifest.json') {
             res.status(200);
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
