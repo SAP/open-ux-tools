@@ -21,6 +21,14 @@ const DEFAULT_THEME = 'sap_horizon';
 const DEFAULT_PATH = '/test/flp.html';
 
 /**
+ * Default intent
+ */
+const DEFAULT_INTENT = {
+    object: 'app',
+    action: 'preview'
+};
+
+/**
  * Internal structure used to fill the sandbox.html template
  */
 export interface TemplateConfig {
@@ -75,6 +83,7 @@ export class FlpSandbox {
     ) {
         this.config = {
             path: config.path ?? DEFAULT_PATH,
+            intent: config.intent ?? DEFAULT_INTENT,
             apps: config.apps ?? [],
             rta: config.rta
         };
@@ -106,10 +115,7 @@ export class FlpSandbox {
             componentId,
             target: resources[componentId ?? manifest['sap.app'].id] ?? '/',
             local: '.',
-            intent: {
-                object: 'app',
-                action: 'preview'
-            }
+            intent: this.config.intent
         });
 
         // add route for the sandbox.html
