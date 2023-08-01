@@ -1,6 +1,11 @@
 import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 
+interface Intent {
+    object: string;
+    action: string;
+}
+
 /**
  * Configuration for additional applications
  */
@@ -11,10 +16,7 @@ export interface App {
      * Optional component id if it differs from the manifest (e.g. for adaptation projects)
      */
     componentId?: string;
-    intent?: {
-        object: string;
-        action: string;
-    };
+    intent?: Intent;
 }
 
 /**
@@ -22,6 +24,7 @@ export interface App {
  */
 export interface FlpConfig {
     path: string;
+    intent?: Intent;
     rta?: {
         layer?: UI5FlexLayer;
     };
