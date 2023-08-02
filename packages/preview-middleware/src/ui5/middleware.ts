@@ -18,8 +18,8 @@ import type { ReaderCollection } from '@ui5/fs';
 async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, flp: FlpSandbox, logger: ToolsLogger) {
     const files = await rootProject.byGlob('/manifest.appdescr_variant');
     if (files.length === 1) {
-        const adp = new AdpPreview(config, logger);
-        const layer = await adp.init(JSON.parse(await files[0].getString()), await rootProject.byGlob('**/*.*'));
+        const adp = new AdpPreview(config, rootProject, logger);
+        const layer = await adp.init(JSON.parse(await files[0].getString()));
         flp.config.rta = { layer };
         await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp));
