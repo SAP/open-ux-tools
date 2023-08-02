@@ -43,9 +43,14 @@ describe('flex', () => {
         });
 
         test('mix of valid and invalid changes', async () => {
-            byGlobMock.mockResolvedValueOnce([mockChange('id1'), { invalid: 'change' }]);
+            byGlobMock.mockResolvedValueOnce([
+                mockChange('id1'), // valid
+                mockChange('id2', 'change', { changeType: 'addXML' }), // valid but moduleName cannot be replaced
+                { invalid: 'change' } // invalid
+            ]);
             const changes = await readChanges(project, logger);
-            expect(Object.keys(changes)).toHaveLength(1);
+            expect(Object.keys(changes)).toHaveLength(2);
+            expect(changes['sap.ui.fl.id2'].moduleName).toBeUndefined();
         });
 
         test('controller extension change with missing module name', async () => {
@@ -59,6 +64,19 @@ describe('flex', () => {
             byGlobMock.mockResolvedValueOnce([mockChange('id1', 'change', change)]);
             const changes = await readChanges(project, logger);
             expect(changes['sap.ui.fl.id1'].moduleName).toBe('my/app/changes/controller/MyExtension');
+        });
+
+        test('xml fragment change with missing module name', async () => {
+            const change = {
+                changeType: 'addXML',
+                reference: 'my.app',
+                content: {
+                    fragmentPath: 'fragment/MyFragment.xml'
+                }
+            };
+            byGlobMock.mockResolvedValueOnce([mockChange('id1', 'change', change)]);
+            const changes = await readChanges(project, logger);
+            expect(changes['sap.ui.fl.id1'].moduleName).toBe('my/app/changes/fragment/MyFragment.xml');
         });
     });
 
