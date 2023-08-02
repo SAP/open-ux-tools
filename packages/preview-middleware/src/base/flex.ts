@@ -22,7 +22,7 @@ export interface FlexChange {
  */
 const moduleNameContentMap: { [key: string]: (change: FlexChange) => string } = {
     codeExt: (change) => (change.content?.codeRef ?? '').replace('.js', ''),
-    addXML: (change: any) => change.content.fragmentPath
+    addXML: (change) => change.content?.fragmentPath ?? ''
 };
 
 /**
