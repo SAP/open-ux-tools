@@ -6,7 +6,7 @@ import { join, parse } from 'path';
 /**
  * Structure of a flex change.
  */
-interface FlexChange {
+export interface FlexChange {
     [key: string]: string | object | undefined;
     changeType: string;
     reference: string;
@@ -47,8 +47,8 @@ function tryFixChange(change: FlexChange, logger: Logger) {
  * @param logger logger instance
  * @returns object with the file name as key and the file content as value
  */
-export async function readChanges(project: ReaderCollection, logger: Logger): Promise<Record<string, unknown>> {
-    const changes: Record<string, unknown> = {};
+export async function readChanges(project: ReaderCollection, logger: Logger): Promise<Record<string, FlexChange>> {
+    const changes: Record<string, FlexChange> = {};
     const files = await project.byGlob('/**/changes/*.*');
     for (const file of files) {
         try {

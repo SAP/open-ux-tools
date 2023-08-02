@@ -19,11 +19,11 @@ describe('flex', () => {
         const project = {
             byGlob: byGlobMock
         } as unknown as ReaderCollection;
-        function mockChange(id: string, ext: string = 'change') {
+        function mockChange(id: string, ext: string = 'change', content?: object) {
             return {
                 getPath: () => `test/changes/${id}.${ext}`,
                 getName: () => `${id}.${ext}`,
-                getString: () => Promise.resolve(JSON.stringify({ id }))
+                getString: () => Promise.resolve(JSON.stringify(content ?? { id }))
             };
         }
         test('no changes available', async () => {
@@ -46,6 +46,19 @@ describe('flex', () => {
             byGlobMock.mockResolvedValueOnce([mockChange('id1'), { invalid: 'change' }]);
             const changes = await readChanges(project, logger);
             expect(Object.keys(changes)).toHaveLength(1);
+        });
+
+        test('controller extension change with missing module name', async () => {
+            const change = {
+                changeType: 'codeExt',
+                reference: 'my.app',
+                content: {
+                    codeRef: 'controller/MyExtension.js'
+                }
+            };
+            byGlobMock.mockResolvedValueOnce([mockChange('id1', 'change', change)]);
+            const changes = await readChanges(project, logger);
+            expect(changes['sap.ui.fl.id1'].moduleName).toBe('my/app/changes/controller/MyExtension');
         });
     });
 
