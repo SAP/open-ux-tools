@@ -1,6 +1,6 @@
 import type { ReaderCollection } from '@ui5/fs';
 import type { TemplateConfig } from '../../../src/base/flp';
-import { FlpSandbox as FlpSandboxUnderTest } from '../../../src/base/flp';
+import { FlpSandbox as FlpSandboxUnderTest } from '../../../src';
 import type { FlpConfig } from '../../../src/types';
 import type { MiddlewareUtils } from '@ui5/server';
 import { ToolsLogger } from '@sap-ux/logger';
@@ -49,12 +49,14 @@ describe('FlpSandbox', () => {
             expect(flp.config.path).toBe('/test/flp.html');
             expect(flp.config.apps).toBeDefined();
             expect(flp.config.apps).toHaveLength(0);
+            expect(flp.config.intent).toStrictEqual({ object: 'app', action: 'preview' });
             expect(flp.router).toBeDefined();
         });
 
         test('advanced config', () => {
             const config: FlpConfig = {
                 path: '/my/custom/path',
+                intent: { object: 'movie', action: 'start' },
                 apps: [
                     {
                         target: '/other/app',
@@ -65,6 +67,7 @@ describe('FlpSandbox', () => {
             const flp = new FlpSandbox(config, mockProject, mockUtils, logger);
             expect(flp.config.path).toBe(config.path);
             expect(flp.config.apps).toEqual(config.apps);
+            expect(flp.config.intent).toStrictEqual({ object: 'movie', action: 'start' });
             expect(flp.router).toBeDefined();
         });
     });

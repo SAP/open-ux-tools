@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.3.0
+
+### Minor Changes
+
+-   f13aabe6: export FlpSandbox class for programmatic use of the middleware
+
 ## 0.2.0
 
 ### Minor Changes
