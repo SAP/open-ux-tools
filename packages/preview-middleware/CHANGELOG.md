@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.3.1
+
+### Patch Changes
+
+-   68ef7224: FIX: local artifacts like controller extensions are not loaded
+-   Updated dependencies [68ef7224]
+    -   @sap-ux/adp-tooling@0.1.1
+
 ## 0.3.0
 
 ### Minor Changes
