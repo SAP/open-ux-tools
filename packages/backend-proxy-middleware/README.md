@@ -137,7 +137,7 @@ By default the `backend-proxy-middleware` will read the proxy configuration from
 ```
 **Please note:** if you want to exclude any domains from the proxy then you will need to set the `noproxy` variable. E.g. if you want to exclude the `https://my.backend.example:1234` from the proxy you will need to set `noproxy` to `npm config set noproxy ".backend.example"`. Note the leading `.`, if you provide only `backend.example`, then it will not work.
 
-### Proxying Multiple Paths Backends(#proxying-multiple-paths-backends)
+### [Proxying Multiple Paths Backends](#proxying-multiple-paths-backends)
 
 To connect to multiple backend or multiple paths of a backend, use multiple instances of the middleware.
 
