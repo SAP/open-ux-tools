@@ -349,7 +349,6 @@ export async function createTransportRequest(
         provider = await getAbapServiceProvider(config, logger);
     }
     const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
-    logger.debug(`ADTService created for application ${config.app.name}: ${!!adtService}.`);
     const transportRequest = await adtService?.createTransportRequest({
         packageName: config.app.package ?? '',
         ui5AppName: config.app.name,
