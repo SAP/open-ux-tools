@@ -100,12 +100,12 @@ Options:
   --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables
   --username                           ABAP Service username
   --password                           ABAP Service password
-  --create-transport                   Create a transport request during deployment
   --transport <transport-request>      Transport number to record the change in the ABAP system
+  --create-transport                   Create a transport request during deployment
+  --package <abap-package>             Package name for deploy target ABAP system (only required when --create-transport is used)
   --name <bsp-name>                    Project name of the app
   --no-strict-ssl                      Deactivate SSL certificate validation, enabled by default
   --test                               Run in test mode. ABAP backend reports undeployment errors without actually undeploying (use --no-test to deactivate it).
-  --package <abap-package>             Package name for deploy target ABAP system (only required when --create-transport is used)
   -v, --version                        version of the deploy tooling
   -h, --help                           display help for command
 ```
