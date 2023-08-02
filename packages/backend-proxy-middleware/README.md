@@ -30,7 +30,7 @@ Optional object that can be used to directly set options of the used `http-proxy
 
 Executing `ui5 serve` in your project with the configuration below in the `ui5.yaml` file would forward any request starting with the `path` parameter to the provided backend `url`.
 
-```
+```yaml
 - name: backend-proxy-middleware
   afterMiddleware: compression
   configuration:
@@ -44,7 +44,7 @@ Executing `ui5 serve` in your project with the configuration below in the `ui5.y
 If working in SAP Business Application Studio and the backend is configured as destination then you can also provide the `destination` in the configuration. 
 If a destination needs to be read by a specific instance of a destination service then you need to provide the id of the service as optional property `destinationInstance`.
 
-```
+```yaml
 - name: backend-proxy-middleware
   afterMiddleware: compression
   configuration:
@@ -57,7 +57,7 @@ If a destination needs to be read by a specific instance of a destination servic
 
 If the backend destination is configured to use principal propagation, then in some cases the requests might fail. If this occurs then you will need to set the optional property `xfwd` to `true`. This will add the x-forwared headers to the proxy requests.
 
-```
+```yaml
 - name: backend-proxy-middleware
   afterMiddleware: compression
   configuration:
@@ -71,7 +71,7 @@ If the backend destination is configured to use principal propagation, then in s
 ### [Connecting to the SAP Business Technology Platform](#connecting-to-the-sap-business-technology-platform)
 If you want to connect to an ABAP Environment on SAP Business Technology Platform then you will need to set the optional property `scp` to `true`. For any other target, remove this property or set it to `false`.
 
-```
+```yaml
 - name: backend-proxy-middleware
   afterMiddleware: compression
   configuration:
@@ -84,7 +84,7 @@ If you want to connect to an ABAP Environment on SAP Business Technology Platfor
 ### [Connecting to the SAP API Business Hub](#connecting-to-the-sap-api-business-hub)
 If you want to connect to the SAP API Business Hub then you will need to set the optional property `apiHub` to `true`, and set the corresponding `path` and `url`, e.g.
 
-```
+```yaml
 - name: backend-proxy-middleware
   afterMiddleware: compression
   configuration:
@@ -97,7 +97,7 @@ If you want to connect to the SAP API Business Hub then you will need to set the
 ### [Proxying WebSockets](#proxying-websockets)
 If you want the proxy to handle also WebSockets, then you need to set the optional property `ws` to `true`, e.g.
 
-```
+```yaml
 - name: backend-proxy-middleware
   afterMiddleware: compression
   configuration:
@@ -111,12 +111,12 @@ If you want the proxy to handle also WebSockets, then you need to set the option
 ### [Changing the path to which a request is proxied](#changing-the-path-to-which-a-request-is-proxied)
 If you want to configure the proxy to send requests from a certain path `/services/odata` to your backend (local url or destination) with a specified entry path `/my/entry/path`. Then you need to do the following:
 
-```
+```yaml
 - name: backend-proxy-middleware
   afterMiddleware: compression
   configuration:
     backend:
-    - path: /services/odata
+      path: /services/odata
       pathReplace: /my/entry/path
       url: https://my.backend.example:1234
       destination: my_example_destination
@@ -125,17 +125,43 @@ If you want to configure the proxy to send requests from a certain path `/servic
 ### [Providing Proxy Configuration](#providing-proxy-configuration)
 By default the `backend-proxy-middleware` will read the proxy configuration from the OS environment variables `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` or from the Node.js environment variables `proxy`, `https-proxy` and `noproxy`. If those variables are not set, then you can also provide the proxy configuration in the `ui5.yaml` file.
 
-```
+```yaml
 - name: backend-proxy-middleware
   afterMiddleware: compression
   configuration:
     proxy: https://myproxy.example:8443
     backend:
-    - path: /sap
+      path: /sap
       url: https://my.backend.example:1234
 
 ```
 **Please note:** if you want to exclude any domains from the proxy then you will need to set the `noproxy` variable. E.g. if you want to exclude the `https://my.backend.example:1234` from the proxy you will need to set `noproxy` to `npm config set noproxy ".backend.example"`. Note the leading `.`, if you provide only `backend.example`, then it will not work.
+
+## Proxying Multiple Paths Backends(#multiple-backends)
+
+To connect to multiple backend or multiple paths of a backend, use multiple instances of the middleware.
+
+```yaml
+- name: backend-proxy-middleware
+  afterMiddleware: compression
+  configuration:
+    backend:
+      path: /my/path
+      url: https://my.backend.example:1234
+- name: backend-proxy-middleware
+  afterMiddleware: compression
+  configuration:
+    backend:
+      path: /my/other/path
+      url: https://my.backend.example:1234
+- name: backend-proxy-middleware
+  afterMiddleware: compression
+  configuration:
+    backend:
+      path: /my/path
+      url: https://other.backend.example:1234
+```
+
 ## Programmatic Usage
 Alternatively you can only use the underlying proxy function, e.g. for the case when you want to use the `backend-proxy-middleware` functionality in your `express` server.
 
