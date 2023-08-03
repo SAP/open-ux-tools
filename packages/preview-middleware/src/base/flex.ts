@@ -4,18 +4,59 @@ import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'f
 import { join, parse } from 'path';
 
 /**
+ * Structure of a flex change.
+ */
+export interface FlexChange {
+    [key: string]: string | object | undefined;
+    changeType: string;
+    reference: string;
+    moduleName?: string;
+    content?: {
+        codeRef?: string;
+        fragmentPath?: string;
+    };
+}
+
+/**
+ * Map of change type specific correction functions.
+ */
+const moduleNameContentMap: { [key: string]: (change: FlexChange) => string } = {
+    codeExt: (change) => (change.content?.codeRef ?? '').replace('.js', ''),
+    addXML: (change) => change.content?.fragmentPath ?? ''
+};
+
+/**
+ * Sets the moduleName property of the provided change to also support old changes with newer UI5 versions.
+ *
+ * @param change change to be fixed
+ * @param logger logger instance
+ */
+function tryFixChange(change: FlexChange, logger: Logger) {
+    try {
+        const prefix = change.reference.replace(/\./g, '/');
+        change.moduleName = `${prefix}/changes/${moduleNameContentMap[change.changeType](change)}`;
+    } catch (error) {
+        logger.warn('Could not fix missing module name.');
+    }
+}
+
+/**
  * Read changes from the file system and return them.
  *
  * @param project reference to the UI5 project
  * @param logger logger instance
  * @returns object with the file name as key and the file content as value
  */
-export async function readChanges(project: ReaderCollection, logger: Logger): Promise<Record<string, unknown>> {
-    const changes: Record<string, unknown> = {};
+export async function readChanges(project: ReaderCollection, logger: Logger): Promise<Record<string, FlexChange>> {
+    const changes: Record<string, FlexChange> = {};
     const files = await project.byGlob('/**/changes/*.*');
     for (const file of files) {
         try {
-            changes[`sap.ui.fl.${parse(file.getName()).name}`] = JSON.parse(await file.getString());
+            const change = JSON.parse(await file.getString()) as FlexChange;
+            if (moduleNameContentMap[change.changeType] && !change.moduleName) {
+                tryFixChange(change, logger);
+            }
+            changes[`sap.ui.fl.${parse(file.getName()).name}`] = change;
             logger.debug(`Read change from ${file.getPath()}`);
         } catch (error) {
             logger.warn(error.message);

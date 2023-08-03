@@ -101,6 +101,8 @@ Options:
   --username                           ABAP Service username
   --password                           ABAP Service password
   --transport <transport-request>      Transport number to record the change in the ABAP system
+  --create-transport                   Create a transport request during deployment
+  --package <abap-package>             Package name for deploy target ABAP system (only required when --create-transport is used)
   --name <bsp-name>                    Project name of the app
   --no-strict-ssl                      Deactivate SSL certificate validation, enabled by default
   --test                               Run in test mode. ABAP backend reports undeployment errors without actually undeploying (use --no-test to deactivate it).

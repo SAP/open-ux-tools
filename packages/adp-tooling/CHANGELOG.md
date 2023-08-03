@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.1.1
+
+### Patch Changes
+
+-   68ef7224: FIX: local artifacts like controller extensions are not loaded
+
 ## 0.1.0
 
 ### Minor Changes
