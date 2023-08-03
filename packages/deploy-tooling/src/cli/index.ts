@@ -43,7 +43,11 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
                 'Read ABAP cloud service properties from environment variables or .env file'
             ).conflicts(['cloudServiceKey', 'destination'])
         )
+        .option('--package <abap-package>', 'Package name for deploy target ABAP system')
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
+        .addOption(
+            new Option('--create-transport', 'Create transport request during deployment').conflicts(['transport'])
+        )
         .addOption(
             new Option('--username <username>', 'ABAP System username').conflicts([
                 'cloudServiceKey',
@@ -72,11 +76,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
     if (name === 'deploy') {
         // additional parameters for deployment
         command
-            .option('--package <abap-package>', 'Package name for deploy target ABAP system')
             .option('--description <description>', 'Project description of the app')
-            .addOption(
-                new Option('--create-transport', 'Create transport request during deployment').conflicts(['transport'])
-            )
             // SafeMode: Example: If the deployment would overwrite a repository that contains an app with a different sap.app/id and SafeMode is true, HTTP status code 412 (Precondition Failed) with further information would be returned.
             .option('--safe', 'Prevents accidentally breaking deployments.')
             .option('--keep', 'Keep a copy of the deployed archive in the project folder.');

@@ -328,12 +328,30 @@ describe('base/deploy', () => {
     });
 
     describe('undeploy', () => {
+        beforeEach(() => {
+            mockedUi5RepoService.undeploy.mockReset();
+            mockedAdtService.createTransportRequest.mockReset();
+        });
         test('No errors', async () => {
             mockedUi5RepoService.undeploy.mockResolvedValue({});
             await undeploy({ app, target }, nullLogger);
             expect(mockedUi5RepoService.undeploy).toBeCalledWith({ bsp: app, testMode: undefined });
             await undeploy({ app, target, test: true }, nullLogger);
             expect(mockedUi5RepoService.undeploy).toBeCalledWith({ bsp: app, testMode: true });
+        });
+
+        test('Creates new transport request during undeployment and reset createTransport param', async () => {
+            mockedStoreService.read.mockResolvedValueOnce(credentials);
+            mockedUi5RepoService.undeploy.mockResolvedValue(undefined);
+            mockedAdtService.createTransportRequest.mockResolvedValueOnce('~transport123');
+            const config = { app, target, createTransport: true };
+            await undeploy(config, nullLogger);
+            expect(mockedUi5RepoService.undeploy).toBeCalledWith({
+                bsp: { ...app, transport: '~transport123' },
+                testMode: undefined
+            });
+            expect(config.createTransport).toBe(false);
+            expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
         });
     });
 

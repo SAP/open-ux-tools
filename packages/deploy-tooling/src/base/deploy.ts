@@ -441,6 +441,10 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
  */
 async function tryUndeploy(provider: AbapServiceProvider, config: AbapDeployConfig, logger: Logger): Promise<void> {
     try {
+        if (config.createTransport) {
+            config.app.transport = await createTransportRequest(config, logger, provider);
+            config.createTransport = false;
+        }
         const service = getUi5AbapRepositoryService(provider, config, logger);
         await service.undeploy({ bsp: config.app, testMode: config.test });
         if (config.test === true) {
