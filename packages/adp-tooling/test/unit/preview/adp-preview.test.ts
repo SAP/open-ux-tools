@@ -2,7 +2,7 @@ import { ToolsLogger } from '@sap-ux/logger';
 import { AdpPreview } from '../../../src/preview/adp-preview';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import type { Resource } from '@ui5/fs';
+import type { ReaderCollection } from '@ui5/fs';
 import nock from 'nock';
 import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
@@ -18,6 +18,10 @@ jest.mock('@sap-ux/store', () => {
         )
     };
 });
+
+const mockProject = {
+    byGlob: jest.fn().mockResolvedValue([])
+};
 
 describe('AdaptationProject', () => {
     const backend = 'https://sap.example';
@@ -68,20 +72,21 @@ describe('AdaptationProject', () => {
                         url: backend
                     }
                 },
+                mockProject as unknown as ReaderCollection,
                 logger
             );
 
-            await adp.init(JSON.parse(descriptorVariant), [
+            mockProject.byGlob.mockResolvedValueOnce([
                 {
                     getPath: () => '/manifest.appdescr_variant',
                     getBuffer: () => Buffer.from(descriptorVariant)
-                } as unknown as Resource
+                }
             ]);
+            await adp.init(JSON.parse(descriptorVariant));
             expect(adp.descriptor).toEqual(mockMergedDescriptor);
             expect(adp.resources).toEqual({
-                'my.adaptation': '/my/adaptation',
                 'sap.reuse.lib': '/sap/reuse/lib',
-                'the.original.app': '/my/adaptation'
+                'the.original.app': mockMergedDescriptor.url
             });
         });
 
@@ -92,6 +97,7 @@ describe('AdaptationProject', () => {
                         url: backend
                     }
                 },
+                mockProject as unknown as ReaderCollection,
                 logger
             );
 
@@ -109,19 +115,21 @@ describe('AdaptationProject', () => {
                         url: backend
                     }
                 },
+                mockProject as unknown as ReaderCollection,
                 logger
             );
 
-            await adp.init(JSON.parse(descriptorVariant), [
+            mockProject.byGlob.mockResolvedValueOnce([
                 {
                     getPath: () => '/manifest.appdescr_variant',
                     getBuffer: () => Buffer.from(descriptorVariant)
-                } as unknown as Resource
+                }
             ]);
+            await adp.init(JSON.parse(descriptorVariant));
 
             const app = express();
             app.use(adp.descriptor.url, adp.proxy.bind(adp));
-            app.get('/my/adaptation/another.file', next);
+            app.get(`${mockMergedDescriptor.url}/original.file`, next);
             app.use((req) => fail(`${req.path} should have been intercepted.`));
 
             server = await supertest(app);
@@ -136,8 +144,20 @@ describe('AdaptationProject', () => {
             await server.get('/my/adaptation/Component-preload.js').expect(404);
         });
 
-        test('/another.file', async () => {
-            await server.get('/my/adaptation/another.file').expect(200);
+        test('/local.file', async () => {
+            const testFileContent = '~test';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getPath: () => '/local.file',
+                    getString: () => testFileContent
+                }
+            ]);
+            const response = await server.get(`${mockMergedDescriptor.url}/local.file`).expect(200);
+            expect(response.text).toEqual(testFileContent);
+        });
+
+        test('/original.file', async () => {
+            await server.get(`${mockMergedDescriptor.url}/original.file`).expect(200);
             expect(next).toBeCalled();
         });
     });

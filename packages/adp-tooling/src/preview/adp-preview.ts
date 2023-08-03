@@ -4,7 +4,7 @@ import type { AdpPreviewConfig, DescriptorVariant } from '../types';
 import { createBuffer, createProvider } from './service';
 import type { NextFunction, Request, Response } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
-import type { Resource } from '@ui5/fs';
+import type { ReaderCollection } from '@ui5/fs';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 
 /**
@@ -33,8 +33,7 @@ export class AdpPreview {
     get resources() {
         if (this.mergedDescriptor) {
             const resources = {
-                [this.mergedDescriptor.name]: this.mergedDescriptor.url,
-                [this.mergedDescriptor.manifest['sap.app'].id]: this.mergedDescriptor.url
+                [this.mergedDescriptor.name]: this.mergedDescriptor.url
             };
             this.mergedDescriptor.asyncHints.libs.forEach((lib) => {
                 if (lib.url?.url) {
@@ -51,22 +50,27 @@ export class AdpPreview {
      * Constructor taking the config and a logger as input.
      *
      * @param config adp config
+     * @param project reference to the root of the project
      * @param logger logger instance
      */
-    constructor(private readonly config: AdpPreviewConfig, private readonly logger: ToolsLogger) {}
+    constructor(
+        private readonly config: AdpPreviewConfig,
+        private readonly project: ReaderCollection,
+        private readonly logger: ToolsLogger
+    ) {}
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
      *
      * @param descriptorVariant descriptor variant from the project
-     * @param files all relevant project files (e.g. webapp content)
      * @returns the UI5 flex layer for which editing is enabled
      */
-    async init(descriptorVariant: DescriptorVariant, files: Resource[]): Promise<UI5FlexLayer> {
+    async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
         const provider = await createProvider(this.config, this.logger);
         const lrep = provider.getLayeredRepository();
 
         const zip = new ZipFile();
+        const files = await this.project.byGlob('**/*.*');
         for (const file of files) {
             zip.addBuffer(await file.getBuffer(), file.getPath().substring(1));
         }
@@ -86,14 +90,19 @@ export class AdpPreview {
      * @param res outgoing response object
      * @param next next middleware that is to be called if the request cannot be handled
      */
-    proxy(req: Request, res: Response, next: NextFunction) {
-        if (req.path.endsWith('manifest.json')) {
+    async proxy(req: Request, res: Response, next: NextFunction) {
+        if (req.path === '/manifest.json') {
             res.status(200);
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
-        } else if (req.path.endsWith('Component-preload.js')) {
+        } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
         } else {
-            next();
+            const files = await this.project.byGlob(req.path);
+            if (files.length === 1) {
+                res.status(200).send(await files[0].getString());
+            } else {
+                next();
+            }
         }
     }
 }
