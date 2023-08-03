@@ -27,6 +27,13 @@ export interface InternalCustomSection extends CustomSection, CustomSubSection, 
     dependencies?: string;
 }
 
+export interface CustomHeaderSection extends CustomSection {
+    /**
+     * Sub title of header section.
+     */
+    subTitle?: string;
+}
+
 export interface CustomSubSection extends CustomSection {
     /**
      * Id of parent section.

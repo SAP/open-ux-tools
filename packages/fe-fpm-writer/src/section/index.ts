@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { CustomSection, InternalCustomSection, CustomSubSection } from './types';
+import type { CustomHeaderSection, CustomSection, InternalCustomSection, CustomSubSection } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
@@ -114,6 +114,23 @@ function generate(
     }
 
     return fs;
+}
+
+/**
+ * Add a custom header section to an existing UI5 application.
+ *
+ * @param {string} basePath - the base path
+ * @param {CustomHeaderSection} customHeaderSection - the custom header section configuration
+ * @param {Editor} [fs] - the mem-fs editor instance
+ * @returns {Promise<Editor>} the updated mem-fs editor instance
+ */
+export function generateCustomHeaderSection(
+    basePath: string,
+    customHeaderSection: CustomHeaderSection,
+    fs?: Editor
+): Editor {
+    const manifestRoot = getManifestRoot('headersection', customHeaderSection.minUI5Version);
+    return generate(basePath, customHeaderSection, manifestRoot, fs);
 }
 
 /**
