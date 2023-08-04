@@ -5,7 +5,7 @@ import type { NextFunction, Request, Response } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
-import { createProvider } from '@sap-ux/system-access';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 /**
  * Create a buffer based on the given zip file object.
@@ -87,7 +87,12 @@ export class AdpPreview {
      * @returns the UI5 flex layer for which editing is enabled
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
-        const provider = await createProvider(this.config.target, this.config.ignoreCertErrors, this.logger);
+        const provider = await createAbapServiceProvider(
+            this.config.target,
+            { ignoreCertErrors: this.config.ignoreCertErrors },
+            true,
+            this.logger
+        );
         const lrep = provider.getLayeredRepository();
 
         const zip = new ZipFile();

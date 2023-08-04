@@ -1,5 +1,9 @@
 import prompts from 'prompts';
-import { getCredentialsWithPrompts, getCredentialsFromStore } from '../../../src/base/credentials';
+import {
+    getCredentialsWithPrompts,
+    getCredentialsFromStore,
+    getCredentialsFromEnvVariables
+} from '../../../src/base/credentials';
 import type { BackendSystemKey } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
@@ -20,7 +24,7 @@ describe('base/credentials', () => {
         client: '001'
     };
 
-    describe('getCredentials', () => {
+    describe('getCredentialsFromStore', () => {
         test('read credentials from store', async () => {
             const credentials = await getCredentialsFromStore({ url: target.url }, logger);
             expect(credentials).toBeDefined();
@@ -52,6 +56,31 @@ describe('base/credentials', () => {
             const creds = await getCredentialsWithPrompts(providedUser);
             expect(creds.username).toBe(providedUser);
             expect(creds.password).toBe(password);
+        });
+    });
+
+    describe('getCredentialsFromEnvVariables', () => {
+        afterEach(() => {
+            delete process.env.FIORI_TOOLS_USER;
+            delete process.env.FIORI_TOOLS_PASSWORD;
+        });
+
+        test('no variables', async () => {
+            const credentials = await getCredentialsFromEnvVariables();
+            expect(credentials).toBeUndefined();
+        });
+
+        test('no password', async () => {
+            process.env.FIORI_TOOLS_USER = '~user';
+            const credentials = await getCredentialsFromEnvVariables();
+            expect(credentials).toBeUndefined();
+        });
+
+        test('username / password available', async () => {
+            process.env.FIORI_TOOLS_USER = '~user';
+            process.env.FIORI_TOOLS_PASSWORD = 'password';
+            const credentials = await getCredentialsFromEnvVariables();
+            expect(credentials).toBeDefined();
         });
     });
 });

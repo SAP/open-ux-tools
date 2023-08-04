@@ -1,31 +1,11 @@
-import type {
-    AbapServiceProvider,
-    ProviderConfiguration,
-    Ui5AbapRepositoryService,
-    AxiosRequestConfig,
-    AxiosError,
-    AbapCloudStandaloneOptions
-} from '@sap-ux/axios-extension';
-import {
-    AbapCloudEnvironment,
-    createForAbap,
-    createForDestination,
-    createForAbapOnCloud,
-    isAxiosError,
-    TransportRequestService
-} from '@sap-ux/axios-extension';
-import type { ServiceInfo } from '@sap-ux/btp-utils';
-import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import type { AbapServiceProvider, Ui5AbapRepositoryService, AxiosError } from '@sap-ux/axios-extension';
+import { isAxiosError, TransportRequestService } from '@sap-ux/axios-extension';
 import type { Logger } from '@sap-ux/logger';
-import type { BackendSystem } from '@sap-ux/store';
-import { getService, BackendSystemKey } from '@sap-ux/store';
 import { writeFileSync } from 'fs';
-import type { AbapDeployConfig, UrlAbapTarget } from '../types';
-import { getConfigForLogging, isUrlTarget } from './config';
-import { promptConfirmation, promptCredentials, promptServiceKeys } from './prompt';
-
-type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
-type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> & { refreshToken?: string };
+import type { AbapDeployConfig } from '../types';
+import { getConfigForLogging } from './config';
+import { promptConfirmation } from './prompt';
+import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
 
 const deploymentCommands = { tryUndeploy, tryDeploy };
 
@@ -35,149 +15,6 @@ const deploymentCommands = { tryUndeploy, tryDeploy };
 const enum TryCommands {
     Deploy = 'tryDeploy',
     UnDeploy = 'tryUndeploy'
-}
-
-/**
- * Check the secure storage if it has credentials for the given target.
- *
- * @param target - ABAP target
- * @returns {*}  {(Promise<T | undefined>)} - Credentials
- */
-export async function getCredentials<T extends BasicAuth | ServiceAuth | undefined>(
-    target: UrlAbapTarget
-): Promise<T | undefined> {
-    if (!isAppStudio()) {
-        const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-        let system = await systemService.read(new BackendSystemKey({ url: target.url, client: target.client }));
-        if (!system && target.client) {
-            // check if there are credentials for the default client
-            system = await systemService.read(new BackendSystemKey({ url: target.url }));
-        }
-        return system as T;
-    } else {
-        return undefined;
-    }
-}
-
-/**
- * Enhance axios options and create a service provider instance for an ABAP Cloud system.
- *
- * @param options - predefined axios options
- * @param target - url target configuration
- * @param noPrompt - only if not truthy prompt for anything
- * @param logger - reference to the logger instance
- * @returns {*}  {(Promise<AbapServiceProvider>)} - ABAP Service Provider
- */
-async function createAbapCloudServiceProvider(
-    options: AxiosRequestConfig,
-    target: UrlAbapTarget,
-    noPrompt?: boolean,
-    logger?: Logger
-): Promise<AbapServiceProvider> {
-    const providerConfig: Partial<AbapCloudStandaloneOptions & ProviderConfiguration> = {
-        ...options,
-        environment: AbapCloudEnvironment.Standalone,
-        service: target.serviceKey
-    };
-    if (!target.serviceKey) {
-        const storedOpts = await getCredentials<ServiceAuth>(target);
-        if (logger && storedOpts) {
-            providerConfig.service = storedOpts.serviceKeys as ServiceInfo;
-            providerConfig.refreshToken = storedOpts.refreshToken;
-            logger.info(`Using system [${storedOpts.name}] from System store`);
-        }
-        if (!storedOpts && !noPrompt) {
-            providerConfig.service = await promptServiceKeys();
-        }
-    }
-    if (providerConfig.service) {
-        return createForAbapOnCloud(providerConfig as AbapCloudStandaloneOptions);
-    } else {
-        throw new Error('Service keys required for deployment to an ABAP Cloud environment.');
-    }
-}
-
-/**
- * Checks if credentials are of basic auth type.
- *
- * @param authOpts credential options
- * @returns boolean
- */
-function isBasicAuth(authOpts: BasicAuth | ServiceAuth | undefined): authOpts is BasicAuth {
-    return !!authOpts && (authOpts as BasicAuth).password !== undefined;
-}
-
-/**
- * Enhance axios options and create a service provider instance for an on-premise ABAP system.
- *
- * @param options - predefined axios options
- * @param target - url target configuration
- * @returns {*}  {(Promise<AbapServiceProvider>)}
- */
-async function createAbapServiceProvider(
-    options: AxiosRequestConfig,
-    target: UrlAbapTarget
-): Promise<AbapServiceProvider> {
-    options.baseURL = target.url;
-    if (target.client) {
-        options.params['sap-client'] = target.client;
-    }
-    if (!options.auth) {
-        const storedOpts = await getCredentials<BasicAuth | ServiceAuth>(target);
-        if (isBasicAuth(storedOpts)) {
-            options.auth = {
-                username: storedOpts.username,
-                password: storedOpts.password
-            };
-        }
-        if ((storedOpts as ServiceAuth)?.serviceKeys) {
-            throw new Error(
-                'This is an ABAP Cloud system, please add the --cloud arg to ensure the correct deployment flow.'
-            );
-        }
-    }
-    return createForAbap(options);
-}
-
-/**
- * Create an instance of an AbapServiceProvider connected to the given target configuration.
- *
- * @param config - deployment configuration
- * @param logger - optional reference to the logger instance
- * @returns service instance
- */
-async function getAbapServiceProvider(config: AbapDeployConfig, logger?: Logger): Promise<AbapServiceProvider> {
-    let provider: AbapServiceProvider;
-    const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {};
-    if (config.strictSsl === false) {
-        options.ignoreCertErrors = true;
-    }
-    if (config.credentials?.password) {
-        options.auth = {
-            username: config.credentials?.username,
-            password: config.credentials?.password
-        };
-    }
-    options.params = config.target.params || {};
-    // Destination only supported on Business Application studio
-    if (isAppStudio() && config.target.destination) {
-        // Need additional properties to determine the type of destination we are dealing with
-        const destinations = await listDestinations();
-        const destination = destinations?.[config.target.destination];
-        if (!destination) {
-            throw new Error(`Destination ${config.target.destination} not found on subaccount`);
-        }
-        provider = createForDestination(options, destination) as AbapServiceProvider;
-    } else if (isUrlTarget(config.target)) {
-        if (config.target.cloud) {
-            provider = await createAbapCloudServiceProvider(options, config.target, config.retry, logger);
-        } else {
-            provider = await createAbapServiceProvider(options, config.target);
-        }
-    } else {
-        throw new Error('Unable to handle the configuration in the current environment.');
-    }
-    return provider;
 }
 
 /**
@@ -264,7 +101,7 @@ async function handle401Error(
     );
     logger.info('Please enter your credentials.');
     const service = getUi5AbapRepositoryService(provider, config, logger);
-    const credentials = await promptCredentials(service.defaults.auth?.username);
+    const credentials = await getCredentialsWithPrompts(service.defaults.auth?.username);
     if (Object.keys(credentials).length) {
         if (config.target.serviceKey) {
             config.target.serviceKey.uaa.username = credentials.username;
@@ -347,7 +184,15 @@ export async function createTransportRequest(
 ): Promise<string> {
     try {
         if (!provider) {
-            provider = await getAbapServiceProvider(config, logger);
+            provider = await createAbapServiceProvider(
+                config.target,
+                {
+                    auth: config.credentials,
+                    ignoreCertErrors: !config.strictSsl
+                },
+                !!config.target.cloud,
+                logger
+            );
         }
         const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
         logger.debug(`ADTService created for application ${config.app.name}, ${!adtService}.`);
@@ -383,7 +228,15 @@ async function runCommand(
     logger: Logger,
     archive: Buffer = Buffer.from('')
 ): Promise<void> {
-    const provider = await getAbapServiceProvider(config, logger);
+    const provider = await createAbapServiceProvider(
+        config.target,
+        {
+            auth: config.credentials,
+            ignoreCertErrors: !config.strictSsl
+        },
+        !!config.target.cloud,
+        logger
+    );
     logger.info(
         `Starting to ${command === TryCommands.Deploy ? 'deploy' : 'undeploy'}${
             config.test === true ? ' in test mode' : ''

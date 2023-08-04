@@ -1,6 +1,5 @@
 import prompts from 'prompts';
-import { createTransportRequest, deploy, getCredentials, undeploy } from '../../../src/base/deploy';
-import type { BackendSystemKey } from '@sap-ux/store';
+import { createTransportRequest, deploy, undeploy } from '../../../src/base/deploy';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { AbapDeployConfig, AbapTarget } from '../../../src/types';
 import {
@@ -28,29 +27,6 @@ describe('base/deploy', () => {
         client: '001'
     };
     const credentials = { username: '~username', password: '~password' };
-
-    describe('getCredentials', () => {
-        test('AppStudio - no place to get credentials', async () => {
-            mockIsAppStudio.mockReturnValueOnce(true);
-            const credentials = await getCredentials(target);
-            expect(credentials).toBeUndefined();
-        });
-
-        test('read credentials from store', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            const credentials = await getCredentials({ url: target.url });
-            expect(credentials).toBeDefined();
-        });
-
-        test('fallback read without client parameter', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            mockedStoreService.read.mockImplementation((key: BackendSystemKey) =>
-                key.getId().includes(target.client) ? undefined : {}
-            );
-            const credentials = await getCredentials(target);
-            expect(credentials).toBeDefined();
-        });
-    });
 
     describe('deploy', () => {
         const archive = Buffer.from('TestData');
@@ -185,9 +161,7 @@ describe('base/deploy', () => {
                 await deploy(archive, { app, target, yes: true }, nullLogger);
                 fail('Should have thrown an error');
             } catch (error) {
-                expect(error.message).toBe(
-                    'This is an ABAP Cloud system, please add the --cloud arg to ensure the correct deployment flow.'
-                );
+                expect(error.message).toBe('This is an ABAP Cloud system, please correct your configuration.');
             }
         });
 

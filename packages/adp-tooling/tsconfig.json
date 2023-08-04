@@ -1,6 +1,10 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["../../types/ui5.d.ts", "../../types/mem-fs-editor.d.ts", "src"],
+    "include": [
+        "../../types/ui5.d.ts",
+        "../../types/mem-fs-editor.d.ts",
+        "src"
+    ],
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "dist"
@@ -8,9 +12,6 @@
     "references": [
         {
             "path": "../axios-extension"
-        },
-        {
-            "path": "../btp-utils"
         },
         {
             "path": "../logger"

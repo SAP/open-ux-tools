@@ -1,4 +1,4 @@
-import { createProvider } from '../../../src/base/connect';
+import { createAbapServiceProvider } from '../../../src/base/connect';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
 jest.mock('@sap-ux/btp-utils', () => {
@@ -31,7 +31,7 @@ describe('service', () => {
                 username: '~user',
                 password: '~pass'
             });
-            expect(await createProvider(target, undefined, logger)).toBeDefined();
+            expect(await createAbapServiceProvider(target, undefined, true, logger)).toBeDefined();
         });
         test('steampunk url', async () => {
             mockedStoreService.read.mockResolvedValueOnce({
@@ -39,7 +39,9 @@ describe('service', () => {
                     uaa: { clientid: 'id', clientsecret: 'secret', url: 'url' }
                 }
             });
-            expect(await createProvider({ ...target, scp: true }, true, logger)).toBeDefined();
+            expect(
+                await createAbapServiceProvider({ ...target, cloud: true }, { ignoreCertErrors: true }, false, logger)
+            ).toBeDefined();
         });
     });
 });

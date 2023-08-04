@@ -1,5 +1,5 @@
-import { existsSync } from "fs";
-import { PromptObject } from "prompts";
+import { existsSync } from 'fs';
+import type { PromptObject } from 'prompts';
 
 export const UsernamePrompt: PromptObject<string> = {
     type: 'text',

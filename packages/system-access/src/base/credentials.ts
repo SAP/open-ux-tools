@@ -1,7 +1,7 @@
 import type { Logger } from '@sap-ux/logger';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import type { BackendSystem } from '@sap-ux/store';
-import type { AbapTarget, UrlAbapTarget } from '../types';
+import type { UrlAbapTarget } from '../types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import prompts from 'prompts';
 import { PasswordPrompt, UsernamePrompt } from './prompts';
@@ -13,11 +13,12 @@ export type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> 
  * Check the secure storage if it has credentials for the given target.
  *
  * @param target ABAP target
+ * @param logger - optional reference to the logger instance
  * @returns credentials from the store or undefined.
  */
 export async function getCredentialsFromStore<T extends BasicAuth | ServiceAuth | undefined>(
     target: UrlAbapTarget,
-    log: Logger
+    logger: Logger
 ): Promise<T | undefined> {
     try {
         if (!isAppStudio()) {
@@ -30,18 +31,23 @@ export async function getCredentialsFromStore<T extends BasicAuth | ServiceAuth 
             return system as T;
         }
     } catch (error) {
-        log.warn('Reading credentials from store failed');
-        log.debug(error.message);
+        logger.warn('Reading credentials from store failed');
+        logger.debug(error.message);
     }
     return undefined;
 }
 
+/**
+ * Checks the environment variables for Fiori tools settings.
+ *
+ * @returns basic auth credentials from the environment or undefined.
+ */
 export function getCredentialsFromEnvVariables(): BasicAuth | undefined {
     if (process.env.FIORI_TOOLS_USER && process.env.FIORI_TOOLS_PASSWORD) {
         return {
             username: process.env.FIORI_TOOLS_USER,
             password: process.env.FIORI_TOOLS_PASSWORD
-        }
+        };
     } else {
         return undefined;
     }
@@ -57,8 +63,9 @@ export async function getCredentialsWithPrompts(username?: string): Promise<Basi
     const credentials = await prompts([
         {
             ...UsernamePrompt,
-            initial: username,
-        }, PasswordPrompt
+            initial: username
+        },
+        PasswordPrompt
     ]);
     return credentials as BasicAuth;
 }
