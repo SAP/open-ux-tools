@@ -19,12 +19,17 @@ import prompts from 'prompts';
 import { readFileSync } from 'fs';
 
 /**
+ * Possible stored authentication options
+ */
+type StoredAuthOptions = Partial<BasicAuth> | ServiceAuth | undefined;
+
+/**
  * Checks if credentials are of basic auth type.
  *
  * @param authOpts credential options
  * @returns boolean
  */
-function isBasicAuth(authOpts: Partial<BasicAuth> | ServiceAuth | undefined): authOpts is BasicAuth {
+function isBasicAuth(authOpts: StoredAuthOptions): authOpts is BasicAuth {
     return !!authOpts && (authOpts as BasicAuth).password !== undefined;
 }
 
@@ -34,7 +39,7 @@ function isBasicAuth(authOpts: Partial<BasicAuth> | ServiceAuth | undefined): au
  * @param authOpts credential options
  * @returns boolean
  */
-function isServiceAuth(authOpts: Partial<BasicAuth> | ServiceAuth | undefined): authOpts is ServiceAuth {
+function isServiceAuth(authOpts: StoredAuthOptions): authOpts is ServiceAuth {
     return !!authOpts && (authOpts as ServiceAuth).serviceKeys !== undefined;
 }
 
@@ -116,7 +121,7 @@ async function createAbapOnPremServiceProvider(
         options.params['sap-client'] = target.client;
     }
     if (!options.auth) {
-        let storedOpts: Partial<BasicAuth> | ServiceAuth | undefined;
+        let storedOpts: StoredAuthOptions;
         try {
             storedOpts = await getCredentialsFromStore(target, logger);
         } catch (error) {
