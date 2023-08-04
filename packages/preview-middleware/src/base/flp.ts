@@ -2,7 +2,7 @@ import type { ReaderCollection } from '@ui5/fs';
 import { render } from 'ejs';
 import type { Request, Response } from 'express';
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { dirname, join, relative } from 'path';
 import type { App, FlpConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger } from '@sap-ux/logger';
@@ -32,6 +32,7 @@ const DEFAULT_INTENT = {
  * Internal structure used to fill the sandbox.html template
  */
 export interface TemplateConfig {
+    basePath: string;
     apps: Record<
         string,
         {
@@ -87,6 +88,9 @@ export class FlpSandbox {
             apps: config.apps ?? [],
             rta: config.rta
         };
+        if (!this.config.path.startsWith('/')) {
+            this.config.path = `/${this.config.path}`;
+        }
         logger.debug(`Config: ${JSON.stringify(this.config)}`);
         this.router = createRouter();
     }
@@ -102,6 +106,7 @@ export class FlpSandbox {
         const flex = this.createFlexHandler();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         this.templateConfig = {
+            basePath: relative(dirname(this.config.path), '/') ?? '.',
             apps: {},
             ui5: {
                 libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
@@ -113,7 +118,7 @@ export class FlpSandbox {
         };
         this.addApp(manifest, {
             componentId,
-            target: resources[componentId ?? manifest['sap.app'].id] ?? '/',
+            target: resources[componentId ?? manifest['sap.app'].id] ?? this.templateConfig.basePath,
             local: '.',
             intent: this.config.intent
         });
