@@ -1,0 +1,27 @@
+{
+    "extends": "../../tsconfig.json",
+    "include": [
+        "src"
+    ],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
+    },
+    "references": [
+        {
+            "path": "../axios-extension"
+        },
+        {
+            "path": "../btp-utils"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../store"
+        }
+    ]
+}
