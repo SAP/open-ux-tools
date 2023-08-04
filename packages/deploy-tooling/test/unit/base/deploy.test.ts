@@ -172,6 +172,9 @@ describe('base/deploy', () => {
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(401));
             prompts.inject(['~username', '~password']);
             await deploy(archive, { app, target, yes: true }, nullLogger);
+            expect(mockCreateForAbap).toBeCalledWith(
+                expect.objectContaining({ auth: { password: '~password', username: '~username' } })
+            );
         });
 
         test('Successful retry after known axios error (cloud target)', async () => {

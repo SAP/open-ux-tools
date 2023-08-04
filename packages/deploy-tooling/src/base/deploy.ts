@@ -107,9 +107,9 @@ async function handle401Error(
             config.target.serviceKey.uaa.username = credentials.username;
             config.target.serviceKey.uaa.password = credentials.password;
         } else {
-            service.defaults.auth = credentials;
+            config.credentials = credentials;
         }
-        await deploymentCommands[command](provider, config, logger, archive);
+        await runCommand(command, config, logger, archive);
         return true;
     } else {
         return false;
@@ -182,36 +182,28 @@ export async function createTransportRequest(
     logger: Logger,
     provider?: AbapServiceProvider
 ): Promise<string> {
-    try {
-        if (!provider) {
-            provider = await createAbapServiceProvider(
-                config.target,
-                {
-                    auth: config.credentials,
-                    ignoreCertErrors: !config.strictSsl
-                },
-                !!config.target.cloud,
-                logger
-            );
-        }
-        const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
-        logger.debug(`ADTService created for application ${config.app.name}, ${!adtService}.`);
-        const transportRequest = await adtService?.createTransportRequest({
-            packageName: config.app.package ?? '',
-            ui5AppName: config.app.name,
-            description: 'Created by @sap-ux/deploy-tooling'
-        });
-        if (transportRequest) {
-            logger.info(`Transport request ${transportRequest} created for application ${config.app.name}.`);
-            return transportRequest;
-        }
-        throw new Error(`Transport request could not be created for application ${config.app.name}.`);
-    } catch (e) {
-        logger.error(
-            `Transport request could not be created for application ${config.app.name}. Please create it manually and re-run deployment configuration for this project.`
+    if (!provider) {
+        provider = await createAbapServiceProvider(
+            config.target,
+            {
+                auth: config.credentials,
+                ignoreCertErrors: !config.strictSsl
+            },
+            !!config.target.cloud,
+            logger
         );
-        throw e;
     }
+    const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
+    const transportRequest = await adtService?.createTransportRequest({
+        packageName: config.app.package ?? '',
+        ui5AppName: config.app.name,
+        description: 'Created by @sap-ux/deploy-tooling'
+    });
+    if (transportRequest) {
+        logger.info(`Transport request ${transportRequest} created for application ${config.app.name}.`);
+        return transportRequest;
+    }
+    throw new Error(`Transport request could not be created for application ${config.app.name}.`);
 }
 
 /**
