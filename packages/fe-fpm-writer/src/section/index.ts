@@ -131,15 +131,15 @@ export function generateCustomHeaderSection(
 ): Editor {
     const manifestRoot = getManifestRoot('headersection', customHeaderSection.minUI5Version);
     const { editor, section } = generate(basePath, customHeaderSection, manifestRoot, fs);
-    // templateEdit
+    // handle fragment for templateEdit property
     if (section.edit) {
         const viewPath = join(section.path, `${section.edit.name}.fragment.xml`);
         // Apply event handler
-        if (section.eventHandler) {
-            section.eventHandler = applyEventHandlerConfiguration(
+        if (section.edit.eventHandler) {
+            section.edit.eventHandler = applyEventHandlerConfiguration(
                 editor,
                 section,
-                section.eventHandler,
+                section.edit.eventHandler,
                 false,
                 section.typescript
             );

@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomHeaderSection } from '../../src/section';
-import type { CustomHeaderSection } from '../../src/section/types';
+import { RequestGroupId, type CustomHeaderSection, DesignTime } from '../../src/section/types';
 import type { Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import * as manifestSections from './sample/section/webapp/manifest.json';
@@ -20,13 +20,28 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
         name: 'NewCustomHeaderSection',
         folder: 'extensions/custom',
         title: 'New Custom Header Section',
-        subTitle: 'Custom Header section subtitle'
+        subTitle: 'Custom Header section subtitle',
+        edit: {
+            name: 'NewCustomHeaderSectionEdit',
+            folder: 'extensions/custom',
+            eventHandler: true
+        },
+        requestGroupId: RequestGroupId.Decoration,
+        flexSettings: {
+            designtime: DesignTime.Default
+        }
     };
     const expectedFragmentPath = join(
         testDir,
         `webapp/${customHeaderSection.folder}/${customHeaderSection.name}.fragment.xml`
     );
-
+    let expectedEditFragmentPath: string;
+    if (customHeaderSection.edit?.folder) {
+        expectedEditFragmentPath = join(
+            testDir,
+            `webapp/${customHeaderSection.edit.folder}/${customHeaderSection.edit.name}.fragment.xml`
+        );
+    }
     beforeEach(() => {
         fs = create(createStorage());
         fs.delete(testDir);
@@ -35,13 +50,13 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
 
     const testVersions = ['1.85', '1.86', '1.98'];
     test.each(testVersions)('Versions %s', (minUI5Version) => {
-        const testCustomSubSection: CustomHeaderSection = {
+        const testCustomHeaderSection: CustomHeaderSection = {
             ...customHeaderSection,
             eventHandler: true,
             minUI5Version
         };
 
-        generateCustomHeaderSection(testDir, { ...testCustomSubSection }, fs);
+        generateCustomHeaderSection(testDir, { ...testCustomHeaderSection }, fs);
 
         const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
         const settings = (
@@ -51,6 +66,9 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
 
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+        expect(fs.read(expectedEditFragmentPath)).toBeDefined();
+        expect(fs.read(expectedEditFragmentPath)).toMatchSnapshot();
+        expect(fs.read(expectedEditFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
     });
 
     const positionTests = [

@@ -22,26 +22,22 @@ export interface CustomSection extends CustomElement, EventHandler {
     control?: string;
 }
 
-export interface InternalCustomSection
-    extends CustomHeaderSection,
-        CustomSection,
-        CustomSubSection,
-        InternalCustomElement {
+export interface InternalCustomSection extends CustomHeaderSection, CustomSection, CustomSubSection, InternalCustomElement {
     content: string;
     dependencies?: string;
 }
 
 type HeaderSectionEditProperty = Pick<CustomElement, 'name' | 'folder'> & EventHandler;
 
-enum RequestGroupId {
+export enum RequestGroupId {
     Heroes = 'Heroes',
     Decoration = 'Decoration',
     Workers = 'Workers',
     LongRunners = 'LongRunners'
 }
 
-enum DesignTime {
-    Default = '',
+export enum DesignTime {
+    Default = 'Default',
     NotAdaptableVisibility = 'not-adaptable-visibility',
     NotAdaptable = 'not-adaptable',
     NotAdaptableTree = 'not-adaptable-tree',
