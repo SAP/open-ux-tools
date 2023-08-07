@@ -134,6 +134,9 @@ export function generateCustomHeaderSection(
     // handle fragment for templateEdit property
     if (section.edit) {
         const viewPath = join(section.path, `${section.edit.name}.fragment.xml`);
+        const manifestPath = join(basePath, 'webapp/manifest.json');
+        const manifest = editor.readJSON(manifestPath) as Manifest;
+        setCommonDefaults(section.edit, manifestPath, manifest);
         // Apply event handler
         if (section.edit.eventHandler) {
             section.edit.eventHandler = applyEventHandlerConfiguration(
