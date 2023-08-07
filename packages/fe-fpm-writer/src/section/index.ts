@@ -86,7 +86,7 @@ function generate(
     customSection: CustomSectionUnion,
     manifestTemplateRoot: string,
     fs?: Editor
-): Editor {
+): { editor: Editor; section: InternalCustomSection } {
     validateVersion(customSection.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
@@ -113,7 +113,7 @@ function generate(
         fs.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, completeSection);
     }
 
-    return fs;
+    return { editor: fs, section: completeSection };
 }
 
 /**
@@ -130,7 +130,19 @@ export function generateCustomHeaderSection(
     fs?: Editor
 ): Editor {
     const manifestRoot = getManifestRoot('headersection', customHeaderSection.minUI5Version);
-    return generate(basePath, customHeaderSection, manifestRoot, fs);
+    const { editor, section } = generate(basePath, customHeaderSection, manifestRoot, fs);
+    // templateEdit
+    if (section.edit) {
+        const viewPath = join(section.path, `${section.edit.name}.fragment.xml`);
+        // Apply event handler
+        if (section.eventHandler) {
+            section.eventHandler = applyEventHandlerConfiguration(editor, section, section.eventHandler, false, section.typescript);
+        }
+        if (!editor.exists(viewPath)) {
+            editor.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, section);
+        }
+    }
+    return editor;
 }
 
 /**
@@ -143,7 +155,7 @@ export function generateCustomHeaderSection(
  */
 export function generateCustomSection(basePath: string, customSection: CustomSection, fs?: Editor): Editor {
     const manifestRoot = getManifestRoot('section', customSection.minUI5Version);
-    return generate(basePath, customSection, manifestRoot, fs);
+    return generate(basePath, customSection, manifestRoot, fs).editor;
 }
 
 /**
@@ -156,5 +168,5 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
  */
 export function generateCustomSubSection(basePath: string, customSubSection: CustomSubSection, fs?: Editor): Editor {
     const manifestRoot = getManifestRoot('subsection', customSubSection.minUI5Version);
-    return generate(basePath, customSubSection, manifestRoot, fs);
+    return generate(basePath, customSubSection, manifestRoot, fs).editor;
 }
