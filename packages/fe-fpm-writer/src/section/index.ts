@@ -136,7 +136,13 @@ export function generateCustomHeaderSection(
         const viewPath = join(section.path, `${section.edit.name}.fragment.xml`);
         // Apply event handler
         if (section.eventHandler) {
-            section.eventHandler = applyEventHandlerConfiguration(editor, section, section.eventHandler, false, section.typescript);
+            section.eventHandler = applyEventHandlerConfiguration(
+                editor,
+                section,
+                section.eventHandler,
+                false,
+                section.typescript
+            );
         }
         if (!editor.exists(viewPath)) {
             editor.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, section);

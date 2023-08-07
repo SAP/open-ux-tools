@@ -22,7 +22,11 @@ export interface CustomSection extends CustomElement, EventHandler {
     control?: string;
 }
 
-export interface InternalCustomSection extends CustomHeaderSection, CustomSection, CustomSubSection, InternalCustomElement {
+export interface InternalCustomSection
+    extends CustomHeaderSection,
+        CustomSection,
+        CustomSubSection,
+        InternalCustomElement {
     content: string;
     dependencies?: string;
 }
