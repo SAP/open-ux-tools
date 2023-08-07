@@ -2,7 +2,7 @@ import type { ReaderCollection } from '@ui5/fs';
 import { render } from 'ejs';
 import type { Request, Response } from 'express';
 import { readFileSync } from 'fs';
-import { basename, dirname, join, relative } from 'path';
+import { dirname, join, relative } from 'path';
 import type { App, FlpConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger } from '@sap-ux/logger';
@@ -20,11 +20,10 @@ const DEFAULT_THEME = 'sap_horizon';
  */
 const DEFAULT_PATH = '/test/flp.html';
 
-
 /**
  * Default name of the locate reuse libs script.
  */
-const DEFAULT_LOCATE_LIBS_FILENAME = 'locate-reuse-libs.js'
+const DEFAULT_LOCATE_LIBS_FILENAME = 'locate-reuse-libs.js';
 /**
  * Default intent
  */
@@ -120,7 +119,9 @@ export class FlpSandbox {
                 flex,
                 resources: { ...resources }
             },
-            locateReuseLibsScript: this.config.libs ? `./${DEFAULT_LOCATE_LIBS_FILENAME}` : await this.findLocateReuseLibsScript()
+            locateReuseLibsScript: this.config.libs
+                ? `./${DEFAULT_LOCATE_LIBS_FILENAME}`
+                : await this.findLocateReuseLibsScript()
         };
         this.addApp(manifest, {
             componentId,
@@ -129,6 +130,16 @@ export class FlpSandbox {
             intent: this.config.intent
         });
 
+        this.addStandardRoutes();
+        this.addRoutesForAdditionalApps();
+        this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
+        this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
+    }
+
+    /**
+     * Add routes for html and scripts required for a local FLP.
+     */
+    private addStandardRoutes() {
         // add route for the sandbox.html
         this.router.get(this.config.path, (req: Request, res: Response & { _livereload?: boolean }) => {
             const config = { ...this.templateConfig };
@@ -161,10 +172,6 @@ export class FlpSandbox {
                 res.status(200).contentType('text/javascript').send(script);
             });
         }
-
-        this.addRoutesForAdditionalApps();
-        this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
-        this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
 
     /**
