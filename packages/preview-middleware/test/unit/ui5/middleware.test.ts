@@ -4,7 +4,7 @@ import * as previewMiddleware from '../../../src/ui5/middleware';
 import type { Config } from '../../../src/types';
 import type { Resource } from '@ui5/fs';
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { dirname, join } from 'path';
 import nock from 'nock';
 
 jest.mock('@sap-ux/store', () => {
@@ -79,12 +79,14 @@ describe('ui5/middleware', () => {
     test('no config', async () => {
         const server = await getTestServer('simple-app');
         await server.get('/test/flp.html').expect(200);
+        await server.get('/test/locate-reuse-libs.js').expect(404);
     });
 
     test('simple config', async () => {
         const path = '/my/preview/is/here.html';
-        const server = await getTestServer('simple-app', { flp: { path } });
+        const server = await getTestServer('simple-app', { flp: { path, libs: true } });
         await server.get(path).expect(200);
+        await server.get(join(dirname(path), 'locate-reuse-libs.js')).expect(200);
         await server.get('/test/flp.html').expect(404);
     });
 

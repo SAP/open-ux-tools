@@ -16,6 +16,7 @@ server:
           afterMiddleware: compression
           configuration:
               flp:
+                  libs: true
                   apps:
                       - local: ../simple-app
                         target: /apps/other-simple-app
