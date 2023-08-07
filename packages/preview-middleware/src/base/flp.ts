@@ -166,8 +166,10 @@ export class FlpSandbox {
         });
         // add route for locate-reuse-libs if requested
         if (this.config.libs && this.templateConfig.locateReuseLibsScript) {
-            const scriptPath = join(dirname(this.config.path), DEFAULT_LOCATE_LIBS_FILENAME);
-            this.router.get(scriptPath, (req: Request, res: Response) => {
+            const pathParts = this.config.path.split('/');
+            pathParts.pop();
+            pathParts.push(DEFAULT_LOCATE_LIBS_FILENAME);
+            this.router.get(pathParts.join('/'), (_req: Request, res: Response) => {
                 const script = readFileSync(join(__dirname, '../../templates/flp/locate-reuse-libs.js'), 'utf-8');
                 res.status(200).contentType('text/javascript').send(script);
             });

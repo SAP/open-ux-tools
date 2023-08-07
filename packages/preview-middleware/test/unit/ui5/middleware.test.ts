@@ -4,7 +4,7 @@ import * as previewMiddleware from '../../../src/ui5/middleware';
 import type { Config } from '../../../src/types';
 import type { Resource } from '@ui5/fs';
 import { readFileSync } from 'fs';
-import { dirname, join } from 'path';
+import { join } from 'path';
 import nock from 'nock';
 
 jest.mock('@sap-ux/store', () => {
