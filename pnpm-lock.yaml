@@ -120,9 +120,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@sap-ux/store':
+      '@sap-ux/system-access':
         specifier: workspace:*
-        version: link:../../packages/store
+        version: link:../../packages/system-access
       yeoman-generator:
         specifier: 5.9.0
         version: 5.9.0

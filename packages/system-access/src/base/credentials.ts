@@ -1,10 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
-import { getService, BackendSystemKey } from '@sap-ux/store';
-import type { BackendSystem } from '@sap-ux/store';
+import { getService, BackendSystemKey, BackendSystem } from '@sap-ux/store';
 import type { UrlAbapTarget } from '../types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import prompts from 'prompts';
-import { PasswordPrompt, UsernamePrompt } from './prompts';
+import { questions } from './prompts';
 
 export type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
 export type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> & { refreshToken?: string };
@@ -38,6 +37,32 @@ export async function getCredentialsFromStore<T extends BasicAuth | ServiceAuth 
 }
 
 /**
+ * Store the credentials in the secure storage
+ *
+ * @param name 
+ * @param target 
+ * @param credentials 
+ * @param logger 
+ * @returns true if the credentials are successfully stored
+ */
+export async function storeCredentials(name: string, target: { url: string, client?: string }, credentials: { username: string, password: string }, logger: Logger): Promise<boolean> {
+    try {
+        const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
+        const system = new BackendSystem({
+            name,
+            ...target,
+            ...credentials
+        });
+        await systemService.write(system);
+        return true;
+    } catch (error) {
+        logger.error('Could not store credentials.');
+        logger.debug(error);
+        return false;
+    }
+}
+
+/**
  * Checks the environment variables for Fiori tools settings.
  *
  * @returns basic auth credentials from the environment or undefined.
@@ -62,10 +87,10 @@ export function getCredentialsFromEnvVariables(): BasicAuth | undefined {
 export async function getCredentialsWithPrompts(username?: string): Promise<BasicAuth> {
     const credentials = await prompts([
         {
-            ...UsernamePrompt,
+            ...questions.username,
             initial: username
         },
-        PasswordPrompt
+        questions.password
     ]);
     return credentials as BasicAuth;
 }

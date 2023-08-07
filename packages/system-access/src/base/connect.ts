@@ -14,7 +14,7 @@ import {
 import type { BasicAuth, ServiceAuth } from './credentials';
 import { getCredentialsFromStore, getCredentialsWithPrompts } from './credentials';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
-import { ServiceKeysPathPrompt } from './prompts';
+import { questions } from './prompts';
 import prompts from 'prompts';
 import { readFileSync } from 'fs';
 
@@ -88,7 +88,7 @@ async function createAbapCloudServiceProvider(
             logger.debug(error.message);
         }
         if (!providerConfig.service && prompt) {
-            const { path } = await prompts(ServiceKeysPathPrompt);
+            const { path } = await prompts(questions.serviceKeysPath);
             providerConfig.service = JSON.parse(readFileSync(path, 'utf-8')) as ServiceInfo;
         }
     }
