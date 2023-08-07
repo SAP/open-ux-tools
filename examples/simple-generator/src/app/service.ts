@@ -35,12 +35,17 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
     const params: { [key: string]: string } = {};
     serviceUrl.searchParams.forEach((value, key) => (params[key] = value));
 
-    const provider = await createAbapServiceProvider({
-        url: serviceUrl.origin,
-        client: params['sap-client']
-    }, {
-        ignoreCertErrors: true
-    }, true, getLogger(generator))
+    const provider = await createAbapServiceProvider(
+        {
+            url: serviceUrl.origin,
+            client: params['sap-client']
+        },
+        {
+            ignoreCertErrors: true
+        },
+        true,
+        getLogger(generator)
+    );
 
     return {
         url: serviceUrl.origin,
@@ -64,7 +69,12 @@ async function askToStoreCredentials(generator: Generator, provider: AbapService
         }
     ]);
     if (store) {
-        storeCredentials(name, { url: provider.defaults.baseURL!, client: provider.defaults.params?.['sap-client']}, provider.defaults.auth!, getLogger(generator));
+        await storeCredentials(
+            name,
+            { url: provider.defaults.baseURL!, client: provider.defaults.params?.['sap-client'] },
+            provider.defaults.auth!,
+            getLogger(generator)
+        );
     }
 }
 

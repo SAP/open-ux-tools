@@ -1,12 +1,17 @@
-import type { Logger } from "@sap-ux/logger";
-import type Generator from "yeoman-generator";
+import type { Logger } from '@sap-ux/logger';
+import type Generator from 'yeoman-generator';
 
 let logger: Logger;
 
-const notImplemented = () => { throw new Error('Not implemented') };
+const notImplemented = () => {
+    throw new Error('Not implemented');
+};
 
 /**
- * Wrapping the yeoman logger as @sap-ux/logger
+ * Wrapping the yeoman logger as @sap-ux/logger.
+ *
+ * @param generator yeaman generator instance
+ * @returns an instance of the @sap-ux/logger
  */
 export function getLogger(generator: Generator) {
     if (!logger) {
@@ -20,7 +25,7 @@ export function getLogger(generator: Generator) {
             remove: notImplemented,
             child: notImplemented,
             transports: notImplemented
-        }
+        };
     }
     return logger;
 }
