@@ -86,7 +86,7 @@ describe('ui5/middleware', () => {
         const path = '/my/preview/is/here.html';
         const server = await getTestServer('simple-app', { flp: { path, libs: true } });
         await server.get(path).expect(200);
-        await server.get(join(dirname(path), 'locate-reuse-libs.js')).expect(200);
+        await server.get('/my/preview/is/locate-reuse-libs.js').expect(200);
         await server.get('/test/flp.html').expect(404);
     });
 
