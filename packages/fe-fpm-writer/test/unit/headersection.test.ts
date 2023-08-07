@@ -39,10 +39,17 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
                 designtime: DesignTime.Default
             }
         };
+        let expectedEditFragmentPath: string;
         const expectedFragmentPath = join(
             testDir,
             `webapp/${customHeaderSection.folder}/${customHeaderSection.name}.fragment.xml`
         );
+        if (customHeaderSection.edit?.folder) {
+            expectedEditFragmentPath = join(
+                testDir,
+                `webapp/${customHeaderSection.edit.folder}/${customHeaderSection.edit.name}.fragment.xml`
+            );
+        }
         test.each(testVersions)('Versions %s', (minUI5Version) => {
             const testCustomHeaderSection: CustomHeaderSection = {
                 ...customHeaderSection,
@@ -57,9 +64,11 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
                 updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
             )['settings'];
             expect(settings.content).toMatchSnapshot();
-
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
             expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+            expect(expectedEditFragmentPath).toBeDefined();
+            expect(fs.read(expectedEditFragmentPath)).toMatchSnapshot();
+            expect(fs.read(expectedEditFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
         });
     });
 
@@ -82,6 +91,10 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             }
         };
         let expectedEditFragmentPath: string;
+        const expectedFragmentPath = join(
+            testDir,
+            `webapp/${customHeaderSection.folder}/${customHeaderSection.name}.fragment.xml`
+        );
         if (customHeaderSection.edit?.folder) {
             expectedEditFragmentPath = join(
                 testDir,
@@ -102,6 +115,8 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
                 updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
             )['settings'];
             expect(settings.content).toMatchSnapshot();
+            expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+            expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
             expect(expectedEditFragmentPath).toBeDefined();
             expect(fs.read(expectedEditFragmentPath)).toMatchSnapshot();
             expect(fs.read(expectedEditFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
