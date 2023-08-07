@@ -32,20 +32,24 @@ const systemName: PromptObject<string> = {
     name: 'name',
     message: 'System name:',
     validate: (input) => !!input
-}
+};
 
 /**
  * Export map of questions for usage with the prompts modules
  */
 export const questions = {
-    username, password, serviceKeysPath, storeCredentials, systemName
+    username,
+    password,
+    serviceKeysPath,
+    storeCredentials,
+    systemName
 } as const;
 type keys = keyof typeof questions;
 
 /**
  * Generate a map of questions for usages with inquirer (e.g. in yeoman)
  */
-export const inquirer: {[key in keys]: object} = {} as {[key in keys]: object};
+export const inquirer: { [key in keys]: object } = {} as { [key in keys]: object };
 for (const key in questions) {
     const question = questions[key as keys];
     inquirer[key as keys] = {
@@ -54,5 +58,5 @@ for (const key in questions) {
         message: question.message,
         validate: question.validate,
         default: question.initial
-    }
+    };
 }

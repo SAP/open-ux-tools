@@ -12,7 +12,7 @@ export type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> 
  * Check the secure storage if it has credentials for the given target.
  *
  * @param target ABAP target
- * @param logger - optional reference to the logger instance
+ * @param logger - reference to the logger instance
  * @returns credentials from the store or undefined.
  */
 export async function getCredentialsFromStore<T extends BasicAuth | ServiceAuth | undefined>(
@@ -37,15 +37,24 @@ export async function getCredentialsFromStore<T extends BasicAuth | ServiceAuth 
 }
 
 /**
- * Store the credentials in the secure storage
+ * Store the credentials in the secure storage.
  *
- * @param name 
- * @param target 
- * @param credentials 
- * @param logger 
+ * @param name system name
+ * @param target target
+ * @param target.url system url
+ * @param target.client optional system client
+ * @param credentials basic auth credentials
+ * @param credentials.username username
+ * @param credentials.password password
+ * @param logger reference to the logger instance
  * @returns true if the credentials are successfully stored
  */
-export async function storeCredentials(name: string, target: { url: string, client?: string }, credentials: { username: string, password: string }, logger: Logger): Promise<boolean> {
+export async function storeCredentials(
+    name: string,
+    target: { url: string; client?: string },
+    credentials: { username: string; password: string },
+    logger: Logger
+): Promise<boolean> {
     try {
         const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
         const system = new BackendSystem({
