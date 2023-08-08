@@ -221,13 +221,13 @@ describe('cli', () => {
             }).toThrow(error);
         });
 
-        test.each([{ params: ['--username', '~username', '--destination', '~dest'] }])(
-            'Supporting options $params',
-            ({ params }) => {
-                const { cmd, actionMock } = makeCommand();
-                cmd.parse(params, opts);
-                expect(actionMock).toHaveBeenCalledTimes(1);
-            }
-        );
+        test.each([
+            { params: ['--username', '~username', '--destination', '~dest'] },
+            { params: ['--username', '~username', '--password', '~password', '--destination', '~dest'] }
+        ])('Supporting options $params', ({ params }) => {
+            const { cmd, actionMock } = makeCommand();
+            cmd.parse(params, opts);
+            expect(actionMock).toHaveBeenCalledTimes(1);
+        });
     });
 });
