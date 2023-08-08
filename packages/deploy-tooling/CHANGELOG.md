@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.9.1
+
+### Patch Changes
+
+-   91bee893: Destination CLI param should support username CLI param
+
 ## 0.9.0
 
 ### Minor Changes
