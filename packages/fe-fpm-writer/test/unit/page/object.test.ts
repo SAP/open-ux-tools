@@ -65,6 +65,18 @@ describe('ObjectPage', () => {
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
+        test('minimal input, plus minUi5Version and contextPath', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const testApiData = JSON.parse(JSON.stringify(minimalInput));
+            testApiData.minUI5Version = '1.110';
+            testApiData.contextPath = '/my/navigation';
+            //act
+            generate(target, testApiData, fs);
+            //check
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+        });
+
         test('all optional settings', () => {
             const target = join(testDir, 'all-settings');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);

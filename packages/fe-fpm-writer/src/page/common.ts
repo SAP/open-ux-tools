@@ -8,6 +8,7 @@ import { validateBasePath } from '../common/validate';
 import type {
     CustomPage,
     FCL,
+    FpmPage,
     InternalCustomPage,
     InternalObjectPage,
     ObjectPage,
@@ -19,6 +20,7 @@ import type { Manifest } from '../common/types';
 import { FCL_ROUTER } from '../common/defaults';
 import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
+import { coerce, gte } from 'semver';
 
 type EnhancePageConfigFunction = (
     data: ObjectPage | ListReport,
@@ -145,6 +147,31 @@ export function getFclConfig(manifest: Manifest, navigation?: Navigation): FCL {
         }
     }
     return config;
+}
+
+/**
+ * Create target settings for a Fiori elements page.
+ *
+ * @param data - incoming configuration
+ * @param addSettings - optional arbitrary settings
+ * @returns version aware settings object
+ */
+export function initializeTargetSettings(
+    data: FpmPage,
+    addSettings?: Record<string, unknown>
+): Record<string, unknown> {
+    const settings: Record<string, unknown> = addSettings ? { ...addSettings } : {};
+    settings.navigation ??= {};
+
+    // starting with UI5 v1.94.0, contextPath is the preferred setting
+    const minVersion = coerce(data.minUI5Version);
+    if (!minVersion || gte(minVersion, '1.94.0')) {
+        settings.contextPath = data.contextPath ?? `/${data.entity}`;
+    } else {
+        settings.entitySet = data.entity;
+    }
+
+    return settings;
 }
 
 /**

@@ -100,6 +100,7 @@ export function proxyErrorHandler(
  * not found or error while extracting the key.
  *
  * @param logger - logger to report errors
+ * @returns {*}  {(Promise<string | undefined>)} - ApiHubKey
  */
 async function getApiHubKey(logger: Logger): Promise<string | undefined> {
     let apiHubKey: string | undefined = process.env.API_HUB_API_KEY;
@@ -324,7 +325,7 @@ export async function generateProxyMiddlewareOptions(
                 await enhanceConfigForSystem(proxyOptions, system, backend.scp, (refreshToken?: string) => {
                     if (refreshToken) {
                         logger.info('Updating refresh token for: ' + localBackend.url);
-                        systemStore.write({ ...system, refreshToken });
+                        systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
                     }
                 });
             }

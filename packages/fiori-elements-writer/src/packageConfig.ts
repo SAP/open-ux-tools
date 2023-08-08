@@ -13,7 +13,6 @@ import type { PackageJsonScripts } from './types';
  * @param options.startFile path that should be opened with the start script
  * @param options.localStartFile path that should be opend with the start-local script
  * @param options.generateIndex exclude the start-noflp script
- * @description Generates the package.json scripts
  * @returns package.json scripts
  */
 export function getPackageJsonTasks({

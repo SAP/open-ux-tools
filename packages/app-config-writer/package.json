@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/app-config-writer",
     "description": "Add or update configuration for SAP Fiori tools application",
-    "version": "0.0.5",
+    "version": "0.1.4",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -15,7 +15,7 @@
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf dist coverage *.tsbuildinfo",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",

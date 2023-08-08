@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { CustomSection, InternalCustomSection, CustomSectionDependencies } from './types';
+import type { CustomSection, InternalCustomSection, CustomSubSection } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
@@ -10,20 +10,23 @@ import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults
 import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
-import { coerce } from 'semver';
+import { coerce, gte } from 'semver';
+
+type CustomSectionUnion = CustomSection | CustomSubSection;
 
 /**
  * Get the template folder for the given UI5 version.
  *
+ * @param folderName template folder name.
  * @param ui5Version required UI5 version.
  * @returns path to the template folder containing the manifest.json ejs template
  */
-export function getManifestRoot(ui5Version?: string): string {
+export function getManifestRoot(folderName: string, ui5Version?: string): string {
     const minVersion = coerce(ui5Version);
-    if (!minVersion || minVersion.minor >= 86) {
-        return getTemplatePath('/section/1.86');
+    if (!minVersion || gte(minVersion, '1.86.0')) {
+        return getTemplatePath(`/${folderName}/1.86`);
     } else {
-        return getTemplatePath('/section/1.85');
+        return getTemplatePath(`/${folderName}/1.85`);
     }
 }
 
@@ -31,11 +34,11 @@ export function getManifestRoot(ui5Version?: string): string {
  * Get additional dependencies for fragment.xml template based on passed ui5 version.
  *
  * @param ui5Version required UI5 version.
- * @returns Additional dependencies for fragment.xml
+ * @returns String with additional dependencies to add for "FragmentDefinition" element in fragment.xml
  */
-function getAdditionalDependencies(ui5Version?: string): CustomSectionDependencies | undefined {
+function getAdditionalDependencies(ui5Version?: string): string | undefined {
     const minVersion = coerce(ui5Version);
-    return !minVersion || minVersion.minor >= 90 ? { 'xmlns:macros': 'sap.fe.macros' } : undefined;
+    return !minVersion || gte(minVersion, '1.90.0') ? 'xmlns:macros="sap.fe.macros"' : undefined;
 }
 
 /**
@@ -49,11 +52,11 @@ function getAdditionalDependencies(ui5Version?: string): CustomSectionDependenci
  */
 function enhanceConfig(
     fs: Editor,
-    data: CustomSection,
+    data: CustomSectionUnion,
     manifestPath: string,
     manifest: Manifest
 ): InternalCustomSection {
-    const config: CustomSection & Partial<InternalCustomSection> = { ...data };
+    const config: CustomSectionUnion & Partial<InternalCustomSection> = { ...data };
     setCommonDefaults(config, manifestPath, manifest);
 
     // Apply event handler
@@ -70,14 +73,20 @@ function enhanceConfig(
 }
 
 /**
- * Add a custom section to an existing UI5 application.
+ * Add a custom section or sub section to an existing UI5 application.
  *
  * @param {string} basePath - the base path
  * @param {CustomSection} customSection - the custom section configuration
+ * @param {string} manifestTemplateRoot - path to the template folder containing the manifest.json ejs template
  * @param {Editor} [fs] - the mem-fs editor instance
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
-export function generateCustomSection(basePath: string, customSection: CustomSection, fs?: Editor): Editor {
+function generate(
+    basePath: string,
+    customSection: CustomSectionUnion,
+    manifestTemplateRoot: string,
+    fs?: Editor
+): Editor {
     validateVersion(customSection.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
@@ -91,8 +100,7 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
     const completeSection = enhanceConfig(fs, customSection, manifestPath, manifest);
 
     // enhance manifest with section definition
-    const manifestRoot = getManifestRoot(customSection.minUI5Version);
-    const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeSection, {});
+    const filledTemplate = render(fs.read(join(manifestTemplateRoot, `manifest.json`)), completeSection, {});
     extendJSON(fs, {
         filepath: manifestPath,
         content: filledTemplate,
@@ -102,8 +110,34 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
     // add fragment
     const viewPath = join(completeSection.path, `${completeSection.name}.fragment.xml`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeSection);
+        fs.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, completeSection);
     }
 
     return fs;
+}
+
+/**
+ * Add a custom section to an existing UI5 application.
+ *
+ * @param {string} basePath - the base path
+ * @param {CustomSection} customSection - the custom section configuration
+ * @param {Editor} [fs] - the mem-fs editor instance
+ * @returns {Promise<Editor>} the updated mem-fs editor instance
+ */
+export function generateCustomSection(basePath: string, customSection: CustomSection, fs?: Editor): Editor {
+    const manifestRoot = getManifestRoot('section', customSection.minUI5Version);
+    return generate(basePath, customSection, manifestRoot, fs);
+}
+
+/**
+ * Add a custom sub section to an existing UI5 application.
+ *
+ * @param {string} basePath - the base path
+ * @param {CustomSubSection} customSubSection - the custom sub section configuration
+ * @param {Editor} [fs] - the mem-fs editor instance
+ * @returns {Promise<Editor>} the updated mem-fs editor instance
+ */
+export function generateCustomSubSection(basePath: string, customSubSection: CustomSubSection, fs?: Editor): Editor {
+    const manifestRoot = getManifestRoot('subsection', customSubSection.minUI5Version);
+    return generate(basePath, customSubSection, manifestRoot, fs);
 }

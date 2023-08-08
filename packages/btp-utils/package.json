@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/btp-utils",
-    "version": "0.11.5",
+    "version": "0.11.7",
     "description": "Library to simplify working with SAP BTP specific features especially in SAP Business Application",
     "repository": {
         "type": "git",
@@ -16,7 +16,7 @@
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf dist coverage *.tsbuildinfo",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",

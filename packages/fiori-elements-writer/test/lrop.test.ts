@@ -10,12 +10,14 @@ import {
     v4Service,
     v2TemplateSettings,
     v2Service,
-    projectChecks
+    projectChecks,
+    updatePackageJSONDependencyToUseLocalPath
 } from './common';
-import { UI5_DEFAULT } from '@sap-ux/ui5-application-writer/src/data/defaults';
 
 const TEST_NAME = 'lropTemplates';
-jest.setTimeout(120000); // Needed when debug.debugFull
+if (debug?.enabled) {
+    jest.setTimeout(360000);
+}
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
@@ -64,6 +66,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     },
                     appOptions: {
                         ...feBaseConfig('lropV4AddTests').appOptions,
+                        generateIndex: true,
                         addTests: true
                     }
                 }),
@@ -210,6 +213,24 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
+            name: 'lropV2_ts_ui5_1_113',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_113'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.113.0'
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
             name: 'lropV2_without_start-noflp',
             config: {
                 ...Object.assign(feBaseConfig('lropV2_ts'), {
@@ -236,9 +257,10 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         const fs = await generate(testPath, config);
         expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);

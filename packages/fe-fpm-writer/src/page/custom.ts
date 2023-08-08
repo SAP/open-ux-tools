@@ -4,12 +4,12 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { CustomPage, InternalCustomPage } from './types';
-import { getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
+import { initializeTargetSettings, getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
 import { setCommonDefaults } from '../common/defaults';
 import type { Manifest } from '../common/types';
 import { validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
-import { coerce } from 'semver';
+import { coerce, gte } from 'semver';
 import { addExtensionTypes } from '../common/utils';
 import { extendJSON } from '../common/file';
 
@@ -26,6 +26,7 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
 
     // set common defaults
     const config = setCommonDefaults(data, manifestPath, manifest) as InternalCustomPage;
+    config.settings = initializeTargetSettings(data);
 
     // set FCL configuration
     const fclConfig = getFclConfig(manifest, config.navigation);
@@ -48,7 +49,7 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
  */
 export function getTemplateRoot(ui5Version?: string): string {
     const minVersion = coerce(ui5Version);
-    if (!minVersion || minVersion.minor >= 94) {
+    if (!minVersion || gte(minVersion, '1.94.0')) {
         return getTemplatePath('/page/custom/1.94');
     } else {
         return getTemplatePath('/page/custom/1.84');

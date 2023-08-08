@@ -271,7 +271,7 @@ sap.ui.define([
          * @public
          */
         onNavBack: function() {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         },
 

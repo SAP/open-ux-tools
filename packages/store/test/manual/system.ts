@@ -62,5 +62,5 @@ async function main(action: string, basedir?: string): Promise<void> {
 }
 
 if (require.main === module) {
-    main(process.argv[2] || 'a', process.argv[3]);
+    main(process.argv[2] || 'a', process.argv[3]).catch((error) => console.error(error));
 }

@@ -1,5 +1,91 @@
 # @sap-ux/ui5-application-writer
 
+## 0.24.0
+
+### Minor Changes
+
+-   eba8741e: Use @sapui5/types with UI5 1.113 and newer
+
+## 0.23.5
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-config@0.18.2
+
+## 0.23.4
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+-   Updated dependencies [d9355692]
+    -   @sap-ux/ui5-config@0.18.1
+
+## 0.23.3
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+
+## 0.23.2
+
+### Patch Changes
+
+-   743a5dc7: Chore - bump version of @sap-ux/eslint-plugin-fiori-tools used in templates
+
+## 0.23.1
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/ui5-config@0.17.1
+
+## 0.23.0
+
+### Minor Changes
+
+-   31207b95: abstract ui5-app-writer functions into appropriate modules
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-config@0.17.0
+
+## 0.22.3
+
+### Patch Changes
+
+-   906b7fea: Fix: incorrect settings for ui5-middleware-transpile
+
+## 0.22.2
+
+### Patch Changes
+
+-   495a22cb: Use @sap-ux/eslint-plugin-fiori-tools for JS projects with eslint option
+
+## 0.22.1
+
+### Patch Changes
+
+-   91e95ef8: BUG - Generated Controller Extensions do not always work with TS
+
+## 0.22.0
+
+### Minor Changes
+
+-   7ac0cb40: Add new module containing an eslint plugin with reusable eslint configs
+
+## 0.21.1
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/ui5-config@0.16.6
+
 ## 0.21.0
 
 ### Minor Changes

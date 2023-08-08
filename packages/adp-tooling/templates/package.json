@@ -1,0 +1,23 @@
+{
+    "name": "<%= package.name %>",
+    "version": "0.1.0",
+    "private": true,
+    "description": "<%= package.description %>",
+    "keywords": [
+        "ui5",
+        "openui5",
+        "sapui5"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        "@sap-ux/backend-proxy-middleware": "^0.6.61",
+        "@sap-ux/preview-middleware": "^0.3.1",
+        "@sap-ux/ui5-proxy-middleware": "^1.1.31",
+        "@ui5/cli": "^3.3.2"
+    },
+    "scripts": {
+        "build": "ui5 build --clean-dest",
+        "start": "ui5 serve --open /test/flp.html#app-preview",
+        "editor": "ui5 serve --open /test/flp.html?fiori-tools-rta-mode=forAdaptation#app-preview"
+    }
+}
