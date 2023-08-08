@@ -23,7 +23,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
     // options to set (or overwrite) values that are otherwise read from the `ui5*.yaml`
     command
         .addOption(
-            new Option('--destination  <destination>', 'Destination in SAP BTP pointing to an ABAP system').conflicts(
+            new Option('--destination <destination>', 'Destination in SAP BTP pointing to an ABAP system').conflicts(
                 'url'
             )
         )
@@ -51,15 +51,13 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .addOption(
             new Option('--username <username>', 'ABAP System username').conflicts([
                 'cloudServiceKey',
-                'cloudServiceEnv',
-                'destination'
+                'cloudServiceEnv'
             ])
         )
         .addOption(
             new Option('--password <password>', 'ABAP System password').conflicts([
                 'cloudServiceKey',
-                'cloudServiceEnv',
-                'destination'
+                'cloudServiceEnv'
             ])
         )
         .option('--name <bsp-name>', 'Project name of the app')
