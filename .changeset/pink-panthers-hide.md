@@ -2,4 +2,4 @@
 '@sap-ux/system-access': minor
 ---
 
-Initital release of reusable module consolidating system access
+Initial release of reusable module consolidating system access
