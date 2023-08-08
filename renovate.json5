@@ -32,12 +32,13 @@
 
     assigneesFromCodeOwners: true,
 
-    ignorePaths: ["**/templates/**", "**/test-input/**", , "**/test-output/**"],
+    ignorePaths: ['**/templates/**', '**/test-input/**', '**/test-output/**'],
 
     packageRules: [
         {
-            matchPackagePrefixes: ['react', '@types/react'],
-            groupName: 'dependencies [react]'
+            matchPackagePrefixes: ['react', 'react-dom', '@types/react', '@types/react-dom'],
+            groupName: 'dependencies [react]',
+            allowedVersions: '<17.0.0'
         },
         {
             matchPackagePrefixes: ['@fluentui/'],
@@ -45,15 +46,18 @@
         },
         {
             matchPackagePrefixes: ['@testing-library/', '@types/testing-library'],
-            groupName: 'dependencies [testing-library]'
+            groupName: 'dependencies [testing-library]',
+            matchDepTypes: ['devDependencies']
         },
         {
             matchPackagePrefixes: ['eslint', '@typescript-eslint/', 'lint-staged'],
-            groupName: 'dependencies [eslint]'
+            groupName: 'dev dependencies [eslint]',
+            matchDepTypes: ['devDependencies']
         },
         {
             matchPackageNames: ['prettier', 'pretty-quick'],
-            groupName: 'dependencies [prettier]'
+            groupName: 'dev dependencies [prettier]',
+            matchDepTypes: ['devDependencies']
         },
         {
             matchPackagePrefixes: ['i18next'],
@@ -65,7 +69,8 @@
         },
         {
             matchPackagePrefixes: ['enzyme', '@types/enzyme'],
-            groupName: 'dependencies [enzyme]'
+            groupName: 'dev dependencies [enzyme]',
+            matchDepTypes: ['devDependencies']
         },
         {
             matchPackagePrefixes: ['lodash', '@types/lodash'],
@@ -73,15 +78,28 @@
         },
         {
             matchPackagePrefixes: ['jest', 'ts-jest', '@​types/jest', 'babel-jest'],
-            groupName: 'dependencies [jest]'
-        },
-                {
-            matchPackagePrefixes: ['nx', '@​nrwl/nx-cloud'],
-            groupName: 'dependencies [nx]'
+            groupName: 'dev dependencies [jest]',
+            matchDepTypes: ['devDependencies']
         },
         {
-            matchPackagePrefixes: ['webpack', 'ts-loader', 'style-loader', 'sass-loader', 'sass', 'css-loader', '@storybook/manager-webpack5', '@storybook/builder-webpack5', 'storybook-addon-turbo-build'],
-            groupName: 'dependencies [webpack]'
+            matchPackagePrefixes: ['nx', '@​nrwl/nx-cloud'],
+            groupName: 'dev dependencies [nx]',
+            matchDepTypes: ['devDependencies']
+        },
+        {
+            matchPackagePrefixes: [
+                'webpack',
+                'ts-loader',
+                'style-loader',
+                'sass-loader',
+                'sass',
+                'css-loader',
+                '@storybook/manager-webpack5',
+                '@storybook/builder-webpack5',
+                'storybook-addon-turbo-build'
+            ],
+            groupName: 'dev dependencies [webpack]',
+            matchDepTypes: ['devDependencies']
         }
     ]
 }
