@@ -6,16 +6,9 @@ import {
 } from '../../../src/base/credentials';
 import type { BackendSystemKey } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-
-const mockedStoreService = {
-    read: jest.fn().mockReturnValue({})
-};
-jest.mock('@sap-ux/store', () => {
-    return {
-        ...jest.requireActual('@sap-ux/store'),
-        getService: jest.fn().mockImplementation(() => Promise.resolve(mockedStoreService))
-    };
-});
+import {
+    mockedStoreService
+} from '../../__mocks__';
 
 describe('base/credentials', () => {
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -23,9 +16,12 @@ describe('base/credentials', () => {
         url: 'http://target.example',
         client: '001'
     };
+    const username = '~user';
+    const password = '~pass';
 
     describe('getCredentialsFromStore', () => {
         test('read credentials from store', async () => {
+            mockedStoreService.read.mockResolvedValueOnce( { username, password })
             const credentials = await getCredentialsFromStore({ url: target.url }, logger);
             expect(credentials).toBeDefined();
         });
@@ -37,12 +33,15 @@ describe('base/credentials', () => {
             const credentials = await getCredentialsFromStore(target, logger);
             expect(credentials).toBeDefined();
         });
+
+        test('handle error thrown by store', async () => {
+            mockedStoreService.read.mockRejectedValue(Error);
+            const credentials = await getCredentialsFromStore(target, logger);
+            expect(credentials).toBeUndefined();
+        });
     });
 
     describe('getCredentialsWithPrompts', () => {
-        const username = '~user';
-        const password = '~pass';
-
         test('no default provided', async () => {
             prompts.inject([username, password]);
             const creds = await getCredentialsWithPrompts();
@@ -71,16 +70,16 @@ describe('base/credentials', () => {
         });
 
         test('no password', async () => {
-            process.env.FIORI_TOOLS_USER = '~user';
+            process.env.FIORI_TOOLS_USER = username;
             const credentials = await getCredentialsFromEnvVariables();
             expect(credentials).toBeUndefined();
         });
 
         test('username / password available', async () => {
-            process.env.FIORI_TOOLS_USER = '~user';
-            process.env.FIORI_TOOLS_PASSWORD = 'password';
+            process.env.FIORI_TOOLS_USER = username;
+            process.env.FIORI_TOOLS_PASSWORD = password;
             const credentials = await getCredentialsFromEnvVariables();
-            expect(credentials).toBeDefined();
+            expect(credentials).toEqual({ username, password });
         });
     });
 });

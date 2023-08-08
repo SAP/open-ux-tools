@@ -9,13 +9,19 @@ export type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
 export type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> & { refreshToken?: string };
 
 /**
+ * Possible stored authentication options
+ */
+export type StoredAuthOptions = Partial<BasicAuth> | ServiceAuth | undefined;
+
+
+/**
  * Check the secure storage if it has credentials for the given target.
  *
  * @param target ABAP target
  * @param logger - reference to the logger instance
  * @returns credentials from the store or undefined.
  */
-export async function getCredentialsFromStore<T extends BasicAuth | ServiceAuth | undefined>(
+export async function getCredentialsFromStore<T extends StoredAuthOptions>(
     target: UrlAbapTarget,
     logger: Logger
 ): Promise<T | undefined> {

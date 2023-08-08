@@ -11,17 +11,12 @@ import {
     createForAbap,
     createForDestination
 } from '@sap-ux/axios-extension';
-import type { BasicAuth, ServiceAuth } from './credentials';
+import type { BasicAuth, ServiceAuth, StoredAuthOptions } from './credentials';
 import { getCredentialsFromStore, getCredentialsWithPrompts } from './credentials';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import { questions } from './prompts';
 import prompts from 'prompts';
 import { readFileSync } from 'fs';
-
-/**
- * Possible stored authentication options
- */
-type StoredAuthOptions = Partial<BasicAuth> | ServiceAuth | undefined;
 
 /**
  * Checks if credentials are of basic auth type.
@@ -75,17 +70,11 @@ async function createAbapCloudServiceProvider(
     };
     if (!providerConfig.service) {
         // first try reading the keys from the store
-        try {
-            const storedOpts = await getCredentialsFromStore<ServiceAuth>(target, logger);
-            if (storedOpts) {
-                providerConfig.service = storedOpts.serviceKeys as ServiceInfo;
-                providerConfig.refreshToken = storedOpts.refreshToken;
-                logger.info(`Using system [${storedOpts.name}] from System store`);
-            }
-        } catch (error) {
-            // something went wrong but it doesn't matter, we could still prompt the user
-            logger.warn('Could not read service keys from store.');
-            logger.debug(error.message);
+        const storedOpts = await getCredentialsFromStore<ServiceAuth>(target, logger);
+        if (storedOpts) {
+            providerConfig.service = storedOpts.serviceKeys as ServiceInfo;
+            providerConfig.refreshToken = storedOpts.refreshToken;
+            logger.info(`Using system [${storedOpts.name}] from System store`);
         }
         if (!providerConfig.service && prompt) {
             const { path } = await prompts(questions.serviceKeysPath);
@@ -121,14 +110,7 @@ async function createAbapOnPremServiceProvider(
         options.params['sap-client'] = target.client;
     }
     if (!options.auth) {
-        let storedOpts: StoredAuthOptions;
-        try {
-            storedOpts = await getCredentialsFromStore(target, logger);
-        } catch (error) {
-            // something went wrong but it doesn't matter, we could still prompt the user
-            logger.warn('Could not read credentials from store.');
-            logger.debug(error.message);
-        }
+        const storedOpts = await getCredentialsFromStore(target, logger);
         if (isBasicAuth(storedOpts)) {
             options.auth = {
                 username: storedOpts.username,

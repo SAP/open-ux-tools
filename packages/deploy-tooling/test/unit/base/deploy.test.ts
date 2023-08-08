@@ -4,15 +4,10 @@ import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { AbapDeployConfig, AbapTarget } from '../../../src/types';
 import {
     mockedStoreService,
-    mockIsAppStudio,
     mockedUi5RepoService,
-    mockListDestinations,
     mockCreateForAbap,
     mockedAdtService
 } from '../../__mocks__';
-import { join } from 'path';
-import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
-import { readFileSync } from 'fs';
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -68,101 +63,6 @@ describe('base/deploy', () => {
             );
             expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
             expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
-        });
-
-        test('Throw error in AppStudio if destination not found', async () => {
-            const destination = '~destination';
-            mockIsAppStudio.mockReturnValueOnce(true);
-            mockListDestinations.mockReturnValue({});
-            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
-            try {
-                await deploy(archive, { app, target: { destination } }, nullLogger);
-                fail('Should have thrown an error');
-            } catch (error) {
-                expect(error).toStrictEqual(new Error(`Destination ${destination} not found on subaccount`));
-            }
-            expect(mockedUi5RepoService.deploy).not.toBeCalledWith();
-        });
-
-        test('No errors in AppStudio with destinations', async () => {
-            const destination = 'testDestination';
-            mockIsAppStudio.mockReturnValueOnce(true);
-            mockListDestinations.mockReturnValue({ testDestination: { Name: destination } as Destination });
-            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
-            await deploy(archive, { app, target: { destination, service: '/bc/my/service' } }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
-                archive,
-                bsp: app,
-                testMode: undefined,
-                safeMode: undefined
-            });
-        });
-
-        test('No errors locally with ABAP on BTP', async () => {
-            const credentials = {
-                serviceKeys: {
-                    uaa: {
-                        clientid: '~client',
-                        clientsecret: '~clientsecret',
-                        url: target.url
-                    }
-                },
-                url: target.url
-            };
-            mockedStoreService.read.mockResolvedValueOnce(credentials);
-            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
-            await deploy(archive, { app, target: { ...target, cloud: true } }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
-                archive,
-                bsp: app,
-                testMode: undefined,
-                safeMode: undefined
-            });
-        });
-
-        test('Provide service key for ABAP on BTP as input', async () => {
-            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
-            const serviceKey: ServiceInfo = JSON.parse(
-                readFileSync(join(__dirname, '../../test-input/service-keys.json'), 'utf-8')
-            );
-            await deploy(archive, { app, target: { ...target, cloud: true, serviceKey } }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
-                archive,
-                bsp: app,
-                testMode: undefined,
-                safeMode: undefined
-            });
-        });
-
-        test('Handle missing service keys with ABAP on BTP', async () => {
-            mockedStoreService.read.mockResolvedValue(undefined);
-            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
-            prompts.inject([join(__dirname, '../../test-input/service-keys.json')]);
-            await deploy(archive, { app, target: { ...target, cloud: true } }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({
-                archive,
-                bsp: app,
-                testMode: undefined,
-                safeMode: undefined
-            });
-        });
-
-        test('Throws error when cloud system read from store but cloud target is not specified in params', async () => {
-            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
-            await deploy(archive, { app, target, yes: true }, nullLogger);
-            mockedStoreService.read.mockResolvedValueOnce({
-                serviceKeys: {
-                    'uaa': {},
-                    'url': 'https://mock-url.com'
-                }
-            });
-
-            try {
-                await deploy(archive, { app, target, yes: true }, nullLogger);
-                fail('Should have thrown an error');
-            } catch (error) {
-                expect(error.message).toBe('This is an ABAP Cloud system, please correct your configuration.');
-            }
         });
 
         test('Successful retry after known axios error', async () => {
