@@ -2,13 +2,12 @@ import prompts from 'prompts';
 import {
     getCredentialsWithPrompts,
     getCredentialsFromStore,
-    getCredentialsFromEnvVariables
+    getCredentialsFromEnvVariables,
+    storeCredentials
 } from '../../../src/base/credentials';
 import type { BackendSystemKey } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import {
-    mockedStoreService
-} from '../../__mocks__';
+import { mockedStoreService } from '../../__mocks__';
 
 describe('base/credentials', () => {
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -19,9 +18,22 @@ describe('base/credentials', () => {
     const username = '~user';
     const password = '~pass';
 
+    describe('storeCredentials', () => {
+        test('successfully stored credentials', async () => {
+            const success = await storeCredentials('~name', target, { username, password }, logger);
+            expect(success).toBe(true);
+        });
+
+        test('error handled', async () => {
+            mockedStoreService.write.mockRejectedValueOnce(Error);
+            const success = await storeCredentials('~name', target, { username, password }, logger);
+            expect(success).toBe(false);
+        });
+    });
+
     describe('getCredentialsFromStore', () => {
         test('read credentials from store', async () => {
-            mockedStoreService.read.mockResolvedValueOnce( { username, password })
+            mockedStoreService.read.mockResolvedValueOnce({ username, password });
             const credentials = await getCredentialsFromStore({ url: target.url }, logger);
             expect(credentials).toBeDefined();
         });

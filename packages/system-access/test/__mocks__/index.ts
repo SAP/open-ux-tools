@@ -8,6 +8,7 @@ export const mockReadFileSync = jest.spyOn(fs, 'readFileSync');
 type MockedStore = {
     mockedService: {
         read: jest.Mock;
+        write: jest.Mock;
     };
 };
 

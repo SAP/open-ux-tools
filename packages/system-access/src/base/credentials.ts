@@ -13,7 +13,6 @@ export type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> 
  */
 export type StoredAuthOptions = Partial<BasicAuth> | ServiceAuth | undefined;
 
-
 /**
  * Check the secure storage if it has credentials for the given target.
  *

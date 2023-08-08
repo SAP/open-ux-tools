@@ -1,6 +1,6 @@
 const axiosExt = jest.requireActual('@sap-ux/axios-extension');
 
-const mockedProvider = { };
+const mockedProvider = {};
 
 module.exports = {
     ...axiosExt,
