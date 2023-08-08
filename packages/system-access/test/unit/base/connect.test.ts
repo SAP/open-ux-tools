@@ -58,7 +58,7 @@ describe('service', () => {
 
             test('valid configuration', async () => {
                 mockedStoreService.read.mockResolvedValueOnce(credentials);
-                const provider = await createAbapServiceProvider({ ...target, cloud: true }, undefined, true, logger);
+                const provider = await createAbapServiceProvider({ ...target, scp: true }, undefined, true, logger);
                 expect(provider).toBeDefined();
             });
 
@@ -66,7 +66,7 @@ describe('service', () => {
                 const provider = await createAbapServiceProvider(
                     {
                         ...target,
-                        cloud: true,
+                        scp: true,
                         serviceKey: credentials.serviceKeys as AbapTarget['serviceKey']
                     },
                     undefined,
@@ -79,13 +79,13 @@ describe('service', () => {
             test('handle missing service keys', async () => {
                 mockReadFileSync.mockReturnValueOnce(JSON.stringify(credentials.serviceKeys));
                 prompts.inject(['/a/mocked/path/service-keys.json']);
-                const provider = await createAbapServiceProvider({ ...target, cloud: true }, undefined, true, logger);
+                const provider = await createAbapServiceProvider({ ...target, scp: true }, undefined, true, logger);
                 expect(provider).toBeDefined();
             });
 
             test('missing service keys and no prompt leads to error', async () => {
                 try {
-                    await createAbapServiceProvider({ ...target, cloud: true }, undefined, false, logger);
+                    await createAbapServiceProvider({ ...target, scp: true }, undefined, false, logger);
                     fail('Should have thrown an error');
                 } catch (error) {
                     expect(error.message).toBe('Service keys required for ABAP Cloud environment.');
@@ -95,7 +95,7 @@ describe('service', () => {
             test('throw error when cloud system read from store but cloud target is not specified in params', async () => {
                 mockedStoreService.read.mockResolvedValueOnce(credentials);
                 try {
-                    await createAbapServiceProvider({ ...target, cloud: false }, undefined, true, logger);
+                    await createAbapServiceProvider({ ...target, scp: false }, undefined, true, logger);
                     fail('Should have thrown an error');
                 } catch (error) {
                     expect(error.message).toBe('This is an ABAP Cloud system, please correct your configuration.');

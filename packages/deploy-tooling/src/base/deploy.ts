@@ -189,7 +189,7 @@ export async function createTransportRequest(
                 auth: config.credentials,
                 ignoreCertErrors: !config.strictSsl
             },
-            !!config.target.cloud,
+            !!config.target.scp,
             logger
         );
     }
@@ -226,7 +226,7 @@ async function runCommand(
             auth: config.credentials,
             ignoreCertErrors: !config.strictSsl
         },
-        !!config.target.cloud,
+        !!config.target.scp,
         logger
     );
     logger.info(

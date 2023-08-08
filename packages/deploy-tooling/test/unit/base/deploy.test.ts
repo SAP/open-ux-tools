@@ -1,8 +1,9 @@
 import prompts from 'prompts';
 import { createTransportRequest, deploy, undeploy } from '../../../src/base/deploy';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import type { AbapDeployConfig, AbapTarget } from '../../../src/types';
+import type { AbapDeployConfig } from '../../../src/types';
 import { mockedStoreService, mockedUi5RepoService, mockCreateForAbap, mockedAdtService } from '../../__mocks__';
+import type { AbapTarget } from '@sap-ux/system-access';
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -76,7 +77,7 @@ describe('base/deploy', () => {
             const configCloud = {
                 app,
                 target: {
-                    cloud: true,
+                    scp: true,
                     serviceKey: {
                         uaa: {
                             username: '~username',

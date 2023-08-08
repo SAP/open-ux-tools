@@ -1,24 +1,8 @@
-import type { AxiosRequestConfig, BspConfig, ServiceInfo } from '@sap-ux/axios-extension';
+import type { AxiosRequestConfig, BspConfig } from '@sap-ux/axios-extension';
 import type { LogLevel } from '@sap-ux/logger';
+import type { AbapTarget as BaseAbapTarget, DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 
 export const NAME = 'abap-deploy-task';
-
-export interface UrlAbapTarget {
-    url: string;
-    client?: string;
-    service?: string;
-    cloud?: boolean;
-    serviceKey?: ServiceInfo;
-    params?: AxiosRequestConfig['params'];
-}
-
-export interface DestinationAbapTarget {
-    destination: string;
-}
-
-export type AbapTarget =
-    | (UrlAbapTarget & Partial<DestinationAbapTarget>)
-    | (DestinationAbapTarget & Partial<UrlAbapTarget>);
 
 export interface CommonOptions {
     /**
@@ -72,6 +56,11 @@ export interface CommonOptions {
     createTransport?: boolean;
 }
 
+/**
+ * Enhancing the target with an optional service property allowing to use an alias for the deployment service.
+ */
+export type AbapTarget = BaseAbapTarget & { service?: string}
+
 export interface AbapDeployConfig extends CommonOptions {
     target: AbapTarget;
     app: BspConfig;
@@ -81,7 +70,7 @@ export interface AbapDeployConfig extends CommonOptions {
 export interface CliOptions
     extends Partial<BspConfig>,
         Partial<DestinationAbapTarget>,
-        Pick<Partial<UrlAbapTarget>, Exclude<keyof UrlAbapTarget, 'serviceKey'>>,
+        Pick<Partial<UrlAbapTarget>, Exclude<keyof UrlAbapTarget, 'serviceKey' | 'scp'>>,
         Partial<CommonOptions> {
     config?: string;
     archiveFolder?: string;
@@ -89,7 +78,9 @@ export interface CliOptions
     archiveUrl?: string;
     cloudServiceKey?: string;
     queryParams?: string;
+    cloud?: boolean;
     cloudServiceEnv?: boolean;
     username?: string;
     password?: string;
+    service?: string;
 }

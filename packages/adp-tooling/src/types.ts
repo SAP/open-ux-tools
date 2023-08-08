@@ -1,4 +1,5 @@
 import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -8,19 +9,10 @@ export interface DescriptorVariant {
     content: object[];
 }
 
-export interface UrlAbapTarget {
-    url: string;
-    client?: string;
-    scp?: boolean;
-}
-
-export interface DestinationAbapTarget {
-    destination: string;
-}
-
-export type AbapTarget =
-    | (UrlAbapTarget & Partial<DestinationAbapTarget>)
-    | (DestinationAbapTarget & Partial<UrlAbapTarget>);
+/**
+ * Reduce the options exposed as target configuration.
+ */
+type AbapTarget = DestinationAbapTarget | Pick<UrlAbapTarget, 'url' | 'client' | 'scp'>
 
 export interface AdpPreviewConfig {
     target: AbapTarget;

@@ -6,12 +6,27 @@ import prompts from 'prompts';
 import { questions } from './prompts';
 
 export type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
-export type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> & { refreshToken?: string };
+export type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name' | 'refreshToken'>>;
 
 /**
- * Possible stored authentication options
+ * Checks if credentials are of basic auth type.
+ *
+ * @param authOpts credential options
+ * @returns boolean
  */
-export type StoredAuthOptions = Partial<BasicAuth> | ServiceAuth | undefined;
+export function isBasicAuth(authOpts: BackendSystem | BasicAuth | undefined): authOpts is BasicAuth {
+    return !!authOpts && (authOpts as BasicAuth).password !== undefined;
+}
+
+/**
+ * Checks if credentials are of service auth type.
+ *
+ * @param authOpts credential options
+ * @returns boolean
+ */
+export function isServiceAuth(authOpts: BackendSystem | ServiceAuth | undefined): authOpts is ServiceAuth {
+    return !!authOpts && (authOpts as ServiceAuth).serviceKeys !== undefined;
+}
 
 /**
  * Check the secure storage if it has credentials for the given target.
@@ -20,10 +35,10 @@ export type StoredAuthOptions = Partial<BasicAuth> | ServiceAuth | undefined;
  * @param logger - reference to the logger instance
  * @returns credentials from the store or undefined.
  */
-export async function getCredentialsFromStore<T extends StoredAuthOptions>(
+export async function getCredentialsFromStore(
     target: UrlAbapTarget,
     logger: Logger
-): Promise<T | undefined> {
+): Promise<BackendSystem | undefined> {
     try {
         if (!isAppStudio()) {
             const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
@@ -32,7 +47,7 @@ export async function getCredentialsFromStore<T extends StoredAuthOptions>(
             if (!system && target.client) {
                 system = await systemService.read(new BackendSystemKey({ url: target.url }));
             }
-            return system as T;
+            return system;
         }
     } catch (error) {
         logger.warn('Reading credentials from store failed');

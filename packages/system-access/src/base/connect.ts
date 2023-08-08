@@ -11,32 +11,11 @@ import {
     createForAbap,
     createForDestination
 } from '@sap-ux/axios-extension';
-import type { BasicAuth, ServiceAuth, StoredAuthOptions } from './credentials';
-import { getCredentialsFromStore, getCredentialsWithPrompts } from './credentials';
+import { getCredentialsFromStore, getCredentialsWithPrompts, isBasicAuth, isServiceAuth } from './credentials';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import { questions } from './prompts';
 import prompts from 'prompts';
 import { readFileSync } from 'fs';
-
-/**
- * Checks if credentials are of basic auth type.
- *
- * @param authOpts credential options
- * @returns boolean
- */
-function isBasicAuth(authOpts: StoredAuthOptions): authOpts is BasicAuth {
-    return !!authOpts && (authOpts as BasicAuth).password !== undefined;
-}
-
-/**
- * Checks if credentials are of service auth type.
- *
- * @param authOpts credential options
- * @returns boolean
- */
-function isServiceAuth(authOpts: StoredAuthOptions): authOpts is ServiceAuth {
-    return !!authOpts && (authOpts as ServiceAuth).serviceKeys !== undefined;
-}
 
 /**
  * Check if it is a url or destination target.
@@ -70,8 +49,8 @@ async function createAbapCloudServiceProvider(
     };
     if (!providerConfig.service) {
         // first try reading the keys from the store
-        const storedOpts = await getCredentialsFromStore<ServiceAuth>(target, logger);
-        if (storedOpts) {
+        const storedOpts = await getCredentialsFromStore(target, logger);
+        if (isServiceAuth(storedOpts)) {
             providerConfig.service = storedOpts.serviceKeys as ServiceInfo;
             providerConfig.refreshToken = storedOpts.refreshToken;
             logger.info(`Using system [${storedOpts.name}] from System store`);
@@ -161,7 +140,7 @@ export async function createAbapServiceProvider(
         }
         provider = createForDestination(options, destination) as AbapServiceProvider;
     } else if (isUrlTarget(target)) {
-        if (target.cloud) {
+        if (target.scp) {
             provider = await createAbapCloudServiceProvider(options, target, prompt, logger);
         } else {
             provider = await createAbapOnPremServiceProvider(options, target, prompt, logger);
