@@ -2,12 +2,7 @@ import prompts from 'prompts';
 import { createTransportRequest, deploy, undeploy } from '../../../src/base/deploy';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { AbapDeployConfig, AbapTarget } from '../../../src/types';
-import {
-    mockedStoreService,
-    mockedUi5RepoService,
-    mockCreateForAbap,
-    mockedAdtService
-} from '../../__mocks__';
+import { mockedStoreService, mockedUi5RepoService, mockCreateForAbap, mockedAdtService } from '../../__mocks__';
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });

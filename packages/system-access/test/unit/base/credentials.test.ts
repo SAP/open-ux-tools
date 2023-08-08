@@ -6,9 +6,7 @@ import {
 } from '../../../src/base/credentials';
 import type { BackendSystemKey } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import {
-    mockedStoreService
-} from '../../__mocks__';
+import { mockedStoreService } from '../../__mocks__';
 
 describe('base/credentials', () => {
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -21,7 +19,7 @@ describe('base/credentials', () => {
 
     describe('getCredentialsFromStore', () => {
         test('read credentials from store', async () => {
-            mockedStoreService.read.mockResolvedValueOnce( { username, password })
+            mockedStoreService.read.mockResolvedValueOnce({ username, password });
             const credentials = await getCredentialsFromStore({ url: target.url }, logger);
             expect(credentials).toBeDefined();
         });

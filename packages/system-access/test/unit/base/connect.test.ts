@@ -1,13 +1,8 @@
 import { createAbapServiceProvider } from '../../../src/base/connect';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import {
-    mockedStoreService,
-    mockIsAppStudio,
-    mockListDestinations,
-    mockReadFileSync
-} from '../../__mocks__';
+import { mockedStoreService, mockIsAppStudio, mockListDestinations, mockReadFileSync } from '../../__mocks__';
 import type { Destination } from '@sap-ux/btp-utils';
-import { AbapTarget } from '../../../src/types';
+import type { AbapTarget } from '../../../src/types';
 import prompts from 'prompts';
 
 describe('service', () => {
@@ -20,13 +15,11 @@ describe('service', () => {
     const password = '~pass';
 
     describe('createProvider', () => {
-
         beforeAll(() => {
             mockIsAppStudio.mockReturnValue(false);
         });
 
         describe('ABAP on-premise', () => {
-
             test('credentials available from store', async () => {
                 mockedStoreService.read.mockResolvedValueOnce({ username, password });
                 const provider = await createAbapServiceProvider(target, undefined, true, logger);
@@ -46,7 +39,7 @@ describe('service', () => {
                     await createAbapServiceProvider({ destination: '~destination' }, undefined, true, logger);
                     fail('Should have thrown an error');
                 } catch (error) {
-                    expect(error.message).toBe('Unable to handle the configuration in the current environment.');   
+                    expect(error.message).toBe('Unable to handle the configuration in the current environment.');
                 }
             });
         });
@@ -70,11 +63,16 @@ describe('service', () => {
             });
 
             test('provide service key as input', async () => {
-                const provider = await createAbapServiceProvider({
-                    ...target,
-                    cloud: true,
-                    serviceKey: credentials.serviceKeys as AbapTarget['serviceKey']
-                }, undefined, true, logger);
+                const provider = await createAbapServiceProvider(
+                    {
+                        ...target,
+                        cloud: true,
+                        serviceKey: credentials.serviceKeys as AbapTarget['serviceKey']
+                    },
+                    undefined,
+                    true,
+                    logger
+                );
                 expect(provider).toBeDefined();
             });
 
@@ -106,11 +104,9 @@ describe('service', () => {
         });
 
         describe('AppStudio', () => {
-
             beforeAll(() => {
                 mockIsAppStudio.mockReturnValue(true);
             });
-
 
             afterAll(() => {
                 mockIsAppStudio.mockReturnValue(false);
