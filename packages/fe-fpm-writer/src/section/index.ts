@@ -150,7 +150,7 @@ export function generateCustomHeaderSection(
         }
         // Generate edit fragment content
         editSection.content =
-            editSection.control || getDefaultFragmentContent(editSection.name, editSection.eventHandler);
+            editSection.control ?? getDefaultFragmentContent(editSection.name, editSection.eventHandler);
         const viewPath = join(editSection.path, `${editSection.name}.fragment.xml`);
         if (!editor.exists(viewPath)) {
             editor.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, editSection);
