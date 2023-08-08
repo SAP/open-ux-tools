@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.3.2
+
+### Patch Changes
+
+-   99e84511: FIX: use relative path to app to work with cds-plugin-ui5 in CAP projects
+
 ## 0.3.1
 
 ### Patch Changes

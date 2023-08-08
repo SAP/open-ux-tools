@@ -55,7 +55,7 @@ describe('FlpSandbox', () => {
 
         test('advanced config', () => {
             const config: FlpConfig = {
-                path: '/my/custom/path',
+                path: 'my/custom/path',
                 intent: { object: 'movie', action: 'start' },
                 apps: [
                     {
@@ -65,7 +65,7 @@ describe('FlpSandbox', () => {
                 ]
             };
             const flp = new FlpSandbox(config, mockProject, mockUtils, logger);
-            expect(flp.config.path).toBe(config.path);
+            expect(flp.config.path).toBe(`/${config.path}`);
             expect(flp.config.apps).toEqual(config.apps);
             expect(flp.config.intent).toStrictEqual({ object: 'movie', action: 'start' });
             expect(flp.router).toBeDefined();

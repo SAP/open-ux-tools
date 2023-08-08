@@ -31,6 +31,10 @@ export interface FlpConfig {
     rta?: {
         layer?: UI5FlexLayer;
     };
+    /**
+     * Optional: if set to true then a locate-reuse-libs script will be attached to the html
+     */
+    libs?: boolean;
     apps: App[];
 }
 
