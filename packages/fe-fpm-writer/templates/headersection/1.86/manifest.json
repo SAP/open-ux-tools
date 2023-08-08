@@ -10,6 +10,9 @@
                                     "facets": {
                                         "<%- name %>": {
                                             "template": "<%- ns %>.<%- name %>",
+                                            <% if (typeof edit !== 'undefined') { %> 
+                                                "templateEdit": "<%- edit.ns %>.<%- edit.name %>"
+                                            <% } %>,
                                             <%if (typeof position !== 'undefined') {%>"position": {
                                                 <% if (position.placement) { %> 
                                                     "placement": "<%- position.placement %>"<% if (position.anchor) { %>,<% } %>
