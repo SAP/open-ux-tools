@@ -71,6 +71,10 @@
             matchPackagePrefixes: ['lodash', '@types/lodash'],
             groupName: 'dependencies [lodash]'
         },
+        {
+            matchPackagePrefixes: ['jest', 'ts-jest', '@​types/jest', 'babel-jest'],
+            groupName: 'dependencies [jest]'
+        },
                 {
             matchPackagePrefixes: ['nx', '@​nrwl/nx-cloud'],
             groupName: 'dependencies [nx]'
