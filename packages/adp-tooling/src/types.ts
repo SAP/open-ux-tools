@@ -12,7 +12,7 @@ export interface DescriptorVariant {
 /**
  * Reduce the options exposed as target configuration.
  */
-type AbapTarget = DestinationAbapTarget | Pick<UrlAbapTarget, 'url' | 'client' | 'scp'>
+type AbapTarget = DestinationAbapTarget | Pick<UrlAbapTarget, 'url' | 'client' | 'scp'>;
 
 export interface AdpPreviewConfig {
     target: AbapTarget;

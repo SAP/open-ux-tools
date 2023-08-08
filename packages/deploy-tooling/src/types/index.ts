@@ -59,7 +59,7 @@ export interface CommonOptions {
 /**
  * Enhancing the target with an optional service property allowing to use an alias for the deployment service.
  */
-export type AbapTarget = BaseAbapTarget & { service?: string}
+export type AbapTarget = BaseAbapTarget & { service?: string };
 
 export interface AbapDeployConfig extends CommonOptions {
     target: AbapTarget;
