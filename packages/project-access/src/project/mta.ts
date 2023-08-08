@@ -11,9 +11,9 @@ import type { MtaPath } from '../types/mta';
  * a parent root folder for MTA project, and this project itself is configured
  * to have deploy target CF and user answered yes to "add to Managed App Router" question.
  *
- * @param projectPath Fiori app root folder
- * @param fs
- * @returns MtaPath
+ * @param projectPath - Fiori app root folder
+ * @param fs - optional mem-fs-editor instance
+ * @returns - MtaPath
  */
 export async function getMtaPath(projectPath: string, fs?: Editor): Promise<MtaPath | undefined> {
     const mtaPath = await findFileUp(FileName.MtaYaml, projectPath, fs);
