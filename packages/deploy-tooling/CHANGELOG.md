@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.9.0
+
+### Minor Changes
+
+-   61939ec4: remove logs and fix 401 error handling
+
 ## 0.8.0
 
 ### Minor Changes
