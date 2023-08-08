@@ -12,7 +12,7 @@ import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
 
-type CustomSectionUnion = CustomSection | CustomSubSection;
+type CustomSectionUnion = CustomHeaderSection | CustomSection | CustomSubSection;
 
 /**
  * Get the template folder for the given UI5 version.
@@ -131,24 +131,28 @@ export function generateCustomHeaderSection(
 ): Editor {
     const manifestRoot = getManifestRoot('headersection', customHeaderSection.minUI5Version);
     const { editor, section } = generate(basePath, customHeaderSection, manifestRoot, fs);
-    // handle fragment for templateEdit property
-    if (section.edit) {
-        const viewPath = join(section.path, `${section.edit.name}.fragment.xml`);
+    // Get edit fragment details
+    const editSection = section.edit as InternalCustomSection;
+    if (editSection) {
         const manifestPath = join(basePath, 'webapp/manifest.json');
         const manifest = editor.readJSON(manifestPath) as Manifest;
-        setCommonDefaults(section.edit, manifestPath, manifest);
-        // Apply event handler
-        if (section.edit.eventHandler) {
-            section.edit.eventHandler = applyEventHandlerConfiguration(
+        // Set folder, ns and path for edit fragment
+        setCommonDefaults(editSection, manifestPath, manifest);
+        // Apply event handler for edit fragment
+        if (editSection.eventHandler) {
+            editSection.eventHandler = applyEventHandlerConfiguration(
                 editor,
-                section,
-                section.edit.eventHandler,
+                editSection,
+                editSection.eventHandler,
                 false,
                 section.typescript
             );
         }
+        // Generate edit fragment content
+        editSection.content = editSection.control || getDefaultFragmentContent(editSection.name, editSection.eventHandler);
+        const viewPath = join(editSection.path, `${editSection.name}.fragment.xml`);
         if (!editor.exists(viewPath)) {
-            editor.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, section);
+            editor.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, editSection);
         }
     }
     return editor;
