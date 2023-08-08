@@ -26,7 +26,6 @@ export async function promptGeneratorInput({
                 { title: flexLayer.CUSTOMER_BASE, value: flexLayer.CUSTOMER_BASE },
                 { title: flexLayer.VENDOR, value: flexLayer.VENDOR }
             ],
-            initial: flexLayer.CUSTOMER_BASE,
             name: 'layer',
             message: 'Flex layer:'
         },

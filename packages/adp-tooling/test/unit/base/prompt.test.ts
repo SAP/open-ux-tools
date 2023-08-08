@@ -10,12 +10,12 @@ describe('base/prompts', () => {
         };
 
         test('defaults provided', async () => {
-            prompts.inject([]);
+            prompts.inject([undefined]);
             const config = await promptGeneratorInput(defaults);
             expect(config).toEqual({
                 app: {
-                    id: `customer.${defaults.id}`,
-                    layer: flexLayer.CUSTOMER_BASE,
+                    id: defaults.id,
+                    layer: undefined,
                     reference: defaults.reference,
                     title: undefined
                 },
