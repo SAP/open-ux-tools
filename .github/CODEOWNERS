@@ -48,6 +48,15 @@
 # Module: backend-proxy-middleware
 /packages/backend-proxy-middleware/ @SAP/ux-tools-middlewares-and-tasks
 
+# Module: preview-middleware
+/packages/preview-middleware/ @SAP/ux-tools-middlewares-and-tasks @SAP/ux-tools-adp
+
+# Module: adp-tooling
+/packages/adp-tooling/ @SAP/ux-tools-adp
+
+# Module: deploy-tooling
+/packages/adp-tooling/ @SAP/ux-tools-deploy
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin
