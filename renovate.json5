@@ -71,6 +71,10 @@
             matchPackagePrefixes: ['lodash', '@types/lodash'],
             groupName: 'dependencies [lodash]'
         },
+                {
+            matchPackagePrefixes: ['nx', '@​nrwl/nx-cloud'],
+            groupName: 'dependencies [nx]'
+        },
         {
             matchPackagePrefixes: ['webpack', 'ts-loader', 'style-loader', 'sass-loader', 'sass', 'css-loader', '@storybook/manager-webpack5', '@storybook/builder-webpack5', 'storybook-addon-turbo-build'],
             groupName: 'dependencies [webpack]'
