@@ -1,7 +1,8 @@
 # @sap-ux/fiori-freestyle-writer
 
-Easy to use Fiori Freestyle project files writer for use within Yeoman generator and other prompting libraries. 
+Writer module allowing to generate custom SAPUI5 applications with different templates.
 
+:warning: **All templates except the Basic template have been deprectated** and will be removed at some point in time. Please use the Custom page SAP Fiori template (`@sap-ux/fiori-elements-writer`)as an alternative.
 
 ## Installation
 Npm
@@ -26,8 +27,7 @@ const exampleWriter = async () => {
     {
       app: {
         id: 'test.me',
-        title: 'My Test App',
-        flpAppId: 'testme-app'
+        title: 'My Test App'
       },
       package: {
         name: 'test.me'
@@ -39,36 +39,21 @@ const exampleWriter = async () => {
         metadata: // Fetch from: https://services.odata.org/V2/Northwind/Northwind.svc$metadata
       },
       ui5: {
-        localVersion: '1.90.0',
-        version: '', // I.e Latest
+        version: '1.90.0',
         ui5Theme: 'sap_fiori_3',
         ui5Libs: 'sap.m,sap.ushell'
       },
       template: {
-        type: TemplateType.ListDetail,
+        type: TemplateType.Basic,
         settings: {
-          entity: {
-            name: 'Suppliers',
-            key: 'SupplierID',
-            idProperty: 'CompanyName',
-            numberProperty: undefined,
-            unitOfMeasureProperty: undefined
-          },
-          lineItem: {
-            name: 'Products',
-            key: 'ProductID',
-            idProperty: 'ProductName',
-            numberProperty: 'UnitsInStock',
-            unitOfMeasureProperty: 'QuantityPerUnit'
-          }
-        }
+          viewName: 'CustomViewName'
       }
     };
   
 const projectPath = join(curTestOutPath, name);
 const fs = await generate(join(projectPath), appConfig);
 return new Promise((resolve) => {
-    fs.commit(resolve); // When using with Yeoman it handle the fs commit.
+    fs.commit(resolve); // when using with Yeoman it handle the fs commit.
 });
 }
 
@@ -78,4 +63,6 @@ await exampleWriter();
 ```
 
 ## Keywords
-SAP Fiori Freestyle
+SAPUI5
+SAP Fiori
+SAP Fiori tools
