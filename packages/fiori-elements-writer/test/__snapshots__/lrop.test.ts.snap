@@ -3340,7 +3340,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felrop2\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop2/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop2/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"SessionStorageConnector\\"}]'>
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -6896,7 +6896,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felrop3\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop3/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop3/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"SessionStorageConnector\\"}]'>
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -10454,7 +10454,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felrop4\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"SessionStorageConnector\\"}]'>
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {
@@ -13818,7 +13818,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"lropV2_set_toolsId\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_set_toolsId/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_set_toolsId/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"SessionStorageConnector\\"}]'>
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -17375,7 +17375,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"lropV2_set_toolsId_only\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_set_toolsId_only/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_set_toolsId_only/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"SessionStorageConnector\\"}]'>
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -21053,7 +21053,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"lropV2_ts\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"SessionStorageConnector\\"}]'>
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {
@@ -24547,7 +24547,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"lropV2_ts_ui5_1_108\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts_ui5_1_108/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts_ui5_1_108/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"SessionStorageConnector\\"}]'>
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {
@@ -28030,7 +28030,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"lropV2_ts_ui5_1_111\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts_ui5_1_111/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts_ui5_1_111/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"SessionStorageConnector\\"}]'>
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {
@@ -31513,7 +31513,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"lropV2_ts_ui5_1_113\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts_ui5_1_113/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts_ui5_1_113/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"SessionStorageConnector\\"}]'>
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {
@@ -34835,7 +34835,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"lropV2_ts\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"SessionStorageConnector\\"}]'>
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {

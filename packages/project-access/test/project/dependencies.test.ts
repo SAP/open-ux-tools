@@ -1,4 +1,6 @@
+import { join, sep } from 'path';
 import type { Package } from '../../src';
+import { getNodeModulesPath } from '../../src';
 import { hasDependency } from '../../src/project/dependencies';
 
 describe('Test hasDependency()', () => {
@@ -18,5 +20,23 @@ describe('Test hasDependency()', () => {
             devDependencies: { 'dev-dependency': '0.0.0' }
         } as Partial<Package>;
         expect(hasDependency(packageJson as Package, 'dep')).toBeFalsy();
+    });
+});
+
+describe('Test getNodeModulesPath()', () => {
+    test('Find node_modules parent of this module, should return root path to this module', () => {
+        expect(getNodeModulesPath(__dirname)?.split(sep).pop()).toBe('project-access');
+    });
+
+    test('Find node_modules parent of this module with a given module, should return root path', () => {
+        expect(getNodeModulesPath(__dirname, '@ui5/manifest')?.split(sep).pop()).toBe('project-access');
+    });
+
+    test('Find node_modules parent of this module with a non existing module, should return undefined', () => {
+        expect(getNodeModulesPath(__dirname, 'wrong-module')?.split(sep).pop()).toBe(undefined);
+    });
+
+    test('Find node_modules parent for relative path, should return undefined', () => {
+        expect(getNodeModulesPath(join('some/relative/path'))).toBe(undefined);
     });
 });
