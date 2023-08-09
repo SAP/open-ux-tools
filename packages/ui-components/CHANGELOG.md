@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.8.5
+
+### Patch Changes
+
+-   d3e7d06b: Fixes for 'promises should not be misused' sonar bugs
+
 ## 1.8.4
 
 ### Patch Changes
