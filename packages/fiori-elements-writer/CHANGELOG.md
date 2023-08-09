@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.21
+
+### Patch Changes
+
+-   9085aeee: Add SessionStorageConnector to flexibilityServices
+
 ## 0.12.20
 
 ### Patch Changes
