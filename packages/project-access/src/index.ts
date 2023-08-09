@@ -10,6 +10,7 @@ export {
     getCapModelAndServices,
     getCapProjectType,
     getMtaPath,
+    getNodeModulesPath,
     getWebappPath,
     isCapJavaProject,
     isCapNodeJsProject,
