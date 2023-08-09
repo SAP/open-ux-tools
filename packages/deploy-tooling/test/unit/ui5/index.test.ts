@@ -26,7 +26,7 @@ describe('ui5', () => {
         byGlob: jest.fn().mockReturnValue([
             {
                 getPath: () => `${projectName}/~path`,
-                getBuffer: () => Promise.resolve(Buffer.from('TestData'))
+                getBuffer: () => Promise.resolve(Buffer.from(''))
             }
         ])
     };
