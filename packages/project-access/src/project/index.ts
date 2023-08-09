@@ -7,6 +7,7 @@ export {
     getCapEnvironment,
     readCapServiceMetadataEdmx
 } from './cap';
+export { getNodeModulesPath } from './dependencies';
 export { getAppProgrammingLanguage } from './info';
 export { loadModuleFromProject } from './module-loader';
 export { findAllApps, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from './search';
