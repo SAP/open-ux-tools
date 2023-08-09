@@ -19,7 +19,7 @@
         'workarounds:typesNodeVersioning'
     ],
 
-    enabledManagers: ['npm'],
+    enabledManagers: ['npm', 'github-actions'],
     branchPrefix: 'chore/renovate/',
     platformCommit: true,
 
