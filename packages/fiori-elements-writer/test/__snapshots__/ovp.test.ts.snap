@@ -1413,7 +1413,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"feovp1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"feovp1/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"feovp1/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"SessionStorageConnector\\"}]'>
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -3164,7 +3164,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"feovp1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"feovp1/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"feovp1/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"SessionStorageConnector\\"}]'>
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {
