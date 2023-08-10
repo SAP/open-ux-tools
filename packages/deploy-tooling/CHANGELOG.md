@@ -1,5 +1,17 @@
 # @sap-ux/deploy-tooling
 
+## 0.9.2
+
+### Patch Changes
+
+-   517c6ae9: Load dotenv when UI5 task is called
+
+## 0.9.1
+
+### Patch Changes
+
+-   91bee893: Destination CLI param should support username CLI param
+
 ## 0.9.0
 
 ### Minor Changes

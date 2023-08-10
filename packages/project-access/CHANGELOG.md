@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.11.1
+
+### Patch Changes
+
+-   88861559: Fix for module loading after installation
+
 ## 1.11.0
 
 ### Minor Changes

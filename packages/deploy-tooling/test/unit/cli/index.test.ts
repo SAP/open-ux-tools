@@ -113,26 +113,6 @@ describe('cli', () => {
         });
     });
 
-    describe('deploy | undeploy should handle exception', () => {
-        test.each([runDeploy, runUndeploy])(
-            'unsuccessful deploy | undeploy, help options is shown if no parameters are passed in $param',
-            async (method) => {
-                // Don't exit the jest process
-                const mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => {
-                    throw new Error('process.exit: ' + number);
-                });
-                const errorMock = jest.spyOn(Command.prototype, 'error').mockImplementation();
-                const helpMock = jest.spyOn(Command.prototype, 'help');
-                process.argv = ['node', 'test'];
-                await method();
-                expect(helpMock).toBeCalled();
-                expect(errorMock).toBeCalled();
-                expect(mockExit).toHaveBeenCalledWith(0);
-                mockExit.mockRestore();
-            }
-        );
-    });
-
     describe('runUndeploy', () => {
         test('successful undeploy with configuration file', async () => {
             const target = 'https://target.example';
@@ -161,35 +141,93 @@ describe('cli', () => {
         });
     });
 
+    describe('deploy | undeploy should handle exception', () => {
+        afterAll(() => {
+            jest.resetAllMocks();
+        });
+
+        test.each([runDeploy, runUndeploy])(
+            'unsuccessful deploy | undeploy, help options is shown if no parameters are passed in $param',
+            async (method) => {
+                // Don't exit the jest process
+                const mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => {
+                    throw new Error('process.exit: ' + number);
+                });
+                const errorMock = jest.spyOn(Command.prototype, 'error').mockImplementation();
+                const helpMock = jest.spyOn(Command.prototype, 'help');
+                process.argv = ['node', 'test'];
+                await method();
+                expect(helpMock).toBeCalled();
+                expect(errorMock).toBeCalled();
+                expect(mockExit).toHaveBeenCalledWith(0);
+                mockExit.mockRestore();
+                errorMock.mockReset();
+            }
+        );
+    });
+
     describe('createCommand', () => {
-        const cmd = createCommand('deploy');
-        const errorMock = jest.spyOn(cmd, 'error').mockImplementation();
+        function makeCommand() {
+            const actionMock = jest.fn();
+            const cmd = createCommand('deploy');
+            cmd.exitOverride()
+                .configureOutput({
+                    writeErr: jest.fn(),
+                    writeOut: jest.fn()
+                })
+                .action(actionMock);
+
+            return { cmd, actionMock };
+        }
         // parse options for testing
         const opts: ParseOptions = { from: 'user' };
 
-        afterEach(() => {
-            errorMock.mockClear();
-        });
-
         test('minimum parameters', () => {
+            const { cmd } = makeCommand();
             const config = join(fixture, 'ui5-deploy.yaml');
             cmd.parse(['-c', config], opts);
-            expect(errorMock).not.toBeCalled();
             expect(cmd.opts().config).toBe(config);
         });
 
         test.each([
-            { params: ['--url', '~url', '--destination', '~dest'] },
-            { params: ['--client', '001', '--destination', '~dest'] },
-            { params: ['--cloud', '--destination', '~dest'] },
-            { params: ['--transport', '~transport', '--create-transport', 'true'] },
-            { params: ['--username', '~username', '--cloud-service-env'] },
-            { params: ['--username', '~username', '--cloud-service-key', '~path'] },
-            { params: ['--username', '~username', '--destination', '~dest'] }
-        ])('conflicting options $params', ({ params }) => {
+            {
+                params: ['--url', '~url', '--destination', '~dest'],
+                error: /'--destination <destination>' cannot be used with option '--url <target-url>/
+            },
+            {
+                params: ['--client', '001', '--destination', '~dest'],
+                error: /'--client <sap-client>' cannot be used with option '--destination <destination>/
+            },
+            {
+                params: ['--cloud', '--destination', '~dest'],
+                error: /'--cloud' cannot be used with option '--destination <destination>/
+            },
+            {
+                params: ['--transport', '~transport', '--create-transport', 'true'],
+                error: /'--create-transport' cannot be used with option '--transport <transport-request>/
+            },
+            {
+                params: ['--username', '~username', '--cloud-service-env'],
+                error: /'--username <username>' cannot be used with option '--cloud-service-env'/
+            },
+            {
+                params: ['--username', '~username', '--cloud-service-key', '~path'],
+                error: /'--username <username>' cannot be used with option '--cloud-service-key <file-location>'/
+            }
+        ])('conflicting options $params', ({ params, error }) => {
+            const { cmd } = makeCommand();
+            expect(() => {
+                cmd.parse(params, opts);
+            }).toThrow(error);
+        });
+
+        test.each([
+            { params: ['--username', '~username', '--destination', '~dest'] },
+            { params: ['--username', '~username', '--password', '~password', '--destination', '~dest'] }
+        ])('Supporting options $params', ({ params }) => {
+            const { cmd, actionMock } = makeCommand();
             cmd.parse(params, opts);
-            expect(errorMock).toBeCalled();
-            errorMock.mockClear();
+            expect(actionMock).toHaveBeenCalledTimes(1);
         });
     });
 });
