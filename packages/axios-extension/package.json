@@ -28,7 +28,7 @@
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "axios": "0.24.0",
+        "axios": "1.4.0",
         "detect-content-type": "1.2.0",
         "fast-xml-parser": "4.2.5",
         "lodash": "4.17.21",
