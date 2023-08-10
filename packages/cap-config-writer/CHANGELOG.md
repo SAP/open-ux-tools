@@ -1,5 +1,39 @@
 # @sap-ux/cap-config-writer
 
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [88861559]
+    -   @sap-ux/project-access@1.11.1
+
+## 0.1.12
+
+### Patch Changes
+
+-   4a07fa00: Update minimum version of cds-plugin-ui5 to 0.2.1
+
+## 0.1.11
+
+### Patch Changes
+
+-   Updated dependencies [1c267b37]
+    -   @sap-ux/project-access@1.11.0
+
+## 0.1.10
+
+### Patch Changes
+
+-   Updated dependencies [c18f957a]
+    -   @sap-ux/project-access@1.10.2
+
+## 0.1.9
+
+### Patch Changes
+
+-   Updated dependencies [95a8daae]
+    -   @sap-ux/project-access@1.10.1
+
 ## 0.1.8
 
 ### Patch Changes

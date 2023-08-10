@@ -60,6 +60,7 @@ const existingCookieConfigForAbapOnCloud = {
 };
 
 const testPackage = 'ZSPD';
+const testPackageNamespace = '/NS/ZSPD';
 const testLocalPackage = '$TMP';
 const testNewPakcage = 'NEWPACKAGE';
 const testNewProject = 'zdummyexample';
@@ -289,6 +290,33 @@ describe('Transport checks', () => {
         expect(postSpy).toBeCalledWith(
             expect.any(String),
             expect.stringContaining(`<URI>/sap/bc/adt/filestore/ui5-bsp/objects/%2Ftest%2Fproject/$create</URI>`),
+            expect.objectContaining({
+                headers: expect.objectContaining({
+                    Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
+                    'content-type':
+                        'application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.transport.service.checkData'
+                })
+            })
+        );
+    });
+
+    test('Valid package name with namespace', async () => {
+        const provider = createForAbap(config);
+        const postSpy = jest.spyOn(TransportChecksService.prototype, 'post');
+
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_CHECKS)
+            .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-2.xml'));
+
+        const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+
+        await transportChecksService?.getTransportRequests(testPackageNamespace, testProjectNamespace);
+
+        expect(postSpy).toBeCalledWith(
+            expect.any(String),
+            expect.stringContaining(`<DEVCLASS>${encodeURIComponent(testPackageNamespace)}</DEVCLASS>`),
             expect.objectContaining({
                 headers: expect.objectContaining({
                     Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',

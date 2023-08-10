@@ -1,5 +1,80 @@
 # @sap-ux/deploy-tooling
 
+## 0.9.2
+
+### Patch Changes
+
+-   517c6ae9: Load dotenv when UI5 task is called
+
+## 0.9.1
+
+### Patch Changes
+
+-   91bee893: Destination CLI param should support username CLI param
+
+## 0.9.0
+
+### Minor Changes
+
+-   61939ec4: remove logs and fix 401 error handling
+
+## 0.8.0
+
+### Minor Changes
+
+-   19cf13b2: enable create transport param for undeployment
+
+## 0.7.2
+
+### Patch Changes
+
+-   523510a2: update uaa params for 401 errors
+
+## 0.7.1
+
+### Patch Changes
+
+-   1fa8b879: fix issue cloud target systems
+
+## 0.7.0
+
+### Minor Changes
+
+-   f159d02b: handle toggling of strict-ssl
+
+## 0.6.0
+
+### Minor Changes
+
+-   b1a2e3a9: exposes function and adds param to create transport requests
+
+## 0.5.0
+
+### Minor Changes
+
+-   3fb2d5c4: support cli credentials
+
+## 0.4.5
+
+### Patch Changes
+
+-   Updated dependencies [d2fd9a58]
+    -   @sap-ux/axios-extension@1.4.0
+
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [23059e62]
+    -   @sap-ux/axios-extension@1.3.6
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [69b88bcc]
+    -   @sap-ux/axios-extension@1.3.5
+
 ## 0.4.2
 
 ### Patch Changes

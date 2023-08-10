@@ -62,9 +62,12 @@ Options:
   --cloud                              target is an ABAP Cloud system
   --cloud-service-key <file-location>  JSON file location with the ABAP cloud service key.
   --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables. Secrets in your .env should not be committed to source control.
+  --username                           ABAP Service username
+  --password                           ABAP Service password
+  --create-transport                   Create a transport request during deployment
   --transport <transport-request>      Transport number to record the change in the ABAP system
   --name <bsp-name>                    Project name of the app
-  --strict-ssl                         Perform certificate validation (use --no-strict-ssl to deactivate it)
+  --no-strict-ssl                      Deactivate SSL certificate validation, enabled by default
   --test                               Run in test mode. ABAP backend reports deployment errors without actually deploying. (use --no-test to deactivate it)
   --package <abap-package>             Package name for deploy target ABAP system
   --description <description>          Project description of the app
@@ -95,9 +98,13 @@ Options:
   --cloud                              target is an ABAP Cloud system
   --cloud-service-key <file-location>  JSON file location with the ABAP cloud service key.
   --cloud-service-env                  Load ABAP cloud service properties from either a .env file or your environment variables
+  --username                           ABAP Service username
+  --password                           ABAP Service password
   --transport <transport-request>      Transport number to record the change in the ABAP system
+  --create-transport                   Create a transport request during deployment
+  --package <abap-package>             Package name for deploy target ABAP system (only required when --create-transport is used)
   --name <bsp-name>                    Project name of the app
-  --strict-ssl                         Perform certificate validation (use --no-strict-ssl to deactivate it)
+  --no-strict-ssl                      Deactivate SSL certificate validation, enabled by default
   --test                               Run in test mode. ABAP backend reports undeployment errors without actually undeploying (use --no-test to deactivate it).
   -v, --version                        version of the deploy tooling
   -h, --help                           display help for command

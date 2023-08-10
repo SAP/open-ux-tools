@@ -65,6 +65,11 @@ export interface CommonOptions {
      * '--no-retry' cli param negates the retry value which is true by default
      */
     retry?: boolean;
+
+    /**
+     * If set to true, a transport request will be created during deployment
+     */
+    createTransport?: boolean;
 }
 
 export interface AbapDeployConfig extends CommonOptions {
@@ -85,4 +90,6 @@ export interface CliOptions
     cloudServiceKey?: string;
     queryParams?: string;
     cloudServiceEnv?: boolean;
+    username?: string;
+    password?: string;
 }

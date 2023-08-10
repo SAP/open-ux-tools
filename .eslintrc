@@ -30,6 +30,7 @@
                         "disallowTypeAnnotations": true
                     }
                 ],
+                "@typescript-eslint/no-misused-promises": ["error", { "checksVoidReturn": false }],
                 "@typescript-eslint/no-use-before-define": ["error", "nofunc"],
                 "jsdoc/require-param-type": "off",
                 "jsdoc/require-returns-type": "off",

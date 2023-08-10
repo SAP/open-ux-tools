@@ -136,6 +136,25 @@ function mergeTarget(baseTarget: AbapTarget, options: CliOptions) {
 }
 
 /**
+ * Merge CLI credentials.
+ *
+ * @param taskConfig - base configuration from the file
+ * @param options - CLI options
+ * @returns merged credentials
+ */
+function mergeCredentials(taskConfig: AbapDeployConfig, options: CliOptions) {
+    let credentials = taskConfig.credentials;
+    if (options.username || options.password) {
+        credentials = {
+            ...(credentials ?? {}),
+            username: options.username ?? '',
+            password: options.password ?? ''
+        };
+    }
+    return credentials;
+}
+
+/**
  * Merge the configuration from the ui5*.yaml with CLI options.
  *
  * @param taskConfig - base configuration from the file
@@ -150,12 +169,13 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
         transport: options.transport ?? taskConfig.app?.transport
     };
     const target = mergeTarget(taskConfig.target, options);
-    const config: AbapDeployConfig = { app, target, credentials: taskConfig.credentials };
+    const config: AbapDeployConfig = { app, target, credentials: mergeCredentials(taskConfig, options) };
     config.test = mergeFlag(options.test, taskConfig.test);
     config.safe = mergeFlag(options.safe, taskConfig.safe);
     config.keep = mergeFlag(options.keep, taskConfig.keep);
     config.strictSsl = mergeFlag(options.strictSsl, taskConfig.strictSsl);
     config.yes = mergeFlag(options.yes, taskConfig.yes);
+    config.createTransport = mergeFlag(options.createTransport, taskConfig.createTransport);
     config.retry = process.env.NO_RETRY ? !process.env.NO_RETRY : mergeFlag(options.retry, taskConfig.retry);
 
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {

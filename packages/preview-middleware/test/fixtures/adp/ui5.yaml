@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.0"
+metadata:
+  name: my.f1873
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        adp:
+          target:
+            url: http://example.sap
+    - name: ui5-proxy-middleware
+      afterMiddleware: preview-middleware
+      configuration:
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: backend-proxy-middleware
+      afterMiddleware: preview-middleware
+      configuration:
+        backend:
+          url: http://example.sap
+          path: /sap
+---
+specVersion: "3.0"
+metadata:
+    name: preview-middleware
+kind: extension
+type: server-middleware
+middleware:
+    path: ../../../preview-middleware/dist/ui5/middleware.js

@@ -1,5 +1,29 @@
 # @sap-ux/project-access
 
+## 1.11.1
+
+### Patch Changes
+
+-   88861559: Fix for module loading after installation
+
+## 1.11.0
+
+### Minor Changes
+
+-   1c267b37: Adding getMtaPath(appRoot: string, fs: Editor) utility function. It helps to identify if the input Fiori app is part of a MTA project or not.
+
+## 1.10.2
+
+### Patch Changes
+
+-   c18f957a: add readonly for WorkspaceFolder usage
+
+## 1.10.1
+
+### Patch Changes
+
+-   95a8daae: Ignore leading or trailing slashes when searching for services in CAP project
+
 ## 1.10.0
 
 ### Minor Changes

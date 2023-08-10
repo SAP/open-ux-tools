@@ -23,7 +23,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
     // options to set (or overwrite) values that are otherwise read from the `ui5*.yaml`
     command
         .addOption(
-            new Option('--destination  <destination>', 'Destination in SAP BTP pointing to an ABAP system').conflicts(
+            new Option('--destination <destination>', 'Destination in SAP BTP pointing to an ABAP system').conflicts(
                 'url'
             )
         )
@@ -43,9 +43,25 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
                 'Read ABAP cloud service properties from environment variables or .env file'
             ).conflicts(['cloudServiceKey', 'destination'])
         )
+        .option('--package <abap-package>', 'Package name for deploy target ABAP system')
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
+        .addOption(
+            new Option('--create-transport', 'Create transport request during deployment').conflicts(['transport'])
+        )
+        .addOption(
+            new Option('--username <username>', 'ABAP System username').conflicts([
+                'cloudServiceKey',
+                'cloudServiceEnv'
+            ])
+        )
+        .addOption(
+            new Option('--password <password>', 'ABAP System password').conflicts([
+                'cloudServiceKey',
+                'cloudServiceEnv'
+            ])
+        )
         .option('--name <bsp-name>', 'Project name of the app')
-        .option('--strict-ssl', 'Perform certificate validation (use --no-strict-ssl to deactivate it)')
+        .option('--no-strict-ssl', 'Deactivate certificate validation', true)
         .option(
             '--query-params <param1=value&param2=value>',
             'Additional parameters that are to be added to calls to the target.'
@@ -58,7 +74,6 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
     if (name === 'deploy') {
         // additional parameters for deployment
         command
-            .option('--package <abap-package>', 'Package name for deploy target ABAP system')
             .option('--description <description>', 'Project description of the app')
             // SafeMode: Example: If the deployment would overwrite a repository that contains an app with a different sap.app/id and SafeMode is true, HTTP status code 412 (Precondition Failed) with further information would be returned.
             .option('--safe', 'Prevents accidentally breaking deployments.')
