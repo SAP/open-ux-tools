@@ -6,6 +6,7 @@ import type { NextFunction, Request, Response } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
+import { join } from 'path';
 
 /**
  * Instance of an adaptation project handling requests and data transformation.
@@ -44,6 +45,10 @@ export class AdpPreview {
         } else {
             throw new Error('Not initialized');
         }
+    }
+
+    get pluginScriptLocation() {
+        return join(__dirname, '../../rta');
     }
 
     /**

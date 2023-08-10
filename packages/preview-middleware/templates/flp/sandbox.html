@@ -57,7 +57,8 @@
     </script><% if (locals.locateReuseLibsScript) { %>
 	<script id="locate-reuse-libs" src="<%- locateReuseLibsScript %>" data-sap-ui-manifest-uri="/manifest.json">
 	</script><% } %>
-    <script>
+    <script type="module" ><% if (locals.flex?.pluginScript) { %>
+        import loadPlugin from '<%- flex.pluginScript %>';<% } %>
         sap.ui.getCore().attachInit(function () {<% if (locals.flex) { %>
             sap.ushell.Container.attachRendererCreatedEvent(function () {
                 sap.ushell.Container.getServiceAsync('AppLifeCycle').then((serviceInstance) => {
@@ -72,7 +73,7 @@
                                     developerMode: <%- flex.developerMode %>
 								}
                             };
-                            await startAdaptation(options);
+                            await startAdaptation(options<% if (locals.flex?.pluginScript) { %>, loadPlugin<% } %>);
                         });
                     })
                 });
