@@ -1,5 +1,13 @@
 # @sap-ux/axios-extension
 
+## 1.4.1
+
+### Patch Changes
+
+-   24e45780: Updated dependency: axios@1.4.0
+-   Updated dependencies [24e45780]
+    -   @sap-ux/btp-utils@0.11.8
+
 ## 1.4.0
 
 ### Minor Changes
