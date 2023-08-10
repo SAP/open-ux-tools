@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IStackTokens, Icon } from '@fluentui/react';
+import { ContextualMenuItemType, IStackTokens, Icon } from '@fluentui/react';
 import { Text, Stack } from '@fluentui/react';
 
 import {
@@ -26,21 +26,22 @@ export const defaultUsage = (): JSX.Element => {
         setSelection(key);
     };
 
-    const buttonItem: UIContextualMenuItem = {
-        key: 'option1',
-        text: 'option 1'
+    const getMenuItem = (key: string, text: string, icon?: UiIcons): UIContextualMenuItem => {
+        const item: UIContextualMenuItem = {
+            key,
+            text
+        };
+        if (icon) {
+            item.iconProps = {
+                iconName: UiIcons.GuidedDevelopment
+            };
+        }
+        return item;
     };
 
-    const menuItems: UIContextualMenuItem[] = [
-        {
-            key: 'option2',
-            text: 'option 2'
-        },
-        {
-            key: 'option3',
-            text: 'option 3'
-        }
-    ];
+    const buttonItem: UIContextualMenuItem = getMenuItem('option1', 'option 1');
+
+    const menuItems: UIContextualMenuItem[] = [getMenuItem('option2', 'option 2'), getMenuItem('option3', 'option 3')];
 
     const menuItemsWithIcon = menuItems.map((source) => ({
         ...source,
@@ -48,6 +49,30 @@ export const defaultUsage = (): JSX.Element => {
             iconName: UiIcons.GuidedDevelopment
         }
     }));
+
+    const menuItemsWithSeparators: UIContextualMenuItem[] = [
+        getMenuItem('option1', 'option 1'),
+        getMenuItem('option2', 'option 2'),
+        {
+            key: '',
+            itemType: ContextualMenuItemType.Divider
+        },
+        getMenuItem('option3', 'option 3'),
+        getMenuItem('option4', 'option 4'),
+        getMenuItem('option5', 'option 5'),
+        {
+            key: '',
+            itemType: ContextualMenuItemType.Header,
+            text: 'Dummy header'
+        },
+        getMenuItem('option6', 'option 6'),
+        getMenuItem('option7', 'option 7'),
+        getMenuItem('option8', 'option 8'),
+        //getMenuItem('option9', 'option 9', UiIcons.Beginner),
+        getMenuItem('option10', 'option 10'),
+        getMenuItem('option11', 'option 11'),
+        getMenuItem('option12', 'option 12')
+    ];
 
     return (
         <Stack tokens={stackTokens}>
@@ -89,9 +114,15 @@ export const defaultUsage = (): JSX.Element => {
                         button={buttonItem}
                     />
                     <UISplitButton
-                        id="test"
+                        id="test2"
                         callback={onCallback.bind(this)}
                         menuItems={menuItemsWithIcon}
+                        button={buttonItem}
+                    />
+                    <UISplitButton
+                        id="test3"
+                        callback={onCallback.bind(this)}
+                        menuItems={menuItemsWithSeparators}
                         button={buttonItem}
                     />
                     <span>selection: {selection}</span>
@@ -196,6 +227,15 @@ export const defaultUsage = (): JSX.Element => {
                             directionalHint: UIDirectionalHint.bottomRightEdge,
                             directionalHintFixed: false,
                             items: menuItemsWithIcon
+                        }}
+                    />
+
+                    <UIIconButton
+                        iconProps={{ iconName: UiIcons.Add }}
+                        menuProps={{
+                            directionalHint: UIDirectionalHint.bottomRightEdge,
+                            directionalHintFixed: false,
+                            items: menuItemsWithSeparators
                         }}
                     />
                 </Stack>
