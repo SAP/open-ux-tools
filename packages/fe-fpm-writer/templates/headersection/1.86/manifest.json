@@ -22,7 +22,7 @@
                                                 <% } %>
                                             },<% } %>
                                             "title": "<%- title %>",
-                                            <% if (subTitle) { %> 
+                                            <% if (typeof subTitle !== 'undefined') { %> 
                                                 "subTitle": "<%- subTitle %>",
                                             <% } %>
                                             <% if (typeof stashed !== 'undefined') { %> 
