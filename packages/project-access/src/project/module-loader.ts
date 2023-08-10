@@ -26,3 +26,20 @@ export async function loadModuleFromProject<T>(projectRoot: string, moduleName: 
     }
     return module;
 }
+
+/**
+ * Load module from all known locations (require.resolve.paths(ModuleName)).
+ *
+ * @param moduleName - name of the node module
+ * @returns - loaded module.
+ */
+export async function loadModule<T>(moduleName: string) {
+    let module: T;
+    try {
+        const modulePath = require.resolve(moduleName, { paths: require.resolve.paths(moduleName) ?? [] });
+        module = (await import(modulePath)) as T;
+    } catch (error) {
+        throw Error(`Module '${moduleName}' not installed.\n${error.toString()}`);
+    }
+    return module;
+}

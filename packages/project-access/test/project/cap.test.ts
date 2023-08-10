@@ -318,6 +318,25 @@ describe('Test getCapEnvironment', () => {
         await getCapEnvironment('PROJECT_ROOT');
         expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
     });
+    test('with cds loaded from other location than project', async () => {
+        const forSpy = jest.fn();
+        jest.spyOn(projectModuleMock, 'loadModule').mockResolvedValue({ default: { env: { for: forSpy } } });
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValue('ERROR');
+        await getCapEnvironment('ROOT');
+        expect(forSpy).toBeCalledWith('cds', 'ROOT');
+    });
+    test('failed to load cds from any location', async () => {
+        jest.spyOn(projectModuleMock, 'loadModule').mockRejectedValue('LOAD_ERROR');
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValue('LOAD_MODULE_ERROR');
+        try {
+            await getCapEnvironment('ROOT');
+            fail('Call to getCapEnvironment() should have thrown error due to cds loading but did not.');
+        } catch (error) {
+            const errorString = error.toString();
+            expect(errorString).toContain('LOAD_ERROR');
+            expect(errorString).toContain('LOAD_MODULE_ERROR');
+        }
+    });
 });
 
 describe('toReferenceUri', () => {

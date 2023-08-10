@@ -2,7 +2,7 @@ import { dirname, join, normalize, relative, sep } from 'path';
 import { FileName } from '../constants';
 import type { CapCustomPaths, CapProjectType, CdsEnvironment, csn, Package } from '../types';
 import { fileExists, readFile, readJSON } from '../file';
-import { loadModuleFromProject } from './module-loader';
+import { loadModule, loadModuleFromProject } from './module-loader';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
@@ -95,7 +95,7 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
  * @returns {*}  {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
  */
 export async function getCapModelAndServices(projectRoot: string): Promise<{ model: csn; services: ServiceInfo[] }> {
-    const cds = await loadCdsModuleFromProject(projectRoot);
+    const cds = await loadCdsModule(projectRoot);
     const capProjectPaths = await getCapCustomPaths(projectRoot);
     const modelPaths = [
         join(projectRoot, capProjectPaths.app),
@@ -147,7 +147,7 @@ export async function readCapServiceMetadataEdmx(
         if (!service) {
             throw Error(`Service for uri: '${uri}' not found. Available services: ${JSON.stringify(services)}`);
         }
-        const cds = await loadCdsModuleFromProject(root);
+        const cds = await loadCdsModule(root);
         const edmx = cds.compile.to.edmx(model, { service: service.name, version });
         return edmx;
     } catch (error) {
@@ -179,18 +179,41 @@ function findServiceByUri(
  * @returns - environment config for a CAP project
  */
 export async function getCapEnvironment(capProjectPath: string): Promise<CdsEnvironment> {
-    const cds = await loadCdsModuleFromProject(capProjectPath);
+    const cds = await loadCdsModule(capProjectPath);
     return cds.env.for('cds', capProjectPath);
 }
 
 /**
- * Load CAP CDS module for a project based on its root.
+ * Load CAP CDS module. First attempt loads @sap/cds for a project based on its root.
+ * Second attempt loads @sap/cds-dk from all node locations including global modules.
+ * Throws error if module could not be loaded.
  *
  * @param capProjectPath - project root of a CAP project
  * @returns - CAP CDS module for a CAP project
  */
-async function loadCdsModuleFromProject(capProjectPath: string): Promise<CdsFacade> {
-    const module = await loadModuleFromProject<CdsFacade | { default: CdsFacade }>(capProjectPath, '@sap/cds');
+async function loadCdsModule(capProjectPath: string): Promise<CdsFacade> {
+    let module: CdsFacade | { default: CdsFacade } | undefined;
+    let loadProjectError;
+    let loadError;
+    try {
+        // First approach, load @sap/cds from project
+        module = await loadModuleFromProject<CdsFacade | { default: CdsFacade }>(capProjectPath, '@sap/cds');
+    } catch (error) {
+        loadProjectError = error;
+    }
+    if (!module) {
+        try {
+            // Second approach, load @sap/cds-dk from any location
+            module = await loadModule<CdsFacade | { default: CdsFacade }>('@sap/cds-dk');
+        } catch (error) {
+            loadError = error;
+        }
+    }
+    if (!module) {
+        throw Error(
+            `Could not load cds module. Attempt to load module @sap/cds from project threw error '${loadProjectError}', attempt to load module @sap/cds-dk threw error '${loadError}'`
+        );
+    }
     return 'default' in module ? module.default : module;
 }
 
