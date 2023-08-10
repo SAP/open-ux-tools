@@ -5,7 +5,7 @@
     "author": "@SAP/ux-tools-team",
     "private": true,
     "devDependencies": {
-        "@bessonovs/set-project-references": "0.0.10",
+        "update-ts-references": "2.6.1",
         "@changesets/cli": "2.26.1",
         "@nrwl/nx-cloud": "16.0.5",
         "@types/jest": "29.5.2",
@@ -31,7 +31,7 @@
         "typescript": "4.9.4"
     },
     "scripts": {
-        "postinstall": "set-project-references --save",
+        "postinstall": "update-ts-references",
         "clean": "nx run-many --target=clean --all",
         "build": "nx run-many --target=build --all",
         "format": "pnpm recursive run format",
