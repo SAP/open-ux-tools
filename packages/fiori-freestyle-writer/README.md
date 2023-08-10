@@ -2,7 +2,7 @@
 
 Writer module allowing to generate custom SAPUI5 applications with different templates.
 
-:warning: **All templates except the Basic template have been deprectated** and will be removed at some point in time. Please use the Custom page SAP Fiori template (`@sap-ux/fiori-elements-writer`)as an alternative.
+:warning: **All templates except the Basic template are deprecated** and will be removed in a future release. Please use the Custom page SAP Fiori template(`@sap-ux/fiori-elements-writer`)  as an alternative. 
 
 ## Installation
 Npm
