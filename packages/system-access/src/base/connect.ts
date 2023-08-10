@@ -1,12 +1,14 @@
 import type { Logger } from '@sap-ux/logger';
 import type { AbapTarget, UrlAbapTarget } from '../types';
-import type { ServiceInfo } from '@sap-ux/axios-extension';
+import type {
+    AbapCloudStandaloneOptions,
+    AbapServiceProvider,
+    AxiosRequestConfig,
+    ProviderConfiguration,
+    ServiceInfo
+} from '@sap-ux/axios-extension';
 import {
     AbapCloudEnvironment,
-    type AbapCloudStandaloneOptions,
-    type AbapServiceProvider,
-    type AxiosRequestConfig,
-    type ProviderConfiguration,
     createForAbapOnCloud,
     createForAbap,
     createForDestination
