@@ -2,7 +2,7 @@ import type { ReaderCollection } from '@ui5/fs';
 import { render } from 'ejs';
 import type { Request, Response } from 'express';
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { dirname, join, relative } from 'path';
 import type { App, FlpConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger } from '@sap-ux/logger';
@@ -21,6 +21,10 @@ const DEFAULT_THEME = 'sap_horizon';
 const DEFAULT_PATH = '/test/flp.html';
 
 /**
+ * Default name of the locate reuse libs script.
+ */
+const DEFAULT_LOCATE_LIBS_FILENAME = 'locate-reuse-libs.js';
+/**
  * Default intent
  */
 const DEFAULT_INTENT = {
@@ -32,6 +36,7 @@ const DEFAULT_INTENT = {
  * Internal structure used to fill the sandbox.html template
  */
 export interface TemplateConfig {
+    basePath: string;
     apps: Record<
         string,
         {
@@ -85,8 +90,12 @@ export class FlpSandbox {
             path: config.path ?? DEFAULT_PATH,
             intent: config.intent ?? DEFAULT_INTENT,
             apps: config.apps ?? [],
-            rta: config.rta
+            rta: config.rta,
+            libs: config.libs
         };
+        if (!this.config.path.startsWith('/')) {
+            this.config.path = `/${this.config.path}`;
+        }
         logger.debug(`Config: ${JSON.stringify(this.config)}`);
         this.router = createRouter();
     }
@@ -102,6 +111,7 @@ export class FlpSandbox {
         const flex = this.createFlexHandler();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         this.templateConfig = {
+            basePath: relative(dirname(this.config.path), '/') ?? '.',
             apps: {},
             ui5: {
                 libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
@@ -109,15 +119,27 @@ export class FlpSandbox {
                 flex,
                 resources: { ...resources }
             },
-            locateReuseLibsScript: await this.findLocateReuseLibsScript()
+            locateReuseLibsScript: this.config.libs
+                ? `./${DEFAULT_LOCATE_LIBS_FILENAME}`
+                : await this.findLocateReuseLibsScript()
         };
         this.addApp(manifest, {
             componentId,
-            target: resources[componentId ?? manifest['sap.app'].id] ?? '/',
+            target: resources[componentId ?? manifest['sap.app'].id] ?? this.templateConfig.basePath,
             local: '.',
             intent: this.config.intent
         });
 
+        this.addStandardRoutes();
+        this.addRoutesForAdditionalApps();
+        this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
+        this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
+    }
+
+    /**
+     * Add routes for html and scripts required for a local FLP.
+     */
+    private addStandardRoutes() {
         // add route for the sandbox.html
         this.router.get(this.config.path, (req: Request, res: Response & { _livereload?: boolean }) => {
             const config = { ...this.templateConfig };
@@ -142,13 +164,20 @@ export class FlpSandbox {
                 res.status(200).contentType('html').send(html);
             }
         });
-        this.addRoutesForAdditionalApps();
-        this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
-        this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
+        // add route for locate-reuse-libs if requested
+        if (this.config.libs && this.templateConfig.locateReuseLibsScript) {
+            const pathParts = this.config.path.split('/');
+            pathParts.pop();
+            pathParts.push(DEFAULT_LOCATE_LIBS_FILENAME);
+            this.router.get(pathParts.join('/'), (_req: Request, res: Response) => {
+                const script = readFileSync(join(__dirname, '../../templates/flp/locate-reuse-libs.js'), 'utf-8');
+                res.status(200).contentType('text/javascript').send(script);
+            });
+        }
     }
 
     /**
-     * Try finding the locate-reuse-libs script.
+     * Try finding a locate-reuse-libs script in the project.
      *
      * @returns the location of the locate-reuse-libs script or undefined.
      */
@@ -161,6 +190,9 @@ export class FlpSandbox {
         }
     }
 
+    /**
+     * Add additional routes for apps also to be shown in the local FLP.
+     */
     private addRoutesForAdditionalApps() {
         for (const app of this.config.apps) {
             if (app.local) {

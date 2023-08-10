@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.1.2
+
+### Patch Changes
+
+-   a256cd54: FIX: 'Trying to copy from a source that does not exist' error
+
 ## 0.1.1
 
 ### Patch Changes

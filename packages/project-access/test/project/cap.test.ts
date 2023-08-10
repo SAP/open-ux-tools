@@ -2,13 +2,16 @@ import { join } from 'path';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
-import { isCapNodeJsProject, isCapJavaProject, getCapModelAndServices, getCapProjectType } from '../../src';
 import {
     getCapCustomPaths,
     getCapEnvironment,
-    readCapServiceMetadataEdmx,
-    toReferenceUri
-} from '../../src/project/cap';
+    isCapNodeJsProject,
+    isCapJavaProject,
+    getCapModelAndServices,
+    getCapProjectType,
+    readCapServiceMetadataEdmx
+} from '../../src';
+import { toReferenceUri } from '../../src/project/cap';
 import * as file from '../../src/file';
 import os from 'os';
 

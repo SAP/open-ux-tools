@@ -1,7 +1,6 @@
 import { basename, dirname, join } from 'path';
 import type { WorkspaceFolder } from '../../src';
-import { findAllApps, findProjectRoot, getAppRootFromWebappPath } from '../../src';
-import { findFioriArtifacts } from '../../src/project/search';
+import { findAllApps, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from '../../src';
 
 const testDataRoot = join(__dirname, '..', 'test-data');
 

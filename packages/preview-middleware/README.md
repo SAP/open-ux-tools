@@ -11,9 +11,10 @@ The `@sap-ux/preview-middleware` is a [Custom UI5 Server Middleware](https://sap
 | `flp.intent.object`    | `string`  | `app`            | Optional intent object                                                                                                              |
 | `flp.intent.action`    | `string`  | `preview`        | Optional intent action                                                                                                              |
 | `flp.apps`             | `array`   | `[]`             | Optional additional local apps that are available in local Fiori launchpad                                                          |
+| `flp.libs`             | `boolean` | `false`          | Optional flag to add a generic script fetching the paths of used libraries not available in UI5                                     |
 | `adp.target`           |           |                  | Required configuration for adaptation projects defining the connected backend                                                       |
 | `adp.ignoreCertErrors` | `boolean` | `false`          | Optional setting to ignore certification validation errors when working with e.g. development systems with self signed certificates |
-| `debug`                | `boolean` | false            | Enables debug output                                                                                                                |
+| `debug`                | `boolean` | `false`          | Enables debug output                                                                                                                |
 
 ### `flp.apps`
 Array of additional application configurations:

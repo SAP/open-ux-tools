@@ -8,7 +8,7 @@ Object {
       "applicationType": "URL",
       "description": "",
       "title": "my.id",
-      "url": "/",
+      "url": "..",
     },
     "myObject-action": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.other",
@@ -25,6 +25,7 @@ Object {
       "url": "/simple/app",
     },
   },
+  "basePath": "..",
   "locateReuseLibsScript": undefined,
   "ui5": Object {
     "flex": Array [
@@ -36,7 +37,7 @@ Object {
     ],
     "libs": "",
     "resources": Object {
-      "my.id": "/",
+      "my.id": "..",
       "test.fe.v2.app": "/simple/app",
       "test.fe.v2.other": "/yet/another/app",
     },
@@ -53,9 +54,10 @@ Object {
       "applicationType": "URL",
       "description": "",
       "title": "my.id",
-      "url": "/",
+      "url": "..",
     },
   },
+  "basePath": "..",
   "locateReuseLibsScript": undefined,
   "ui5": Object {
     "flex": Array [
@@ -67,7 +69,7 @@ Object {
     ],
     "libs": "",
     "resources": Object {
-      "my.id": "/",
+      "my.id": "..",
     },
     "theme": "sap_horizon",
   },
@@ -82,9 +84,10 @@ Object {
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Simple App",
-      "url": "/",
+      "url": "..",
     },
   },
+  "basePath": "..",
   "locateReuseLibsScript": undefined,
   "ui5": Object {
     "flex": Array [
@@ -96,7 +99,7 @@ Object {
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
     "resources": Object {
-      "test.fe.v2.app": "/",
+      "test.fe.v2.app": "..",
     },
     "theme": "sap_horizon_dark",
   },
@@ -223,14 +226,14 @@ exports[`FlpSandbox router test/flp.html 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
 
-    <script src=\\"/test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
-        src=\\"/resources/sap-ui-core.js\\"
+        src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
@@ -238,7 +241,7 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true}]'
-        data-sap-ui-resourceroots='{\\"test.fe.v2.app\\":\\"/\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
+        data-sap-ui-resourceroots='{\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\">
     </script>
@@ -296,14 +299,14 @@ exports[`FlpSandbox router test/flp.html?fiori-tools-rta-mode=forAdaptation 1`] 
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
 
-    <script src=\\"/test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
-        src=\\"/resources/sap-ui-core.js\\"
+        src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
@@ -311,7 +314,7 @@ exports[`FlpSandbox router test/flp.html?fiori-tools-rta-mode=forAdaptation 1`] 
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true}]'
-        data-sap-ui-resourceroots='{\\"test.fe.v2.app\\":\\"/\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
+        data-sap-ui-resourceroots='{\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\">
     </script>
@@ -387,14 +390,14 @@ exports[`FlpSandbox router test/flp.html?fiori-tools-rta-mode=true 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
 
-    <script src=\\"/test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
-        src=\\"/resources/sap-ui-core.js\\"
+        src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
@@ -402,7 +405,7 @@ exports[`FlpSandbox router test/flp.html?fiori-tools-rta-mode=true 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true}]'
-        data-sap-ui-resourceroots='{\\"test.fe.v2.app\\":\\"/\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
+        data-sap-ui-resourceroots='{\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\">
     </script>
