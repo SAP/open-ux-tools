@@ -55,7 +55,7 @@
 /packages/adp-tooling/ @SAP/ux-tools-adp
 
 # Module: deploy-tooling
-/packages/adp-tooling/ @SAP/ux-tools-deploy
+/packages/deploy-tooling/ @SAP/ux-tools-deploy
 
 # Admin
 /.github/ @SAP/ux-tools-admin
