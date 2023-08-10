@@ -1,5 +1,13 @@
 # @sap-ux/adp-tooling
 
+## 0.1.3
+
+### Patch Changes
+
+-   Updated dependencies [24e45780]
+    -   @sap-ux/axios-extension@1.4.1
+    -   @sap-ux/btp-utils@0.11.8
+
 ## 0.1.2
 
 ### Patch Changes

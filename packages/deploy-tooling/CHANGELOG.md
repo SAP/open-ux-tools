@@ -1,5 +1,14 @@
 # @sap-ux/deploy-tooling
 
+## 0.9.3
+
+### Patch Changes
+
+-   24e45780: Updated dependency: axios@1.4.0
+-   Updated dependencies [24e45780]
+    -   @sap-ux/axios-extension@1.4.1
+    -   @sap-ux/btp-utils@0.11.8
+
 ## 0.9.2
 
 ### Patch Changes
