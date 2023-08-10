@@ -10,7 +10,13 @@
     },
     "references": [
         {
+            "path": "../adp-tooling"
+        },
+        {
             "path": "../app-config-writer"
+        },
+        {
+            "path": "../cap-config-writer"
         },
         {
             "path": "../logger"

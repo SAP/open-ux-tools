@@ -21,3 +21,4 @@ builder:
         target:
           destination: EXAMPLE
           url: https://target.example
+          service: /bc/my/deploy/service

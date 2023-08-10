@@ -1,0 +1,12 @@
+{
+    "ignore": ["**/*.d.ts"],
+    "presets": [
+        [
+            "transform-ui5",
+            {
+                "overridesToOverride": true
+            }
+        ],
+        "@babel/preset-typescript"
+    ]
+}

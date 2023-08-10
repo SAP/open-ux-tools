@@ -12,6 +12,10 @@ import {
 import * as auth from '../../src/auth';
 import type { ArchiveFileNode } from '../../src/abap/types';
 import fs from 'fs';
+import cloneDeep from 'lodash/cloneDeep';
+import { Uaa } from '../../src/auth/uaa';
+
+jest.mock('open');
 
 /**
  * URL are specific to the discovery schema.
@@ -39,7 +43,14 @@ const existingCookieConfig = {
     cookies: 'sap-usercontext=sap-client=100;SAP_SESSIONID_Y05_100=abc'
 };
 const configForAbapOnCloud = {
-    service: {},
+    service: {
+        url: server,
+        uaa: {
+            clientid: 'ClientId',
+            clientsecret: 'ClientSecret',
+            url: server
+        }
+    } as any,
     environment: AbapCloudEnvironment.Standalone
 };
 const existingCookieConfigForAbapOnCloud = {
@@ -49,10 +60,12 @@ const existingCookieConfigForAbapOnCloud = {
 };
 
 const testPackage = 'ZSPD';
+const testPackageNamespace = '/NS/ZSPD';
 const testLocalPackage = '$TMP';
 const testNewPakcage = 'NEWPACKAGE';
 const testNewProject = 'zdummyexample';
 const testExistProject = 'zdummyexist';
+const testProjectNamespace = '/test/project';
 
 // Discovery schema is cached, so separate this test suite from other ADT service tests
 describe('ADT Services unavailable in discovery', () => {
@@ -259,19 +272,79 @@ describe('Transport checks', () => {
             })
         ]);
     });
+
+    test('Valid package name, existing project name with namespace', async () => {
+        const provider = createForAbap(config);
+        const postSpy = jest.spyOn(TransportChecksService.prototype, 'post');
+
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_CHECKS)
+            .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-2.xml'));
+
+        const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+
+        await transportChecksService?.getTransportRequests(testPackage, testProjectNamespace);
+
+        expect(postSpy).toBeCalledWith(
+            expect.any(String),
+            expect.stringContaining(`<URI>/sap/bc/adt/filestore/ui5-bsp/objects/%2Ftest%2Fproject/$create</URI>`),
+            expect.objectContaining({
+                headers: expect.objectContaining({
+                    Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
+                    'content-type':
+                        'application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.transport.service.checkData'
+                })
+            })
+        );
+    });
+
+    test('Valid package name with namespace', async () => {
+        const provider = createForAbap(config);
+        const postSpy = jest.spyOn(TransportChecksService.prototype, 'post');
+
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_CHECKS)
+            .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-2.xml'));
+
+        const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+
+        await transportChecksService?.getTransportRequests(testPackageNamespace, testProjectNamespace);
+
+        expect(postSpy).toBeCalledWith(
+            expect.any(String),
+            expect.stringContaining(`<DEVCLASS>${encodeURIComponent(testPackageNamespace)}</DEVCLASS>`),
+            expect.objectContaining({
+                headers: expect.objectContaining({
+                    Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
+                    'content-type':
+                        'application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.transport.service.checkData'
+                })
+            })
+        );
+    });
 });
 
 describe('Use existing connection session', () => {
+    const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
     beforeAll(() => {
         nock.disableNetConnect();
+    });
+
+    beforeEach(() => {
+        nock.cleanAll();
+        attachUaaAuthInterceptorSpy.mockRestore();
+        Uaa.prototype.getAccessToken = jest.fn();
     });
 
     afterAll(() => {
         nock.cleanAll();
         nock.enableNetConnect();
+        jest.resetAllMocks();
     });
-
-    const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
 
     test('abap service provider', async () => {
         const provider = createForAbap(existingCookieConfig);
@@ -288,7 +361,7 @@ describe('Use existing connection session', () => {
         const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloud as any);
         expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
         expect(await provider.isS4Cloud()).toBe(false);
-        expect(attachUaaAuthInterceptorSpy.mockImplementation(jest.fn())).toBeCalledTimes(0);
+        expect(attachUaaAuthInterceptorSpy).toBeCalledTimes(0);
     });
 
     test('abap service provider for cloud - require authentication', async () => {
@@ -296,11 +369,51 @@ describe('Use existing connection session', () => {
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
             .get(AdtServices.ATO_SETTINGS)
-            .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
+            .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'))
+            .get('/userinfo')
+            .reply(200, { email: 'emailTest', name: 'nameTest' });
 
-        const provider = createForAbapOnCloud(configForAbapOnCloud as any);
+        const cloneObj = cloneDeep(configForAbapOnCloud);
+        delete cloneObj.service.uaa.username;
+        const provider = createForAbapOnCloud(cloneObj as any);
+        expect(await provider.isS4Cloud()).toBe(true);
+        expect(await provider.user()).toBe('emailTest');
+    });
+
+    test('abap service provider for cloud - with authentication provided', async () => {
+        nock(server)
+            .post('/oauth/token')
+            .reply(201, { access_token: 'accessToken', refresh_token: 'refreshToken' })
+            .get('/userinfo')
+            .reply(200, { email: 'email', name: 'name' });
+
+        const configForAbapOnCloudWithAuthentication = cloneDeep(configForAbapOnCloud);
+        configForAbapOnCloudWithAuthentication.service = {
+            log: console,
+            url: server,
+            uaa: {
+                username: 'TestUsername',
+                password: 'TestPassword',
+                clientid: 'ClientId',
+                clientsecret: 'ClientSecret',
+                url: server
+            }
+        };
+        const provider = createForAbapOnCloud(configForAbapOnCloudWithAuthentication as any);
         expect(await provider.isS4Cloud()).toBe(false);
-        expect(attachUaaAuthInterceptorSpy.mockImplementation(jest.fn())).toBeCalledTimes(1);
+        expect(await provider.user()).toBe('email');
+    });
+
+    it.each([
+        { remove: 'clientid', errorStr: 'Client ID missing' },
+        { remove: 'clientsecret', errorStr: 'Client Secret missing' },
+        { remove: 'url', errorStr: 'UAA URL missing' }
+    ])('Fail with error: $errorStr', ({ remove, errorStr }) => {
+        const cloneObj = cloneDeep(configForAbapOnCloud);
+        delete cloneObj.service.uaa[remove];
+        expect(() => {
+            createForAbapOnCloud(cloneObj as any);
+        }).toThrowError(errorStr);
     });
 });
 

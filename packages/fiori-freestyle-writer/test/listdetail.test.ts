@@ -126,6 +126,40 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     typescript: true
                 }
             } as FreestyleApp<ListDetailSettings>
+        },
+        {
+            name: 'listdetail-advanced-ts_ui5_1_113',
+            config: {
+                ...listDetailConfig,
+                template: {
+                    type: TemplateType.ListDetail,
+                    settings: {
+                        entity: {
+                            name: 'Suppliers',
+                            key: 'SupplierID',
+                            idProperty: 'CompanyName',
+                            numberProperty: 'Phone',
+                            unitOfMeasureProperty: 'Region'
+                        },
+                        lineItem: {
+                            name: 'Products',
+                            key: 'ProductID',
+                            idProperty: 'ProductName',
+                            numberProperty: 'UnitsInStock',
+                            unitOfMeasureProperty: 'QuantityPerUnit'
+                        }
+                    }
+                },
+                ui5: {
+                    minUI5Version: '1.113.0',
+                    version: '', // I.e Latest
+                    ui5Theme: 'sap_horizon',
+                    ui5Libs: 'sap.m,sap.ushell'
+                },
+                appOptions: {
+                    typescript: true
+                }
+            } as FreestyleApp<ListDetailSettings>
         }
     ];
 

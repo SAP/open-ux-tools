@@ -1,5 +1,41 @@
 # @sap-ux/ui-components
 
+## 1.8.5
+
+### Patch Changes
+
+-   d3e7d06b: Fixes for 'promises should not be misused' sonar bugs
+
+## 1.8.4
+
+### Patch Changes
+
+-   deb06c73: `terminal` icon added
+
+## 1.8.3
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 1.8.2
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
+## 1.8.1
+
+### Patch Changes
+
+-   e315fd8a: fix: make icon positioning consistent in searchbox inputs
+
+## 1.8.0
+
+### Minor Changes
+
+-   5c34522c: fix on click logic
+
 ## 1.7.0
 
 ### Minor Changes

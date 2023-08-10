@@ -1,5 +1,23 @@
 # @sap-ux/ui5-test-writer
 
+## 0.1.10
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 0.1.9
+
+### Patch Changes
+
+-   080f89ac: Opa tests to use flpSandbox.html when index.html is not generated
+
+## 0.1.8
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
 ## 0.1.7
 
 ### Patch Changes

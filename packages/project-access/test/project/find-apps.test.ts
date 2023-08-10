@@ -1,7 +1,6 @@
 import { basename, dirname, join } from 'path';
 import type { WorkspaceFolder } from '../../src';
-import { findAllApps, findProjectRoot, getAppRootFromWebappPath } from '../../src';
-import { findFioriArtifacts } from '../../src/project/search';
+import { findAllApps, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from '../../src';
 
 const testDataRoot = join(__dirname, '..', 'test-data');
 
@@ -179,7 +178,13 @@ describe('Test findFioriArtifacts()', () => {
         });
         expect(result.applications?.length).toBeGreaterThan(0);
         expect(result.adaptations).toEqual([
-            { appRoot: join(testDataRoot, 'project/find-all-apps/adaptations/valid-adaptation') }
+            {
+                appRoot: join(testDataRoot, 'project/find-all-apps/adaptations/valid-adaptation'),
+                manifestAppdescrVariantPath: join(
+                    testDataRoot,
+                    'project/find-all-apps/adaptations/valid-adaptation/webapp/manifest.appdescr_variant'
+                )
+            }
         ]);
         expect(result.extensions).toEqual([
             {

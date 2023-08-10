@@ -13,7 +13,6 @@ import {
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath
 } from './common';
-import { UI5_DEFAULT } from '@sap-ux/ui5-application-writer/src/data/defaults';
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
@@ -67,6 +66,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     },
                     appOptions: {
                         ...feBaseConfig('lropV4AddTests').appOptions,
+                        generateIndex: true,
                         addTests: true
                     }
                 }),
@@ -204,6 +204,24 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     },
                     ui5: {
                         version: '1.111.0'
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_ts_ui5_1_113',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_113'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.113.0'
                     },
                     appOptions: {
                         typescript: true

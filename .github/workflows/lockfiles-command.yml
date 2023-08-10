@@ -11,17 +11,16 @@ jobs:
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
 
-            - name: Use Node.js 12.x
+            - name: Use Node.js 16.x
               if: success()
               uses: actions/setup-node@v3
               with:
-                  node-version: 12.x
+                  node-version: 16.x
 
             - name: Setup PNPM
               uses: pnpm/action-setup@v2.2.4
               if: success()
               with:
-                  version: 7.1.0
                   run_install: false
 
             - name: Pnpm Install recursive

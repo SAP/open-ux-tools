@@ -1,5 +1,56 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.32
+
+### Patch Changes
+
+-   d3e7d06b: Fixes for 'promises should not be misused' sonar bugs
+
+## 1.1.31
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-config@0.18.2
+    -   @sap-ux/logger@0.3.7
+
+## 1.1.30
+
+### Patch Changes
+
+-   Updated dependencies [d9355692]
+    -   @sap-ux/ui5-config@0.18.1
+
+## 1.1.29
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+
+## 1.1.28
+
+### Patch Changes
+
+-   7f1971c1: Fix: handle missing manifest.json
+
+## 1.1.27
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/logger@0.3.6
+    -   @sap-ux/ui5-config@0.17.1
+
+## 1.1.26
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-config@0.17.0
+
 ## 1.1.25
 
 ### Patch Changes

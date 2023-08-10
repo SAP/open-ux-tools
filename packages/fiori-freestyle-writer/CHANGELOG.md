@@ -1,5 +1,93 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.19.13
+
+### Patch Changes
+
+-   Updated dependencies [eba8741e]
+    -   @sap-ux/ui5-application-writer@0.24.0
+
+## 0.19.12
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-application-writer@0.23.5
+    -   @sap-ux/odata-service-writer@0.14.26
+    -   @sap-ux/ui5-config@0.18.2
+
+## 0.19.11
+
+### Patch Changes
+
+-   Updated dependencies [d9355692]
+    -   @sap-ux/odata-service-writer@0.14.25
+    -   @sap-ux/ui5-application-writer@0.23.4
+    -   @sap-ux/ui5-config@0.18.1
+
+## 0.19.10
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+    -   @sap-ux/odata-service-writer@0.14.24
+    -   @sap-ux/ui5-application-writer@0.23.3
+
+## 0.19.9
+
+### Patch Changes
+
+-   743a5dc7: Chore - bump version of @sap-ux/eslint-plugin-fiori-tools used in templates
+-   Updated dependencies [743a5dc7]
+    -   @sap-ux/ui5-application-writer@0.23.2
+
+## 0.19.8
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/odata-service-writer@0.14.23
+    -   @sap-ux/ui5-application-writer@0.23.1
+    -   @sap-ux/ui5-config@0.17.1
+
+## 0.19.7
+
+### Patch Changes
+
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/odata-service-writer@0.14.22
+
+## 0.19.6
+
+### Patch Changes
+
+-   7aed929c: disable search in flpSandbox
+
+## 0.19.5
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-application-writer@0.23.0
+    -   @sap-ux/ui5-config@0.17.0
+    -   @sap-ux/odata-service-writer@0.14.21
+
+## 0.19.4
+
+### Patch Changes
+
+-   0aa02ab0: TBI - Clean up eslint warnings in generated projects
+
+## 0.19.3
+
+### Patch Changes
+
+-   Updated dependencies [906b7fea]
+    -   @sap-ux/ui5-application-writer@0.22.3
+
 ## 0.19.2
 
 ### Patch Changes

@@ -9,13 +9,13 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-service-writer"
     },
-    "version": "0.14.20",
+    "version": "0.14.26",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
@@ -34,12 +34,12 @@
     "dependencies": {
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.7",
-        "fast-xml-parser": "4.0.1",
+        "fast-xml-parser": "4.2.5",
         "i18next": "20.3.2",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prettify-xml": "1.2.0",
-        "semver": "7.3.5"
+        "semver": "7.5.3"
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",

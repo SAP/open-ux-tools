@@ -45,7 +45,7 @@ const excludeFolders = ['.git', 'node_modules', 'dist'];
  * @param value - value to type check
  * @returns - true: is a vscode workspace array; no: not a vscode workspace array
  */
-function isWorkspaceFolder(value: WorkspaceFolder[] | string[]): value is WorkspaceFolder[] {
+function isWorkspaceFolder(value: readonly WorkspaceFolder[] | string[]): value is WorkspaceFolder[] {
     return value && (value as WorkspaceFolder[]).length > 0 && (value as WorkspaceFolder[])[0].uri !== undefined;
 }
 
@@ -55,7 +55,7 @@ function isWorkspaceFolder(value: WorkspaceFolder[] | string[]): value is Worksp
  * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @returns - root paths
  */
-function wsFoldersToRootPaths(wsFolders: WorkspaceFolder[] | string[] | undefined): string[] {
+function wsFoldersToRootPaths(wsFolders: readonly WorkspaceFolder[] | string[] | undefined): string[] {
     // extract root path if provided as VSCode folder
     let wsRoots: string[];
     if (wsFolders && isWorkspaceFolder(wsFolders)) {
@@ -66,7 +66,7 @@ function wsFoldersToRootPaths(wsFolders: WorkspaceFolder[] | string[] | undefine
                 wsRoots.push(folder.uri.fsPath);
             });
     } else {
-        wsRoots = wsFolders || [];
+        wsRoots = (wsFolders ?? []) as string[];
     }
     return wsRoots;
 }
@@ -77,6 +77,7 @@ function wsFoldersToRootPaths(wsFolders: WorkspaceFolder[] | string[] | undefine
  * @param path path of a project file
  * @param sapuxRequired if true, only find sapux projects
  * @param silent if true, then does not throw an error but returns an empty path
+ * @returns {*}  {Promise<string>} - Project Root
  */
 export async function findProjectRoot(path: string, sapuxRequired = true, silent = false): Promise<string> {
     const packageJson = await findFileUp(FileName.Package, path);
@@ -102,7 +103,6 @@ export async function findProjectRoot(path: string, sapuxRequired = true, silent
 
 /**
  * Find app root and project root from given paths and sapux entry.
- *
  *
  * @param sapux - value of sapux in package.json, either boolean or string array
  * @param path - path where the search started from
@@ -231,7 +231,9 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
  * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
-export async function findAllApps(wsFolders: WorkspaceFolder[] | string[] | undefined): Promise<AllAppResults[]> {
+export async function findAllApps(
+    wsFolders: readonly WorkspaceFolder[] | string[] | undefined
+): Promise<AllAppResults[]> {
     const findResults = await findFioriArtifacts({ wsFolders, artifacts: ['applications'] });
     return findResults.applications ?? [];
 }
@@ -276,7 +278,7 @@ async function filterAdaptations(pathMap: FileMapAndCache): Promise<AdaptationRe
     for (const manifestAppDescrVar of manifestAppDescrVars) {
         const adpPath = await findFileUp('.adp', dirname(manifestAppDescrVar));
         if (adpPath && (await fileExists(join(adpPath, FileName.AdaptationConfig)))) {
-            results.push({ appRoot: dirname(adpPath) });
+            results.push({ appRoot: dirname(adpPath), manifestAppdescrVariantPath: manifestAppDescrVar });
         }
     }
     return results;
@@ -372,7 +374,7 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
  * @returns - data structure containing the search results, for app e.g. as path to app plus files already parsed, e.g. manifest.json
  */
 export async function findFioriArtifacts(options: {
-    wsFolders?: WorkspaceFolder[] | string[];
+    wsFolders?: readonly WorkspaceFolder[] | string[];
     artifacts: FioriArtifactTypes[];
 }): Promise<FoundFioriArtifacts> {
     const results: FoundFioriArtifacts = {};

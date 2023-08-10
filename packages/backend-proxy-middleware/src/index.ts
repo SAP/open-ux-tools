@@ -2,4 +2,6 @@ import { generateProxyMiddlewareOptions, createProxy, initI18n } from './base/pr
 
 export { generateProxyMiddlewareOptions, createProxy };
 
-initI18n();
+initI18n().catch(() => {
+    // Ignore any errors since the middleware will still work
+});

@@ -6,6 +6,7 @@ export const NAME = 'abap-deploy-task';
 export interface UrlAbapTarget {
     url: string;
     client?: string;
+    service?: string;
     cloud?: boolean;
     serviceKey?: ServiceInfo;
     params?: AxiosRequestConfig['params'];
@@ -61,9 +62,14 @@ export interface CommonOptions {
     verbose?: boolean;
 
     /**
-     * If set to true then do not retry if a deployment fails.
+     * '--no-retry' cli param negates the retry value which is true by default
      */
-    noRetry?: boolean;
+    retry?: boolean;
+
+    /**
+     * If set to true, a transport request will be created during deployment
+     */
+    createTransport?: boolean;
 }
 
 export interface AbapDeployConfig extends CommonOptions {
@@ -83,4 +89,7 @@ export interface CliOptions
     archiveUrl?: string;
     cloudServiceKey?: string;
     queryParams?: string;
+    cloudServiceEnv?: boolean;
+    username?: string;
+    password?: string;
 }

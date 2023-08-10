@@ -8,6 +8,7 @@ export interface MessageDetail {
     code: string;
     message: string;
     severity: string;
+    longtext_url?: string;
 }
 
 /**
@@ -76,7 +77,7 @@ export function prettyPrintMessage({ msg, log, host }: { msg: string; log: Logge
         logFullURL({ host, path: jsonMsg['longtext_url'], log });
         if (jsonMsg.details) {
             jsonMsg.details.forEach((entry) => {
-                log.info(entry.message);
+                logLevel(entry.severity, entry.message, log);
             });
         }
     } catch (error) {
@@ -123,7 +124,7 @@ export function prettyPrintError(
             if (!entry.message.startsWith('<![CDATA')) {
                 logLevel(entry.severity, entry.message, log, true);
             }
-            logFullURL({ host, path: error['longtext_url'], log });
+            logFullURL({ host, path: entry['longtext_url'], log });
         });
         if (showAllMessages && error.innererror?.Error_Resolution) {
             for (const key in error.innererror.Error_Resolution) {

@@ -1,5 +1,59 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.22.3
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 0.22.2
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+
+## 0.22.1
+
+### Patch Changes
+
+-   b7b25d00: Fix. Allow to create custom section or subsection without 'position' property.
+
+## 0.22.0
+
+### Minor Changes
+
+-   36ccc8eb: Add support to generate table building blocks
+
+## 0.21.0
+
+### Minor Changes
+
+-   2de44bb9: Feature. Add VBox wrapper container to generated content for custom section and sub section
+
+## 0.20.3
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
+## 0.20.2
+
+### Patch Changes
+
+-   2fc69d95: Fix: generated typescript controller extension does not work with latest ui5-application-writer version
+
+## 0.20.1
+
+### Patch Changes
+
+-   0aa02ab0: TBI - Clean up eslint warnings in generated projects
+
+## 0.20.0
+
+### Minor Changes
+
+-   5c16776d: Generate custom filter
+
 ## 0.19.1
 
 ### Patch Changes
