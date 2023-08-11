@@ -1,5 +1,13 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.135
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.12.22
+-   @sap-ux/fiori-freestyle-writer@0.19.15
+-   @sap-ux/axios-extension@1.4.1
+
 ## 0.2.134
 
 ### Patch Changes
