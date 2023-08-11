@@ -1,10 +1,19 @@
 import { basename, dirname, join } from 'path';
 import type { WorkspaceFolder } from '../../src';
 import { findAllApps, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from '../../src';
+import * as loadMock from '../../src/project/module-loader';
 
 const testDataRoot = join(__dirname, '..', 'test-data');
 
 describe('Test findAllApps()', () => {
+    beforeAll(() => {
+        jest.spyOn(loadMock, 'loadModule').mockRejectedValue('Module not installed');
+    });
+
+    afterAll(() => {
+        jest.resetAllMocks();
+    });
+
     test('Find all apps from workspace', async () => {
         // Mock setup
         const testWs = {
@@ -171,6 +180,14 @@ describe('Test getAppRootFromManifestPath()', () => {
 });
 
 describe('Test findFioriArtifacts()', () => {
+    beforeAll(() => {
+        jest.spyOn(loadMock, 'loadModule').mockRejectedValue('Module not installed');
+    });
+
+    afterAll(() => {
+        jest.resetAllMocks();
+    });
+
     test('Find all artifacts', async () => {
         const result = await findFioriArtifacts({
             wsFolders: [join(testDataRoot, 'project/find-all-apps')],
