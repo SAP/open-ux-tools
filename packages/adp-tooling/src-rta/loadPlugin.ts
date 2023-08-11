@@ -1,4 +1,4 @@
-export default (rta) => {
+export default (rta: sap.ui.rta.RuntimeAuthoring) => {
     const menu = rta.getDefaultPlugins().contextMenu;
     menu.addMenuItem({
         id: 'ADD_FRAGMENT',

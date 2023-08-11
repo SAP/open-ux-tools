@@ -69,7 +69,7 @@ export class AdpPreview {
     }
 
     get pluginScriptLocation() {
-        return join(__dirname, '../../rta');
+        return join(__dirname, 'rta');
     }
 
     /**
