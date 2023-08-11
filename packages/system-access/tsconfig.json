@@ -1,7 +1,6 @@
 {
     "extends": "../../tsconfig.json",
     "include": [
-        "../../types/ui5.d.ts",
         "src"
     ],
     "compilerOptions": {
@@ -19,13 +18,10 @@
             "path": "../logger"
         },
         {
+            "path": "../project-access"
+        },
+        {
             "path": "../store"
-        },
-        {
-            "path": "../system-access"
-        },
-        {
-            "path": "../ui5-config"
         }
     ]
 }
