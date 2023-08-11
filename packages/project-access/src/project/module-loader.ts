@@ -74,7 +74,7 @@ async function getModulePath(moduleName: string): Promise<string> {
             if (out) {
                 resolve(out);
             } else {
-                reject('Module path not found');
+                reject(new Error('Module path not found'));
             }
         });
         nodeResolvePaths.on('error', (error) => {
