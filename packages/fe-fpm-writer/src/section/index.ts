@@ -5,7 +5,7 @@ import type { CustomHeaderSection, CustomSection, InternalCustomSection, CustomS
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
-import type { Manifest } from '../common/types';
+import type { CustomElement, Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { extendJSON } from '../common/file';
@@ -132,8 +132,9 @@ export function generateCustomHeaderSection(
     const manifestRoot = getManifestRoot('headersection', customHeaderSection.minUI5Version);
     const { editor, section } = generate(basePath, customHeaderSection, manifestRoot, fs);
     // Get edit fragment details
-    const editSection = section.edit as InternalCustomSection;
-    if (editSection) {
+    const minVersion = coerce(customHeaderSection.minUI5Version);
+    if (section.edit && (!minVersion || gte(minVersion, '1.86.0'))) {
+        const editSection: CustomElement & Partial<InternalCustomSection> = section.edit;
         const manifestPath = join(basePath, 'webapp/manifest.json');
         const manifest = editor.readJSON(manifestPath) as Manifest;
         // Set folder, ns and path for edit fragment
@@ -150,10 +151,13 @@ export function generateCustomHeaderSection(
         }
         // Generate edit fragment content
         editSection.content =
-            editSection.control ?? getDefaultFragmentContent(editSection.name, editSection.eventHandler);
-        const viewPath = join(editSection.path, `${editSection.name}.fragment.xml`);
-        if (!editor.exists(viewPath)) {
-            editor.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, editSection);
+            editSection.control ??
+            getDefaultFragmentContent(editSection.name, editSection.eventHandler, undefined);
+        if (editSection.path) {
+            const viewPath = join(editSection.path, `${editSection.name}.fragment.xml`);
+            if (!editor.exists(viewPath)) {
+                editor.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, editSection);
+            }
         }
     }
     return editor;

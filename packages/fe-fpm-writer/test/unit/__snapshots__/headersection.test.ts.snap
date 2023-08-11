@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CustomHeaderSection generateCustomHeaderSection positions Test 'position' property. Create with anchor - 1.85 ui5 1`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection Positions Test 'position' property. Create with anchor - 1.85 ui5 1`] = `
 Object {
   "flexSettings": Object {
     "designtime": "Default",
@@ -13,13 +13,13 @@ Object {
   "requestGroupId": "Decoration",
   "subTitle": "Custom Header section subtitle",
   "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+  "templateEdit": ".NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
   "type": "XMLFragment",
 }
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection positions Test 'position' property. Create with anchor - latest ui5 1`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection Positions Test 'position' property. Create with anchor - latest ui5 1`] = `
 Object {
   "flexSettings": Object {
     "designtime": "Default",
@@ -36,7 +36,7 @@ Object {
 }
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection positions Test 'position' property. Create without anchor - 1.85 ui5 1`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection Positions Test 'position' property. Create without anchor - 1.85 ui5 1`] = `
 Object {
   "flexSettings": Object {
     "designtime": "Default",
@@ -49,13 +49,13 @@ Object {
   "requestGroupId": "Decoration",
   "subTitle": "Custom Header section subtitle",
   "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+  "templateEdit": ".NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
   "type": "XMLFragment",
 }
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection positions Test 'position' property. Create without anchor - latest ui5 1`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection Positions Test 'position' property. Create without anchor - latest ui5 1`] = `
 Object {
   "flexSettings": Object {
     "designtime": "Default",
@@ -67,12 +67,12 @@ Object {
   "requestGroupId": "Decoration",
   "subTitle": "Custom Header section subtitle",
   "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+  "templateEdit": ".NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
 }
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection positions Test 'position' property. Create without position - 1.85 ui5 1`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection Positions Test 'position' property. Create without position - 1.85 ui5 1`] = `
 Object {
   "flexSettings": Object {
     "designtime": "Default",
@@ -85,13 +85,13 @@ Object {
   "requestGroupId": "Decoration",
   "subTitle": "Custom Header section subtitle",
   "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+  "templateEdit": ".NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
   "type": "XMLFragment",
 }
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection positions Test 'position' property. Create without position - latest ui5 1`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection Positions Test 'position' property. Create without position - latest ui5 1`] = `
 Object {
   "flexSettings": Object {
     "designtime": "Default",
@@ -103,12 +103,80 @@ Object {
   "requestGroupId": "Decoration",
   "subTitle": "Custom Header section subtitle",
   "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
+  "templateEdit": ".NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
 }
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.85 1`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in different extension folders for version 1.86 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {},
+  },
+  "header": Object {
+    "facets": Object {
+      "NewCustomHeaderSection": Object {
+        "flexSettings": Object {
+          "designtime": "Default",
+        },
+        "requestGroupId": "Decoration",
+        "subTitle": "Custom Header section subtitle",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
+        "templateEdit": ".NewCustomHeaderSectionEdit",
+        "title": "New Custom Header Section",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in different extension folders for version 1.86 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<VBox>
+		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\" text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
+	</VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in different extension folders for version 1.86 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in different extension folders for version 1.86 4`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<VBox>
+		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/different/NewCustomHeaderSectionEdit'}\\" text=\\"NewCustomHeaderSectionEdit\\" press=\\"handler.onPress\\" />
+	</VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in different extension folders for version 1.86 5`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.85 (edit mode not supported) 1`] = `
 Object {
   "body": Object {
     "sections": Object {},
@@ -130,7 +198,7 @@ Object {
 }
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.85 2`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.85 (edit mode not supported) 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox>
 		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\" text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
@@ -138,7 +206,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection read only and edit frag
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.85 3`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.85 (edit mode not supported) 3`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -153,30 +221,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection read only and edit frag
 "
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.85 4`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/different/NewCustomHeaderSectionEdit'}\\" text=\\"NewCustomHeaderSectionEdit\\" press=\\"handler.onPress\\" />
-	</VBox>
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.85 5`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.86 1`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.86 (eventHandler should not generate) 1`] = `
 Object {
   "body": Object {
     "sections": Object {},
@@ -198,7 +243,7 @@ Object {
 }
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.86 2`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.86 (eventHandler should not generate) 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox>
 		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\" text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
@@ -206,7 +251,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection read only and edit frag
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.86 3`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.86 (eventHandler should not generate) 3`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -221,30 +266,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection read only and edit frag
 "
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.86 4`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/different/NewCustomHeaderSectionEdit'}\\" text=\\"NewCustomHeaderSectionEdit\\" press=\\"handler.onPress\\" />
-	</VBox>
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.86 5`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.98 1`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.86 1`] = `
 Object {
   "body": Object {
     "sections": Object {},
@@ -266,7 +288,75 @@ Object {
 }
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.98 2`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.86 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<VBox>
+		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\" text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
+	</VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.86 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.86 4`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<VBox>
+		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSectionEdit'}\\" text=\\"NewCustomHeaderSectionEdit\\" press=\\"handler.onPress\\" />
+	</VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.86 5`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.98 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {},
+  },
+  "header": Object {
+    "facets": Object {
+      "NewCustomHeaderSection": Object {
+        "flexSettings": Object {
+          "designtime": "Default",
+        },
+        "requestGroupId": "Decoration",
+        "subTitle": "Custom Header section subtitle",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
+        "templateEdit": ".NewCustomHeaderSectionEdit",
+        "title": "New Custom Header Section",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.98 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<VBox>
 		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\" text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
@@ -274,7 +364,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection read only and edit frag
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.98 3`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.98 3`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -289,75 +379,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection read only and edit frag
 "
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.98 4`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/different/NewCustomHeaderSectionEdit'}\\" text=\\"NewCustomHeaderSectionEdit\\" press=\\"handler.onPress\\" />
-	</VBox>
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in different extension folders for version 1.98 5`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.85 1`] = `
-Object {
-  "body": Object {
-    "sections": Object {},
-  },
-  "header": Object {
-    "facets": Object {
-      "NewCustomHeaderSection": Object {
-        "flexSettings": Object {
-          "designtime": "Default",
-        },
-        "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-        "requestGroupId": "Decoration",
-        "subTitle": "Custom Header section subtitle",
-        "title": "New Custom Header Section",
-        "type": "XMLFragment",
-      },
-    },
-  },
-}
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.85 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\" text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
-	</VBox>
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.85 3`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.85 4`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.98 4`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox>
 		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSectionEdit'}\\" text=\\"NewCustomHeaderSectionEdit\\" press=\\"handler.onPress\\" />
@@ -365,143 +387,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection read only and edit frag
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.85 5`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.86 1`] = `
-Object {
-  "body": Object {
-    "sections": Object {},
-  },
-  "header": Object {
-    "facets": Object {
-      "NewCustomHeaderSection": Object {
-        "flexSettings": Object {
-          "designtime": "Default",
-        },
-        "requestGroupId": "Decoration",
-        "subTitle": "Custom Header section subtitle",
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-        "templateEdit": ".NewCustomHeaderSectionEdit",
-        "title": "New Custom Header Section",
-      },
-    },
-  },
-}
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.86 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\" text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
-	</VBox>
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.86 3`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.86 4`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSectionEdit'}\\" text=\\"NewCustomHeaderSectionEdit\\" press=\\"handler.onPress\\" />
-	</VBox>
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.86 5`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.98 1`] = `
-Object {
-  "body": Object {
-    "sections": Object {},
-  },
-  "header": Object {
-    "facets": Object {
-      "NewCustomHeaderSection": Object {
-        "flexSettings": Object {
-          "designtime": "Default",
-        },
-        "requestGroupId": "Decoration",
-        "subTitle": "Custom Header section subtitle",
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-        "templateEdit": ".NewCustomHeaderSectionEdit",
-        "title": "New Custom Header Section",
-      },
-    },
-  },
-}
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.98 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSection'}\\" text=\\"NewCustomHeaderSection\\" press=\\"handler.onPress\\" />
-	</VBox>
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.98 3`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.98 4`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSectionEdit'}\\" text=\\"NewCustomHeaderSectionEdit\\" press=\\"handler.onPress\\" />
-	</VBox>
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomHeaderSection generateCustomHeaderSection read only and edit fragments in same extension folder for version 1.98 5`] = `
+exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.98 5`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {

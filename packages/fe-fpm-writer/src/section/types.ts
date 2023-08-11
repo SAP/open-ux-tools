@@ -31,7 +31,7 @@ export interface InternalCustomSection
     dependencies?: string;
 }
 
-type HeaderSectionEditProperty = Pick<CustomElement, 'name' | 'folder'> & EventHandler;
+export type HeaderSectionEditProperty = Pick<CustomElement, 'name' | 'folder'> & EventHandler;
 
 export enum RequestGroupId {
     Heroes = 'Heroes',
