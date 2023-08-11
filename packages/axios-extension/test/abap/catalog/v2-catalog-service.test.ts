@@ -97,14 +97,12 @@ describe('V2CatalogService', () => {
                 .replyWithFile(200, join(__dirname, '../mockResponses/v2CatalogDocument.json'))
                 .persist();
             nock(server)
-                .get((path) => path.startsWith(`${V2CatalogService.PATH}/ServiceCollection(%27${id}%27)/Annotations`))
+                .get((path) => path.startsWith(`${V2CatalogService.PATH}/ServiceCollection('${id}')/Annotations`))
                 .replyWithFile(200, join(__dirname, '../mockResponses/v2ServiceAnnotations.json'))
                 .persist();
             nock(server)
                 .get((path) =>
-                    path.startsWith(
-                        `${V2CatalogService.PATH}/Annotations(TechnicalName=%27${anno}%27,Version=%270001%27)`
-                    )
+                    path.startsWith(`${V2CatalogService.PATH}/Annotations(TechnicalName='${anno}',Version='0001')`)
                 )
                 .replyWithFile(200, join(__dirname, '../mockResponses/v2Annotations.xml'))
                 .persist();
