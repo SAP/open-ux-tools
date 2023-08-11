@@ -403,7 +403,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             if (errorMessage) {
                 prettyPrintError({ error: errorMessage, host, log: this.log });
             } else {
-                this.log.error(error.response.data);
+                this.log.error(error.response.data.toString());
             }
         }
     }
@@ -414,7 +414,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param data string value
      * @returns undefined if an error object is not found or populated ErrorMessage object
      */
-    protected getErrorMessageFromString(data: string): ErrorMessage | undefined {
+    protected getErrorMessageFromString(data: unknown): ErrorMessage | undefined {
         let error;
         if (typeof data === 'string') {
             try {
