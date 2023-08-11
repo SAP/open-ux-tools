@@ -14,9 +14,6 @@
             "path": "../axios-extension"
         },
         {
-            "path": "../btp-utils"
-        },
-        {
             "path": "../logger"
         },
         {
@@ -24,6 +21,9 @@
         },
         {
             "path": "../store"
+        },
+        {
+            "path": "../system-access"
         },
         {
             "path": "../ui5-config"

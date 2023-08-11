@@ -1,12 +1,33 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import { ZipFile } from 'yazl';
 import type { AdpPreviewConfig, DescriptorVariant } from '../types';
-import { createBuffer, createProvider } from './service';
 import type { NextFunction, Request, Response } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { join } from 'path';
+
+/**
+ * Create a buffer based on the given zip file object.
+ *
+ * @param zip object representing a zip file
+ * @returns a buffer
+ */
+async function createBuffer(zip: ZipFile): Promise<Buffer> {
+    await new Promise<void>((resolve) => {
+        zip.end({ forceZip64Format: false }, () => {
+            resolve();
+        });
+    });
+
+    const chunks: Buffer[] = [];
+    for await (const chunk of zip.outputStream) {
+        chunks.push(chunk as Buffer);
+    }
+
+    return Buffer.concat(chunks);
+}
 
 /**
  * Instance of an adaptation project handling requests and data transformation.
@@ -71,7 +92,12 @@ export class AdpPreview {
      * @returns the UI5 flex layer for which editing is enabled
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
-        const provider = await createProvider(this.config, this.logger);
+        const provider = await createAbapServiceProvider(
+            this.config.target,
+            { ignoreCertErrors: this.config.ignoreCertErrors },
+            true,
+            this.logger
+        );
         const lrep = provider.getLayeredRepository();
 
         const zip = new ZipFile();
