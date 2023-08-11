@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.19.0
+
+### Minor Changes
+
+-   375ca861: publish npm module after failure on PR #1110
+
 ## 0.18.2
 
 ### Patch Changes
