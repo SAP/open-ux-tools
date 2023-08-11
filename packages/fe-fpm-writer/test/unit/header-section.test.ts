@@ -9,7 +9,7 @@ import type { Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import * as manifestSections from './sample/section/webapp/manifest.json';
 
-const testDir = join(__dirname, 'sample/headersection');
+const testDir = join(__dirname, 'sample/headers-ection');
 
 describe('CustomHeaderSection generateCustomHeaderSection', () => {
     let fs: Editor;

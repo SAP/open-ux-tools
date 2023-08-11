@@ -129,7 +129,7 @@ export function generateCustomHeaderSection(
     customHeaderSection: CustomHeaderSection,
     fs?: Editor
 ): Editor {
-    const manifestRoot = getManifestRoot('headersection', customHeaderSection.minUI5Version);
+    const manifestRoot = getManifestRoot('header-section', customHeaderSection.minUI5Version);
     const { editor, section } = generate(basePath, customHeaderSection, manifestRoot, fs);
     // Get edit fragment details
     const minVersion = coerce(customHeaderSection.minUI5Version);
