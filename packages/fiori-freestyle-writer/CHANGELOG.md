@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.19.14
+
+### Patch Changes
+
+-   6d8e3f1c: Adding deprecation message for old templates
+
 ## 0.19.13
 
 ### Patch Changes

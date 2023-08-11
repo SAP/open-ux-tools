@@ -1,5 +1,6 @@
 import { ServiceInfo } from '@sap-ux/btp-utils';
-import type { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosHeaders } from 'axios';
+import type { Axios, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
 import type { AbapServiceProvider } from '../abap';
 import { getReentranceTicket } from './reentrance-ticket';
@@ -47,10 +48,10 @@ export function attachUaaAuthInterceptor(
         return uaa.getUserInfo(token);
     };
 
-    const oneTimeInterceptorId = provider.interceptors.request.use(async (request: AxiosRequestConfig) => {
-        token = token ?? (await getToken());
+    const oneTimeInterceptorId = provider.interceptors.request.use(async (request: InternalAxiosRequestConfig) => {
+        token = token ?? (await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb));
         // add token as auth header
-        request.headers = request.headers ?? {};
+        request.headers = request.headers ?? new AxiosHeaders();
         request.headers.authorization = `bearer ${token}`;
         // remove this interceptor since it is not needed anymore
         provider.interceptors.request.eject(oneTimeInterceptorId);
@@ -88,8 +89,8 @@ export function getReentranceTicketAuthInterceptor({
 }: {
     provider: ServiceProvider;
     ejectCallback: () => void;
-}): (request: AxiosRequestConfig) => Promise<AxiosRequestConfig<any>> {
-    return async (request: AxiosRequestConfig) => {
+}): (request: InternalAxiosRequestConfig) => Promise<InternalAxiosRequestConfig<any>> {
+    return async (request: InternalAxiosRequestConfig) => {
         const { reentranceTicket, apiUrl } = await getReentranceTicket({
             backendUrl: provider.defaults.baseURL,
             logger: provider.log
@@ -102,7 +103,7 @@ export function getReentranceTicketAuthInterceptor({
             );
             provider.defaults.baseURL = apiUrl;
         }
-        request.headers = request.headers ?? {};
+        request.headers = request.headers ?? new AxiosHeaders();
         request.headers.MYSAPSSO2 = reentranceTicket;
         // remove this interceptor since it is not needed anymore
         ejectCallback();
