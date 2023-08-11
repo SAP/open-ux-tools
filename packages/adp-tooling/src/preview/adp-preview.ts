@@ -69,7 +69,10 @@ export class AdpPreview {
     }
 
     get pluginScriptLocation() {
-        return join(__dirname, 'rta');
+        return {
+            localFolder: join(__dirname, 'rta'),
+            scriptFile: 'loadPlugin.js'
+        };
     }
 
     /**
