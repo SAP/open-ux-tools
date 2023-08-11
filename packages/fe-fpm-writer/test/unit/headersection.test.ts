@@ -3,7 +3,8 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomHeaderSection } from '../../src/section';
-import { RequestGroupId, type CustomHeaderSection, DesignTime, HeaderSectionEditProperty } from '../../src/section/types';
+import type { HeaderSectionEditProperty } from '../../src/section/types';
+import { RequestGroupId, type CustomHeaderSection, DesignTime } from '../../src/section/types';
 import type { Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import * as manifestSections from './sample/section/webapp/manifest.json';
@@ -31,8 +32,8 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             },
             minUI5Version,
             eventHandler: true
-        }
-    }
+        };
+    };
 
     /*  for custom header sections 2 fragment definitions are supported:
         1. template - standard fragment
