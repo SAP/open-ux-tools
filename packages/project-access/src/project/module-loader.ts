@@ -1,4 +1,7 @@
+import { spawn } from 'child_process';
 import { getNodeModulesPath } from './dependencies';
+
+const pathsCache: Map<string, string[]> = new Map();
 
 /**
  * Load module from project or app. Throws error if module is not installed.
@@ -36,10 +39,42 @@ export async function loadModuleFromProject<T>(projectRoot: string, moduleName: 
 export async function loadModule<T>(moduleName: string) {
     let module: T;
     try {
-        const modulePath = require.resolve(moduleName, { paths: require.resolve.paths(moduleName) ?? [] });
+        if (!pathsCache.has(moduleName)) {
+            pathsCache.set(moduleName, await getPaths(moduleName));
+        }
+        const paths = pathsCache.get(moduleName);
+        const modulePath = require.resolve(moduleName, { paths });
         module = (await import(modulePath)) as T;
     } catch (error) {
         throw Error(`Module '${moduleName}' not installed.\n${error.toString()}`);
     }
     return module;
+}
+
+/**
+ * Call require.resolve.paths(moduleName) in a spawned process.
+ * This is required in case module paths are gathered from within an
+ * isolated node environment, like from a Visual Studio Code extension.
+ * It ensures that the systems node environment is used.
+ *
+ * @param moduleName - name of the node module
+ * @returns - array containing result of require.resolve.paths(moduleName)
+ */
+async function getPaths(moduleName: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+        let out = '';
+        const nodeResolvePaths = spawn('node', [
+            '-e',
+            `process.stdout.write((require.resolve.paths('${moduleName}') ?? []).join(','))`
+        ]);
+        nodeResolvePaths.stdout.on('data', (data) => {
+            out += data.toString();
+        });
+        nodeResolvePaths.on('close', () => {
+            resolve(out.split(','));
+        });
+        nodeResolvePaths.on('error', (error) => {
+            reject(error);
+        });
+    });
 }
