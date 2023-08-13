@@ -6,7 +6,7 @@
     "private": true,
     "devDependencies": {
         "update-ts-references": "2.6.1",
-        "@changesets/cli": "2.26.1",
+        "@changesets/cli": "2.26.2",
         "@nrwl/nx-cloud": "16.0.5",
         "@types/jest": "29.5.2",
         "@types/node": "12.12.6",
