@@ -1,4 +1,4 @@
-import { showDialog } from "./submodule/dialog.js";
+import { showDialog } from "./submodule/dialog";
 
 export default (rta: sap.ui.rta.RuntimeAuthoring) => {
     const menu = rta.getDefaultPlugins().contextMenu;

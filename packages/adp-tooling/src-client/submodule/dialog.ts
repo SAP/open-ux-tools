@@ -1,5 +1,5 @@
+import MesssageBox from 'sap/m/MessageBox';
 
 export function showDialog() {
-    //@ts-ignore
-    sap.m.MessageBox.show('Hello World');
+    MesssageBox.show('Hello World');
 }

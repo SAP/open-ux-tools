@@ -60,7 +60,7 @@ export interface TemplateConfig {
     flex?: {
         layer: UI5FlexLayer;
         developerMode: boolean;
-        pluginScript?: string;
+        pluginModule?: string;
     };
     locateReuseLibsScript?: string;
 }
@@ -149,7 +149,7 @@ export class FlpSandbox {
                 if (this.config.rta?.layer) {
                     config.flex = {
                         layer: this.config.rta?.layer,
-                        pluginScript: this.config.rta?.pluginScript,
+                        pluginModule: this.config.rta?.pluginModule,
                         developerMode: fioriToolsRtaMode === 'forAdaptation'
                     };
                 } else {
