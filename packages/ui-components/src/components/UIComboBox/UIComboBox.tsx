@@ -392,6 +392,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * Method called after each value live change - we need recheck if there is any visible item after search is done.
      * 1. If there no any visible item - we hide menu callout.
      * 2. If there is any visible item - we show menu callout.
+     *
      * @param option Selected option.
      * @param index Selected option's index.
      * @param value Text value entered in input.
