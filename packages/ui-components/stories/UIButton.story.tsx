@@ -68,7 +68,6 @@ export const defaultUsage = (): JSX.Element => {
         getMenuItem('option6', 'option 6'),
         getMenuItem('option7', 'option 7'),
         getMenuItem('option8', 'option 8'),
-        //getMenuItem('option9', 'option 9', UiIcons.Beginner),
         getMenuItem('option10', 'option 10'),
         getMenuItem('option11', 'option 11'),
         getMenuItem('option12', 'option 12')
