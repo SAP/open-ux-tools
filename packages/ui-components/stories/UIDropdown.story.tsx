@@ -1,9 +1,9 @@
 import React from 'react';
-import { Stack } from '@fluentui/react';
+import { SelectableOptionMenuItemType, Stack } from '@fluentui/react';
 import type { IDropdownOption } from '@fluentui/react';
 import { UIDropdown } from '../src/components/UIDropdown';
 import { UICheckbox } from '../src/components/UICheckbox';
-import { data, shortData } from '../test/__mock__/select-data';
+import { data, shortData, groupsData } from '../test/__mock__/select-data';
 
 import { initIcons } from '../src/components/Icons';
 
@@ -179,6 +179,20 @@ export const accessibilityStates = () => {
                     </tr>
                 </table>
             </Stack>
+        </div>
+    );
+};
+
+export const separators = () => {
+    const dataTemp: IDropdownOption[] = [...groupsData];
+    dataTemp.splice(5, 0, {
+        key: 'div1',
+        text: '',
+        itemType: SelectableOptionMenuItemType.Divider
+    });
+    return (
+        <div style={{ width: '300px' }}>
+            <UIDropdown options={dataTemp} />
         </div>
     );
 };

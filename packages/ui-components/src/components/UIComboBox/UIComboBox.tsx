@@ -310,7 +310,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
-        if (props) {
+        if (props && props.itemType !== SelectableOptionMenuItemType.Header) {
             return <UIHighlightMenuOption text={props.text} query={this.query} />;
         }
         return defaultRender ? defaultRender(props) : null;

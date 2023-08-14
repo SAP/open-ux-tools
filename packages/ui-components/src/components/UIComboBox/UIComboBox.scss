@@ -183,7 +183,8 @@
             }
         }
         // Header item
-        .ms-ComboBox-header {
+        .ms-ComboBox-header,
+        .ms-Dropdown-header {
             min-height: $menu-item-height;
             height: $menu-item-height;
             line-height: $menu-item-height;
@@ -193,17 +194,20 @@
         }
         // Divider between groups
         > div {
-            .ms-ComboBox-header {
+            .ms-ComboBox-header,
+            .ms-Dropdown-header {
                 border-top: 1px solid $menu-item-divider-color;
             }
             &:first-child {
-                .ms-ComboBox-header {
+                .ms-ComboBox-header,
+                .ms-Dropdown-header {
                     border-top: none;
                 } 
             }
         }
         // Separator
-        .ms-ComboBox-divider {
+        .ms-ComboBox-divider,
+        .ms-Dropdown-divider {
             background-color: $menu-item-divider-color;
         }
     }
