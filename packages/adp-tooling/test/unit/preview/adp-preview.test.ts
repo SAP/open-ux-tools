@@ -85,6 +85,7 @@ describe('AdaptationProject', () => {
             await adp.init(JSON.parse(descriptorVariant));
             expect(adp.descriptor).toEqual(mockMergedDescriptor);
             expect(adp.resources).toEqual({
+                'adp.extension': 'adp/extension',
                 'sap.reuse.lib': '/sap/reuse/lib',
                 'the.original.app': mockMergedDescriptor.url
             });
