@@ -206,10 +206,17 @@
 
         // Header item
         > .ms-ContextualMenu-header {
+            padding: $menu-item-padding;
             .ms-ContextualMenu-itemText {
-                color: $menu-color;
-                font-size: 11px;
-                font-weight: bold;
+                color: $menu-item-header-color;
+                font-size: $menu-item-header-font-size;
+                font-weight: $menu-item-header-font-weight;
+                text-transform: $menu-item-header-text-transform;
+            }
+            .ms-ContextualMenu-linkContent,
+            .ms-ContextualMenu-itemText {
+                height: $menu-item-height;
+                line-height: $menu-item-height;
             }
         }
     }

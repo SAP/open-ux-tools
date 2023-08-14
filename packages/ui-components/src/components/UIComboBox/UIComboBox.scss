@@ -188,9 +188,11 @@
             min-height: $menu-item-height;
             height: $menu-item-height;
             line-height: $menu-item-height;
-            color: $menu-color;
-            font-size: 11px;
-            font-weight: bold;
+            padding: $menu-item-padding;
+            color: $menu-item-header-color;
+            font-size: $menu-item-header-font-size;
+            font-weight: $menu-item-header-font-weight;
+            text-transform: $menu-item-header-text-transform;
         }
         // Divider between groups
         > div {
