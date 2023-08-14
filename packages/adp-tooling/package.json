@@ -50,6 +50,7 @@
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
+        "@sapui5/types": "1.117.0",
         "@types/ejs": "3.1.0",
         "@types/express": "4.17.13",
         "@types/mem-fs": "1.1.2",
