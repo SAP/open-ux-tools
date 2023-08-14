@@ -1,6 +1,5 @@
 
-
-
 export function showDialog() {
-    alert('Hello World');
+    //@ts-ignore
+    sap.m.MessageBox.show('Hello World');
 }
