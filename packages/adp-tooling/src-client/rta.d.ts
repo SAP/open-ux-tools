@@ -1,5 +1,7 @@
 declare namespace sap {
     namespace ui {
+        function getCore(): sap.ui.core.Core;
+
         namespace base {
             interface ManagedObjectMetadataProperties {
                 name: string;
@@ -8,6 +10,12 @@ declare namespace sap {
                 getType: () => sap.ui.base.DataType;
                 getName: () => string;
                 getDefaultValue: () => unknown;
+            }
+            interface ManagedObject {
+                getMetadata: () => sap.ui.base.ManagedObjectMetadata;
+                getId: () => string;
+                getProperty: (propertyName: string) => any;
+                getBindingInfo: (name: string) => object;
             }
         }
         namespace dt {
@@ -21,7 +29,10 @@ declare namespace sap {
                 getDesignTimeMetadata: () => DesignTimeMetadata;
             }
             interface DesignTimeMetadata extends sap.ui.base.ManagedObject {
-                getData: () => { properties: { [name: string]: DesignTimeMetadataData } };
+                getData: () => {
+                    properties: { [name: string]: DesignTimeMetadataData };
+                    aggregations: { [name: string]: DesignTimeMetadataData };
+                };
             }
 
             interface OverlayRegistry {
@@ -40,6 +51,7 @@ declare namespace sap {
                 ignore: boolean;
                 defaultValue: unknown;
                 deprecated: boolean | undefined;
+                specialIndexHandling?: boolean;
             }
 
             namespace plugin {
