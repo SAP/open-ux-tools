@@ -7,6 +7,7 @@ import type { Config } from '../types';
 import { AdpPreview } from '@sap-ux/adp-tooling';
 import type { ReaderCollection } from '@ui5/fs';
 import { static as serveStatic } from 'express';
+import { dirname } from 'path';
 
 /**
  * Initialize the preview for an adaptation project.
@@ -23,11 +24,11 @@ async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, 
         const layer = await adp.init(JSON.parse(await files[0].getString()));
         flp.config.rta = { 
             layer,
-            pluginScript: '/rta/loadPlugin.js'
+            pluginScript: `./rta/${adp.pluginScriptLocation.scriptFile}`
         };
         await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp));
-        flp.router.use('/rta', serveStatic(adp.pluginScriptLocation));
+        flp.router.use(`${dirname(flp.config.path)}/rta`, serveStatic(adp.pluginScriptLocation.localFolder));
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
     }

@@ -1,14 +1,11 @@
-// @ts-nocheck
+import { showDialog } from "./submodule/dialog.js";
 
 export default (rta: sap.ui.rta.RuntimeAuthoring) => {
-    const fragmentDialog = new FragmentDialog(rta);
-    const contextMenu = rta.getDefaultPlugins().contextMenu;
-
-    contextMenu.addMenuItem({
-        id: 'ADD_FRAGMENT',
-        text: 'Add: Fragment',
-        handler: async (overlays: any) => await fragmentDialog.handleAddNewFragment(overlays),
-        // handler: () => {},
+    const menu = rta.getDefaultPlugins().contextMenu;
+    menu.addMenuItem({
+        id: 'ADD_ACTION',
+        text: 'Show dialog',
+        handler: () => showDialog(),
         icon: 'sap-icon://attachment-html'
     });
 };
