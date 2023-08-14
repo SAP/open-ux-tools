@@ -22,7 +22,7 @@ async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, 
     if (files.length === 1) {
         const adp = new AdpPreview(config, rootProject, logger);
         const layer = await adp.init(JSON.parse(await files[0].getString()));
-        flp.config.rta = { 
+        flp.config.rta = {
             layer,
             pluginModule: `${adp.extensionScript.namespace.replace('.', '/')}/${adp.extensionScript.module}`
         };

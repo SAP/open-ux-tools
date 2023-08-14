@@ -1,4 +1,4 @@
-import { showDialog } from "./submodule/dialog";
+import { showDialog } from './submodule/dialog';
 
 export default (rta: sap.ui.rta.RuntimeAuthoring) => {
     const menu = rta.getDefaultPlugins().contextMenu;
@@ -8,5 +8,4 @@ export default (rta: sap.ui.rta.RuntimeAuthoring) => {
         handler: () => showDialog(),
         icon: 'sap-icon://attachment-html'
     });
-}
-
+};

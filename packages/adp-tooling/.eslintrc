@@ -1,4 +1,7 @@
 {
     "extends": ["../../.eslintrc"],
-    "parserOptions": { "project": "./tsconfig.eslint.json" }
+    "parserOptions": { "project": "./tsconfig.eslint.json" },
+    "rules": {
+        "import/no-unresolved": "off" // the rules has issues with UI5 imports
+    }
 }

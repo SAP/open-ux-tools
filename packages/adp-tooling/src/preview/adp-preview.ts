@@ -68,6 +68,9 @@ export class AdpPreview {
         }
     }
 
+    /**
+     * @returns an object with all information about the provided RTA extension script.
+     */
     get extensionScript() {
         return {
             local: join(__dirname, 'client'),
