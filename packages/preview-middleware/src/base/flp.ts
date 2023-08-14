@@ -212,20 +212,25 @@ export class FlpSandbox {
      * @returns template configuration for flex.
      */
     private createFlexHandler(): TemplateConfig['ui5']['flex'] {
+        const BASE_PATH = '/preview/api';
+        const CHANGES_PATH = BASE_PATH + '/changes';
+        const FRAGMENT_PATH = BASE_PATH + '/fragment';
         const workspaceConnectorPath = '/preview/WorkspaceConnector';
         this.router.get(`/resources${workspaceConnectorPath}.js`, (_req: Request, res: Response) => {
             res.status(200)
                 .contentType('text/javascript')
                 .send(readFileSync(join(__dirname, '../../templates/flp/workspaceConnector.js'), 'utf-8'));
         });
-        const api = '/preview/api/changes';
-        this.router.use(api, json());
-        this.router.get(api, async (_req: Request, res: Response) => {
+        this.router.use(CHANGES_PATH, json());
+        this.router.get(CHANGES_PATH, async (_req: Request, res: Response) => {
             res.status(200)
                 .contentType('application/json')
                 .send(await readChanges(this.project, this.logger));
         });
-        this.router.post(api, async (req: Request, res: Response) => {
+        this.router.post(FRAGMENT_PATH, async (req: Request, res: Response) => {
+            res.status(200).send({ fragments: [] });
+        });
+        this.router.post(CHANGES_PATH, async (req: Request, res: Response) => {
             try {
                 const { success, message } = writeChange(
                     req.body,
@@ -241,7 +246,7 @@ export class FlpSandbox {
                 res.status(500).send(error.message);
             }
         });
-        this.router.delete(api, async (req: Request, res: Response) => {
+        this.router.delete(CHANGES_PATH, async (req: Request, res: Response) => {
             try {
                 const { success, message } = deleteChange(
                     req.body,
