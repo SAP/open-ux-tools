@@ -37,7 +37,7 @@ Please check the [Development Conventions and Guidelines](./docs/Guidelines.md) 
 
 ## Development Setup
 
-### Local Development | Install `pnpm` globally
+### Local Development
 
 To install `pnpm` globally using `npm`, run the following:
 ```shell
@@ -46,6 +46,13 @@ npm install -g pnpm
 
 More information on pnpm installation options can be found [here](https://pnpm.io/installation).
 
+### Github Codespaces
+
+To open and develop using Github Codespaces:
+1. Expand the dropdown '<> Code' button on the `open-ux-tools` [github repository page](https://github.com/SAP/open-ux-tools/tree/main)
+2. Select 'Codespaces' tab
+3. Press the 'Create codespace on main' button to create a new Github Codespace based on the configuration in the file `.devcontainer/devcontainer.json`
+
 ### VS Code Development in a Container
 
 To use VS Code and develop in a container:
@@ -53,7 +60,7 @@ To use VS Code and develop in a container:
 2. Install [VS Code](https://code.visualstudio.com/) or [VS Code Insiders edition](https://code.visualstudio.com/insiders/)
 3. Install the [Dev Containers VS Code extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) or the [Remote Development VS Code extension pack](https://aka.ms/vscode-remote/download/extension)
 
-Open currently opened workspace in dev container using the command `Dev Containers: Open Workspace in Container...`.
+Open currently opened workspace in dev container using the command `Dev Containers: Open Workspace in Container...`. This will open a new window using the Dev Containers extension and the configuration in the file `.devcontainer/devcontainer.json`
 More information on VS Code development in a container can be found [here](https://code.visualstudio.com/docs/devcontainers/containers)
 
 ### Install dependencies
