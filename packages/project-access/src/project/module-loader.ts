@@ -1,3 +1,4 @@
+import { existsSync } from 'fs';
 import { spawn } from 'child_process';
 import { getNodeModulesPath } from './dependencies';
 
@@ -71,7 +72,7 @@ async function getModulePath(moduleName: string): Promise<string> {
             out += data.toString();
         });
         nodeResolvePaths.on('close', () => {
-            if (out) {
+            if (out && existsSync(out)) {
                 resolve(out);
             } else {
                 reject(new Error('Module path not found'));
