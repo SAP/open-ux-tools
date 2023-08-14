@@ -662,6 +662,27 @@ describe('<UIComboBox />', () => {
         }
     });
 
+    it('Handle "onPendingValueChanged"', () => {
+        const onPendingValueChanged = jest.fn();
+        wrapper.setProps({
+            highlight: true,
+            onPendingValueChanged
+        });
+        expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+        // Open callout
+        expect(onPendingValueChanged).not.toBeCalled();
+        wrapper.find('input').simulate('keyDown', { which: KeyCodes.down });
+        expect(onPendingValueChanged).toBeCalled();
+        expect(onPendingValueChanged.mock.calls[0]).toEqual([
+            {
+                key: '',
+                text: ''
+            },
+            0,
+            undefined
+        ]);
+    });
+
     describe('Combobox items with group headers', () => {
         beforeEach(() => {
             wrapper.setProps({
