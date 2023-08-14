@@ -63,7 +63,7 @@
                 sap.ushell.Container.getServiceAsync('AppLifeCycle').then((serviceInstance) => {
                     serviceInstance.attachAppLoaded((event) => {
                         var oView = event.getParameter('componentInstance');
-                        sap.ui.require(["sap/ui/rta/api/startAdaptation"<% if (locals.flex?.pluginModule) { %>, "<%- flex.pluginModule %>"<% } %>], async function (startAdaptation, loadPlugin) {
+                        sap.ui.require(["sap/ui/rta/api/startAdaptation"<% if (locals.flex?.pluginModule) { %>, "<%- flex.pluginModule %>"<% } %>], async function (startAdaptation<% if (locals.flex?.pluginModule) { %>, loadPlugin<% } %>) {
                             var options = {
                                 rootControl: oView,
                                 validateAppVersion: false,
