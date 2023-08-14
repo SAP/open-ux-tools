@@ -156,7 +156,7 @@ export class AdpPreview {
             try {
                 const names = files.map((file) => file.getPath());
                 res.status(200).contentType('application/json').send(JSON.stringify(names));
-                this.logger.debug(`Read fragments${JSON.stringify(names)}`);
+                this.logger.debug(`Read fragments ${JSON.stringify(names)}`);
             } catch (error) {
                 this.logger.warn(error.message);
                 res.status(500);

@@ -1,18 +1,31 @@
-// @ts-nocheck
+/** sap.m */
+import Dialog from 'sap/m/Dialog';
+import Label from 'sap/m/Label';
+import Text from 'sap/m/Text';
+import { ListMode } from 'sap/m/library';
+import List from 'sap/m/List';
+import Input from 'sap/m/Input';
+import ComboBox from 'sap/m/ComboBox';
+import ToolbarSpacer from 'sap/m/ToolbarSpacer';
+import SearchField from 'sap/m/SearchField';
+import Button from 'sap/m/Button';
+import { ButtonType } from 'sap/m/library';
+import Link from 'sap/m/Link';
+import Bar from 'sap/m/Bar';
+import MessageToast from 'sap/m/MessageToast';
+
+/** sap.ui.core */
+import Icon from 'sap/ui/core/Icon';
+import VerticalLayout from 'sap/ui/layout/VerticalLayout';
+import HorizontalLayout from 'sap/ui/layout/HorizontalLayout';
+import { VerticalAlign } from 'sap/ui/core/library';
+
+/** sap.ui.model */
+import Filter from 'sap/ui/model/Filter';
+import FilterOperator from 'sap/ui/model/FilterOperator';
 
 import ControlUtils from '../control-utils';
-
-enum RequestMethod {
-    GET = 'GET',
-    POST = 'POST',
-    PATCH = 'PATCH',
-    DELETE = 'DELETE'
-}
-
-interface GETFragmentsResponse {
-    fragments: string[];
-    message: string;
-}
+import ApiRequestHandler, { FragmentsResponse } from '../api-handler';
 
 export default class FragmentDialog {
     constructor(private rta: sap.ui.rta.RuntimeAuthoring) {}
@@ -29,43 +42,24 @@ export default class FragmentDialog {
     }
 
     public async handleAddNewFragment(overlays: any, that: FragmentDialog) {
-        const {
-            Dialog,
-            Label,
-            Text,
-            ListMode,
-            List,
-            Input,
-            ComboBox,
-            PlacementType,
-            Popover,
-            ToolbarSpacer,
-            SearchField,
-            Button,
-            ButtonType,
-            Link,
-            Bar,
-            MessageToast
-        } = sap.m;
-
+        // @ts-ignore
         const { ValueState, Item, CustomData } = sap.ui.core;
 
         let bAddFragment: boolean;
 
         let runtimeControl: sap.ui.base.ManagedObject;
-        let controlName = null;
         let control = null;
         const selectorId = overlays[0].getId();
-
+        // @ts-ignore
         const oModel = new sap.ui.model.json.JSONModel();
-
+        // @ts-ignore
         let controlMetadata: sap.ui.core.ElementMetadata = null;
+        // @ts-ignore
         const overlayControl: sap.ui.dt.ElementOverlay = sap.ui.getCore().byId(selectorId);
         if (overlayControl) {
             runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
             // @ts-ignore
             controlMetadata = runtimeControl.getMetadata();
-            controlName = controlMetadata.getName();
             control = await ControlUtils.buildControlData(runtimeControl, overlayControl);
         }
 
@@ -141,21 +135,17 @@ export default class FragmentDialog {
             oModel.setProperty('/selectedAggregation/value', _aControlAggregation[0].value);
         }
 
-        let existingFragmentsInWorkspace: string[];
         try {
-            const response = await fetch('./preview/api/fragment');
-            const data: GETFragmentsResponse = await response.json();
-            existingFragmentsInWorkspace = data.fragments;
+            const { fragments } = await ApiRequestHandler.getFragments<FragmentsResponse>();
+
             oModel.setProperty('/filteredFragmentList', {
-                fragmentList: existingFragmentsInWorkspace,
+                fragmentList: fragments,
                 newFragmentName: '',
                 selectorId: selectorId,
-                unFilteredFragmentList: existingFragmentsInWorkspace
+                unFilteredFragmentList: fragments
             });
-            oModel.setProperty('/fragmentCount', data.fragments.length);
-        } catch (e) {
-            console.error(e.message);
-        }
+            oModel.setProperty('/fragmentCount', fragments.length);
+        } catch (e) {}
 
         oModel.setProperty('/selectedIndex', _aIndexArray.length - 1);
         oModel.setProperty('/defaultAggregation', defaultAggregation);
@@ -311,7 +301,7 @@ export default class FragmentDialog {
         //     showArrow: false,
         //     content: new Text()
         // });
-        const oIndexFieldHelpIcon = new sap.ui.core.Icon({
+        const oIndexFieldHelpIcon = new Icon({
             src: 'sap-icon://message-information',
             size: '1rem',
             visible: {
@@ -335,10 +325,10 @@ export default class FragmentDialog {
             }
         }).addStyleClass('uiadaptationFragmentIndexHelpIcon');
 
-        const oSelectFragmentLayout = new sap.ui.layout.VerticalLayout({
+        const oSelectFragmentLayout = new VerticalLayout({
             width: '100%',
             content: [
-                new sap.ui.layout.HorizontalLayout({
+                new HorizontalLayout({
                     content: [
                         new Label({
                             text: 'Control type'
@@ -352,7 +342,7 @@ export default class FragmentDialog {
                         })
                     ]
                 }).addStyleClass('sapUiTinyMarginTopBottom'),
-                new sap.ui.layout.HorizontalLayout({
+                new HorizontalLayout({
                     content: [
                         new Label({
                             text: 'Target Aggregation'
@@ -363,7 +353,7 @@ export default class FragmentDialog {
                         oControlAggregationComboBox
                     ]
                 }).addStyleClass('sapUiTinyMarginTopBottom'),
-                new sap.ui.layout.HorizontalLayout({
+                new HorizontalLayout({
                     content: [
                         new Label({
                             text: 'Index'
@@ -382,20 +372,20 @@ export default class FragmentDialog {
                         const aFilters = [];
                         const sValue = oEvent.getSource().getValue();
                         if (sValue && sValue.length > 0) {
-                            const oFilterName = new sap.ui.model.Filter(
-                                'fragmentName',
-                                sap.ui.model.FilterOperator.Contains,
-                                sValue
-                            );
-                            const oFilter = new sap.ui.model.Filter({
+                            const oFilterName = new Filter('fragmentName', FilterOperator.Contains, sValue);
+                            const oFilter = new Filter({
                                 filters: [oFilterName],
                                 and: false
                             });
                             aFilters.push(oFilter);
+                            // TODO: Replace this jQuery
+                            // @ts-ignore
                             if (!jQuery.isEmptyObject(oFragmentList.getBinding('items'))) {
                                 // @ts-ignore
                                 oFragmentList.getBinding('items').filter(aFilters);
                             }
+                            // TODO: Replace this jQuery
+                            // @ts-ignore
                         } else if (!jQuery.isEmptyObject(oFragmentList.getBinding('items'))) {
                             // @ts-ignore
                             oFragmentList.getBinding('items').filter([]);
@@ -411,7 +401,7 @@ export default class FragmentDialog {
                         }
                     }
                 }),
-                new sap.ui.layout.HorizontalLayout({
+                new HorizontalLayout({
                     content: [
                         new Label({
                             text: {
@@ -448,15 +438,15 @@ export default class FragmentDialog {
             ]
         });
 
-        const oCreateFragmentLayout = new sap.ui.layout.VerticalLayout({
+        const oCreateFragmentLayout = new VerticalLayout({
             visible: false,
             width: '100%',
             content: [
-                new sap.ui.layout.HorizontalLayout({
+                new HorizontalLayout({
                     content: [
                         new Label({
                             text: 'Selected Aggregation',
-                            vAlign: sap.ui.core.VerticalAlign.Bottom
+                            vAlign: VerticalAlign.Bottom
                         }),
                         new ToolbarSpacer({
                             width: '1.5rem'
@@ -471,11 +461,11 @@ export default class FragmentDialog {
                         })
                     ]
                 }).addStyleClass('sapUiTinyMarginTopBottom'),
-                new sap.ui.layout.HorizontalLayout({
+                new HorizontalLayout({
                     content: [
                         new Label({
                             text: 'Selected Index',
-                            vAlign: sap.ui.core.VerticalAlign.Middle
+                            vAlign: VerticalAlign.Middle
                         }),
                         new ToolbarSpacer({
                             width: '4rem'
@@ -485,11 +475,11 @@ export default class FragmentDialog {
                         })
                     ]
                 }).addStyleClass('sapUiTinyMarginTopBottom'),
-                new sap.ui.layout.HorizontalLayout({
+                new HorizontalLayout({
                     content: [
                         new Label({
                             text: 'Fragment Name',
-                            vAlign: sap.ui.core.VerticalAlign.Middle
+                            vAlign: VerticalAlign.Middle
                         }),
                         new ToolbarSpacer({
                             width: '3.5rem'
@@ -506,8 +496,6 @@ export default class FragmentDialog {
             escapeHandler: function () {
                 fragmentDialog.close();
                 fragmentDialog.destroy();
-                fragmentDialog = null;
-                // oModel = null;
             },
             beginButton: new Button({
                 text: 'Add',
@@ -571,6 +559,7 @@ export default class FragmentDialog {
      * @description Creates a new fragment for the specified control
      * @param overlays Overlays
      */
+    // @ts-ignore
     public async createNewFragment({ fragmentName, index, targetAggregation }, runtimeControl: any): Promise<void> {
         try {
             const options: RequestInit = {
@@ -589,7 +578,7 @@ export default class FragmentDialog {
                     `Error writing a fragment. Response: ${res.status} ${res.statusText}. ${resText ?? ''}`
                 );
             }
-            sap.m.MessageToast.show(resText);
+            MessageToast.show(resText);
             // Send message to the frontend that the fragment has been successfully created.
             console.info(resText);
         } catch (e) {

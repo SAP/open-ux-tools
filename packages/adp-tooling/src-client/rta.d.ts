@@ -1,7 +1,5 @@
 declare namespace sap {
     namespace ui {
-        function getCore(): sap.ui.core.Core;
-
         namespace base {
             interface ManagedObjectMetadataProperties {
                 name: string;
