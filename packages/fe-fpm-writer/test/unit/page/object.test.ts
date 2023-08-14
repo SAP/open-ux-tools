@@ -157,7 +157,7 @@ describe('ObjectPage', () => {
                 target,
                 {
                     ...minimalInput,
-                    contextPath: '/RootEntity/OtherEntity',
+                    contextPath: '/RootEntity/to_OtherEntity',
                     navigation: {
                         sourcePage: 'RootEntityObjectPage',
                         navEntity: `to_${minimalInput.entity}`,

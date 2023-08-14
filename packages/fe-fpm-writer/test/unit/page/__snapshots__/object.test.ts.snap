@@ -321,7 +321,7 @@ Object {
       "name": "sap.fe.templates.ObjectPage",
       "options": Object {
         "settings": Object {
-          "contextPath": "/RootEntity/OtherEntity",
+          "contextPath": "/RootEntity/to_OtherEntity",
           "navigation": Object {},
         },
       },
