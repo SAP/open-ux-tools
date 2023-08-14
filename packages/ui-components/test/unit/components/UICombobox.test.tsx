@@ -662,27 +662,6 @@ describe('<UIComboBox />', () => {
         }
     });
 
-    it('Handle "onPendingValueChanged"', () => {
-        const onPendingValueChanged = jest.fn();
-        wrapper.setProps({
-            highlight: true,
-            onPendingValueChanged
-        });
-        expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
-        // Open callout
-        expect(onPendingValueChanged).not.toBeCalled();
-        wrapper.find('input').simulate('keyDown', { which: KeyCodes.down });
-        expect(onPendingValueChanged).toBeCalled();
-        expect(onPendingValueChanged.mock.calls[0]).toEqual([
-            {
-                key: '',
-                text: ''
-            },
-            0,
-            undefined
-        ]);
-    });
-
     describe('Combobox items with group headers', () => {
         beforeEach(() => {
             wrapper.setProps({
@@ -718,5 +697,21 @@ describe('<UIComboBox />', () => {
             triggerSearch('');
             expect(wrapper.find(headerItemSelector).length).toEqual(7);
         });
+    });
+
+    it('Handle "onPendingValueChanged"', () => {
+        const onPendingValueChanged = jest.fn();
+        wrapper.setProps({
+            highlight: true,
+            onPendingValueChanged
+        });
+        expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+        // Open callout
+        expect(onPendingValueChanged).not.toBeCalled();
+        wrapper.find('input').simulate('keyDown', { which: KeyCodes.down });
+        expect(onPendingValueChanged).toBeCalled();
+        const callArgs = onPendingValueChanged.mock.calls[0];
+        expect(callArgs[0].key).toEqual('LV');
+        expect(callArgs[1]).toEqual(35);
     });
 });
