@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ContextualMenuItemType, IStackTokens, Icon } from '@fluentui/react';
+import { IStackTokens } from '@fluentui/react';
 import { Text, Stack } from '@fluentui/react';
 
 import {
@@ -11,6 +11,7 @@ import {
     UISmallButton
 } from '../src/components/UIButton';
 import type { UIContextualMenuItem } from '../src/components/UIContextualMenu';
+import { UIContextualMenuItemType } from '../src/components/UIContextualMenu';
 import { initIcons, UiIcons } from '../src/components/Icons';
 import { UIDirectionalHint } from '../src/components/UITreeDropdown';
 
@@ -55,14 +56,14 @@ export const defaultUsage = (): JSX.Element => {
         getMenuItem('option2', 'option 2'),
         {
             key: '',
-            itemType: ContextualMenuItemType.Divider
+            itemType: UIContextualMenuItemType.Divider
         },
         getMenuItem('option3', 'option 3'),
         getMenuItem('option4', 'option 4'),
         getMenuItem('option5', 'option 5'),
         {
             key: '',
-            itemType: ContextualMenuItemType.Header,
+            itemType: UIContextualMenuItemType.Header,
             text: 'Dummy header'
         },
         getMenuItem('option6', 'option 6'),

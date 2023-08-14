@@ -22,7 +22,8 @@ import { isDropdownEmpty } from '../UIDropdown';
 export {
     IComboBoxOption as UIComboBoxOption,
     IComboBox as UIComboBoxRef,
-    IOnRenderComboBoxLabelProps as UIOnRenderComboBoxLabelProps
+    IOnRenderComboBoxLabelProps as UIOnRenderComboBoxLabelProps,
+    SelectableOptionMenuItemType as UISelectableOptionMenuItemType
 };
 
 export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps {

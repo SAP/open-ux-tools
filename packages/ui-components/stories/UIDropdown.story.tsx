@@ -1,11 +1,8 @@
 import React from 'react';
-import { SelectableOptionMenuItemType, Stack } from '@fluentui/react';
+import { Stack } from '@fluentui/react';
 import type { IDropdownOption } from '@fluentui/react';
-import { UIDropdown } from '../src/components/UIDropdown';
-import { UICheckbox } from '../src/components/UICheckbox';
+import { UISelectableOptionMenuItemType, UICheckbox, UIDropdown, initIcons } from '../src/components';
 import { data, shortData, groupsData } from '../test/__mock__/select-data';
-
-import { initIcons } from '../src/components/Icons';
 
 initIcons();
 
@@ -188,33 +185,23 @@ export const groupsAndSeparators = () => {
     dataTemp.splice(4, 0, {
         key: 'div1',
         text: '',
-        itemType: SelectableOptionMenuItemType.Divider
+        itemType: UISelectableOptionMenuItemType.Divider
     });
     dataTemp.splice(14, 0, {
         key: 'div1',
         text: '',
-        itemType: SelectableOptionMenuItemType.Divider
+        itemType: UISelectableOptionMenuItemType.Divider
     });
     dataTemp.splice(18, 0, {
         key: 'div1',
         text: '',
-        itemType: SelectableOptionMenuItemType.Divider
+        itemType: UISelectableOptionMenuItemType.Divider
     });
     return (
         <div style={{ width: '300px' }}>
-            <UIDropdown
-                options={groupsData}
-                label="Menu items with headers"
-            />
-            <UIDropdown
-                options={dataTemp}
-                label="Menu items with dividers and headers"
-            />
-            <UIDropdown
-                options={groupsData}
-                multiSelect={true}
-                label="Menu items with headers - multi select"
-            />
+            <UIDropdown options={groupsData} label="Menu items with headers" />
+            <UIDropdown options={dataTemp} label="Menu items with dividers and headers" />
+            <UIDropdown options={groupsData} multiSelect={true} label="Menu items with headers - multi select" />
             <UIDropdown
                 options={dataTemp}
                 multiSelect={true}

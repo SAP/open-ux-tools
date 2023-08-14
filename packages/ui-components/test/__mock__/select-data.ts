@@ -1,4 +1,4 @@
-import { SelectableOptionMenuItemType } from '@fluentui/react';
+import { UISelectableOptionMenuItemType } from '../../src/components';
 
 export const data = [
     {
@@ -347,12 +347,12 @@ const continents = {
     unknown: ['DU', 'DD']
 };
 
-export const groupsData: Array<{ key: string; text: string; itemType?: SelectableOptionMenuItemType }> = [];
+export const groupsData: Array<{ key: string; text: string; itemType?: UISelectableOptionMenuItemType }> = [];
 for (const continent in continents) {
     groupsData.push({
         key: continent,
         text: continent.charAt(0).toUpperCase() + continent.slice(1),
-        itemType: SelectableOptionMenuItemType.Header
+        itemType: UISelectableOptionMenuItemType.Header
     });
     const countries = continents[continent];
     for (const countryCode of countries) {

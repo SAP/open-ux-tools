@@ -1,9 +1,9 @@
 import type { SetStateAction } from 'react';
 import React, { useState } from 'react';
-import { Stack, SelectableOptionMenuItemType, ComboBox } from '@fluentui/react';
+import { Stack } from '@fluentui/react';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 
-import { UIComboBox } from '../src/components/UIComboBox';
+import { UIComboBox, UISelectableOptionMenuItemType } from '../src/components/UIComboBox';
 import { UICheckbox } from '../src/components/UICheckbox';
 import { data, groupsData } from '../test/__mock__/select-data';
 
@@ -299,12 +299,12 @@ export const groupsAndSeparators = () => {
     dataTemp.splice(5, 0, {
         key: 'div1',
         text: '',
-        itemType: SelectableOptionMenuItemType.Divider
+        itemType: UISelectableOptionMenuItemType.Divider
     });
     dataTemp.splice(15, 0, {
         key: 'div1',
         text: '',
-        itemType: SelectableOptionMenuItemType.Divider
+        itemType: UISelectableOptionMenuItemType.Divider
     });
     return (
         <div style={{ width: '300px' }}>
