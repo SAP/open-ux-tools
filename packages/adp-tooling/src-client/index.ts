@@ -1,13 +1,9 @@
-import FragmentDialog from './fragment';
+import FragmentDialog from './fragment/fragment';
 
 export default (rta: sap.ui.rta.RuntimeAuthoring) => {
+    const contextMenu = rta.getDefaultPlugins().contextMenu;
+
     const fragmentDialog = new FragmentDialog(rta);
-    const menu = rta.getDefaultPlugins().contextMenu;
-    
-    menu.addMenuItem({
-        id: 'ADD_FRAGMENT',
-        text: 'Add: Fragment',
-        handler: fragmentDialog.handleAddNewFragment,
-        icon: 'sap-icon://attachment-html'
-    });
+
+    fragmentDialog.init(contextMenu);
 };
