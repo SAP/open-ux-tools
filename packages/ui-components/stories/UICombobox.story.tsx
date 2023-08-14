@@ -294,15 +294,29 @@ export const accessibilityStates = () => {
     );
 };
 
-export const separators = () => {
+export const groupsAndSeparators = () => {
     const dataTemp: IComboBoxOption[] = [...groupsData];
     dataTemp.splice(5, 0, {
         key: 'div1',
         text: '',
         itemType: SelectableOptionMenuItemType.Divider
     });
+    dataTemp.splice(15, 0, {
+        key: 'div1',
+        text: '',
+        itemType: SelectableOptionMenuItemType.Divider
+    });
     return (
         <div style={{ width: '300px' }}>
+            <UIComboBox
+                options={groupsData}
+                highlight={true}
+                allowFreeform={true}
+                useComboBoxAsMenuMinWidth={true}
+                autoComplete="on"
+                openMenuOnClick={true}
+                label="Menu items with headers"
+            />
             <UIComboBox
                 options={dataTemp}
                 highlight={true}
@@ -312,11 +326,25 @@ export const separators = () => {
                 openMenuOnClick={true}
                 label="Menu items with dividers and headers"
             />
-            <ComboBox
-                options={dataTemp}
+            <UIComboBox
+                options={groupsData}
+                highlight={true}
                 allowFreeform={true}
+                useComboBoxAsMenuMinWidth={true}
                 autoComplete="on"
-                label="Menu items with dividers and headers"
+                openMenuOnClick={true}
+                multiSelect={true}
+                label="Menu items with headers - multi select"
+            />
+            <UIComboBox
+                options={dataTemp}
+                highlight={true}
+                allowFreeform={true}
+                useComboBoxAsMenuMinWidth={true}
+                autoComplete="on"
+                openMenuOnClick={true}
+                multiSelect={true}
+                label="Menu items with dividers and headers - multi select"
             />
         </div>
     );

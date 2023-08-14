@@ -183,16 +183,43 @@ export const accessibilityStates = () => {
     );
 };
 
-export const separators = () => {
+export const groupsAndSeparators = () => {
     const dataTemp: IDropdownOption[] = [...groupsData];
-    dataTemp.splice(5, 0, {
+    dataTemp.splice(4, 0, {
+        key: 'div1',
+        text: '',
+        itemType: SelectableOptionMenuItemType.Divider
+    });
+    dataTemp.splice(14, 0, {
+        key: 'div1',
+        text: '',
+        itemType: SelectableOptionMenuItemType.Divider
+    });
+    dataTemp.splice(18, 0, {
         key: 'div1',
         text: '',
         itemType: SelectableOptionMenuItemType.Divider
     });
     return (
         <div style={{ width: '300px' }}>
-            <UIDropdown options={dataTemp} />
+            <UIDropdown
+                options={groupsData}
+                label="Menu items with headers"
+            />
+            <UIDropdown
+                options={dataTemp}
+                label="Menu items with dividers and headers"
+            />
+            <UIDropdown
+                options={groupsData}
+                multiSelect={true}
+                label="Menu items with headers - multi select"
+            />
+            <UIDropdown
+                options={dataTemp}
+                multiSelect={true}
+                label="Menu items with dividers and headers - multi select"
+            />
         </div>
     );
 };
