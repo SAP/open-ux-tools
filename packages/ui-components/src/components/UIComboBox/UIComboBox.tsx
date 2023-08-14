@@ -393,11 +393,18 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * 1. If there no any visible item - we hide menu callout.
      * 2. If there is any visible item - we show menu callout.
      */
-    private onPendingValueChanged(): void {
+    private onPendingValueChanged(
+        option?: IComboBoxOption | undefined,
+        index?: number | undefined,
+        value?: string | undefined
+    ): void {
         if (this.state.isListHidden !== this.isListHidden) {
             this.setState({
                 isListHidden: this.isListHidden
             });
+        }
+        if (this.props?.onPendingValueChanged) {
+            this.props?.onPendingValueChanged(option, index, value);
         }
     }
 
