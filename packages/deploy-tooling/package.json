@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Adeploy-tooling"
     },
-    "version": "0.2.4",
+    "version": "0.9.5",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -20,7 +20,7 @@
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
@@ -41,15 +41,16 @@
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "@sap-ux/store": "workspace:*",
+        "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "axios": "0.24.0",
+        "axios": "1.4.0",
         "commander": "9.4.0",
         "dotenv": "16.0.0",
         "prompts": "2.4.2",
         "yazl": "2.5.1"
     },
     "devDependencies": {
+        "@sap-ux/store": "workspace:*",
         "@types/prompts": "2.0.14",
         "@types/yazl": "2.4.2"
     },

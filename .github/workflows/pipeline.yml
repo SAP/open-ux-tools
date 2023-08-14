@@ -11,7 +11,7 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest, windows-latest]
-                node-version: [14.x, 16.x, 18.x]
+                node-version: [16.x, 18.x]
         runs-on: ${{ matrix.os }}
         timeout-minutes: 15
         steps:
@@ -22,7 +22,6 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v2.2.4
               with:
-                  version: 7.1.0
                   run_install: true
             - name: Cache pnpm modules
               uses: actions/cache@v3
@@ -44,7 +43,7 @@ jobs:
             - name: Run unit tests
               run: pnpm run test
             - name: Run SonarCloud scan
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '14.x'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '16.x'
               uses: sonarsource/sonarcloud-github-action@master
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
@@ -65,7 +64,6 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v2.2.4
               with:
-                  version: 7.1.0
                   run_install: true
             - name: Cache pnpm modules
               uses: actions/cache@v3
@@ -76,10 +74,10 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 14.x
+            - name: Use Node.js 16.x
               uses: actions/setup-node@v3
               with:
-                  node-version: 14.x
+                  node-version: 16.x
             - name: Install pnpm modules
               run: pnpm install
             - name: Apply changesets
@@ -111,7 +109,6 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v2.2.4
               with:
-                  version: 7.1.0
                   run_install: true
             - name: Cache pnpm modules
               uses: actions/cache@v3
@@ -122,10 +119,10 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 14.x
+            - name: Use Node.js 16.x
               uses: actions/setup-node@v3
               with:
-                  node-version: 14.x
+                  node-version: 16.x
             - name: Install pnpm modules
               run: pnpm install
             - name: Run build
@@ -134,7 +131,7 @@ jobs:
               run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
             - name: 'Publish to npmjs'
               id: changesetPublish
-              uses: changesets/action@v1.4.1
+              uses: changesets/action@v1.4.5
               with:
                   publish: pnpm ci:publish
               env:
@@ -150,7 +147,7 @@ jobs:
                 echo "$EOF" >> $GITHUB_ENV
             - name: Send Slack notification
               if: steps.changesetPublish.outputs.published == 'true'
-              uses: slackapi/slack-github-action@v1.23.0
+              uses: slackapi/slack-github-action@v1.24.0
               with:
                 payload: |
                   {"text": ":rocket: The following packages were published to npmjs.com:\n${{ env.PUBLISHED_PACKAGES_MESSAGE }}" }

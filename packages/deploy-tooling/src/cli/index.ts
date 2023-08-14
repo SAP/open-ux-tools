@@ -5,6 +5,7 @@ import type { CliOptions, AbapDeployConfig } from '../types';
 import { NAME } from '../types';
 import { getArchive } from './archive';
 import { getDeploymentConfig, getVersion, mergeConfig } from './config';
+import { config as loadEnvConfig } from 'dotenv';
 
 /**
  * Create an instance of a command runner for deployment.
@@ -16,28 +17,51 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
     const command = new Command(name)
         .option('-c, --config <path-to-yaml>', 'Path to config yaml file')
         .option('-y, --yes', 'yes to all questions', false)
-        .option('-n, --no-retry', `do not retry if ${name} fails for any reason`, false)
+        .option('-n, --no-retry', `do not retry if ${name} fails for any reason`, true) // retry by default when true, if passed from cli, will set to false
         .option('--verbose', 'verbose log output', false);
 
     // options to set (or overwrite) values that are otherwise read from the `ui5*.yaml`
     command
         .addOption(
-            new Option('--destination  <destination>', 'Destination in SAP BTP pointing to an ABAP system').conflicts(
+            new Option('--destination <destination>', 'Destination in SAP BTP pointing to an ABAP system').conflicts(
                 'url'
             )
         )
         .addOption(new Option('--url <target-url>', 'URL of target ABAP system').conflicts('destination'))
         .addOption(new Option('--client <sap-client>', 'Client number of target ABAP system').conflicts('destination'))
-        .addOption(new Option('--cloud', 'target is an ABAP Cloud system').conflicts('destination'))
+        .addOption(new Option('--cloud', 'Target is an ABAP Cloud system').conflicts('destination'))
+        .addOption(new Option('--service <service-path>', 'Target SAPUI5 Repository OData Service'))
         .addOption(
             new Option(
                 '--cloud-service-key <file-location>',
                 'JSON file location with the ABAP cloud service key.'
             ).conflicts('destination')
         )
+        .addOption(
+            new Option(
+                '--cloud-service-env',
+                'Read ABAP cloud service properties from environment variables or .env file'
+            ).conflicts(['cloudServiceKey', 'destination'])
+        )
+        .option('--package <abap-package>', 'Package name for deploy target ABAP system')
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
+        .addOption(
+            new Option('--create-transport', 'Create transport request during deployment').conflicts(['transport'])
+        )
+        .addOption(
+            new Option('--username <username>', 'ABAP System username').conflicts([
+                'cloudServiceKey',
+                'cloudServiceEnv'
+            ])
+        )
+        .addOption(
+            new Option('--password <password>', 'ABAP System password').conflicts([
+                'cloudServiceKey',
+                'cloudServiceEnv'
+            ])
+        )
         .option('--name <bsp-name>', 'Project name of the app')
-        .option('--strict-ssl', 'Perform certificate validation (use --no-strict-ssl to deactivate it)')
+        .option('--no-strict-ssl', 'Deactivate certificate validation', true)
         .option(
             '--query-params <param1=value&param2=value>',
             'Additional parameters that are to be added to calls to the target.'
@@ -50,7 +74,6 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
     if (name === 'deploy') {
         // additional parameters for deployment
         command
-            .option('--package <abap-package>', 'Package name for deploy target ABAP system')
             .option('--description <description>', 'Project description of the app')
             // SafeMode: Example: If the deployment would overwrite a repository that contains an app with a different sap.app/id and SafeMode is true, HTTP status code 412 (Precondition Failed) with further information would be returned.
             .option('--safe', 'Prevents accidentally breaking deployments.')
@@ -90,6 +113,7 @@ async function prepareRun(cmd: Command) {
     if (process.argv.length < 3) {
         cmd.help();
     }
+    loadEnvConfig();
     const options = cmd.parse().opts<CliOptions>();
     const logLevel = options.verbose ? LogLevel.Silly : LogLevel.Info;
     const logger = new ToolsLogger({

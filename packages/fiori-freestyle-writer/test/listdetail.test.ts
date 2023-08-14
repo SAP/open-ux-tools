@@ -4,11 +4,20 @@ import { join } from 'path';
 import type { ListDetailSettings } from '../src/types';
 import { TemplateType } from '../src/types';
 import { removeSync } from 'fs-extra';
-import { commonConfig, northwind, debug, testOutputDir, projectChecks } from './common';
+import {
+    commonConfig,
+    northwind,
+    debug,
+    testOutputDir,
+    projectChecks,
+    updatePackageJSONDependencyToUseLocalPath
+} from './common';
 
 const TEST_NAME = 'listDetailTemplate';
 
-jest.setTimeout(120000); // Needed when debug.debugFull
+if (debug?.enabled) {
+    jest.setTimeout(360000);
+}
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -117,6 +126,40 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     typescript: true
                 }
             } as FreestyleApp<ListDetailSettings>
+        },
+        {
+            name: 'listdetail-advanced-ts_ui5_1_113',
+            config: {
+                ...listDetailConfig,
+                template: {
+                    type: TemplateType.ListDetail,
+                    settings: {
+                        entity: {
+                            name: 'Suppliers',
+                            key: 'SupplierID',
+                            idProperty: 'CompanyName',
+                            numberProperty: 'Phone',
+                            unitOfMeasureProperty: 'Region'
+                        },
+                        lineItem: {
+                            name: 'Products',
+                            key: 'ProductID',
+                            idProperty: 'ProductName',
+                            numberProperty: 'UnitsInStock',
+                            unitOfMeasureProperty: 'QuantityPerUnit'
+                        }
+                    }
+                },
+                ui5: {
+                    minUI5Version: '1.113.0',
+                    version: '', // I.e Latest
+                    ui5Theme: 'sap_horizon',
+                    ui5Libs: 'sap.m,sap.ushell'
+                },
+                appOptions: {
+                    typescript: true
+                }
+            } as FreestyleApp<ListDetailSettings>
         }
     ];
 
@@ -131,6 +174,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);

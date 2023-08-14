@@ -1,0 +1,23 @@
+{
+  "_version": "1.38.0",
+  "sap.app": {
+    "id": "testNameSpace.alpv2",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "crossNavigation": {
+      "inbounds": {
+        "semanticObject1-action1": {
+          "action": "action1",
+          "semanticObject": "semanticObject1",
+          "subTitle": "subtitle1",
+          "title": "title1"
+        }
+      }
+    }
+  }
+}

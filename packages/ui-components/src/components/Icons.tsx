@@ -41,6 +41,7 @@ export enum UiIcons {
     ContractNodesSmall = 'ContractNodesSmall',
     Copy = 'Copy',
     CopyToClipboard = 'CopyToClipboard',
+    CopyToClipboardLong = 'CopyToClipboardLong',
     Columns = 'Columns',
     ComplexType = 'ComplexType',
     ComplexTypeSmall = 'ComplexTypeSmall',
@@ -124,6 +125,7 @@ export enum UiIcons {
     Table = 'Table',
     Tags = 'Tags',
     Task = 'Task',
+    Terminal = 'Terminal',
     TestGuides = 'TestGuides',
     ToTheTop = 'ToTheTop',
     TrashCan = 'TrashCan',
@@ -592,8 +594,30 @@ export function initIcons(): void {
                         d="M5 2H3V3H1V14H6.59971C6.43777 13.6832 6.30564 13.3486 6.20703 13H2V4H12V6.02242C12.3434 6.05337 12.6777 6.11588 13 6.20703V3H11V2H9C9 0.895431 8.10457 0 7 0C5.89543 0 5 0.895431 5 2ZM7 1C6.44772 1 6 1.44772 6 2H8C8 1.44772 7.55228 1 7 1Z"
                         fill={COLORS.default}
                     />
-                    <path d="M8.33692 7H3V8H7.25716C7.57052 7.62057 7.93379 7.28389 8.33692 7Z" fill={COLORS.default} />
                     <path d="M3 5V6H11V5H3Z" fill={COLORS.default} />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M11.5 16C13.9853 16 16 13.9853 16 11.5C16 9.01472 13.9853 7 11.5 7C9.01472 7 7 9.01472 7 11.5C7 13.9853 9.01472 16 11.5 16ZM11.1465 9.14645C11.3418 8.95118 11.6584 8.95118 11.8536 9.14645L14.2072 11.5L13.5001 12.2071L12 10.707V14H11V10.7072L9.50008 12.2071L8.79297 11.5L11.1465 9.14645Z"
+                        fill={COLORS.info}
+                    />
+                </svg>
+            ),
+            [UiIcons.CopyToClipboardLong]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M5 2H3V3H1V14H6.59971C6.43777 13.6832 6.30564 13.3486 6.20703 13H2V4H12V6.02242C12.3434 6.05337 12.6777 6.11588 13 6.20703V3H11V2H9C9 0.895431 8.10457 0 7 0C5.89543 0 5 0.895431 5 2ZM7 1C6.44772 1 6 1.44772 6 2H8C8 1.44772 7.55228 1 7 1Z"
+                        fill={COLORS.default}
+                    />
+                    <path d="M8.33692 7H3V8H7.25716C7.57052 7.62057 7.93379 7.28389 8.33692 7Z" fill={COLORS.default} />
+                    <path d="M3 6V5H11V6H3Z" fill={COLORS.default} />
+                    <path d="M3 9H6.5997C6.43774 9.3168 6.30563 9.65137 6.20703 10H3V9Z" fill={COLORS.default} />
+                    <path
+                        d="M3 11H6.02243C6.0076 11.1647 6 11.3315 6 11.5C6 11.6685 6.0076 11.8353 6.02243 12H3V11Z"
+                        fill={COLORS.default}
+                    />
                     <path
                         fillRule="evenodd"
                         clipRule="evenodd"
@@ -1622,6 +1646,21 @@ export function initIcons(): void {
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M1.0037 15.0144V12.0164H2.0037V14.0144H4.0027V15.0144H1.0037ZM12.046 7.16468C12.527 6.49968 13.075 5.69268 13.485 4.52268C13.764 3.72668 13.933 2.89268 13.99 2.03668C13.131 2.11768 12.29 2.30168 11.484 2.58568C10.584 2.90268 9.778 3.32768 8.792 4.00368C6.515 5.56768 4.414 7.66868 2.963 9.27168L6.79 13.0987C8.351 11.5787 10.419 9.41268 12.046 7.16468ZM7.714 14.0227L10 14.0177L10.004 11.2167C9.117 12.1897 8.251 13.0677 7.496 13.8047L7.714 14.0227ZM4.756 6.01768L2.005 6.02068L2.001 8.30868L2.257 8.56568C2.962 7.79068 3.806 6.90868 4.756 6.01768ZM14.858 1.14268C14.759 1.04668 14.624 0.98768 14.489 1.00168C13.342 1.05168 12.219 1.26768 11.152 1.64468C10.164 1.99268 9.29 2.45168 8.227 3.18068C7.411 3.74168 6.623 4.36968 5.874 5.01568L1.505 5.02068C1.23 5.02168 1.006 5.24468 1.006 5.51968L1 8.51468C1 8.64768 1.052 8.77468 1.147 8.86868L7.154 14.8777C7.248 14.9717 7.375 15.0237 7.508 15.0237H7.509L10.501 15.0157C10.776 15.0147 10.999 14.7917 10.999 14.5167L11.006 10.0787C11.648 9.32768 12.278 8.54668 12.855 7.74968C13.415 6.97568 13.994 6.08768 14.427 4.85268C14.8 3.78768 14.997 2.66168 15.01 1.50668C15.011 1.36968 14.957 1.23768 14.858 1.14268V1.14268Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
+            [UiIcons.Terminal]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M5.79287 9.00001L3.14642 6.35356L3.85353 5.64645L6.85353 8.64645C7.04879 8.84172 7.04879 9.1583 6.85353 9.35356L3.85353 12.3536L3.14642 11.6465L5.79287 9.00001Z"
+                        fill={COLORS.default}
+                    />
+                    <path d="M12 11H8V12H12V11Z" fill={COLORS.default} />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M1 2C1 1.44772 1.44772 1 2 1H14C14.5523 1 15 1.44772 15 2V14C15 14.5523 14.5523 15 14 15H2C1.44772 15 1 14.5523 1 14V2ZM14 4H2V14H14V4Z"
                         fill={COLORS.default}
                     />
                 </svg>

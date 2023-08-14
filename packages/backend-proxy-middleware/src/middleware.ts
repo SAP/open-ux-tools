@@ -28,6 +28,7 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
  *
  * @param params input parameters for UI5 middleware
  * @param params.options configuration options
+ * @returns {*}  {(Promise<RequestHandler>)}
  */
 module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({

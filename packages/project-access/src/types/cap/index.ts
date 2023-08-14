@@ -6,6 +6,18 @@ export interface CapCustomPaths {
     srv: string;
 }
 
+export interface CdsEnvironment {
+    folders?: CapCustomPaths;
+    i18n?: CapI18n;
+}
+
+export interface CapI18n {
+    default_language?: string;
+    fallback_bundle?: string;
+    file?: string;
+    folders?: string[];
+}
+
 type SELECT = {
     SELECT: {
         distinct?: true;

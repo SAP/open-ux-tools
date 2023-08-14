@@ -1,0 +1,46 @@
+{
+  "fileName": "manifest",
+  "layer": "VENDOR",
+  "fileType": "appdescr_variant",
+  "reference": "the.original.app",
+  "id": "my.adaptation",
+  "namespace": "apps/the.original.app/appVariants/my.adaptation/",
+  "version": "1.0.0",
+  "content": [
+    {
+      "changeType": "appdescr_app_setTitle",
+      "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": "i18n",
+        "bundleUrl": "i18n/i18n.properties",
+        "supportedLocales": [
+          ""
+        ],
+        "fallbackLocale": ""
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": "i18nLib",
+        "bundleUrl": "i18n/i18nLib.properties",
+        "supportedLocales": [
+          ""
+        ],
+        "fallbackLocale": ""
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_setMinUI5Version",
+      "content": {
+        "minUI5Version": "1.111.0"
+      }
+    }
+  ]
+}

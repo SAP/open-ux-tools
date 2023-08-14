@@ -1,0 +1,7 @@
+specVersion: '3.0'
+metadata:
+    name: preview-middleware
+kind: extension
+type: server-middleware
+middleware:
+    path: dist/ui5/middleware.js

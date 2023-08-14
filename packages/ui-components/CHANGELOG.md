@@ -1,5 +1,59 @@
 # @sap-ux/ui-components
 
+## 1.8.5
+
+### Patch Changes
+
+-   d3e7d06b: Fixes for 'promises should not be misused' sonar bugs
+
+## 1.8.4
+
+### Patch Changes
+
+-   deb06c73: `terminal` icon added
+
+## 1.8.3
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 1.8.2
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
+## 1.8.1
+
+### Patch Changes
+
+-   e315fd8a: fix: make icon positioning consistent in searchbox inputs
+
+## 1.8.0
+
+### Minor Changes
+
+-   5c34522c: fix on click logic
+
+## 1.7.0
+
+### Minor Changes
+
+-   8c3aecc6: update to ui action callout component
+
+## 1.6.0
+
+### Minor Changes
+
+-   14c4c34f: feat: update clipboard icons
+
+## 1.5.1
+
+### Patch Changes
+
+-   6b26d421: UITranslationInput. Generic type for "entries" property("I18nBundle" type) - generic type is used as parameter when "onShowExistingEntry" is called.
+
 ## 1.5.0
 
 ### Minor Changes

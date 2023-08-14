@@ -1,9 +1,10 @@
 import type Generator from 'yeoman-generator';
 import type { AxiosBasicCredentials } from 'axios';
 import type { ODataService, AbapServiceProvider, Annotations } from '@sap-ux/axios-extension';
-import { createForAbap, createForDestination, ODataVersion } from '@sap-ux/axios-extension';
+import { createForDestination, ODataVersion } from '@sap-ux/axios-extension';
 import type { OdataService } from '@sap-ux/odata-service-writer';
-import { getService, BackendSystem, BackendSystemKey } from '@sap-ux/store';
+import { inquirer, storeCredentials, createAbapServiceProvider } from '@sap-ux/system-access';
+import { getLogger } from './logger';
 
 export interface ServiceInfo {
     url?: string;
@@ -34,12 +35,17 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
     const params: { [key: string]: string } = {};
     serviceUrl.searchParams.forEach((value, key) => (params[key] = value));
 
-    const provider = createForAbap({
-        baseURL: serviceUrl.origin,
-        ignoreCertErrors: true,
-        params,
-        auth: await getCredentials(serviceUrl.origin, params['sap-client'])
-    });
+    const provider = await createAbapServiceProvider(
+        {
+            url: serviceUrl.origin,
+            client: params['sap-client']
+        },
+        {
+            ignoreCertErrors: true
+        },
+        true,
+        getLogger(generator)
+    );
 
     return {
         url: serviceUrl.origin,
@@ -49,54 +55,26 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
 }
 
 /**
- * Check the secure storage if it has credentials for teh entered url.
- *
- * @param url target system url
- * @param client optional sap-client parameter
- * @returns credentials or undefined
- */
-async function getCredentials(url: string, client?: string): Promise<AxiosBasicCredentials | undefined> {
-    const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-    const system = await systemService.read(new BackendSystemKey({ url, client }));
-    return system?.username ? { username: system.username, password: system.password || '' } : undefined;
-}
-
-/**
  * Ask the user whether the credentials should be stored. If yes, store them in the secure storage.
  *
  * @param generator generator reference used for prompting
  * @param provider service provider for which the credentials should be stored
  */
-async function storeCredentials(generator: Generator, provider: AbapServiceProvider) {
-    const { storeCreds, name }: { storeCreds: boolean; name: string } = await generator.prompt([
+async function askToStoreCredentials(generator: Generator, provider: AbapServiceProvider) {
+    const { store, name } = await generator.prompt<{ store: boolean; name: string }>([
+        inquirer.storeCredentials,
         {
-            type: 'confirm',
-            name: 'storeCreds',
-            message: 'Do you want to store your credentials in the secure storage?',
-            default: true
-        },
-        {
-            type: 'input',
-            name: 'name',
-            message: 'System name:',
-            default: new URL(provider.defaults.baseURL!).hostname,
-            validate: (answer) => !!answer
+            ...inquirer.systemName,
+            default: new URL(provider.defaults.baseURL!).hostname
         }
     ]);
-    if (storeCreds) {
-        try {
-            const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-            const system = new BackendSystem({
-                name,
-                url: provider.defaults.baseURL!,
-                client: provider.defaults.params?.['sap-client'],
-                username: provider.defaults.auth?.username,
-                password: provider.defaults.auth?.password
-            });
-            await systemService.write(system);
-        } catch (error) {
-            generator.log(`Couldn't store credentials. ${error}`);
-        }
+    if (store) {
+        await storeCredentials(
+            name,
+            { url: provider.defaults.baseURL!, client: provider.defaults.params?.['sap-client'] },
+            provider.defaults.auth!,
+            getLogger(generator)
+        );
     }
 }
 
@@ -161,32 +139,20 @@ export async function getMetadata(
             annotations = await provider.catalog(odataVersion).getAnnotations({ path });
             if (newCredentials && service.defaults.auth) {
                 provider.defaults.auth = service.defaults.auth;
-                await storeCredentials(generator, provider);
+                await askToStoreCredentials(generator, provider);
             }
         } catch (error: any) {
             if (error.cause?.status === 401) {
                 if (service.defaults?.auth?.username) {
                     generator.log.error(error.cause.statusText);
                 }
-                const { username, password } = await generator.prompt([
+                service.defaults.auth = await generator.prompt<AxiosBasicCredentials>([
                     {
-                        type: 'input',
-                        name: 'username',
-                        message: 'Username',
-                        default: generator.config.get('username'),
-                        validate: (answer) => !!answer
+                        ...inquirer.username,
+                        default: generator.config.get('username')
                     },
-                    {
-                        type: 'password',
-                        name: 'password',
-                        message: 'Password',
-                        validate: (answer) => !!answer
-                    }
+                    inquirer.password
                 ]);
-                service.defaults.auth = {
-                    username,
-                    password
-                };
                 newCredentials = true;
             } else {
                 throw error;
