@@ -44,17 +44,18 @@ declare namespace sap {
 
             namespace plugin {
                 interface ContextMenu {
-                    addMenuItem(item: {
-                        id: string;
-                        text: string;
-                        handler: Function;
-                        icon?: string;
-                    })
+                    addMenuItem(item: { id: string; text: string; handler: Function; icon?: string });
                 }
             }
         }
         namespace fl {
+            /**
+             *
+             */
             export class Utils {
+                /**
+                 *
+                 */
                 static checkControlId(control: sap.ui.base.ManagedObject): boolean;
             }
             type Layer = 'USER' | 'PUBLIC' | 'CUSTOMER' | 'CUSTOMER_BASE' | 'PARTNER' | 'VENDOR' | 'BASE';
@@ -121,7 +122,13 @@ declare namespace sap {
                     scenario?: string;
                 }
 
+                /**
+                 *
+                 */
                 export class CommandFactory {
+                    /**
+                     *
+                     */
                     static getCommandFor<T extends BaseCommand = BaseCommand>(
                         control: sap.ui.core.Element | string,
                         commandType: string,
