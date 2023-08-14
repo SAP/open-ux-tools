@@ -14,8 +14,8 @@
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc --build && pnpm build:rta",
-        "build:rta": "tsc --build tsconfig.rta.json",
+        "build": "tsc --build && pnpm build:client",
+        "build:client": "tsc --build tsconfig.client.json",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",

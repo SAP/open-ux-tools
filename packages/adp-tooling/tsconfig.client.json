@@ -1,10 +1,10 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src-rta"],
+    "include": ["src-client"],
     "compilerOptions": {
         "module": "es6",
-        "rootDir": "src-rta",
-        "outDir": "dist/preview/rta",
+        "rootDir": "src-client",
+        "outDir": "dist/preview/client",
         "incremental": true,
         "lib": ["ES2020", "dom"],
         "preserveConstEnums": true,

@@ -70,8 +70,8 @@ export class AdpPreview {
 
     get pluginScriptLocation() {
         return {
-            localFolder: join(__dirname, 'rta'),
-            scriptFile: 'loadPlugin.js'
+            localFolder: join(__dirname, 'client'),
+            scriptFile: 'index.js'
         };
     }
 
