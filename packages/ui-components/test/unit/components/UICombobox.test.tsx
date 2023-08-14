@@ -2,12 +2,13 @@ import * as React from 'react';
 import * as Enzyme from 'enzyme';
 import type { UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
 import { UIComboBox } from '../../../src/components/UIComboBox';
-import { data as originalData } from '../../__mock__/select-data';
+import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 import { KeyCodes, ComboBox, Autofill } from '@fluentui/react';
 
 const data = JSON.parse(JSON.stringify(originalData));
+const groupsData = JSON.parse(JSON.stringify(originalGroupsData));
 
 describe('<UIComboBox />', () => {
     let wrapper: Enzyme.ReactWrapper<UIComboBoxProps, UIComboBoxState>;
@@ -15,10 +16,19 @@ describe('<UIComboBox />', () => {
     const nonHighlighttItemSelector = `${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command .ms-ComboBox-optionText`;
     const highlightItemSelector = `${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command .ts-Menu-option`;
     const inputSelector = 'input.ms-ComboBox-Input';
+    const headerItemSelector = '.ms-ComboBox-header';
     initIcons();
 
     const openDropdown = (): void => {
         wrapper.find('.ms-ComboBox .ms-Button--icon').simulate('click', document.createEvent('Events'));
+    };
+
+    const triggerSearch = (query: string) => {
+        wrapper.find('input').simulate('input', {
+            target: {
+                value: query
+            }
+        });
     };
 
     beforeEach(() => {
@@ -137,22 +147,14 @@ describe('<UIComboBox />', () => {
         it('Test "onInput"', () => {
             const query = 'Lat';
             wrapper.find('input').simulate('keyDown', {});
-            wrapper.find('input').simulate('input', {
-                target: {
-                    value: query
-                }
-            });
+            triggerSearch(query);
             expect(wrapper.find('.ts-Menu-option--highlighted').length).toEqual(1);
             expect(wrapper.find('.ts-Menu-option--highlighted').text()).toEqual(query);
         });
 
         it('Test "reserQuery"', () => {
             openDropdown();
-            wrapper.find('input').simulate('input', {
-                target: {
-                    value: 'Au'
-                }
-            });
+            triggerSearch('Au');
             expect(wrapper.find(menuDropdownSelector).length).toEqual(1);
             let hiddenItemsExist = wrapper.props().options.some((option) => {
                 return option.hidden;
@@ -170,19 +172,11 @@ describe('<UIComboBox />', () => {
         it('Test list visibility', () => {
             expect(wrapper.state().isListHidden).toBeFalsy();
             wrapper.find('input').simulate('keyDown', {});
-            wrapper.find('input').simulate('input', {
-                target: {
-                    value: 'Lat'
-                }
-            });
+            triggerSearch('Lat');
             // List should be visible - there is some occurrences
             expect(wrapper.state().isListHidden).toBeFalsy();
             // List should be hidden - there any occurrence
-            wrapper.find('input').simulate('input', {
-                target: {
-                    value: '404'
-                }
-            });
+            triggerSearch('404');
             expect(wrapper.state().isListHidden).toBeTruthy();
         });
     });
@@ -666,5 +660,42 @@ describe('<UIComboBox />', () => {
                 expect(wrapper.find('div.ts-ComboBox--empty').length).toEqual(testCase.expected ? 1 : 0);
             });
         }
+    });
+
+    describe('Combobox items with group headers', () => {
+        beforeEach(() => {
+            wrapper.setProps({
+                highlight: true,
+                options: groupsData
+            });
+            wrapper.update();
+        });
+
+        it('Test css selectors which are used in scss - with highlight', () => {
+            openDropdown();
+            expect(wrapper.find(headerItemSelector).length).toEqual(7);
+            // Search items and hide group header if no matching children
+            wrapper.find('input').simulate('keyDown', {});
+            triggerSearch('Est');
+            expect(wrapper.find(headerItemSelector).length).toEqual(1);
+            expect(wrapper.find(headerItemSelector).text()).toEqual('Europe');
+            // Search and match first group
+            triggerSearch('gypt');
+            expect(wrapper.find(headerItemSelector).length).toEqual(1);
+            expect(wrapper.find(headerItemSelector).text()).toEqual('Africa');
+            // Search and match last group
+            triggerSearch('dumy');
+            expect(wrapper.find(headerItemSelector).length).toEqual(1);
+            expect(wrapper.find(headerItemSelector).text()).toEqual('Unknown');
+            // Search and match multiple groups
+            triggerSearch('la');
+            expect(wrapper.find(headerItemSelector).length).toEqual(3);
+            // Search without matching
+            triggerSearch('404');
+            expect(wrapper.find(headerItemSelector).length).toEqual(0);
+            // Reset search
+            triggerSearch('');
+            expect(wrapper.find(headerItemSelector).length).toEqual(7);
+        });
     });
 });
