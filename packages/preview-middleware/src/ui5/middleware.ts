@@ -27,16 +27,15 @@ async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, 
             pluginModule: `${adp.extensionScript.namespace.replace('.', '/')}/${adp.extensionScript.module}`
         };
 
-        const resources = adp.resources;
-        const nsParts = adp.extensionScript.namespace.split('.');
-        resources[adp.extensionScript.namespace] = nsParts.join('/');
-        const pathParts = flp.config.path.split('/');
-        pathParts.pop();
-        nsParts.forEach(part => pathParts.push(part));
+        const ns = adp.extensionScript.namespace.split('.');
+        const path = flp.config.path.split('/');
+        path.pop();
+        ns.forEach((segment) => path.push(segment));
 
-        await flp.init(adp.descriptor.manifest, adp.descriptor.name, resources);
+        await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp));
-        flp.router.use(pathParts.join('/'), serveStatic(adp.extensionScript.local));
+        flp.router.use(path.join('/'), serveStatic(adp.extensionScript.local));
+        adp.addApis(flp.router);
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
     }
