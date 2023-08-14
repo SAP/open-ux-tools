@@ -6,7 +6,8 @@ import {
     IComboBoxOption,
     initializeComponentRef,
     KeyCodes,
-    IOnRenderComboBoxLabelProps
+    IOnRenderComboBoxLabelProps,
+    SelectableOptionMenuItemType
 } from '@fluentui/react';
 import { UIHighlightMenuOption } from '../UIContextualMenu/UIHighlightMenuOption';
 import './UIComboBox.scss';
@@ -128,12 +129,32 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      */
     private updateHiddenOptions(opts: IComboBoxOption[]): void {
         this.isListHidden = true;
+        let currentGroup: IComboBoxOption | undefined;
+        let isGroupVisible = false;
+        const updateGroupVisibility = () => {
+            if (currentGroup) {
+                currentGroup.hidden = !isGroupVisible;
+            }
+        };
         for (const option of opts) {
-            option.hidden = option.text.toLowerCase().indexOf(this.query) === -1;
-            if (this.isListHidden && !option.hidden) {
-                this.isListHidden = false;
+            if (option.itemType === SelectableOptionMenuItemType.Header) {
+                // Update visibility of previously processed group
+                updateGroupVisibility();
+                // Reset current group and visibility flag
+                currentGroup = option;
+                isGroupVisible = false;
+            } else {
+                // Handle selectable item
+                const isHidden = option.text.toLowerCase().indexOf(this.query) === -1;
+                option.hidden = isHidden;
+                if (this.isListHidden && !option.hidden) {
+                    this.isListHidden = false;
+                }
+                // Groups should be visible if at least one item is visible within group
+                isGroupVisible = !isHidden || isGroupVisible;
             }
         }
+        updateGroupVisibility();
     }
 
     /**
@@ -226,7 +247,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
-        if (defaultRender && props && !props.itemType) {
+        if (defaultRender && props) {
             // Use data for custom onRender functions
             props.data = this.query;
             if (props.title === undefined) {

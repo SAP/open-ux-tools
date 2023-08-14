@@ -1,11 +1,11 @@
 import type { SetStateAction } from 'react';
 import React, { useState } from 'react';
-import { Stack } from '@fluentui/react';
+import { Stack, SelectableOptionMenuItemType, ComboBox } from '@fluentui/react';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 
 import { UIComboBox } from '../src/components/UIComboBox';
 import { UICheckbox } from '../src/components/UICheckbox';
-import { data } from '../test/__mock__/select-data';
+import { data, groupsData } from '../test/__mock__/select-data';
 
 import { initIcons } from '../src/components/Icons';
 
@@ -290,6 +290,34 @@ export const accessibilityStates = () => {
                     </tr>
                 </table>
             </Stack>
+        </div>
+    );
+};
+
+export const separators = () => {
+    const dataTemp: IComboBoxOption[] = [...groupsData];
+    dataTemp.splice(5, 0, {
+        key: 'div1',
+        text: '',
+        itemType: SelectableOptionMenuItemType.Divider
+    });
+    return (
+        <div style={{ width: '300px' }}>
+            <UIComboBox
+                options={dataTemp}
+                highlight={true}
+                allowFreeform={true}
+                useComboBoxAsMenuMinWidth={true}
+                autoComplete="on"
+                openMenuOnClick={true}
+                label="Menu items with dividers and headers"
+            />
+            <ComboBox
+                options={dataTemp}
+                allowFreeform={true}
+                autoComplete="on"
+                label="Menu items with dividers and headers"
+            />
         </div>
     );
 };

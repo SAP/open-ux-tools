@@ -182,6 +182,30 @@
                 outline-offset: $menu-item-border-offset;
             }
         }
+        // Header item
+        .ms-ComboBox-header {
+            min-height: $menu-item-height;
+            height: $menu-item-height;
+            line-height: $menu-item-height;
+            color: $menu-color;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        // Divider between groups
+        > div {
+            .ms-ComboBox-header {
+                border-top: 1px solid $menu-item-divider-color;
+            }
+            &:first-child {
+                .ms-ComboBox-header {
+                    border-top: none;
+                } 
+            }
+        }
+        // Separator
+        .ms-ComboBox-divider {
+            background-color: $menu-item-divider-color;
+        }
     }
     // Select/dropdown list items
     .ms-Dropdown-items {
