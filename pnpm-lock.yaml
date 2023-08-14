@@ -173,6 +173,9 @@ importers:
         specifier: 2.5.1
         version: 2.5.1
     devDependencies:
+      '@babel/cli':
+        specifier: 7.22.10
+        version: 7.22.10(@babel/core@7.22.5)
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -203,6 +206,9 @@ importers:
       '@types/yazl':
         specifier: 2.4.2
         version: 2.4.2
+      babel-preset-transform-ui5:
+        specifier: 7.2.4
+        version: 7.2.4
       dotenv:
         specifier: 16.0.0
         version: 16.0.0
@@ -1394,6 +1400,26 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.1.1
       '@jridgewell/trace-mapping': 0.3.18
+
+  /@babel/cli@7.22.10(@babel/core@7.22.5):
+    resolution: {integrity: sha512-rM9ZMmaII630zGvtMtQ3P4GyHs28CHLYE9apLG7L8TgaSqcfoIGrlLSLsh4Q8kDTdZQQEXZm1M0nQtOvU/2heg==}
+    engines: {node: '>=6.9.0'}
+    hasBin: true
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.22.5
+      '@jridgewell/trace-mapping': 0.3.18
+      commander: 4.1.1
+      convert-source-map: 1.8.0
+      fs-readdir-recursive: 1.1.0
+      glob: 7.2.0
+      make-dir: 2.1.0
+      slash: 2.0.0
+    optionalDependencies:
+      '@nicolo-ribaudo/chokidar-2': 2.1.8-no-fsevents.3
+      chokidar: 3.5.3
+    dev: true
 
   /@babel/code-frame@7.12.11:
     resolution: {integrity: sha512-Zt1yodBx1UcyiePMSkWnU4hPqhwq7hGi2nFL1LeA3EUl+q2LQx16MISgJ0+z7dnmgvP9QtIleuETGOiOH1RcIw==}
@@ -4194,6 +4220,12 @@ packages:
       call-me-maybe: 1.0.2
       glob-to-regexp: 0.3.0
     dev: true
+
+  /@nicolo-ribaudo/chokidar-2@2.1.8-no-fsevents.3:
+    resolution: {integrity: sha512-s88O1aVtXftvp5bCPB7WnmXc5IwOZZ7YPuwNPt+GtOOXpPvad1LfbmjYv+qII7zP6RU2QGnqve27dnLycEnyEQ==}
+    requiresBuild: true
+    dev: true
+    optional: true
 
   /@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1:
     resolution: {integrity: sha512-54/JRvkLIzzDWshCWfuhadfrfZVPiElY8Fcgmg1HroEly/EDSszzhBAsarCux+D/kOslTRquNzuyGSmUSTTHGg==}
@@ -7262,6 +7294,10 @@ packages:
     resolution: {integrity: sha512-PCVAQswWemu6UdxsDFFX/+gVeYqKAod3D3UVm91jHwynguOwAvYPhx8nNlM++NqRcK6CxxpUafjmhIdKiHibqg==}
     dev: true
 
+  /array-flatten@3.0.0:
+    resolution: {integrity: sha512-zPMVc3ZYlGLNk4mpK1NzP2wg0ml9t7fUgDsayR5Y5rSzxQilzR9FGu/EH2jQOcKSAeAfWeylyW8juy3OkWRvNA==}
+    dev: true
+
   /array-includes@3.1.6:
     resolution: {integrity: sha512-sgTbLvL6cNnw24FnbaDyjmvddQ2ML8arZsgaJhoABMoplz/4QRhtrYS+alr1BUM1Bwp6dhx8vVCBSLG+StwOFw==}
     engines: {node: '>= 0.4'}
@@ -7674,6 +7710,16 @@ packages:
       - supports-color
     dev: true
 
+  /babel-plugin-transform-modules-ui5@7.2.4:
+    resolution: {integrity: sha512-0JG30UjJraqM+Q2su8GP/3rggX9vG2MB/LAVtmtxMZ2lgo99G8cPV2wma7XZYgVnjGPDFuH6siEURcudvH1dMQ==}
+    engines: {node: '>=6'}
+    dependencies:
+      array-flatten: 3.0.0
+      doctrine: 3.0.0
+      ignore-case: 0.1.0
+      object-assign-defined: 1.0.2
+    dev: true
+
   /babel-preset-current-node-syntax@1.0.1(@babel/core@7.22.5):
     resolution: {integrity: sha512-M7LQ0bxarkxQoN+vz5aJPsLBn77n8QgTFmo8WK0/44auK2xlCXrYcUxHFxgU7qW5Yzw/CjmLRK2uJzaCd7LvqQ==}
     peerDependencies:
@@ -7703,6 +7749,12 @@ packages:
       '@babel/core': 7.22.5
       babel-plugin-jest-hoist: 29.5.0
       babel-preset-current-node-syntax: 1.0.1(@babel/core@7.22.5)
+    dev: true
+
+  /babel-preset-transform-ui5@7.2.4:
+    resolution: {integrity: sha512-e2MyeQyhsenLwvEjtrz+YOfwLPDu9y9U/oB8Mh019CdypsiakCQci9TOfFL3pa44IMd7j2IUdO75J3EEYIRrvg==}
+    dependencies:
+      babel-plugin-transform-modules-ui5: 7.2.4
     dev: true
 
   /bail@1.0.5:
@@ -10914,6 +10966,10 @@ packages:
     resolution: {integrity: sha512-cybjIfiiE+pTWicSCLFHSrXZ6EilF30oh91FDP9S2B051prEa7QWfrVTQm10/dDpswBDXZugPa1Ogu8Yh+HV0Q==}
     dev: true
 
+  /fs-readdir-recursive@1.1.0:
+    resolution: {integrity: sha512-GNanXlVr2pf02+sPN40XN8HG+ePaNcvM0q5mZBd668Obwb0yD5GiUbZOFgwn8kGMY6I3mdyDJzieUy3PTYyTRA==}
+    dev: true
+
   /fs-write-stream-atomic@1.0.10:
     resolution: {integrity: sha512-gehEzmPn2nAwr39eay+x3X34Ra+M2QlVUTLhkXPjWdeO8RF9kszk116avgBJM3ZyNHgHXBNx+VmPaFC36k0PzA==}
     dependencies:
@@ -11717,6 +11773,10 @@ packages:
 
   /iferr@0.1.5:
     resolution: {integrity: sha512-DUNFN5j7Tln0D+TxzloUjKB+CtVu6myn0JEFak6dG18mNt9YkQ6lzGCdafwofISZ1lLF3xRHJ98VKy9ynkcFaA==}
+    dev: true
+
+  /ignore-case@0.1.0:
+    resolution: {integrity: sha512-tQS9ucNf134w040JaMWzQ0WXfDR8Vdelk8E6ITviSzE6cOY2K12kNU04lLa8yy9WtcRrKWh3sdv0Xn8uLbMjUA==}
     dev: true
 
   /ignore-walk@6.0.3:
@@ -14333,6 +14393,11 @@ packages:
       '@nx/nx-win32-x64-msvc': 16.4.0
     transitivePeerDependencies:
       - debug
+    dev: true
+
+  /object-assign-defined@1.0.2:
+    resolution: {integrity: sha512-xO24o25GXklHv9k1eQUvHpNpqhfv3sXmT4yQaLXdaig0EiK9ts7M2UECjjyIpEg8ckCiSZBec0qsAr4knbgdDA==}
+    engines: {node: '>=4'}
     dev: true
 
   /object-assign@4.1.1:

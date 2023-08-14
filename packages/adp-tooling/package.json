@@ -48,6 +48,7 @@
         "yazl": "2.5.1"
     },
     "devDependencies": {
+        "@babel/cli": "7.22.10",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sapui5/types": "1.117.0",
@@ -58,6 +59,7 @@
         "@types/prompts": "2.0.14",
         "@types/supertest": "2.0.12",
         "@types/yazl": "2.4.2",
+        "babel-preset-transform-ui5": "7.2.4",
         "dotenv": "16.0.0",
         "express": "4.18.2",
         "nock": "13.2.1",
