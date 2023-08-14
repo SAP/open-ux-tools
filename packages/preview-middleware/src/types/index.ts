@@ -31,9 +31,9 @@ export interface FlpConfig {
     rta?: {
         layer?: UI5FlexLayer;
         /**
-         * Optional location of a javascript file exporting as default a function that adds RTA plugins
+         * Optional UI5 module exporting as default a function that adds RTA plugins
          */
-        pluginScript?: string;
+        pluginModule?: string;
     };
     /**
      * Optional: if set to true then a locate-reuse-libs script will be attached to the html

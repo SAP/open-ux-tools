@@ -57,14 +57,13 @@
     </script><% if (locals.locateReuseLibsScript) { %>
 	<script id="locate-reuse-libs" src="<%- locateReuseLibsScript %>" data-sap-ui-manifest-uri="/manifest.json">
 	</script><% } %>
-    <script type="module" ><% if (locals.flex?.pluginScript) { %>
-        import loadPlugin from '<%- flex.pluginScript %>';<% } %>
+    <script>
         sap.ui.getCore().attachInit(function () {<% if (locals.flex) { %>
             sap.ushell.Container.attachRendererCreatedEvent(function () {
                 sap.ushell.Container.getServiceAsync('AppLifeCycle').then((serviceInstance) => {
                     serviceInstance.attachAppLoaded((event) => {
                         var oView = event.getParameter('componentInstance');
-                        sap.ui.require(["sap/ui/rta/api/startAdaptation"], async function (startAdaptation) {
+                        sap.ui.require(["sap/ui/rta/api/startAdaptation"<% if (locals.flex?.pluginModule) { %>, "<%- flex.pluginModule %>"<% } %>], async function (startAdaptation, loadPlugin) {
                             var options = {
                                 rootControl: oView,
                                 validateAppVersion: false,
@@ -73,7 +72,7 @@
                                     developerMode: <%- flex.developerMode %>
 								}
                             };
-                            await startAdaptation(options<% if (locals.flex?.pluginScript) { %>, loadPlugin<% } %>);
+                            await startAdaptation(options<% if (locals.flex?.pluginModule) { %>, loadPlugin<% } %>);
                         });
                     })
                 });
