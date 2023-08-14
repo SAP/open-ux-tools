@@ -151,7 +151,7 @@ export function generateCustomHeaderSection(
         }
         // Generate edit fragment content
         editSection.content =
-            editSection.control ?? getDefaultFragmentContent(editSection.name, editSection.eventHandler);
+            editSection.control ?? getDefaultFragmentContent(editSection.name, editSection.eventHandler, false, true);
         if (editSection.path) {
             const viewPath = join(editSection.path, `${editSection.name}.fragment.xml`);
             if (!editor.exists(viewPath)) {

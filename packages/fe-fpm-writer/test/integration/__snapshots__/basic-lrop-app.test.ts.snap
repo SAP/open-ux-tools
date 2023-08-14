@@ -83,7 +83,7 @@ Object {
   "js/webapp/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox>
-		<Button core:require=\\"{ handler: 'v4travel/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit'}\\" text=\\"MyCustomHeaderSectionEdit\\" press=\\"handler.onPress\\" />
+		<Input core:require=\\"{ handler: 'v4travel/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit'}\\" label=\\"MyCustomHeaderSectionEdit\\" change=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>",
     "state": "modified",
@@ -705,7 +705,7 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
   "ts/webapp/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox>
-		<Button core:require=\\"{ handler: 'v4travel/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit'}\\" text=\\"MyCustomHeaderSectionEdit\\" press=\\"handler.onPress\\" />
+		<Input core:require=\\"{ handler: 'v4travel/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit'}\\" label=\\"MyCustomHeaderSectionEdit\\" change=\\"handler.onPress\\" />
 	</VBox>
 </core:FragmentDefinition>",
     "state": "modified",
