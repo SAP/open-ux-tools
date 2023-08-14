@@ -2,4 +2,4 @@
 '@sap-ux/ui-components': minor
 ---
 
-UICombobox, UIDropdown, UIContextualMenu. Support headers and separators.
+Enhancements for DropdownMenues. UICombobox, UIDropdown and UIContextualMenu - support headers and separators. UIContextualMenu - support item text with icons(rendered on right).
