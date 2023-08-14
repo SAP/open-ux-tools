@@ -1,5 +1,29 @@
 # @sap-ux/create
 
+## 0.4.9
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.1.5
+
+## 0.4.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.1.4
+-   @sap-ux/app-config-writer@0.1.7
+-   @sap-ux/mockserver-config-writer@0.1.8
+-   @sap-ux/project-access@1.11.2
+-   @sap-ux/cap-config-writer@0.1.14
+
+## 0.4.7
+
+### Patch Changes
+
+-   Updated dependencies [24e45780]
+    -   @sap-ux/app-config-writer@0.1.6
+    -   @sap-ux/adp-tooling@0.1.3
+
 ## 0.4.6
 
 ### Patch Changes
