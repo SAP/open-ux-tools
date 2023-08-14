@@ -46,12 +46,12 @@ npm install -g pnpm
 
 More information on pnpm installation options can be found [here](https://pnpm.io/installation).
 
-### Github Codespaces
+### GitHub Codespaces
 
-To open and develop using Github Codespaces:
+To open and develop using GitHub Codespaces:
 1. Expand the dropdown '<> Code' button on the `open-ux-tools` [github repository page](https://github.com/SAP/open-ux-tools/tree/main)
 2. Select 'Codespaces' tab
-3. Press the 'Create codespace on main' button to create a new Github Codespace based on the configuration in the file `.devcontainer/devcontainer.json`
+3. Press the 'Create codespace on main' button to create a new GitHub Codespace based on the configuration in the file `.devcontainer/devcontainer.json`
 
 ### VS Code Development in a Container
 
