@@ -7,7 +7,6 @@ import type { Config } from '../types';
 import { AdpPreview } from '@sap-ux/adp-tooling';
 import type { ReaderCollection } from '@ui5/fs';
 import { static as serveStatic } from 'express';
-import { dirname, resolve } from 'path';
 
 /**
  * Initialize the preview for an adaptation project.
