@@ -1,15 +1,6 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { AbapDeployConfig, AbapTarget, UrlAbapTarget } from '../types';
-
-/**
- * Check if it is a url or destination target.
- *
- * @param target target configuration
- * @returns true is it is a UrlAbapTarget
- */
-export function isUrlTarget(target: AbapTarget): target is UrlAbapTarget {
-    return (<UrlAbapTarget>target).url !== undefined;
-}
+import type { AbapTarget, AbapDeployConfig } from '../types';
+import { isUrlTarget } from '@sap-ux/system-access';
 
 /**
  * Clones the given config and removes secrets so that it can be printed to a log file.

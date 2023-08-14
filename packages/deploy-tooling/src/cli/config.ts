@@ -122,12 +122,12 @@ function getServiceKey(options: CliOptions, targetUrl: string | undefined): unde
  * @param options additional options
  * @returns merged target object
  */
-function mergeTarget(baseTarget: AbapTarget, options: CliOptions) {
+function mergeTarget(baseTarget: AbapTarget & { cloud?: boolean }, options: CliOptions) {
     const targetUrl = options.url ?? baseTarget?.url;
     return {
         url: targetUrl,
         client: options.client ?? baseTarget?.client,
-        cloud: options.cloud !== undefined ? options.cloud : baseTarget?.cloud,
+        scp: options.cloud !== undefined ? options.cloud : baseTarget?.cloud,
         destination: options.destination ?? baseTarget?.destination,
         serviceKey: getServiceKey(options, targetUrl),
         params: options.queryParams ? parseQueryParams(options.queryParams) : undefined,

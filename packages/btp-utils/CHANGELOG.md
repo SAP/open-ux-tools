@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.11.8
+
+### Patch Changes
+
+-   24e45780: Updated dependency: axios@1.4.0
+
 ## 0.11.7
 
 ### Patch Changes
