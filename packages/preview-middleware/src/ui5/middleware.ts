@@ -7,7 +7,7 @@ import type { Config } from '../types';
 import { AdpPreview } from '@sap-ux/adp-tooling';
 import type { ReaderCollection } from '@ui5/fs';
 import { static as serveStatic } from 'express';
-import { dirname } from 'path';
+import { dirname, resolve } from 'path';
 
 /**
  * Initialize the preview for an adaptation project.
@@ -24,13 +24,16 @@ async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, 
         const layer = await adp.init(JSON.parse(await files[0].getString()));
         flp.config.rta = { 
             layer,
-            pluginModule: `${adp.pluginScriptLocation.namespace.replace('.', '/')}/${adp.pluginScriptLocation.module}`
+            pluginModule: `${adp.extensionScript.namespace.replace('.', '/')}/${adp.extensionScript.module}`
         };
+
         const resources = adp.resources;
-        resources[adp.pluginScriptLocation.namespace] = `${dirname(flp.config.path)}/rta`;
+        resources[adp.extensionScript.namespace] = adp.extensionScript.path;
+        const pluginPath = resolve(dirname(flp.config.path), adp.extensionScript.path);
+
         await flp.init(adp.descriptor.manifest, adp.descriptor.name, resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp));
-        flp.router.use(`${dirname(flp.config.path)}/rta`, serveStatic(adp.pluginScriptLocation.localFolder));
+        flp.router.use(pluginPath, serveStatic(adp.extensionScript.local));
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
     }

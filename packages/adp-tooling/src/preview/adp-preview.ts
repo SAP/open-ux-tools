@@ -68,9 +68,10 @@ export class AdpPreview {
         }
     }
 
-    get pluginScriptLocation() {
+    get extensionScript() {
         return {
-            localFolder: join(__dirname, 'client'),
+            local: join(__dirname, 'client'),
+            path: './adp/extension',
             namespace: 'adp.extension',
             module: 'index'
         };
