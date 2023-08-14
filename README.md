@@ -37,7 +37,7 @@ Please check the [Development Conventions and Guidelines](./docs/Guidelines.md) 
 
 ## Development Setup
 
-### Install `pnpm` globally
+### Local Development | Install `pnpm` globally
 
 To install `pnpm` globally using `npm`, run the following:
 ```shell
@@ -45,6 +45,17 @@ npm install -g pnpm
 ```
 
 More information on pnpm installation options can be found [here](https://pnpm.io/installation).
+
+### VS Code Development in a Container
+
+To use VS Code and develop in a container:
+1. Install [docker](https://www.docker.com/get-started)
+2. Install [VS Code](https://code.visualstudio.com/) or [VS Code Insiders edition](https://code.visualstudio.com/insiders/)
+3. Install the [Dev Containers VS Code extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) or the [Remote Development VS Code extension pack](https://aka.ms/vscode-remote/download/extension)
+
+Open currently opened workspace in dev container using the command `Dev Containers: Open Workspace in Container...`.
+More information on VS Code development in a container can be found [here](https://code.visualstudio.com/docs/devcontainers/containers)
+
 ### Install dependencies
 To install `dependencies` and `devDependencies`, run following command at root of the repository:
 
