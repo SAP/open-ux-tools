@@ -7,6 +7,6 @@
         "src-client"
     ],
     "compilerOptions": {
-        "types": ["@sapui5/types"]
+        "types": ["@sapui5/types", "node", "jest"]
     }
 }
