@@ -1,4 +1,5 @@
 import { join } from 'path';
+import * as childProcess from 'child_process';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
@@ -14,6 +15,9 @@ import {
 import { toReferenceUri } from '../../src/project/cap';
 import * as file from '../../src/file';
 import os from 'os';
+
+jest.mock('child_process');
+const childProcessMock = jest.mocked(childProcess, { shallow: true });
 
 describe('Test getCapProjectType()', () => {
     test('Test if valid CAP Node.js project is recognized', async () => {
@@ -318,25 +322,72 @@ describe('Test getCapEnvironment', () => {
         await getCapEnvironment('PROJECT_ROOT');
         expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
     });
-    test('with cds loaded from other location than project', async () => {
-        const forSpy = jest.fn();
-        jest.spyOn(projectModuleMock, 'loadModule').mockResolvedValue({ default: { env: { for: forSpy } } });
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValue('ERROR');
-        await getCapEnvironment('ROOT');
-        expect(forSpy).toBeCalledWith('cds', 'ROOT');
-    });
+
     test('failed to load cds from any location', async () => {
-        jest.spyOn(projectModuleMock, 'loadModule').mockRejectedValue('LOAD_ERROR');
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValue('LOAD_MODULE_ERROR');
+        // Mock setup
+        childProcessMock.spawn.mockReturnValueOnce(getChildProcessMock('WRONG'));
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
+
+        // Test execution
         try {
-            await getCapEnvironment('ROOT');
-            fail('Call to getCapEnvironment() should have thrown error due to cds loading but did not.');
+            await getCapEnvironment('PROJECT_ROOT');
+            fail('Call to getCapEnvironment() should have thrown error due to missing cds module but did not');
         } catch (error) {
-            const errorString = error.toString();
-            expect(errorString).toContain('LOAD_ERROR');
-            expect(errorString).toContain('LOAD_MODULE_ERROR');
+            expect(error.toString()).toContain('ERROR_LOCAL');
+            expect(error.toString()).toContain('@sap/cds-dk');
         }
     });
+
+    test('with cds loaded from other location than project', async () => {
+        // Mock setup
+        const spawnSpy = jest
+            .spyOn(childProcessMock, 'spawn')
+            .mockReturnValueOnce(getChildProcessMock('anyKey: anyValue\nhome: GLOBAL_ROOT\n'));
+        const forSpy = jest.fn();
+        const loadSpy = jest
+            .spyOn(projectModuleMock, 'loadModuleFromProject')
+            .mockRejectedValueOnce('ERROR_LOCAL')
+            .mockResolvedValueOnce({ default: { env: { for: forSpy } } });
+
+        // Test execution
+        await getCapEnvironment('PROJECT_ROOT');
+
+        // Result check
+        expect(spawnSpy).toBeCalledWith('cds', ['--version'], { cwd: undefined });
+        expect(loadSpy).toHaveBeenNthCalledWith(1, 'PROJECT_ROOT', '@sap/cds');
+        expect(loadSpy).toHaveBeenNthCalledWith(2, 'GLOBAL_ROOT', '@sap/cds');
+        expect(forSpy).toBeCalledWith('cds', 'PROJECT_ROOT');
+    });
+
+    function getChildProcessMock(data: any): childProcess.ChildProcess {
+        return {
+            stdout: {
+                on: (type: 'data', cb: (chunk: any) => void) => {
+                    if (type === 'data') {
+                        cb(data);
+                    }
+                }
+            },
+            on: (type: 'close', cb: () => void) => {
+                if (type === 'close') {
+                    cb();
+                }
+            }
+        } as childProcess.ChildProcess;
+    }
+
+    // test('failed to load cds from any location', async () => {
+    //     jest.spyOn(projectModuleMock, 'loadModule').mockRejectedValue('LOAD_ERROR');
+    //     jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValue('LOAD_MODULE_ERROR');
+    //     try {
+    //         await getCapEnvironment('ROOT');
+    //         fail('Call to getCapEnvironment() should have thrown error due to cds loading but did not.');
+    //     } catch (error) {
+    //         const errorString = error.toString();
+    //         expect(errorString).toContain('LOAD_ERROR');
+    //         expect(errorString).toContain('LOAD_MODULE_ERROR');
+    //     }
+    // });
 });
 
 describe('toReferenceUri', () => {

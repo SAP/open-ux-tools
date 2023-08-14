@@ -1,8 +1,9 @@
+import { spawn } from 'child_process';
 import { dirname, join, normalize, relative, sep } from 'path';
 import { FileName } from '../constants';
 import type { CapCustomPaths, CapProjectType, CdsEnvironment, csn, Package } from '../types';
 import { fileExists, readFile, readJSON } from '../file';
-import { loadModule, loadModuleFromProject } from './module-loader';
+import { loadModuleFromProject } from './module-loader';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
@@ -95,7 +96,7 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
  * @returns {*}  {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
  */
 export async function getCapModelAndServices(projectRoot: string): Promise<{ model: csn; services: ServiceInfo[] }> {
-    const cds = await loadCdsModule(projectRoot);
+    const cds = await loadCdsModuleFromProject(projectRoot);
     const capProjectPaths = await getCapCustomPaths(projectRoot);
     const modelPaths = [
         join(projectRoot, capProjectPaths.app),
@@ -147,7 +148,7 @@ export async function readCapServiceMetadataEdmx(
         if (!service) {
             throw Error(`Service for uri: '${uri}' not found. Available services: ${JSON.stringify(services)}`);
         }
-        const cds = await loadCdsModule(root);
+        const cds = await loadCdsModuleFromProject(root);
         const edmx = cds.compile.to.edmx(model, { service: service.name, version });
         return edmx;
     } catch (error) {
@@ -179,19 +180,19 @@ function findServiceByUri(
  * @returns - environment config for a CAP project
  */
 export async function getCapEnvironment(capProjectPath: string): Promise<CdsEnvironment> {
-    const cds = await loadCdsModule(capProjectPath);
+    const cds = await loadCdsModuleFromProject(capProjectPath);
     return cds.env.for('cds', capProjectPath);
 }
 
 /**
  * Load CAP CDS module. First attempt loads @sap/cds for a project based on its root.
- * Second attempt loads @sap/cds-dk from all node locations including global modules.
+ * Second attempt loads @sap/cds from global installed @sap/cds-dk.
  * Throws error if module could not be loaded.
  *
  * @param capProjectPath - project root of a CAP project
  * @returns - CAP CDS module for a CAP project
  */
-async function loadCdsModule(capProjectPath: string): Promise<CdsFacade> {
+async function loadCdsModuleFromProject(capProjectPath: string): Promise<CdsFacade> {
     let module: CdsFacade | { default: CdsFacade } | undefined;
     let loadProjectError;
     let loadError;
@@ -203,15 +204,15 @@ async function loadCdsModule(capProjectPath: string): Promise<CdsFacade> {
     }
     if (!module) {
         try {
-            // Second approach, load @sap/cds-dk from any location
-            module = await loadModule<CdsFacade | { default: CdsFacade }>('@sap/cds-dk');
+            // Second approach, load @sap/cds from @sap/cds-dk
+            module = await loadGlobalCdsModule();
         } catch (error) {
             loadError = error;
         }
     }
     if (!module) {
         throw Error(
-            `Could not load cds module. Attempt to load module @sap/cds from project threw error '${loadProjectError}', attempt to load module @sap/cds-dk threw error '${loadError}'`
+            `Could not load cds module. Attempt to load module @sap/cds from project threw error '${loadProjectError}', attempt to load module @sap/cds from @sap/cds-dk threw error '${loadError}'`
         );
     }
     return 'default' in module ? module.default : module;
@@ -317,4 +318,53 @@ async function readPackageNameForFolder(baseUri: string, relativeUri: string): P
         packageName = '';
     }
     return packageName;
+}
+
+let globalCdsPathCache: string;
+
+/**
+ * Try to load global installation of @sap/cds, usually child of @sap/cds-dk.
+ *
+ * @returns - module @sap/cds from global installed @sap/cds-dk
+ */
+async function loadGlobalCdsModule<T>(): Promise<T> {
+    if (!globalCdsPathCache) {
+        const versions = await getCdsVersionInfo();
+        if (!versions.home) {
+            throw Error('Can not find global installation of module @sap/cds, which should be part of @sap/cds-dk');
+        }
+        globalCdsPathCache = versions.home;
+    }
+    return loadModuleFromProject<T>(globalCdsPathCache, '@sap/cds');
+}
+
+/**
+ * Get cds information, which includes versions and also the home path of cds module.
+ *
+ * @param [cwd] - optional folder in which cds --version should be executed
+ * @returns - result of call 'cds --version'
+ */
+function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> {
+    return new Promise((resolve, reject) => {
+        let out = '';
+        const cdsVersionInfo = spawn('cds', ['--version'], { cwd });
+        cdsVersionInfo.stdout.on('data', (data) => {
+            out += data.toString();
+        });
+        cdsVersionInfo.on('close', () => {
+            if (out) {
+                const versions: Record<string, string> = {};
+                for (const line of out.split('\n').filter((v) => v)) {
+                    const [key, value] = line.split(': ');
+                    versions[key] = value;
+                }
+                resolve(versions);
+            } else {
+                reject(new Error('Module path not found'));
+            }
+        });
+        cdsVersionInfo.on('error', (error) => {
+            reject(error);
+        });
+    });
 }
