@@ -16,7 +16,16 @@ export interface FragmentsResponse {
     message: string;
 }
 
+/**
+ * @description Class responsible for sending requests from client to the server
+ */
 export default class ApiRequestHandler {
+    /**
+     * @description Requests a given endpoint
+     * @param endpoint API Endpoint
+     * @param method RequestMethod
+     * @param data Data to be sent to the server
+     */
     private static async request<T>(endpoint: ApiEndpoints, method: RequestMethod, data?: any): Promise<T> {
         const config: RequestInit = {
             method,
@@ -35,18 +44,32 @@ export default class ApiRequestHandler {
         }
     }
 
+    /**
+     * Retrieves all XML fragments from the project's workspace
+     */
     public static async getFragments<T>(): Promise<T> {
         return this.request<T>(ApiEndpoints.FRAGMENT, RequestMethod.GET);
     }
 
+    /**
+     * Writes an XML fragment to the project's workspace
+     * @param data Data to be send to the server
+     */
     public static async writeFragment<T>(data: T): Promise<T> {
         return this.request<T>(ApiEndpoints.FRAGMENT, RequestMethod.POST, data);
     }
 
+    /**
+     * Retrieves all JS controllers from the project's workspace
+     */
     public static async getControllers<T>(): Promise<T> {
         return this.request<T>(ApiEndpoints.CONTROLLER, RequestMethod.GET);
     }
 
+    /**
+     * Writes a JS Controller to the project's workspace
+     * @param data Data to be send to the server
+     */
     public static async writeController<T>(data: T): Promise<T> {
         return this.request<T>(ApiEndpoints.FRAGMENT, RequestMethod.POST, data);
     }
