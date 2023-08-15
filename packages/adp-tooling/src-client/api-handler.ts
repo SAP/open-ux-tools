@@ -1,6 +1,7 @@
 export const enum ApiEndpoints {
     FRAGMENT = './adp/api/fragment',
-    CONTROLLER = './adp/api/controller'
+    CONTROLLER = './adp/api/controller',
+    MANIFEST_APP_DESCRIPTOR = '/adp/api/manifest'
 }
 
 export const enum RequestMethod {
@@ -38,7 +39,22 @@ export default class ApiRequestHandler {
         try {
             const response: Response = await fetch(endpoint, config);
 
-            return response.json();
+            if (!response.ok) {
+                throw new Error(`Request failed, status: ${response.status}.`);
+            }
+
+            switch (method) {
+                case RequestMethod.GET:
+                    return response.json();
+                case RequestMethod.POST:
+                    /**
+                     * Since POST usually creates something
+                     * and returns nothing (or a message) we just parse the text from res.send(msg)
+                     */
+                    return response.text() as T;
+                default:
+                    return response.json();
+            }
         } catch (e) {
             throw new Error(e.message);
         }
@@ -72,5 +88,12 @@ export default class ApiRequestHandler {
      */
     public static async writeController<T>(data: T): Promise<T> {
         return this.request<T>(ApiEndpoints.FRAGMENT, RequestMethod.POST, data);
+    }
+
+    /**
+     * Retrieves manifest.appdescr_variant from the project's workspace
+     */
+    public static async getManifestAppdescr<T>(): Promise<T> {
+        return this.request<T>(ApiEndpoints.MANIFEST_APP_DESCRIPTOR, RequestMethod.GET);
     }
 }
