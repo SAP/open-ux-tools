@@ -2,6 +2,7 @@ import { join } from 'path';
 import express from 'express';
 import { ZipFile } from 'yazl';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
+import rateLimit, { Options, RateLimitRequestHandler } from 'express-rate-limit';
 
 import type { NextFunction, Request, Response, Router } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
@@ -50,6 +51,10 @@ export class AdpPreview {
      * Routes handler class to handle API requests
      */
     private routesHandler: RoutesHandler;
+    /**
+     * Rate limiter for post routes, to prevent denial-of-service attacks
+     */
+    private rateLimiter: RateLimitRequestHandler;
 
     /**
      * @returns merged manifest.
@@ -106,6 +111,11 @@ export class AdpPreview {
         private readonly logger: ToolsLogger
     ) {
         this.routesHandler = new RoutesHandler(project, logger);
+        this.rateLimiter = rateLimit({
+            windowMs: 1 * 60 * 1000,
+            max: 6,
+            message: 'Too many requests from this IP, please try again later.'
+        });
     }
 
     /**
@@ -170,7 +180,7 @@ export class AdpPreview {
          * FRAGMENT Routes
          */
         router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments);
-        router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment);
+        router.post(ApiRoutes.FRAGMENT, this.rateLimiter, express.json(), this.routesHandler.handleWriteFragment);
 
         /**
          * CONTROLLER Routes
