@@ -2,6 +2,8 @@
     "extends": ["../../.eslintrc"],
     "parserOptions": { "project": "./tsconfig.eslint.json" },
     "rules": {
-        "import/no-unresolved": "off" // the rules has issues with UI5 imports
+        "import/no-unresolved": "off", // the rules has issues with UI5 imports
+        "@typescript-eslint/no-use-before-define": "warn",
+        "@typescript-eslint/ban-ts-comment": "warn"
     }
 }

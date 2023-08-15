@@ -18,18 +18,41 @@ import MessageToast from 'sap/m/MessageToast';
 import Icon from 'sap/ui/core/Icon';
 import VerticalLayout from 'sap/ui/layout/VerticalLayout';
 import HorizontalLayout from 'sap/ui/layout/HorizontalLayout';
+import Item from 'sap/ui/core/Item';
+import CustomData from 'sap/ui/core/CustomData';
 import { VerticalAlign } from 'sap/ui/core/library';
+import { ValueState } from 'sap/ui/core/library';
 
 /** sap.ui.model */
 import Filter from 'sap/ui/model/Filter';
 import FilterOperator from 'sap/ui/model/FilterOperator';
+import JSONModel from 'sap/ui/model/json/JSONModel';
 
 import ControlUtils from '../control-utils';
-import ApiRequestHandler, { FragmentsResponse } from '../api-handler';
+import type { FragmentsResponse } from '../api-handler';
+import ApiRequestHandler from '../api-handler';
 
+import type ElementMetadata from 'sap/ui/core/ElementMetadata';
+
+interface CreateFragmentProps {
+    fragmentName: string;
+    index: string | number;
+    targetAggregation: string;
+}
+
+/**
+ *
+ */
 export default class FragmentDialog {
+    /**
+     * @param rta Runtime Authoring
+     */
     constructor(private rta: sap.ui.rta.RuntimeAuthoring) {}
 
+    /**
+     * @description Initilizes "Add XML Fragment" functionality and adds a new item to the context menu
+     * @param contextMenu Context Menu from RTA
+     */
     public init(contextMenu: sap.ui.dt.plugin.ContextMenu) {
         const that = this;
 
@@ -41,32 +64,36 @@ export default class FragmentDialog {
         });
     }
 
+    /**
+     * @description Builds an Add XML Fragment dialog, fills it with data and opens it
+     * @param overlays Overlays when clicking on control
+     * @param that Points to FragmentDialog class for accessing its methods
+     */
     public async handleAddNewFragment(overlays: any, that: FragmentDialog) {
-        // @ts-ignore
-        const { ValueState, Item, CustomData } = sap.ui.core;
+        const selectorId = overlays[0].getId();
+        const oModel = new JSONModel();
 
         let bAddFragment: boolean;
-
         let runtimeControl: sap.ui.base.ManagedObject;
         let control = null;
-        const selectorId = overlays[0].getId();
-        // @ts-ignore
-        const oModel = new sap.ui.model.json.JSONModel();
-        // @ts-ignore
-        let controlMetadata: sap.ui.core.ElementMetadata = null;
+        let controlMetadata: ElementMetadata;
+
         // @ts-ignore
         const overlayControl: sap.ui.dt.ElementOverlay = sap.ui.getCore().byId(selectorId);
         if (overlayControl) {
             runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
-            // @ts-ignore
             controlMetadata = runtimeControl.getMetadata();
             control = await ControlUtils.buildControlData(runtimeControl, overlayControl);
+        } else {
+            return;
         }
 
-        const aAllAggregation = Object.keys(controlMetadata.getAllAggregations());
+        const aAllAggregation = Object.keys(controlMetadata!.getAllAggregations());
         const aHiddenAggregation = ['customData', 'layoutData', 'dependents'];
         const targetAggregation = aAllAggregation.filter(function (item) {
-            if (aHiddenAggregation.indexOf(item) === -1) return item;
+            if (aHiddenAggregation.indexOf(item) === -1) {
+                return item;
+            }
         });
         // @ts-ignore
         const defaultAggregation = runtimeControl.getMetadata().getDefaultAggregationName();
@@ -233,10 +260,8 @@ export default class FragmentDialog {
                 }
                 const selectedKey = oEvent.oSource.getSelectedKey();
                 if (!selectedItem) {
-                    // @ts-ignore
                     // sap.ui.getCore().byId('createNewFragmentLink').setEnabled(false);
                 } else {
-                    // @ts-ignore
                     // sap.ui.getCore().byId('createNewFragmentLink').setEnabled(true);
                 }
                 oModel.setProperty('/selectedAggregation/key', selectedKey);
@@ -248,16 +273,12 @@ export default class FragmentDialog {
 
                 let updatedIndexArray = [];
                 if (newSelectedControlChildren.length === 0) {
-                    // @ts-ignore
                     updatedIndexArray.push({ key: 0, value: 0 });
                 } else {
-                    // @ts-ignore
                     updatedIndexArray = newSelectedControlChildren.map(function (elem, index) {
                         return { key: index + 1, value: parseInt(elem) + 1 };
                     });
-                    // @ts-ignore
                     updatedIndexArray.unshift({ key: 0, value: 0 });
-                    // @ts-ignore
                     updatedIndexArray.push({
                         key: newSelectedControlChildren.length + 1,
                         value: newSelectedControlChildren.length + 1
@@ -337,7 +358,6 @@ export default class FragmentDialog {
                             width: '3.4rem'
                         }),
                         new Label({
-                            // @ts-ignore
                             text: control.name
                         })
                     ]
@@ -455,7 +475,9 @@ export default class FragmentDialog {
                             text: {
                                 path: '/selectedAggregation/value',
                                 formatter: function (oValue: string) {
-                                    if (oValue) return oValue.charAt(0).toUpperCase() + oValue.slice(1);
+                                    if (oValue) {
+                                        return oValue.charAt(0).toUpperCase() + oValue.slice(1);
+                                    }
                                 }
                             }
                         })
@@ -520,14 +542,14 @@ export default class FragmentDialog {
                         const sSelectedFragmentName = oModel.getProperty('/SelectedFragment/selectedFragmentName');
                         // Create a change file for already existing XML Fragment
                     }
-                }.bind(that)
+                }
             }),
             endButton: new Button({
                 text: 'Cancel',
                 press: function () {
                     fragmentDialog.close();
                     fragmentDialog.destroy();
-                }.bind(that)
+                }
             }),
             customHeader: new Bar({
                 contentLeft: [
@@ -557,10 +579,15 @@ export default class FragmentDialog {
 
     /**
      * @description Creates a new fragment for the specified control
-     * @param overlays Overlays
+     * @param fragmentName Fragment name
+     * @param index Index for XML Fragment placement
+     * @param targetAggregation Target aggregation for control
+     * @param runtimeControl Runtime control
      */
-    // @ts-ignore
-    public async createNewFragment({ fragmentName, index, targetAggregation }, runtimeControl: any): Promise<void> {
+    public async createNewFragment(
+        { fragmentName, index, targetAggregation }: CreateFragmentProps,
+        runtimeControl: any
+    ): Promise<void> {
         try {
             const options: RequestInit = {
                 body: JSON.stringify({ fragmentName }),
@@ -570,24 +597,20 @@ export default class FragmentDialog {
                 }
             };
 
-            const res: Response = await fetch('./UIAdaptation/api/writeFragment', options);
+            const res: Response = await fetch('./adp/api/fragment', options);
             const resText = await res.text();
 
             if (res.status !== 201) {
-                throw new Error(
-                    `Error writing a fragment. Response: ${res.status} ${res.statusText}. ${resText ?? ''}`
-                );
+                throw new Error(`Error writing a fragment. ${resText ?? ''}`);
             }
+
             MessageToast.show(resText);
-            // Send message to the frontend that the fragment has been successfully created.
-            console.info(resText);
         } catch (e) {
             // In case of error when creating a new fragment, we should not create a change file
             console.error(e.message);
+            MessageToast.show(e.message);
             return;
         }
-
-        // TODO: Create a new change that points to that XML Fragment
 
         const flexSettings = {
             baseId: 'sap.ui.demoapps.rta.fiorielements',

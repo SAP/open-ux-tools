@@ -1,4 +1,11 @@
+/**
+ *
+ */
 export default class ControlUtils {
+    /**
+     *
+     * @param overlayControl
+     */
     public static getRuntimeControl(overlayControl: sap.ui.dt.ElementOverlay): sap.ui.base.ManagedObject {
         let runtimeControl;
         if (overlayControl.getElementInstance) {
@@ -9,8 +16,13 @@ export default class ControlUtils {
         return runtimeControl;
     }
 
+    /**
+     *
+     * @param oControl
+     * @param sName
+     */
     public static getControlAggregationByName(oControl: any, sName: string) {
-        var aResult = [],
+        let aResult = [],
             oAggregation = ((oControl && oControl.getMetadata().getAllAggregations()) || {})[sName];
 
         if (oAggregation) {
@@ -31,6 +43,10 @@ export default class ControlUtils {
         return aResult;
     }
 
+    /**
+     *
+     * @param property
+     */
     private static analyzePropertyType(property: sap.ui.base.ManagedObjectMetadataProperties): any | undefined {
         const analyzedType = {
             primitiveType: 'any',
@@ -97,10 +113,18 @@ export default class ControlUtils {
         return analyzedType;
     }
 
+    /**
+     *
+     * @param analyzedType
+     */
     private static isPropertyEnabled(analyzedType: any): boolean {
         return analyzedType.isArray || analyzedType.primitiveType === 'any' ? false : true;
     }
 
+    /**
+     *
+     * @param rawValue
+     */
     private static normalizeObjectPropertyValue(rawValue: any): string {
         if (typeof rawValue === 'object' && rawValue instanceof Object && !Array.isArray(rawValue)) {
             try {
@@ -130,6 +154,10 @@ export default class ControlUtils {
         }
     }
 
+    /**
+     *
+     * @param name
+     */
     private static testIconPattern(name: string): boolean {
         // replace `/src|.*icon$|^icon.*/i`.test(property.name);
         // match 'src' or any string starting or ending with 'icon' (case insensitive;)
@@ -142,6 +170,12 @@ export default class ControlUtils {
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
+    /**
+     *
+     * @param control
+     * @param controlOverlay
+     * @param includeDocumentation
+     */
     public static async buildControlData(
         // @ts-ignore
         control: sap.ui.base.ManagedObject,
