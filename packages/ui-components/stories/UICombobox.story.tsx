@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import { Stack } from '@fluentui/react';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 
-import { UIComboBox } from '../src/components/UIComboBox';
+import { UIComboBox, UISelectableOptionMenuItemType } from '../src/components/UIComboBox';
 import { UICheckbox } from '../src/components/UICheckbox';
-import { data } from '../test/__mock__/select-data';
+import { data, groupsData } from '../test/__mock__/select-data';
 
 import { initIcons } from '../src/components/Icons';
 
@@ -290,6 +290,62 @@ export const accessibilityStates = () => {
                     </tr>
                 </table>
             </Stack>
+        </div>
+    );
+};
+
+export const groupsAndSeparators = () => {
+    const dataTemp: IComboBoxOption[] = [...groupsData];
+    dataTemp.splice(5, 0, {
+        key: 'div1',
+        text: '',
+        itemType: UISelectableOptionMenuItemType.Divider
+    });
+    dataTemp.splice(15, 0, {
+        key: 'div1',
+        text: '',
+        itemType: UISelectableOptionMenuItemType.Divider
+    });
+    return (
+        <div style={{ width: '300px' }}>
+            <UIComboBox
+                options={groupsData}
+                highlight={true}
+                allowFreeform={true}
+                useComboBoxAsMenuMinWidth={true}
+                autoComplete="on"
+                openMenuOnClick={true}
+                label="Menu items with headers"
+            />
+            <UIComboBox
+                options={dataTemp}
+                highlight={true}
+                allowFreeform={true}
+                useComboBoxAsMenuMinWidth={true}
+                autoComplete="on"
+                openMenuOnClick={true}
+                label="Menu items with dividers and headers"
+            />
+            <UIComboBox
+                options={groupsData}
+                highlight={true}
+                allowFreeform={true}
+                useComboBoxAsMenuMinWidth={true}
+                autoComplete="on"
+                openMenuOnClick={true}
+                multiSelect={true}
+                label="Menu items with headers - multi select"
+            />
+            <UIComboBox
+                options={dataTemp}
+                highlight={true}
+                allowFreeform={true}
+                useComboBoxAsMenuMinWidth={true}
+                autoComplete="on"
+                openMenuOnClick={true}
+                multiSelect={true}
+                label="Menu items with dividers and headers - multi select"
+            />
         </div>
     );
 };
