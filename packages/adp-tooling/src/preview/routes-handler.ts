@@ -4,6 +4,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import type { NextFunction, Request, Response, Router } from 'express';
 import { FolderNames, TemplateFileName, HttpStatusCodes } from '../types';
+import sanitize from 'sanitize-filename';
 
 interface WriteFragmentBody {
     fragmentName: string;
@@ -62,8 +63,8 @@ export default class RoutesHandler {
     public handleWriteFragment = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data = req.body as WriteFragmentBody;
-            const fragmentName = data.fragmentName;
-            const matching = this.project.byPath('/**/changes');
+
+            const fragmentName = sanitize(data.fragmentName);
 
             const projectPath = process.cwd();
 
@@ -90,8 +91,9 @@ export default class RoutesHandler {
                 res.send(HttpStatusCodes.BAD_REQUEST).send('Fragment Name was not provided!');
             }
         } catch (e) {
-            this.logger.error(e.message);
-            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
+            const sanitizedMsg = sanitize(e.message);
+            this.logger.error(sanitizedMsg);
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
             next(e);
         }
     };
