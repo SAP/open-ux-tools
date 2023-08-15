@@ -353,7 +353,7 @@ describe('Test getCapEnvironment', () => {
         await getCapEnvironment('PROJECT_ROOT');
 
         // Result check
-        expect(spawnSpy).toBeCalledWith('cds', ['--version'], { cwd: undefined });
+        expect(spawnSpy).toBeCalledWith('cds', ['--version'], { cwd: undefined, shell: true });
         expect(loadSpy).toHaveBeenNthCalledWith(1, 'PROJECT_ROOT', '@sap/cds');
         expect(loadSpy).toHaveBeenNthCalledWith(2, 'GLOBAL_ROOT', '@sap/cds');
         expect(forSpy).toBeCalledWith('cds', 'PROJECT_ROOT');

@@ -347,7 +347,7 @@ async function loadGlobalCdsModule<T>(): Promise<T> {
 function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> {
     return new Promise((resolve, reject) => {
         let out = '';
-        const cdsVersionInfo = spawn('cds', ['--version'], { cwd });
+        const cdsVersionInfo = spawn('cds', ['--version'], { cwd, shell: true });
         cdsVersionInfo.stdout.on('data', (data) => {
             out += data.toString();
         });
