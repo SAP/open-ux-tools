@@ -40,15 +40,38 @@ export interface AdpWriterConfig {
     };
 }
 
+export interface ManifestAppdescr {
+    fileName: string;
+    layer: string;
+    fileType: string;
+    reference: string;
+    id: string;
+    namespace: string;
+    version: string;
+    content: Content[];
+}
+
+export interface Content {
+    changeType: string;
+    content: any;
+    texts?: any;
+}
+
 export const enum FolderNames {
     Webapp = 'webapp',
     Changes = 'changes',
     Fragments = 'fragments',
-    Coding = 'coding'
+    Coding = 'coding',
+    Internalization = 'i18n'
 }
 
 export const enum TemplateFileName {
     Fragment = 'fragment.xml'
+}
+
+export const enum ProjectFileNames {
+    ManifestDescriptor = 'manifest.appdescr_variant',
+    InternalizationProperties = 'i18n.properties'
 }
 
 export const enum HttpStatusCodes {
