@@ -30,7 +30,6 @@
     "files": [
         "LICENSE",
         "templates",
-        "rta",
         "dist",
         "ui5.yaml",
         "bin",
