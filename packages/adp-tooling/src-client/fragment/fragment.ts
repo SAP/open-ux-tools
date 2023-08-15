@@ -40,6 +40,17 @@ interface CreateFragmentProps {
     targetAggregation: string;
 }
 
+export interface ManifestAppdescr {
+    fileName: string;
+    layer: string;
+    fileType: string;
+    reference: string;
+    id: string;
+    namespace: string;
+    version: string;
+    content: any[];
+}
+
 /**
  *
  */
@@ -95,9 +106,7 @@ export default class FragmentDialog {
                 return item;
             }
         });
-        // @ts-ignore
         const defaultAggregation = runtimeControl.getMetadata().getDefaultAggregationName();
-        // @ts-ignore
         const selectedControlName = control.name;
 
         let selectedControlChildren = Object.keys(
@@ -105,7 +114,6 @@ export default class FragmentDialog {
         );
 
         let allowIndexForDefaultAggregation = true;
-        // @ts-ignore
         const oDefaultAggregationDesignTimeMetadata = overlayControl.getDesignTimeMetadata().getData().aggregations[
             defaultAggregation
         ];
@@ -128,16 +136,13 @@ export default class FragmentDialog {
         oModel.setProperty('/indexHandlingFlag', allowIndexForDefaultAggregation);
 
         if (selectedControlChildren.length === 0) {
-            // @ts-ignore
             _aIndexArray.push({ key: 0, value: 0 });
         } else {
             // @ts-ignore
             _aIndexArray = selectedControlChildren.map(function (elem, index) {
                 return { key: index + 1, value: elem + 1 };
             });
-            // @ts-ignore
             _aIndexArray.unshift({ key: 0, value: 0 });
-            // @ts-ignore
             _aIndexArray.push({
                 key: selectedControlChildrenLength + 1,
                 value: selectedControlChildrenLength + 1
@@ -165,11 +170,12 @@ export default class FragmentDialog {
         try {
             const { fragments } = await ApiRequestHandler.getFragments<FragmentsResponse>();
 
+            // TODO: Filter fragments that have a respective change file
             oModel.setProperty('/filteredFragmentList', {
-                fragmentList: fragments,
+                fragmentList: fragments, // filtered fragments that have a corresponding change file
                 newFragmentName: '',
                 selectorId: selectorId,
-                unFilteredFragmentList: fragments
+                unFilteredFragmentList: fragments // All fragments under /fragments folder
             });
             oModel.setProperty('/fragmentCount', fragments.length);
         } catch (e) {}
@@ -589,22 +595,7 @@ export default class FragmentDialog {
         runtimeControl: any
     ): Promise<void> {
         try {
-            const options: RequestInit = {
-                body: JSON.stringify({ fragmentName }),
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            };
-
-            const res: Response = await fetch('./adp/api/fragment', options);
-            const resText = await res.text();
-
-            if (res.status !== 201) {
-                throw new Error(`Error writing a fragment. ${resText ?? ''}`);
-            }
-
-            MessageToast.show(resText);
+            await ApiRequestHandler.writeFragment<unknown>({ fragmentName });
         } catch (e) {
             // In case of error when creating a new fragment, we should not create a change file
             console.error(e.message);
@@ -612,13 +603,29 @@ export default class FragmentDialog {
             return;
         }
 
+        let manifest: ManifestAppdescr;
+        try {
+            manifest = await ApiRequestHandler.getManifestAppdescr<ManifestAppdescr>();
+
+            if (!manifest) {
+                // Highly unlikely since adaptation projects are required to have manifest.appdescr_variant
+                throw new Error('Could not retrieve manifest');
+            }
+        } catch (e) {
+            console.error(e.message);
+            MessageToast.show(e.message);
+            return;
+        }
+
+        const { id, reference, namespace, layer } = manifest;
+
         const flexSettings = {
-            baseId: 'sap.ui.demoapps.rta.fiorielements',
+            baseId: reference,
             developerMode: true,
-            layer: 'VENDOR',
-            namespace: 'apps/sap.ui.demoapps.rta.fiorielements/changes/',
-            projectId: 'adp.v2app',
-            rootNamespace: 'apps/sap.ui.demoapps.rta.fiorielements/',
+            layer: layer,
+            namespace: namespace,
+            projectId: id,
+            rootNamespace: namespace.split('/').slice(0, 2).join('/'),
             scenario: undefined
         };
 
@@ -640,16 +647,9 @@ export default class FragmentDialog {
             flexSettings
         );
 
-        // await sap.ui.rta.command.CommandFactory.getCommandFor<sap.ui.rta.command.FlexCommand>(
-        //     modifiedControl,
-        //     changeType,
-        //     modifiedValue,
-        //     null,
-        //     flexSettings
-        // );
-
+        /**
+         * The change will have pending state and will only be saved to the workspace when the user clicks save icon
+         *  */
         await this.rta.getCommandStack().pushAndExecute(command);
-
-        // TODO?: Send message to the app context that the change has been successfully created.
     }
 }
