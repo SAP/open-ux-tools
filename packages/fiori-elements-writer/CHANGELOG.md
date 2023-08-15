@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.23
+
+### Patch Changes
+
+-   ce5ccd4d: Use LocalStorageConnector instead of SessionStorageConnector in flexibilityServices
+
 ## 0.12.22
 
 ### Patch Changes

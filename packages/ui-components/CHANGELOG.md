@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.9.0
+
+### Minor Changes
+
+-   8577ffa4: Enhancements for DropdownMenues. UICombobox, UIDropdown and UIContextualMenu - support headers and separators. UIContextualMenu - support item text with icons(rendered on right).
+
 ## 1.8.5
 
 ### Patch Changes

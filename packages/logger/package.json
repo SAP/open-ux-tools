@@ -31,7 +31,7 @@
         "winston-transport": "4.5.0"
     },
     "devDependencies": {
-        "@types/debug": "4.1.7",
+        "@types/debug": "4.1.8",
         "@types/lodash": "4.14.176",
         "@types/vscode": "1.63.1",
         "jest-extended": "3.2.4",
