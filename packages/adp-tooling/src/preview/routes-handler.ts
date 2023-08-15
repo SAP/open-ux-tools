@@ -1,17 +1,19 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import type { ToolsLogger } from '@sap-ux/logger';
-import type { ReaderCollection } from '@ui5/fs';
-import type { NextFunction, Request, Response, Router } from 'express';
-import { FolderNames, TemplateFileName, HttpStatusCodes } from '../types';
 import sanitize from 'sanitize-filename';
+import type NodeCache from 'node-cache';
+import type { ReaderCollection } from '@ui5/fs';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { NextFunction, Request, Response } from 'express';
+
+import { FolderNames, TemplateFileName, HttpStatusCodes, ProjectFileNames, ManifestAppdescr } from '../types';
 
 interface WriteFragmentBody {
     fragmentName: string;
 }
 
 /**
- *
+ * @description Handles API Routes
  */
 export default class RoutesHandler {
     /**
@@ -20,7 +22,23 @@ export default class RoutesHandler {
      * @param project reference to the root of the project
      * @param logger logger instance
      */
-    constructor(private readonly project: ReaderCollection, private readonly logger: ToolsLogger) {}
+    constructor(
+        private readonly project: ReaderCollection,
+        private readonly logger: ToolsLogger,
+        private cache: NodeCache
+    ) {}
+
+    private withCache<T>(key: string, ttlSeconds: number = 60, cb: () => T) {
+        const cachedData = this.cache.get<T>(key);
+
+        if (cachedData !== undefined) {
+            return cachedData;
+        } else {
+            const data = cb();
+            this.cache.set(key, data, ttlSeconds);
+            return data;
+        }
+    }
 
     /**
      * Handler for reading all fragment files from the workspace
@@ -90,6 +108,34 @@ export default class RoutesHandler {
             } else {
                 res.send(HttpStatusCodes.BAD_REQUEST).send('Fragment Name was not provided!');
             }
+        } catch (e) {
+            const sanitizedMsg = sanitize(e.message);
+            this.logger.error(sanitizedMsg);
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
+            next(e);
+        }
+    };
+
+    /**
+     * Handler for reading the manifest.appdescr_variant contents
+     * @param req Request
+     * @param res Response
+     * @param next Next Function
+     */
+    public handleReadAppDescrVariant = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const projectPath = process.cwd();
+            const key = `__express__${req.path}`;
+
+            const fullPath = path.join(projectPath, FolderNames.Webapp, ProjectFileNames.ManifestDescriptor);
+
+            const readFile = () => {
+                return JSON.parse(fs.readFileSync(fullPath, 'utf8'));
+            };
+
+            // Need a way to clear the cache when server is stopped with flushAll()
+            const manifest = this.withCache<ManifestAppdescr>(key, 180, readFile);
+            res.status(HttpStatusCodes.OK).send(manifest);
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);
             this.logger.error(sanitizedMsg);
