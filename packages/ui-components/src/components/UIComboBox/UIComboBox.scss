@@ -182,6 +182,36 @@
                 outline-offset: $menu-item-border-offset;
             }
         }
+        // Header item
+        .ms-ComboBox-header,
+        .ms-Dropdown-header {
+            min-height: $menu-item-height;
+            height: $menu-item-height;
+            line-height: $menu-item-height;
+            padding: $menu-item-padding;
+            color: $menu-item-header-color;
+            font-size: $menu-item-header-font-size;
+            font-weight: $menu-item-header-font-weight;
+            text-transform: $menu-item-header-text-transform;
+        }
+        // Divider between groups
+        > div {
+            .ms-ComboBox-header,
+            .ms-Dropdown-header {
+                border-top: 1px solid $menu-item-divider-color;
+            }
+            &:first-child {
+                .ms-ComboBox-header,
+                .ms-Dropdown-header {
+                    border-top: none;
+                } 
+            }
+        }
+        // Separator
+        .ms-ComboBox-divider,
+        .ms-Dropdown-divider {
+            background-color: $menu-item-divider-color;
+        }
     }
     // Select/dropdown list items
     .ms-Dropdown-items {

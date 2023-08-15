@@ -109,6 +109,17 @@ function injectContextualMenuItemsStyle(items: IContextualMenuItem[]): IContextu
             item.submenuIconProps = submenuIconProps;
         }
 
+        if (item?.iconProps) {
+            item.onRenderContent = (props, renderers): React.ReactNode => {
+                return (
+                    <>
+                        {renderers.renderItemName(props)}
+                        {renderers.renderItemIcon(props)}
+                    </>
+                );
+            };
+        }
+
         return item;
     });
 }
