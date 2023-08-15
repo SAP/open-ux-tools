@@ -43,6 +43,8 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "express-rate-limit": "6.9.0",
+        "sanitize-filename": "1.6.3",
         "ejs": "3.1.7",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
