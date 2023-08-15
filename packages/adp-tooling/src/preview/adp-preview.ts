@@ -1,6 +1,7 @@
 import { join } from 'path';
 import express from 'express';
 import { ZipFile } from 'yazl';
+import NodeCache from 'node-cache';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import rateLimit, { Options, RateLimitRequestHandler } from 'express-rate-limit';
 
@@ -15,7 +16,8 @@ import RoutesHandler from './routes-handler';
 
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
-    CONTROLLER = '/adp/api/controller'
+    CONTROLLER = '/adp/api/controller',
+    MANIFEST_APP_DESCRIPTOR = '/adp/api/manifest'
 }
 
 /**
@@ -55,6 +57,10 @@ export class AdpPreview {
      * Rate limiter for post routes, to prevent denial-of-service attacks
      */
     private rateLimiter: RateLimitRequestHandler;
+    /**
+     * Cache handler for caching resources
+     */
+    private cache: NodeCache;
 
     /**
      * @returns merged manifest.
@@ -110,7 +116,8 @@ export class AdpPreview {
         private readonly project: ReaderCollection,
         private readonly logger: ToolsLogger
     ) {
-        this.routesHandler = new RoutesHandler(project, logger);
+        this.cache = new NodeCache();
+        this.routesHandler = new RoutesHandler(project, logger, this.cache);
         this.rateLimiter = rateLimit({
             windowMs: 1 * 60 * 1000,
             max: 6,
@@ -185,5 +192,11 @@ export class AdpPreview {
         /**
          * CONTROLLER Routes
          */
+        // TODO: Implement Controller routes
+
+        /**
+         * PROJECT Specific Routes
+         */
+        router.get(ApiRoutes.MANIFEST_APP_DESCRIPTOR, this.routesHandler.handleReadAppDescrVariant);
     }
 }
