@@ -6,7 +6,8 @@ import {
     IComboBoxOption,
     initializeComponentRef,
     KeyCodes,
-    IOnRenderComboBoxLabelProps
+    IOnRenderComboBoxLabelProps,
+    SelectableOptionMenuItemType
 } from '@fluentui/react';
 import { UIHighlightMenuOption } from '../UIContextualMenu/UIHighlightMenuOption';
 import './UIComboBox.scss';
@@ -21,7 +22,8 @@ import { isDropdownEmpty } from '../UIDropdown';
 export {
     IComboBoxOption as UIComboBoxOption,
     IComboBox as UIComboBoxRef,
-    IOnRenderComboBoxLabelProps as UIOnRenderComboBoxLabelProps
+    IOnRenderComboBoxLabelProps as UIOnRenderComboBoxLabelProps,
+    SelectableOptionMenuItemType as UISelectableOptionMenuItemType
 };
 
 export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps {
@@ -128,12 +130,32 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      */
     private updateHiddenOptions(opts: IComboBoxOption[]): void {
         this.isListHidden = true;
+        let currentGroup: IComboBoxOption | undefined;
+        let isGroupVisible = false;
+        const updateGroupVisibility = () => {
+            if (currentGroup) {
+                currentGroup.hidden = !isGroupVisible;
+            }
+        };
         for (const option of opts) {
-            option.hidden = option.text.toLowerCase().indexOf(this.query) === -1;
-            if (this.isListHidden && !option.hidden) {
-                this.isListHidden = false;
+            if (option.itemType === SelectableOptionMenuItemType.Header) {
+                // Update visibility of previously processed group
+                updateGroupVisibility();
+                // Reset current group and visibility flag
+                currentGroup = option;
+                isGroupVisible = false;
+            } else {
+                // Handle selectable item
+                const isHidden = option.text.toLowerCase().indexOf(this.query) === -1;
+                option.hidden = isHidden;
+                if (this.isListHidden && !option.hidden) {
+                    this.isListHidden = false;
+                }
+                // Groups should be visible if at least one item is visible within group
+                isGroupVisible = !isHidden || isGroupVisible;
             }
         }
+        updateGroupVisibility();
     }
 
     /**
@@ -226,7 +248,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
-        if (defaultRender && props && !props.itemType) {
+        if (defaultRender && props) {
             // Use data for custom onRender functions
             props.data = this.query;
             if (props.title === undefined) {
@@ -289,7 +311,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
-        if (props) {
+        if (props && props.itemType !== SelectableOptionMenuItemType.Header) {
             return <UIHighlightMenuOption text={props.text} query={this.query} />;
         }
         return defaultRender ? defaultRender(props) : null;
@@ -371,12 +393,23 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * Method called after each value live change - we need recheck if there is any visible item after search is done.
      * 1. If there no any visible item - we hide menu callout.
      * 2. If there is any visible item - we show menu callout.
+     *
+     * @param option Selected option.
+     * @param index Selected option's index.
+     * @param value Text value entered in input.
      */
-    private onPendingValueChanged(): void {
+    private onPendingValueChanged(
+        option?: IComboBoxOption | undefined,
+        index?: number | undefined,
+        value?: string | undefined
+    ): void {
         if (this.state.isListHidden !== this.isListHidden) {
             this.setState({
                 isListHidden: this.isListHidden
             });
+        }
+        if (this.props?.onPendingValueChanged) {
+            this.props?.onPendingValueChanged(option, index, value);
         }
     }
 

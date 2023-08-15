@@ -1,5 +1,5 @@
 import prompts from 'prompts';
-import { promptConfirmation, promptCredentials } from '../../../src/base/prompt';
+import { promptConfirmation } from '../../../src/base/prompt';
 
 describe('base/prompts', () => {
     const message = 'Test question?';
@@ -15,26 +15,6 @@ describe('base/prompts', () => {
             expect(await promptConfirmation(message)).toBe(true);
             prompts.inject([false]);
             expect(await promptConfirmation(message)).toBe(false);
-        });
-    });
-
-    describe('promptCredentials', () => {
-        const username = '~user';
-        const password = '~pass';
-
-        test('no default provided', async () => {
-            prompts.inject([username, password]);
-            const creds = await promptCredentials();
-            expect(creds.username).toBe(username);
-            expect(creds.password).toBe(password);
-        });
-
-        test('default provided', async () => {
-            prompts.inject([undefined, password]);
-            const providedUser = '~other';
-            const creds = await promptCredentials(providedUser);
-            expect(creds.username).toBe(providedUser);
-            expect(creds.password).toBe(password);
         });
     });
 });

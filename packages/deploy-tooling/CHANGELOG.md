@@ -1,5 +1,35 @@
 # @sap-ux/deploy-tooling
 
+## 0.9.5
+
+### Patch Changes
+
+-   Updated dependencies [290b6b59]
+    -   @sap-ux/system-access@0.2.0
+
+## 0.9.4
+
+### Patch Changes
+
+-   Updated dependencies [375ca861]
+    -   @sap-ux/ui5-config@0.19.0
+    -   @sap-ux/axios-extension@1.4.1
+
+## 0.9.3
+
+### Patch Changes
+
+-   24e45780: Updated dependency: axios@1.4.0
+-   Updated dependencies [24e45780]
+    -   @sap-ux/axios-extension@1.4.1
+    -   @sap-ux/btp-utils@0.11.8
+
+## 0.9.2
+
+### Patch Changes
+
+-   517c6ae9: Load dotenv when UI5 task is called
+
 ## 0.9.1
 
 ### Patch Changes
