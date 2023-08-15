@@ -1,12 +1,21 @@
-import type { ToolsLogger } from '@sap-ux/logger';
+import { join } from 'path';
+import express from 'express';
 import { ZipFile } from 'yazl';
-import type { AdpPreviewConfig, DescriptorVariant } from '../types';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
+
 import type { NextFunction, Request, Response, Router } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
-import { join } from 'path';
+import type { AdpPreviewConfig, DescriptorVariant } from '../types';
+
+import RoutesHandler from './routes-handler';
+
+export const enum ApiRoutes {
+    FRAGMENT = '/adp/api/fragment',
+    CONTROLLER = '/adp/api/controller'
+}
 
 /**
  * Create a buffer based on the given zip file object.
@@ -37,6 +46,10 @@ export class AdpPreview {
      * Merged descriptor variant with reference app manifest
      */
     private mergedDescriptor: MergedAppDescriptor;
+    /**
+     * Routes handler class to handle API requests
+     */
+    private routesHandler: RoutesHandler;
 
     /**
      * @returns merged manifest.
@@ -91,7 +104,9 @@ export class AdpPreview {
         private readonly config: AdpPreviewConfig,
         private readonly project: ReaderCollection,
         private readonly logger: ToolsLogger
-    ) {}
+    ) {
+        this.routesHandler = new RoutesHandler(project, logger);
+    }
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
@@ -151,16 +166,14 @@ export class AdpPreview {
      * @param router router that is to be enhanced with the API
      */
     addApis(router: Router): void {
-        router.get('/adp/api/fragment', async (_req: Request, res: Response) => {
-            const files = await this.project.byGlob('/**/changes/**/*.fragment.xml');
-            try {
-                const names = files.map((file) => file.getPath());
-                res.status(200).contentType('application/json').send(JSON.stringify(names));
-                this.logger.debug(`Read fragments ${JSON.stringify(names)}`);
-            } catch (error) {
-                this.logger.warn(error.message);
-                res.status(500);
-            }
-        });
+        /**
+         * FRAGMENT Routes
+         */
+        router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments);
+        router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment);
+
+        /**
+         * CONTROLLER Routes
+         */
     }
 }
