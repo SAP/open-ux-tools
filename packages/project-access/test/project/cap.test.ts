@@ -338,6 +338,36 @@ describe('Test getCapEnvironment', () => {
         }
     });
 
+    test('call to cds --version does not contain result', async () => {
+        // Mock setup
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock(''));
+        const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
+
+        // Test execution
+        try {
+            await getCapEnvironment('PROJECT_ROOT');
+            fail('Call to getCapEnvironment() should have thrown error due to missing cds module path but did not');
+        } catch (error) {
+            expect(error.toString()).toContain('Error: Module path not found');
+        }
+        expect(loadSpy).toHaveBeenCalledTimes(1);
+    });
+
+    test('call to cds --version throws error', async () => {
+        // Mock setup
+        jest.spyOn(childProcessMock, 'spawn').mockReturnValueOnce(getChildProcessMock('', true));
+        const loadSpy = jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockRejectedValueOnce('ERROR_LOCAL');
+
+        // Test execution
+        try {
+            await getCapEnvironment('PROJECT_ROOT');
+            fail('Call to getCapEnvironment() should have thrown error due to missing cds module path but did not');
+        } catch (error) {
+            expect(error.toString()).toContain('Error: Module path not found');
+        }
+        expect(loadSpy).toHaveBeenCalledTimes(1);
+    });
+
     test('with cds loaded from other location than project', async () => {
         // Mock setup
         const spawnSpy = jest
@@ -359,7 +389,7 @@ describe('Test getCapEnvironment', () => {
         expect(forSpy).toBeCalledWith('cds', 'PROJECT_ROOT');
     });
 
-    function getChildProcessMock(data: any): childProcess.ChildProcess {
+    function getChildProcessMock(data: any, throwError = false): childProcess.ChildProcess {
         return {
             stdout: {
                 on: (type: 'data', cb: (chunk: any) => void) => {
@@ -368,9 +398,12 @@ describe('Test getCapEnvironment', () => {
                     }
                 }
             },
-            on: (type: 'close', cb: () => void) => {
+            on: (type: 'close' | 'error', cb: (error?: string) => void) => {
                 if (type === 'close') {
                     cb();
+                }
+                if (type === 'error' && throwError) {
+                    cb('ERROR');
                 }
             }
         } as childProcess.ChildProcess;
