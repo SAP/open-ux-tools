@@ -30,7 +30,7 @@ import Filter from 'sap/ui/model/Filter';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import FilterOperator from 'sap/ui/model/FilterOperator';
 
-import type { BuiltRuntimeControl, ControlManagedObject } from '../control-utils';
+import type { BuiltRuntimeControl } from '../control-utils';
 import ControlUtils from '../control-utils';
 import ApiRequestHandler from '../api-handler';
 import type { FragmentsResponse } from '../api-handler';
@@ -41,6 +41,15 @@ import type Event from 'sap/ui/base/Event';
 import type EventProvider from 'sap/ui/base/EventProvider';
 import type Binding from 'sap/ui/model/Binding';
 
+import CommandFactory from 'sap/ui/rta/command/CommandFactory';
+import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+
+import type OverflowToolbar from 'sap/m/OverflowToolbar';
+import type { Layer } from 'sap/ui/fl';
+
 interface CreateFragmentProps {
     fragmentName: string;
     index: string | number;
@@ -49,7 +58,7 @@ interface CreateFragmentProps {
 
 export interface ManifestAppdescr {
     fileName: string;
-    layer: string;
+    layer: Layer;
     fileType: string;
     reference: string;
     id: string;
@@ -81,13 +90,13 @@ export default class FragmentDialog {
     /**
      * @param rta Runtime Authoring
      */
-    constructor(private rta: sap.ui.rta.RuntimeAuthoring) {}
+    constructor(private rta: RuntimeAuthoring) {}
 
     /**
      * @description Initilizes "Add XML Fragment" functionality and adds a new item to the context menu
      * @param contextMenu Context Menu from RTA
      */
-    public init(contextMenu: sap.ui.dt.plugin.ContextMenu) {
+    public init(contextMenu: ContextMenu) {
         const that = this;
 
         contextMenu.addMenuItem({
@@ -108,13 +117,13 @@ export default class FragmentDialog {
         const jsonModel = new JSONModel();
 
         let buttonAddFragment: boolean;
-        let runtimeControl: ControlManagedObject;
+        let runtimeControl: OverflowToolbar;
         let control: BuiltRuntimeControl;
         let controlMetadata: ManagedObjectMetadata;
 
-        const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as sap.ui.dt.ElementOverlay;
+        const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
         if (overlayControl) {
-            runtimeControl = ControlUtils.getRuntimeControl(overlayControl) as unknown as ControlManagedObject;
+            runtimeControl = ControlUtils.getRuntimeControl(overlayControl) as OverflowToolbar;
             controlMetadata = runtimeControl.getMetadata();
             control = await ControlUtils.buildControlData(runtimeControl, overlayControl);
         } else {
@@ -606,7 +615,7 @@ export default class FragmentDialog {
      */
     private async createNewFragment(
         fragmentData: CreateFragmentProps,
-        runtimeControl: ControlManagedObject,
+        runtimeControl: OverflowToolbar,
         that: FragmentDialog
     ): Promise<void> {
         const { fragmentName, index, targetAggregation } = fragmentData;
@@ -627,7 +636,7 @@ export default class FragmentDialog {
      * @param fragmentData Fragment Data
      * @param runtimeControl Runtime control
      */
-    private async createFragmentChange(fragmentData: CreateFragmentProps, runtimeControl: ControlManagedObject) {
+    private async createFragmentChange(fragmentData: CreateFragmentProps, runtimeControl: OverflowToolbar) {
         const { fragmentName, index, targetAggregation } = fragmentData;
         let manifest: ManifestAppdescr;
         try {
@@ -655,7 +664,7 @@ export default class FragmentDialog {
             scenario: undefined
         };
 
-        const designMetadata = sap.ui.dt.OverlayRegistry.getOverlay(runtimeControl).getDesignTimeMetadata();
+        const designMetadata = OverlayRegistry.getOverlay(runtimeControl).getDesignTimeMetadata();
 
         const modifiedValue = {
             fragment:
@@ -668,7 +677,7 @@ export default class FragmentDialog {
         /**
          * Generate the command to be pushed to command stack
          */
-        const command = await sap.ui.rta.command.CommandFactory.getCommandFor(
+        const command = await CommandFactory.getCommandFor(
             runtimeControl,
             'addXML',
             modifiedValue,

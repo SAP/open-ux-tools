@@ -1,9 +1,9 @@
 import Utils from 'sap/ui/fl/Utils';
 import DataType from 'sap/ui/base/DataType';
-import ElementOverlay from 'sap/ui/dt/ElementOverlay';
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
-import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
-import type ManagedObjectMetadataProperties from 'sap/ui/base/ManagedObjectMetadataProperties';
+import type { MetadataOptions } from 'sap/ui/base/ManagedObject';
+import type OverflowToolbar from 'sap/m/OverflowToolbar';
 
 export interface BuiltRuntimeControl {
     id: string;
@@ -24,19 +24,20 @@ export interface Properties {
     isIcon?: boolean;
 }
 
-export interface ControlManagedObject extends ManagedObject {
-    __calledJSONKeys: boolean;
-    getMetadata: () => ManagedObjectMetadata & {
-        getJSONKeys: () => unknown;
-    };
-}
-
 interface AnalyzedType {
     primitiveType: string;
     ui5Type: string | null;
     enumValues: { [key: string]: string } | null;
     isArray: boolean;
 }
+
+// TODO: review this one and check if should be moved to the types project
+type MetadataOptionsProperty = MetadataOptions.Property & {
+    name: string;
+    getType(): {
+        getName(): string;
+    };
+};
 
 /**
  * @description Handles calling control specific functions for retrieving control data
@@ -65,7 +66,7 @@ export default class ControlUtils {
      * @param name Aggregation name
      * @returns Array of control aggregations
      */
-    public static getControlAggregationByName(control: ControlManagedObject, name: string) {
+    public static getControlAggregationByName(control: OverflowToolbar & { __calledJSONKeys?: boolean }, name: string) {
         let result = [];
         const aggregation = (control ? control.getMetadata().getAllAggregations() : {})[name] as unknown as object & {
             _sGetter: string;
@@ -73,7 +74,7 @@ export default class ControlUtils {
 
         if (aggregation) {
             if (!aggregation._sGetter && !control.__calledJSONKeys) {
-                control.getMetadata().getJSONKeys();
+                (control.getMetadata() as any).getJSONKeys();
                 // Performance optimization
                 control.__calledJSONKeys = true;
             }
@@ -96,7 +97,7 @@ export default class ControlUtils {
      * @param property Managed Objects metadata properties
      * @returns {AnalyzedType | undefined} Analyzed type
      */
-    private static analyzePropertyType(property: ManagedObjectMetadataProperties): AnalyzedType | undefined {
+    private static analyzePropertyType(property: MetadataOptionsProperty): AnalyzedType | undefined {
         const analyzedType: AnalyzedType = {
             primitiveType: 'any',
             ui5Type: null,
@@ -248,16 +249,14 @@ export default class ControlUtils {
             : undefined;
 
         // Add the control's properties
-        const allProperties = controlMetadata.getAllProperties() as unknown as {
-            [name: string]: ManagedObjectMetadataProperties;
-        };
+        const allProperties = controlMetadata.getAllProperties();
         const propertyNames: string[] = Object.keys(allProperties);
         const properties: Properties[] = [];
         // const document = includeDocumentation ? await getDocumentation(selectedControlName, selContLibName) : {};
         // ? Do we need this documentation at all
         const document: { [key: string]: object } = {};
         for (const propertyName of propertyNames) {
-            const property = allProperties[propertyName];
+            const property = allProperties[propertyName] as MetadataOptionsProperty;
 
             const analyzedType = this.analyzePropertyType(property);
             if (!analyzedType) {

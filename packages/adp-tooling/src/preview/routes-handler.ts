@@ -34,8 +34,8 @@ export default class RoutesHandler {
      * Generic caching function, caches the results of a callback
      *
      * @param key Cache key - unique identifier
-     * @param ttlSeconds Time-to-live for cached item
      * @param cb Callback used to return data
+     * @param ttlSeconds Time-to-live for cached item
      * @template T
      * @returns {T} Type or Interface of the return data
      */
