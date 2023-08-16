@@ -166,7 +166,7 @@ export default class ControlUtils {
      * @returns {boolean} Boolean value
      */
     private static isPropertyEnabled(analyzedType: AnalyzedType): boolean {
-        return analyzedType.isArray || analyzedType.primitiveType === 'any' ? false : true;
+        return analyzedType.isArray || analyzedType.primitiveType === 'any';
     }
 
     /**
