@@ -2,11 +2,9 @@ import { join } from 'path';
 import express from 'express';
 import { ZipFile } from 'yazl';
 import NodeCache from 'node-cache';
-import rateLimit from 'express-rate-limit';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import type { RateLimitRequestHandler } from 'express-rate-limit';
 
-import type { NextFunction, Request, Response, Router } from 'express';
+import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
@@ -54,10 +52,6 @@ export class AdpPreview {
      * Routes handler class to handle API requests
      */
     private routesHandler: RoutesHandler;
-    /**
-     * Rate limiter for post routes, to prevent denial-of-service attacks
-     */
-    private rateLimiter: RateLimitRequestHandler;
     /**
      * Cache handler for caching resources
      */
@@ -119,11 +113,6 @@ export class AdpPreview {
     ) {
         this.cache = new NodeCache();
         this.routesHandler = new RoutesHandler(project, logger, this.cache);
-        this.rateLimiter = rateLimit({
-            windowMs: 1 * 60 * 1000,
-            max: 6,
-            message: 'Too many requests from this IP, please try again later.'
-        });
     }
 
     /**
@@ -187,17 +176,16 @@ export class AdpPreview {
         /**
          * FRAGMENT Routes
          */
-        router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments);
-        router.post(ApiRoutes.FRAGMENT, this.rateLimiter, express.json(), this.routesHandler.handleWriteFragment);
+        router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
+        router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment as RequestHandler);
 
         /**
          * CONTROLLER Routes
          */
-        // TODO: Implement Controller routes
 
         /**
          * PROJECT Specific Routes
          */
-        router.get(ApiRoutes.MANIFEST_APP_DESCRIPTOR, this.routesHandler.handleReadAppDescrVariant);
+        router.get(ApiRoutes.MANIFEST_APP_DESCRIPTOR, this.routesHandler.handleReadAppDescrVariant as RequestHandler);
     }
 }

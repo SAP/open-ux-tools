@@ -250,7 +250,7 @@ export default class FragmentDialog {
             width: '24rem',
             description: '.fragment.xml',
             value: '{/newFragmentName}',
-            liveChange: async function (event: Event) {
+            liveChange: (event: Event) => {
                 const source = event.getSource() as ExtendedEventProvider;
                 const fragmentName = source.getValue();
                 const fragmentList = jsonModel.getProperty('/filteredFragmentList/unFilteredFragmentList');
@@ -282,6 +282,8 @@ export default class FragmentDialog {
                         fragmentDialog.getBeginButton().setEnabled(true);
                         source.setValueState(ValueState.None);
                         jsonModel.setProperty('/fragmentNameToCreate', fragmentName);
+                        break;
+                    default:
                         break;
                 }
             }
