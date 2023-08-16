@@ -39,7 +39,7 @@ export default class RoutesHandler {
      * @template T
      * @returns {T} Type or Interface of the return data
      */
-    private withCache<T>(key: string, ttlSeconds: number = 60, cb: () => T): T {
+    private withCache<T>(key: string, cb: () => T, ttlSeconds: number = 60): T {
         const cachedData = this.cache.get<T>(key);
 
         if (cachedData !== undefined) {
@@ -186,7 +186,7 @@ export default class RoutesHandler {
             };
 
             // Need a way to clear the cache when server is stopped with flushAll()
-            const manifest = this.withCache<ManifestAppdescr>(key, 180, readFile);
+            const manifest = this.withCache<ManifestAppdescr>(key, readFile, 180);
             res.status(HttpStatusCodes.OK).send(manifest);
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);

@@ -1,20 +1,27 @@
+import Utils from 'sap/ui/fl/Utils';
 import DataType from 'sap/ui/base/DataType';
+import ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
+import type ManagedObjectMetadataProperties from 'sap/ui/base/ManagedObjectMetadataProperties';
 
 export interface BuiltRuntimeControl {
     id: string;
     type: string;
-    properties: {
-        type: string;
-        editor: string;
-        name: string;
-        readableName: string;
-        value: unknown | boolean;
-        isEnabled: boolean;
-        documentation: object;
-    }[];
+    properties: Properties[];
     name: string;
+}
+
+export interface Properties {
+    type: string;
+    editor: string;
+    name: string;
+    readableName: string;
+    value: unknown | boolean;
+    isEnabled: boolean;
+    documentation: object;
+    options?: { key: string; text: string }[];
+    isIcon?: boolean;
 }
 
 export interface ControlManagedObject extends ManagedObject {
@@ -41,7 +48,7 @@ export default class ControlUtils {
      * @param overlayControl Overlay
      * @returns {ManagedObject} Managed Object instance
      */
-    public static getRuntimeControl(overlayControl: sap.ui.dt.ElementOverlay): sap.ui.base.ManagedObject {
+    public static getRuntimeControl(overlayControl: ElementOverlay): ManagedObject {
         let runtimeControl;
         if (overlayControl.getElementInstance) {
             runtimeControl = overlayControl.getElementInstance();
@@ -60,9 +67,7 @@ export default class ControlUtils {
      */
     public static getControlAggregationByName(control: ControlManagedObject, name: string) {
         let result = [];
-        const aggregation = ((control && control.getMetadata().getAllAggregations()) || {})[
-            name
-        ] as unknown as object & {
+        const aggregation = (control ? control.getMetadata().getAllAggregations() : {})[name] as unknown as object & {
             _sGetter: string;
         };
 
@@ -81,7 +86,7 @@ export default class ControlUtils {
             if (typeof result !== 'object') {
                 result = [];
             }
-            result = result.splice ? result : [result];
+            result = Array.isArray(result) ? result : [result];
         }
         return result;
     }
@@ -91,9 +96,7 @@ export default class ControlUtils {
      * @param property Managed Objects metadata properties
      * @returns {AnalyzedType | undefined} Analyzed type
      */
-    private static analyzePropertyType(
-        property: sap.ui.base.ManagedObjectMetadataProperties
-    ): AnalyzedType | undefined {
+    private static analyzePropertyType(property: ManagedObjectMetadataProperties): AnalyzedType | undefined {
         const analyzedType: AnalyzedType = {
             primitiveType: 'any',
             ui5Type: null,
@@ -231,15 +234,14 @@ export default class ControlUtils {
      */
     public static async buildControlData(
         control: ManagedObject,
-        controlOverlay?: sap.ui.dt.ElementOverlay,
+        controlOverlay?: ElementOverlay,
         _includeDocumentation = true
     ): Promise<BuiltRuntimeControl> {
         const controlMetadata = control.getMetadata();
 
         const selectedControlName = controlMetadata.getName();
-        // const selContLibName = controlMetadata.getLibraryName();
 
-        const hasStableId = sap.ui.fl.Utils.checkControlId(control);
+        const hasStableId = Utils.checkControlId(control);
 
         const controlProperties = controlOverlay
             ? controlOverlay.getDesignTimeMetadata().getData().properties
@@ -247,10 +249,10 @@ export default class ControlUtils {
 
         // Add the control's properties
         const allProperties = controlMetadata.getAllProperties() as unknown as {
-            [name: string]: sap.ui.base.ManagedObjectMetadataProperties;
+            [name: string]: ManagedObjectMetadataProperties;
         };
         const propertyNames: string[] = Object.keys(allProperties);
-        const properties = [];
+        const properties: Properties[] = [];
         // const document = includeDocumentation ? await getDocumentation(selectedControlName, selContLibName) : {};
         // ? Do we need this documentation at all
         const document: { [key: string]: object } = {};
@@ -264,7 +266,7 @@ export default class ControlUtils {
             // the default behavior is that the property is enabled
             // meaning it's not ignored during design time
             let ignore = false;
-            if (controlProperties && controlProperties[property.name]) {
+            if (controlProperties?.[property?.name]) {
                 // check whether the property should be ignored in design time or not
                 // if it's 'undefined' then it's not considered when building isEnabled because it's 'true'
                 ignore = controlProperties[property.name].ignore;
@@ -298,16 +300,15 @@ export default class ControlUtils {
                 this.testIconPattern(property.name) &&
                 selectedControlName !== 'sap.m.Image' &&
                 analyzedType.ui5Type === 'sap.ui.core.URI';
-            const documentation =
-                document && document[property.name]
-                    ? document[property.name]
-                    : {
-                          defaultValue: (property.defaultValue as string) || '-',
-                          description: '',
-                          propertyName: property.name,
-                          type: analyzedType.ui5Type,
-                          propertyType: analyzedType.ui5Type
-                      };
+            const documentation = document?.[property.name]
+                ? document[property.name]
+                : {
+                      defaultValue: (property.defaultValue as string) || '-',
+                      description: '',
+                      propertyName: property.name,
+                      type: analyzedType.ui5Type,
+                      propertyType: analyzedType.ui5Type
+                  };
             const readableName = this.convertCamelCaseToPascalCase(property.name);
             switch (analyzedType.primitiveType) {
                 case 'enum': {
@@ -380,10 +381,12 @@ export default class ControlUtils {
             }
         }
 
+        const sortedProperties = properties.sort((a, b) => (a.name > b.name ? 1 : -1));
+
         return {
             id: control.getId(), //the id of the underlying control/aggregation
             type: selectedControlName, //the name of the ui5 class of the control/aggregation
-            properties: properties.sort((a, b) => (a.name > b.name ? 1 : -1)),
+            properties: sortedProperties,
             name: selectedControlName
         };
     }

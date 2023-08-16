@@ -30,9 +30,6 @@ import Filter from 'sap/ui/model/Filter';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import FilterOperator from 'sap/ui/model/FilterOperator';
 
-/** sap.ui.dt */
-// import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-
 import type { BuiltRuntimeControl, ControlManagedObject } from '../control-utils';
 import ControlUtils from '../control-utils';
 import ApiRequestHandler from '../api-handler';
@@ -636,7 +633,7 @@ export default class FragmentDialog {
         try {
             manifest = await ApiRequestHandler.getManifestAppdescr<ManifestAppdescr>();
 
-            if (manifest) {
+            if (!manifest) {
                 // Highly unlikely since adaptation projects are required to have manifest.appdescr_variant
                 throw new Error('Could not retrieve manifest');
             }
