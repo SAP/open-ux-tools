@@ -11,7 +11,7 @@
     },
     "references": [
         {
-            "path": "../adp-tooling/tsconfig.server.json",
+            "path": "../adp-tooling",
         },
         {
             "path": "../logger"

@@ -15,8 +15,8 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "pnpm build:server && pnpm build:client",
-        "build:server": "tsc --build tsconfig.server.json",
-        "build:client": "tsc --project tsconfig.client.json && babel --extensions .ts ./src-client -d ./dist/preview/client",
+        "build:server": "tsc --build",
+        "build:client": "tsc --noEmit --project src/preview/client/tsconfig.json && babel --extensions .ts ./src/preview/client -d ./dist/preview/client",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
