@@ -1,7 +1,5 @@
 module.exports = {
-    'root': true,
     'extends': ['../../.eslintrc'],
-    'parser': '@typescript-eslint/parser',
     'parserOptions': { 'project': './tsconfig.eslint.json', 'sourceType': 'module', 'tsconfigRootDir': __dirname },
     'rules': {
         'import/no-unresolved': 'off', // the rules has issues with UI5 imports
