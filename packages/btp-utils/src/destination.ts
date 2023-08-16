@@ -16,7 +16,7 @@ export enum WebIDEAdditionalData {
     API_MGMT = 'api_mgmt'
 }
 
-// Addiotional destination properties relevant for development
+// Additional destination properties relevant for development
 type DestinationProperty =
     | 'WebIDEEnabled'
     | 'WebIDESystem'
@@ -55,7 +55,7 @@ export function isAbapSystem(destination: Partial<Destination>): boolean {
 }
 
 /**
- * Checks whether the provided destination is configured to point to an ABAP environmnent on BTP (aka steampunk).
+ * Checks whether the provided destination is configured to point to an ABAP environment on BTP (aka steampunk).
  *
  * @param destination destination info
  * @returns true of the destination is configured for a steampunk system

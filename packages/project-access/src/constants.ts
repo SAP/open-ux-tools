@@ -1,9 +1,13 @@
 export const FileName = {
-    Fragment: 'fragment.xml',
+    AdaptationConfig: 'config.json',
+    ExtConfigJson: '.extconfig.json',
     Manifest: 'manifest.json',
+    ManifestAppDescrVar: 'manifest.appdescr_variant',
+    MtaYaml: 'mta.yaml',
     Package: 'package.json',
+    Tsconfig: 'tsconfig.json',
     Ui5Yaml: 'ui5.yaml',
     Ui5LocalYaml: 'ui5-local.yaml',
     Ui5MockYaml: 'ui5-mock.yaml',
-    View: 'view.xml'
+    UI5DeployYaml: 'ui5-deploy.yaml'
 } as const;

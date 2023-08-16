@@ -1,5 +1,239 @@
 # @sap-ux/ui-components
 
+## 1.9.0
+
+### Minor Changes
+
+-   8577ffa4: Enhancements for DropdownMenues. UICombobox, UIDropdown and UIContextualMenu - support headers and separators. UIContextualMenu - support item text with icons(rendered on right).
+
+## 1.8.5
+
+### Patch Changes
+
+-   d3e7d06b: Fixes for 'promises should not be misused' sonar bugs
+
+## 1.8.4
+
+### Patch Changes
+
+-   deb06c73: `terminal` icon added
+
+## 1.8.3
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 1.8.2
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
+## 1.8.1
+
+### Patch Changes
+
+-   e315fd8a: fix: make icon positioning consistent in searchbox inputs
+
+## 1.8.0
+
+### Minor Changes
+
+-   5c34522c: fix on click logic
+
+## 1.7.0
+
+### Minor Changes
+
+-   8c3aecc6: update to ui action callout component
+
+## 1.6.0
+
+### Minor Changes
+
+-   14c4c34f: feat: update clipboard icons
+
+## 1.5.1
+
+### Patch Changes
+
+-   6b26d421: UITranslationInput. Generic type for "entries" property("I18nBundle" type) - generic type is used as parameter when "onShowExistingEntry" is called.
+
+## 1.5.0
+
+### Minor Changes
+
+-   faa2fac3: feat(ui-components) add uiseparator to index
+
+## 1.4.0
+
+### Minor Changes
+
+-   3771a579: feat(ui-components) icons - separator - small btn
+
+## 1.3.9
+
+### Patch Changes
+
+-   28c472e: Addition of new icons- refresh, refreshsmall, expandnodes, contractnodes, contractnodessmall
+
+## 1.3.8
+
+### Patch Changes
+
+-   3a61b8d: Column ids added to the flexible table header row cells
+
+## 1.3.7
+
+### Patch Changes
+
+-   3d9e5ef: chore: upgrade webpack to version 5.76.0
+
+## 1.3.6
+
+### Patch Changes
+
+-   925a52c: UITranslationInput. Fix - allow to pass custom "title" when i18n entry resolved
+
+## 1.3.5
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
+## 1.3.4
+
+### Patch Changes
+
+-   f8c3fe5: Updated filter icon, as it was totally buggy
+
+## 1.3.3
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
+## 1.3.2
+
+### Patch Changes
+
+-   59fc7a9: message sent icon added
+
+## 1.3.1
+
+### Patch Changes
+
+-   4418744: UITranslationInput. Rename accept button default text, add title to input with information about resolved i18n value
+
+## 1.3.0
+
+### Minor Changes
+
+-   e007958: feat(21552): add generic combobox column type to UITable (ColumnControlType.UICombobox)
+
+## 1.2.0
+
+### Minor Changes
+
+-   92184eb: New component - UITranslationInput which provide UI to generate i18n key for entered text value
+
+## 1.1.10
+
+### Patch Changes
+
+-   2bac3c4: New icon Id tag
+
+## 1.1.9
+
+### Patch Changes
+
+-   ce13abe: UITextInput. Background color issue for read only input field
+
+## 1.1.8
+
+### Patch Changes
+
+-   b9b66e9: UIFlexibleTable. Fixed "undefined" error when "No data." row was clicked and dragged.
+
+## 1.1.7
+
+### Patch Changes
+
+-   2942309: fix(uic): fixes jumping cursor in editable table input
+
+## 1.1.6
+
+### Patch Changes
+
+-   2014255: Added warning icon with smiley style.
+
+## 1.1.5
+
+### Patch Changes
+
+-   e415208: UIActionButton. Remove forced color for inner icon - icon will be taken from individual icon styles
+
+## 1.1.4
+
+### Patch Changes
+
+-   2447b96: New icons added for knowledge centre, Icon16/ Mission, Graduate, ClockShort, ClockMedium, ClockLong
+
+## 1.1.3
+
+### Patch Changes
+
+-   dbfb2ae: UITextInput, UIComboBox, UIDropdown, UITreeDropdown. Support for "readonly" property
+
+## 1.1.2
+
+### Patch Changes
+
+-   1777aff: UIFlexibleTable. Added "grab" icon for cursor when table reordering is enabled. Cursor icon changes to "default" when reordering is disabled, "grabbing" icon is displayed if reordering is started.
+
+## 1.1.1
+
+### Patch Changes
+
+-   703989a: UIDialog. Enable animation for dialog open with new property "isOpenAnimated". Default value is "true".
+
+## 1.1.0
+
+### Minor Changes
+
+-   69260c3: Adds UIActionCallout
+
+## 1.0.28
+
+### Patch Changes
+
+-   d19e72e: New 16 px and 12px icons added. 16px Icons: Link, Highlighter. 12px Icons: Key, Hide, Main Entity, Foreighn Key, Complex Type
+
+## 1.0.27
+
+### Patch Changes
+
+-   e7d10c9: Storybook update
+
+## 1.0.26
+
+### Patch Changes
+
+-   cedf427: UICombobox. Default value for property "openMenuOnClick" changed to "true". Additionally, property "openMenuOnClick" is not considered during key press handling - dropdown menu is opened on first key press.
+
+## 1.0.25
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+
+## 1.0.24
+
+### Patch Changes
+
+-   cc04479: Upgrade loader-utils modules to fix known vulnerability
+
 ## 1.0.23
 
 ### Patch Changes

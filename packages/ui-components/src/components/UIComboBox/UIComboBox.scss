@@ -38,14 +38,11 @@
         &,
         &:hover {
             input {
-                &,
+                color: $dropdown-input-color;
                 &::placeholder {
-                    color: $dropdown-input-color;
+                    color: $dropdown-input-placeholder-color;
                 }
             }
-        }
-        input::placeholder {
-            opacity: 0.7;
         }
         // Overwrite default border
         &:after {
@@ -59,8 +56,34 @@
                 border-color: $dropdown-input-focus-border-color;
             }
         }
-        &.is-disabled {
-            @include input-disabled;
+    }
+    &--readonly {
+        .ms-ComboBox {
+            &.is-disabled {
+                @include input-readonly;
+            }
+        }
+        // Empty and readonly field - disable hover efect
+        &.ts-ComboBox--empty {
+            .ms-ComboBox:hover:after {
+                border-color: $dropdown-input-border-color;
+            }
+        }
+    }
+    &--disabled {
+        .ms-ComboBox {
+            &.is-disabled {
+                @include input-disabled;
+            }
+        }
+    }
+    &--readonly,
+    &--disabled {
+        .ms-ComboBox:focus-within {
+            &:after {
+                border-style: solid;
+                border-color: $dropdown-input-focus-border-color !important;
+            }
         }
     }
     &--error {
@@ -158,6 +181,36 @@
                 outline: $menu-item-focus-border;
                 outline-offset: $menu-item-border-offset;
             }
+        }
+        // Header item
+        .ms-ComboBox-header,
+        .ms-Dropdown-header {
+            min-height: $menu-item-height;
+            height: $menu-item-height;
+            line-height: $menu-item-height;
+            padding: $menu-item-padding;
+            color: $menu-item-header-color;
+            font-size: $menu-item-header-font-size;
+            font-weight: $menu-item-header-font-weight;
+            text-transform: $menu-item-header-text-transform;
+        }
+        // Divider between groups
+        > div {
+            .ms-ComboBox-header,
+            .ms-Dropdown-header {
+                border-top: 1px solid $menu-item-divider-color;
+            }
+            &:first-child {
+                .ms-ComboBox-header,
+                .ms-Dropdown-header {
+                    border-top: none;
+                } 
+            }
+        }
+        // Separator
+        .ms-ComboBox-divider,
+        .ms-Dropdown-divider {
+            background-color: $menu-item-divider-color;
         }
     }
     // Select/dropdown list items

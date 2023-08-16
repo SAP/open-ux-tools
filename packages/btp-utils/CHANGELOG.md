@@ -1,5 +1,41 @@
 # @sap-ux/btp-utils
 
+## 0.11.8
+
+### Patch Changes
+
+-   24e45780: Updated dependency: axios@1.4.0
+
+## 0.11.7
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 0.11.6
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
+## 0.11.5
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
+## 0.11.4
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
+## 0.11.3
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+
 ## 0.11.2
 
 ### Patch Changes

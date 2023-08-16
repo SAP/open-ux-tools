@@ -1,6 +1,7 @@
 {
     "extends": "../../tsconfig.json",
     "include": [
+        "../../types/mem-fs-editor.d.ts",
         "src",
         "src/**/*.json"
     ],
@@ -9,6 +10,9 @@
         "outDir": "dist"
     },
     "references": [
+        {
+            "path": "../eslint-plugin-fiori-tools"
+        },
         {
             "path": "../fe-fpm-writer"
         },

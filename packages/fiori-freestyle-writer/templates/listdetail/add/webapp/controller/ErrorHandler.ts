@@ -24,7 +24,7 @@ export default class ErrorHandler extends UI5Object {
         const model = component.getModel() as ODataModel;
         model.attachMetadataFailed(this.showServiceError);
         model.attachRequestFailed(function (this: ErrorHandler, event: Event) {
-            const params = event.getParameters() as { response: XMLHttpRequest['response'] };
+            const params = event.getParameters() as { response: XMLHttpRequest["response"] };
             // An entity that was not found in the service is also throwing a 404 error in oData.
             // We already cover this case with a notFound target so we skip it here.
             // A request that cannot be sent to the server is a technical error that we have to handle though
@@ -48,7 +48,7 @@ export default class ErrorHandler extends UI5Object {
             ((this.component.getModel("i18n") as ResourceModel).getResourceBundle() as ResourceBundle).getText("errorText") || "",
             {
                 id: "serviceErrorMessageBox",
-                details: (event.getParameters() as XMLHttpRequest['response']).response,
+                details: (event.getParameters() as XMLHttpRequest["response"]).response,
                 styleClass: this.component.getContentDensityClass(),
                 actions: [Action.CLOSE],
                 onClose: function (this: ErrorHandler) {

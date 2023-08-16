@@ -1,13 +1,4 @@
 {
-  "plugins": [
-    "eslint-plugin-fiori-custom"
-  ],
-  "extends": [
-    "./node_modules/eslint-plugin-fiori-custom/configure.eslintrc"
-  ],
-  "ignorePatterns": [
-    "webapp/localService/**",
-    "webapp/test/**",
-    "dist/**"
-  ]
+    "extends": "plugin:@sap-ux/eslint-plugin-fiori-tools/defaultJS",
+    "root": true
 }

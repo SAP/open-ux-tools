@@ -1,11 +1,32 @@
 # Version Overrides
 This document lists the version overrides for vulnerable (nested) dependencies and the reason.
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ word-wrap vulnerable to Regular Expression Denial of   │
+│                     │ Service                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ word-wrap                                              │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <1.2.4                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=1.2.4                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-j8xg-fqg3-53r7      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+## semver
+| Override:           | >=7.5.2 |
+|:--------------------| :-------------|
+|                     | |
+| **moderate**        | Regular Expression Denial of Service in semver  |
+| Package             | semver |
+| Vulnerable versions | <7.5.2 |
+| Patched versions    | >=7.5.2 |
+| More info           | https://github.com/advisories/GHSA-c2qf-rxjj-qqgw  |
 
 ## trim
 | Override:           | >=0.0.3 |
 |:--------------------| :-------------|
 |                     | |
-| **high**        | Regular Expression Denial of Service in trim  |
+| **high**            | Regular Expression Denial of Service in trim  |
 | Package             | trim |
 | Vulnerable versions | <0.0.3 |
 | Patched versions    | >=0.0.3 |
@@ -15,7 +36,7 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Override:           | >=3.0.1 |
 |:--------------------| :-------------|
 |                     | |
-| **high**        | Uncontrolled Resource Consumption in trim-newlines |
+| **high**            | Uncontrolled Resource Consumption in trim-newlines |
 | Package             | trim-newlines |
 | Vulnerable versions | <3.0.1 |
 | Patched versions    | >=3.0.1 |
@@ -25,32 +46,13 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Override:           | >=5.1.2 |
 |:--------------------| :-------------|
 |                     | |
-| **high**        | glob-parent before 5.1.2 vulnerable to Regular Expression Denial of Service in enclosure regex |
+| **high**            | glob-parent before 5.1.2 vulnerable to Regular Expression Denial of Service in enclosure regex |
 | Package             | glob-parent |
 | Vulnerable versions | <5.1.2 |
 | Patched versions    | >=5.1.2 |
 | More info           | https://github.com/advisories/GHSA-ww39-953v-wcq6   |
 
-## minimatch
-| Override:           | >=3.0.5 |
-|:--------------------| :-------------|
-|                     | |
-| **high**            | minimatch ReDoS vulnerability                     |
-| Package             | minimatch                                         |
-| Vulnerable versions | <3.0.5                                            |
-| Patched versions    | >=3.0.5                                           |
-| More info           | https://github.com/advisories/GHSA-f8q6-p94x-37v3 |
-
-## loader-utils
-| Override:           | 2.0.3; 1.4.1 |
-|:--------------------| :-------------|
-|                     | |
-| **high**            | minimatch ReDoS vulnerability                     |
-| Package             | minimatch                                         |
-| Vulnerable versions | >= 2.0.0, < 2.0.3;  < 1.4.1                       |
-| Patched versions    | 2.0.3; 1.4.1                                      |
-| More info           | https://github.com/advisories/GHSA-76p3-8jx3-jpfq |
-
 :warning: Attention :warning: 
-* `trim`, `trim-newlines` and `glob-parent` and `loader-utils` are dependencies of `storybook` that is used in `@sap-ux/ui-components`. Once a new version without the vulnerable dependency is available, it is to be used and this override can be removed.
-* the `minimatch` override can be removed as soon as `@sap/bas-sdk` and `pretty-quick` are updated
+* `trim`, `trim-newlines` and `glob-parent` are dependencies of `storybook` that is used in `@sap-ux/ui-components`. Once a new version without the vulnerable dependency is available, it is to be used and this override can be removed.
+* `semver` is used by too many modules. Override can be removed or kept for specific dependencies after we have cleaned up our devDependencies.
+*  `word-wrap` no fix available yet for @typescript-eslint/* modules.

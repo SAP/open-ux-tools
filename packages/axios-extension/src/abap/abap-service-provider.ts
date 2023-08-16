@@ -21,6 +21,11 @@ export class AbapServiceProvider extends ServiceProvider {
     protected atoSettings: AtoSettings;
 
     /**
+     * Maintain the public facing URL which is required for destination related flows
+     */
+    protected _publicUrl: string;
+
+    /**
      * Get the name of the currently logged in user. This is the basic implementation that could be overwritten by subclasses.
      * The function returns a promise because it may be required to fetch the information from the backend.
      *
@@ -63,6 +68,24 @@ export class AbapServiceProvider extends ServiceProvider {
     }
 
     /**
+     * Set the public facing URL, typically used for a destination related flows.
+     *
+     * @param host
+     */
+    public set publicUrl(host: string) {
+        this._publicUrl = host;
+    }
+
+    /**
+     * Retrieve the public facing URL, default to Axios base URL if not configured.
+     *
+     * @returns string Axios baseUrl if public URL is not configured by a destination
+     */
+    public get publicUrl(): string {
+        return this._publicUrl || this.defaults.baseURL;
+    }
+
+    /**
      * Detect if the given configuration points to an S/4HANA Cloud system.
      *
      * @returns true if it an S/4HANA cloud system
@@ -92,11 +115,11 @@ export class AbapServiceProvider extends ServiceProvider {
      */
     private getAdtCatalogService(): AdtCatalogService {
         if (!this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH]) {
-            const adtCatalogSerivce = this.createService<AdtCatalogService>(
+            const adtCatalogService = this.createService<AdtCatalogService>(
                 AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH,
                 AdtCatalogService
             );
-            this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] = adtCatalogSerivce;
+            this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] = adtCatalogService;
         }
 
         return this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] as AdtCatalogService;
@@ -138,6 +161,7 @@ export class AbapServiceProvider extends ServiceProvider {
         if (!this.services[path]) {
             this.services[path] = this.createService<Ui5AbapRepositoryService>(path, Ui5AbapRepositoryService);
         }
+
         return this.services[path] as Ui5AbapRepositoryService;
     }
 
@@ -176,7 +200,7 @@ export class AbapServiceProvider extends ServiceProvider {
      *
      * @example
      * ```ts
-     * const transportRequestSerivce = abapServiceProvider.getAdtService<TransportRequestService>(TransportRequestService);
+     * const transportRequestService = abapServiceProvider.getAdtService<TransportRequestService>(TransportRequestService);
      * ```
      * @param adtServiceSubclass Subclass of class AdtService, type is specified by using AdtService class constructor signature.
      * @returns Subclass type of class AdtService
@@ -185,8 +209,8 @@ export class AbapServiceProvider extends ServiceProvider {
         const subclassName = adtServiceSubclass.name;
         if (!this.services[subclassName]) {
             // Retrieve ADT schema for the specific input AdtService subclass
-            const adtCatalogSerivce = this.getAdtCatalogService();
-            const adtSchema = await adtCatalogSerivce.getServiceDefinition(adtServiceSubclass.getAdtCatagory());
+            const adtCatalogService = this.getAdtCatalogService();
+            const adtSchema = await adtCatalogService.getServiceDefinition(adtServiceSubclass.getAdtCatagory());
             // No ADT schema available neither locally nor from service query.
             if (!adtSchema) {
                 return null;

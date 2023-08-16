@@ -1,0 +1,47 @@
+{
+  "code": "/UI5/UI5_REP_LOAD/006",
+  "message":
+  {
+    "lang": "en",
+    "value": "Test run indicated an error"
+  },
+  "innererror":
+  {
+    "application":
+    {
+      "component_id": "CA-UI5-ABA-SAR",
+      "service_namespace": "/UI5/",
+      "service_id": "ABAP_REPOSITORY_SRV",
+      "service_version": "0001"
+    },
+    "transactionid": "0F61D5F13A6D0060E00644D444B789F3",
+    "timestamp": "20230504133900.3265560",
+    "Error_Resolution":
+    {
+      "SAP_Transaction": "For backend administrators: use ADT feed reader \"SAP Gateway Error Log\" or run transaction /IWFND/ERROR_LOG on SAP Gateway hub system and search for entries with the timestamp above for more details",
+      "SAP_Note": "See SAP Note 1797736 for error analysis (https://service.sap.com/sap/support/notes/1797736)"
+    },
+    "errordetails":
+    [
+      {
+        "ContentID": "",
+        "code": "/UI5/UI5_REP_LOAD/006",
+        "message": "Test run indicated an error",
+        "longtext_url": "/sap/opu/odata/iwbep/message_text/T100_longtexts(MSGID='%2FUI5%2FUI5_REP_LOAD',MSGNO='006',MESSAGE_V1='ZJLONG0205',MESSAGE_V2='',MESSAGE_V3='',MESSAGE_V4='')/$value",
+        "propertyref": "",
+        "severity": "error",
+        "transition": false,
+        "target": "ZJLONG0205"
+      },
+      {
+        "ContentID": "",
+        "code": "",
+        "message": "<![CDATA[***** Upload of SAPUI5 App or Library from ZIP-Archive into SAPUI5 ABAP Repository *****<br />. <br />. Running in test mode: Upload operations are indicated but not excuted, detailed log<br />. <br />. 20 Files found in Archive.<br />. <br />* Parameters *<br />. <br />. The text files are identified using the standard settings.<br />. The binary files are identified using the standard settings.<br />. The files and folders to be ignored are determined from the built-in standard settings.<br />. The name of the SAPUI5 repository \"ZJLONG0205\" has been determined from the corresponding import parameter.<br />. The external Code Page Name \"UTF8\" has been determined from the corresponding import parameter.<br />. The acceptance of Unix style end of line markers in text files has been determined from the corresponding import parameter.<br />. Unix style end of line markers in text files get accepted.<br />. The delta mode has been turned on.<br />. Running in safe mode<br />. <br />. <br />> Error       ==> Upload canceled: Errors have been detected.<br />> Error       ==> Deployment stopped by safe mode protection: See below<br />. <br />.             ========== Error : /UI5/APP_API 173 ==========<br />.             Deployment stopped by safe mode protection: See below<br />.             -----<br />.             Application component:<br />.             CA-UI5-ABA-AIDX ( UI5 App Infrastr.: App Index,Descriptor & Variants )<br />.             ==============================================<br />. <br />> Error       ==> Existing ID test.jl.testprojectjl020502 in repository ZJLONG0205 is not in new deployment<br />. <br />.             ========== Error : /UI5/APP_API 172 ==========<br />.             Existing ID test.jl.testprojectjl020502 in repository ZJLONG0205 is not in new deployment<br />.             -----<br />.             Application component:<br />.             CA-UI5-ABA-AIDX ( UI5 App Infrastr.: App Index,Descriptor & Variants )<br />.             ==============================================<br />. <br />> Error       ==> New deployment into repository ZJLONG0205 contains new ID test.jl.testprojectjl0205<br />. <br />.             ========== Error : /UI5/APP_API 174 ==========<br />.             New deployment into repository ZJLONG0205 contains new ID test.jl.testprojectjl0205<br />.             -----<br />.             Application component:<br />.             CA-UI5-ABA-AIDX ( UI5 App Infrastr.: App Index,Descriptor & Variants )<br />.             ==============================================<br />. <br />> Error       ==> Test run indicated an error<br />. <br />.             ========== Error : /UI5/UI5_REP_LOAD 006 ==========<br />.             Test run indicated an error<br />.             -----<br />.             Diagnosis<br />.             The test run to upload an SAPUI5 application, component, or library into<br />.             the SAPUI5 ABAP repository ZJLONG0205 indicated errors.<br />.             System Response<br />.             The upload won't be okay.<br />.             Procedure<br />.             Check the errors and warnings in the log output.<br />.             Procedure for System Administration<br />.             <br />.             -----<br />.             Application component:<br />.             CA-UI5-ABA-SAR ( UI5 App Infrastructure: SAPUI5 ABAP Repository )<br />.             ===================================================<br />. <br />. <br />* Done *]]>",
+        "propertyref": "",
+        "severity": "",
+        "transition": false,
+        "target": ""
+      }
+    ]
+  }
+}

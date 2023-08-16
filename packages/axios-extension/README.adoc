@@ -27,11 +27,11 @@ The generic OData service simplifies the access to the service metadata as well 
 #### Catalog Service
 Simplified consumption of the SAP catalog service useful for fetching annotations.
 
-#### ABAP UI5 Respository Service
+#### ABAP UI5 Repository Service
 Allows deployment of applications to the UI5 ABAP Repository as well as checking deployed applications.
 
 #### App Index Service
-A class respresenting the app index service allowing to search applications deployed on an ABAP system.
+A class representing the app index service allowing to search applications deployed on an ABAP system.
 
 #### Layered Repository Service
 Allows deployment of adaptation projects.
@@ -64,8 +64,8 @@ const provider = createForAbap({
     baseURL: 'https://sap.example',
     params: { 'sap-client': client }
 });
-const transportRequestSerivce = provider.getAdtService<TransportRequestService>(TransportRequestService);
-const newTrNumber = await transportRequestSerivce.createTransportRequest({
+const transportRequestService = provider.getAdtService<TransportRequestService>(TransportRequestService);
+const newTrNumber = await transportRequestService.createTransportRequest({
     packageName: 'Z_PACKAGE',
     ui5AppName: 'zappname',
     description: 'A new transport request number for deployment'

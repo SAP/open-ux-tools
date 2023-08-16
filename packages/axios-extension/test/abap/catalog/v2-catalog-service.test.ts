@@ -84,6 +84,7 @@ describe('V2CatalogService', () => {
         const title = 'TEST_SERVICE';
         const path = `/TEST/${title}`;
         const anno = 'TEST_SERVICE_ANNO';
+        const pathWithSegParams = `/TEST/${title};v=0001`;
 
         // create a catalog for testing
         const provider = createForAbap(config);
@@ -96,14 +97,12 @@ describe('V2CatalogService', () => {
                 .replyWithFile(200, join(__dirname, '../mockResponses/v2CatalogDocument.json'))
                 .persist();
             nock(server)
-                .get((path) => path.startsWith(`${V2CatalogService.PATH}/ServiceCollection(%27${id}%27)/Annotations`))
+                .get((path) => path.startsWith(`${V2CatalogService.PATH}/ServiceCollection('${id}')/Annotations`))
                 .replyWithFile(200, join(__dirname, '../mockResponses/v2ServiceAnnotations.json'))
                 .persist();
             nock(server)
                 .get((path) =>
-                    path.startsWith(
-                        `${V2CatalogService.PATH}/Annotations(TechnicalName=%27${anno}%27,Version=%270001%27)`
-                    )
+                    path.startsWith(`${V2CatalogService.PATH}/Annotations(TechnicalName='${anno}',Version='0001')`)
                 )
                 .replyWithFile(200, join(__dirname, '../mockResponses/v2Annotations.xml'))
                 .persist();
@@ -123,7 +122,9 @@ describe('V2CatalogService', () => {
 
         test('find by path or title', async () => {
             nock(server)
-                .get(`${V2CatalogService.PATH}/ServiceCollection?$format=json&$filter=Title eq '${title}'`)
+                .get(
+                    `${V2CatalogService.PATH}/ServiceCollection?$format=json&$filter=Title eq '${title}' and TechnicalServiceVersion eq 1`
+                )
                 .reply(200, {
                     d: {
                         results: [
@@ -143,6 +144,9 @@ describe('V2CatalogService', () => {
             expect(annotations[0].Definitions).toBeDefined();
             const annotationsByTitle = await catalog.getAnnotations({ title });
             expect(annotationsByTitle[0].Definitions).toBe(annotations[0].Definitions);
+            // service uri contains segment parameters
+            const annotationsByPathWithSegParams = await catalog.getAnnotations({ path: pathWithSegParams });
+            expect(annotationsByPathWithSegParams[0].Definitions).toBe(annotations[0].Definitions);
         });
     });
 });

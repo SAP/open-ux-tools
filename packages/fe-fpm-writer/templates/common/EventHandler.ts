@@ -8,6 +8,6 @@ import MessageToast from 'sap/m/MessageToast';
  * @param this reference to the 'this' that the event handler is bound to.
  * @param <%- parameters.name %> <%- parameters.description %>
  */
-export function <%- (typeof eventHandlerFnName !== 'undefined' && eventHandlerFnName) || 'onPress' %>(this: ExtensionAPI, <%- parameters.name %>: <%- parameters.importType %>) {
+export function <%- eventHandlerFnName %>(this: ExtensionAPI, <%- parameters.name %>: <%- parameters.importType %>) {
     MessageToast.show("Custom handler invoked.");
 }

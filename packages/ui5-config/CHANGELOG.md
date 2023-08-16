@@ -1,5 +1,90 @@
 # @sap-ux/ui5-config
 
+## 0.19.0
+
+### Minor Changes
+
+-   375ca861: publish npm module after failure on PR #1110
+
+## 0.18.2
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/yaml@0.13.7
+
+## 0.18.1
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+
+## 0.18.0
+
+### Minor Changes
+
+-   59863d93: Removed types determination workaround.
+
+## 0.17.1
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/yaml@0.13.6
+
+## 0.17.0
+
+### Minor Changes
+
+-   31207b95: abstract ui5-app-writer functions into appropriate modules
+
+## 0.16.6
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/yaml@0.13.5
+
+## 0.16.5
+
+### Patch Changes
+
+-   e7614e5: Add minor types for smartlinks configuration
+
+## 0.16.4
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/yaml@0.13.4
+
+## 0.16.3
+
+### Patch Changes
+
+-   Updated dependencies [3327a3f]
+    -   @sap-ux/yaml@0.13.3
+
+## 0.16.2
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/yaml@0.13.2
+
+## 0.16.1
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/yaml@0.13.1
+
 ## 0.16.0
 
 ### Minor Changes

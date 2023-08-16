@@ -47,7 +47,7 @@ export class Uaa {
      * @returns uaa url
      */
     protected get url(): string {
-        return this.serviceInfo.uaa.url;
+        return this.serviceInfo.uaa.url.replace(/\/?$/, '');
     }
 
     /**
@@ -87,6 +87,24 @@ export class Uaa {
     }
 
     /**
+     * Getter for username.
+     *
+     * @returns system id
+     */
+    private get username(): string {
+        return this.serviceInfo.uaa.username;
+    }
+
+    /**
+     * Getter for password.
+     *
+     * @returns system id
+     */
+    private get password(): string {
+        return this.serviceInfo.uaa.password;
+    }
+
+    /**
      * Generates a request url based on the provided redirect url.
      *
      * @param params config parameters
@@ -98,11 +116,34 @@ export class Uaa {
             this.url +
             '/oauth/authorize?' +
             qs.stringify({
-                response_type: 'code',
-                redirect_uri: redirectUri,
-                client_id: this.clientid
+                'response_type': 'code',
+                'redirect_uri': redirectUri,
+                'client_id': this.clientid
             })
         );
+    }
+
+    /**
+     * Generate an access token using grant_type password to the authorization service (XSUAA).
+     *
+     * @returns an axios request config
+     */
+    protected getTokenRequestForClientCredential(): AxiosRequestConfig {
+        const secret = `${this.clientid}:${this.clientsecret}`;
+        return {
+            url: `${this.url}/oauth/token`,
+            method: 'POST',
+            data: qs.stringify({
+                'grant_type': 'password',
+                'username': this.username,
+                'password': this.password
+            }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Accept: 'application/json',
+                Authorization: `Basic ${Buffer.from(secret).toString('base64')}`
+            }
+        };
     }
 
     /**
@@ -115,14 +156,14 @@ export class Uaa {
      */
     protected getTokenRequestForAuthCode({ redirectUri, authCode }): AxiosRequestConfig {
         return {
-            url: this.url + '/oauth/token',
+            url: `${this.url}/oauth/token`,
             auth: { username: this.clientid, password: this.clientsecret },
             method: 'POST',
             data: qs.stringify({
                 code: authCode,
-                grant_type: 'authorization_code',
-                redirect_uri: redirectUri,
-                response_type: 'token'
+                'grant_type': 'authorization_code',
+                'redirect_uri': redirectUri,
+                'response_type': 'token'
             }),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -139,12 +180,12 @@ export class Uaa {
      */
     protected getTokenRequestForRefreshToken(refreshToken): AxiosRequestConfig {
         return {
-            url: this.url + '/oauth/token',
+            url: `${this.url}/oauth/token`,
             auth: { username: this.clientid, password: this.clientsecret },
             method: 'POST',
             data: qs.stringify({
-                grant_type: 'refresh_token',
-                refresh_token: refreshToken
+                'grant_type': 'refresh_token',
+                'refresh_token': refreshToken
             }),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -161,7 +202,7 @@ export class Uaa {
      */
     public async getUserInfo(accessToken: string): Promise<string | undefined> {
         const userInfoResp = await axios.request({
-            url: this.url + '/userinfo',
+            url: `${this.url}/userinfo`,
             method: 'GET',
             headers: {
                 authorization: `bearer ${accessToken}`
@@ -205,7 +246,7 @@ export class Uaa {
             server.listen();
             redirect = new Redirect((server.address() as AddressInfo).port);
             const oauthUrl = this.getAuthCodeUrl({ redirectUri: redirect.url() });
-            open(oauthUrl);
+            open(oauthUrl)?.catch((error) => this.log.error(error));
         });
     }
 
@@ -251,10 +292,22 @@ export class Uaa {
 
         if (newRefreshToken && refreshTokenChangedCb) {
             this.log.info('Sending notification that refresh token changed');
-            refreshTokenChangedCb(newRefreshToken);
+            await refreshTokenChangedCb(newRefreshToken);
         }
 
         this.log.info('Got access token successfully');
+        return response?.data?.access_token;
+    }
+
+    /**
+     * Retrieve an access token using the client credentials.
+     *
+     * @returns an access token using the BTP UAA credentials
+     */
+    public async getAccessTokenWithClientCredentials(): Promise<string> {
+        const tokenRequest = this.getTokenRequestForClientCredential();
+        const response: AxiosResponse = await axios.request(tokenRequest);
+        this.log.info('Got access token successfully using client credentials');
         return response?.data?.access_token;
     }
 }

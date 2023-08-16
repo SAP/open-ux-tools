@@ -3,7 +3,7 @@ export * from './middlewares';
 
 export interface AbapApp {
     name: string;
-    desription: string;
+    description: string;
     package: string;
     transport: string;
 }
@@ -19,6 +19,7 @@ export interface AbapTarget {
 export interface AbapDeployConfig {
     target: AbapTarget;
     app: AbapApp;
+    ignoreCertError?: boolean;
 }
 
 export interface FioriAppReloadConfig {

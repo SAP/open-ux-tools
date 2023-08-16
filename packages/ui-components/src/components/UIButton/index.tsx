@@ -5,3 +5,4 @@ export * from './UIActionButton';
 export * from './UIDefaultButton';
 export * from './UIIconButton';
 export * from './UISplitButton';
+export * from './UISmallButton';

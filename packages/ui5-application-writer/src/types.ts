@@ -47,6 +47,7 @@ export interface UI5 {
     version: string;
     localVersion: string;
     typesVersion: string;
+    typesPackage: string;
     descriptorVersion: string;
     ui5Libs: string | string[];
     ui5Theme: string;
@@ -73,6 +74,11 @@ export interface AppOptions {
      * Enable support for importing functionality from npm packages in UI5 applications
      */
     npmPackageConsumption: boolean;
+
+    /**
+     * Excludes the index.html from the template and does not add the `start-noflp` script in package.json
+     */
+    generateIndex?: boolean;
 }
 
 export interface Ui5App {

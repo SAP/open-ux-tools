@@ -21,6 +21,9 @@ interface ComponentProps {
     // Header render in single or multi lines
     // Default is single line
     multiLineTitle?: boolean;
+    // Is dialog open should be animated with fade in animation
+    // Default value for "isOpenAnimated" is "true"
+    isOpenAnimated?: boolean;
 }
 
 export const DIALOG_MAX_HEIGHT_OFFSET = 32;
@@ -46,6 +49,7 @@ export type DialogProps = IDialogProps & ComponentProps;
 
 export interface DialogState {
     resizeMaxHeight?: number;
+    isMounted?: boolean;
 }
 
 export enum UIDialogScrollArea {
@@ -65,6 +69,8 @@ export enum UIDialogScrollArea {
  * @extends {React.Component<IDialogProps, {}>}
  */
 export class UIDialog extends React.Component<DialogProps, DialogState> {
+    // Default values for public component properties
+    static defaultProps = { isOpenAnimated: true };
     /**
      * Initializes component properties.
      *
@@ -73,11 +79,14 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
     public constructor(props: DialogProps) {
         super(props);
         this.onResize = this.onResize.bind(this);
+        this.onModalLayerMount = this.onModalLayerMount.bind(this);
+        this.onModalLayerUnmount = this.onModalLayerUnmount.bind(this);
         this.attachResize = this.attachResize.bind(this);
         this.detachResize = this.detachResize.bind(this);
         this.onHeaderMouseDown = this.onHeaderMouseDown.bind(this);
         this.state = {
-            resizeMaxHeight: this.getResizeMaxHeight()
+            resizeMaxHeight: this.getResizeMaxHeight(),
+            isMounted: false
         };
     }
 
@@ -95,6 +104,26 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 this.detachResize();
             }
         }
+    }
+
+    /**
+     * Method handles modal dialog mount event.
+     */
+    private onModalLayerMount(): void {
+        this.attachResize();
+        this.setState({
+            isMounted: true
+        });
+    }
+
+    /**
+     * Method handles modal dialog unmount event.
+     */
+    private onModalLayerUnmount(): void {
+        this.detachResize();
+        this.setState({
+            isMounted: false
+        });
     }
 
     /**
@@ -227,11 +256,14 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
             minWidth: '460px',
             modalProps: {
                 layerProps: {
-                    onLayerDidMount: this.attachResize,
-                    onLayerWillUnmount: this.detachResize
+                    onLayerDidMount: this.onModalLayerMount,
+                    onLayerWillUnmount: this.onModalLayerUnmount
                 }
             },
             styles: {
+                root: {
+                    opacity: !this.props.isOpenAnimated || this.state.isMounted ? undefined : 0
+                },
                 main: {
                     backgroundColor: DIALOG_STYLES.background,
                     border: `1px solid ${DIALOG_STYLES.borderColor}`,

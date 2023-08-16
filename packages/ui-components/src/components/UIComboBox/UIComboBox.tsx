@@ -1,37 +1,43 @@
 import React from 'react';
-import type { IComboBoxProps, IComboBoxState } from '@fluentui/react';
+import type { IComboBoxProps, IComboBoxState, IAutofillProps } from '@fluentui/react';
 import {
     ComboBox,
     IComboBox,
     IComboBoxOption,
     initializeComponentRef,
     KeyCodes,
-    IOnRenderComboBoxLabelProps
+    IOnRenderComboBoxLabelProps,
+    SelectableOptionMenuItemType
 } from '@fluentui/react';
 import { UIHighlightMenuOption } from '../UIContextualMenu/UIHighlightMenuOption';
 import './UIComboBox.scss';
 import './Callout.scss';
 import { UILoader } from '../UILoader';
 import { UiIcons } from '../Icons';
-import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
+import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
+import { isDropdownEmpty } from '../UIDropdown';
 
 export {
     IComboBoxOption as UIComboBoxOption,
     IComboBox as UIComboBoxRef,
-    IOnRenderComboBoxLabelProps as UIOnRenderComboBoxLabelProps
+    IOnRenderComboBoxLabelProps as UIOnRenderComboBoxLabelProps,
+    SelectableOptionMenuItemType as UISelectableOptionMenuItemType
 };
 
 export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps {
+    wrapperRef?: React.RefObject<HTMLDivElement>;
     highlight?: boolean;
     useComboBoxAsMenuMinWidth?: boolean;
+    // Default value for "openMenuOnClick" is "true"
     openMenuOnClick?: boolean;
     onRefresh?(): void;
     onHandleChange?(value: string | number): void;
     tooltipRefreshButton?: string;
     isLoading?: boolean;
     isForceEnabled?: boolean;
+    readOnly?: boolean;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -51,9 +57,11 @@ interface ComboBoxHoistedProps {
         currentOptions: IComboBoxOption[];
     };
 }
-export interface ComboBoxRef extends IComboBox {
+
+interface ComboBoxRef extends IComboBox {
     state: IComboBoxState;
     props: UIComboBoxProps & ComboBoxHoistedProps;
+    _comboBoxWrapper: React.RefObject<HTMLDivElement>;
 }
 
 /**
@@ -64,17 +72,13 @@ export interface ComboBoxRef extends IComboBox {
  * @extends {React.Component<UIComboBoxProps, UIComboBoxState>}
  */
 export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState> {
+    // Default values for public component properties
+    static defaultProps = { openMenuOnClick: true };
+    // Reference to fluent ui combobox
     private comboBox = React.createRef<ComboBoxRef>();
-    private root: React.RefObject<HTMLDivElement> = React.createRef();
     private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
     private query = '';
-    private ignoreOpenKeys: Array<number> = [
-        KeyCodes.ctrl,
-        KeyCodes.shift,
-        KeyCodes.tab,
-        KeyCodes.alt,
-        KeyCodes.capslock
-    ];
+    private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
 
     /**
@@ -126,12 +130,32 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      */
     private updateHiddenOptions(opts: IComboBoxOption[]): void {
         this.isListHidden = true;
+        let currentGroup: IComboBoxOption | undefined;
+        let isGroupVisible = false;
+        const updateGroupVisibility = () => {
+            if (currentGroup) {
+                currentGroup.hidden = !isGroupVisible;
+            }
+        };
         for (const option of opts) {
-            option.hidden = option.text.toLowerCase().indexOf(this.query) === -1;
-            if (this.isListHidden && !option.hidden) {
-                this.isListHidden = false;
+            if (option.itemType === SelectableOptionMenuItemType.Header) {
+                // Update visibility of previously processed group
+                updateGroupVisibility();
+                // Reset current group and visibility flag
+                currentGroup = option;
+                isGroupVisible = false;
+            } else {
+                // Handle selectable item
+                const isHidden = option.text.toLowerCase().indexOf(this.query) === -1;
+                option.hidden = isHidden;
+                if (this.isListHidden && !option.hidden) {
+                    this.isListHidden = false;
+                }
+                // Groups should be visible if at least one item is visible within group
+                isGroupVisible = !isHidden || isGroupVisible;
             }
         }
+        updateGroupVisibility();
     }
 
     /**
@@ -182,12 +206,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             // Do not handle keydown of combobox
             event.preventDefault();
             event.stopPropagation();
-        } else if (
-            !this.ignoreOpenKeys.includes(event.which) &&
-            baseCombobox &&
-            !this.props.openMenuOnClick &&
-            !isOpen
-        ) {
+        } else if (!this.ignoreOpenKeys.includes(event.key) && baseCombobox && !isOpen) {
             // Open dropdown list on first key press instead of showing it right after focus
             baseCombobox.focus(true);
         }
@@ -229,7 +248,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
-        if (defaultRender && props && !props.itemType) {
+        if (defaultRender && props) {
             // Use data for custom onRender functions
             props.data = this.query;
             if (props.title === undefined) {
@@ -292,7 +311,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
-        if (props) {
+        if (props && props.itemType !== SelectableOptionMenuItemType.Header) {
             return <UIHighlightMenuOption text={props.text} query={this.query} />;
         }
         return defaultRender ? defaultRender(props) : null;
@@ -357,10 +376,14 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * 'minWidth' from state is used to set callout size in render.
      */
     private calculateMenuMinWidth(): void {
-        const root = this.root.current;
-        if (root && this.props.useComboBoxAsMenuMinWidth && root.clientWidth !== this.state.minWidth) {
+        const comboBoxWrapper = this.comboBox.current?._comboBoxWrapper.current;
+        if (
+            comboBoxWrapper &&
+            this.props.useComboBoxAsMenuMinWidth &&
+            comboBoxWrapper.clientWidth !== this.state.minWidth
+        ) {
             this.setState({
-                minWidth: root.clientWidth
+                minWidth: comboBoxWrapper.clientWidth
             });
         }
     }
@@ -370,12 +393,23 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * Method called after each value live change - we need recheck if there is any visible item after search is done.
      * 1. If there no any visible item - we hide menu callout.
      * 2. If there is any visible item - we show menu callout.
+     *
+     * @param option Selected option.
+     * @param index Selected option's index.
+     * @param value Text value entered in input.
      */
-    private onPendingValueChanged(): void {
+    private onPendingValueChanged(
+        option?: IComboBoxOption | undefined,
+        index?: number | undefined,
+        value?: string | undefined
+    ): void {
         if (this.state.isListHidden !== this.isListHidden) {
             this.setState({
                 isListHidden: this.isListHidden
             });
+        }
+        if (this.props?.onPendingValueChanged) {
+            this.props?.onPendingValueChanged(option, index, value);
         }
     }
 
@@ -496,16 +530,70 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
+     * Method returns class names string depending on props and component state.
+     *
+     * @param {InputValidationMessageInfo} messageInfo Error/warning message if applied
+     * @returns {string} Class names of root combobox element.
+     */
+    private getClassNames(messageInfo: InputValidationMessageInfo): string {
+        const { readOnly, disabled } = this.props;
+        const errorSuffix = messageInfo.message ? MESSAGE_TYPES_CLASSNAME_MAP.get(messageInfo.type) : undefined;
+        let classNames = `ts-ComboBox${messageInfo.message ? ' ts-ComboBox--' + errorSuffix : ''}`;
+        if (readOnly && !disabled) {
+            classNames += ' ts-ComboBox--readonly';
+        }
+        if (disabled) {
+            classNames += ' ts-ComboBox--disabled';
+        }
+        if (isDropdownEmpty(this.props)) {
+            classNames += ' ts-ComboBox--empty';
+        }
+        return classNames;
+    }
+
+    /**
+     * Method returns properties for Autofill component(combobox's inner compnent for text input).
+     * Method handles 'highlight' and 'readOnly' properties.
+     *
+     * @returns {IAutofillProps} Properties for Autofill component.
+     */
+    private getAutofillProps(): IAutofillProps {
+        const { highlight, readOnly, disabled } = this.props;
+        const autofill: IAutofillProps = {};
+        // Handle search highligh
+        if (highlight) {
+            autofill.onKeyDownCapture = this.onKeyDown;
+        }
+        const tabIndex = 'tabIndex' in this.props ? this.props.tabIndex : undefined;
+        // Handle readOnly property
+        if (readOnly && !disabled) {
+            autofill.readOnly = readOnly;
+            autofill.tabIndex = tabIndex;
+            // Adjust aria attributes for readonly
+            autofill['aria-disabled'] = undefined;
+            autofill['aria-readonly'] = true;
+        } else if (disabled) {
+            autofill.disabled = undefined;
+            autofill.readOnly = true;
+            autofill.tabIndex = tabIndex;
+        }
+        return autofill;
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
         const messageInfo = getMessageInfo(this.props);
-        const errorSuffix = messageInfo.message ? MESSAGE_TYPES_CLASSNAME_MAP.get(messageInfo.type) : undefined;
+        let disabled = this.props.isForceEnabled ? false : !this.props.options.length;
+        if (this.props.readOnly) {
+            disabled = true;
+        }
         return (
-            <div ref={this.root} className={`ts-ComboBox${messageInfo.message ? ' ts-ComboBox--' + errorSuffix : ''}`}>
+            <div ref={this.props.wrapperRef} className={this.getClassNames(messageInfo)}>
                 <ComboBox
                     componentRef={this.comboBox}
-                    disabled={this.props.isForceEnabled ? false : !this.props.options.length}
+                    disabled={disabled}
                     iconButtonProps={{
                         iconProps: {
                             iconName: UiIcons.ArrowDown
@@ -550,11 +638,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         onRenderItem: this.onRenderItem,
                         onRenderOption: this.onRenderOption,
                         placeholder: this.getPlaceholder(),
-                        autofill: {
-                            onKeyDownCapture: this.onKeyDown
-                        },
                         onPendingValueChanged: this.onPendingValueChanged
                     })}
+                    autofill={this.getAutofillProps()}
                     {...(this.props.useComboBoxAsMenuMinWidth && {
                         // Use 'onMenuOpen', because there can be dynamic size of combobox
                         onMenuOpen: this.calculateMenuMinWidth.bind(this)

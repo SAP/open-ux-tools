@@ -100,6 +100,7 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
     }
 
     const rowCellsData: React.ReactNode[] = [];
+    const tableId = props.id;
     for (let i = 0; i < props.columns.length; i++) {
         const column = props.columns[i];
         if (column.hidden) {
@@ -117,14 +118,22 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
             ]);
             if (isSpan) {
                 rowCellsData.push(
-                    <div key={`title-cell-unknown`} className={className} title={tooltip || column.tooltip}>
+                    <div
+                        key={`title-cell-unknown`}
+                        className={className}
+                        title={tooltip || column.tooltip}
+                        id={`${tableId}-header-column-${key}`}>
                         {content}
                     </div>
                 );
                 break;
             } else {
                 rowCellsData.push(
-                    <div key={`cell-${key}-${i}`} className={className} title={tooltip || column.tooltip}>
+                    <div
+                        key={`cell-${key}-${i}`}
+                        className={className}
+                        title={tooltip || column.tooltip}
+                        id={`${tableId}-header-column-${key}`}>
                         {content}
                     </div>
                 );
@@ -134,7 +143,11 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
                 column.className
             ]);
             rowCellsData.push(
-                <div key={`title-cell-${key}-${i}`} className={className} title={column.tooltip}>
+                <div
+                    key={`title-cell-${key}-${i}`}
+                    className={className}
+                    title={column.tooltip}
+                    id={`${tableId}-header-column-${key}`}>
                     {column.title}
                 </div>
             );

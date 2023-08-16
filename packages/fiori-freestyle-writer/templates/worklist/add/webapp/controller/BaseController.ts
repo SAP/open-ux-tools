@@ -7,7 +7,7 @@ import View from "sap/ui/core/mvc/View";
 import History from "sap/ui/core/routing/History";
 import Router from "sap/ui/core/routing/Router";
 import AppComponent from "../Component";
-import { currencyValue } from "../model/formatter";
+import { numberUnit } from "../model/formatter";
 
 /**
  * @namespace <%- app.id %>
@@ -15,7 +15,7 @@ import { currencyValue } from "../model/formatter";
 export default class BaseController extends Controller {
 
     public readonly formatter = {
-        currencyValue
+        numberUnit
     };
     
     /**
@@ -74,7 +74,7 @@ export default class BaseController extends Controller {
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
-            // eslint-disable-next-line sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         } else {
             this.getRouter().navTo("worklist", {});

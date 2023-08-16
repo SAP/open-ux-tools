@@ -1,9 +1,22 @@
 import { FileName, Severity } from '../../src/types';
 import { join } from 'path';
 import { getDestinationsFromWorkspace } from '../../src/checks/workspace';
+import { findAllApps } from '@sap-ux/project-access';
+
+jest.mock('@sap-ux/project-access', () => ({
+    findAllApps: jest.fn()
+}));
+const mockFindAllApps = findAllApps as jest.Mock;
+
+jest.mock('fs', () => {
+    const fs = jest.requireActual('fs');
+    return fs;
+});
 
 describe('Test for getDestinationsFromWorkspace()', () => {
     const sampleWorkspace = join(__dirname, '..', 'sample-workspace');
+    const sampleAppA = join(sampleWorkspace, 'sample-app-A');
+    const sampleAppB = join(sampleWorkspace, 'sample-app-B');
     const sampleAppNoUI5Yaml = join(sampleWorkspace, 'sample-app-NO_UI5_YAML');
     const sampleAppNoBackend = join(sampleWorkspace, 'sample-app-NO_BACKEND');
     const sampleAppNoDest = join(sampleWorkspace, 'sample-app-NO_DEST');
@@ -11,6 +24,25 @@ describe('Test for getDestinationsFromWorkspace()', () => {
     test('Test destinations recieved from sample-workspace using getDestinationsFromWorkspace()', async () => {
         // Mock setup
         const wsFolders = [sampleWorkspace];
+        mockFindAllApps.mockImplementationOnce(() => {
+            return [
+                {
+                    appRoot: sampleAppA
+                },
+                {
+                    appRoot: sampleAppB
+                },
+                {
+                    appRoot: sampleAppNoUI5Yaml
+                },
+                {
+                    appRoot: sampleAppNoBackend
+                },
+                {
+                    appRoot: sampleAppNoDest
+                }
+            ];
+        });
 
         // Test execution
         const result = await getDestinationsFromWorkspace(wsFolders);

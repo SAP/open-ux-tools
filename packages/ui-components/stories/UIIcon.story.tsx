@@ -18,7 +18,7 @@ const columns: IColumn[] = [
         key: 'column1',
         name: 'Icon',
         minWidth: 50,
-        maxWidth: 50,
+        maxWidth: 60,
         onRender: (item: string) => {
             return (
                 <UIIcon

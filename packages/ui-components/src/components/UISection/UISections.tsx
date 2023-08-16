@@ -418,7 +418,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      *
      * @param {number} index Target section index.
      * @param {number} childrenCount Count of children.
-     * @param {boolean} [reverse=false] Reverse calculation(width vs right).
+     * @param {boolean} [reverse] Reverse calculation(width vs right).
      * @returns {number} Size of section in percents. For example 50% => 0.5.
      */
     private getSizePercents(index: number, childrenCount: number, reverse = false): number {

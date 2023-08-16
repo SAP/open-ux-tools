@@ -38,7 +38,7 @@ describe('LayeredRepositoryService', () => {
             jest.spyOn(fs, 'readFileSync').mockReturnValue(testData);
         });
 
-        test('deploy new adapation project', async () => {
+        test('deploy new adaptation project', async () => {
             nock(server)
                 .get((url) => {
                     return url.startsWith(
@@ -61,7 +61,7 @@ describe('LayeredRepositoryService', () => {
             expect(response.status).toBe(200);
         });
 
-        test('update an existing adapation project', async () => {
+        test('update an existing adaptation project', async () => {
             nock(server)
                 .get((url) => {
                     return url.startsWith(
@@ -125,7 +125,7 @@ describe('LayeredRepositoryService', () => {
             expect(response.status).toBe(200);
         });
 
-        test('try undeploying a not existing adapation project', async () => {
+        test('try undeploying a not existing adaptation project', async () => {
             nock(server)
                 .get(
                     `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
@@ -138,6 +138,26 @@ describe('LayeredRepositoryService', () => {
 
             try {
                 await service.undeploy(config);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
+        });
+    });
+
+    describe('mergeAppDescriptorVariant', () => {
+        const mockResult = { hello: 'world' };
+        test('merge valid app variant', async () => {
+            nock(server).put(`${LayeredRepositoryService.PATH}/appdescr_variant_preview/`).reply(200, mockResult);
+
+            const mergedDescriptor = await service.mergeAppDescriptorVariant(Buffer.from('~test'));
+            expect(mergedDescriptor).toEqual(mockResult);
+        });
+
+        test('error is thrown', async () => {
+            nock(server).put(`${LayeredRepositoryService.PATH}/appdescr_variant_preview/`).reply(500);
+            try {
+                await service.mergeAppDescriptorVariant(Buffer.from('~test'));
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();

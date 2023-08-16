@@ -1,5 +1,125 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.22.3
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 0.22.2
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+
+## 0.22.1
+
+### Patch Changes
+
+-   b7b25d00: Fix. Allow to create custom section or subsection without 'position' property.
+
+## 0.22.0
+
+### Minor Changes
+
+-   36ccc8eb: Add support to generate table building blocks
+
+## 0.21.0
+
+### Minor Changes
+
+-   2de44bb9: Feature. Add VBox wrapper container to generated content for custom section and sub section
+
+## 0.20.3
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
+## 0.20.2
+
+### Patch Changes
+
+-   2fc69d95: Fix: generated typescript controller extension does not work with latest ui5-application-writer version
+
+## 0.20.1
+
+### Patch Changes
+
+-   0aa02ab0: TBI - Clean up eslint warnings in generated projects
+
+## 0.20.0
+
+### Minor Changes
+
+-   5c16776d: Generate custom filter
+
+## 0.19.1
+
+### Patch Changes
+
+-   cca1095c: remove of superfluous checks in template
+
+## 0.19.0
+
+### Minor Changes
+
+-   970dc528: Feature: Custom SubSections support for fe-fpm-writer
+
+## 0.18.9
+
+### Patch Changes
+
+-   1522b416: Remove redundant commas from templates
+
+## 0.18.8
+
+### Patch Changes
+
+-   3391be7f: Feature enhancement: in addition to the entity (set) you now can define a contextPath that gets written instead of entitySet into the `options > settings` of the new page.
+
+## 0.18.7
+
+### Patch Changes
+
+-   81e3f25: Fix: Controller extensions. Typescript error "Subsequent property declarations must have the same type." displayed for typescript application when both extension controllers created for ListReport and ObjectPage.
+
+## 0.18.6
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
+## 0.18.5
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
+## 0.18.4
+
+### Patch Changes
+
+-   d167d79: Fix: writing into manifest.json always provides 2 spaces for tab size. Additional property 'tabInfo' can be passed in config for generation functions or tab sizing will be calculated before saving
+
+## 0.18.3
+
+### Patch Changes
+
+-   6e4c6c4: Feature: Merge a new custom view with an existing view of the same key
+
+## 0.18.2
+
+### Patch Changes
+
+-   b727719: chore(open-ux-tools) upgrade @xmldom/xmldom
+
+## 0.18.1
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+
 ## 0.18.0
 
 ### Minor Changes

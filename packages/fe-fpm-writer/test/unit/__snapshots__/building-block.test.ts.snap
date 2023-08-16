@@ -57,6 +57,25 @@ Object {
 }
 `;
 
+exports[`Building Blocks Generate with just ID and xml view without macros namespace generate table building block: generate-table-with-id-no-macros-ns 1`] = `
+Object {
+  "generate-table-with-id-no-macros-ns/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"testTable\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-table-with-id-no-macros-ns/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`Building Blocks Generate with just ID generate chart building block: generate-chart-with-id 1`] = `
 Object {
   "generate-chart-with-id/webapp/ext/main/Main.view.xml": Object {
@@ -114,6 +133,25 @@ Object {
 }
 `;
 
+exports[`Building Blocks Generate with just ID generate table building block: generate-table-with-id 1`] = `
+Object {
+  "generate-table-with-id/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"testTable\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-table-with-id/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`Building Blocks Generate with optional parameters generate chart building block: generate-chart-with-optional-params 1`] = `
 Object {
   "generate-chart-with-optional-params/webapp/ext/main/Main.view.xml": Object {
@@ -165,6 +203,25 @@ Object {
     "state": "modified",
   },
   "generate-filter-bar-with-optional-params/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Generate with optional parameters generate table building block: generate-table-with-optional-params 1`] = `
+Object {
+  "generate-table-with-optional-params/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Table id=\\"testTable\\" metaPath=\\"testMetaPath\\" contextPath=\\"testContextPath\\" busy=\\"true\\" enableAutoColumnWidth=\\"true\\" enableExport=\\"true\\" enableFullScreen=\\"true\\" enablePaste=\\"true\\" filterBar=\\"testFilterBar\\" header=\\"Test Header\\" headerVisible=\\"true\\" isSearchable=\\"true\\" personalization=\\"Column\\" readOnly=\\"true\\" type=\\"ResponsiveTable\\" variantManagement=\\"None\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-table-with-optional-params/webapp/manifest.json": Object {
     "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
     "state": "modified",
   },

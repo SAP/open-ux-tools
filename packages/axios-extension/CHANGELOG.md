@@ -1,5 +1,217 @@
 # @sap-ux/axios-extension
 
+## 1.4.1
+
+### Patch Changes
+
+-   24e45780: Updated dependency: axios@1.4.0
+-   Updated dependencies [24e45780]
+    -   @sap-ux/btp-utils@0.11.8
+
+## 1.4.0
+
+### Minor Changes
+
+-   d2fd9a58: Enhanced LREP service to support merging of app descriptor variants
+
+## 1.3.6
+
+### Patch Changes
+
+-   23059e62: log longtext_url as clickable link
+
+## 1.3.5
+
+### Patch Changes
+
+-   69b88bcc: TransportChecksService API method `getTransportRequests` now encodes the packageName within its implementation.
+
+## 1.3.4
+
+### Patch Changes
+
+-   da6fbb04: remove trailing slash from uaa url
+
+## 1.3.3
+
+### Patch Changes
+
+-   1599efac: encode app name for tr requests
+
+## 1.3.2
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/btp-utils@0.11.7
+    -   @sap-ux/logger@0.3.7
+
+## 1.3.1
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+
+## 1.3.0
+
+### Minor Changes
+
+-   42dc7395: handle btp uaa credentials
+
+## 1.2.8
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/btp-utils@0.11.6
+    -   @sap-ux/logger@0.3.6
+
+## 1.2.7
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+
+## 1.2.6
+
+### Patch Changes
+
+-   2d279633: handle 401 for undeployment
+
+## 1.2.5
+
+### Patch Changes
+
+-   aeb4cd83: handle entry severity in logging
+
+## 1.2.4
+
+### Patch Changes
+
+-   aeba5509: Better error logging when test mode is enabled
+
+## 1.2.3
+
+### Patch Changes
+
+-   31eb27c4: Only eject the fetch request interceptor when a valid csrf token is received
+
+## 1.2.2
+
+### Patch Changes
+
+-   fa94bfd6: Only eject the fetch request interceptor when a valid csrf token is received
+
+## 1.2.1
+
+### Patch Changes
+
+-   3d3d8c64: Fixes for unsage usage of optional chaining sonar bugs
+
+## 1.2.0
+
+### Minor Changes
+
+-   c775d787: This change implements a new ADT service `FileStoreService`.
+    `FileStoreService` supports querying the file structure and file content in a deployed Fiori app archive.
+
+    Example use case:
+
+    ```
+    const fileStoreService = await provider.getAdtService<FileStoreService>(FileStoreService);
+    // Fetch a list of files and folders in the app's root folder.
+    const rootFolderContent = await fileStoreService.getAppArchiveContent('folder' 'ZFIORIAPP');
+    // Fetch a list of files and folders in <root>/webapp
+    const webappFolderContent = await fileStoreService.getAppArchiveContent('folder' 'ZFIORIAPP', '/webapp');
+    // Fetch the text content as string from <root>/package.json file.
+    const fileContent = await fileStoreService.getAppArchiveContent('file' 'ZFIORIAPP', '/package.json');
+    ```
+
+## 1.1.0
+
+### Minor Changes
+
+-   0fa9c31e: Show destination URL property as public facing URL
+
+## 1.0.3
+
+### Patch Changes
+
+-   7fd2810: improved logging
+
+## 1.0.2
+
+### Patch Changes
+
+-   8e059ae: consider segment parameters in service uri
+
+## 1.0.1
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/btp-utils@0.11.5
+
+## 1.0.0
+
+### Major Changes
+
+-   77ac998: Added a new AdtService class: ListPackageService. It provides API function
+    `listPackages({maxResult: number, phrase: string})` which returns all existing package names that
+    has prefix matching input parameter `phrase`.
+
+    ```javascript
+    const listPackageService = (await provider.getAdtService) < ListPackageService > ListPackageService;
+    const packages = await listPackageService.listPackages({ maxResult: 50, phrase: 'Z_' });
+    ```
+
+## 0.14.1
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/btp-utils@0.11.4
+    -   @sap-ux/logger@0.3.4
+
+## 0.14.0
+
+### Minor Changes
+
+-   3748963: minor bug fix
+
+## 0.13.4
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+
+## 0.13.3
+
+### Patch Changes
+
+-   b727719: chore(open-ux-tools) upgrade @xmldom/xmldom
+
+## 0.13.2
+
+### Patch Changes
+
+-   5589854: Upgrade qs module and the modules using it because of a potential Denial of Service vulnerabity
+
+## 0.13.1
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/btp-utils@0.11.3
+    -   @sap-ux/logger@0.3.2
+
 ## 0.13.0
 
 ### Minor Changes

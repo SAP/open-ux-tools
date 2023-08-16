@@ -6,7 +6,8 @@
 export enum BuildingBlockType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
-    Field = 'field'
+    Field = 'field',
+    Table = 'table'
 }
 
 /**
@@ -39,7 +40,7 @@ export interface BuildingBlock {
  * Usually, a contextPath and metaPath is expected.
  *
  * @example
- * <macro:Chart id="Mychart" contextPath="/RootEntity" metaPath="@com.sap.vocabularies.UI.v1.Chart" />
+ * <macro:Chart id="MyChart" contextPath="/RootEntity" metaPath="@com.sap.vocabularies.UI.v1.Chart" />
  * @extends {BuildingBlock}
  */
 export interface Chart extends BuildingBlock {
@@ -307,10 +308,6 @@ export interface Table extends BuildingBlock {
      * Defines whether to display the search action.
      */
     isSearchable?: boolean;
-    /**
-     * Groups menu actions by key.
-     */
-    menu?: string;
     /**
      * Controls which options should be enabled for the table personalization dialog.
      * If it is set to `true`, all possible options for this kind of table are enabled.

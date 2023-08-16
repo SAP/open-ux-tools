@@ -1,11 +1,24 @@
 import nock from 'nock';
 import type { AppInfo } from '../../src';
 import { Ui5AbapRepositoryService, createForAbap } from '../../src';
+import mockErrorDetails from './mockResponses/errordetails.json';
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as Logger from '@sap-ux/logger';
+
+const loggerMock: ToolsLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+} as Partial<ToolsLogger> as ToolsLogger;
+
+jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
     const validApp = 'VALID_APP';
     const notExistingApp = 'NOT_EXISTING_APP';
+    const restrictedApp = 'RESTRICTED_APP';
     const validAppInfo: AppInfo = {
         Name: validApp,
         Package: 'my_package'
@@ -22,12 +35,16 @@ describe('Ui5AbapRepositoryService', () => {
         nock.disableNetConnect();
         // mock an existing and not existing app
         nock(server)
-            .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?$format=json`)
+            .get(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?$format=json`)
             .reply(200, { d: validAppInfo })
             .persist();
         nock(server)
-            .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${notExistingApp}%27)?$format=json`)
-            .replyWithError('the app does not exist')
+            .get(`${Ui5AbapRepositoryService.PATH}/Repositories('${notExistingApp}')?$format=json`)
+            .reply(404, 'the app does not exist')
+            .persist();
+        nock(server)
+            .get(`${Ui5AbapRepositoryService.PATH}/Repositories('${restrictedApp}')?$format=json`)
+            .reply(401, { d: validAppInfo })
             .persist();
     });
 
@@ -51,9 +68,13 @@ describe('Ui5AbapRepositoryService', () => {
             expect(info).toEqual(validAppInfo);
         });
 
-        test('Not existing app', async () => {
-            const info = await service.getInfo(notExistingApp);
-            expect(info).toBeUndefined();
+        test('Non-existing app returning 404', async () => {
+            const info = await service.getInfo(validApp);
+            expect(info).toBeDefined();
+        });
+
+        test('Not authorized to access app', async () => {
+            await expect(service.getInfo(restrictedApp)).rejects.toThrowError();
         });
     });
 
@@ -62,6 +83,9 @@ describe('Ui5AbapRepositoryService', () => {
 
         test('deploy new app', async () => {
             nock(server)
+                .defaultReplyHeaders({
+                    'sap-message': sapMessageHeader
+                })
                 .post(
                     `${Ui5AbapRepositoryService.PATH}/Repositories?${updateParams}`,
                     (body) => body.indexOf(archive.toString('base64')) !== -1
@@ -91,7 +115,7 @@ describe('Ui5AbapRepositoryService', () => {
         test('update existing app', async () => {
             nock(server)
                 .put(
-                    `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`,
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`,
                     (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
                 .reply(200);
@@ -103,14 +127,32 @@ describe('Ui5AbapRepositoryService', () => {
         test('deployment failed', async () => {
             nock(server)
                 .put(
-                    `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`,
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`,
                     (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
-                .replyWithError('Deployment failed');
+                .reply(401, 'Deployment failed');
             await expect(service.deploy({ archive, bsp: { name: validApp } })).rejects.toThrowError();
         });
 
-        test('retry deployment on 504', async () => {
+        it.each([{ code: 408 }, { code: 504 }])('retry deployment based on error codes', async ({ code }) => {
+            const badService = createForAbap({ baseURL: server }).getUi5AbapRepository();
+            const mockPut = jest.fn().mockRejectedValue({
+                response: {
+                    status: code
+                }
+            });
+            badService.put = mockPut;
+            try {
+                await badService.deploy({ archive, bsp: { name: validApp } });
+                fail('Function should have thrown an error');
+            } catch (error) {
+                expect(error.response?.status).toBe(code);
+                // in case of 504 we retry 2 times
+                expect(mockPut).toHaveBeenCalledTimes(3);
+            }
+        });
+
+        test('retry deployment on 504 and 408', async () => {
             const badService = createForAbap({ baseURL: server }).getUi5AbapRepository();
             const mockPut = jest.fn().mockRejectedValue({
                 response: {
@@ -128,29 +170,48 @@ describe('Ui5AbapRepositoryService', () => {
             }
         });
 
-        test('testMode and safeMode', async () => {
+        test('testMode enabled', async () => {
             nock(server)
                 .put(
-                    `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}&TestMode=true&SafeMode=false`
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}&TestMode=true&SafeMode=true`
                 )
                 .reply(200);
             const response = await service.deploy({
                 archive,
                 bsp: { name: validApp },
                 testMode: true,
-                safeMode: false
+                safeMode: true
             });
             expect(response.data).toBeDefined();
+        });
+
+        test('testMode enabled with error', async () => {
+            nock(server)
+                .put(
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}&TestMode=true&SafeMode=true`
+                )
+                .reply(403, JSON.stringify(mockErrorDetails));
+            const response = await service.deploy({
+                archive,
+                bsp: { name: validApp },
+                testMode: true,
+                safeMode: true
+            });
+            expect(response.data).toContain('CA-UI5-ABA-SAR');
         });
     });
 
     describe('undeploy', () => {
+        beforeEach(() => {
+            jest.resetAllMocks();
+        });
+
         test('successful removal', async () => {
             nock(server)
-                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`)
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
-            expect(response.status).toBe(200);
+            expect(response?.status).toBe(200);
         });
 
         test('successful with additional message', async () => {
@@ -158,35 +219,73 @@ describe('Ui5AbapRepositoryService', () => {
                 .defaultReplyHeaders({
                     'sap-message': sapMessageHeader
                 })
-                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`)
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
-            expect(response.status).toBe(200);
+            expect(response?.status).toBe(200);
         });
 
         test('failed removal', async () => {
             nock(server)
-                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`)
                 .replyWithError('Failed');
             await expect(service.undeploy({ bsp: { name: validApp } })).rejects.toThrowError();
         });
+
+        test('failed removal, not authorised', async () => {
+            const appName = 'TestApp';
+            nock(server).get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?$format=json`).reply(401);
+            await expect(service.undeploy({ bsp: { name: appName } })).rejects.toThrowError();
+            expect(loggerMock.debug).toHaveBeenCalledTimes(1);
+            expect(loggerMock.info).toHaveBeenCalledTimes(0);
+            expect(loggerMock.error).toHaveBeenCalledTimes(0);
+        });
+
+        test('failed removal, application not found', async () => {
+            const appName = 'TestApp';
+            nock(server).get(`${Ui5AbapRepositoryService.PATH}/Repositories('${appName}')?$format=json`).reply(404);
+            const response = await service.undeploy({ bsp: { name: appName } });
+            expect(response).toBeUndefined();
+        });
+
+        test('failed removal but handle repeat request', async () => {
+            const appName = 'TestAppRecursive';
+            nock(server)
+                .get(`${Ui5AbapRepositoryService.PATH}/Repositories('${appName}')?$format=json`)
+                .reply(200, { d: { ...validAppInfo, Name: appName } });
+            nock(server)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${appName}')?${updateParams}`)
+                .reply(400);
+            nock(server)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${appName}')?${updateParams}`)
+                .reply(200);
+            const response = await service.undeploy({ bsp: { name: appName } });
+            expect(response?.status).toBe(200);
+        });
     });
 
-    describe('createPayload', () => {
-        test('ensure special characters are encoded', async () => {
+    describe('Validate Ui5AbapRepositoryService private methods', () => {
+        test('Validate private methods', async () => {
             /**
-             * Extension of Ui5AbapRespository class to make `createPayload` public and available for testing.
+             * Extension of Ui5AbapRepository class to make `createPayload` and `getAbapFrontendUrl` public and available for testing.
              */
             class ServiceForTesting extends Ui5AbapRepositoryService {
                 public createPayload = super.createPayload;
+                public getAbapFrontendUrl = super.getAbapFrontendUrl;
             }
-            const service = new ServiceForTesting();
-            const inputDescription = `<my&special"'decription>`;
+            const publicUrl = 'http://sap.server';
+            const service = new ServiceForTesting({ publicUrl });
+            const inputDescription = `<my&special"'description>`;
             const xmlPayload = service.createPayload(Buffer.from('TestData'), 'special&name', inputDescription, '');
+            // Ensure special characters are encoded
             expect(xmlPayload).not.toContain('special&name');
             expect(xmlPayload).toContain('special&amp;name');
             expect(xmlPayload).not.toContain(inputDescription);
-            expect(xmlPayload).toContain('&lt;my&amp;special&quot;&apos;decription&gt;');
+            expect(xmlPayload).toContain('&lt;my&amp;special&quot;&apos;description&gt;');
+            expect(xmlPayload).toContain(` xml:base="${publicUrl}"`);
+            expect(xmlPayload).toContain(`<id>${publicUrl}/Repositories('special&amp;name')</id>`);
+            // ABAP frontend reflects
+            expect(service.getAbapFrontendUrl()).toEqual(publicUrl);
         });
     });
 });

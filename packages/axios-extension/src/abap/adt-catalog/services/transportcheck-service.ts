@@ -1,7 +1,7 @@
 import { AdtService } from './adt-service';
 import { LocalPackageText } from '../../types';
 import type { AdtCategory, AdtTransportStatus, TransportRequest } from '../../types';
-import XmlParser from 'fast-xml-parser';
+import { XMLValidator } from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
 
@@ -13,7 +13,7 @@ export class TransportChecksService extends AdtService {
     /**
      * @see AdtService.getAdtCatagory()
      */
-    private static AdtCategory = {
+    private static adtCategory = {
         scheme: 'http://www.sap.com/adt/categories/cts',
         term: 'transportchecks'
     };
@@ -23,7 +23,7 @@ export class TransportChecksService extends AdtService {
      * @returns AdtCategory
      */
     public static getAdtCatagory(): AdtCategory {
-        return TransportChecksService.AdtCategory;
+        return TransportChecksService.adtCategory;
     }
 
     /**
@@ -50,10 +50,10 @@ export class TransportChecksService extends AdtService {
                         <PGMID/>
                         <OBJECT/>
                         <OBJECTNAME/>
-                        <DEVCLASS>${packageName}</DEVCLASS>
+                        <DEVCLASS>${encodeURIComponent(packageName)}</DEVCLASS>
                         <SUPER_PACKAGE/>
                         <OPERATION>I</OPERATION>
-                        <URI>/sap/bc/adt/filestore/ui5-bsp/objects/${appName}/$create</URI>
+                        <URI>/sap/bc/adt/filestore/ui5-bsp/objects/${encodeURIComponent(appName)}/$create</URI>
                         </DATA>
                     </asx:values>
                 </asx:abap>
@@ -71,7 +71,7 @@ export class TransportChecksService extends AdtService {
      * @returns a list of valid transport requests can be used for deploy config
      */
     private getTransportRequestList(xml: string): TransportRequest[] {
-        if (XmlParser.validate(xml) !== true) {
+        if (XMLValidator.validate(xml) !== true) {
             this.log.warn(`Invalid XML: ${xml}`);
             return [];
         }

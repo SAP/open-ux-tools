@@ -59,8 +59,8 @@ describe('UAA', () => {
         const refreshToken = 'refreshToken';
         const mockedResponse = {
             data: {
-                access_token: accessToken,
-                refresh_token: refreshToken
+                'access_token': accessToken,
+                'refresh_token': refreshToken
             }
         };
 
@@ -70,6 +70,7 @@ describe('UAA', () => {
         });
 
         it('returns the access token without refresh token', async () => {
+            jest.setTimeout(10000);
             jest.spyOn(axios, 'request').mockResolvedValueOnce(mockedResponse);
 
             // mocked exchange with the server
@@ -78,14 +79,43 @@ describe('UAA', () => {
                 expect(params.get('response_type')).toBe('code');
                 const openedUri = params.get('redirect_uri');
                 expect(openedUri).toBeDefined();
-                axios.get(openedUri, {
-                    params: {
-                        code: 'authCode'
-                    }
-                });
+                if (openedUri) {
+                    axios
+                        .get(openedUri, {
+                            params: {
+                                code: 'authCode'
+                            }
+                        })
+                        .catch((error) => console.error(error));
+                }
             };
 
             await expect(uaaInstance().getAccessToken()).resolves.toEqual(accessToken);
+        });
+    });
+
+    describe('getAccessTokenWithClientCredentials', () => {
+        const accessToken = 'accessToken';
+        const refreshToken = 'refreshToken';
+        const mockedResponse = {
+            data: {
+                'access_token': accessToken,
+                'refresh_token': refreshToken
+            }
+        };
+
+        it('returns an access token using client credentials', async () => {
+            const axiosRequestSpy = jest.spyOn(axios, 'request').mockResolvedValueOnce(mockedResponse);
+            const uaaUrlSlash = 'https://some.url.with.slash/';
+            await expect(uaaInstance({ url: uaaUrlSlash }).getAccessTokenWithClientCredentials()).resolves.toEqual(
+                accessToken
+            );
+            expect(axiosRequestSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    'method': 'POST',
+                    'url': 'https://some.url.with.slash/oauth/token'
+                })
+            );
         });
     });
 });
