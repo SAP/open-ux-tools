@@ -15,9 +15,8 @@ import MessageToast from 'sap/m/MessageToast';
 import ToolbarSpacer from 'sap/m/ToolbarSpacer';
 
 /** sap.ui.core */
-import Icon from 'sap/ui/core/Icon';
 import Item from 'sap/ui/core/Item';
-import UI5Element from 'sap/ui/core/Element';
+import type UI5Element from 'sap/ui/core/Element';
 import CustomData from 'sap/ui/core/CustomData';
 import { ValueState } from 'sap/ui/core/library';
 import { VerticalAlign } from 'sap/ui/core/library';
@@ -34,17 +33,16 @@ import FilterOperator from 'sap/ui/model/FilterOperator';
 /** sap.ui.dt */
 // import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
-import ManagedObject from 'sap/ui/base/ManagedObject';
-
-import ControlUtils, { BuiltRuntimeControl, ControlManagedObject } from '../control-utils';
+import type { BuiltRuntimeControl, ControlManagedObject } from '../control-utils';
+import ControlUtils from '../control-utils';
 import ApiRequestHandler from '../api-handler';
 import type { FragmentsResponse } from '../api-handler';
 
 import StandardListItem from 'sap/m/StandardListItem';
-import type ElementMetadata from 'sap/ui/core/ElementMetadata';
-import ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
-import Event from 'sap/ui/base/Event';
-import EventProvider from 'sap/ui/base/EventProvider';
+import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
+import type Event from 'sap/ui/base/Event';
+import type EventProvider from 'sap/ui/base/EventProvider';
+import type Binding from 'sap/ui/model/Binding';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -199,7 +197,6 @@ export default class FragmentDialog {
         try {
             const { fragments, filteredFragments } = await ApiRequestHandler.getFragments<FragmentsResponse>();
 
-            // TODO: Filter fragments that have a respective change file
             jsonModel.setProperty('/filteredFragmentList', {
                 fragmentList: filteredFragments, // filtered fragments that have no corresponding change file
                 newFragmentName: '',
@@ -207,7 +204,11 @@ export default class FragmentDialog {
                 unFilteredFragmentList: fragments // All fragments under /fragments folder
             });
             jsonModel.setProperty('/fragmentCount', fragments.length);
-        } catch (e) {}
+        } catch (e) {
+            console.error(e.message);
+            MessageToast.show(e.message);
+            return;
+        }
 
         jsonModel.setProperty('/selectedIndex', indexArray.length - 1);
         jsonModel.setProperty('/defaultAggregation', defaultAggregation);
@@ -397,15 +398,11 @@ export default class FragmentDialog {
                                 and: false
                             });
                             filters.push(oFilter);
-                            // TODO: Replace this jQuery
-                            // @ts-ignore
-                            if (!jQuery.isEmptyObject(filteredFragmentList.getBinding('items'))) {
+                            if (that.isEmptyObject<Binding>(filteredFragmentList.getBinding('items')!)) {
                                 // @ts-ignore
                                 filteredFragmentList.getBinding('items').filter(filters);
                             }
-                            // TODO: Replace this jQuery
-                            // @ts-ignore
-                        } else if (!jQuery.isEmptyObject(filteredFragmentList.getBinding('items'))) {
+                        } else if (that.isEmptyObject<Binding>(filteredFragmentList.getBinding('items')!)) {
                             // @ts-ignore
                             filteredFragmentList.getBinding('items').filter([]);
                         }
@@ -414,8 +411,7 @@ export default class FragmentDialog {
                     search: function (event: Event) {
                         const clearBtnPressed = (event.getParameters() as object & { clearButtonPressed: boolean })
                             .clearButtonPressed;
-                        // @ts-ignore
-                        if (clearBtnPressed && !jQuery.isEmptyObject(filteredFragmentList.getBinding('items'))) {
+                        if (clearBtnPressed && that.isEmptyObject<Binding>(filteredFragmentList.getBinding('items')!)) {
                             // @ts-ignore
                             filteredFragmentList.getBinding('items').filter([]);
                         }
@@ -511,7 +507,7 @@ export default class FragmentDialog {
                 }).addStyleClass('sapUiTinyMarginTopBottom')
             ]
         });
-        var fragmentDialog = new Dialog({
+        const fragmentDialog = new Dialog({
             content: [selectFragmentLayout, createFragmentLayout],
             contentWidth: '600px',
 
@@ -529,15 +525,12 @@ export default class FragmentDialog {
                     if (!buttonAddFragment) {
                         // Need to create a new fragment and a respective change file
                         const fragmentNameToCreate = jsonModel.getProperty('/fragmentNameToCreate');
-                        await that.createNewFragment(
-                            {
-                                fragmentName: fragmentNameToCreate,
-                                index: jsonModel.getProperty('/selectedIndex'),
-                                targetAggregation: jsonModel.getProperty('/selectedAggregation/value')
-                            },
-                            runtimeControl,
-                            that
-                        );
+                        const fragmentData = {
+                            fragmentName: fragmentNameToCreate,
+                            index: jsonModel.getProperty('/selectedIndex'),
+                            targetAggregation: jsonModel.getProperty('/selectedAggregation/value')
+                        };
+                        await that.createNewFragment(fragmentData, runtimeControl, that);
                     } else {
                         const selectedFragmentName = jsonModel.getProperty('/SelectedFragment/selectedFragmentName');
                         await that.createFragmentChange(
@@ -588,17 +581,38 @@ export default class FragmentDialog {
     }
 
     /**
-     * @description Creates a new fragment for the specified control
-     * @param fragmentName Fragment name
-     * @param index Index for XML Fragment placement
-     * @param targetAggregation Target aggregation for control
-     * @param runtimeControl Runtime control
+     * @description Checks if an object is empty (has no own properties)
+     * @param obj Any object to be checked
+     * @returns Boolean value
      */
-    public async createNewFragment(
-        { fragmentName, index, targetAggregation }: CreateFragmentProps,
+    private isEmptyObject<T>(obj: Record<string, unknown> | T): boolean {
+        if (typeof obj === 'object') {
+            for (const key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @description Creates a new fragment for the specified control
+     * @param fragmentData Fragment Data
+     * @param fragmentData.index Index for XML Fragment placement
+     * @param fragmentData.fragmentName Fragment name
+     * @param fragmentData.targetAggregation Target aggregation for control
+     * @param runtimeControl Runtime control
+     * @param that FragmentDialog instance
+     */
+    private async createNewFragment(
+        fragmentData: CreateFragmentProps,
         runtimeControl: ControlManagedObject,
         that: FragmentDialog
     ): Promise<void> {
+        const { fragmentName, index, targetAggregation } = fragmentData;
         try {
             await ApiRequestHandler.writeFragment<unknown>({ fragmentName });
         } catch (e) {
@@ -611,15 +625,18 @@ export default class FragmentDialog {
         await that.createFragmentChange({ fragmentName, index, targetAggregation }, runtimeControl);
     }
 
-    public async createFragmentChange(
-        { fragmentName, index = 0, targetAggregation }: CreateFragmentProps,
-        runtimeControl: ControlManagedObject
-    ) {
+    /**
+     * @description Creates an addXML fragment command and pushes it to the command stack
+     * @param fragmentData Fragment Data
+     * @param runtimeControl Runtime control
+     */
+    private async createFragmentChange(fragmentData: CreateFragmentProps, runtimeControl: ControlManagedObject) {
+        const { fragmentName, index, targetAggregation } = fragmentData;
         let manifest: ManifestAppdescr;
         try {
             manifest = await ApiRequestHandler.getManifestAppdescr<ManifestAppdescr>();
 
-            if (!manifest) {
+            if (manifest) {
                 // Highly unlikely since adaptation projects are required to have manifest.appdescr_variant
                 throw new Error('Could not retrieve manifest');
             }
@@ -637,7 +654,7 @@ export default class FragmentDialog {
             layer: layer,
             namespace: namespace,
             projectId: id,
-            rootNamespace: namespace.split('/').slice(0, 2).join('/'),
+            rootNamespace: (namespace as string).split('/').slice(0, 2).join('/'),
             scenario: undefined
         };
 
@@ -664,7 +681,7 @@ export default class FragmentDialog {
 
         /**
          * The change will have pending state and will only be saved to the workspace when the user clicks save icon
-         *  */
+         */
         await this.rta.getCommandStack().pushAndExecute(command);
     }
 }

@@ -2,8 +2,9 @@ import { join } from 'path';
 import express from 'express';
 import { ZipFile } from 'yazl';
 import NodeCache from 'node-cache';
+import rateLimit from 'express-rate-limit';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import rateLimit, { Options, RateLimitRequestHandler } from 'express-rate-limit';
+import type { RateLimitRequestHandler } from 'express-rate-limit';
 
 import type { NextFunction, Request, Response, Router } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';

@@ -6,7 +6,8 @@ import type { ReaderCollection } from '@ui5/fs';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { NextFunction, Request, Response } from 'express';
 
-import { FolderNames, TemplateFileName, HttpStatusCodes, ProjectFileNames, ManifestAppdescr } from '../types';
+import type { ManifestAppdescr } from '../types';
+import { FolderNames, TemplateFileName, HttpStatusCodes, ProjectFileNames } from '../types';
 
 interface WriteFragmentBody {
     fragmentName: string;
@@ -19,8 +20,9 @@ export default class RoutesHandler {
     /**
      * Constructor taking project as input.
      *
-     * @param project reference to the root of the project
-     * @param logger logger instance
+     * @param project Reference to the root of the project
+     * @param logger Logger instance
+     * @param cache Caching instance
      */
     constructor(
         private readonly project: ReaderCollection,
@@ -28,7 +30,16 @@ export default class RoutesHandler {
         private cache: NodeCache
     ) {}
 
-    private withCache<T>(key: string, ttlSeconds: number = 60, cb: () => T) {
+    /**
+     * Generic caching function, caches the results of a callback
+     *
+     * @param key Cache key - unique identifier
+     * @param ttlSeconds Time-to-live for cached item
+     * @param cb Callback used to return data
+     * @template T
+     * @returns {T} Type or Interface of the return data
+     */
+    private withCache<T>(key: string, ttlSeconds: number = 60, cb: () => T): T {
         const cachedData = this.cache.get<T>(key);
 
         if (cachedData !== undefined) {
@@ -41,7 +52,7 @@ export default class RoutesHandler {
     }
 
     /**
-     * Handler for reading all fragment files from the workspace
+     * @description Handler for reading all fragment files from the workspace
      * @param _ Request
      * @param res Response
      * @param next Next Function
@@ -113,7 +124,8 @@ export default class RoutesHandler {
 
     /**
      * Handler for writing a fragment file to the workspace
-     * @param _req Request
+     *
+     * @param req Request
      * @param res Response
      * @param next Next Function
      */
@@ -157,6 +169,7 @@ export default class RoutesHandler {
 
     /**
      * Handler for reading the manifest.appdescr_variant contents
+     *
      * @param req Request
      * @param res Response
      * @param next Next Function

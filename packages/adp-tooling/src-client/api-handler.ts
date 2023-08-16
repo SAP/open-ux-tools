@@ -25,10 +25,12 @@ export interface FragmentsResponse {
  */
 export default class ApiRequestHandler {
     /**
-     * @description Requests a given endpoint
+     * Requests a given endpoint
+     *
      * @param endpoint API Endpoint
      * @param method RequestMethod
      * @param data Data to be sent to the server
+     * @returns Data from the server request
      */
     private static async request<T>(endpoint: ApiEndpoints, method: RequestMethod, data?: unknown): Promise<T> {
         const config: RequestInit = {
@@ -65,6 +67,8 @@ export default class ApiRequestHandler {
 
     /**
      * Retrieves all XML fragments from the project's workspace
+     *
+     * @returns Generic Promise<T>
      */
     public static async getFragments<T>(): Promise<T> {
         return this.request<T>(ApiEndpoints.FRAGMENT, RequestMethod.GET);
@@ -72,7 +76,9 @@ export default class ApiRequestHandler {
 
     /**
      * Writes an XML fragment to the project's workspace
+     *
      * @param data Data to be send to the server
+     * @returns Generic Promise<T>
      */
     public static async writeFragment<T>(data: T): Promise<T> {
         return this.request<T>(ApiEndpoints.FRAGMENT, RequestMethod.POST, data);
@@ -80,6 +86,8 @@ export default class ApiRequestHandler {
 
     /**
      * Retrieves all JS controllers from the project's workspace
+     *
+     * @returns Generic Promise<T>
      */
     public static async getControllers<T>(): Promise<T> {
         return this.request<T>(ApiEndpoints.CONTROLLER, RequestMethod.GET);
@@ -87,7 +95,9 @@ export default class ApiRequestHandler {
 
     /**
      * Writes a JS Controller to the project's workspace
+     *
      * @param data Data to be send to the server
+     * @returns Generic Promise<T>
      */
     public static async writeController<T>(data: T): Promise<T> {
         return this.request<T>(ApiEndpoints.FRAGMENT, RequestMethod.POST, data);
@@ -95,6 +105,8 @@ export default class ApiRequestHandler {
 
     /**
      * Retrieves manifest.appdescr_variant from the project's workspace
+     *
+     * @returns Generic Promise<T>
      */
     public static async getManifestAppdescr<T>(): Promise<T> {
         return this.request<T>(ApiEndpoints.MANIFEST_APP_DESCRIPTOR, RequestMethod.GET);

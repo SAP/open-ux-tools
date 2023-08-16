@@ -1,6 +1,6 @@
 import DataType from 'sap/ui/base/DataType';
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
 export interface BuiltRuntimeControl {
     id: string;
@@ -37,7 +37,9 @@ interface AnalyzedType {
 export default class ControlUtils {
     /**
      * Returns ManagedObject runtime control
+     *
      * @param overlayControl Overlay
+     * @returns {ManagedObject} Managed Object instance
      */
     public static getRuntimeControl(overlayControl: sap.ui.dt.ElementOverlay): sap.ui.base.ManagedObject {
         let runtimeControl;
@@ -51,14 +53,18 @@ export default class ControlUtils {
 
     /**
      * Returns control aggregation names in an array
+     *
      * @param control Managed Object runtime controll
      * @param name Aggregation name
+     * @returns Array of control aggregations
      */
     public static getControlAggregationByName(control: ControlManagedObject, name: string) {
-        let result = [],
-            aggregation = ((control && control.getMetadata().getAllAggregations()) || {})[name] as unknown as object & {
-                _sGetter: string;
-            };
+        let result = [];
+        const aggregation = ((control && control.getMetadata().getAllAggregations()) || {})[
+            name
+        ] as unknown as object & {
+            _sGetter: string;
+        };
 
         if (aggregation) {
             if (!aggregation._sGetter && !control.__calledJSONKeys) {
@@ -81,8 +87,9 @@ export default class ControlUtils {
     }
 
     /**
-     *
-     * @param property
+     * @description Analyzes propery type
+     * @param property Managed Objects metadata properties
+     * @returns {AnalyzedType | undefined} Analyzed type
      */
     private static analyzePropertyType(
         property: sap.ui.base.ManagedObjectMetadataProperties
@@ -151,16 +158,18 @@ export default class ControlUtils {
     }
 
     /**
-     *
-     * @param analyzedType
+     * @description Checks if property in analyzed type is enabled
+     * @param analyzedType Analyzed type
+     * @returns {boolean} Boolean value
      */
     private static isPropertyEnabled(analyzedType: AnalyzedType): boolean {
         return analyzedType.isArray || analyzedType.primitiveType === 'any' ? false : true;
     }
 
     /**
-     *
-     * @param rawValue
+     * @description Normalizes rawValue
+     * @param rawValue Any object or string value
+     * @returns {object | string} Object or a string
      */
     private static normalizeObjectPropertyValue(rawValue: object | string): object | string {
         if (typeof rawValue === 'object' && rawValue instanceof Object && !Array.isArray(rawValue)) {
@@ -192,8 +201,9 @@ export default class ControlUtils {
     }
 
     /**
-     *
-     * @param name
+     * @description Tests icon pattern
+     * @param name Icon name
+     * @returns {boolean} Boolean value
      */
     private static testIconPattern(name: string): boolean {
         // replace `/src|.*icon$|^icon.*/i`.test(property.name);
@@ -202,21 +212,27 @@ export default class ControlUtils {
         return nameLc.indexOf('src') >= 0 || nameLc.startsWith('icon') || nameLc.endsWith('icon');
     }
 
+    /**
+     * @description Converts strings from camel case to pascal case
+     * @param text Text to convert
+     * @returns {boolean} Boolean value
+     */
     private static convertCamelCaseToPascalCase = (text: string): string => {
         const string = text.replace(/([A-Z])/g, ' $1');
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
     /**
-     *
-     * @param control
-     * @param controlOverlay
-     * @param includeDocumentation
+     * @description Builds control data
+     * @param control Control Managed Object
+     * @param controlOverlay Control overlay
+     * @param _includeDocumentation Toggle whether to include documentation
+     * @returns {BuiltRuntimeControl} Built runtime control
      */
     public static async buildControlData(
         control: ManagedObject,
         controlOverlay?: sap.ui.dt.ElementOverlay,
-        includeDocumentation = true
+        _includeDocumentation = true
     ): Promise<BuiltRuntimeControl> {
         const controlMetadata = control.getMetadata();
 
