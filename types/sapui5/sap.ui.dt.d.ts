@@ -6,20 +6,25 @@ declare module 'sap/ui/dt/DesignTimeMetadata' {
         ignore: boolean;
         defaultValue: unknown;
         deprecated?: boolean;
+        specialIndexHandling?: boolean;
     }
 
     export default interface DesignTimeMetadata extends ManagedObject {
-        getData: () => { properties: { [name: string]: DesignTimeMetadataData } };
+        getData: () => { 
+            properties: { [name: string]: DesignTimeMetadataData };
+            aggregations: { [name: string]: DesignTimeMetadataData };
+        };
     }
 }
 
 declare module 'sap/ui/dt/ElementOverlay' {
     import type ManagedObject from 'sap/ui/base/ManagedObject';
+    import type Overlay from 'sap/ui/dt/Overlay';
 
     /**
      *
      */
-    export default class {
+    export default interface ElementOverlay extends Overlay {
         getElement(): ManagedObject;
         getElementInstance(): ManagedObject;
         isSelectable(): boolean;

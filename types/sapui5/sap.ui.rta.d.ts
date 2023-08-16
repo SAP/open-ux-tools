@@ -45,13 +45,15 @@ declare module 'sap/ui/rta/command/CommandFactory' {
         baseId?: string;
         projectId?: string;
         scenario?: string;
+        namespace?: string;
+        rootNamespace?: string;
     }
 
-    export default interface CommandFactory {
+    interface CommandFactory {
         /**
          *
          */
-        static getCommandFor<T extends BaseCommand = BaseCommand>(
+        getCommandFor<T extends BaseCommand = BaseCommand>(
             control: Element | string,
             commandType: string,
             settings: any,
@@ -59,6 +61,9 @@ declare module 'sap/ui/rta/command/CommandFactory' {
             flexSettings?: FlexSettings
         ): Promise<T>;
     }
+
+    const CommandFactory: CommandFactory;
+    export default CommandFactory;
 }
 
 declare module 'sap/ui/rta/command/OutlineService' {
