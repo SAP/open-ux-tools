@@ -1,10 +1,9 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src-client"],
+    "include": ["src-client", "../../types/sapui5"],
     "compilerOptions": {
         "module": "es6",
         "lib": ["ES2020", "dom"],
-        "types": ["@sapui5/types"],
         "allowJs": true,
         "noEmit": true
     }

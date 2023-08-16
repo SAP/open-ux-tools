@@ -1,11 +1,5 @@
-import { showDialog } from './submodule/dialog';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-export default (rta: sap.ui.rta.RuntimeAuthoring) => {
-    const menu = rta.getDefaultPlugins().contextMenu;
-    menu.addMenuItem({
-        id: 'ADD_ACTION',
-        text: 'Show dialog',
-        handler: () => showDialog(),
-        icon: 'sap-icon://attachment-html'
-    });
+export default (_rta: RuntimeAuthoring) => {
+    // add custom plugins to the RuntimeAuthoring instance here
 };

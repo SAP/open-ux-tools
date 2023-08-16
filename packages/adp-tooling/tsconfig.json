@@ -1,12 +1,4 @@
 {
     "extends": "../../tsconfig.json",
-    "include": [
-        "../../types/ui5.d.ts",
-        "../../types/mem-fs-editor.d.ts",
-        "src",
-        "src-client"
-    ],
-    "compilerOptions": {
-        "types": ["@sapui5/types", "node", "jest"]
-    }
+    "include": ["../../types/ui5.d.ts", "../../types/mem-fs-editor.d.ts", "../../types/sapui5", "src", "src-client"]
 }
