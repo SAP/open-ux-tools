@@ -1,7 +1,7 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import { ZipFile } from 'yazl';
 import type { AdpPreviewConfig, DescriptorVariant } from '../types';
-import type { NextFunction, Request, Response, Router } from 'express';
+import type { NextFunction, Request, RequestHandler, Response, Router } from 'express';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
@@ -151,7 +151,7 @@ export class AdpPreview {
      * @param router router that is to be enhanced with the API
      */
     addApis(router: Router): void {
-        router.get('/adp/api/fragment', async (_req: Request, res: Response) => {
+        router.get('/adp/api/fragment', (async (_req: Request, res: Response) => {
             const files = await this.project.byGlob('/**/changes/**/*.fragment.xml');
             try {
                 const names = files.map((file) => file.getPath());
@@ -161,6 +161,6 @@ export class AdpPreview {
                 this.logger.warn(error.message);
                 res.status(500);
             }
-        });
+        }) as RequestHandler);
     }
 }
