@@ -53,8 +53,8 @@ export interface ManifestAppdescr {
 
 export interface Content {
     changeType: string;
-    content: any;
-    texts?: any;
+    content: object;
+    texts?: object;
 }
 
 export const enum FolderNames {

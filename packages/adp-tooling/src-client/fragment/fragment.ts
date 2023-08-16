@@ -60,7 +60,7 @@ export interface ManifestAppdescr {
     id: string;
     namespace: string;
     version: string;
-    content: any[];
+    content: object[];
 }
 
 type ExtendedEventProvider = EventProvider & {
@@ -74,8 +74,9 @@ type ExtendedEventProvider = EventProvider & {
         }[];
     };
     getSelectedKey: () => string;
-    setValueState: (state: ValueState) => {};
-    setValueStateText: (text: string) => {};
+    setValueState: (state: ValueState) => void;
+    setValueStateText: (text: string) => void;
+    setVisible: (bool: boolean) => void;
 };
 
 /**
@@ -97,7 +98,7 @@ export default class FragmentDialog {
         contextMenu.addMenuItem({
             id: 'ADD_FRAGMENT',
             text: 'Add: Fragment',
-            handler: async (overlays: any) => await this.handleAddNewFragment(overlays, that),
+            handler: async (overlays: UI5Element[]) => await this.handleAddNewFragment(overlays, that),
             icon: 'sap-icon://attachment-html'
         });
     }
@@ -564,8 +565,9 @@ export default class FragmentDialog {
                     new Button({
                         icon: 'sap-icon://nav-back',
                         visible: false,
-                        press: function (event: any) {
-                            event.getSource().setVisible(false);
+                        press: function (event: Event) {
+                            const source = event.getSource() as ExtendedEventProvider;
+                            source.setVisible(false);
                             buttonAddFragment = true;
                             fragmentDialog.getBeginButton().setText('Add');
                             fragmentDialog.getContent()[1].setVisible(false);

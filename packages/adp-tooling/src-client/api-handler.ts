@@ -30,7 +30,7 @@ export default class ApiRequestHandler {
      * @param method RequestMethod
      * @param data Data to be sent to the server
      */
-    private static async request<T>(endpoint: ApiEndpoints, method: RequestMethod, data?: any): Promise<T> {
+    private static async request<T>(endpoint: ApiEndpoints, method: RequestMethod, data?: unknown): Promise<T> {
         const config: RequestInit = {
             method,
             body: JSON.stringify(data),

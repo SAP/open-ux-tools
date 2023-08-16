@@ -154,7 +154,7 @@ export default class ControlUtils {
      *
      * @param analyzedType
      */
-    private static isPropertyEnabled(analyzedType: any): boolean {
+    private static isPropertyEnabled(analyzedType: AnalyzedType): boolean {
         return analyzedType.isArray || analyzedType.primitiveType === 'any' ? false : true;
     }
 
@@ -162,7 +162,7 @@ export default class ControlUtils {
      *
      * @param rawValue
      */
-    private static normalizeObjectPropertyValue(rawValue: any): string {
+    private static normalizeObjectPropertyValue(rawValue: object | string): object | string {
         if (typeof rawValue === 'object' && rawValue instanceof Object && !Array.isArray(rawValue)) {
             try {
                 return JSON.stringify(rawValue);
@@ -233,13 +233,13 @@ export default class ControlUtils {
         const allProperties = controlMetadata.getAllProperties() as unknown as {
             [name: string]: sap.ui.base.ManagedObjectMetadataProperties;
         };
-        const propertyNames = Object.keys(allProperties);
+        const propertyNames: string[] = Object.keys(allProperties);
         const properties = [];
         // const document = includeDocumentation ? await getDocumentation(selectedControlName, selContLibName) : {};
         // ? Do we need this documentation at all
-        const document: any = {};
+        const document: { [key: string]: object } = {};
         for (const propertyName of propertyNames) {
-            const property: any = allProperties[propertyName];
+            const property = allProperties[propertyName];
 
             const analyzedType = this.analyzePropertyType(property);
             if (!analyzedType) {
