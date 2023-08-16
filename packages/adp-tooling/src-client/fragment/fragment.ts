@@ -1,38 +1,48 @@
 /** sap.m */
-import Dialog from 'sap/m/Dialog';
-import Label from 'sap/m/Label';
-import Text from 'sap/m/Text';
-import { ListMode } from 'sap/m/library';
-import List from 'sap/m/List';
-import Input from 'sap/m/Input';
-import ComboBox from 'sap/m/ComboBox';
-import ToolbarSpacer from 'sap/m/ToolbarSpacer';
-import SearchField from 'sap/m/SearchField';
-import Button from 'sap/m/Button';
-import { ButtonType } from 'sap/m/library';
-import Link from 'sap/m/Link';
 import Bar from 'sap/m/Bar';
+import List from 'sap/m/List';
+import Link from 'sap/m/Link';
+import Text from 'sap/m/Text';
+import Label from 'sap/m/Label';
+import Input from 'sap/m/Input';
+import Dialog from 'sap/m/Dialog';
+import Button from 'sap/m/Button';
+import ComboBox from 'sap/m/ComboBox';
+import { ListMode } from 'sap/m/library';
+import { ButtonType } from 'sap/m/library';
+import SearchField from 'sap/m/SearchField';
 import MessageToast from 'sap/m/MessageToast';
+import ToolbarSpacer from 'sap/m/ToolbarSpacer';
 
 /** sap.ui.core */
 import Icon from 'sap/ui/core/Icon';
+import Item from 'sap/ui/core/Item';
+import UI5Element from 'sap/ui/core/Element';
+import CustomData from 'sap/ui/core/CustomData';
+import { ValueState } from 'sap/ui/core/library';
+import { VerticalAlign } from 'sap/ui/core/library';
+
+/** sap.ui.layout */
 import VerticalLayout from 'sap/ui/layout/VerticalLayout';
 import HorizontalLayout from 'sap/ui/layout/HorizontalLayout';
-import Item from 'sap/ui/core/Item';
-import CustomData from 'sap/ui/core/CustomData';
-import { VerticalAlign } from 'sap/ui/core/library';
-import { ValueState } from 'sap/ui/core/library';
 
 /** sap.ui.model */
 import Filter from 'sap/ui/model/Filter';
-import FilterOperator from 'sap/ui/model/FilterOperator';
 import JSONModel from 'sap/ui/model/json/JSONModel';
+import FilterOperator from 'sap/ui/model/FilterOperator';
 
-import ControlUtils from '../control-utils';
-import type { FragmentsResponse } from '../api-handler';
+/** sap.ui.dt */
+// import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+
+import ManagedObject from 'sap/ui/base/ManagedObject';
+
+import ControlUtils, { BuiltRuntimeControl, ControlManagedObject } from '../control-utils';
 import ApiRequestHandler from '../api-handler';
+import type { FragmentsResponse } from '../api-handler';
 
+import StandardListItem from 'sap/m/StandardListItem';
 import type ElementMetadata from 'sap/ui/core/ElementMetadata';
+import ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -85,14 +95,13 @@ export default class FragmentDialog {
         const oModel = new JSONModel();
 
         let bAddFragment: boolean;
-        let runtimeControl: sap.ui.base.ManagedObject;
-        let control = null;
-        let controlMetadata: ElementMetadata;
+        let runtimeControl: ControlManagedObject;
+        let control: BuiltRuntimeControl;
+        let controlMetadata: ManagedObjectMetadata;
 
-        // @ts-ignore
-        const overlayControl: sap.ui.dt.ElementOverlay = sap.ui.getCore().byId(selectorId);
+        const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as sap.ui.dt.ElementOverlay;
         if (overlayControl) {
-            runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
+            runtimeControl = ControlUtils.getRuntimeControl(overlayControl) as unknown as ControlManagedObject;
             controlMetadata = runtimeControl.getMetadata();
             control = await ControlUtils.buildControlData(runtimeControl, overlayControl);
         } else {
@@ -110,7 +119,7 @@ export default class FragmentDialog {
         const selectedControlName = control.name;
 
         let selectedControlChildren = Object.keys(
-            ControlUtils.getControlAggregationByName(runtimeControl!, defaultAggregation)
+            ControlUtils.getControlAggregationByName(runtimeControl, defaultAggregation)
         );
 
         let allowIndexForDefaultAggregation = true;
@@ -168,11 +177,11 @@ export default class FragmentDialog {
         }
 
         try {
-            const { fragments } = await ApiRequestHandler.getFragments<FragmentsResponse>();
+            const { fragments, filteredFragments } = await ApiRequestHandler.getFragments<FragmentsResponse>();
 
             // TODO: Filter fragments that have a respective change file
             oModel.setProperty('/filteredFragmentList', {
-                fragmentList: fragments, // filtered fragments that have a corresponding change file
+                fragmentList: filteredFragments, // filtered fragments that have no corresponding change file
                 newFragmentName: '',
                 selectorId: selectorId,
                 unFilteredFragmentList: fragments // All fragments under /fragments folder
@@ -205,7 +214,7 @@ export default class FragmentDialog {
         oFragmentList.bindItems(
             '/filteredFragmentList/fragmentList',
             // @ts-ignore
-            new sap.m.StandardListItem({
+            new StandardListItem({
                 customData: new CustomData({
                     key: '{fragmentDocumentPath}'
                 }),
@@ -260,7 +269,7 @@ export default class FragmentDialog {
             change: function (oEvent: any) {
                 let selectedItem = null;
                 // @ts-ignore
-                sap.ui.getCore().byId('filteredFragmentSearchField').setValue('');
+                sap.ui.getCore().byId('filteredFragmentSearchField')!.setValue('');
                 if (oEvent.oSource.getSelectedItem()) {
                     selectedItem = oEvent.oSource.getSelectedItem().getText();
                 }
@@ -313,7 +322,7 @@ export default class FragmentDialog {
             'items',
             '/index',
             // @ts-ignore
-            new sap.ui.core.Item({
+            new Item({
                 key: '{key}',
                 text: '{value}',
                 enabled: true
@@ -546,7 +555,7 @@ export default class FragmentDialog {
                         fragmentDialog.destroy();
                     } else {
                         const sSelectedFragmentName = oModel.getProperty('/SelectedFragment/selectedFragmentName');
-                        // Create a change file for already existing XML Fragment
+                        // TODO: Just create a change file for that XML Fragment and close the dialog
                     }
                 }
             }),

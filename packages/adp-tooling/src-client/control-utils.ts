@@ -1,10 +1,43 @@
+import DataType from 'sap/ui/base/DataType';
+import ManagedObject from 'sap/ui/base/ManagedObject';
+import ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
+
+export interface BuiltRuntimeControl {
+    id: string;
+    type: string;
+    properties: {
+        type: string;
+        editor: string;
+        name: string;
+        readableName: string;
+        value: unknown | boolean;
+        isEnabled: boolean;
+        documentation: object;
+    }[];
+    name: string;
+}
+
+export interface ControlManagedObject extends ManagedObject {
+    __calledJSONKeys: boolean;
+    getMetadata: () => ManagedObjectMetadata & {
+        getJSONKeys: () => unknown;
+    };
+}
+
+interface AnalyzedType {
+    primitiveType: string;
+    ui5Type: string | null;
+    enumValues: { [key: string]: string } | null;
+    isArray: boolean;
+}
+
 /**
- *
+ * @description Handles calling control specific functions for retrieving control data
  */
 export default class ControlUtils {
     /**
-     *
-     * @param overlayControl
+     * Returns ManagedObject runtime control
+     * @param overlayControl Overlay
      */
     public static getRuntimeControl(overlayControl: sap.ui.dt.ElementOverlay): sap.ui.base.ManagedObject {
         let runtimeControl;
@@ -17,38 +50,44 @@ export default class ControlUtils {
     }
 
     /**
-     *
-     * @param oControl
-     * @param sName
+     * Returns control aggregation names in an array
+     * @param control Managed Object runtime controll
+     * @param name Aggregation name
      */
-    public static getControlAggregationByName(oControl: any, sName: string) {
-        let aResult = [],
-            oAggregation = ((oControl && oControl.getMetadata().getAllAggregations()) || {})[sName];
+    public static getControlAggregationByName(control: ControlManagedObject, name: string) {
+        let result = [],
+            aggregation = ((control && control.getMetadata().getAllAggregations()) || {})[name] as unknown as object & {
+                _sGetter: string;
+            };
 
-        if (oAggregation) {
-            if (!oAggregation._sGetter && !oControl.__calledJSONKeys) {
-                oControl.getMetadata().getJSONKeys();
+        if (aggregation) {
+            if (!aggregation._sGetter && !control.__calledJSONKeys) {
+                control.getMetadata().getJSONKeys();
                 // Performance optimization
-                oControl.__calledJSONKeys = true;
+                control.__calledJSONKeys = true;
             }
+            //_sGetter is "getContent"
+            // This executes a _sGetter function that canvary from control to control (can be: getContent, getItems, etc)
+            // @ts-ignore
+            result = (aggregation._sGetter && control[aggregation._sGetter]()) || [];
 
-            aResult = (oAggregation._sGetter && oControl[oAggregation._sGetter]()) || [];
-
-            //the aggregation has primitive alternative type
-            if (typeof aResult !== 'object') {
-                aResult = [];
+            // The aggregation has primitive alternative type
+            if (typeof result !== 'object') {
+                result = [];
             }
-            aResult = aResult.splice ? aResult : [aResult];
+            result = result.splice ? result : [result];
         }
-        return aResult;
+        return result;
     }
 
     /**
      *
      * @param property
      */
-    private static analyzePropertyType(property: sap.ui.base.ManagedObjectMetadataProperties): any | undefined {
-        const analyzedType = {
+    private static analyzePropertyType(
+        property: sap.ui.base.ManagedObjectMetadataProperties
+    ): AnalyzedType | undefined {
+        const analyzedType: AnalyzedType = {
             primitiveType: 'any',
             ui5Type: null,
             enumValues: null,
@@ -87,11 +126,9 @@ export default class ControlUtils {
         // Control type is a sap.ui.base.DataType or an enumeration type
         else {
             // Determine type from iFrame
-            // @ts-ignore
-            const DataType = window.sap.ui.base.DataType;
             const propertyDataType = DataType.getType(typeName);
 
-            //type which is not a DataType such as Control is not supported
+            // type which is not a DataType such as Control is not supported
             if (propertyDataType && !(propertyDataType instanceof DataType)) {
                 return analyzedType;
             }
@@ -177,15 +214,14 @@ export default class ControlUtils {
      * @param includeDocumentation
      */
     public static async buildControlData(
-        // @ts-ignore
-        control: sap.ui.base.ManagedObject,
+        control: ManagedObject,
         controlOverlay?: sap.ui.dt.ElementOverlay,
         includeDocumentation = true
-    ): Promise<any> {
+    ): Promise<BuiltRuntimeControl> {
         const controlMetadata = control.getMetadata();
 
         const selectedControlName = controlMetadata.getName();
-        const selContLibName = controlMetadata.getLibraryName();
+        // const selContLibName = controlMetadata.getLibraryName();
 
         const hasStableId = sap.ui.fl.Utils.checkControlId(control);
 
@@ -200,6 +236,7 @@ export default class ControlUtils {
         const propertyNames = Object.keys(allProperties);
         const properties = [];
         // const document = includeDocumentation ? await getDocumentation(selectedControlName, selContLibName) : {};
+        // ? Do we need this documentation at all
         const document: any = {};
         for (const propertyName of propertyNames) {
             const property: any = allProperties[propertyName];
@@ -217,13 +254,15 @@ export default class ControlUtils {
                 ignore = controlProperties[property.name].ignore;
             }
 
-            //updating i18n text for the control if bindingInfo has bindingString
+            // updating i18n text for the control if bindingInfo has bindingString
             const controlNewData = {
                 id: control.getId(),
                 name: property.name,
                 newValue: control.getProperty(property.name)
             };
-            const bindingInfo: { bindingString?: string } = control.getBindingInfo(controlNewData.name);
+            const bindingInfo = control.getBindingInfo(controlNewData.name) as object & {
+                bindingString?: string;
+            };
             if (bindingInfo?.bindingString !== undefined) {
                 controlNewData.newValue = bindingInfo.bindingString;
             }
@@ -261,7 +300,6 @@ export default class ControlUtils {
                         key,
                         text: values[key]
                     }));
-                    // @ts-ignore
                     properties.push({
                         type: 'string',
                         editor: 'dropdown',
@@ -275,7 +313,6 @@ export default class ControlUtils {
                     break;
                 }
                 case 'string': {
-                    // @ts-ignore
                     properties.push({
                         type: 'string',
                         editor: 'input',
@@ -289,7 +326,6 @@ export default class ControlUtils {
                     break;
                 }
                 case 'int': {
-                    // @ts-ignore
                     properties.push({
                         type: 'integer',
                         editor: 'input',
@@ -302,7 +338,6 @@ export default class ControlUtils {
                     break;
                 }
                 case 'float': {
-                    // @ts-ignore
                     properties.push({
                         type: 'float',
                         editor: 'input',
@@ -315,7 +350,6 @@ export default class ControlUtils {
                     break;
                 }
                 case 'boolean': {
-                    // @ts-ignore
                     properties.push({
                         type: 'boolean',
                         editor: 'checkbox',
@@ -333,7 +367,6 @@ export default class ControlUtils {
         return {
             id: control.getId(), //the id of the underlying control/aggregation
             type: selectedControlName, //the name of the ui5 class of the control/aggregation
-            // @ts-ignore
             properties: properties.sort((a, b) => (a.name > b.name ? 1 : -1)),
             name: selectedControlName
         };

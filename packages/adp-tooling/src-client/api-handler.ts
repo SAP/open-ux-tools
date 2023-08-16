@@ -12,8 +12,11 @@ export const enum RequestMethod {
     DELETE = 'DELETE'
 }
 
+type Fragments = { fragmentName: string }[];
+
 export interface FragmentsResponse {
-    fragments: string[];
+    fragments: Fragments;
+    filteredFragments: Fragments;
     message: string;
 }
 
