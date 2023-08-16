@@ -8,18 +8,16 @@ import Input from 'sap/m/Input';
 import Dialog from 'sap/m/Dialog';
 import Button from 'sap/m/Button';
 import ComboBox from 'sap/m/ComboBox';
-import { ListMode } from 'sap/m/library';
-import { ButtonType } from 'sap/m/library';
 import SearchField from 'sap/m/SearchField';
 import MessageToast from 'sap/m/MessageToast';
 import ToolbarSpacer from 'sap/m/ToolbarSpacer';
+import { ListMode, ButtonType } from 'sap/m/library';
 
 /** sap.ui.core */
 import Item from 'sap/ui/core/Item';
 import type UI5Element from 'sap/ui/core/Element';
 import CustomData from 'sap/ui/core/CustomData';
-import { ValueState } from 'sap/ui/core/library';
-import { VerticalAlign } from 'sap/ui/core/library';
+import { ValueState, VerticalAlign } from 'sap/ui/core/library';
 
 /** sap.ui.layout */
 import VerticalLayout from 'sap/ui/layout/VerticalLayout';
@@ -140,7 +138,7 @@ export default class FragmentDialog {
         const defaultAggregation = runtimeControl.getMetadata().getDefaultAggregationName();
         const selectedControlName = control.name;
 
-        let selectedControlChildren = Object.keys(
+        let selectedControlChildren: string[] | number[] = Object.keys(
             ControlUtils.getControlAggregationByName(runtimeControl, defaultAggregation)
         );
 
@@ -154,7 +152,6 @@ export default class FragmentDialog {
                 defaultAggregationDesignTimeMetadata.specialIndexHandling === true ? false : true;
         }
 
-        // @ts-ignore
         selectedControlChildren = selectedControlChildren.map(function (key) {
             return parseInt(key);
         });
@@ -308,7 +305,7 @@ export default class FragmentDialog {
                     ControlUtils.getControlAggregationByName(runtimeControl, selectedItem!)
                 );
 
-                let updatedIndexArray = [];
+                let updatedIndexArray: { key: number; value: number }[] = [];
                 if (newSelectedControlChildren.length === 0) {
                     updatedIndexArray.push({ key: 0, value: 0 });
                 } else {
@@ -394,16 +391,16 @@ export default class FragmentDialog {
                 new SearchField('filteredFragmentSearchField', {
                     placeholder: 'Search Fragments',
                     liveChange: function (event: Event) {
-                        const filters = [];
+                        const filters: object[] = [];
                         const source = event.getSource() as ExtendedEventProvider;
                         const value = source.getValue();
                         if (value && value.length > 0) {
-                            const oFilterName = new Filter('fragmentName', FilterOperator.Contains, value);
-                            const oFilter = new Filter({
-                                filters: [oFilterName],
+                            const filterName = new Filter('fragmentName', FilterOperator.Contains, value);
+                            const filter = new Filter({
+                                filters: [filterName],
                                 and: false
                             });
-                            filters.push(oFilter);
+                            filters.push(filter);
                             if (that.isEmptyObject<Binding>(filteredFragmentList.getBinding('items')!)) {
                                 // @ts-ignore
                                 filteredFragmentList.getBinding('items').filter(filters);
