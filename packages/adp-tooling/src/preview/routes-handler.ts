@@ -151,7 +151,7 @@ export default class RoutesHandler {
                 }
 
                 // Copy the template XML Fragment to the project's workspace
-                const fragmentTemplatePath = path.join(__dirname, '../templates', TemplateFileName.Fragment);
+                const fragmentTemplatePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
                 fs.copyFileSync(fragmentTemplatePath, filePath);
 
                 const message = 'XML Fragment created';

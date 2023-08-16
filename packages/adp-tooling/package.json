@@ -14,10 +14,9 @@
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm build:server && pnpm build:client && pnpm copy:templates",
+        "build": "pnpm build:server && pnpm build:client",
         "build:server": "tsc --build",
         "build:client": "tsc --noEmit --project src/preview/client/tsconfig.json && babel --extensions .ts ./src/preview/client -d ./dist/preview/client",
-        "copy:templates": "rimraf ./dist/templates && shx cp -r ./templates/rta ./dist/templates",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
@@ -51,7 +50,6 @@
         "yazl": "2.5.1"
     },
     "devDependencies": {
-        "shx": "0.3.4",
         "@babel/cli": "7.22.10",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
