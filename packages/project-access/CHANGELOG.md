@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.12.1
+
+### Patch Changes
+
+-   f880ea76: fix for async function definition
+
 ## 1.12.0
 
 ### Minor Changes
