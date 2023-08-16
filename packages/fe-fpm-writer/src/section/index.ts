@@ -146,7 +146,10 @@ export function generateCustomHeaderSection(
                 editSection,
                 editSection.eventHandler,
                 false,
-                section.typescript
+                section.typescript,
+                undefined,
+                undefined,
+                'onChange'
             );
         }
         // Generate edit fragment content

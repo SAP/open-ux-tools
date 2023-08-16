@@ -156,7 +156,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
 exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in different extension folders for version 1.86 4`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox>
-		<Input core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/different/NewCustomHeaderSectionEdit'}\\" label=\\"NewCustomHeaderSectionEdit\\" change=\\"handler.onPress\\" />
+		<Input core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/different/NewCustomHeaderSectionEdit'}\\" label=\\"NewCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -168,7 +168,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onChange: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -314,7 +314,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
 exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.86 4`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox>
-		<Input core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSectionEdit'}\\" label=\\"NewCustomHeaderSectionEdit\\" change=\\"handler.onPress\\" />
+		<Input core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSectionEdit'}\\" label=\\"NewCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -326,7 +326,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onChange: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -382,7 +382,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
 exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode fragments in same extension folder for version 1.98 4`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<VBox>
-		<Input core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSectionEdit'}\\" label=\\"NewCustomHeaderSectionEdit\\" change=\\"handler.onPress\\" />
+		<Input core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomHeaderSectionEdit'}\\" label=\\"NewCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
 	</VBox>
 </core:FragmentDefinition>"
 `;
@@ -394,7 +394,7 @@ exports[`CustomHeaderSection generateCustomHeaderSection View mode and edit mode
     'use strict';
 
     return {
-        onPress: function(oEvent) {
+        onChange: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
