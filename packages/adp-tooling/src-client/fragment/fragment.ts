@@ -43,6 +43,8 @@ import type { FragmentsResponse } from '../api-handler';
 import StandardListItem from 'sap/m/StandardListItem';
 import type ElementMetadata from 'sap/ui/core/ElementMetadata';
 import ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
+import Event from 'sap/ui/base/Event';
+import EventProvider from 'sap/ui/base/EventProvider';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -60,6 +62,21 @@ export interface ManifestAppdescr {
     version: string;
     content: any[];
 }
+
+type ExtendedEventProvider = EventProvider & {
+    setEnabled: (v: boolean) => {};
+    getValue: () => string;
+    getSelectedItem: () => {
+        getTitle: () => string;
+        getText: () => string;
+        getCustomData: () => {
+            [key: string]: Function;
+        }[];
+    };
+    getSelectedKey: () => string;
+    setValueState: (state: ValueState) => {};
+    setValueStateText: (text: string) => {};
+};
 
 /**
  *
@@ -90,11 +107,11 @@ export default class FragmentDialog {
      * @param overlays Overlays when clicking on control
      * @param that Points to FragmentDialog class for accessing its methods
      */
-    public async handleAddNewFragment(overlays: any, that: FragmentDialog) {
+    public async handleAddNewFragment(overlays: UI5Element[], that: FragmentDialog) {
         const selectorId = overlays[0].getId();
-        const oModel = new JSONModel();
+        const jsonModel = new JSONModel();
 
-        let bAddFragment: boolean;
+        let buttonAddFragment: boolean;
         let runtimeControl: ControlManagedObject;
         let control: BuiltRuntimeControl;
         let controlMetadata: ManagedObjectMetadata;
@@ -108,10 +125,10 @@ export default class FragmentDialog {
             return;
         }
 
-        const aAllAggregation = Object.keys(controlMetadata!.getAllAggregations());
-        const aHiddenAggregation = ['customData', 'layoutData', 'dependents'];
-        const targetAggregation = aAllAggregation.filter(function (item) {
-            if (aHiddenAggregation.indexOf(item) === -1) {
+        const allAggregations = Object.keys(controlMetadata!.getAllAggregations());
+        const hiddenAggregations = ['customData', 'layoutData', 'dependents'];
+        const targetAggregation = allAggregations.filter(function (item) {
+            if (hiddenAggregations.indexOf(item) === -1) {
                 return item;
             }
         });
@@ -123,13 +140,13 @@ export default class FragmentDialog {
         );
 
         let allowIndexForDefaultAggregation = true;
-        const oDefaultAggregationDesignTimeMetadata = overlayControl.getDesignTimeMetadata().getData().aggregations[
+        const defaultAggregationDesignTimeMetadata = overlayControl.getDesignTimeMetadata().getData().aggregations[
             defaultAggregation
         ];
 
-        if (oDefaultAggregationDesignTimeMetadata !== undefined) {
+        if (defaultAggregationDesignTimeMetadata !== undefined) {
             allowIndexForDefaultAggregation =
-                oDefaultAggregationDesignTimeMetadata.specialIndexHandling === true ? false : true;
+                defaultAggregationDesignTimeMetadata.specialIndexHandling === true ? false : true;
         }
 
         // @ts-ignore
@@ -137,81 +154,83 @@ export default class FragmentDialog {
             return parseInt(key);
         });
 
-        let _aIndexArray: { key: number; value: number }[] = [];
+        let indexArray: { key: number; value: number }[] = [];
         const selectedControlChildrenLength = selectedControlChildren.length;
 
-        oModel.setProperty('/selectedControlName', selectedControlName);
-        oModel.setProperty('/selectedAggregation', {});
-        oModel.setProperty('/indexHandlingFlag', allowIndexForDefaultAggregation);
+        jsonModel.setProperty('/selectedControlName', selectedControlName);
+        jsonModel.setProperty('/selectedAggregation', {});
+        jsonModel.setProperty('/indexHandlingFlag', allowIndexForDefaultAggregation);
 
         if (selectedControlChildren.length === 0) {
-            _aIndexArray.push({ key: 0, value: 0 });
+            indexArray.push({ key: 0, value: 0 });
         } else {
             // @ts-ignore
-            _aIndexArray = selectedControlChildren.map(function (elem, index) {
+            indexArray = selectedControlChildren.map(function (elem, index) {
                 return { key: index + 1, value: elem + 1 };
             });
-            _aIndexArray.unshift({ key: 0, value: 0 });
-            _aIndexArray.push({
+            indexArray.unshift({ key: 0, value: 0 });
+            indexArray.push({
                 key: selectedControlChildrenLength + 1,
                 value: selectedControlChildrenLength + 1
             });
         }
 
-        const _aControlAggregation = targetAggregation.map(function (elem, index) {
+        const controlAggregation: { key: string | number; value: string | number }[] = targetAggregation.map(function (
+            elem,
+            index
+        ) {
             return { key: index, value: elem };
         });
 
         if (defaultAggregation !== null) {
-            _aControlAggregation.forEach(function (obj) {
+            controlAggregation.forEach(function (obj) {
                 if (obj.value === defaultAggregation) {
-                    // @ts-ignore
                     obj.key = 'default';
-                    oModel.setProperty('/selectedAggregation/key', obj.key);
-                    oModel.setProperty('/selectedAggregation/value', obj.value);
+                    jsonModel.setProperty('/selectedAggregation/key', obj.key);
+                    jsonModel.setProperty('/selectedAggregation/value', obj.value);
                 }
             });
         } else {
-            oModel.setProperty('/selectedAggregation/key', _aControlAggregation[0].key);
-            oModel.setProperty('/selectedAggregation/value', _aControlAggregation[0].value);
+            jsonModel.setProperty('/selectedAggregation/key', controlAggregation[0].key);
+            jsonModel.setProperty('/selectedAggregation/value', controlAggregation[0].value);
         }
 
         try {
             const { fragments, filteredFragments } = await ApiRequestHandler.getFragments<FragmentsResponse>();
 
             // TODO: Filter fragments that have a respective change file
-            oModel.setProperty('/filteredFragmentList', {
+            jsonModel.setProperty('/filteredFragmentList', {
                 fragmentList: filteredFragments, // filtered fragments that have no corresponding change file
                 newFragmentName: '',
                 selectorId: selectorId,
                 unFilteredFragmentList: fragments // All fragments under /fragments folder
             });
-            oModel.setProperty('/fragmentCount', fragments.length);
+            jsonModel.setProperty('/fragmentCount', fragments.length);
         } catch (e) {}
 
-        oModel.setProperty('/selectedIndex', _aIndexArray.length - 1);
-        oModel.setProperty('/defaultAggregation', defaultAggregation);
-        oModel.setProperty('/targetAggregation', _aControlAggregation);
-        oModel.setProperty('/index', _aIndexArray);
-        oModel.setProperty('/selectorId', selectorId ? selectorId : 'oCurrentSelection.id');
+        jsonModel.setProperty('/selectedIndex', indexArray.length - 1);
+        jsonModel.setProperty('/defaultAggregation', defaultAggregation);
+        jsonModel.setProperty('/targetAggregation', controlAggregation);
+        jsonModel.setProperty('/index', indexArray);
+        jsonModel.setProperty('/selectorId', selectorId ? selectorId : 'oCurrentSelection.id');
 
-        const oFragmentList = new List('filteredFragmentList', {
+        const filteredFragmentList = new List('filteredFragmentList', {
             noDataText: 'Create a fragment. There is no fragment available for the target aggregation.',
             mode: ListMode.SingleSelectMaster,
-            selectionChange: function (oEvent: any) {
-                const oSelectedItem = oEvent.getSource().getSelectedItem();
-                oModel.setProperty('/SelectedFragment', {
-                    selectedFragmentName: oSelectedItem.getTitle(),
-                    selectedFragmentPath: oSelectedItem.getCustomData()[0].getKey()
+            selectionChange: function (event: Event) {
+                const source = event.getSource() as ExtendedEventProvider;
+                const selectedItem = source.getSelectedItem();
+                jsonModel.setProperty('/SelectedFragment', {
+                    selectedFragmentName: selectedItem.getTitle(),
+                    selectedFragmentPath: selectedItem.getCustomData()[0].getKey() as string
                 });
-                // const bEnabled = !!(oSelectedItem && that._getExtPointTargetAggregationComboItem());
-                const bEnabled = !!oSelectedItem;
-                bAddFragment = true;
-                fragmentDialog.getBeginButton().setEnabled(bEnabled);
+                const buttonEnabled = !!selectedItem;
+                buttonAddFragment = true;
+                fragmentDialog.getBeginButton().setEnabled(buttonEnabled);
             }
         }).addStyleClass('uiadaptationFragmentList');
 
-        oFragmentList.bindItems(
+        filteredFragmentList.bindItems(
             '/filteredFragmentList/fragmentList',
             // @ts-ignore
             new StandardListItem({
@@ -222,68 +241,63 @@ export default class FragmentDialog {
             })
         );
 
-        const oFragmentNameInput = new Input({
+        const fragmentNameInput = new Input({
             width: '24rem',
             description: '.fragment.xml',
             value: '{/newFragmentName}',
-            liveChange: async function (oEvent: any) {
-                const fragmentName = oEvent.getSource().getValue();
-                const fragmentList = oModel.getProperty('/filteredFragmentList/unFilteredFragmentList');
+            liveChange: async function (event: Event) {
+                const source = event.getSource() as ExtendedEventProvider;
+                const fragmentName = source.getValue();
+                const fragmentList = jsonModel.getProperty('/filteredFragmentList/unFilteredFragmentList');
 
                 const iExistingFileIndex = fragmentList.findIndex((f: { fragmentName: string }) => {
                     return f.fragmentName === `${fragmentName}.fragment.xml`;
                 });
+
                 switch (true) {
                     case iExistingFileIndex >= 0:
-                        oEvent.getSource().setValueState(ValueState.Error);
-                        oEvent
-                            .getSource()
-                            .setValueStateText(
-                                'Enter a different name. The fragment name that you entered already exists in your project.'
-                            );
+                        source.setValueState(ValueState.Error);
+                        source.setValueStateText(
+                            'Enter a different name. The fragment name that you entered already exists in your project.'
+                        );
                         fragmentDialog.getBeginButton().setEnabled(false);
-                        oModel.setProperty('/fragmentNameToCreate', null);
+                        jsonModel.setProperty('/fragmentNameToCreate', null);
                         break;
                     case fragmentName.length <= 0:
                         fragmentDialog.getBeginButton().setEnabled(false);
-                        oModel.setProperty('/fragmentNameToCreate', null);
+                        jsonModel.setProperty('/fragmentNameToCreate', null);
                         break;
                     case !/^[a-zA-Z_]+[a-zA-Z0-9_-]*$/.test(fragmentName):
-                        oEvent.getSource().setValueState(ValueState.Error);
-                        oEvent
-                            .getSource()
-                            .setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
+                        source.setValueState(ValueState.Error);
+                        source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
                         fragmentDialog.getBeginButton().setEnabled(false);
-                        oModel.setProperty('/fragmentNameToCreate', null);
+                        jsonModel.setProperty('/fragmentNameToCreate', null);
                         break;
                     case fragmentName.length > 0:
                         fragmentDialog.getBeginButton().setEnabled(true);
-                        oEvent.getSource().setValueState(ValueState.None);
-                        oModel.setProperty('/fragmentNameToCreate', fragmentName);
+                        source.setValueState(ValueState.None);
+                        jsonModel.setProperty('/fragmentNameToCreate', fragmentName);
                         break;
                 }
             }
         });
-        const oControlAggregationComboBox = new ComboBox('extPointTargetAggregationCombo', {
+        const controlAggregationComboBox = new ComboBox('extPointTargetAggregationCombo', {
             selectedKey: '{/selectedAggregation/key}',
-            change: function (oEvent: any) {
+            change: function (event: Event) {
                 let selectedItem = null;
                 // @ts-ignore
                 sap.ui.getCore().byId('filteredFragmentSearchField')!.setValue('');
-                if (oEvent.oSource.getSelectedItem()) {
-                    selectedItem = oEvent.oSource.getSelectedItem().getText();
+                const source = event.getSource() as ExtendedEventProvider;
+                if (source.getSelectedItem()) {
+                    selectedItem = source.getSelectedItem().getText();
                 }
-                const selectedKey = oEvent.oSource.getSelectedKey();
-                if (!selectedItem) {
-                    // sap.ui.getCore().byId('createNewFragmentLink').setEnabled(false);
-                } else {
-                    // sap.ui.getCore().byId('createNewFragmentLink').setEnabled(true);
-                }
-                oModel.setProperty('/selectedAggregation/key', selectedKey);
-                oModel.setProperty('/selectedAggregation/value', selectedItem);
+                const selectedKey = source.getSelectedKey();
+
+                jsonModel.setProperty('/selectedAggregation/key', selectedKey);
+                jsonModel.setProperty('/selectedAggregation/value', selectedItem);
 
                 const newSelectedControlChildren = Object.keys(
-                    ControlUtils.getControlAggregationByName(runtimeControl, selectedItem)
+                    ControlUtils.getControlAggregationByName(runtimeControl, selectedItem!)
                 );
 
                 let updatedIndexArray = [];
@@ -299,8 +313,8 @@ export default class FragmentDialog {
                         value: newSelectedControlChildren.length + 1
                     });
                 }
-                oModel.setProperty('/index', updatedIndexArray);
-                oModel.setProperty('/selectedIndex', updatedIndexArray.length - 1);
+                jsonModel.setProperty('/index', updatedIndexArray);
+                jsonModel.setProperty('/selectedIndex', updatedIndexArray.length - 1);
             }
         }).bindAggregation(
             'items',
@@ -311,10 +325,11 @@ export default class FragmentDialog {
                 text: '{value}'
             })
         );
-        const oIndexComboBox = new ComboBox({
-            change: function (oEvent: any) {
-                const sSelectedIndex = oEvent.oSource.getSelectedItem().getText();
-                oModel.setProperty('/selectedIndex', parseInt(sSelectedIndex));
+        const indexComboBox = new ComboBox({
+            change: function (event: Event) {
+                const source = event.getSource() as ExtendedEventProvider;
+                const selectedIndex = source.getSelectedItem().getText();
+                jsonModel.setProperty('/selectedIndex', parseInt(selectedIndex));
             },
             selectedKey: '{/selectedIndex}',
             enabled: true
@@ -329,39 +344,7 @@ export default class FragmentDialog {
             })
         );
 
-        // const oPopoverIndexField = new Popover('popoverr1', {
-        //     placement: PlacementType.Bottom,
-        //     showHeader: false,
-        //     offsetX: 20,
-        //     contentWidth: '22rem',
-        //     showArrow: false,
-        //     content: new Text()
-        // });
-        const oIndexFieldHelpIcon = new Icon({
-            src: 'sap-icon://message-information',
-            size: '1rem',
-            visible: {
-                path: '/indexHandlingFlag',
-                formatter: function (oValue: boolean | string) {
-                    if (oValue) {
-                        return false;
-                    }
-                    return true;
-                }
-            },
-            press: function () {
-                // oPopoverIndexField
-                //     .getContent()[0]
-                //     .setText(
-                //         that.context.i18n.getText('UIAdaptationFragment_fragment_index_uneditable', [
-                //             oModel.getProperty('/selectedControlName')
-                //         ])
-                //     );
-                // oPopoverIndexField.openBy(this);
-            }
-        }).addStyleClass('uiadaptationFragmentIndexHelpIcon');
-
-        const oSelectFragmentLayout = new VerticalLayout({
+        const selectFragmentLayout = new VerticalLayout({
             width: '100%',
             content: [
                 new HorizontalLayout({
@@ -385,7 +368,7 @@ export default class FragmentDialog {
                         new ToolbarSpacer({
                             width: '1rem'
                         }),
-                        oControlAggregationComboBox
+                        controlAggregationComboBox
                     ]
                 }).addStyleClass('sapUiTinyMarginTopBottom'),
                 new HorizontalLayout({
@@ -396,43 +379,44 @@ export default class FragmentDialog {
                         new ToolbarSpacer({
                             width: '6rem'
                         }),
-                        oIndexComboBox,
-                        oIndexFieldHelpIcon
+                        indexComboBox
                     ]
                 }).addStyleClass('sapUiTinyMarginTopBottom'),
 
                 new SearchField('filteredFragmentSearchField', {
                     placeholder: 'Search Fragments',
-                    liveChange: function (oEvent: any) {
-                        const aFilters = [];
-                        const sValue = oEvent.getSource().getValue();
-                        if (sValue && sValue.length > 0) {
-                            const oFilterName = new Filter('fragmentName', FilterOperator.Contains, sValue);
+                    liveChange: function (event: Event) {
+                        const filters = [];
+                        const source = event.getSource() as ExtendedEventProvider;
+                        const value = source.getValue();
+                        if (value && value.length > 0) {
+                            const oFilterName = new Filter('fragmentName', FilterOperator.Contains, value);
                             const oFilter = new Filter({
                                 filters: [oFilterName],
                                 and: false
                             });
-                            aFilters.push(oFilter);
+                            filters.push(oFilter);
                             // TODO: Replace this jQuery
                             // @ts-ignore
-                            if (!jQuery.isEmptyObject(oFragmentList.getBinding('items'))) {
+                            if (!jQuery.isEmptyObject(filteredFragmentList.getBinding('items'))) {
                                 // @ts-ignore
-                                oFragmentList.getBinding('items').filter(aFilters);
+                                filteredFragmentList.getBinding('items').filter(filters);
                             }
                             // TODO: Replace this jQuery
                             // @ts-ignore
-                        } else if (!jQuery.isEmptyObject(oFragmentList.getBinding('items'))) {
+                        } else if (!jQuery.isEmptyObject(filteredFragmentList.getBinding('items'))) {
                             // @ts-ignore
-                            oFragmentList.getBinding('items').filter([]);
+                            filteredFragmentList.getBinding('items').filter([]);
                         }
-                        oModel.setProperty('/fragmentCount', oFragmentList.getItems().length);
+                        jsonModel.setProperty('/fragmentCount', filteredFragmentList.getItems().length);
                     },
-                    search: function (oEvent: any) {
-                        const bClearBtnPressed = oEvent.getParameters().clearButtonPressed;
+                    search: function (event: Event) {
+                        const clearBtnPressed = (event.getParameters() as object & { clearButtonPressed: boolean })
+                            .clearButtonPressed;
                         // @ts-ignore
-                        if (bClearBtnPressed && !jQuery.isEmptyObject(oFragmentList.getBinding('items'))) {
+                        if (clearBtnPressed && !jQuery.isEmptyObject(filteredFragmentList.getBinding('items'))) {
                             // @ts-ignore
-                            oFragmentList.getBinding('items').filter([]);
+                            filteredFragmentList.getBinding('items').filter([]);
                         }
                     }
                 }),
@@ -441,9 +425,9 @@ export default class FragmentDialog {
                         new Label({
                             text: {
                                 path: '/fragmentCount',
-                                formatter: function (oValue: string) {
-                                    if (oValue !== undefined) {
-                                        return oValue + ' ' + 'Fragments';
+                                formatter: function (value: string) {
+                                    if (value !== undefined) {
+                                        return value + ' ' + 'Fragments';
                                     } else {
                                         return '0' + ' ' + 'Fragments';
                                     }
@@ -455,9 +439,9 @@ export default class FragmentDialog {
                         }),
                         new Link({
                             text: 'Create new',
-                            press: function (oEvent: any) {
-                                bAddFragment = false;
-                                oFragmentNameInput.setValue('');
+                            press: function (_: Event) {
+                                buttonAddFragment = false;
+                                fragmentNameInput.setValue('');
                                 fragmentDialog.getBeginButton().setEnabled(false);
                                 // @ts-ignore
                                 fragmentDialog.getCustomHeader().getContentLeft()[0].setVisible(true);
@@ -465,15 +449,15 @@ export default class FragmentDialog {
                                 fragmentDialog.getContent()[0].setVisible(false);
                                 fragmentDialog.getContent()[1].setVisible(true);
                             },
-                            enabled: oModel.getProperty('/selectedAggregation/value') ? true : false
+                            enabled: jsonModel.getProperty('/selectedAggregation/value') ? true : false
                         }).addStyleClass('uiadaptationFragmentDialogLink')
                     ]
                 }).addStyleClass('sapUiTinyMarginBottom'),
-                oFragmentList
+                filteredFragmentList
             ]
         });
 
-        const oCreateFragmentLayout = new VerticalLayout({
+        const createFragmentLayout = new VerticalLayout({
             visible: false,
             width: '100%',
             content: [
@@ -489,9 +473,9 @@ export default class FragmentDialog {
                         new Label({
                             text: {
                                 path: '/selectedAggregation/value',
-                                formatter: function (oValue: string) {
-                                    if (oValue) {
-                                        return oValue.charAt(0).toUpperCase() + oValue.slice(1);
+                                formatter: function (value: string) {
+                                    if (value) {
+                                        return value.charAt(0).toUpperCase() + value.slice(1);
                                     }
                                 }
                             }
@@ -521,13 +505,13 @@ export default class FragmentDialog {
                         new ToolbarSpacer({
                             width: '3.5rem'
                         }),
-                        oFragmentNameInput
+                        fragmentNameInput
                     ]
                 }).addStyleClass('sapUiTinyMarginTopBottom')
             ]
         });
         var fragmentDialog = new Dialog({
-            content: [oSelectFragmentLayout, oCreateFragmentLayout],
+            content: [selectFragmentLayout, createFragmentLayout],
             contentWidth: '600px',
 
             escapeHandler: function () {
@@ -538,25 +522,34 @@ export default class FragmentDialog {
                 text: 'Add',
                 enabled: false,
                 type: ButtonType.Emphasized,
-                press: async function (oEvent: any) {
-                    oEvent.getSource().setEnabled(false);
-                    if (!bAddFragment) {
+                press: async function (event: Event) {
+                    const source = event.getSource() as ExtendedEventProvider;
+                    source.setEnabled(false);
+                    if (!buttonAddFragment) {
                         // Need to create a new fragment and a respective change file
-                        const fragmentNameToCreate = oModel.getProperty('/fragmentNameToCreate');
+                        const fragmentNameToCreate = jsonModel.getProperty('/fragmentNameToCreate');
                         await that.createNewFragment(
                             {
                                 fragmentName: fragmentNameToCreate,
-                                index: oModel.getProperty('/selectedIndex'),
-                                targetAggregation: oModel.getProperty('/selectedAggregation/value')
+                                index: jsonModel.getProperty('/selectedIndex'),
+                                targetAggregation: jsonModel.getProperty('/selectedAggregation/value')
+                            },
+                            runtimeControl,
+                            that
+                        );
+                    } else {
+                        const selectedFragmentName = jsonModel.getProperty('/SelectedFragment/selectedFragmentName');
+                        await that.createFragmentChange(
+                            {
+                                fragmentName: selectedFragmentName,
+                                index: 0,
+                                targetAggregation: 'content'
                             },
                             runtimeControl
                         );
-                        fragmentDialog.close();
-                        fragmentDialog.destroy();
-                    } else {
-                        const sSelectedFragmentName = oModel.getProperty('/SelectedFragment/selectedFragmentName');
-                        // TODO: Just create a change file for that XML Fragment and close the dialog
                     }
+                    fragmentDialog.close();
+                    fragmentDialog.destroy();
                 }
             }),
             endButton: new Button({
@@ -571,9 +564,9 @@ export default class FragmentDialog {
                     new Button({
                         icon: 'sap-icon://nav-back',
                         visible: false,
-                        press: function (oEvent: any) {
-                            oEvent.getSource().setVisible(false);
-                            bAddFragment = true;
+                        press: function (event: any) {
+                            event.getSource().setVisible(false);
+                            buttonAddFragment = true;
                             fragmentDialog.getBeginButton().setText('Add');
                             fragmentDialog.getContent()[1].setVisible(false);
                             fragmentDialog.getContent()[0].setVisible(true);
@@ -586,7 +579,7 @@ export default class FragmentDialog {
                     })
                 ]
             })
-        }).setModel(oModel);
+        }).setModel(jsonModel);
 
         fragmentDialog.addStyleClass('sapUiRTABorder').addStyleClass('sapUiResponsivePadding--content');
         fragmentDialog.open();
@@ -601,7 +594,8 @@ export default class FragmentDialog {
      */
     public async createNewFragment(
         { fragmentName, index, targetAggregation }: CreateFragmentProps,
-        runtimeControl: any
+        runtimeControl: ControlManagedObject,
+        that: FragmentDialog
     ): Promise<void> {
         try {
             await ApiRequestHandler.writeFragment<unknown>({ fragmentName });
@@ -612,6 +606,13 @@ export default class FragmentDialog {
             return;
         }
 
+        await that.createFragmentChange({ fragmentName, index, targetAggregation }, runtimeControl);
+    }
+
+    public async createFragmentChange(
+        { fragmentName, index = 0, targetAggregation }: CreateFragmentProps,
+        runtimeControl: ControlManagedObject
+    ) {
         let manifest: ManifestAppdescr;
         try {
             manifest = await ApiRequestHandler.getManifestAppdescr<ManifestAppdescr>();
@@ -648,6 +649,9 @@ export default class FragmentDialog {
             targetAggregation: targetAggregation ?? 'content'
         };
 
+        /**
+         * Generate the command to be pushed to command stack
+         */
         const command = await sap.ui.rta.command.CommandFactory.getCommandFor(
             runtimeControl,
             'addXML',
