@@ -1,4 +1,30 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["../../types/ui5.d.ts", "../../types/mem-fs-editor.d.ts", "../../types/sapui5", "src", "src-client"]
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/ui5.d.ts",
+    "../../types/mem-fs-editor.d.ts",
+    "../../types/sapui5",
+    "src",
+    "src-client"
+  ],
+  "references": [
+    {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../system-access"
+    },
+    {
+      "path": "../ui5-config"
+    }
+  ]
 }
