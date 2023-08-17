@@ -144,16 +144,11 @@ export function generateCustomHeaderSection(
         setCommonDefaults(editSection, manifestPath, manifest);
         // Apply event handler for edit fragment
         if (editSection.eventHandler) {
-            editSection.eventHandler = applyEventHandlerConfiguration(
-                editor,
-                editSection,
-                editSection.eventHandler,
-                {
-                    controllerSuffix: false,
-                    typescript: section.typescript,
-                    eventHandlerFnName: 'onChange'
-                }
-            );
+            editSection.eventHandler = applyEventHandlerConfiguration(editor, editSection, editSection.eventHandler, {
+                controllerSuffix: false,
+                typescript: section.typescript,
+                eventHandlerFnName: 'onChange'
+            });
         }
         // Generate edit fragment content
         editSection.content =
