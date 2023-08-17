@@ -9,9 +9,10 @@ import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
-import type { AdpPreviewConfig, DescriptorVariant } from '../types';
 
+import { HttpStatusCodes } from '../types';
 import RoutesHandler from './routes-handler';
+import type { AdpPreviewConfig, DescriptorVariant } from '../types';
 
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
@@ -48,6 +49,10 @@ export class AdpPreview {
      * Merged descriptor variant with reference app manifest
      */
     private mergedDescriptor: MergedAppDescriptor;
+    /**
+     * Descriptor variant from the project
+     */
+    private descriptorVariant: DescriptorVariant;
     /**
      * Routes handler class to handle API requests
      */
@@ -122,6 +127,7 @@ export class AdpPreview {
      * @returns the UI5 flex layer for which editing is enabled
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
+        this.descriptorVariant = descriptorVariant;
         const provider = await createAbapServiceProvider(
             this.config.target,
             { ignoreCertErrors: this.config.ignoreCertErrors },
@@ -180,12 +186,16 @@ export class AdpPreview {
         router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment as RequestHandler);
 
         /**
-         * CONTROLLER Routes
-         */
-
-        /**
          * PROJECT Specific Routes
          */
-        router.get(ApiRoutes.MANIFEST_APP_DESCRIPTOR, this.routesHandler.handleReadAppDescrVariant as RequestHandler);
+        router.get(ApiRoutes.MANIFEST_APP_DESCRIPTOR, (_: Request, res: Response, next: NextFunction) => {
+            try {
+                res.status(HttpStatusCodes.OK).send(this.descriptorVariant);
+            } catch (e) {
+                this.logger.error(e.message);
+                res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
+                next(e);
+            }
+        });
     }
 }

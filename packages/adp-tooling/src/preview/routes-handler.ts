@@ -6,8 +6,7 @@ import type { ReaderCollection } from '@ui5/fs';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { NextFunction, Request, Response } from 'express';
 
-import type { ManifestAppdescr } from '../types';
-import { FolderNames, TemplateFileName, HttpStatusCodes, ProjectFileNames } from '../types';
+import { FolderNames, TemplateFileName, HttpStatusCodes } from '../types';
 
 interface WriteFragmentBody {
     fragmentName: string;
@@ -159,35 +158,6 @@ export default class RoutesHandler {
             } else {
                 res.send(HttpStatusCodes.BAD_REQUEST).send('Fragment Name was not provided!');
             }
-        } catch (e) {
-            const sanitizedMsg = sanitize(e.message);
-            this.logger.error(sanitizedMsg);
-            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
-            next(e);
-        }
-    };
-
-    /**
-     * Handler for reading the manifest.appdescr_variant contents
-     *
-     * @param req Request
-     * @param res Response
-     * @param next Next Function
-     */
-    public handleReadAppDescrVariant = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const projectPath = process.cwd();
-            const key = `__express__${req.path}`;
-
-            const fullPath = path.join(projectPath, FolderNames.Webapp, ProjectFileNames.ManifestDescriptor);
-
-            const readFile = () => {
-                return JSON.parse(fs.readFileSync(fullPath, 'utf8'));
-            };
-
-            // Need a way to clear the cache when server is stopped with flushAll()
-            const manifest = this.withCache<ManifestAppdescr>(key, readFile, 180);
-            res.status(HttpStatusCodes.OK).send(manifest);
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);
             this.logger.error(sanitizedMsg);
