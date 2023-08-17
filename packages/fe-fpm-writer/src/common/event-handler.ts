@@ -63,7 +63,7 @@ function resolveEventHandlerConfigurationOptions(
         typescript,
         templatePath: templatePath ?? 'common/EventHandler',
         eventHandlerFnName: eventHandlerFnName ?? 'onPress'
-    }
+    };
 }
 
 /**
