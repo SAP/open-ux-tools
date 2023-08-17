@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -697,6 +697,9 @@ importers:
 
   packages/fiori-freestyle-writer:
     dependencies:
+      '@sap-ux/eslint-plugin-fiori-tools':
+        specifier: workspace:*
+        version: link:../eslint-plugin-fiori-tools
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
@@ -725,9 +728,6 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
     devDependencies:
-      '@sap-ux/eslint-plugin-fiori-tools':
-        specifier: workspace:*
-        version: link:../eslint-plugin-fiori-tools
       '@types/ejs':
         specifier: 3.1.0
         version: 3.1.0
