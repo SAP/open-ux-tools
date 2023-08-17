@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /** sap.m */
 import Bar from 'sap/m/Bar';
 import List from 'sap/m/List';
@@ -47,6 +48,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import type OverflowToolbar from 'sap/m/OverflowToolbar';
 import type { Layer } from 'sap/ui/fl';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -63,6 +65,11 @@ export interface ManifestAppdescr {
     namespace: string;
     version: string;
     content: object[];
+}
+
+interface DialogueData {
+    runtimeControl: ManagedObject;
+    control: BuiltRuntimeControl;
 }
 
 type ExtendedEventProvider = EventProvider & {
@@ -106,31 +113,31 @@ export default class FragmentDialog {
     }
 
     /**
-     * @description Builds an Add XML Fragment dialog, fills it with data and opens it
-     * @param overlays Overlays when clicking on control
-     * @param that Points to FragmentDialog class for accessing its methods
+     * Builds and returns data that is used in the dialog
+     *
+     * @param overlays Overlays
+     * @param jsonModel JSON Model for the dialog
+     * @returns {Promise<DialogueData>} Dialog data
      */
-    public async handleAddNewFragment(overlays: UI5Element[], that: FragmentDialog) {
+    private async getDialogData(overlays: UI5Element[], jsonModel: JSONModel): Promise<DialogueData> {
         const selectorId = overlays[0].getId();
-        const jsonModel = new JSONModel();
 
-        let buttonAddFragment: boolean;
-        let runtimeControl: OverflowToolbar;
+        let runtimeControl: ManagedObject;
         let control: BuiltRuntimeControl;
         let controlMetadata: ManagedObjectMetadata;
 
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
         if (overlayControl) {
-            runtimeControl = ControlUtils.getRuntimeControl(overlayControl) as OverflowToolbar;
+            runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
             controlMetadata = runtimeControl.getMetadata();
             control = await ControlUtils.buildControlData(runtimeControl, overlayControl);
         } else {
-            return;
+            throw new Error('Cannot get overlay control');
         }
 
-        const allAggregations = Object.keys(controlMetadata!.getAllAggregations());
+        const allAggregations = Object.keys(controlMetadata.getAllAggregations());
         const hiddenAggregations = ['customData', 'layoutData', 'dependents'];
-        const targetAggregation = allAggregations.filter(function (item) {
+        const targetAggregation = allAggregations.filter((item) => {
             if (hiddenAggregations.indexOf(item) === -1) {
                 return item;
             }
@@ -152,40 +159,24 @@ export default class FragmentDialog {
                 defaultAggregationDesignTimeMetadata.specialIndexHandling === true ? false : true;
         }
 
-        selectedControlChildren = selectedControlChildren.map(function (key) {
+        selectedControlChildren = selectedControlChildren.map((key) => {
             return parseInt(key);
         });
-
-        let indexArray: { key: number; value: number }[] = [];
-        const selectedControlChildrenLength = selectedControlChildren.length;
 
         jsonModel.setProperty('/selectedControlName', selectedControlName);
         jsonModel.setProperty('/selectedAggregation', {});
         jsonModel.setProperty('/indexHandlingFlag', allowIndexForDefaultAggregation);
 
-        if (selectedControlChildren.length === 0) {
-            indexArray.push({ key: 0, value: 0 });
-        } else {
-            // @ts-ignore
-            indexArray = selectedControlChildren.map(function (elem, index) {
-                return { key: index + 1, value: elem + 1 };
-            });
-            indexArray.unshift({ key: 0, value: 0 });
-            indexArray.push({
-                key: selectedControlChildrenLength + 1,
-                value: selectedControlChildrenLength + 1
-            });
-        }
+        const indexArray = this.fillIndexArray(selectedControlChildren);
 
-        const controlAggregation: { key: string | number; value: string | number }[] = targetAggregation.map(function (
-            elem,
-            index
-        ) {
-            return { key: index, value: elem };
-        });
+        const controlAggregation: { key: string | number; value: string | number }[] = targetAggregation.map(
+            (elem, index) => {
+                return { key: index, value: elem };
+            }
+        );
 
         if (defaultAggregation !== null) {
-            controlAggregation.forEach(function (obj) {
+            controlAggregation.forEach((obj) => {
                 if (obj.value === defaultAggregation) {
                     obj.key = 'default';
                     jsonModel.setProperty('/selectedAggregation/key', obj.key);
@@ -208,9 +199,7 @@ export default class FragmentDialog {
             });
             jsonModel.setProperty('/fragmentCount', fragments.length);
         } catch (e) {
-            console.error(e.message);
-            MessageToast.show(e.message);
-            return;
+            throw new Error(e.message);
         }
 
         jsonModel.setProperty('/selectedIndex', indexArray.length - 1);
@@ -219,10 +208,51 @@ export default class FragmentDialog {
         jsonModel.setProperty('/index', indexArray);
         jsonModel.setProperty('/selectorId', selectorId ? selectorId : 'oCurrentSelection.id');
 
+        return {
+            runtimeControl,
+            control
+        };
+    }
+
+    /**
+     * Fills indexArray from selected control children
+     *
+     * @param selectedControlChildren Array of numbers
+     * @returns Array of key value pairs
+     */
+    private fillIndexArray(selectedControlChildren: number[]) {
+        let indexArray: { key: number; value: number }[] = [];
+        if (selectedControlChildren.length === 0) {
+            indexArray.push({ key: 0, value: 0 });
+        } else {
+            indexArray = selectedControlChildren.map((elem, index) => {
+                return { key: index + 1, value: elem + 1 };
+            });
+            indexArray.unshift({ key: 0, value: 0 });
+            indexArray.push({
+                key: selectedControlChildren.length + 1,
+                value: selectedControlChildren.length + 1
+            });
+        }
+        return indexArray;
+    }
+
+    /**
+     * @description Builds an Add XML Fragment dialog, fills it with data and opens it
+     * @param overlays Overlays when clicking on control
+     * @param that Points to FragmentDialog class for accessing its methods
+     */
+    public async handleAddNewFragment(overlays: UI5Element[], that: FragmentDialog) {
+        const jsonModel = new JSONModel();
+
+        const { runtimeControl, control } = await that.getDialogData(overlays, jsonModel);
+
+        let buttonAddFragment: boolean;
+
         const filteredFragmentList = new List('filteredFragmentList', {
             noDataText: 'Create a fragment. There is no fragment available for the target aggregation.',
             mode: ListMode.SingleSelectMaster,
-            selectionChange: function (event: Event) {
+            selectionChange: (event: Event) => {
                 const source = event.getSource() as ExtendedEventProvider;
                 const selectedItem = source.getSelectedItem();
                 jsonModel.setProperty('/SelectedFragment', {
@@ -233,18 +263,18 @@ export default class FragmentDialog {
                 buttonAddFragment = true;
                 fragmentDialog.getBeginButton().setEnabled(buttonEnabled);
             }
-        }).addStyleClass('uiadaptationFragmentList');
-
-        filteredFragmentList.bindItems(
-            '/filteredFragmentList/fragmentList',
-            // @ts-ignore
-            new StandardListItem({
-                customData: new CustomData({
-                    key: '{fragmentDocumentPath}'
-                }),
-                title: '{fragmentName}'
-            })
-        );
+        })
+            .bindItems(
+                '/filteredFragmentList/fragmentList',
+                // @ts-ignore
+                new StandardListItem({
+                    customData: new CustomData({
+                        key: '{fragmentDocumentPath}'
+                    }),
+                    title: '{fragmentName}'
+                })
+            )
+            .addStyleClass('uiadaptationFragmentList');
 
         const fragmentNameInput = new Input({
             width: '24rem',
@@ -288,52 +318,10 @@ export default class FragmentDialog {
                 }
             }
         });
-        const controlAggregationComboBox = new ComboBox('extPointTargetAggregationCombo', {
-            selectedKey: '{/selectedAggregation/key}',
-            change: function (event: Event) {
-                let selectedItem = null;
-                // @ts-ignore
-                sap.ui.getCore().byId('filteredFragmentSearchField')!.setValue('');
-                const source = event.getSource() as ExtendedEventProvider;
-                if (source.getSelectedItem()) {
-                    selectedItem = source.getSelectedItem().getText();
-                }
-                const selectedKey = source.getSelectedKey();
+        const controlAggregationComboBox = that.getControlAggregationComboBox(jsonModel, runtimeControl, that);
 
-                jsonModel.setProperty('/selectedAggregation/key', selectedKey);
-                jsonModel.setProperty('/selectedAggregation/value', selectedItem);
-
-                const newSelectedControlChildren = Object.keys(
-                    ControlUtils.getControlAggregationByName(runtimeControl, selectedItem!)
-                );
-
-                let updatedIndexArray: { key: number; value: number }[] = [];
-                if (newSelectedControlChildren.length === 0) {
-                    updatedIndexArray.push({ key: 0, value: 0 });
-                } else {
-                    updatedIndexArray = newSelectedControlChildren.map(function (elem, index) {
-                        return { key: index + 1, value: parseInt(elem) + 1 };
-                    });
-                    updatedIndexArray.unshift({ key: 0, value: 0 });
-                    updatedIndexArray.push({
-                        key: newSelectedControlChildren.length + 1,
-                        value: newSelectedControlChildren.length + 1
-                    });
-                }
-                jsonModel.setProperty('/index', updatedIndexArray);
-                jsonModel.setProperty('/selectedIndex', updatedIndexArray.length - 1);
-            }
-        }).bindAggregation(
-            'items',
-            '/targetAggregation',
-            // @ts-ignore
-            new Item({
-                key: '{key}',
-                text: '{value}'
-            })
-        );
         const indexComboBox = new ComboBox({
-            change: function (event: Event) {
+            change: (event: Event) => {
                 const source = event.getSource() as ExtendedEventProvider;
                 const selectedIndex = source.getSelectedItem().getText();
                 jsonModel.setProperty('/selectedIndex', parseInt(selectedIndex));
@@ -390,38 +378,8 @@ export default class FragmentDialog {
                     ]
                 }).addStyleClass('sapUiTinyMarginTopBottom'),
 
-                new SearchField('filteredFragmentSearchField', {
-                    placeholder: 'Search Fragments',
-                    liveChange: function (event: Event) {
-                        const filters: object[] = [];
-                        const source = event.getSource() as ExtendedEventProvider;
-                        const value = source.getValue();
-                        if (value && value.length > 0) {
-                            const filterName = new Filter('fragmentName', FilterOperator.Contains, value);
-                            const filter = new Filter({
-                                filters: [filterName],
-                                and: false
-                            });
-                            filters.push(filter);
-                            if (that.isEmptyObject<Binding>(filteredFragmentList.getBinding('items')!)) {
-                                // @ts-ignore
-                                filteredFragmentList.getBinding('items').filter(filters);
-                            }
-                        } else if (that.isEmptyObject<Binding>(filteredFragmentList.getBinding('items')!)) {
-                            // @ts-ignore
-                            filteredFragmentList.getBinding('items').filter([]);
-                        }
-                        jsonModel.setProperty('/fragmentCount', filteredFragmentList.getItems().length);
-                    },
-                    search: function (event: Event) {
-                        const clearBtnPressed = (event.getParameters() as object & { clearButtonPressed: boolean })
-                            .clearButtonPressed;
-                        if (clearBtnPressed && that.isEmptyObject<Binding>(filteredFragmentList.getBinding('items')!)) {
-                            // @ts-ignore
-                            filteredFragmentList.getBinding('items').filter([]);
-                        }
-                    }
-                }),
+                that.getSearchField(jsonModel, filteredFragmentList, that),
+
                 new HorizontalLayout({
                     content: [
                         new Label({
@@ -441,11 +399,10 @@ export default class FragmentDialog {
                         }),
                         new Link({
                             text: 'Create new',
-                            press: function (_: Event) {
+                            press: (_: Event) => {
                                 buttonAddFragment = false;
                                 fragmentNameInput.setValue('');
                                 fragmentDialog.getBeginButton().setEnabled(false);
-                                // @ts-ignore
                                 fragmentDialog.getCustomHeader().getContentLeft()[0].setVisible(true);
                                 fragmentDialog.getBeginButton().setText('Create');
                                 fragmentDialog.getContent()[0].setVisible(false);
@@ -475,7 +432,7 @@ export default class FragmentDialog {
                         new Label({
                             text: {
                                 path: '/selectedAggregation/value',
-                                formatter: function (value: string) {
+                                formatter: (value: string) => {
                                     if (value) {
                                         return value.charAt(0).toUpperCase() + value.slice(1);
                                     }
@@ -516,7 +473,7 @@ export default class FragmentDialog {
             content: [selectFragmentLayout, createFragmentLayout],
             contentWidth: '600px',
 
-            escapeHandler: function () {
+            escapeHandler: () => {
                 fragmentDialog.close();
                 fragmentDialog.destroy();
             },
@@ -524,7 +481,7 @@ export default class FragmentDialog {
                 text: 'Add',
                 enabled: false,
                 type: ButtonType.Emphasized,
-                press: async function (event: Event) {
+                press: async (event: Event): Promise<void> => {
                     const source = event.getSource() as ExtendedEventProvider;
                     source.setEnabled(false);
                     if (!buttonAddFragment) {
@@ -586,12 +543,112 @@ export default class FragmentDialog {
     }
 
     /**
+     * Builds new Search Field control
+     *
+     * @param jsonModel JSON Model that hosts all the dialog data
+     * @param filteredFragmentList Filtered fragment List instance
+     * @param that FragmentDialog instance
+     * @returns {SearchField} Search field instance
+     */
+    private getSearchField(jsonModel: JSONModel, filteredFragmentList: List, that: FragmentDialog): SearchField {
+        return new SearchField('filteredFragmentSearchField', {
+            placeholder: 'Search Fragments',
+            liveChange: (event: Event) => {
+                const filters: object[] = [];
+                const source = event.getSource() as ExtendedEventProvider;
+                const value = source.getValue();
+                const items = filteredFragmentList.getBinding('items');
+                if (value && value.length > 0) {
+                    const filterName = new Filter('fragmentName', FilterOperator.Contains, value);
+                    const filter = new Filter({
+                        filters: [filterName],
+                        and: false
+                    });
+                    filters.push(filter);
+
+                    if (!that.isEmptyObject<Binding>(items.oList)) {
+                        items.filter(filters);
+                    }
+                } else if (that.isEmptyObject<Binding>(items.oList)) {
+                    items.filter([]);
+                } else {
+                    items.filter([]);
+                }
+                jsonModel.setProperty('/fragmentCount', items.oList.length);
+            },
+            search: (event: Event) => {
+                const clearBtnPressed = (event.getParameters() as object & { clearButtonPressed: boolean })
+                    .clearButtonPressed;
+                const items = filteredFragmentList.getBinding('items');
+                if (clearBtnPressed && !that.isEmptyObject<Binding>(items.oList)) {
+                    items.filter([]);
+                }
+            }
+        });
+    }
+
+    /**
+     * Builds a new ComboBox from provided data
+     *
+     * @param jsonModel JSON Model that hosts all the dialog data
+     * @param runtimeControl Runtime control
+     * @param that FragmentDialog instance
+     * @returns {ComboBox} UI5 Control ComboBox
+     */
+    private getControlAggregationComboBox(
+        jsonModel: JSONModel,
+        runtimeControl: ManagedObject,
+        that: FragmentDialog
+    ): ComboBox {
+        return new ComboBox('extPointTargetAggregationCombo', {
+            selectedKey: '{/selectedAggregation/key}',
+            change: (event: Event) => {
+                let selectedItem = '';
+                // @ts-ignore
+                sap.ui.getCore().byId('filteredFragmentSearchField')!.setValue('');
+                const source = event.getSource() as ExtendedEventProvider;
+                if (source.getSelectedItem()) {
+                    selectedItem = source.getSelectedItem().getText();
+                }
+                const selectedKey = source.getSelectedKey();
+
+                jsonModel.setProperty('/selectedAggregation/key', selectedKey);
+                jsonModel.setProperty('/selectedAggregation/value', selectedItem);
+
+                let newSelectedControlChildren: string[] | number[] = Object.keys(
+                    ControlUtils.getControlAggregationByName(runtimeControl, selectedItem)
+                );
+
+                newSelectedControlChildren = newSelectedControlChildren.map((key) => {
+                    return parseInt(key);
+                });
+
+                const updatedIndexArray: { key: number; value: number }[] =
+                    that.fillIndexArray(newSelectedControlChildren);
+
+                jsonModel.setProperty('/index', updatedIndexArray);
+                jsonModel.setProperty('/selectedIndex', updatedIndexArray.length - 1);
+            }
+        }).bindAggregation(
+            'items',
+            '/targetAggregation',
+            // @ts-ignore
+            new Item({
+                key: '{key}',
+                text: '{value}'
+            })
+        );
+    }
+
+    /**
      * @description Checks if an object is empty (has no own properties)
      * @param obj Any object to be checked
      * @returns Boolean value
      */
     private isEmptyObject<T>(obj: Record<string, unknown> | T): boolean {
-        if (typeof obj === 'object') {
+        if (Array.isArray(obj) && obj.length > 0) {
+            return false;
+        } else if (typeof obj === 'object') {
             for (const key in obj) {
                 if (obj.hasOwnProperty(key)) {
                     return false;
