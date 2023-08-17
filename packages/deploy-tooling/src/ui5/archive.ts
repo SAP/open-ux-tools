@@ -9,8 +9,13 @@ import { createBuffer } from '../base';
  * @param logger - reference to the logger instance
  * @param workspace - reference to the UI5 tooling workspace object
  * @param projectName - project properties and configuration
+ * @returns {*}  {Promise<Buffer>} - archive
  */
-export async function createUi5Archive(logger: ToolsLogger, workspace: DuplexCollection, projectName: string) {
+export async function createUi5Archive(
+    logger: ToolsLogger,
+    workspace: DuplexCollection,
+    projectName: string
+): Promise<Buffer> {
     logger.info('Creating archive with UI5 build result.');
     const prefix = `/resources/${projectName}/`;
     const zip = new ZipFile();

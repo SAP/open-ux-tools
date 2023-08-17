@@ -1,5 +1,212 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.23
+
+### Patch Changes
+
+-   ce5ccd4d: Use LocalStorageConnector instead of SessionStorageConnector in flexibilityServices
+
+## 0.12.22
+
+### Patch Changes
+
+-   Updated dependencies [375ca861]
+    -   @sap-ux/ui5-config@0.19.0
+    -   @sap-ux/odata-service-writer@0.14.27
+    -   @sap-ux/ui5-application-writer@0.24.1
+    -   @sap-ux/fe-fpm-writer@0.22.3
+    -   @sap-ux/ui5-test-writer@0.1.10
+
+## 0.12.21
+
+### Patch Changes
+
+-   9085aeee: Add SessionStorageConnector to flexibilityServices
+
+## 0.12.20
+
+### Patch Changes
+
+-   Updated dependencies [eba8741e]
+    -   @sap-ux/ui5-application-writer@0.24.0
+
+## 0.12.19
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-application-writer@0.23.5
+    -   @sap-ux/odata-service-writer@0.14.26
+    -   @sap-ux/ui5-test-writer@0.1.10
+    -   @sap-ux/fe-fpm-writer@0.22.3
+    -   @sap-ux/ui5-config@0.18.2
+
+## 0.12.18
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+-   Updated dependencies [d9355692]
+    -   @sap-ux/fe-fpm-writer@0.22.2
+    -   @sap-ux/odata-service-writer@0.14.25
+    -   @sap-ux/ui5-application-writer@0.23.4
+    -   @sap-ux/ui5-config@0.18.1
+    -   @sap-ux/ui5-test-writer@0.1.9
+
+## 0.12.17
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+    -   @sap-ux/odata-service-writer@0.14.24
+    -   @sap-ux/ui5-application-writer@0.23.3
+    -   @sap-ux/fe-fpm-writer@0.22.1
+    -   @sap-ux/ui5-test-writer@0.1.9
+
+## 0.12.16
+
+### Patch Changes
+
+-   743a5dc7: Chore - bump version of @sap-ux/eslint-plugin-fiori-tools used in templates
+-   Updated dependencies [743a5dc7]
+    -   @sap-ux/ui5-application-writer@0.23.2
+
+## 0.12.15
+
+### Patch Changes
+
+-   080f89ac: Opa tests to use flpSandbox.html when index.html is not generated
+-   Updated dependencies [080f89ac]
+    -   @sap-ux/ui5-test-writer@0.1.9
+
+## 0.12.14
+
+### Patch Changes
+
+-   Updated dependencies [b7b25d00]
+    -   @sap-ux/fe-fpm-writer@0.22.1
+
+## 0.12.13
+
+### Patch Changes
+
+-   Updated dependencies [36ccc8eb]
+    -   @sap-ux/fe-fpm-writer@0.22.0
+
+## 0.12.12
+
+### Patch Changes
+
+-   Updated dependencies [2de44bb9]
+    -   @sap-ux/fe-fpm-writer@0.21.0
+
+## 0.12.11
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/fe-fpm-writer@0.20.3
+    -   @sap-ux/odata-service-writer@0.14.23
+    -   @sap-ux/ui5-application-writer@0.23.1
+    -   @sap-ux/ui5-config@0.17.1
+    -   @sap-ux/ui5-test-writer@0.1.8
+
+## 0.12.10
+
+### Patch Changes
+
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/odata-service-writer@0.14.22
+
+## 0.12.9
+
+### Patch Changes
+
+-   Updated dependencies [2fc69d95]
+    -   @sap-ux/fe-fpm-writer@0.20.2
+
+## 0.12.8
+
+### Patch Changes
+
+-   7aed929c: disable search in flpSandbox
+
+## 0.12.7
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-application-writer@0.23.0
+    -   @sap-ux/ui5-config@0.17.0
+    -   @sap-ux/fe-fpm-writer@0.20.1
+    -   @sap-ux/odata-service-writer@0.14.21
+    -   @sap-ux/ui5-test-writer@0.1.7
+
+## 0.12.6
+
+### Patch Changes
+
+-   0aa02ab0: TBI - Clean up eslint warnings in generated projects
+-   Updated dependencies [0aa02ab0]
+    -   @sap-ux/fe-fpm-writer@0.20.1
+
+## 0.12.5
+
+### Patch Changes
+
+-   Updated dependencies [906b7fea]
+    -   @sap-ux/ui5-application-writer@0.22.3
+
+## 0.12.4
+
+### Patch Changes
+
+-   Updated dependencies [5c16776d]
+    -   @sap-ux/fe-fpm-writer@0.20.0
+
+## 0.12.3
+
+### Patch Changes
+
+-   Updated dependencies [cca1095c]
+    -   @sap-ux/fe-fpm-writer@0.19.1
+
+## 0.12.2
+
+### Patch Changes
+
+-   Updated dependencies [495a22cb]
+    -   @sap-ux/ui5-application-writer@0.22.2
+
+## 0.12.1
+
+### Patch Changes
+
+-   91e95ef8: BUG - Generated Controller Extensions do not always work with TS
+-   Updated dependencies [91e95ef8]
+    -   @sap-ux/ui5-application-writer@0.22.1
+
+## 0.12.0
+
+### Minor Changes
+
+-   7ac0cb40: Add new module containing an eslint plugin with reusable eslint configs
+
+### Patch Changes
+
+-   Updated dependencies [7ac0cb40]
+    -   @sap-ux/ui5-application-writer@0.22.0
+
+## 0.11.4
+
+### Patch Changes
+
+-   Updated dependencies [970dc528]
+    -   @sap-ux/fe-fpm-writer@0.19.0
+
 ## 0.11.3
 
 ### Patch Changes

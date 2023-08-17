@@ -5,7 +5,9 @@ import { LogLevel } from '@sap-ux/logger';
 import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'fs';
 import { isAxiosError } from '../base/odata-request-error';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
+export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 /**
  * Object structure representing a namespace: containing an id (variant id) and a reference (base application id).
  */
@@ -44,6 +46,30 @@ export interface AdaptationConfig {
      * Optional transport request
      */
     transport?: string;
+
+    /**
+     * Optional layer (default: CUSTOMER_BASE)
+     */
+    layer?: Layer;
+}
+
+/**
+ * Resulting structure after merging an app descriptor variant with the original app descriptor.
+ */
+export interface MergedAppDescriptor {
+    name: string;
+    url: string;
+    manifest: Manifest;
+    asyncHints: {
+        libs: {
+            name: string;
+            lazy?: boolean;
+            url?: {
+                url: string;
+                final: boolean;
+            };
+        }[];
+    };
 }
 
 /**
@@ -78,7 +104,7 @@ function getNamespaceAsString(namespace: Namespace): string {
 const DTA_PATH_SUFFIX = '/dta_folder/';
 
 /**
- * A class respresenting the design time adaptation service allowing to deploy adaptation projects to an ABAP system.
+ * A class representing the design time adaptation service allowing to deploy adaptation projects to an ABAP system.
  */
 export class LayeredRepositoryService extends Axios implements Service {
     public static readonly PATH = '/sap/bc/lrep';
@@ -86,28 +112,55 @@ export class LayeredRepositoryService extends Axios implements Service {
     public log: Logger;
 
     /**
+     * Merge a given app descriptor variant with the stord app descriptor.
+     *
+     * @param appDescriptorVariant zip file containing an app descriptor variant
+     * @returns a promise with an object containing merged app descriptors with their id as keys.
+     */
+    public async mergeAppDescriptorVariant(
+        appDescriptorVariant: Buffer
+    ): Promise<{ [key: string]: MergedAppDescriptor }> {
+        try {
+            const response = await this.put('/appdescr_variant_preview/', appDescriptorVariant, {
+                headers: {
+                    'Content-Type': 'application/zip'
+                }
+            });
+            return JSON.parse(response.data);
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+            }
+            throw error;
+        }
+    }
+
+    /**
      * Check whether a variant with the given namespace already exists.
      *
      * @param namespace either as string or as object
-     * @returns the Axios response object for futher processing
+     * @param [layer] optional layer
+     * @returns the Axios response object for further processing
      */
-    public async isExistingVariant(namespace: Namespace): Promise<AxiosResponse> {
+    public async isExistingVariant(namespace: Namespace, layer: Layer = 'CUSTOMER_BASE'): Promise<AxiosResponse> {
         try {
             const response = await this.get(DTA_PATH_SUFFIX, {
                 params: {
                     name: getNamespaceAsString(namespace),
-                    layer: 'CUSTOMER_BASE' as Layer,
+                    layer,
                     timestamp: Date.now()
                 }
             });
             this.tryLogResponse(response);
             return response;
         } catch (error) {
-            if (isAxiosError(error) && error.response?.status === 404) {
-                return error.response;
-            } else {
-                throw error;
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+                if (error.response?.status === 404) {
+                    return error.response;
+                }
             }
+            throw error;
         }
     }
 
@@ -124,7 +177,7 @@ export class LayeredRepositoryService extends Axios implements Service {
         const checkResponse = await this.isExistingVariant(config.namespace);
         const params: object = {
             name: getNamespaceAsString(config.namespace),
-            layer: 'CUSTOMER_BASE' as Layer
+            layer: config.layer ?? 'CUSTOMER_BASE'
         };
 
         params['package'] = config.package ?? '$TMP';
@@ -159,7 +212,7 @@ export class LayeredRepositoryService extends Axios implements Service {
         }
         const params: object = {
             name: getNamespaceAsString(config.namespace),
-            layer: 'CUSTOMER_BASE' as Layer
+            layer: config.layer ?? 'CUSTOMER_BASE'
         };
         if (config.transport) {
             params['changelist'] = config.transport;

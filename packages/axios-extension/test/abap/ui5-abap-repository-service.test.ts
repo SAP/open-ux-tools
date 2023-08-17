@@ -2,6 +2,17 @@ import nock from 'nock';
 import type { AppInfo } from '../../src';
 import { Ui5AbapRepositoryService, createForAbap } from '../../src';
 import mockErrorDetails from './mockResponses/errordetails.json';
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as Logger from '@sap-ux/logger';
+
+const loggerMock: ToolsLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+} as Partial<ToolsLogger> as ToolsLogger;
+
+jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
@@ -24,15 +35,15 @@ describe('Ui5AbapRepositoryService', () => {
         nock.disableNetConnect();
         // mock an existing and not existing app
         nock(server)
-            .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?$format=json`)
+            .get(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?$format=json`)
             .reply(200, { d: validAppInfo })
             .persist();
         nock(server)
-            .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${notExistingApp}%27)?$format=json`)
+            .get(`${Ui5AbapRepositoryService.PATH}/Repositories('${notExistingApp}')?$format=json`)
             .reply(404, 'the app does not exist')
             .persist();
         nock(server)
-            .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${restrictedApp}%27)?$format=json`)
+            .get(`${Ui5AbapRepositoryService.PATH}/Repositories('${restrictedApp}')?$format=json`)
             .reply(401, { d: validAppInfo })
             .persist();
     });
@@ -104,7 +115,7 @@ describe('Ui5AbapRepositoryService', () => {
         test('update existing app', async () => {
             nock(server)
                 .put(
-                    `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`,
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`,
                     (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
                 .reply(200);
@@ -116,7 +127,7 @@ describe('Ui5AbapRepositoryService', () => {
         test('deployment failed', async () => {
             nock(server)
                 .put(
-                    `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`,
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`,
                     (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
                 .reply(401, 'Deployment failed');
@@ -162,7 +173,7 @@ describe('Ui5AbapRepositoryService', () => {
         test('testMode enabled', async () => {
             nock(server)
                 .put(
-                    `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}&TestMode=true&SafeMode=true`
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}&TestMode=true&SafeMode=true`
                 )
                 .reply(200);
             const response = await service.deploy({
@@ -177,7 +188,7 @@ describe('Ui5AbapRepositoryService', () => {
         test('testMode enabled with error', async () => {
             nock(server)
                 .put(
-                    `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}&TestMode=true&SafeMode=true`
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}&TestMode=true&SafeMode=true`
                 )
                 .reply(403, JSON.stringify(mockErrorDetails));
             const response = await service.deploy({
@@ -191,9 +202,13 @@ describe('Ui5AbapRepositoryService', () => {
     });
 
     describe('undeploy', () => {
+        beforeEach(() => {
+            jest.resetAllMocks();
+        });
+
         test('successful removal', async () => {
             nock(server)
-                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`)
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
             expect(response?.status).toBe(200);
@@ -204,7 +219,7 @@ describe('Ui5AbapRepositoryService', () => {
                 .defaultReplyHeaders({
                     'sap-message': sapMessageHeader
                 })
-                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`)
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
             expect(response?.status).toBe(200);
@@ -212,14 +227,23 @@ describe('Ui5AbapRepositoryService', () => {
 
         test('failed removal', async () => {
             nock(server)
-                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`)
                 .replyWithError('Failed');
             await expect(service.undeploy({ bsp: { name: validApp } })).rejects.toThrowError();
         });
 
+        test('failed removal, not authorised', async () => {
+            const appName = 'TestApp';
+            nock(server).get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?$format=json`).reply(401);
+            await expect(service.undeploy({ bsp: { name: appName } })).rejects.toThrowError();
+            expect(loggerMock.debug).toHaveBeenCalledTimes(1);
+            expect(loggerMock.info).toHaveBeenCalledTimes(0);
+            expect(loggerMock.error).toHaveBeenCalledTimes(0);
+        });
+
         test('failed removal, application not found', async () => {
             const appName = 'TestApp';
-            nock(server).get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?$format=json`).reply(404);
+            nock(server).get(`${Ui5AbapRepositoryService.PATH}/Repositories('${appName}')?$format=json`).reply(404);
             const response = await service.undeploy({ bsp: { name: appName } });
             expect(response).toBeUndefined();
         });
@@ -227,13 +251,13 @@ describe('Ui5AbapRepositoryService', () => {
         test('failed removal but handle repeat request', async () => {
             const appName = 'TestAppRecursive';
             nock(server)
-                .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?$format=json`)
+                .get(`${Ui5AbapRepositoryService.PATH}/Repositories('${appName}')?$format=json`)
                 .reply(200, { d: { ...validAppInfo, Name: appName } });
             nock(server)
-                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?${updateParams}`)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${appName}')?${updateParams}`)
                 .reply(400);
             nock(server)
-                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?${updateParams}`)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${appName}')?${updateParams}`)
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: appName } });
             expect(response?.status).toBe(200);

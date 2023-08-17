@@ -1,26 +1,24 @@
 {
-  "compilerOptions": {
-    "target": "es2015",
-    "module": "es2015",
-    "skipLibCheck": true,
-    "preserveConstEnums": true,
-    "inlineSourceMap": true,
-    "allowJs": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": false,
-    "moduleResolution": "node",
-    "rootDir": "webapp",
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "paths": {
-      "<%-app.id.replace(/\./g, '/') %>/*": [
-        "webapp/*"
-      ]
+    "compilerOptions": {
+        "target": "es2022",
+        "module": "es2022",
+        "skipLibCheck": true,
+        "allowJs": true,
+        "strict": true,
+        "strictPropertyInitialization": false,
+        "moduleResolution": "node",
+        "rootDir": "./webapp",
+        "baseUrl": "./",
+        "paths": {
+            "<%-app.id.replace(/\./g, '/') %>/*": [
+                "./webapp/*"
+            ]
+        },
+        "types": [
+            "<%- ui5.typesPackage %>"
+        ]
     },
-    "types": [ "@sapui5/ts-types-esm" ]
-  },
-  "include": [
-    "webapp/**/*"
-  ]
+    "include": [
+        "./webapp/**/*"
+    ]
 }

@@ -24,7 +24,7 @@ export default class ListSelector extends UI5Object {
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
         // invoke selectItem functions before calling setBoundList
-        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: any, reject: any) {
+        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: (arg0: { oList: List; }) => void, reject: (arg0: { oList: List; }) => void) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
                     oList.getBinding("items")?.attachEventOnce("dataReceived",

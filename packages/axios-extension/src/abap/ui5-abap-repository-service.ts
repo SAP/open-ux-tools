@@ -170,11 +170,15 @@ export class Ui5AbapRepositoryService extends ODataService {
                     : '';
                 this.log.info(`App available at ${frontendUrl}${path}${query}`);
             } else {
-                prettyPrintError({
-                    error: this.getErrorMessageFromString(response?.data),
-                    log: this.log,
-                    host: frontendUrl
-                });
+                // Test mode returns a HTTP response code of 403 so we dont want to show all error messages
+                prettyPrintError(
+                    {
+                        error: this.getErrorMessageFromString(response?.data),
+                        log: this.log,
+                        host: frontendUrl
+                    },
+                    false
+                );
             }
             return response;
         } catch (error) {
@@ -194,8 +198,8 @@ export class Ui5AbapRepositoryService extends ODataService {
     public async undeploy({ bsp, testMode = false }: UndeployConfig): Promise<AxiosResponse | undefined> {
         const config = this.createConfig(bsp.transport, testMode);
         const host = this.getAbapFrontendUrl();
+        const info: AppInfo = await this.getInfo(bsp.name);
         try {
-            const info: AppInfo = await this.getInfo(bsp.name);
             if (info) {
                 const response = await this.deleteRepoRequest(bsp.name, config);
                 if (response?.headers?.['sap-message']) {
@@ -399,7 +403,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             if (errorMessage) {
                 prettyPrintError({ error: errorMessage, host, log: this.log });
             } else {
-                this.log.error(error.response.data);
+                this.log.error(error.response.data.toString());
             }
         }
     }
@@ -410,7 +414,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param data string value
      * @returns undefined if an error object is not found or populated ErrorMessage object
      */
-    protected getErrorMessageFromString(data: string): ErrorMessage | undefined {
+    protected getErrorMessageFromString(data: unknown): ErrorMessage | undefined {
         let error;
         if (typeof data === 'string') {
             try {

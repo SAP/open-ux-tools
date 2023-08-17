@@ -1,5 +1,21 @@
 # @sap-ux/store
 
+## 0.3.12
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/logger@0.3.7
+
+## 0.3.11
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/logger@0.3.6
+
 ## 0.3.10
 
 ### Patch Changes

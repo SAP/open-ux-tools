@@ -1,6 +1,6 @@
 import { AdtService } from './adt-service';
 import type { AdtCategory } from '../../types';
-import XmlParser from 'fast-xml-parser';
+import { XMLParser, XMLValidator } from 'fast-xml-parser';
 import type { PackageInfo } from '../../types/adt-internal-types';
 
 /**
@@ -80,7 +80,7 @@ export class ListPackageService extends AdtService {
      * @returns A list of package names.
      */
     private parsePackageListResponse(xml: string): string[] {
-        if (XmlParser.validate(xml) !== true) {
+        if (XMLValidator.validate(xml) !== true) {
             this.log.warn(`Invalid XML: ${xml}`);
             return [];
         }
@@ -88,10 +88,11 @@ export class ListPackageService extends AdtService {
             attributeNamePrefix: '',
             ignoreAttributes: false,
             ignoreNameSpace: true,
-            parseAttributeValue: true
+            parseAttributeValue: true,
+            removeNSPrefix: true
         };
-        const obj = XmlParser.getTraversalObj(xml, options);
-        const parsed = XmlParser.convertToJson(obj, options);
+        const parser: XMLParser = new XMLParser(options);
+        const parsed = parser.parse(xml, true);
 
         let packageArray: PackageInfo[] = [];
         if (parsed?.objectReferences?.objectReference) {
