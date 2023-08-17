@@ -1,5 +1,17 @@
 # @sap-ux/project-access
 
+## 1.12.1
+
+### Patch Changes
+
+-   f880ea76: fix for async function definition
+
+## 1.12.0
+
+### Minor Changes
+
+-   6feb0cea: Add fallback to load @sap/cds from any module location
+
 ## 1.11.2
 
 ### Patch Changes

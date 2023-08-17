@@ -203,9 +203,42 @@
                 }
             }
         }
+
+        // Header item
+        > .ms-ContextualMenu-header {
+            padding: $menu-item-padding;
+            .ms-ContextualMenu-itemText {
+                color: $menu-item-header-color;
+                font-size: $menu-item-header-font-size;
+                font-weight: $menu-item-header-font-weight;
+                text-transform: $menu-item-header-text-transform;
+            }
+            .ms-ContextualMenu-linkContent,
+            .ms-ContextualMenu-itemText {
+                height: $menu-item-height;
+                line-height: $menu-item-height;
+            }
+        }
     }
 
     .ms-ContextualMenu-itemText {
         margin: 0;
+    }
+
+    // Icons inside menu item
+    .ms-ContextualMenu-icon {
+        display: flex;
+        width: 12px;
+        height: 12px;
+        margin: 0 6px 0 0;
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    // Divider item
+    .ms-ContextualMenu-divider {
+        background-color: $menu-item-divider-color;
     }
 }
