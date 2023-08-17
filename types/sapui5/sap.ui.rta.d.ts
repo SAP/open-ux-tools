@@ -3,7 +3,7 @@ declare module 'sap/ui/rta/command/BaseCommand' {
     /**
      *
      */
-    export default class {
+    export default interface BaseCommand {
         execute(): Promise<void>;
         getElement(): Element;
     }
@@ -14,7 +14,7 @@ declare module 'sap/ui/rta/command/Stack' {
     /**
      *
      */
-    export default class {
+    export default interface Stack {
         /**
          *
          */
@@ -82,7 +82,7 @@ declare module 'sap/ui/rta/command/OutlineService' {
     /**
      *
      */
-    export default class {
+    export default interface OutlineService {
         get(): Promise<OutlineViewNode[]>;
         /**
          *

@@ -79,7 +79,7 @@ declare module 'sap/ui/dt/plugin/ContextMenu' {
     /**
      *
      */
-    export default class {
+    export default interface ContextMenu {
         /**
          *
          */
