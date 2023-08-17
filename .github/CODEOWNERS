@@ -48,6 +48,9 @@
 # Module: backend-proxy-middleware
 /packages/backend-proxy-middleware/ @SAP/ux-tools-middlewares-and-tasks
 
+# Module: control-property-editor
+/packages/ui-components/ @SAP/ux-tools-control-property-editor
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin

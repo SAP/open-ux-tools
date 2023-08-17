@@ -124,5 +124,5 @@ export function HeaderField(headerFieldProps: HeaderFieldProps): ReactElement {
  * @param text {string to copy to clipboard}
  */
 function copyToClipboard(text: string): void {
-    navigator.clipboard.writeText(text).catch((reason) => console.error(reason));
+    navigator.clipboard.writeText(text);
 }

@@ -233,7 +233,7 @@ describe('SelectionService', () => {
         expect(sendActionSpy).toHaveBeenCalledTimes(1);
     });
 
-    test.only('select control', async () => {
+    test('select control', async () => {
         let handler: ((event: sap.ui.base.Event) => Promise<void>) | undefined;
         const actionHandlers: ((action: ExternalAction) => void)[] = [];
         function subscribe(handler: (action: ExternalAction) => Promise<void> | void): void {

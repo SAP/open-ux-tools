@@ -1,8 +1,7 @@
 {
-  "name": "@sap/ux-control-property-editor",
+  "name": "@sap-ux/control-property-editor",
   "displayName": "SAP Fiori Tools - Control Property Editor",
   "description": "SAP Fiori Tools - Control Property Editor",
-  "publisher": "SAPSE",
   "license": "SEE LICENSE IN LICENSE",
   "version": "1.0.0",
   "main": "dist/index.js",
