@@ -1,7 +1,7 @@
 module.exports = {
     extends: ['../../.eslintrc', 'plugin:react/recommended'],
     parserOptions: {
-        EXPERIMENTAL_useSourceOfProjectReferenceRedirect: true,
+        'EXPERIMENTAL_useSourceOfProjectReferenceRedirect': true,
         project: './tsconfig.eslint.json',
         tsconfigRootDir: __dirname
     },
