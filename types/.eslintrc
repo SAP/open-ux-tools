@@ -1,0 +1,7 @@
+{
+    "extends": ["../.eslintrc"],
+    "parserOptions": { "project": "./tsconfig.eslint.json" },
+    "rules": {
+        "semi": "off"
+    }
+}
