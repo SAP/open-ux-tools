@@ -3500,7 +3500,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 })(sap);
 
 function registerSAPFonts(){
-    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\")
+    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\");
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -7135,7 +7135,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 })(sap);
 
 function registerSAPFonts(){
-    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\")
+    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\");
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",

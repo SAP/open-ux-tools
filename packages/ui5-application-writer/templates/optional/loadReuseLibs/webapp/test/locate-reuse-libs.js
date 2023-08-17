@@ -132,7 +132,7 @@
 })(sap);
 
 function registerSAPFonts(){
-    var IconPool = sap.ui.require("sap/ui/core/IconPool")
+    var IconPool = sap.ui.require("sap/ui/core/IconPool");
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: "SAP-icons-TNT",

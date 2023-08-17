@@ -6458,7 +6458,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 })(sap);
 
 function registerSAPFonts(){
-    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\")
+    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\");
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -9780,7 +9780,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 })(sap);
 
 function registerSAPFonts(){
-    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\")
+    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\");
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -12693,7 +12693,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 })(sap);
 
 function registerSAPFonts(){
-    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\")
+    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\");
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -16051,7 +16051,7 @@ export function createDeviceModel () {
 })(sap);
 
 function registerSAPFonts(){
-    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\")
+    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\");
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -19409,7 +19409,7 @@ export function createDeviceModel () {
 })(sap);
 
 function registerSAPFonts(){
-    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\")
+    var IconPool = sap.ui.require(\\"sap/ui/core/IconPool\\");
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
