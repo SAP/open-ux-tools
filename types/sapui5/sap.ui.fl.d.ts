@@ -14,7 +14,7 @@ declare module 'sap/ui/fl/Change' {
     /**
      *
      */
-    export default class {
+    export default interface Change {
         getDefinition: () => ChangeDefinition;
     }
 }
@@ -24,10 +24,13 @@ declare module 'sap/ui/fl/Utils' {
     /**
      *
      */
-    export default class {
+    interface Utils {
         /**
          *
          */
-        static checkControlId(control: ManagedObject): boolean;
+        checkControlId(control: ManagedObject): boolean;
     }
+
+    const Utils: Utils;
+    export default Utils;
 }
