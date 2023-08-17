@@ -31,6 +31,14 @@ interface AnalyzedType {
     isArray: boolean;
 }
 
+type Property = { name: string; defaultValue: string };
+
+type ControlNewData = {
+    id: any;
+    name: any;
+    newValue: any;
+};
+
 // TODO: review this one and check if should be moved to the types project
 type MetadataOptionsProperty = MetadataOptions.Property & {
     name: string;
@@ -284,21 +292,6 @@ export default class ControlUtils {
                 controlNewData.newValue = bindingInfo.bindingString;
             }
 
-            // A property is enabled if:
-            // 1. The property supports changes
-            // 2. The control has stable ID
-            // 3. It is not configured to be ignored in design time
-            // 4. And control overlay is selectable
-            const isEnabled =
-                (controlOverlay?.isSelectable() ?? false) &&
-                this.isPropertyEnabled(analyzedType) &&
-                hasStableId &&
-                !ignore;
-            const value = this.normalizeObjectPropertyValue(controlNewData.newValue);
-            const isIcon =
-                this.testIconPattern(property.name) &&
-                selectedControlName !== 'sap.m.Image' &&
-                analyzedType.ui5Type === 'sap.ui.core.URI';
             const documentation = document?.[property.name]
                 ? document[property.name]
                 : {
@@ -308,76 +301,18 @@ export default class ControlUtils {
                       type: analyzedType.ui5Type,
                       propertyType: analyzedType.ui5Type
                   };
-            const readableName = this.convertCamelCaseToPascalCase(property.name);
-            switch (analyzedType.primitiveType) {
-                case 'enum': {
-                    const values = analyzedType.enumValues ?? {};
-                    const options: { key: string; text: string }[] = Object.keys(values).map((key) => ({
-                        key,
-                        text: values[key]
-                    }));
-                    properties.push({
-                        type: 'string',
-                        editor: 'dropdown',
-                        name: property.name,
-                        readableName,
-                        value,
-                        isEnabled,
-                        options,
-                        documentation
-                    });
-                    break;
-                }
-                case 'string': {
-                    properties.push({
-                        type: 'string',
-                        editor: 'input',
-                        name: property.name,
-                        readableName,
-                        value,
-                        isEnabled,
-                        isIcon,
-                        documentation: documentation
-                    });
-                    break;
-                }
-                case 'int': {
-                    properties.push({
-                        type: 'integer',
-                        editor: 'input',
-                        name: property.name,
-                        readableName,
-                        value: value as unknown as number,
-                        isEnabled,
-                        documentation
-                    });
-                    break;
-                }
-                case 'float': {
-                    properties.push({
-                        type: 'float',
-                        editor: 'input',
-                        name: property.name,
-                        readableName,
-                        value: value as unknown as number,
-                        isEnabled,
-                        documentation
-                    });
-                    break;
-                }
-                case 'boolean': {
-                    properties.push({
-                        type: 'boolean',
-                        editor: 'checkbox',
-                        name: property.name,
-                        readableName,
-                        value: value as unknown as boolean,
-                        isEnabled,
-                        documentation
-                    });
-                    break;
-                }
-            }
+
+            this.getPropertyForBuiltControl(
+                analyzedType,
+                property,
+                properties,
+                documentation,
+                selectedControlName,
+                controlOverlay,
+                controlNewData,
+                hasStableId,
+                ignore
+            );
         }
 
         const sortedProperties = properties.sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -388,5 +323,117 @@ export default class ControlUtils {
             properties: sortedProperties,
             name: selectedControlName
         };
+    }
+
+    /**
+     * Pushed property to properties array depending on primitive type of analyzed type
+     *
+     * @param {AnalyzedType} analyzedType  Analyzed type
+     * @param {Property} property Property
+     * @param {Properties[]} properties Properties array
+     * @param documentation Documentation object
+     * @param selectedControlName Selected control name
+     * @param {ElementOverlay} controlOverlay Control overlay
+     * @param {ControlNewData} controlNewData Control new data
+     * @param hasStableId Has a stable id
+     * @param ignore Ignore toggle
+     */
+    private static getPropertyForBuiltControl(
+        analyzedType: AnalyzedType,
+        property: Property,
+        properties: Properties[],
+        documentation: object,
+        selectedControlName: string,
+        controlOverlay: ElementOverlay,
+        controlNewData: ControlNewData,
+        hasStableId: boolean,
+        ignore: boolean
+    ) {
+        // A property is enabled if:
+        // 1. The property supports changes
+        // 2. The control has stable ID
+        // 3. It is not configured to be ignored in design time
+        // 4. And control overlay is selectable
+        const isEnabled =
+            (controlOverlay?.isSelectable() ?? false) && this.isPropertyEnabled(analyzedType) && hasStableId && !ignore;
+        const value = this.normalizeObjectPropertyValue(controlNewData.newValue);
+        const isIcon =
+            this.testIconPattern(property.name) &&
+            selectedControlName !== 'sap.m.Image' &&
+            analyzedType.ui5Type === 'sap.ui.core.URI';
+
+        const readableName = this.convertCamelCaseToPascalCase(property.name);
+
+        switch (analyzedType.primitiveType) {
+            case 'enum': {
+                const values = analyzedType.enumValues ?? {};
+                const options: { key: string; text: string }[] = Object.keys(values).map((key) => ({
+                    key,
+                    text: values[key]
+                }));
+                properties.push({
+                    type: 'string',
+                    editor: 'dropdown',
+                    name: property.name,
+                    readableName,
+                    value,
+                    isEnabled,
+                    options,
+                    documentation
+                });
+                break;
+            }
+            case 'string': {
+                properties.push({
+                    type: 'string',
+                    editor: 'input',
+                    name: property.name,
+                    readableName,
+                    value,
+                    isEnabled,
+                    isIcon,
+                    documentation: documentation
+                });
+                break;
+            }
+            case 'int': {
+                properties.push({
+                    type: 'integer',
+                    editor: 'input',
+                    name: property.name,
+                    readableName,
+                    value: value as unknown as number,
+                    isEnabled,
+                    documentation
+                });
+                break;
+            }
+            case 'float': {
+                properties.push({
+                    type: 'float',
+                    editor: 'input',
+                    name: property.name,
+                    readableName,
+                    value: value as unknown as number,
+                    isEnabled,
+                    documentation
+                });
+                break;
+            }
+            case 'boolean': {
+                properties.push({
+                    type: 'boolean',
+                    editor: 'checkbox',
+                    name: property.name,
+                    readableName,
+                    value: value as unknown as boolean,
+                    isEnabled,
+                    documentation
+                });
+                break;
+            }
+            default:
+                break;
+        }
     }
 }
