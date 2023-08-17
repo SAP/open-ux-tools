@@ -7,7 +7,7 @@ import Text from 'sap/m/Text';
 import Label from 'sap/m/Label';
 import Input from 'sap/m/Input';
 import Dialog from 'sap/m/Dialog';
-import Button from 'sap/m/Button';
+import Button, { type $ButtonSettings } from 'sap/m/Button';
 import ComboBox from 'sap/m/ComboBox';
 import SearchField from 'sap/m/SearchField';
 import MessageToast from 'sap/m/MessageToast';
@@ -87,6 +87,8 @@ type ExtendedEventProvider = EventProvider & {
     setValueStateText: (text: string) => void;
     setVisible: (bool: boolean) => void;
 };
+
+type ExtendedButtonSettings = $ButtonSettings & { press: (event: Event) => void | Promise<void> };
 
 /**
  *
@@ -482,7 +484,7 @@ export default class FragmentDialog {
                 text: 'Add',
                 enabled: false,
                 type: ButtonType.Emphasized,
-                press: async (event: Event): Promise<void> => {
+                press: async (event: Event) => {
                     const source = event.getSource() as ExtendedEventProvider;
                     source.setEnabled(false);
                     if (!buttonAddFragment) {
@@ -508,7 +510,7 @@ export default class FragmentDialog {
                     fragmentDialog.close();
                     fragmentDialog.destroy();
                 }
-            }),
+            } as ExtendedButtonSettings),
             endButton: new Button({
                 text: 'Cancel',
                 press: () => {
