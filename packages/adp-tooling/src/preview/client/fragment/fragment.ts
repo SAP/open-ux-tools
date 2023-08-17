@@ -282,7 +282,7 @@ export default class FragmentDialog {
             value: '{/newFragmentName}',
             liveChange: (event: Event) => {
                 const source = event.getSource() as ExtendedEventProvider;
-                const fragmentName = source.getValue();
+                const fragmentName: string = source.getValue().trim();
                 const fragmentList = jsonModel.getProperty('/filteredFragmentList/unFilteredFragmentList');
 
                 const iExistingFileIndex = fragmentList.findIndex((f: { fragmentName: string }) => {
@@ -302,7 +302,7 @@ export default class FragmentDialog {
                         fragmentDialog.getBeginButton().setEnabled(false);
                         jsonModel.setProperty('/fragmentNameToCreate', null);
                         break;
-                    case !/^[a-zA-Z_]+[a-zA-Z0-9_-]*$/.test(fragmentName):
+                    case !/^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName):
                         source.setValueState(ValueState.Error);
                         source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
                         fragmentDialog.getBeginButton().setEnabled(false);
