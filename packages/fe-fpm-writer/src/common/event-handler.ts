@@ -49,6 +49,24 @@ export const contextParameter: EventHandlerTypescriptParameters = {
 };
 
 /**
+ * Method resolves event handler configuration options by adding default values.
+ *
+ * @param eventHandlerOptions - eventHandler options
+ * @returns {EventHandlerConfigurationOptions} event handler configuration options
+ */
+function resolveEventHandlerConfigurationOptions(
+    eventHandlerOptions: EventHandlerConfigurationOptions
+): EventHandlerConfigurationOptions {
+    const { controllerSuffix, typescript, templatePath, eventHandlerFnName } = eventHandlerOptions;
+    return {
+        controllerSuffix,
+        typescript,
+        templatePath: templatePath ?? 'common/EventHandler',
+        eventHandlerFnName: eventHandlerFnName ?? 'onPress'
+    }
+}
+
+/**
  * Method creates or updates handler js file and update 'settings.eventHandler' entry with namespace path entry to method.
  *
  * @param fs - the memfs editor instance
@@ -65,9 +83,8 @@ export function applyEventHandlerConfiguration(
     eventHandlerOptions: EventHandlerConfigurationOptions,
     parameters: EventHandlerTypescriptParameters = defaultParameter
 ): string {
-    const controllerSuffix = eventHandlerOptions.controllerSuffix;
-    const templatePath = eventHandlerOptions.templatePath ?? 'common/EventHandler';
-    let eventHandlerFnName = eventHandlerOptions.eventHandlerFnName ?? 'onPress';
+    const { controllerSuffix, typescript, templatePath } = resolveEventHandlerConfigurationOptions(eventHandlerOptions);
+    let eventHandlerFnName = resolveEventHandlerConfigurationOptions(eventHandlerOptions).eventHandlerFnName;
     if (typeof eventHandler === 'string') {
         // Existing event handler is passed - no need for file creation/update
         return eventHandler;
@@ -86,7 +103,7 @@ export function applyEventHandlerConfiguration(
         }
     }
 
-    const ext = eventHandlerOptions.typescript ? 'ts' : 'js';
+    const ext = typescript ? 'ts' : 'js';
     const controllerPath = join(config.path || '', `${fileName}${controllerSuffix ? '.controller' : ''}.${ext}`);
     if (!fs.exists(controllerPath)) {
         fs.copyTpl(getTemplatePath(`${templatePath}.${ext}`), controllerPath, {
