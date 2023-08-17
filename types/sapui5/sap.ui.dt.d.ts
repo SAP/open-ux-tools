@@ -10,7 +10,7 @@ declare module 'sap/ui/dt/DesignTimeMetadata' {
     }
 
     export default interface DesignTimeMetadata extends ManagedObject {
-        getData: () => { 
+        getData: () => {
             properties: { [name: string]: DesignTimeMetadataData };
             aggregations: { [name: string]: DesignTimeMetadataData };
         };
@@ -79,7 +79,7 @@ declare module 'sap/ui/dt/plugin/ContextMenu' {
     /**
      *
      */
-    export default class {
+    export default interface ContextMenu {
         /**
          *
          */
