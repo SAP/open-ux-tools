@@ -21,94 +21,89 @@ export interface FragmentsResponse {
 }
 
 /**
- * @description Class responsible for sending requests from client to the server
+ * Requests a given endpoint
+ *
+ * @param endpoint API Endpoint
+ * @param method RequestMethod
+ * @param data Data to be sent to the server
+ * @returns Data from the server request
  */
-export default class ApiRequestHandler {
-    /**
-     * Requests a given endpoint
-     *
-     * @param endpoint API Endpoint
-     * @param method RequestMethod
-     * @param data Data to be sent to the server
-     * @returns Data from the server request
-     */
-    private static async request<T>(endpoint: ApiEndpoints, method: RequestMethod, data?: unknown): Promise<T> {
-        const config: RequestInit = {
-            method,
-            body: JSON.stringify(data),
-            headers: {
-                'content-type': 'application/json'
-            }
-        };
-
-        try {
-            const response: Response = await fetch(endpoint, config);
-
-            if (!response.ok) {
-                throw new Error(`Request failed, status: ${response.status}.`);
-            }
-
-            switch (method) {
-                case RequestMethod.GET:
-                    return response.json();
-                case RequestMethod.POST:
-                    /**
-                     * Since POST usually creates something
-                     * and returns nothing (or a message) we just parse the text from res.send(msg)
-                     */
-                    return response.text() as T;
-                default:
-                    return response.json();
-            }
-        } catch (e) {
-            throw new Error(e.message);
+export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, data?: unknown): Promise<T> {
+    const config: RequestInit = {
+        method,
+        body: JSON.stringify(data),
+        headers: {
+            'content-type': 'application/json'
         }
-    }
+    };
 
-    /**
-     * Retrieves all XML fragments from the project's workspace
-     *
-     * @returns Generic Promise<T>
-     */
-    public static async getFragments<T>(): Promise<T> {
-        return this.request<T>(ApiEndpoints.FRAGMENT, RequestMethod.GET);
-    }
+    try {
+        const response: Response = await fetch(endpoint, config);
 
-    /**
-     * Writes an XML fragment to the project's workspace
-     *
-     * @param data Data to be send to the server
-     * @returns Generic Promise<T>
-     */
-    public static async writeFragment<T>(data: T): Promise<T> {
-        return this.request<T>(ApiEndpoints.FRAGMENT, RequestMethod.POST, data);
-    }
+        if (!response.ok) {
+            throw new Error(`Request failed, status: ${response.status}.`);
+        }
 
-    /**
-     * Retrieves all JS controllers from the project's workspace
-     *
-     * @returns Generic Promise<T>
-     */
-    public static async getControllers<T>(): Promise<T> {
-        return this.request<T>(ApiEndpoints.CONTROLLER, RequestMethod.GET);
+        switch (method) {
+            case RequestMethod.GET:
+                return response.json();
+            case RequestMethod.POST:
+                /**
+                 * Since POST usually creates something
+                 * and returns nothing (or a message) we just parse the text from res.send(msg)
+                 */
+                return response.text() as T;
+            default:
+                return response.json();
+        }
+    } catch (e) {
+        throw new Error(e.message);
     }
+}
 
-    /**
-     * Writes a JS Controller to the project's workspace
-     *
-     * @param data Data to be send to the server
-     * @returns Generic Promise<T>
-     */
-    public static async writeController<T>(data: T): Promise<T> {
-        return this.request<T>(ApiEndpoints.FRAGMENT, RequestMethod.POST, data);
-    }
+/**
+ * Retrieves all XML fragments from the project's workspace
+ *
+ * @returns Generic Promise<T>
+ */
+export async function getFragments<T>(): Promise<T> {
+    return request<T>(ApiEndpoints.FRAGMENT, RequestMethod.GET);
+}
 
-    /**
-     * Retrieves manifest.appdescr_variant from the project's workspace
-     *
-     * @returns Generic Promise<T>
-     */
-    public static async getManifestAppdescr<T>(): Promise<T> {
-        return this.request<T>(ApiEndpoints.MANIFEST_APP_DESCRIPTOR, RequestMethod.GET);
-    }
+/**
+ * Writes an XML fragment to the project's workspace
+ *
+ * @param data Data to be send to the server
+ * @returns Generic Promise<T>
+ */
+export async function writeFragment<T>(data: T): Promise<T> {
+    return request<T>(ApiEndpoints.FRAGMENT, RequestMethod.POST, data);
+}
+
+/**
+ * Retrieves all JS controllers from the project's workspace
+ *
+ * @returns Generic Promise<T>
+ */
+export async function getControllers<T>(): Promise<T> {
+    return request<T>(ApiEndpoints.CONTROLLER, RequestMethod.GET);
+}
+
+/**
+ * Writes a JS Controller to the project's workspace
+ *
+ * @param data Data to be send to the server
+ * @returns Generic Promise<T>
+ */
+export async function writeController<T>(data: T): Promise<T> {
+    return request<T>(ApiEndpoints.FRAGMENT, RequestMethod.POST, data);
+}
+
+/**
+ * Retrieves manifest.appdescr_variant from the project's workspace
+ *
+ * @returns Generic Promise<T>
+ */
+export async function getManifestAppdescr<T>(): Promise<T> {
+    return request<T>(ApiEndpoints.MANIFEST_APP_DESCRIPTOR, RequestMethod.GET);
 }

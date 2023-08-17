@@ -7,17 +7,19 @@ import Text from 'sap/m/Text';
 import Label from 'sap/m/Label';
 import Input from 'sap/m/Input';
 import Dialog from 'sap/m/Dialog';
-import Button, { type $ButtonSettings } from 'sap/m/Button';
 import ComboBox from 'sap/m/ComboBox';
 import SearchField from 'sap/m/SearchField';
 import MessageToast from 'sap/m/MessageToast';
 import ToolbarSpacer from 'sap/m/ToolbarSpacer';
 import { ListMode, ButtonType } from 'sap/m/library';
+import StandardListItem from 'sap/m/StandardListItem';
+import type OverflowToolbar from 'sap/m/OverflowToolbar';
+import Button, { type $ButtonSettings } from 'sap/m/Button';
 
 /** sap.ui.core */
 import Item from 'sap/ui/core/Item';
-import type UI5Element from 'sap/ui/core/Element';
 import CustomData from 'sap/ui/core/CustomData';
+import type UI5Element from 'sap/ui/core/Element';
 import { ValueState, VerticalAlign } from 'sap/ui/core/library';
 
 /** sap.ui.layout */
@@ -26,29 +28,32 @@ import HorizontalLayout from 'sap/ui/layout/HorizontalLayout';
 
 /** sap.ui.model */
 import Filter from 'sap/ui/model/Filter';
+import type Binding from 'sap/ui/model/Binding';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import FilterOperator from 'sap/ui/model/FilterOperator';
 
-import type { BuiltRuntimeControl } from '../control-utils';
-import ControlUtils from '../control-utils';
-import ApiRequestHandler from '../api-handler';
-import type { FragmentsResponse } from '../api-handler';
+/** sap.ui.rta */
+import CommandFactory from 'sap/ui/rta/command/CommandFactory';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import StandardListItem from 'sap/m/StandardListItem';
-import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
+/** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
 import type EventProvider from 'sap/ui/base/EventProvider';
-import type Binding from 'sap/ui/model/Binding';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
+/** sap.ui.dt */
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
-import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import type OverflowToolbar from 'sap/m/OverflowToolbar';
+/** sap.ui.fl */
 import type { Layer } from 'sap/ui/fl';
-import type ManagedObject from 'sap/ui/base/ManagedObject';
+
+import ControlUtils from '../control-utils';
+import type { FragmentsResponse } from '../api-handler';
+import type { BuiltRuntimeControl } from '../control-utils';
+import { getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -191,7 +196,7 @@ export default class FragmentDialog {
         }
 
         try {
-            const { fragments, filteredFragments } = await ApiRequestHandler.getFragments<FragmentsResponse>();
+            const { fragments, filteredFragments } = await getFragments<FragmentsResponse>();
 
             jsonModel.setProperty('/filteredFragmentList', {
                 fragmentList: filteredFragments, // filtered fragments that have no corresponding change file
@@ -497,10 +502,13 @@ export default class FragmentDialog {
                         };
                         await that.createNewFragment(fragmentData, runtimeControl, that);
                     } else {
-                        const selectedFragmentName = jsonModel.getProperty('/SelectedFragment/selectedFragmentName');
+                        const selectedFragmentFile: string = jsonModel.getProperty(
+                            '/SelectedFragment/selectedFragmentName'
+                        );
+                        const fragmentName = selectedFragmentFile.split('.').shift() as string;
                         await that.createFragmentChange(
                             {
-                                fragmentName: selectedFragmentName,
+                                fragmentName,
                                 index: 0,
                                 targetAggregation: 'content'
                             },
@@ -679,7 +687,7 @@ export default class FragmentDialog {
     ): Promise<void> {
         const { fragmentName, index, targetAggregation } = fragmentData;
         try {
-            await ApiRequestHandler.writeFragment<unknown>({ fragmentName });
+            await writeFragment<unknown>({ fragmentName });
         } catch (e) {
             // In case of error when creating a new fragment, we should not create a change file
             console.error(e.message);
@@ -699,7 +707,7 @@ export default class FragmentDialog {
         const { fragmentName, index, targetAggregation } = fragmentData;
         let manifest: ManifestAppdescr;
         try {
-            manifest = await ApiRequestHandler.getManifestAppdescr<ManifestAppdescr>();
+            manifest = await getManifestAppdescr<ManifestAppdescr>();
 
             if (!manifest) {
                 // Highly unlikely since adaptation projects are required to have manifest.appdescr_variant
