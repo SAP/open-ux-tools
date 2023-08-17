@@ -32,7 +32,6 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
