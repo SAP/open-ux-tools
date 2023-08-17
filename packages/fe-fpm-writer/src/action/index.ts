@@ -98,7 +98,6 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
             },
             contextParameter
         );
-        contextParameter
     }
 
     // enhance manifest with action definition and controller reference

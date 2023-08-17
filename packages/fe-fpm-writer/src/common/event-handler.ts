@@ -65,10 +65,10 @@ export function applyEventHandlerConfiguration(
     eventHandlerOptions: EventHandlerConfigurationOptions,
     parameters: EventHandlerTypescriptParameters = defaultParameter
 ): string {
-    const controllerSuffix = eventHandlerOptions.controllerSuffix || false;
+    const controllerSuffix = eventHandlerOptions.controllerSuffix ?? false;
     const typescript = eventHandlerOptions.typescript;
-    const templatePath = eventHandlerOptions.templatePath || 'common/EventHandler';
-    let eventHandlerFnName = eventHandlerOptions.eventHandlerFnName || 'onPress';
+    const templatePath = eventHandlerOptions.templatePath ?? 'common/EventHandler';
+    let eventHandlerFnName = eventHandlerOptions.eventHandlerFnName ?? 'onPress';
     if (typeof eventHandler === 'string') {
         // Existing event handler is passed - no need for file creation/update
         return eventHandler;
