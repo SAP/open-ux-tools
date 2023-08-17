@@ -385,7 +385,7 @@ export default class FragmentDialog {
                         new Label({
                             text: {
                                 path: '/fragmentCount',
-                                formatter: function (value: string) {
+                                formatter: (value: string) => {
                                     if (value !== undefined) {
                                         return value + ' ' + 'Fragments';
                                     } else {
@@ -436,6 +436,7 @@ export default class FragmentDialog {
                                     if (value) {
                                         return value.charAt(0).toUpperCase() + value.slice(1);
                                     }
+                                    return '';
                                 }
                             }
                         })
@@ -510,7 +511,7 @@ export default class FragmentDialog {
             }),
             endButton: new Button({
                 text: 'Cancel',
-                press: function () {
+                press: () => {
                     fragmentDialog.close();
                     fragmentDialog.destroy();
                 }
@@ -520,7 +521,7 @@ export default class FragmentDialog {
                     new Button({
                         icon: 'sap-icon://nav-back',
                         visible: false,
-                        press: function (event: Event) {
+                        press: (event: Event) => {
                             const source = event.getSource() as ExtendedEventProvider;
                             source.setVisible(false);
                             buttonAddFragment = true;
@@ -605,7 +606,7 @@ export default class FragmentDialog {
             change: (event: Event) => {
                 let selectedItem = '';
                 // @ts-ignore
-                sap.ui.getCore().byId('filteredFragmentSearchField')!.setValue('');
+                sap.ui.getCore().byId('filteredFragmentSearchField').setValue('');
                 const source = event.getSource() as ExtendedEventProvider;
                 if (source.getSelectedItem()) {
                     selectedItem = source.getSelectedItem().getText();
