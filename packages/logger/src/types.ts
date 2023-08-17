@@ -54,7 +54,7 @@ export interface Logger {
 }
 
 /**
- * Follows severity ordering specificed in RFC 5424: https://datatracker.ietf.org/doc/html/rfc5424
+ * Follows severity ordering specified in RFC 5424: https://datatracker.ietf.org/doc/html/rfc5424
  */
 export enum LogLevel {
     Error = 0,
