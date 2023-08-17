@@ -65,8 +65,7 @@ export function applyEventHandlerConfiguration(
     eventHandlerOptions: EventHandlerConfigurationOptions,
     parameters: EventHandlerTypescriptParameters = defaultParameter
 ): string {
-    const controllerSuffix = eventHandlerOptions.controllerSuffix ?? false;
-    const typescript = eventHandlerOptions.typescript;
+    const controllerSuffix = eventHandlerOptions.controllerSuffix;
     const templatePath = eventHandlerOptions.templatePath ?? 'common/EventHandler';
     let eventHandlerFnName = eventHandlerOptions.eventHandlerFnName ?? 'onPress';
     if (typeof eventHandler === 'string') {
@@ -87,7 +86,7 @@ export function applyEventHandlerConfiguration(
         }
     }
 
-    const ext = typescript ? 'ts' : 'js';
+    const ext = eventHandlerOptions.typescript ? 'ts' : 'js';
     const controllerPath = join(config.path || '', `${fileName}${controllerSuffix ? '.controller' : ''}.${ext}`);
     if (!fs.exists(controllerPath)) {
         fs.copyTpl(getTemplatePath(`${templatePath}.${ext}`), controllerPath, {
