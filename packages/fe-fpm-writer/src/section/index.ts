@@ -61,7 +61,10 @@ function enhanceConfig(
 
     // Apply event handler
     if (config.eventHandler) {
-        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, false, config.typescript);
+        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, {
+            controllerSuffix: false,
+            typescript: config.typescript
+        });
     }
 
     // generate section content
@@ -145,11 +148,11 @@ export function generateCustomHeaderSection(
                 editor,
                 editSection,
                 editSection.eventHandler,
-                false,
-                section.typescript,
-                undefined,
-                undefined,
-                'onChange'
+                {
+                    controllerSuffix: false,
+                    typescript: section.typescript,
+                    eventHandlerFnName: 'onChange'
+                }
             );
         }
         // Generate edit fragment content
