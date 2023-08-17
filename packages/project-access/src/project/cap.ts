@@ -344,7 +344,7 @@ async function loadGlobalCdsModule<T>(): Promise<T> {
  * @param [cwd] - optional folder in which cds --version should be executed
  * @returns - result of call 'cds --version'
  */
-function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> {
+async function getCdsVersionInfo(cwd?: string): Promise<Record<string, string>> {
     return new Promise((resolve, reject) => {
         let out = '';
         const cdsVersionInfo = spawn('cds', ['--version'], { cwd, shell: true });
