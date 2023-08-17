@@ -1,5 +1,125 @@
 # @sap-ux/app-config-writer
 
+## 0.1.9
+
+### Patch Changes
+
+-   Updated dependencies [f880ea76]
+    -   @sap-ux/project-access@1.12.1
+    -   @sap-ux/axios-extension@1.4.1
+
+## 0.1.8
+
+### Patch Changes
+
+-   Updated dependencies [6feb0cea]
+    -   @sap-ux/project-access@1.12.0
+    -   @sap-ux/axios-extension@1.4.1
+
+## 0.1.7
+
+### Patch Changes
+
+-   Updated dependencies [375ca861]
+    -   @sap-ux/ui5-config@0.19.0
+    -   @sap-ux/project-access@1.11.2
+    -   @sap-ux/axios-extension@1.4.1
+
+## 0.1.6
+
+### Patch Changes
+
+-   24e45780: Updated dependency: axios@1.4.0
+-   Updated dependencies [24e45780]
+    -   @sap-ux/axios-extension@1.4.1
+    -   @sap-ux/btp-utils@0.11.8
+
+## 0.1.5
+
+### Patch Changes
+
+-   Updated dependencies [88861559]
+    -   @sap-ux/project-access@1.11.1
+    -   @sap-ux/axios-extension@1.4.0
+
+## 0.1.4
+
+### Patch Changes
+
+-   Updated dependencies [1c267b37]
+    -   @sap-ux/project-access@1.11.0
+    -   @sap-ux/axios-extension@1.4.0
+
+## 0.1.3
+
+### Patch Changes
+
+-   Updated dependencies [c18f957a]
+    -   @sap-ux/project-access@1.10.2
+    -   @sap-ux/axios-extension@1.4.0
+
+## 0.1.2
+
+### Patch Changes
+
+-   Updated dependencies [d2fd9a58]
+    -   @sap-ux/axios-extension@1.4.0
+
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [95a8daae]
+    -   @sap-ux/project-access@1.10.1
+
+## 0.1.0
+
+### Minor Changes
+
+-   804e2a18: Feature added: Inbound config writing
+
+## 0.0.30
+
+### Patch Changes
+
+-   Updated dependencies [23059e62]
+    -   @sap-ux/axios-extension@1.3.6
+
+## 0.0.29
+
+### Patch Changes
+
+-   Updated dependencies [69b88bcc]
+    -   @sap-ux/axios-extension@1.3.5
+
+## 0.0.28
+
+### Patch Changes
+
+-   Updated dependencies [da6fbb04]
+    -   @sap-ux/axios-extension@1.3.4
+
+## 0.0.27
+
+### Patch Changes
+
+-   Updated dependencies [ff74ee09]
+    -   @sap-ux/project-access@1.10.0
+
+## 0.0.26
+
+### Patch Changes
+
+-   Updated dependencies [5ab0638f]
+    -   @sap-ux/project-access@1.9.1
+
+## 0.0.25
+
+### Patch Changes
+
+-   Updated dependencies [42b1de7b]
+    -   @sap-ux/project-access@1.9.0
+
 ## 0.0.24
 
 ### Patch Changes

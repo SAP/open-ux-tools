@@ -1,7 +1,13 @@
 import { basename, dirname, join } from 'path';
 import type { WorkspaceFolder } from '../../src';
-import { findAllApps, findProjectRoot, getAppRootFromWebappPath } from '../../src';
-import { findFioriArtifacts } from '../../src/project/search';
+import { findAllApps, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from '../../src';
+
+/**
+ * To get CAP project type we call cds --version using child_process.spawn() and cache global install path.
+ * During pipeline test there is no local or global installation of @sap/cds, which is causing test delays
+ * due to many spawn calls. Mock child_process to speed up test execution.
+ */
+jest.mock('child_process');
 
 const testDataRoot = join(__dirname, '..', 'test-data');
 

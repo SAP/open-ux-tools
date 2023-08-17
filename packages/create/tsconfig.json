@@ -10,6 +10,9 @@
     },
     "references": [
         {
+            "path": "../adp-tooling"
+        },
+        {
             "path": "../app-config-writer"
         },
         {

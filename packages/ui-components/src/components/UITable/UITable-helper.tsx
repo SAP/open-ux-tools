@@ -155,15 +155,14 @@ export async function waitFor(selector: string) {
     return new Promise((resolve) => {
         if (el) {
             resolve(el);
-            return;
+        } else {
+            setTimeout(async () => {
+                const el2 = await waitFor(selector);
+                if (el2) {
+                    resolve(el2);
+                }
+            }, 100);
         }
-        setTimeout(async () => {
-            const el2 = await waitFor(selector);
-            if (el2) {
-                resolve(el2);
-                return;
-            }
-        }, 100);
     });
 }
 

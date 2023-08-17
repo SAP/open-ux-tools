@@ -1,5 +1,125 @@
 # @sap-ux/environment-check
 
+## 0.15.48
+
+### Patch Changes
+
+-   Updated dependencies [f880ea76]
+    -   @sap-ux/project-access@1.12.1
+    -   @sap-ux/axios-extension@1.4.1
+
+## 0.15.47
+
+### Patch Changes
+
+-   Updated dependencies [6feb0cea]
+    -   @sap-ux/project-access@1.12.0
+    -   @sap-ux/axios-extension@1.4.1
+
+## 0.15.46
+
+### Patch Changes
+
+-   Updated dependencies [375ca861]
+    -   @sap-ux/ui5-config@0.19.0
+    -   @sap-ux/project-access@1.11.2
+    -   @sap-ux/axios-extension@1.4.1
+
+## 0.15.45
+
+### Patch Changes
+
+-   24e45780: Updated dependency: axios@1.4.0
+-   Updated dependencies [24e45780]
+    -   @sap-ux/axios-extension@1.4.1
+    -   @sap-ux/btp-utils@0.11.8
+
+## 0.15.44
+
+### Patch Changes
+
+-   Updated dependencies [88861559]
+    -   @sap-ux/project-access@1.11.1
+    -   @sap-ux/axios-extension@1.4.0
+
+## 0.15.43
+
+### Patch Changes
+
+-   Updated dependencies [1c267b37]
+    -   @sap-ux/project-access@1.11.0
+    -   @sap-ux/axios-extension@1.4.0
+
+## 0.15.42
+
+### Patch Changes
+
+-   Updated dependencies [c18f957a]
+    -   @sap-ux/project-access@1.10.2
+    -   @sap-ux/axios-extension@1.4.0
+
+## 0.15.41
+
+### Patch Changes
+
+-   Updated dependencies [d2fd9a58]
+    -   @sap-ux/axios-extension@1.4.0
+
+## 0.15.40
+
+### Patch Changes
+
+-   Updated dependencies [95a8daae]
+    -   @sap-ux/project-access@1.10.1
+
+## 0.15.39
+
+### Patch Changes
+
+-   Updated dependencies [23059e62]
+    -   @sap-ux/axios-extension@1.3.6
+
+## 0.15.38
+
+### Patch Changes
+
+-   Updated dependencies [69b88bcc]
+    -   @sap-ux/axios-extension@1.3.5
+
+## 0.15.37
+
+### Patch Changes
+
+-   Updated dependencies [da6fbb04]
+    -   @sap-ux/axios-extension@1.3.4
+
+## 0.15.36
+
+### Patch Changes
+
+-   Updated dependencies [ff74ee09]
+    -   @sap-ux/project-access@1.10.0
+
+## 0.15.35
+
+### Patch Changes
+
+-   Updated dependencies [5ab0638f]
+    -   @sap-ux/project-access@1.9.1
+
+## 0.15.34
+
+### Patch Changes
+
+-   Updated dependencies [42b1de7b]
+    -   @sap-ux/project-access@1.9.0
+
+## 0.15.33
+
+### Patch Changes
+
+-   852d5887: exclude `.git` folder in archive
+
 ## 0.15.32
 
 ### Patch Changes

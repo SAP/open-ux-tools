@@ -119,11 +119,13 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
         return (
             <>
                 {defaultRender?.(props)}
-                <div
-                    onMouseEnter={this.stopEventPropagation.bind(this)}
-                    onMouseLeave={this.stopEventPropagation.bind(this)}
-                    onMouseMove={this.stopEventPropagation.bind(this)}
-                    className="ts-dropdown-item-blocker"></div>
+                {props?.itemType !== DropdownMenuItemType.Header && (
+                    <div
+                        onMouseEnter={this.stopEventPropagation.bind(this)}
+                        onMouseLeave={this.stopEventPropagation.bind(this)}
+                        onMouseMove={this.stopEventPropagation.bind(this)}
+                        className="ts-dropdown-item-blocker"></div>
+                )}
             </>
         );
     };

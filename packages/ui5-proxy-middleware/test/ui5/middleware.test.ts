@@ -9,8 +9,12 @@ import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 
 // spy on ui5Proxy and injectScripts to verify calls
 const ui5ProxySpy = jest.spyOn(proxy, 'ui5Proxy');
-const injectScriptsMock = jest.spyOn(utils, 'injectScripts').mockImplementation(async (req, res) => {
-    res.end();
+const injectScriptsMock = jest.spyOn(utils, 'injectScripts').mockImplementation(async (req, res, next) => {
+    if (req.url.includes('error')) {
+        throw Error('error with directLoad');
+    } else {
+        res.end();
+    }
 });
 
 const rootProjectMock = {
@@ -194,6 +198,16 @@ describe('middleware', () => {
             await server.get('/index.html');
             expect(injectScriptsMock).toBeCalled();
         });
+
+        test('directLoad:error', async () => {
+            const server = await getTestServer({
+                ...config,
+                directLoad: true
+            });
+            const result = await server.get('/index.html?error');
+            expect(result.status).toEqual(500);
+            expect(result.text.includes('error with directLoad')).toBeTruthy();
+        });
     });
 
     describe('manifest.json options', () => {
@@ -207,12 +221,16 @@ describe('middleware', () => {
             ui5ProxySpy.mockClear();
         });
 
-        test("valid manifest.json", async () => {
+        test('valid manifest.json', async () => {
             const ui5Version = '1.123';
-            const loadManifestMock = jest.fn().mockResolvedValue(`{ "sap.ui5": { "dependencies": { "minUI5Version": "${ui5Version}"}}}`);
-            rootProjectMock.byGlob.mockResolvedValueOnce([{
-                getString: loadManifestMock
-            }]);
+            const loadManifestMock = jest
+                .fn()
+                .mockResolvedValue(`{ "sap.ui5": { "dependencies": { "minUI5Version": "${ui5Version}"}}}`);
+            rootProjectMock.byGlob.mockResolvedValueOnce([
+                {
+                    getString: loadManifestMock
+                }
+            ]);
             await getTestServer(config);
             expect(loadManifestMock).toBeCalled();
             expect(ui5ProxySpy).toBeCalledWith(
@@ -221,24 +239,20 @@ describe('middleware', () => {
             );
         });
 
-        test("invalid manifest.json", async () => {
-            rootProjectMock.byGlob.mockResolvedValueOnce([{
-                getString: jest.fn()
-            }]);
+        test('invalid manifest.json', async () => {
+            rootProjectMock.byGlob.mockResolvedValueOnce([
+                {
+                    getString: jest.fn()
+                }
+            ]);
             await getTestServer(config);
-            expect(ui5ProxySpy).toBeCalledWith(
-                expect.objectContaining({ version: '' }),
-                expect.objectContaining({})
-            );
+            expect(ui5ProxySpy).toBeCalledWith(expect.objectContaining({ version: '' }), expect.objectContaining({}));
         });
 
-        test("no manifest.json", async () => {
+        test('no manifest.json', async () => {
             rootProjectMock.byGlob.mockResolvedValueOnce([]);
             await getTestServer(config);
-            expect(ui5ProxySpy).toBeCalledWith(
-                expect.objectContaining({ version: '' }),
-                expect.objectContaining({})
-            );
+            expect(ui5ProxySpy).toBeCalledWith(expect.objectContaining({ version: '' }), expect.objectContaining({}));
         });
     });
 });

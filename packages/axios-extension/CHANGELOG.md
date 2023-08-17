@@ -1,5 +1,37 @@
 # @sap-ux/axios-extension
 
+## 1.4.1
+
+### Patch Changes
+
+-   24e45780: Updated dependency: axios@1.4.0
+-   Updated dependencies [24e45780]
+    -   @sap-ux/btp-utils@0.11.8
+
+## 1.4.0
+
+### Minor Changes
+
+-   d2fd9a58: Enhanced LREP service to support merging of app descriptor variants
+
+## 1.3.6
+
+### Patch Changes
+
+-   23059e62: log longtext_url as clickable link
+
+## 1.3.5
+
+### Patch Changes
+
+-   69b88bcc: TransportChecksService API method `getTransportRequests` now encodes the packageName within its implementation.
+
+## 1.3.4
+
+### Patch Changes
+
+-   da6fbb04: remove trailing slash from uaa url
+
 ## 1.3.3
 
 ### Patch Changes

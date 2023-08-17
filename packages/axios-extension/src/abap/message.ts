@@ -8,6 +8,7 @@ export interface MessageDetail {
     code: string;
     message: string;
     severity: string;
+    longtext_url?: string;
 }
 
 /**
@@ -123,7 +124,7 @@ export function prettyPrintError(
             if (!entry.message.startsWith('<![CDATA')) {
                 logLevel(entry.severity, entry.message, log, true);
             }
-            logFullURL({ host, path: error['longtext_url'], log });
+            logFullURL({ host, path: entry['longtext_url'], log });
         });
         if (showAllMessages && error.innererror?.Error_Resolution) {
             for (const key in error.innererror.Error_Resolution) {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { IStackTokens } from '@fluentui/react';
+import { IStackTokens } from '@fluentui/react';
 import { Text, Stack } from '@fluentui/react';
 
 import {
@@ -11,7 +11,9 @@ import {
     UISmallButton
 } from '../src/components/UIButton';
 import type { UIContextualMenuItem } from '../src/components/UIContextualMenu';
+import { UIContextualMenuItemType } from '../src/components/UIContextualMenu';
 import { initIcons, UiIcons } from '../src/components/Icons';
+import { UIDirectionalHint } from '../src/components/UITreeDropdown';
 
 initIcons();
 
@@ -25,20 +27,51 @@ export const defaultUsage = (): JSX.Element => {
         setSelection(key);
     };
 
-    const buttonItem: UIContextualMenuItem = {
-        key: 'option1',
-        text: 'option 1'
+    const getMenuItem = (key: string, text: string, icon?: UiIcons): UIContextualMenuItem => {
+        const item: UIContextualMenuItem = {
+            key,
+            text
+        };
+        if (icon) {
+            item.iconProps = {
+                iconName: UiIcons.GuidedDevelopment
+            };
+        }
+        return item;
     };
 
-    const menuItems: UIContextualMenuItem[] = [
-        {
-            key: 'option2',
-            text: 'option 2'
-        },
-        {
-            key: 'option3',
-            text: 'option 3'
+    const buttonItem: UIContextualMenuItem = getMenuItem('option1', 'option 1');
+
+    const menuItems: UIContextualMenuItem[] = [getMenuItem('option2', 'option 2'), getMenuItem('option3', 'option 3')];
+
+    const menuItemsWithIcon = menuItems.map((source) => ({
+        ...source,
+        iconProps: {
+            iconName: UiIcons.GuidedDevelopment
         }
+    }));
+
+    const menuItemsWithSeparators: UIContextualMenuItem[] = [
+        getMenuItem('option1', 'option 1'),
+        getMenuItem('option2', 'option 2'),
+        {
+            key: '',
+            itemType: UIContextualMenuItemType.Divider
+        },
+        getMenuItem('option3', 'option 3'),
+        getMenuItem('option4', 'option 4'),
+        getMenuItem('option5', 'option 5'),
+        {
+            key: '',
+            itemType: UIContextualMenuItemType.Header,
+            text: 'Dummy header'
+        },
+        getMenuItem('option6', 'option 6'),
+        getMenuItem('option7', 'option 7'),
+        getMenuItem('option8', 'option 8'),
+        getMenuItem('option10', 'option 10'),
+        getMenuItem('option11', 'option 11'),
+        getMenuItem('option12', 'option 12')
     ];
 
     return (
@@ -78,6 +111,18 @@ export const defaultUsage = (): JSX.Element => {
                         id="test"
                         callback={onCallback.bind(this)}
                         menuItems={menuItems}
+                        button={buttonItem}
+                    />
+                    <UISplitButton
+                        id="test2"
+                        callback={onCallback.bind(this)}
+                        menuItems={menuItemsWithIcon}
+                        button={buttonItem}
+                    />
+                    <UISplitButton
+                        id="test3"
+                        callback={onCallback.bind(this)}
+                        menuItems={menuItemsWithSeparators}
                         button={buttonItem}
                     />
                     <span>selection: {selection}</span>
@@ -139,6 +184,17 @@ export const defaultUsage = (): JSX.Element => {
                         }}>
                         Icon with color - disabled
                     </UIActionButton>
+                    <UIActionButton
+                        iconProps={{
+                            iconName: UiIcons.Bulb
+                        }}
+                        menuProps={{
+                            directionalHint: UIDirectionalHint.bottomRightEdge,
+                            directionalHintFixed: false,
+                            items: menuItemsWithIcon
+                        }}>
+                        Button with menu
+                    </UIActionButton>
                 </Stack>
             </Stack>
 
@@ -148,6 +204,40 @@ export const defaultUsage = (): JSX.Element => {
                 </Text>
                 <Stack horizontal tokens={stackTokens}>
                     <UISmallButton primary>Clear All</UISmallButton>
+                </Stack>
+            </Stack>
+
+            <Stack tokens={stackTokens}>
+                <Text variant={'large'} className="textColor" block>
+                    Dropdown Button
+                </Text>
+                <Stack horizontal tokens={stackTokens}>
+                    <UIIconButton
+                        iconProps={{ iconName: UiIcons.Add }}
+                        menuProps={{
+                            directionalHint: UIDirectionalHint.bottomRightEdge,
+                            directionalHintFixed: false,
+                            items: menuItems
+                        }}
+                    />
+
+                    <UIIconButton
+                        iconProps={{ iconName: UiIcons.Add }}
+                        menuProps={{
+                            directionalHint: UIDirectionalHint.bottomRightEdge,
+                            directionalHintFixed: false,
+                            items: menuItemsWithIcon
+                        }}
+                    />
+
+                    <UIIconButton
+                        iconProps={{ iconName: UiIcons.Add }}
+                        menuProps={{
+                            directionalHint: UIDirectionalHint.bottomRightEdge,
+                            directionalHintFixed: false,
+                            items: menuItemsWithSeparators
+                        }}
+                    />
                 </Stack>
             </Stack>
         </Stack>

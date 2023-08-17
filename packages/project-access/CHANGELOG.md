@@ -1,5 +1,66 @@
 # @sap-ux/project-access
 
+## 1.12.1
+
+### Patch Changes
+
+-   f880ea76: fix for async function definition
+
+## 1.12.0
+
+### Minor Changes
+
+-   6feb0cea: Add fallback to load @sap/cds from any module location
+
+## 1.11.2
+
+### Patch Changes
+
+-   Updated dependencies [375ca861]
+    -   @sap-ux/ui5-config@0.19.0
+
+## 1.11.1
+
+### Patch Changes
+
+-   88861559: Fix for module loading after installation
+
+## 1.11.0
+
+### Minor Changes
+
+-   1c267b37: Adding getMtaPath(appRoot: string, fs: Editor) utility function. It helps to identify if the input Fiori app is part of a MTA project or not.
+
+## 1.10.2
+
+### Patch Changes
+
+-   c18f957a: add readonly for WorkspaceFolder usage
+
+## 1.10.1
+
+### Patch Changes
+
+-   95a8daae: Ignore leading or trailing slashes when searching for services in CAP project
+
+## 1.10.0
+
+### Minor Changes
+
+-   ff74ee09: Add functionality to convert CDS into EDMX
+
+## 1.9.1
+
+### Patch Changes
+
+-   5ab0638f: Fix "getCapModelAndServices" for CDS v7
+
+## 1.9.0
+
+### Minor Changes
+
+-   42b1de7b: Add utils method for getting absolute and reference uri for cap resources
+
 ## 1.8.4
 
 ### Patch Changes
