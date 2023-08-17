@@ -131,8 +131,8 @@
     };
 })(sap);
 
-function registerSAPFonts(){
-    var IconPool = sap.ui.require("sap/ui/core/IconPool");
+function registerSAPFonts() {  
+    sap.ui.require(["sap/ui/core/IconPool"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: "SAP-icons-TNT",
@@ -147,6 +147,7 @@ function registerSAPFonts(){
     };
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
+    })
 }
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
