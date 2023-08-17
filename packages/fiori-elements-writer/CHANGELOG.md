@@ -1,5 +1,36 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.24
+
+### Patch Changes
+
+-   29179b5f: Add SAP icon loading in flpsandbox.html
+-   Updated dependencies [29179b5f]
+    -   @sap-ux/ui5-application-writer@0.24.2
+
+## 0.12.23
+
+### Patch Changes
+
+-   ce5ccd4d: Use LocalStorageConnector instead of SessionStorageConnector in flexibilityServices
+
+## 0.12.22
+
+### Patch Changes
+
+-   Updated dependencies [375ca861]
+    -   @sap-ux/ui5-config@0.19.0
+    -   @sap-ux/odata-service-writer@0.14.27
+    -   @sap-ux/ui5-application-writer@0.24.1
+    -   @sap-ux/fe-fpm-writer@0.22.3
+    -   @sap-ux/ui5-test-writer@0.1.10
+
+## 0.12.21
+
+### Patch Changes
+
+-   9085aeee: Add SessionStorageConnector to flexibilityServices
+
 ## 0.12.20
 
 ### Patch Changes

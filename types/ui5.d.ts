@@ -25,8 +25,8 @@ declare module '@ui5/fs' {
     }
 
     /**
-    * https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_ReaderCollection.html
-    */
+     * https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_ReaderCollection.html
+     */
     export class ReaderCollection {
         /**
          * Locates resources by matching glob patterns.
@@ -52,14 +52,14 @@ declare module '@ui5/fs' {
     /**
      * https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_AbstractReader.html
      */
-    export class AbstractReader { }
+    export class AbstractReader {}
 }
 
 declare module '@ui5/builder' {
     /**
      * https://sap.github.io/ui5-tooling/stable/api/@ui5_project_build_helpers_TaskUtil.html
      */
-    export class TaskUtil { }
+    export class TaskUtil {}
 
     export interface TaskParameters<C> {
         /**
@@ -114,8 +114,8 @@ declare module '@ui5/server' {
              * Get the full path of the source (webapp in case of an app) folder.
              */
             getSourcePath(): string;
-        }
-    };
+        };
+    }
 
     export interface MiddlewareParameters<C> {
         /**

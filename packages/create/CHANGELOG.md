@@ -1,5 +1,51 @@
 # @sap-ux/create
 
+## 0.4.11
+
+### Patch Changes
+
+-   Updated dependencies [f880ea76]
+    -   @sap-ux/project-access@1.12.1
+    -   @sap-ux/adp-tooling@0.1.5
+    -   @sap-ux/app-config-writer@0.1.9
+    -   @sap-ux/cap-config-writer@0.1.16
+    -   @sap-ux/mockserver-config-writer@0.1.8
+
+## 0.4.10
+
+### Patch Changes
+
+-   Updated dependencies [6feb0cea]
+    -   @sap-ux/project-access@1.12.0
+    -   @sap-ux/adp-tooling@0.1.5
+    -   @sap-ux/app-config-writer@0.1.8
+    -   @sap-ux/cap-config-writer@0.1.15
+    -   @sap-ux/mockserver-config-writer@0.1.8
+
+## 0.4.9
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.1.5
+
+## 0.4.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.1.4
+-   @sap-ux/app-config-writer@0.1.7
+-   @sap-ux/mockserver-config-writer@0.1.8
+-   @sap-ux/project-access@1.11.2
+-   @sap-ux/cap-config-writer@0.1.14
+
+## 0.4.7
+
+### Patch Changes
+
+-   Updated dependencies [24e45780]
+    -   @sap-ux/app-config-writer@0.1.6
+    -   @sap-ux/adp-tooling@0.1.3
+
 ## 0.4.6
 
 ### Patch Changes

@@ -1,0 +1,105 @@
+// json5: https://json5.org/
+// json5 VS Code extension: https://marketplace.visualstudio.com/items?itemName=mrmlnc.vscode-json5
+// renovate configuration: https://docs.renovatebot.com/configuration-options/
+{
+    $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+
+    extends: [
+        'config:base',
+        ':automergeDisabled',
+        ':combinePatchMinorReleases',
+        ':enableVulnerabilityAlerts',
+        ':enableVulnerabilityAlertsWithLabel(security)',
+        ':label(renovate)',
+        ':rebaseStalePrs',
+        ':semanticCommits',
+        ':semanticPrefixChore',
+        ':timezone(America/Los_Angeles)',
+        ':updateNotScheduled',
+        'workarounds:typesNodeVersioning'
+    ],
+
+    enabledManagers: ['npm', 'github-actions'],
+    branchPrefix: 'chore/renovate/',
+    platformCommit: true,
+
+    major: {
+        dependencyDashboardApproval: true
+    },
+    dependencyDashboardAutoclose: true,
+    dependencyDashboardLabels: ['renovate-dashboard'],
+    dependencyDashboardTitle: 'Renovate Dependency Dashboard',
+
+    assigneesFromCodeOwners: true,
+
+    ignorePaths: ['**/templates/**', '**/test-input/**', '**/test-output/**', '**/test/fixtures/**', '**/test/test-data/**'],
+
+    packageRules: [
+        {
+            matchPackagePrefixes: ['react', 'react-dom', '@types/react', '@types/react-dom'],
+            groupName: 'dependencies [react]',
+            allowedVersions: '<17.0.0'
+        },
+        {
+            matchPackagePrefixes: ['@fluentui/'],
+            groupName: 'dependencies [fluentui]'
+        },
+        {
+            matchPackagePrefixes: ['@testing-library/', '@types/testing-library'],
+            groupName: 'dependencies [testing-library]',
+            matchDepTypes: ['devDependencies']
+        },
+        {
+            matchPackagePrefixes: ['eslint', '@typescript-eslint/', 'lint-staged'],
+            groupName: 'dev dependencies [eslint]',
+            matchDepTypes: ['devDependencies']
+        },
+        {
+            matchPackageNames: ['prettier', 'pretty-quick'],
+            groupName: 'dev dependencies [prettier]',
+            matchDepTypes: ['devDependencies']
+        },
+        {
+            matchPackagePrefixes: ['i18next'],
+            groupName: 'dependencies [i18next]'
+        },
+        {
+            matchPackagePrefixes: ['mem-fs', '@types/mem-fs'],
+            groupName: 'dependencies [mem-fs]'
+        },
+        {
+            matchPackagePrefixes: ['enzyme', '@types/enzyme'],
+            groupName: 'dev dependencies [enzyme]',
+            matchDepTypes: ['devDependencies']
+        },
+        {
+            matchPackagePrefixes: ['lodash', '@types/lodash'],
+            groupName: 'dependencies [lodash]'
+        },
+        {
+            matchPackagePrefixes: ['jest', 'ts-jest', '@​types/jest', 'babel-jest'],
+            groupName: 'dev dependencies [jest]',
+            matchDepTypes: ['devDependencies']
+        },
+        {
+            matchPackagePrefixes: ['nx', '@​nrwl/nx-cloud'],
+            groupName: 'dev dependencies [nx]',
+            matchDepTypes: ['devDependencies']
+        },
+        {
+            matchPackagePrefixes: [
+                'webpack',
+                'ts-loader',
+                'style-loader',
+                'sass-loader',
+                'sass',
+                'css-loader',
+                '@storybook/manager-webpack5',
+                '@storybook/builder-webpack5',
+                'storybook-addon-turbo-build'
+            ],
+            groupName: 'dev dependencies [webpack]',
+            matchDepTypes: ['devDependencies']
+        }
+    ]
+}

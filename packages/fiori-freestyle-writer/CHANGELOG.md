@@ -1,5 +1,28 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.19.16
+
+### Patch Changes
+
+-   29179b5f: Add SAP icon loading in flpsandbox.html
+-   Updated dependencies [29179b5f]
+    -   @sap-ux/ui5-application-writer@0.24.2
+
+## 0.19.15
+
+### Patch Changes
+
+-   Updated dependencies [375ca861]
+    -   @sap-ux/ui5-config@0.19.0
+    -   @sap-ux/odata-service-writer@0.14.27
+    -   @sap-ux/ui5-application-writer@0.24.1
+
+## 0.19.14
+
+### Patch Changes
+
+-   6d8e3f1c: Adding deprecation message for old templates
+
 ## 0.19.13
 
 ### Patch Changes
