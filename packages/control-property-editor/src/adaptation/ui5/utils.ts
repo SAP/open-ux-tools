@@ -1,0 +1,48 @@
+export interface PropertiesInfo {
+    defaultValue: string;
+    description: string;
+    propertyName: string;
+    type: string;
+    propertyType: string | undefined;
+}
+export interface Properties {
+    [key: string]: PropertiesInfo;
+}
+
+/**
+ * Get runtime control.
+ *
+ * @param overlayControl
+ * @returns {sap.ui.base.ManagedObject}
+ */
+export function getRuntimeControl(overlayControl: sap.ui.dt.ElementOverlay): sap.ui.base.ManagedObject {
+    let runtimeControl;
+    if (overlayControl.getElementInstance) {
+        runtimeControl = overlayControl.getElementInstance();
+    } else {
+        runtimeControl = overlayControl.getElement();
+    }
+    return runtimeControl;
+}
+
+/**
+ * Get library of a control name.
+ *
+ * @param controlName
+ * @returns {Promise<string>}
+ */
+export async function getLibrary(controlName: string): Promise<string> {
+    return new Promise((resolve) => {
+        const controlPath = controlName.replace(/\./g, '/');
+        sap.ui.require([controlPath], (control) => {
+            const contMetadata = control.getMetadata();
+            // getLibraryName method does not exist on events
+            if (contMetadata && contMetadata.getLibraryName) {
+                const contLibName = contMetadata.getLibraryName();
+                resolve(contLibName);
+            } else {
+                resolve(''); // return empty for events
+            }
+        });
+    });
+}

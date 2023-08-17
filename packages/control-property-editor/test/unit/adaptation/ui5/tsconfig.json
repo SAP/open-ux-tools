@@ -1,0 +1,12 @@
+{
+    "extends": "../../../../tsconfig-base.json",
+    "compilerOptions": {
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "incremental": true,
+        "outDir": "dist",
+        "lib": ["ES2021", "dom"],
+        "types": ["@sapui5/ts-types", "../../src/adaptation/ui5/rta.d.ts", "jest"]
+    }
+}

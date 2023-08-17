@@ -1,0 +1,60 @@
+import { startPostMessageCommunication } from '../../postMessage';
+import type { ExternalAction } from '../../api';
+import { iconsLoaded } from '../../api';
+
+import type { ActionHandler, Service, UI5AdaptationOptions } from './types';
+import { initOutline } from './outline';
+import { createUi5Facade } from './facade';
+import { SelectionService } from './selection';
+import { ChangeService } from './changes/service';
+import { loadDefaultLibraries } from './documentation';
+
+/**
+ * Main function, register handlers for events and messages.
+ *
+ * @param options - UI5 adaptation options
+ */
+export function init(options: UI5AdaptationOptions): void {
+    console.log(`Initializing Control Property Editor`);
+
+    const { rta } = options;
+    const ui5 = createUi5Facade();
+    const actionHandlers: ActionHandler[] = [];
+    /**
+     *
+     * @param handler
+     */
+    function subscribe(handler: ActionHandler): void {
+        actionHandlers.push(handler);
+    }
+
+    const selectionService = new SelectionService(rta, ui5);
+    const changesService = new ChangeService(options, ui5, selectionService);
+    const services: Service[] = [selectionService, changesService];
+    try {
+        loadDefaultLibraries();
+        const { sendAction } = startPostMessageCommunication<ExternalAction>(
+            window.parent,
+            async function onAction(action) {
+                for (const handler of actionHandlers) {
+                    try {
+                        await handler(action);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            }
+        );
+
+        for (const service of services) {
+            service.init(sendAction, subscribe);
+        }
+        initOutline(rta, sendAction).catch((error) => {
+            throw new Error(error);
+        });
+        const icons = ui5.getIcons();
+        sendAction(iconsLoaded(icons));
+    } catch (error) {
+        console.error(`Error during initialization of Control Property Editor`, error);
+    }
+}
