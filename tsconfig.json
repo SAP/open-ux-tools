@@ -105,6 +105,9 @@
       "path": "packages/yaml"
     },
     {
+      "path": "examples/fe-fpm-cli"
+    },
+    {
       "path": "examples/odata-cli"
     },
     {

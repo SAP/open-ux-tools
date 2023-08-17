@@ -1,11 +1,9 @@
-import { FileName, findFiles } from '@sap-ux/project-access';
-import { Editor } from 'mem-fs-editor';
-import { relative } from 'path';
-import type { PromptObject } from 'prompts';
+import type { Editor } from 'mem-fs-editor';
 import { translate, i18nNamespaces, initI18n } from '../../i18n';
 import type { BuildingBlockType, Chart, FilterBar } from '../types';
+import type { Answers, InputQuestion, ListQuestion, Question } from 'inquirer';
 
-export interface BuildingBlockTypePromptsAnswer {
+export interface BuildingBlockTypePromptsAnswer extends Answers {
     buildingBlockType: BuildingBlockType;
 }
 
@@ -14,23 +12,23 @@ export interface BuildingBlockTypePromptsAnswer {
  *
  * @returns {Promise<PromptObject<keyof BuildingBlockTypePromptsAnswer>[]>} the list of prompts
  */
-export async function getBuildingBlockTypePrompts(): Promise<PromptObject<keyof BuildingBlockTypePromptsAnswer>[]> {
+export async function getBuildingBlockTypePrompts(): Promise<Question<BuildingBlockTypePromptsAnswer>[]> {
     await initI18n();
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.super.');
     return [
         {
-            type: 'select',
+            type: 'list',
             name: 'buildingBlockType',
             message: t('buildingBlockType.message'),
             choices: [
-                { title: t('buildingBlockType.choices.chart'), value: 'chart' },
-                { title: t('buildingBlockType.choices.filterBar'), value: 'filter-bar' }
+                { name: t('buildingBlockType.choices.chart'), value: 'chart' },
+                { name: t('buildingBlockType.choices.filterBar'), value: 'filter-bar' }
             ]
-        }
+        } as ListQuestion
     ];
 }
 
-export interface ChartPromptsAnswer extends Chart {
+export interface ChartPromptsAnswer extends Chart, Answers {
     viewOrFragmentFile: string;
 }
 
@@ -39,12 +37,12 @@ export interface ChartPromptsAnswer extends Chart {
  *
  * @param {string} basePath the base path
  * @param {Editor} fs the memfs editor instance
- * @return {Promise<PromptObject<keyof ChartPromptsAnswer>[]>}
+ * @returns {Promise<PromptObject<keyof ChartPromptsAnswer>[]>}
  */
 export async function getChartBuildingBlockPrompts(
     basePath: string,
     fs: Editor
-): Promise<PromptObject<keyof ChartPromptsAnswer>[]> {
+): Promise<Question<ChartPromptsAnswer>[]> {
     await initI18n();
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
     return [
@@ -60,61 +58,61 @@ export async function getChartBuildingBlockPrompts(
         //     validate: (value: string) => (value ? true : t('viewOrFragmentFile.validation'))
         // } as any,
         {
-            type: 'text',
+            type: 'input',
             name: 'id',
             message: t('id.message'),
             validate: (value) => (value ? true : t('id.validation'))
-        },
+        } as InputQuestion,
         {
-            type: 'text',
+            type: 'input',
             name: 'contextPath',
             message: t('contextPath')
-        },
+        } as InputQuestion,
         {
-            type: 'text',
+            type: 'input',
             name: 'metaPath',
             message: t('metaPath')
-        },
+        } as InputQuestion,
         {
-            type: 'text',
+            type: 'input',
             name: 'filterBar',
             message: t('filterBar')
-        },
+        } as InputQuestion,
         {
-            type: 'multiselect',
+            type: 'list',
             name: 'personalization',
             message: t('personalization.message'),
             choices: [
-                { title: t('personalization.choices.type'), value: 'Type' },
-                { title: t('personalization.choices.item'), value: 'Item' },
-                { title: t('personalization.choices.sort'), value: 'Sort' }
+                { name: t('personalization.choices.type'), value: 'Type' },
+                { name: t('personalization.choices.item'), value: 'Item' },
+                { name: t('personalization.choices.sort'), value: 'Sort' }
             ]
-        },
+        } as ListQuestion,
         {
-            type: 'select',
+            type: 'list',
             name: 'selectionMode',
             message: t('selectionMode.message'),
             choices: [
-                { title: t('selectionMode.choices.single'), value: 'Single' },
-                { title: t('selectionMode.choices.multiple'), value: 'Multiple' }
+                { name: t('selectionMode.choices.single'), value: 'Single' },
+                { name: t('selectionMode.choices.multiple'), value: 'Multiple' }
             ]
-        },
+        } as ListQuestion,
         {
-            type: 'text',
+            type: 'input',
             name: 'selectionChange',
             message: t('selectionChange')
-        }
+        } as InputQuestion
     ];
 }
 
-export type FilterBarPromptsAnswer = FilterBar;
+export interface FilterBarPromptsAnswer extends FilterBar, Answers {}
 
 /**
  * Returns a list of prompts required to generate a filter bar building block.
  *
  * @returns {Promise<PromptObject<keyof FilterBarPromptsAnswer>[]>} the list of prompts
  */
-export async function getFilterBarBuildingBlockPrompts(): Promise<PromptObject<keyof FilterBarPromptsAnswer>[]> {
+export async function getFilterBarBuildingBlockPrompts(): Promise<Question<FilterBarPromptsAnswer>[]> {
     await initI18n();
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.filterBar.');
     return [
