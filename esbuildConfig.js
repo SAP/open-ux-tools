@@ -12,7 +12,7 @@ const resolveFixup = {
     setup(build) {
         build.onResolve({ filter: /react-virtualized/ }, async (args) => {
             return {
-                path: resolve(join(__dirname, './node_modules/react-virtualized/dist/umd/react-virtualized.js'))
+                path: resolve(join(__dirname, './packages/ui-components/node_modules/react-virtualized/dist/umd/react-virtualized.js'))
             };
         });
     }

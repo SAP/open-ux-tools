@@ -7,7 +7,10 @@
     "incremental": true,
     "outDir": "dist",
     "skipLibCheck": true,
-    "lib": ["ES2021", "dom"],
+    "lib": [
+      "ES2021",
+      "dom"
+    ],
     "strict": true,
     "strictNullChecks": true,
     "jsx": "react",
@@ -27,5 +30,9 @@
     "node_modules",
     "reports"
   ],
-  "references": []
+  "references": [
+    {
+      "path": "../ui-components"
+    }
+  ]
 }

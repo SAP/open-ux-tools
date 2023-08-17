@@ -42,6 +42,9 @@
       "path": "packages/cap-config-writer"
     },
     {
+      "path": "packages/control-property-editor"
+    },
+    {
       "path": "packages/create"
     },
     {

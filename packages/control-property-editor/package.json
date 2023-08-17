@@ -36,7 +36,7 @@
     "@fluentui/react": "8.100.0",
     "@fluentui/react-hooks": "8.6.14",
     "@reduxjs/toolkit": "1.6.1",
-    "@sap-ux/ui-components": "1.8.0",
+    "@sap-ux/ui-components": "1.9.0",
     "@sapui5/ts-types": "1.90.6",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "12.1.4",
@@ -78,8 +78,8 @@
     "esbuild-plugin-alias": "0.2.1",
     "esbuild-sass-plugin": "2.3.1",
     "@esbuild-plugins/node-modules-polyfill": "0.1.4",
-    "react-virtualized": "9.22.3",
-    "jest-junit": "15.0.0"
+    "jest-junit": "15.0.0",
+    "@sap-ux/types": "1.0.4"
   },
   "jestSonar": {
     "reportPath": "reports/test/unit",
