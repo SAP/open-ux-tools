@@ -1,10 +1,11 @@
-{
-    "extends": ["../../.eslintrc", "plugin:react/recommended"],
-    "parserOptions": {
-        "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true,
-        "project": "./tsconfig.eslint.json"
+module.exports = {
+    extends: ["../../.eslintrc", "plugin:react/recommended"],
+    parserOptions: { 
+        EXPERIMENTAL_useSourceOfProjectReferenceRedirect: true,
+        project: './tsconfig.eslint.json', 
+        tsconfigRootDir: __dirname 
     },
-    "overrides": [
+    overrides: [
         {
             "parser": "@typescript-eslint/parser",
             "files": ["./test/**/*.tsx"],
@@ -23,15 +24,15 @@
             }
         }
     ],
-    "rules": {
+    rules: {
         "react/no-unknown-property": ["error", { "ignore": ["onFocusCapture"] }],
         "jsdoc/require-param-description": "off",
         "jsdoc/require-returns-description": "off",
         "jsdoc/no-undefined-types": "off"
     },
-    "settings": {
+    settings: {
         "react": {
             "version": "detect"
         }
     }
-}
+};
