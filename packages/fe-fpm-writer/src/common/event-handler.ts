@@ -7,15 +7,15 @@ import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../common/ut
 /**
  * Interface to describe event handler configuration options used during creation.
  */
-interface EventHandlerConfigurationOptions  {
+interface EventHandlerConfigurationOptions {
     // append controller suffix to new file, default value is "false"
-    controllerSuffix?: boolean,
+    controllerSuffix?: boolean;
     // whether create Typescript file instead of Javascript
-    typescript?: boolean,
+    typescript?: boolean;
     // path to the template without the extension, default value is "common/EventHandler"
     templatePath?: string;
     // event handler function name - 'onPress' is default, default value is "onPress"
-    eventHandlerFnName?: string
+    eventHandlerFnName?: string;
 }
 
 /**
