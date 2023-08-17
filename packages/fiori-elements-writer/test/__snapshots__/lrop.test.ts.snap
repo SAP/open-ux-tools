@@ -17696,6 +17696,7 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"lropV2_ts/*\\": [
@@ -21190,6 +21191,7 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"lropV2_ts_ui5_1_108/*\\": [
@@ -24673,6 +24675,7 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"lropV2_ts_ui5_1_111/*\\": [
@@ -28156,6 +28159,7 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"lropV2_ts_ui5_1_113/*\\": [

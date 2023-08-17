@@ -1734,6 +1734,7 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"feovp1/*\\": [
@@ -9167,6 +9168,7 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"feovp2/*\\": [
