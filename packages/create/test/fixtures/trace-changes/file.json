@@ -1,0 +1,7 @@
+{
+    "rootProp": "property on root",
+    "object": {
+        "array": ["one", "two", "three"],
+        "nestedProp": "Nested property value"
+    }
+}

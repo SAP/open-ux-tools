@@ -1,11 +1,22 @@
 {
-    "include": ["src", "test"],
+    "extends": "../../tsconfig.json",
+    "include": [
+        "src",
+        "src/**/*.json"
+    ],
     "compilerOptions": {
-        "declaration": true,
-        "outDir": "dist",
-        "sourceMap": true,
-        "baseUrl": "./src",
-        "resolveJsonModule": true
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    "extends": "../../tsconfig.json"
+    "references": [
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../ui5-config"
+        }
+    ]
 }

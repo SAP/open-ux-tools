@@ -283,7 +283,7 @@ describe('UI5Config', () => {
     describe('addAbapDeployTask', () => {
         const app: AbapApp = {
             name: '~name',
-            desription: '~description',
+            description: '~description',
             'package': '~package',
             transport: '~transport'
         };

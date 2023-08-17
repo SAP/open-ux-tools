@@ -8,8 +8,9 @@ import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults
 import type { Manifest } from '../common/types';
 import { validateVersion, validateBasePath } from '../common/validate';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
+import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
-import { coerce } from 'semver';
+import { coerce, gte } from 'semver';
 
 /**
  * Get the template folder for the given UI5 version.
@@ -19,9 +20,9 @@ import { coerce } from 'semver';
  */
 export function getManifestRoot(ui5Version?: string): string {
     const minVersion = coerce(ui5Version);
-    if (!minVersion || minVersion.minor >= 86) {
+    if (!minVersion || gte(minVersion, '1.86.0')) {
         return getTemplatePath('/column/1.86');
-    } else if (minVersion.minor >= 85) {
+    } else if (gte(minVersion, '1.85.0')) {
         return getTemplatePath('/column/1.85');
     } else {
         return getTemplatePath('column/1.84');
@@ -86,7 +87,11 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(customColumn.minUI5Version);
     const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeColumn, {});
-    fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
+    extendJSON(fs, {
+        filepath: manifestPath,
+        content: filledTemplate,
+        tabInfo: customColumn.tabInfo
+    });
 
     // add fragment
     const viewPath = join(completeColumn.path, `${completeColumn.name}.fragment.xml`);

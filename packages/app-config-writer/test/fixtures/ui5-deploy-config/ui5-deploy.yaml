@@ -1,0 +1,22 @@
+specVersion: '2.4'
+metadata:
+    name: 'ui5-deploy-config'
+type: application
+builder:
+    resources:
+        excludes:
+            - /test/**
+            - /localService/**
+    customTasks:
+        - name: deploy-to-abap
+          afterTask: generateCachebusterInfo
+          configuration:
+              target:
+                  destination: ABC123
+                  url: https://abc.example
+                  client: 100
+                  # scp: true - not supported
+              app:
+                  name: TEST
+                  package: $tmp
+                  transport: ''

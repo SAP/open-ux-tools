@@ -9,16 +9,16 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Ayaml"
     },
-    "version": "0.13.0",
+    "version": "0.13.7",
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc -p tsconfig-build.json",
-        "clean": "rimraf dist test/test-output coverage",
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "watch": "tsc --watch",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -30,7 +30,7 @@
     ],
     "dependencies": {
         "lodash": "4.17.21",
-        "yaml": "2.0.0-10"
+        "yaml": "2.2.2"
     },
     "devDependencies": {
         "@types/i18next-fs-backend": "1.0.0",

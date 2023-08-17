@@ -1,5 +1,214 @@
 # @sap-ux/ui5-application-writer
 
+## 0.24.1
+
+### Patch Changes
+
+-   Updated dependencies [375ca861]
+    -   @sap-ux/ui5-config@0.19.0
+
+## 0.24.0
+
+### Minor Changes
+
+-   eba8741e: Use @sapui5/types with UI5 1.113 and newer
+
+## 0.23.5
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-config@0.18.2
+
+## 0.23.4
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+-   Updated dependencies [d9355692]
+    -   @sap-ux/ui5-config@0.18.1
+
+## 0.23.3
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+
+## 0.23.2
+
+### Patch Changes
+
+-   743a5dc7: Chore - bump version of @sap-ux/eslint-plugin-fiori-tools used in templates
+
+## 0.23.1
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/ui5-config@0.17.1
+
+## 0.23.0
+
+### Minor Changes
+
+-   31207b95: abstract ui5-app-writer functions into appropriate modules
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-config@0.17.0
+
+## 0.22.3
+
+### Patch Changes
+
+-   906b7fea: Fix: incorrect settings for ui5-middleware-transpile
+
+## 0.22.2
+
+### Patch Changes
+
+-   495a22cb: Use @sap-ux/eslint-plugin-fiori-tools for JS projects with eslint option
+
+## 0.22.1
+
+### Patch Changes
+
+-   91e95ef8: BUG - Generated Controller Extensions do not always work with TS
+
+## 0.22.0
+
+### Minor Changes
+
+-   7ac0cb40: Add new module containing an eslint plugin with reusable eslint configs
+
+## 0.21.1
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/ui5-config@0.16.6
+
+## 0.21.0
+
+### Minor Changes
+
+-   e39c14d7: Add configuration option generateIndex to toggle the generation of index.html
+
+## 0.20.0
+
+### Minor Changes
+
+-   f3ec7324: Update eslint fiori custom package and rules
+
+## 0.19.2
+
+### Patch Changes
+
+-   c06de66b: TBI - refactor locate-reuse-lib.js template to use modern API's and fix lint issues
+
+## 0.19.1
+
+### Patch Changes
+
+-   8f167e8a: TBI - Fiori Elements V2 type support
+
+## 0.19.0
+
+### Minor Changes
+
+-   7df492ae: move locate-reuse-libs.js to webapp/test, update references and remove reference from index.html
+
+## 0.18.10
+
+### Patch Changes
+
+-   Updated dependencies [e7614e5]
+    -   @sap-ux/ui5-config@0.16.5
+
+## 0.18.9
+
+### Patch Changes
+
+-   35d1e15: tbi: Support @ui5/cli v3 in the generated projects
+
+## 0.18.8
+
+### Patch Changes
+
+-   81e3f25: chore - TS writers update `"ui5-tooling-transpile": "^0.3.7"`
+    `"addControllerStaticPropsToExtend": true` is added to typescript app's `.babelrc.json` to support controller extension class syntax
+
+## 0.18.7
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/ui5-config@0.16.4
+
+## 0.18.6
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+
+## 0.18.5
+
+### Patch Changes
+
+-   76603f8: Align FF ListDetail temple between JS and TS and add test utils
+
+## 0.18.4
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/ui5-config@0.16.2
+
+## 0.18.3
+
+### Patch Changes
+
+-   aab6b0d: tbi - hide transpile warnings for /Component-preload.js
+
+## 0.18.2
+
+### Patch Changes
+
+-   eaf7214: TBI - refactor pre scripts for start and build for typescript projects
+
+## 0.18.1
+
+### Patch Changes
+
+-   ac7f8f3: chore - TS writers udpate "ui5-tooling-transpile": "^0.2.1",
+
+## 0.18.0
+
+### Minor Changes
+
+-   b3945f3: consume version mapping from @ui5/manifest
+
+## 0.17.14
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/ui5-config@0.16.1
+
+## 0.17.13
+
+### Patch Changes
+
+-   fdfa554: Disable codeAssist when Typescript is also selected. Since Typescript includes it's own code assist config.
+
 ## 0.17.12
 
 ### Patch Changes

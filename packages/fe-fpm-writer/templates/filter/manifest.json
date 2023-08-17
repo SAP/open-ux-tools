@@ -1,0 +1,12 @@
+{
+    "<%- name %>": {
+        "label": "<%- label %>",
+        "property": "<%- property %>",
+        "template": "<%- `${ns}.${fragmentFile}` %>",
+        "required": <%- required -%><%if (typeof position !== 'undefined') {%>,
+        "position": {
+            "placement": "<%- position.placement %>"<%if (position.anchor !== undefined) {%>,
+            "anchor": "<%- position.anchor %>"<% } %>
+        }<% } %>
+    }
+}

@@ -47,6 +47,7 @@ export interface UI5 {
     version: string;
     localVersion: string;
     typesVersion: string;
+    typesPackage: string;
     descriptorVersion: string;
     ui5Libs: string | string[];
     ui5Theme: string;
@@ -65,6 +66,7 @@ export interface AppOptions {
 
     /**
      * Enable Typescript support and generate all files in Typescript instead of Javascript
+     * Enabling Typescript will disable JavaScript codeAssist if also enabled. Typescript code assist will be used instead
      */
     typescript: boolean;
 
@@ -72,6 +74,11 @@ export interface AppOptions {
      * Enable support for importing functionality from npm packages in UI5 applications
      */
     npmPackageConsumption: boolean;
+
+    /**
+     * Excludes the index.html from the template and does not add the `start-noflp` script in package.json
+     */
+    generateIndex?: boolean;
 }
 
 export interface Ui5App {

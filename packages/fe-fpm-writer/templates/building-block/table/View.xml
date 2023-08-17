@@ -1,0 +1,19 @@
+<<%- macrosNamespace %>:Table
+    id="<%- data.id %>"<% if (data.metaPath) { %>
+    metaPath="<%- data.metaPath %>"<% } %><% if (data.contextPath) { %>
+    contextPath="<%- data.contextPath %>"<% } %><% if (data.busy) { %>
+    busy="<%- data.busy %>"<% } %><% if (data.enableAutoColumnWidth) { %>
+    enableAutoColumnWidth="<%- data.enableAutoColumnWidth %>"<% } %><% if (data.enableExport) { %>
+    enableExport="<%- data.enableExport %>"<% } %><% if (data.enableFullScreen) { %>
+    enableFullScreen="<%- data.enableFullScreen %>"<% } %><% if (data.enablePaste) { %>
+    enablePaste="<%- data.enablePaste %>"<% } %><% if (data.filterBar) { %>
+    filterBar="<%- data.filterBar %>"<% } %><% if (data.header) { %>
+    header="<%- data.header %>"<% } %><% if (data.headerVisible) { %>
+    headerVisible="<%- data.headerVisible %>"<% } %><% if (data.isSearchable) { %>
+    isSearchable="<%- data.isSearchable %>"<% } %><% if (data.personalization) { %>
+    personalization="<%- data.personalization %>"<% } %><% if (data.readOnly) { %>
+    readOnly="<%- data.readOnly %>"<% } %><% if (data.selectionMode) { %>
+    selectionMode="<%- data.selectionMode %>"<% } %><% if (data.type) { %>
+    type="<%- data.type %>"<% } %><% if (data.variantManagement) { %>
+    variantManagement="<%- data.variantManagement %>"<% } %>
+/>

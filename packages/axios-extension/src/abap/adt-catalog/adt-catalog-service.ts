@@ -2,7 +2,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { AdtCategory, AdtCollection, AdtSchemaData } from 'abap/types';
 import { Axios } from 'axios';
 import { AdtSchemaStore } from './adt-schema-store';
-import XmlParser from 'fast-xml-parser';
+import { XMLParser, XMLValidator } from 'fast-xml-parser';
 
 /**
  * Adt Catalog Service implementation fetches the
@@ -80,17 +80,18 @@ export class AdtCatalogService extends Axios {
      * @returns Discovery schema data object
      */
     private parseAdtSchemaData(xml: string): AdtSchemaData | null {
-        if (XmlParser.validate(xml) !== true) {
+        if (XMLValidator.validate(xml) !== true) {
             return null;
         }
         const options = {
             attributeNamePrefix: '',
             ignoreAttributes: false,
             ignoreNameSpace: true,
-            parseAttributeValue: true
+            parseAttributeValue: true,
+            removeNSPrefix: true
         };
-        const obj = XmlParser.getTraversalObj(xml, options);
-        const parsed = XmlParser.convertToJson(obj, options);
+        const parser: XMLParser = new XMLParser(options);
+        const parsed = parser.parse(xml, true);
 
         if (parsed.service) {
             return parsed;

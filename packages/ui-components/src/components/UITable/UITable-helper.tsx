@@ -2,7 +2,6 @@ import React from 'react';
 import type { IDetailsHeaderProps, IRenderFunction, IDetailsListStyles, IDetailsList } from '@fluentui/react';
 import { Sticky } from '@fluentui/react';
 import { UIIcon } from '..';
-import type { ComboBoxRef } from '../UIComboBox';
 import type { UIColumn, EditedCell, UITableProps, UITableState } from '.';
 
 /**
@@ -156,15 +155,14 @@ export async function waitFor(selector: string) {
     return new Promise((resolve) => {
         if (el) {
             resolve(el);
-            return;
+        } else {
+            setTimeout(async () => {
+                const el2 = await waitFor(selector);
+                if (el2) {
+                    resolve(el2);
+                }
+            }, 100);
         }
-        setTimeout(async () => {
-            const el2 = await waitFor(selector);
-            if (el2) {
-                resolve(el2);
-                return;
-            }
-        }, 100);
     });
 }
 
@@ -276,8 +274,6 @@ export function hideFocus(): void {
  * @param ref
  * @returns {HTMLInputElement | undefined }
  */
-export function getComboBoxInput(ref?: React.RefObject<ComboBoxRef>): HTMLInputElement | undefined {
-    const anyCombo = ref?.current as any;
-    const anyComboDiv = anyCombo?.root.current;
-    return anyComboDiv?.querySelector('input') as HTMLInputElement;
+export function getComboBoxInput(ref?: React.RefObject<HTMLDivElement>): HTMLInputElement | undefined {
+    return ref?.current?.querySelector('input') as HTMLInputElement;
 }

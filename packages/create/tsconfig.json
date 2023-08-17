@@ -1,0 +1,31 @@
+{
+    "extends": "../../tsconfig.json",
+    "include": [
+        "../../types/mem-fs-editor.d.ts",
+        "src"
+    ],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
+    },
+    "references": [
+        {
+            "path": "../adp-tooling"
+        },
+        {
+            "path": "../app-config-writer"
+        },
+        {
+            "path": "../cap-config-writer"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../mockserver-config-writer"
+        },
+        {
+            "path": "../project-access"
+        }
+    ]
+}

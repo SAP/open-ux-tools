@@ -16,17 +16,23 @@ interface RowDataCellsProps<T> {
  * @param {UIFlexibleTableProps<T>} tableProps
  * @param {React.ReactNode} title
  * @param {boolean} inRowLayout
+ * @param {string} tooltip
  * @returns {React.ReactNode}
  */
 function getCellTitleElement<T>(
     tableProps: UIFlexibleTableProps<T>,
     title: React.ReactNode,
-    inRowLayout: boolean
+    inRowLayout: boolean,
+    tooltip?: string
 ): React.ReactNode {
     const wrappingLayout = tableProps.layout === UIFlexibleTableLayout.Wrapping;
     const isFlexContent = wrappingLayout || !inRowLayout || tableProps.showColumnTitlesInCells;
     if (tableProps.showColumnTitles && isFlexContent) {
-        return <div className="flexible-table-content-table-row-item-title">{title}</div>;
+        return (
+            <div className="flexible-table-content-table-row-item-title" title={tooltip}>
+                {title}
+            </div>
+        );
     } else {
         return <></>;
     }
@@ -43,12 +49,13 @@ function getRowDataCells<T>(props: RowDataCellsProps<T>): Array<React.ReactNode>
     const result: Array<React.ReactNode> = [];
 
     for (let i = 0; i < tableProps.columns.length; i++) {
-        if (tableProps.columns[i].hidden) {
+        const column = tableProps.columns[i];
+        if (column.hidden) {
             continue;
         }
 
-        const colKey = tableProps.columns[i].key;
-        const { content, isSpan, cellClassNames, title } = tableProps.onRenderCell({
+        const colKey = column.key;
+        const { content, isSpan, cellClassNames, title, tooltip } = tableProps.onRenderCell({
             cells: row.cells,
             colIndex: i,
             colKey,
@@ -62,12 +69,12 @@ function getRowDataCells<T>(props: RowDataCellsProps<T>): Array<React.ReactNode>
         if (tableProps.layout === UIFlexibleTableLayout.InlineFlex || content) {
             const classNameStr: string = composeClassNames('flexible-table-content-table-row-item-data-cells-wrapper', [
                 cellClassNames,
-                tableProps.columns[i].className
+                column.className
             ]);
             const cellId = `cell-${colKey}`;
             result.push(
                 <div key={isSpan ? `cell-unknown` : `cell-${colKey}-${i}`} className={classNameStr} id={cellId}>
-                    {getCellTitleElement(tableProps, title || tableProps.columns[i].title, isInRowLayout)}
+                    {getCellTitleElement(tableProps, title || column.title, isInRowLayout, tooltip || column.tooltip)}
                     <div className="flexible-table-content-table-row-item-data-cells-value">{content}</div>
                 </div>
             );

@@ -8,6 +8,8 @@ import type { CustomSection } from '../../src/section/types';
 import type { EventHandlerConfiguration, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import * as manifest from './sample/section/webapp/manifest.json';
+import { detectTabSpacing } from '../../src/common/file';
+import { tabSizingTestCases } from '../common';
 
 const testDir = join(__dirname, 'sample/section');
 
@@ -23,11 +25,11 @@ describe('CustomSection', () => {
             { version: '1.86', expected: join(root, 'section', '1.86') }
         ];
         test.each(testInput)('get root path of template', ({ version, expected }) => {
-            expect(getManifestRoot(version)).toEqual(expected);
+            expect(getManifestRoot('section', version)).toEqual(expected);
         });
         test('invalid version', () => {
             try {
-                getManifestRoot('1.8');
+                getManifestRoot('section', '1.8');
                 expect(true).toBeFalsy();
             } catch (error) {
                 expect(error).toBeDefined();
@@ -337,7 +339,9 @@ describe('CustomSection', () => {
                         }
                     };
                     // Generate handler with single method - content should be updated during generating of custom section
-                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
+                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, {
+                        eventHandlerFnName: 'onPress'
+                    });
 
                     generateCustomSectionWithEventHandler(id, extension, folder);
                     const xmlPath = join(testDir, 'webapp', folder, `${id}.fragment.xml`);
@@ -346,6 +350,92 @@ describe('CustomSection', () => {
                     expect(fs.read(existingPath)).toMatchSnapshot();
                 }
             );
+        });
+
+        describe('Test property custom "tabSizing"', () => {
+            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+                generateCustomSection(
+                    testDir,
+                    {
+                        ...customSection,
+                        tabInfo
+                    },
+                    fs
+                );
+                let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                let result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+                // Generate another section and check if new tab sizing recalculated correctly without passing tab size info
+                generateCustomSection(
+                    testDir,
+                    {
+                        ...customSection,
+                        name: 'second'
+                    },
+                    fs
+                );
+                updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+            });
+        });
+
+        const positionTests = [
+            {
+                name: 'Create with anchor - latest ui5',
+                position: {
+                    placement: Placement.Before,
+                    anchor: 'Dummy'
+                }
+            },
+            {
+                name: 'Create without anchor - latest ui5',
+                position: {
+                    placement: Placement.Before
+                }
+            },
+            {
+                name: 'Create without position - latest ui5',
+                position: undefined
+            },
+            {
+                name: 'Create with anchor - 1.85 ui5',
+                position: {
+                    placement: Placement.Before,
+                    anchor: 'Dummy'
+                },
+                minUI5Version: '1.85.1'
+            },
+            {
+                name: 'Create without anchor - 1.85 ui5',
+                position: {
+                    placement: Placement.Before
+                },
+                minUI5Version: '1.85.1'
+            },
+            {
+                name: 'Create without position - 1.85 ui5',
+                position: undefined,
+                minUI5Version: '1.85.1'
+            }
+        ];
+        positionTests.forEach((testCase) => {
+            test(`Test 'position' property. ${testCase.name}`, () => {
+                generateCustomSection(
+                    testDir,
+                    {
+                        ...customSection,
+                        position: testCase.position,
+                        minUI5Version: testCase.minUI5Version
+                    },
+                    fs
+                );
+                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+                const section = (
+                    manifest?.['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+                )?.['settings']?.['content']?.['body']?.['sections']?.['NewCustomSection'];
+                expect(section).toMatchSnapshot();
+            });
         });
     });
 });

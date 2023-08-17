@@ -46,6 +46,7 @@ describe('ODataService templates', () => {
      * Helper function to create app directories for testing in mem-fs.
      *
      * @param name testDir name
+     * @returns testDir Path
      */
     async function createTestDir(name: string): Promise<string> {
         const testDir = join(outputDir, name);
@@ -67,7 +68,7 @@ describe('ODataService templates', () => {
     it('generate: valid project with standard valid input', async () => {
         const testDir = await createTestDir('odata-service-v2');
         await generate(testDir, validServiceConfig as OdataService, fs);
-        expect((fs as any).dump(testDir)).toMatchSnapshot();
+        expect(fs.dump(testDir)).toMatchSnapshot();
     });
 
     it('generate: project with local annotations', async () => {
@@ -84,6 +85,6 @@ describe('ODataService templates', () => {
 
         const testDir = await createTestDir('local-annotations');
         await generate(testDir, serviceConfigWithAnnotations, fs);
-        expect((fs as any).dump(testDir)).toMatchSnapshot();
+        expect(fs.dump(testDir)).toMatchSnapshot();
     });
 });

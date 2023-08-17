@@ -1,5 +1,6 @@
 $valid-drop-color: var(--vscode-notebookStatusSuccessIcon-foreground, var(--vscode-successBackground, #84c881));
 $invalid-drop-color: var(--vscode-notificationsWarningIcon-foreground, var(--vscode-warningBackground, #cca700));
+$warning-highlight-color: var(--vscode-notificationsWarningIcon-foreground, var(--vscode-warningBackground, #cca700));
 $readonly-labels-opacity: 0.4;
 
 .flexible-table {
@@ -37,6 +38,7 @@ $readonly-labels-opacity: 0.4;
     .ui-loader-blocker {
         margin: 0;
     }
+    
     &-content {
         display: flex;
         margin-top: 10px;
@@ -53,6 +55,9 @@ $readonly-labels-opacity: 0.4;
             .flexible-table-content-table-title-row {
                 border: 1px solid var(--vscode-editorWidget-border);
             }
+            margin-top: 0px;
+        }
+        &.empty-table-header {
             margin-top: 0px;
         }
 
@@ -219,6 +224,7 @@ $readonly-labels-opacity: 0.4;
                         border-top: 0;
                     }
                 }
+                
 
                 &-item {
                     &-title {
@@ -318,7 +324,21 @@ $readonly-labels-opacity: 0.4;
                 }
             }
         }
+
+        &-table.dragged {
+            .flexible-table-content-table-row.highlight-drop-warning {
+                .flexible-table-content-table-row-wrapper::before {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    box-sizing: border-box;
+                    content: " ";
+                    border: 1px solid $warning-highlight-color;
+                }
+            }
+        }
     }
+    
 }
 
 $wrapping-table-space-between-scrollbar-and-border: 5px;

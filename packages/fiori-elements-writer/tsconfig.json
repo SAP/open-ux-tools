@@ -1,12 +1,32 @@
 {
-    "include": ["src"],
-    "exclude": ["dist", "templates", "coverage"],
+    "extends": "../../tsconfig.json",
+    "include": [
+        "../../types/mem-fs-editor.d.ts",
+        "src",
+        "src/**/*.json"
+    ],
     "compilerOptions": {
-        "declaration": true,
-        "outDir": "dist",
-        "sourceMap": true,
-        "baseUrl": "./src",
-        "resolveJsonModule": true
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    "extends": "../../tsconfig.json"
+    "references": [
+        {
+            "path": "../eslint-plugin-fiori-tools"
+        },
+        {
+            "path": "../fe-fpm-writer"
+        },
+        {
+            "path": "../odata-service-writer"
+        },
+        {
+            "path": "../ui5-application-writer"
+        },
+        {
+            "path": "../ui5-config"
+        },
+        {
+            "path": "../ui5-test-writer"
+        }
+    ]
 }

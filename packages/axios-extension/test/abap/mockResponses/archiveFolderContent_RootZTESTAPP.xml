@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<atom:feed xmlns:atom="http://www.w3.org/2005/Atom" xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+   <atom:author />
+   <atom:id>ZTESTAPP</atom:id>
+   <atom:link href="./ZTESTAPP/content" rel="self" type="application/atom+xml;type=feed" />
+   <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+   <atom:title>ZTESTAPP</atom:title>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="file" />
+      <atom:content xmlns:afr="http://www.sap.com/adt/afr" afr:etag="20230112203908" type="application/octet-stream" src="./ZTESTAPP%2fComponent-dbg.js/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2fComponent-dbg.js</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2fComponent-dbg.js" rel="self" type="application/atom+xml;type=entry" />
+      <atom:link href="https://testdomain/sap/bc/ui5_ui5/sap/ZTESTAPP/component-dbg.js?sap-client=100&amp;sap-ui-language=EN&amp;sap-ui-xx-devmode=true" rel="execute" type="application/http" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/Component-dbg.js</atom:title>
+   </atom:entry>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="file" />
+      <atom:content xmlns:afr="http://www.sap.com/adt/afr" afr:etag="20230112203909" type="application/octet-stream" src="./ZTESTAPP%2fComponent-preload.js/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2fComponent-preload.js</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2fComponent-preload.js" rel="self" type="application/atom+xml;type=entry" />
+      <atom:link href="https://testdomain/sap/bc/ui5_ui5/sap/ZTESTAPP/component-preload.js?sap-client=100&amp;sap-ui-language=EN&amp;sap-ui-xx-devmode=true" rel="execute" type="application/http" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/Component-preload.js</atom:title>
+   </atom:entry>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="file" />
+      <atom:content xmlns:afr="http://www.sap.com/adt/afr" afr:etag="20230112203909" type="application/octet-stream" src="./ZTESTAPP%2fComponent.js/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2fComponent.js</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2fComponent.js" rel="self" type="application/atom+xml;type=entry" />
+      <atom:link href="https://testdomain/sap/bc/ui5_ui5/sap/ZTESTAPP/component.js?sap-client=100&amp;sap-ui-language=EN&amp;sap-ui-xx-devmode=true" rel="execute" type="application/http" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/Component.js</atom:title>
+   </atom:entry>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="folder" />
+      <atom:content type="application/atom+xml;type=feed" src="./ZTESTAPP%2fcontroller/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2fcontroller</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2fcontroller" rel="self" type="application/atom+xml;type=entry" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/controller</atom:title>
+   </atom:entry>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="folder" />
+      <atom:content type="application/atom+xml;type=feed" src="./ZTESTAPP%2fi18n/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2fi18n</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2fi18n" rel="self" type="application/atom+xml;type=entry" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/i18n</atom:title>
+   </atom:entry>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="file" />
+      <atom:content xmlns:afr="http://www.sap.com/adt/afr" afr:etag="20230112203911" type="application/octet-stream" src="./ZTESTAPP%2findex.html/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2findex.html</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2findex.html" rel="self" type="application/atom+xml;type=entry" />
+      <atom:link href="https://testdomain/sap/bc/ui5_ui5/sap/ZTESTAPP/index.html?sap-client=100&amp;sap-ui-language=EN&amp;sap-ui-xx-devmode=true" rel="execute" type="application/http" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/index.html</atom:title>
+   </atom:entry>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="folder" />
+      <atom:content type="application/atom+xml;type=feed" src="./ZTESTAPP%2flocalService/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2flocalService</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2flocalService" rel="self" type="application/atom+xml;type=entry" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/localService</atom:title>
+   </atom:entry>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="file" />
+      <atom:content xmlns:afr="http://www.sap.com/adt/afr" afr:etag="20230112203912" type="application/octet-stream" src="./ZTESTAPP%2fmanifest.json/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2fmanifest.json</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2fmanifest.json" rel="self" type="application/atom+xml;type=entry" />
+      <atom:link href="https://testdomain/sap/bc/ui5_ui5/sap/ZTESTAPP/manifest.json?sap-client=100&amp;sap-ui-language=EN&amp;sap-ui-xx-devmode=true" rel="execute" type="application/http" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/manifest.json</atom:title>
+   </atom:entry>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="folder" />
+      <atom:content type="application/atom+xml;type=feed" src="./ZTESTAPP%2fmodel/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2fmodel</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2fmodel" rel="self" type="application/atom+xml;type=entry" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/model</atom:title>
+   </atom:entry>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="folder" />
+      <atom:content type="application/atom+xml;type=feed" src="./ZTESTAPP%2fresources/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2fresources</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2fresources" rel="self" type="application/atom+xml;type=entry" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/resources</atom:title>
+   </atom:entry>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="folder" />
+      <atom:content type="application/atom+xml;type=feed" src="./ZTESTAPP%2ftest/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2ftest</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2ftest" rel="self" type="application/atom+xml;type=entry" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/test</atom:title>
+   </atom:entry>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="folder" />
+      <atom:content type="application/atom+xml;type=feed" src="./ZTESTAPP%2futils/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2futils</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2futils" rel="self" type="application/atom+xml;type=entry" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/utils</atom:title>
+   </atom:entry>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="folder" />
+      <atom:content type="application/atom+xml;type=feed" src="./ZTESTAPP%2fview/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2fview</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2fview" rel="self" type="application/atom+xml;type=entry" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/view</atom:title>
+   </atom:entry>
+</atom:feed>

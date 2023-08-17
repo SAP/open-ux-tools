@@ -1,5 +1,5 @@
 import { URLHelper } from "sap/m/library";<%if (template.settings.lineItem.name) {%>
-import Table from "sap/m/Table";<%}%>;
+import Table from "sap/m/Table";<%}%>
 import Event from "sap/ui/base/Event";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import ListBinding from "sap/ui/model/ListBinding";
@@ -119,17 +119,19 @@ export default class Detail extends BaseController {
             return;
         }
 
-        const path = elementBinding.getPath();
-        const resourceBundle = this.getResourceBundle();
-        const detailObject = this.getModel().getObject(path);
-        const viewModel = this.getModel<JSONModel>("detailView");
+        if (elementBinding) {
+            const path = elementBinding.getPath();
+            const resourceBundle = this.getResourceBundle();
+            const detailObject = this.getModel().getObject(path);
+            const viewModel = this.getModel<JSONModel>("detailView");
 
-        this.getUIComponent().listSelector.selectAListItem(path);
+            this.getUIComponent().listSelector.selectAListItem(path);
 
-        viewModel.setProperty("/shareSendEmailSubject",
-            resourceBundle.getText("shareSendEmailObjectSubject", [detailObject.<%=template.settings.entity.key%>]));
-        viewModel.setProperty("/shareSendEmailMessage",
-            resourceBundle.getText("shareSendEmailObjectMessage", [detailObject.<%=template.settings.entity.idProperty%>, detailObject.<%=template.settings.entity.key%>, location.href]));
+            viewModel.setProperty("/shareSendEmailSubject",
+                resourceBundle.getText("shareSendEmailObjectSubject", [detailObject.<%=template.settings.entity.key%>]));
+            viewModel.setProperty("/shareSendEmailMessage",
+                resourceBundle.getText("shareSendEmailObjectMessage", [detailObject.<%=template.settings.entity.idProperty%>, detailObject.<%=template.settings.entity.key%>, location.href]));
+        }    
     }
 
     protected onMetadataLoaded() {
@@ -137,7 +139,7 @@ export default class Detail extends BaseController {
         const originalViewBusyDelay = this.getView()!.getBusyIndicatorDelay();
         const viewModel = this.getModel<JSONModel>("detailView");<%if (template.settings.lineItem.name) {%>
         const lineItemTable = this.byId("lineItemsList") as Table;
-        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();<%}%>;
+        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();<%}%>
 
         // Make sure busy indicator is displayed immediately when
         // detail view is displayed for the first time

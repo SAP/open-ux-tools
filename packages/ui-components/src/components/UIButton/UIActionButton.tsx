@@ -62,21 +62,13 @@ export class UIActionButton extends React.Component<IButtonProps, {}> {
                 backgroundColor: 'transparent',
 
                 selectors: {
-                    color: 'var(--vscode-foreground)',
-                    'svg > path, svg > rect': {
-                        fill: 'var(--vscode-foreground)'
-                    }
+                    color: 'var(--vscode-foreground)'
                 }
             },
             icon: {
                 height: 16,
                 lineHeight: 16,
                 marginLeft: -3,
-                selectors: {
-                    'svg > path, svg > rect': {
-                        fill: 'var(--vscode-foreground)'
-                    }
-                },
                 position: 'relative',
                 top: 1
             },

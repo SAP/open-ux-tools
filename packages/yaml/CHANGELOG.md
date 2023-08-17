@@ -1,5 +1,47 @@
 # @sap-ux/yaml
 
+## 0.13.7
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 0.13.6
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
+## 0.13.5
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+
+## 0.13.4
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
+## 0.13.3
+
+### Patch Changes
+
+-   3327a3f: Do not throw exception for multi document yaml
+
+## 0.13.2
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
+## 0.13.1
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+
 ## 0.13.0
 
 ### Minor Changes

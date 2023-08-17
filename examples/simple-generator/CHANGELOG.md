@@ -1,5 +1,629 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.137
+
+### Patch Changes
+
+-   Updated dependencies [ce5ccd4d]
+    -   @sap-ux/fiori-elements-writer@0.12.23
+
+## 0.2.136
+
+### Patch Changes
+
+-   Updated dependencies [290b6b59]
+    -   @sap-ux/system-access@0.2.0
+
+## 0.2.135
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.12.22
+-   @sap-ux/fiori-freestyle-writer@0.19.15
+-   @sap-ux/axios-extension@1.4.1
+
+## 0.2.134
+
+### Patch Changes
+
+-   Updated dependencies [24e45780]
+    -   @sap-ux/axios-extension@1.4.1
+    -   @sap-ux/btp-utils@0.11.8
+
+## 0.2.133
+
+### Patch Changes
+
+-   Updated dependencies [6d8e3f1c]
+    -   @sap-ux/fiori-freestyle-writer@0.19.14
+
+## 0.2.132
+
+### Patch Changes
+
+-   Updated dependencies [9085aeee]
+    -   @sap-ux/fiori-elements-writer@0.12.21
+
+## 0.2.131
+
+### Patch Changes
+
+-   Updated dependencies [d2fd9a58]
+    -   @sap-ux/axios-extension@1.4.0
+
+## 0.2.130
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.12.20
+-   @sap-ux/fiori-freestyle-writer@0.19.13
+
+## 0.2.129
+
+### Patch Changes
+
+-   Updated dependencies [23059e62]
+    -   @sap-ux/axios-extension@1.3.6
+
+## 0.2.128
+
+### Patch Changes
+
+-   Updated dependencies [69b88bcc]
+    -   @sap-ux/axios-extension@1.3.5
+
+## 0.2.127
+
+### Patch Changes
+
+-   Updated dependencies [da6fbb04]
+    -   @sap-ux/axios-extension@1.3.4
+
+## 0.2.126
+
+### Patch Changes
+
+-   Updated dependencies [1599efac]
+    -   @sap-ux/axios-extension@1.3.3
+
+## 0.2.125
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/fiori-freestyle-writer@0.19.12
+    -   @sap-ux/fiori-elements-writer@0.12.19
+    -   @sap-ux/axios-extension@1.3.2
+    -   @sap-ux/btp-utils@0.11.7
+    -   @sap-ux/logger@0.3.7
+    -   @sap-ux/store@0.3.12
+
+## 0.2.124
+
+### Patch Changes
+
+-   Updated dependencies [d9355692]
+    -   @sap-ux/axios-extension@1.3.1
+    -   @sap-ux/fiori-elements-writer@0.12.18
+    -   @sap-ux/fiori-freestyle-writer@0.19.11
+
+## 0.2.123
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.12.17
+-   @sap-ux/fiori-freestyle-writer@0.19.10
+
+## 0.2.122
+
+### Patch Changes
+
+-   Updated dependencies [42dc7395]
+    -   @sap-ux/axios-extension@1.3.0
+
+## 0.2.121
+
+### Patch Changes
+
+-   Updated dependencies [743a5dc7]
+    -   @sap-ux/fiori-elements-writer@0.12.16
+    -   @sap-ux/fiori-freestyle-writer@0.19.9
+
+## 0.2.120
+
+### Patch Changes
+
+-   Updated dependencies [080f89ac]
+    -   @sap-ux/fiori-elements-writer@0.12.15
+
+## 0.2.119
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.12.14
+
+## 0.2.118
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.12.13
+
+## 0.2.117
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.12.12
+
+## 0.2.116
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/axios-extension@1.2.8
+    -   @sap-ux/btp-utils@0.11.6
+    -   @sap-ux/fiori-elements-writer@0.12.11
+    -   @sap-ux/fiori-freestyle-writer@0.19.8
+    -   @sap-ux/logger@0.3.6
+    -   @sap-ux/store@0.3.11
+
+## 0.2.115
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/axios-extension@1.2.7
+    -   @sap-ux/fiori-elements-writer@0.12.10
+    -   @sap-ux/fiori-freestyle-writer@0.19.7
+
+## 0.2.114
+
+### Patch Changes
+
+-   Updated dependencies [2d279633]
+    -   @sap-ux/axios-extension@1.2.6
+
+## 0.2.113
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.12.9
+
+## 0.2.112
+
+### Patch Changes
+
+-   Updated dependencies [7aed929c]
+    -   @sap-ux/fiori-elements-writer@0.12.8
+    -   @sap-ux/fiori-freestyle-writer@0.19.6
+
+## 0.2.111
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.12.7
+-   @sap-ux/fiori-freestyle-writer@0.19.5
+
+## 0.2.110
+
+### Patch Changes
+
+-   Updated dependencies [aeb4cd83]
+    -   @sap-ux/axios-extension@1.2.5
+
+## 0.2.109
+
+### Patch Changes
+
+-   Updated dependencies [0aa02ab0]
+    -   @sap-ux/fiori-elements-writer@0.12.6
+    -   @sap-ux/fiori-freestyle-writer@0.19.4
+
+## 0.2.108
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.12.5
+-   @sap-ux/fiori-freestyle-writer@0.19.3
+
+## 0.2.107
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.12.4
+
+## 0.2.106
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.12.3
+
+## 0.2.105
+
+### Patch Changes
+
+-   Updated dependencies [495a22cb]
+    -   @sap-ux/fiori-freestyle-writer@0.19.2
+    -   @sap-ux/fiori-elements-writer@0.12.2
+
+## 0.2.104
+
+### Patch Changes
+
+-   Updated dependencies [91e95ef8]
+    -   @sap-ux/fiori-elements-writer@0.12.1
+    -   @sap-ux/fiori-freestyle-writer@0.19.1
+
+## 0.2.103
+
+### Patch Changes
+
+-   Updated dependencies [7ac0cb40]
+    -   @sap-ux/fiori-elements-writer@0.12.0
+    -   @sap-ux/fiori-freestyle-writer@0.19.0
+
+## 0.2.102
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.11.4
+
+## 0.2.101
+
+### Patch Changes
+
+-   Updated dependencies [aeba5509]
+    -   @sap-ux/axios-extension@1.2.4
+
+## 0.2.100
+
+### Patch Changes
+
+-   Updated dependencies [31eb27c4]
+    -   @sap-ux/axios-extension@1.2.3
+
+## 0.2.99
+
+### Patch Changes
+
+-   Updated dependencies [1522b416]
+    -   @sap-ux/fiori-elements-writer@0.11.3
+
+## 0.2.98
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/fiori-elements-writer@0.11.2
+    -   @sap-ux/fiori-freestyle-writer@0.18.1
+
+## 0.2.97
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.11.1
+
+## 0.2.96
+
+### Patch Changes
+
+-   Updated dependencies [fa94bfd6]
+    -   @sap-ux/axios-extension@1.2.2
+
+## 0.2.95
+
+### Patch Changes
+
+-   Updated dependencies [3d3d8c64]
+    -   @sap-ux/axios-extension@1.2.1
+
+## 0.2.94
+
+### Patch Changes
+
+-   Updated dependencies [e39c14d7]
+    -   @sap-ux/fiori-elements-writer@0.11.0
+    -   @sap-ux/fiori-freestyle-writer@0.18.0
+
+## 0.2.93
+
+### Patch Changes
+
+-   Updated dependencies [c775d787]
+    -   @sap-ux/axios-extension@1.2.0
+
+## 0.2.92
+
+### Patch Changes
+
+-   Updated dependencies [f3ec7324]
+    -   @sap-ux/fiori-elements-writer@0.10.0
+    -   @sap-ux/fiori-freestyle-writer@0.17.0
+
+## 0.2.91
+
+### Patch Changes
+
+-   Updated dependencies [c06de66b]
+    -   @sap-ux/fiori-elements-writer@0.9.2
+    -   @sap-ux/fiori-freestyle-writer@0.16.2
+
+## 0.2.90
+
+### Patch Changes
+
+-   Updated dependencies [8f167e8a]
+    -   @sap-ux/fiori-elements-writer@0.9.1
+    -   @sap-ux/fiori-freestyle-writer@0.16.1
+
+## 0.2.89
+
+### Patch Changes
+
+-   Updated dependencies [0fa9c31e]
+    -   @sap-ux/axios-extension@1.1.0
+
+## 0.2.88
+
+### Patch Changes
+
+-   Updated dependencies [7df492ae]
+    -   @sap-ux/fiori-elements-writer@0.9.0
+    -   @sap-ux/fiori-freestyle-writer@0.16.0
+
+## 0.2.87
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.20
+-   @sap-ux/fiori-freestyle-writer@0.15.15
+
+## 0.2.86
+
+### Patch Changes
+
+-   Updated dependencies [35d1e15]
+    -   @sap-ux/fiori-elements-writer@0.8.19
+    -   @sap-ux/fiori-freestyle-writer@0.15.14
+
+## 0.2.85
+
+### Patch Changes
+
+-   Updated dependencies [7fd2810]
+    -   @sap-ux/axios-extension@1.0.3
+
+## 0.2.84
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.18
+-   @sap-ux/fiori-freestyle-writer@0.15.13
+
+## 0.2.83
+
+### Patch Changes
+
+-   Updated dependencies [8e059ae]
+    -   @sap-ux/axios-extension@1.0.2
+
+## 0.2.82
+
+### Patch Changes
+
+-   Updated dependencies [6602fe4]
+    -   @sap-ux/fiori-freestyle-writer@0.15.12
+
+## 0.2.81
+
+### Patch Changes
+
+-   Updated dependencies [7fae2cd]
+    -   @sap-ux/fiori-freestyle-writer@0.15.11
+
+## 0.2.80
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/axios-extension@1.0.1
+    -   @sap-ux/fiori-elements-writer@0.8.17
+    -   @sap-ux/fiori-freestyle-writer@0.15.10
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/store@0.3.10
+    -   @sap-ux/btp-utils@0.11.5
+
+## 0.2.79
+
+### Patch Changes
+
+-   Updated dependencies [77ac998]
+    -   @sap-ux/axios-extension@1.0.0
+
+## 0.2.78
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.16
+-   @sap-ux/fiori-freestyle-writer@0.15.9
+
+## 0.2.77
+
+### Patch Changes
+
+-   Updated dependencies [76603f8]
+    -   @sap-ux/fiori-elements-writer@0.8.15
+    -   @sap-ux/fiori-freestyle-writer@0.15.8
+
+## 0.2.76
+
+### Patch Changes
+
+-   Updated dependencies [a34b85f]
+    -   @sap-ux/fiori-freestyle-writer@0.15.7
+
+## 0.2.75
+
+### Patch Changes
+
+-   Updated dependencies [f9dcf18]
+    -   @sap-ux/fiori-freestyle-writer@0.15.6
+
+## 0.2.74
+
+### Patch Changes
+
+-   Updated dependencies [b0d8f64]
+    -   @sap-ux/fiori-freestyle-writer@0.15.5
+
+## 0.2.73
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/store@0.3.9
+    -   @sap-ux/axios-extension@0.14.1
+    -   @sap-ux/btp-utils@0.11.4
+    -   @sap-ux/fiori-elements-writer@0.8.14
+    -   @sap-ux/fiori-freestyle-writer@0.15.4
+    -   @sap-ux/logger@0.3.4
+
+## 0.2.72
+
+### Patch Changes
+
+-   Updated dependencies [730e940]
+    -   @sap-ux/fiori-freestyle-writer@0.15.3
+
+## 0.2.71
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.13
+
+## 0.2.70
+
+### Patch Changes
+
+-   Updated dependencies [aab6b0d]
+    -   @sap-ux/fiori-elements-writer@0.8.12
+    -   @sap-ux/fiori-freestyle-writer@0.15.2
+
+## 0.2.69
+
+### Patch Changes
+
+-   eaf7214: TBI - refactor pre scripts for start and build for typescript projects
+-   Updated dependencies [eaf7214]
+    -   @sap-ux/fiori-elements-writer@0.8.11
+    -   @sap-ux/fiori-freestyle-writer@0.15.1
+
+## 0.2.68
+
+### Patch Changes
+
+-   Updated dependencies [3748963]
+    -   @sap-ux/axios-extension@0.14.0
+
+## 0.2.67
+
+### Patch Changes
+
+-   Updated dependencies [62d83f6]
+    -   @sap-ux/fiori-freestyle-writer@0.15.0
+
+## 0.2.66
+
+### Patch Changes
+
+-   Updated dependencies [ac7f8f3]
+    -   @sap-ux/fiori-elements-writer@0.8.10
+    -   @sap-ux/fiori-freestyle-writer@0.14.19
+
+## 0.2.65
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.9
+
+## 0.2.64
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+    -   @sap-ux/axios-extension@0.13.4
+    -   @sap-ux/store@0.3.8
+
+## 0.2.63
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.8
+-   @sap-ux/fiori-freestyle-writer@0.14.18
+
+## 0.2.62
+
+### Patch Changes
+
+-   Updated dependencies [b727719]
+    -   @sap-ux/axios-extension@0.13.3
+    -   @sap-ux/fiori-elements-writer@0.8.7
+
+## 0.2.61
+
+### Patch Changes
+
+-   5589854: Upgrade qs module and the modules using it because of a potential Denial of Service vulnerabity
+-   Updated dependencies [5589854]
+    -   @sap-ux/axios-extension@0.13.2
+
+## 0.2.60
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/axios-extension@0.13.1
+    -   @sap-ux/btp-utils@0.11.3
+    -   @sap-ux/fiori-elements-writer@0.8.6
+    -   @sap-ux/fiori-freestyle-writer@0.14.17
+    -   @sap-ux/logger@0.3.2
+    -   @sap-ux/store@0.3.7
+
+## 0.2.59
+
+### Patch Changes
+
+-   Updated dependencies [a293cbb]
+    -   @sap-ux/fiori-elements-writer@0.8.5
+
+## 0.2.58
+
+### Patch Changes
+
+-   Updated dependencies [9b9b3d7]
+    -   @sap-ux/axios-extension@0.13.0
+
+## 0.2.57
+
+### Patch Changes
+
+-   Updated dependencies [116ff5e]
+    -   @sap-ux/axios-extension@0.12.0
+
+## 0.2.56
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.4
+-   @sap-ux/fiori-freestyle-writer@0.14.16
+
 ## 0.2.55
 
 ### Patch Changes

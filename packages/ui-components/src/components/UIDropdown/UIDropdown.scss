@@ -37,6 +37,9 @@
                 color: $dropdown-input-color;
             }
         }
+        .ms-Dropdown-titleIsPlaceHolder {
+            color: $dropdown-input-placeholder-color;
+        }
         &:after {
             pointer-events: none;
             content: '';
@@ -53,11 +56,43 @@
         &:focus,
         &:hover {
             &:after {
-                border: $dropdown-input-border-width solid $dropdown-input-focus-border-color;
+                border-color: $dropdown-input-focus-border-color;
             }
         }
-        &.is-disabled {
-            @include input-disabled;
+        &:focus,
+        &.is-open {
+            &:after {
+                border-style: solid;
+            }
+        }
+    }
+    &--readonly {
+        .ms-Dropdown {
+            &.is-disabled {
+                @include input-readonly;
+            }
+        }
+        // Empty and readonly field - disable hover efect
+        &.ts-SelectBox--empty {
+            .ms-Dropdown:hover:after {
+                border-color: $dropdown-input-border-color;
+            }
+        }
+    }
+    &--disabled {
+        .ms-Dropdown {
+            &.is-disabled {
+                @include input-disabled;
+            }
+        }
+    }
+    &--readonly,
+    &--disabled {
+        .ms-Dropdown:focus {
+            &:after {
+                border-style: solid;
+                border-color: $dropdown-input-focus-border-color !important;
+            }
         }
     }
     &--error {

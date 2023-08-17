@@ -33,6 +33,7 @@ describe('<UIFlexibleTable />', () => {
         tableHeaderPrimaryAction: '.flexible-table-header-primary-actions .flexible-table-header-action',
         tableHeaderSecondaryAction: '.flexible-table-header-secondary-actions .flexible-table-header-action',
         content: '.flexible-table-content-table',
+        noData: '.flexible-table-content-table-row-no-data',
         row: '.flexible-table-content-table-row',
         rowHeader: '.flexible-table-content-table-row-header',
         rowTitleContainer: '.flexible-table-content-table-row-header-text-content',
@@ -86,7 +87,12 @@ describe('<UIFlexibleTable />', () => {
                     columns={columns}
                     rows={rows}
                     onRenderCell={onRenderCell}
-                    onTableReorder={() => null}
+                    onTableReorder={() => {
+                        return;
+                    }}
+                    onRenderReorderActions={() => {
+                        return {};
+                    }}
                 />
             );
         });
@@ -120,6 +126,19 @@ describe('<UIFlexibleTable />', () => {
             expect(wrapper.find(selectors.reverseBackground).length).toEqual(0);
         });
 
+        it('Render table (no rows)', () => {
+            wrapper.setProps({
+                noDataText: 'No data.',
+                rows: []
+            });
+            expect(wrapper.exists()).toEqual(true);
+            expect(wrapper.find(selectors.content).length).toEqual(1);
+            expect(wrapper.find(selectors.row).length).toEqual(0);
+            const noData = wrapper.find(selectors.noData);
+            expect(noData.exists()).toEqual(true);
+            expect(noData.props().style?.cursor).toBe('default');
+        });
+
         it('Render index column', () => {
             wrapper.setProps({ showIndexColumn: true });
             const indexCells = wrapper.find(selectors.indexColumn);
@@ -142,12 +161,36 @@ describe('<UIFlexibleTable />', () => {
             const titleCells = wrapper.find(selectors.titleRowValue);
             expect(titleCells.length).toBe(2);
 
-            columns
-                .filter((col) => !col.hidden)
-                .forEach((col, idx) => {
-                    expect(titleCells.get(idx).key).toBe(`title-cell-${col.key}-${idx}`);
-                    expect(titleCells.get(idx).props.children).toBe(col.title);
-                });
+            const filteredColumns = columns.filter((col) => !col.hidden);
+            const expectedIds = filteredColumns.map((c) => `${tableId}-header-column-${c.key}`);
+
+            filteredColumns.forEach((col, idx) => {
+                expect(titleCells.get(idx).key).toBe(`title-cell-${col.key}-${idx}`);
+                expect(titleCells.get(idx).props.children).toBe(col.title);
+                expect(titleCells.get(idx).props['id']).toBe(expectedIds[idx]);
+            });
+        });
+
+        it('Render column default titles (with spanned cells)', () => {
+            wrapper.setProps({
+                showIndexColumn: true,
+                showColumnTitles: true,
+                onRenderTitleColumnCell: (params) => ({
+                    content: columns[params.colIndex || 0].title,
+                    isSpan: params.colIndex === 0
+                })
+            });
+            const headersFound = wrapper.find(selectors.titleRow);
+            expect(headersFound.length).toEqual(1);
+
+            const titleCells = wrapper.find(selectors.titleRowValue);
+            expect(titleCells.length).toBe(1);
+
+            const col = columns[0];
+            const expectedId = `${tableId}-header-column-${col.key}`;
+            expect(titleCells.get(0).key).toBe(`title-cell-unknown`);
+            expect(titleCells.get(0).props.children).toBe(col.title);
+            expect(titleCells.get(0).props['id']).toBe(expectedId);
         });
 
         it('Render column titles in cells', () => {
@@ -274,6 +317,27 @@ describe('<UIFlexibleTable />', () => {
                   "maxWidth": "100%",
                 }
             `);
+        });
+
+        it('onRenderRowContainer ', () => {
+            wrapper.setProps({
+                onRenderRowContainer: (params) => {
+                    return params.rowIndex === 2 ? { isDropWarning: true } : { isDropWarning: false };
+                }
+            });
+
+            const rowDataObjects = wrapper.find(selectors.rowDataCells);
+            expect(rowDataObjects.length).toEqual(3);
+
+            const rowObjects = wrapper.find(selectors.row);
+            expect(rowObjects.length).toEqual(3);
+
+            // check warning class added
+            rowObjects.forEach((row, rowIndex) => {
+                expect(
+                    row.getElement().props.className.includes('highlight-drop-warning') === (rowIndex === 2)
+                ).toBeTruthy();
+            });
         });
 
         it('Property "reverseBackground"', () => {
@@ -428,6 +492,25 @@ describe('<UIFlexibleTable />', () => {
                 expect(onDeleteClick.mock.calls.length).toEqual(1);
                 expect(onDeleteClick.mock.calls[0][0].rowIndex).toEqual(2);
             });
+            it('tooltip', () => {
+                wrapper.setProps({
+                    addRowButton: { label: 'Add New Item', onClick: onAddClick },
+                    onDeleteRow: onDeleteClick,
+                    onRenderDeleteAction: ({ rowIndex }) => {
+                        return {
+                            isDeleteDisabled: rowIndex > 0,
+                            tooltip: rowIndex > 0 ? 'Tooltip for disabled' : 'Tooltip for enabled'
+                        };
+                    }
+                });
+                const foundButtons = wrapper.find(selectors.deleteButton);
+                expect(foundButtons.length).toEqual(3);
+                foundButtons.forEach((button, idx) => {
+                    expect(button.getElement().props.title).toBe(
+                        idx > 0 ? 'Tooltip for disabled' : 'Tooltip for enabled'
+                    );
+                });
+            });
             it('readonly - off', () => {
                 wrapper.setProps({
                     addRowButton: { label: 'Add', onClick: onAddClick },
@@ -457,7 +540,9 @@ describe('<UIFlexibleTable />', () => {
         describe('reorder buttons', () => {
             it('render', () => {
                 wrapper.setProps({
-                    onTableReorder: () => null
+                    onTableReorder: () => {
+                        return;
+                    }
                 });
                 const upButtonsFound = wrapper.find(selectors.upArrow);
                 const downButtonsFound = wrapper.find(selectors.downArrow);
@@ -469,10 +554,60 @@ describe('<UIFlexibleTable />', () => {
                 downButtonsFound.forEach((button, idx) => {
                     expect(button.getElement().props.className.includes('is-disabled') === (idx === 2)).toBeTruthy();
                 });
+                expect(wrapper.find(selectors.content).props().style?.cursor).toBe('grab');
+            });
+            it('move up/down not rendered', () => {
+                wrapper.setProps({
+                    onTableReorder: undefined
+                });
+                const upButtonsFound = wrapper.find(selectors.upArrow);
+                const downButtonsFound = wrapper.find(selectors.downArrow);
+                expect(upButtonsFound.length).toBe(0);
+                expect(downButtonsFound.length).toBe(0);
+                expect(wrapper.find(selectors.content).props().style?.cursor).toBe('default');
+            });
+
+            it('move up/down disabled for new line item index 1(2nd row) with tooltip', () => {
+                wrapper.setProps({
+                    onTableReorder: () => {
+                        return;
+                    },
+                    onRenderReorderActions: (params) => {
+                        const isRow2 = params.rowIndex === 1;
+                        return {
+                            up: {
+                                disabled: isRow2,
+                                tooltip: isRow2 ? 'Testing move up disabled' : ''
+                            },
+                            down: {
+                                disabled: isRow2,
+                                tooltip: isRow2 ? 'Testing move down disabled' : ''
+                            }
+                        };
+                    }
+                });
+                const upButtonsFound = wrapper.find(selectors.upArrow);
+                const downButtonsFound = wrapper.find(selectors.downArrow);
+                expect(upButtonsFound.length).toBe(3);
+                expect(downButtonsFound.length).toBe(3);
+                upButtonsFound.forEach((button, idx) => {
+                    expect(
+                        button.getElement().props.className.includes('is-disabled') === [0, 1].includes(idx)
+                    ).toBeTruthy();
+                    expect(button.getElement().props.title).toBe(idx === 1 ? 'Testing move up disabled' : '');
+                });
+                downButtonsFound.forEach((button, idx) => {
+                    expect(
+                        button.getElement().props.className.includes('is-disabled') === [1, 2].includes(idx)
+                    ).toBeTruthy();
+                    expect(button.getElement().props.title).toBe(idx === 1 ? 'Testing move down disabled' : '');
+                });
             });
             it('readonly - off', () => {
                 wrapper.setProps({
-                    onTableReorder: () => null,
+                    onTableReorder: () => {
+                        return;
+                    },
                     readonly: true
                 });
                 const upButtonsFound = wrapper.find(selectors.upArrow);
@@ -667,7 +802,9 @@ describe('<UIFlexibleTable />', () => {
                     columns={columns}
                     rows={rows}
                     onRenderCell={onRenderCell}
-                    onTableReorder={() => null}
+                    onTableReorder={() => {
+                        return;
+                    }}
                     showColumnTitles={true}
                 />
             );
@@ -780,7 +917,9 @@ describe('<UIFlexibleTable />', () => {
                     columns={columns}
                     rows={[]}
                     onRenderCell={onRenderCell}
-                    onTableReorder={() => null}
+                    onTableReorder={() => {
+                        return;
+                    }}
                 />
             );
         });
@@ -790,7 +929,7 @@ describe('<UIFlexibleTable />', () => {
             wrapper.setProps({
                 noDataText
             });
-            const noData = wrapper.find('.flexible-table-content-table-row-no-data');
+            const noData = wrapper.find(selectors.noData);
             expect(noData.length).toEqual(1);
             expect(noData.text()).toEqual(noDataText);
         });
@@ -809,7 +948,7 @@ describe('<UIFlexibleTable />', () => {
                 noRowBackground: true,
                 noDataText
             });
-            expect(wrapper.find('.flexible-table-content-table-row-no-data.no-background').length).toEqual(1);
+            expect(wrapper.find(`${selectors.noData}.no-background`).length).toEqual(1);
         });
 
         it('"reverseBackground" ', () => {
@@ -818,7 +957,7 @@ describe('<UIFlexibleTable />', () => {
                 reverseBackground: true,
                 noDataText
             });
-            expect(wrapper.find('.flexible-table-content-table-row-no-data.reverse-background').length).toEqual(1);
+            expect(wrapper.find(`${selectors.noData}.reverse-background`).length).toEqual(1);
         });
     });
 });

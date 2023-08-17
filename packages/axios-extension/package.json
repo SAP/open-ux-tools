@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/axios-extension",
-    "version": "0.11.1",
-    "description": "Extension of the Axios module adding convinience methods to interact with SAP systems especially with OData services.",
+    "version": "1.4.1",
+    "description": "Extension of the Axios module adding convenience methods to interact with SAP systems especially with OData services.",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -14,33 +14,34 @@
     "private": false,
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc -p tsconfig-build.json",
+        "build": "tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf dist coverage",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --colors --detectOpenHandles",
-        "test-u": "jest --ci --forceExit --colors -u --detectOpenHandles",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "axios": "0.24.0",
+        "axios": "1.4.0",
         "detect-content-type": "1.2.0",
-        "fast-xml-parser": "3.12.20",
+        "fast-xml-parser": "4.2.5",
         "lodash": "4.17.21",
         "open": "7.0.3",
-        "qs": "6.7.0",
+        "qs": "6.7.3",
         "xpath": "0.0.32",
-        "@xmldom/xmldom": "0.8.4"
+        "@xmldom/xmldom": "0.8.6"
     },
     "devDependencies": {
+        "@sap-ux/project-access": "workspace:*",
         "@types/lodash": "4.14.176",
         "nock": "13.2.1",
-        "supertest": "6.2.2"
+        "supertest": "6.3.2"
     },
     "files": [
         "dist",

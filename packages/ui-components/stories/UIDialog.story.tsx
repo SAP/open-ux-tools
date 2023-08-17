@@ -8,6 +8,7 @@ import { UIDefaultButton } from '../src/components/UIButton';
 import { UITextInput } from '../src/components/UIInput';
 import { UIDropdown } from '../src/components/UIDropdown';
 import { UIComboBox } from '../src/components/UIComboBox';
+import { UICheckbox } from '../src/components/UICheckbox';
 
 import { initIcons } from '../src/components/Icons';
 
@@ -25,9 +26,15 @@ const TEXTFIELD_MARGIN = {
     }
 };
 
-class Test extends React.Component<{
-    draggable: boolean;
-}> {
+interface TestDialogProps {
+    openAnimation: boolean;
+}
+
+class Test extends React.Component<
+    TestDialogProps & {
+        draggable: boolean;
+    }
+> {
     state = {
         isOpen: false,
         text: 'Some Text'
@@ -56,6 +63,18 @@ class Test extends React.Component<{
                 text: 'Dummy option 222'
             }
         ];
+        const additionalProps = this.props.draggable
+            ? {
+                  modalProps: {
+                      dragOptions: {
+                          moveMenuItemText: 'Move',
+                          closeMenuItemText: 'Close',
+                          menu: ContextualMenu,
+                          keepInBounds: true
+                      }
+                  }
+              }
+            : undefined;
         return (
             <>
                 <UIDefaultButton onClick={this.onToggle} primary>
@@ -63,22 +82,12 @@ class Test extends React.Component<{
                 </UIDefaultButton>
                 <UIDialog
                     isOpen={this.state.isOpen}
+                    isOpenAnimated={this.props.openAnimation}
                     isBlocking={true}
                     title={'Header Title'}
                     acceptButtonText={'Accept'}
                     cancelButtonText={'Cancel'}
-                    modalProps={
-                        this.props.draggable
-                            ? {
-                                  dragOptions: {
-                                      moveMenuItemText: 'Move',
-                                      closeMenuItemText: 'Close',
-                                      menu: ContextualMenu,
-                                      keepInBounds: true
-                                  }
-                              }
-                            : undefined
-                    }
+                    {...additionalProps}
                     onAccept={this.onAccept}
                     styles={TEXTFIELD_MARGIN}
                     onCancel={this.onToggle}
@@ -92,7 +101,7 @@ class Test extends React.Component<{
     }
 }
 
-const LargeDialog = (props: { size?: number }): JSX.Element => {
+const LargeDialog = (props: TestDialogProps & { size?: number }): JSX.Element => {
     const [isVisible, setVisible] = useState(false);
     const toggle = (): void => {
         setVisible(!isVisible);
@@ -115,6 +124,7 @@ const LargeDialog = (props: { size?: number }): JSX.Element => {
             </UIDefaultButton>
             <UIDialog
                 isOpen={isVisible}
+                isOpenAnimated={props.openAnimation}
                 isBlocking={true}
                 title={'Header Title'}
                 acceptButtonText={'Accept'}
@@ -146,7 +156,7 @@ const LargeDialog = (props: { size?: number }): JSX.Element => {
     );
 };
 
-const ConfirmDialog = (): JSX.Element => {
+const ConfirmDialog = (props: TestDialogProps): JSX.Element => {
     const [isVisible, setVisible] = useState(false);
     const toggle = (): void => {
         setVisible(!isVisible);
@@ -158,6 +168,7 @@ const ConfirmDialog = (): JSX.Element => {
             </UIDefaultButton>
             <UIDialog
                 isOpen={isVisible}
+                isOpenAnimated={props.openAnimation}
                 isBlocking={true}
                 onAccept={toggle}
                 onCancel={toggle}
@@ -172,30 +183,46 @@ const ConfirmDialog = (): JSX.Element => {
     );
 };
 
-export const Dialog = () => (
-    <Stack tokens={stackTokens}>
+export const Dialog = () => {
+    const [openAnimation, setOpenAnimation] = useState(true);
+
+    return (
         <Stack tokens={stackTokens}>
-            <Text variant={'large'} block>
-                Dialogs
-            </Text>
-            <Stack horizontal tokens={stackTokens}>
-                <Test draggable={false} />
-            </Stack>
-            <Stack horizontal tokens={stackTokens}>
-                <Test draggable={true} />
-            </Stack>
-            <Stack horizontal tokens={stackTokens}>
-                <LargeDialog />
-            </Stack>
-            <Stack horizontal tokens={stackTokens}>
-                <LargeDialog size={400} />
-            </Stack>
-            <Stack horizontal tokens={stackTokens}>
-                <LargeDialog />
-            </Stack>
-            <Stack horizontal tokens={stackTokens}>
-                <ConfirmDialog />
+            <Stack tokens={stackTokens}>
+                <Text variant={'large'} block>
+                    Dialogs
+                </Text>
+                <Stack horizontal tokens={stackTokens}>
+                    <UICheckbox
+                        label="Open animation enabled"
+                        checked={openAnimation}
+                        onChange={(event: any, value: any) => {
+                            setOpenAnimation(value);
+                        }}
+                    />
+                </Stack>
+                <Stack horizontal tokens={stackTokens}>
+                    <Test draggable={false} openAnimation={openAnimation} />
+                </Stack>
+                <Stack horizontal tokens={stackTokens}>
+                    <Test draggable={false} openAnimation={openAnimation} />
+                </Stack>
+                <Stack horizontal tokens={stackTokens}>
+                    <Test draggable={true} openAnimation={openAnimation} />
+                </Stack>
+                <Stack horizontal tokens={stackTokens}>
+                    <LargeDialog openAnimation={openAnimation} />
+                </Stack>
+                <Stack horizontal tokens={stackTokens}>
+                    <LargeDialog size={400} openAnimation={openAnimation} />
+                </Stack>
+                <Stack horizontal tokens={stackTokens}>
+                    <LargeDialog openAnimation={openAnimation} />
+                </Stack>
+                <Stack horizontal tokens={stackTokens}>
+                    <ConfirmDialog openAnimation={openAnimation} />
+                </Stack>
             </Stack>
         </Stack>
-    </Stack>
-);
+    );
+};

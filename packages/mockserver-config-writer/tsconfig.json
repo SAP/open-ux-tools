@@ -1,0 +1,20 @@
+{
+    "extends": "../../tsconfig.json",
+    "include": [
+        "../../types/mem-fs-editor.d.ts",
+        "src",
+        "src/**/*.json"
+    ],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
+    },
+    "references": [
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../ui5-config"
+        }
+    ]
+}

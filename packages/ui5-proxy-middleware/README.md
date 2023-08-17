@@ -113,8 +113,11 @@ server:
 Alternatively you can only use the underlying proxy function, e.g. for the case when you want to incorporate the `ui5-proxy-middleware` functionality in your own middleware.
 
 ```Typescript
+import { Router } from 'express';
 import { ui5Proxy } from '@sap-ux/ui5-proxy-middleware';
-const ui5ProxyMiddlewareFn = ui5Proxy(config, options, filter)
+
+const router = Router();
+router.use("/resources/", ui5Proxy({ path: "/", url: "https://ui5.sap.com"})/*, options, filter*/);
 ```
 - **config** - The UI5 configuration
 - **options** - Options of the [http-proxy-middleware](https://www.npmjs.com/package/http-proxy-middleware#options)

@@ -28,3 +28,37 @@ export function writeFilesForDebugging(fs: Editor): Promise<void> {
         }
     });
 }
+
+export const tabSizingTestCases = [
+    {
+        name: '6 spaces',
+        tabInfo: {
+            size: 6
+        },
+        expectedAfterSave: {
+            size: 6,
+            useTabSymbol: false
+        }
+    },
+    {
+        name: '1 tab',
+        tabInfo: {
+            useTabSymbol: true
+        },
+        expectedAfterSave: {
+            size: 1,
+            useTabSymbol: true
+        }
+    },
+    {
+        name: '2 tabs',
+        tabInfo: {
+            size: 2,
+            useTabSymbol: true
+        },
+        expectedAfterSave: {
+            size: 2,
+            useTabSymbol: true
+        }
+    }
+];

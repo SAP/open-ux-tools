@@ -1,5 +1,41 @@
 # @sap-ux/ui5-test-writer
 
+## 0.1.10
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 0.1.9
+
+### Patch Changes
+
+-   080f89ac: Opa tests to use flpSandbox.html when index.html is not generated
+
+## 0.1.8
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
+## 0.1.7
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
+## 0.1.6
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
+## 0.1.5
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+
 ## 0.1.4
 
 ### Patch Changes

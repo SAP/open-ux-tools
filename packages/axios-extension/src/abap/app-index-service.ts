@@ -10,7 +10,7 @@ export interface App {
 export type AppIndex = Partial<App>[];
 
 /**
- * A class respresenting the app index service allowing to search applications deployed on an ABAP system.
+ * A class representing the app index service allowing to search applications deployed on an ABAP system.
  */
 export abstract class AppIndexService extends Axios implements Service {
     public static readonly PATH = '/sap/bc/ui2/app_index';

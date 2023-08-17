@@ -84,6 +84,7 @@ describe('createForDestination', () => {
         expect(provider).toBeDefined();
         expect(provider.defaults.baseURL).toBe(getDestinationUrlForAppStudio(destination.Name));
         expect(provider).toBeInstanceOf(AbapServiceProvider);
+        expect((provider as AbapServiceProvider).publicUrl).toBe(destination.Host);
     });
 
     test('ABAP system with additional credentials', async () => {
@@ -96,6 +97,7 @@ describe('createForDestination', () => {
         expect(provider.defaults.baseURL).toBe(getDestinationUrlForAppStudio(destination.Name));
         expect(provider.defaults.auth).toEqual(auth);
         expect(provider).toBeInstanceOf(AbapServiceProvider);
+        expect((provider as AbapServiceProvider).publicUrl).toBe(destination.Host);
     });
 
     test('System from destination service', async () => {

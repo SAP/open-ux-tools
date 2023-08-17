@@ -1,4 +1,4 @@
-@import '../../styles/_variables.scss';
+@import "../../styles/_variables.scss";
 
 .ui-treeDropdown {
     position: relative;
@@ -8,34 +8,16 @@
     }
     &-wrapper {
         position: relative;
-        border: $dropdown-input-border;
-
-        &.disabled {
-            opacity: $dropdown-input-disabled-opacity;
-        }
-        .ms-TextField {
-            .ms-TextField-wrapper {
-                .ms-TextField-fieldGroup {
-                    border: none;
-                    opacity: initial;
-                    background: $dropdown-input-background;
-                }
-            }
-        }
         input {
             padding: 0 26px 0 8px;
             font-family: var(--vscode-font-family);
         }
-        &:hover {
-            border: 1px solid $dropdown-input-focus-border-color;
+        // Decrease z-index for open menu button when component is disabled
+        &.disabled > button {
+            z-index: -1;
         }
-        &-menu {
-            &-open {
-                border: 1px solid $dropdown-input-focus-border-color;
-            }
-            &-close {
-                border: 1px solid var(--vscode-editorWidget-border);
-            }
+        &.readonly > button {
+            pointer-events: none;
         }
     }
     &-caret {
@@ -71,7 +53,7 @@
 
         &.required {
             &:after {
-                content: ' *';
+                content: " *";
                 color: var(--vscode-inputValidation-errorBorder);
             }
         }

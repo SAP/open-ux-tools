@@ -6,6 +6,8 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { CustomPage } from '../../../src';
 import { generateCustomPage, validateBasePath } from '../../../src';
 import { FCL_ROUTER } from '../../../src/common/defaults';
+import { detectTabSpacing } from '../../../src/common/file';
+import { tabSizingTestCases } from '../../common';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -64,10 +66,40 @@ describe('CustomPage', () => {
             name: 'CustomPage',
             entity: 'RootEntity'
         };
+
         test('latest version with minimal input', () => {
             const target = join(testDir, 'minimal-input');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            //act
             generateCustomPage(target, minimalInput, fs);
+            //check
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+        });
+
+        test('latest version with entitySet and lower UI5 version', () => {
+            const target = join(testDir, 'ui5_1_71');
+            const localManifest = JSON.parse(testAppManifest);
+            localManifest['sap.ui5'].dependencies.minUI5Version = '1.84.62';
+            fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(localManifest));
+            const testInput = JSON.parse(JSON.stringify(minimalInput));
+            testInput.minUI5Version = '1.84.62';
+            //act
+            generateCustomPage(target, testInput, fs);
+            //check
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+        });
+
+        test('latest version with contextPath', () => {
+            const localInput = JSON.parse(JSON.stringify(minimalInput));
+            localInput.contextPath = 'my/path';
+            localInput.minUI5Version = '1.102';
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            generateCustomPage(target, localInput, fs);
 
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
@@ -199,6 +231,38 @@ describe('CustomPage', () => {
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
             generateCustomPage(target, input, fs);
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+    });
+
+    describe('Test property custom "tabSizing"', () => {
+        test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+            const target = join(testDir, 'tab-sizing');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            generateCustomPage(
+                target,
+                {
+                    name: 'CustomPage',
+                    entity: 'RootEntity',
+                    tabInfo
+                },
+                fs
+            );
+
+            let updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
+            let result = detectTabSpacing(updatedManifest);
+            expect(result).toEqual(expectedAfterSave);
+            // Generate another page and check if new tab sizing recalculated correctly without passing tab size info
+            generateCustomPage(
+                target,
+                {
+                    name: 'Second',
+                    entity: 'RootEntity'
+                },
+                fs
+            );
+            updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
+            result = detectTabSpacing(updatedManifest);
+            expect(result).toEqual(expectedAfterSave);
         });
     });
 });

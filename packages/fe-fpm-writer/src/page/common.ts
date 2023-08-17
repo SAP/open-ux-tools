@@ -1,18 +1,31 @@
 import type { Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 import { join } from 'path';
+import { render } from 'ejs';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { validateBasePath } from '../common/validate';
 import type {
     CustomPage,
     FCL,
+    FpmPage,
     InternalCustomPage,
     InternalObjectPage,
     ObjectPage,
+    ListReport,
     Navigation,
     InternalListReport
 } from './types';
 import type { Manifest } from '../common/types';
 import { FCL_ROUTER } from '../common/defaults';
+import { extendJSON } from '../common/file';
+import { getTemplatePath } from '../templates';
+import { coerce, gte } from 'semver';
+
+type EnhancePageConfigFunction = (
+    data: ObjectPage | ListReport,
+    manifest: Manifest
+) => InternalObjectPage | InternalListReport;
 
 /**
  * Suffix for patterns to support arbitrary paramters
@@ -137,6 +150,31 @@ export function getFclConfig(manifest: Manifest, navigation?: Navigation): FCL {
 }
 
 /**
+ * Create target settings for a Fiori elements page.
+ *
+ * @param data - incoming configuration
+ * @param addSettings - optional arbitrary settings
+ * @returns version aware settings object
+ */
+export function initializeTargetSettings(
+    data: FpmPage,
+    addSettings?: Record<string, unknown>
+): Record<string, unknown> {
+    const settings: Record<string, unknown> = addSettings ? { ...addSettings } : {};
+    settings.navigation ??= {};
+
+    // starting with UI5 v1.94.0, contextPath is the preferred setting
+    const minVersion = coerce(data.minUI5Version);
+    if (!minVersion || gte(minVersion, '1.94.0')) {
+        settings.contextPath = data.contextPath ?? `/${data.entity}`;
+    } else {
+        settings.entitySet = data.entity;
+    }
+
+    return settings;
+}
+
+/**
  * Validate the input parameters for the generation of a custom or an object page.
  *
  * @param basePath - the base path
@@ -169,6 +207,45 @@ export function validatePageConfig(basePath: string, config: CustomPage | Object
             throw new Error(`Invalid routing configuration for navigation source ${config.navigation.sourcePage}!`);
         }
     }
+
+    return fs;
+}
+
+/**
+ * Add an generic page to an existing UI5 application.
+ * Supported pages - ListReport or ObjectPage.
+ *
+ * @param basePath - the base path
+ * @param data - the page configuration
+ * @param enhanceDataFn - Callback function for data enhancement
+ * @param templatePath - path to 'manifest.json' template
+ * @param fs - the memfs editor instance
+ * @returns the updated memfs editor instance
+ */
+export function extendPageJSON(
+    basePath: string,
+    data: ObjectPage,
+    enhanceDataFn: EnhancePageConfigFunction,
+    templatePath: string,
+    fs?: Editor
+): Editor {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    validatePageConfig(basePath, data, fs);
+
+    const manifestPath = join(basePath, 'webapp/manifest.json');
+    const manifest = fs.readJSON(manifestPath) as Manifest;
+
+    const config = enhanceDataFn(data, manifest);
+
+    // enhance manifest.json
+    extendJSON(fs, {
+        filepath: manifestPath,
+        content: render(fs.read(getTemplatePath(templatePath)), config, {}),
+        replacer: getManifestJsonExtensionHelper(config),
+        tabInfo: data.tabInfo
+    });
 
     return fs;
 }

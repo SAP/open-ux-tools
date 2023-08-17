@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import type { Chart, Field, FilterBar } from '../../src';
+import type { Chart, Field, FilterBar, Table } from '../../src';
 import { BuildingBlockType, generateBuildingBlock } from '../../src';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'fs';
@@ -187,6 +187,12 @@ describe('Building Blocks', () => {
                     id: 'testField',
                     buildingBlockType: BuildingBlockType.Field
                 } as Field
+            },
+            {
+                buildingBlockData: {
+                    id: 'testTable',
+                    buildingBlockType: BuildingBlockType.Table
+                } as Table
             }
         ];
 
@@ -215,7 +221,7 @@ describe('Building Blocks', () => {
                 },
                 fs
             );
-            expect((fs as any).dump(testAppPath)).toMatchSnapshot(
+            expect(fs.dump(testAppPath)).toMatchSnapshot(
                 `generate-${testData.buildingBlockData.buildingBlockType}-with-id-no-macros-ns`
             );
             await writeFilesForDebugging(fs);
@@ -241,6 +247,12 @@ describe('Building Blocks', () => {
                     id: 'testField',
                     buildingBlockType: BuildingBlockType.Field
                 } as Field
+            },
+            {
+                buildingBlockData: {
+                    id: 'testTable',
+                    buildingBlockType: BuildingBlockType.Table
+                } as Field
             }
         ];
 
@@ -260,7 +272,7 @@ describe('Building Blocks', () => {
                 },
                 fs
             );
-            expect((fs as any).dump(testAppPath)).toMatchSnapshot(
+            expect(fs.dump(testAppPath)).toMatchSnapshot(
                 `generate-${testData.buildingBlockData.buildingBlockType}-with-id`
             );
             await writeFilesForDebugging(fs);
@@ -301,6 +313,27 @@ describe('Building Blocks', () => {
                     readOnly: true,
                     semanticObject: 'testSemanticObject'
                 } as Field
+            },
+            {
+                buildingBlockData: {
+                    id: 'testTable',
+                    buildingBlockType: BuildingBlockType.Table,
+                    contextPath: 'testContextPath',
+                    metaPath: 'testMetaPath',
+                    busy: true,
+                    enableAutoColumnWidth: true,
+                    enableExport: true,
+                    enableFullScreen: true,
+                    enablePaste: true,
+                    filterBar: 'testFilterBar',
+                    header: 'Test Header',
+                    headerVisible: true,
+                    isSearchable: true,
+                    personalization: 'Column',
+                    readOnly: true,
+                    type: 'ResponsiveTable',
+                    variantManagement: 'None'
+                } as Table
             }
         ];
 
@@ -323,7 +356,7 @@ describe('Building Blocks', () => {
                 },
                 fs
             );
-            expect((fs as any).dump(testAppPath)).toMatchSnapshot(
+            expect(fs.dump(testAppPath)).toMatchSnapshot(
                 `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
             );
             await writeFilesForDebugging(fs);

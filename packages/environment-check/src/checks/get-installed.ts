@@ -4,10 +4,10 @@ import { join } from 'path';
 import { spawnCommand, npmCommand } from '../command';
 import { Extensions, NpmModules } from '../types';
 import type { ILogger } from '../types';
+import type { Extension } from 'vscode';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
 const pluginsDirBAS = join('/extbin/plugins');
-const globalNpmBAS = join('/extbin/npm/globals/lib');
 
 /**
  * Checks if vsix/extension is required for results.
@@ -35,8 +35,8 @@ async function getExtensionsBAS(): Promise<{ [id: string]: { version: string } }
         .filter((vsixFile) => isExtensionRequired(vsixFile))
         .reduce((returnObject, current) => {
             const idVersion = current.split('.vsix')[0];
-            const firstNumeric = idVersion.search(/\d/);
-            const [id, version] = [idVersion.slice(0, firstNumeric - 1), idVersion.slice(firstNumeric)];
+            const firstNumeric = idVersion.search(/-\d/);
+            const [id, version] = [idVersion.slice(0, firstNumeric), idVersion.slice(firstNumeric + 1)];
             returnObject[id] = {
                 version
             };
@@ -46,12 +46,27 @@ async function getExtensionsBAS(): Promise<{ [id: string]: { version: string } }
 }
 
 /**
+ * Internal function to check if the module is being ran in VSCode Insiders.
+ *
+ * @returns boolean - if ran in insiders
+ */
+async function checkIsInsiders(): Promise<boolean> {
+    let isInsiders = false;
+    const processEnvProp = process.env['VSCODE_IPC_HOOK'] ?? process.env['TERM_PROGRAM_VERSION'];
+    if (processEnvProp?.includes('insider')) {
+        isInsiders = true;
+    }
+    return isInsiders;
+}
+
+/**
  * Reads the list of extensions installed in vscode.
  *
  * @returns list of extension ids and versions
  */
 async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string } }> {
-    const output = await spawnCommand('code', ['--list-extensions', '--show-versions']);
+    const isInsiders = await checkIsInsiders();
+    const output = await spawnCommand(isInsiders ? 'code-insiders' : 'code', ['--list-extensions', '--show-versions']);
     const versions = output
         .split('\n')
         .filter((ext) => ext.startsWith('SAP'))
@@ -66,16 +81,31 @@ async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string 
         }, {});
     return versions;
 }
+
 /**
  * Reads the list of extensions installed and returns the id and version.
  *
+ * @param extensions - installed extensions passed from vscode
  * @param logger - logger to report errors
  * @returns list of extension ids and versions
  */
-export async function getInstalledExtensions(logger?: ILogger): Promise<{ [id: string]: { version: string } }> {
+export async function getInstalledExtensions(
+    extensions?: readonly Extension<any>[],
+    logger?: ILogger
+): Promise<{ [id: string]: { version: string } }> {
     let versions;
     try {
-        if (isAppStudio()) {
+        if (extensions) {
+            versions = extensions
+                .filter((ext) => isExtensionRequired(ext.packageJSON.name))
+                .reduce((returnObject, current) => {
+                    const version = current.packageJSON.version;
+                    returnObject[current.packageJSON.name] = {
+                        version
+                    };
+                    return returnObject;
+                }, {});
+        } else if (isAppStudio()) {
             versions = await getExtensionsBAS();
         } else {
             versions = await getExtensionsVSCode();
@@ -103,36 +133,25 @@ export async function getCFCliToolVersion(): Promise<string> {
 }
 
 /**
- * Read the version of the fiori generator in BAS.
+ * Get the path of the fiori generator.
  *
  * @returns version
  */
-async function getFioriGenBAS(): Promise<string> {
-    let version;
-    const pathToPackageJson = join(globalNpmBAS, 'package.json');
-    if (existsSync(pathToPackageJson)) {
-        const dependencies = JSON.parse(await promises.readFile(pathToPackageJson, 'utf-8')).dependencies;
-        version = dependencies[NpmModules.FioriGenerator];
-    }
-    return version;
-}
-
-/**
- * Read the version of the fiori generator in VSCode.
- *
- * @returns version
- */
-async function getFioriGenGlobalRoot(): Promise<string> {
-    let version;
+async function getFioriGenGlobalPath(): Promise<string> {
+    let fioriGenPath;
     let globalNpmPath = await spawnCommand(npmCommand, ['root', '-g']);
-    globalNpmPath = globalNpmPath.trim();
-    const pathToPackageJson = join(globalNpmPath, NpmModules.FioriGenerator, 'package.json');
-    if (existsSync(pathToPackageJson)) {
-        version = JSON.parse(await promises.readFile(pathToPackageJson, 'utf-8')).version;
-    } else {
-        version = t('info.notInstalledOrNotFound');
+
+    // default version of npm on BAS (8.11.0) has a bug https://github.com/npm/cli/issues/5228
+    // can be removed when default npm version is upgraded
+    if (globalNpmPath.includes('WARN') && globalNpmPath.includes('--location=global')) {
+        globalNpmPath = await spawnCommand(npmCommand, ['root', '--location=global']);
     }
-    return version;
+
+    globalNpmPath = globalNpmPath.trim();
+    if (globalNpmPath) {
+        fioriGenPath = join(globalNpmPath, NpmModules.FioriGenerator);
+    }
+    return fioriGenPath;
 }
 
 /**
@@ -141,13 +160,30 @@ async function getFioriGenGlobalRoot(): Promise<string> {
  * @returns version
  */
 export async function getFioriGenVersion(): Promise<string> {
-    let fioriGenVersion: string;
+    let fioriGenVersion = t('info.notInstalledOrNotFound');
+    const genSearchPaths = [];
     try {
-        if (isAppStudio()) {
-            fioriGenVersion = await getFioriGenBAS();
+        const fioriGenPath = await getFioriGenGlobalPath();
+        genSearchPaths.push(fioriGenPath);
+
+        // BAS recommend using NODE_PATH as the paths therein are used to locate all generators regardless of installation method
+        if (isAppStudio() && process.env.NODE_PATH) {
+            genSearchPaths.push(
+                ...process.env.NODE_PATH.split(':')
+                    .filter((path) => path.endsWith('node_modules'))
+                    .map((path) => join(path, NpmModules.FioriGenerator))
+            );
         }
-        if (!fioriGenVersion) {
-            fioriGenVersion = await getFioriGenGlobalRoot();
+
+        for (const genPath of genSearchPaths) {
+            const fioriGenPkgJson = join(genPath, 'package.json');
+            if (existsSync(fioriGenPkgJson)) {
+                const version = JSON.parse(await promises.readFile(fioriGenPkgJson, 'utf-8')).version;
+                if (version) {
+                    fioriGenVersion = version;
+                    break;
+                }
+            }
         }
     } catch {
         return t('info.notInstalledOrNotFound');

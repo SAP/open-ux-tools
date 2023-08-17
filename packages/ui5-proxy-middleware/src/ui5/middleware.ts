@@ -1,7 +1,7 @@
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
 import type { Options } from 'http-proxy-middleware';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import type { MiddlewareParameters, Ui5MiddlewareConfig, ProxyConfig } from '../base';
+import type { ProxyConfig } from '../base';
 import {
     getCorporateProxyServer,
     HTML_MOUNT_PATHS,
@@ -12,6 +12,9 @@ import {
 } from '../base';
 import dotenv from 'dotenv';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
+import type { Manifest } from '@sap-ux/project-access';
+import type { MiddlewareParameters } from '@ui5/server';
+import type { ReaderCollection } from '@ui5/fs';
 
 /**
  * Create proxy options based on the middleware config.
@@ -46,13 +49,42 @@ function createRequestHandler(routes: { route: string; handler: RequestHandler }
     };
 }
 
-module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>): Promise<RequestHandler> => {
+/**
+ * Search the project for the manifest.json.
+ *
+ * @param rootProject @ui5/fs reader collection with access to the project files
+ * @returns manifest.json as object or undefined if not found
+ */
+async function loadManifest(rootProject: ReaderCollection): Promise<Manifest | undefined> {
+    const files = await rootProject.byGlob('**/manifest.json');
+    if (files?.length > 0) {
+        return JSON.parse(await files[0].getString());
+    } else {
+        return undefined;
+    }
+}
+
+module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
+
+    if (!options.configuration?.ui5) {
+        logger.error('Configuration missing, no proxy created.');
+        return (_req, _res, next) => next();
+    }
+
     dotenv.config();
     const config = options.configuration;
-    const ui5Version = await resolveUI5Version(config.version, logger);
+    let ui5Version: string = '';
+    try {
+        const manifest = await loadManifest(resources.rootProject);
+        ui5Version = await resolveUI5Version(config.version, logger, manifest);
+    } catch (error) {
+        logger.warn('Retrieving UI5 version failed, using latest version instead.');
+        logger.debug(error);
+    }
+
     const envUI5Url = process.env.FIORI_TOOLS_UI5_URI;
     const directLoad = !!config.directLoad;
     const corporateProxyServer = getCorporateProxyServer(config.proxy);
@@ -84,7 +116,12 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
 
     if (directLoad) {
         const directLoadProxy = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-            await injectScripts(req, res, next, ui5Configs);
+            try {
+                await injectScripts(req, res, next, ui5Configs);
+            } catch (error) {
+                logger.error(error);
+                next(error);
+            }
         };
 
         HTML_MOUNT_PATHS.forEach((path) => {

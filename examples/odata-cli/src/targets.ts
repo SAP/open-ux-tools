@@ -36,7 +36,7 @@ export async function testWithAbapSystem(
             password: env.TEST_PASSWORD
         }
     });
-    activity(provider, env);
+    activity(provider, env).catch((error) => console.error(error));
 }
 
 /**
@@ -98,7 +98,7 @@ export async function testWithCloudAbapSystem(
         url: env.TEST_SYSTEM,
         ignoreCertErrors: env.TEST_IGNORE_CERT_ERRORS === 'true'
     });
-    activity(provider, env);
+    activity(provider, env).catch((error) => console.error(error));
 }
 
 /**
@@ -132,7 +132,7 @@ export async function testWithDestination(
                 : {},
             destinations[env.TEST_DESTINATION]
         ) as AbapServiceProvider;
-        activity(provider, env);
+        activity(provider, env).catch((error) => console.error(error));
 
         const provider2 = createForDestination(
             {
@@ -140,7 +140,7 @@ export async function testWithDestination(
             },
             destinations[env.TEST_DESTINATION]
         ) as AbapServiceProvider;
-        activity(provider2, env);
+        activity(provider2, env).catch((error) => console.error(error));
     } else {
         logger.info(`Invalid destination ${env.TEST_DESTINATION}`);
     }

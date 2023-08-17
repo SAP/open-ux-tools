@@ -1,23 +1,11 @@
-module.exports = {
-    transform: {
-        '^.+\\.ts$': 'ts-jest'
-    },
-    collectCoverage: true,
-    collectCoverageFrom: ['src/**/*.ts'],
-    setupFilesAfterEnv: ['jest-extended'],
-    globals: {
-        'ts-jest': {
-            tsconfig: './test/tsconfig.json'
+const config = require('../../jest.base');
+config.setupFilesAfterEnv = ['jest-extended/all'];
+config.transform = {
+    '^.+\\.tsx?$': [
+        'ts-jest',
+        {
+            tsconfig: 'test/tsconfig.json'
         }
-    },
-    reporters: [
-        'default',
-        [
-            'jest-sonar',
-            {
-                reportedFilePath: 'relative',
-                relativeRootDir: '<rootDir>/../../../'
-            }
-        ]
     ]
 };
+module.exports = config;

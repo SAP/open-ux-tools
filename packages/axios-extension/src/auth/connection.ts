@@ -1,6 +1,6 @@
-import type { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
+import { AxiosHeaders } from 'axios';
+import type { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
-import { ConnectionError } from './error';
 import detectContentType from 'detect-content-type';
 
 export enum CSRF {
@@ -23,7 +23,7 @@ export class Cookies {
      * @returns cookies object
      */
     public setCookies(response: AxiosResponse): Cookies {
-        if (response.headers && response.headers['set-cookie']) {
+        if (response.headers?.['set-cookie']) {
             response.headers['set-cookie'].forEach((cookieString) => this.addCookie(cookieString));
         }
         return this;
@@ -37,7 +37,7 @@ export class Cookies {
      */
     public addCookie(cookieString: string): Cookies {
         const cookie = cookieString.split(';');
-        const [key, ...values] = cookie[0]?.split('=');
+        const [key, ...values] = cookie[0]?.split('=') || [];
         const value = values?.join('='); // Account for embedded '=' in the value
         if (key && cookieString.indexOf('Max-Age=0') >= 0) {
             delete this.cookies[key];
@@ -115,7 +115,7 @@ function isHtmlLoginForm(response: AxiosResponse): boolean {
 
 /**
  * @param contentTypeHeader contents of Content-Type header (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type)
- * @param responseData data receievd in HTTP response. This is used to infer the Content-Type, if the header is missing or ambiguous
+ * @param responseData data received in HTTP response. This is used to infer the Content-Type, if the header is missing or ambiguous
  * @returns content type
  */
 function getContentType(contentTypeHeader: string | undefined, responseData: any): string {
@@ -136,37 +136,49 @@ function getContentType(contentTypeHeader: string | undefined, responseData: any
  */
 export function attachConnectionHandler(provider: ServiceProvider) {
     // fetch xsrf token with the first request
-    const oneTimeReqInterceptorId = provider.interceptors.request.use((request: AxiosRequestConfig) => {
-        request.headers = request.headers ?? {};
+    const oneTimeReqInterceptorId = provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+        request.headers = request.headers ?? new AxiosHeaders();
         request.headers[CSRF.RequestHeaderName] = CSRF.RequestHeaderValue;
-        provider.interceptors.request.eject(oneTimeReqInterceptorId);
         return request;
     });
 
     // throw error if the user is unauthorized otherwise, remove interceptor if successfully connected
-    const oneTimeRespInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
-        if (response.status === 401) {
-            throw new ConnectionError(response.statusText, response);
-        }
-        // if a redirect to a SAML login page happened try again with disable saml param
-        else if (isSamlLogonNeeded(response) && provider.defaults.params?.saml2 !== 'disabled') {
-            provider.defaults.params = provider.defaults.params ?? {};
-            provider.defaults.params.saml2 = 'disabled';
-            return provider.request(response.config);
-        } else {
-            throwIfHtmlLoginForm(response);
-            // remember xsrf token
-            if (response.headers?.[CSRF.ResponseHeaderName]) {
-                provider.defaults.headers.common[CSRF.RequestHeaderName] = response.headers[CSRF.ResponseHeaderName];
+    const oneTimeRespInterceptorId = provider.interceptors.response.use(
+        (response: AxiosResponse) => {
+            // if a redirect to a SAML login page happened try again with disable saml param
+            if (isSamlLogonNeeded(response) && provider.defaults.params?.saml2 !== 'disabled') {
+                provider.defaults.params = provider.defaults.params ?? {};
+                provider.defaults.params.saml2 = 'disabled';
+                return provider.request(response.config);
+            } else {
+                throwIfHtmlLoginForm(response);
+                // remember xsrf token
+                if (response.headers?.[CSRF.ResponseHeaderName]) {
+                    provider.defaults.headers.common[CSRF.RequestHeaderName] =
+                        response.headers[CSRF.ResponseHeaderName];
+                    provider.interceptors.request.eject(oneTimeReqInterceptorId);
+                }
+                provider.interceptors.response.eject(oneTimeRespInterceptorId);
+                return response;
             }
-            provider.interceptors.response.eject(oneTimeRespInterceptorId);
-            return response;
+        },
+        (error: AxiosError) => {
+            // remember xsrf token if provided even on error
+            if (error.response) {
+                if (error.response.headers?.[CSRF.ResponseHeaderName]) {
+                    provider.defaults.headers.common[CSRF.RequestHeaderName] =
+                        error.response.headers[CSRF.ResponseHeaderName];
+                    provider.interceptors.request.eject(oneTimeReqInterceptorId);
+                }
+                provider.cookies.setCookies(error.response);
+            }
+            throw error;
         }
-    });
+    );
 
     // always add cookies to outgoing requests
-    provider.interceptors.request.use((request: AxiosRequestConfig) => {
-        request.headers = request.headers ?? {};
+    provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+        request.headers = request.headers ?? new AxiosHeaders();
         request.headers.cookie = provider.cookies.toString();
         return request;
     });

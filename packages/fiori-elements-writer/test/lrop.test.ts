@@ -9,10 +9,15 @@ import {
     v4TemplateSettings,
     v4Service,
     v2TemplateSettings,
-    v2Service
+    v2Service,
+    projectChecks,
+    updatePackageJSONDependencyToUseLocalPath
 } from './common';
 
 const TEST_NAME = 'lropTemplates';
+if (debug?.enabled) {
+    jest.setTimeout(360000);
+}
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
@@ -61,6 +66,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     },
                     appOptions: {
                         ...feBaseConfig('lropV4AddTests').appOptions,
+                        generateIndex: true,
                         addTests: true
                     }
                 }),
@@ -161,11 +167,81 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         settings: v2TemplateSettings
                     },
                     ui5: {
-                        version: '1.77.2' // flex changes preview should be included with this version
+                        version: '1.77.2'
                     },
                     appOptions: {
                         typescript: true
                     }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_ts_ui5_1_108',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_108'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.108.0'
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_ts_ui5_1_111',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_111'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.111.0'
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_ts_ui5_1_113',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_113'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.113.0'
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_without_start-noflp',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.77.2'
+                    },
+                    appOptions: { generateIndex: false }
                 }),
                 service: v2Service
             } as FioriElementsApp<LROPSettings>
@@ -179,15 +255,18 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     test.each(lropConfigs)('Generate files for template: $name', async ({ name, config }) => {
         const testPath = join(curTestOutPath, name);
         const fs = await generate(testPath, config);
-        expect((fs as any).dump(testPath)).toMatchSnapshot();
+        expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 });

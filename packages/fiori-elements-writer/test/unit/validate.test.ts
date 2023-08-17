@@ -4,7 +4,7 @@ import { TemplateTypeAttributes } from '../../src/data/templateAttributes';
 import { t } from '../../src/i18n';
 import type { ALPSettings } from '../../src/types';
 import { validateApp, validateRequiredProperties } from '../../src/validate';
-import { feBaseConfig, v4TemplateSettings } from '../common';
+import { feBaseConfig } from '../common';
 
 describe('Validate', () => {
     test('Valid app config', () => {

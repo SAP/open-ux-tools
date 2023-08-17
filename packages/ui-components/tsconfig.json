@@ -1,28 +1,15 @@
 {
     "extends": "../../tsconfig.json",
+    "include": ["src"],
     "compilerOptions": {
-        "composite": true,
-        "declaration": true,
-        "declarationMap": true,
-        "incremental": true,
+        "rootDir": "src",
         "outDir": "dist",
-        "baseUrl": "./src",
-        "skipLibCheck": true,
-        "resolveJsonModule": true,
-        "lib": ["ES2020", "dom"],
-        "strict": false,
+        "incremental": true,
         "jsx": "react",
-        "sourceMap": true,
-
-        "target": "ES2020",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "types": ["node", "jest"],
+        "lib": ["ES2020", "dom"],
         "preserveConstEnums": true,
+        "target": "ES2020",
+        "types": ["node", "jest"],
         "importsNotUsedAsValues": "remove"
-    },
-    "include": ["src/**/*.ts", "src/**/*.tsx"],
-    "exclude": ["dist", "node_modules", ".vscode-test", "reports"],
-    "references": []
+    }
 }

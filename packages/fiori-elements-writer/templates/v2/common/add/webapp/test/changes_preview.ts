@@ -1,6 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 //Load the fake lrep connector only if ui5 version < 1.78
-var version = sap.ui.version.split(".");
+const version = sap.ui.version.split(".");
 if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries(["sap/ui/fl"]);
     sap.ui.require(["sap/ui/fl/FakeLrepConnector"], function (FakeLrepConnector) {
@@ -12,8 +13,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 if (!sCodeAsString || sCodeAsString.length === 0) {
                     return "";
                 }
-                var sAsciiString = "";
-                for (var i = 0; i < sCodeAsString.length; i++) {
+                const sAsciiString = "";
+                for (const i = 0; i < sCodeAsString.length; i++) {
                     sAsciiString += sCodeAsString.charCodeAt(i) + ",";
                 }
                 if (
@@ -31,7 +32,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
              * and get their content
              */
             loadChanges: function () {
-                var oResult = {
+                const oResult = {
                     changes: [],
                     settings: {
                         isKeyUser: true,
@@ -41,30 +42,18 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 };
 
                 //Get the content of the changes folder.
-                var aPromises = [];
-                var sCacheBusterFilePath = "/sap-ui-cachebuster-info.json";
-                var trustedHosts = [
-                    /^localhost$/,
-                    /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+applicationstudio\.cloud\.sap$/,
-                    /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+applicationstudio\.sapcloud\.cn$/,
-                    /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+applicationstudio\.vlab-sapcloudplatformdev\.cn$/
-                ];                
-                var url = new URL(window.location.toString());
-                var isValidHost = trustedHosts.some((host) => {
-                    return host.test(url.hostname);
-                });
+                const aPromises = [];
+                const sCacheBusterFilePath = "/sap-ui-cachebuster-info.json";
+
                 return new Promise(function (resolve, reject) {
-                    if (!isValidHost) {
-                        reject("cannot load flex changes: invalid host");
-                    }
                     $.ajax({
-                        url: url.origin + sCacheBusterFilePath,
+                        url: sCacheBusterFilePath,
                         type: "GET",
                         cache: false
                     })
                         .then(function (oCachebusterContent) {
                             //we are looking for only change files
-                            var aChangeFilesPaths = Object.keys(oCachebusterContent).filter(function (sPath) {
+                            const aChangeFilesPaths = Object.keys(oCachebusterContent).filter(function (sPath) {
                                 return sPath.endsWith(".change");
                             });
                             $.each(aChangeFilesPaths, function (index, sFilePath) {
@@ -76,12 +65,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                 //<MTA-HTML5-MODULE-NAME>/webapp/changes/<change-file>
                                 if (sFilePath.indexOf("changes") === 0) {
                                     /*eslint-disable no-param-reassign*/
-                                    if (!isValidHost) {
-                                        reject("cannot load flex changes: invalid host");
-                                    }
                                     aPromises.push(
                                         $.ajax({
-                                            url: url.origin + "/" + sFilePath,
+                                            url: "/" + sFilePath,
                                             type: "GET",
                                             cache: false
                                         }).then(function (sChangeContent) {
@@ -97,25 +83,19 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                     // If no changes found, maybe because the app was executed without doing a build.
                                     // Check for changes folder and load the changes, if any.
                                     if (aChanges.length === 0) {
-                                        if (!isValidHost) {
-                                            rejectInner("cannot load flex changes: invalid host");
-                                        }
                                         $.ajax({
-                                            url: url.origin + "/changes/",
+                                            url: "/changes/",
                                             type: "GET",
                                             cache: false
                                         })
                                             .then(function (sChangesFolderContent) {
-                                                var regex = /(\/changes\/[^"]*\.[a-zA-Z]*)/g;
-                                                var result = regex.exec(sChangesFolderContent);
+                                                const regex = /(\/changes\/[^"]*\.[a-zA-Z]*)/g;
+                                                const result = regex.exec(sChangesFolderContent);
 
                                                 while (result !== null) {
-                                                    if (!isValidHost) {
-                                                        rejectInner("cannot load flex changes: invalid host");
-                                                    }
                                                     aPromises.push(
                                                         $.ajax({
-                                                            url: url.origin + result[1],
+                                                            url: result[1],
                                                             type: "GET",
                                                             cache: false
                                                         }).then(function (sChangeContent) {
@@ -134,20 +114,20 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                         resolveInner(aChanges);
                                     }
                                 }).then(function (aCheckChanges) {
-                                    var aChangePromises = [],
+                                    const aChangePromises = [],
                                         aProcessedChanges = [];
                                     aCheckChanges.forEach(function (oChange) {
-                                        var sChangeType = oChange.changeType;
+                                        const sChangeType = oChange.changeType;
                                         if (sChangeType === "addXML" || sChangeType === "codeExt") {
                                             /*eslint-disable no-nested-ternary*/
-                                            var sPath =
+                                            const sPath =
                                                 sChangeType === "addXML"
                                                     ? oChange.content.fragmentPath
                                                     : sChangeType === "codeExt"
                                                         ? oChange.content.codeRef
                                                         : "";
-                                            var sWebappPath = sPath.match(/webapp(.*)/);
-                                            var sUrl = "/" + sWebappPath[0];
+                                            const sWebappPath = sPath.match(/webapp(.*)/);
+                                            const sUrl = "/" + sWebappPath[0];
                                             aChangePromises.push(
                                                 $.ajax({
                                                     url: sUrl,
@@ -184,7 +164,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                                 return new Date(change1.creation) - new Date(change2.creation);
                                             });
                                             oResult.changes = aProcessedChanges;
-                                            var oLrepChange = {
+                                            const oLrepChange = {
                                                 changes: oResult,
                                                 componentClassName: "<%- app.id %>"
                                             };
@@ -195,7 +175,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                             return new Date(change1.creation) - new Date(change2.creation);
                                         });
                                         oResult.changes = aProcessedChanges;
-                                        var oLrepChange = {
+                                        const oLrepChange = {
                                             changes: oResult,
                                             componentClassName: "<%- app.id %>"
                                         };
