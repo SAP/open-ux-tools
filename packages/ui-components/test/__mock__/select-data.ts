@@ -1,3 +1,5 @@
+import { UISelectableOptionMenuItemType } from '../../src/components';
+
 export const data = [
     {
         key: '',
@@ -298,3 +300,65 @@ export const data = [
 ];
 
 export const shortData = [data[0], data[1], data[2], data[3], data[4]];
+
+const continents = {
+    africa: ['DZ', 'EG', 'GH', 'KE', 'MA', 'NG', 'SN', 'ZA', 'TN', 'UG'],
+    asia: ['BH', 'IN', 'ID', 'JP', 'JO', 'KW', 'MY', 'OM', 'PH', 'QA', 'SA', 'SG', 'KR', 'AE', 'YE'],
+    ['Australia and Oceania']: ['AU', 'BC', 'NZ'],
+    europe: [
+        'AT',
+        'BE',
+        'BA',
+        'BG',
+        'HR',
+        'CZ',
+        'DK',
+        'EE',
+        'FI',
+        'FR',
+        'GER',
+        'GR',
+        'HU',
+        'IE',
+        'IL',
+        'IT',
+        'LV',
+        'LT',
+        'MK',
+        'ME',
+        'NL',
+        'NO',
+        'PL',
+        'PT',
+        'RO',
+        'RU',
+        'RS',
+        'SK',
+        'SI',
+        'ES',
+        'SE',
+        'CH',
+        'TR',
+        'UA',
+        'GB'
+    ],
+    northAmerica: ['CA'],
+    southAmerica: ['AR', 'BR', 'CL', 'CO', 'CU', 'MX', 'PE'],
+    unknown: ['DU', 'DD']
+};
+
+export const groupsData: Array<{ key: string; text: string; itemType?: UISelectableOptionMenuItemType }> = [];
+for (const continent in continents) {
+    groupsData.push({
+        key: continent,
+        text: continent.charAt(0).toUpperCase() + continent.slice(1),
+        itemType: UISelectableOptionMenuItemType.Header
+    });
+    const countries = continents[continent];
+    for (const countryCode of countries) {
+        const country = data.find((countryData) => countryData.key === countryCode);
+        if (country) {
+            groupsData.push(country);
+        }
+    }
+}

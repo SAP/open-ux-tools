@@ -4,10 +4,11 @@ import type { UIDropdownProps } from '../../../src/components/UIDropdown';
 import { UIDropdown } from '../../../src/components/UIDropdown';
 import type { IStyleFunction, ICalloutContentStyles, IDropdownStyleProps } from '@fluentui/react';
 import { Dropdown, ResponsiveMode } from '@fluentui/react';
-import { data as originalData } from '../../__mock__/select-data';
+import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 
 const data = JSON.parse(JSON.stringify(originalData));
+const groupsData = JSON.parse(JSON.stringify(originalGroupsData));
 
 describe('<UIDropdown />', () => {
     let wrapper: Enzyme.ReactWrapper<UIDropdownProps>;
@@ -77,6 +78,7 @@ describe('<UIDropdown />', () => {
         expect(wrapper.find('.ts-Callout-Dropdown').length).toBeGreaterThan(0);
         expect(wrapper.find('.ts-Callout-Dropdown .ms-Callout-main').length).toBeGreaterThan(0);
         expect(wrapper.find('.ts-Callout-Dropdown .ms-Dropdown-items .ms-Button--command').length).toBeGreaterThan(0);
+        expect(wrapper.find('.ms-Dropdown-header').length).toEqual(0);
     });
 
     it('Test "disabled" property', () => {
@@ -312,5 +314,15 @@ describe('<UIDropdown />', () => {
                 expect(wrapper.find('div.ts-SelectBox--empty').length).toEqual(testCase.expected ? 1 : 0);
             });
         }
+    });
+
+    it('Dropdown items with group headers', () => {
+        wrapper.setProps({
+            options: groupsData
+        });
+        wrapper.update();
+        openDropdown();
+        expect(wrapper.find('.ms-Dropdown-header').length).toEqual(7);
+        expect(wrapper.find('.ms-Dropdown-header .ts-dropdown-item-blocker').length).toEqual(0);
     });
 });

@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.3.7
+
+### Patch Changes
+
+-   29179b5f: Add SAP icon loading in flpsandbox.html
+
 ## 0.3.6
 
 ### Patch Changes
