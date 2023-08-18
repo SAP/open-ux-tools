@@ -51,6 +51,7 @@ type MetadataOptionsProperty = MetadataOptions.Property & {
  * @description Handles calling control specific functions for retrieving control data
  */
 export default class ControlUtils {
+    private static analyzedType: AnalyzedType;
     /**
      * Returns ManagedObject runtime control
      *
@@ -100,46 +101,84 @@ export default class ControlUtils {
     }
 
     /**
+     * Checks for property validity for analyzing
+     *
+     * @param {MetadataOptionsProperty} property Metadat options property
+     * @returns {boolean} Whether property is valid
+     */
+    private static checkPropertyValidity(property: MetadataOptionsProperty): boolean {
+        if (!property) {
+            return false;
+        }
+
+        const propertyType = property.getType();
+        if (!propertyType) {
+            return false;
+        }
+
+        const typeName = propertyType.getName();
+        if (!typeName) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Sets properties for analyzedType when data type is enum
+     *
+     * @param propertyDataType Type of property data type
+     * @param typeName Type name
+     */
+    private static setAnalyzedTypeForEnumDataType(propertyDataType: object, typeName: string) {
+        const name = Object.getPrototypeOf(propertyDataType).getName();
+        if (!name) {
+            this.analyzedType.primitiveType = 'enum';
+        } else {
+            this.analyzedType.primitiveType = name;
+        }
+        this.analyzedType.ui5Type = typeName;
+
+        // Determine base type for SAP types
+        if (this.analyzedType.primitiveType === 'enum') {
+            // @ts-ignore
+            this.analyzedType.enumValues = jQuery.sap.getObject(this.analyzedType.ui5Type);
+        }
+    }
+
+    /**
      * @description Analyzes propery type
      * @param property Managed Objects metadata properties
      * @returns {AnalyzedType | undefined} Analyzed type
      */
     private static analyzePropertyType(property: MetadataOptionsProperty): AnalyzedType | undefined {
-        const analyzedType: AnalyzedType = {
+        this.analyzedType = {
             primitiveType: 'any',
             ui5Type: null,
             enumValues: null,
             isArray: false
         };
 
-        if (!property) {
+        if (!this.checkPropertyValidity(property)) {
             return;
         }
 
-        const propertyType = property.getType();
-        if (!propertyType) {
-            return;
-        }
-
-        const typeName = propertyType.getName();
-        if (!typeName) {
-            return;
-        }
+        const typeName = property.getType().getName();
 
         // Check if array and determine property type (or component type)
         if (typeName.indexOf('[]') > 0) {
-            analyzedType.primitiveType = typeName.substring(0, typeName.indexOf('[]'));
-            analyzedType.isArray = true;
+            this.analyzedType.primitiveType = typeName.substring(0, typeName.indexOf('[]'));
+            this.analyzedType.isArray = true;
         }
         // Return if object or void type
         else if (typeName === 'void' || typeName === 'object') {
-            analyzedType.primitiveType = typeName;
+            this.analyzedType.primitiveType = typeName;
         } else if (typeName === 'any') {
-            analyzedType.primitiveType = 'any';
+            this.analyzedType.primitiveType = 'any';
         }
         // Type of control property is an elementary simple type
         else if (typeName === 'boolean' || typeName === 'string' || typeName === 'int' || typeName === 'float') {
-            analyzedType.primitiveType = typeName;
+            this.analyzedType.primitiveType = typeName;
         }
         // Control type is a sap.ui.base.DataType or an enumeration type
         else {
@@ -148,24 +187,12 @@ export default class ControlUtils {
 
             // type which is not a DataType such as Control is not supported
             if (propertyDataType && !(propertyDataType instanceof DataType)) {
-                return analyzedType;
+                return this.analyzedType;
             }
-            const name = Object.getPrototypeOf(propertyDataType).getName();
-            if (!name) {
-                analyzedType.primitiveType = 'enum';
-            } else {
-                analyzedType.primitiveType = name;
-            }
-            analyzedType.ui5Type = typeName;
-
-            // Determine base type for SAP types
-            if (analyzedType.primitiveType === 'enum') {
-                // @ts-ignore
-                analyzedType.enumValues = jQuery.sap.getObject(analyzedType.ui5Type);
-            }
+            this.setAnalyzedTypeForEnumDataType(propertyDataType, typeName);
         }
 
-        return analyzedType;
+        return this.analyzedType;
     }
 
     /**

@@ -415,7 +415,7 @@ export default class FragmentDialog {
                                 fragmentDialog.getContent()[0].setVisible(false);
                                 fragmentDialog.getContent()[1].setVisible(true);
                             },
-                            enabled: jsonModel.getProperty('/selectedAggregation/value') ? true : false
+                            enabled: !!jsonModel.getProperty('/selectedAggregation/value')
                         }).addStyleClass('uiadaptationFragmentDialogLink')
                     ]
                 }).addStyleClass('sapUiTinyMarginBottom'),
