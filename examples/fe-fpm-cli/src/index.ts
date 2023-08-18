@@ -48,22 +48,26 @@ async function initialize(): Promise<Editor> {
  * @param {Editor} fs the memfs editor object
  * @returns {Promise<Editor>} the updated memfs editor object
  */
-// async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor> {
-//     const answers: FilterBarPromptsAnswer = await inquirer.prompt(await getFilterBarBuildingBlockPrompts()) as FilterBarPromptsAnswer;
-//     fs = generateBuildingBlock<FilterBarPromptsAnswer>(
-//         testAppPath,
-//         {
-//             aggregationPath: `/mvc:View/*[local-name()='Page']/*[local-name()='content']`,
-//             viewOrFragmentPath: xmlViewFilePath,
-//             buildingBlockData: {
-//                 ...answers,
-//                 buildingBlockType: BuildingBlockType.FilterBar
-//             }
-//         },
-//         fs
-//     );
-//     return fs;
-// }
+export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor> {
+    const inquirer = await getInquirer();
+
+    const answers: FilterBarPromptsAnswer = (await inquirer.prompt(
+        await getFilterBarBuildingBlockPrompts()
+    )) as FilterBarPromptsAnswer;
+    fs = generateBuildingBlock<FilterBarPromptsAnswer>(
+        testAppPath,
+        {
+            aggregationPath: `/mvc:View/*[local-name()='Page']/*[local-name()='content']`,
+            viewOrFragmentPath: xmlViewFilePath,
+            buildingBlockData: {
+                ...answers,
+                buildingBlockType: BuildingBlockType.FilterBar
+            }
+        },
+        fs
+    );
+    return fs;
+}
 
 /**
  * Generates a chart building block by prompting the user for the required information.
@@ -71,37 +75,46 @@ async function initialize(): Promise<Editor> {
  * @param {Editor} fs the memfs editor object
  * @returns {Promise<Editor>} the updated memfs editor object
  */
-// async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
-//     const answers: ChartPromptsAnswer = await inquirer.prompt(await getChartBuildingBlockPrompts(testAppPath, fs)) as ChartPromptsAnswer;
-//     fs = generateBuildingBlock<ChartPromptsAnswer>(
-//         testAppPath,
-//         {
-//             aggregationPath: `/mvc:View/*[local-name()='Page']/*[local-name()='content']`,
-//             viewOrFragmentPath: xmlViewFilePath,
-//             buildingBlockData: {
-//                 ...answers,
-//                 buildingBlockType: BuildingBlockType.Chart
-//             }
-//         },
-//         fs
-//     );
-//     return fs;
-// }
+export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
+    const inquirer = await getInquirer();
+
+    const answers: ChartPromptsAnswer = (await inquirer.prompt(
+        await getChartBuildingBlockPrompts(testAppPath, fs)
+    )) as ChartPromptsAnswer;
+    fs = generateBuildingBlock<ChartPromptsAnswer>(
+        testAppPath,
+        {
+            aggregationPath: `/mvc:View/*[local-name()='Page']/*[local-name()='content']`,
+            viewOrFragmentPath: xmlViewFilePath,
+            buildingBlockData: {
+                ...answers,
+                buildingBlockType: BuildingBlockType.Chart
+            }
+        },
+        fs
+    );
+    return fs;
+}
 
 (async () => {
     let fs = await initialize();
-    const { default: inquirer } = await import('inquirer');
+    const inquirer = await getInquirer();
     // const inquirer = require('inquirer');
-    const answers: BuildingBlockTypePromptsAnswer = await inquirer.prompt(await getBuildingBlockTypePrompts()) as BuildingBlockTypePromptsAnswer;
-    // switch (answers.buildingBlockType) {
-    //     case BuildingBlockType.Chart:
-    //         fs = await generateChartBuildingBlock(fs);
-    //         break;
-    //     case BuildingBlockType.FilterBar:
-    //         fs = await generateFilterBarBuildingBlock(fs);
-    //         break;
-    //     default:
-    //         break;
-    // }
+    const answers: BuildingBlockTypePromptsAnswer = await inquirer.prompt(await getBuildingBlockTypePrompts());
+
+    switch (answers.buildingBlockType) {
+        case BuildingBlockType.Chart:
+            fs = await generateChartBuildingBlock(fs);
+            break;
+        case BuildingBlockType.FilterBar:
+            fs = await generateFilterBarBuildingBlock(fs);
+            break;
+        default:
+            break;
+    }
     await promisify(fs.commit).call(fs);
 })();
+
+async function getInquirer() {
+    return (await import('inquirer')).default;
+}
