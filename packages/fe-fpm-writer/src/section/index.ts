@@ -138,7 +138,7 @@ export function generateCustomHeaderSection(
     const manifestRoot = getManifestRoot('header-section', customHeaderSection.minUI5Version);
     const minVersion = coerce(customHeaderSection.minUI5Version);
     const applyTemplateEdit = customHeaderSection.edit && (!minVersion || gte(minVersion, '1.86.0'));
-    let editSection: (CustomElement & Partial<InternalCustomSection>) | undefined = undefined;
+    let editSection: (CustomElement & Partial<InternalCustomSection>) | undefined;
     // Prepare 'templateEdit' - apply namespace, folder paths resolution
     if (customHeaderSection.edit && applyTemplateEdit) {
         editSection = customHeaderSection.edit;
