@@ -13,7 +13,7 @@ Object {
   "requestGroupId": "Decoration",
   "subTitle": "Custom Header section subtitle",
   "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": ".NewCustomHeaderSectionEdit",
+  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
   "type": "XMLFragment",
 }
@@ -31,7 +31,7 @@ Object {
   "requestGroupId": "Decoration",
   "subTitle": "Custom Header section subtitle",
   "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": ".NewCustomHeaderSectionEdit",
+  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
 }
 `;
@@ -49,7 +49,7 @@ Object {
   "requestGroupId": "Decoration",
   "subTitle": "Custom Header section subtitle",
   "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": ".NewCustomHeaderSectionEdit",
+  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
   "type": "XMLFragment",
 }
@@ -67,7 +67,7 @@ Object {
   "requestGroupId": "Decoration",
   "subTitle": "Custom Header section subtitle",
   "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": ".NewCustomHeaderSectionEdit",
+  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
 }
 `;
@@ -85,7 +85,7 @@ Object {
   "requestGroupId": "Decoration",
   "subTitle": "Custom Header section subtitle",
   "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": ".NewCustomHeaderSectionEdit",
+  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
   "type": "XMLFragment",
 }
@@ -103,7 +103,7 @@ Object {
   "requestGroupId": "Decoration",
   "subTitle": "Custom Header section subtitle",
   "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-  "templateEdit": ".NewCustomHeaderSectionEdit",
+  "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
   "title": "New Custom Header Section",
 }
 `;
@@ -122,7 +122,7 @@ Object {
         "requestGroupId": "Decoration",
         "subTitle": "Custom Header section subtitle",
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-        "templateEdit": ".NewCustomHeaderSectionEdit",
+        "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.different.NewCustomHeaderSectionEdit",
         "title": "New Custom Header Section",
       },
     },
@@ -235,7 +235,7 @@ Object {
         "requestGroupId": "Decoration",
         "subTitle": "Custom Header section subtitle",
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-        "templateEdit": ".NewCustomHeaderSectionEdit",
+        "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
         "title": "New Custom Header Section",
       },
     },
@@ -280,7 +280,7 @@ Object {
         "requestGroupId": "Decoration",
         "subTitle": "Custom Header section subtitle",
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-        "templateEdit": ".NewCustomHeaderSectionEdit",
+        "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
         "title": "New Custom Header Section",
       },
     },
@@ -348,7 +348,7 @@ Object {
         "requestGroupId": "Decoration",
         "subTitle": "Custom Header section subtitle",
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSection",
-        "templateEdit": ".NewCustomHeaderSectionEdit",
+        "templateEdit": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomHeaderSectionEdit",
         "title": "New Custom Header Section",
       },
     },
