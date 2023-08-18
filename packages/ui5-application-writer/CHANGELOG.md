@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.24.2
+
+### Patch Changes
+
+-   29179b5f: Add SAP icon loading in flpsandbox.html
+
 ## 0.24.1
 
 ### Patch Changes

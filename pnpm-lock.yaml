@@ -1367,6 +1367,9 @@ importers:
 
   types:
     devDependencies:
+      '@sapui5/types':
+        specifier: 1.117.0
+        version: 1.117.0
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
@@ -4600,6 +4603,15 @@ packages:
       url: 0.11.0
     dev: false
 
+  /@sapui5/types@1.117.0:
+    resolution: {integrity: sha512-QrtSjE7KpT40LQULS8ShbkWd6g1K9J/+lK5FSx/dNXGDJJ+lxLqEkjZGKRnszhjzOsnovv/8YNAThB3Qi4fQHw==}
+    dependencies:
+      '@types/jquery': 3.5.13
+      '@types/offscreencanvas': 2019.6.4
+      '@types/qunit': 2.5.4
+      '@types/three': 0.125.3
+    dev: true
+
   /@sigstore/bundle@1.0.0:
     resolution: {integrity: sha512-yLvrWDOh6uMOUlFCTJIZEnwOT9Xte7NPXUqVexEKGSF5XtBAuSg5du0kn3dRR0p47a4ah10Y0mNt8+uyeQXrBQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -5907,6 +5919,12 @@ packages:
       pretty-format: 29.5.0
     dev: true
 
+  /@types/jquery@3.5.13:
+    resolution: {integrity: sha512-ZxJrup8nz/ZxcU0vantG+TPdboMhB24jad2uSap50zE7Q9rUeYlCF25kFMSmHR33qoeOgqcdHEp3roaookC0Sg==}
+    dependencies:
+      '@types/sizzle': 2.3.3
+    dev: true
+
   /@types/jsdom@20.0.1:
     resolution: {integrity: sha512-d0r18sZPmMQr1eG35u12FZfhIXNrnsPU/g5wvRKCUf/tOGilKKwYMYGqh33BNR6ba+2gkHw1EUiHoN3mn7E5IQ==}
     dependencies:
@@ -6013,6 +6031,10 @@ packages:
     resolution: {integrity: sha512-WKG4gTr8przEZBiJ5r3s8ZIAoMXNbOgQ+j/d5O4X3x6kZJRLNvyUJuUK/KoG3+8BaOHPhp2m7WC6JKKeovDSzQ==}
     dev: true
 
+  /@types/offscreencanvas@2019.6.4:
+    resolution: {integrity: sha512-u8SAgdZ8ROtkTF+mfZGOscl0or6BSj9A4g37e6nvxDc+YB/oDut0wHkK2PBBiC2bNR8TS0CPV+1gAk4fNisr1Q==}
+    dev: true
+
   /@types/parse-json@4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
     dev: true
@@ -6054,6 +6076,10 @@ packages:
 
   /@types/qs@6.9.7:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
+    dev: true
+
+  /@types/qunit@2.5.4:
+    resolution: {integrity: sha512-VHi2lEd4/zp8OOouf43JXGJJ5ZxHvdLL1dU0Yakp6Iy73SjpuXl7yjwAwmh1qhTv8krDgHteSwaySr++uXX9YQ==}
     dev: true
 
   /@types/range-parser@1.2.4:
@@ -6117,6 +6143,10 @@ packages:
       '@types/node': 12.12.6
     dev: true
 
+  /@types/sizzle@2.3.3:
+    resolution: {integrity: sha512-JYM8x9EGF163bEyhdJBpR2QX1R5naCJHC8ucJylJ3w9/CVBaskdQ8WqBf8MmQrd1kRvp/a4TS8HJ+bxzR7ZJYQ==}
+    dev: true
+
   /@types/source-list-map@0.1.2:
     resolution: {integrity: sha512-K5K+yml8LTo9bWJI/rECfIPrGgxdpeNbj+d53lwN4QjW1MCwlkhUms+gtdzigTeUyBr09+u8BwOIY3MXvHdcsA==}
     dev: true
@@ -6150,6 +6180,10 @@ packages:
 
   /@types/text-table@0.2.2:
     resolution: {integrity: sha512-dGoI5Af7To0R2XE8wJuc6vwlavWARsCh3UKJPjWs1YEqGUqfgBI/j/4GX0yf19/DsDPPf0YAXWAp8psNeIehLg==}
+    dev: true
+
+  /@types/three@0.125.3:
+    resolution: {integrity: sha512-tUPMzKooKDvMOhqcNVUPwkt+JNnF8ASgWSsrLgleVd0SjLj4boJhteSsF9f6YDjye0mmUjO+BDMWW83F97ehXA==}
     dev: true
 
   /@types/through@0.0.30:
