@@ -49,24 +49,6 @@ export const contextParameter: EventHandlerTypescriptParameters = {
 };
 
 /**
- * Method resolves event handler configuration options by adding default values.
- *
- * @param eventHandlerOptions - eventHandler options
- * @returns {EventHandlerConfigurationOptions} event handler configuration options
- */
-function resolveEventHandlerConfigurationOptions(
-    eventHandlerOptions: EventHandlerConfigurationOptions
-): EventHandlerConfigurationOptions {
-    const { controllerSuffix, typescript, templatePath, eventHandlerFnName } = eventHandlerOptions;
-    return {
-        controllerSuffix,
-        typescript,
-        templatePath: templatePath ?? 'common/EventHandler',
-        eventHandlerFnName: eventHandlerFnName ?? 'onPress'
-    };
-}
-
-/**
  * Method creates or updates handler js file and update 'settings.eventHandler' entry with namespace path entry to method.
  *
  * @param fs - the memfs editor instance
@@ -83,8 +65,8 @@ export function applyEventHandlerConfiguration(
     eventHandlerOptions: EventHandlerConfigurationOptions,
     parameters: EventHandlerTypescriptParameters = defaultParameter
 ): string {
-    const { controllerSuffix, typescript, templatePath } = resolveEventHandlerConfigurationOptions(eventHandlerOptions);
-    let eventHandlerFnName = resolveEventHandlerConfigurationOptions(eventHandlerOptions).eventHandlerFnName;
+    const { controllerSuffix, typescript, templatePath = 'common/EventHandler' } = eventHandlerOptions;
+    let { eventHandlerFnName = 'onPress' } = eventHandlerOptions;
     if (typeof eventHandler === 'string') {
         // Existing event handler is passed - no need for file creation/update
         return eventHandler;
