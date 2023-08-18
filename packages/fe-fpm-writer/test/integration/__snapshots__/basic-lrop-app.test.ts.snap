@@ -500,7 +500,7 @@ Object {
                   \\"facets\\": {
                     \\"MyCustomHeaderSection\\": {
                       \\"template\\": \\"v4travel.ext.myCustomHeaderSection.MyCustomHeaderSection\\",
-                      \\"templateEdit\\": \\".MyCustomHeaderSectionEdit\\",
+                      \\"templateEdit\\": \\"v4travel.ext.myCustomHeaderSectionEdit.MyCustomHeaderSectionEdit\\",
                       \\"position\\": {
                         \\"placement\\": \\"After\\",
                         \\"anchor\\": \\"DummyHeaderAnchor\\"
@@ -1125,7 +1125,7 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
                   \\"facets\\": {
                     \\"MyCustomHeaderSection\\": {
                       \\"template\\": \\"v4travel.ext.myCustomHeaderSection.MyCustomHeaderSection\\",
-                      \\"templateEdit\\": \\".MyCustomHeaderSectionEdit\\",
+                      \\"templateEdit\\": \\"v4travel.ext.myCustomHeaderSectionEdit.MyCustomHeaderSectionEdit\\",
                       \\"position\\": {
                         \\"placement\\": \\"After\\",
                         \\"anchor\\": \\"DummyHeaderAnchor\\"

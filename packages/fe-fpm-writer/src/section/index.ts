@@ -132,16 +132,24 @@ export function generateCustomHeaderSection(
     customHeaderSection: CustomHeaderSection,
     fs?: Editor
 ): Editor {
+    if (!fs) {
+        fs = create(createStorage());
+    }
     const manifestRoot = getManifestRoot('header-section', customHeaderSection.minUI5Version);
-    const { editor, section } = generate(basePath, customHeaderSection, manifestRoot, fs);
-    // Get edit fragment details
     const minVersion = coerce(customHeaderSection.minUI5Version);
-    if (section.edit && (!minVersion || gte(minVersion, '1.86.0'))) {
-        const editSection: CustomElement & Partial<InternalCustomSection> = section.edit;
+    let editSection: (CustomElement & Partial<InternalCustomSection>) | undefined;
+    // Prepare 'templateEdit' - apply namespace and folder path resolution
+    if (customHeaderSection.edit && (!minVersion || gte(minVersion, '1.86.0'))) {
+        editSection = customHeaderSection.edit;
         const manifestPath = join(basePath, 'webapp/manifest.json');
-        const manifest = editor.readJSON(manifestPath) as Manifest;
+        const manifest = fs.readJSON(manifestPath) as Manifest;
         // Set folder, ns and path for edit fragment
         setCommonDefaults(editSection, manifestPath, manifest);
+    }
+    // Call standard custom section generation
+    const { editor, section } = generate(basePath, customHeaderSection, manifestRoot, fs);
+    // Handle 'templateEdit' - edit fragment details
+    if (editSection) {
         // Apply event handler for edit fragment
         if (editSection.eventHandler) {
             editSection.eventHandler = applyEventHandlerConfiguration(editor, editSection, editSection.eventHandler, {
