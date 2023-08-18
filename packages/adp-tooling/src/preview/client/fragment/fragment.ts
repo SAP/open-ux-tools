@@ -148,6 +148,7 @@ export default class FragmentDialog {
             if (hiddenAggregations.indexOf(item) === -1) {
                 return item;
             }
+            return false;
         });
         const defaultAggregation = runtimeControl.getMetadata().getDefaultAggregationName();
         const selectedControlName = control.name;
@@ -162,8 +163,7 @@ export default class FragmentDialog {
         ];
 
         if (defaultAggregationDesignTimeMetadata !== undefined) {
-            allowIndexForDefaultAggregation =
-                defaultAggregationDesignTimeMetadata.specialIndexHandling === true ? false : true;
+            allowIndexForDefaultAggregation = !defaultAggregationDesignTimeMetadata.specialIndexHandling;
         }
 
         selectedControlChildren = selectedControlChildren.map((key) => {
@@ -213,7 +213,7 @@ export default class FragmentDialog {
         jsonModel.setProperty('/defaultAggregation', defaultAggregation);
         jsonModel.setProperty('/targetAggregation', controlAggregation);
         jsonModel.setProperty('/index', indexArray);
-        jsonModel.setProperty('/selectorId', selectorId ? selectorId : 'oCurrentSelection.id');
+        jsonModel.setProperty('/selectorId', selectorId);
 
         return {
             runtimeControl,

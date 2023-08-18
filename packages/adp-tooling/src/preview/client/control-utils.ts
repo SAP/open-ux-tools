@@ -88,7 +88,6 @@ export default class ControlUtils {
             }
             //_sGetter is "getContent"
             // This executes a _sGetter function that canvary from control to control (can be: getContent, getItems, etc)
-            // @ts-ignore
             result = (aggregation._sGetter && control[aggregation._sGetter]()) || [];
 
             // The aggregation has primitive alternative type
@@ -302,41 +301,48 @@ export default class ControlUtils {
                       propertyType: analyzedType.ui5Type
                   };
 
+            // A property is enabled if:
+            // 1. The property supports changes
+            // 2. The control has stable ID
+            // 3. It is not configured to be ignored in design time
+            // 4. And control overlay is selectable
+            const isEnabled =
+                (controlOverlay?.isSelectable() ?? false) &&
+                this.isPropertyEnabled(analyzedType) &&
+                hasStableId &&
+                !ignore;
+
             this.getPropertyForBuiltControl(
                 analyzedType,
                 property,
                 properties,
                 documentation,
                 selectedControlName,
-                controlOverlay,
                 controlNewData,
-                hasStableId,
-                ignore
+                isEnabled
             );
         }
 
-        const sortedProperties = properties.sort((a, b) => (a.name > b.name ? 1 : -1));
+        properties.sort((a, b) => (a.name > b.name ? 1 : -1));
 
         return {
-            id: control.getId(), //the id of the underlying control/aggregation
-            type: selectedControlName, //the name of the ui5 class of the control/aggregation
-            properties: sortedProperties,
+            id: control.getId(), // the id of the underlying control/aggregation
+            type: selectedControlName, // the name of the ui5 class of the control/aggregation
+            properties, // sorted array of properties
             name: selectedControlName
         };
     }
 
     /**
-     * Pushed property to properties array depending on primitive type of analyzed type
+     * Pushed property to properties array depending on primitiveType of analyzed T
      *
      * @param {AnalyzedType} analyzedType  Analyzed type
      * @param {Property} property Property
      * @param {Properties[]} properties Properties array
      * @param documentation Documentation object
      * @param selectedControlName Selected control name
-     * @param {ElementOverlay} controlOverlay Control overlay
      * @param {ControlNewData} controlNewData Control new data
-     * @param hasStableId Has a stable id
-     * @param ignore Ignore toggle
+     * @param isEnabled Whether property is enabled
      */
     private static getPropertyForBuiltControl(
         analyzedType: AnalyzedType,
@@ -344,18 +350,9 @@ export default class ControlUtils {
         properties: Properties[],
         documentation: object,
         selectedControlName: string,
-        controlOverlay: ElementOverlay,
         controlNewData: ControlNewData,
-        hasStableId: boolean,
-        ignore: boolean
+        isEnabled: boolean
     ) {
-        // A property is enabled if:
-        // 1. The property supports changes
-        // 2. The control has stable ID
-        // 3. It is not configured to be ignored in design time
-        // 4. And control overlay is selectable
-        const isEnabled =
-            (controlOverlay?.isSelectable() ?? false) && this.isPropertyEnabled(analyzedType) && hasStableId && !ignore;
         const value = this.normalizeObjectPropertyValue(controlNewData.newValue);
         const isIcon =
             this.testIconPattern(property.name) &&
