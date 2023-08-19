@@ -1,7 +1,6 @@
 /** sap.m */
 import type Dialog from 'sap/m/Dialog';
 import MessageToast from 'sap/m/MessageToast';
-import type OverflowToolbar from 'sap/m/OverflowToolbar';
 
 /** sap.ui.core */
 import Fragment from 'sap/ui/core/Fragment';
@@ -198,10 +197,10 @@ export default class FragmentDialog {
             handler: async (overlays: UI5Element[]) => {
                 that.model = new JSONModel();
                 if (!that.dialog) {
-                    that.dialog = await Fragment.load({
+                    that.dialog = (await Fragment.load({
                         name: 'adp.fragments.add-fragment',
                         controller: dummyController
-                    });
+                    })) as Dialog;
                     const { runtimeControl } = await that.getDialogData(overlays, that.model);
                     that.runtimeControl = runtimeControl;
                     that.dialog
@@ -223,8 +222,6 @@ export default class FragmentDialog {
     private handleDialogClose(that: FragmentDialog) {
         that.dialog.close();
         that.dialog.destroy();
-        that.dialog = null;
-        that.model = null;
     }
 
     /**
@@ -363,7 +360,7 @@ export default class FragmentDialog {
      */
     private async createNewFragment(
         fragmentData: CreateFragmentProps,
-        runtimeControl: OverflowToolbar,
+        runtimeControl: ManagedObject,
         that: FragmentDialog
     ): Promise<void> {
         const { fragmentName, index, targetAggregation } = fragmentData;
@@ -383,7 +380,7 @@ export default class FragmentDialog {
      * @param fragmentData Fragment Data
      * @param runtimeControl Runtime control
      */
-    private async createFragmentChange(fragmentData: CreateFragmentProps, runtimeControl: OverflowToolbar) {
+    private async createFragmentChange(fragmentData: CreateFragmentProps, runtimeControl: ManagedObject) {
         const { fragmentName, index, targetAggregation } = fragmentData;
         let manifest: ManifestAppdescr;
         try {
@@ -410,7 +407,7 @@ export default class FragmentDialog {
             scenario: undefined
         };
 
-        const designMetadata = OverlayRegistry.getOverlay(runtimeControl).getDesignTimeMetadata();
+        const designMetadata = OverlayRegistry.getOverlay(runtimeControl as UI5Element).getDesignTimeMetadata();
 
         const modifiedValue = {
             fragment:

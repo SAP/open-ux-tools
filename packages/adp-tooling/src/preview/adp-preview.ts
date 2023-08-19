@@ -189,7 +189,7 @@ export class AdpPreview {
         /**
          * Template fragments for Dialogs
          */
-        router.get(ApiRoutes.TEMPLATE_FRAGMENTS, this.routesHandler.handleGetXMLFragmentByName);
+        router.get(ApiRoutes.TEMPLATE_FRAGMENTS, this.routesHandler.handleGetXMLFragmentByName as RequestHandler);
 
         /**
          * PROJECT Specific Routes

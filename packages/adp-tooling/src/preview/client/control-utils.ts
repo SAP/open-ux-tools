@@ -1,9 +1,9 @@
+/* eslint-disable consistent-return */
 import Utils from 'sap/ui/fl/Utils';
 import DataType from 'sap/ui/base/DataType';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type { MetadataOptions } from 'sap/ui/base/ManagedObject';
-import type OverflowToolbar from 'sap/m/OverflowToolbar';
 
 export interface BuiltRuntimeControl {
     id: string;
@@ -39,7 +39,6 @@ type ControlNewData = {
     newValue: any;
 };
 
-// TODO: review this one and check if should be moved to the types project
 type MetadataOptionsProperty = MetadataOptions.Property & {
     name: string;
     getType(): {
@@ -75,7 +74,10 @@ export default class ControlUtils {
      * @param name Aggregation name
      * @returns Array of control aggregations
      */
-    public static getControlAggregationByName(control: OverflowToolbar & { __calledJSONKeys?: boolean }, name: string) {
+    public static getControlAggregationByName(
+        control: ManagedObject & { __calledJSONKeys?: boolean; [key: string]: any },
+        name: string
+    ) {
         let result = [];
         const aggregation = (control ? control.getMetadata().getAllAggregations() : {})[name] as unknown as object & {
             _sGetter: string;
@@ -189,6 +191,11 @@ export default class ControlUtils {
             if (propertyDataType && !(propertyDataType instanceof DataType)) {
                 return this.analyzedType;
             }
+
+            if (!propertyDataType) {
+                return this.analyzedType;
+            }
+
             this.setAnalyzedTypeForEnumDataType(propertyDataType, typeName);
         }
 
@@ -373,7 +380,7 @@ export default class ControlUtils {
      */
     private static getPropertyForBuiltControl(
         analyzedType: AnalyzedType,
-        property: Property,
+        property: MetadataOptionsProperty,
         properties: Properties[],
         documentation: object,
         selectedControlName: string,
