@@ -62,22 +62,22 @@ export default class RoutesHandler {
             const xmlName = req.params['xmlName'];
 
             if (!xmlName) {
-                res.send(404).send(`Could not find XML Fragment at ${req.path}`);
+                res.send(HttpStatusCodes.NOT_FOUND).send(`Could not find XML Fragment at ${req.path}`);
                 return;
             }
 
             const xmlFragmentPath = path.join(__dirname, '../../templates/rta/ui', xmlName);
 
             if (!fs.existsSync(xmlFragmentPath)) {
-                res.send(404).send(`XML Fragment does not exist`);
+                res.send(HttpStatusCodes.NOT_FOUND).send(`XML Fragment does not exist`);
                 return;
             }
 
             const fragment = fs.readFileSync(xmlFragmentPath, 'utf-8');
 
-            res.status(200).contentType('application/xml').send(fragment);
+            res.status(HttpStatusCodes.OK).contentType('application/xml').send(fragment);
         } catch (e) {
-            res.status(500).send(e.message);
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
             next(e);
         }
     };
