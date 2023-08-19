@@ -17,7 +17,8 @@ import type { AdpPreviewConfig, DescriptorVariant } from '../types';
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
-    MANIFEST_APP_DESCRIPTOR = '/adp/api/manifest'
+    MANIFEST_APP_DESCRIPTOR = '/adp/api/manifest',
+    TEMPLATE_FRAGMENTS = '/resources/adp/fragments/:xmlName'
 }
 
 /**
@@ -184,6 +185,11 @@ export class AdpPreview {
          */
         router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
         router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment as RequestHandler);
+
+        /**
+         * Template fragments for Dialogs
+         */
+        router.get(ApiRoutes.TEMPLATE_FRAGMENTS, this.routesHandler.handleGetXMLFragmentByName);
 
         /**
          * PROJECT Specific Routes

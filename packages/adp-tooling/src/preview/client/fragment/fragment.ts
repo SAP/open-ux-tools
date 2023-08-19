@@ -1,36 +1,15 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 /** sap.m */
-import Bar from 'sap/m/Bar';
-import List from 'sap/m/List';
-import Link from 'sap/m/Link';
-import Text from 'sap/m/Text';
-import Label from 'sap/m/Label';
-import Input from 'sap/m/Input';
-import Dialog from 'sap/m/Dialog';
-import ComboBox from 'sap/m/ComboBox';
-import SearchField from 'sap/m/SearchField';
+import type Dialog from 'sap/m/Dialog';
 import MessageToast from 'sap/m/MessageToast';
-import ToolbarSpacer from 'sap/m/ToolbarSpacer';
-import { ListMode, ButtonType } from 'sap/m/library';
-import StandardListItem from 'sap/m/StandardListItem';
 import type OverflowToolbar from 'sap/m/OverflowToolbar';
-import Button, { type $ButtonSettings } from 'sap/m/Button';
 
 /** sap.ui.core */
-import Item from 'sap/ui/core/Item';
-import CustomData from 'sap/ui/core/CustomData';
+import Fragment from 'sap/ui/core/Fragment';
 import type UI5Element from 'sap/ui/core/Element';
-import { ValueState, VerticalAlign } from 'sap/ui/core/library';
-
-/** sap.ui.layout */
-import VerticalLayout from 'sap/ui/layout/VerticalLayout';
-import HorizontalLayout from 'sap/ui/layout/HorizontalLayout';
+import { ValueState } from 'sap/ui/core/library';
 
 /** sap.ui.model */
-import Filter from 'sap/ui/model/Filter';
-import type Binding from 'sap/ui/model/Binding';
 import JSONModel from 'sap/ui/model/json/JSONModel';
-import FilterOperator from 'sap/ui/model/FilterOperator';
 
 /** sap.ui.rta */
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
@@ -93,12 +72,23 @@ type ExtendedEventProvider = EventProvider & {
     setVisible: (bool: boolean) => void;
 };
 
-type ExtendedButtonSettings = $ButtonSettings & { press: (event: Event) => void | Promise<void> };
-
 /**
- *
+ * Handles creation of the dialog, fills it with data
  */
 export default class FragmentDialog {
+    /**
+     * Dialog instance
+     */
+    private dialog: Dialog;
+    /**
+     * JSON Model for the dialog
+     */
+    private model: JSONModel;
+    /**
+     * Runtime control managed object
+     */
+    private runtimeControl: ManagedObject;
+
     /**
      * @param rta Runtime Authoring
      */
@@ -109,14 +99,132 @@ export default class FragmentDialog {
      * @param contextMenu Context Menu from RTA
      */
     public init(contextMenu: ContextMenu) {
+        // We need this in order to keep the reference to the class
+        // we cannot use this keyword, because it is overshadowed by function scope
         const that = this;
+
+        /**
+         * Controller for the action in the Dialog
+         */
+        const dummyController = {
+            onAggregationChanged: (event: Event) => {
+                let selectedItem = '';
+                const source = event.getSource() as ExtendedEventProvider;
+                if (source.getSelectedItem()) {
+                    selectedItem = source.getSelectedItem().getText();
+                }
+                const selectedKey = source.getSelectedKey();
+
+                that.model.setProperty('/selectedAggregation/key', selectedKey);
+                that.model.setProperty('/selectedAggregation/value', selectedItem);
+
+                let newSelectedControlChildren: string[] | number[] = Object.keys(
+                    ControlUtils.getControlAggregationByName(that.runtimeControl, selectedItem)
+                );
+
+                newSelectedControlChildren = newSelectedControlChildren.map((key) => {
+                    return parseInt(key);
+                });
+
+                const updatedIndexArray: { key: number; value: number }[] =
+                    that.fillIndexArray(newSelectedControlChildren);
+
+                that.model.setProperty('/index', updatedIndexArray);
+                that.model.setProperty('/selectedIndex', updatedIndexArray.length - 1);
+            },
+            onIndexChanged: (event: Event) => {
+                const source = event.getSource() as ExtendedEventProvider;
+                const selectedIndex = source.getSelectedItem().getText();
+                that.model.setProperty('/selectedIndex', parseInt(selectedIndex));
+            },
+            onFragmentNameInputChange: (event: Event) => {
+                const source = event.getSource() as ExtendedEventProvider;
+                const fragmentName: string = source.getValue().trim();
+                const fragmentList: { fragmentName: string }[] = that.model.getProperty(
+                    '/filteredFragmentList/unFilteredFragmentList'
+                );
+
+                const iExistingFileIndex = fragmentList.findIndex((f: { fragmentName: string }) => {
+                    return f.fragmentName === `${fragmentName}.fragment.xml`;
+                });
+
+                switch (true) {
+                    case iExistingFileIndex >= 0:
+                        source.setValueState(ValueState.Error);
+                        source.setValueStateText(
+                            'Enter a different name. The fragment name that you entered already exists in your project.'
+                        );
+                        that.dialog.getBeginButton().setEnabled(false);
+                        that.model.setProperty('/fragmentNameToCreate', null);
+                        break;
+                    case fragmentName.length <= 0:
+                        that.dialog.getBeginButton().setEnabled(false);
+                        that.model.setProperty('/fragmentNameToCreate', null);
+                        break;
+                    case !/^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName):
+                        source.setValueState(ValueState.Error);
+                        source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
+                        that.dialog.getBeginButton().setEnabled(false);
+                        that.model.setProperty('/fragmentNameToCreate', null);
+                        break;
+                    case fragmentName.length > 0:
+                        that.dialog.getBeginButton().setEnabled(true);
+                        source.setValueState(ValueState.None);
+                        that.model.setProperty('/fragmentNameToCreate', fragmentName);
+                        break;
+                    default:
+                        break;
+                }
+            },
+            onCreateBtnPress: async (event: Event) => {
+                const source = event.getSource() as ExtendedEventProvider;
+                source.setEnabled(false);
+                // Need to create a new fragment and a respective change file
+                const fragmentNameToCreate = that.model.getProperty('/fragmentNameToCreate');
+                const fragmentData = {
+                    fragmentName: fragmentNameToCreate,
+                    index: that.model.getProperty('/selectedIndex'),
+                    targetAggregation: that.model.getProperty('/selectedAggregation/value')
+                };
+                await that.createNewFragment(fragmentData, that.runtimeControl, that);
+                that.handleDialogClose(that);
+            },
+            closeDialog: () => that.handleDialogClose(that)
+        };
 
         contextMenu.addMenuItem({
             id: 'ADD_FRAGMENT',
             text: 'Add: Fragment',
-            handler: async (overlays: UI5Element[]) => await this.handleAddNewFragment(overlays, that),
+            handler: async (overlays: UI5Element[]) => {
+                that.model = new JSONModel();
+                if (!that.dialog) {
+                    that.dialog = await Fragment.load({
+                        name: 'adp.fragments.add-fragment',
+                        controller: dummyController
+                    });
+                    const { runtimeControl } = await that.getDialogData(overlays, that.model);
+                    that.runtimeControl = runtimeControl;
+                    that.dialog
+                        .setModel(that.model)
+                        .addStyleClass('sapUiRTABorder')
+                        .addStyleClass('sapUiResponsivePadding--content');
+                }
+                that.dialog.open();
+            },
             icon: 'sap-icon://attachment-html'
         });
+    }
+
+    /**
+     * Handles the dialog closing and data cleanup
+     *
+     * @param that FragmentDialog instance
+     */
+    private handleDialogClose(that: FragmentDialog) {
+        that.dialog.close();
+        that.dialog.destroy();
+        that.dialog = null;
+        that.model = null;
     }
 
     /**
@@ -126,7 +234,7 @@ export default class FragmentDialog {
      * @param jsonModel JSON Model for the dialog
      * @returns {Promise<DialogueData>} Dialog data
      */
-    private async getDialogData(overlays: UI5Element[], jsonModel: JSONModel): Promise<DialogueData> {
+    public async getDialogData(overlays: UI5Element[], jsonModel: JSONModel): Promise<DialogueData> {
         const selectorId = overlays[0].getId();
 
         let runtimeControl: ManagedObject;
@@ -245,433 +353,6 @@ export default class FragmentDialog {
     }
 
     /**
-     * @description Builds an Add XML Fragment dialog, fills it with data and opens it
-     * @param overlays Overlays when clicking on control
-     * @param that Points to FragmentDialog class for accessing its methods
-     */
-    public async handleAddNewFragment(overlays: UI5Element[], that: FragmentDialog) {
-        const jsonModel = new JSONModel();
-
-        const { runtimeControl, control } = await that.getDialogData(overlays, jsonModel);
-
-        let buttonAddFragment: boolean;
-
-        const filteredFragmentList = new List('filteredFragmentList', {
-            noDataText: 'Create a fragment. There is no fragment available for the target aggregation.',
-            mode: ListMode.SingleSelectMaster,
-            selectionChange: (event: Event) => {
-                const source = event.getSource() as ExtendedEventProvider;
-                const selectedItem = source.getSelectedItem();
-                jsonModel.setProperty('/SelectedFragment', {
-                    selectedFragmentName: selectedItem.getTitle(),
-                    selectedFragmentPath: selectedItem.getCustomData()[0].getKey() as string
-                });
-                const buttonEnabled = !!selectedItem;
-                buttonAddFragment = true;
-                fragmentDialog.getBeginButton().setEnabled(buttonEnabled);
-            }
-        })
-            .bindItems(
-                '/filteredFragmentList/fragmentList',
-                // @ts-ignore
-                new StandardListItem({
-                    customData: new CustomData({
-                        key: '{fragmentDocumentPath}'
-                    }),
-                    title: '{fragmentName}'
-                })
-            )
-            .addStyleClass('uiadaptationFragmentList');
-
-        const fragmentNameInput = new Input({
-            width: '24rem',
-            description: '.fragment.xml',
-            value: '{/newFragmentName}',
-            liveChange: (event: Event) => {
-                const source = event.getSource() as ExtendedEventProvider;
-                const fragmentName: string = source.getValue().trim();
-                const fragmentList = jsonModel.getProperty('/filteredFragmentList/unFilteredFragmentList');
-
-                const iExistingFileIndex = fragmentList.findIndex((f: { fragmentName: string }) => {
-                    return f.fragmentName === `${fragmentName}.fragment.xml`;
-                });
-
-                switch (true) {
-                    case iExistingFileIndex >= 0:
-                        source.setValueState(ValueState.Error);
-                        source.setValueStateText(
-                            'Enter a different name. The fragment name that you entered already exists in your project.'
-                        );
-                        fragmentDialog.getBeginButton().setEnabled(false);
-                        jsonModel.setProperty('/fragmentNameToCreate', null);
-                        break;
-                    case fragmentName.length <= 0:
-                        fragmentDialog.getBeginButton().setEnabled(false);
-                        jsonModel.setProperty('/fragmentNameToCreate', null);
-                        break;
-                    case !/^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName):
-                        source.setValueState(ValueState.Error);
-                        source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
-                        fragmentDialog.getBeginButton().setEnabled(false);
-                        jsonModel.setProperty('/fragmentNameToCreate', null);
-                        break;
-                    case fragmentName.length > 0:
-                        fragmentDialog.getBeginButton().setEnabled(true);
-                        source.setValueState(ValueState.None);
-                        jsonModel.setProperty('/fragmentNameToCreate', fragmentName);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-        const controlAggregationComboBox = that.getControlAggregationComboBox(jsonModel, runtimeControl, that);
-
-        const indexComboBox = new ComboBox({
-            change: (event: Event) => {
-                const source = event.getSource() as ExtendedEventProvider;
-                const selectedIndex = source.getSelectedItem().getText();
-                jsonModel.setProperty('/selectedIndex', parseInt(selectedIndex));
-            },
-            selectedKey: '{/selectedIndex}',
-            enabled: true
-        }).bindAggregation(
-            'items',
-            '/index',
-            // @ts-ignore
-            new Item({
-                key: '{key}',
-                text: '{value}',
-                enabled: true
-            })
-        );
-
-        const selectFragmentLayout = new VerticalLayout({
-            width: '100%',
-            content: [
-                new HorizontalLayout({
-                    content: [
-                        new Label({
-                            text: 'Control type'
-                        }),
-                        new ToolbarSpacer({
-                            width: '3.4rem'
-                        }),
-                        new Label({
-                            text: control.name
-                        })
-                    ]
-                }).addStyleClass('sapUiTinyMarginTopBottom'),
-                new HorizontalLayout({
-                    content: [
-                        new Label({
-                            text: 'Target Aggregation'
-                        }),
-                        new ToolbarSpacer({
-                            width: '1rem'
-                        }),
-                        controlAggregationComboBox
-                    ]
-                }).addStyleClass('sapUiTinyMarginTopBottom'),
-                new HorizontalLayout({
-                    content: [
-                        new Label({
-                            text: 'Index'
-                        }),
-                        new ToolbarSpacer({
-                            width: '6rem'
-                        }),
-                        indexComboBox
-                    ]
-                }).addStyleClass('sapUiTinyMarginTopBottom'),
-
-                that.getSearchField(jsonModel, filteredFragmentList, that),
-
-                new HorizontalLayout({
-                    content: [
-                        new Label({
-                            text: {
-                                path: '/fragmentCount',
-                                formatter: (value: string) => {
-                                    if (value !== undefined) {
-                                        return value + ' ' + 'Fragments';
-                                    } else {
-                                        return '0' + ' ' + 'Fragments';
-                                    }
-                                }
-                            }
-                        }),
-                        new ToolbarSpacer({
-                            width: '24rem'
-                        }),
-                        new Link({
-                            text: 'Create new',
-                            press: (_: Event) => {
-                                buttonAddFragment = false;
-                                fragmentNameInput.setValue('');
-                                fragmentDialog.getBeginButton().setEnabled(false);
-                                fragmentDialog.getCustomHeader().getContentLeft()[0].setVisible(true);
-                                fragmentDialog.getBeginButton().setText('Create');
-                                fragmentDialog.getContent()[0].setVisible(false);
-                                fragmentDialog.getContent()[1].setVisible(true);
-                            },
-                            enabled: !!jsonModel.getProperty('/selectedAggregation/value')
-                        }).addStyleClass('uiadaptationFragmentDialogLink')
-                    ]
-                }).addStyleClass('sapUiTinyMarginBottom'),
-                filteredFragmentList
-            ]
-        });
-
-        const createFragmentLayout = new VerticalLayout({
-            visible: false,
-            width: '100%',
-            content: [
-                new HorizontalLayout({
-                    content: [
-                        new Label({
-                            text: 'Selected Aggregation',
-                            vAlign: VerticalAlign.Bottom
-                        }),
-                        new ToolbarSpacer({
-                            width: '1.5rem'
-                        }),
-                        new Label({
-                            text: {
-                                path: '/selectedAggregation/value',
-                                formatter: (value: string) => {
-                                    if (value) {
-                                        return value.charAt(0).toUpperCase() + value.slice(1);
-                                    }
-                                    return '';
-                                }
-                            }
-                        })
-                    ]
-                }).addStyleClass('sapUiTinyMarginTopBottom'),
-                new HorizontalLayout({
-                    content: [
-                        new Label({
-                            text: 'Selected Index',
-                            vAlign: VerticalAlign.Middle
-                        }),
-                        new ToolbarSpacer({
-                            width: '4rem'
-                        }),
-                        new Label({
-                            text: '{/selectedIndex}'
-                        })
-                    ]
-                }).addStyleClass('sapUiTinyMarginTopBottom'),
-                new HorizontalLayout({
-                    content: [
-                        new Label({
-                            text: 'Fragment Name',
-                            vAlign: VerticalAlign.Middle
-                        }),
-                        new ToolbarSpacer({
-                            width: '3.5rem'
-                        }),
-                        fragmentNameInput
-                    ]
-                }).addStyleClass('sapUiTinyMarginTopBottom')
-            ]
-        });
-        const fragmentDialog = new Dialog({
-            content: [selectFragmentLayout, createFragmentLayout],
-            contentWidth: '600px',
-
-            escapeHandler: () => {
-                fragmentDialog.close();
-                fragmentDialog.destroy();
-            },
-            beginButton: new Button({
-                text: 'Add',
-                enabled: false,
-                type: ButtonType.Emphasized,
-                press: async (event: Event) => {
-                    const source = event.getSource() as ExtendedEventProvider;
-                    source.setEnabled(false);
-                    if (!buttonAddFragment) {
-                        // Need to create a new fragment and a respective change file
-                        const fragmentNameToCreate = jsonModel.getProperty('/fragmentNameToCreate');
-                        const fragmentData = {
-                            fragmentName: fragmentNameToCreate,
-                            index: jsonModel.getProperty('/selectedIndex'),
-                            targetAggregation: jsonModel.getProperty('/selectedAggregation/value')
-                        };
-                        await that.createNewFragment(fragmentData, runtimeControl, that);
-                    } else {
-                        const selectedFragmentFile: string = jsonModel.getProperty(
-                            '/SelectedFragment/selectedFragmentName'
-                        );
-                        const fragmentName = selectedFragmentFile.split('.').shift() as string;
-                        await that.createFragmentChange(
-                            {
-                                fragmentName,
-                                index: 0,
-                                targetAggregation: 'content'
-                            },
-                            runtimeControl
-                        );
-                    }
-                    fragmentDialog.close();
-                    fragmentDialog.destroy();
-                }
-            } as ExtendedButtonSettings),
-            endButton: new Button({
-                text: 'Cancel',
-                press: () => {
-                    fragmentDialog.close();
-                    fragmentDialog.destroy();
-                }
-            }),
-            customHeader: new Bar({
-                contentLeft: [
-                    new Button({
-                        icon: 'sap-icon://nav-back',
-                        visible: false,
-                        press: (event: Event) => {
-                            const source = event.getSource() as ExtendedEventProvider;
-                            source.setVisible(false);
-                            buttonAddFragment = true;
-                            fragmentDialog.getBeginButton().setText('Add');
-                            fragmentDialog.getContent()[1].setVisible(false);
-                            fragmentDialog.getContent()[0].setVisible(true);
-                        }
-                    })
-                ],
-                contentMiddle: [
-                    new Text({
-                        text: 'Add Fragment'
-                    })
-                ]
-            })
-        }).setModel(jsonModel);
-
-        fragmentDialog.addStyleClass('sapUiRTABorder').addStyleClass('sapUiResponsivePadding--content');
-        fragmentDialog.open();
-    }
-
-    /**
-     * Builds new Search Field control
-     *
-     * @param jsonModel JSON Model that hosts all the dialog data
-     * @param filteredFragmentList Filtered fragment List instance
-     * @param that FragmentDialog instance
-     * @returns {SearchField} Search field instance
-     */
-    private getSearchField(jsonModel: JSONModel, filteredFragmentList: List, that: FragmentDialog): SearchField {
-        return new SearchField('filteredFragmentSearchField', {
-            placeholder: 'Search Fragments',
-            liveChange: (event: Event) => {
-                const filters: object[] = [];
-                const source = event.getSource() as ExtendedEventProvider;
-                const value = source.getValue();
-                const items = filteredFragmentList.getBinding('items');
-                if (value && value.length > 0) {
-                    const filterName = new Filter('fragmentName', FilterOperator.Contains, value);
-                    const filter = new Filter({
-                        filters: [filterName],
-                        and: false
-                    });
-                    filters.push(filter);
-
-                    if (!that.isEmptyObject<Binding>(items.oList)) {
-                        items.filter(filters);
-                    }
-                } else if (that.isEmptyObject<Binding>(items.oList)) {
-                    items.filter([]);
-                } else {
-                    items.filter([]);
-                }
-                jsonModel.setProperty('/fragmentCount', items.oList.length);
-            },
-            search: (event: Event) => {
-                const clearBtnPressed = (event.getParameters() as object & { clearButtonPressed: boolean })
-                    .clearButtonPressed;
-                const items = filteredFragmentList.getBinding('items');
-                if (clearBtnPressed && !that.isEmptyObject<Binding>(items.oList)) {
-                    items.filter([]);
-                }
-            }
-        });
-    }
-
-    /**
-     * Builds a new ComboBox from provided data
-     *
-     * @param jsonModel JSON Model that hosts all the dialog data
-     * @param runtimeControl Runtime control
-     * @param that FragmentDialog instance
-     * @returns {ComboBox} UI5 Control ComboBox
-     */
-    private getControlAggregationComboBox(
-        jsonModel: JSONModel,
-        runtimeControl: ManagedObject,
-        that: FragmentDialog
-    ): ComboBox {
-        return new ComboBox('extPointTargetAggregationCombo', {
-            selectedKey: '{/selectedAggregation/key}',
-            change: (event: Event) => {
-                let selectedItem = '';
-                // @ts-ignore
-                sap.ui.getCore().byId('filteredFragmentSearchField').setValue('');
-                const source = event.getSource() as ExtendedEventProvider;
-                if (source.getSelectedItem()) {
-                    selectedItem = source.getSelectedItem().getText();
-                }
-                const selectedKey = source.getSelectedKey();
-
-                jsonModel.setProperty('/selectedAggregation/key', selectedKey);
-                jsonModel.setProperty('/selectedAggregation/value', selectedItem);
-
-                let newSelectedControlChildren: string[] | number[] = Object.keys(
-                    ControlUtils.getControlAggregationByName(runtimeControl, selectedItem)
-                );
-
-                newSelectedControlChildren = newSelectedControlChildren.map((key) => {
-                    return parseInt(key);
-                });
-
-                const updatedIndexArray: { key: number; value: number }[] =
-                    that.fillIndexArray(newSelectedControlChildren);
-
-                jsonModel.setProperty('/index', updatedIndexArray);
-                jsonModel.setProperty('/selectedIndex', updatedIndexArray.length - 1);
-            }
-        }).bindAggregation(
-            'items',
-            '/targetAggregation',
-            // @ts-ignore
-            new Item({
-                key: '{key}',
-                text: '{value}'
-            })
-        );
-    }
-
-    /**
-     * @description Checks if an object is empty (has no own properties)
-     * @param obj Any object to be checked
-     * @returns Boolean value
-     */
-    private isEmptyObject<T>(obj: Record<string, unknown> | T): boolean {
-        if (Array.isArray(obj) && obj.length > 0) {
-            return false;
-        } else if (typeof obj === 'object') {
-            for (const key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * @description Creates a new fragment for the specified control
      * @param fragmentData Fragment Data
      * @param fragmentData.index Index for XML Fragment placement
@@ -690,9 +371,8 @@ export default class FragmentDialog {
             await writeFragment<unknown>({ fragmentName });
         } catch (e) {
             // In case of error when creating a new fragment, we should not create a change file
-            console.error(e.message);
             MessageToast.show(e.message);
-            return;
+            throw new Error(e.message);
         }
 
         await that.createFragmentChange({ fragmentName, index, targetAggregation }, runtimeControl);
@@ -714,9 +394,8 @@ export default class FragmentDialog {
                 throw new Error('Could not retrieve manifest');
             }
         } catch (e) {
-            console.error(e.message);
             MessageToast.show(e.message);
-            return;
+            throw new Error(e.message);
         }
 
         const { id, reference, namespace, layer } = manifest;
