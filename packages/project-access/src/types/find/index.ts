@@ -1,6 +1,7 @@
 import type { Manifest } from '../webapp';
 
 export type FioriArtifactTypes = 'applications' | 'adaptations' | 'extensions' | 'libraries';
+export type FioriArtifactType = 'application' | 'adaptation' | 'extension' | 'library';
 
 /**
  * Search result when searching for apps. It is valid for all types of
