@@ -18,7 +18,7 @@ const DEFAULT_THEME = 'sap_horizon';
 /**
  * Default path for mounting the local FLP.
  */
-const DEFAULT_PATH = '/test/flp.html';
+export const DEFAULT_PATH = '/test/flp.html';
 
 /**
  * Default name of the locate reuse libs script.

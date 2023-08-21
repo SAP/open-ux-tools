@@ -1,7 +1,7 @@
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import type { MiddlewareParameters } from '@ui5/server';
-import { FlpSandbox } from '../base/flp';
+import { DEFAULT_PATH, FlpSandbox } from '../base/flp';
 import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import type { Config } from '../types';
 import { AdpPreview } from '@sap-ux/adp-tooling';
@@ -71,7 +71,9 @@ module.exports = async (params: MiddlewareParameters<Config>): Promise<RequestHa
         logLevel: params.options.configuration?.debug ? LogLevel.Debug : LogLevel.Info
     });
     try {
-        return await createRouter(params, logger);
+        const middleware = await createRouter(params, logger);
+        middleware.getAppPages = () => [params.options.configuration?.flp?.path ?? DEFAULT_PATH];
+        return middleware;
     } catch (error) {
         logger.error('Could not start preview-middleware.');
         logger.error(error.message);
