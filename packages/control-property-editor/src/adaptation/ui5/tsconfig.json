@@ -1,6 +1,4 @@
 {
   "extends": "../../../tsconfig-base.json",
-  "compilerOptions": {
-    "types": ["@sapui5/ts-types"]
-  }
+  "include": [".", "../../../../../types/sapui5"]
 }

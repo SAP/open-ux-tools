@@ -1,5 +1,6 @@
 import type { OutlineNode } from '../../../api';
 import { isEditable } from './utils';
+import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 
 /**
  * Transform node.
@@ -9,7 +10,7 @@ import { isEditable } from './utils';
  * @returns {Promise<OutlineNode[]>}
  */
 export async function transformNodes(
-    input: sap.ui.rta.OutlineViewNode[],
+    input: OutlineViewNode[],
     getAdditionalData: (id: string) => { text?: string }
 ): Promise<OutlineNode[]> {
     const stack = [...input];
@@ -19,7 +20,7 @@ export async function transformNodes(
         const editable = await isEditable(current?.id);
         if (current?.type === 'element') {
             // eslint-disable-next-line no-loop-func
-            const children = (current.elements ?? []).flatMap((element: sap.ui.rta.OutlineViewNode) =>
+            const children = (current.elements ?? []).flatMap((element: OutlineViewNode) =>
                 element.type === 'aggregation' ? element.elements ?? [] : []
             );
             const { text } = getAdditionalData(current.id);

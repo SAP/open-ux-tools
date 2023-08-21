@@ -1,3 +1,6 @@
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+
 export interface PropertiesInfo {
     defaultValue: string;
     description: string;
@@ -13,9 +16,9 @@ export interface Properties {
  * Get runtime control.
  *
  * @param overlayControl
- * @returns {sap.ui.base.ManagedObject}
+ * @returns {ManagedObject}
  */
-export function getRuntimeControl(overlayControl: sap.ui.dt.ElementOverlay): sap.ui.base.ManagedObject {
+export function getRuntimeControl(overlayControl: ElementOverlay): ManagedObject {
     let runtimeControl;
     if (overlayControl.getElementInstance) {
         runtimeControl = overlayControl.getElementInstance();

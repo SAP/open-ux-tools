@@ -78,8 +78,7 @@
     "esbuild-plugin-alias": "0.2.1",
     "esbuild-sass-plugin": "2.3.1",
     "@esbuild-plugins/node-modules-polyfill": "0.1.4",
-    "jest-junit": "15.0.0",
-    "@sap-ux/types": "1.0.4"
+    "jest-junit": "15.0.0"
   },
   "jestSonar": {
     "reportPath": "reports/test/unit",

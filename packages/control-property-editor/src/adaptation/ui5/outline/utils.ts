@@ -1,5 +1,7 @@
 import { buildControlData } from '../controlData';
 import { getRuntimeControl } from '../utils';
+import OverlayUtil from 'sap/ui/dt/OverlayUtil';
+import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
 export const isEditable = async (id = ''): Promise<boolean> => {
     let editable = false;
@@ -10,10 +12,10 @@ export const isEditable = async (id = ''): Promise<boolean> => {
             editable = false;
         }
     } else {
-        let controlOverlay = sap.ui.dt.OverlayRegistry.getOverlay(control);
+        let controlOverlay = OverlayRegistry.getOverlay(control);
         if (!controlOverlay || !controlOverlay.getDomRef()) {
             //look for closest control
-            controlOverlay = sap.ui.dt.OverlayUtil.getClosestOverlayFor(control);
+            controlOverlay = OverlayUtil.getClosestOverlayFor(control);
         }
         if (controlOverlay) {
             const runtimeControl = getRuntimeControl(controlOverlay);

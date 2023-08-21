@@ -4,6 +4,7 @@ import { applyChange } from './flexChange';
 import type { SelectionService } from '../selection';
 
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions, UI5Facade } from '../types';
+import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
 
 /**
  * A Class of ChangeService
@@ -142,9 +143,7 @@ export class ChangeService {
      * @param sendAction
      * @returns {(event: sap.ui.base.Event) => Promise<void>}
      */
-    private createOnStackChangeHandler(
-        sendAction: (action: ExternalAction) => void
-    ): (event: sap.ui.base.Event) => Promise<void> {
+    private createOnStackChangeHandler(sendAction: (action: ExternalAction) => void): (event: Event) => Promise<void> {
         return async (): Promise<void> => {
             const stack = this.options.rta.getCommandStack();
             const allCommands = stack.getCommands();
@@ -152,7 +151,7 @@ export class ChangeService {
             const inactiveCommandCount = allCommands.length - executedCommands.length;
 
             const activeChanges = allCommands
-                .map((command: sap.ui.rta.command.BaseCommand, i): PendingPropertyChange | undefined => {
+                .map((command: BaseCommand, i): PendingPropertyChange | undefined => {
                     let result: PendingPropertyChange | undefined;
                     try {
                         const selector = command.getProperty('selector');

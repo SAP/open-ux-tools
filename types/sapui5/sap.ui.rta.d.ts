@@ -1,9 +1,12 @@
+
 declare module 'sap/ui/rta/command/BaseCommand' {
     import type Element from 'sap/ui/core/Element';
+    import type ManagedObject from 'sap/ui/base/ManagedObject';
+
     /**
      *
      */
-    export default interface BaseCommand {
+    export default interface BaseCommand extends ManagedObject {
         execute(): Promise<void>;
         getElement(): Element;
     }

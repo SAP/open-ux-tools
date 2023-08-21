@@ -13,6 +13,10 @@ import {
 import type { PropertiesInfo } from './utils';
 import { getDocumentation } from './documentation';
 import { convertCamelCaseToPascalCase } from '../../utils';
+import type DataType from 'sap/ui/base/DataType';
+import Utils from 'sap/ui/fl/Utils';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 type AnalyzedType = Pick<UI5ControlProperty, 'isArray' | 'primitiveType' | 'ui5Type' | 'enumValues'>;
 
@@ -29,13 +33,22 @@ function testIconPattern(name: string): boolean {
     return nameLc.indexOf('src') >= 0 || nameLc.startsWith('icon') || nameLc.endsWith('icon');
 }
 
+interface ManagedObjectMetadataProperties {
+    name: string;
+    defaultValue: unknown | null;
+    deprecated: boolean;
+    getType: () => DataType;
+    getName: () => string;
+    getDefaultValue: () => unknown;
+}
+
 /**
  * Analyze a given property and returns the analyzed object.
  *
  * @param property
  * @returns {AnalyzedType|undefined}
  */
-function analyzePropertyType(property: sap.ui.base.ManagedObjectMetadataProperties): AnalyzedType | undefined {
+function analyzePropertyType(property: ManagedObjectMetadataProperties): AnalyzedType | undefined {
     const analyzedType: AnalyzedType = {
         primitiveType: 'any',
         ui5Type: null,
@@ -75,7 +88,7 @@ function analyzePropertyType(property: sap.ui.base.ManagedObjectMetadataProperti
     // Control type is a sap.ui.base.DataType or an enumeration type
     else {
         // Determine type from iFrame
-        const DataType = window.sap.ui.base.DataType;
+        const DataType = window.sap['ui']['base'].DataType;
         const propertyDataType = DataType.getType(typeName);
 
         //type which is not a DataType such as Control is not supported
@@ -162,8 +175,8 @@ interface NewControlData {
  * @returns {Promise<Control>}
  */
 export async function buildControlData(
-    control: sap.ui.base.ManagedObject,
-    controlOverlay?: sap.ui.dt.ElementOverlay,
+    control: ManagedObject,
+    controlOverlay?: ElementOverlay,
     includeDocumentation = true
 ): Promise<Control> {
     const controlMetadata = control.getMetadata();
@@ -171,13 +184,13 @@ export async function buildControlData(
     const selectedControlName = controlMetadata.getName();
     const selContLibName = controlMetadata.getLibraryName();
 
-    const hasStableId = sap.ui.fl.Utils.checkControlId(control);
+    const hasStableId = Utils.checkControlId(control);
 
     const controlProperties = controlOverlay ? controlOverlay.getDesignTimeMetadata().getData().properties : undefined;
 
     // Add the control's properties
     const allProperties = controlMetadata.getAllProperties() as unknown as {
-        [name: string]: sap.ui.base.ManagedObjectMetadataProperties;
+        [name: string]: ManagedObjectMetadataProperties;
     };
     const propertyNames = Object.keys(allProperties);
     const properties: ControlProperty[] = [];

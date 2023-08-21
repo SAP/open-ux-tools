@@ -1,5 +1,13 @@
 import type { IconDetails } from '../../api';
 import type { UI5Facade } from './types';
+import type Component from 'sap/ui/core/Component';
+import type Element from 'sap/ui/core/Element';
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+import type { ID } from 'sap/ui/core/library';
+import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+import OverlayUtil from 'sap/ui/dt/OverlayUtil';
+import IconPool from 'sap/ui/core/IconPool';
+
 
 /**
  * A facade for UI5 framework methods.
@@ -21,7 +29,7 @@ export function createUi5Facade(): UI5Facade {
  * @param id
  * @returns {T | undefined}
  */
-function getControlById<T extends sap.ui.core.Element>(id: sap.ui.core.ID): T | undefined {
+function getControlById<T extends Element>(id: ID): T | undefined {
     return sap.ui.getCore().byId(id) as T;
 }
 
@@ -31,7 +39,7 @@ function getControlById<T extends sap.ui.core.Element>(id: sap.ui.core.ID): T | 
  * @param id
  * @returns {T | undefined}
  */
-function getComponent<T extends sap.ui.core.Component>(id: sap.ui.core.ID): T | undefined {
+function getComponent<T extends Component>(id: ID): T | undefined {
     return sap.ui.getCore().getComponent(id) as T;
 }
 
@@ -41,8 +49,8 @@ function getComponent<T extends sap.ui.core.Component>(id: sap.ui.core.ID): T | 
  * @param control
  * @returns {T | undefined}
  */
-function getOverlay<T extends sap.ui.dt.ElementOverlay>(control: sap.ui.core.Element): T | undefined {
-    return sap.ui.dt.OverlayRegistry.getOverlay(control) as T;
+function getOverlay<T extends ElementOverlay>(control: Element): T | undefined {
+    return OverlayRegistry.getOverlay(control) as T;
 }
 
 /**
@@ -51,8 +59,8 @@ function getOverlay<T extends sap.ui.dt.ElementOverlay>(control: sap.ui.core.Ele
  * @param control
  * @returns { T | undefined }
  */
-function getClosestOverlayFor<T extends sap.ui.dt.ElementOverlay>(control: sap.ui.core.Element): T | undefined {
-    return sap.ui.dt.OverlayUtil.getClosestOverlayFor(control) as T;
+function getClosestOverlayFor<T extends ElementOverlay>(control: Element): T | undefined {
+    return OverlayUtil.getClosestOverlayFor(control) as T;
 }
 
 /**
@@ -61,9 +69,9 @@ function getClosestOverlayFor<T extends sap.ui.dt.ElementOverlay>(control: sap.u
  * @returns {IconDetails[]}
  */
 function getIcons(): IconDetails[] {
-    return sap.ui.core.IconPool.getIconNames('undefined')
+    return IconPool.getIconNames('undefined')
         .map((icon: any) => {
-            const iconInfo = sap.ui.core.IconPool.getIconInfo(icon) as IconDetails;
+            const iconInfo = IconPool.getIconInfo(icon) as IconDetails;
             return {
                 name: icon.toLowerCase(),
                 content: iconInfo.content,

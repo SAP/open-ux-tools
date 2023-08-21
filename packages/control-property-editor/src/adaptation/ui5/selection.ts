@@ -5,6 +5,10 @@ import { buildControlData } from './controlData';
 import { getRuntimeControl } from './utils';
 
 import type { ActionSenderFunction, Service, SubscribeFunction, UI5Facade } from './types';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type Event from 'sap/ui/base/Event';
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
 
 /**
  *
@@ -17,7 +21,7 @@ export class SelectionService implements Service {
      * @param rta
      * @param ui5
      */
-    constructor(private readonly rta: sap.ui.rta.RuntimeAuthoring, private readonly ui5: UI5Facade) {}
+    constructor(private readonly rta: RuntimeAuthoring, private readonly ui5: UI5Facade) {}
 
     /**
      * Initialize selection service.
@@ -87,15 +91,15 @@ export class SelectionService implements Service {
     private createOnSelectionChangeHandler(
         sendAction: (action: ExternalAction) => void,
         eventOrigin: Set<string>
-    ): (event: sap.ui.base.Event) => Promise<void> {
-        return async (event: sap.ui.base.Event): Promise<void> => {
+    ): (event: Event) => Promise<void> {
+        return async (event: Event): Promise<void> => {
             const selection = event.getParameter('selection');
             for (const dispose of this.activeChangeHandlers) {
                 dispose();
             }
             this.activeChangeHandlers.clear();
             if (Array.isArray(selection) && selection.length === 1) {
-                const overlayControl = this.ui5.getControlById<sap.ui.dt.ElementOverlay>(selection[0].getId());
+                const overlayControl = this.ui5.getControlById<ElementOverlay>(selection[0].getId());
                 if (overlayControl) {
                     const runtimeControl = getRuntimeControl(overlayControl);
                     const controlName = runtimeControl.getMetadata().getName();
@@ -126,11 +130,8 @@ export class SelectionService implements Service {
      * @param runtimeControl
      * @param sendAction
      */
-    private handlePropertyChanges(
-        runtimeControl: sap.ui.base.ManagedObject,
-        sendAction: (action: ExternalAction) => void
-    ): void {
-        const handler = (e: sap.ui.base.Event) => {
+    private handlePropertyChanges(runtimeControl: ManagedObject, sendAction: (action: ExternalAction) => void): void {
+        const handler = (e: Event) => {
             const propertyName = e.getParameter('name');
             const controlId = e.getParameter('id');
             const changeId = propertyChangeId(controlId, propertyName);

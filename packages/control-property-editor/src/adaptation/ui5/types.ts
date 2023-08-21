@@ -1,9 +1,15 @@
+import type { ID } from 'sap/ui/core/library';
 import type { ExternalAction, IconDetails } from '../../api';
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+import type Component from 'sap/ui/core/Component';
+import type Element from 'sap/ui/core/Element';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type { Layer } from 'sap/ui/fl';
 
 export interface UI5AdaptationOptions {
-    rta: sap.ui.rta.RuntimeAuthoring;
+    rta: RuntimeAuthoring;
     componentId: string;
-    layer: sap.ui.fl.Layer;
+    layer: Layer;
     generator: string;
 }
 
@@ -44,9 +50,9 @@ export interface Service {
 }
 
 export interface UI5Facade {
-    getControlById: <T extends sap.ui.core.Element>(id: sap.ui.core.ID) => T | undefined;
+    getControlById: <T extends Element>(id: ID) => T | undefined;
     getIcons: () => IconDetails[];
-    getComponent: <T extends sap.ui.core.Component>(id: sap.ui.core.ID) => T | undefined;
-    getOverlay: <T extends sap.ui.dt.ElementOverlay>(control: sap.ui.core.Element) => T | undefined;
-    getClosestOverlayFor: <T extends sap.ui.dt.ElementOverlay>(control: sap.ui.core.Element) => T | undefined;
+    getComponent: <T extends Component>(id: ID) => T | undefined;
+    getOverlay: <T extends ElementOverlay>(control: Element) => T | undefined;
+    getClosestOverlayFor: <T extends ElementOverlay>(control: Element) => T | undefined;
 }

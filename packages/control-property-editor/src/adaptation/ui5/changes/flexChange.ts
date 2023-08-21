@@ -1,6 +1,8 @@
 import type { PropertyChange } from '../../../api';
 
 import type { UI5AdaptationOptions } from '../types';
+import CommandFactory from 'sap/ui/rta/command/CommandFactory';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 const developerMode = true;
 const FLScenario = 'FE_FROM_SCRATCH';
@@ -43,7 +45,7 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
                   newValue: change.value
               };
 
-    const command = await sap.ui.rta.command.CommandFactory.getCommandFor<sap.ui.rta.command.FlexCommand>(
+    const command = await CommandFactory.getCommandFor<FlexCommand>(
         modifiedControl,
         changeType,
         modifiedValue,
