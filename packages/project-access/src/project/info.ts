@@ -40,7 +40,7 @@ export async function getAppProgrammingLanguage(appRoot: string, memFs?: Editor)
  * @param path - path to root, for application, adaptation, and extension provide the app root, for library the project root
  * @returns - Fiori artifact type
  */
-export async function getArtifactTypes(path: string): Promise<FioriArtifactType> {
+export async function getFioriArtifactType(path: string): Promise<FioriArtifactType> {
     const foundArtifacts = await findFioriArtifacts({
         artifacts: ['adaptations', 'applications', 'extensions', 'libraries'],
         wsFolders: [path]

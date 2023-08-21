@@ -9,6 +9,7 @@ export {
     getCapEnvironment,
     getCapModelAndServices,
     getCapProjectType,
+    getFioriArtifactType,
     getMtaPath,
     getNodeModulesPath,
     getWebappPath,
