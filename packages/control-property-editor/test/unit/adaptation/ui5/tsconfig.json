@@ -7,6 +7,7 @@
         "incremental": true,
         "outDir": "dist",
         "lib": ["ES2021", "dom"],
-        "types": ["@sapui5/ts-types", "../../src/adaptation/ui5/rta.d.ts", "jest"]
-    }
+        "types": ["jest"]
+    },
+    "include": ["../../../../../../types/sapui5"]
 }
