@@ -1,6 +1,6 @@
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
-import type { MiddlewareParameters } from '@ui5/server';
+import type { MiddlewareParameters, MiddlewareUtils } from '@ui5/server';
 import { FlpSandbox } from '../base/flp';
 import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import type { Config } from '../types';
@@ -14,12 +14,19 @@ import { static as serveStatic } from 'express';
  * @param rootProject reference to the project
  * @param config configuration from the ui5.yaml
  * @param flp FlpSandbox instance
+ * @param util middleware utilities provided by the UI5 CLI
  * @param logger logger instance
  */
-async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, flp: FlpSandbox, logger: ToolsLogger) {
+async function initAdp(
+    rootProject: ReaderCollection,
+    config: AdpPreviewConfig,
+    flp: FlpSandbox,
+    util: MiddlewareUtils,
+    logger: ToolsLogger
+) {
     const files = await rootProject.byGlob('/manifest.appdescr_variant');
     if (files.length === 1) {
-        const adp = new AdpPreview(config, rootProject, logger);
+        const adp = new AdpPreview(config, rootProject, util, logger);
         const layer = await adp.init(JSON.parse(await files[0].getString()));
         flp.config.rta = {
             layer,
@@ -59,7 +66,7 @@ async function createRouter({ resources, options, middlewareUtil }: MiddlewarePa
     const flp = new FlpSandbox(config.flp, resources.rootProject, middlewareUtil, logger);
 
     if (config.adp) {
-        await initAdp(resources.rootProject, config.adp, flp, logger);
+        await initAdp(resources.rootProject, config.adp, flp, middlewareUtil, logger);
     } else {
         const files = await resources.rootProject.byGlob('/manifest.json');
         if (files.length === 1) {

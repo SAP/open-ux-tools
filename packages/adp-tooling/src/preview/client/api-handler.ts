@@ -1,7 +1,7 @@
 export const enum ApiEndpoints {
     FRAGMENT = './adp/api/fragment',
     CONTROLLER = './adp/api/controller',
-    MANIFEST_APP_DESCRIPTOR = '/adp/api/manifest'
+    MANIFEST_APP_DESCRIPTOR = '/manifest.appdescr_variant'
 }
 
 export const enum RequestMethod {

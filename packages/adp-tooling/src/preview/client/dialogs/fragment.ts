@@ -32,6 +32,7 @@ import ControlUtils from '../control-utils';
 import type { FragmentsResponse } from '../api-handler';
 import type { BuiltRuntimeControl } from '../control-utils';
 import { getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
+import Controller from 'sap/ui/core/mvc/Controller';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -199,8 +200,9 @@ export default class FragmentDialog {
                 that.model = new JSONModel();
                 if (!that.dialog) {
                     that.dialog = (await Fragment.load({
-                        name: 'adp.fragments.add-fragment',
-                        controller: dummyController
+                        name: 'adp.extension.ui.AddFragment',
+                        controller: new Controller('adp.extension.controllers.AddFragment')
+                        // controller: dummyController
                     })) as Dialog;
                     const { runtimeControl } = await that.getDialogData(overlays, that.model);
                     that.runtimeControl = runtimeControl;

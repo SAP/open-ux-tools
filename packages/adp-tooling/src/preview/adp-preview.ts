@@ -1,7 +1,7 @@
 import { join } from 'path';
 import express from 'express';
 import { ZipFile } from 'yazl';
-import NodeCache from 'node-cache';
+import type { MiddlewareUtils } from '@ui5/server';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
@@ -10,15 +10,12 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 
-import { HttpStatusCodes } from '../types';
 import RoutesHandler from './routes-handler';
 import type { AdpPreviewConfig, DescriptorVariant } from '../types';
 
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
-    CONTROLLER = '/adp/api/controller',
-    MANIFEST_APP_DESCRIPTOR = '/adp/api/manifest',
-    TEMPLATE_FRAGMENTS = '/resources/adp/fragments/:xmlName'
+    CONTROLLER = '/adp/api/controller'
 }
 
 /**
@@ -58,10 +55,6 @@ export class AdpPreview {
      * Routes handler class to handle API requests
      */
     private routesHandler: RoutesHandler;
-    /**
-     * Cache handler for caching resources
-     */
-    private cache: NodeCache;
 
     /**
      * @returns merged manifest.
@@ -110,15 +103,16 @@ export class AdpPreview {
      *
      * @param config adp config
      * @param project reference to the root of the project
+     * @param util middleware utilities provided by the UI5 CLI
      * @param logger logger instance
      */
     constructor(
         private readonly config: AdpPreviewConfig,
         private readonly project: ReaderCollection,
+        private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
     ) {
-        this.cache = new NodeCache();
-        this.routesHandler = new RoutesHandler(project, logger, this.cache);
+        this.routesHandler = new RoutesHandler(project, util, logger);
     }
 
     /**
@@ -185,23 +179,5 @@ export class AdpPreview {
          */
         router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
         router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment as RequestHandler);
-
-        /**
-         * Template fragments for Dialogs
-         */
-        router.get(ApiRoutes.TEMPLATE_FRAGMENTS, this.routesHandler.handleGetXMLFragmentByName as RequestHandler);
-
-        /**
-         * PROJECT Specific Routes
-         */
-        router.get(ApiRoutes.MANIFEST_APP_DESCRIPTOR, (_: Request, res: Response, next: NextFunction) => {
-            try {
-                res.status(HttpStatusCodes.OK).send(this.descriptorVariant);
-            } catch (e) {
-                this.logger.error(e.message);
-                res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
-                next(e);
-            }
-        });
     }
 }

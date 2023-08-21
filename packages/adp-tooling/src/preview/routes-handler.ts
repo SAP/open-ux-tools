@@ -1,9 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import sanitize from 'sanitize-filename';
-import type NodeCache from 'node-cache';
 import type { ReaderCollection } from '@ui5/fs';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response } from 'express';
 
 import { FolderNames, TemplateFileName, HttpStatusCodes } from '../types';
@@ -20,69 +20,14 @@ export default class RoutesHandler {
      * Constructor taking project as input.
      *
      * @param project Reference to the root of the project
+     * @param util middleware utilities provided by the UI5 CLI
      * @param logger Logger instance
-     * @param cache Caching instance
      */
     constructor(
         private readonly project: ReaderCollection,
-        private readonly logger: ToolsLogger,
-        private cache: NodeCache
+        private readonly util: MiddlewareUtils,
+        private readonly logger: ToolsLogger
     ) {}
-
-    /**
-     * Generic caching function, caches the results of a callback
-     *
-     * @param key Cache key - unique identifier
-     * @param cb Callback used to return data
-     * @param ttlSeconds Time-to-live for cached item
-     * @template T
-     * @returns {T} Type or Interface of the return data
-     */
-    private withCache<T>(key: string, cb: () => T, ttlSeconds: number = 60): T {
-        const cachedData = this.cache.get<T>(key);
-
-        if (cachedData !== undefined) {
-            return cachedData;
-        } else {
-            const data = cb();
-            this.cache.set(key, data, ttlSeconds);
-            return data;
-        }
-    }
-
-    /**
-     * Handler for retrieving XML Fragments for templates used for Dialogs
-     *
-     * @param req Request
-     * @param res Response
-     * @param next Next Function
-     */
-    public handleGetXMLFragmentByName = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const xmlName = req.params['xmlName'];
-            const sanitizedXmlName = sanitize(xmlName);
-
-            if (!sanitizedXmlName) {
-                res.send(HttpStatusCodes.NOT_FOUND).send(`Could not find XML Fragment at ${req.path}`);
-                return;
-            }
-
-            const xmlFragmentPath = path.join(__dirname, '../../templates/rta/ui', sanitizedXmlName);
-
-            if (!fs.existsSync(xmlFragmentPath)) {
-                res.send(HttpStatusCodes.NOT_FOUND).send(`XML Fragment does not exist`);
-                return;
-            }
-
-            // Optionally we can cache the fragment
-            const fragment = fs.readFileSync(xmlFragmentPath, 'utf-8');
-
-            res.status(HttpStatusCodes.OK).contentType('application/xml').send(fragment);
-        } catch (e) {
-            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
-            next(e);
-        }
-    };
 
     /**
      * @description Handler for reading all fragment files from the workspace
@@ -133,10 +78,10 @@ export default class RoutesHandler {
 
             const fragmentName = sanitize(data.fragmentName);
 
-            const projectPath = process.cwd();
+            const sourcePath = this.util.getProject().getSourcePath();
 
             if (fragmentName) {
-                const fullPath = path.join(projectPath, FolderNames.Webapp, FolderNames.Changes, FolderNames.Fragments);
+                const fullPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Fragments);
                 const filePath = path.join(fullPath, `${fragmentName}.fragment.xml`);
 
                 if (!fs.existsSync(fullPath)) {
