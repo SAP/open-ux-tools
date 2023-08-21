@@ -336,7 +336,7 @@ async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults
         try {
             pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
             const manifest = pathMap[manifestPath] as Manifest;
-            if (manifest['sap.app'] && manifest['sap.app'].type === 'library') {
+            if (manifest['sap.app'] && manifest['sap.app'].type === 'library' && !manifest['sap.app'].embeddedBy) {
                 const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath));
                 const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
                 if (projectRoot && (await fileExists(join(projectRoot, FileName.Ui5Yaml)))) {
