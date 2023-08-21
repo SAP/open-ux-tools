@@ -158,6 +158,7 @@ export default class FragmentDialog {
                         break;
                     case fragmentName.length <= 0:
                         that.dialog.getBeginButton().setEnabled(false);
+                        source.setValueState(ValueState.None);
                         that.model.setProperty('/fragmentNameToCreate', null);
                         break;
                     case !/^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName):
@@ -301,13 +302,12 @@ export default class FragmentDialog {
         }
 
         try {
-            const { fragments, filteredFragments } = await getFragments<FragmentsResponse>();
+            const { fragments } = await getFragments<FragmentsResponse>();
 
             jsonModel.setProperty('/filteredFragmentList', {
-                fragmentList: filteredFragments, // filtered fragments that have no corresponding change file
                 newFragmentName: '',
                 selectorId: selectorId,
-                unFilteredFragmentList: fragments // All fragments under /fragments folder
+                unFilteredFragmentList: fragments // All fragments under /changes/fragments folder
             });
             jsonModel.setProperty('/fragmentCount', fragments.length);
         } catch (e) {

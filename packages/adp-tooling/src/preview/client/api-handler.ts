@@ -16,7 +16,6 @@ type Fragments = { fragmentName: string }[];
 
 export interface FragmentsResponse {
     fragments: Fragments;
-    filteredFragments: Fragments;
     message: string;
 }
 

@@ -92,7 +92,6 @@ export default class RoutesHandler {
      */
     public handleReadAllFragments = async (_: Request, res: Response, next: NextFunction) => {
         const files = await this.project.byGlob('/**/changes/**/*.fragment.xml');
-        const xmlChangeFiles = await this.project.byGlob('/**/changes/*_addXML.change');
 
         if (!files || files.length === 0) {
             res.status(HttpStatusCodes.OK)
@@ -100,40 +99,10 @@ export default class RoutesHandler {
                 .send({ fragments: [], message: `No fragments found in the project workspace.` });
         }
         try {
-            // Dictionary where keys are XML Fragment names that are in the project's workspace
-            const dict: { [key: string]: string } = {};
-
             const fragments = files.map((file) => {
                 const fileName = file.getName();
-                dict[fileName] = file.getPath();
                 return {
                     fragmentName: fileName
-                };
-            });
-
-            /**
-             * Searches every addXML change file and deletes the fragmentName from the dictionary
-             */
-            await Promise.all(
-                xmlChangeFiles
-                    .map(async (file) => {
-                        const buffer = await file.getBuffer();
-                        const data: object & { content: { fragmentPath: string } } = JSON.parse(buffer.toString());
-                        // check if the fragment file exists in the workspace, return nothing if it does not
-                        const fragmentFileName = data.content.fragmentPath;
-                        const fragmentName = fragmentFileName.split('/').pop() as string;
-
-                        delete dict[fragmentName];
-                    })
-                    .map((f) => Promise.resolve(f))
-            );
-
-            /**
-             * Returned array consists of fragmentNames that have no corresponding change file
-             */
-            const filteredFragmentsWithoutChangeFile: { fragmentName: string }[] = Object.keys(dict).map((key) => {
-                return {
-                    fragmentName: key
                 };
             });
 
@@ -141,13 +110,9 @@ export default class RoutesHandler {
                 .contentType('application/json')
                 .send({
                     fragments,
-                    filteredFragments: filteredFragmentsWithoutChangeFile,
                     message: `${fragments.length} fragments found in the project workspace.`
                 });
             this.logger.debug(`Read fragments ${JSON.stringify(fragments)}`);
-            this.logger.debug(
-                `Read fragments without change file ${JSON.stringify(filteredFragmentsWithoutChangeFile)}`
-            );
         } catch (e) {
             this.logger.error(e.message);
             res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: e.message });
