@@ -1,35 +1,35 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "../../types/ui5.d.ts",
-    "../../types/mem-fs-editor.d.ts",
-    "src"
-  ],
-  "exclude": [
-    "src/preview/client"
-  ],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist"
-  },
-  "references": [
-    {
-      "path": "../axios-extension"
+    "extends": "../../tsconfig.json",
+    "include": [
+        "../../types/ui5.d.ts",
+        "../../types/mem-fs-editor.d.ts",
+        "src"
+    ],
+    "exclude": [
+        "src/preview/client"
+      ],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    {
-      "path": "../logger"
-    },
-    {
-      "path": "../project-access"
-    },
-    {
-      "path": "../store"
-    },
-    {
-      "path": "../system-access"
-    },
-    {
-      "path": "../ui5-config"
-    }
-  ]
+    "references": [
+        {
+            "path": "../axios-extension"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../store"
+        },
+        {
+            "path": "../system-access"
+        },
+        {
+            "path": "../ui5-config"
+        }
+    ]
 }
