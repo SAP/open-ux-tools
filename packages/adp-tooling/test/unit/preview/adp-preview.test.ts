@@ -162,4 +162,37 @@ describe('AdaptationProject', () => {
             expect(next).toBeCalled();
         });
     });
+    describe('addApis', () => {
+        let server!: SuperTest<Test>;
+        beforeAll(async () => {
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    }
+                },
+                mockProject as unknown as ReaderCollection,
+                logger
+            );
+
+            const app = express();
+            adp.addApis(app);
+            server = await supertest(app);
+        });
+
+        test('/adp/api/fragment', async () => {
+            const expectedNames = ['/changes/fragments/my.fragment.xml', '/changes/other/path/other.fragment.xml'];
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getPath: () => expectedNames[0]
+                },
+                {
+                    getPath: () => expectedNames[1]
+                }
+            ]);
+            const response = await server.get('/adp/api/fragment').expect(200);
+            const names = JSON.parse(response.text);
+            expect(names).toEqual(expectedNames);
+        });
+    });
 });
