@@ -407,3 +407,30 @@ export async function findFioriArtifacts(options: {
     }
     return results;
 }
+
+/**
+ * Find all CAP project roots by locating pom.xml or package.json in a given workspace.
+ *
+ * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
+ * @returns - root file paths that may contain a CAP project
+ */
+export async function findCapProjects(wsFolders: WorkspaceFolder[] | string[]): Promise<string[]> {
+    const result = new Set<string>();
+    const excludeFolders = ['node_modules', 'dist', 'src', 'webapp', 'MDKModule', 'gen'];
+    const fileNames = [FileName.Pom, FileName.Package];
+    const wsRoots = wsFoldersToRootPaths(wsFolders);
+    for (const root of wsRoots) {
+        const filesToCheck = await findBy({
+            fileNames,
+            root,
+            excludeFolders
+        });
+        const foldersToCheck = Array.from(new Set(filesToCheck.map((file) => dirname(file)))); //only directories without duplicates
+        for (const folderToCheck of foldersToCheck) {
+            if ((await getCapProjectType(folderToCheck)) !== undefined) {
+                result.add(folderToCheck);
+            }
+        }
+    }
+    return Array.from(result);
+}
