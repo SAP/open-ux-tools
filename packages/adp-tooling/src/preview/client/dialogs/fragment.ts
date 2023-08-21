@@ -5,7 +5,6 @@ import MessageToast from 'sap/m/MessageToast';
 /** sap.ui.core */
 import Fragment from 'sap/ui/core/Fragment';
 import type UI5Element from 'sap/ui/core/Element';
-import { ValueState } from 'sap/ui/core/library';
 
 /** sap.ui.model */
 import JSONModel from 'sap/ui/model/json/JSONModel';
@@ -15,8 +14,6 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 /** sap.ui.base */
-import type Event from 'sap/ui/base/Event';
-import type EventProvider from 'sap/ui/base/EventProvider';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
@@ -33,8 +30,7 @@ import type { FragmentsResponse } from '../api-handler';
 import type { BuiltRuntimeControl } from '../control-utils';
 import { getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
 import Controller from 'sap/ui/core/mvc/Controller';
-
-import AddFragmentController from '../controllers/AddFragment.controller';
+import type AddFragment from '../controllers/AddFragment.controller';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -57,22 +53,6 @@ interface DialogueData {
     runtimeControl: ManagedObject;
     control: BuiltRuntimeControl;
 }
-
-type ExtendedEventProvider = EventProvider & {
-    setEnabled: (v: boolean) => {};
-    getValue: () => string;
-    getSelectedItem: () => {
-        getTitle: () => string;
-        getText: () => string;
-        getCustomData: () => {
-            [key: string]: Function;
-        }[];
-    };
-    getSelectedKey: () => string;
-    setValueState: (state: ValueState) => void;
-    setValueStateText: (text: string) => void;
-    setVisible: (bool: boolean) => void;
-};
 
 /**
  * Handles creation of the dialog, fills it with data
@@ -100,133 +80,34 @@ export default class FragmentDialog {
      * @description Initilizes "Add XML Fragment" functionality and adds a new item to the context menu
      * @param contextMenu Context Menu from RTA
      */
-    public init(contextMenu: ContextMenu) {
-        // We need this in order to keep the reference to the class
-        // we cannot use this keyword, because it is overshadowed by function scope
-        const that = this;
-
-        /**
-         * Controller for the action in the Dialog
-         */
-        const dummyController = {
-            onAggregationChanged: (event: Event) => {
-                let selectedItem = '';
-                const source = event.getSource() as ExtendedEventProvider;
-                if (source.getSelectedItem()) {
-                    selectedItem = source.getSelectedItem().getText();
-                }
-                const selectedKey = source.getSelectedKey();
-
-                that.model.setProperty('/selectedAggregation/key', selectedKey);
-                that.model.setProperty('/selectedAggregation/value', selectedItem);
-
-                let newSelectedControlChildren: string[] | number[] = Object.keys(
-                    ControlUtils.getControlAggregationByName(that.runtimeControl, selectedItem)
-                );
-
-                newSelectedControlChildren = newSelectedControlChildren.map((key) => {
-                    return parseInt(key);
-                });
-
-                const updatedIndexArray: { key: number; value: number }[] =
-                    that.fillIndexArray(newSelectedControlChildren);
-
-                that.model.setProperty('/index', updatedIndexArray);
-                that.model.setProperty('/selectedIndex', updatedIndexArray.length - 1);
-            },
-            onIndexChanged: (event: Event) => {
-                const source = event.getSource() as ExtendedEventProvider;
-                const selectedIndex = source.getSelectedItem().getText();
-                that.model.setProperty('/selectedIndex', parseInt(selectedIndex));
-            },
-            onFragmentNameInputChange: (event: Event) => {
-                const source = event.getSource() as ExtendedEventProvider;
-                const fragmentName: string = source.getValue().trim();
-                const fragmentList: { fragmentName: string }[] = that.model.getProperty(
-                    '/filteredFragmentList/unFilteredFragmentList'
-                );
-
-                const iExistingFileIndex = fragmentList.findIndex((f: { fragmentName: string }) => {
-                    return f.fragmentName === `${fragmentName}.fragment.xml`;
-                });
-
-                switch (true) {
-                    case iExistingFileIndex >= 0:
-                        source.setValueState(ValueState.Error);
-                        source.setValueStateText(
-                            'Enter a different name. The fragment name that you entered already exists in your project.'
-                        );
-                        that.dialog.getBeginButton().setEnabled(false);
-                        that.model.setProperty('/fragmentNameToCreate', null);
-                        break;
-                    case fragmentName.length <= 0:
-                        that.dialog.getBeginButton().setEnabled(false);
-                        source.setValueState(ValueState.None);
-                        that.model.setProperty('/fragmentNameToCreate', null);
-                        break;
-                    case !/^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName):
-                        source.setValueState(ValueState.Error);
-                        source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
-                        that.dialog.getBeginButton().setEnabled(false);
-                        that.model.setProperty('/fragmentNameToCreate', null);
-                        break;
-                    case fragmentName.length > 0:
-                        that.dialog.getBeginButton().setEnabled(true);
-                        source.setValueState(ValueState.None);
-                        that.model.setProperty('/fragmentNameToCreate', fragmentName);
-                        break;
-                    default:
-                        break;
-                }
-            },
-            onCreateBtnPress: async (event: Event) => {
-                const source = event.getSource() as ExtendedEventProvider;
-                source.setEnabled(false);
-                // Need to create a new fragment and a respective change file
-                const fragmentNameToCreate = that.model.getProperty('/fragmentNameToCreate');
-                const fragmentData = {
-                    fragmentName: fragmentNameToCreate,
-                    index: that.model.getProperty('/selectedIndex'),
-                    targetAggregation: that.model.getProperty('/selectedAggregation/value')
-                };
-                await that.createNewFragment(fragmentData, that.runtimeControl, that);
-                that.handleDialogClose(that);
-            },
-            closeDialog: () => that.handleDialogClose(that)
-        };
-
+    public async init(contextMenu: ContextMenu) {
         contextMenu.addMenuItem({
             id: 'ADD_FRAGMENT',
             text: 'Add: Fragment',
-            handler: async (overlays: UI5Element[]) => {
-                that.model = new JSONModel();
-                if (!that.dialog) {
-                    that.dialog = (await Fragment.load({
+            handler: async function (this: FragmentDialog, overlays: UI5Element[]) {
+                const controller = (await Controller.create({
+                    name: 'adp.extension.controllers.AddFragment'
+                })) as unknown as AddFragment;
+                controller.model = new JSONModel();
+                if (!this.dialog) {
+                    this.dialog = (await Fragment.load({
                         name: 'adp.extension.ui.AddFragment',
-                        controller: await Controller.create({ name: 'adp.extension.controllers.AddFragment' })
-                        // controller: dummyController
+                        controller
                     })) as Dialog;
-                    const { runtimeControl } = await that.getDialogData(overlays, that.model);
-                    that.runtimeControl = runtimeControl;
-                    that.dialog
-                        .setModel(that.model)
+                    const { runtimeControl } = await this.getDialogData(overlays, controller.model);
+                    controller.runtimeControl = runtimeControl;
+                    this.dialog
+                        .setModel(this.model)
                         .addStyleClass('sapUiRTABorder')
                         .addStyleClass('sapUiResponsivePadding--content');
                 }
-                that.dialog.open();
-            },
+                controller.dialog = this.dialog;
+                controller.fillIndexArray = this.fillIndexArray;
+                controller.createNewFragment = this.createNewFragment;
+                this.dialog.open();
+            }.bind(this),
             icon: 'sap-icon://attachment-html'
         });
-    }
-
-    /**
-     * Handles the dialog closing and data cleanup
-     *
-     * @param that FragmentDialog instance
-     */
-    private handleDialogClose(that: FragmentDialog) {
-        that.dialog.close();
-        that.dialog.destroy();
     }
 
     /**
