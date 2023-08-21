@@ -1,11 +1,11 @@
+import MessageBox from 'sap/m/MessageBox';
 import Controller from 'sap/ui/core/mvc/Controller';
 
 /**
- * @namespace AddFragment.controller
+ * @namespace adp.extension.controllers
  */
 export default class AddFragment extends Controller {
-    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
-        alert('Alert from Controller');
+        MessageBox.show('Alert from Controller');
     }
 }
