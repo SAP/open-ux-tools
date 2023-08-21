@@ -411,14 +411,17 @@ export async function findFioriArtifacts(options: {
 /**
  * Find all CAP project roots by locating pom.xml or package.json in a given workspace.
  *
- * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
+ * @param options - find options
+ * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @returns - root file paths that may contain a CAP project
  */
-export async function findCapProjects(wsFolders: WorkspaceFolder[] | string[]): Promise<string[]> {
+export async function findCapProjects(options: {
+    readonly wsFolders: WorkspaceFolder[] | string[];
+}): Promise<string[]> {
     const result = new Set<string>();
     const excludeFolders = ['node_modules', 'dist', 'src', 'webapp', 'MDKModule', 'gen'];
     const fileNames = [FileName.Pom, FileName.Package];
-    const wsRoots = wsFoldersToRootPaths(wsFolders);
+    const wsRoots = wsFoldersToRootPaths(options.wsFolders);
     for (const root of wsRoots) {
         const filesToCheck = await findBy({
             fileNames,
