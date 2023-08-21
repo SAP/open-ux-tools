@@ -166,9 +166,6 @@ importers:
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
-      node-cache:
-        specifier: 5.1.2
-        version: 5.1.2
       prompts:
         specifier: 2.4.2
         version: 2.4.2
@@ -14137,13 +14134,6 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
-
-  /node-cache@5.1.2:
-    resolution: {integrity: sha512-t1QzWwnk4sjLWaQAS8CHgOJ+RAfmHpxFWmc36IWTiWHQfs0w5JDMBS1b1ZxQteo0vVVuWJvIUKHDkkeK7vIGCg==}
-    engines: {node: '>= 8.0.0'}
-    dependencies:
-      clone: 2.1.2
-    dev: false
 
   /node-dir@0.1.17:
     resolution: {integrity: sha512-tmPX422rYgofd4epzrNoOXiE8XFZYOcCq1vD7MAXCDO+O+zndlA2ztdKKMa+EeuBG5tHETpr4ml4RGgpqDCCAg==}

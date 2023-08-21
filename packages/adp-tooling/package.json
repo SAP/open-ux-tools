@@ -16,7 +16,7 @@
     "scripts": {
         "build": "pnpm build:server && pnpm build:client",
         "build:server": "tsc --build",
-        "build:client": "tsc --noEmit --project src/preview/client/tsconfig.json && babel --extensions .ts ./src/preview/client -d ./dist/preview/client",
+        "build:client": "tsc --noEmit --project src/preview/client/tsconfig.json && babel --extensions .ts ./src/preview/client -d ./dist/preview/client --copy-files",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
@@ -42,7 +42,6 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "sanitize-filename": "1.6.3",
-        "node-cache": "5.1.2",
         "ejs": "3.1.7",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
