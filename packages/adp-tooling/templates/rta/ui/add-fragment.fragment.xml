@@ -4,7 +4,7 @@
     xmlns:l="sap.ui.layout"
     xmlns:f="sap.f" 
     xmlns:form="sap.ui.layout.form" >
-        <Dialog id="CreateSalesOrderDialog" title="Add XML Fragment" >
+        <Dialog id="CreateSalesOrderDialog" title="Add XML Fragment" contentWidth="500px" >
             <content>
                 <l:VerticalLayout class="sapUiContentPadding" width="100%">
                     <l:HorizontalLayout>
@@ -42,7 +42,7 @@
                         <Label text="Fragment Name" />
                         <ToolbarSpacer width="2rem" />
                         <Input 
-                            width="25rem" 
+                            width="300px" 
                             description=".fragment.xml" 
                             value="{/newFragmentName}" 
                             liveChange="onFragmentNameInputChange" />

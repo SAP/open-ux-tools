@@ -60,19 +60,21 @@ export default class RoutesHandler {
     public handleGetXMLFragmentByName = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const xmlName = req.params['xmlName'];
+            const sanitizedXmlName = sanitize(xmlName);
 
-            if (!xmlName) {
+            if (!sanitizedXmlName) {
                 res.send(HttpStatusCodes.NOT_FOUND).send(`Could not find XML Fragment at ${req.path}`);
                 return;
             }
 
-            const xmlFragmentPath = path.join(__dirname, '../../templates/rta/ui', xmlName);
+            const xmlFragmentPath = path.join(__dirname, '../../templates/rta/ui', sanitizedXmlName);
 
             if (!fs.existsSync(xmlFragmentPath)) {
                 res.send(HttpStatusCodes.NOT_FOUND).send(`XML Fragment does not exist`);
                 return;
             }
 
+            // Optionally we can cache the fragment
             const fragment = fs.readFileSync(xmlFragmentPath, 'utf-8');
 
             res.status(HttpStatusCodes.OK).contentType('application/xml').send(fragment);
