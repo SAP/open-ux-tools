@@ -209,6 +209,16 @@ describe('Test findFioriArtifacts()', () => {
         ]);
         expect(result.libraries).toEqual([
             {
+                'manifest': {
+                    'sap.app': {
+                        'embeds': ['components/one-component'],
+                        'type': 'library'
+                    }
+                },
+                'manifestPath': join(testDataRoot, 'project/find-all-apps/libraries/nested-library/src/manifest.json'),
+                'projectRoot': join(testDataRoot, 'project/find-all-apps/libraries/nested-library')
+            },
+            {
                 manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library/src/manifest.json'),
                 manifest: {
                     'sap.app': {
@@ -229,6 +239,16 @@ describe('Test findFioriArtifacts()', () => {
         expect(result.adaptations).toBeUndefined();
         expect(result.extensions).toBeUndefined();
         expect(result.libraries).toEqual([
+            {
+                'manifest': {
+                    'sap.app': {
+                        'embeds': ['components/one-component'],
+                        'type': 'library'
+                    }
+                },
+                'manifestPath': join(testDataRoot, 'project/find-all-apps/libraries/nested-library/src/manifest.json'),
+                'projectRoot': join(testDataRoot, 'project/find-all-apps/libraries/nested-library')
+            },
             {
                 manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library/src/manifest.json'),
                 manifest: {
