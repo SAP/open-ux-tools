@@ -57,7 +57,7 @@ async function createRouter({ resources, options, middlewareUtil }: MiddlewarePa
         }
     }
     // add exposed endpoints for cds-plugin-ui5
-    flp.router.getAppPages = () => [`${flp.config.path}#${flp.config.intent?.object}-${flp.config.intent?.action}`];
+    flp.router.getAppPages = () => [`${flp.config.path}#${flp.config.intent.object}-${flp.config.intent.action}`];
     return flp.router;
 }
 
