@@ -1,6 +1,6 @@
 import type { ReaderCollection } from '@ui5/fs';
 import { render } from 'ejs';
-import type { Request, Response } from 'express';
+import type { Request, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, relative } from 'path';
 import type { App, FlpConfig } from '../types';
@@ -9,6 +9,13 @@ import type { Logger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+
+/**
+ * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
+ */
+export type EnhancedRouter = Router & {
+    getAppPages?: () => string[];
+};
 
 /**
  * Default theme
@@ -70,7 +77,7 @@ export interface TemplateConfig {
 export class FlpSandbox {
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
-    public readonly router: any;
+    public readonly router: EnhancedRouter;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
