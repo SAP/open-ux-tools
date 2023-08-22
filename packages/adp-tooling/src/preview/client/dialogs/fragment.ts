@@ -59,19 +59,6 @@ interface DialogueData {
  */
 export default class FragmentDialog {
     /**
-     * Dialog instance
-     */
-    private dialog: Dialog;
-    /**
-     * JSON Model for the dialog
-     */
-    private model: JSONModel;
-    /**
-     * Runtime control managed object
-     */
-    private runtimeControl: ManagedObject;
-
-    /**
      * @param rta Runtime Authoring
      */
     constructor(private rta: RuntimeAuthoring) {}
@@ -88,23 +75,22 @@ export default class FragmentDialog {
                 const controller = (await Controller.create({
                     name: 'adp.extension.controllers.AddFragment'
                 })) as unknown as AddFragment;
+
                 controller.model = new JSONModel();
-                if (!this.dialog) {
-                    this.dialog = (await Fragment.load({
+                const { runtimeControl } = await this.getDialogData(overlays, controller.model);
+                controller.runtimeControl = runtimeControl;
+
+                if (!controller.dialog) {
+                    controller.dialog = (await Fragment.load({
                         name: 'adp.extension.ui.AddFragment',
                         controller
                     })) as Dialog;
-                    const { runtimeControl } = await this.getDialogData(overlays, controller.model);
-                    controller.runtimeControl = runtimeControl;
-                    this.dialog
-                        .setModel(this.model)
-                        .addStyleClass('sapUiRTABorder')
-                        .addStyleClass('sapUiResponsivePadding--content');
+
+                    controller.dialog.setModel(controller.model).addStyleClass('sapUiRTABorder');
                 }
-                controller.dialog = this.dialog;
                 controller.fillIndexArray = this.fillIndexArray;
-                controller.createNewFragment = this.createNewFragment;
-                this.dialog.open();
+                controller.createNewFragment = this.createNewFragment.bind(this);
+                controller.dialog.open();
             }.bind(this),
             icon: 'sap-icon://attachment-html'
         });
@@ -241,13 +227,8 @@ export default class FragmentDialog {
      * @param fragmentData.fragmentName Fragment name
      * @param fragmentData.targetAggregation Target aggregation for control
      * @param runtimeControl Runtime control
-     * @param that FragmentDialog instance
      */
-    private async createNewFragment(
-        fragmentData: CreateFragmentProps,
-        runtimeControl: ManagedObject,
-        that: FragmentDialog
-    ): Promise<void> {
+    private async createNewFragment(fragmentData: CreateFragmentProps, runtimeControl: ManagedObject): Promise<void> {
         const { fragmentName, index, targetAggregation } = fragmentData;
         try {
             await writeFragment<unknown>({ fragmentName });
@@ -257,7 +238,7 @@ export default class FragmentDialog {
             throw new Error(e.message);
         }
 
-        await that.createFragmentChange({ fragmentName, index, targetAggregation }, runtimeControl);
+        await this.createFragmentChange({ fragmentName, index, targetAggregation }, runtimeControl);
     }
 
     /**

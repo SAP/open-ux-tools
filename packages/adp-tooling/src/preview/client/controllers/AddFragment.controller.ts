@@ -1,11 +1,16 @@
+import type Dialog from 'sap/m/Dialog';
+
+import { ValueState } from 'sap/ui/core/library';
+
+import Controller from 'sap/ui/core/mvc/Controller';
+
 import type Event from 'sap/ui/base/Event';
 import type EventProvider from 'sap/ui/base/EventProvider';
-import { ValueState } from 'sap/ui/core/library';
-import Controller from 'sap/ui/core/mvc/Controller';
-import ControlUtils from '../control-utils';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
+
 import type JSONModel from 'sap/ui/model/json/JSONModel';
-import type Dialog from 'sap/m/Dialog';
+
+import ControlUtils from '../control-utils';
 
 type ExtendedEventProvider = EventProvider & {
     setEnabled: (v: boolean) => {};
@@ -23,6 +28,12 @@ type ExtendedEventProvider = EventProvider & {
     setVisible: (bool: boolean) => void;
 };
 
+interface CreateFragmentProps {
+    fragmentName: string;
+    index: string | number;
+    targetAggregation: string;
+}
+
 /**
  * @namespace adp.extension.controllers
  */
@@ -31,15 +42,29 @@ export default class AddFragment extends Controller {
      * Runtime control managed object
      */
     public runtimeControl: ManagedObject;
-
+    /**
+     * JSON Model that has the data
+     */
     public model: JSONModel;
-
+    /**
+     * Dialog instance
+     */
     public dialog: Dialog;
-
+    /**
+     * Function that fills the indexArray
+     */
     public fillIndexArray: any;
 
-    public createNewFragment: any;
+    /**
+     * Function that creates the XML fragment and the change file
+     */
+    public createNewFragment: (fragmentData: CreateFragmentProps, runtimeControl: ManagedObject) => Promise<void>;
 
+    /**
+     * Handles the change in aggregations
+     *
+     * @param event Event
+     */
     onAggregationChanged(event: Event) {
         let selectedItem = '';
         const source = event.getSource() as ExtendedEventProvider;
@@ -65,12 +90,22 @@ export default class AddFragment extends Controller {
         this.model.setProperty('/selectedIndex', updatedIndexArray.length - 1);
     }
 
+    /**
+     * Handles the change in target indexes
+     *
+     * @param event Event
+     */
     onIndexChanged(event: Event) {
         const source = event.getSource() as ExtendedEventProvider;
         const selectedIndex = source.getSelectedItem().getText();
         this.model.setProperty('/selectedIndex', parseInt(selectedIndex));
     }
 
+    /**
+     * Handles fragment name input change
+     *
+     * @param event Event
+     */
     onFragmentNameInputChange(event: Event) {
         const source = event.getSource() as ExtendedEventProvider;
         const fragmentName: string = source.getValue().trim();
@@ -111,6 +146,12 @@ export default class AddFragment extends Controller {
                 break;
         }
     }
+
+    /**
+     * Handles create button press
+     *
+     * @param event Event
+     */
     async onCreateBtnPress(event: Event) {
         const source = event.getSource() as ExtendedEventProvider;
         source.setEnabled(false);
@@ -121,15 +162,20 @@ export default class AddFragment extends Controller {
             index: this.model.getProperty('/selectedIndex'),
             targetAggregation: this.model.getProperty('/selectedAggregation/value')
         };
-        await this.createNewFragment(fragmentData, this.runtimeControl, this);
+        await this.createNewFragment(fragmentData, this.runtimeControl);
+
         this.handleDialogClose();
     }
+
+    /**
+     * Handles the closing of the dialog
+     */
     closeDialog() {
         this.handleDialogClose();
     }
 
     /**
-     * Handles the dialog closing and data cleanup
+     * Handles the dialog closing and destruction of it
      */
     private handleDialogClose() {
         this.dialog.close();

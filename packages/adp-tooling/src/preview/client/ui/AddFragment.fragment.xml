@@ -2,52 +2,54 @@
     xmlns="sap.m" 
     xmlns:core="sap.ui.core" 
     xmlns:l="sap.ui.layout"
-    xmlns:f="sap.f" 
-    xmlns:form="sap.ui.layout.form" >
+    xmlns:f="sap.ui.layout.form" >
         <Dialog id="CreateSalesOrderDialog" title="Add XML Fragment" contentWidth="500px" >
             <content>
-                <l:VerticalLayout class="sapUiContentPadding" width="100%">
-                    <l:HorizontalLayout>
-                        <Label text="Control Type" />
-                        <ToolbarSpacer width="3.4rem" />
-                        <Label text="{/selectedControlName}" />
-                    </l:HorizontalLayout>
-                    <l:HorizontalLayout>
-                        <Label text="Target Aggregation" />
-                        <ToolbarSpacer width="1rem" />
-                        <ComboBox
-                            change="onAggregationChanged"
-                            selectedKey="{/selectedAggregation/key}"
-                            items="{
-                                path: '/targetAggregation',
-                                sorter: { path: 'text' }
-                            }">
-                            <core:Item key="{key}" text="{value}" />
-                        </ComboBox>
-                    </l:HorizontalLayout>
-                    <l:HorizontalLayout>
-                        <Label text="Index" />
-                        <ToolbarSpacer width="6rem" />
-                        <ComboBox
-                            change="onIndexChanged"
-                            selectedKey='{/selectedIndex}'
-                            items="{
-                                path: '/index',
-                                sorter: { path: 'text' }
-                            }">
-                            <core:Item key="{key}" text="{value}" />
-                        </ComboBox>
-                    </l:HorizontalLayout>
-                    <l:HorizontalLayout>
-                        <Label text="Fragment Name" />
-                        <ToolbarSpacer width="2rem" />
-                        <Input 
-                            width="300px" 
-                            description=".fragment.xml" 
-                            value="{/newFragmentName}" 
-                            liveChange="onFragmentNameInputChange" />
-                    </l:HorizontalLayout>
-                </l:VerticalLayout>
+                <VBox class="sapUiSmallMargin">
+                    <f:SimpleForm id="SimpleFormChange354"
+                        editable="true"
+                        layout="ResponsiveGridLayout"
+                        labelSpanS="4"
+                        singleContainerFullSize="false" >
+                        <f:content>
+                            <!-- Control type -->
+                            <Label text="Control Type" />
+                            <Text text="{/selectedControlName}" />
+
+                            <!-- Target Aggregation -->
+                            <Label text="Target Aggregation" />
+                            <ComboBox
+                                change="onAggregationChanged"
+                                selectedKey="{/selectedAggregation/key}"
+                                items="{
+                                    path: '/targetAggregation',
+                                    sorter: { path: 'text' }
+                                }">
+                                <core:Item key="{key}" text="{value}" />
+                            </ComboBox>
+
+                            <!-- Target Index -->
+                            <Label text="Index" />
+                            <ComboBox
+                                change="onIndexChanged"
+                                selectedKey='{/selectedIndex}'
+                                items="{
+                                    path: '/index',
+                                    sorter: { path: 'text' }
+                                }">
+                                <core:Item key="{key}" text="{value}" />
+                            </ComboBox>
+
+                            <!-- Fragment Name input -->
+                            <Label text="Fragment Name" />
+                            <Input 
+                                description=".fragment.xml" 
+                                value="{/newFragmentName}" 
+                                liveChange="onFragmentNameInputChange" >
+                            </Input>
+                        </f:content>
+                    </f:SimpleForm >
+                </VBox >
             </content>
             <beginButton>
                 <Button 
