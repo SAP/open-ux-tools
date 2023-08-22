@@ -76,6 +76,7 @@ export enum UiIcons {
     HelpAction = 'HelpAction',
     HideSmall = 'HideSmall',
     Highlighter = 'Highlighter',
+    History = 'History',
     Home = 'Home',
     IdTag = 'IdTag',
     Info = 'Info',
@@ -121,6 +122,7 @@ export enum UiIcons {
     Sort = 'Sort',
     Source = 'Source',
     Star = 'Star',
+    StarActive = 'StarActive',
     Success = 'Success',
     Table = 'Table',
     Tags = 'Tags',
@@ -1062,6 +1064,18 @@ export function initIcons(): void {
                     />
                 </svg>
             ),
+            [UiIcons.History]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M14 8C14 11.3137 11.3135 14 8 14C5.81885 14 3.9082 12.8365 2.85645 11.0915C2.72998 10.8816 2.61621 10.6632 2.51562 10.4376L1.60156 10.8437C1.71875 11.1073 1.85205 11.3623 2 11.6076C3.2251 13.6404 5.45361 15 8 15C11.8662 15 15 11.866 15 8C15 4.134 11.8662 1 8 1C5.45361 1 3.2251 2.35959 2 4.39243V2H1V6H5V5H2.80225C2.81982 4.96933 2.83789 4.93884 2.85645 4.90851C3.9082 3.16348 5.81885 2 8 2C11.3135 2 14 4.68628 14 8Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M7.5 4H8.5V7.13379C8.79883 7.3067 9 7.62988 9 8C9 8.0896 8.98828 8.17642 8.96631 8.25906L11.916 11.2089L11.209 11.916L8.25879 8.96613C8.17627 8.98822 8.08936 9 8 9C7.44775 9 7 8.55228 7 8C7 7.62988 7.20117 7.3067 7.5 7.13379V4Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
             [UiIcons.Home]: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                     <path
@@ -1605,11 +1619,22 @@ export function initIcons(): void {
                 </svg>
             ),
             [UiIcons.Star]: (
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
-                        fill={COLORS.default}
                         fillRule="evenodd"
-                        d="M7.998,1 L6.286,5.998 L1,5.991 L4.899,9.376 L3.707,15.03 L8.001,11.636 L12.299,15.002 L11.112,9.377 L15.015,6.003 L9.788,5.989 L7.999,1 L7.998,1 Z M8.02,4.022 L9.083,6.987 L12.338,6.996 L10.013,9.006 L10.753,12.522 L7.998,10.365 L5.256,12.532 L5.998,9.007 L3.68,6.995 L7,6.998 L8.02,4.022 Z"
+                        clipRule="evenodd"
+                        d="M10.0572 5.16844L7.99993 1L5.94268 5.16844L1.34253 5.83688L4.67123 9.08156L3.88543 13.6631L7.99993 11.5L12.1144 13.6631L11.3286 9.08156L14.6573 5.83688L10.0572 5.16844ZM12.5084 6.53512L9.39311 6.08245L7.99993 3.25955L6.60674 6.08245L3.49149 6.53512L5.74571 8.73244L5.21356 11.8351L7.99993 10.3702L10.7863 11.8351L10.2541 8.73244L12.5084 6.53512Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
+            [UiIcons.StarActive]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M10.0572 5.16844L7.99993 1L5.94268 5.16844L1.34253 5.83688L4.67123 9.08156L3.88543 13.6631L7.99993 11.5L12.1144 13.6631L11.3286 9.08156L14.6573 5.83688L10.0572 5.16844Z"
+                        fill="var(--vscode-editorLightBulb-foreground)"
                     />
                 </svg>
             ),
