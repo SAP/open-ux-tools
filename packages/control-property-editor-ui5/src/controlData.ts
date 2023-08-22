@@ -14,7 +14,7 @@ import {
 import type { PropertiesInfo } from './utils';
 import { getDocumentation } from './documentation';
 
-import type DataType from 'sap/ui/base/DataType';
+import DataType from 'sap/ui/base/DataType';
 import Utils from 'sap/ui/fl/Utils';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
@@ -89,7 +89,6 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
     // Control type is a sap.ui.base.DataType or an enumeration type
     else {
         // Determine type from iFrame
-        const DataType = window['sap'].ui['base'].DataType;
         const propertyDataType = DataType.getType(typeName);
 
         //type which is not a DataType such as Control is not supported

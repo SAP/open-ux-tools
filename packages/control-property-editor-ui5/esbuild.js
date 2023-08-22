@@ -33,13 +33,9 @@ const esbuildOptions = {
         js: `function __ui5_require_async(path) {
     return new Promise(function(resolve, reject) {
         sap.ui.require([path], function(module) {
-        if (!(module && module.__esModule)) {
-            module = module === null || !(typeof module === "object" && path.endsWith("/library")) ? { ...module, default: module } : module;
-            Object.defineProperty(module, "__esModule", { value: true });
-        }
-        resolve(module);
+         resolve(module);
         }, function(err) {
-        reject(err);
+         reject(err);
         });
     });
 }`
@@ -49,7 +45,6 @@ const esbuildOptions = {
     platform: 'browser',
     target: 'es2022',
     format: 'esm',
-    external: ['sap'],
     plugins: [ui5Plugin]
 };
 

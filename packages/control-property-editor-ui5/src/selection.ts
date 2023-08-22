@@ -8,7 +8,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type Event from 'sap/ui/base/Event';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
-import { SelectionChangeEvent } from 'sap/ui/rta/RuntimeAuthoring';
+import type { SelectionChangeEvent } from 'sap/ui/rta/RuntimeAuthoring';
 
 /**
  *
