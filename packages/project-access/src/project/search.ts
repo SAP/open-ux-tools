@@ -13,7 +13,7 @@ import type {
 import { FileName } from '../constants';
 import { fileExists, findBy, findFileUp, readJSON } from '../file';
 import { hasDependency } from './dependencies';
-import { getCapProjectType, isCapJavaProject, isCapNodeJsProject } from './cap';
+import { getCapCustomPaths, getCapProjectType, isCapJavaProject, isCapNodeJsProject } from './cap';
 import { getWebappPath } from './ui5-config';
 
 /**
@@ -430,7 +430,10 @@ export async function findCapProjects(options: {
         });
         const foldersToCheck = Array.from(new Set(filesToCheck.map((file) => dirname(file)))); //only directories without duplicates
         for (const folderToCheck of foldersToCheck) {
-            if ((await getCapProjectType(folderToCheck)) !== undefined) {
+            if (
+                (await getCapProjectType(folderToCheck)) !== undefined &&
+                (await fileExists(join(folderToCheck, (await getCapCustomPaths(folderToCheck)).srv)))
+            ) {
                 result.add(folderToCheck);
             }
         }
