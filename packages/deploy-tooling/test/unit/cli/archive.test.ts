@@ -5,7 +5,6 @@ import { createUi5Archive } from '../../../src/ui5/archive';
 import axios from 'axios';
 import type { Resource } from '@ui5/fs';
 import { ZipFile } from 'yazl';
-import { mockedUi5RepoService } from '../../__mocks__';
 
 jest.mock('axios');
 

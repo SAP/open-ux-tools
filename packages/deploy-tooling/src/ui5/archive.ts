@@ -9,6 +9,7 @@ import { createBuffer } from '../base';
  * @param logger - reference to the logger instance
  * @param workspace - reference to the UI5 tooling workspace object
  * @param projectName - project properties and configuration
+ * @param exclude - array of regex patterns used to exclude folders from archive
  * @returns {*}  {Promise<Buffer>} - archive
  */
 export async function createUi5Archive(
@@ -22,7 +23,7 @@ export async function createUi5Archive(
     const zip = new ZipFile();
     const resources = await workspace.byGlob(`${prefix}**/*`);
     for (const resource of resources) {
-        if (!exclude.some((regex) => resource.getPath().match(regex))) {
+        if (!exclude.some((regex) => RegExp(regex, 'g').exec(resource.getPath()))) {
             const path = resource.getPath().replace(prefix, '');
             logger.debug(`Adding ${path}`);
             const buffer = await resource.getBuffer();
