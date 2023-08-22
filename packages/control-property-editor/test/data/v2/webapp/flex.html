@@ -22,16 +22,14 @@
         <script src="/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
         <script
             src="/resources/sap-ui-core.js"
-            data-sap-ui-libs="sap.m, sap.ushell, sap.ui.core, sap.ui.comp, sap.ui.table, sap.suite.ui.generic.template, sap.ui.generic.app, sap.ui.rta, com.sap.ux.cpe"
+            data-sap-ui-libs="sap.m, sap.ushell, sap.ui.core, sap.ui.comp, sap.ui.table, sap.suite.ui.generic.template, sap.ui.generic.app, sap.ui.rta"
             data-sap-ui-async="true"
             data-sap-ui-preload="async"
             data-sap-ui-xx-designMode="true"
             data-sap-ui-compatVersion="edge"
             data-sap-ui-theme="sap_fiori_3"
             data-sap-ui-resourceroots='{
-                  "v2flex": ".",
-                  "com.sap.ux.cpe": "/ui5-adaptation",
-                  "@sap-ux.control-property-editor-common": "/cpe-common/bundle"
+                  "v2flex": "."
               }'
             data-sap-ui-frameOptions="allow"
             data-sap-ui-bindingSyntax="complex"
@@ -57,8 +55,8 @@
                             console.info('attachAppLoaded', event);
                             const view = event.getParameter('componentInstance');
                             sap.ui.require(
-                                ['sap/ui/rta/RuntimeAuthoring', 'sap/ui/fl/Layer', 'sap/ui/base/BindingParser', 'com/sap/ux/cpe/cpeAdapter'],
-                                async function (RuntimeAuthoring, Layer, BindingParser, ControlPropertyEditorAdapter) {
+                                ['sap/ui/rta/RuntimeAuthoring', 'sap/ui/fl/Layer', 'sap/ui/base/BindingParser', ],
+                                async function (RuntimeAuthoring, Layer, BindingParser) {
                                     const layer = Layer.VENDOR;
                                     const options = {
                                         rootControl: view,
@@ -70,8 +68,8 @@
                                     BindingParser._keepBindingStrings = true;
                                     const rta = new RuntimeAuthoring(options);
                                     await rta.start();
-                                    //const { init } = await import('/ui5-adaptation.js');
-                                    new ControlPropertyEditorAdapter.ControlPropertyEditorAdapter().init({
+                                    const { init } = await import('/ui5-adaptation/index.js');
+                                    init({
                                         rta,
                                         componentId: 'v2flex',
                                         layer,
