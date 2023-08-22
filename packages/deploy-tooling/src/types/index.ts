@@ -65,6 +65,7 @@ export interface AbapDeployConfig extends CommonOptions {
     target: AbapTarget;
     app: BspConfig;
     credentials?: AxiosRequestConfig['auth'];
+    exclude?: string[];
 }
 
 export interface CliOptions
