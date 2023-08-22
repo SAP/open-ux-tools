@@ -22,7 +22,7 @@ async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, 
         const layer = await adp.init(JSON.parse(await files[0].getString()));
         flp.config.rta = { layer };
         await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
-        flp.router.use(adp.descriptor.url, adp.proxy.bind(adp));
+        flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
     }

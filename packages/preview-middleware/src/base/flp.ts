@@ -1,6 +1,6 @@
 import type { ReaderCollection } from '@ui5/fs';
 import { render } from 'ejs';
-import type { Request, Response, Router } from 'express';
+import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, relative } from 'path';
 import type { App, FlpConfig } from '../types';
@@ -225,12 +225,12 @@ export class FlpSandbox {
         });
         const api = '/preview/api/changes';
         this.router.use(api, json());
-        this.router.get(api, async (_req: Request, res: Response) => {
+        this.router.get(api, (async (_req: Request, res: Response) => {
             res.status(200)
                 .contentType('application/json')
                 .send(await readChanges(this.project, this.logger));
-        });
-        this.router.post(api, async (req: Request, res: Response) => {
+        }) as RequestHandler);
+        this.router.post(api, (async (req: Request, res: Response) => {
             try {
                 const { success, message } = writeChange(
                     req.body,
@@ -245,8 +245,8 @@ export class FlpSandbox {
             } catch (error) {
                 res.status(500).send(error.message);
             }
-        });
-        this.router.delete(api, async (req: Request, res: Response) => {
+        }) as RequestHandler);
+        this.router.delete(api, (async (req: Request, res: Response) => {
             try {
                 const { success, message } = deleteChange(
                     req.body,
@@ -261,7 +261,7 @@ export class FlpSandbox {
             } catch (error) {
                 res.status(500).send(error.message);
             }
-        });
+        }) as RequestHandler);
 
         return [
             {
