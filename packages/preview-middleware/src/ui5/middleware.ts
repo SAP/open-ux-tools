@@ -56,6 +56,8 @@ async function createRouter({ resources, options, middlewareUtil }: MiddlewarePa
             throw new Error('No manifest.json found.');
         }
     }
+    // add exposed endpoints for cds-plugin-ui5
+    flp.router.getAppPages = () => [`${flp.config.path}#${flp.config.intent?.object}-${flp.config.intent?.action}`];
     return flp.router;
 }
 
@@ -71,9 +73,7 @@ module.exports = async (params: MiddlewareParameters<Config>): Promise<RequestHa
         logLevel: params.options.configuration?.debug ? LogLevel.Debug : LogLevel.Info
     });
     try {
-        const middleware = await createRouter(params, logger);
-        middleware.getAppPages = () => [params.options.configuration?.flp?.path ?? DEFAULT_PATH];
-        return middleware;
+        return await createRouter(params, logger);
     } catch (error) {
         logger.error('Could not start preview-middleware.');
         logger.error(error.message);
