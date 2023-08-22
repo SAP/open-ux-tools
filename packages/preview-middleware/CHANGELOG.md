@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.3.8
+
+### Patch Changes
+
+-   44df3d5c: fix lint warnings in locate-reuse-libs.js
+
 ## 0.3.7
 
 ### Patch Changes
