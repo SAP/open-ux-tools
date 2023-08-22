@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.19.17
+
+### Patch Changes
+
+-   44df3d5c: fix lint warnings in locate-reuse-libs.js
+-   Updated dependencies [44df3d5c]
+    -   @sap-ux/ui5-application-writer@0.24.3
+
 ## 0.19.16
 
 ### Patch Changes
