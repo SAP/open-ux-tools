@@ -1,6 +1,6 @@
 import type { UI5ControlProperty } from './types';
 
-import type { Control, ControlProperty } from '../../api';
+import type { Control, ControlProperty } from '@sap-ux/control-property-editor-common';
 import {
     BOOLEAN_VALUE_TYPE,
     CHECKBOX_EDITOR_TYPE,
@@ -8,15 +8,25 @@ import {
     FLOAT_VALUE_TYPE,
     INPUT_EDITOR_TYPE,
     INTEGER_VALUE_TYPE,
-    STRING_VALUE_TYPE
-} from '../../api';
+    STRING_VALUE_TYPE,
+    convertCamelCaseToPascalCase
+} from '@sap-ux/control-property-editor-common';
 import type { PropertiesInfo } from './utils';
 import { getDocumentation } from './documentation';
-import { convertCamelCaseToPascalCase } from '../../utils';
+
 import type DataType from 'sap/ui/base/DataType';
 import Utils from 'sap/ui/fl/Utils';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+
+interface ManagedObjectMetadataProperties {
+    name: string;
+    defaultValue: unknown | null;
+    deprecated: boolean;
+    getType: () => DataType;
+    getName: () => string;
+    getDefaultValue: () => unknown;
+}
 
 type AnalyzedType = Pick<UI5ControlProperty, 'isArray' | 'primitiveType' | 'ui5Type' | 'enumValues'>;
 
@@ -31,15 +41,6 @@ function testIconPattern(name: string): boolean {
     // match 'src' or any string starting or ending with 'icon' (case insensitive;)
     const nameLc = (name || '').toLowerCase();
     return nameLc.indexOf('src') >= 0 || nameLc.startsWith('icon') || nameLc.endsWith('icon');
-}
-
-interface ManagedObjectMetadataProperties {
-    name: string;
-    defaultValue: unknown | null;
-    deprecated: boolean;
-    getType: () => DataType;
-    getName: () => string;
-    getDefaultValue: () => unknown;
 }
 
 /**
@@ -88,7 +89,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
     // Control type is a sap.ui.base.DataType or an enumeration type
     else {
         // Determine type from iFrame
-        const DataType = window.sap['ui']['base'].DataType;
+        const DataType = window['sap'].ui['base'].DataType;
         const propertyDataType = DataType.getType(typeName);
 
         //type which is not a DataType such as Control is not supported

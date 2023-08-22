@@ -1,14 +1,14 @@
-import type { ExternalAction } from '../../api';
-import { controlSelected, propertyChanged, selectControl } from '../../api';
-import { reportTelemetry } from '../../telemetry';
+import type { ExternalAction } from '@sap-ux/control-property-editor-common';
+import { controlSelected, propertyChanged, selectControl } from '@sap-ux/control-property-editor-common';
+import { reportTelemetry } from '@sap-ux/control-property-editor-common';
 import { buildControlData } from './controlData';
 import { getRuntimeControl } from './utils';
-
 import type { ActionSenderFunction, Service, SubscribeFunction, UI5Facade } from './types';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type Event from 'sap/ui/base/Event';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
+import { SelectionChangeEvent } from 'sap/ui/rta/RuntimeAuthoring';
 
 /**
  *
@@ -86,13 +86,13 @@ export class SelectionService implements Service {
      *
      * @param sendAction
      * @param eventOrigin
-     * @returns { (event: sap.ui.base.Event) => Promise<void>}
+     * @returns { (event: Event) => Promise<void>}
      */
     private createOnSelectionChangeHandler(
         sendAction: (action: ExternalAction) => void,
         eventOrigin: Set<string>
-    ): (event: Event) => Promise<void> {
-        return async (event: Event): Promise<void> => {
+    ): (event: SelectionChangeEvent) => Promise<void> {
+        return async (event: SelectionChangeEvent): Promise<void> => {
             const selection = event.getParameter('selection');
             for (const dispose of this.activeChangeHandlers) {
                 dispose();

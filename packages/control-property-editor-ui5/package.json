@@ -1,0 +1,25 @@
+{
+    "name": "@sap-ux/control-property-editor-ui5",
+    "version": "1.0.0",
+    "description": "Showcase of a TypeScript setup for developing UI5 applications",
+    "author": "SAP SE",
+    "license": "Apache-2.0",
+    "scripts": {
+      "build": "ui5 build --clean-dest",
+      "build-ui5": "babel src --extensions .ts --out-dir lib",
+      "build:opt": "ui5 build self-contained --clean-dest --all",
+      "start": "ui5 serve --port 8080 -o index.html",
+      "start:dist": "ui5 serve  --port 8080 -o index.html --config ui5-dist.yaml",
+      "ts-typecheck": "tsc --noEmit",
+      "lint": "eslint webapp"
+    },
+    "devDependencies": {
+      "@ui5/cli": "^3.4.0",
+      "ui5-tooling-transpile": "^3.0.1",
+      "@sap-ux/control-property-editor-common": "workspace:*",
+      "@babel/core": "7.22.10",
+      "@babel/cli": "7.22.10",
+      "babel-preset-transform-ui5": "7.2.4",
+      "@babel/preset-typescript": "7.22.5"
+    }
+  }

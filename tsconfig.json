@@ -42,6 +42,12 @@
       "path": "packages/cap-config-writer"
     },
     {
+      "path": "packages/control-property-editor-common"
+    },
+    {
+      "path": "packages/control-property-editor-ui5"
+    },
+    {
       "path": "packages/control-property-editor"
     },
     {

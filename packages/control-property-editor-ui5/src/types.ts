@@ -1,10 +1,10 @@
+import type { ExternalAction, IconDetails } from '@sap-ux/control-property-editor-common';
+import type { Layer } from 'sap/ui/fl';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';
-import type { ExternalAction, IconDetails } from '../../api';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type Component from 'sap/ui/core/Component';
-import type Element from 'sap/ui/core/Element';
-import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import type { Layer } from 'sap/ui/fl';
 
 export interface UI5AdaptationOptions {
     rta: RuntimeAuthoring;

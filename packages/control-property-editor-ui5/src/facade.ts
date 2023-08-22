@@ -1,4 +1,4 @@
-import type { IconDetails } from '../../api';
+import type { IconDetails } from '@sap-ux/control-property-editor-common';
 import type { UI5Facade } from './types';
 import type Component from 'sap/ui/core/Component';
 import type Element from 'sap/ui/core/Element';
@@ -7,7 +7,6 @@ import type { ID } from 'sap/ui/core/library';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import IconPool from 'sap/ui/core/IconPool';
-
 
 /**
  * A facade for UI5 framework methods.

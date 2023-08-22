@@ -12,13 +12,17 @@ import { isExpression, InputType } from './types';
 import { setCachedValue } from './propertyValuesCache';
 
 import './Properties.scss';
-import { reportTelemetry } from '../../../telemetry';
+import {
+    reportTelemetry,
+    debounce,
+    FLOAT_VALUE_TYPE,
+    INTEGER_VALUE_TYPE,
+    BOOLEAN_VALUE_TYPE
+} from '@sap-ux/control-property-editor-common';
 import './SapUiIcon.scss';
 import { IconValueHelp } from './IconValueHelp';
-import type { IconDetails } from '../../../api';
-import { FLOAT_VALUE_TYPE, INTEGER_VALUE_TYPE, BOOLEAN_VALUE_TYPE } from '../../../api';
+import type { IconDetails } from '@sap-ux/control-property-editor-common';
 import type { RootState } from '../../store';
-import { debounce } from '../../../debounce';
 
 /**
  * React element for string editor in property panel.

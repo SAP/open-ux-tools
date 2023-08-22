@@ -5,9 +5,8 @@ import { Text, Stack } from '@fluentui/react';
 import { useDispatch } from 'react-redux';
 import styles from './UnknownChange.module.scss';
 import { UIIconButton, UiIcons, UIDialog } from '@sap-ux/ui-components';
-import type { PropertyChangeDeletionDetails } from '../../../api';
-import { deletePropertyChanges } from '../../../api';
-import { convertCamelCaseToPascalCase } from '../../../utils';
+import type { PropertyChangeDeletionDetails } from '@sap-ux/control-property-editor-common';
+import { deletePropertyChanges, convertCamelCaseToPascalCase } from '@sap-ux/control-property-editor-common';
 import { getFormattedDateAndTime } from './utils';
 
 export interface UnknownChangeProps {

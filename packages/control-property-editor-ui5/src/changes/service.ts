@@ -1,9 +1,10 @@
-import type { ExternalAction, SavedPropertyChange, PendingPropertyChange, UnknownSavedChange } from '../../../api';
-import { changeProperty, changeStackModified, deletePropertyChanges, propertyChangeFailed } from '../../../api';
+import type { ExternalAction, SavedPropertyChange, PendingPropertyChange, UnknownSavedChange } from '@sap-ux/control-property-editor-common';
+import { changeProperty, changeStackModified, deletePropertyChanges, propertyChangeFailed } from '@sap-ux/control-property-editor-common';
 import { applyChange } from './flexChange';
 import type { SelectionService } from '../selection';
 
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions, UI5Facade } from '../types';
+import type Event from 'sap/ui/base/Event';
 import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
 
 /**

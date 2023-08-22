@@ -27,7 +27,6 @@ const ui5Proxy = createProxyMiddleware({
     changeOrigin: true,
     pathRewrite: { '/resources': ui5Version + '/resources', '/test-resources': ui5Version + '/test-resources' }
 });
-
 app.use('/resources', ui5Proxy);
 app.use('/test-resources', ui5Proxy);
 
@@ -41,6 +40,8 @@ app.get('/FioriTools/api/getChanges', getChangesFromWorkspace);
 // API to delete changes from the user's workspace
 app.delete('/FioriTools/api/removeChanges', express.json(), removeChangesFromWorkspace);
 
+app.use('/ui5-adaptation', express.static(join(__dirname, '..', '..','control-property-editor-ui5', 'dist', 'resources', 'com', 'sap', 'ux', 'cpe')));
+app.use('/cpe-common', express.static(join(__dirname, '..', '..','control-property-editor-common', 'dist')));
 app.use(express.static(join(__dirname, 'public')));
 app.use((req, res) => {
     const { url, method, headers } = req;

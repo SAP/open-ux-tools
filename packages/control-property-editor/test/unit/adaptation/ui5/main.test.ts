@@ -1,8 +1,9 @@
 import { init } from '../../../../src/adaptation/ui5/main';
 import * as postMessage from '../../../../src/postMessage';
-import * as flexChange from '../../../../src/adaptation/ui5/changes/flexChange';
+import * as flexChange from '../../../../../control-property-editor-ui5/changes/flexChange';
 import * as outline from '../../../../src/adaptation/ui5/outline';
 import * as facade from '../../../../src/adaptation/ui5/facade';
+import type Event from 'sap/ui/base/Event';
 
 describe('main', () => {
     beforeAll(() => {
@@ -32,12 +33,10 @@ describe('main', () => {
             getOverlay: jest.fn()
         };
     });
-    let handler: ((event: sap.ui.base.Event) => Promise<void>) | undefined;
-    const attachSelectionChange = jest
-        .fn()
-        .mockImplementation((newHandler: (event: sap.ui.base.Event) => Promise<void>) => {
-            handler = newHandler;
-        });
+    let handler: ((event: Event) => Promise<void>) | undefined;
+    const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
+        handler = newHandler;
+    });
 
     const initOutlineSpy = jest.spyOn(outline, 'initOutline').mockImplementation();
     const applyChangeSpy = jest

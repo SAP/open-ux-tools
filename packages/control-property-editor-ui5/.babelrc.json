@@ -1,0 +1,11 @@
+{
+    "ignore": [
+        "**/*.d.ts"
+    ],
+    "presets": [
+        "@babel/preset-env",
+        "transform-ui5",
+        "@babel/preset-typescript"
+    ],
+    "sourceMaps": true
+}

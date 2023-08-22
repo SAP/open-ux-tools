@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import type { UIComboBoxOption, UIComboBoxRef } from '@sap-ux/ui-components';
 import { UIComboBox } from '@sap-ux/ui-components';
 
-import type { PropertyChange, StringControlPropertyWithOptions } from '../../../api';
+import type { PropertyChange, StringControlPropertyWithOptions } from '@sap-ux/control-property-editor-common';
 import { changeProperty } from '../../slice';
 
 import { setCachedValue } from './propertyValuesCache';
@@ -13,8 +13,7 @@ import type { PropertyInputProps } from './types';
 import { InputType } from './types';
 
 import './Properties.scss';
-import { reportTelemetry } from '../../../telemetry';
-import { debounce } from '../../../debounce';
+import { debounce, reportTelemetry } from '@sap-ux/control-property-editor-common';
 
 // exported to make it testable without events
 export const valueChanged = (

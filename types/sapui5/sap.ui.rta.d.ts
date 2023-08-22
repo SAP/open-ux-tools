@@ -100,8 +100,13 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
     import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
 
+    export type SelectionChangeEvent = Event<SelectionChangeParams>;
+    export interface SelectionChangeParams {
+        selection: ElementOverlay[];
+    }
+
     export default interface RuntimeAuthoring {
-        attachSelectionChange(handler: (event: Event) => void): void;
+        attachSelectionChange(handler: (event: SelectionChangeEvent) => void): void;
         attachModeChanged: (handler: (event: Event) => void) => void;
         attachUndoRedoStackModified: (handler: (event: Event) => void) => void;
         getCommandStack: () => Stack;

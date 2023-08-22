@@ -1,9 +1,13 @@
 import type { Dispatch } from 'redux';
 import type { Middleware, MiddlewareAPI } from '@reduxjs/toolkit';
 
-import { startPostMessageCommunication } from '../postMessage';
-import type { ExternalAction } from '../api';
-import { changeProperty as externalChangeProperty, selectControl, deletePropertyChanges } from '../api';
+import type { ExternalAction } from '@sap-ux/control-property-editor-common';
+import {
+    startPostMessageCommunication,
+    changeProperty as externalChangeProperty,
+    selectControl,
+    deletePropertyChanges
+} from '@sap-ux/control-property-editor-common';
 
 import type { Action } from './actions';
 import { changeProperty } from './slice';

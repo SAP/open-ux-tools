@@ -1,14 +1,12 @@
-import type { PropertyChange } from '../../../api';
-
-import type { UI5AdaptationOptions } from '../types';
+import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type { PropertyChange } from '@sap-ux/control-property-editor-common';
+import { UI5AdaptationOptions } from '../types';
 
 const developerMode = true;
 const FLScenario = 'FE_FROM_SCRATCH';
 
 /**
- * Taken from uiadaptation/client/src/uiadaptation/util/UIAdaptationTransceiver.js.
  *
  * @param options UI5 adaptation options
  * @param change

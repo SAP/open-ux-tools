@@ -1,5 +1,6 @@
-import * as flexChange from '../../../../../src/adaptation/ui5/changes/flexChange';
-import { ChangeService } from '../../../../../src/adaptation/ui5/changes/service';
+import { ID } from 'sap/ui/core/library';
+import * as flexChange from '../../../../../../control-property-editor-ui5/changes/flexChange';
+import { ChangeService } from '../../../../../../control-property-editor-ui5/changes/service';
 import { changeProperty, deletePropertyChanges } from '../../../../../src/api';
 
 describe('SelectionService', () => {
@@ -54,7 +55,7 @@ describe('SelectionService', () => {
         );
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
         const cache = new Map();
-        const getControlByIdSpy = jest.fn().mockImplementation((id: sap.ui.core.ID) => {
+        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
             return cache.get(id);
         });
         const attachUndoRedoStackModified = jest.fn();
@@ -136,7 +137,7 @@ describe('SelectionService', () => {
         );
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
         const cache = new Map();
-        const getControlByIdSpy = jest.fn().mockImplementation((id: sap.ui.core.ID) => {
+        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
             return cache.get(id);
         });
         const attachUndoRedoStackModified = jest.fn();
@@ -188,7 +189,7 @@ describe('SelectionService', () => {
             })
         );
         const cache = new Map();
-        const getControlByIdSpy = jest.fn().mockImplementation((id: sap.ui.core.ID) => {
+        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
             return cache.get(id);
         });
         const attachUndoRedoStackModified = jest.fn();
@@ -278,7 +279,7 @@ describe('SelectionService', () => {
             })
         );
         const cache = new Map();
-        const getControlByIdSpy = jest.fn().mockImplementation((id: sap.ui.core.ID) => {
+        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
             return cache.get(id);
         });
         const attachUndoRedoStackModified = jest.fn();
@@ -337,7 +338,7 @@ describe('SelectionService', () => {
             })
         );
         const cache = new Map();
-        const getControlByIdSpy = jest.fn().mockImplementation((id: sap.ui.core.ID) => {
+        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
             return cache.get(id);
         });
         const attachUndoRedoStackModified = jest.fn();

@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<library xmlns="http://www.sap.com/sap.ui.library.xsd">
+	<name>com.sap.ux.cpe</name>
+	<vendor>sap</vendor>
+	<version>1.0.0</version>
+	<copyright>(c) 2023 com.myorg.myui5lib contributors</copyright>
+	<title>com.sap.ux.cpe</title>
+	<documentation>Some description about com.sap.ux.cpe</documentation>
+	<dependencies>
+		<dependency>
+			<libraryName>sap.ui.core</libraryName>
+		</dependency>
+	</dependencies>
+</library>

@@ -1,4 +1,4 @@
-import { applyChange } from '../../../../../src/adaptation/ui5/changes/flexChange';
+import { applyChange } from '../../../../../../control-property-editor-ui5/changes/flexChange';
 import type { UI5AdaptationOptions } from '../../../../../src/adaptation/ui5/types';
 import type { PropertyChange } from '../../../../../src/api';
 describe('flexChange', () => {

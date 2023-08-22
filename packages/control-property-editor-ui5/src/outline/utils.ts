@@ -3,6 +3,7 @@ import { getRuntimeControl } from '../utils';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
+
 export const isEditable = async (id = ''): Promise<boolean> => {
     let editable = false;
     const control = sap.ui.getCore().byId(id);

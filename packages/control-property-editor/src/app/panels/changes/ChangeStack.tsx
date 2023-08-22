@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 import type { FilterOptions } from '../../slice';
 import { FilterName } from '../../slice';
 import type { RootState } from '../../store';
-import { convertCamelCaseToPascalCase } from '../../../utils';
+import { convertCamelCaseToPascalCase } from '@sap-ux/control-property-editor-common';
 import { getFormattedDateAndTime } from './utils';
 
 export interface ChangeStackProps {

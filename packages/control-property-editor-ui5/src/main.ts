@@ -1,9 +1,7 @@
-import { startPostMessageCommunication } from '../../postMessage';
-import type { ExternalAction } from '../../api';
-import { iconsLoaded } from '../../api';
+import { startPostMessageCommunication, iconsLoaded, ExternalAction } from '@sap-ux/control-property-editor-common';
 
 import type { ActionHandler, Service, UI5AdaptationOptions } from './types';
-import { initOutline } from './outline';
+import { initOutline } from './outline/index';
 import { createUi5Facade } from './facade';
 import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';

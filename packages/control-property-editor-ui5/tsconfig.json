@@ -14,6 +14,7 @@
     "strict": true,
     "strictNullChecks": true,
     "jsx": "react",
+    "rootDir": ".",
     "sourceMap": true,
     "module": "ES6"
   },
@@ -22,8 +23,7 @@
     "src/**/*.tsx",
     "test/**/*.ts",
     "test/**/*.tsx",
-    "development/**/*.ts",
-    "development/**/*.tsx"
+    "../../types/sapui5"
   ],
   "exclude": [
     "dist",
@@ -33,9 +33,6 @@
   "references": [
     {
       "path": "../control-property-editor-common"
-    },
-    {
-      "path": "../ui-components"
     }
   ]
 }

@@ -1,4 +1,4 @@
-import type { OutlineNode } from '../../../api';
+import type { OutlineNode } from '@sap-ux/control-property-editor-common';
 import { isEditable } from './utils';
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 

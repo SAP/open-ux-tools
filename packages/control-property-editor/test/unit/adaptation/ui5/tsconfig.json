@@ -1,5 +1,6 @@
 {
     "extends": "../../../../tsconfig-base.json",
+    "include": [".", "../../../../../../types/sapui5"],
     "compilerOptions": {
         "composite": true,
         "declaration": true,
@@ -7,7 +8,6 @@
         "incremental": true,
         "outDir": "dist",
         "lib": ["ES2021", "dom"],
-        "types": ["jest"]
-    },
-    "include": ["../../../../../../types/sapui5"]
+        "types": ["../../../../../../types/sapui5", "jest"]
+    }
 }

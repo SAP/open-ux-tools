@@ -50,7 +50,6 @@
     "@types/remote-redux-devtools": "0.5.4",
     "@types/source-map-support": "0.5.0",
     "@types/vscode": "1.73.1",
-    "autoprefixer": "10.4.7",
     "body-parser": "1.20.1",
     "eslint-plugin-react": "7.32.2",
     "expect-puppeteer": "5.0.3",
@@ -59,7 +58,6 @@
     "jest-dev-server": "7.0.0",
     "jest-sonar": "0.2.12",
     "npm-run-all": "4.1.5",
-    "postcss": "8.4.14",
     "puppeteer-core": "7.0.0",
     "react": "16.14.0",
     "react-dom": "16.14.0",
@@ -75,10 +73,10 @@
     "ts-jest": "29.1.1",
     "typescript": "4.9.5",
     "postcss-modules": "6.0.0",
-    "esbuild-plugin-alias": "0.2.1",
-    "esbuild-sass-plugin": "2.3.1",
-    "@esbuild-plugins/node-modules-polyfill": "0.1.4",
     "jest-junit": "15.0.0"
+  },
+  "dependencies": {
+    "@sap-ux/control-property-editor-common": "workspace:*"
   },
   "jestSonar": {
     "reportPath": "reports/test/unit",
