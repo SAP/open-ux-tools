@@ -182,7 +182,7 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
         if (appPckJson.sapux) {
             return findRootsWithSapux(appPckJson.sapux, path, appRoot);
         }
-        if (isCapNodeJsProject(appPckJson) || (await isCapJavaProject(appRoot))) {
+        if ((await getCapProjectType(appRoot)) !== undefined) {
             // App is part of a CAP project, but doesn't have own package.json and is not mentioned in sapux array
             // in root -> not supported
             return null;
@@ -430,10 +430,7 @@ export async function findCapProjects(options: {
         });
         const foldersToCheck = Array.from(new Set(filesToCheck.map((file) => dirname(file)))); //only directories without duplicates
         for (const folderToCheck of foldersToCheck) {
-            if (
-                (await getCapProjectType(folderToCheck)) !== undefined &&
-                (await fileExists(join(folderToCheck, (await getCapCustomPaths(folderToCheck)).srv)))
-            ) {
+            if ((await getCapProjectType(folderToCheck)) !== undefined) {
                 result.add(folderToCheck);
             }
         }
