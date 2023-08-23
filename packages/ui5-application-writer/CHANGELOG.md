@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.25.0
+
+### Minor Changes
+
+-   de0b13f2: Update templates to use Typescript version 5
+
 ## 0.24.3
 
 ### Patch Changes
