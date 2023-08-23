@@ -4,7 +4,6 @@ import * as Documentation from '../../src/documentation';
 import DataType from 'sap/ui/base/DataType';
 describe('controlData', () => {
     // prepare
-    const mockCheckConttrolId = jest.fn();
     jest.spyOn(Documentation, 'getDocumentation').mockResolvedValueOnce({
         activeIcon: {
             defaultValue: 'test',
@@ -57,48 +56,18 @@ describe('controlData', () => {
         }
     });
 
-    const mockGetName = jest.fn();
-    // class DataType {
-    //     getName() {
-    //         const getName = mockGetName
-    //             .mockReturnValueOnce('string')
-    //             .mockReturnValueOnce(undefined)
-    //             .mockReturnValueOnce('string');
-    //         return getName();
-    //     }
-    //     static getType() {
-    //         return new DataType();
-    //     }
-    // }
-    sap.ui.require = jest.fn().mockReturnValueOnce({ None: 'None', Menu: 'Menu', ListBox: 'ListBox' }) as any;
-    // DataType = DataType as any;
-    jest.mock('sap.ui.base.DataType', () => {
-        return class DataType {
-            getName() {
-                const getName = mockGetName
-                    .mockReturnValueOnce('string')
-                    .mockReturnValueOnce(undefined)
-                    .mockReturnValueOnce('string');
-                return getName();
-            }
-            static getType() {
-                return new DataType();
-            }
-        };
-    });
-    Utils.checkControlId = mockCheckConttrolId.mockReturnValue(true);
-    /*   global.sap = {
-        ui: {
-            base: {
-                DataType: DataType
-            },
-            fl: {
-                Utils: {
-                    checkControlId: mockCheckConttrolId.mockReturnValue(true)
-                } as any
-            }
+    jest.spyOn(sap.ui, 'require').mockImplementation((path) => {
+        if (path === 'sap/ui/core/aria/HasPopup') {
+            return { None: 'None', Menu: 'Menu', ListBox: 'ListBox' };
         }
-    };*/
+        return undefined;
+    });
+    jest.spyOn(DataType.prototype, 'getName')
+        .mockReturnValueOnce('string')
+        .mockReturnValueOnce('')
+        .mockReturnValueOnce('string');
+
+    jest.spyOn(Utils, 'checkControlId').mockReturnValue(true);
 
     const controlOverlay = {
         getDesignTimeMetadata: jest.fn().mockReturnValue({

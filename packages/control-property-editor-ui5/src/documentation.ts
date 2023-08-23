@@ -135,17 +135,17 @@ function parseControlMetaModel(controlLibMetadata: SchemaForApiJsonFiles, contro
     if (selectedControlMetadata) {
         // base type info of control is available on property 'extends'
         controlInfo.baseType = selectedControlMetadata.extends;
-        controlInfo.doc = selectedControlMetadata.description;
+        controlInfo.doc = selectedControlMetadata.description ?? '';
         const properties = selectedControlMetadata['ui5-metadata'].properties;
         if (properties) {
-            properties.forEach((prop) => {
+            properties.forEach((prop: any) => {
                 prop.description = formatHtmlText(prop.description) || '';
                 prop.propertyName = prop.name;
                 prop.propertyType = prop.type;
                 if (prop.defaultValue === null || prop.defaultValue === '') {
                     prop.defaultValue = '-';
                 }
-                controlInfo['properties'][prop.name] = { ...prop };
+                controlInfo.properties[prop.name] = { ...prop };
             });
         }
     }

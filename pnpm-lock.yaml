@@ -485,12 +485,6 @@ importers:
       '@types/expect-puppeteer':
         specifier: 4.4.5
         version: 4.4.5
-      '@types/jest':
-        specifier: 29.2.6
-        version: 29.2.6
-      '@types/jest-dev-server':
-        specifier: 5.0.0
-        version: 5.0.0
       '@types/puppeteer':
         specifier: 5.4.4
         version: 5.4.4
@@ -512,9 +506,6 @@ importers:
       '@types/source-map-support':
         specifier: 0.5.0
         version: 0.5.0
-      '@types/vscode':
-        specifier: 1.73.1
-        version: 1.73.1
       body-parser:
         specifier: 1.20.1
         version: 1.20.1
@@ -6132,7 +6123,7 @@ packages:
       endent: 2.1.0
       find-cache-dir: 3.3.2
       flat-cache: 3.0.4
-      micromatch: 4.0.4
+      micromatch: 4.0.5
       react-docgen-typescript: 2.2.2(typescript@4.9.4)
       tslib: 2.5.0
       typescript: 4.9.4
@@ -6689,20 +6680,6 @@ packages:
       '@types/istanbul-lib-report': 3.0.0
     dev: true
 
-  /@types/jest-dev-server@5.0.0:
-    resolution: {integrity: sha512-2o5mY2c/WTXO0j+FrtWMxDt0NBi0o6R6aNx4xaym/OfVP8owAeZa582eFxQEqZ7KzHDqvkEEJ9YZ9O3Zw/MpPw==}
-    dependencies:
-      '@types/node': 12.12.6
-      '@types/wait-on': 5.3.1
-    dev: true
-
-  /@types/jest@29.2.6:
-    resolution: {integrity: sha512-XEUC/Tgw3uMh6Ho8GkUtQ2lPhY5Fmgyp3TdlkTJs1W9VgNxs+Ow/x3Elh8lHQKqCbZL0AubQuqWjHVT033Hhrw==}
-    dependencies:
-      expect: 29.5.0
-      pretty-format: 29.5.0
-    dev: true
-
   /@types/jest@29.5.2:
     resolution: {integrity: sha512-mSoZVJF5YzGVCk+FsDxzDuH7s+SCkzrgKZzf0Z0T2WudhBUPoF6ktoTPC4R0ZoCPCV5xUvuU6ias5NvxcBcMMg==}
     dependencies:
@@ -7075,16 +7052,6 @@ packages:
 
   /@types/vscode@1.63.1:
     resolution: {integrity: sha512-Z+ZqjRcnGfHP86dvx/BtSwWyZPKQ/LBdmAVImY82TphyjOw2KgTKcp7Nx92oNwCTsHzlshwexAG/WiY2JuUm3g==}
-    dev: true
-
-  /@types/vscode@1.73.1:
-    resolution: {integrity: sha512-eArfOrAoZVV+Ao9zQOCaFNaeXj4kTCD+bGS2gyNgIFZH9xVMuLMlRrEkhb22NyxycFWKV1UyTh03vhaVHmqVMg==}
-    dev: true
-
-  /@types/wait-on@5.3.1:
-    resolution: {integrity: sha512-2FFOKCF/YydrMUaqg+fkk49qf0e5rDgwt6aQsMzFQzbS419h2gNOXyiwp/o2yYy27bi/C1z+HgfncryjGzlvgQ==}
-    dependencies:
-      '@types/node': 12.12.6
     dev: true
 
   /@types/webpack-env@1.18.1:
@@ -12250,7 +12217,7 @@ packages:
       '@nodelib/fs.walk': 1.2.8
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.4
+      micromatch: 4.0.5
     dev: true
 
   /fast-glob@3.3.1:
@@ -12261,7 +12228,7 @@ packages:
       '@nodelib/fs.walk': 1.2.8
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.4
+      micromatch: 4.0.5
     dev: true
 
   /fast-json-parse@1.0.3:
@@ -12482,7 +12449,7 @@ packages:
   /find-yarn-workspace-root2@1.2.16:
     resolution: {integrity: sha512-hr6hb1w8ePMpPVUK39S4RlwJzi+xPLuVuG8XlwXU3KD5Yn3qgBWVfy3AzNlDhWvE1EORCE65/Qm26rFQt3VLVA==}
     dependencies:
-      micromatch: 4.0.4
+      micromatch: 4.0.5
       pkg-dir: 4.2.0
     dev: true
 
@@ -14557,7 +14524,7 @@ packages:
       jest-runner: 29.5.0
       jest-util: 29.5.0
       jest-validate: 29.5.0
-      micromatch: 4.0.4
+      micromatch: 4.0.5
       parse-json: 5.2.0
       pretty-format: 29.5.0
       slash: 3.0.0
@@ -14677,7 +14644,7 @@ packages:
       jest-regex-util: 29.4.3
       jest-util: 29.5.0
       jest-worker: 29.5.0
-      micromatch: 4.0.4
+      micromatch: 4.0.5
       walker: 1.0.8
     optionalDependencies:
       fsevents: 2.3.2
@@ -14720,7 +14687,7 @@ packages:
       '@types/stack-utils': 2.0.1
       chalk: 4.1.2
       graceful-fs: 4.2.11
-      micromatch: 4.0.4
+      micromatch: 4.0.5
       pretty-format: 29.5.0
       slash: 3.0.0
       stack-utils: 2.0.5

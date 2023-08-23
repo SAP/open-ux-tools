@@ -8,7 +8,7 @@
     "outDir": "dist",
     "jsx": "react",
     "target": "ES2021",
-    "module": "commonjs",
+    "module": "ES2022",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,

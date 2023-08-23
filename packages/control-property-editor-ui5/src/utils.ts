@@ -1,6 +1,17 @@
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
+export interface PropertiesInfo {
+    defaultValue: string;
+    description: string;
+    propertyName: string;
+    type: string;
+    propertyType: string | undefined;
+}
+export interface Properties {
+    [key: string]: PropertiesInfo;
+}
+
 /**
  * Get runtime control.
  *

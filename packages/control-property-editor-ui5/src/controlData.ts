@@ -217,7 +217,7 @@ export async function buildControlData(
             name: property.name,
             newValue: control.getProperty(property.name)
         };
-        const bindingInfo: { bindingString?: string } = control.getBindingInfo(controlNewData.name);
+        const bindingInfo: { bindingString?: string } = control.getBindingInfo(controlNewData.name) as unknown as any;
         if (bindingInfo?.bindingString !== undefined) {
             controlNewData.newValue = bindingInfo.bindingString;
         }

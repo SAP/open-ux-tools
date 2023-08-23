@@ -1,8 +1,3 @@
-// const config = require('../../jest.base');
-// config.testEnvironment = 'jsdom';
-//config.collectCoverageFrom = ['**/*.ts', '!**/index.ts'];
-// config.preset = 'ts-jest';
-// module.exports = config;
 const config = require('../../jest.base');
 config.testEnvironment = 'jsdom';
 config.collectCoverageFrom = ['src/**/*.ts'];
@@ -12,4 +7,5 @@ config.transform = {
 config.preset = 'ts-jest';
 config.transformIgnorePatterns = ['<rootDir>/node_modules/'];
 config.testMatch = ['**/test/unit/**/*.(test).ts(x)?'];
+config.setupFiles = ['<rootDir>/setup-mock.js'];
 module.exports = config;
