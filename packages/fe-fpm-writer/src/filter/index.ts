@@ -65,10 +65,12 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
             fs,
             config,
             config.eventHandler,
-            false,
-            config.typescript,
-            contextParameter,
-            'filter/Controller'
+            {
+                controllerSuffix: false,
+                typescript: config.typescript,
+                templatePath: 'filter/Controller'
+            },
+            contextParameter
         );
     }
 

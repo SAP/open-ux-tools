@@ -22,3 +22,5 @@ builder:
           destination: EXAMPLE
           url: https://target.example
           service: /bc/my/deploy/service
+        exclude:
+          - /test/

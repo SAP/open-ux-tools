@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.23.0
+
+### Minor Changes
+
+-   c1c9396a: Feature: Custom header sections support for fe-fpm-writer
+
 ## 0.22.3
 
 ### Patch Changes

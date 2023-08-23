@@ -1,5 +1,34 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.27
+
+### Patch Changes
+
+-   44df3d5c: fix lint warnings in locate-reuse-libs.js
+-   Updated dependencies [44df3d5c]
+    -   @sap-ux/ui5-application-writer@0.24.3
+
+## 0.12.26
+
+### Patch Changes
+
+-   b69c21f3: Enable LocalStorageConnector in v4 templates
+
+## 0.12.25
+
+### Patch Changes
+
+-   Updated dependencies [c1c9396a]
+    -   @sap-ux/fe-fpm-writer@0.23.0
+
+## 0.12.24
+
+### Patch Changes
+
+-   29179b5f: Add SAP icon loading in flpsandbox.html
+-   Updated dependencies [29179b5f]
+    -   @sap-ux/ui5-application-writer@0.24.2
+
 ## 0.12.23
 
 ### Patch Changes
