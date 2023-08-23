@@ -1,12 +1,17 @@
 import { ToolsLogger } from '@sap-ux/logger';
 import { AdpPreview } from '../../../src/preview/adp-preview';
-import { readFileSync } from 'fs';
+import * as fs from 'fs';
 import { join } from 'path';
 import type { ReaderCollection } from '@ui5/fs';
 import nock from 'nock';
 import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
 import express from 'express';
+
+interface GetFragmentsResponse {
+    fragments: { fragmentName: string }[];
+    message: string;
+}
 
 jest.mock('@sap-ux/store', () => {
     return {
@@ -25,7 +30,7 @@ const mockProject = {
 
 describe('AdaptationProject', () => {
     const backend = 'https://sap.example';
-    const descriptorVariant = readFileSync(
+    const descriptorVariant = fs.readFileSync(
         join(__dirname, '../../fixtures/adaptation-project/webapp', 'manifest.appdescr_variant'),
         'utf-8'
     );
@@ -48,6 +53,19 @@ describe('AdaptationProject', () => {
             }
         },
         url: '/my/adaptation'
+    };
+
+    const middlewareUtil = {
+        getProject() {
+            return {
+                getRootPath() {
+                    return '';
+                },
+                getSourcePath() {
+                    return '/adp.project/webapp';
+                }
+            };
+        }
     };
 
     beforeAll(() => {
@@ -73,6 +91,7 @@ describe('AdaptationProject', () => {
                     }
                 },
                 mockProject as unknown as ReaderCollection,
+                middlewareUtil,
                 logger
             );
 
@@ -99,6 +118,7 @@ describe('AdaptationProject', () => {
                     }
                 },
                 mockProject as unknown as ReaderCollection,
+                middlewareUtil,
                 logger
             );
 
@@ -117,6 +137,7 @@ describe('AdaptationProject', () => {
                     }
                 },
                 mockProject as unknown as ReaderCollection,
+                middlewareUtil,
                 logger
             );
 
@@ -172,6 +193,7 @@ describe('AdaptationProject', () => {
                     }
                 },
                 mockProject as unknown as ReaderCollection,
+                middlewareUtil,
                 logger
             );
 
@@ -180,19 +202,56 @@ describe('AdaptationProject', () => {
             server = await supertest(app);
         });
 
-        test('/adp/api/fragment', async () => {
-            const expectedNames = ['/changes/fragments/my.fragment.xml', '/changes/other/path/other.fragment.xml'];
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        test('GET /adp/api/fragment', async () => {
+            const expectedNames = [{ fragmentName: 'my.fragment.xml' }, { fragmentName: 'other.fragment.xml' }];
             mockProject.byGlob.mockResolvedValueOnce([
                 {
-                    getPath: () => expectedNames[0]
+                    getName: () => expectedNames[0].fragmentName
                 },
                 {
-                    getPath: () => expectedNames[1]
+                    getName: () => expectedNames[1].fragmentName
                 }
             ]);
             const response = await server.get('/adp/api/fragment').expect(200);
-            const names = JSON.parse(response.text);
-            expect(names).toEqual(expectedNames);
+            const data: GetFragmentsResponse = JSON.parse(response.text);
+            expect(data.fragments).toEqual(expectedNames);
+            expect(data.message).toEqual(`${expectedNames.length} fragments found in the project workspace.`);
         });
+
+        test('GET /adp/api/fragment - returns empty array of fragment', async () => {
+            const response = await server.get('/adp/api/fragment').expect(200);
+            const data: GetFragmentsResponse = JSON.parse(response.text);
+            expect(data.fragments.length).toEqual(0);
+            expect(data.message).toEqual(`No fragments found in the project workspace.`);
+        });
+
+        test('GET /adp/api/fragment - throws error', async () => {
+            const errorMsg = 'Could not get fragment name.';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getName: () => {
+                        throw new Error(errorMsg);
+                    }
+                }
+            ]);
+            const response = await server.get('/adp/api/fragment').expect(500);
+            const data: GetFragmentsResponse = JSON.parse(response.text);
+            expect(data.message).toEqual(errorMsg);
+        });
+
+        // test('POST /adp/api/fragment', async () => {
+        //     //  Need to understand how to mock fs methods
+        //     // jest.mock('fs').spyOn(fs, 'existsSync').mockReturnValueOnce(false).mockReturnValueOnce(true);
+
+        //     const fragmentName = 'Share';
+        //     const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(201);
+
+        //     const data: GetFragmentsResponse = JSON.parse(response.text);
+        //     expect(data.message).toEqual('XML Fragment created');
+        // });
     });
 });

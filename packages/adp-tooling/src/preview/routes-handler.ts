@@ -36,14 +36,16 @@ export default class RoutesHandler {
      * @param next Next Function
      */
     public handleReadAllFragments = async (_: Request, res: Response, next: NextFunction) => {
-        const files = await this.project.byGlob('/**/changes/**/*.fragment.xml');
-
-        if (!files || files.length === 0) {
-            res.status(HttpStatusCodes.OK)
-                .contentType('application/json')
-                .send({ fragments: [], message: `No fragments found in the project workspace.` });
-        }
         try {
+            const files = await this.project.byGlob('/**/changes/**/*.fragment.xml');
+
+            if (!files || files.length === 0) {
+                res.status(HttpStatusCodes.OK)
+                    .contentType('application/json')
+                    .send({ fragments: [], message: `No fragments found in the project workspace.` });
+                return;
+            }
+
             const fragments = files.map((file) => {
                 const fileName = file.getName();
                 return {
