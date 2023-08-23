@@ -13,7 +13,7 @@ import type {
 import { FileName } from '../constants';
 import { fileExists, findBy, findFileUp, readJSON } from '../file';
 import { hasDependency } from './dependencies';
-import { getCapCustomPaths, getCapProjectType, isCapJavaProject, isCapNodeJsProject } from './cap';
+import { getCapProjectType } from './cap';
 import { getWebappPath } from './ui5-config';
 
 /**
