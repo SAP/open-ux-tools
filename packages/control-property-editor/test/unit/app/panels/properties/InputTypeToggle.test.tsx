@@ -4,14 +4,14 @@ import type {
     BooleanControlProperty,
     StringControlProperty,
     StringControlPropertyWithOptions
-} from '../../../../../src/api';
+} from '@sap-ux/control-property-editor-common';
 import {
     BOOLEAN_VALUE_TYPE,
     CHECKBOX_EDITOR_TYPE,
     DROPDOWN_EDITOR_TYPE,
     INPUT_EDITOR_TYPE,
     STRING_VALUE_TYPE
-} from '../../../../../src/api';
+} from '@sap-ux/control-property-editor-common';
 import { IconName, registerAppIcons } from '../../../../../src/app/icons';
 import { getValueForInputType, InputTypeToggle } from '../../../../../src/app/panels/properties/InputTypeToggle';
 import type { InputTypeToggleOptionProps } from '../../../../../src/app/panels/properties/types';

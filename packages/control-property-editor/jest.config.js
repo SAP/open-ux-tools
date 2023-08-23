@@ -2,7 +2,7 @@ const config = require('../../jest.base');
 config.testEnvironment = 'jsdom';
 config.collectCoverageFrom = ['src/**/*.{ts,tsx}'];
 config.transform = {
-    '^.+\\.test.tsx?$': 'ts-jest',
+    collectCoverageFrom: ['src/**/*.{ts,tsx}'],
     '.+\\.(css|sass|scss)$': 'jest-scss-transform'
 };
 config.globals = {

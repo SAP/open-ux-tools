@@ -1,5 +1,5 @@
-import { initOutline } from '../../../../../src/adaptation/ui5/outline/index';
-import * as nodes from '../../../../../src/adaptation/ui5/outline/nodes';
+import { initOutline } from '../../../src/outline/index';
+import * as nodes from '../../../src/outline/nodes';
 
 const transformNodesSpy = jest.spyOn(nodes, 'transformNodes').mockResolvedValue([
     {

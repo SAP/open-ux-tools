@@ -1,4 +1,4 @@
-import { createUi5Facade } from '../../../../src/adaptation/ui5/facade';
+import { createUi5Facade } from '../../src/facade';
 
 describe('Facade', () => {
     const mockGetIconNames = jest.fn().mockReturnValueOnce(['Reject', 'Accedental-Leave', 'Accept']);

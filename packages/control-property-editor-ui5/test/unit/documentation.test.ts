@@ -1,9 +1,9 @@
-import * as Documention from '../../../../src/adaptation/ui5/documentation';
-import * as Utils from '../../../../src/adaptation/ui5/utils';
+import * as Documentation from '../../src/documentation';
+import * as Utils from '../../src/utils';
 import fs from 'fs';
 import { join } from 'path';
 import { cwd } from 'process';
-import type { SchemaForApiJsonFiles } from '../../../../src/adaptation/ui5/apiJson';
+import type { SchemaForApiJsonFiles } from '../../src/apiJson';
 
 describe('Documentation', () => {
     const path = join(cwd(), 'test', 'unit', 'adaptation', 'ui5', 'testData', 'api.json');
@@ -23,7 +23,7 @@ describe('Documentation', () => {
         jest.spyOn(Utils, 'getLibrary').mockImplementation(() => {
             return Promise.resolve('');
         });
-        const result = await Documention.getDocumentation(
+        const result = await Documentation.getDocumentation(
             'sap.ui.comp.filterbar.FilterBar',
             'sap.ui.comp',
             ui5ApiDtMetadata

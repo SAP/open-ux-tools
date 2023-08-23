@@ -1,24 +1,13 @@
 {
-  "extends": "./tsconfig-base.json",
-  "compilerOptions": {
-    "lib": [
-      "ES2021",
-      "dom"
+    "extends": "./tsconfig-base.json",
+    "compilerOptions": {
+        "lib": ["ES2021", "DOM"],
+        "strict": true,
+        "strictNullChecks": true
+    },
+    "include": [
+        "src/**/*.ts",
+        "test/**/*.ts",
     ],
-    "strict": true,
-    "strictNullChecks": true,
-    "module": "ES6"
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "test/**/*.ts",
-    "test/**/*.tsx",
-    "development/**/*.ts",
-    "development/**/*.tsx"
-  ],
-  "exclude": [
-    "dist",
-    "reports"
-  ]
+    "exclude": ["dist", "reports"]
 }

@@ -1,12 +1,5 @@
-import * as postMessage from '../../../src/postMessage';
+import * as common from '@sap-ux/control-property-editor-common';
 import { communicationMiddleware } from '../../../src/app/middleware';
-import {
-    controlSelected,
-    outlineChanged,
-    propertyChanged,
-    propertyChangeFailed,
-    selectControl
-} from '../../../src/api';
 
 jest.mock('../../../src/app/slice', () => {
     return {
@@ -21,7 +14,7 @@ describe('communication middleware', () => {
     const sendActionfn = jest.fn();
 
     beforeEach(() => {
-        messageProcessor = jest.spyOn(postMessage, 'startPostMessageCommunication').mockReturnValue({
+        messageProcessor = jest.spyOn(common, 'startPostMessageCommunication').mockReturnValue({
             sendAction: sendActionfn,
             dispose: jest.fn()
         });
@@ -33,7 +26,7 @@ describe('communication middleware', () => {
     });
 
     test('property changed in UI5 application', () => {
-        const action = propertyChanged({
+        const action = common.propertyChanged({
             controlId: 'control1',
             propertyName: 'text',
             newValue: 'new value'
@@ -44,7 +37,7 @@ describe('communication middleware', () => {
     });
 
     test('control selected in UI5 application', () => {
-        const action = controlSelected({
+        const action = common.controlSelected({
             id: 'control1',
             type: 'text',
             properties: []
@@ -55,14 +48,14 @@ describe('communication middleware', () => {
     });
 
     test('outline changed in UI5 application', () => {
-        const action = outlineChanged([]);
+        const action = common.outlineChanged([]);
         messageProcessor.mock.calls[0][1](action);
         expect(dispatch).toHaveBeenCalledTimes(1);
         expect(dispatch).toHaveBeenNthCalledWith(1, action);
     });
 
     test('property change failed in UI5 application', () => {
-        const action = propertyChangeFailed({
+        const action = common.propertyChangeFailed({
             controlId: 'control1',
             propertyName: 'text',
             errorMessage: 'change failed'
@@ -77,7 +70,7 @@ describe('communication middleware', () => {
     });
 
     test('property change - send action', () => {
-        const action = propertyChanged({
+        const action = common.propertyChanged({
             controlId: 'control1',
             propertyName: 'text',
             newValue: 'new value'
@@ -98,9 +91,9 @@ describe('communication middleware', () => {
     });
 
     test('select control - send action', () => {
-        const action = selectControl('01-02');
+        const action = common.selectControl('01-02');
         const next = jest.fn().mockReturnValue(action);
-        jest.mock('../../../src/api', () => {
+        jest.mock('@sap-ux/control-property-editor-common', () => {
             return {
                 selectControl: { type: '[ext] select-control' }
             };

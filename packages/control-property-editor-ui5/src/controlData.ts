@@ -105,7 +105,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
 
         // Determine base type for SAP types
         if (analyzedType.primitiveType === 'enum') {
-            analyzedType.enumValues = jQuery.sap.getObject(analyzedType.ui5Type);
+            analyzedType.enumValues = sap.ui.require(analyzedType.ui5Type.split('.').join('/'));
         }
     }
 

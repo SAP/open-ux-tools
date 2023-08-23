@@ -7,7 +7,7 @@ interface TelemetryData {
 /**
  * Reports telemetry data from Control Property Editor
  *
- * @param data The TelemetryData object, that needs to be repoerted
+ * @param data The TelemetryData object, that needs to be reported
  */
 
 /**

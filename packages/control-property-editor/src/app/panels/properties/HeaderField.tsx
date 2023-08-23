@@ -7,7 +7,7 @@ import { UIIconButton, UiIcons, UITooltip, UITooltipUtils, UIDirectionalHint } f
 import './Properties.scss';
 import { defaultFontSize, sectionHeaderFontSize } from './constants';
 import { PropertyDocumentation } from './PropertyDocumentation';
-import type { PropertiesInfo } from '../../../adaptation/ui5/utils';
+import type { PropertiesInfo } from '@sap-ux/control-property-editor-common';
 import { Clipboard } from './Clipboard';
 
 export interface HeaderFieldProps {

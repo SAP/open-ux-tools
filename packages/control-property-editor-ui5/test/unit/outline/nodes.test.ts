@@ -1,5 +1,6 @@
-import { transformNodes as tn } from '../../../../../src/adaptation/ui5/outline/nodes';
-import type { OutlineNode } from '../../../../../src/api';
+import { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
+import { transformNodes as tn } from '../../../src/outline/nodes';
+import type { OutlineNode } from '@sap-ux/control-property-editor-common';
 
 jest.mock('../../../../../src/adaptation/ui5/outline/utils', () => {
     return {
@@ -7,7 +8,7 @@ jest.mock('../../../../../src/adaptation/ui5/outline/utils', () => {
     };
 });
 describe('outline nodes', () => {
-    const transformNodes = (nodes: sap.ui.rta.OutlineViewNode[]): Promise<OutlineNode[]> => tn(nodes, () => ({}));
+    const transformNodes = (nodes: OutlineViewNode[]): Promise<OutlineNode[]> => tn(nodes, () => ({}));
     describe('transformNodes', () => {
         test('empty tree', async () => {
             expect(await transformNodes([])).toStrictEqual([]);

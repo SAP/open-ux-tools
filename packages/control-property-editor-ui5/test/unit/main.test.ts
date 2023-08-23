@@ -1,8 +1,8 @@
-import { init } from '../../../../src/adaptation/ui5/main';
-import * as postMessage from '../../../../src/postMessage';
-import * as flexChange from '../../../../../control-property-editor-ui5/changes/flexChange';
-import * as outline from '../../../../src/adaptation/ui5/outline';
-import * as facade from '../../../../src/adaptation/ui5/facade';
+import { init } from '../../src/main';
+import * as common from '@sap-ux/control-property-editor-common';
+import * as flexChange from '../../src/changes/flexChange';
+import * as outline from '../../src/outline';
+import * as facade from '../../src/facade';
 import type Event from 'sap/ui/base/Event';
 
 describe('main', () => {
@@ -56,7 +56,7 @@ describe('main', () => {
         attachUndoRedoStackModified: jest.fn()
     } as any;
     const sendActionMock = jest.fn();
-    const spyPostMessage = jest.spyOn(postMessage, 'startPostMessageCommunication').mockImplementation(() => {
+    const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
         return { sendAction: sendActionMock, dispose: jest.fn() };
     });
 

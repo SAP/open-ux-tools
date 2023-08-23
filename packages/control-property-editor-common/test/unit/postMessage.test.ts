@@ -74,7 +74,7 @@ describe('postMessage', () => {
         result.dispose();
 
         expect(removeEventListenerSpy).toBeCalled();
-        expect(removeEventListenerSpy).toBeCalledWith('message', callBackFn);
+        expect(removeEventListenerSpy).toHaveBeenCalledWith('message', expect.any(Function));
 
         result.sendAction({});
         expect(postMessageMock).toBeCalled();

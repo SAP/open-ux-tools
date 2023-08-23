@@ -1,4 +1,4 @@
-import { isEditable } from '../../../../../src/adaptation/ui5/outline/utils';
+import { isEditable } from '../../../src/outline/utils';
 jest.mock('../../../../../src/adaptation/ui5/controlData', () => {
     return {
         buildControlData: () => {

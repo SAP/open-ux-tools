@@ -1,6 +1,6 @@
-import * as controlData from '../../../../src/adaptation/ui5/controlData';
-import { SelectionService } from '../../../../src/adaptation/ui5/selection';
-import type { ExternalAction } from '../../../../src/api';
+import * as controlData from '../../src/controlData';
+import { SelectionService } from '../../src/selection';
+import type { ExternalAction } from '@sap-ux/control-property-editor-common';
 import type Component from 'sap/ui/core/Component';
 import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';

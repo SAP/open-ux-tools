@@ -1,6 +1,6 @@
-import { applyChange } from '../../../../../../control-property-editor-ui5/changes/flexChange';
-import type { UI5AdaptationOptions } from '../../../../../src/adaptation/ui5/types';
-import type { PropertyChange } from '../../../../../src/api';
+import { applyChange } from '../../../src/changes/flexChange';
+import type { UI5AdaptationOptions } from '../../../src/types';
+import type { PropertyChange } from '@sap-ux/control-property-editor-common';
 describe('flexChange', () => {
     // prepare
     global.sap = {

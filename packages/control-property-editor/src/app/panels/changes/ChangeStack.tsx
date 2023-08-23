@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Stack } from '@fluentui/react';
 
-import type { Change, ValidChange } from '../../../api';
+import type { Change, ValidChange } from '@sap-ux/control-property-editor-common';
 
 import { Separator } from '../../components';
 import type { ControlGroupProps, ControlPropertyChange } from './ControlGroup';

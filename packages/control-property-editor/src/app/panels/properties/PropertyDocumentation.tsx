@@ -6,7 +6,7 @@ import { Text, Stack } from '@fluentui/react';
 
 import { UIIcon, UIIconButton, UiIcons } from '@sap-ux/ui-components';
 
-import type { Control, SavedPropertyChange, PendingPropertyChange } from '../../../api';
+import type { Control, SavedPropertyChange, PendingPropertyChange } from '@sap-ux/control-property-editor-common';
 import { Separator } from '../../components';
 import type { RootState } from '../../store';
 
@@ -14,11 +14,11 @@ import styles from './PropertyDocumentation.module.scss';
 
 export interface PropertyDocumentationProps {
     defaultValue: string;
-    title: string;
+    title?: string;
     description: string;
     propertyName: string;
     propertyType: string | undefined;
-    onDelete(controlId: string, propertyName: string): void;
+    onDelete?(controlId: string, propertyName: string): void;
 }
 /**
  * React element PropertyDocumentation.

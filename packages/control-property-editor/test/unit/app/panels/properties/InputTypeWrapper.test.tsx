@@ -4,7 +4,7 @@ import type {
     BooleanControlProperty,
     StringControlProperty,
     StringControlPropertyWithOptions
-} from '../../../../../src/api';
+} from '@sap-ux/control-property-editor-common';
 import {
     BOOLEAN_VALUE_TYPE,
     CHECKBOX_EDITOR_TYPE,
@@ -13,7 +13,7 @@ import {
     INPUT_EDITOR_TYPE,
     INTEGER_VALUE_TYPE,
     STRING_VALUE_TYPE
-} from '../../../../../src/api';
+} from '@sap-ux/control-property-editor-common';
 import { initI18n } from '../../../../../src/app/i18n';
 import {
     getInputTypeToggleOptions,

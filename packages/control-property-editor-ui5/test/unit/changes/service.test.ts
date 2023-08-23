@@ -1,7 +1,7 @@
 import { ID } from 'sap/ui/core/library';
-import * as flexChange from '../../../../../../control-property-editor-ui5/changes/flexChange';
-import { ChangeService } from '../../../../../../control-property-editor-ui5/changes/service';
-import { changeProperty, deletePropertyChanges } from '../../../../../src/api';
+import * as flexChange from '../../../src/changes/flexChange';
+import { ChangeService } from '../../../src/changes/service';
+import { changeProperty, deletePropertyChanges } from '@sap-ux/control-property-editor-common';
 
 describe('SelectionService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {

@@ -1,5 +1,7 @@
-import { buildControlData } from '../../../../src/adaptation/ui5/controlData';
-import * as Documentation from '../../../../src/adaptation/ui5/documentation';
+import Utils from 'sap/ui/fl/Utils';
+import { buildControlData } from '../../src/controlData';
+import * as Documentation from '../../src/documentation';
+import DataType from 'sap/ui/base/DataType';
 describe('controlData', () => {
     // prepare
     const mockCheckConttrolId = jest.fn();
@@ -56,24 +58,36 @@ describe('controlData', () => {
     });
 
     const mockGetName = jest.fn();
-    class DataType {
-        getName() {
-            const getName = mockGetName
-                .mockReturnValueOnce('string')
-                .mockReturnValueOnce(undefined)
-                .mockReturnValueOnce('string');
-            return getName();
-        }
-        static getType() {
-            return new DataType();
-        }
-    }
-    global.jQuery = {
-        sap: {
-            getObject: jest.fn().mockReturnValueOnce({ None: 'None', Menu: 'Menu', ListBox: 'ListBox' })
-        } as any
-    };
-    global.sap = {
+    // class DataType {
+    //     getName() {
+    //         const getName = mockGetName
+    //             .mockReturnValueOnce('string')
+    //             .mockReturnValueOnce(undefined)
+    //             .mockReturnValueOnce('string');
+    //         return getName();
+    //     }
+    //     static getType() {
+    //         return new DataType();
+    //     }
+    // }
+    sap.ui.require = jest.fn().mockReturnValueOnce({ None: 'None', Menu: 'Menu', ListBox: 'ListBox' }) as any;
+    // DataType = DataType as any;
+    jest.mock('sap.ui.base.DataType', () => {
+        return class DataType {
+            getName() {
+                const getName = mockGetName
+                    .mockReturnValueOnce('string')
+                    .mockReturnValueOnce(undefined)
+                    .mockReturnValueOnce('string');
+                return getName();
+            }
+            static getType() {
+                return new DataType();
+            }
+        };
+    });
+    Utils.checkControlId = mockCheckConttrolId.mockReturnValue(true);
+    /*   global.sap = {
         ui: {
             base: {
                 DataType: DataType
@@ -84,7 +98,7 @@ describe('controlData', () => {
                 } as any
             }
         }
-    };
+    };*/
 
     const controlOverlay = {
         getDesignTimeMetadata: jest.fn().mockReturnValue({
