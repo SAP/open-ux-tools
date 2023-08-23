@@ -298,6 +298,7 @@ describe('Transport checks', () => {
                 })
             })
         );
+        postSpy.mockClear();
     });
 
     test('Valid package name with namespace', async () => {
@@ -317,8 +318,8 @@ describe('Transport checks', () => {
         const packageNamePattern = `<DEVCLASS>${testPackageNamespace}</DEVCLASS>`;
         const appNamePattern = `<URI>/sap/bc/adt/filestore/ui5-bsp/objects/${encodeURIComponent(
             testProjectNamespace
-        )}/$create</URI>`;
-        const combinedPattern = new RegExp(`(${packageNamePattern})|(${appNamePattern})`);
+        )}/\\$create</URI>`;
+        const combinedPattern = new RegExp(`${packageNamePattern}(\n|\r\n|\r|.)*${appNamePattern}`);
         expect(postSpy).toBeCalledWith(
             expect.any(String),
             expect.stringMatching(combinedPattern),
@@ -330,6 +331,7 @@ describe('Transport checks', () => {
                 })
             })
         );
+        postSpy.mockClear();
     });
 });
 
