@@ -1,5 +1,16 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.13.0
+
+### Minor Changes
+
+-   de0b13f2: Update templates to use Typescript version 5
+
+### Patch Changes
+
+-   Updated dependencies [de0b13f2]
+    -   @sap-ux/ui5-application-writer@0.25.0
+
 ## 0.12.27
 
 ### Patch Changes
