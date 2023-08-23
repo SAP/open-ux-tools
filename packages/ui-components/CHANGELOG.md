@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.10.0
+
+### Minor Changes
+
+-   c908acf2: feat(562): update star icon and add history icon
+
 ## 1.9.0
 
 ### Minor Changes
