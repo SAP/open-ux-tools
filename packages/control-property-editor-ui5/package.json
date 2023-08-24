@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/control-property-editor-ui5",
     "version": "1.0.0",
-    "description": "Showcase of a TypeScript setup for developing UI5 applications",
+    "description": "UI5 module of Control Property Editor",
     "author": "SAP SE",
     "license": "Apache-2.0",
     "main": "dist/index.js",
