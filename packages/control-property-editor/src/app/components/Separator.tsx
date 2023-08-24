@@ -17,12 +17,12 @@ export function Separator(
     const { direction, style, ...rest } = separatorProps;
     const isVertical = direction === 'vertical';
     const borderProp = isVertical ? 'borderLeft' : 'borderBottom';
-    const inlineStyles: CSSProperties = Object.assign(
-        {
+    const inlineStyles: CSSProperties = {
+        ...{
             [borderProp]: '1px solid var(--vscode-contrastBorder, var(--vscode-editorIndentGuide-background))'
         },
-        style
-    );
+        ...style
+    };
 
     if (isVertical) {
         inlineStyles.height = '100%';

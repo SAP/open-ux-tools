@@ -155,14 +155,14 @@ export function isKnownChange(change: ControlGroupProps | UnknownChangeProps): c
 
 const filterPropertyChanges = (changes: ControlPropertyChange[], query: string): ControlPropertyChange[] => {
     return changes.filter((item) => {
-        return !query ||
+        return (
+            !query ||
             item.propertyName.trim().toLowerCase().includes(query) ||
             convertCamelCaseToPascalCase(item.propertyName.toString()).trim().toLowerCase().includes(query) ||
             item.value.toString().trim().toLowerCase().includes(query) ||
             convertCamelCaseToPascalCase(item.value.toString()).trim().toLowerCase().includes(query) ||
             (item.timestamp && getFormattedDateAndTime(item.timestamp).trim().toLowerCase().includes(query))
-            ? true
-            : false;
+        );
     });
 };
 
@@ -198,12 +198,10 @@ function filterGroup(model: Item[], query: string): Item[] {
         if (parentMatch) {
             // parent matched filter query and pushed already to `filterModel`. only  replace matched children
             (filteredModel[filteredModel.length - 1] as ControlGroupProps).changes = controlPropModel.changes;
-        } else {
             // add node and its matched children
-            if (data.length > 0) {
-                const newFilterModel = { ...item, changes: data };
-                filteredModel.push(newFilterModel);
-            }
+        } else if (data.length > 0) {
+            const newFilterModel = { ...item, changes: data };
+            filteredModel.push(newFilterModel);
         }
     }
 

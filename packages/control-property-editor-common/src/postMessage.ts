@@ -17,9 +17,8 @@ interface PostMessageAction<T> {
  * @param data
  * @returns {data is PostMessageAction<T>}
  */
-function isPostMessageAction<T>(data: any | undefined): data is PostMessageAction<T> {
-    // TODO: check if more extensive checks are required
-    return data.type === POST_MESSAGE_ACTION_TYPE && typeof data.action === 'object';
+function isPostMessageAction<T>(data: PostMessageAction<T> | undefined): data is PostMessageAction<T> {
+    return data?.type === POST_MESSAGE_ACTION_TYPE && typeof data?.action === 'object';
 }
 
 /**

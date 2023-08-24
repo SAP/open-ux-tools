@@ -98,7 +98,7 @@ export function HeaderField(headerFieldProps: HeaderFieldProps): ReactElement {
                             }
                         }
                     }}
-                    onRenderSuffix={(): JSX.Element => {
+                    onRenderSuffix={(): React.JSX.Element => {
                         return (
                             <UIIconButton
                                 id={`${label.replace(/\s/g, '')}--copy`}

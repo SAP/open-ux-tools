@@ -10,11 +10,11 @@ export const isEditable = async (id = ''): Promise<boolean> => {
     if (!control) {
         const component = sap.ui.getCore().getComponent(id);
         if (component) {
-            editable = false;
+            editable = !component;
         }
     } else {
         let controlOverlay = OverlayRegistry.getOverlay(control);
-        if (!controlOverlay || !controlOverlay.getDomRef()) {
+        if (!controlOverlay?.getDomRef()) {
             //look for closest control
             controlOverlay = OverlayUtil.getClosestOverlayFor(control);
         }

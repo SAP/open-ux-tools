@@ -1,5 +1,5 @@
 import { reportTelemetry } from '../../src/telemetry';
-const globalAny:any = global;
+const globalAny: any = global;
 describe('reportTelemetry', () => {
     afterEach(() => {
         globalAny.fetch = jest.fn(() => Promise.resolve({}));

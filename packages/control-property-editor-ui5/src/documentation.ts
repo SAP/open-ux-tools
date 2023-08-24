@@ -84,10 +84,10 @@ export async function getControlPropertyDocumentation(
                     contLibName,
                     ui5ApiDtMetadata
                 );
-                return Object.assign({}, baseControlProps, doc.properties);
+                return { ...baseControlProps, ...doc.properties };
             }
         }
-        return Object.assign(Object.assign({}, doc.properties));
+        return { ...doc.properties };
     } else {
         return undefined;
     }
@@ -131,7 +131,7 @@ function parseControlMetaModel(controlLibMetadata: SchemaForApiJsonFiles, contro
         doc: '',
         properties: {}
     };
-    const selectedControlMetadata = (controlLibMetadata.symbols || []).find((control) => control.name === controlName);
+    const selectedControlMetadata = (controlLibMetadata.symbols ?? []).find((control) => control.name === controlName);
     if (selectedControlMetadata) {
         // base type info of control is available on property 'extends'
         controlInfo.baseType = selectedControlMetadata.extends;

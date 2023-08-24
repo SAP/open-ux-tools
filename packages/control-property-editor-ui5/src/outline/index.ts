@@ -17,7 +17,7 @@ export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: Ex
         const views = await outline.get();
         const nodes = await transformNodes(views, (id: string): { text?: string } => {
             const control = sap.ui.getCore().byId(id);
-            if (control && control.getMetadata().getProperty('text')) {
+            if (control?.getMetadata().getProperty('text')) {
                 const text = control.getProperty('text');
                 if (typeof text === 'string' && text.trim() !== '') {
                     return {

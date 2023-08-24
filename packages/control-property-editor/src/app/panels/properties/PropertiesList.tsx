@@ -53,7 +53,7 @@ export function PropertiesList(): ReactElement {
         event?: React.ChangeEvent<HTMLInputElement> | undefined,
         filterValue?: string | undefined
     ): void => {
-        setFilterValue(filterValue?.toLowerCase() || '');
+        setFilterValue(filterValue?.toLowerCase() ?? '');
     };
     const editors = (
         <>
@@ -92,7 +92,7 @@ export function PropertiesList(): ReactElement {
                                             key: property.name,
                                             controlId: id,
                                             property,
-                                            toggleOptions: (props as InputTypeWrapperProps).toggleOptions,
+                                            toggleOptions: props.toggleOptions,
                                             controlName: name
                                         }}
                                     />

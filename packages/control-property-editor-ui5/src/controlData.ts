@@ -21,7 +21,7 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 interface ManagedObjectMetadataProperties {
     name: string;
-    defaultValue: unknown | null;
+    defaultValue: string | null;
     deprecated: boolean;
     getType: () => DataType;
     getName: () => string;
@@ -120,7 +120,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
  * @returns {boolean}
  */
 function isPropertyEnabled(analyzedType: AnalyzedType): boolean {
-    return analyzedType.isArray || analyzedType.primitiveType === 'any' ? false : true;
+    return !(analyzedType.isArray || analyzedType.primitiveType === 'any');
 }
 
 /**
@@ -205,7 +205,7 @@ export async function buildControlData(
         // the default behavior is that the property is enabled
         // meaning it's not ignored during design time
         let ignore = false;
-        if (controlProperties && controlProperties[property.name]) {
+        if (controlProperties?.[property.name]) {
             // check whether the property should be ignored in design time or not
             // if it's 'undefined' then it's not considered when building isEnabled because it's 'true'
             ignore = controlProperties[property.name].ignore;
@@ -234,16 +234,15 @@ export async function buildControlData(
             testIconPattern(property.name) &&
             selectedControlName !== 'sap.m.Image' &&
             analyzedType.ui5Type === 'sap.ui.core.URI';
-        const documentation =
-            document && document[property.name]
-                ? document[property.name]
-                : ({
-                      defaultValue: (property.defaultValue as string) || '-',
-                      description: '',
-                      propertyName: property.name,
-                      type: analyzedType.ui5Type,
-                      propertyType: analyzedType.ui5Type
-                  } as PropertiesInfo);
+        const documentation = document?.[property.name]
+            ? document[property.name]
+            : ({
+                  defaultValue: (property.defaultValue as string) || '-',
+                  description: '',
+                  propertyName: property.name,
+                  type: analyzedType.ui5Type,
+                  propertyType: analyzedType.ui5Type
+              } as PropertiesInfo);
         const readableName = convertCamelCaseToPascalCase(property.name);
         switch (analyzedType.primitiveType) {
             case 'enum': {
@@ -320,7 +319,7 @@ export async function buildControlData(
     return {
         id: control.getId(), //the id of the underlying control/aggregation
         type: selectedControlName, //the name of the ui5 class of the control/aggregation
-        properties: properties.sort((a, b) => (a.name > b.name ? 1 : -1)),
+        properties: [...properties.sort((a, b) => (a.name > b.name ? 1 : -1))],
         name: selectedControlName
     };
 }

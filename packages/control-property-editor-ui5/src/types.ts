@@ -14,7 +14,6 @@ export interface UI5AdaptationOptions {
 }
 
 export type PrimitiveTypes = 'boolean' | 'enum' | 'float' | 'string' | 'any';
-export type ControlId = string;
 export type PropertyValue = boolean | object | number | string;
 
 export interface UI5ControlProperty {
@@ -33,7 +32,7 @@ export interface UI5ControlProperty {
 export interface UI5ControlData {
     allowIndexForDefaultAggregation: boolean;
     defaultAggregation: string;
-    id: ControlId;
+    id: string;
     properties: UI5ControlProperty[];
     selectedControlChildren: string[];
     selectedControlName: string;

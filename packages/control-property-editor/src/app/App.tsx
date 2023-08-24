@@ -38,9 +38,7 @@ export default function App(appProps: AppProps): ReactElement {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const [hideWarningDialog, setHideWarningDialog] = useLocalStorage('hide-warning-dialog', false);
-    const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() =>
-        hideWarningDialog === true ? false : true
-    );
+    const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => !(hideWarningDialog === true));
 
     const [isInitialized, setIsInitialized] = useState(false);
 
@@ -61,7 +59,7 @@ export default function App(appProps: AppProps): ReactElement {
                     const paddingWidth = 40;
                     const width = node.clientWidth;
                     const availableWidth = width - paddingWidth;
-                    const requiredWidth = parseInt(previewWidth);
+                    const requiredWidth = parseInt(previewWidth, 10);
                     if (availableWidth < requiredWidth) {
                         const scale = availableWidth / requiredWidth;
                         dispatch(changePreviewScale(scale));

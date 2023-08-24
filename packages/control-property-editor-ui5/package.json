@@ -7,7 +7,7 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "node esbuild.js",
-        "lint": "eslint . --ext .ts,.tsx",
+        "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts,.tsx --fix",
         "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles --config='jest.config.js'"
     },

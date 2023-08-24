@@ -211,7 +211,7 @@ export const Tree = (): ReactElement => {
             }
         }
     };
-    const onRenderHeader = (props?: IGroupHeaderProps): JSX.Element | null => {
+    const onRenderHeader = (props?: IGroupHeaderProps): React.JSX.Element | null => {
         const selectNode = selection.group?.key === props?.group?.key ? theme : '';
         let paddingValue = (props?.group?.level ?? 0) * 10 + 15;
         // add padding to compensate absence of chevron icon
@@ -288,11 +288,11 @@ export const Tree = (): ReactElement => {
 
 function createGroupChild(model: OutlineNode[]): boolean {
     let result = false;
-    for (let i = 0; i < model.length; i++) {
-        const data = model[i];
+    for (const data of model) {
         const children = data.children || [];
         if (children.length > 0) {
-            return (result = true);
+            result = true;
+            break;
         }
     }
     return result;

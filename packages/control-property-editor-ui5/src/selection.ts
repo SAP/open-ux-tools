@@ -1,6 +1,10 @@
 import type { ExternalAction } from '@sap-ux/control-property-editor-common';
-import { controlSelected, propertyChanged, selectControl } from '@sap-ux/control-property-editor-common';
-import { reportTelemetry } from '@sap-ux/control-property-editor-common';
+import {
+    controlSelected,
+    propertyChanged,
+    selectControl,
+    reportTelemetry
+} from '@sap-ux/control-property-editor-common';
 import { buildControlData } from './controlData';
 import { getRuntimeControl } from './utils';
 import type { ActionSenderFunction, Service, SubscribeFunction, UI5Facade } from './types';
@@ -57,8 +61,8 @@ export class SelectionService implements Service {
                 const selectedOverlayControls = this.rta.getSelection();
                 if (selectedOverlayControls.length > 0) {
                     //remove previous selection
-                    for (let i = 0; i < selectedOverlayControls.length; i++) {
-                        selectedOverlayControls[i].setSelected(false); //deselect previously selected control
+                    for (const selectedOverlayControl of selectedOverlayControls) {
+                        selectedOverlayControl.setSelected(false); //deselect previously selected control
                     }
                 }
 
@@ -67,7 +71,7 @@ export class SelectionService implements Service {
                     controlOverlay = this.ui5.getClosestOverlayFor(control);
                 }
 
-                if (controlOverlay && controlOverlay.isSelectable()) {
+                if (controlOverlay?.isSelectable()) {
                     controlOverlay.setSelected(true); //highlight without firing event only if the layer is selectable
                 } else {
                     const controlData = await buildControlData(control);

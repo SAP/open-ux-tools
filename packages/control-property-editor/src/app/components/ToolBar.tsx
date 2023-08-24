@@ -19,7 +19,7 @@ export function Toolbar(propsWithChildren: PropsWithChildren<ToolbarProps>): Rea
     const { left, right, children } = propsWithChildren;
     return (
         <UIToolbar>
-            <UIToolbarColumn className="column-left">{left || children}</UIToolbarColumn>
+            <UIToolbarColumn className="column-left">{left ?? children}</UIToolbarColumn>
             <UIToolbarColumn className="column-right">{right}</UIToolbarColumn>
         </UIToolbar>
     );

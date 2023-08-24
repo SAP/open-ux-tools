@@ -40,7 +40,7 @@ export async function getLibrary(controlName: string): Promise<string> {
         sap.ui.require([controlPath], (control) => {
             const contMetadata = control.getMetadata();
             // getLibraryName method does not exist on events
-            if (contMetadata && contMetadata.getLibraryName) {
+            if (contMetadata?.getLibraryName) {
                 const contLibName = contMetadata.getLibraryName();
                 resolve(contLibName);
             } else {

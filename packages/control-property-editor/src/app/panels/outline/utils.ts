@@ -35,8 +35,7 @@ const commonVisibleControls = [
  */
 export function getFilteredModel(model: OutlineNode[], filterOptions: FilterOptions[]): OutlineNode[] {
     let filteredModel: OutlineNode[] = [];
-    for (let i = 0; i < filterOptions.length; i++) {
-        const option = filterOptions[i];
+    for (const option of filterOptions) {
         if (option.name === FilterName.query) {
             if (filteredModel.length > 0) {
                 // filter based on filtered model
@@ -70,16 +69,16 @@ function filterByQuery(model: OutlineNode[], filterOption: FilterOptions) {
     if (query.length === 0) {
         return model;
     }
-    for (let i = 0; i < model.length; i++) {
+    for (const item of model) {
         let parentMatch = false;
-        const name = model[i].name.toLocaleUpperCase();
+        const name = item.name.toLocaleUpperCase();
         if (name.includes(query)) {
             parentMatch = true;
             // add node without its children
-            filteredModel.push({ ...model[i], children: [] });
+            filteredModel.push({ ...item, children: [] });
         }
-        if (model[i].children.length) {
-            const data = filterByQuery(model[i].children, filterOption);
+        if (item.children.length) {
+            const data = filterByQuery(item.children, filterOption);
             if (data.length > 0) {
                 // children matched filter query
                 if (parentMatch) {
@@ -87,7 +86,7 @@ function filterByQuery(model: OutlineNode[], filterOption: FilterOptions) {
                     filteredModel[filteredModel.length - 1].children = data;
                 } else {
                     // add node and its matched children
-                    const newFilterModel = { ...model[i], children: data };
+                    const newFilterModel = { ...item, children: data };
                     filteredModel.push(newFilterModel);
                 }
             }
@@ -109,16 +108,16 @@ function filterByCommonlyUsedControls(model: OutlineNode[], filterOption: Filter
     if (!checked) {
         return model;
     }
-    for (let i = 0; i < model.length; i++) {
+    for (const item of model) {
         let parentMatch = false;
-        const controlType = model[i].controlType;
+        const controlType = item.controlType;
         if (commonVisibleControls.includes(controlType)) {
             parentMatch = true;
             // add node without its children
-            filteredModel.push({ ...model[i], children: [] });
+            filteredModel.push({ ...item, children: [] });
         }
-        if (model[i].children.length) {
-            const data = filterByCommonlyUsedControls(model[i].children, filterOption);
+        if (item.children.length) {
+            const data = filterByCommonlyUsedControls(item.children, filterOption);
             if (data.length > 0) {
                 // children matched filter query
                 if (parentMatch) {
@@ -126,7 +125,7 @@ function filterByCommonlyUsedControls(model: OutlineNode[], filterOption: Filter
                     filteredModel[filteredModel.length - 1].children = data;
                 } else {
                     // add node and its matched children
-                    const newFilterModel = { ...model[i], children: data };
+                    const newFilterModel = { ...item, children: data };
                     filteredModel.push(newFilterModel);
                 }
             }
