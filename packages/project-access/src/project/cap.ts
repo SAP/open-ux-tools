@@ -35,10 +35,11 @@ export function isCapNodeJsProject(packageJson: Package): boolean {
  * Returns true if the project is a CAP Java project.
  *
  * @param projectRoot - the root path of the project
+ * @param [capCustomPaths] - optional, relative CAP paths like app, db, srv
  * @returns - true if the project is a CAP project
  */
-export async function isCapJavaProject(projectRoot: string): Promise<boolean> {
-    const { srv } = await getCapCustomPaths(projectRoot);
+export async function isCapJavaProject(projectRoot: string, capCustomPaths?: CapCustomPaths): Promise<boolean> {
+    const srv = capCustomPaths?.srv ?? (await getCapCustomPaths(projectRoot)).srv;
     return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', 'application.yaml'));
 }
 
@@ -49,7 +50,11 @@ export async function isCapJavaProject(projectRoot: string): Promise<boolean> {
  * @returns - CAPJava for Java based CAP projects; CAPNodejs for node.js based CAP projects; undefined if it is no CAP project
  */
 export async function getCapProjectType(projectRoot: string): Promise<CapProjectType | undefined> {
-    if (await isCapJavaProject(projectRoot)) {
+    const capCustomPaths = await getCapCustomPaths(projectRoot);
+    if (!(await fileExists(join(projectRoot, capCustomPaths.srv)))) {
+        return undefined;
+    }
+    if (await isCapJavaProject(projectRoot, capCustomPaths)) {
         return 'CAPJava';
     }
     let packageJson;
