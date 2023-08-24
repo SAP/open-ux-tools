@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.13.0
+
+### Minor Changes
+
+-   d13264b3: Add function to search for CAP project roots in local folders or workspace
+
 ## 1.12.1
 
 ### Patch Changes
