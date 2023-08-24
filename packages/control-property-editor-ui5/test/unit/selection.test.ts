@@ -13,18 +13,21 @@ declare global {
   }
 describe('SelectionService', () => {
     const sendActionMock = jest.fn();
-    const buildControlDataSpy = jest.spyOn(controlData, 'buildControlData').mockImplementation((): any => {
-        return {
-            id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy', //the id of the underlying control/aggregation
-            type: 'sap.m.Button', //the name of the ui5 class of the control/aggregation
-            properties: []
-        };
-    });
+    let buildControlDataSpy: jest.SpyInstance<any>;
+
+    beforeEach(() => {
+        buildControlDataSpy = jest.spyOn(controlData, 'buildControlData').mockImplementation((): any => {
+            return {
+                id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy', //the id of the underlying control/aggregation
+                type: 'sap.m.Button', //the name of the ui5 class of the control/aggregation
+                properties: []
+            };
+        });
+    })
 
     afterEach(() => {
         buildControlDataSpy.mockRestore();
     })
-
     beforeAll(() => {
         global.fetch = jest.fn(() => Promise.resolve({}));
     });
@@ -306,6 +309,6 @@ describe('SelectionService', () => {
             });
         }
         expect(sendActionMock).toBeCalledTimes(2);
-        expect(buildControlDataSpy).toBeCalledTimes(4);
+        expect(buildControlDataSpy).toBeCalledTimes(2);
     });
 });
