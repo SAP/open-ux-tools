@@ -1,4 +1,4 @@
-import type { OutlineNode } from '../../../api';
+import type { OutlineNode } from '@sap-ux/control-property-editor-common';
 import type { FilterOptions } from '../../slice';
 import { FilterName } from '../../slice';
 import type { IGroup } from '@fluentui/react';

@@ -9,5 +9,5 @@
         "src/**/*.ts",
         "test/**/*.ts",
     ],
-    "exclude": ["dist", "reports"]
+    "exclude": ["dist", "coverage"]
 }

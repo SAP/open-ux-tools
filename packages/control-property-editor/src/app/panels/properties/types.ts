@@ -1,6 +1,11 @@
 import type { ReactElement } from 'react';
 
-import type { ControlProperty, CHECKBOX_EDITOR_TYPE, DROPDOWN_EDITOR_TYPE, INPUT_EDITOR_TYPE } from '../../../api';
+import type {
+    ControlProperty,
+    CHECKBOX_EDITOR_TYPE,
+    DROPDOWN_EDITOR_TYPE,
+    INPUT_EDITOR_TYPE
+} from '@sap-ux/control-property-editor-common';
 
 import type { PropertyChangeStats } from '../../slice';
 

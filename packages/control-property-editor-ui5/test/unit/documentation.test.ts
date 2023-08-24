@@ -6,7 +6,7 @@ import { cwd } from 'process';
 import type { SchemaForApiJsonFiles } from '../../src/apiJson';
 
 describe('Documentation', () => {
-    const path = join(cwd(), 'test', 'unit', 'adaptation', 'ui5', 'testData', 'api.json');
+    const path = join(cwd(), 'test', 'unit', 'testData', 'api.json');
     const sapUiCompMetadata = JSON.parse(fs.readFileSync(path, 'utf8'));
     const ui5ApiDtMetadata: Map<string, SchemaForApiJsonFiles> = new Map();
     ui5ApiDtMetadata.set('sap.ui.comp', sapUiCompMetadata);
@@ -23,11 +23,7 @@ describe('Documentation', () => {
         jest.spyOn(Utils, 'getLibrary').mockImplementation(() => {
             return Promise.resolve('');
         });
-        const result = await Documentation.getDocumentation(
-            'sap.ui.comp.filterbar.FilterBar',
-            'sap.ui.comp',
-            ui5ApiDtMetadata
-        );
+        const result = await Documentation.getDocumentation('sap.ui.comp.filterbar.FilterBar', 'sap.ui.comp');
         expect(result).toMatchSnapshot();
     });
 });

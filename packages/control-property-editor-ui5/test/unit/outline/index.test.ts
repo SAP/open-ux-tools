@@ -15,48 +15,39 @@ const transformNodesSpy = jest.spyOn(nodes, 'transformNodes').mockResolvedValue(
 describe('index', () => {
     const mockSendAction = jest.fn();
     const mockAttachEvent = jest.fn();
+    let runtimeAuthoring: any;
     beforeEach(() => {
         const mockGetComponent = jest.fn();
-        global.sap = {
-            ui: {
-                getCore: () => {
-                    return {
-                        byId: () => {
-                            return {
-                                getMetadata: () => {
-                                    return {
-                                        getProperty: () => {
-                                            return {
-                                                name: 'text',
-                                                bindable: false,
-                                                type: 'string'
-                                            };
-                                        }
-                                    };
-                                },
-                                getProperty: () => {
-                                    return 'Share';
-                                }
-                            };
-                        },
-                        getComponent: mockGetComponent
-                    };
-                },
-                rta: {
-                    RuntimeAuthoring: {
-                        getService: () => {
-                            return {
-                                attachEvent: mockAttachEvent,
-                                get: jest.fn()
-                            };
-                        }
+        sap.ui.getCore = jest.fn().mockReturnValue({
+            byId: () => {
+                return {
+                    getMetadata: () => {
+                        return {
+                            getProperty: () => {
+                                return {
+                                    name: 'text',
+                                    bindable: false,
+                                    type: 'string'
+                                };
+                            }
+                        };
+                    },
+                    getProperty: () => {
+                        return 'Share';
                     }
-                }
-            }
-        } as any;
+                };
+            },
+            getComponent: mockGetComponent
+        });
+        runtimeAuthoring = {
+            getService: jest.fn().mockReturnValue({
+                attachEvent: mockAttachEvent,
+                get: jest.fn()
+            })
+        };
     });
     test('initOutline', async () => {
-        await initOutline(sap.ui.rta.RuntimeAuthoring, mockSendAction);
+        await initOutline(runtimeAuthoring, mockSendAction);
         expect(mockAttachEvent).toMatchInlineSnapshot(`
             [MockFunction] {
               "calls": Array [

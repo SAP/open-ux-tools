@@ -2,7 +2,13 @@ import { ID } from 'sap/ui/core/library';
 import * as flexChange from '../../../src/changes/flexChange';
 import { ChangeService } from '../../../src/changes/service';
 import { changeProperty, deletePropertyChanges } from '@sap-ux/control-property-editor-common';
-
+declare global {
+    namespace NodeJS {
+      interface Global {
+        fetch: jest.Mock;
+      }
+    }
+  }
 describe('SelectionService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
         return Promise.resolve();

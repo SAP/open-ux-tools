@@ -1,6 +1,5 @@
 import * as common from '@sap-ux/control-property-editor-common';
 import { communicationMiddleware } from '../../../src/app/middleware';
-
 jest.mock('../../../src/app/slice', () => {
     return {
         changeProperty: { type: '[ext] property-changed' }
@@ -24,6 +23,12 @@ describe('communication middleware', () => {
             contentWindow: 'Target'
         } as any);
     });
+    afterEach(() => {
+        if (messageProcessor) {
+            messageProcessor.mockRestore();
+        }
+        sendActionfn.mockReset();
+    });
 
     test('property changed in UI5 application', () => {
         const action = common.propertyChanged({
@@ -39,6 +44,7 @@ describe('communication middleware', () => {
     test('control selected in UI5 application', () => {
         const action = common.controlSelected({
             id: 'control1',
+            name: 'testing',
             type: 'text',
             properties: []
         });

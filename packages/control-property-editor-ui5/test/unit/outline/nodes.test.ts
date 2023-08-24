@@ -2,7 +2,7 @@ import { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import { transformNodes as tn } from '../../../src/outline/nodes';
 import type { OutlineNode } from '@sap-ux/control-property-editor-common';
 
-jest.mock('../../../../../src/adaptation/ui5/outline/utils', () => {
+jest.mock('../../../src/outline/utils', () => {
     return {
         isEditable: () => false
     };

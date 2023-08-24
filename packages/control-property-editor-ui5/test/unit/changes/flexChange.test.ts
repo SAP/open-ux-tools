@@ -1,61 +1,53 @@
+import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { applyChange } from '../../../src/changes/flexChange';
 import type { UI5AdaptationOptions } from '../../../src/types';
 import type { PropertyChange } from '@sap-ux/control-property-editor-common';
 describe('flexChange', () => {
     // prepare
-    global.sap = {
-        ui: {
-            getCore: jest
-                .fn()
-                .mockReturnValueOnce({
-                    byId: jest.fn().mockReturnValueOnce({ name: 'sap.m.Button' })
+    sap.ui.getCore = jest
+        .fn()
+        .mockReturnValueOnce({
+            byId: jest.fn().mockReturnValueOnce({ name: 'sap.m.Button' })
+        })
+        .mockReturnValueOnce({
+            byId: jest.fn().mockReturnValueOnce({ name: 'sap.m.Button' })
+        })
+        .mockReturnValueOnce({
+            byId: jest.fn().mockReturnValueOnce({ name: 'sap.m.Button' })
+        })
+        .mockReturnValueOnce({
+            byId: jest.fn().mockReturnValueOnce(undefined)
+        });
+    CommandFactory.getCommandFor = jest
+        .fn()
+        .mockResolvedValueOnce({
+            getPreparedChange: jest.fn().mockReturnValue({
+                getDefinition: jest.fn().mockReturnValue({
+                    support: {
+                        generator: 'testGenerator'
+                    }
                 })
-                .mockReturnValueOnce({
-                    byId: jest.fn().mockReturnValueOnce({ name: 'sap.m.Button' })
+            })
+        })
+        .mockResolvedValueOnce({
+            getPreparedChange: jest.fn().mockReturnValue({
+                getDefinition: jest.fn().mockReturnValue({
+                    support: {
+                        generator: 'testGenerator'
+                    }
                 })
-                .mockReturnValueOnce({
-                    byId: jest.fn().mockReturnValueOnce({ name: 'sap.m.Button' })
+            })
+        })
+        .mockResolvedValueOnce({
+            getPreparedChange: jest.fn().mockReturnValue({
+                getDefinition: jest.fn().mockReturnValue({
+                    support: {
+                        generator: 'testGenerator'
+                    }
                 })
-                .mockReturnValueOnce({
-                    byId: jest.fn().mockReturnValueOnce(undefined)
-                }),
-            rta: {
-                command: {
-                    CommandFactory: {
-                        getCommandFor: jest
-                            .fn()
-                            .mockResolvedValueOnce({
-                                getPreparedChange: jest.fn().mockReturnValue({
-                                    getDefinition: jest.fn().mockReturnValue({
-                                        support: {
-                                            generator: 'testGenerator'
-                                        }
-                                    })
-                                })
-                            })
-                            .mockResolvedValueOnce({
-                                getPreparedChange: jest.fn().mockReturnValue({
-                                    getDefinition: jest.fn().mockReturnValue({
-                                        support: {
-                                            generator: 'testGenerator'
-                                        }
-                                    })
-                                })
-                            })
-                            .mockResolvedValueOnce({
-                                getPreparedChange: jest.fn().mockReturnValue({
-                                    getDefinition: jest.fn().mockReturnValue({
-                                        support: {
-                                            generator: 'testGenerator'
-                                        }
-                                    })
-                                })
-                            })
-                    } as sap.ui.rta.command.CommandFactory
-                }
-            }
-        }
-    };
+            })
+        });
+
     let getCommandStackMock: jest.Mock;
     let pushAndExecuteMock: jest.Mock;
     let options: UI5AdaptationOptions;

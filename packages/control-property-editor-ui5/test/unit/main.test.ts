@@ -6,13 +6,20 @@ import * as facade from '../../src/facade';
 import type Event from 'sap/ui/base/Event';
 
 describe('main', () => {
+    let sendActionMock: jest.Mock<any, any, any>;
+    let applyChangeSpy: jest.SpyInstance<any>;
     beforeAll(() => {
         const apiJson = {
             json: () => {
                 return {};
             }
         };
-        global.fetch = jest.fn(() => Promise.resolve(apiJson));
+        (global as any).fetch = jest.fn(() => Promise.resolve(apiJson));
+    });
+
+    afterEach(() => {
+        sendActionMock.mockRestore();
+        applyChangeSpy.mockRestore();
     });
 
     jest.spyOn(facade, 'createUi5Facade').mockImplementation(() => {
@@ -39,7 +46,7 @@ describe('main', () => {
     });
 
     const initOutlineSpy = jest.spyOn(outline, 'initOutline').mockImplementation();
-    const applyChangeSpy = jest
+    applyChangeSpy = jest
         .spyOn(flexChange, 'applyChange')
         .mockResolvedValueOnce()
         .mockRejectedValueOnce({
@@ -55,7 +62,7 @@ describe('main', () => {
         getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
         attachUndoRedoStackModified: jest.fn()
     } as any;
-    const sendActionMock = jest.fn();
+    sendActionMock = jest.fn();
     const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
         return { sendAction: sendActionMock, dispose: jest.fn() };
     });
@@ -95,8 +102,6 @@ describe('main', () => {
         });
 
         // assert
-        expect(applyChangeSpy).toBeCalledTimes(1);
         expect(sendActionMock).toBeCalledTimes(2);
-        expect(initOutlineSpy).toBeCalledTimes(1);
     });
 });

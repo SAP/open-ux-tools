@@ -4,12 +4,19 @@ import { reportTelemetry } from '@sap-ux/control-property-editor-common';
 import { buildControlData } from './controlData';
 import { getRuntimeControl } from './utils';
 import type { ActionSenderFunction, Service, SubscribeFunction, UI5Facade } from './types';
-import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+
 import type Event from 'sap/ui/base/Event';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type { SelectionChangeEvent } from 'sap/ui/rta/RuntimeAuthoring';
+import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
+export type PropertyChangeEvent = Event<PropertyChangeParams>;
+export interface PropertyChangeParams {
+    name: string;
+    id: string;
+    newValue: string;
+}
 /**
  *
  */
@@ -131,7 +138,7 @@ export class SelectionService implements Service {
      * @param sendAction
      */
     private handlePropertyChanges(runtimeControl: ManagedObject, sendAction: (action: ExternalAction) => void): void {
-        const handler = (e: Event) => {
+        const handler = (e: PropertyChangeEvent) => {
             const propertyName = e.getParameter('name');
             const controlId = e.getParameter('id');
             const changeId = propertyChangeId(controlId, propertyName);
@@ -141,8 +148,8 @@ export class SelectionService implements Service {
                 this.appliedChangeCache.delete(changeId);
                 return;
             }
-            const info: { bindingString?: string } = runtimeControl.getBindingInfo(propertyName);
-            const newValue = info?.bindingString ?? e.getParameter('newValue');
+            const info: { path?: string } = runtimeControl.getBindingInfo(propertyName);
+            const newValue = info?.path ?? e.getParameter('newValue');
             const change = propertyChanged({
                 controlId,
                 propertyName,

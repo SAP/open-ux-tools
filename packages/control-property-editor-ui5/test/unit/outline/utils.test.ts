@@ -1,5 +1,5 @@
 import { isEditable } from '../../../src/outline/utils';
-jest.mock('../../../../../src/adaptation/ui5/controlData', () => {
+jest.mock('../../../src/controlData', () => {
     return {
         buildControlData: () => {
             return {
@@ -14,26 +14,7 @@ describe('utils', () => {
     const mockGetOverlay = jest.fn();
     const mockGetClosestOverlayFor = jest.fn();
     beforeEach(() => {
-        global.sap = {
-            ui: {
-                getCore: () => {
-                    return {
-                        byId: mockGetId,
-                        getComponent: mockGetComponent
-                    };
-                },
-                dt: {
-                    OverlayRegistry: {
-                        getOverlay: () => {
-                            return;
-                        }
-                    },
-                    OverlayUtil: {
-                        getClosestOverlayFor: mockGetClosestOverlayFor
-                    }
-                }
-            }
-        } as any;
+        sap.ui.getCore = jest.fn().mockReturnValue({ byId: mockGetId, getComponent: mockGetComponent });
     });
     describe('isEditable', () => {
         test('control not found by id, search by component', () => {
