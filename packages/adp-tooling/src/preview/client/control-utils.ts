@@ -47,10 +47,14 @@ type MetadataOptionsProperty = MetadataOptions.Property & {
 };
 
 /**
- * @description Handles calling control specific functions for retrieving control data
+ * Handles calling control specific functions for retrieving control data
  */
 export default class ControlUtils {
+    /**
+     * Analyzed type
+     */
     private static analyzedType: AnalyzedType;
+
     /**
      * Returns ManagedObject runtime control
      *
@@ -89,8 +93,7 @@ export default class ControlUtils {
                 // Performance optimization
                 control.__calledJSONKeys = true;
             }
-            //_sGetter is "getContent"
-            // This executes a _sGetter function that canvary from control to control (can be: getContent, getItems, etc)
+            // This executes a _sGetter function that can vary from control to control (_sGetter can be: getContent, getItems, etc)
             result = (aggregation._sGetter && control[aggregation._sGetter]()) || [];
 
             // The aggregation has primitive alternative type
@@ -149,7 +152,8 @@ export default class ControlUtils {
     }
 
     /**
-     * @description Analyzes propery type
+     * Analyzes propery type
+     *
      * @param property Managed Objects metadata properties
      * @returns {AnalyzedType | undefined} Analyzed type
      */
@@ -203,7 +207,8 @@ export default class ControlUtils {
     }
 
     /**
-     * @description Checks if property in analyzed type is enabled
+     * Checks if property in analyzed type is enabled
+     *
      * @param analyzedType Analyzed type
      * @returns {boolean} Boolean value
      */
@@ -212,7 +217,8 @@ export default class ControlUtils {
     }
 
     /**
-     * @description Normalizes rawValue
+     * Normalizes rawValue
+     *
      * @param rawValue Any object or string value
      * @returns {object | string} Object or a string
      */
@@ -246,7 +252,8 @@ export default class ControlUtils {
     }
 
     /**
-     * @description Tests icon pattern
+     * Tests icon pattern
+     *
      * @param name Icon name
      * @returns {boolean} Boolean value
      */
@@ -258,7 +265,8 @@ export default class ControlUtils {
     }
 
     /**
-     * @description Converts strings from camel case to pascal case
+     * Converts strings from camel case to pascal case
+     *
      * @param text Text to convert
      * @returns {boolean} Boolean value
      */
@@ -268,7 +276,8 @@ export default class ControlUtils {
     };
 
     /**
-     * @description Builds control data
+     * Builds control data
+     *
      * @param control Control Managed Object
      * @param controlOverlay Control overlay
      * @param _includeDocumentation Toggle whether to include documentation

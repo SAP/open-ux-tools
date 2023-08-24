@@ -9,8 +9,8 @@ module.exports = {
         '@typescript-eslint/no-use-before-define': 'warn',
         '@typescript-eslint/ban-ts-comment': 'warn',
         '@typescript-eslint/no-this-alias': 'warn',
-        'consistent-this': 'off', // that - this
-        'space-before-function-paren': 'warn',
+        'consistent-this': 'warn', // that - this
+        'space-before-function-paren': 'off',
         'jsdoc/match-description': 'off',
         'radix': 'off'
     }

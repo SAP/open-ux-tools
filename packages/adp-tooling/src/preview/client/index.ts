@@ -1,5 +1,6 @@
-import FragmentDialog from './dialogs/fragment';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+
+import FragmentDialog from './dialogs/fragment';
 import type { BaseDialog } from './dialogs/base';
 
 export default (rta: RuntimeAuthoring) => {

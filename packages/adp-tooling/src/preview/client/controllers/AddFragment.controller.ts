@@ -1,28 +1,34 @@
+/** sap.ui.fl */
 import type { Layer } from 'sap/ui/fl';
 
+/** sap.m */
 import type Dialog from 'sap/m/Dialog';
 import MessageToast from 'sap/m/MessageToast';
 
+/** sap.ui.core */
 import { ValueState } from 'sap/ui/core/library';
 import type UI5Element from 'sap/ui/core/Element';
-
 import Controller from 'sap/ui/core/mvc/Controller';
 
+/** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
 import type EventProvider from 'sap/ui/base/EventProvider';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
+/** sap.ui.model */
 import JSONModel from 'sap/ui/model/json/JSONModel';
 
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
+/** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
+/** sap.ui.dt */
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
-import ControlUtils, { type BuiltRuntimeControl } from '../control-utils';
+import CommandExecutor from '../command-executor';
 import type { FragmentsResponse } from '../api-handler';
+import ControlUtils, { type BuiltRuntimeControl } from '../control-utils';
 import { getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
 
 type ExtendedEventProvider = EventProvider & {
@@ -58,16 +64,6 @@ export interface ManifestAppdescr {
     content: object[];
 }
 
-interface DialogueData {
-    runtimeControl: ManagedObject;
-    control: BuiltRuntimeControl;
-}
-
-interface DialogueData {
-    runtimeControl: ManagedObject;
-    control: BuiltRuntimeControl;
-}
-
 /**
  * @namespace adp.extension.controllers
  */
@@ -92,17 +88,21 @@ export default class AddFragment extends Controller {
      * Controll Overlays
      */
     public overlays: UI5Element[];
+    /**
+     * RTA Command Executor
+     */
+    private commandExecutor: CommandExecutor;
 
     /**
      * Initialized controller, fill model with data and opens the dialog
      */
     async onInit() {
         this.model = new JSONModel();
+        this.commandExecutor = new CommandExecutor(this.rta);
 
         this.dialog = (await this.loadFragment({ name: 'adp.extension.ui.AddFragment' })) as Dialog;
 
-        const { runtimeControl } = await this.getDialogData(this.overlays, this.model);
-        this.runtimeControl = runtimeControl;
+        await this.getDialogData(this.overlays, this.model);
 
         this.getView()?.addDependent(this.dialog).setModel(this.model);
 
@@ -211,7 +211,7 @@ export default class AddFragment extends Controller {
             index: this.model.getProperty('/selectedIndex'),
             targetAggregation: this.model.getProperty('/selectedAggregation/value')
         };
-        await this.createNewFragment(fragmentData, this.runtimeControl);
+        await this.createNewFragment(fragmentData);
 
         this.handleDialogClose();
     }
@@ -236,20 +236,18 @@ export default class AddFragment extends Controller {
      *
      * @param overlays Overlays
      * @param jsonModel JSON Model for the dialog
-     * @returns {Promise<DialogueData>} Dialog data
      */
-    public async getDialogData(overlays: UI5Element[], jsonModel: JSONModel): Promise<DialogueData> {
+    public async getDialogData(overlays: UI5Element[], jsonModel: JSONModel): Promise<void> {
         const selectorId = overlays[0].getId();
 
-        let runtimeControl: ManagedObject;
         let control: BuiltRuntimeControl;
         let controlMetadata: ManagedObjectMetadata;
 
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
         if (overlayControl) {
-            runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
-            controlMetadata = runtimeControl.getMetadata();
-            control = await ControlUtils.buildControlData(runtimeControl, overlayControl);
+            this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
+            controlMetadata = this.runtimeControl.getMetadata();
+            control = await ControlUtils.buildControlData(this.runtimeControl, overlayControl);
         } else {
             throw new Error('Cannot get overlay control');
         }
@@ -262,11 +260,11 @@ export default class AddFragment extends Controller {
             }
             return false;
         });
-        const defaultAggregation = runtimeControl.getMetadata().getDefaultAggregationName();
+        const defaultAggregation = this.runtimeControl.getMetadata().getDefaultAggregationName();
         const selectedControlName = control.name;
 
         let selectedControlChildren: string[] | number[] = Object.keys(
-            ControlUtils.getControlAggregationByName(runtimeControl, defaultAggregation)
+            ControlUtils.getControlAggregationByName(this.runtimeControl, defaultAggregation)
         );
 
         let allowIndexForDefaultAggregation = true;
@@ -325,11 +323,6 @@ export default class AddFragment extends Controller {
         jsonModel.setProperty('/targetAggregation', controlAggregation);
         jsonModel.setProperty('/index', indexArray);
         jsonModel.setProperty('/selectorId', selectorId);
-
-        return {
-            runtimeControl,
-            control
-        };
     }
 
     /**
@@ -361,9 +354,8 @@ export default class AddFragment extends Controller {
      * @param fragmentData.index Index for XML Fragment placement
      * @param fragmentData.fragmentName Fragment name
      * @param fragmentData.targetAggregation Target aggregation for control
-     * @param runtimeControl Runtime control
      */
-    private async createNewFragment(fragmentData: CreateFragmentProps, runtimeControl: ManagedObject): Promise<void> {
+    private async createNewFragment(fragmentData: CreateFragmentProps): Promise<void> {
         const { fragmentName, index, targetAggregation } = fragmentData;
         try {
             await writeFragment<unknown>({ fragmentName });
@@ -373,15 +365,14 @@ export default class AddFragment extends Controller {
             throw new Error(e.message);
         }
 
-        await this.createFragmentChange({ fragmentName, index, targetAggregation }, runtimeControl);
+        await this.createFragmentChange({ fragmentName, index, targetAggregation });
     }
 
     /**
      * @description Creates an addXML fragment command and pushes it to the command stack
      * @param fragmentData Fragment Data
-     * @param runtimeControl Runtime control
      */
-    private async createFragmentChange(fragmentData: CreateFragmentProps, runtimeControl: ManagedObject) {
+    private async createFragmentChange(fragmentData: CreateFragmentProps) {
         const { fragmentName, index, targetAggregation } = fragmentData;
         let manifest: ManifestAppdescr;
         try {
@@ -408,7 +399,7 @@ export default class AddFragment extends Controller {
             scenario: undefined
         };
 
-        const designMetadata = OverlayRegistry.getOverlay(runtimeControl as UI5Element).getDesignTimeMetadata();
+        const designMetadata = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element).getDesignTimeMetadata();
 
         const modifiedValue = {
             fragment:
@@ -418,20 +409,12 @@ export default class AddFragment extends Controller {
             targetAggregation: targetAggregation ?? 'content'
         };
 
-        /**
-         * Generate the command to be pushed to command stack
-         */
-        const command = await CommandFactory.getCommandFor(
-            runtimeControl,
+        await this.commandExecutor.generateAndExecuteCommand(
+            this.runtimeControl,
             'addXML',
             modifiedValue,
             designMetadata,
             flexSettings
         );
-
-        /**
-         * The change will have pending state and will only be saved to the workspace when the user clicks save icon
-         */
-        await this.rta.getCommandStack().pushAndExecute(command);
     }
 }
