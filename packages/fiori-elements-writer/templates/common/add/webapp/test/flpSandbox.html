@@ -66,8 +66,8 @@
         data-sap-ui-compatVersion="edge"
         data-sap-ui-language="en"
         data-sap-ui-resourceroots='{"<%- app.id  %>": "../"}'
-        data-sap-ui-frameOptions="allow"<% if (templateOptions.changesLoader) {%>
-        data-sap-ui-flexibilityServices='[{"applyConnector":"<%= app.id.replace(/\./g, "/") %>/test/changes_loader", "custom":true}, {"connector": "LocalStorageConnector"}]'<% } %>>
+        data-sap-ui-frameOptions="allow"
+        data-sap-ui-flexibilityServices='[<% if (templateOptions.changesLoader) {%>{"applyConnector":"<%= app.id.replace(/\./g, "/") %>/test/changes_loader", "custom":true}, <% } %>{"connector": "LocalStorageConnector"}]'>
     </script><% if (appOptions.loadReuseLibs) { %>
     <script id="locate-reuse-libs" src="./locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
     </script><% } else { %>
