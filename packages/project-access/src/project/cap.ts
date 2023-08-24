@@ -126,13 +126,16 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
 
 /**
  * Remove rogue '\\' - cds windows if needed.
- * Replaces all backslashes with forward slashes, removes double slashes, and trailing slashes
+ * Replaces all backslashes with forward slashes, removes double slashes, and trailing slashes.
  *
  * @param url - url to uniform
  * @returns - uniform url
  */
 function uniformUrl(url: string) {
-    return url.replace(/\\/g, '/').replace(/\/\//g, '/').replace(/(?:^\/)/g, '');
+    return url
+        .replace(/\\/g, '/')
+        .replace(/\/\//g, '/')
+        .replace(/(?:^\/)/g, '');
 }
 
 /**

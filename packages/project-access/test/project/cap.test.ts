@@ -89,14 +89,15 @@ describe('Test getCapModelAndServices()', () => {
             load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
             compile: {
                 to: {
-                    serviceinfo: jest.fn().mockImplementation(() => [{
-                        "name": "Forwardslash",
-                        "urlPath": "odata/service/with/forwardslash/",
-                    },
-                    {
-                        "name": "Backslash",
-                        "urlPath": "\\odata\\service\\with\\backslash/",
-                    },
+                    serviceinfo: jest.fn().mockImplementation(() => [
+                        {
+                            'name': 'Forwardslash',
+                            'urlPath': 'odata/service/with/forwardslash/'
+                        },
+                        {
+                            'name': 'Backslash',
+                            'urlPath': '\\odata\\service\\with\\backslash/'
+                        }
                     ])
                 }
             }
@@ -108,14 +109,17 @@ describe('Test getCapModelAndServices()', () => {
 
         // Check results
         expect(capMS).toEqual({
-            model: 'MODEL', services: [{
-                "name": "Forwardslash",
-                "urlPath": "odata/service/with/forwardslash/",
-            },
-            {
-                "name": "Backslash",
-                "urlPath": "odata/service/with/backslash/",
-            }]
+            model: 'MODEL',
+            services: [
+                {
+                    'name': 'Forwardslash',
+                    'urlPath': 'odata/service/with/forwardslash/'
+                },
+                {
+                    'name': 'Backslash',
+                    'urlPath': 'odata/service/with/backslash/'
+                }
+            ]
         });
         expect(cdsMock.load).toBeCalledWith([
             join('PROJECT_ROOT', 'APP'),
