@@ -102,7 +102,7 @@ export default class AddFragment extends Controller {
 
         this.dialog = (await this.loadFragment({ name: 'adp.extension.ui.AddFragment' })) as Dialog;
 
-        await this.getDialogData(this.overlays, this.model);
+        await this.buildDialogData(this.overlays, this.model);
 
         this.getView()?.addDependent(this.dialog).setModel(this.model);
 
@@ -237,7 +237,7 @@ export default class AddFragment extends Controller {
      * @param overlays Overlays
      * @param jsonModel JSON Model for the dialog
      */
-    public async getDialogData(overlays: UI5Element[], jsonModel: JSONModel): Promise<void> {
+    public async buildDialogData(overlays: UI5Element[], jsonModel: JSONModel): Promise<void> {
         const selectorId = overlays[0].getId();
 
         let control: BuiltRuntimeControl;
