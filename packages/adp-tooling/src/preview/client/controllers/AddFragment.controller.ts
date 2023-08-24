@@ -94,7 +94,7 @@ export default class AddFragment extends Controller {
     private commandExecutor: CommandExecutor;
 
     /**
-     * Initialized controller, fill model with data and opens the dialog
+     * Initializes controller, fills model with data and opens the dialog
      */
     async onInit() {
         this.model = new JSONModel();
@@ -232,7 +232,7 @@ export default class AddFragment extends Controller {
     }
 
     /**
-     * Builds and returns data that is used in the dialog
+     * Builds data that is used in the dialog
      *
      * @param overlays Overlays
      * @param jsonModel JSON Model for the dialog
@@ -349,7 +349,8 @@ export default class AddFragment extends Controller {
     }
 
     /**
-     * @description Creates a new fragment for the specified control
+     * Creates a new fragment for the specified control
+     *
      * @param fragmentData Fragment Data
      * @param fragmentData.index Index for XML Fragment placement
      * @param fragmentData.fragmentName Fragment name
@@ -369,7 +370,8 @@ export default class AddFragment extends Controller {
     }
 
     /**
-     * @description Creates an addXML fragment command and pushes it to the command stack
+     * Creates an addXML fragment command and pushes it to the command stack
+     *
      * @param fragmentData Fragment Data
      */
     private async createFragmentChange(fragmentData: CreateFragmentProps) {
