@@ -49,23 +49,21 @@ export function startPostMessageCommunication<T>(
      *
      * @param event event
      */
-    async function postMessageListener(event: MessageEvent): Promise<void> {
+    function postMessageListener(event: MessageEvent): void {
         const target = getTarget();
         if (!target || event.origin !== target.origin || event.source !== target) {
             // Ignore messages from unknown sources
             return;
         }
         if (isPostMessageAction<T>(event.data)) {
-            await onActionHandler(event.data.action);
+            onActionHandler(event.data.action).catch((error) => console.error(error));
         } else {
             console.warn(`Unknown message received`, event.data);
         }
     }
 
     function dispose(): void {
-        window.removeEventListener('message', async (event) => {
-            await postMessageListener(event);
-        });
+        window.removeEventListener('message', postMessageListener);
     }
 
     /**
@@ -85,9 +83,7 @@ export function startPostMessageCommunication<T>(
         target.postMessage(message, target.origin);
     }
 
-    window.addEventListener('message', async (event) => {
-        await postMessageListener(event);
-    });
+    window.addEventListener('message', postMessageListener);
 
     return {
         dispose,

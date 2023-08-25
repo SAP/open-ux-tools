@@ -53,6 +53,21 @@ export const getDefaultInputType = (editor: string, type: string, value: CacheVa
     return defaultInputType;
 };
 
+/**
+ * Gets translated tooltip, if translation function exists.
+ *
+ * @param value string
+ * @param t TFunction
+ * @returns string
+ */
+function getToolTip(value: string, t?: TFunction): string {
+    if (t) {
+        return t(value);
+    } else {
+        return value;
+    }
+}
+
 export const getInputTypeToggleOptions = (property: ControlProperty, t?: TFunction): InputTypeToggleOptionProps[] => {
     const { value, editor, type } = property;
     const inputTypeToggleOptions: InputTypeToggleOptionProps[] = [];
@@ -60,13 +75,13 @@ export const getInputTypeToggleOptions = (property: ControlProperty, t?: TFuncti
         case CHECKBOX_EDITOR_TYPE:
             inputTypeToggleOptions.push({
                 inputType: InputType.booleanTrue,
-                tooltip: t ? t('BOOLEAN_TYPE_TRUE') : 'BOOLEAN_TYPE_TRUE',
+                tooltip: getToolTip('BOOLEAN_TYPE_TRUE', t),
                 iconName: IconName.boolTrue,
                 selected: typeof value === 'boolean' && value === true
             });
             inputTypeToggleOptions.push({
                 inputType: InputType.booleanFalse,
-                tooltip: t ? t('BOOLEAN_TYPE_FALSE') : 'BOOLEAN_TYPE_FALSE',
+                tooltip: getToolTip('BOOLEAN_TYPE_FALSE', t),
                 iconName: IconName.boolFalse,
                 selected: typeof value === 'boolean' && value === false
             });
@@ -74,7 +89,7 @@ export const getInputTypeToggleOptions = (property: ControlProperty, t?: TFuncti
         case DROPDOWN_EDITOR_TYPE:
             inputTypeToggleOptions.push({
                 inputType: InputType.enumMember,
-                tooltip: t ? t('ENUM_TYPE') : 'ENUM_TYPE',
+                tooltip: getToolTip('ENUM_TYPE', t),
                 iconName: IconName.dropdown,
                 selected: !!property.options.find((option) => option.key === value)
             });
@@ -83,7 +98,7 @@ export const getInputTypeToggleOptions = (property: ControlProperty, t?: TFuncti
             if (type === STRING_VALUE_TYPE) {
                 inputTypeToggleOptions.push({
                     inputType: InputType.string,
-                    tooltip: t ? t('STRING_TYPE') : 'STRING_TYPE',
+                    tooltip: getToolTip('STRING_TYPE', t),
                     iconName: IconName.string,
                     selected: typeof value !== 'string' || !isExpression(value)
                 });
@@ -91,7 +106,7 @@ export const getInputTypeToggleOptions = (property: ControlProperty, t?: TFuncti
                 const textKey = type === INTEGER_VALUE_TYPE ? 'INTEGER_TYPE' : 'FLOAT_TYPE';
                 inputTypeToggleOptions.push({
                     inputType: InputType.number,
-                    tooltip: t ? t(textKey) : textKey,
+                    tooltip: getToolTip(textKey, t),
                     iconName: IconName.number,
                     selected: typeof value !== 'string' || !isExpression(value)
                 });
@@ -102,7 +117,7 @@ export const getInputTypeToggleOptions = (property: ControlProperty, t?: TFuncti
 
     inputTypeToggleOptions.push({
         inputType: InputType.expression,
-        tooltip: t ? t('EXPRESSION_TYPE') : 'EXPRESSION_TYPE',
+        tooltip: getToolTip('EXPRESSION_TYPE', t),
         iconName: IconName.expression,
         selected: typeof value === 'string' && isExpression(value)
     });

@@ -181,7 +181,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                         : {
                               pending: 0,
                               saved: 0,
-                              controlName: controlName || '',
+                              controlName: controlName ?? '',
                               properties: {}
                           };
                     if (type === 'pending') {
