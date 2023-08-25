@@ -63,7 +63,9 @@ export function startPostMessageCommunication<T>(
     }
 
     function dispose(): void {
-        window.removeEventListener('message', postMessageListener);
+        window.removeEventListener('message', async (event) => {
+            await postMessageListener(event);
+        });
     }
 
     /**
@@ -83,7 +85,9 @@ export function startPostMessageCommunication<T>(
         target.postMessage(message, target.origin);
     }
 
-    window.addEventListener('message', postMessageListener);
+    window.addEventListener('message', async (event) => {
+        await postMessageListener(event);
+    });
 
     return {
         dispose,

@@ -46,7 +46,7 @@ export async function init(options: UI5AdaptationOptions): Promise<void> {
         );
 
         for (const service of services) {
-            await service.init(sendAction, subscribe);
+            service.init(sendAction, subscribe);
         }
         initOutline(rta, sendAction).catch((error) => {
             throw new Error(error);

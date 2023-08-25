@@ -29,5 +29,7 @@ export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: Ex
         });
         sendAction(outlineChanged(nodes));
     }
-    outline.attachEvent('update', syncOutline);
+    outline.attachEvent('update', async () => {
+        await syncOutline();
+    });
 }
