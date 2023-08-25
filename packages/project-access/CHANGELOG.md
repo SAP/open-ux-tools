@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.13.1
+
+### Patch Changes
+
+-   56dc4c59: Fix for leading slashes on Windows
+
 ## 1.13.0
 
 ### Minor Changes
