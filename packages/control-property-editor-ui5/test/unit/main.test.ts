@@ -69,7 +69,7 @@ describe('main', () => {
     });
 
     test('init - 1', async () => {
-        init({ rta, componentId: 'testComponentId', generator: 'testGenerator', layer: 'VENDOR' });
+        await init({ rta, componentId: 'testComponentId', generator: 'testGenerator', layer: 'VENDOR' });
         const callBackFn = spyPostMessage.mock.calls[0][1];
         // apply change without error
         await callBackFn({
@@ -87,7 +87,7 @@ describe('main', () => {
         expect(initOutlineSpy).toBeCalledTimes(1);
     });
     test('init - rta exception', async () => {
-        init({ rta, componentId: 'testComponentId', generator: 'testGenerator', layer: 'VENDOR' });
+        await init({ rta, componentId: 'testComponentId', generator: 'testGenerator', layer: 'VENDOR' });
         const callBackFn = spyPostMessage.mock.calls[0][1];
 
         // apply change

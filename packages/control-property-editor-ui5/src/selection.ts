@@ -40,9 +40,10 @@ export class SelectionService implements Service {
      * @param sendAction action sender function
      * @param subscribe subscriber function
      */
-    public init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void {
+    public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
         const eventOrigin: Set<string> = new Set();
-        this.rta.attachSelectionChange(this.createOnSelectionChangeHandler(sendAction, eventOrigin));
+        const selectionChange = await this.createOnSelectionChangeHandler(sendAction, eventOrigin);
+        this.rta.attachSelectionChange(selectionChange);
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (selectControl.match(action)) {
                 const id = action.payload;

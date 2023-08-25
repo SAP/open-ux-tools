@@ -152,10 +152,10 @@ export class ChangeService {
      * Handler for undo/redo stack change.
      *
      * @param sendAction send action method
-     * @returns (event: sap.ui.base.Event) => Promise<void>
+     * @returns (event: sap.ui.base.Event) => void
      */
-    private createOnStackChangeHandler(sendAction: (action: ExternalAction) => void): (event: Event) => Promise<void> {
-        return async (): Promise<void> => {
+    private createOnStackChangeHandler(sendAction: (action: ExternalAction) => void): (event: Event) => void {
+        return (): void => {
             const stack = this.options.rta.getCommandStack();
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();

@@ -47,7 +47,7 @@ describe('SelectionService', () => {
             getComponent: jest.fn(),
             getOverlay: jest.fn()
         });
-        service.init(jest.fn(), jest.fn());
+        await service.init(jest.fn(), jest.fn());
         expect(handler).not.toBeUndefined();
         if (handler !== undefined) {
             await handler({
@@ -111,7 +111,7 @@ describe('SelectionService', () => {
             getIcons: jest.fn()
         });
         const sendActionSpy = jest.fn();
-        service.init(sendActionSpy, jest.fn());
+        await service.init(sendActionSpy, jest.fn());
         expect(handler).not.toBeUndefined();
         // Select control
         if (handler !== undefined) {
@@ -203,7 +203,7 @@ describe('SelectionService', () => {
             getOverlay: jest.fn()
         });
         const sendActionSpy = jest.fn();
-        service.init(sendActionSpy, jest.fn());
+        await service.init(sendActionSpy, jest.fn());
         expect(handler).not.toBeUndefined();
         if (handler !== undefined) {
             // Select control
@@ -280,7 +280,7 @@ describe('SelectionService', () => {
             getClosestOverlayFor: getClosestOverlayForSpy,
             getIcons: jest.fn()
         });
-        service.init(sendActionMock, subscribe);
+        await service.init(sendActionMock, subscribe);
 
         for (const handler2 of actionHandlers) {
             // control.isSelectable = true

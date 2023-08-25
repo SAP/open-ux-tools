@@ -30,7 +30,7 @@ function isPostMessageAction<T>(data: PostMessageAction<T> | undefined): data is
  */
 export function startPostMessageCommunication<T>(
     target: Window | (() => Window | undefined) | undefined,
-    onActionHandler: (action: T) => void
+    onActionHandler: (action: T) => Promise<void>
 ): PostMessageCommunication<T> {
     /**
      * Returns target windows or undefined.
@@ -49,14 +49,14 @@ export function startPostMessageCommunication<T>(
      *
      * @param event event
      */
-    function postMessageListener(event: MessageEvent): void {
+    async function postMessageListener(event: MessageEvent): Promise<void> {
         const target = getTarget();
         if (!target || event.origin !== target.origin || event.source !== target) {
             // Ignore messages from unknown sources
             return;
         }
         if (isPostMessageAction<T>(event.data)) {
-            onActionHandler(event.data.action);
+            await onActionHandler(event.data.action);
         } else {
             console.warn(`Unknown message received`, event.data);
         }

@@ -69,7 +69,7 @@
                                     const rta = new RuntimeAuthoring(options);
                                     await rta.start();
                                     const { init } = await import('/ui5-adaptation/index.js');
-                                    init({
+                                    await init({
                                         rta,
                                         componentId: 'v2flex',
                                         layer,

@@ -13,7 +13,7 @@ import { loadDefaultLibraries } from './documentation';
  *
  * @param options - UI5 adaptation options
  */
-export function init(options: UI5AdaptationOptions): void {
+export async function init(options: UI5AdaptationOptions): Promise<void> {
     console.log(`Initializing Control Property Editor`);
 
     const { rta } = options;
@@ -46,7 +46,7 @@ export function init(options: UI5AdaptationOptions): void {
         );
 
         for (const service of services) {
-            service.init(sendAction, subscribe);
+            await service.init(sendAction, subscribe);
         }
         initOutline(rta, sendAction).catch((error) => {
             throw new Error(error);
