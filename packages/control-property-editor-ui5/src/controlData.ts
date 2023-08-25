@@ -33,8 +33,8 @@ type AnalyzedType = Pick<UI5ControlProperty, 'isArray' | 'primitiveType' | 'ui5T
 /**
  * Match 'src' or any string starting or ending with 'icon' (case insensitive;).
  *
- * @param name
- * @returns {boolean}
+ * @param name icon name
+ * @returns boolean
  */
 function testIconPattern(name: string): boolean {
     // replace `/src|.*icon$|^icon.*/i`.test(property.name);
@@ -44,10 +44,10 @@ function testIconPattern(name: string): boolean {
 }
 
 /**
- * Analyze a given property and returns the analyzed object.
+ * Analyze property type string | boolean | enum.
  *
- * @param property
- * @returns {AnalyzedType|undefined}
+ * @param property control property
+ * @returns AnalyzedType|undefined
  */
 function analyzePropertyType(property: ManagedObjectMetadataProperties): AnalyzedType | undefined {
     const analyzedType: AnalyzedType = {
@@ -68,7 +68,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
 
     const typeName = propertyType.getName();
     if (!typeName) {
-        return;
+        return undefined;
     }
 
     // Check if array and determine property type (or component type)
@@ -116,8 +116,8 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
  * A property is disabled if it is an array or the type is 'any'
  * - since  we currently don't have a good editor for it Otherwise, it is enabled.
  *
- * @param analyzedType
- * @returns {boolean}
+ * @param analyzedType - analyzed property type
+ * @returns boolean
  */
 function isPropertyEnabled(analyzedType: AnalyzedType): boolean {
     return !(analyzedType.isArray || analyzedType.primitiveType === 'any');
@@ -128,8 +128,8 @@ function isPropertyEnabled(analyzedType: AnalyzedType): boolean {
  * If it is an object, stringify it.
  * If it is a function, return empty string.
  *
- * @param rawValue
- * @returns {string}
+ * @param rawValue property value
+ * @returns string
  */
 function normalizeObjectPropertyValue(rawValue: any): string {
     if (typeof rawValue === 'object' && rawValue instanceof Object && !Array.isArray(rawValue)) {
@@ -169,10 +169,10 @@ interface NewControlData {
 /**
  * Build control data.
  *
- * @param control
- * @param controlOverlay
- * @param includeDocumentation
- * @returns {Promise<Control>}
+ * @param control - ui5 control
+ * @param controlOverlay - element overlay
+ * @param includeDocumentation - include documentation flag
+ * @returns Promise<Control>
  */
 export async function buildControlData(
     control: ManagedObject,

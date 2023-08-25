@@ -71,7 +71,7 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
         minWidth: 68,
         flexGrow: 1,
         isResizable: true,
-        onRender: function render(item: any) {
+        onRender: function render(item: { fontFamily: string }) {
             const style: CSSProperties = {
                 fontFamily: item.fontFamily,
                 fontSize: '1rem',
@@ -92,7 +92,7 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
         minWidth: 238,
         flexGrow: 4,
         isResizable: true,
-        onRender: function render(item: any) {
+        onRender: function render(item: { name: string; fontFamily: string }) {
             const style: CSSProperties = {
                 fontFamily: item.fontFamily,
                 fontSize: '13px',
@@ -126,7 +126,11 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
                             setDialogVisibility(false);
                             setItems(icons);
                             setCachedValue(controlId, propertyName, InputType.string, newValue);
-                            const action = changeProperty({ controlId, propertyName, value: newValue });
+                            const action = changeProperty({
+                                controlId,
+                                propertyName,
+                                value: newValue
+                            });
                             dispatch(action);
                         }}
                         onCancel={() => {

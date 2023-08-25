@@ -1,0 +1,19 @@
+{
+    "extends": ["../../.eslintrc"],
+    "parserOptions": {
+        "project": "./tsconfig.json"
+    },
+    "plugins": ["import"],
+    "overrides": [
+        {
+            "files": ["**/src/**/*.ts", "**/test/**/*.ts"],
+            "rules": {
+                // ui5 modules are not available in file system
+                "import/no-unresolved": ["error", { "ignore": ["^sap/"] }]
+            }
+        }
+    ],
+    "rules": {
+        "no-console": "off"
+    }
+}

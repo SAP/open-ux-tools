@@ -11,7 +11,7 @@ import IconPool from 'sap/ui/core/IconPool';
 /**
  * A facade for UI5 framework methods.
  *
- * @returns {UI5Facade}
+ * @returns UI5Facade
  */
 export function createUi5Facade(): UI5Facade {
     return {
@@ -25,8 +25,8 @@ export function createUi5Facade(): UI5Facade {
 /**
  * Gets control by id.
  *
- * @param id
- * @returns {T | undefined}
+ * @param id unique identifier for control
+ * @returns Element | undefined
  */
 function getControlById<T extends Element>(id: ID): T | undefined {
     return sap.ui.getCore().byId(id) as T;
@@ -35,8 +35,8 @@ function getControlById<T extends Element>(id: ID): T | undefined {
 /**
  * Gets Component by id.
  *
- * @param id
- * @returns {T | undefined}
+ * @param id - unique identifier for control
+ * @returns Component | undefined
  */
 function getComponent<T extends Component>(id: ID): T | undefined {
     return sap.ui.getCore().getComponent(id) as T;
@@ -45,18 +45,18 @@ function getComponent<T extends Component>(id: ID): T | undefined {
 /**
  * Gets overlay for control.
  *
- * @param control
- * @returns {T | undefined}
+ * @param control ui5 control
+ * @returns ElementOverlay | undefined
  */
 function getOverlay<T extends ElementOverlay>(control: Element): T | undefined {
     return OverlayRegistry.getOverlay(control) as T;
 }
 
 /**
- * Gets ClosestOverlay For control.
+ * Gets ClosestOverlay for control.
  *
- * @param control
- * @returns { T | undefined }
+ * @param control ui5 control
+ * @returns ElementOverlay | undefined
  */
 function getClosestOverlayFor<T extends ElementOverlay>(control: Element): T | undefined {
     return OverlayUtil.getClosestOverlayFor(control) as T;
@@ -65,7 +65,7 @@ function getClosestOverlayFor<T extends ElementOverlay>(control: Element): T | u
 /**
  * Get ui5 icons.
  *
- * @returns {IconDetails[]}
+ * @returns IconDetails[]
  */
 function getIcons(): IconDetails[] {
     return IconPool.getIconNames('undefined')

@@ -49,7 +49,8 @@ test('renders properties', () => {
                     editor: 'input',
                     name: propNameString,
                     value: '',
-                    isEnabled: true
+                    isEnabled: true,
+                    readableName: ''
                 },
                 {
                     type: 'string',
@@ -57,6 +58,7 @@ test('renders properties', () => {
                     name: propNameDropDown,
                     value: 'None',
                     isEnabled: true,
+                    readableName: '',
                     options: [
                         {
                             key: 'None',
@@ -84,7 +86,6 @@ test('renders properties', () => {
                         }
                     ]
                 },
-
                 {
                     type: 'boolean',
                     editor: 'checkbox',

@@ -5,14 +5,9 @@ interface TelemetryData {
 }
 
 /**
- * Reports telemetry data from Control Property Editor
+ * Reports telemetry data from Control Property Editor.
  *
  * @param data The TelemetryData object, that needs to be reported
- */
-
-/**
- *
- * @param data
  */
 export function reportTelemetry(data: TelemetryData) {
     const requestOptions = {

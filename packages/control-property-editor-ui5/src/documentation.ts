@@ -35,8 +35,8 @@ export function loadDefaultLibraries(): void {
 /**
  * Get ui5 metadata of given library name.
  *
- * @param libName
- * @returns {Promise<SchemaForApiJsonFiles>}
+ * @param libName library name for eg: sap.m
+ * @returns Promise<SchemaForApiJsonFiles>
  */
 export async function getUi5ApiDtMetadata(libName: string): Promise<SchemaForApiJsonFiles> {
     const libUrl = '/test-resources/' + libName.split('.').join('/') + '/designtime/api.json';
@@ -46,9 +46,9 @@ export async function getUi5ApiDtMetadata(libName: string): Promise<SchemaForApi
 /**
  * Get documentation of a given control of a ui5 library.
  *
- * @param controlName
- * @param contLibName
- * @returns {Promise<Properties | undefined>}
+ * @param controlName name of the control.
+ * @param contLibName library name of the control
+ * @returns Promise<Properties | undefined>
  */
 export async function getDocumentation(controlName: string, contLibName: string): Promise<Properties | undefined> {
     let doc: Properties | undefined;
@@ -63,10 +63,10 @@ export async function getDocumentation(controlName: string, contLibName: string)
 /**
  * Get Control Property Documentation for a give control name and control library.
  *
- * @param controlName
- * @param contLibName
- * @param ui5ApiDtMetadata
- * @returns {Promise<Properties | undefined>}
+ * @param controlName name of the control
+ * @param contLibName library name of the control
+ * @param ui5ApiDtMetadata ui5 api metadata
+ * @returns Promise<Properties | undefined>
  */
 export async function getControlPropertyDocumentation(
     controlName: string,
@@ -96,10 +96,10 @@ export async function getControlPropertyDocumentation(
 /**
  * Get control metadata for a given control.
  *
- * @param controlName
- * @param contLibName
- * @param ui5ApiDtMetadata
- * @returns {Promise<ControlMetadata | undefined>}
+ * @param controlName name of the control
+ * @param contLibName library name of the control
+ * @param ui5ApiDtMetadata ui5 api metadata
+ * @returns Promise<ControlMetadata | undefined>
  */
 async function getControlMetadata(
     controlName: string,
@@ -121,9 +121,9 @@ async function getControlMetadata(
 /**
  * Method to parse ui5 control metadata.
  *
- * @param controlLibMetadata
- * @param controlName
- * @returns {ControlMetadata}
+ * @param controlLibMetadata control library metadata
+ * @param controlName name of the control
+ * @returns ControlMetadata
  */
 function parseControlMetaModel(controlLibMetadata: SchemaForApiJsonFiles, controlName: string): ControlMetadata {
     const controlInfo: ControlMetadata = {
@@ -155,8 +155,8 @@ function parseControlMetaModel(controlLibMetadata: SchemaForApiJsonFiles, contro
 /**
  * Format html text.
  *
- * @param sHtml
- * @returns {string}
+ * @param sHtml - html string
+ * @returns string
  */
 function formatHtmlText(sHtml: string): string {
     // replaced "sHtml.replace(new RegExp('<[^>]*>', 'g')" due to regex runtime vulnerability

@@ -15,7 +15,7 @@
         "sourceMap": true,
         "module": "ES2022"
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx", "test/**/*.ts", "test/**/*.tsx", "../../types/sapui5"],
+    "include": ["src/**/*.ts", "../../types/sapui5",  "test/**/*.ts"],
     "exclude": ["dist", "node_modules", "reports"],
     "references": [
         {

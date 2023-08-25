@@ -1,7 +1,7 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import type { PropertyChange } from '@sap-ux/control-property-editor-common';
-import { UI5AdaptationOptions } from '../types';
+import type { UI5AdaptationOptions } from '../types';
 
 const developerMode = true;
 const FLScenario = 'FE_FROM_SCRATCH';
@@ -9,7 +9,7 @@ const FLScenario = 'FE_FROM_SCRATCH';
 /**
  *
  * @param options UI5 adaptation options
- * @param change
+ * @param change changed property of a control
  */
 export async function applyChange(options: UI5AdaptationOptions, change: PropertyChange): Promise<void> {
     const { layer, componentId, rta, generator } = options;
@@ -57,7 +57,7 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
 /**
  * Function to check a give value is a binding expression.
  *
- * @param value
+ * @param value value to be checked.
  * @returns boolean
  */
 function isBindingExpression(value: string): boolean {

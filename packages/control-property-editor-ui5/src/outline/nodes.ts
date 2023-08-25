@@ -5,9 +5,9 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 /**
  * Transform node.
  *
- * @param input
- * @param getAdditionalData
- * @returns {Promise<OutlineNode[]>}
+ * @param input outline view node
+ * @param getAdditionalData gets additional data for give control id.
+ * @returns Promise<OutlineNode[]>
  */
 export async function transformNodes(
     input: OutlineViewNode[],

@@ -1,5 +1,15 @@
-import type { ExternalAction, SavedPropertyChange, PendingPropertyChange, UnknownSavedChange } from '@sap-ux/control-property-editor-common';
-import { changeProperty, changeStackModified, deletePropertyChanges, propertyChangeFailed } from '@sap-ux/control-property-editor-common';
+import type {
+    ExternalAction,
+    SavedPropertyChange,
+    PendingPropertyChange,
+    UnknownSavedChange
+} from '@sap-ux/control-property-editor-common';
+import {
+    changeProperty,
+    changeStackModified,
+    deletePropertyChanges,
+    propertyChangeFailed
+} from '@sap-ux/control-property-editor-common';
 import { applyChange } from './flexChange';
 import type { SelectionService } from '../selection';
 
@@ -14,9 +24,9 @@ export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
     /**
      *
-     * @param options
-     * @param ui5
-     * @param selectionService
+     * @param options ui5 adaptation options.
+     * @param ui5 facade for ui5 framework methods.
+     * @param selectionService selection service instance.
      */
     constructor(
         private readonly options: UI5AdaptationOptions,
@@ -26,8 +36,8 @@ export class ChangeService {
 
     /**
      *
-     * @param sendAction
-     * @param subscribe
+     * @param sendAction action sender function
+     * @param subscribe subscriber function
      */
     public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
         subscribe(async (action): Promise<void> => {
@@ -114,9 +124,9 @@ export class ChangeService {
 
     /**
      *
-     * @param controlId
-     * @param propertyName
-     * @param fileName
+     * @param controlId unique identifier for a control
+     * @param propertyName name of the property change to be deleted
+     * @param fileName name of the file.
      */
     public async deleteChange(controlId: string, propertyName: string, fileName?: string): Promise<void> {
         const filesToDelete = this.savedChanges
@@ -141,8 +151,8 @@ export class ChangeService {
     /**
      * Handler for undo/redo stack change.
      *
-     * @param sendAction
-     * @returns {(event: sap.ui.base.Event) => Promise<void>}
+     * @param sendAction send action method
+     * @returns (event: sap.ui.base.Event) => Promise<void>
      */
     private createOnStackChangeHandler(sendAction: (action: ExternalAction) => void): (event: Event) => Promise<void> {
         return async (): Promise<void> => {
@@ -195,10 +205,10 @@ export class ChangeService {
 /**
  * Modify rta message.
  *
- * @param errorMessage
- * @param id
- * @param type
- * @returns {string}
+ * @param errorMessage error message to be replaced
+ * @param id - control id
+ * @param type - control type
+ * @returns string
  */
 function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): string {
     return errorMessage.replace('Error: Applying property changes failed:', '').replace(`${type}#${id}`, '');
@@ -207,8 +217,8 @@ function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): 
 /**
  * Assert change for its validity. Throws error if no value found in saved changes.
  *
- * @param properties
- * @param target
+ * @param properties array of property name
+ * @param target any
  */
 function assertChange(properties: string[], target: any): void {
     for (const property of properties) {
@@ -223,8 +233,8 @@ function assertChange(properties: string[], target: any): void {
  * Look up property values in object (including nested).
  *
  * @param property Path to property using "." to separate nested structures
- * @param object
- * @returns
+ * @param object any
+ * @returns any
  */
 function getValue(property: string, object: any): any {
     const segments = property.split('.');

@@ -104,7 +104,7 @@ export function HeaderField(headerFieldProps: HeaderFieldProps): ReactElement {
                                 id={`${label.replace(/\s/g, '')}--copy`}
                                 iconProps={{ iconName: UiIcons.Copy }}
                                 onClick={(): void => {
-                                    copyToClipboard(value);
+                                    copyToClipboard(value).catch((reason) => console.error(reason));
                                     setMessageBoxVisibility(!isCopyMessageBoxVisible);
                                     setTimeout(() => setMessageBoxVisibility(false), 3000);
                                 }}
@@ -123,6 +123,6 @@ export function HeaderField(headerFieldProps: HeaderFieldProps): ReactElement {
  *
  * @param text {string to copy to clipboard}
  */
-function copyToClipboard(text: string): void {
-    navigator.clipboard.writeText(text);
+async function copyToClipboard(text: string): Promise<void> {
+    await navigator.clipboard.writeText(text);
 }

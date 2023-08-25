@@ -1,6 +1,6 @@
 export interface Control {
     /**
-     * Unique identifier for a control
+     * unique identifier for a control
      */
     id: string;
     /**
@@ -18,7 +18,7 @@ export type PropertyValue = string | boolean | number;
 
 export interface PropertyChange<T extends PropertyValue = PropertyValue> {
     controlId: string;
-    controlName: string;
+    controlName?: string;
     propertyName: string;
     value: T;
 }
@@ -148,8 +148,8 @@ export interface PayloadAction<T extends string, U> {
 /**
  * Create matcher.
  *
- * @param type
- * @returns {(value: any) => value is Y}
+ * @param type action type
+ * @returns (value: any) => value is Y
  */
 function createMatcher<Y>(type: string): (value: any) => value is Y {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -161,8 +161,8 @@ function createMatcher<Y>(type: string): (value: any) => value is Y {
 /**
  * Create action factory.
  *
- * @param prefix
- * @returns {Function}
+ * @param prefix to determine ext action
+ * @returns Function
  */
 function createActionFactory(prefix: string) {
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -170,8 +170,8 @@ function createActionFactory(prefix: string) {
         const actionType = [prefix, name].join(' ');
         /**
          *
-         * @param payload
-         * @returns {PayloadAction<typeof actionType, T>}
+         * @param payload action payload
+         * @returns PayloadAction<typeof actionType, T>
          */
         function action(payload: T): PayloadAction<typeof actionType, T> {
             return {

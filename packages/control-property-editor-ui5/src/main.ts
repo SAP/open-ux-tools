@@ -1,4 +1,5 @@
-import { startPostMessageCommunication, iconsLoaded, ExternalAction } from '@sap-ux/control-property-editor-common';
+import type { ExternalAction } from '@sap-ux/control-property-editor-common';
+import { startPostMessageCommunication, iconsLoaded } from '@sap-ux/control-property-editor-common';
 
 import type { ActionHandler, Service, UI5AdaptationOptions } from './types';
 import { initOutline } from './outline/index';
@@ -20,7 +21,7 @@ export function init(options: UI5AdaptationOptions): void {
     const actionHandlers: ActionHandler[] = [];
     /**
      *
-     * @param handler
+     * @param handler action handler
      */
     function subscribe(handler: ActionHandler): void {
         actionHandlers.push(handler);

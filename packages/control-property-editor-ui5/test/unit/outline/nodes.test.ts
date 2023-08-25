@@ -1,4 +1,4 @@
-import { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
+import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import { transformNodes as tn } from '../../../src/outline/nodes';
 import type { OutlineNode } from '@sap-ux/control-property-editor-common';
 

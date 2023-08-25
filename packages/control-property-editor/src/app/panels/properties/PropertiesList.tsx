@@ -92,7 +92,6 @@ export function PropertiesList(): ReactElement {
                                             key: property.name,
                                             controlId: id,
                                             property,
-                                            toggleOptions: props.toggleOptions,
                                             controlName: name
                                         }}
                                     />

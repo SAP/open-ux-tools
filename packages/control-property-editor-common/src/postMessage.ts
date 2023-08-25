@@ -14,8 +14,8 @@ interface PostMessageAction<T> {
 /**
  * Check if data isPostMessageAction.
  *
- * @param data
- * @returns {data is PostMessageAction<T>}
+ * @param data - post message action
+ * @returns data is PostMessageAction<T>
  */
 function isPostMessageAction<T>(data: PostMessageAction<T> | undefined): data is PostMessageAction<T> {
     return data?.type === POST_MESSAGE_ACTION_TYPE && typeof data?.action === 'object';
@@ -24,9 +24,9 @@ function isPostMessageAction<T>(data: PostMessageAction<T> | undefined): data is
 /**
  * Method to start post message communication.
  *
- * @param target
- * @param onActionHandler
- * @returns {PostMessageCommunication<T>}
+ * @param target target window
+ * @param onActionHandler action handler
+ * @returns PostMessageCommunication<T>
  */
 export function startPostMessageCommunication<T>(
     target: Window | (() => Window | undefined) | undefined,
@@ -35,7 +35,7 @@ export function startPostMessageCommunication<T>(
     /**
      * Returns target windows or undefined.
      *
-     * @returns {Window | undefined}
+     * @returns Window | undefined
      */
     function getTarget(): Window | undefined {
         if (typeof target === 'function') {
@@ -47,7 +47,7 @@ export function startPostMessageCommunication<T>(
     /**
      * Invoke action on post message.
      *
-     * @param event
+     * @param event event
      */
     function postMessageListener(event: MessageEvent): void {
         const target = getTarget();
@@ -69,7 +69,7 @@ export function startPostMessageCommunication<T>(
     /**
      * Post message to a give window.
      *
-     * @param action
+     * @param action action payload
      */
     function sendAction(action: T): void {
         const target = getTarget();

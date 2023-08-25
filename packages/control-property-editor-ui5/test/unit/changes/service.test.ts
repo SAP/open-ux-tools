@@ -1,21 +1,16 @@
-import { ID } from 'sap/ui/core/library';
+import type { ID } from 'sap/ui/core/library';
 import * as flexChange from '../../../src/changes/flexChange';
 import { ChangeService } from '../../../src/changes/service';
 import { changeProperty, deletePropertyChanges } from '@sap-ux/control-property-editor-common';
-declare global {
-    namespace NodeJS {
-      interface Global {
-        fetch: jest.Mock;
-      }
-    }
-  }
+
+const globalAny = global as any;
 describe('SelectionService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
         return Promise.resolve();
     });
 
     test('read workspace changes', async () => {
-        global.fetch = jest.fn(() =>
+        globalAny.fetch = jest.fn(() =>
             Promise.resolve({
                 json: () =>
                     Promise.resolve({
@@ -58,7 +53,7 @@ describe('SelectionService', () => {
                         change4: {}
                     })
             })
-        );
+        ) as jest.Mock;
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
         const cache = new Map();
         const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
@@ -78,7 +73,7 @@ describe('SelectionService', () => {
         );
 
         await service.init(sendActionMock, jest.fn());
-        expect(global.fetch).toHaveBeenCalledWith('/FioriTools/api/getChanges?_=123');
+        expect(globalAny.fetch).toHaveBeenCalledWith('/FioriTools/api/getChanges?_=123');
         expect(sendActionMock).toHaveBeenCalledWith({
             type: '[ext] change-stack-modified',
             payload: {
@@ -118,7 +113,7 @@ describe('SelectionService', () => {
     });
 
     test('unknown change with timestamp', async () => {
-        global.fetch = jest.fn(() =>
+        globalAny.fetch = jest.fn(() =>
             Promise.resolve({
                 json: () =>
                     Promise.resolve({
@@ -160,7 +155,7 @@ describe('SelectionService', () => {
         );
 
         await service.init(sendActionMock, jest.fn());
-        expect(global.fetch).toHaveBeenCalledWith('/FioriTools/api/getChanges?_=123');
+        expect(globalAny.fetch).toHaveBeenCalledWith('/FioriTools/api/getChanges?_=123');
         expect(sendActionMock).toHaveBeenCalledWith({
             type: '[ext] change-stack-modified',
             payload: {
@@ -189,7 +184,7 @@ describe('SelectionService', () => {
     });
 
     test('undo/redo stack changed', async () => {
-        global.fetch = jest.fn(() =>
+        globalAny.fetch = jest.fn(() =>
             Promise.resolve({
                 json: () => Promise.resolve({})
             })
@@ -279,7 +274,7 @@ describe('SelectionService', () => {
     });
 
     test('change property', async () => {
-        global.fetch = jest.fn(() =>
+        globalAny.fetch = jest.fn(() =>
             Promise.resolve({
                 json: () => Promise.resolve({})
             })
@@ -324,7 +319,7 @@ describe('SelectionService', () => {
 
     test('delete property', async () => {
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
-        global.fetch = jest.fn(() =>
+        globalAny.fetch = jest.fn(() =>
             Promise.resolve({
                 json: () =>
                     Promise.resolve({
@@ -372,7 +367,7 @@ describe('SelectionService', () => {
             })
         );
 
-        expect(global.fetch).toHaveBeenNthCalledWith(2, '/FioriTools/api/removeChanges', {
+        expect(globalAny.fetch).toHaveBeenNthCalledWith(2, '/FioriTools/api/removeChanges', {
             body: '{"fileName":"id_1640106755570_203_propertyChange"}',
             headers: { 'Content-Type': 'application/json' },
             method: 'DELETE'

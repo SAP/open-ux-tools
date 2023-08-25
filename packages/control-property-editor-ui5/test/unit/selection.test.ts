@@ -4,13 +4,7 @@ import type { ExternalAction } from '@sap-ux/control-property-editor-common';
 import type Component from 'sap/ui/core/Component';
 import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';
-declare global {
-    namespace NodeJS {
-      interface Global {
-        fetch: jest.Mock;
-      }
-    }
-  }
+
 describe('SelectionService', () => {
     const sendActionMock = jest.fn();
     let buildControlDataSpy: jest.SpyInstance<any>;
@@ -23,13 +17,13 @@ describe('SelectionService', () => {
                 properties: []
             };
         });
-    })
+    });
 
     afterEach(() => {
         buildControlDataSpy.mockRestore();
-    })
+    });
     beforeAll(() => {
-        global.fetch = jest.fn(() => Promise.resolve({}));
+        (global as any).fetch = jest.fn(() => Promise.resolve({}));
     });
 
     test('attaches to RTA selection change', async () => {
@@ -260,7 +254,7 @@ describe('SelectionService', () => {
         const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
             return cache.get(id);
         });
-        const getComponentSpy = jest.fn().mockImplementation((id: ID) => {
+        const getComponentSpy = jest.fn().mockImplementation(() => {
             return {} as Component;
         });
         const getOverlaySpy = jest.fn().mockImplementation();

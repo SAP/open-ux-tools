@@ -38,7 +38,7 @@ export default function App(appProps: AppProps): ReactElement {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const [hideWarningDialog, setHideWarningDialog] = useLocalStorage('hide-warning-dialog', false);
-    const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => !(hideWarningDialog === true));
+    const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => hideWarningDialog !== true);
 
     const [isInitialized, setIsInitialized] = useState(false);
 

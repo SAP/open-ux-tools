@@ -15,8 +15,8 @@ export interface Properties {
 /**
  * Get runtime control.
  *
- * @param overlayControl
- * @returns {ManagedObject}
+ * @param overlayControl - element overlay.
+ * @returns ManagedObject
  */
 export function getRuntimeControl(overlayControl: ElementOverlay): ManagedObject {
     let runtimeControl;
@@ -31,8 +31,8 @@ export function getRuntimeControl(overlayControl: ElementOverlay): ManagedObject
 /**
  * Get library of a control name.
  *
- * @param controlName
- * @returns {Promise<string>}
+ * @param controlName - name of the ui5 control eg: sap.m.Button.
+ * @returns Promise<string>
  */
 export async function getLibrary(controlName: string): Promise<string> {
     return new Promise((resolve) => {

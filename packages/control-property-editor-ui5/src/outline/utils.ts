@@ -3,14 +3,13 @@ import { getRuntimeControl } from '../utils';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
-
 export const isEditable = async (id = ''): Promise<boolean> => {
     let editable = false;
     const control = sap.ui.getCore().byId(id);
     if (!control) {
         const component = sap.ui.getCore().getComponent(id);
         if (component) {
-            editable = !component;
+            editable = false;
         }
     } else {
         let controlOverlay = OverlayRegistry.getOverlay(control);

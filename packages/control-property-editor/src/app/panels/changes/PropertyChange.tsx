@@ -155,4 +155,5 @@ function getValueIcon(value: string | number | boolean): string | undefined {
             return IconName.boolFalse;
         }
     }
+    return undefined;
 }

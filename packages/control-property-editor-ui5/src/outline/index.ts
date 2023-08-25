@@ -5,11 +5,10 @@ import { transformNodes } from './nodes';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type OutlineService from 'sap/ui/rta/command/OutlineService';
 
-
 /**
  *
- * @param rta
- * @param sendAction
+ * @param rta runtimeAuthoring object.
+ * @param sendAction send action method.
  */
 export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: ExternalAction) => void): Promise<void> {
     const outline = await rta.getService<OutlineService>('outline');

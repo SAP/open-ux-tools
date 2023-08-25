@@ -16,7 +16,7 @@ describe('Documentation', () => {
                 return sapUiCompMetadata;
             }
         };
-        global.fetch = jest.fn(() => Promise.resolve(apiJson));
+        (global as any).fetch = jest.fn(() => Promise.resolve(apiJson));
     });
 
     test('Get Documention for sap.ui.comp.filterbar.FilterBar', async () => {

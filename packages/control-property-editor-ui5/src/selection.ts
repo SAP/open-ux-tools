@@ -13,7 +13,7 @@ import type Event from 'sap/ui/base/Event';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type { SelectionChangeEvent } from 'sap/ui/rta/RuntimeAuthoring';
-import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 export type PropertyChangeEvent = Event<PropertyChangeParams>;
 export interface PropertyChangeParams {
@@ -29,16 +29,16 @@ export class SelectionService implements Service {
     private activeChangeHandlers = new Set<() => void>();
     /**
      *
-     * @param rta
-     * @param ui5
+     * @param rta - rta object.
+     * @param ui5 - facade for ui5 framework methods
      */
     constructor(private readonly rta: RuntimeAuthoring, private readonly ui5: UI5Facade) {}
 
     /**
      * Initialize selection service.
      *
-     * @param sendAction
-     * @param subscribe
+     * @param sendAction action sender function
+     * @param subscribe subscriber function
      */
     public init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void {
         const eventOrigin: Set<string> = new Set();
@@ -84,8 +84,8 @@ export class SelectionService implements Service {
 
     /**
      *
-     * @param controlId
-     * @param propertyName
+     * @param controlId unique identifier for a control
+     * @param propertyName name of the control property.
      */
     public applyControlPropertyChange(controlId: string, propertyName: string): void {
         const changeId = propertyChangeId(controlId, propertyName);
@@ -95,9 +95,9 @@ export class SelectionService implements Service {
     /**
      * Create handler for onSelectionChange.
      *
-     * @param sendAction
-     * @param eventOrigin
-     * @returns { (event: Event) => Promise<void>}
+     * @param sendAction sending action method
+     * @param eventOrigin origin of the event.
+     * @returns (event: Event) => Promise<void>
      */
     private createOnSelectionChangeHandler(
         sendAction: (action: ExternalAction) => void,
@@ -138,8 +138,8 @@ export class SelectionService implements Service {
 
     /**
      *
-     * @param runtimeControl
-     * @param sendAction
+     * @param runtimeControl sap/ui/base/ManagedObject
+     * @param sendAction send action method.
      */
     private handlePropertyChanges(runtimeControl: ManagedObject, sendAction: (action: ExternalAction) => void): void {
         const handler = (e: PropertyChangeEvent) => {
@@ -173,11 +173,11 @@ export class SelectionService implements Service {
 }
 
 /**
- * Property change id of controlId and propertyName.
+ * Change id is a combination of controlId and propertyName.
  *
- * @param controlId
- * @param propertyName
- * @returns {string}
+ * @param controlId unique identifier for a control.
+ * @param propertyName name of the control property.
+ * @returns string
  */
 function propertyChangeId(controlId: string, propertyName: string): string {
     return [controlId, propertyName].join(',');
