@@ -109,9 +109,9 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
         join(projectRoot, capProjectPaths.db)
     ];
     const model = await cds.load(modelPaths);
-    let services = cds.compile.to['serviceinfo'](model, { root: projectRoot });
-    if (services?.map) {
-        services = services?.map((value) => {
+    let services = cds.compile.to.serviceinfo(model, { root: projectRoot }) ?? [];
+    if (services.map) {
+        services = services.map((value) => {
             return {
                 name: value.name,
                 urlPath: uniformUrl(value.urlPath)
@@ -126,12 +126,16 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
 
 /**
  * Remove rogue '\\' - cds windows if needed.
+ * Replaces all backslashes with forward slashes, removes double slashes, and trailing slashes.
  *
  * @param url - url to uniform
  * @returns - uniform url
  */
 function uniformUrl(url: string) {
-    return url.replace(/\\/g, '/').replace(/\/\//g, '/');
+    return url
+        .replace(/\\/g, '/')
+        .replace(/\/\//g, '/')
+        .replace(/(?:^\/)/g, '');
 }
 
 /**
