@@ -185,7 +185,11 @@ export const setHtmlResponse = (res: any, html: string): void => {
         res.write(html);
         res.end();
     } else {
-        res.status(200).contentType('html').send(html);
+        res.writeHead(200, {
+            "Content-Type": "text/html"
+        });
+        res.write(html);
+        res.end();
     }
 };
 
