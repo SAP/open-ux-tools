@@ -54,7 +54,7 @@ export function ChangeStack(changeStackProps: ChangeStackProps): ReactElement {
                 ),
 
                 i + 1 < groups.length ? (
-                    <Stack.Item key={`${i}-separator`}>
+                    <Stack.Item key={getKey(i)}>
                         <Separator className={styles.item} />
                     </Stack.Item>
                 ) : (
@@ -63,6 +63,16 @@ export function ChangeStack(changeStackProps: ChangeStackProps): ReactElement {
             ])}
         </Stack>
     );
+}
+
+/**
+ * Generate react attribute key.
+ *
+ * @param i
+ * @returns {string}
+ */
+function getKey(i: number): string {
+    return `${i}-separator`;
 }
 
 type Item = ControlGroupProps | UnknownChangeProps;

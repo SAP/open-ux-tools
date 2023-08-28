@@ -34,6 +34,22 @@ const getModel = (saved = false): ChangesSlice => {
                       type: 'pending',
                       value: 'testValue1',
                       isActive: true
+                  },
+                  {
+                      controlId: 'testId1BoolFalse',
+                      controlName: 'controlNameBoolFalse',
+                      propertyName: 'testPropertyNameBoolFalse',
+                      type: 'pending',
+                      value: false,
+                      isActive: true
+                  },
+                  {
+                      controlId: 'testId1Exp',
+                      controlName: 'controlNameExp',
+                      propertyName: 'testPropertyNameExp',
+                      type: 'pending',
+                      value: '{expression}',
+                      isActive: true
                   }
               ] as PendingPropertyChange[])
             : [],
@@ -46,6 +62,26 @@ const getModel = (saved = false): ChangesSlice => {
                       type: 'saved',
                       value: 'testValue2',
                       fileName: 'testFileName',
+                      kind: 'valid',
+                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime()
+                  },
+                  {
+                      controlId: 'testId3',
+                      controlName: 'controlNameBoolean',
+                      propertyName: 'testPropertyNameBool',
+                      type: 'saved',
+                      value: true,
+                      fileName: 'testFileNameBool',
+                      kind: 'valid',
+                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime()
+                  },
+                  {
+                      controlId: 'testId4',
+                      controlName: 'controlNameNumber',
+                      propertyName: 'testPropertyNameNum',
+                      type: 'saved',
+                      value: 2,
+                      fileName: 'testFileNameNum',
                       kind: 'valid',
                       timestamp: new Date('2022-02-09T12:06:53.939Z').getTime()
                   }
@@ -125,6 +161,7 @@ describe('ChangePanel', () => {
 
         const controlName1 = screen.getByRole('button', { name: /control name2/i });
         expect(controlName1).toBeInTheDocument();
+        fireEvent.click(controlName1);
 
         const propertyName1 = screen.getByText(/Test Property Name2/i);
         expect(propertyName1).toBeInTheDocument();
@@ -138,6 +175,22 @@ describe('ChangePanel', () => {
 
         expect(deleteButton).toBeInTheDocument();
         expect(iconName).toBe('TrashCan');
+
+        fireEvent.click(deleteButton);
+        expect(
+            screen.getByText(
+                /Are you sure you want to delete the change for this property\? This action cannot be undone\./i
+            )
+        ).toBeInTheDocument();
+
+        // first cancel
+        const cancelButton = screen.getByRole('button', { name: /^Cancel$/i });
+        cancelButton.click();
+
+        // delete
+        fireEvent.click(deleteButton);
+        const confirmButton = screen.getByRole('button', { name: /^Delete$/i });
+        confirmButton.click();
 
         fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'control Name2' } });
 
@@ -188,5 +241,21 @@ describe('ChangePanel', () => {
         const iconName = iTagAttributes?.getNamedItem('data-icon-name')?.value;
         expect(deleteButton).toBeInTheDocument();
         expect(iconName).toBe('TrashCan');
+
+        fireEvent.click(deleteButton);
+        expect(
+            screen.getByText(
+                /Are you sure you want to delete the change for this property\? This action cannot be undone\./i
+            )
+        ).toBeInTheDocument();
+
+        // first cancel
+        const cancelButton = screen.getByRole('button', { name: /^Cancel$/i });
+        cancelButton.click();
+
+        // delete
+        fireEvent.click(deleteButton);
+        const confirmButton = screen.getByRole('button', { name: /^Delete$/i });
+        confirmButton.click();
     });
 });

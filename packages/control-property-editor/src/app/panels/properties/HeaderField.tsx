@@ -98,19 +98,16 @@ export function HeaderField(headerFieldProps: HeaderFieldProps): ReactElement {
                             }
                         }
                     }}
-                    onRenderSuffix={(): React.JSX.Element => {
-                        return (
-                            <UIIconButton
-                                id={`${label.replace(/\s/g, '')}--copy`}
-                                iconProps={{ iconName: UiIcons.Copy }}
-                                onClick={(): void => {
-                                    copyToClipboard(value).catch((reason) => console.error(reason));
-                                    setMessageBoxVisibility(!isCopyMessageBoxVisible);
-                                    setTimeout(() => setMessageBoxVisibility(false), 3000);
-                                }}
-                            />
-                        );
-                    }}
+                    onRenderSuffix={() => (
+                        <CopyButton
+                            label={label}
+                            onClick={(): void => {
+                                copyToClipboard(value).catch((reason) => console.error(reason));
+                                setMessageBoxVisibility(!isCopyMessageBoxVisible);
+                                setTimeout(() => setMessageBoxVisibility(false), 3000);
+                            }}
+                        />
+                    )}
                 />
                 {isCopyMessageBoxVisible && <Clipboard label={label} />}
             </Stack>
@@ -125,4 +122,26 @@ export function HeaderField(headerFieldProps: HeaderFieldProps): ReactElement {
  */
 async function copyToClipboard(text: string): Promise<void> {
     await navigator.clipboard.writeText(text);
+}
+interface CopyButtonProps {
+    label: string;
+    onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | HTMLSpanElement>;
+}
+
+/**
+ * Copy button component.
+ *
+ * @param props {CopyButtonProps}
+ * @returns ReactElement
+ */
+function CopyButton(props: CopyButtonProps): ReactElement {
+    const { label, onClick } = props;
+
+    return (
+        <UIIconButton
+            id={`${label.replace(/\s/g, '')}--copy`}
+            iconProps={{ iconName: UiIcons.Copy }}
+            onClick={onClick}
+        />
+    );
 }

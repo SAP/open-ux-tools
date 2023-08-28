@@ -69,7 +69,7 @@ export class SelectionService implements Service {
                     }
                 }
 
-                if (!controlOverlay || !controlOverlay.getDomRef()) {
+                if (!controlOverlay?.getDomRef()) {
                     //look for closest control in order to highlight in UI the (without firing the selection event)
                     controlOverlay = this.ui5.getClosestOverlayFor(control);
                 }

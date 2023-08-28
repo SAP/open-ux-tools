@@ -71,19 +71,7 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
         minWidth: 68,
         flexGrow: 1,
         isResizable: true,
-        onRender: function render(item: { fontFamily: string }) {
-            const style: CSSProperties = {
-                fontFamily: item.fontFamily,
-                fontSize: '1rem',
-                fontStyle: 'normal',
-                display: 'inline-block',
-                lineHeight: 0,
-                verticalAlign: 'baseLine',
-                textAlign: 'center',
-                marginTop: 8
-            };
-            return <span className="sapUiIcon icon-span" data-sap-ui-icon-content={item.content} style={style}></span>;
-        }
+        onRender: (item: IconColumnProps) => <IconColumn content={item.content} fontFamily={item.fontFamily} />
     };
     const col2: UIColumn = {
         key: t('ICON_NAME'),
@@ -92,14 +80,7 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
         minWidth: 238,
         flexGrow: 4,
         isResizable: true,
-        onRender: function render(item: { name: string; fontFamily: string }) {
-            const style: CSSProperties = {
-                fontFamily: item.fontFamily,
-                fontSize: '13px',
-                fontStyle: 'normal'
-            };
-            return <span style={style}>{item.name}</span>;
-        }
+        onRender: (item: LabelColumnProps) => <LabelColumn fontFamily={item.fontFamily} name={item.name} />
     };
     const columns: UIColumn[] = [col1, col2];
     const propertyNamePascalCase = propertyName[0].toUpperCase() + propertyName.substring(1);
@@ -173,4 +154,48 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
             )}
         </>
     );
+}
+interface IconColumnProps {
+    fontFamily: string;
+    content: any;
+}
+
+/**
+ * React element for showing ui5 icon column.
+ *
+ * @param props IconColumnProps
+ * @returns {ReactElement}
+ */
+function IconColumn(props: IconColumnProps): React.JSX.Element {
+    const { content, fontFamily } = props;
+    const style: CSSProperties = {
+        fontFamily: fontFamily,
+        fontSize: '1rem',
+        fontStyle: 'normal',
+        display: 'inline-block',
+        lineHeight: 0,
+        verticalAlign: 'baseLine',
+        textAlign: 'center',
+        marginTop: 8
+    };
+    return <span className="sapUiIcon icon-span" data-sap-ui-icon-content={content} style={style}></span>;
+}
+interface LabelColumnProps {
+    name: string;
+    fontFamily: string;
+}
+/**
+ * React element for showing ui5 label column.
+ *
+ * @param props { name: string; fontFamily: string }
+ * @returns {ReactElement}
+ */
+function LabelColumn(props: LabelColumnProps): React.JSX.Element {
+    const { name, fontFamily } = props;
+    const style: CSSProperties = {
+        fontFamily: fontFamily,
+        fontSize: '13px',
+        fontStyle: 'normal'
+    };
+    return <span style={style}>{name}</span>;
 }

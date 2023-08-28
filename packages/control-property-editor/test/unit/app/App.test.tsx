@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 
 import { render } from './utils';
@@ -126,4 +126,7 @@ test('renders warning dialog', () => {
         /The Control Property Editor enables you to change control properties and behavior directly. These changes may not have the desired effect with Fiori elements applications. Please consult documentation to learn which changes are supported./i
     );
     expect(dialogContent).toBeInTheDocument();
+    const okButton = screen.getByText(/ok/i);
+    expect(okButton).toBeInTheDocument();
+    fireEvent.click(okButton);
 });
