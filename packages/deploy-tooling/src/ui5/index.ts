@@ -28,7 +28,12 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
     replaceEnvVariables(config);
 
     // The calling client can use either the projectNamespace or projectName when creating the workspace, needs to match when creating the archive.
-    const archive = await createUi5Archive(logger, workspace, options.projectNamespace ?? options.projectName);
+    const archive = await createUi5Archive(
+        logger,
+        workspace,
+        options.projectNamespace ?? options.projectName,
+        config.exclude
+    );
     await deploy(archive, config, logger);
 }
 

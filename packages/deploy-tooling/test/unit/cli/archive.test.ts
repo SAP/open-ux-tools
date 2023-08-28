@@ -1,7 +1,10 @@
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { dirname, relative } from 'path';
 import { getArchive } from '../../../src/cli/archive';
+import { createUi5Archive } from '../../../src/ui5/archive';
 import axios from 'axios';
+import type { Resource } from '@ui5/fs';
+import { ZipFile } from 'yazl';
 
 jest.mock('axios');
 
@@ -60,5 +63,39 @@ describe('cli/archive', () => {
                 expect(error).toBeDefined();
             }
         });
+    });
+});
+
+describe('Archive Generation', () => {
+    const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
+    const projectName = 'ProjectName';
+    const files: Partial<Resource>[] = [];
+    // Should be included
+    files.push({
+        getPath: () => `${projectName}/~path`,
+        getBuffer: () => Promise.resolve(Buffer.from(''))
+    });
+    // Should be excluded
+    files.push({
+        getPath: () => `${projectName}/test/change_loader.js`,
+        getBuffer: () => Promise.resolve(Buffer.from(''))
+    });
+    const mockProject = {
+        byGlob: jest.fn().mockResolvedValue(files)
+    };
+    const zipFileSpy = jest.spyOn(ZipFile.prototype, 'addBuffer');
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('Create archive with exclude parameter', async () => {
+        await createUi5Archive(nullLogger, mockProject as any, projectName, ['/test/']);
+        expect(zipFileSpy).toBeCalledTimes(1);
+    });
+
+    test('Create archive to include everything', async () => {
+        await createUi5Archive(nullLogger, mockProject as any, projectName);
+        expect(zipFileSpy).toBeCalledTimes(2);
     });
 });

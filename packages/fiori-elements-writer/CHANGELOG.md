@@ -1,5 +1,53 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.13.1
+
+### Patch Changes
+
+-   b63aea83: Update ui5 yaml spec to 3.1
+-   Updated dependencies [b63aea83]
+    -   @sap-ux/ui5-application-writer@0.25.1
+
+## 0.13.0
+
+### Minor Changes
+
+-   de0b13f2: Update templates to use Typescript version 5
+
+### Patch Changes
+
+-   Updated dependencies [de0b13f2]
+    -   @sap-ux/ui5-application-writer@0.25.0
+
+## 0.12.27
+
+### Patch Changes
+
+-   44df3d5c: fix lint warnings in locate-reuse-libs.js
+-   Updated dependencies [44df3d5c]
+    -   @sap-ux/ui5-application-writer@0.24.3
+
+## 0.12.26
+
+### Patch Changes
+
+-   b69c21f3: Enable LocalStorageConnector in v4 templates
+
+## 0.12.25
+
+### Patch Changes
+
+-   Updated dependencies [c1c9396a]
+    -   @sap-ux/fe-fpm-writer@0.23.0
+
+## 0.12.24
+
+### Patch Changes
+
+-   29179b5f: Add SAP icon loading in flpsandbox.html
+-   Updated dependencies [29179b5f]
+    -   @sap-ux/ui5-application-writer@0.24.2
+
 ## 0.12.23
 
 ### Patch Changes

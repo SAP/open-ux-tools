@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`use FPM with existing apps extend UI5 application with FPM generateCustomSubSection in ObjectPage 1`] = `
+exports[`use FPM with existing apps extend UI5 application with FPM generateCustomHeaderSection in ObjectPage 1`] = `
 Object {
   "js/webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
     "contents": "sap.ui.define([
@@ -50,6 +50,52 @@ Object {
 
     return {
         onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "js/webapp/ext/myCustomHeaderSection/MyCustomHeaderSection.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<VBox>
+		<Button core:require=\\"{ handler: 'v4travel/ext/myCustomHeaderSection/MyCustomHeaderSection'}\\" text=\\"MyCustomHeaderSection\\" press=\\"handler.onPress\\" />
+	</VBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "js/webapp/ext/myCustomHeaderSection/MyCustomHeaderSection.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "js/webapp/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<VBox>
+		<Input core:require=\\"{ handler: 'v4travel/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit'}\\" label=\\"MyCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
+	</VBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "js/webapp/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onChange: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -450,6 +496,21 @@ Object {
                       \\"enabled\\": true,
                       \\"text\\": \\"Navigate to CustomPage (appended action)\\"
                     }
+                  },
+                  \\"facets\\": {
+                    \\"MyCustomHeaderSection\\": {
+                      \\"template\\": \\"v4travel.ext.myCustomHeaderSection.MyCustomHeaderSection\\",
+                      \\"templateEdit\\": \\"v4travel.ext.myCustomHeaderSectionEdit.MyCustomHeaderSectionEdit\\",
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DummyHeaderAnchor\\"
+                      },
+                      \\"title\\": \\"My Custom Header Section\\",
+                      \\"requestGroupId\\": \\"Decoration\\",
+                      \\"flexSettings\\": {
+                        \\"designtime\\": \\"Default\\"
+                      }
+                    }
                   }
                 },
                 \\"body\\": {
@@ -613,6 +674,54 @@ import MessageToast from 'sap/m/MessageToast';
  * @param pageContext the context of the page on which the event was fired
  */
 export function onPress(this: ExtensionAPI, pageContext: Context) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myCustomHeaderSection/MyCustomHeaderSection.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<VBox>
+		<Button core:require=\\"{ handler: 'v4travel/ext/myCustomHeaderSection/MyCustomHeaderSection'}\\" text=\\"MyCustomHeaderSection\\" press=\\"handler.onPress\\" />
+	</VBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myCustomHeaderSection/MyCustomHeaderSection.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import UI5Event from 'sap/ui/base/Event';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param event the event object provided by the event provider
+ */
+export function onPress(this: ExtensionAPI, event: UI5Event) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<VBox>
+		<Input core:require=\\"{ handler: 'v4travel/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit'}\\" label=\\"MyCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
+	</VBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import UI5Event from 'sap/ui/base/Event';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param event the event object provided by the event provider
+ */
+export function onChange(this: ExtensionAPI, event: UI5Event) {
     MessageToast.show(\\"Custom handler invoked.\\");
 }",
     "state": "modified",
@@ -1011,6 +1120,21 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
                       \\"visible\\": true,
                       \\"enabled\\": true,
                       \\"text\\": \\"Navigate to CustomPage (appended action)\\"
+                    }
+                  },
+                  \\"facets\\": {
+                    \\"MyCustomHeaderSection\\": {
+                      \\"template\\": \\"v4travel.ext.myCustomHeaderSection.MyCustomHeaderSection\\",
+                      \\"templateEdit\\": \\"v4travel.ext.myCustomHeaderSectionEdit.MyCustomHeaderSectionEdit\\",
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DummyHeaderAnchor\\"
+                      },
+                      \\"title\\": \\"My Custom Header Section\\",
+                      \\"requestGroupId\\": \\"Decoration\\",
+                      \\"flexSettings\\": {
+                        \\"designtime\\": \\"Default\\"
+                      }
                     }
                   }
                 },

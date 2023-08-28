@@ -1,5 +1,29 @@
 # @sap-ux/preview-middleware
 
+## 0.4.0
+
+### Minor Changes
+
+-   4b906238: Preview html is shown in CAP project using cds-plugin-ui5@0.4.0
+
+## 0.3.9
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.1.6
+
+## 0.3.8
+
+### Patch Changes
+
+-   44df3d5c: fix lint warnings in locate-reuse-libs.js
+
+## 0.3.7
+
+### Patch Changes
+
+-   29179b5f: Add SAP icon loading in flpsandbox.html
+
 ## 0.3.6
 
 ### Patch Changes

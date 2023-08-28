@@ -131,6 +131,25 @@
     };
 })(sap);
 
+function registerSAPFonts() {  
+    sap.ui.require(["sap/ui/core/IconPool"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: "SAP-icons-TNT",
+        fontURI: sap.ui.require.toUrl("sap/tnt/themes/base/fonts/")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: "BusinessSuiteInAppSymbols",
+        fontURI: sap.ui.require.toUrl("sap/ushell/themes/base/fonts/")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById("locate-reuse-libs");
 if (!currentScript) {
@@ -163,6 +182,7 @@ sap.registerComponentDependencyPaths(manifestUri)
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === "true") {
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\./g, "/") + "/localService/mockserver"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -176,6 +196,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
                 // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
                     sap.ui.require(["sap/base/i18n/ResourceBundle"], function (ResourceBundle) {
                         var oResourceBundle = ResourceBundle.create({
@@ -188,6 +209,7 @@ sap.registerComponentDependencyPaths(manifestUri)
             }
         } else {
             sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
                 // initialize the ushell sandbox component
                 sap.ushell.Container.createRenderer().placeAt("content");
             });

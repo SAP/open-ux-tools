@@ -12,7 +12,10 @@ import {
     generateControllerExtension,
     ControllerExtensionPageType,
     generateCustomFilter,
-    generateCustomSubSection
+    generateCustomSubSection,
+    generateCustomHeaderSection,
+    RequestGroupId,
+    DesignTime
 } from '../../src';
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';
@@ -307,6 +310,32 @@ describe('use FPM with existing apps', () => {
                     position: {
                         placement: Placement.After,
                         anchor: 'DummySubAnchor'
+                    },
+                    eventHandler: true,
+                    ...config.settings
+                },
+                fs
+            );
+        });
+
+        test.each(configs)('generateCustomHeaderSection in ObjectPage', (config) => {
+            generateCustomHeaderSection(
+                config.path,
+                {
+                    name: 'MyCustomHeaderSection',
+                    target: 'TravelObjectPage',
+                    title: 'My Custom Header Section',
+                    edit: {
+                        name: 'MyCustomHeaderSectionEdit',
+                        eventHandler: true
+                    },
+                    position: {
+                        placement: Placement.After,
+                        anchor: 'DummyHeaderAnchor'
+                    },
+                    requestGroupId: RequestGroupId.Decoration,
+                    flexSettings: {
+                        designtime: DesignTime.Default
                     },
                     eventHandler: true,
                     ...config.settings
