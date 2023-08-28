@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.20.1
+
+### Patch Changes
+
+-   b63aea83: Update ui5 yaml spec to 3.1
+-   Updated dependencies [b63aea83]
+    -   @sap-ux/ui5-application-writer@0.25.1
+
 ## 0.20.0
 
 ### Minor Changes

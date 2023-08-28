@@ -34,7 +34,7 @@
     },
     "devDependencies": {
         "@types/i18next-fs-backend": "1.0.0",
-        "@types/lodash": "4.14.176"
+        "@types/lodash": "4.14.197"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",

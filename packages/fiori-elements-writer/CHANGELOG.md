@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.13.1
+
+### Patch Changes
+
+-   b63aea83: Update ui5 yaml spec to 3.1
+-   Updated dependencies [b63aea83]
+    -   @sap-ux/ui5-application-writer@0.25.1
+
 ## 0.13.0
 
 ### Minor Changes
