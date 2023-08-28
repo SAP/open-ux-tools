@@ -1,5 +1,19 @@
 # @sap-ux/deploy-tooling
 
+## 0.9.7
+
+### Patch Changes
+
+-   Updated dependencies [29e71f68]
+    -   @sap-ux/axios-extension@1.4.2
+    -   @sap-ux/system-access@0.2.1
+
+## 0.9.6
+
+### Patch Changes
+
+-   30a7f6ae: apply exclude param when generating archive zip
+
 ## 0.9.5
 
 ### Patch Changes

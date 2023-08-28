@@ -298,6 +298,7 @@ describe('Transport checks', () => {
                 })
             })
         );
+        postSpy.mockClear();
     });
 
     test('Valid package name with namespace', async () => {
@@ -314,9 +315,14 @@ describe('Transport checks', () => {
 
         await transportChecksService?.getTransportRequests(testPackageNamespace, testProjectNamespace);
 
+        const packageNamePattern = `<DEVCLASS>${testPackageNamespace}</DEVCLASS>`;
+        const appNamePattern = `<URI>/sap/bc/adt/filestore/ui5-bsp/objects/${encodeURIComponent(
+            testProjectNamespace
+        )}/\\$create</URI>`;
+        const combinedPattern = new RegExp(`${packageNamePattern}(\n|\r\n|\r|.)*${appNamePattern}`);
         expect(postSpy).toBeCalledWith(
             expect.any(String),
-            expect.stringContaining(`<DEVCLASS>${encodeURIComponent(testPackageNamespace)}</DEVCLASS>`),
+            expect.stringMatching(combinedPattern),
             expect.objectContaining({
                 headers: expect.objectContaining({
                     Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
@@ -325,6 +331,7 @@ describe('Transport checks', () => {
                 })
             })
         );
+        postSpy.mockClear();
     });
 });
 

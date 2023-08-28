@@ -1,5 +1,39 @@
 # @sap-ux/ui5-library-writer
 
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [56dc4c59]
+    -   @sap-ux/project-access@1.13.1
+    -   @sap-ux/ui5-application-writer@0.25.0
+
+## 0.2.1
+
+### Patch Changes
+
+-   Updated dependencies [d13264b3]
+    -   @sap-ux/project-access@1.13.0
+    -   @sap-ux/ui5-application-writer@0.25.0
+
+## 0.2.0
+
+### Minor Changes
+
+-   de0b13f2: Update templates to use Typescript version 5
+
+### Patch Changes
+
+-   Updated dependencies [de0b13f2]
+    -   @sap-ux/ui5-application-writer@0.25.0
+
+## 0.1.17
+
+### Patch Changes
+
+-   Updated dependencies [44df3d5c]
+    -   @sap-ux/ui5-application-writer@0.24.3
+
 ## 0.1.16
 
 ### Patch Changes
