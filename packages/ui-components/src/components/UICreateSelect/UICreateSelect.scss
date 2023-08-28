@@ -1,0 +1,15 @@
+.ui-create-select {
+    &-indicator {
+        &-clear,
+        &-dropdown {
+            display: flex;
+            height: 16px;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
+        }
+        &-loading {
+            padding-right: 8px;
+        }
+    }
+}
