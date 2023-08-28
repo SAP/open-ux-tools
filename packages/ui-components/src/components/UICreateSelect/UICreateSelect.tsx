@@ -190,7 +190,6 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
                     margin: '0px',
                     borderRadius: 0
                 }),
-                menuList: (baseStyles, _state) => ({ ...baseStyles }),
                 option: (baseStyles, state) => ({
                     ...baseStyles,
                     fontFamily: 'var(--vscode-font-family)',
@@ -235,11 +234,6 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
                     outline: 0
                 }),
                 valueContainer: (baseStyles, _state) => ({ ...baseStyles, padding: '0px' }),
-                multiValue: (baseStyles, _state) => ({ ...baseStyles }),
-                multiValueLabel: (baseStyles, _state) => ({ ...baseStyles }),
-                multiValueRemove: (baseStyles, _state) => ({ ...baseStyles }),
-                group: (baseStyles, _state) => ({ ...baseStyles }),
-                groupHeading: (baseStyles, _state) => ({ ...baseStyles }),
                 indicatorsContainer: (baseStyles, _state) => ({
                     ...baseStyles,
                     padding: '0px 5px 0px 0px',
@@ -247,9 +241,6 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
                 }),
                 indicatorSeparator: (baseStyles, _state) => ({ ...baseStyles, display: 'none' }),
                 dropdownIndicator: (baseStyles, _state) => ({ ...baseStyles, padding: '0px' }),
-                loadingIndicator: (baseStyles, _state) => ({ ...baseStyles }),
-                loadingMessage: (baseStyles, _state) => ({ ...baseStyles }),
-                noOptionsMessage: (baseStyles, _state) => ({ ...baseStyles }),
                 clearIndicator: (baseStyles, _state) => ({
                     ...baseStyles,
                     padding: '0px',
