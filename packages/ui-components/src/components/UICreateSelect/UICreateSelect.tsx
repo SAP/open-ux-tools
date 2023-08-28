@@ -7,7 +7,11 @@ import type {
     LoadingIndicatorProps,
     OptionProps,
     ActionMeta,
-    MultiValue
+    MultiValue,
+    Options,
+    OptionsOrGroups,
+    GetOptionLabel,
+    GetOptionValue
 } from 'react-select';
 import { components } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
@@ -26,6 +30,16 @@ export interface UICreateSelectOptionEntry {
     __isNew__?: boolean;
 }
 
+export interface UICreateSelectGroupEntry {
+    readonly options: readonly UICreateSelectOptionEntry[];
+    readonly label?: string;
+}
+
+export interface Accessors<Option> {
+    getOptionValue: GetOptionValue<Option>;
+    getOptionLabel: GetOptionLabel<Option>;
+}
+
 export type UICreateSelectProps = {
     createText?: string;
     isClearable: boolean;
@@ -34,7 +48,12 @@ export type UICreateSelectProps = {
     placeholder: string;
     value: UICreateSelectOptionEntry | undefined;
     options: UICreateSelectOptionEntry[];
-    isValidNewOption?: (inputValue: string, selectValue: UICreateSelectOptionEntry[]) => boolean;
+    isValidNewOption?: (
+        inputValue: string,
+        selectValue: Options<UICreateSelectOptionEntry>,
+        selectOptions: OptionsOrGroups<UICreateSelectOptionEntry, UICreateSelectGroupEntry>,
+        accessors: Accessors<UICreateSelectOptionEntry>
+    ) => boolean;
     handleCreate?: (inputValue: string) => void;
     handleOnChange?: (
         newValue: MultiValue<UICreateSelectOptionEntry>,
