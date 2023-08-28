@@ -360,6 +360,7 @@ export default class AddFragment extends Controller {
         const { fragmentName, index, targetAggregation } = fragmentData;
         try {
             await writeFragment<unknown>({ fragmentName });
+            MessageToast.show(`Fragment with name '${fragmentName}' was created.`);
         } catch (e) {
             // In case of error when creating a new fragment, we should not create a change file
             MessageToast.show(e.message);

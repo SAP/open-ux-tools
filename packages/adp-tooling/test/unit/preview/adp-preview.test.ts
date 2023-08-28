@@ -1,6 +1,7 @@
 import { ToolsLogger } from '@sap-ux/logger';
 import { AdpPreview } from '../../../src/preview/adp-preview';
-import * as fs from 'fs';
+import * as mockFs from 'fs';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { ReaderCollection } from '@ui5/fs';
 import nock from 'nock';
@@ -30,7 +31,7 @@ const mockProject = {
 
 describe('AdaptationProject', () => {
     const backend = 'https://sap.example';
-    const descriptorVariant = fs.readFileSync(
+    const descriptorVariant = readFileSync(
         join(__dirname, '../../fixtures/adaptation-project/webapp', 'manifest.appdescr_variant'),
         'utf-8'
     );
@@ -185,6 +186,12 @@ describe('AdaptationProject', () => {
     });
     describe('addApis', () => {
         let server!: SuperTest<Test>;
+
+        // jest.mock('fs', () => ({
+        //     __esModule: true,
+        //     promises: { readFile: jest.fn() }
+        // }));
+
         beforeAll(async () => {
             const adp = new AdpPreview(
                 {
@@ -200,10 +207,6 @@ describe('AdaptationProject', () => {
             const app = express();
             adp.addApis(app);
             server = await supertest(app);
-        });
-
-        afterEach(() => {
-            jest.clearAllMocks();
         });
 
         test('GET /adp/api/fragment', async () => {
@@ -243,15 +246,16 @@ describe('AdaptationProject', () => {
             expect(data.message).toEqual(errorMsg);
         });
 
-        // test('POST /adp/api/fragment', async () => {
-        //     //  Need to understand how to mock fs methods
-        //     // jest.mock('fs').spyOn(fs, 'existsSync').mockReturnValueOnce(false).mockReturnValueOnce(true);
+        test('POST /adp/api/fragment', async () => {
+            jest.spyOn(mockFs, 'existsSync')
+                .mockImplementationOnce(() => false)
+                .mockImplementationOnce(() => false);
+            jest.spyOn(mockFs, 'mkdirSync').mockReturnValue(undefined);
+            const fragmentName = 'Share';
+            const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(201);
 
-        //     const fragmentName = 'Share';
-        //     const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(201);
-
-        //     const data: GetFragmentsResponse = JSON.parse(response.text);
-        //     expect(data.message).toEqual('XML Fragment created');
-        // });
+            const data: GetFragmentsResponse = JSON.parse(response.text);
+            expect(data.message).toEqual('XML Fragment created');
+        });
     });
 });

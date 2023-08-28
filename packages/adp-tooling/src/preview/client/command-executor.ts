@@ -23,7 +23,6 @@ export default class CommandExecutor {
      * @param modifiedValue Modified value/s
      * @param designMetadata Design time metadata
      * @param flexSettings Additional flex settings
-     * @returns {BaseCommand} Base command to be executed
      */
     public async generateAndExecuteCommand(
         runtimeControl: ManagedObject,
