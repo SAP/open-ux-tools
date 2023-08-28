@@ -1368,8 +1368,8 @@ importers:
   types:
     devDependencies:
       '@sapui5/types':
-        specifier: 1.117.0
-        version: 1.117.0
+        specifier: 1.117.1
+        version: 1.117.1
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
@@ -4603,8 +4603,8 @@ packages:
       url: 0.11.0
     dev: false
 
-  /@sapui5/types@1.117.0:
-    resolution: {integrity: sha512-QrtSjE7KpT40LQULS8ShbkWd6g1K9J/+lK5FSx/dNXGDJJ+lxLqEkjZGKRnszhjzOsnovv/8YNAThB3Qi4fQHw==}
+  /@sapui5/types@1.117.1:
+    resolution: {integrity: sha512-7mAr+HLF1FdK7b4n9R3OHazv43RbjoucqfEVUQPgDpj7dT63U8E3gj21NUQ7J17hLXd7eQLtsGudTqDLLHz1QA==}
     dependencies:
       '@types/jquery': 3.5.13
       '@types/offscreencanvas': 2019.6.4
