@@ -1,13 +1,12 @@
 import { ToolsLogger } from '@sap-ux/logger';
 import { AdpPreview } from '../../../src/preview/adp-preview';
-import * as mockFs from 'fs';
-import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { ReaderCollection } from '@ui5/fs';
 import nock from 'nock';
 import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
 import express from 'express';
+import { readFileSync } from 'fs';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -28,6 +27,13 @@ jest.mock('@sap-ux/store', () => {
 const mockProject = {
     byGlob: jest.fn().mockResolvedValue([])
 };
+const mockExistsSync = jest.fn();
+
+jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
+    existsSync: mockExistsSync,
+    mkdirSync: jest.fn().mockRejectedValue(undefined)
+}));
 
 describe('AdaptationProject', () => {
     const backend = 'https://sap.example';
@@ -247,10 +253,7 @@ describe('AdaptationProject', () => {
         });
 
         test('POST /adp/api/fragment', async () => {
-            jest.spyOn(mockFs, 'existsSync')
-                .mockImplementationOnce(() => false)
-                .mockImplementationOnce(() => false);
-            jest.spyOn(mockFs, 'mkdirSync').mockReturnValue(undefined);
+            mockExistsSync.mockReturnValue(false);
             const fragmentName = 'Share';
             const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(201);
 
