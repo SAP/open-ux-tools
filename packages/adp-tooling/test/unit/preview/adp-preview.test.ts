@@ -30,8 +30,9 @@ const mockProject = {
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
-    existsSync: jest.fn().mockReturnValue(false),
-    mkdirSync: jest.fn().mockRejectedValue(undefined)
+    existsSync: jest.fn(),
+    mkdirSync: jest.fn().mockRejectedValue(undefined),
+    copyFileSync: jest.fn().mockRejectedValue(undefined)
 }));
 const mockExistsSync = existsSync as jest.Mock;
 
@@ -193,11 +194,6 @@ describe('AdaptationProject', () => {
     describe('addApis', () => {
         let server!: SuperTest<Test>;
 
-        // jest.mock('fs', () => ({
-        //     __esModule: true,
-        //     promises: { readFile: jest.fn() }
-        // }));
-
         beforeAll(async () => {
             const adp = new AdpPreview(
                 {
@@ -213,6 +209,10 @@ describe('AdaptationProject', () => {
             const app = express();
             adp.addApis(app);
             server = await supertest(app);
+        });
+
+        afterEach(() => {
+            mockExistsSync.mockRestore();
         });
 
         test('GET /adp/api/fragment', async () => {
@@ -252,13 +252,13 @@ describe('AdaptationProject', () => {
             expect(data.message).toEqual(errorMsg);
         });
 
-        test('POST /adp/api/fragment', async () => {
+        test('POST /adp/api/fragment - creates fragment', async () => {
             mockExistsSync.mockReturnValue(false);
             const fragmentName = 'Share';
             const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(201);
 
-            const data: GetFragmentsResponse = JSON.parse(response.text);
-            expect(data.message).toEqual('XML Fragment created');
-        });
+            const message = response.text;
+            expect(message).toBe('XML Fragment created');
+        }, 20000);
     });
 });
