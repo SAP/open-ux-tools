@@ -6,7 +6,7 @@ import nock from 'nock';
 import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
 import express from 'express';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -27,13 +27,13 @@ jest.mock('@sap-ux/store', () => {
 const mockProject = {
     byGlob: jest.fn().mockResolvedValue([])
 };
-const mockExistsSync = jest.fn();
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
-    existsSync: mockExistsSync,
+    existsSync: jest.fn().mockReturnValue(false),
     mkdirSync: jest.fn().mockRejectedValue(undefined)
 }));
+const mockExistsSync = existsSync as jest.Mock;
 
 describe('AdaptationProject', () => {
     const backend = 'https://sap.example';
