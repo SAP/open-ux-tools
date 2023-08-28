@@ -17,9 +17,7 @@ describe('main', () => {
                     'Error: Applying property changes failed: Error: "" is of type string, expected boolean for property "enabled" of Element sap.m.Buttonx#v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy'
                 )
         });
-    const initOutlineSpy = jest.spyOn(outline, 'initOutline').mockImplementation(async () => {
-        return;
-    });
+    const initOutlineSpy = jest.spyOn(outline, 'initOutline');
     beforeAll(() => {
         const apiJson = {
             json: () => {
@@ -69,6 +67,7 @@ describe('main', () => {
     });
 
     test('init - 1', async () => {
+        initOutlineSpy.mockResolvedValue();
         await init({ rta, componentId: 'testComponentId', generator: 'testGenerator', layer: 'VENDOR' });
         const callBackFn = spyPostMessage.mock.calls[0][1];
         // apply change without error
@@ -87,6 +86,7 @@ describe('main', () => {
         expect(initOutlineSpy).toBeCalledTimes(1);
     });
     test('init - rta exception', async () => {
+        initOutlineSpy.mockRejectedValue('error');
         await init({ rta, componentId: 'testComponentId', generator: 'testGenerator', layer: 'VENDOR' });
         const callBackFn = spyPostMessage.mock.calls[0][1];
 

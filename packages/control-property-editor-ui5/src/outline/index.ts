@@ -12,24 +12,27 @@ import type OutlineService from 'sap/ui/rta/command/OutlineService';
  */
 export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: ExternalAction) => void): Promise<void> {
     const outline = await rta.getService<OutlineService>('outline');
-    async function syncOutline() {
-        const views = await outline.get();
-        const nodes = await transformNodes(views, (id: string): { text?: string } => {
-            const control = sap.ui.getCore().byId(id);
-            if (control?.getMetadata().getProperty('text')) {
-                const text = control.getProperty('text');
-                if (typeof text === 'string' && text.trim() !== '') {
-                    return {
-                        text
-                    };
-                }
-                return {};
-            }
-            return {};
-        });
-        sendAction(outlineChanged(nodes));
+    function syncOutline() {
+        outline
+            .get()
+            .then((views) => {
+                return transformNodes(views, (id: string): { text?: string } => {
+                    const control = sap.ui.getCore().byId(id);
+                    if (control?.getMetadata().getProperty('text')) {
+                        const text = control.getProperty('text');
+                        if (typeof text === 'string' && text.trim() !== '') {
+                            return {
+                                text
+                            };
+                        }
+                    }
+                    return {};
+                });
+            })
+            .then((nodes) => {
+                sendAction(outlineChanged(nodes));
+            })
+            .catch((error) => console.error(error));
     }
-    outline.attachEvent('update', () => {
-        syncOutline().catch((error) => console.error(error));
-    });
+    outline.attachEvent('update', syncOutline);
 }

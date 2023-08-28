@@ -56,18 +56,10 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
         enumValues: null,
         isArray: false
     };
+    const propertyType = property?.getType();
+    const typeName = propertyType?.getName();
 
-    if (!property) {
-        return undefined;
-    }
-
-    const propertyType = property.getType();
-    if (!propertyType) {
-        return undefined;
-    }
-
-    const typeName = propertyType.getName();
-    if (!typeName) {
+    if (!property || !propertyType || !typeName) {
         return undefined;
     }
 
@@ -77,13 +69,11 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
         analyzedType.isArray = true;
     }
     // Return if object or void type
-    else if (typeName === 'void' || typeName === 'object') {
+    else if (['object', 'void', 'any'].includes(typeName)) {
         analyzedType.primitiveType = typeName;
-    } else if (typeName === 'any') {
-        analyzedType.primitiveType = 'any';
     }
     // Type of control property is an elementary simple type
-    else if (typeName === 'boolean' || typeName === 'string' || typeName === 'int' || typeName === 'float') {
+    else if (['boolean', 'string', 'int', 'float'].includes(typeName)) {
         analyzedType.primitiveType = typeName;
     }
     // Control type is a sap.ui.base.DataType or an enumeration type
@@ -315,11 +305,10 @@ export async function buildControlData(
             default:
         }
     }
-
     return {
         id: control.getId(), //the id of the underlying control/aggregation
         type: selectedControlName, //the name of the ui5 class of the control/aggregation
-        properties: [...properties.sort((a, b) => (a.name > b.name ? 1 : -1))],
+        properties: [...properties].sort((a, b) => (a.name > b.name ? 1 : -1)),
         name: selectedControlName
     };
 }

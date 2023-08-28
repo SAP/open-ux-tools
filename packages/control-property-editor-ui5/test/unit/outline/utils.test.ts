@@ -1,4 +1,6 @@
+import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { isEditable } from '../../../src/outline/utils';
+import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 jest.mock('../../../src/controlData', () => {
     return {
         buildControlData: () => {
@@ -11,10 +13,14 @@ jest.mock('../../../src/controlData', () => {
 describe('utils', () => {
     const mockGetComponent = jest.fn();
     const mockGetId = jest.fn();
-    const mockGetOverlay = jest.fn();
-    const mockGetClosestOverlayFor = jest.fn();
     beforeEach(() => {
-        sap.ui.getCore = jest.fn().mockReturnValue({ byId: mockGetId, getComponent: mockGetComponent });
+        sap.ui = {
+            getCore: jest.fn().mockReturnValue({ byId: mockGetId, getComponent: mockGetComponent })
+        } as any;
+        OverlayRegistry.getOverlay = jest
+            .fn()
+            .mockReturnValue({ getElementInstance: jest.fn(), getDomRef: jest.fn().mockReturnValue(undefined) });
+        OverlayUtil.getClosestOverlayFor = jest.fn().mockReturnValue({ getElementInstance: jest.fn() });
     });
     describe('isEditable', () => {
         test('control not found by id, search by component', () => {
@@ -25,8 +31,6 @@ describe('utils', () => {
         });
         test('control found by id, search by getOverlay', () => {
             mockGetId.mockReturnValue('mockControl');
-            mockGetClosestOverlayFor.mockReturnValue({ getElementInstance: jest.fn() });
-            mockGetOverlay.mockReturnValue({ getElementInstance: jest.fn() });
             const editable = isEditable('dummyId');
             expect(editable).toBeTruthy();
         });

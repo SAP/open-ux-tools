@@ -1,6 +1,6 @@
 const config = require('../../jest.base');
 config.testEnvironment = 'jsdom';
-config.collectCoverageFrom = ['src/**/*.ts'];
+config.collectCoverageFrom = ['src/**/*.ts', '!src/index.ts', '!src/changes/index.ts'];
 config.transform = {
     '^.+\\.test.ts?$': 'ts-jest'
 };

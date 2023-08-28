@@ -49,7 +49,7 @@ export async function init(options: UI5AdaptationOptions): Promise<void> {
             service.init(sendAction, subscribe);
         }
         initOutline(rta, sendAction).catch((error) => {
-            throw new Error(error);
+            console.error(`Error during initialization of Control Property Editor Outline`, error);
         });
         const icons = ui5.getIcons();
         sendAction(iconsLoaded(icons));

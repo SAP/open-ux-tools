@@ -8,7 +8,11 @@ describe('postMessage', () => {
     beforeEach(() => {
         removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
         addEventListenerSpy = jest.spyOn(window, 'addEventListener');
-        actionHandlerMock = jest.fn();
+        actionHandlerMock = jest.fn().mockResolvedValue('action');
+    });
+
+    afterEach(() => {
+        jest.resetAllMocks();
     });
 
     test('startPostMessageCommunication', () => {
@@ -70,7 +74,7 @@ describe('postMessage', () => {
 
         const callBackFn = addEventListenerSpy.mock.calls[0][1];
         callBackFn(event as any);
-
+        expect(actionHandlerMock).not.toHaveBeenCalled();
         result.dispose();
 
         expect(removeEventListenerSpy).toBeCalled();
