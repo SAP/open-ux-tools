@@ -78,7 +78,7 @@ const DropdownIndicator = (props: DropdownIndicatorProps<UICreateSelectOptionEnt
 /**
  * Return a custom clear indicator component to be used in the select component.
  *
- * @param {ClearIndicatorProps<UICreateSelectOptionEntry>} props
+ * @param {ClearIndicatorProps<UICreateSelectOptionEntry, true>} props
  * @returns {JSX.Element}
  */
 const ClearIndicator = (props: ClearIndicatorProps<UICreateSelectOptionEntry, true>): JSX.Element => {
@@ -92,10 +92,12 @@ const ClearIndicator = (props: ClearIndicatorProps<UICreateSelectOptionEntry, tr
 /**
  * Return a custom loading indicator component to be used in the select component.
  *
- * @param {LoadingIndicatorProps<UICreateSelectOptionEntry>} _props
+ * @param {LoadingIndicatorProps<UICreateSelectOptionEntry, true, UICreateSelectGroupEntry>} _props
  * @returns {JSX.Element}
  */
-const LoadingIndicator = (_props: LoadingIndicatorProps<UICreateSelectOptionEntry>): JSX.Element => {
+const LoadingIndicator = (
+    _props: LoadingIndicatorProps<UICreateSelectOptionEntry, true, UICreateSelectGroupEntry>
+): JSX.Element => {
     return (
         <div className="ui-create-select-indicator-loading">
             <UILoader className="uiLoaderXSmall" labelPosition="right" />
