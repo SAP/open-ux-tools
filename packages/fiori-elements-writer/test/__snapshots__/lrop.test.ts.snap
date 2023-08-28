@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Fiori Elements template: lropTemplates Generate files for template: lropV2 1`] = `
+exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v2 1`] = `
 Object {
   ".gitignore": Object {
     "contents": "node_modules/
@@ -51,7 +51,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felrop2
 type: application
@@ -99,7 +99,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felrop2
 type: application
@@ -140,7 +140,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felrop2
 type: application
@@ -3629,7 +3629,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felrop3
 type: application
@@ -3677,7 +3677,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felrop3
 type: application
@@ -3718,7 +3718,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felrop3
 type: application
@@ -7209,7 +7209,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felrop4
 type: application
@@ -7257,7 +7257,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felrop4
 type: application
@@ -7298,7 +7298,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felrop4
 type: application
@@ -10572,7 +10572,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_set_toolsId
 type: application
@@ -10620,7 +10620,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_set_toolsId
 type: application
@@ -10661,7 +10661,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_set_toolsId
 type: application
@@ -14151,7 +14151,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_set_toolsId_only
 type: application
@@ -14199,7 +14199,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_set_toolsId_only
 type: application
@@ -14240,7 +14240,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_set_toolsId_only
 type: application
@@ -17679,7 +17679,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 }
 `;
 
-exports[`Fiori Elements template: lropTemplates Generate files for template: lropV2_ts 1`] = `
+exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v2_ts 1`] = `
 Object {
   ".babelrc.json": Object {
     "contents": "{
@@ -17732,7 +17732,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"lropv2_ts\\",
+  \\"name\\": \\"lrop_v2_ts\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
@@ -17756,8 +17756,8 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_ts-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_ts-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lrop_v2_ts-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lrop_v2_ts-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
@@ -17766,7 +17766,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_ts-tile\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lrop_v2_ts-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -17787,7 +17787,7 @@ archive.zip
         \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
-            \\"lropV2_ts/*\\": [
+            \\"lrop_v2_ts/*\\": [
                 \\"./webapp/*\\"
             ]
         },
@@ -17804,9 +17804,9 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
-  name: lropV2_ts
+  name: lrop_v2_ts
 type: application
 framework:
   name: SAPUI5
@@ -17864,9 +17864,9 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
-  name: lropV2_ts
+  name: lrop_v2_ts
 type: application
 server:
   customMiddleware:
@@ -17917,9 +17917,9 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
-  name: lropV2_ts
+  name: lrop_v2_ts
 type: application
 server:
   customMiddleware:
@@ -17961,7 +17961,7 @@ builder:
     "contents": "import BaseComponent from \\"sap/suite/ui/generic/template/lib/AppComponent\\";
 
 /**
- * @namespace lropV2_ts
+ * @namespace lrop_v2_ts
  */
 export default class Component extends BaseComponent {
 
@@ -18002,7 +18002,7 @@ export default class Component extends BaseComponent {
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for lropV2_ts
+    "contents": "# This is the resource bundle for lrop_v2_ts
 
 #Texts for manifest.json
 
@@ -18031,7 +18031,7 @@ appDescription=A Fiori application.",
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-resourceroots='{
-            \\"lropV2_ts\\": \\"./\\"
+            \\"lrop_v2_ts\\": \\"./\\"
         }'
         data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
@@ -18042,9 +18042,9 @@ appDescription=A Fiori application.",
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"lropV2_ts\\"
+        data-name=\\"lrop_v2_ts\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"lropV2_ts\\"}'
+        data-settings='{\\"id\\" : \\"lrop_v2_ts\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -20667,7 +20667,7 @@ appDescription=A Fiori application.",
     "contents": "{
   \\"_version\\": \\"1.21.0\\",
   \\"sap.app\\": {
-    \\"id\\": \\"lropV2_ts\\",
+    \\"id\\": \\"lrop_v2_ts\\",
     \\"type\\": \\"application\\",
     \\"i18n\\": \\"i18n/i18n.properties\\",
     \\"applicationVersion\\": {
@@ -20747,7 +20747,7 @@ appDescription=A Fiori application.",
       \\"i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
         \\"settings\\": {
-          \\"bundleName\\": \\"lropV2_ts.i18n.i18n\\"
+          \\"bundleName\\": \\"lrop_v2_ts.i18n.i18n\\"
         }
       },
       \\"\\": {
@@ -21045,7 +21045,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                             oResult.changes = aProcessedChanges;
                                             const oLrepChange = {
                                                 changes: oResult,
-                                                componentClassName: \\"lropV2_ts\\"
+                                                componentClassName: \\"lrop_v2_ts\\"
                                             };
                                             resolve(oLrepChange);
                                         });
@@ -21056,7 +21056,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                         oResult.changes = aProcessedChanges;
                                         const oLrepChange = {
                                             changes: oResult,
-                                            componentClassName: \\"lropV2_ts\\"
+                                            componentClassName: \\"lrop_v2_ts\\"
                                         };
                                         resolve(oLrepChange);
                                     }
@@ -21119,10 +21119,10 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 }
             },
             applications: {
-                \\"lropV2_ts-tile\\": {
+                \\"lrop_v2_ts-tile\\": {
                     title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
                     description: \\"A Fiori application.\\",
-                    additionalInformation: \\"SAPUI5.Component=lropV2_ts\\",
+                    additionalInformation: \\"SAPUI5.Component=lrop_v2_ts\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
                 }
@@ -21140,9 +21140,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"lropV2_ts\\": \\"../\\"}'
+        data-sap-ui-resourceroots='{\\"lrop_v2_ts\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"LocalStorageConnector\\"}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lrop_v2_ts/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"LocalStorageConnector\\"}]'>
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {
@@ -21299,7 +21299,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_ts_ui5_1_108
 type: application
@@ -21359,7 +21359,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_ts_ui5_1_108
 type: application
@@ -21412,7 +21412,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_ts_ui5_1_108
 type: application
@@ -24783,7 +24783,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_ts_ui5_1_111
 type: application
@@ -24843,7 +24843,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_ts_ui5_1_111
 type: application
@@ -24896,7 +24896,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_ts_ui5_1_111
 type: application
@@ -28267,7 +28267,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_ts_ui5_1_113
 type: application
@@ -28327,7 +28327,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_ts_ui5_1_113
 type: application
@@ -28380,7 +28380,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: lropV2_ts_ui5_1_113
 type: application
@@ -31643,7 +31643,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"lropv2_ts\\",
+  \\"name\\": \\"lrop_v2_ts\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
@@ -31661,12 +31661,12 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_ts-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_ts-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lrop_v2_ts-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lrop_v2_ts-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_ts-tile\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lrop_v2_ts-tile\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -31676,9 +31676,9 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
-  name: lropV2_ts
+  name: lrop_v2_ts
 type: application
 framework:
   name: SAPUI5
@@ -31724,9 +31724,9 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
-  name: lropV2_ts
+  name: lrop_v2_ts
 type: application
 server:
   customMiddleware:
@@ -31765,9 +31765,9 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
-  name: lropV2_ts
+  name: lrop_v2_ts
 type: application
 server:
   customMiddleware:
@@ -31799,7 +31799,7 @@ server:
     function (Component) {
         \\"use strict\\";
 
-        return Component.extend(\\"lropV2_ts.Component\\", {
+        return Component.extend(\\"lrop_v2_ts.Component\\", {
             metadata: {
                 manifest: \\"json\\"
             }
@@ -31830,7 +31830,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for lropV2_ts
+    "contents": "# This is the resource bundle for lrop_v2_ts
 
 #Texts for manifest.json
 
@@ -34457,7 +34457,7 @@ appDescription=A Fiori application.",
     "contents": "{
   \\"_version\\": \\"1.21.0\\",
   \\"sap.app\\": {
-    \\"id\\": \\"lropV2_ts\\",
+    \\"id\\": \\"lrop_v2_ts\\",
     \\"type\\": \\"application\\",
     \\"i18n\\": \\"i18n/i18n.properties\\",
     \\"applicationVersion\\": {
@@ -34537,7 +34537,7 @@ appDescription=A Fiori application.",
       \\"i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
         \\"settings\\": {
-          \\"bundleName\\": \\"lropV2_ts.i18n.i18n\\"
+          \\"bundleName\\": \\"lrop_v2_ts.i18n.i18n\\"
         }
       },
       \\"\\": {
@@ -34830,7 +34830,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                             oResult.changes = aProcessedChanges;
                                             var oLrepChange = {
                                                 changes: oResult,
-                                                componentClassName: \\"lropV2_ts\\"
+                                                componentClassName: \\"lrop_v2_ts\\"
                                             };
                                             resolve(oLrepChange);
                                         });
@@ -34841,7 +34841,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                         oResult.changes = aProcessedChanges;
                                         var oLrepChange = {
                                             changes: oResult,
-                                            componentClassName: \\"lropV2_ts\\"
+                                            componentClassName: \\"lrop_v2_ts\\"
                                         };
                                         resolve(oLrepChange);
                                     }
@@ -34904,10 +34904,10 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 }
             },
             applications: {
-                \\"lropV2_ts-tile\\": {
+                \\"lrop_v2_ts-tile\\": {
                     title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
                     description: \\"A Fiori application.\\",
-                    additionalInformation: \\"SAPUI5.Component=lropV2_ts\\",
+                    additionalInformation: \\"SAPUI5.Component=lrop_v2_ts\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
                 }
@@ -34925,9 +34925,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"lropV2_ts\\": \\"../\\"}'
+        data-sap-ui-resourceroots='{\\"lrop_v2_ts\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"LocalStorageConnector\\"}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lrop_v2_ts/test/changes_loader\\", \\"custom\\":true}, {\\"connector\\": \\"LocalStorageConnector\\"}]'>
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {
@@ -34950,7 +34950,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 }
 `;
 
-exports[`Fiori Elements template: lropTemplates Generate files for template: lropV4 1`] = `
+exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4 1`] = `
 Object {
   ".gitignore": Object {
     "contents": "node_modules/
@@ -35001,7 +35001,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felrop1
 type: application
@@ -35045,7 +35045,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felrop1
 type: application
@@ -35085,7 +35085,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felrop1
 type: application
@@ -38586,7 +38586,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 }
 `;
 
-exports[`Fiori Elements template: lropTemplates Generate files for template: lropV4_addTests 1`] = `
+exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_addtests 1`] = `
 Object {
   ".gitignore": Object {
     "contents": "node_modules/
@@ -38603,7 +38603,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"lropv4addtests\\",
+  \\"name\\": \\"lrop_v4_addtests\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
@@ -38621,13 +38621,13 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lropV4AddTests-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lropV4AddTests-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_addtests-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_addtests-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lropV4AddTests-tile\\\\\\"\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_addtests-tile\\\\\\"\\",
     \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/integration/opaTests.qunit.html\\\\\\"\\"
   },
   \\"sapux\\": true
@@ -38638,9 +38638,9 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
-  name: lropV4AddTests
+  name: lrop_v4_addtests
 type: application
 framework:
   name: SAPUI5
@@ -38682,9 +38682,9 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
-  name: lropV4AddTests
+  name: lrop_v4_addtests
 type: application
 server:
   customMiddleware:
@@ -38722,9 +38722,9 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
-  name: lropV4AddTests
+  name: lrop_v4_addtests
 type: application
 server:
   customMiddleware:
@@ -38755,7 +38755,7 @@ server:
     function (Component) {
         \\"use strict\\";
 
-        return Component.extend(\\"lropV4AddTests.Component\\", {
+        return Component.extend(\\"lrop_v4_addtests.Component\\", {
             metadata: {
                 manifest: \\"json\\"
             }
@@ -38786,7 +38786,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for lropV4AddTests
+    "contents": "# This is the resource bundle for lrop_v4_addtests
 
 #Texts for manifest.json
 
@@ -38815,7 +38815,7 @@ appDescription=A Fiori application.",
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
-            \\"lropV4AddTests\\": \\"./\\"
+            \\"lrop_v4_addtests\\": \\"./\\"
         }'
         data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
@@ -38826,9 +38826,9 @@ appDescription=A Fiori application.",
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"lropV4AddTests\\"
+        data-name=\\"lrop_v4_addtests\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"lropV4AddTests\\"}'
+        data-settings='{\\"id\\" : \\"lrop_v4_addtests\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -41747,7 +41747,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     "contents": "{
   \\"_version\\": \\"1.37.0\\",
   \\"sap.app\\": {
-    \\"id\\": \\"lropV4AddTests\\",
+    \\"id\\": \\"lrop_v4_addtests\\",
     \\"type\\": \\"application\\",
     \\"i18n\\": \\"i18n/i18n.properties\\",
     \\"applicationVersion\\": {
@@ -41816,7 +41816,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
         \\"settings\\": {
-          \\"bundleName\\": \\"lropV4AddTests.i18n.i18n\\"
+          \\"bundleName\\": \\"lrop_v4_addtests.i18n.i18n\\"
         }
       },
       \\"\\": {
@@ -41962,10 +41962,10 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                 }
             },
             applications: {
-                \\"lropV4AddTests-tile\\": {
+                \\"lrop_v4_addtests-tile\\": {
                     title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
                     description: \\"A Fiori application.\\",
-                    additionalInformation: \\"SAPUI5.Component=lropV4AddTests\\",
+                    additionalInformation: \\"SAPUI5.Component=lrop_v4_addtests\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
                 }
@@ -41983,7 +41983,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"lropV4AddTests\\": \\"../\\"}'
+        data-sap-ui-resourceroots='{\\"lrop_v4_addtests\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
     </script>
@@ -42050,7 +42050,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             src=\\"/resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"lropV4AddTests\\": \\"../../\\"
+                \\"lrop_v4_addtests\\": \\"../../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -42076,16 +42076,16 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     "contents": "sap.ui.require(
     [
         'sap/fe/test/JourneyRunner',
-        'lropV4AddTests/test/integration/FirstJourney',
-		'lropV4AddTests/test/integration/pages/TravelList',
-		'lropV4AddTests/test/integration/pages/TravelObjectPage',
-		'lropV4AddTests/test/integration/pages/BookingObjectPage'
+        'lrop_v4_addtests/test/integration/FirstJourney',
+		'lrop_v4_addtests/test/integration/pages/TravelList',
+		'lrop_v4_addtests/test/integration/pages/TravelObjectPage',
+		'lrop_v4_addtests/test/integration/pages/BookingObjectPage'
     ],
     function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
         'use strict';
         var JourneyRunner = new JourneyRunner({
             // start index.html in web folder
-            launchUrl: sap.ui.require.toUrl('lropV4AddTests') + '/index.html'
+            launchUrl: sap.ui.require.toUrl('lrop_v4_addtests') + '/index.html'
         });
 
        
@@ -42114,7 +42114,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 
     return new ObjectPage(
         {
-            appId: 'lropV4AddTests',
+            appId: 'lrop_v4_addtests',
             componentId: 'BookingObjectPage',
             entitySet: 'Booking'
         },
@@ -42134,7 +42134,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 
     return new ListReport(
         {
-            appId: 'lropV4AddTests',
+            appId: 'lrop_v4_addtests',
             componentId: 'TravelList',
             entitySet: 'Travel'
         },
@@ -42154,7 +42154,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 
     return new ObjectPage(
         {
-            appId: 'lropV4AddTests',
+            appId: 'lrop_v4_addtests',
             componentId: 'TravelObjectPage',
             entitySet: 'Travel'
         },
@@ -42412,7 +42412,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 }
 `;
 
-exports[`Fiori Elements template: lropTemplates Generate files for template: lropV4noUi5Version 1`] = `
+exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_no_ui5_version 1`] = `
 Object {
   ".gitignore": Object {
     "contents": "node_modules/
@@ -42463,7 +42463,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felropui5
 type: application
@@ -42507,7 +42507,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felropui5
 type: application
@@ -42547,7 +42547,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: felropui5
 type: application
