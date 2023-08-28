@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.34
+
+### Patch Changes
+
+-   bce98f84: Support usage when running in connect server like approuter
+
 ## 1.1.33
 
 ### Patch Changes
