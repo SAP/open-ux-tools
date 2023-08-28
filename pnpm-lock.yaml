@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -311,8 +311,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@types/lodash':
-        specifier: 4.14.176
-        version: 4.14.176
+        specifier: 4.14.197
+        version: 4.14.197
       nock:
         specifier: 13.2.1
         version: 13.2.1
@@ -680,8 +680,8 @@ importers:
         specifier: 9.0.13
         version: 9.0.13
       '@types/lodash':
-        specifier: 4.14.176
-        version: 4.14.176
+        specifier: 4.14.197
+        version: 4.14.197
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -735,8 +735,8 @@ importers:
         specifier: 9.0.13
         version: 9.0.13
       '@types/lodash':
-        specifier: 4.14.176
-        version: 4.14.176
+        specifier: 4.14.197
+        version: 4.14.197
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -766,8 +766,8 @@ importers:
         specifier: 4.1.8
         version: 4.1.8
       '@types/lodash':
-        specifier: 4.14.176
-        version: 4.14.176
+        specifier: 4.14.197
+        version: 4.14.197
       '@types/vscode':
         specifier: 1.63.1
         version: 1.63.1
@@ -1171,8 +1171,8 @@ importers:
         specifier: 9.0.13
         version: 9.0.13
       '@types/lodash':
-        specifier: 4.14.176
-        version: 4.14.176
+        specifier: 4.14.197
+        version: 4.14.197
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1199,8 +1199,8 @@ importers:
         version: 7.5.3
     devDependencies:
       '@types/lodash':
-        specifier: 4.14.176
-        version: 4.14.176
+        specifier: 4.14.197
+        version: 4.14.197
       '@types/semver':
         specifier: 7.3.9
         version: 7.3.9
@@ -1251,8 +1251,8 @@ importers:
         specifier: 9.0.13
         version: 9.0.13
       '@types/lodash':
-        specifier: 4.14.176
-        version: 4.14.176
+        specifier: 4.14.197
+        version: 4.14.197
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1362,8 +1362,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@types/lodash':
-        specifier: 4.14.176
-        version: 4.14.176
+        specifier: 4.14.197
+        version: 4.14.197
 
   types:
     devDependencies:
@@ -3772,7 +3772,7 @@ packages:
     dependencies:
       '@formatjs/ts-transformer': 2.13.0(ts-jest@29.1.0)
       '@types/json-stable-stringify': 1.0.34
-      '@types/lodash': 4.14.176
+      '@types/lodash': 4.14.197
       '@types/loud-rejection': 2.0.0
       '@types/node': 14.18.54
       '@vue/compiler-core': 3.3.4
@@ -5353,7 +5353,7 @@ packages:
       '@babel/preset-env': 7.22.5(@babel/core@7.22.5)
       '@babel/types': 7.22.5
       '@mdx-js/mdx': 1.6.22
-      '@types/lodash': 4.14.176
+      '@types/lodash': 4.14.197
       js-string-escape: 1.0.1
       loader-utils: 2.0.4
       lodash: 4.17.21
@@ -5948,8 +5948,8 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
-  /@types/lodash@4.14.176:
-    resolution: {integrity: sha512-xZmuPTa3rlZoIbtDUyJKZQimJV3bxCmzMIO2c9Pz9afyDro6kr7R79GwcB6mRhuoPmV2p1Vb66WOJH7F886WKQ==}
+  /@types/lodash@4.14.197:
+    resolution: {integrity: sha512-BMVOiWs0uNxHVlHBgzTIqJYmj+PgCo4euloGF+5m4okL3rEYzM2EEv78mw8zWSMM57dM7kVIgJ2QDvwHSoCI5g==}
     dev: true
 
   /@types/loud-rejection@2.0.0:
