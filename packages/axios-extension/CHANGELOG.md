@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.4.2
+
+### Patch Changes
+
+-   29e71f68: Remove unnecessary uri encoding on the package name within ADT service query implementation `getTransportRequests`.
+
 ## 1.4.1
 
 ### Patch Changes
