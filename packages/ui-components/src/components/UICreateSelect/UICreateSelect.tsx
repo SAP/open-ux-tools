@@ -108,10 +108,10 @@ const LoadingIndicator = (
 /**
  * Return a custom option component to be used in the select component.
  *
- * @param {OptionProps<UICreateSelectOptionEntry>} props
+ * @param {OptionProps<UICreateSelectOptionEntry, true, UICreateSelectGroupEntry>} props
  * @returns {JSX.Element}
  */
-const Option = (props: OptionProps<UICreateSelectOptionEntry>): JSX.Element => {
+const Option = (props: OptionProps<UICreateSelectOptionEntry, true, UICreateSelectGroupEntry>): JSX.Element => {
     return (
         <React.Fragment>
             {!props?.data?.__isNew__ && (
