@@ -39,7 +39,7 @@
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
-        "@types/lodash": "4.14.176",
+        "@types/lodash": "4.14.197",
         "nock": "13.2.1",
         "supertest": "6.3.2"
     },
