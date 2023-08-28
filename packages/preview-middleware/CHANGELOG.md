@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.4.0
+
+### Minor Changes
+
+-   4b906238: Preview html is shown in CAP project using cds-plugin-ui5@0.4.0
+
 ## 0.3.9
 
 ### Patch Changes
