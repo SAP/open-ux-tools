@@ -19,6 +19,6 @@
   "devDependencies": {
     "@types/mem-fs-editor": "7.0.1",
     "@types/vinyl": "2.0.7",
-    "@sapui5/types": "1.117.0"
+    "@sapui5/types": "1.117.1"
   }
 }
