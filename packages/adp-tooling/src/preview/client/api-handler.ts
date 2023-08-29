@@ -1,6 +1,6 @@
 export const enum ApiEndpoints {
-    FRAGMENT = './adp/api/fragment',
-    CONTROLLER = './adp/api/controller',
+    FRAGMENT = '/adp/api/fragment',
+    CONTROLLER = '/adp/api/controller',
     MANIFEST_APP_DESCRIPTOR = '/manifest.appdescr_variant'
 }
 

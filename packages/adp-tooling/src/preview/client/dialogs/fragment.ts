@@ -6,46 +6,42 @@ import Controller from 'sap/ui/core/mvc/Controller';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-/** sap.ui.dt */
-import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
-
 import type AddFragment from '../controllers/AddFragment.controller';
-import type { BaseDialog } from './base';
 
 /**
- * Handles creation of the dialog, fills it with data
+ * Initilizes "Add XML Fragment" functionality and adds a new item to the context menu
+ *
+ * @param rta Runtime Authoring
  */
-export default class FragmentDialog implements BaseDialog {
-    /**
-     * @param rta Runtime Authoring
-     */
-    constructor(private rta: RuntimeAuthoring) {}
+export const initFragment = (rta: RuntimeAuthoring): void => {
+    const contextMenu = rta.getDefaultPlugins().contextMenu;
 
-    /**
-     * Initilizes "Add XML Fragment" functionality and adds a new item to the context menu
-     *
-     * @param contextMenu Context Menu from RTA
-     */
-    public init(contextMenu: ContextMenu): void {
-        contextMenu.addMenuItem({
-            id: 'ADD_FRAGMENT',
-            text: 'Add: Fragment',
-            handler: async function (this: FragmentDialog, overlays: UI5Element[]) {
-                const viewXml = '<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"></mvc:View>';
+    contextMenu.addMenuItem({
+        id: 'ADD_FRAGMENT',
+        text: 'Add: Fragment',
+        handler: async (overlays: UI5Element[]) => await handler(overlays, rta),
+        icon: 'sap-icon://attachment-html'
+    });
+};
 
-                const controller = (await Controller.create({
-                    name: 'adp.extension.controllers.AddFragment'
-                })) as unknown as AddFragment;
+/**
+ * Handler for new context menu entry
+ *
+ * @param overlays Control overlays
+ * @param rta Runtime Authoring
+ */
+export async function handler(overlays: UI5Element[], rta: RuntimeAuthoring): Promise<void> {
+    const viewXml = '<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"></mvc:View>';
 
-                controller.overlays = overlays;
-                controller.rta = this.rta;
+    const controller = (await Controller.create({
+        name: 'adp.extension.controllers.AddFragment'
+    })) as unknown as AddFragment;
 
-                await XMLView.create({
-                    definition: viewXml,
-                    controller
-                });
-            }.bind(this),
-            icon: 'sap-icon://attachment-html'
-        });
-    }
+    controller.overlays = overlays;
+    controller.rta = rta;
+
+    await XMLView.create({
+        definition: viewXml,
+        controller
+    });
 }
