@@ -102,7 +102,7 @@ export default class RoutesHandler {
                 const message = 'XML Fragment created';
                 res.status(HttpStatusCodes.CREATED).send(message);
             } else {
-                res.send(HttpStatusCodes.BAD_REQUEST).send('Fragment Name was not provided!');
+                res.status(HttpStatusCodes.BAD_REQUEST).send('Fragment Name was not provided!');
             }
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);

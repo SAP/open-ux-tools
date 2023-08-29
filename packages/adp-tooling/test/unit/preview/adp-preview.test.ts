@@ -31,8 +31,8 @@ const mockProject = {
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
     existsSync: jest.fn(),
-    mkdirSync: jest.fn().mockRejectedValue(undefined),
-    copyFileSync: jest.fn().mockRejectedValue(undefined)
+    mkdirSync: jest.fn(),
+    copyFileSync: jest.fn()
 }));
 const mockExistsSync = existsSync as jest.Mock;
 
@@ -253,12 +253,35 @@ describe('AdaptationProject', () => {
         });
 
         test('POST /adp/api/fragment - creates fragment', async () => {
-            mockExistsSync.mockReturnValue(false);
+            mockExistsSync.mockReturnValueOnce(false).mockReturnValueOnce(false);
             const fragmentName = 'Share';
             const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(201);
 
             const message = response.text;
             expect(message).toBe('XML Fragment created');
-        }, 20000);
+        });
+
+        test('POST /adp/api/fragment - fragment already exists', async () => {
+            mockExistsSync.mockReturnValueOnce(false).mockReturnValueOnce(true);
+            const fragmentName = 'Share';
+            const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(409);
+
+            const message = response.text;
+            expect(message).toBe(`Fragment with name "${fragmentName}" already exists`);
+        });
+
+        test('POST /adp/api/fragment - fragmentName is not provided', async () => {
+            const response = await server.post('/adp/api/fragment').send({ fragmentName: '' }).expect(400);
+
+            const message = response.text;
+            expect(message).toBe('Fragment Name was not provided!');
+        });
+
+        test('POST /adp/api/fragment - throws error when fragmentName is undefined', async () => {
+            const response = await server.post('/adp/api/fragment').send({ fragmentName: undefined }).expect(500);
+
+            const message = response.text;
+            expect(message).toBe('Input must be string');
+        });
     });
 });
