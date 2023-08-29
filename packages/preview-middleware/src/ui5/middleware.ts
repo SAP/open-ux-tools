@@ -32,7 +32,7 @@ async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, 
         ns.forEach((segment) => path.push(segment));
 
         await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
-        flp.router.use(adp.descriptor.url, adp.proxy.bind(adp));
+        flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
         flp.router.use(path.join('/'), serveStatic(adp.extensionScript.local));
         adp.addApis(flp.router);
     } else {
@@ -68,6 +68,8 @@ async function createRouter({ resources, options, middlewareUtil }: MiddlewarePa
             throw new Error('No manifest.json found.');
         }
     }
+    // add exposed endpoints for cds-plugin-ui5
+    flp.router.getAppPages = () => [`${flp.config.path}#${flp.config.intent.object}-${flp.config.intent.action}`];
     return flp.router;
 }
 

@@ -27,7 +27,7 @@ export interface App {
  */
 export interface FlpConfig {
     path: string;
-    intent?: Intent;
+    intent: Intent;
     rta?: {
         layer?: UI5FlexLayer;
         /**
