@@ -1,5 +1,5 @@
 import type ManagedObject from 'sap/ui/base/ManagedObject';
-import Control from 'sap/ui/core/Control';
+import type Control from 'sap/ui/core/Control';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 export interface PropertiesInfo {
