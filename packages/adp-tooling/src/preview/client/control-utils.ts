@@ -24,22 +24,20 @@ export interface Properties {
     isIcon?: boolean;
 }
 
-interface AnalyzedType {
+export interface AnalyzedType {
     primitiveType: string;
     ui5Type: string | null;
     enumValues: { [key: string]: string } | null;
     isArray: boolean;
 }
 
-type Property = { name: string; defaultValue: string };
-
-type ControlNewData = {
+export type ControlNewData = {
     id: any;
     name: any;
     newValue: any;
 };
 
-type MetadataOptionsProperty = MetadataOptions.Property & {
+export type MetadataOptionsProperty = MetadataOptions.Property & {
     name: string;
     getType(): {
         getName(): string;
@@ -133,10 +131,11 @@ export default class ControlUtils {
      * Sets properties for analyzedType when data type is enum
      *
      * @param propertyDataType Type of property data type
+     * @param propertyDataType.getName Gets the name of the property
      * @param typeName Type name
      */
-    private static setAnalyzedTypeForEnumDataType(propertyDataType: object, typeName: string) {
-        const name = Object.getPrototypeOf(propertyDataType).getName();
+    private static setAnalyzedTypeForEnumDataType(propertyDataType: { getName: () => string }, typeName: string): void {
+        const name = propertyDataType.getName();
         if (!name) {
             this.analyzedType.primitiveType = 'enum';
         } else {
@@ -380,7 +379,7 @@ export default class ControlUtils {
      * Pushed property to properties array depending on primitiveType of analyzed T
      *
      * @param {AnalyzedType} analyzedType  Analyzed type
-     * @param {Property} property Property
+     * @param {MetadataOptionsProperty} property Property
      * @param {Properties[]} properties Properties array
      * @param documentation Documentation object
      * @param selectedControlName Selected control name

@@ -253,7 +253,7 @@ describe('AdaptationProject', () => {
         });
 
         test('POST /adp/api/fragment - creates fragment', async () => {
-            mockExistsSync.mockReturnValueOnce(false).mockReturnValueOnce(false);
+            mockExistsSync.mockReturnValue(false);
             const fragmentName = 'Share';
             const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(201);
 

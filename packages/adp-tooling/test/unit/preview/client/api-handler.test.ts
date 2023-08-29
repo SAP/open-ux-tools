@@ -10,13 +10,18 @@ describe('API Handler', () => {
         });
 
         test('GET - returns correct data', async () => {
-            nock(backend).get(ApiEndpoints.FRAGMENT).reply(200).persist(true);
+            const scope = nock(backend).get(ApiEndpoints.FRAGMENT).reply(200);
             try {
-                const data = await request(ApiEndpoints.FRAGMENT, RequestMethod.GET);
+                const data = await request(
+                    `${backend}${ApiEndpoints.FRAGMENT}` as unknown as ApiEndpoints,
+                    RequestMethod.GET
+                );
                 expect(data);
             } catch (e) {
                 expect(e.message).toBe('Test should have failed!');
             }
+
+            scope.done();
         });
     });
 });
