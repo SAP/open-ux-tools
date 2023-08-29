@@ -61,12 +61,10 @@ export class SelectionService implements Service {
                 }
                 eventOrigin.add('outline');
                 let controlOverlay = this.ui5.getOverlay(control);
-                const selectedOverlayControls = this.rta.getSelection();
-                if (selectedOverlayControls.length > 0) {
-                    //remove previous selection
-                    for (const selectedOverlayControl of selectedOverlayControls) {
-                        selectedOverlayControl.setSelected(false); //deselect previously selected control
-                    }
+                const selectedOverlayControls = this.rta.getSelection() || [];
+                //remove previous selection
+                for (const selectedOverlayControl of selectedOverlayControls) {
+                    selectedOverlayControl.setSelected(false); //deselect previously selected control
                 }
 
                 if (!controlOverlay?.getDomRef()) {

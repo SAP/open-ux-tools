@@ -56,9 +56,7 @@
     "stream-browserify": "3.0.0",
     "ts-import-plugin": "1.6.3",
     "ts-jest": "29.1.1",
-    "postcss-modules": "6.0.0"
-  },
-  "dependencies": {
+    "postcss-modules": "6.0.0",
     "@sap-ux/control-property-editor-common": "workspace:*"
   }
 }

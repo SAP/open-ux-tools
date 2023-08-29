@@ -1,6 +1,6 @@
 import type { UI5ControlProperty } from './types';
 
-import type { Control, ControlProperty } from '@sap-ux/control-property-editor-common';
+import type { Control, ControlProperty, Properties } from '@sap-ux/control-property-editor-common';
 import {
     BOOLEAN_VALUE_TYPE,
     CHECKBOX_EDITOR_TYPE,
@@ -217,22 +217,14 @@ export async function buildControlData(
         // 2. The control has stable ID
         // 3. It is not configured to be ignored in design time
         // 4. And control overlay is selectable
-        const isEnabled =
-            (controlOverlay?.isSelectable() ?? false) && isPropertyEnabled(analyzedType) && hasStableId && !ignore;
+        const isEnabled = isControlEnabled(analyzedType, hasStableId, ignore, controlOverlay);
+
         const value = normalizeObjectPropertyValue(controlNewData.newValue);
         const isIcon =
             testIconPattern(property.name) &&
             selectedControlName !== 'sap.m.Image' &&
             analyzedType.ui5Type === 'sap.ui.core.URI';
-        const documentation = document?.[property.name]
-            ? document[property.name]
-            : ({
-                  defaultValue: (property.defaultValue as string) || '-',
-                  description: '',
-                  propertyName: property.name,
-                  type: analyzedType.ui5Type,
-                  propertyType: analyzedType.ui5Type
-              } as PropertiesInfo);
+        const documentation = getPropertyDocument(property, analyzedType, document);
         const readableName = convertCamelCaseToPascalCase(property.name);
         switch (analyzedType.primitiveType) {
             case 'enum': {
@@ -311,4 +303,46 @@ export async function buildControlData(
         properties: [...properties].sort((a, b) => (a.name > b.name ? 1 : -1)),
         name: selectedControlName
     };
+}
+
+/**
+ * Return if a control is enabled or not.
+ *
+ * @param analyzedType - analyzed property type
+ * @param hasStableId - given control has stable id.
+ * @param ignore - property that is ignored during design time
+ * @param controlOverlay - element overlay
+ * @returns boolean
+ */
+function isControlEnabled(
+    analyzedType: AnalyzedType,
+    hasStableId: boolean,
+    ignore: boolean,
+    controlOverlay?: ElementOverlay
+): boolean {
+    return (controlOverlay?.isSelectable() ?? false) && isPropertyEnabled(analyzedType) && hasStableId && !ignore;
+}
+
+/**
+ * Return document of a property.
+ *
+ * @param property - control metadata props.
+ * @param analyzedType - analyzed property type
+ * @param document - property that is ignored during design time
+ * @returns PropertiesInfo
+ */
+function getPropertyDocument(
+    property: ManagedObjectMetadataProperties,
+    analyzedType: AnalyzedType,
+    document?: Properties
+): PropertiesInfo {
+    return document?.[property.name]
+        ? document[property.name]
+        : ({
+              defaultValue: (property.defaultValue as string) || '-',
+              description: '',
+              propertyName: property.name,
+              type: analyzedType.ui5Type,
+              propertyType: analyzedType.ui5Type
+          } as PropertiesInfo);
 }

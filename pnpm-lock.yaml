@@ -456,10 +456,6 @@ importers:
         version: 7.3.9
 
   packages/control-property-editor:
-    dependencies:
-      '@sap-ux/control-property-editor-common':
-        specifier: workspace:*
-        version: link:../control-property-editor-common
     devDependencies:
       '@fluentui/react':
         specifier: 8.100.0
@@ -470,6 +466,9 @@ importers:
       '@reduxjs/toolkit':
         specifier: 1.6.1
         version: 1.6.1(react-redux@7.2.1)(react@16.14.0)
+      '@sap-ux/control-property-editor-common':
+        specifier: workspace:*
+        version: link:../control-property-editor-common
       '@sap-ux/ui-components':
         specifier: workspace:*
         version: link:../ui-components
