@@ -1,4 +1,5 @@
 import type ManagedObject from 'sap/ui/base/ManagedObject';
+import Control from 'sap/ui/core/Control';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 export interface PropertiesInfo {
@@ -37,7 +38,7 @@ export function getRuntimeControl(overlayControl: ElementOverlay): ManagedObject
 export async function getLibrary(controlName: string): Promise<string> {
     return new Promise((resolve) => {
         const controlPath = controlName.replace(/\./g, '/');
-        sap.ui.require([controlPath], (control) => {
+        sap.ui.require([controlPath], (control: Control) => {
             const contMetadata = control.getMetadata();
             // getLibraryName method does not exist on events
             if (contMetadata?.getLibraryName) {
