@@ -6,6 +6,7 @@ import type { Resource } from '@ui5/fs';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import nock from 'nock';
+import type { EnhancedRouter } from '../../../src/base/flp';
 
 jest.mock('@sap-ux/store', () => {
     return {
@@ -18,9 +19,8 @@ jest.mock('@sap-ux/store', () => {
     };
 });
 
-// middleware function wrapper for testing to simplify tests
-async function getTestServer(fixture?: string, configuration: Partial<Config> = {}): Promise<any> {
-    const router = await (previewMiddleware as any).default({
+async function getRouter(fixture?: string, configuration: Partial<Config> = {}): Promise<EnhancedRouter> {
+    return await (previewMiddleware as any).default({
         options: { configuration },
         resources: {
             rootProject: {
@@ -48,6 +48,11 @@ async function getTestServer(fixture?: string, configuration: Partial<Config> = 
         },
         middlewareUtil: {}
     });
+}
+
+// middleware function wrapper for testing to simplify tests
+async function getTestServer(fixture?: string, configuration: Partial<Config> = {}): Promise<any> {
+    const router = await getRouter(fixture, configuration);
     const app = express();
     app.use(router);
     return supertest(app);
@@ -112,5 +117,11 @@ describe('ui5/middleware', () => {
         } catch (error) {
             expect(error).toBeDefined();
         }
+    });
+
+    test('exposed endpoints (for cds-plugin-ui5)', async () => {
+        const router = await getRouter('simple-app');
+        expect(router.getAppPages).toBeDefined();
+        expect(router.getAppPages?.()).toEqual(['/test/flp.html#app-preview']);
     });
 });

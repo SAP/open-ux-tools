@@ -1,5 +1,17 @@
 # @sap-ux/project-access
 
+## 1.13.1
+
+### Patch Changes
+
+-   56dc4c59: Fix for leading slashes on Windows
+
+## 1.13.0
+
+### Minor Changes
+
+-   d13264b3: Add function to search for CAP project roots in local folders or workspace
+
 ## 1.12.1
 
 ### Patch Changes

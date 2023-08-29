@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.0
+
+### Minor Changes
+
+-   cb80467e: feat: add GoLeft and GoRight icons
+
 ## 1.10.0
 
 ### Minor Changes

@@ -66,6 +66,8 @@ export enum UiIcons {
     ForeignKeySmall = 'ForeignKeySmall',
     FullscreenExpand = 'FullscreenExpand',
     FullscreenCollapse = 'FullscreenCollapse',
+    GoLeft = 'GoLeft',
+    GoRight = 'GoRight',
     GoToKey = 'GoToKey',
     Ghost = 'Ghost',
     GuidedDevelopment = 'GuidedDevelopment',
@@ -944,6 +946,22 @@ export function initIcons(): void {
                     <rect x="17" y="16" width="4" height="13" rx="2" fill={COLORS.focus} />
                     <rect x="31" y="16" width="4" height="13" rx="2" fill={COLORS.focus} />
                     <rect x="21" y="35" width="10" height="4" rx="2" fill={COLORS.focus} />
+                </svg>
+            ),
+            [UiIcons.GoLeft]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M13.9399 7.03207L13.9399 8.03207L3.86513 8.03207L8.1427 11.4541L7.518 12.235L2.32279 8.07883C1.9725 7.7986 1.9725 7.26584 2.32279 6.98561L7.51801 2.82944L8.1427 3.61031L3.86549 7.03207L13.9399 7.03207Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
+            [UiIcons.GoRight]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M2.06006 7.03207L2.06006 8.03207L12.1349 8.03207L7.8573 11.4541L8.48199 12.235L13.6772 8.07883C14.0275 7.7986 14.0275 7.26584 13.6772 6.98561L8.48199 2.82944L7.8573 3.61031L12.1345 7.03207L2.06006 7.03207Z"
+                        fill={COLORS.default}
+                    />
                 </svg>
             ),
             [UiIcons.GoToKey]: (

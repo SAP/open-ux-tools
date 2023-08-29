@@ -69,7 +69,7 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
-    \\"typescript\\": \\"^4.6.3\\",
+    \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
@@ -103,6 +103,7 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"test/me/*\\": [
@@ -122,7 +123,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -177,7 +178,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -229,7 +230,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -2758,7 +2759,7 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
-    \\"typescript\\": \\"^4.6.3\\",
+    \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
@@ -2792,6 +2793,7 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"test/me/*\\": [
@@ -2811,7 +2813,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -2866,7 +2868,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -2918,7 +2920,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -5447,7 +5449,7 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"~1.113.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
-    \\"typescript\\": \\"^4.6.3\\",
+    \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
@@ -5481,6 +5483,7 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"test/me/*\\": [
@@ -5500,7 +5503,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -5555,7 +5558,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -5607,7 +5610,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -8148,7 +8151,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -8191,7 +8194,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -8231,7 +8234,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -10675,7 +10678,7 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
-    \\"typescript\\": \\"^4.6.3\\",
+    \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
@@ -10709,6 +10712,7 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"test/me/*\\": [
@@ -10728,7 +10732,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -10783,7 +10787,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -10835,7 +10839,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application

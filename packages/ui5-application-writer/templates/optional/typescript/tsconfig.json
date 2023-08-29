@@ -8,6 +8,7 @@
         "strictPropertyInitialization": false,
         "moduleResolution": "node",
         "rootDir": "./webapp",
+        "outDir": "./dist",
         "baseUrl": "./",
         "paths": {
             "<%-app.id.replace(/\./g, '/') %>/*": [
