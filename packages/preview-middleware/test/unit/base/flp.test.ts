@@ -19,6 +19,7 @@ class FlpSandbox extends FlpSandboxUnderTest {
 
 describe('FlpSandbox', () => {
     const mockProject = {
+        byPath: jest.fn().mockResolvedValue(undefined),
         byGlob: jest.fn().mockImplementation((glob) =>
             Promise.resolve(
                 glob.includes('changes')

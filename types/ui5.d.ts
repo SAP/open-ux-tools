@@ -36,7 +36,7 @@ declare module '@ui5/fs' {
         /**
          * Locates resources by matching a given path.
          */
-        byPath(virPattern: string | string[], options?: object): Promise<Resource[]>;
+        byPath(virPattern: string | string[], options?: object): Promise<Resource>;
     }
 
     /**
