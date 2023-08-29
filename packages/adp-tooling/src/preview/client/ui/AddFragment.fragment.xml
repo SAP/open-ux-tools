@@ -3,7 +3,7 @@
     xmlns:core="sap.ui.core" 
     xmlns:l="sap.ui.layout"
     xmlns:f="sap.ui.layout.form" >
-        <Dialog id="CreateSalesOrderDialog" title="Add XML Fragment" contentWidth="500px" class="sapUiRTABorder" >
+        <Dialog id="addNewFragmentDialog" title="Add XML Fragment" contentWidth="500px" class="sapUiRTABorder" >
             <content>
                 <VBox class="sapUiSmallMargin">
                     <f:SimpleForm id="SimpleFormChange354"

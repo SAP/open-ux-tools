@@ -48,10 +48,6 @@ export class AdpPreview {
      */
     private mergedDescriptor: MergedAppDescriptor;
     /**
-     * Descriptor variant from the project
-     */
-    private descriptorVariant: DescriptorVariant;
-    /**
      * Routes handler class to handle API requests
      */
     private routesHandler: RoutesHandler;
@@ -122,7 +118,6 @@ export class AdpPreview {
      * @returns the UI5 flex layer for which editing is enabled
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
-        this.descriptorVariant = descriptorVariant;
         const provider = await createAbapServiceProvider(
             this.config.target,
             { ignoreCertErrors: this.config.ignoreCertErrors },

@@ -60,18 +60,11 @@ export interface Content {
 export const enum FolderNames {
     Webapp = 'webapp',
     Changes = 'changes',
-    Fragments = 'fragments',
-    Coding = 'coding',
-    Internalization = 'i18n'
+    Fragments = 'fragments'
 }
 
 export const enum TemplateFileName {
     Fragment = 'fragment.xml'
-}
-
-export const enum ProjectFileNames {
-    ManifestDescriptor = 'manifest.appdescr_variant',
-    InternalizationProperties = 'i18n.properties'
 }
 
 export const enum HttpStatusCodes {

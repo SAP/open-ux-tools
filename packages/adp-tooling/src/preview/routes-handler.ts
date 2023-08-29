@@ -30,7 +30,8 @@ export default class RoutesHandler {
     ) {}
 
     /**
-     * @description Handler for reading all fragment files from the workspace
+     * Handler for reading all fragment files from the workspace
+     *
      * @param _ Request
      * @param res Response
      * @param next Next Function
@@ -92,6 +93,7 @@ export default class RoutesHandler {
 
                 if (fs.existsSync(filePath)) {
                     res.status(HttpStatusCodes.CONFLICT).send(`Fragment with name "${fragmentName}" already exists`);
+                    this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
                     return;
                 }
 
@@ -101,8 +103,10 @@ export default class RoutesHandler {
 
                 const message = 'XML Fragment created';
                 res.status(HttpStatusCodes.CREATED).send(message);
+                this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
             } else {
-                res.status(HttpStatusCodes.BAD_REQUEST).send('Fragment Name was not provided!');
+                res.status(HttpStatusCodes.BAD_REQUEST).send('Fragment name was not provided!');
+                this.logger.debug('Bad request. Fragment name was not provided!');
             }
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);

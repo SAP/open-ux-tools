@@ -1,5 +1,4 @@
 const config = require('../../jest.base');
-// config.coveragePathIgnorePatterns = ['src/preview/client'];
 config.moduleNameMapper = {
     '^sap/(.+)$': `<rootDir>/test/__mock__/sap/$1.ts`
 };

@@ -274,7 +274,7 @@ describe('AdaptationProject', () => {
             const response = await server.post('/adp/api/fragment').send({ fragmentName: '' }).expect(400);
 
             const message = response.text;
-            expect(message).toBe('Fragment Name was not provided!');
+            expect(message).toBe('Fragment name was not provided!');
         });
 
         test('POST /adp/api/fragment - throws error when fragmentName is undefined', async () => {
