@@ -134,8 +134,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui5-application-writer
       '@types/yeoman-environment':
-        specifier: 2.10.6
-        version: 2.10.6
+        specifier: 2.10.8
+        version: 2.10.8
       '@types/yeoman-generator':
         specifier: 5.2.9
         version: 5.2.9
@@ -5759,10 +5759,6 @@ packages:
       '@types/ms': 0.7.31
     dev: true
 
-  /@types/diff@5.0.2:
-    resolution: {integrity: sha512-uw8eYMIReOwstQ0QKF0sICefSy8cNO/v7gOTiIy9SbwuHyEecJUm7qlgueOO5S1udZ5I/irVydHVwMchgzbKTg==}
-    dev: true
-
   /@types/diff@5.0.3:
     resolution: {integrity: sha512-amrLbRqTU9bXMCc6uX0sWpxsQzRIo9z6MJPkH1pkez/qOxuqSZVuryJAWoBRq94CeG8JxY+VK4Le9HtjQR5T9A==}
     dev: true
@@ -6210,13 +6206,6 @@ packages:
     resolution: {integrity: sha512-C2j2FWgQkF1ru12SjZJyMaTPxs/f6n90+5G5qNakBxKXjTBc/YTSelHh4Pz1HUDwxFXD9WvpQhOGCDC+/Y4mIQ==}
     dev: true
 
-  /@types/vinyl@2.0.6:
-    resolution: {integrity: sha512-ayJ0iOCDNHnKpKTgBG6Q6JOnHTj9zFta+3j2b8Ejza0e4cvRyMn0ZoLEmbPrTHe5YYRlDYPvPWVdV4cTaRyH7g==}
-    dependencies:
-      '@types/expect': 1.20.4
-      '@types/node': 12.12.6
-    dev: true
-
   /@types/vinyl@2.0.7:
     resolution: {integrity: sha512-4UqPv+2567NhMQuMLdKAyK4yzrfCqwaTt6bLhHEs8PFcxbHILsrxaY63n4wgE/BRLDWDQeI+WcTmkXKExh9hQg==}
     dependencies:
@@ -6271,17 +6260,17 @@ packages:
       '@types/node': 12.12.6
     dev: true
 
-  /@types/yeoman-environment@2.10.6:
-    resolution: {integrity: sha512-LxouMcULWzEr919MQ82g0qPc7JypnldWA1IVMFUcnqn8nWKt2jjxK8RyxUohxzVDG2ou9EH1upt2jGqprhcnNA==}
+  /@types/yeoman-environment@2.10.8:
+    resolution: {integrity: sha512-/g92Z/PAMXklSoWafGxTW8DxB4admgl5NDHvKn0qMkz2C0GJUvbV7tpU9LbKNnlMO+ynerz5bCVbhuBzEHbb6Q==}
     dependencies:
-      '@types/diff': 5.0.2
+      '@types/diff': 5.0.3
       '@types/inquirer': 8.2.1
       '@types/mem-fs': 1.1.2
       '@types/text-table': 0.2.2
-      '@types/vinyl': 2.0.6
+      '@types/vinyl': 2.0.7
       '@types/yeoman-generator': 5.2.9
       chalk: 4.1.2
-      commander: 9.2.0
+      commander: 9.4.0
       execa: 5.1.1
       rxjs: 6.6.7
     dev: true
@@ -6293,7 +6282,7 @@ packages:
       '@types/ejs': 3.1.0
       '@types/inquirer': 8.2.1
       '@types/mem-fs-editor': 7.0.1
-      '@types/yeoman-environment': 2.10.6
+      '@types/yeoman-environment': 2.10.8
       rxjs: 6.6.7
     dev: true
 
@@ -8572,15 +8561,9 @@ packages:
     engines: {node: '>= 12'}
     dev: true
 
-  /commander@9.2.0:
-    resolution: {integrity: sha512-e2i4wANQiSXgnrBlIatyHtP1odfUp0BbV5Y5nEGbxtIrStkEOAAzCUirvLBNXHLr7kwLvJl6V+4V3XV9x7Wd9w==}
-    engines: {node: ^12.20.0 || >=14}
-    dev: true
-
   /commander@9.4.0:
     resolution: {integrity: sha512-sRPT+umqkz90UA8M1yqYfnHlZA7fF6nSphDtxeywPZ49ysjxDQybzk13CL+mXekDRG92skbcqCLVovuCusNmFw==}
     engines: {node: ^12.20.0 || >=14}
-    dev: false
 
   /comment-json@4.1.0:
     resolution: {integrity: sha512-WEghmVYaNq9NlWbrkzQTSsya9ycLyxJxpTQfZEan6a5Jomnjw18zS3Podf8q1Zf9BvonvQd/+Z7Z39L7KKzzdQ==}
