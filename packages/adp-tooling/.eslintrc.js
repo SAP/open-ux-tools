@@ -5,7 +5,8 @@ module.exports = {
         tsconfigRootDir: __dirname
     },
     rules: {
-        'import/no-unresolved': 'off', // the rule has issues with UI5 imports
+        // ui5 modules are not available in file system
+        'import/no-unresolved': ['error', { ignore: ['^sap/'] }],
         '@typescript-eslint/no-use-before-define': 'warn',
         '@typescript-eslint/ban-ts-comment': 'warn',
         '@typescript-eslint/no-this-alias': 'warn',

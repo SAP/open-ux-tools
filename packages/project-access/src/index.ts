@@ -1,6 +1,7 @@
 export { FileName } from './constants';
 export {
     findAllApps,
+    findCapProjects,
     findFioriArtifacts,
     findProjectRoot,
     getAppRootFromWebappPath,

@@ -298,27 +298,19 @@ describe('utils', () => {
     });
 
     test('setHtmlResponse: use res.send()', () => {
-        const mockSend = jest.fn();
-        const mockContentType = jest.fn().mockImplementation(() => {
-            return {
-                send: mockSend
-            };
-        });
-        const mockStatus = jest.fn().mockImplementation(() => {
-            return {
-                contentType: mockContentType
-            };
-        });
         const res = {
-            status: mockStatus
+            writeHead: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
         } as unknown as any;
         const html = '<html></html>';
         setHtmlResponse(res, html);
-        expect(mockStatus).toBeCalledTimes(1);
-        expect(mockStatus).toBeCalledWith(200);
-        expect(mockContentType).toBeCalledTimes(1);
-        expect(mockContentType).toBeCalledWith('html');
-        expect(mockSend).toHaveBeenCalledWith(html);
+        expect(res.writeHead).toBeCalledTimes(1);
+        expect(res.writeHead).toBeCalledWith(200, {
+            "Content-Type": "text/html"
+        });
+        expect(res.write).toHaveBeenCalledWith(html);
+        expect(res.end).toBeCalledTimes(1);
     });
 
     test('setUI5Version: take version from YAML', async () => {
@@ -464,9 +456,9 @@ describe('utils', () => {
     describe('injectScripts', () => {
         const nextMock = jest.fn();
         const respMock: Response = {} as Partial<Response> as Response;
-        respMock.status = jest.fn().mockReturnValue(respMock);
-        respMock.contentType = jest.fn().mockReturnValue(respMock);
-        respMock.send = jest.fn().mockReturnValue(respMock);
+        respMock.writeHead = jest.fn();
+        respMock.write = jest.fn();
+        respMock.end =  jest.fn();
 
         beforeEach(() => {
             nextMock.mockReset();
@@ -475,9 +467,11 @@ describe('utils', () => {
         test('HTML is modified and response is sent', async () => {
             readFileMock.mockReturnValue('<html></html>');
             await baseUtils.injectScripts({ baseUrl: 'index.html' } as any, respMock, nextMock, []);
-            expect(respMock.status).toHaveBeenCalledWith(200);
-            expect(respMock.contentType).toHaveBeenCalledWith('html');
-            expect(respMock.send).toHaveBeenCalled();
+            expect(respMock.writeHead).toBeCalledTimes(1);
+            expect(respMock.writeHead).toBeCalledWith(200, {
+                "Content-Type": "text/html"
+            });
+            expect(respMock.end).toHaveBeenCalled();        
             expect(nextMock).not.toHaveBeenCalled();
         });
 
