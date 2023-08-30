@@ -3,7 +3,7 @@ import type { TemplateConfig } from '../../../src/base/flp';
 import { FlpSandbox as FlpSandboxUnderTest } from '../../../src';
 import type { FlpConfig } from '../../../src/types';
 import type { MiddlewareUtils } from '@ui5/server';
-import { ToolsLogger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -19,6 +19,7 @@ class FlpSandbox extends FlpSandboxUnderTest {
 
 describe('FlpSandbox', () => {
     const mockProject = {
+        byPath: jest.fn().mockResolvedValue(undefined),
         byGlob: jest.fn().mockImplementation((glob) =>
             Promise.resolve(
                 glob.includes('changes')
@@ -32,7 +33,7 @@ describe('FlpSandbox', () => {
                     : []
             )
         )
-    } as unknown as ReaderCollection;
+    } as unknown as ReaderCollection & { byPath: jest.Mock; byGlob: jest.Mock };
     const mockUtils = {
         getProject() {
             return {
@@ -40,7 +41,9 @@ describe('FlpSandbox', () => {
             };
         }
     } as unknown as MiddlewareUtils;
-    const logger = new ToolsLogger();
+    const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as Logger & {
+        warn: jest.Mock;
+    };
     const fixtures = join(__dirname, '../../fixtures');
 
     describe('constructor', () => {
@@ -151,6 +154,13 @@ describe('FlpSandbox', () => {
         test('test/flp.html', async () => {
             const response = await server.get('/test/flp.html').expect(200);
             expect(response.text).toMatchSnapshot();
+        });
+
+        test('test/flp.html - warn if a file at the same location exists', async () => {
+            logger.warn.mockReset();
+            mockProject.byPath.mockResolvedValueOnce({});
+            await server.get('/test/flp.html').expect(200);
+            expect(logger.warn).toBeCalled();
         });
 
         test('test/flp.html?fiori-tools-rta-mode=true', async () => {
