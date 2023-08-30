@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.4.1
+
+### Patch Changes
+
+-   86f01c39: Log a warning if the preview middleware is used with a path that also exists in the filesystem
+
 ## 0.4.0
 
 ### Minor Changes

@@ -17,10 +17,10 @@ import { static as serveStatic } from 'express';
  * @param logger logger instance
  */
 async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, flp: FlpSandbox, logger: ToolsLogger) {
-    const files = await rootProject.byGlob('/manifest.appdescr_variant');
-    if (files.length === 1) {
+    const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
+    if (appVariant) {
         const adp = new AdpPreview(config, rootProject, logger);
-        const layer = await adp.init(JSON.parse(await files[0].getString()));
+        const layer = await adp.init(JSON.parse(await appVariant.getString()));
         flp.config.rta = {
             layer,
             pluginModule: `${adp.extensionScript.namespace.replace('.', '/')}/${adp.extensionScript.module}`
@@ -61,9 +61,9 @@ async function createRouter({ resources, options, middlewareUtil }: MiddlewarePa
     if (config.adp) {
         await initAdp(resources.rootProject, config.adp, flp, logger);
     } else {
-        const files = await resources.rootProject.byGlob('/manifest.json');
-        if (files.length === 1) {
-            await flp.init(JSON.parse(await files[0].getString()));
+        const manifest = await resources.rootProject.byPath('/manifest.json');
+        if (manifest) {
+            await flp.init(JSON.parse(await manifest.getString()));
         } else {
             throw new Error('No manifest.json found.');
         }
