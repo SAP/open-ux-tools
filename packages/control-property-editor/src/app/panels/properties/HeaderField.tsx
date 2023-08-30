@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { TextField, Label, Stack } from '@fluentui/react';
 import { UIIconButton, UiIcons, UITooltip, UITooltipUtils, UIDirectionalHint } from '@sap-ux/ui-components';
@@ -39,7 +39,19 @@ export function HeaderField(headerFieldProps: HeaderFieldProps): ReactElement {
             propertyType={documentation.propertyType}
         />
     );
-
+    const onCopy = useCallback(
+        () => (
+            <CopyButton
+                label={label}
+                onClick={(): void => {
+                    copyToClipboard(value).catch((reason) => console.error(reason));
+                    setMessageBoxVisibility(!isCopyMessageBoxVisible);
+                    setTimeout(() => setMessageBoxVisibility(false), 3000);
+                }}
+            />
+        ),
+        []
+    );
     return (
         <>
             <Stack horizontal={false} verticalAlign={'space-between'} style={{ marginBottom: 4 }}>
@@ -98,16 +110,7 @@ export function HeaderField(headerFieldProps: HeaderFieldProps): ReactElement {
                             }
                         }
                     }}
-                    onRenderSuffix={() => (
-                        <CopyButton
-                            label={label}
-                            onClick={(): void => {
-                                copyToClipboard(value).catch((reason) => console.error(reason));
-                                setMessageBoxVisibility(!isCopyMessageBoxVisible);
-                                setTimeout(() => setMessageBoxVisibility(false), 3000);
-                            }}
-                        />
-                    )}
+                    onRenderSuffix={onCopy}
                 />
                 {isCopyMessageBoxVisible && <Clipboard label={label} />}
             </Stack>

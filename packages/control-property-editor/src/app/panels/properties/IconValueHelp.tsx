@@ -63,6 +63,12 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
             setItems(icons);
         }
     };
+    const onIconColumnRender = (item: IconColumnProps) => (
+        <IconColumn content={item.content} fontFamily={item.fontFamily} />
+    );
+    const onLabelColumnRender = (item: LabelColumnProps) => (
+        <LabelColumn fontFamily={item.fontFamily} name={item.name} />
+    );
 
     const col1: UIColumn = {
         key: t('ICON'),
@@ -71,7 +77,7 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
         minWidth: 68,
         flexGrow: 1,
         isResizable: true,
-        onRender: (item: IconColumnProps) => <IconColumn content={item.content} fontFamily={item.fontFamily} />
+        onRender: onIconColumnRender
     };
     const col2: UIColumn = {
         key: t('ICON_NAME'),
@@ -80,7 +86,7 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
         minWidth: 238,
         flexGrow: 4,
         isResizable: true,
-        onRender: (item: LabelColumnProps) => <LabelColumn fontFamily={item.fontFamily} name={item.name} />
+        onRender: onLabelColumnRender
     };
     const columns: UIColumn[] = [col1, col2];
     const propertyNamePascalCase = propertyName[0].toUpperCase() + propertyName.substring(1);
