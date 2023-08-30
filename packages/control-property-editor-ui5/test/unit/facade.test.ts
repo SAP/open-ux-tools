@@ -2,6 +2,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { createUi5Facade } from '../../src/facade';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import IconPool from 'sap/ui/core/IconPool';
+import Component from 'sap/ui/core/Component';
 
 describe('Facade', () => {
     const mockGetIconNames = jest.fn().mockReturnValueOnce(['Reject', 'Accedental-Leave', 'Accept']);
@@ -36,11 +37,20 @@ describe('Facade', () => {
         expect(control).toStrictEqual('control');
     });
 
-    test('getComponent', () => {
+    test('getComponent - deprecated', () => {
+        Component.get = undefined as any;
         const component = createUi5Facade().getComponent('abc');
 
         expect(sap.ui.getCore).toBeCalledTimes(1);
         expect(mockComponent).toBeCalledTimes(1);
+        expect(component).toStrictEqual({});
+    });
+
+    test('getComponent', () => {
+        Component.get = jest.fn().mockReturnValue({});
+        const component = createUi5Facade().getComponent('abc');
+
+        expect(Component.get).toBeCalledTimes(1);
         expect(component).toStrictEqual({});
     });
 

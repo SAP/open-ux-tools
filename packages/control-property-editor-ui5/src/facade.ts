@@ -1,6 +1,6 @@
 import type { IconDetails } from '@sap-ux/control-property-editor-common';
 import type { UI5Facade } from './types';
-import type Component from 'sap/ui/core/Component';
+import Component from 'sap/ui/core/Component';
 import type Element from 'sap/ui/core/Element';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type { ID } from 'sap/ui/core/library';
@@ -39,7 +39,12 @@ function getControlById<T extends Element>(id: ID): T | undefined {
  * @returns Component | undefined
  */
 function getComponent<T extends Component>(id: ID): T | undefined {
-    return sap.ui.getCore().getComponent(id) as T;
+    if (Component?.get) {
+        return Component.get(id) as T;
+    } else {
+        // Older version must be still supported until maintenance period.
+        return sap.ui.getCore().getComponent(id) as T; // NOSONAR
+    }
 }
 
 /**

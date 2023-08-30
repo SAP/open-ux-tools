@@ -48,7 +48,7 @@ export async function init(options: UI5AdaptationOptions): Promise<void> {
         for (const service of services) {
             service.init(sendAction, subscribe);
         }
-        initOutline(rta, sendAction).catch((error) => {
+        initOutline(rta, ui5, sendAction).catch((error) => {
             console.error(`Error during initialization of Control Property Editor Outline`, error);
         });
         const icons = ui5.getIcons();

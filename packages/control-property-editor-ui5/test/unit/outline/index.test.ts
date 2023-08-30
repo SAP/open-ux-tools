@@ -1,8 +1,10 @@
+import { createUi5Facade } from '../../../src/facade';
 import { initOutline } from '../../../src/outline/index';
 import * as nodes from '../../../src/outline/nodes';
 jest.useFakeTimers();
 
 describe('index', () => {
+    const ui5 = createUi5Facade();
     const mockSendAction = jest.fn();
     const mockAttachEvent = jest.fn();
     const mockGetComponent = jest.fn();
@@ -53,7 +55,7 @@ describe('index', () => {
                 visible: true
             }
         ]);
-        await initOutline(runtimeAuthoring, mockSendAction);
+        await initOutline(runtimeAuthoring, ui5, mockSendAction);
         expect(mockAttachEvent).toMatchInlineSnapshot(`
             [MockFunction] {
               "calls": Array [
@@ -101,14 +103,14 @@ describe('index', () => {
               ],
             }
         `);
-        const additionalDataCallback = transformNodesSpy.mock.calls[0][1];
+        const additionalDataCallback = transformNodesSpy.mock.calls[0][2];
         const result = additionalDataCallback('v2flex::sap.::SEPMRA_C_PD_Product--template::Share');
         expect(result).toEqual({ text: 'Share' });
     });
 
     test('initOutline - exception', async () => {
         transformNodesSpy.mockRejectedValue('error');
-        await initOutline(runtimeAuthoring, mockSendAction);
+        await initOutline(runtimeAuthoring, ui5, mockSendAction);
         const syncOutline = mockAttachEvent.mock.calls[0][1];
         syncOutline.call();
         await jest.advanceTimersByTimeAsync(4000);
@@ -129,11 +131,11 @@ describe('index', () => {
             }
         ]);
         transformNodesSpy.mockRejectedValue('error');
-        await initOutline(runtimeAuthoring, mockSendAction);
+        await initOutline(runtimeAuthoring, ui5, mockSendAction);
         const syncOutline = mockAttachEvent.mock.calls[0][1];
         syncOutline.call();
         await jest.advanceTimersByTimeAsync(4000);
-        const additionalDataCallback = transformNodesSpy.mock.calls[0][1];
+        const additionalDataCallback = transformNodesSpy.mock.calls[0][2];
         const result = additionalDataCallback('v2flex::sap.::SEPMRA_C_PD_Product--template::Share');
         expect(result).toStrictEqual({});
     });

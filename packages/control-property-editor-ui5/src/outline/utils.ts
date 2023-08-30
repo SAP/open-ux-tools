@@ -2,12 +2,13 @@ import { buildControlData } from '../controlData';
 import { getRuntimeControl } from '../utils';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+import type { UI5Facade } from 'src/types';
 
-export const isEditable = async (id = ''): Promise<boolean> => {
+export const isEditable = async (id = '', ui5: UI5Facade): Promise<boolean> => {
     let editable = false;
-    const control = sap.ui.getCore().byId(id);
+    const control = ui5.getControlById(id);
     if (!control) {
-        const component = sap.ui.getCore().getComponent(id);
+        const component = ui5.getComponent(id);
         if (component) {
             editable = false;
         }

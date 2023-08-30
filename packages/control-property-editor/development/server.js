@@ -20,7 +20,7 @@ app.use('/preview', express.static(APP_ROOT));
 
 // const ui5Version = '1.93.0';
 // const ui5Version = '1.84.5';
-const ui5Version = '';
+const ui5Version = ''; //picks latest
 const ui5PublicUrl = 'https://ui5.sap.com';
 const ui5Proxy = createProxyMiddleware({
     target: ui5PublicUrl,
