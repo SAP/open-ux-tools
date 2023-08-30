@@ -148,7 +148,7 @@ export class FlpSandbox {
      */
     private addStandardRoutes() {
         // add route for the sandbox.html
-        this.router.get(this.config.path, (req: Request, res: Response & { _livereload?: boolean }) => {
+        this.router.get(this.config.path, (async (req: Request, res: Response & { _livereload?: boolean }) => {
             const config = { ...this.templateConfig };
             const fioriToolsRtaMode = req.query['fiori-tools-rta-mode'];
             if (fioriToolsRtaMode) {
@@ -161,6 +161,13 @@ export class FlpSandbox {
                     this.logger.error('Fiori tools RTA mode could not be started because the RTA layer is missing.');
                 }
             }
+
+            // warn the user if a file with the same name exists in the filesystem
+            const file = await this.project.byPath(this.config.path);
+            if (file) {
+                this.logger.warn(`HTML file returned at ${this.config.path} is NOT loaded from the file system.`);
+            }
+
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             const html = render(template, config);
             // if livereload is enabled, don't send it but let other middleware modify the content
@@ -170,7 +177,7 @@ export class FlpSandbox {
             } else {
                 res.status(200).contentType('html').send(html);
             }
-        });
+        }) as RequestHandler);
         // add route for locate-reuse-libs if requested
         if (this.config.libs && this.templateConfig.locateReuseLibsScript) {
             const pathParts = this.config.path.split('/');
