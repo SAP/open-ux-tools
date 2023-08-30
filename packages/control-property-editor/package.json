@@ -15,9 +15,10 @@
     "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
     "clean": "rimraf ./out ./reports",
     "clean:all": "npm-run-all clean",
-    "build": "npm-run-all -l -s clean -p build:compile build:webapp",
+    "build": "npm-run-all -l -s clean -p build:compile build:webapp build:copyfiles",
     "build:compile": "tsc  --build ./tsconfig.build.json --pretty --dry",
     "build:webapp": "node esbuild.js",
+    "build:copyfiles": "copyfiles --up 3 \"../control-property-editor-ui5/dist/**/*\" \"./dist/ui5-adaptation\"",
     "watch": "npm-run-all -p watch:*",
     "watch:webapp": "node esbuild.js --watch --minify=false",
     "start": "node development/server",
@@ -57,6 +58,8 @@
     "ts-import-plugin": "1.6.3",
     "ts-jest": "29.1.1",
     "postcss-modules": "6.0.0",
-    "@sap-ux/control-property-editor-common": "workspace:*"
+    "copyfiles": "2.4.1",
+    "@sap-ux/control-property-editor-common": "workspace:*",
+    "@sap-ux/control-property-editor-ui5": "workspace:*"
   }
 }

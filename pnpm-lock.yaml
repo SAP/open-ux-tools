@@ -469,6 +469,9 @@ importers:
       '@sap-ux/control-property-editor-common':
         specifier: workspace:*
         version: link:../control-property-editor-common
+      '@sap-ux/control-property-editor-ui5':
+        specifier: workspace:*
+        version: link:../control-property-editor-ui5
       '@sap-ux/ui-components':
         specifier: workspace:*
         version: link:../ui-components
@@ -502,6 +505,9 @@ importers:
       body-parser:
         specifier: 1.20.1
         version: 1.20.1
+      copyfiles:
+        specifier: 2.4.1
+        version: 2.4.1
       eslint-plugin-react:
         specifier: 7.32.2
         version: 7.32.2(eslint@8.43.0)
@@ -14289,7 +14295,7 @@ packages:
       jest-util: 29.5.0
       jest-validate: 29.5.0
       prompts: 2.4.2
-      yargs: 17.6.2
+      yargs: 17.7.2
     transitivePeerDependencies:
       - '@types/node'
       - supports-color
@@ -20025,7 +20031,7 @@ packages:
       smartwrap: 2.0.2
       strip-ansi: 6.0.1
       wcwidth: 1.0.1
-      yargs: 17.6.2
+      yargs: 17.7.2
     dev: true
 
   /tuf-js@1.1.7:

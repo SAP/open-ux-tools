@@ -1,21 +1,11 @@
 {
     "extends": "./tsconfig-base.json",
     "compilerOptions": {
-        "composite": true,
-        "declaration": true,
-        "declarationMap": true,
-        "incremental": true,
-        "outDir": "dist",
-        "skipLibCheck": true,
         "lib": ["ES2022", "dom"],
         "strict": true,
-        "strictNullChecks": true,
-        "jsx": "react",
-        "rootDir": ".",
-        "sourceMap": true,
-        "module": "ES2022"
+        "strictNullChecks": true
     },
-    "include": ["src/**/*.ts", "../../types/sapui5",  "test/**/*.ts"],
+    "include": ["../../types/sapui5"],
     "exclude": ["dist", "node_modules", "reports"],
     "references": [
         {

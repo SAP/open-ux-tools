@@ -6,7 +6,6 @@
     "declarationMap": true,
     "incremental": true,
     "outDir": "dist",
-    "jsx": "react",
     "target": "ES2021",
     "module": "ES2022",
     "moduleResolution": "node",

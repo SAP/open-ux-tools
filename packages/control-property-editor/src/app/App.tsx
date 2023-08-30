@@ -51,30 +51,31 @@ export default function App(appProps: AppProps): ReactElement {
 
     const containerRef = useCallback(
         (node) => {
-            if (node !== null) {
-                setTimeout(() => {
-                    if (isInitialized && !fitPreview) {
-                        return;
-                    }
-                    const paddingWidth = 40;
-                    const width = node.clientWidth;
-                    const availableWidth = width - paddingWidth;
-                    const requiredWidth = parseInt(previewWidth, 10);
-                    if (availableWidth < requiredWidth) {
-                        const scale = availableWidth / requiredWidth;
-                        dispatch(changePreviewScale(scale));
-                        const startPosition = (node.scrollWidth - width) / 2;
-                        if (typeof node.scrollTo === 'function') {
-                            node.scrollTo(startPosition, 0);
-                        }
-                    } else if (previewScale < 1 && availableWidth >= requiredWidth) {
-                        dispatch(changePreviewScale(1));
-                    }
-                    if (!isInitialized) {
-                        setIsInitialized(true);
-                    }
-                }, 0);
+            if (node === null) {
+                return;
             }
+            setTimeout(() => {
+                if (isInitialized && !fitPreview) {
+                    return;
+                }
+                const paddingWidth = 40;
+                const width = node.clientWidth;
+                const availableWidth = width - paddingWidth;
+                const requiredWidth = parseInt(previewWidth, 10);
+                if (availableWidth < requiredWidth) {
+                    const scale = availableWidth / requiredWidth;
+                    dispatch(changePreviewScale(scale));
+                    const startPosition = (node.scrollWidth - width) / 2;
+                    if (typeof node.scrollTo === 'function') {
+                        node.scrollTo(startPosition, 0);
+                    }
+                } else if (previewScale < 1 && availableWidth >= requiredWidth) {
+                    dispatch(changePreviewScale(1));
+                }
+                if (!isInitialized) {
+                    setIsInitialized(true);
+                }
+            }, 0);
         },
         [windowSize, fitPreview]
     );

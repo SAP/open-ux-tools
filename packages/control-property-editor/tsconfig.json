@@ -35,6 +35,9 @@
       "path": "../control-property-editor-common"
     },
     {
+      "path": "../control-property-editor-ui5"
+    },
+    {
       "path": "../ui-components"
     }
   ]

@@ -28,12 +28,12 @@ describe('utils', () => {
         test('control not found by id, search by component', () => {
             mockGetId.mockReturnValue(null);
             mockGetComponent.mockReturnValue('mockControl');
-            const editable = isEditable('dummyId', ui5);
+            const editable = isEditable(ui5, 'dummyId');
             expect(editable).toBeTruthy();
         });
         test('control found by id, search by getOverlay', () => {
             mockGetId.mockReturnValue('mockControl');
-            const editable = isEditable('dummyId', ui5);
+            const editable = isEditable(ui5, 'dummyId');
             expect(editable).toBeTruthy();
         });
     });

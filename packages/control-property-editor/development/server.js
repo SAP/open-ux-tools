@@ -40,7 +40,7 @@ app.get('/FioriTools/api/getChanges', getChangesFromWorkspace);
 // API to delete changes from the user's workspace
 app.delete('/FioriTools/api/removeChanges', express.json(), removeChangesFromWorkspace);
 
-app.use('/ui5-adaptation', express.static(join(__dirname, '..', '..', 'control-property-editor-ui5', 'dist')));
+app.use('/ui5-adaptation', express.static(join(__dirname, '..', '..', 'control-property-editor', 'dist', 'ui5-adaptation')));
 app.use('/cpe-common', express.static(join(__dirname, '..', '..', 'control-property-editor-common', 'dist')));
 app.use(express.static(join(__dirname, 'public')));
 app.use((req, res) => {
