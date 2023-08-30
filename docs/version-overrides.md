@@ -22,4 +22,4 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 ```
 
 :warning: Attention :warning: 
-* @adobe/css-tools is used in packages/ui-components > @testing-library, which can't be updated to the very latest version due peer dependency to react 18
+* `@adobe/css-tools`` is used in packages/ui-components > `@testing-library/jest-dom`, which can't be updated to the very latest version due peer dependency to react 18.
