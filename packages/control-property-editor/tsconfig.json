@@ -22,8 +22,8 @@
     "src/**/*.tsx",
     "test/**/*.ts",
     "test/**/*.tsx",
-    "development/**/*.ts",
-    "development/**/*.tsx"
+    "test/fixtures/development/**/*.ts",
+    "test/fixtures/development/**/*.tsx"
   ],
   "exclude": [
     "dist",
@@ -36,6 +36,12 @@
     },
     {
       "path": "../control-property-editor-ui5"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../preview-middleware"
     },
     {
       "path": "../ui-components"

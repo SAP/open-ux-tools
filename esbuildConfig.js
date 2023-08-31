@@ -4,7 +4,6 @@ const postcss = require('postcss');
 const yargsParser = require('yargs-parser');
 const { writeFileSync } = require('fs');
 const { resolve, join } = require('path');
-const alias = require('esbuild-plugin-alias');
 
 // from https://github.com/bvaughn/react-virtualized/issues/1212#issuecomment-847759202 workaround for https://github.com/bvaughn/react-virtualized/issues/1632 until it is released.
 const resolveFixup = {
@@ -12,7 +11,12 @@ const resolveFixup = {
     setup(build) {
         build.onResolve({ filter: /react-virtualized/ }, async (args) => {
             return {
-                path: resolve(join(__dirname, './packages/ui-components/node_modules/react-virtualized/dist/umd/react-virtualized.js'))
+                path: resolve(
+                    join(
+                        __dirname,
+                        './packages/ui-components/node_modules/react-virtualized/dist/umd/react-virtualized.js'
+                    )
+                )
             };
         });
     }
@@ -34,11 +38,7 @@ const commonConfig = {
         '.svg': 'file'
     },
 
-    external: [
-        'vscode', // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be bundled
-        'keytar',
-        '@sap/cds'
-    ],
+    external: [],
     plugins: []
 };
 const transformModule = postcssModules({});
@@ -62,10 +62,6 @@ const browserConfig = {
                 const { css } = await postcss([autoprefixer]).process(source);
                 return css;
             }
-        }),
-        alias({
-            'react': require.resolve('react'),
-            'react-dom': require.resolve('react-dom')
         })
     ]
 };
