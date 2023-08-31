@@ -954,8 +954,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@types/pluralize':
-        specifier: 0.0.29
-        version: 0.0.29
+        specifier: 0.0.30
+        version: 0.0.30
       '@types/qs':
         specifier: 6.9.1
         version: 6.9.1
@@ -5703,8 +5703,8 @@ packages:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
     dev: true
 
-  /@types/pluralize@0.0.29:
-    resolution: {integrity: sha512-BYOID+l2Aco2nBik+iYS4SZX0Lf20KPILP5RGmM1IgzdwNdTs0eebiFriOPcej1sX9mLnSoiNte5zcFxssgpGA==}
+  /@types/pluralize@0.0.30:
+    resolution: {integrity: sha512-kVww6xZrW/db5BR9OqiT71J9huRdQ+z/r+LbDuT7/EK50mCmj5FoaIARnVv0rvjUS/YpDox0cDU9lpQT011VBA==}
     dev: true
 
   /@types/prettier@2.4.3:
