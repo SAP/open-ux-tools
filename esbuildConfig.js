@@ -3,6 +3,24 @@ const autoprefixer = require('autoprefixer');
 const postcss = require('postcss');
 const yargsParser = require('yargs-parser');
 const { writeFileSync } = require('fs');
+const { resolve, join } = require('path');
+
+// from https://github.com/bvaughn/react-virtualized/issues/1212#issuecomment-847759202 workaround for https://github.com/bvaughn/react-virtualized/issues/1632 until it is released.
+const resolveFixup = {
+    name: 'resolve-fixup',
+    setup(build) {
+        build.onResolve({ filter: /react-virtualized/ }, async (args) => {
+            return {
+                path: resolve(
+                    join(
+                        __dirname,
+                        './packages/ui-components/node_modules/react-virtualized/dist/umd/react-virtualized.js'
+                    )
+                )
+            };
+        });
+    }
+};
 
 const commonConfig = {
     write: true,
@@ -35,6 +53,7 @@ const browserConfig = {
     target: 'chrome90',
     format: 'iife',
     plugins: [
+        resolveFixup,
         sassPlugin({
             async transform(source, dirname, path) {
                 if (path.endsWith('.module.scss')) {
