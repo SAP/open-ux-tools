@@ -1070,8 +1070,8 @@ importers:
         specifier: 2.6.2
         version: 2.6.2
       '@types/uuid':
-        specifier: 3.4.7
-        version: 3.4.7
+        specifier: 3.4.11
+        version: 3.4.11
       babel-jest:
         specifier: 29.5.0
         version: 29.5.0(@babel/core@7.22.11)
@@ -5856,8 +5856,8 @@ packages:
     resolution: {integrity: sha512-Q5vtl1W5ue16D+nIaW8JWebSSraJVlK+EthKn7e7UcD4KWsaSJ8BqGPXNaPghgtcn/fhvrN17Tv8ksUsQpiplw==}
     dev: true
 
-  /@types/uuid@3.4.7:
-    resolution: {integrity: sha512-C2j2FWgQkF1ru12SjZJyMaTPxs/f6n90+5G5qNakBxKXjTBc/YTSelHh4Pz1HUDwxFXD9WvpQhOGCDC+/Y4mIQ==}
+  /@types/uuid@3.4.11:
+    resolution: {integrity: sha512-CJNkbEu4IdVuBMRVaNC2GjASgJK7ziqDlVXWuJ1pvhOLADl7nzxhTKjHRdOmo2SuXuygcWBmzgYgn9foTX0UiA==}
     dev: true
 
   /@types/vinyl@2.0.7:
