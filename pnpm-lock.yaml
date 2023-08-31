@@ -133,8 +133,8 @@ importers:
         specifier: 2.10.8
         version: 2.10.8
       '@types/yeoman-generator':
-        specifier: 5.2.9
-        version: 5.2.9
+        specifier: 5.2.11
+        version: 5.2.11
       axios:
         specifier: 0.24.0
         version: 0.24.0
@@ -1070,8 +1070,8 @@ importers:
         specifier: 2.6.2
         version: 2.6.2
       '@types/uuid':
-        specifier: 3.4.7
-        version: 3.4.7
+        specifier: 3.4.11
+        version: 3.4.11
       babel-jest:
         specifier: 29.5.0
         version: 29.5.0(@babel/core@7.22.11)
@@ -5411,12 +5411,6 @@ packages:
       '@types/node': 12.12.6
     dev: true
 
-  /@types/debug@4.1.7:
-    resolution: {integrity: sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==}
-    dependencies:
-      '@types/ms': 0.7.31
-    dev: true
-
   /@types/debug@4.1.8:
     resolution: {integrity: sha512-/vPO1EPOs306Cvhwv7KfVfYvOJqA/S/AXjaHQiJboCZzcNDb+TIJFN9/2C9DZ//ijSKWioNyUxD792QmDJ+HKQ==}
     dependencies:
@@ -5856,8 +5850,8 @@ packages:
     resolution: {integrity: sha512-Q5vtl1W5ue16D+nIaW8JWebSSraJVlK+EthKn7e7UcD4KWsaSJ8BqGPXNaPghgtcn/fhvrN17Tv8ksUsQpiplw==}
     dev: true
 
-  /@types/uuid@3.4.7:
-    resolution: {integrity: sha512-C2j2FWgQkF1ru12SjZJyMaTPxs/f6n90+5G5qNakBxKXjTBc/YTSelHh4Pz1HUDwxFXD9WvpQhOGCDC+/Y4mIQ==}
+  /@types/uuid@3.4.11:
+    resolution: {integrity: sha512-CJNkbEu4IdVuBMRVaNC2GjASgJK7ziqDlVXWuJ1pvhOLADl7nzxhTKjHRdOmo2SuXuygcWBmzgYgn9foTX0UiA==}
     dev: true
 
   /@types/vinyl@2.0.7:
@@ -5899,17 +5893,17 @@ packages:
       '@types/mem-fs': 1.1.2
       '@types/text-table': 0.2.2
       '@types/vinyl': 2.0.7
-      '@types/yeoman-generator': 5.2.9
+      '@types/yeoman-generator': 5.2.11
       chalk: 4.1.2
       commander: 9.4.0
       execa: 5.1.1
       rxjs: 6.6.7
     dev: true
 
-  /@types/yeoman-generator@5.2.9:
-    resolution: {integrity: sha512-nLcJvIoq83s/FBjTgSjtwPEUk6U8nVzVZ4fBOh9Untdgu00MjjQOFORob8kzlTSJIh0MC9mPnNuV2ErD/NlabQ==}
+  /@types/yeoman-generator@5.2.11:
+    resolution: {integrity: sha512-Eu56V69QPODdnHhdHil2xzw8SvR6cJdgkQBmGkyYDNz6dTErr3wCCUv+Uvw5jPATZjyB+b2CNyZbidI79KBcdw==}
     dependencies:
-      '@types/debug': 4.1.7
+      '@types/debug': 4.1.8
       '@types/ejs': 3.1.0
       '@types/inquirer': 8.2.1
       '@types/mem-fs-editor': 7.0.1
