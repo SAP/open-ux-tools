@@ -135,7 +135,7 @@ describe('AdaptationProject', () => {
         });
     });
     describe('proxy', () => {
-        let server!: SuperTest<Test>;
+        let server: SuperTest<Test>;
         const next = jest.fn().mockImplementation((_req, res) => res.status(200).send());
         beforeAll(async () => {
             const adp = new AdpPreview(
@@ -162,7 +162,7 @@ describe('AdaptationProject', () => {
             app.get(`${mockMergedDescriptor.url}/original.file`, next);
             app.use((req) => fail(`${req.path} should have been intercepted.`));
 
-            server = await supertest(app);
+            server = supertest(app);
         });
 
         test('/manifest.json', async () => {

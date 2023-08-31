@@ -2,7 +2,8 @@
     "extends": "../../tsconfig.json",
     "include": [
         "src",
-        "src/**/*.json"
+        "src/**/*.json",
+        "../../types/ui5.d.ts"
     ],
     "compilerOptions": {
         "rootDir": "src",

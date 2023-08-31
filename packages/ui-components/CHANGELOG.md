@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.1
+
+### Patch Changes
+
+-   b9320dbf: update devDependencies
+
 ## 1.11.0
 
 ### Minor Changes
