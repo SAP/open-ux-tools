@@ -1052,8 +1052,8 @@ importers:
         specifier: 12.1.5
         version: 12.1.5(react-dom@16.14.0)(react@16.14.0)
       '@types/enzyme':
-        specifier: 3.10.12
-        version: 3.10.12
+        specifier: 3.10.13
+        version: 3.10.13
       '@types/enzyme-adapter-react-16':
         specifier: 1.0.6
         version: 1.0.6
@@ -5450,11 +5450,11 @@ packages:
   /@types/enzyme-adapter-react-16@1.0.6:
     resolution: {integrity: sha512-VonDkZ15jzqDWL8mPFIQnnLtjwebuL9YnDkqeCDYnB4IVgwUm0mwKkqhrxLL6mb05xm7qqa3IE95m8CZE9imCg==}
     dependencies:
-      '@types/enzyme': 3.10.12
+      '@types/enzyme': 3.10.13
     dev: true
 
-  /@types/enzyme@3.10.12:
-    resolution: {integrity: sha512-xryQlOEIe1TduDWAOphR0ihfebKFSWOXpIsk+70JskCfRfW+xALdnJ0r1ZOTo85F9Qsjk6vtlU7edTYHbls9tA==}
+  /@types/enzyme@3.10.13:
+    resolution: {integrity: sha512-FCtoUhmFsud0Yx9fmZk179GkdZ4U9B0GFte64/Md+W/agx0L5SxsIIbhLBOxIb9y2UfBA4WQnaG1Od/UsUQs9Q==}
     dependencies:
       '@types/cheerio': 0.22.31
       '@types/react': 16.14.0
