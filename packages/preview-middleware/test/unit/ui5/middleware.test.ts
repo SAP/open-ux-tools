@@ -2,7 +2,6 @@ import express from 'express';
 import supertest from 'supertest';
 import * as previewMiddleware from '../../../src/ui5/middleware';
 import type { Config } from '../../../src/types';
-import type { Resource } from '@ui5/fs';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import nock from 'nock';
@@ -24,10 +23,9 @@ async function getRouter(fixture?: string, configuration: Partial<Config> = {}):
         options: { configuration },
         resources: {
             rootProject: {
-                byGlob: (glob: string) => {
-                    const files: Partial<Resource>[] = [];
-                    if (glob.includes(fixture === 'adp' ? 'manifest.appdescr_variant' : 'manifest.json') && fixture) {
-                        files.push({
+                byPath: (path: string) => {
+                    if (path === (fixture === 'adp' ? '/manifest.appdescr_variant' : '/manifest.json') && fixture) {
+                        return {
                             getString: () =>
                                 Promise.resolve(
                                     readFileSync(
@@ -40,9 +38,13 @@ async function getRouter(fixture?: string, configuration: Partial<Config> = {}):
                                         'utf-8'
                                     )
                                 )
-                        });
+                        };
+                    } else {
+                        return undefined;
                     }
-                    return files;
+                },
+                byGlob: (_glob: string) => {
+                    return [];
                 }
             }
         },
