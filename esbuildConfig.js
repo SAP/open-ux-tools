@@ -3,30 +3,12 @@ const autoprefixer = require('autoprefixer');
 const postcss = require('postcss');
 const yargsParser = require('yargs-parser');
 const { writeFileSync } = require('fs');
-const { resolve, join } = require('path');
-
-// from https://github.com/bvaughn/react-virtualized/issues/1212#issuecomment-847759202 workaround for https://github.com/bvaughn/react-virtualized/issues/1632 until it is released.
-const resolveFixup = {
-    name: 'resolve-fixup',
-    setup(build) {
-        build.onResolve({ filter: /react-virtualized/ }, async (args) => {
-            return {
-                path: resolve(
-                    join(
-                        __dirname,
-                        './packages/ui-components/node_modules/react-virtualized/dist/umd/react-virtualized.js'
-                    )
-                )
-            };
-        });
-    }
-};
 
 const commonConfig = {
     write: true,
     bundle: true,
     metafile: true,
-    sourcemap: true, // .vscodeignore ignores .map files when bundling!!
+    sourcemap: true,
     minify: true,
     logLevel: 'warning',
     loader: {
@@ -53,7 +35,6 @@ const browserConfig = {
     target: 'chrome90',
     format: 'iife',
     plugins: [
-        resolveFixup,
         sassPlugin({
             async transform(source, dirname, path) {
                 if (path.endsWith('.module.scss')) {
@@ -79,8 +60,6 @@ const handleCliParams = (options, args = []) => {
     outOptions.metafile = yargs.metafile === 'false' ? false : outOptions.metafile;
 
     outOptions.sourcemap = yargs.sourcemap !== undefined ? yargs.sourcemap : outOptions.sourcemap;
-
-    // console.log(JSON.stringify(outOptions, null, 2));
 
     return outOptions;
 };
