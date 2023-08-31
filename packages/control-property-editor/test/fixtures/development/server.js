@@ -8,8 +8,8 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const { FlpSandbox } = require('@sap-ux/preview-middleware');
 const { ToolsLogger, UI5ToolingTransport } = require('@sap-ux/logger');
 const { esbuildOptions } = require('../../../esbuild');
-const APP_ROOT = join(__dirname, '..', 'data', 'v2', 'webapp');
-const PROJECT_ROOT = join(__dirname, '..', 'data', 'v2');
+const APP_ROOT = join(__dirname, '..', 'v2', 'webapp');
+const PROJECT_ROOT = join(__dirname, '..', 'v2');
 getCreateReader().then((createReader) => {
     const log = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'tools-preview' })]
