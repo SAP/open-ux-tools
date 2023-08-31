@@ -30,7 +30,7 @@
         "@sap-ux/logger": "workspace:*",
         "axios": "1.4.0",
         "detect-content-type": "1.2.0",
-        "fast-xml-parser": "4.2.5",
+        "fast-xml-parser": "4.2.7",
         "lodash": "4.17.21",
         "open": "7.0.3",
         "qs": "6.7.3",
