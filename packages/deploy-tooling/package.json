@@ -44,7 +44,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "axios": "1.4.0",
-        "commander": "9.4.0",
+        "commander": "11.0.0",
         "dotenv": "16.0.0",
         "prompts": "2.4.2",
         "yazl": "2.5.1"

@@ -445,8 +445,8 @@ importers:
         specifier: 4.1.2
         version: 4.1.2
       commander:
-        specifier: 9.4.0
-        version: 9.4.0
+        specifier: 11.0.0
+        version: 11.0.0
       diff:
         specifier: 5.1.0
         version: 5.1.0
@@ -485,8 +485,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       commander:
-        specifier: 9.4.0
-        version: 9.4.0
+        specifier: 11.0.0
+        version: 11.0.0
       dotenv:
         specifier: 16.0.0
         version: 16.0.0
@@ -7585,6 +7585,11 @@ packages:
     dependencies:
       delayed-stream: 1.0.0
 
+  /commander@11.0.0:
+    resolution: {integrity: sha512-9HMlXtt/BNoYr8ooyjjNRdIilOTkVJXB+GhxMTtOKwk0R4j4lS4NpjuqmRxroBfnfTSHQIHQB7wryHhXarNjmQ==}
+    engines: {node: '>=16'}
+    dev: false
+
   /commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
     dev: true
@@ -7602,6 +7607,7 @@ packages:
   /commander@9.4.0:
     resolution: {integrity: sha512-sRPT+umqkz90UA8M1yqYfnHlZA7fF6nSphDtxeywPZ49ysjxDQybzk13CL+mXekDRG92skbcqCLVovuCusNmFw==}
     engines: {node: ^12.20.0 || >=14}
+    dev: true
 
   /comment-json@4.1.0:
     resolution: {integrity: sha512-WEghmVYaNq9NlWbrkzQTSsya9ycLyxJxpTQfZEan6a5Jomnjw18zS3Podf8q1Zf9BvonvQd/+Z7Z39L7KKzzdQ==}
