@@ -163,7 +163,7 @@ describe('AdaptationProject', () => {
         });
     });
     describe('addApis', () => {
-        let server!: SuperTest<Test>;
+        let server: SuperTest<Test>;
         beforeAll(async () => {
             const adp = new AdpPreview(
                 {
@@ -177,7 +177,7 @@ describe('AdaptationProject', () => {
 
             const app = express();
             adp.addApis(app);
-            server = await supertest(app);
+            server = supertest(app);
         });
 
         test('/adp/api/fragment', async () => {
