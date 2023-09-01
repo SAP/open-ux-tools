@@ -96,8 +96,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/logger
       dotenv:
-        specifier: 10.0.0
-        version: 10.0.0
+        specifier: 16.3.1
+        version: 16.3.1
 
   examples/simple-generator:
     dependencies:
@@ -197,8 +197,8 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
       dotenv:
-        specifier: 16.0.0
-        version: 16.0.0
+        specifier: 16.3.1
+        version: 16.3.1
       express:
         specifier: 4.18.2
         version: 4.18.2
@@ -334,8 +334,8 @@ importers:
         specifier: 4.1.2
         version: 4.1.2
       dotenv:
-        specifier: 16.0.0
-        version: 16.0.0
+        specifier: 16.3.1
+        version: 16.3.1
       http-proxy-middleware:
         specifier: 2.0.1
         version: 2.0.1
@@ -488,8 +488,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0
       dotenv:
-        specifier: 16.0.0
-        version: 16.0.0
+        specifier: 16.3.1
+        version: 16.3.1
       prompts:
         specifier: 2.4.2
         version: 2.4.2
@@ -1280,8 +1280,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       dotenv:
-        specifier: 16.0.0
-        version: 16.0.0
+        specifier: 16.3.1
+        version: 16.3.1
       http-proxy-middleware:
         specifier: 2.0.1
         version: 2.0.1
@@ -8261,9 +8261,10 @@ packages:
   /dotenv@10.0.0:
     resolution: {integrity: sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==}
     engines: {node: '>=10'}
+    dev: true
 
-  /dotenv@16.0.0:
-    resolution: {integrity: sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==}
+  /dotenv@16.3.1:
+    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
 
   /duplexer@0.1.2:
@@ -11529,7 +11530,7 @@ packages:
     engines: {node: '>=14.0.0'}
     dependencies:
       app-root-dir: 1.0.2
-      dotenv: 16.0.0
+      dotenv: 16.3.1
       dotenv-expand: 10.0.0
     dev: true
 
