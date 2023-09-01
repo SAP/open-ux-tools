@@ -49,12 +49,12 @@ export function getDefaultFragmentContent(
         const handler = `${parts.join('/')}${isController ? '.controller' : ''}`;
         const requireAttr = `core:require="{ handler: '${handler}'}"`;
         if (prefferInput) {
-            content = `<Input ${requireAttr} label="${text}" change="handler.${method}" />`;
+            content = `<Input ${requireAttr} value="${text}" change="handler.${method}" />`;
         } else {
             content = `<Button ${requireAttr} text="${text}" press="handler.${method}" />`;
         }
     } else if (prefferInput) {
-        content = `<Input label="${text}" />`;
+        content = `<Input value="${text}" />`;
     } else {
         content = `<Text text="${text}" />`;
     }
