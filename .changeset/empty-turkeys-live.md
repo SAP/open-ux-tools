@@ -2,4 +2,4 @@
 '@sap-ux/fe-fpm-writer': patch
 ---
 
-Fix: Updated contents of default edit fragment for header custom section
+Correction for content of generated fragment for `templateEdit` property: Content is wrapped inside `sap.ui.layout.form.FormElement`
