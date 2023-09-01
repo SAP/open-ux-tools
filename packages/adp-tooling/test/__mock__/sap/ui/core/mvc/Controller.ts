@@ -2,7 +2,7 @@
 // add required functionality for testing here
 export default class Controller {
     constructor() {}
-    public create = async () => jest.fn();
+    public static create = async () => jest.fn();
     public loadFragment() {}
     public getView() {}
 }
