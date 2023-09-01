@@ -288,8 +288,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       fast-xml-parser:
-        specifier: 4.2.5
-        version: 4.2.5
+        specifier: 4.2.7
+        version: 4.2.7
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -817,8 +817,8 @@ importers:
         specifier: 3.1.7
         version: 3.1.7
       fast-xml-parser:
-        specifier: 4.2.5
-        version: 4.2.5
+        specifier: 4.2.7
+        version: 4.2.7
       i18next:
         specifier: 20.3.2
         version: 20.3.2
@@ -9353,8 +9353,8 @@ packages:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
     dev: true
 
-  /fast-xml-parser@4.2.5:
-    resolution: {integrity: sha512-B9/wizE4WngqQftFPmdaMYlXoJlJOYxGQOanC77fq9k8+Z0v5dDSVh+3glErdIROP//s/jgb7ZuxKfB8nVyo0g==}
+  /fast-xml-parser@4.2.7:
+    resolution: {integrity: sha512-J8r6BriSLO1uj2miOk1NW0YVm8AGOOu3Si2HQp/cSmo6EA4m3fcwu2WKjJ4RK9wMLBtg69y1kS8baDiQBR41Ig==}
     hasBin: true
     dependencies:
       strnum: 1.0.5
