@@ -164,7 +164,7 @@ export function generateCustomHeaderSection(
         if (editSection.path) {
             const viewPath = join(editSection.path, `${editSection.name}.fragment.xml`);
             if (!editor.exists(viewPath)) {
-                editor.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, editSection);
+                editor.copyTpl(getTemplatePath('common/FragmentWithForm.xml'), viewPath, editSection);
             }
         }
     }
