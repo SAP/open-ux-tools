@@ -260,7 +260,7 @@ export default class AddFragment extends Controller {
             }
             return false;
         });
-        const defaultAggregation = this.runtimeControl.getMetadata().getDefaultAggregationName();
+        const defaultAggregation = controlMetadata.getDefaultAggregationName();
         const selectedControlName = control.name;
 
         let selectedControlChildren: string[] | number[] = Object.keys(

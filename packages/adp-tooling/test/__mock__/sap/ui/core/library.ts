@@ -1,4 +1,4 @@
-export const enum ValueState {
+export enum ValueState {
     None = 'None',
     Error = 'Error'
 }

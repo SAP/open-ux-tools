@@ -3,16 +3,12 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { handler, initFragment } from '../../../../../src/preview/client/dialogs/fragment';
 import XMLView from '../../../../__mock__/sap/ui/core/mvc/XMLView';
-
-jest.mock('sap/ui/core/mvc/Controller', () => ({
-    __esModule: true,
-    default: () => jest.fn()
-}));
+import Controller from '../../../../__mock__/sap/ui/core/mvc/Controller';
 
 describe('Fragment Dialog', () => {
     describe('initFragment', () => {
         afterEach(() => {
-            XMLView.create.mockRestore();
+            jest.restoreAllMocks();
         });
 
         test('adds a new item to the context menu', () => {
@@ -32,6 +28,8 @@ describe('Fragment Dialog', () => {
         });
 
         test('addMenuItem handler function', async () => {
+            Controller.create = jest.fn().mockReturnValue({ overlays: {}, rta: {} });
+
             const rta = {};
             await handler({} as unknown as UI5Element[], rta as unknown as RuntimeAuthoring);
 

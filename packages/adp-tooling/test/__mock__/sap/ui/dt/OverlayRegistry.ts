@@ -1,4 +1,4 @@
 // add required functionality for testing here
-export default {
+export default jest.fn().mockReturnValue({
     getOverlay: jest.fn().mockReturnValue({ getDesignTimeMetadata: jest.fn() })
-};
+});
