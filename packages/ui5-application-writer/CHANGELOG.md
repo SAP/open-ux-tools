@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.25.2
+
+### Patch Changes
+
+-   a794dad7: Update ui5-tooling-transpile in templates
+
 ## 0.25.1
 
 ### Patch Changes
