@@ -120,7 +120,7 @@ export class FlpSandbox {
                 libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
                 theme: supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0],
                 flex,
-                resources: { ...resources, 'open/ux/preview': '.' }
+                resources: { ...resources, 'open.ux.preview': '.' }
             },
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
