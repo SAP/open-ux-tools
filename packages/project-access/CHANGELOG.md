@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.13.2
+
+### Patch Changes
+
+-   164d52b5: chore(deps): update dependency vscode-uri to v3.0.7
+
 ## 1.13.1
 
 ### Patch Changes

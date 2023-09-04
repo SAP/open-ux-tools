@@ -35,7 +35,7 @@
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "dotenv": "16.0.0",
+        "dotenv": "16.3.1",
         "http-proxy-middleware": "2.0.1",
         "https-proxy-agent": "5.0.0",
         "i18next": "20.3.2",
@@ -48,7 +48,7 @@
         "@types/proxy-from-env": "1.0.1",
         "express": "4.18.2",
         "nock": "13.2.4",
-        "supertest": "6.3.2",
+        "supertest": "6.3.3",
         "yaml": "2.2.2"
     },
     "ui5": {
