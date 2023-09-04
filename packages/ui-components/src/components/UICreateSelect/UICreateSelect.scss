@@ -12,4 +12,14 @@
             padding-right: 8px;
         }
     }
+    &__option {
+        &--is-focused {
+            .ts-Menu-option--highlighted {
+                color: var(
+                    --vscode-editorSuggestWidget-focusHighlightForeground,
+                    var(--vscode-list-focusHighlightForeground)
+                );
+            }
+        }
+    }
 }
