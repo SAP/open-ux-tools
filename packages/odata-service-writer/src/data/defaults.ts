@@ -9,7 +9,7 @@ import { DEFAULT_DATASOURCE_NAME } from './constants';
  * @param {OdataService} service - The service object whose path needs to be set or modified.
  */
 function setDefaultServicePath(service: OdataService): void {
-    service.path = service.path?.endsWith('/') ? service.path : (service.path || '') + '/';
+    service.path = service.path?.endsWith('/') ? service.path : (service.path ?? '') + '/';
 }
 
 /**
@@ -19,7 +19,7 @@ function setDefaultServicePath(service: OdataService): void {
  * @param {OdataService} service - The service object whose name needs to be set or modified.
  */
 function setDefaultServiceName(service: OdataService): void {
-    service.name = service.name || DEFAULT_DATASOURCE_NAME;
+    service.name = service.name ?? DEFAULT_DATASOURCE_NAME;
 }
 
 /**
@@ -29,7 +29,7 @@ function setDefaultServiceName(service: OdataService): void {
  * @param {OdataService} service - The service object whose model needs to be set or modified.
  */
 function setDefaultServiceModel(service: OdataService): void {
-    service.model = service.model || ''; // Default UI5 model
+    service.model = service.model ?? ''; // Default UI5 model
 }
 
 /**
@@ -60,7 +60,7 @@ export function enhanceData(service: OdataService): void {
     // enhance preview settings with service configuration
     service.previewSettings = service.previewSettings || {};
     service.previewSettings.path =
-        service.previewSettings.path || `/${service.path?.split('/').filter((s: string) => s !== '')[0] || ''}`;
+        service.previewSettings.path || `/${service.path?.split('/').filter((s: string) => s !== '')[0] ?? ''}`;
     service.previewSettings.url = service.previewSettings.url || service.url || 'http://localhost';
     if (service.client && !service.previewSettings.client) {
         service.previewSettings.client = service.client;
