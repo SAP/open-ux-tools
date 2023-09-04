@@ -143,7 +143,7 @@ export class FlpSandbox {
     private addStandardRoutes() {
         // add route for the oninit script
         this.router.get(`${dirname(this.config.path)}/init.js`, (_req: Request, res: Response) => {
-            const initjs = readFileSync(join(__dirname, '../../templates/flp/init.js'), 'utf-8');
+            const initjs = readFileSync(join(__dirname, '../../templates/flp/sandboxInit.js'), 'utf-8');
             res.status(200).contentType('text/javascript').send(initjs);
         });
 
