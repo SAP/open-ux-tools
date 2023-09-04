@@ -21,6 +21,9 @@ export function enhanceData(service: OdataService): void {
     if (service.model === undefined) {
         service.model = ''; // Default UI5 model
     }
+    if ((service.annotations && service.annotations.name === undefined) || service.annotations?.name === '') {
+        service.annotations.name = service.annotations?.technicalName.replace(/\//g, '_').replace(/^_/, '');
+    }
 
     // enhance preview settings with service configuration
     service.previewSettings = service.previewSettings || {};
