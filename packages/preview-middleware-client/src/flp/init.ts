@@ -34,19 +34,20 @@ const UI5_LIBS = [
 ];
 
 /**
+ * Check whether a specific dependency is a custom library, and if yes, add it to the map.
  *
- * @param libOrComp
- * @param reuseLibsObj
+ * @param dependency dependency from the manifest
+ * @param customLibs map containing the required custom libraries
  */
-function addKeys(libOrComp: object, reuseLibsObj: Record<string, boolean>) {
-    Object.keys(libOrComp).forEach(function (libOrCompKey) {
+function addKeys(dependency: Record<string, unknown>, customLibs: Record<string, true>) {
+    Object.keys(dependency).forEach(function (key) {
         // ignore libs or Components that start with SAPUI5 delivered namespaces
         if (
             !UI5_LIBS.some(function (substring) {
-                return libOrCompKey === substring || libOrCompKey.startsWith(substring + '.');
+                return key === substring || key.startsWith(substring + '.');
             })
         ) {
-            reuseLibsObj[libOrCompKey] = true;
+            customLibs[key] = true;
         }
     });
 }
@@ -54,10 +55,10 @@ function addKeys(libOrComp: object, reuseLibsObj: Record<string, boolean>) {
 /**
  * Fetch the manifest for all the given application urls and generate a string containing all required custom library ids.
  *
- * @param {string[]} appUrls
+ * @param appUrls urls pointing to included applications
  * @returns {Promise<string>} Promise of a comma separated list of all required libraries.
  */
-function fioriToolsGetManifestLibs(appUrls: any) {
+function fioriToolsGetManifestLibs(appUrls: string[]) {
     const result = {} as Record<string, true>;
     const promises = [];
     for (const url of appUrls) {
@@ -89,13 +90,24 @@ function fioriToolsGetManifestLibs(appUrls: any) {
 /**
  * Register the custom libraries and their url with the UI5 loader.
  *
- * @param {*} dataFromAppIndex
+ * @param dataFromAppIndex data returned from the app index service
  */
-function registerModules(dataFromAppIndex: any) {
+function registerModules(
+    dataFromAppIndex: Record<
+        string,
+        {
+            dependencies?: {
+                url?: string;
+                type?: string;
+                componentId: string;
+            }[];
+        }
+    >
+) {
     Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
         const moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
         if (moduleDefinition && moduleDefinition.dependencies) {
-            moduleDefinition.dependencies.forEach(function (dependency: any) {
+            moduleDefinition.dependencies.forEach(function (dependency) {
                 if (dependency.url && dependency.url.length > 0 && dependency.type === 'UI5LIB') {
                     Log.info('Registering Library ' + dependency.componentId + ' from server ' + dependency.url);
                     const compId = dependency.componentId.replace(/\./g, '/');
@@ -113,35 +125,31 @@ function registerModules(dataFromAppIndex: any) {
 /**
  * Fetch the manifest from the given application urls, then parse them for custom libs, and finally request their urls.
  *
- * @param {string[]} appUrls application urls
- * @returns {Promise<void>} returns a promise when the registration is completed.
+ * @param appUrls application urls
+ * @returns returns a promise when the registration is completed.
  */
-function registerComponentDependencyPaths(appUrls: string[]) {
-    return fioriToolsGetManifestLibs(appUrls).then(function (libs) {
-        if (libs && libs.length > 0) {
-            let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
-            let sapClient = '';
-
-            return new Promise(function (resolve) {
-                sap.ui.require(['sap/base/util/UriParameters'], function (UriParameters: any) {
-                    sapClient = UriParameters.fromQuery(window.location.search).get('sap-client');
-                    if (sapClient && sapClient.length === 3) {
-                        url = url + '&sap-client=' + sapClient;
-                    }
-                    resolve(url);
-                });
-            }).then(function (url2) {
-                // @ts-ignore
-                return $.ajax(url2).done(function (data: any) {
-                    if (data) {
-                        registerModules(data);
-                    }
-                });
+async function registerComponentDependencyPaths(appUrls: string[]) {
+    const libs = await fioriToolsGetManifestLibs(appUrls);
+    if (libs && libs.length > 0) {
+        let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
+        url = await new Promise(function (resolve) {
+            sap.ui.require(['sap/base/util/UriParameters'], function (UriParameters: any) {
+                const sapClient = UriParameters.fromQuery(window.location.search).get('sap-client');
+                if (sapClient && sapClient.length === 3) {
+                    url = url + '&sap-client=' + sapClient;
+                }
+                resolve(url);
             });
-        } else {
-            return undefined;
-        }
-    });
+        });
+        // @ts-ignore
+        return $.ajax(url).done(function (data: any) {
+            if (data) {
+                registerModules(data);
+            }
+        });
+    } else {
+        return undefined;
+    }
 }
 
 /**
