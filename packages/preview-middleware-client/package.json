@@ -11,7 +11,7 @@
     "private": true,
     "main": "dist/index.js",
     "scripts": {
-        "build": "ui5 build --clean-dest --exclude-task=* --include-task=ui5-tooling-transpile-task && rimraf dist/**/*-dbg.js",
+        "build": "ui5 build --clean-dest --exclude-task=* --include-task=ui5-tooling-transpile-task && rimraf --glob dist/**/*-dbg.js",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
