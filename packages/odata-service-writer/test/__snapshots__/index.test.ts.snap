@@ -2888,13 +2888,13 @@ Object {
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [
-            \\"/SEPM_XYZ/SERVICE\\"
+            \\"SEPM_XYZ_SERVICE\\"
           ],
           \\"localUri\\": \\"localService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
-      \\"/SEPM_XYZ/SERVICE\\": {
+      \\"SEPM_XYZ_SERVICE\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
