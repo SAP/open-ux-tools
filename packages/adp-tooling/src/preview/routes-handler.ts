@@ -47,12 +47,9 @@ export default class RoutesHandler {
                 return;
             }
 
-            const fragments = files.map((file) => {
-                const fileName = file.getName();
-                return {
-                    fragmentName: fileName
-                };
-            });
+            const fragments = files.map((f) => ({
+                fragmentName: f.getName()
+            }));
 
             res.status(HttpStatusCodes.OK)
                 .contentType('application/json')
