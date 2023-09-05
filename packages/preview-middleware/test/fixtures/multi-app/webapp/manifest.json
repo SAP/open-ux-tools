@@ -56,7 +56,9 @@
                 "sap.f": {},
                 "sap.ui.comp": {},
                 "sap.ui.generic.app": {},
-                "sap.suite.ui.generic.template": {}
+                "sap.suite.ui.generic.template": {},
+                "mock.reuse.lib": {},
+                "mock.another.reuse.lib": {}
             }
         },
         "contentDensities": {
