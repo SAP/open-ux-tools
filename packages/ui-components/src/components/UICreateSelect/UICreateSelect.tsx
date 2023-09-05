@@ -152,6 +152,7 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
             value={props.value}
             formatCreateLabel={formatCreateLabel}
             components={{ ClearIndicator, DropdownIndicator, LoadingIndicator, Option }}
+            unstyled={true}
             styles={{
                 control: (baseStyles, state) => ({
                     ...baseStyles,

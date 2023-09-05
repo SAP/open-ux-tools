@@ -1,3 +1,22 @@
+$menu-item-hover-contrast-border: 1px dashed var(--vscode-contrastActiveBorder);
+@mixin menu-item-contrast-border($outline: null) {
+    &:after {
+        @if $outline {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            z-index: 1;
+            outline: $outline;
+            outline-offset: $menu-item-border-offset;
+            pointer-events: none;
+        } @else {
+            outline: none;
+        }
+
+        border: none;
+    }
+}
+
 .ui-create-select {
     &-indicator {
         &-clear,
@@ -13,12 +32,36 @@
         }
     }
     &__option {
+        position: relative;
+
         &--is-focused {
             .ts-Menu-option--highlighted {
                 color: var(
                     --vscode-editorSuggestWidget-focusHighlightForeground,
                     var(--vscode-list-focusHighlightForeground)
                 );
+            }
+            &::after {
+                content: '';
+                position: absolute;
+                inset: 1px;
+                z-index: 1;
+                outline: 1px dashed var(--vscode-contrastActiveBorder);
+                outline-offset: -1px;
+                pointer-events: none;
+                border: none;
+            }
+        }
+        &:hover {
+            &::after {
+                content: '';
+                position: absolute;
+                inset: 1px;
+                z-index: 1;
+                outline: 1px dashed var(--vscode-contrastActiveBorder);
+                outline-offset: -1px;
+                pointer-events: none;
+                border: none;
             }
         }
     }
