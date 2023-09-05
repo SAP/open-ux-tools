@@ -110,6 +110,7 @@ export function ViewChanger(): ReactElement {
             />
             <UIComboBox
                 id="view-changer-combobox"
+                data-testid={`testId-view-changer-combobox`}
                 className={styles.zoomInput}
                 autoComplete="off"
                 selectedKey={key}

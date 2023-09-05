@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 
 import { ViewChanger } from '../../../../../src/app/panels/properties/ViewChanger';
 import { initI18n } from '../../../../../src/app/i18n';
@@ -158,6 +158,33 @@ describe('ViewChanger', () => {
         expect(dispatch).toHaveBeenNthCalledWith(1, {
             payload: 'fit',
             type: 'app/change-preview-scale-mode'
+        });
+    });
+
+    test('enter "new" value in combobox', () => {
+        const { dispatch } = render(<ViewChanger />, {
+            initialState: {
+                scale: 1,
+                fitPreview: true
+            }
+        });
+        const combobox = screen.getByRole('combobox');
+
+        if (!combobox.parentElement) {
+            expect(combobox.parentElement).not.toBeNull();
+            return;
+        }
+        const dropDownEditor = screen.getByTestId('testId-view-changer-combobox');
+        const dropDownEditorInput = dropDownEditor.querySelector('input');
+        if (dropDownEditorInput) {
+            fireEvent.focus(dropDownEditorInput);
+            fireEvent.input(dropDownEditorInput, { target: { value: '35%' } });
+            fireEvent.blur(dropDownEditorInput);
+        }
+
+        expect(dispatch).toHaveBeenNthCalledWith(1, {
+            payload: 0.35,
+            type: 'app/change-preview-scale'
         });
     });
 });

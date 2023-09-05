@@ -1,5 +1,5 @@
 export * from './api';
-export * from './debounce';
+export { debounce } from './debounce';
 export { PostMessageCommunication, startPostMessageCommunication } from './postMessage';
-export * from './telemetry';
+export { reportTelemetry } from './telemetry';
 export * from './utils';

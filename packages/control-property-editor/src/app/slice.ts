@@ -85,7 +85,7 @@ export const changePreviewScaleMode = createAction<'fit' | 'fixed'>('app/change-
 export const changeDeviceType = createAction<DeviceType>('app/change-device-type');
 export const filterNodes = createAction<FilterOptions[]>('app/filter-nodes');
 
-const initialState = {
+export const initialState = {
     deviceType: DeviceType.Desktop,
     scale: 1.0,
     selectedControl: undefined,

@@ -4,11 +4,12 @@ import type { StringControlPropertyWithOptions } from '@sap-ux/control-property-
 import { DROPDOWN_EDITOR_TYPE, STRING_VALUE_TYPE } from '@sap-ux/control-property-editor-common';
 import { DropdownEditor, valueChanged } from '../../../../../src/app/panels/properties/DropdownEditor';
 import * as slice from '../../../../../src/app/slice';
+import '@testing-library/jest-dom';
 
 import { render } from '../../utils';
 
 describe('DropdownEditor', () => {
-    test('render & click (for boolean value)', () => {
+    test('render & click (for boolean value)', async () => {
         // arrange
         const controlId = 'testControlId';
         const propertyName = 'testProperty';
@@ -31,9 +32,18 @@ describe('DropdownEditor', () => {
         cleanup();
 
         // act
-        render(<DropdownEditor property={property} controlId={controlId} controlName="Button" />);
+        const { dispatch } = render(<DropdownEditor property={property} controlId={controlId} controlName="Button" />);
         const dropDownEditor = screen.getByTestId(testId);
-        fireEvent.change(dropDownEditor, { target: { text: 'option2' } }); // { value: 'option2' } })
+        const dropDownEditorInput = dropDownEditor.querySelector('input');
+        jest.spyOn(window, 'setTimeout').mockImplementation((cb: any) => {
+            cb(undefined, undefined, 'test');
+        });
+        if (dropDownEditorInput) {
+            fireEvent.focus(dropDownEditorInput);
+            fireEvent.input(dropDownEditorInput, { target: { value: 'test' } });
+            fireEvent.blur(dropDownEditorInput);
+        }
+        expect(dispatch).toBeCalledTimes(2);
     });
     test('valueChanged function', () => {
         const result = valueChanged('testControlId', 'testPropertyName', 'newValue', 'Button');

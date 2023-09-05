@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 
-import { render } from './utils';
+import { render, mockDomEventListener } from './utils';
 import { initI18n } from '../../../src/app/i18n';
 
 import App from '../../../src/app/App';
@@ -10,7 +10,10 @@ import { controlSelected } from '@sap-ux/control-property-editor-common';
 import { mockResizeObserver } from '../../utils/utils';
 import { InputType } from '../../../src/app/panels/properties/types';
 import { registerAppIcons } from '../../../src/app/icons';
+import { DeviceType } from '../../../src/app/devices';
+import { changePreviewScale, initialState } from '../../../src/app/slice';
 
+const windowEventListenerMock = mockDomEventListener(window);
 beforeAll(() => {
     mockResizeObserver();
     initI18n();
@@ -39,6 +42,8 @@ test('renders properties', () => {
     const propNameString = 'activeIcon';
     const propNameDropDown = 'ariaHasPopup';
     const propNameCheckbox = 'visible';
+    const propNameCheckboxExpression = 'random';
+    const propNameDropDownExpression = 'sync';
     store.dispatch(
         controlSelected({
             id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
@@ -91,7 +96,33 @@ test('renders properties', () => {
                     editor: 'checkbox',
                     name: propNameCheckbox,
                     value: true,
-                    isEnabled: true
+                    isEnabled: true,
+                    readableName: 'test check'
+                },
+                {
+                    type: 'string',
+                    editor: 'dropdown',
+                    options: [],
+                    name: propNameDropDownExpression,
+                    value: '{ dropDownDynamicExpression }',
+                    isEnabled: true,
+                    readableName: ''
+                },
+                {
+                    type: 'boolean',
+                    editor: 'checkbox',
+                    name: propNameCheckboxExpression,
+                    isEnabled: true,
+                    value: '{ checkBoxDynamicExpression }',
+                    readableName: 'test check dynamic expression'
+                },
+                {
+                    type: 'string',
+                    editor: 'unknown',
+                    name: 'unknownprop',
+                    isEnabled: true,
+                    value: 'checkBoxDynamicExpression',
+                    readableName: 'test check dynamic expression'
                 }
             ]
         })
@@ -111,6 +142,18 @@ test('renders properties', () => {
     expect(buttonExpression.getAttribute('aria-pressed')).toBe('false');
     expect(buttonExpression).toBeInTheDocument();
 
+    const dropdownButtonExp2 = screen.getByTestId(
+        `${propNameDropDownExpression}--InputTypeToggle--${InputType.expression}`
+    );
+    expect(dropdownButtonExp2.getAttribute('aria-pressed')).toBe('true');
+    expect(dropdownButtonExp2).toBeInTheDocument();
+
+    const checkButtonExp2 = screen.getByTestId(
+        `${propNameCheckboxExpression}--InputTypeToggle--${InputType.expression}`
+    );
+    expect(checkButtonExp2.getAttribute('aria-pressed')).toBe('true');
+    expect(checkButtonExp2).toBeInTheDocument();
+
     let notFoundException = null;
     try {
         screen.getByTestId(`${propNameCheckbox}--StringEditor`);
@@ -120,7 +163,7 @@ test('renders properties', () => {
     expect(notFoundException).toBeTruthy();
 });
 
-test('renders warning dialog', () => {
+test('renders warning dialog', async () => {
     render(<App previewUrl="" />);
     const dialogContent = screen.getByText(
         /The Control Property Editor enables you to change control properties and behavior directly. These changes may not have the desired effect with Fiori elements applications. Please consult documentation to learn which changes are supported./i
@@ -130,3 +173,35 @@ test('renders warning dialog', () => {
     expect(okButton).toBeInTheDocument();
     fireEvent.click(okButton);
 });
+
+const testCases = [
+    {
+        deviceType: DeviceType.Desktop,
+        expectedScale: 460 / 1200
+    },
+    {
+        deviceType: DeviceType.Tablet,
+        expectedScale: 460 / 720
+    }
+];
+
+for (const testCase of testCases) {
+    test(`Test resize - fitPreview=true, device=${testCase.deviceType}`, async () => {
+        const stateTemp = JSON.parse(JSON.stringify(initialState));
+        stateTemp.fitPreview = true;
+        stateTemp.deviceType = testCase.deviceType;
+
+        const { dispatch } = render(<App previewUrl="" />, {
+            initialState: stateTemp
+        });
+        await new Promise((resolve) => setTimeout(resolve, 1));
+        global.window.innerWidth = 111;
+        global.window.innerHeight = 2222;
+        dispatch.mockReset();
+        jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => 500);
+        windowEventListenerMock.simulateEvent('resize', {});
+        // Debounce timeout within resize + within use effect
+        await new Promise((resolve) => setTimeout(resolve, 550));
+        expect(dispatch).toBeCalledWith(changePreviewScale(testCase.expectedScale));
+    });
+}
