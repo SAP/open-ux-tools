@@ -315,11 +315,12 @@ describe('AddFragment', () => {
 
             const fragmentData = { fragmentName: 'Share', index: 0, targetAggregation: 'content' };
 
-            const commandExecutor = new CommandExecutor({} as unknown as RuntimeAuthoring);
-
             const executorSpy = jest.fn();
 
-            commandExecutor.generateAndExecuteCommand = executorSpy;
+            // @ts-ignore
+            addFragment.commandExecutor = new CommandExecutor({} as unknown as RuntimeAuthoring);
+            // @ts-ignore
+            addFragment.commandExecutor.generateAndExecuteCommand = executorSpy;
 
             // @ts-ignore
             await addFragment.createFragmentChange(fragmentData);

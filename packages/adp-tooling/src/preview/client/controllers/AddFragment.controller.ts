@@ -402,7 +402,8 @@ export default class AddFragment extends Controller {
             scenario: undefined
         };
 
-        const designMetadata = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element).getDesignTimeMetadata();
+        const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
+        const designMetadata = overlay.getDesignTimeMetadata();
 
         const modifiedValue = {
             fragment:
