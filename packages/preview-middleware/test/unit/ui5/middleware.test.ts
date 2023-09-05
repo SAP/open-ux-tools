@@ -86,14 +86,14 @@ describe('ui5/middleware', () => {
     test('no config', async () => {
         const server = await getTestServer('simple-app');
         await server.get('/test/flp.html').expect(200);
-        await server.get('/test/init.js').expect(200);
+        await server.get('/test/sandboxInit.js').expect(200);
     });
 
     test('simple config', async () => {
         const path = '/my/preview/is/here.html';
         const server = await getTestServer('simple-app', { flp: { path, libs: true } });
         await server.get(path).expect(200);
-        await server.get('/my/preview/is/init.js').expect(200);
+        await server.get('/my/preview/is/sandboxInit.js').expect(200);
         await server.get('/test/flp.html').expect(404);
     });
 
