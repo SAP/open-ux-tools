@@ -183,7 +183,7 @@ if (flex) {
     });
 }
 
-var manifestUri = bootstrapConfig.getAttribute("data-open-ux-preview-manifest-uri");
+var manifestUri = bootstrapConfig.getAttribute("data-open-ux-preview-libs-manifest");
 var initPromise = manifestUri ? registerComponentDependencyPaths(manifestUri) : Promise.resolve();
 initPromise.catch(function (error) {
     sap.ui.require(["sap/base/Log"], function (Log) {
