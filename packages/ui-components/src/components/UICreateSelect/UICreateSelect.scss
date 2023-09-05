@@ -1,22 +1,3 @@
-$menu-item-hover-contrast-border: 1px dashed var(--vscode-contrastActiveBorder);
-@mixin menu-item-contrast-border($outline: null) {
-    &:after {
-        @if $outline {
-            content: '';
-            position: absolute;
-            inset: 1px;
-            z-index: 1;
-            outline: $outline;
-            outline-offset: $menu-item-border-offset;
-            pointer-events: none;
-        } @else {
-            outline: none;
-        }
-
-        border: none;
-    }
-}
-
 .ui-create-select {
     &-indicator {
         &-clear,
