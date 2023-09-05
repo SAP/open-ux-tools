@@ -41,7 +41,7 @@ function setDefaultServiceModel(service: OdataService): void {
  */
 function setDefaultAnnotationsName(service: OdataService): void {
     if ((service.annotations && service.annotations.name === undefined) || service.annotations?.name === '') {
-        service.annotations.name = service.annotations?.technicalName.replace(/\//g, '_').replace(/^_/, '');
+        service.annotations.name = service.annotations?.technicalName?.replace(/\//g, '_')?.replace(/^_/, '');
     }
 }
 
