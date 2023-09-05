@@ -1,4 +1,11 @@
 /* global sap document */
+
+/**
+ * Fetch the manifest for all the given application urls and generate a string containing all required custom library ids.
+ *
+ * @param {string[]} appUrls 
+ * @returns {Promise<string>} Promise of a comma separated list of all required libraries.
+ */
 function fioriToolsGetManifestLibs(appUrls) {
     var result = {};
     // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -67,6 +74,10 @@ function fioriToolsGetManifestLibs(appUrls) {
     return Promise.all(promises).then(() => Object.keys(result).join(','));
 };
 
+/**
+ * Register the custom libraries and their url with the UI5 loader.
+ * @param {*} dataFromAppIndex 
+ */
 function registerModules(dataFromAppIndex) {
     Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
         var moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
@@ -93,13 +104,12 @@ function registerModules(dataFromAppIndex) {
 }
 
 /**
- * Registers the module paths for dependencies of the given component.
- * @param {string} manifestPath The the path to the app manifest path
- * for which the dependencies should be registered.
- * @returns {Promise} A promise which is resolved when the ajax request for
- * the app-index was successful and the module paths were registered.
+ * Fetch the manifest from the given application urls, then parse them for custom libs, and finally request their urls.
+ *
+ * @param {string[]} appUrls application urls
+ * @returns {Promise<void>} returns a promise when the registration is completed.
  */
-registerComponentDependencyPaths = function (appUrls) {
+function registerComponentDependencyPaths(appUrls) {
     return fioriToolsGetManifestLibs(appUrls).then(function (libs) {
         if (libs && libs.length > 0) {
             var url = "/sap/bc/ui2/app_index/ui5_app_info?id=" + libs;
@@ -127,6 +137,9 @@ registerComponentDependencyPaths = function (appUrls) {
     });
 };
 
+/**
+ * Reigster SAP fonts that are also registered in a productive Fiori launchpad
+ */
 function registerSAPFonts() {  
     sap.ui.require(["sap/ui/core/IconPool"], function (IconPool) {  
     //Fiori Theme font family and URI
@@ -146,7 +159,9 @@ function registerSAPFonts() {
     });
 }
 
-// setting the app title with internationalization 
+/**
+ * Read the application title from the resource bundle and set it as document title.
+ */
 function setI18nTitle() { 
     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
     sap.ui.require(["sap/base/i18n/ResourceBundle"], function (ResourceBundle) {
@@ -158,8 +173,8 @@ function setI18nTitle() {
     });
 }
 
+// Register RTA if configured
 var bootstrapConfig = document.getElementById("sap-ui-bootstrap");
-
 var flex = bootstrapConfig.getAttribute("data-open-ux-preview-flex-settings");
 if (flex) {
     sap.ushell.Container.attachRendererCreatedEvent(function () {
@@ -179,6 +194,7 @@ if (flex) {
     });
 }
 
+// Load custom library paths if configured
 var appUrls = bootstrapConfig.getAttribute("data-open-ux-preview-libs-manifests");
 var initPromise = appUrls ? registerComponentDependencyPaths(JSON.parse(appUrls)) : Promise.resolve();
 initPromise.catch(function (error) {
@@ -187,6 +203,7 @@ initPromise.catch(function (error) {
     });
 })
 .finally(function() {
+    // always set title, regiseter fonts and place the renderer
     setI18nTitle();
     registerSAPFonts();
     sap.ushell.Container.createRenderer().placeAt("content");

@@ -61,8 +61,12 @@
                 "sap.ui.comp": {},
                 "sap.ui.generic.app": {},
                 "sap.suite.ui.generic.template": {},
-                "mock.reuse.lib": {},
-                "mock.reuse.lib2": {}
+                "mock.reuse.lib": {
+                    "lazy": true
+                },
+                "mock.reuse.lib2": {
+                    "lazy": true
+                }
             }
         },
         "contentDensities": {
