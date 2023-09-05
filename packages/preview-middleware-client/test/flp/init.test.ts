@@ -11,11 +11,17 @@ window.sap = {
         loader: {
             config: jest.fn()
         }
-    } as any
+    } as any,
+    ushell: {
+        Container: {
+            createRenderer: jest.fn().mockReturnValue({ placeAt: jest.fn() }),
+            attachRendererCreatedEvent: jest.fn().mockImplementation((cb: () => Promise<void>) => cb())
+        }
+    }
 } as any;
 window.fetch = jest.fn();
 
-import { registerComponentDependencyPaths, registerSAPFonts, setI18nTitle } from '../../src/flp/init';
+import { configure, init, registerComponentDependencyPaths, registerSAPFonts, setI18nTitle } from '../../src/flp/init';
 import IconPoolMock from '../__mock__/sap/ui/core/IconPool';
 import { mockBundle } from '../__mock__/sap/base/i18n/ResourceBundle';
 
@@ -67,5 +73,31 @@ describe('flp/init', () => {
             await registerComponentDependencyPaths(['/']);
             expect(loaderMock).toBeCalledWith({ paths: { 'test/lib/component': '~url' } });
         });
+    });
+
+    describe('configure', () => {
+        const attachMock = sap.ushell.Container.attachRendererCreatedEvent as jest.Mock;
+        beforeEach(() => {
+            attachMock.mockReset();
+        });
+
+        test('nothing configured', async () => {
+            await configure({});
+            expect(attachMock).not.toBeCalled();
+        });
+
+        test('flex configured', async () => {
+            await configure({
+                flex: JSON.stringify({
+                    layer: 'CUSTOMER_BASE'
+                })
+            });
+            expect(attachMock).toBeCalled();
+        });
+    });
+
+    test('init', () => {
+        init();
+        expect(sap.ushell.Container.createRenderer).toBeCalled();
     });
 });

@@ -171,14 +171,14 @@ export function setI18nTitle() {
 }
 
 /**
- * Initialization function.
+ * Apply additional configuration.
  *
  * @param params init parameters read from the script tag
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
  * @returns promise
  */
-function init({ appUrls, flex }: { appUrls: string | null; flex: string | null }): Promise<void> {
+export function configure({ appUrls, flex }: { appUrls?: string | null; flex?: string | null }): Promise<void> {
     // Register RTA if configured
     if (flex) {
         sap.ushell.Container.attachRendererCreatedEvent(async function () {
@@ -205,16 +205,18 @@ function init({ appUrls, flex }: { appUrls: string | null; flex: string | null }
     }
 }
 
+export function init() {
+    setI18nTitle();
+    registerSAPFonts();
+    sap.ushell.Container.createRenderer().placeAt('content');
+}
+
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
-    init({
+    configure({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings')
     })
-        .then(() => {
-            setI18nTitle();
-            registerSAPFonts();
-            sap.ushell.Container.createRenderer().placeAt('content');
-        })
+        .then(init)
         .catch(() => Log.error('Sandbox initialization failed.'));
 }
