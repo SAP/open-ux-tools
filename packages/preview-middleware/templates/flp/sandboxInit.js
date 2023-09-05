@@ -203,7 +203,7 @@ initPromise.catch(function (error) {
     });
 })
 .finally(function() {
-    // always set title, regiseter fonts and place the renderer
+    // always set title, register fonts and place the renderer
     setI18nTitle();
     registerSAPFonts();
     sap.ushell.Container.createRenderer().placeAt("content");
