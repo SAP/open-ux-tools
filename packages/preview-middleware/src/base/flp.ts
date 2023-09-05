@@ -147,6 +147,9 @@ export class FlpSandbox {
      * Add routes for html and scripts required for a local FLP.
      */
     private addStandardRoutes() {
+        // register static client sources
+        this.router.use('/preview/client', serveStatic(join(__dirname, '../../dist/client')));
+
         // add route for the sandbox.html
         this.router.get(this.config.path, (async (req: Request, res: Response & { _livereload?: boolean }) => {
             const config = { ...this.templateConfig };

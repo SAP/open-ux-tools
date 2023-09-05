@@ -3,10 +3,12 @@ declare module 'sap/ui/rta/command/BaseCommand' {
     /**
      *
      */
-    export default interface BaseCommand {
+    interface BaseCommand {
         execute(): Promise<void>;
         getElement(): Element;
     }
+
+    export default BaseCommand;
 }
 
 declare module 'sap/ui/rta/command/Stack' {
@@ -14,7 +16,7 @@ declare module 'sap/ui/rta/command/Stack' {
     /**
      *
      */
-    export default interface Stack {
+    interface Stack {
         /**
          *
          */
@@ -22,15 +24,19 @@ declare module 'sap/ui/rta/command/Stack' {
         getCommands(): BaseCommand[];
         getAllExecutedCommands(): BaseCommand[];
     }
+
+    export default Stack;
 }
 
 declare module 'sap/ui/rta/command/FlexCommand' {
     import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
     import type Change from 'sap/ui/fl/Change';
 
-    export default interface FlexCommand extends BaseCommand {
+    interface FlexCommand extends BaseCommand {
         getPreparedChange(): Change;
     }
+
+    export default FlexCommand;
 }
 
 declare module 'sap/ui/rta/command/CommandFactory' {
@@ -82,13 +88,15 @@ declare module 'sap/ui/rta/command/OutlineService' {
     /**
      *
      */
-    export default interface OutlineService {
+    interface OutlineService {
         get(): Promise<OutlineViewNode[]>;
         /**
          *
          */
         attachEvent<T>(eventName: string, handler: (params: T) => void): void;
     }
+
+    export default OutlineService;
 }
 
 declare module 'sap/ui/rta/RuntimeAuthoring' {
@@ -97,7 +105,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
     import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
 
-    export default interface RuntimeAuthoring {
+    interface RuntimeAuthoring {
         attachSelectionChange(handler: (event: Event) => void): void;
         attachModeChanged: (handler: (event: Event) => void) => void;
         attachUndoRedoStackModified: (handler: (event: Event) => void) => void;
@@ -106,4 +114,6 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getSelection: () => ElementOverlay[];
         getDefaultPlugins: () => { contextMenu: ContextMenu };
     }
+
+    export default RuntimeAuthoring;
 }

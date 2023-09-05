@@ -14,9 +14,11 @@ declare module 'sap/ui/fl/Change' {
     /**
      *
      */
-    export default interface Change {
+    interface Change {
         getDefinition: () => ChangeDefinition;
     }
+
+    export default Change;
 }
 
 declare module 'sap/ui/fl/Utils' {

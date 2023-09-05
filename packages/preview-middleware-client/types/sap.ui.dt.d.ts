@@ -9,12 +9,14 @@ declare module 'sap/ui/dt/DesignTimeMetadata' {
         specialIndexHandling?: boolean;
     }
 
-    export default interface DesignTimeMetadata extends ManagedObject {
+    interface DesignTimeMetadata extends ManagedObject {
         getData: () => {
             properties: { [name: string]: DesignTimeMetadataData };
             aggregations: { [name: string]: DesignTimeMetadataData };
         };
     }
+
+    export default DesignTimeMetadata;
 }
 
 declare module 'sap/ui/dt/ElementOverlay' {
@@ -24,7 +26,7 @@ declare module 'sap/ui/dt/ElementOverlay' {
     /**
      *
      */
-    export default interface ElementOverlay extends Overlay {
+    interface ElementOverlay extends Overlay {
         getElement(): ManagedObject;
         getElementInstance(): ManagedObject;
         isSelectable(): boolean;
@@ -33,15 +35,19 @@ declare module 'sap/ui/dt/ElementOverlay' {
          */
         setSelected(selected: boolean): void;
     }
+
+    export default ElementOverlay;
 }
 
 declare module 'sap/ui/dt/Overlay' {
     import type Element from 'sap/ui/core/Element';
     import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 
-    export default interface Overlay extends Element {
+    interface Overlay extends Element {
         getDesignTimeMetadata: () => DesignTimeMetadata;
     }
+
+    export default Overlay;
 }
 
 declare module 'sap/ui/dt/OverlayRegistry' {
@@ -79,10 +85,12 @@ declare module 'sap/ui/dt/plugin/ContextMenu' {
     /**
      *
      */
-    export default interface ContextMenu {
+    interface ContextMenu {
         /**
          *
          */
         addMenuItem(item: ContextMenuItem);
     }
+
+    export default ContextMenu;
 }
