@@ -3,7 +3,8 @@
 import Log from 'sap/base/Log';
 import type Event from 'sap/ui/base/Event';
 import type Control from 'sap/ui/core/Control';
-
+import IconPool from 'sap/ui/core/IconPool';
+import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
@@ -146,37 +147,33 @@ function registerComponentDependencyPaths(appUrls: string[]) {
 /**
  * Register SAP fonts that are also registered in a productive Fiori launchpad.
  */
-function registerSAPFonts() {
-    sap.ui.require(['sap/ui/core/IconPool'], function (IconPool: any) {
-        //Fiori Theme font family and URI
-        const fioriTheme = {
-            fontFamily: 'SAP-icons-TNT',
-            fontURI: sap.ui.require.toUrl('sap/tnt/themes/base/fonts/')
-        };
-        //Registering to the icon pool
-        IconPool.registerFont(fioriTheme);
-        //SAP Business Suite Theme font family and URI
-        const bSuiteTheme = {
-            fontFamily: 'BusinessSuiteInAppSymbols',
-            fontURI: sap.ui.require.toUrl('sap/ushell/themes/base/fonts/')
-        };
-        //Registering to the icon pool
-        IconPool.registerFont(bSuiteTheme);
-    });
+export function registerSAPFonts() {
+    //Fiori Theme font family and URI
+    const fioriTheme = {
+        fontFamily: 'SAP-icons-TNT',
+        fontURI: sap.ui.require.toUrl('sap/tnt/themes/base/fonts/')
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    const bSuiteTheme = {
+        fontFamily: 'BusinessSuiteInAppSymbols',
+        fontURI: sap.ui.require.toUrl('sap/ushell/themes/base/fonts/')
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
 }
 
 /**
  * Read the application title from the resource bundle and set it as document title.
  */
-function setI18nTitle() {
+export function setI18nTitle() {
     const sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-    sap.ui.require(['sap/base/i18n/ResourceBundle'], function (ResourceBundle: any) {
-        const oResourceBundle = ResourceBundle.create({
-            url: 'i18n/i18n.properties',
-            locale: sLocale
-        });
-        document.title = oResourceBundle.getText('appTitle');
-    });
+    const oResourceBundle = ResourceBundle.create({
+        url: 'i18n/i18n.properties',
+        locale: sLocale
+    }) as ResourceBundle;
+    document.title = oResourceBundle.getText('appTitle') ?? document.title;
 }
 
 /**
