@@ -1,6 +1,6 @@
 specVersion: "3.0"
 metadata:
-    name: rta-client-extension
+    name: preview-middleware-client
 type: application
 resources:
   configuration:

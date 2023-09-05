@@ -1,10 +1,11 @@
-/* global $ document */
+/* global document */
 
 import Log from 'sap/base/Log';
 import type Event from 'sap/ui/base/Event';
 import type Control from 'sap/ui/core/Control';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
+import UriParameters from 'sap/base/util/UriParameters';
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
@@ -58,29 +59,26 @@ function addKeys(dependency: Record<string, unknown>, customLibs: Record<string,
  * @param appUrls urls pointing to included applications
  * @returns {Promise<string>} Promise of a comma separated list of all required libraries.
  */
-function fioriToolsGetManifestLibs(appUrls: string[]) {
+function getManifestLibs(appUrls: string[]) {
     const result = {} as Record<string, true>;
     const promises = [];
     for (const url of appUrls) {
         promises.push(
-            new Promise<void>(function (resolve, _reject) {
-                // @ts-ignore
-                $.ajax(`${url}/manifest.json`).done(function (manifest: any) {
-                    if (manifest) {
-                        if (manifest['sap.ui5'] && manifest['sap.ui5'].dependencies) {
-                            if (manifest['sap.ui5'].dependencies.libs) {
-                                addKeys(manifest['sap.ui5'].dependencies.libs, result);
-                            }
-                            if (manifest['sap.ui5'].dependencies.components) {
-                                addKeys(manifest['sap.ui5'].dependencies.components, result);
-                            }
+            fetch(`${url}/manifest.json`).then(async (resp) => {
+                const manifest = await resp.json();
+                if (manifest) {
+                    if (manifest['sap.ui5'] && manifest['sap.ui5'].dependencies) {
+                        if (manifest['sap.ui5'].dependencies.libs) {
+                            addKeys(manifest['sap.ui5'].dependencies.libs, result);
                         }
-                        if (manifest['sap.ui5'] && manifest['sap.ui5'].componentUsages) {
-                            addKeys(manifest['sap.ui5'].componentUsages, result);
+                        if (manifest['sap.ui5'].dependencies.components) {
+                            addKeys(manifest['sap.ui5'].dependencies.components, result);
                         }
                     }
-                    resolve();
-                });
+                    if (manifest['sap.ui5'] && manifest['sap.ui5'].componentUsages) {
+                        addKeys(manifest['sap.ui5'].componentUsages, result);
+                    }
+                }
             })
         );
     }
@@ -112,8 +110,8 @@ function registerModules(
                     Log.info('Registering Library ' + dependency.componentId + ' from server ' + dependency.url);
                     const compId = dependency.componentId.replace(/\./g, '/');
                     const config = {
-                        paths: {}
-                    } as any;
+                        paths: {} as Record<string, string>
+                    };
                     config.paths[compId] = dependency.url;
                     sap.ui.loader.config(config);
                 }
@@ -128,27 +126,16 @@ function registerModules(
  * @param appUrls application urls
  * @returns returns a promise when the registration is completed.
  */
-async function registerComponentDependencyPaths(appUrls: string[]) {
-    const libs = await fioriToolsGetManifestLibs(appUrls);
+async function registerComponentDependencyPaths(appUrls: string[]): Promise<void> {
+    const libs = await getManifestLibs(appUrls);
     if (libs && libs.length > 0) {
         let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
-        url = await new Promise(function (resolve) {
-            sap.ui.require(['sap/base/util/UriParameters'], function (UriParameters: any) {
-                const sapClient = UriParameters.fromQuery(window.location.search).get('sap-client');
-                if (sapClient && sapClient.length === 3) {
-                    url = url + '&sap-client=' + sapClient;
-                }
-                resolve(url);
-            });
-        });
-        // @ts-ignore
-        return $.ajax(url).done(function (data: any) {
-            if (data) {
-                registerModules(data);
-            }
-        });
-    } else {
-        return undefined;
+        const sapClient = UriParameters.fromQuery(window.location.search).get('sap-client');
+        if (sapClient && sapClient.length === 3) {
+            url = url + '&sap-client=' + sapClient;
+        }
+        const response = await fetch(url);
+        registerModules(await response.json());
     }
 }
 
@@ -211,11 +198,12 @@ async function init({ appUrls, flex }: { appUrls: string | null; flex: string | 
     }
 
     // Load custom library paths if configured
-    const initPromise = appUrls ? registerComponentDependencyPaths(JSON.parse(appUrls)) : Promise.resolve();
-    try {
-        await initPromise;
-    } catch (error) {
-        Log.error(error);
+    if (appUrls) {
+        try {
+            await registerComponentDependencyPaths(JSON.parse(appUrls));
+        } catch (error) {
+            Log.error(error);
+        }
     }
     setI18nTitle();
     registerSAPFonts();
