@@ -28,10 +28,6 @@ const DEFAULT_THEME = 'sap_horizon';
 const DEFAULT_PATH = '/test/flp.html';
 
 /**
- * Default name of the locate reuse libs script.
- */
-const DEFAULT_LOCATE_LIBS_FILENAME = 'locate-reuse-libs.js';
-/**
  * Default intent
  */
 const DEFAULT_INTENT = {
@@ -68,7 +64,7 @@ export interface TemplateConfig {
         layer: UI5FlexLayer;
         developerMode: boolean;
     };
-    locateReuseLibsScript?: string;
+    locateReuseLibsScript?: boolean;
 }
 
 /**
@@ -124,11 +120,9 @@ export class FlpSandbox {
                 libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
                 theme: supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0],
                 flex,
-                resources: { ...resources }
+                resources: { ...resources, 'open.ux.preview': '.' }
             },
-            locateReuseLibsScript: this.config.libs
-                ? `./${DEFAULT_LOCATE_LIBS_FILENAME}`
-                : await this.findLocateReuseLibsScript()
+            locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
         this.addApp(manifest, {
             componentId,
@@ -147,6 +141,15 @@ export class FlpSandbox {
      * Add routes for html and scripts required for a local FLP.
      */
     private addStandardRoutes() {
+        // add route for the oninit script
+        const previewPath = dirname(this.config.path);
+        this.router.get(`${previewPath === '/' ? '' : previewPath}/sandboxInit.js`, (_req: Request, res: Response) => {
+            const initjs = readFileSync(join(__dirname, '../../templates/flp/sandboxInit.js'), 'utf-8');
+            res.writeHead(200, { 'Content-Type': 'text/javascript' });
+            res.write(initjs);
+            res.end();
+        });
+
         // add route for the sandbox.html
         this.router.get(this.config.path, (async (req: Request, res: Response & { _livereload?: boolean }) => {
             const config = { ...this.templateConfig };
@@ -178,16 +181,6 @@ export class FlpSandbox {
                 res.status(200).contentType('html').send(html);
             }
         }) as RequestHandler);
-        // add route for locate-reuse-libs if requested
-        if (this.config.libs && this.templateConfig.locateReuseLibsScript) {
-            const pathParts = this.config.path.split('/');
-            pathParts.pop();
-            pathParts.push(DEFAULT_LOCATE_LIBS_FILENAME);
-            this.router.get(pathParts.join('/'), (_req: Request, res: Response) => {
-                const script = readFileSync(join(__dirname, '../../templates/flp/locate-reuse-libs.js'), 'utf-8');
-                res.status(200).contentType('text/javascript').send(script);
-            });
-        }
     }
 
     /**
@@ -195,13 +188,9 @@ export class FlpSandbox {
      *
      * @returns the location of the locate-reuse-libs script or undefined.
      */
-    private async findLocateReuseLibsScript(): Promise<string | undefined> {
+    private async hasLocateReuseLibsScript(): Promise<boolean | undefined> {
         const files = await this.project.byGlob('**/locate-reuse-libs.js');
-        if (files.length > 0) {
-            return files[0].getPath();
-        } else {
-            return undefined;
-        }
+        return files.length > 0;
     }
 
     /**
