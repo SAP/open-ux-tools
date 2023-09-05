@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.29
+
+### Patch Changes
+
+-   98d40960: Technical Name key to be schema valid
+
 ## 0.14.28
 
 ### Patch Changes
