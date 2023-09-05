@@ -46,7 +46,7 @@ const PREVIEW_URL = {
     client: {
         url: '/preview/client',
         local: join(__dirname, '../../dist/client'),
-        ns: 'open/ux/preview/client'
+        ns: 'open.ux.preview.client'
     },
     api: '/preview/api'
 };
