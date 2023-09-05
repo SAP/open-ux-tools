@@ -28,10 +28,6 @@ const DEFAULT_THEME = 'sap_horizon';
 const DEFAULT_PATH = '/test/flp.html';
 
 /**
- * Default name of the locate reuse libs script.
- */
-const DEFAULT_LOCATE_LIBS_FILENAME = 'locate-reuse-libs.js';
-/**
  * Default intent
  */
 const DEFAULT_INTENT = {
@@ -80,7 +76,7 @@ export interface TemplateConfig {
         layer: UI5FlexLayer;
         developerMode: boolean;
     };
-    locateReuseLibsScript?: string;
+    locateReuseLibsScript?: boolean;
 }
 
 /**
@@ -141,9 +137,7 @@ export class FlpSandbox {
                     [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
                 }
             },
-            locateReuseLibsScript: this.config.libs
-                ? `./${DEFAULT_LOCATE_LIBS_FILENAME}`
-                : await this.findLocateReuseLibsScript()
+            locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
         this.addApp(manifest, {
             componentId,
@@ -196,16 +190,6 @@ export class FlpSandbox {
                 res.status(200).contentType('html').send(html);
             }
         }) as RequestHandler);
-        // add route for locate-reuse-libs if requested
-        if (this.config.libs && this.templateConfig.locateReuseLibsScript) {
-            const pathParts = this.config.path.split('/');
-            pathParts.pop();
-            pathParts.push(DEFAULT_LOCATE_LIBS_FILENAME);
-            this.router.get(pathParts.join('/'), (_req: Request, res: Response) => {
-                const script = readFileSync(join(__dirname, '../../templates/flp/locate-reuse-libs.js'), 'utf-8');
-                res.status(200).contentType('text/javascript').send(script);
-            });
-        }
     }
 
     /**
@@ -213,13 +197,9 @@ export class FlpSandbox {
      *
      * @returns the location of the locate-reuse-libs script or undefined.
      */
-    private async findLocateReuseLibsScript(): Promise<string | undefined> {
+    private async hasLocateReuseLibsScript(): Promise<boolean | undefined> {
         const files = await this.project.byGlob('**/locate-reuse-libs.js');
-        if (files.length > 0) {
-            return files[0].getPath();
-        } else {
-            return undefined;
-        }
+        return files.length > 0;
     }
 
     /**

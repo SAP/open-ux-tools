@@ -11,7 +11,7 @@
     "private": true,
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc && ui5 build --clean-dest --exclude-task=* --include-task=ui5-tooling-transpile-task && rimraf dist/**/*-dbg.js",
+        "build": "ui5 build --clean-dest --exclude-task=* --include-task=ui5-tooling-transpile-task && rimraf dist/**/*-dbg.js",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
@@ -30,5 +30,6 @@
         "@sapui5/types": "1.117.1",
         "@ui5/cli": "3.5.0",
         "ui5-tooling-transpile": "3.2.0"
-    }
+    },
+    "browserslist": "defaults"
 }

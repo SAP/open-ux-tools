@@ -176,8 +176,9 @@ export function setI18nTitle() {
  * @param params init parameters read from the script tag
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
+ * @returns promise
  */
-async function init({ appUrls, flex }: { appUrls: string | null; flex: string | null }) {
+function init({ appUrls, flex }: { appUrls: string | null; flex: string | null }): Promise<void> {
     // Register RTA if configured
     if (flex) {
         sap.ushell.Container.attachRendererCreatedEvent(async function () {
@@ -198,15 +199,10 @@ async function init({ appUrls, flex }: { appUrls: string | null; flex: string | 
 
     // Load custom library paths if configured
     if (appUrls) {
-        try {
-            await registerComponentDependencyPaths(JSON.parse(appUrls));
-        } catch (error) {
-            Log.error(error);
-        }
+        return registerComponentDependencyPaths(JSON.parse(appUrls));
+    } else {
+        return Promise.resolve();
     }
-    setI18nTitle();
-    registerSAPFonts();
-    sap.ushell.Container.createRenderer().placeAt('content');
 }
 
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
@@ -215,6 +211,10 @@ if (bootstrapConfig) {
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings')
     })
-        .then(() => Log.info('Sandbox initialization finished.'))
+        .then(() => {
+            setI18nTitle();
+            registerSAPFonts();
+            sap.ushell.Container.createRenderer().placeAt('content');
+        })
         .catch(() => Log.error('Sandbox initialization failed.'));
 }
