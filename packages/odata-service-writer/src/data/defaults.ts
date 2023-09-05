@@ -40,7 +40,7 @@ function setDefaultServiceModel(service: OdataService): void {
  * @param {OdataService} service - The service object whose annotations name needs to be set or modified.
  */
 function setDefaultAnnotationsName(service: OdataService): void {
-    if ((service.annotations && service.annotations.name === undefined) || service.annotations?.name === '') {
+    if (service.annotations?.technicalName && !service.annotations.name) {
         service.annotations.name = service.annotations?.technicalName?.replace(/\//g, '_')?.replace(/^_/, '');
     }
 }
