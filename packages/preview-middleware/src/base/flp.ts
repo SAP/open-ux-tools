@@ -40,6 +40,18 @@ const DEFAULT_INTENT = {
 };
 
 /**
+ * Static settings
+ */
+const PREVIEW_URL = {
+    client: {
+        url: '/preview/client',
+        local: join(__dirname, '../../dist/client'),
+        ns: 'open/ux/preview/client'
+    },
+    api: '/preview/api'
+};
+
+/**
  * Internal structure used to fill the sandbox.html template
  */
 export interface TemplateConfig {
@@ -124,7 +136,10 @@ export class FlpSandbox {
                 libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
                 theme: supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0],
                 flex,
-                resources: { ...resources }
+                resources: {
+                    ...resources,
+                    [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
+                }
             },
             locateReuseLibsScript: this.config.libs
                 ? `./${DEFAULT_LOCATE_LIBS_FILENAME}`
@@ -148,7 +163,7 @@ export class FlpSandbox {
      */
     private addStandardRoutes() {
         // register static client sources
-        this.router.use('/preview/client', serveStatic(join(__dirname, '../../dist/client')));
+        this.router.use(PREVIEW_URL.client.url, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox.html
         this.router.get(this.config.path, (async (req: Request, res: Response & { _livereload?: boolean }) => {
@@ -233,7 +248,7 @@ export class FlpSandbox {
                 .contentType('text/javascript')
                 .send(readFileSync(join(__dirname, '../../templates/flp/workspaceConnector.js'), 'utf-8'));
         });
-        const api = '/preview/api/changes';
+        const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
             res.status(200)
