@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.29
+
+### Patch Changes
+
+-   98d40960: Technical Name key to be schema valid
+
+## 0.14.28
+
+### Patch Changes
+
+-   6e403f27: fix(deps): update dependency fast-xml-parser to v4.2.7
+
 ## 0.14.27
 
 ### Patch Changes

@@ -23,6 +23,7 @@ export interface OdataService {
     model?: string;
     metadata?: string;
     annotations?: {
+        name?: string;
         technicalName: string;
         xml: string;
     };

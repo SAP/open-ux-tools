@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.4.3
+
+### Patch Changes
+
+-   6e403f27: fix(deps): update dependency fast-xml-parser to v4.2.7
+
 ## 1.4.2
 
 ### Patch Changes
