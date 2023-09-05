@@ -17,7 +17,7 @@
         "start:fixture": "ui5 serve --config test/fixtures/simple-app/ui5.yaml",
         "build": "pnpm build:middleware && pnpm build:client",
         "build:middleware": "tsc --build",
-        "build:client": "cd ../preview-middleware-client && pnpm build && copyfiles --up 1 \"./dist/**/*\" \"../preview-middleware/dist/client\"",
+        "build:client": "cd ../preview-middleware-client && pnpm build && copyfiles --exclude **/*-dbg.js --up 1 \"./dist/**/*\" \"../preview-middleware/dist/client\"",
         "watch": "tsc --watch",
         "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
