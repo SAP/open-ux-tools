@@ -1,11 +1,10 @@
-/* global document */
-
 import Log from 'sap/base/Log';
 import type Event from 'sap/ui/base/Event';
 import type Control from 'sap/ui/core/Control';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import UriParameters from 'sap/base/util/UriParameters';
+
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
  */
@@ -126,7 +125,7 @@ function registerModules(
  * @param appUrls application urls
  * @returns returns a promise when the registration is completed.
  */
-async function registerComponentDependencyPaths(appUrls: string[]): Promise<void> {
+export async function registerComponentDependencyPaths(appUrls: string[]): Promise<void> {
     const libs = await getManifestLibs(appUrls);
     if (libs && libs.length > 0) {
         let url = '/sap/bc/ui2/app_index/ui5_app_info?id=' + libs;
@@ -163,12 +162,12 @@ export function registerSAPFonts() {
  * Read the application title from the resource bundle and set it as document title.
  */
 export function setI18nTitle() {
-    const sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-    const oResourceBundle = ResourceBundle.create({
+    const locale = sap.ui.getCore().getConfiguration().getLanguage();
+    const resourceBundle = ResourceBundle.create({
         url: 'i18n/i18n.properties',
-        locale: sLocale
+        locale
     }) as ResourceBundle;
-    document.title = oResourceBundle.getText('appTitle') ?? document.title;
+    document.title = resourceBundle.getText('appTitle') ?? document.title;
 }
 
 /**
