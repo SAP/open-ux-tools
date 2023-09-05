@@ -23,6 +23,9 @@ import { UIHighlightMenuOption } from '../UIContextualMenu';
 import './UICreateSelect.scss';
 
 export { MultiValue as UICreateSelectMultiValue };
+export { ActionMeta as UICreateSelectActionMeta };
+export { Options as UICreateSelectOptions };
+export { OptionsOrGroups as UICreateSelectOptionsOrGroups };
 
 export interface UICreateSelectOptionEntry {
     readonly label: string;
@@ -35,7 +38,7 @@ export interface UICreateSelectGroupEntry {
     readonly label?: string;
 }
 
-export interface Accessors<Option> {
+export interface UICreateSelectAccessors<Option> {
     getOptionValue: GetOptionValue<Option>;
     getOptionLabel: GetOptionLabel<Option>;
 }
@@ -52,7 +55,7 @@ export type UICreateSelectProps = {
         inputValue: string,
         selectValue: Options<UICreateSelectOptionEntry>,
         selectOptions: OptionsOrGroups<UICreateSelectOptionEntry, UICreateSelectGroupEntry>,
-        accessors: Accessors<UICreateSelectOptionEntry>
+        accessors: UICreateSelectAccessors<UICreateSelectOptionEntry>
     ) => boolean;
     handleCreate?: (inputValue: string) => void;
     handleOnChange?: (
@@ -122,6 +125,18 @@ const Option = (props: OptionProps<UICreateSelectOptionEntry, true, UICreateSele
             {props?.data?.__isNew__ && <components.Option {...props} />}
         </React.Fragment>
     );
+};
+
+const getBackgroundColor = (state: OptionProps<UICreateSelectOptionEntry>): string => {
+    let backgroundColor = 'transparent';
+    if (state.isSelected) {
+        backgroundColor =
+            'var(--vscode-editorSuggestWidget-selectedBackground, var(--vscode-quickInputList-focusBackground))';
+    }
+    if (state.isFocused && !state.isSelected) {
+        backgroundColor = 'var(--vscode-list-hoverBackground)';
+    }
+    return backgroundColor;
 };
 
 /**
@@ -198,21 +213,21 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
                     minHeight: '22px',
                     height: '22px',
                     lineHeight: '22px',
-                    color:
-                        state.isSelected || state.isFocused
-                            ? 'var(--vscode-editorSuggestWidget-selectedForeground, var(--vscode-quickInputList-focusForeground, var(--vscode-editorSuggestWidget-foreground)))'
-                            : 'var(--vscode-editorSuggestWidget-foreground)',
-                    backgroundColor:
-                        state.isSelected || state.isFocused
-                            ? 'var(--vscode-editorSuggestWidget-selectedBackground, var(--vscode-quickInputList-focusBackground))'
-                            : 'transparent',
+                    color: state.isSelected
+                        ? 'var(--vscode-editorSuggestWidget-selectedForeground, var(--vscode-quickInputList-focusForeground, var(--vscode-editorSuggestWidget-foreground)))'
+                        : 'var(--vscode-editorSuggestWidget-foreground)',
+                    backgroundColor: getBackgroundColor(state),
                     letterSpacing: 'normal',
                     border: '0',
                     padding: '0px 8px',
                     fontSize: '13px',
                     '&:hover': {
-                        backgroundColor: 'var(--vscode-list-hoverBackground)',
-                        color: 'var(--vscode-editorSuggestWidget-foreground)',
+                        backgroundColor: !state.isSelected
+                            ? 'var(--vscode-list-hoverBackground)'
+                            : getBackgroundColor(state),
+                        color: state.isSelected
+                            ? 'var(--vscode-editorSuggestWidget-selectedForeground, var(--vscode-quickInputList-focusForeground, var(--vscode-editorSuggestWidget-foreground)))'
+                            : 'var(--vscode-editorSuggestWidget-foreground)',
                         cursor: 'pointer'
                     }
                 }),

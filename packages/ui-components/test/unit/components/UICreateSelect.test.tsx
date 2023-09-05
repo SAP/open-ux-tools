@@ -1,44 +1,50 @@
-import React from 'react';
-import * as Enzyme from 'enzyme';
+import * as React from 'react';
+import { render, screen } from '@testing-library/react';
+import type { RenderResult } from '@testing-library/react';
 
-import type { UICreateSelectOptionEntry, UICreateSelectProps } from '../../../src/components/UICreateSelect';
-import { UICreateSelect } from '../../../src/components/UICreateSelect';
+import { initIcons, UICreateSelect, UICreateSelectProps } from '../../../src/components';
 
 describe('<UICreateSelect />', () => {
+    initIcons();
+
     const createOption = (label: string) => ({
         label,
         value: label.toLowerCase().replace(/\W/g, '')
     });
     const defaultOptions = [createOption('One'), createOption('Two'), createOption('Three')];
-    const isLoading = false;
-    const options = defaultOptions;
-    const value = {} as UICreateSelectOptionEntry;
-    const handleCreate = jest.fn();
-    const handleChange = jest.fn();
-
-    let wrapper: Enzyme.ReactWrapper<UICreateSelectProps>;
-
-    beforeEach(() => {
-        wrapper = Enzyme.mount(
+    const renderUICreateSelect = (props: UICreateSelectProps): RenderResult =>
+        render(
             <UICreateSelect
-                createText={'Add new value'}
-                isClearable={true}
-                isLoading={isLoading}
-                isDisabled={false}
-                placeholder={'Search or enter a new value'}
-                options={options}
-                value={value}
-                handleCreate={handleCreate}
-                handleOnChange={handleChange}
+                createText={props.createText}
+                isClearable={props.isClearable}
+                isLoading={props.isLoading}
+                isDisabled={props.isDisabled}
+                isValidNewOption={props.isValidNewOption}
+                placeholder={props.placeholder}
+                options={props.options}
+                value={props.value}
+                handleCreate={props.handleCreate}
+                handleOnChange={props.handleOnChange}
             />
         );
-    });
 
-    afterEach(() => {
-        wrapper.unmount();
-    });
+    it('Render a UICreateSelect component', () => {
+        const props: UICreateSelectProps = {
+            createText: 'Add new value',
+            isClearable: true,
+            isLoading: false,
+            isDisabled: false,
+            isValidNewOption: jest.fn(),
+            placeholder: 'Search or enter a new value',
+            options: defaultOptions,
+            value: undefined,
+            handleCreate: jest.fn(),
+            handleOnChange: jest.fn()
+        };
+        renderUICreateSelect(props);
 
-    it('Existence', () => {
-        expect(wrapper.find(UICreateSelect).length).toEqual(1);
+        screen.debug();
+
+        expect(true).toBeTruthy();
     });
 });

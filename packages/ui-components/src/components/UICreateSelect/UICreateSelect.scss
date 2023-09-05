@@ -15,7 +15,7 @@
     &__option {
         position: relative;
 
-        &--is-focused {
+        &--is-selected {
             .ts-Menu-option--highlighted {
                 color: var(
                     --vscode-editorSuggestWidget-focusHighlightForeground,
