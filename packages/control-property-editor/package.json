@@ -4,7 +4,7 @@
   "description": "Control Property Editor",
   "license": "Apache-2.0",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "main": "dist/app.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/SAP/open-ux-tools.git",
@@ -66,7 +66,6 @@
     "@esbuild-plugins/node-modules-polyfill": "0.1.4",
     "@sap-ux/control-property-editor-common": "workspace:*",
     "@sap-ux/control-property-editor-ui5": "workspace:*",
-    "@sap-ux/preview-middleware": "workspace:*",
     "@sap-ux/logger": "workspace:*"
   }
 }

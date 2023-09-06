@@ -162,6 +162,7 @@ export class FlpSandbox {
      * @param rta runtime authoring configuration
      */
     private addEditorRoutes(rta: RtaConfig) {
+        const cpe = dirname(require.resolve('@sap-ux/control-property-editor'));
         for (const editor of rta.editors) {
             const previewUrl = `${editor.path}.inner.html`;
             this.router.get(previewUrl, async (_req: Request, res: Response) => {
@@ -180,6 +181,7 @@ export class FlpSandbox {
                 const html = render(template, { previewUrl: `${previewUrl}?fiori-tools-rta-mode=x` });
                 res.status(200).contentType('html').send(html);
             });
+            this.router.use(`${dirname(editor.path)}/editor`, serveStatic(cpe));
         }
     }
 

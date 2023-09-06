@@ -41,9 +41,6 @@
       "path": "../logger"
     },
     {
-      "path": "../preview-middleware"
-    },
-    {
       "path": "../ui-components"
     }
   ]

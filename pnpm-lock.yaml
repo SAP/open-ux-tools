@@ -459,9 +459,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@sap-ux/preview-middleware':
-        specifier: workspace:*
-        version: link:../preview-middleware
       '@sap-ux/ui-components':
         specifier: workspace:*
         version: link:../ui-components
@@ -1034,6 +1031,9 @@ importers:
       '@private/preview-middleware-client':
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
         version: link:../preview-middleware-client
+      '@sap-ux/control-property-editor':
+        specifier: workspace:*
+        version: link:../control-property-editor
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
