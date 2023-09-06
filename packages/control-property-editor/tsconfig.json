@@ -1,0 +1,50 @@
+{
+  "extends": "./tsconfig-base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "lib": [
+      "ES2021",
+      "dom"
+    ],
+    "strict": true,
+    "strictNullChecks": true,
+    "jsx": "react",
+    "sourceMap": true,
+    "module": "ES6"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "test/**/*.ts",
+    "test/**/*.tsx",
+    "test/fixtures/development/**/*.ts",
+    "test/fixtures/development/**/*.tsx"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "reports"
+  ],
+  "references": [
+    {
+      "path": "../control-property-editor-common"
+    },
+    {
+      "path": "../control-property-editor-ui5"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../preview-middleware"
+    },
+    {
+      "path": "../ui-components"
+    }
+  ]
+}

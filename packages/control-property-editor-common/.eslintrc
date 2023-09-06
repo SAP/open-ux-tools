@@ -1,0 +1,19 @@
+{
+    "extends": ["../../.eslintrc"],
+    "parserOptions": {
+        "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true,
+        "project": "./tsconfig-test.json"
+    },
+    "overrides": [
+        {
+            "parser": "@typescript-eslint/parser",
+            "files": ["./test/**/*.ts"],
+            "rules": {
+                "no-loop-func": "off"
+            }
+        }
+    ],
+    "rules": {
+        "no-console": "off"
+    }
+}

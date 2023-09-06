@@ -1,9 +1,11 @@
 declare module 'sap/ui/rta/command/BaseCommand' {
     import type Element from 'sap/ui/core/Element';
+    import type ManagedObject from 'sap/ui/base/ManagedObject';
+
     /**
      *
      */
-    interface BaseCommand {
+   interface BaseCommand extends ManagedObject {
         execute(): Promise<void>;
         getElement(): Element;
     }
@@ -105,8 +107,14 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
     import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
 
-    interface RuntimeAuthoring {
-        attachSelectionChange(handler: (event: Event) => void): void;
+
+    export type SelectionChangeEvent = Event<SelectionChangeParams>;
+    export interface SelectionChangeParams {
+        selection: ElementOverlay[];
+    }
+
+   interface RuntimeAuthoring {
+        attachSelectionChange(handler: (event: SelectionChangeEvent) => void): void;
         attachModeChanged: (handler: (event: Event) => void) => void;
         attachUndoRedoStackModified: (handler: (event: Event) => void) => void;
         getCommandStack: () => Stack;

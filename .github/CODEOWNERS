@@ -57,6 +57,9 @@
 # Module: deploy-tooling
 /packages/deploy-tooling/ @SAP/ux-tools-deploy
 
+# Module: control-property-editor
+/packages/control-property-editor/ @SAP/ux-tools-control-property-editor
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin

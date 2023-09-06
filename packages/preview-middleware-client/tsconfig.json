@@ -1,10 +1,6 @@
 {
     "extends": "../../tsconfig.json",
-    "include": [
-        "src",
-        "test",
-        "types"
-    ],
+    "include": ["src", "test", "typings"],
     "compilerOptions": {
         "target": "es2022",
         "module": "es2022",
@@ -18,13 +14,8 @@
         "baseUrl": ".",
         "outDir": "dist",
         "paths": {
-            "open/ux/preview/client/*": [
-                "./src/*"
-            ]
+            "open/ux/preview/client/*": ["./src/*"]
         },
-        "types": [
-            "@sapui5/types",
-            "jest"
-        ]
+        "types": ["@sapui5/types", "jest"]
     }
 }
