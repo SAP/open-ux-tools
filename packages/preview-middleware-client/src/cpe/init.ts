@@ -1,9 +1,3 @@
-sap.ui.loader.config({
-	paths: {
-		'@sap-ux/control-property-editor-common': '../thirdparty/@sap-ux/control-property-editor-common/dist/index'
-	}
-});
-
 import type { ExternalAction } from '@sap-ux/control-property-editor-common';
 import { startPostMessageCommunication, iconsLoaded } from '@sap-ux/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';

@@ -15,11 +15,8 @@ builder:
         - name: ui5-tooling-transpile-task
           afterTask: replaceVersion
         - name: ui5-tooling-modules-task
-          afterTask: replaceVersion
+          afterTask: ui5-tooling-transpile-task
           configuration:
             debug: true
             prependPathMappings: true
-            addToNamespace: true
-            includeAssets:
-              "@sap-ux/control-property-editor-common":
-                - "dist/*.*"
+            addToNamespace: false
