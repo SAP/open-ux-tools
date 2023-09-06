@@ -8,6 +8,7 @@ describe('message helpers', () => {
 
     describe('prettyPrintMessage', () => {
         test('convert JSON into messages', () => {
+            const isDest = true;
             const msg: SuccessMessage = {
                 code: '200',
                 message: '~message',
@@ -20,9 +21,9 @@ describe('message helpers', () => {
 
             const infoMock = (log.info = jest.fn());
             const warningMock = (log.warn = jest.fn());
-            prettyPrintMessage({ msg: JSON.stringify(msg), log, host });
-            // log main message, two messages for the full url, and each detail
-            expect(infoMock).toBeCalledTimes(4);
+            prettyPrintMessage({ msg: JSON.stringify(msg), log, host, isDest });
+            // log main message, two messages for the full url, and each detail, additional message for destination
+            expect(infoMock).toBeCalledTimes(5);
             expect(warningMock).toBeCalledTimes(1);
         });
 
