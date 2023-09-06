@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.2
+
+### Patch Changes
+
+-   4c2eef88: UIFlexibleTable. Text of column title is not fully visible
+
 ## 1.11.1
 
 ### Patch Changes
