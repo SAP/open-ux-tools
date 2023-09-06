@@ -156,9 +156,15 @@ export class FlpSandbox {
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
 
+    /**
+     * Add additional routes for configured editors.
+     *
+     * @param rta runtime authoring configuration
+     */
     private addEditorRoutes(rta: RtaConfig) {
         for (const editor of rta.editors) {
-            this.router.get(editor.path, async (_req: Request, res: Response) => {
+            const previewUrl = `${editor.path}.inner.html`;
+            this.router.get(previewUrl, async (_req: Request, res: Response) => {
                 const config = { ...this.templateConfig };
                 config.flex = {
                     layer: rta.layer,
@@ -167,6 +173,11 @@ export class FlpSandbox {
                 };
                 const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
                 const html = render(template, config);
+                res.status(200).contentType('html').send(html);
+            });
+            this.router.get(editor.path, async (_req: Request, res: Response) => {
+                const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
+                const html = render(template, { previewUrl: `${previewUrl}?fiori-tools-rta-mode=x` });
                 res.status(200).contentType('html').send(html);
             });
         }
