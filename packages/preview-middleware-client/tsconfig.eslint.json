@@ -1,6 +1,6 @@
 {
     "extends": "./tsconfig.json",
-    "include": [".eslintrc.js", "src", "test", "typings"],
+    "include": [".eslintrc.js", "src", "test", "types"],
     "compilerOptions": {
         "types": [
             "@sapui5/types",

@@ -186,12 +186,21 @@ export function configure({ appUrls, flex }: { appUrls?: string | null; flex?: s
             serviceInstance.attachAppLoaded((event: Event<{ componentInstance: Control }>) => {
                 const oView = event.getParameter('componentInstance');
                 sap.ui.require(['sap/ui/rta/api/startAdaptation'], function (startAdaptation: Function) {
+                    const flexSettings = JSON.parse(flex);
                     const options = {
                         rootControl: oView,
                         validateAppVersion: false,
-                        flexSettings: JSON.parse(flex)
+                        flexSettings
                     };
                     startAdaptation(options);
+                    if (flexSettings.developerMode) {
+                        sap.ui.require(
+                            ['open/ux/preview/client/cpe/init'],
+                            function ({ init }: { init: () => Promise<void> }) {
+                                init();
+                            }
+                        );
+                    }
                 });
             });
         });

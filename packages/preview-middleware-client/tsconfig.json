@@ -1,21 +1,37 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["src", "test", "typings"],
-    "compilerOptions": {
-        "target": "es2022",
-        "module": "es2022",
-        "skipLibCheck": true,
-        "allowJs": true,
-        "strict": true,
-        "noEmit": true,
-        "strictPropertyInitialization": false,
-        "moduleResolution": "node",
-        "rootDir": ".",
-        "baseUrl": ".",
-        "outDir": "dist",
-        "paths": {
-            "open/ux/preview/client/*": ["./src/*"]
-        },
-        "types": ["@sapui5/types", "jest"]
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "test",
+    "typings",
+    "types"
+  ],
+  "compilerOptions": {
+    "lib": ["ES2020", "DOM"],
+    "target": "es2022",
+    "module": "es2022",
+    "skipLibCheck": true,
+    "allowJs": true,
+    "strict": true,
+    "noEmit": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": {
+      "open/ux/preview/client/*": [
+        "./src/*"
+      ]
+    },
+    "types": [
+      "@sapui5/types",
+      "jest"
+    ]
+  },
+  "references": [
+    {
+      "path": "../control-property-editor-common"
     }
+  ]
 }

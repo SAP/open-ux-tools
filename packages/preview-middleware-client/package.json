@@ -29,7 +29,8 @@
     "devDependencies": {
         "@sapui5/types": "1.117.1",
         "@ui5/cli": "3.5.0",
-        "ui5-tooling-transpile": "3.2.0"
+        "ui5-tooling-transpile": "3.2.0",
+        "@sap-ux/control-property-editor-common": "workspace:*"
     },
     "browserslist": "defaults"
 }

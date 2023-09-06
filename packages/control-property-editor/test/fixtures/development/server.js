@@ -21,7 +21,7 @@ getCreateReader().then((createReader) => {
         virBasePath: virBasePath
     });
     const flp = new FlpSandbox(
-        { path: '/preview', rta: { layer: 'VENDOR' }, intent: { object: 'preview', action: 'app' } },
+        { path: 'preview.html', rta: { layer: 'VENDOR' }, intent: { object: 'preview', action: 'app' } },
         rootPath,
         {
             getProject: () => {
@@ -48,6 +48,7 @@ getCreateReader().then((createReader) => {
 
     Promise.all([flp.init(getManifest()), serve({ servedir: './dist' }, { ...esbuildOptions })]).then(() => {
         app.use(flp.router);
+        app.use('/', express.static(APP_ROOT));
         app.use('/preview', express.static(APP_ROOT));
 
         app.use('/resources', ui5Proxy);
