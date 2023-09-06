@@ -14,3 +14,9 @@ builder:
     customTasks:
         - name: ui5-tooling-transpile-task
           afterTask: replaceVersion
+        - name: ui5-tooling-modules-task
+          afterTask: replaceVersion
+          configuration:
+            debug: true
+            prependPathMappings: true
+            addToNamespace: true
