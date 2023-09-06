@@ -35,7 +35,7 @@ const tableIds = ['table1', 'table2'];
 const columns: UIFlexibleTableColumnType[] = Array.from({ length: 10 }).map((item, index) => {
     const col: UIFlexibleTableColumnType = {
         key: `column${index + 1}`,
-        title: `Column ${index + 1}`,
+        title: index === 0 ? 'Beginning Column' : `Column ${index + 1}`,
         tooltip: `Tooltip for column #${index + 1}`
     };
     return col;
@@ -628,7 +628,7 @@ export const WrappingTable = (): JSX.Element => {
         return {
             isDropDisabled
         };
-    };;
+    };
 
     const option = (label: string, value: boolean, setter: (value: React.SetStateAction<boolean>) => void) => (
         <UICheckbox
