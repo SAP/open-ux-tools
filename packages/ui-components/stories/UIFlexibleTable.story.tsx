@@ -35,7 +35,7 @@ const tableIds = ['table1', 'table2'];
 const columns: UIFlexibleTableColumnType[] = Array.from({ length: 10 }).map((item, index) => {
     const col: UIFlexibleTableColumnType = {
         key: `column${index + 1}`,
-        title: index === 0 ? 'Beginning Column g' : `Column ${index + 1}`,
+        title: index === 0 ? 'Beginning Column' : `Column ${index + 1}`,
         tooltip: `Tooltip for column #${index + 1}`
     };
     return col;
