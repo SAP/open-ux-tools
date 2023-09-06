@@ -3,7 +3,7 @@ import { render } from 'ejs';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, relative } from 'path';
-import type { App, FlpConfig } from '../types';
+import type { App, FlpConfig, RtaConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
@@ -75,6 +75,7 @@ export interface TemplateConfig {
     flex?: {
         layer: UI5FlexLayer;
         developerMode: boolean;
+        pluginScript?: string;
     };
     locateReuseLibsScript?: boolean;
 }
@@ -147,9 +148,28 @@ export class FlpSandbox {
         });
 
         this.addStandardRoutes();
+        if (this.config.rta) {
+            this.addEditorRoutes(this.config.rta);
+        }
         this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
+    }
+
+    private addEditorRoutes(rta: RtaConfig) {
+        for (const editor of rta.editors) {
+            this.router.get(editor.path, async (_req: Request, res: Response) => {
+                const config = { ...this.templateConfig };
+                config.flex = {
+                    layer: rta.layer,
+                    developerMode: editor.adaptation === true,
+                    pluginScript: editor.pluginScript
+                };
+                const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
+                const html = render(template, config);
+                res.status(200).contentType('html').send(html);
+            });
+        }
     }
 
     /**
@@ -161,19 +181,6 @@ export class FlpSandbox {
 
         // add route for the sandbox.html
         this.router.get(this.config.path, (async (req: Request, res: Response & { _livereload?: boolean }) => {
-            const config = { ...this.templateConfig };
-            const fioriToolsRtaMode = req.query['fiori-tools-rta-mode'];
-            if (fioriToolsRtaMode) {
-                if (this.config.rta?.layer) {
-                    config.flex = {
-                        layer: this.config.rta?.layer,
-                        developerMode: fioriToolsRtaMode === 'forAdaptation'
-                    };
-                } else {
-                    this.logger.error('Fiori tools RTA mode could not be started because the RTA layer is missing.');
-                }
-            }
-
             // warn the user if a file with the same name exists in the filesystem
             const file = await this.project.byPath(this.config.path);
             if (file) {
@@ -181,7 +188,7 @@ export class FlpSandbox {
             }
 
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-            const html = render(template, config);
+            const html = render(template, this.templateConfig);
             // if livereload is enabled, don't send it but let other middleware modify the content
             if (res._livereload) {
                 res.write(html);

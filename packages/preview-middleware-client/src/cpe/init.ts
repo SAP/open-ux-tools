@@ -1,22 +1,17 @@
 import type { ExternalAction } from '@sap-ux/control-property-editor-common';
 import { startPostMessageCommunication, iconsLoaded } from '@sap-ux/control-property-editor-common';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import type { ActionHandler, Service, UI5AdaptationOptions } from './types';
+import type { ActionHandler, Service } from './types';
 import { initOutline } from './outline/index';
 import { createUi5Facade } from './facade';
 import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';
 import { loadDefaultLibraries } from './documentation';
 
-/**
- * Main function, register handlers for events and messages.
- *
- * @param options - UI5 adaptation options
- */
-export async function init(options: UI5AdaptationOptions): Promise<void> {
+export default async function init(rta: RuntimeAuthoring): Promise<void> {
     console.log(`Initializing Control Property Editor`);
 
-    const { rta } = options;
     const ui5 = createUi5Facade();
     const actionHandlers: ActionHandler[] = [];
     /**
@@ -28,7 +23,7 @@ export async function init(options: UI5AdaptationOptions): Promise<void> {
     }
 
     const selectionService = new SelectionService(rta, ui5);
-    const changesService = new ChangeService(options, ui5, selectionService);
+    const changesService = new ChangeService({ rta } as any, ui5, selectionService);
     const services: Service[] = [selectionService, changesService];
     try {
         loadDefaultLibraries();

@@ -22,15 +22,22 @@ export interface App {
     intent?: Intent;
 }
 
+export interface RtaConfig {
+    layer: UI5FlexLayer;
+    editors: {
+        path: string;
+        adaptation?: boolean;
+        pluginScript?: string;
+    }[];
+}
+
 /**
  * FLP preview configuration.
  */
 export interface FlpConfig {
     path: string;
     intent: Intent;
-    rta?: {
-        layer?: UI5FlexLayer;
-    };
+    rta?: RtaConfig;
     /**
      * Optional: if set to true then a locate-reuse-libs script will be attached to the html
      */

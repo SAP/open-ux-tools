@@ -185,22 +185,19 @@ export function configure({ appUrls, flex }: { appUrls?: string | null; flex?: s
             const serviceInstance = await sap.ushell.Container.getServiceAsync<any>('AppLifeCycle');
             serviceInstance.attachAppLoaded((event: Event<{ componentInstance: Control }>) => {
                 const oView = event.getParameter('componentInstance');
-                sap.ui.require(['sap/ui/rta/api/startAdaptation'], function (startAdaptation: Function) {
-                    const flexSettings = JSON.parse(flex);
+                const requiredLibs = ['sap/ui/rta/api/startAdaptation'];
+                const flexSettings = JSON.parse(flex);
+                if (flexSettings.pluginScript) {
+                    requiredLibs.push(flexSettings.pluginScript);
+                    delete flexSettings.pluginScript;
+                }
+                sap.ui.require(requiredLibs, function (startAdaptation: Function, pluginScript?: Function) {
                     const options = {
                         rootControl: oView,
                         validateAppVersion: false,
                         flexSettings
                     };
-                    startAdaptation(options);
-                    if (flexSettings.developerMode) {
-                        sap.ui.require(
-                            ['open/ux/preview/client/cpe/init'],
-                            function ({ init }: { init: () => Promise<void> }) {
-                                init();
-                            }
-                        );
-                    }
+                    startAdaptation(options, pluginScript);
                 });
             });
         });

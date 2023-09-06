@@ -15,12 +15,13 @@ import type { ReaderCollection } from '@ui5/fs';
  * @param flp FlpSandbox instance
  * @param logger logger instance
  */
-async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, flp: FlpSandbox, logger: ToolsLogger) {
+async function initAdp(rootProject: ReaderCollection, config: Config, flp: FlpSandbox, logger: ToolsLogger) {
     const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
     if (appVariant) {
-        const adp = new AdpPreview(config, rootProject, logger);
-        const layer = await adp.init(JSON.parse(await appVariant.getString()));
-        flp.config.rta = { layer };
+        const adp = new AdpPreview(config.adp!, rootProject, logger);
+        if (flp.config.rta) {
+            flp.config.rta.layer = await adp.init(JSON.parse(await appVariant.getString()));
+        }
         await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
     } else {
@@ -47,7 +48,7 @@ async function createRouter({ resources, options, middlewareUtil }: MiddlewarePa
     const flp = new FlpSandbox(config.flp, resources.rootProject, middlewareUtil, logger);
 
     if (config.adp) {
-        await initAdp(resources.rootProject, config.adp, flp, logger);
+        await initAdp(resources.rootProject, config, flp, logger);
     } else {
         const manifest = await resources.rootProject.byPath('/manifest.json');
         if (manifest) {
