@@ -44,6 +44,7 @@ export interface UICreateSelectAccessors<Option> {
 }
 
 export type UICreateSelectProps = {
+    defaultMenuIsOpen?: boolean;
     createText?: string;
     isClearable: boolean;
     isLoading: boolean;
@@ -150,6 +151,7 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
 
     return (
         <CreatableSelect
+            defaultMenuIsOpen={props.defaultMenuIsOpen}
             className="ui-create-select"
             classNamePrefix="ui-create-select"
             isClearable={props.isClearable}
