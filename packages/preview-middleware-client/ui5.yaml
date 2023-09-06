@@ -20,3 +20,6 @@ builder:
             debug: true
             prependPathMappings: true
             addToNamespace: true
+            includeAssets:
+              "@sap-ux/control-property-editor-common":
+                - "dist/*.*"
