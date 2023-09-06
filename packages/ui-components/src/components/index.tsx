@@ -6,6 +6,7 @@ export * from './UICheckbox';
 export * from './UIChoiceGroup';
 export * from './UIComboBox';
 export * from './UIContextualMenu';
+export * from './UICreateSelect';
 export * from './UIDialog';
 export * from './UIDropdown';
 export * from './UIFlexibleTable';

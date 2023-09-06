@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "1.11.2",
+    "version": "1.11.3",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
@@ -35,6 +35,7 @@
     "dependencies": {
         "@fluentui/react": "8.100.0",
         "react-movable": "2.4.0",
+        "react-select": "5.7.4",
         "react-virtualized": "9.22.3",
         "sanitize-html": "2.7.3",
         "uuid": "3.4.0"
