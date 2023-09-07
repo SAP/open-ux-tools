@@ -5,9 +5,6 @@
         "../../types/mem-fs-editor.d.ts",
         "src"
     ],
-    "exclude": [
-        "src/preview/client"
-      ],
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "dist"
