@@ -3,7 +3,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 import type { FlexSettings } from 'sap/ui/rta/command/CommandFactory';
 
-import CommandExecutor from '../../../../src/preview/client/command-executor';
+import CommandExecutor from '../../src/adp/command-executor';
 
 describe('client/command-executor', () => {
     describe('generateAndExecuteCommand', () => {

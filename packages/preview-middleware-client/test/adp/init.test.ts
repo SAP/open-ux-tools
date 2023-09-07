@@ -1,8 +1,8 @@
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import init from '../../../../src/preview/client/index';
+import init from '../../src/adp/init';
 
-describe('index', () => {
+describe('init', () => {
     test('initializes client side code', () => {
         const addMenuItemSpy = jest.fn();
         const rta = {

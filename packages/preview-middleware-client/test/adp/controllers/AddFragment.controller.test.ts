@@ -1,16 +1,32 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+const byIdMock = jest.fn();
+window.sap = {
+    ui: {
+        getCore: jest.fn().mockReturnValue({
+            byId: byIdMock
+        })
+    } as any
+} as any;
+
+window.fetch = jest.fn().mockResolvedValue({
+    json: jest.fn().mockReturnValue({ fragments: [] }),
+    text: jest.fn(),
+    ok: true
+});
+
 import type Dialog from 'sap/m/Dialog';
 import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
 import type JSONModel from 'sap/ui/model/json/JSONModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import ControlUtils from '../../../../../src/preview/client/control-utils';
-import AddFragment from '../../../../../src/preview/client/controllers/AddFragment.controller';
-import CommandExecutor from '../../../../../src/preview/client/command-executor';
+import ControlUtils from '../../../src/adp/control-utils';
+import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
+import CommandExecutor from '../../../src/adp/command-executor';
+
+
+const fetchMock = fetch as jest.Mock;
 
 describe('AddFragment', () => {
-    const globalAny: any = global;
     describe('onInit', () => {
         afterEach(() => {
             jest.restoreAllMocks();
@@ -48,20 +64,7 @@ describe('AddFragment', () => {
                     })
                 })
             };
-
-            globalAny.sap = {
-                ui: {
-                    getCore: jest.fn().mockReturnValue({
-                        byId: jest.fn().mockReturnValue(overlayControl)
-                    })
-                }
-            };
-
-            globalAny.fetch = jest.fn().mockResolvedValue({
-                json: jest.fn().mockReturnValue({ fragments: [] }),
-                text: jest.fn(),
-                ok: true
-            });
+            byIdMock.mockReturnValue(overlayControl);
 
             // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
@@ -284,7 +287,7 @@ describe('AddFragment', () => {
             // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
 
-            globalAny.fetch = jest.fn().mockResolvedValue({
+            fetchMock.mockResolvedValue({
                 json: jest.fn(),
                 text: jest.fn().mockReturnValue('XML Fragment was created!'),
                 ok: true
@@ -313,7 +316,7 @@ describe('AddFragment', () => {
             // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
 
-            globalAny.fetch = jest.fn().mockResolvedValue({
+            fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue({ id: '', reference: '', namespace: '', layer: '' }),
                 text: jest.fn(),
                 ok: true

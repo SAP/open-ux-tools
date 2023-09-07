@@ -1,3 +1,5 @@
+window.fetch = jest.fn();
+
 import {
     ApiEndpoints,
     RequestMethod,
@@ -6,21 +8,18 @@ import {
     request,
     writeFragment
 } from '../../src/adp/api-handler';
-import type { ManifestAppdescr } from '../../../adp-tooling/src/types';
-import type { FragmentsResponse } from '../../../../src/preview/client/api-handler';
 
 describe('API Handler', () => {
-    const globalAny: any = global;
-
+    const fetchMock = fetch as jest.Mock;
     describe('request', () => {
         afterEach(() => {
-            globalAny.fetch.mockRestore();
+            fetchMock.mockRestore();
         });
 
         test('GET - parses the response', async () => {
             const jsonSpy = jest.fn();
             try {
-                globalAny.fetch = jest.fn().mockResolvedValue({
+                fetchMock.mockResolvedValue({
                     json: jsonSpy,
                     text: jest.fn(),
                     ok: true
@@ -37,7 +36,7 @@ describe('API Handler', () => {
             const status = 500;
             const jsonSpy = jest.fn();
             try {
-                globalAny.fetch = jest.fn().mockResolvedValue({
+                fetchMock.mockResolvedValue({
                     json: jsonSpy,
                     text: jest.fn(),
                     ok: false,
@@ -54,7 +53,7 @@ describe('API Handler', () => {
         test('POST - gets the text from the response', async () => {
             const textSpy = jest.fn();
             try {
-                globalAny.fetch = jest.fn().mockResolvedValue({
+                fetchMock.mockResolvedValue({
                     json: jest.fn(),
                     text: textSpy,
                     ok: true
@@ -70,7 +69,7 @@ describe('API Handler', () => {
         test('DELETE - parses the response', async () => {
             const jsonSpy = jest.fn();
             try {
-                globalAny.fetch = jest.fn().mockResolvedValue({
+                fetchMock.mockResolvedValue({
                     json: jsonSpy,
                     text: jest.fn(),
                     ok: true
@@ -86,11 +85,11 @@ describe('API Handler', () => {
 
     describe('getFragments', () => {
         afterEach(() => {
-            globalAny.fetch.mockRestore();
+            fetchMock.mockRestore();
         });
 
         test('request is called and correct data is returned', async () => {
-            globalAny.fetch = jest.fn().mockResolvedValue({
+            fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue({
                     fragments: [{ fragmentName: 'Share.fragment.xml' }],
                     message: '1 fragment found in the project workspace.'
@@ -98,7 +97,7 @@ describe('API Handler', () => {
                 ok: true
             });
 
-            const data = await getFragments<FragmentsResponse>();
+            const data = await getFragments<{ fragments: []}>();
 
             expect(data.fragments.length).toBe(1);
         });
@@ -106,11 +105,11 @@ describe('API Handler', () => {
 
     describe('writeFragment', () => {
         afterEach(() => {
-            globalAny.fetch.mockRestore();
+            fetchMock.mockRestore();
         });
 
         test('request is called and message is recieved from the backend', async () => {
-            globalAny.fetch = jest.fn().mockResolvedValue({
+            fetchMock.mockResolvedValue({
                 text: jest.fn().mockReturnValue('Message from backend'),
                 ok: true
             });
@@ -123,16 +122,16 @@ describe('API Handler', () => {
 
     describe('getManifestAppdescr', () => {
         afterEach(() => {
-            globalAny.fetch.mockRestore();
+            fetchMock.mockRestore();
         });
 
         test('request is called and correct data is returned', async () => {
-            globalAny.fetch = jest.fn().mockResolvedValue({
+            fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue({ layer: 'VENDOR' }),
                 ok: true
             });
 
-            const data = await getManifestAppdescr<ManifestAppdescr>();
+            const data = await getManifestAppdescr<{ layer: string}>();
 
             expect(data.layer).toBe('VENDOR');
         });
