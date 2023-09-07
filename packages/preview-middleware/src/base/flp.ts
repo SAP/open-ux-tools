@@ -36,6 +36,18 @@ const DEFAULT_INTENT = {
 };
 
 /**
+ * Static settings
+ */
+const PREVIEW_URL = {
+    client: {
+        url: '/preview/client',
+        local: join(__dirname, '../../dist/client'),
+        ns: 'open.ux.preview.client'
+    },
+    api: '/preview/api'
+};
+
+/**
  * Internal structure used to fill the sandbox.html template
  */
 export interface TemplateConfig {
@@ -120,7 +132,10 @@ export class FlpSandbox {
                 libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
                 theme: supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0],
                 flex,
-                resources: { ...resources, 'open.ux.preview': '.' }
+                resources: {
+                    ...resources,
+                    [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
+                }
             },
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
@@ -141,14 +156,8 @@ export class FlpSandbox {
      * Add routes for html and scripts required for a local FLP.
      */
     private addStandardRoutes() {
-        // add route for the oninit script
-        const previewPath = dirname(this.config.path);
-        this.router.get(`${previewPath === '/' ? '' : previewPath}/sandboxInit.js`, (_req: Request, res: Response) => {
-            const initjs = readFileSync(join(__dirname, '../../templates/flp/sandboxInit.js'), 'utf-8');
-            res.writeHead(200, { 'Content-Type': 'text/javascript' });
-            res.write(initjs);
-            res.end();
-        });
+        // register static client sources
+        this.router.use(PREVIEW_URL.client.url, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox.html
         this.router.get(this.config.path, (async (req: Request, res: Response & { _livereload?: boolean }) => {
@@ -219,7 +228,7 @@ export class FlpSandbox {
                 .contentType('text/javascript')
                 .send(readFileSync(join(__dirname, '../../templates/flp/workspaceConnector.js'), 'utf-8'));
         });
-        const api = '/preview/api/changes';
+        const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
             res.status(200)
