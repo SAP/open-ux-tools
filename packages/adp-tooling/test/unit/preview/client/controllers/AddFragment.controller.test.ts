@@ -93,11 +93,14 @@ describe('AddFragment', () => {
 
             ControlUtils.getControlAggregationByName = jest.fn().mockReturnValue({ 0: {} });
 
+            const setPropSpy = jest.fn();
             addFragment.model = {
-                setProperty: jest.fn()
+                setProperty: setPropSpy
             } as unknown as JSONModel;
 
             addFragment.onAggregationChanged(event as unknown as Event);
+
+            expect(setPropSpy.mock.calls.length).toBe(4);
         });
     });
 
@@ -116,11 +119,14 @@ describe('AddFragment', () => {
                 })
             };
 
+            const setPropSpy = jest.fn();
             addFragment.model = {
-                setProperty: jest.fn()
+                setProperty: setPropSpy
             } as unknown as JSONModel;
 
             addFragment.onIndexChanged(event as unknown as Event);
+
+            expect(setPropSpy.mock.calls.length).toBe(1);
         });
     });
 
