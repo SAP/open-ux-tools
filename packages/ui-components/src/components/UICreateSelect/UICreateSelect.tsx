@@ -45,13 +45,14 @@ export interface UICreateSelectAccessors<Option> {
 
 export type UICreateSelectProps = {
     defaultMenuIsOpen?: boolean;
-    createText?: string;
     isClearable: boolean;
     isLoading: boolean;
     isDisabled: boolean;
     placeholder: string;
     value: UICreateSelectOptionEntry | undefined;
     options: UICreateSelectOptionEntry[];
+    createText?: string;
+    noOptionsMessage?: ((obj: { inputValue: string }) => React.ReactNode) | undefined;
     isValidNewOption?: (
         inputValue: string,
         selectValue: Options<UICreateSelectOptionEntry>,
@@ -167,6 +168,7 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
             onCreateOption={props.handleCreate}
             options={props.options}
             value={props.value}
+            noOptionsMessage={props.noOptionsMessage}
             formatCreateLabel={formatCreateLabel}
             components={{ ClearIndicator, DropdownIndicator, LoadingIndicator, Option }}
             unstyled={true}
