@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.15.54
+
+### Patch Changes
+
+-   ca7b401a: expose node checker
+
 ## 0.15.53
 
 ### Patch Changes

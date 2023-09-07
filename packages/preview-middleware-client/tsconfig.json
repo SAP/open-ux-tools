@@ -3,7 +3,6 @@
   "include": [
     "src",
     "test",
-    "typings",
     "types"
   ],
   "compilerOptions": {
@@ -32,6 +31,9 @@
   "references": [
     {
       "path": "../control-property-editor-common"
+    }, 
+    {
+      "path": "../eslint-plugin-fiori-tools"
     }
   ]
 }

@@ -125,7 +125,7 @@ export class SelectionService implements Service {
                             reportTelemetry({ category: 'Overlay Selection', controlName: name });
                         }
                     } catch (error) {
-                        console.error(`Error in reporting telemetry`, error);
+                        console.error('Error in reporting telemetry', error);
                     } finally {
                         const control = await buildControlData(runtimeControl, overlayControl);
                         const action = controlSelected(control);
