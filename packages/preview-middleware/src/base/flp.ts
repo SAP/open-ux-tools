@@ -164,11 +164,24 @@ export class FlpSandbox {
     private addEditorRoutes(rta: RtaConfig) {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor'));
         for (const editor of rta.editors) {
-            let path = dirname(editor.path);
-            if (!path.endsWith('/')) {
-                path = `${path}/`;
+            let previewUrl = editor.path;
+            if (editor.adaptation) {
+                let path = dirname(editor.path);
+                if (!path.endsWith('/')) {
+                    path = `${path}/`;
+                }
+                previewUrl = `${path}_inner.html`;
+                editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
+
+                this.router.get(editor.path, async (_req: Request, res: Response) => {
+                    const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
+                    const html = render(template, {
+                        previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true#${this.config.intent.object}-${this.config.intent.action}`
+                    });
+                    res.status(200).contentType('html').send(html);
+                });
+                this.router.use(`${path}editor`, serveStatic(cpe));
             }
-            const previewUrl = editor.adaptation ? `${path}_inner.html` : editor.path;
             this.router.get(previewUrl, async (_req: Request, res: Response) => {
                 const config = { ...this.templateConfig };
                 config.flex = {
@@ -180,16 +193,6 @@ export class FlpSandbox {
                 const html = render(template, config);
                 res.status(200).contentType('html').send(html);
             });
-            if (editor.adaptation) {
-                this.router.get(editor.path, async (_req: Request, res: Response) => {
-                    const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
-                    const html = render(template, {
-                        previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true#${this.config.intent.object}-${this.config.intent.action}`
-                    });
-                    res.status(200).contentType('html').send(html);
-                });
-                this.router.use(`${path}editor`, serveStatic(cpe));
-            }
         }
     }
 
