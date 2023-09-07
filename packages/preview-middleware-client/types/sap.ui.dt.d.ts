@@ -23,16 +23,10 @@ declare module 'sap/ui/dt/ElementOverlay' {
     import type ManagedObject from 'sap/ui/base/ManagedObject';
     import type Overlay from 'sap/ui/dt/Overlay';
 
-    /**
-     *
-     */
     interface ElementOverlay extends Overlay {
         getElement(): ManagedObject;
         getElementInstance(): ManagedObject;
         isSelectable(): boolean;
-        /**
-         *
-         */
         setSelected(selected: boolean): void;
     }
 
@@ -82,13 +76,7 @@ declare module 'sap/ui/dt/plugin/ContextMenu' {
         icon?: string;
     }
 
-    /**
-     *
-     */
     interface ContextMenu {
-        /**
-         *
-         */
         addMenuItem(item: ContextMenuItem);
     }
 

@@ -1,8 +1,6 @@
 declare module 'sap/ui/rta/command/BaseCommand' {
     import type Element from 'sap/ui/core/Element';
-    /**
-     *
-     */
+
     interface BaseCommand {
         execute(): Promise<void>;
         getElement(): Element;
@@ -13,13 +11,8 @@ declare module 'sap/ui/rta/command/BaseCommand' {
 
 declare module 'sap/ui/rta/command/Stack' {
     import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
-    /**
-     *
-     */
+
     interface Stack {
-        /**
-         *
-         */
         pushAndExecute(command: BaseCommand): Promise<void>;
         getCommands(): BaseCommand[];
         getAllExecutedCommands(): BaseCommand[];

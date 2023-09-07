@@ -911,6 +911,9 @@ importers:
 
   packages/preview-middleware-client:
     devDependencies:
+      '@sap-ux/eslint-plugin-fiori-tools':
+        specifier: workspace:*
+        version: link:../eslint-plugin-fiori-tools
       '@sapui5/types':
         specifier: 1.117.1
         version: 1.117.1

@@ -1,14 +1,17 @@
 module.exports = {
-    extends: ['../../.eslintrc'],
+    root: true,
+    extends: ['plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS'],
     parserOptions: {
         project: './tsconfig.eslint.json',
         tsconfigRootDir: __dirname
     },
     rules: {
-        // ui5 modules are not available in the file system
-        'import/no-unresolved': ['error', { ignore: ['^sap/'] }],
-        'space-before-function-paren': 'off',
-        '@typescript-eslint/ban-ts-comment': 'warn' /* just temp */
+        'quotes': ['error', 'single'],
+        'valid-jsdoc': ['error', {
+            requireParamType: false,
+            requireReturn: false,
+            requireReturnType: false
+        }]
     },
     overrides: [
         {

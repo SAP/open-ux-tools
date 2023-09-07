@@ -1,6 +1,5 @@
 import Log from 'sap/base/Log';
-import type Event from 'sap/ui/base/Event';
-import type Control from 'sap/ui/core/Control';
+import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import UriParameters from 'sap/base/util/UriParameters';
@@ -39,7 +38,7 @@ const UI5_LIBS = [
  * @param dependency dependency from the manifest
  * @param customLibs map containing the required custom libraries
  */
-function addKeys(dependency: Record<string, unknown>, customLibs: Record<string, true>) {
+function addKeys(dependency: Record<string, unknown>, customLibs: Record<string, true>): void {
     Object.keys(dependency).forEach(function (key) {
         // ignore libs or Components that start with SAPUI5 delivered namespaces
         if (
@@ -56,9 +55,9 @@ function addKeys(dependency: Record<string, unknown>, customLibs: Record<string,
  * Fetch the manifest for all the given application urls and generate a string containing all required custom library ids.
  *
  * @param appUrls urls pointing to included applications
- * @returns {Promise<string>} Promise of a comma separated list of all required libraries.
+ * @returns Promise of a comma separated list of all required libraries.
  */
-function getManifestLibs(appUrls: string[]) {
+function getManifestLibs(appUrls: string[]): Promise<string> {
     const result = {} as Record<string, true>;
     const promises = [];
     for (const url of appUrls) {
@@ -182,10 +181,10 @@ export function configure({ appUrls, flex }: { appUrls?: string | null; flex?: s
     // Register RTA if configured
     if (flex) {
         sap.ushell.Container.attachRendererCreatedEvent(async function () {
-            const serviceInstance = await sap.ushell.Container.getServiceAsync<any>('AppLifeCycle');
-            serviceInstance.attachAppLoaded((event: Event<{ componentInstance: Control }>) => {
+            const serviceInstance = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
+            serviceInstance.attachAppLoaded(event => {
                 const oView = event.getParameter('componentInstance');
-                sap.ui.require(['sap/ui/rta/api/startAdaptation'], function (startAdaptation: Function) {
+                sap.ui.require(['sap/ui/rta/api/startAdaptation'], function (startAdaptation: (opts: object) => void) {
                     const options = {
                         rootControl: oView,
                         validateAppVersion: false,
@@ -205,6 +204,9 @@ export function configure({ appUrls, flex }: { appUrls?: string | null; flex?: s
     }
 }
 
+/**
+ * Initialize the FLP sandbox.
+ */
 export function init() {
     setI18nTitle();
     registerSAPFonts();
