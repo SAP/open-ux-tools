@@ -2,4 +2,4 @@
 '@sap-ux-private/preview-middleware-client': minor
 ---
 
-Initial version of the module containing a typescript version of of the flp init script.
+Enhanced the client to be able to communicate with a wrapping frame running the @sap-ux/control-property-editor.
