@@ -5,8 +5,8 @@ import {
     getManifestAppdescr,
     request,
     writeFragment
-} from '../../../../src/preview/client/api-handler';
-import type { ManifestAppdescr } from '../../../../src/types';
+} from '../../src/adp/api-handler';
+import type { ManifestAppdescr } from '../../../adp-tooling/src/types';
 import type { FragmentsResponse } from '../../../../src/preview/client/api-handler';
 
 describe('API Handler', () => {

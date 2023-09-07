@@ -69,8 +69,7 @@ export class AdpPreview {
     get resources() {
         if (this.mergedDescriptor) {
             const resources = {
-                [this.mergedDescriptor.name]: this.mergedDescriptor.url,
-                [this.extensionScript.namespace]: this.extensionScript.namespace.split('.').join('/')
+                [this.mergedDescriptor.name]: this.mergedDescriptor.url
             };
             this.mergedDescriptor.asyncHints.libs.forEach((lib) => {
                 if (lib.url?.url) {
@@ -81,17 +80,6 @@ export class AdpPreview {
         } else {
             throw new Error('Not initialized');
         }
-    }
-
-    /**
-     * @returns an object with all information about the provided RTA extension script.
-     */
-    get extensionScript() {
-        return {
-            local: join(__dirname, 'client'),
-            namespace: 'adp.extension',
-            module: 'index'
-        };
     }
 
     /**

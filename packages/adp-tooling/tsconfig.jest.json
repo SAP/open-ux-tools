@@ -1,9 +1,0 @@
-{
-    "extends": "../../tsconfig.json",
-    "include": [
-        "../../types/ui5.d.ts",
-        "../../types/mem-fs-editor.d.ts",
-        "../../types/sapui5",
-        "src"
-    ]
-}

@@ -11,23 +11,17 @@ declare module 'sap/ui/fl/Change' {
             generator: string;
         };
     }
-    /**
-     *
-     */
-    export default interface Change {
+    interface Change {
         getDefinition: () => ChangeDefinition;
     }
+
+    export default Change;
 }
 
 declare module 'sap/ui/fl/Utils' {
     import type ManagedObject from 'sap/ui/base/ManagedObject';
-    /**
-     *
-     */
+
     interface Utils {
-        /**
-         *
-         */
         checkControlId(control: ManagedObject): boolean;
     }
 

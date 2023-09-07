@@ -14,9 +14,7 @@
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm build:server && pnpm build:client",
-        "build:server": "tsc --build",
-        "build:client": "tsc --noEmit --project src/preview/client/tsconfig.json && babel --extensions .ts ./src/preview/client -d ./dist/preview/client --copy-files",
+        "build": "tsc --build",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
@@ -49,7 +47,6 @@
         "yazl": "2.5.1"
     },
     "devDependencies": {
-        "@babel/cli": "7.22.10",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@types/ejs": "3.1.0",
@@ -59,9 +56,7 @@
         "@types/prompts": "2.0.14",
         "@types/supertest": "2.0.12",
         "@types/yazl": "2.4.2",
-        "@typescript-eslint/parser": "6.4.0",
-        "babel-preset-transform-ui5": "7.2.4",
-        "dotenv": "16.0.0",
+        "dotenv": "16.3.1",
         "express": "4.18.2",
         "nock": "13.2.1",
         "rimraf": "5.0.1",
@@ -70,6 +65,5 @@
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
         "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
-    },
-    "browserslist": "defaults"
+    }
 }
