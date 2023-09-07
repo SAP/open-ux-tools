@@ -34,7 +34,7 @@ export async function handler(overlays: UI5Element[], rta: RuntimeAuthoring): Pr
     const viewXml = '<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"></mvc:View>';
 
     const controller = (await Controller.create({
-        name: 'adp.extension.controllers.AddFragment'
+        name: 'open.ux.preview.client.adp.controllers.AddFragment'
     })) as unknown as AddFragment;
 
     controller.overlays = overlays;

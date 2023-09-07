@@ -65,7 +65,7 @@ export interface ManifestAppdescr {
 }
 
 /**
- * @namespace adp.extension.controllers
+ * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends Controller {
     /**
@@ -100,7 +100,7 @@ export default class AddFragment extends Controller {
         this.model = new JSONModel();
         this.commandExecutor = new CommandExecutor(this.rta);
 
-        this.dialog = (await this.loadFragment({ name: 'adp.extension.ui.AddFragment' })) as Dialog;
+        this.dialog = (await this.loadFragment({ name: 'open.ux.preview.client.adp.ui.AddFragment' })) as Dialog;
 
         await this.buildDialogData(this.overlays, this.model);
 
