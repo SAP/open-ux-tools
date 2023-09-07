@@ -1,5 +1,5 @@
 ---
-'@sap-ux/preview-middleware': patch
+'@sap-ux/preview-middleware': minor
 ---
 
-No change of functionality, just converted the init script to typescript
+Added support for running an editor with SAPUI5 adaptation projects
