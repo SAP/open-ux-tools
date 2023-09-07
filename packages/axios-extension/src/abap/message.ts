@@ -122,7 +122,7 @@ function logFullURL({
         log.info('Please copy/paste this URL in a browser for more details:');
         if (isDest) {
             log.info(
-                '(Note: As the destination uses a virtual host, you will need to replace the host in the URL with the internal host that is configured with your SAP Cloud Connector)'
+                '(Note: You will need to replace the host in the URL with the internal host, if your destination is configured using an On-Premise SAP Cloud Connector)'
             );
         }
         log.info(new URL(path, base).href);
