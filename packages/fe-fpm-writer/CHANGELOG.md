@@ -1,5 +1,19 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.23.2
+
+### Patch Changes
+
+-   78e726a6: Custom Filter Field. Property "eventHandler".
+    1. Generated fragment requires js file when no "eventHandler" is passed.
+    2. Wrong reference to js file is generated in fragment, when "eventHandler.fileName" is passed.
+
+## 0.23.1
+
+### Patch Changes
+
+-   da6aed84: Correction for content of generated fragment for `templateEdit` property: Content is wrapped inside `sap.ui.layout.form.FormElement`
+
 ## 0.23.0
 
 ### Minor Changes

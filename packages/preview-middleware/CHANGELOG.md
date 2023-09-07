@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.4.4
+
+### Patch Changes
+
+-   a73935c5: No change of functionality, just converted the init script to typescript
+
+## 0.4.3
+
+### Patch Changes
+
+-   9096d8cb: Cleaner FLP sandbox init script
+
 ## 0.4.2
 
 ### Patch Changes

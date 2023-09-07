@@ -1,6 +1,7 @@
 #  `@sap-ux/preview-middleware`
 
 The `@sap-ux/preview-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for previewing an application in a local Fiori launchpad . It can be used either with the `ui5 serve` or the `fiori run` commands.
+It hosts a local Fiori launchpad based on your configuration as well as offers an API to modify flex changes in your project. The API is available at `/preview/api` and additional client code required for the preview is available at `/preview/client`.
 
 ## Configuration Options
 | Option                 | Type      | Default Value    | Description                                                                                                                         |
@@ -11,7 +12,7 @@ The `@sap-ux/preview-middleware` is a [Custom UI5 Server Middleware](https://sap
 | `flp.intent.object`    | `string`  | `app`            | Optional intent object                                                                                                              |
 | `flp.intent.action`    | `string`  | `preview`        | Optional intent action                                                                                                              |
 | `flp.apps`             | `array`   | `[]`             | Optional additional local apps that are available in local Fiori launchpad                                                          |
-| `flp.libs`             | `boolean` | `false`          | Optional flag to add a generic script fetching the paths of used libraries not available in UI5                                     |
+| `flp.libs`             | `boolean` | `undefined`      | Optional flag to add a generic script fetching the paths of used libraries not available in UI5. To disable set it to `false`, if not set, then the project is checked for a `load-reuse-libs` script and if available the libraries are fetched as well.                                    |
 | `adp.target`           |           |                  | Required configuration for adaptation projects defining the connected backend                                                       |
 | `adp.ignoreCertErrors` | `boolean` | `false`          | Optional setting to ignore certification validation errors when working with e.g. development systems with self signed certificates |
 | `debug`                | `boolean` | `false`          | Enables debug output                                                                                                                |

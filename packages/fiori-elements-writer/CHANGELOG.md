@@ -1,5 +1,34 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.13.6
+
+### Patch Changes
+
+-   Updated dependencies [78e726a6]
+    -   @sap-ux/fe-fpm-writer@0.23.2
+
+## 0.13.5
+
+### Patch Changes
+
+-   Updated dependencies [98d40960]
+    -   @sap-ux/odata-service-writer@0.14.29
+
+## 0.13.4
+
+### Patch Changes
+
+-   a794dad7: Update ui5-tooling-transpile in templates
+-   Updated dependencies [a794dad7]
+    -   @sap-ux/ui5-application-writer@0.25.2
+
+## 0.13.3
+
+### Patch Changes
+
+-   Updated dependencies [da6aed84]
+    -   @sap-ux/fe-fpm-writer@0.23.1
+
 ## 0.13.2
 
 ### Patch Changes

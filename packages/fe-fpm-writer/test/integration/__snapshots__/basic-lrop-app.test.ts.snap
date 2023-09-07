@@ -81,10 +81,12 @@ Object {
     "state": "modified",
   },
   "js/webapp/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit.fragment.xml": Object {
-    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Input core:require=\\"{ handler: 'v4travel/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit'}\\" label=\\"MyCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
-	</VBox>
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:f=\\"sap.ui.layout.form\\">
+    <f:FormElement>
+        <f:fields>
+            <Input core:require=\\"{ handler: 'v4travel/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit'}\\" value=\\"MyCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
+        </f:fields>
+    </f:FormElement>
 </core:FragmentDefinition>",
     "state": "modified",
   },
@@ -703,10 +705,12 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
     "state": "modified",
   },
   "ts/webapp/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit.fragment.xml": Object {
-    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<VBox>
-		<Input core:require=\\"{ handler: 'v4travel/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit'}\\" label=\\"MyCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
-	</VBox>
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:f=\\"sap.ui.layout.form\\">
+    <f:FormElement>
+        <f:fields>
+            <Input core:require=\\"{ handler: 'v4travel/ext/myCustomHeaderSectionEdit/MyCustomHeaderSectionEdit'}\\" value=\\"MyCustomHeaderSectionEdit\\" change=\\"handler.onChange\\" />
+        </f:fields>
+    </f:FormElement>
 </core:FragmentDefinition>",
     "state": "modified",
   },
