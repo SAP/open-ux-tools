@@ -178,7 +178,9 @@ export class FlpSandbox {
             });
             this.router.get(editor.path, async (_req: Request, res: Response) => {
                 const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
-                const html = render(template, { previewUrl: `${previewUrl}?fiori-tools-rta-mode=x` });
+                const html = render(template, {
+                    previewUrl: `${previewUrl}#${this.config.intent.object}-${this.config.intent.action}?fiori-tools-rta-mode=x`
+                });
                 res.status(200).contentType('html').send(html);
             });
             this.router.use(`${dirname(editor.path)}/editor`, serveStatic(cpe));
