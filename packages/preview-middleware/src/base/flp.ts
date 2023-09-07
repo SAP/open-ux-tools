@@ -3,7 +3,7 @@ import { render } from 'ejs';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, relative } from 'path';
-import type { App, FlpConfig, RtaConfig } from '../types';
+import type { App, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
@@ -86,6 +86,7 @@ export interface TemplateConfig {
 export class FlpSandbox {
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
+    public readonly rta?: RtaConfig;
     public readonly router: EnhancedRouter;
 
     /**
@@ -97,22 +98,22 @@ export class FlpSandbox {
      * @param logger logger instance
      */
     constructor(
-        config: Partial<FlpConfig>,
+        config: Partial<MiddlewareConfig>,
         private readonly project: ReaderCollection,
         private readonly utils: MiddlewareUtils,
         private readonly logger: Logger
     ) {
         this.config = {
-            path: config.path ?? DEFAULT_PATH,
-            intent: config.intent ?? DEFAULT_INTENT,
-            apps: config.apps ?? [],
-            rta: config.rta,
-            libs: config.libs
+            path: config.flp?.path ?? DEFAULT_PATH,
+            intent: config.flp?.intent ?? DEFAULT_INTENT,
+            apps: config.flp?.apps ?? [],
+            libs: config.flp?.libs
         };
         if (!this.config.path.startsWith('/')) {
             this.config.path = `/${this.config.path}`;
         }
-        logger.debug(`Config: ${JSON.stringify(this.config)}`);
+        this.rta = config.rta;
+        logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta })}`);
         this.router = createRouter();
     }
 
@@ -148,8 +149,8 @@ export class FlpSandbox {
         });
 
         this.addStandardRoutes();
-        if (this.config.rta) {
-            this.addEditorRoutes(this.config.rta);
+        if (this.rta) {
+            this.addEditorRoutes(this.rta);
         }
         this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);

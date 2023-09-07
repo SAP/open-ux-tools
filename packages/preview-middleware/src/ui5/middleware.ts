@@ -2,8 +2,7 @@ import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import type { MiddlewareParameters } from '@ui5/server';
 import { FlpSandbox } from '../base/flp';
-import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
-import type { Config } from '../types';
+import type { MiddlewareConfig } from '../types';
 import { AdpPreview } from '@sap-ux/adp-tooling';
 import type { ReaderCollection } from '@ui5/fs';
 
@@ -15,12 +14,12 @@ import type { ReaderCollection } from '@ui5/fs';
  * @param flp FlpSandbox instance
  * @param logger logger instance
  */
-async function initAdp(rootProject: ReaderCollection, config: Config, flp: FlpSandbox, logger: ToolsLogger) {
+async function initAdp(rootProject: ReaderCollection, config: MiddlewareConfig, flp: FlpSandbox, logger: ToolsLogger) {
     const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
     if (appVariant) {
         const adp = new AdpPreview(config.adp!, rootProject, logger);
-        if (flp.config.rta) {
-            flp.config.rta.layer = await adp.init(JSON.parse(await appVariant.getString()));
+        if (flp.rta) {
+            flp.rta.layer = await adp.init(JSON.parse(await appVariant.getString()));
         }
         await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
@@ -39,13 +38,16 @@ async function initAdp(rootProject: ReaderCollection, config: Config, flp: FlpSa
  * @param logger logger instance
  * @returns a router
  */
-async function createRouter({ resources, options, middlewareUtil }: MiddlewareParameters<Config>, logger: ToolsLogger) {
+async function createRouter(
+    { resources, options, middlewareUtil }: MiddlewareParameters<MiddlewareConfig>,
+    logger: ToolsLogger
+) {
     // setting defaults
     const config = options.configuration ?? {};
     config.flp ??= {};
 
     // configure the FLP sandbox based on information from the manifest
-    const flp = new FlpSandbox(config.flp, resources.rootProject, middlewareUtil, logger);
+    const flp = new FlpSandbox(config, resources.rootProject, middlewareUtil, logger);
 
     if (config.adp) {
         await initAdp(resources.rootProject, config, flp, logger);
@@ -68,7 +70,7 @@ async function createRouter({ resources, options, middlewareUtil }: MiddlewarePa
  * @param params middleware configuration
  * @returns a promise for the request handler
  */
-module.exports = async (params: MiddlewareParameters<Config>): Promise<RequestHandler> => {
+module.exports = async (params: MiddlewareParameters<MiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'preview-middleware' })],
         logLevel: params.options.configuration?.debug ? LogLevel.Debug : LogLevel.Info

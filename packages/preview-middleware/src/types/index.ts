@@ -37,7 +37,6 @@ export interface RtaConfig {
 export interface FlpConfig {
     path: string;
     intent: Intent;
-    rta?: RtaConfig;
     /**
      * Optional: if set to true then a locate-reuse-libs script will be attached to the html
      */
@@ -48,8 +47,9 @@ export interface FlpConfig {
 /**
  * Middleware configuration.
  */
-export interface Config {
+export interface MiddlewareConfig {
     flp?: Partial<FlpConfig>;
+    rta?: RtaConfig;
     adp?: AdpPreviewConfig;
     debug?: boolean;
 }
