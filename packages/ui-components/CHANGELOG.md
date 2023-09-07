@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.11.4
+
+### Patch Changes
+
+-   27f9cdf9: feat(ui-components) add the noOptionsMessage to UICreateSelect
+
+## 1.11.3
+
+### Patch Changes
+
+-   540c38c2: feat(ui-components) add UICreateSelect component
+
 ## 1.11.2
 
 ### Patch Changes

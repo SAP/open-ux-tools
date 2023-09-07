@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.4.4
+
+### Patch Changes
+
+-   a73935c5: No change of functionality, just converted the init script to typescript
+
 ## 0.4.3
 
 ### Patch Changes
