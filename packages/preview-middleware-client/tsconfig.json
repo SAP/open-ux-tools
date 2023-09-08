@@ -20,6 +20,8 @@
     "paths": {
       "open/ux/preview/client/*": [
         "./src/*"
+      ],"mock/*": [
+        "./test/__mock__/*"
       ]
     },
     "types": [
