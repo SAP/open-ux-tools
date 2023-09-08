@@ -1,44 +1,37 @@
+import { sapCoreMock } from 'mock/window';
 import { createUi5Facade } from '../../../../src/cpe/facade';
 import { initOutline } from '../../../../src/cpe/outline/index';
 import * as nodes from '../../../../src/cpe/outline/nodes';
+import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+
 jest.useFakeTimers();
 
 describe('index', () => {
     const ui5 = createUi5Facade();
     const mockSendAction = jest.fn();
     const mockAttachEvent = jest.fn();
-    const mockGetComponent = jest.fn();
     const transformNodesSpy = jest.spyOn(nodes, 'transformNodes');
-    sap.ui.getCore = jest
-        .fn()
-        .mockReturnValueOnce({
-            byId: jest.fn().mockReturnValue({
-                getMetadata: () => {
-                    return {
-                        getProperty: () => {
-                            return {
-                                name: 'text',
-                                bindable: false,
-                                type: 'string'
-                            };
-                        }
-                    };
-                },
+
+    sapCoreMock.byId.mockReturnValue({
+        getMetadata: () => {
+            return {
                 getProperty: () => {
-                    return 'Share';
+                    return {
+                        name: 'text',
+                        bindable: false,
+                        type: 'string'
+                    };
                 }
-            }),
-            getComponent: mockGetComponent
-        })
-        .mockReturnValueOnce({
-            byId: jest.fn().mockReturnValue(undefined)
-        });
-    const runtimeAuthoring = {
-        getService: jest.fn().mockReturnValue({
-            attachEvent: mockAttachEvent,
-            get: jest.fn().mockResolvedValue('views')
-        })
-    } as any;
+            };
+        },
+        getProperty: () => {
+            return 'Share';
+        }
+    });
+    rtaMock.getService.mockReturnValue({
+        attachEvent: mockAttachEvent,
+        get: jest.fn().mockResolvedValue('views')
+    });
     afterEach(() => {
         mockSendAction.mockClear();
         transformNodesSpy.mockReset();
@@ -55,7 +48,7 @@ describe('index', () => {
                 visible: true
             }
         ]);
-        await initOutline(runtimeAuthoring, ui5, mockSendAction);
+        await initOutline(rtaMock, ui5, mockSendAction);
         expect(mockAttachEvent).toMatchInlineSnapshot(`
             [MockFunction] {
               "calls": Array [
@@ -110,7 +103,7 @@ describe('index', () => {
 
     test('initOutline - exception', async () => {
         transformNodesSpy.mockRejectedValue('error');
-        await initOutline(runtimeAuthoring, ui5, mockSendAction);
+        await initOutline(rtaMock, ui5, mockSendAction);
         const syncOutline = mockAttachEvent.mock.calls[0][1];
         syncOutline.call();
         await jest.advanceTimersByTimeAsync(4000);
@@ -120,6 +113,7 @@ describe('index', () => {
     });
 
     test('initOutline - empty additional data', async () => {
+        sapCoreMock.byId.mockReturnValueOnce(undefined);
         transformNodesSpy.mockResolvedValue([
             {
                 children: [],
@@ -131,7 +125,7 @@ describe('index', () => {
             }
         ]);
         transformNodesSpy.mockRejectedValue('error');
-        await initOutline(runtimeAuthoring, ui5, mockSendAction);
+        await initOutline(rtaMock, ui5, mockSendAction);
         const syncOutline = mockAttachEvent.mock.calls[0][1];
         syncOutline.call();
         await jest.advanceTimersByTimeAsync(4000);
