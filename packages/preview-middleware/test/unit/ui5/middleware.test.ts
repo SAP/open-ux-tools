@@ -1,7 +1,7 @@
 import express from 'express';
 import supertest from 'supertest';
 import * as previewMiddleware from '../../../src/ui5/middleware';
-import type { Config } from '../../../src/types';
+import type { MiddlewareConfig } from '../../../src/types';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import nock from 'nock';
@@ -18,7 +18,7 @@ jest.mock('@sap-ux/store', () => {
     };
 });
 
-async function getRouter(fixture?: string, configuration: Partial<Config> = {}): Promise<EnhancedRouter> {
+async function getRouter(fixture?: string, configuration: Partial<MiddlewareConfig> = {}): Promise<EnhancedRouter> {
     return await (previewMiddleware as any).default({
         options: { configuration },
         resources: {
@@ -53,7 +53,7 @@ async function getRouter(fixture?: string, configuration: Partial<Config> = {}):
 }
 
 // middleware function wrapper for testing to simplify tests
-async function getTestServer(fixture?: string, configuration: Partial<Config> = {}): Promise<any> {
+async function getTestServer(fixture?: string, configuration: Partial<MiddlewareConfig> = {}): Promise<any> {
     const router = await getRouter(fixture, configuration);
     const app = express();
     app.use(router);
