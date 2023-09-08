@@ -26,7 +26,7 @@ export interface RtaConfig {
     layer: UI5FlexLayer;
     editors: {
         path: string;
-        adaptation?: boolean;
+        developerMode?: boolean;
         pluginScript?: string;
     }[];
 }

@@ -166,7 +166,7 @@ export class FlpSandbox {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor'));
         for (const editor of rta.editors) {
             let previewUrl = editor.path;
-            if (editor.adaptation) {
+            if (editor.developerMode) {
                 let path = dirname(editor.path);
                 if (!path.endsWith('/')) {
                     path = `${path}/`;
@@ -187,7 +187,7 @@ export class FlpSandbox {
                 const config = { ...this.templateConfig };
                 config.flex = {
                     layer: rta.layer,
-                    developerMode: editor.adaptation === true,
+                    developerMode: editor.developerMode === true,
                     pluginScript: editor.pluginScript
                 };
                 const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
