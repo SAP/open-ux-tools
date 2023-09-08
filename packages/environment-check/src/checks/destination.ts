@@ -1,7 +1,6 @@
 import type { Endpoint, ResultMessage, EndpointResults } from '../types';
-import { destinations as destinationsApi } from '@sap/bas-sdk';
 import axios from 'axios';
-import { getAppStudioProxyURL } from '@sap-ux/btp-utils';
+import { getAppStudioProxyURL, listDestinations } from '@sap-ux/btp-utils';
 import { getLogger } from '../logger';
 import { UrlServiceType, Severity } from '../types';
 import { t } from '../i18n';
@@ -89,10 +88,9 @@ export async function checkBASDestinations(): Promise<{
 
     // Destinations request
     try {
-        const response = await destinationsApi.getDestinations();
-        const retrievedDestinations = transformDestinations(response);
-
-        for (const destination of retrievedDestinations) {
+        const basDestinations = await listDestinations();
+        for (const basDest in basDestinations) {
+            const destination = basDestinations[basDest] as Endpoint;
             destination.UrlServiceType = getUrlServiceTypeForDest(destination);
             destinations.push(destination);
         }
@@ -117,47 +115,6 @@ export async function checkBASDestinations(): Promise<{
         messages: logger.getMessages(),
         destinations
     };
-}
-
-/**
- * Transforms the destination format into generic Endpoint type.
- *
- * @param destinationInfo DestinationListInfo[] from '@sap/bas-sdk'
- * @returns list of destinations in new (flat) format
- */
-function transformDestinations(destinationInfo): Endpoint[] {
-    const destinations: Endpoint[] = [];
-
-    for (const destInfo of destinationInfo) {
-        const answerDestination: Endpoint = {
-            Name: destInfo.name,
-            Type: 'HTTP',
-            Authentication: destInfo.credentials.authentication,
-            ProxyType: destInfo.proxyType,
-            Description: destInfo.description,
-            Host: destInfo.host
-        };
-
-        if (destInfo.basProperties?.additionalData) {
-            answerDestination.WebIDEAdditionalData = destInfo.basProperties.additionalData;
-        }
-
-        if (destInfo.basProperties?.usage) {
-            answerDestination.WebIDEUsage = String(destInfo.basProperties.usage);
-        }
-
-        if (destInfo.basProperties?.sapClient) {
-            answerDestination['sap-client'] = destInfo.basProperties.sapClient;
-        }
-
-        if (destInfo.basProperties?.html5DynamicDestination !== undefined) {
-            answerDestination['HTML5.DynamicDestination'] = destInfo.basProperties.html5DynamicDestination;
-        }
-
-        destinations.push(answerDestination);
-    }
-
-    return destinations;
 }
 
 /**
