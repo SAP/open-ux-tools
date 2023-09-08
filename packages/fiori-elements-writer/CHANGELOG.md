@@ -1,5 +1,12 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.13.7
+
+### Patch Changes
+
+-   Updated dependencies [f50523da]
+    -   @sap-ux/odata-service-writer@0.14.30
+
 ## 0.13.6
 
 ### Patch Changes

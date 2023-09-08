@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.30
+
+### Patch Changes
+
+-   f50523da: TechnicalName key might not be present in all scenarios
+
 ## 0.14.29
 
 ### Patch Changes
