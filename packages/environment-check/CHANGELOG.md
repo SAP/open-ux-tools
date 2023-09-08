@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.15.55
+
+### Patch Changes
+
+-   fbcc0307: Update to use listDestinations from @sap-ux/btp-utils
+
 ## 0.15.54
 
 ### Patch Changes
