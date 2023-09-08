@@ -98,8 +98,15 @@ describe('ui5/middleware', () => {
     });
 
     test('adp config', async () => {
-        const server = await getTestServer('adp', { adp: { target: { url } } });
+        const server = await getTestServer('adp', {
+            adp: { target: { url } },
+            rta: {
+                layer: 'CUSTOMER_BASE',
+                editors: [{ path: '/adp/editor.html' }]
+            }
+        });
         await server.get('/test/flp.html').expect(200);
+        await server.get('/adp/editor.html').expect(200);
     });
 
     test('invalid adp config', async () => {

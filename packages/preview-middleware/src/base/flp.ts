@@ -166,13 +166,8 @@ export class FlpSandbox {
         for (const editor of rta.editors) {
             let previewUrl = editor.path;
             if (editor.developerMode) {
-                let path = dirname(editor.path);
-                if (!path.endsWith('/')) {
-                    path = `${path}/`;
-                }
-                previewUrl = `${path}_inner.html`;
+                previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
-
                 this.router.get(editor.path, async (_req: Request, res: Response) => {
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
                     const html = render(template, {

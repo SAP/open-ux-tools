@@ -142,11 +142,16 @@ describe('FlpSandbox', () => {
                         layer: 'CUSTOMER_BASE',
                         editors: [
                             {
+                                path: '/my/rta.html'
+                            },
+                            {
                                 path: '/my/editor.html',
                                 developerMode: true
                             },
                             {
-                                path: '/my/rta.html'
+                                path: '/with/plugin.html',
+                                developerMode: true,
+                                pluginScript: 'open/ux/tools/plugin'
                             }
                         ]
                     }
@@ -182,7 +187,15 @@ describe('FlpSandbox', () => {
         });
 
         test('rta with developerMode=true', async () => {
-            const response = await server.get('/my/editor.html').expect(200);
+            let response = await server.get('/my/editor.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            response = await server.get('/my/editor.html.inner.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with developerMode=true and plugin', async () => {
+            await server.get('/with/plugin.html').expect(200);
+            const response = await server.get('/with/plugin.html.inner.html').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
