@@ -10,7 +10,7 @@ jest.mock('../../../../src/cpe/outline/utils', () => {
 });
 describe('outline nodes', () => {
     const ui5Facade = createUi5Facade();
-    const transformNodes = (nodes: OutlineViewNode[]): Promise<OutlineNode[]> => tn(nodes, ui5Facade, () => ({}));
+    const transformNodes = (nodes: OutlineViewNode[]): Promise<OutlineNode[]> => tn(ui5Facade, nodes);
     describe('transformNodes', () => {
         test('empty tree', async () => {
             expect(await transformNodes([])).toStrictEqual([]);

@@ -2,7 +2,7 @@ declare module 'sap/ui/rta/command/BaseCommand' {
     import type Element from 'sap/ui/core/Element';
     import type ManagedObject from 'sap/ui/base/ManagedObject';
 
-   interface BaseCommand extends ManagedObject {
+    interface BaseCommand extends ManagedObject {
         execute(): Promise<void>;
         getElement(): Element;
     }
@@ -78,7 +78,7 @@ declare module 'sap/ui/rta/command/OutlineService' {
 
     interface OutlineService {
         get(): Promise<OutlineViewNode[]>;
-        attachEvent<T>(eventName: string, handler: (params: T) => void): void;
+        attachEvent<T>(eventName: T, handler: (params: T) => void): void;
     }
 
     export default OutlineService;
@@ -89,17 +89,19 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type Stack from 'sap/ui/rta/command/Stack';
     import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
     import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
+    import type { FlexSettings } from 'sap/ui/rta/command/CommandFactory';
 
     export type SelectionChangeEvent = Event<SelectionChangeParams>;
     export interface SelectionChangeParams {
         selection: ElementOverlay[];
     }
 
-   interface RuntimeAuthoring {
+    interface RuntimeAuthoring {
         attachSelectionChange(handler: (event: SelectionChangeEvent) => void): void;
         attachModeChanged: (handler: (event: Event) => void) => void;
         attachUndoRedoStackModified: (handler: (event: Event) => void) => void;
         getCommandStack: () => Stack;
+        getFlexSettings: () => FlexSettings;
         getService: <T>(name: 'outline' | string) => Promise<T>;
         getSelection: () => ElementOverlay[];
         getDefaultPlugins: () => { contextMenu: ContextMenu };
@@ -110,7 +112,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
 
 declare module 'sap/ui/rta/api/startAdaptation' {
     import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-    
+
     export type RTAPlugin = (rta: RuntimeAuthoring) => void;
     export type StartAdaptation = (options: object, plugin?: RTAPlugin) => void;
 

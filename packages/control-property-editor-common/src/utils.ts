@@ -14,6 +14,5 @@ export const convertCamelCaseToPascalCase = (text: string): string => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 export enum FlexChangesEndPoints {
-    readChanges = `/FioriTools/api/getChanges`,
-    removeChanges = `/FioriTools/api/removeChanges`
+    changes = `/preview/api/changes`
 }

@@ -68,7 +68,7 @@ export class ChangeService {
             }
         });
 
-        const savedChanges = await fetch(FlexChangesEndPoints.readChanges + `?_=${Date.now()}`)
+        const savedChanges = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`)
             .then((response) => response.json())
             .catch((error) => console.error(error));
         const changes = (
@@ -137,7 +137,7 @@ export class ChangeService {
                     : change.controlId === controlId && change.propertyName === propertyName
             )
             .map((change) =>
-                fetch(FlexChangesEndPoints.removeChanges, {
+                fetch(FlexChangesEndPoints.changes, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'

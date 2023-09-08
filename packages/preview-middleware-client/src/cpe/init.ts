@@ -23,7 +23,13 @@ export default async function init(rta: RuntimeAuthoring): Promise<void> {
     }
 
     const selectionService = new SelectionService(rta, ui5);
-    const changesService = new ChangeService({ rta } as any, ui5, selectionService);
+    const { layer } = rta.getFlexSettings();
+
+    const changesService = new ChangeService(
+        { rta, generator: 'replace-this-generator', layer, componentId: 'adp.v2app' },
+        ui5,
+        selectionService
+    );
     const services: Service[] = [selectionService, changesService];
     try {
         loadDefaultLibraries();

@@ -1,10 +1,13 @@
 import type { ExternalAction } from '@sap-ux/control-property-editor-common';
 import { outlineChanged } from '@sap-ux/control-property-editor-common';
 
-import { transformNodes } from './nodes';
+import Log from 'sap/base/Log';
+
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type OutlineService from 'sap/ui/rta/command/OutlineService';
+
 import type { UI5Facade } from '../types';
+import { transformNodes } from './nodes';
 
 /**
  *
@@ -18,27 +21,15 @@ export async function initOutline(
     sendAction: (action: ExternalAction) => void
 ): Promise<void> {
     const outline = await rta.getService<OutlineService>('outline');
-    function syncOutline() {
-        outline
-            .get()
-            .then((views) => {
-                return transformNodes(views, ui5, (id: string): { text?: string } => {
-                    const control = ui5.getControlById(id);
-                    if (control?.getMetadata().getProperty('text')) {
-                        const text = control.getProperty('text');
-                        if (typeof text === 'string' && text.trim() !== '') {
-                            return {
-                                text
-                            };
-                        }
-                    }
-                    return {};
-                });
-            })
-            .then((nodes) => {
-                sendAction(outlineChanged(nodes));
-            })
-            .catch((error) => console.error(error));
+    async function syncOutline() {
+        try {
+            const viewNodes = await outline.get();
+            const outlineNodes = await transformNodes(ui5, viewNodes);
+
+            sendAction(outlineChanged(outlineNodes));
+        } catch (error) {
+            Log.error('Outline sync failed!', error);
+        }
     }
     outline.attachEvent('update', syncOutline);
 }

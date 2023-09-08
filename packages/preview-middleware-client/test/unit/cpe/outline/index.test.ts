@@ -95,10 +95,7 @@ describe('index', () => {
                 },
               ],
             }
-        `);
-        const additionalDataCallback = transformNodesSpy.mock.calls[0][2];
-        const result = additionalDataCallback('v2flex::sap.::SEPMRA_C_PD_Product--template::Share');
-        expect(result).toEqual({ text: 'Share' });
+        `);        
     });
 
     test('initOutline - exception', async () => {
@@ -129,8 +126,5 @@ describe('index', () => {
         const syncOutline = mockAttachEvent.mock.calls[0][1];
         syncOutline.call();
         await jest.advanceTimersByTimeAsync(4000);
-        const additionalDataCallback = transformNodesSpy.mock.calls[0][2];
-        const result = additionalDataCallback('v2flex::sap.::SEPMRA_C_PD_Product--template::Share');
-        expect(result).toStrictEqual({});
     });
 });
