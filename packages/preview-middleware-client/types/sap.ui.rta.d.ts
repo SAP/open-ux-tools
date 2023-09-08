@@ -86,10 +86,19 @@ declare module 'sap/ui/rta/command/OutlineService' {
 
 declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type Event from 'sap/ui/base/Event';
+    import type Component from 'sap/ui/core/Component';
     import type Stack from 'sap/ui/rta/command/Stack';
     import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
     import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
     import type { FlexSettings } from 'sap/ui/rta/command/CommandFactory';
+
+    type Manifest = {
+        [key: string]: unknown;
+        'sap.app': {
+            [key: string]: string;
+            id: string;
+        }
+    };
 
     export type SelectionChangeEvent = Event<SelectionChangeParams>;
     export interface SelectionChangeParams {
@@ -105,6 +114,9 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getService: <T>(name: 'outline' | string) => Promise<T>;
         getSelection: () => ElementOverlay[];
         getDefaultPlugins: () => { contextMenu: ContextMenu };
+        getRootControlInstance: () => {
+            getManifest(): Manifest;
+        } & Component;
     }
 
     export default RuntimeAuthoring;

@@ -8,9 +8,10 @@ import { createUi5Facade } from './facade';
 import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';
 import { loadDefaultLibraries } from './documentation';
+import log from 'sap/base/Log';
 
 export default async function init(rta: RuntimeAuthoring): Promise<void> {
-    console.log(`Initializing Control Property Editor`);
+    log.info('Initializing Control Property Editor');
 
     const ui5 = createUi5Facade();
     const actionHandlers: ActionHandler[] = [];
@@ -24,9 +25,10 @@ export default async function init(rta: RuntimeAuthoring): Promise<void> {
 
     const selectionService = new SelectionService(rta, ui5);
     const { layer } = rta.getFlexSettings();
+    const manifest = rta.getRootControlInstance().getManifest();
 
     const changesService = new ChangeService(
-        { rta, generator: 'replace-this-generator', layer, componentId: 'adp.v2app' },
+        { rta, generator: 'replace-this-generator', layer, componentId: manifest['sap.app'].id },
         ui5,
         selectionService
     );
