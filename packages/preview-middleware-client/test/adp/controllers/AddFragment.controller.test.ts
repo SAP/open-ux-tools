@@ -1,12 +1,3 @@
-const byIdMock = jest.fn();
-window.sap = {
-    ui: {
-        getCore: jest.fn().mockReturnValue({
-            byId: byIdMock
-        })
-    } as any
-} as any;
-
 import type Dialog from 'sap/m/Dialog';
 import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
@@ -16,7 +7,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ControlUtils from '../../../src/adp/control-utils';
 import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
 import CommandExecutor from '../../../src/adp/command-executor';
-import { fetchMock } from 'mock/window';
+import { fetchMock, sapCoreMock } from 'mock/window';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -63,7 +54,7 @@ describe('AddFragment', () => {
                     })
                 })
             };
-            byIdMock.mockReturnValue(overlayControl);
+            sapCoreMock.byId.mockReturnValue(overlayControl);
 
             // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
