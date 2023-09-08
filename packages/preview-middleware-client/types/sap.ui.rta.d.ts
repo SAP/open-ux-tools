@@ -1,7 +1,8 @@
 declare module 'sap/ui/rta/command/BaseCommand' {
     import type Element from 'sap/ui/core/Element';
+    import type ManagedObject from 'sap/ui/base/ManagedObject';
 
-    interface BaseCommand {
+   interface BaseCommand extends ManagedObject {
         execute(): Promise<void>;
         getElement(): Element;
     }
@@ -49,9 +50,6 @@ declare module 'sap/ui/rta/command/CommandFactory' {
     }
 
     interface CommandFactory {
-        /**
-         *
-         */
         getCommandFor<T extends BaseCommand = BaseCommand>(
             control: Element | string,
             commandType: string,
@@ -78,14 +76,8 @@ declare module 'sap/ui/rta/command/OutlineService' {
         icon?: string;
     }
 
-    /**
-     *
-     */
     interface OutlineService {
         get(): Promise<OutlineViewNode[]>;
-        /**
-         *
-         */
         attachEvent<T>(eventName: string, handler: (params: T) => void): void;
     }
 
@@ -98,8 +90,13 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
     import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
 
-    interface RuntimeAuthoring {
-        attachSelectionChange(handler: (event: Event) => void): void;
+    export type SelectionChangeEvent = Event<SelectionChangeParams>;
+    export interface SelectionChangeParams {
+        selection: ElementOverlay[];
+    }
+
+   interface RuntimeAuthoring {
+        attachSelectionChange(handler: (event: SelectionChangeEvent) => void): void;
         attachModeChanged: (handler: (event: Event) => void) => void;
         attachUndoRedoStackModified: (handler: (event: Event) => void) => void;
         getCommandStack: () => Stack;
@@ -109,4 +106,15 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     }
 
     export default RuntimeAuthoring;
+}
+
+declare module 'sap/ui/rta/api/startAdaptation' {
+    import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+    
+    export type RTAPlugin = (rta: RuntimeAuthoring) => void;
+    export type StartAdaptation = (options: object, plugin?: RTAPlugin) => void;
+
+    const startAdaptation: StartAdaptation;
+
+    export default startAdaptation;
 }

@@ -21,6 +21,9 @@ async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, 
         const layer = await adp.init(JSON.parse(await appVariant.getString()));
         if (flp.rta) {
             flp.rta.layer = layer;
+            for (const editor of flp.rta.editors) {
+                editor.pluginScript ??= 'open/ux/preview/client/adp/init';
+            }
         }
         await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);

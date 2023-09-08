@@ -1,5 +1,6 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
+import type { RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import UriParameters from 'sap/base/util/UriParameters';
@@ -184,13 +185,19 @@ export function configure({ appUrls, flex }: { appUrls?: string | null; flex?: s
             const serviceInstance = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             serviceInstance.attachAppLoaded(event => {
                 const oView = event.getParameter('componentInstance');
-                sap.ui.require(['sap/ui/rta/api/startAdaptation'], function (startAdaptation: (opts: object) => void) {
+                const requiredLibs = ['sap/ui/rta/api/startAdaptation'];
+                const flexSettings = JSON.parse(flex);
+                if (flexSettings.pluginScript) {
+                    requiredLibs.push(flexSettings.pluginScript);
+                    delete flexSettings.pluginScript;
+                }
+                sap.ui.require(requiredLibs, function (startAdaptation: StartAdaptation, pluginScript?: RTAPlugin) {
                     const options = {
                         rootControl: oView,
                         validateAppVersion: false,
-                        flexSettings: JSON.parse(flex)
+                        flexSettings
                     };
-                    startAdaptation(options);
+                    startAdaptation(options, pluginScript);
                 });
             });
         });
