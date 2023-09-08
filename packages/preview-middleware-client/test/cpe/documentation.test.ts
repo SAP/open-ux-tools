@@ -2,6 +2,7 @@ import * as Documentation from '../../src/cpe/documentation';
 import * as Utils from '../../src/cpe/utils';
 import type { SchemaForApiJsonFiles } from '../../src/cpe/api-json';
 import apiJson from '../fixtures/api.json';
+import { fetchMock } from 'mock/window';
 
 describe('Documentation', () => {
     const sapUiCompMetadata = JSON.parse(JSON.stringify(apiJson));
@@ -13,7 +14,7 @@ describe('Documentation', () => {
                 return sapUiCompMetadata;
             }
         };
-        (global as any).fetch = jest.fn(() => Promise.resolve(apiJson));
+        fetchMock.mockResolvedValue(apiJson);
     });
 
     test('Get Documention for sap.ui.comp.filterbar.FilterBar', async () => {
