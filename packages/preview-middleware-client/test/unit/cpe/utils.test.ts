@@ -1,4 +1,4 @@
-import { getLibrary, getRuntimeControl } from '../../src/cpe/utils';
+import { getLibrary, getRuntimeControl } from '../../../src/cpe/utils';
 
 describe('getRuntimeControl', () => {
     let overlayControl: any;

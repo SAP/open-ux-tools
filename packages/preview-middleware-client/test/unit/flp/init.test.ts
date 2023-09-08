@@ -21,9 +21,9 @@ window.sap = {
 } as any;
 window.fetch = jest.fn();
 
-import { configure, init, registerComponentDependencyPaths, registerSAPFonts, setI18nTitle } from '../../src/flp/init';
-import IconPoolMock from '../__mock__/sap/ui/core/IconPool';
-import { mockBundle } from '../__mock__/sap/base/i18n/ResourceBundle';
+import { configure, init, registerComponentDependencyPaths, registerSAPFonts, setI18nTitle } from '../../../src/flp/init';
+import IconPoolMock from 'mock/sap/ui/core/IconPool';
+import { mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 
 describe('flp/init', () => {
     test('registerSAPFonts', () => {

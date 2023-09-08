@@ -1,7 +1,7 @@
-import * as Documentation from '../../src/cpe/documentation';
-import * as Utils from '../../src/cpe/utils';
-import type { SchemaForApiJsonFiles } from '../../src/cpe/api-json';
-import apiJson from '../fixtures/api.json';
+import * as Documentation from '../../../src/cpe/documentation';
+import * as Utils from '../../../src/cpe/utils';
+import type { SchemaForApiJsonFiles } from '../../../src/cpe/api-json';
+import apiJson from '../../fixtures/api.json';
 import { fetchMock } from 'mock/window';
 
 describe('Documentation', () => {
