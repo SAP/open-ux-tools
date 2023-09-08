@@ -1,3 +1,3 @@
 export default {
-    getCommandFor() {}
+    getCommandFor: jest.fn()
 };
