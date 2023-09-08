@@ -20,7 +20,6 @@
     "build:webapp": "node esbuild.js",
     "watch": "npm-run-all -p watch:*",
     "watch:webapp": "node esbuild.js --watch --minify=false",
-    "start": "node test/fixtures/development/server",
     "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles --config='jest.config.js'",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand  --config='jest.config.js' --colors",
     "lint": "eslint . --ext .ts,.tsx",
@@ -63,6 +62,9 @@
     "@ui5/fs": "3.0.4",
     "esbuild-plugin-alias": "0.2.1",
     "@esbuild-plugins/node-modules-polyfill": "0.1.4",
+    "autoprefixer": "10.4.7",
+    "postcss": "8.4.14",
+    "yargs-parser": "21.1.1",
     "@sap-ux/control-property-editor-common": "workspace:*",
     "@sap-ux/logger": "workspace:*"
   }
