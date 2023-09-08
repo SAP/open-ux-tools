@@ -1,29 +1,7 @@
-window.sap = {
-    ui: {
-        require: {
-            toUrl: jest.fn()
-        } as any,
-        getCore: () => ({
-            getConfiguration: () => ({
-                getLanguage: jest.fn()
-            })
-        }),
-        loader: {
-            config: jest.fn()
-        }
-    } as any,
-    ushell: {
-        Container: {
-            createRenderer: jest.fn().mockReturnValue({ placeAt: jest.fn() }),
-            attachRendererCreatedEvent: jest.fn().mockImplementation((cb: () => Promise<void>) => cb())
-        }
-    }
-} as any;
-window.fetch = jest.fn();
-
 import { configure, init, registerComponentDependencyPaths, registerSAPFonts, setI18nTitle } from '../../../src/flp/init';
 import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import { mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
+import { fetchMock } from 'mock/window';
 
 describe('flp/init', () => {
     test('registerSAPFonts', () => {
@@ -39,7 +17,6 @@ describe('flp/init', () => {
     });
 
     describe('registerComponentDependencyPaths', () => {
-        const fetchMock = fetch as jest.Mock;
         const loaderMock = sap.ui.loader.config as jest.Mock;
         const testManifest = {
             'sap.ui5': {
