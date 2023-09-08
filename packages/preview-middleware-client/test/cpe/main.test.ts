@@ -1,8 +1,8 @@
-import { init } from '../../src/main';
+import init from '../../src/cpe/init';
 import * as common from '@sap-ux/control-property-editor-common';
-import * as flexChange from '../../src/changes/flexChange';
-import * as outline from '../../src/outline';
-import * as facade from '../../src/facade';
+import * as flexChange from '../../src/cpe/changes/flex-change';
+import * as outline from '../../src/cpe/outline';
+import * as facade from '../../src/cpe/facade';
 import type Event from 'sap/ui/base/Event';
 
 describe('main', () => {
@@ -68,7 +68,7 @@ describe('main', () => {
 
     test('init - 1', async () => {
         initOutlineSpy.mockResolvedValue();
-        await init({ rta, componentId: 'testComponentId', generator: 'testGenerator', layer: 'VENDOR' });
+        await init(rta);
         const callBackFn = spyPostMessage.mock.calls[0][1];
         // apply change without error
         await callBackFn({
@@ -87,7 +87,7 @@ describe('main', () => {
     });
     test('init - rta exception', async () => {
         initOutlineSpy.mockRejectedValue('error');
-        await init({ rta, componentId: 'testComponentId', generator: 'testGenerator', layer: 'VENDOR' });
+        await init(rta);
         const callBackFn = spyPostMessage.mock.calls[0][1];
 
         // apply change

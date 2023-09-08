@@ -5,7 +5,7 @@ import {
     selectControl,
     reportTelemetry
 } from '@sap-ux/control-property-editor-common';
-import { buildControlData } from './controlData';
+import { buildControlData } from './control-data';
 import { getRuntimeControl } from './utils';
 import type { ActionSenderFunction, Service, SubscribeFunction, UI5Facade } from './types';
 

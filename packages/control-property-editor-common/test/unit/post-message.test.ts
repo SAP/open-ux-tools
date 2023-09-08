@@ -1,4 +1,4 @@
-import { startPostMessageCommunication } from '../../src/postMessage';
+import { startPostMessageCommunication } from '../../src/post-message';
 
 describe('postMessage', () => {
     let actionHandlerMock: jest.Mock;

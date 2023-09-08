@@ -4,6 +4,7 @@
     "compilerOptions": {
         "types": [
             "@sapui5/types",
+            "node",
             "jest"
         ]
     }

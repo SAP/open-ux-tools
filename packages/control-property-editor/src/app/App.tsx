@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
 
 import { PropertiesPanel, LeftPanel } from './panels';
-import { useLocalStorage } from './useLocalStorage';
+import { useLocalStorage } from './use-local-storage';
 import type { RootState } from './store';
 import { useAppDispatch } from './store';
 import { changePreviewScale } from './slice';
-import { useWindowSize } from './useWindowSize';
+import { useWindowSize } from './use-window-size';
 import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices';
 
 import './App.scss';

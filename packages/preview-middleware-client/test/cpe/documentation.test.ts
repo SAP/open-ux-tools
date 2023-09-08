@@ -1,13 +1,10 @@
-import * as Documentation from '../../src/documentation';
-import * as Utils from '../../src/utils';
-import fs from 'fs';
-import { join } from 'path';
-import { cwd } from 'process';
-import type { SchemaForApiJsonFiles } from '../../src/apiJson';
+import * as Documentation from '../../src/cpe/documentation';
+import * as Utils from '../../src/cpe/utils';
+import type { SchemaForApiJsonFiles } from '../../src/cpe/api-json';
+import apiJson from '../fixtures/api.json';
 
 describe('Documentation', () => {
-    const path = join(cwd(), 'test', 'unit', 'testData', 'api.json');
-    const sapUiCompMetadata = JSON.parse(fs.readFileSync(path, 'utf8'));
+    const sapUiCompMetadata = JSON.parse(JSON.stringify(apiJson));
     const ui5ApiDtMetadata: Map<string, SchemaForApiJsonFiles> = new Map();
     ui5ApiDtMetadata.set('sap.ui.comp', sapUiCompMetadata);
     beforeAll(() => {

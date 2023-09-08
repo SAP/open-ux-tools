@@ -1,5 +1,5 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import { createUi5Facade } from '../../src/facade';
+import { createUi5Facade } from '../../src/cpe/facade';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import IconPool from 'sap/ui/core/IconPool';
 import Component from 'sap/ui/core/Component';

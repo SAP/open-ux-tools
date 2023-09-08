@@ -1,6 +1,6 @@
 import type { ID } from 'sap/ui/core/library';
-import * as flexChange from '../../../src/changes/flexChange';
-import { ChangeService } from '../../../src/changes/service';
+import * as flexChange from '../../../src/cpe/changes/flex-change';
+import { ChangeService } from '../../../src/cpe/changes/service';
 import { changeProperty, deletePropertyChanges } from '@sap-ux/control-property-editor-common';
 
 const globalAny = global as any;
@@ -367,7 +367,7 @@ describe('SelectionService', () => {
             })
         );
 
-        expect(globalAny.fetch).toHaveBeenNthCalledWith(2, '/FioriTools/api/removeChanges', {
+        expect(globalAny.fetch).toHaveBeenLastCalledWith('/FioriTools/api/removeChanges', {
             body: '{"fileName":"id_1640106755570_203_propertyChange"}',
             headers: { 'Content-Type': 'application/json' },
             method: 'DELETE'

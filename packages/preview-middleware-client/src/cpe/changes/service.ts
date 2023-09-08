@@ -8,9 +8,10 @@ import {
     changeProperty,
     changeStackModified,
     deletePropertyChanges,
-    propertyChangeFailed
+    propertyChangeFailed,
+    FlexChangesEndPoints
 } from '@sap-ux/control-property-editor-common';
-import { applyChange } from './flexChange';
+import { applyChange } from './flex-change';
 import type { SelectionService } from '../selection';
 
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions, UI5Facade } from '../types';
@@ -67,9 +68,9 @@ export class ChangeService {
             }
         });
 
-        const savedChanges = await fetch(`/FioriTools/api/getChanges?_=${Date.now()}`)
+        const savedChanges = await fetch(FlexChangesEndPoints.readChanges + `?_=${Date.now()}`)
             .then((response) => response.json())
-            .catch(console.error);
+            .catch((error) => console.error(error));
         const changes = (
             Object.keys(savedChanges ?? {})
                 .map((key): SavedPropertyChange | UnknownSavedChange | undefined => {
@@ -81,7 +82,7 @@ export class ChangeService {
                                 (item) => item === undefined || item === null
                             )
                         ) {
-                            throw new Error(`Invalid change, missing new value in the change file`);
+                            throw new Error('Invalid change, missing new value in the change file');
                         }
                         return {
                             type: 'saved',
@@ -136,7 +137,7 @@ export class ChangeService {
                     : change.controlId === controlId && change.propertyName === propertyName
             )
             .map((change) =>
-                fetch(`/FioriTools/api/removeChanges`, {
+                fetch(FlexChangesEndPoints.removeChanges, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -145,7 +146,7 @@ export class ChangeService {
                 })
             );
 
-        await Promise.all(filesToDelete).catch(console.error);
+        await Promise.all(filesToDelete).catch((error) => console.error(error));
     }
 
     /**

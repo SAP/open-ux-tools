@@ -1,6 +1,6 @@
-import { createUi5Facade } from '../../../src/facade';
-import { initOutline } from '../../../src/outline/index';
-import * as nodes from '../../../src/outline/nodes';
+import { createUi5Facade } from '../../../src/cpe/facade';
+import { initOutline } from '../../../src/cpe/outline/index';
+import * as nodes from '../../../src/cpe/outline/nodes';
 jest.useFakeTimers();
 
 describe('index', () => {

@@ -1,4 +1,4 @@
-import { buildControlData } from '../controlData';
+import { buildControlData } from '../control-data';
 import { getRuntimeControl } from '../utils';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';

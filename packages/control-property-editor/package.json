@@ -15,10 +15,9 @@
     "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
     "clean": "rimraf ./out ./reports",
     "clean:all": "npm-run-all clean",
-    "build": "npm-run-all -l -s clean -p build:compile build:webapp build:copyfiles",
+    "build": "npm-run-all -l -s clean -p build:compile build:webapp",
     "build:compile": "tsc  --build ./tsconfig.build.json --pretty --dry",
     "build:webapp": "node esbuild.js",
-    "build:copyfiles": "copyfiles --up 3 \"../control-property-editor-ui5/dist/**/*\" \"./dist/ui5-adaptation\"",
     "watch": "npm-run-all -p watch:*",
     "watch:webapp": "node esbuild.js --watch --minify=false",
     "start": "node test/fixtures/development/server",
@@ -65,7 +64,6 @@
     "esbuild-plugin-alias": "0.2.1",
     "@esbuild-plugins/node-modules-polyfill": "0.1.4",
     "@sap-ux/control-property-editor-common": "workspace:*",
-    "@sap-ux/control-property-editor-ui5": "workspace:*",
     "@sap-ux/logger": "workspace:*"
   }
 }

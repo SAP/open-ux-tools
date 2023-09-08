@@ -1,6 +1,6 @@
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import { applyChange } from '../../../src/changes/flexChange';
-import type { UI5AdaptationOptions } from '../../../src/types';
+import { applyChange } from '../../../src/cpe/changes/flex-change';
+import type { UI5AdaptationOptions } from '../../../src/cpe/types';
 import type { PropertyChange } from '@sap-ux/control-property-editor-common';
 describe('flexChange', () => {
     // prepare

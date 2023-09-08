@@ -1,8 +1,8 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import { isEditable } from '../../../src/outline/utils';
+import { isEditable } from '../../../src/cpe/outline/utils';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
-import { createUi5Facade } from '../../../src/facade';
-jest.mock('../../../src/controlData', () => {
+import { createUi5Facade } from '../../../src/cpe/facade';
+jest.mock('../../../src/cpe/control-data', () => {
     return {
         buildControlData: () => {
             return {

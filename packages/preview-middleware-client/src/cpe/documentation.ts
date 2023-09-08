@@ -1,5 +1,5 @@
 import { getLibrary } from './utils';
-import type { SchemaForApiJsonFiles } from './apiJson';
+import type { SchemaForApiJsonFiles } from './api-json';
 import type { Properties } from './utils';
 export interface ControlMetadata {
     baseType: string | undefined;
