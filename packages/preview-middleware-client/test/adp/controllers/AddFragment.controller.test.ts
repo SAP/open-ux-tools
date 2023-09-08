@@ -7,12 +7,6 @@ window.sap = {
     } as any
 } as any;
 
-window.fetch = jest.fn().mockResolvedValue({
-    json: jest.fn().mockReturnValue({ fragments: [] }),
-    text: jest.fn(),
-    ok: true
-});
-
 import type Dialog from 'sap/m/Dialog';
 import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
@@ -22,11 +16,16 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ControlUtils from '../../../src/adp/control-utils';
 import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
 import CommandExecutor from '../../../src/adp/command-executor';
-
-
-const fetchMock = fetch as jest.Mock;
+import { fetchMock } from 'mock/window';
 
 describe('AddFragment', () => {
+    beforeAll(() => {
+        fetchMock.mockResolvedValue({
+            json: jest.fn().mockReturnValue({ fragments: [] }),
+            text: jest.fn(),
+            ok: true
+        });
+    });
     describe('onInit', () => {
         afterEach(() => {
             jest.restoreAllMocks();

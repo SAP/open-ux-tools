@@ -1,5 +1,3 @@
-window.fetch = jest.fn();
-
 import {
     ApiEndpoints,
     RequestMethod,
@@ -8,9 +6,9 @@ import {
     request,
     writeFragment
 } from '../../src/adp/api-handler';
+import { fetchMock } from 'mock/window';
 
 describe('API Handler', () => {
-    const fetchMock = fetch as jest.Mock;
     describe('request', () => {
         afterEach(() => {
             fetchMock.mockRestore();
@@ -97,7 +95,7 @@ describe('API Handler', () => {
                 ok: true
             });
 
-            const data = await getFragments<{ fragments: []}>();
+            const data = await getFragments<{ fragments: [] }>();
 
             expect(data.fragments.length).toBe(1);
         });
@@ -131,7 +129,7 @@ describe('API Handler', () => {
                 ok: true
             });
 
-            const data = await getManifestAppdescr<{ layer: string}>();
+            const data = await getManifestAppdescr<{ layer: string }>();
 
             expect(data.layer).toBe('VENDOR');
         });

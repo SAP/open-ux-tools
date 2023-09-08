@@ -2,8 +2,8 @@ import type UI5Element from 'sap/ui/core/Element';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { handler, initFragment } from '../../../src/adp/dialogs/fragment';
-import XMLView from '../../__mock__/sap/ui/core/mvc/XMLView';
-import Controller from '../../__mock__/sap/ui/core/mvc/Controller';
+import XMLView from 'mock/sap/ui/core/mvc/XMLView';
+import Controller from 'mock/sap/ui/core/mvc/Controller';
 
 describe('Fragment Dialog', () => {
     describe('initFragment', () => {
