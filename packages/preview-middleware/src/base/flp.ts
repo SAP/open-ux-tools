@@ -163,7 +163,6 @@ export class FlpSandbox {
      * @param rta runtime authoring configuration
      */
     private addEditorRoutes(rta: RtaConfig) {
-        const cpe = dirname(require.resolve('@sap-ux/control-property-editor'));
         for (const editor of rta.editors) {
             let previewUrl = editor.path;
             if (editor.developerMode) {
@@ -181,7 +180,6 @@ export class FlpSandbox {
                     });
                     res.status(200).contentType('html').send(html);
                 });
-                this.router.use(`${path}editor`, serveStatic(cpe));
             }
             this.router.get(previewUrl, async (_req: Request, res: Response) => {
                 const config = { ...this.templateConfig };
