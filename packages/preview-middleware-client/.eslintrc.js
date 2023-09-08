@@ -7,18 +7,14 @@ module.exports = {
     },
     rules: {
         'quotes': ['error', 'single'],
-        'valid-jsdoc': ['error', {
-            requireParamType: false,
-            requireReturn: false,
-            requireReturnType: false
-        }]/*,
-        '@typescript-eslint/no-use-before-define': 'warn',
-        '@typescript-eslint/ban-ts-comment': 'warn',
-        '@typescript-eslint/no-this-alias': 'warn',
-        'consistent-this': 'warn', // that - this
-        'space-before-function-paren': 'off',
-        'jsdoc/match-description': 'off',
-        'radix': 'off'*/
+        'valid-jsdoc': [
+            'error',
+            {
+                requireParamType: false,
+                requireReturn: false,
+                requireReturnType: false
+            }
+        ]
     },
     overrides: [
         {

@@ -32,13 +32,13 @@ import ControlUtils, { type BuiltRuntimeControl } from '../control-utils';
 import { getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
 
 type ExtendedEventProvider = EventProvider & {
-    setEnabled: (v: boolean) => {};
+    setEnabled: (v: boolean) => void;
     getValue: () => string;
     getSelectedItem: () => {
         getTitle: () => string;
         getText: () => string;
         getCustomData: () => {
-            [key: string]: Function;
+            [key: string]: () => void;
         }[];
     };
     getSelectedKey: () => string;
@@ -407,7 +407,7 @@ export default class AddFragment extends Controller {
 
         const modifiedValue = {
             fragment:
-                "<!-- Use stable and unique IDs!-->\n<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>\n\t<!--  add your xml here -->\n</core:FragmentDefinition>",
+                '<!-- Use stable and unique IDs!-->\n<core:FragmentDefinition xmlns:core=\'sap.ui.core\' xmlns=\'sap.m\'>\n\t<!--  add your xml here -->\n</core:FragmentDefinition>',
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,
             index: index ?? 0,
             targetAggregation: targetAggregation ?? 'content'

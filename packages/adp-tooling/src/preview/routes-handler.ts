@@ -30,7 +30,7 @@ export default class RoutesHandler {
     ) {}
 
     /**
-     * Handler for reading all fragment files from the workspace
+     * Handler for reading all fragment files from the workspace.
      *
      * @param _ Request
      * @param res Response
@@ -66,7 +66,7 @@ export default class RoutesHandler {
     };
 
     /**
-     * Handler for writing a fragment file to the workspace
+     * Handler for writing a fragment file to the workspace.
      *
      * @param req Request
      * @param res Response

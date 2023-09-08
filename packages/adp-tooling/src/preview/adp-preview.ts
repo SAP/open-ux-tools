@@ -1,4 +1,3 @@
-import { join } from 'path';
 import express from 'express';
 import { ZipFile } from 'yazl';
 import type { ReaderCollection } from '@ui5/fs';

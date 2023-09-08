@@ -5,6 +5,12 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type { MetadataOptions } from 'sap/ui/base/ManagedObject';
 
+declare const jQuery: {
+    sap: {
+        getObject: (object: unknown) => { [key: string]: string };
+    };
+};
+
 export interface BuiltRuntimeControl {
     id: string;
     type: string;
@@ -145,7 +151,7 @@ export default class ControlUtils {
 
         // Determine base type for SAP types
         if (this.analyzedType.primitiveType === 'enum') {
-            // @ts-ignore
+            // jQuery needs to be removed because it will be likely gone in UI5 2.0
             this.analyzedType.enumValues = jQuery.sap.getObject(this.analyzedType.ui5Type);
         }
     }
