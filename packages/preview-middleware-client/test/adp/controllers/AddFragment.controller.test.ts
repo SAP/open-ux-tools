@@ -56,7 +56,6 @@ describe('AddFragment', () => {
             };
             sapCoreMock.byId.mockReturnValue(overlayControl);
 
-            // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
 
             addFragment.overlays = overlays as unknown as UI5Element[];
@@ -74,7 +73,6 @@ describe('AddFragment', () => {
         });
 
         test('on selected aggragations changed', () => {
-            // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
 
             const event = {
@@ -103,7 +101,6 @@ describe('AddFragment', () => {
         });
 
         test('on selected aggragations changed', () => {
-            // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
 
             const event = {
@@ -129,8 +126,8 @@ describe('AddFragment', () => {
         });
 
         test('sets error when fragment with the same named already exists', () => {
-            // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+
             const valueStateSpy = jest.fn();
             const event = {
                 getSource: jest.fn().mockReturnValue({
@@ -155,8 +152,8 @@ describe('AddFragment', () => {
         });
 
         test('sets error when the fragment name is empty', () => {
-            // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+
             const valueStateSpy = jest.fn();
             const event = {
                 getSource: jest.fn().mockReturnValue({
@@ -181,8 +178,8 @@ describe('AddFragment', () => {
         });
 
         test('sets error when the fragment name is has special characters', () => {
-            // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+
             const valueStateSpy = jest.fn();
             const event = {
                 getSource: jest.fn().mockReturnValue({
@@ -207,8 +204,8 @@ describe('AddFragment', () => {
         });
 
         test('sets create button to true when the fragment name is valid', () => {
-            // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+
             const valueStateSpy = jest.fn();
             const event = {
                 getSource: jest.fn().mockReturnValue({
@@ -239,7 +236,6 @@ describe('AddFragment', () => {
         });
 
         test('creates new fragment', async () => {
-            // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
 
             const event = {
@@ -274,7 +270,6 @@ describe('AddFragment', () => {
         });
 
         test('creates new fragment', async () => {
-            // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
 
             fetchMock.mockResolvedValue({
@@ -303,7 +298,6 @@ describe('AddFragment', () => {
         });
 
         test('creates new fragment', async () => {
-            // @ts-ignore
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
 
             fetchMock.mockResolvedValue({
