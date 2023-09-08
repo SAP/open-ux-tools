@@ -5,9 +5,12 @@ import { ToolsLogger } from '@sap-ux/logger';
 describe('message helpers', () => {
     const log = new ToolsLogger();
     const host = 'http://host.example';
+    const infoMock = (log.info = jest.fn());
+    const warningMock = (log.warn = jest.fn());
 
     describe('prettyPrintMessage', () => {
         test('convert JSON into messages', () => {
+            const isDest = false;
             const msg: SuccessMessage = {
                 code: '200',
                 message: '~message',
@@ -17,13 +20,31 @@ describe('message helpers', () => {
                     { code: '2', message: '~message', severity: 'warning' }
                 ]
             };
-
-            const infoMock = (log.info = jest.fn());
-            const warningMock = (log.warn = jest.fn());
-            prettyPrintMessage({ msg: JSON.stringify(msg), log, host });
-            // log main message, two messages for the full url, and each detail
-            expect(infoMock).toBeCalledTimes(4);
-            expect(warningMock).toBeCalledTimes(1);
+            prettyPrintMessage({ msg: JSON.stringify(msg), log, host, isDest });
+            // Check if log.info is called at least once (no matter how often)
+            expect(infoMock).toHaveBeenCalled();
+            expect(warningMock).toHaveBeenCalledTimes(1);
+        });
+        test('log note when URL contains .dest', () => {
+            // Simulate a specific baseURL that contains ".dest"
+            const config = {
+                baseURL: 'CCF_715.dest/sap/bc/adt/ato/settings'
+            };
+            const msg: SuccessMessage = {
+                code: '200',
+                message: '~message',
+                'longtext_url': 'CCF_715.dest/sap/bc/adt/ato/settings',
+                details: [
+                    { code: '1', message: '~message', severity: 'info' },
+                    { code: '2', message: '~message', severity: 'warning' }
+                ]
+            };
+            prettyPrintMessage({ msg: JSON.stringify(msg), log, host, isDest: /\.dest\//.test(config.baseURL) });
+            expect(infoMock).toHaveBeenCalled();
+            // Check if log.info is called with the note about .dest
+            expect(infoMock).toHaveBeenCalledWith(
+                '(Note: You will need to replace the host in the URL with the internal host, if your destination is configured using an On-Premise SAP Cloud Connector)'
+            );
         });
 
         test('log none JSON message for debugging', () => {

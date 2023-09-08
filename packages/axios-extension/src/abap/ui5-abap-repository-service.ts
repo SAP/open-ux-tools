@@ -160,7 +160,12 @@ export class Ui5AbapRepositoryService extends ODataService {
             const response: AxiosResponse | undefined = await this.updateRepoRequest(!!info, bsp.name, payload, config);
             // An app can be successfully deployed after a timeout exception, no value in showing exception headers
             if (response?.headers?.['sap-message']) {
-                prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host: frontendUrl });
+                prettyPrintMessage({
+                    msg: response.headers['sap-message'],
+                    log: this.log,
+                    host: frontendUrl,
+                    isDest: /\.dest\//.test(config.baseURL)
+                });
             }
             if (!testMode) {
                 // log url of created/updated app
