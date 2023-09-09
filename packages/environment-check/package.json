@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/environment-check",
-    "version": "0.15.56",
+    "version": "0.15.57",
     "description": "SAP Fiori environment check",
     "license": "Apache-2.0",
     "bin": {
@@ -33,7 +33,7 @@
         "glob-gitignore": "1.0.14",
         "i18next": "20.3.2",
         "ignore": "5.2.4",
-        "minimist": "1.2.6",
+        "minimist": "1.2.8",
         "prompts": "2.4.2",
         "yamljs": "0.3.0"
     },
