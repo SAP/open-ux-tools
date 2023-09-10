@@ -21,6 +21,7 @@ import { UILoader } from '../UILoader';
 import { UIHighlightMenuOption } from '../UIContextualMenu';
 
 import './UICreateSelect.scss';
+import { COMMON_INPUT_STYLES } from '../UIInput';
 
 export { MultiValue as UICreateSelectMultiValue };
 export { ActionMeta as UICreateSelectActionMeta };
@@ -186,7 +187,7 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
                     borderStyle: 'solid',
                     borderColor: state.isFocused ? 'var(--vscode-focusBorder)' : 'var(--vscode-editorWidget-border)',
                     color: 'var(--vscode-input-foreground)',
-                    borderRadius: 0,
+                    borderRadius: COMMON_INPUT_STYLES.borderRadius,
                     '&:hover': {
                         borderColor: 'var(--vscode-focusBorder)'
                     }
