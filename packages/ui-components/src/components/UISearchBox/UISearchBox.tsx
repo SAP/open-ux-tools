@@ -49,7 +49,7 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
                             ':after': {
                                 border: `1px solid var(--vscode-focusBorder)`,
                                 inset: -1,
-                                borderRadius: COMMON_INPUT_STYLES.borderRadius,
+                                borderRadius: COMMON_INPUT_STYLES.borderRadius
                             }
                         }
                     },
