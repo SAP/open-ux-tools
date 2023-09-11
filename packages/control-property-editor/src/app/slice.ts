@@ -8,7 +8,7 @@ import type {
     PendingPropertyChange,
     PropertyChange,
     SavedPropertyChange
-} from '@sap-ux/control-property-editor-common';
+} from '@sap-ux-private/control-property-editor-common';
 import {
     changeStackModified,
     controlSelected,
@@ -16,7 +16,7 @@ import {
     outlineChanged,
     propertyChanged,
     propertyChangeFailed
-} from '@sap-ux/control-property-editor-common';
+} from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
 interface SliceState {

@@ -1,7 +1,7 @@
 import * as controlData from '../../../src/cpe/control-data';
 import { SelectionService } from '../../../src/cpe/selection';
 import * as Documentation from '../../../src/cpe/documentation';
-import type { ExternalAction, Control } from '@sap-ux/control-property-editor-common';
+import type { ExternalAction, Control } from '@sap-ux-private/control-property-editor-common';
 import type Component from 'sap/ui/core/Component';
 import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';

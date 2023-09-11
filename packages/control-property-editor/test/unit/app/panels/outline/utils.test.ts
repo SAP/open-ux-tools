@@ -1,4 +1,4 @@
-import type { OutlineNode } from '@sap-ux/control-property-editor-common';
+import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
 import { getFilteredModel } from '../../../../../src/app/panels/outline/utils';
 import type { FilterOptions } from '../../../../../src/app/slice';
 import { FilterName } from '../../../../../src/app/slice';

@@ -1,6 +1,6 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import type { PropertyChange } from '@sap-ux/control-property-editor-common';
+import type { PropertyChange } from '@sap-ux-private/control-property-editor-common';
 import type { UI5AdaptationOptions } from '../types';
 
 const developerMode = true;

@@ -2,14 +2,14 @@ import { UIIconButton } from '@sap-ux/ui-components';
 import type { ReactElement } from 'react';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import type { ControlProperty, StringControlPropertyWithOptions } from '@sap-ux/control-property-editor-common';
+import type { ControlProperty, StringControlPropertyWithOptions } from '@sap-ux-private/control-property-editor-common';
 import { changeProperty } from '../../slice';
 import type { CacheValue } from './propertyValuesCache';
 import { getCachedValue } from './propertyValuesCache';
 import styles from './InputTypeToggle.module.scss';
 import type { InputTypeToggleProps } from './types';
 import { InputType } from './types';
-import { reportTelemetry, STRING_VALUE_TYPE } from '@sap-ux/control-property-editor-common';
+import { reportTelemetry, STRING_VALUE_TYPE } from '@sap-ux-private/control-property-editor-common';
 
 /**
  * Get value for input type.

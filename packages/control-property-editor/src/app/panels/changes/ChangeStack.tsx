@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Stack } from '@fluentui/react';
 
-import type { Change, ValidChange } from '@sap-ux/control-property-editor-common';
+import type { Change, ValidChange } from '@sap-ux-private/control-property-editor-common';
 
 import { Separator } from '../../components';
 import type { ControlGroupProps, ControlPropertyChange } from './ControlGroup';
@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 import type { FilterOptions } from '../../slice';
 import { FilterName } from '../../slice';
 import type { RootState } from '../../store';
-import { convertCamelCaseToPascalCase } from '@sap-ux/control-property-editor-common';
+import { convertCamelCaseToPascalCase } from '@sap-ux-private/control-property-editor-common';
 import { getFormattedDateAndTime } from './utils';
 
 export interface ChangeStackProps {

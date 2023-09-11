@@ -1,5 +1,5 @@
-import type { ExternalAction } from '@sap-ux/control-property-editor-common';
-import { startPostMessageCommunication, iconsLoaded } from '@sap-ux/control-property-editor-common';
+import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import { startPostMessageCommunication, iconsLoaded } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import type { ActionHandler, Service } from './types';

@@ -1,4 +1,4 @@
-import type { ExternalAction, IconDetails } from '@sap-ux/control-property-editor-common';
+import type { ExternalAction, IconDetails } from '@sap-ux-private/control-property-editor-common';
 import type { Layer } from 'sap/ui/fl';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type Element from 'sap/ui/core/Element';

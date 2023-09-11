@@ -1,4 +1,4 @@
-import type { Control, ControlProperty } from '@sap-ux/control-property-editor-common';
+import type { Control, ControlProperty } from '@sap-ux-private/control-property-editor-common';
 import {
     BOOLEAN_VALUE_TYPE,
     CHECKBOX_EDITOR_TYPE,
@@ -8,7 +8,7 @@ import {
     INTEGER_VALUE_TYPE,
     STRING_VALUE_TYPE,
     convertCamelCaseToPascalCase
-} from '@sap-ux/control-property-editor-common';
+} from '@sap-ux-private/control-property-editor-common';
 
 import Utils from 'sap/ui/fl/Utils';
 import type ManagedObject from 'sap/ui/base/ManagedObject';

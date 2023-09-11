@@ -1,5 +1,5 @@
-import type { ExternalAction } from '@sap-ux/control-property-editor-common';
-import { outlineChanged } from '@sap-ux/control-property-editor-common';
+import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import { outlineChanged } from '@sap-ux-private/control-property-editor-common';
 
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type OutlineService from 'sap/ui/rta/command/OutlineService';

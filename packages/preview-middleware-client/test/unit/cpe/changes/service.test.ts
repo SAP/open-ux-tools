@@ -1,7 +1,7 @@
 import type { ID } from 'sap/ui/core/library';
 import * as flexChange from '../../../../src/cpe/changes/flex-change';
 import { ChangeService } from '../../../../src/cpe/changes/service';
-import { changeProperty, deletePropertyChanges } from '@sap-ux/control-property-editor-common';
+import { changeProperty, deletePropertyChanges } from '@sap-ux-private/control-property-editor-common';
 
 const globalAny = global as any;
 describe('SelectionService', () => {

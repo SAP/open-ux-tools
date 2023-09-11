@@ -1,11 +1,11 @@
-import type { Control, ExternalAction } from '@sap-ux/control-property-editor-common';
+import type { Control, ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import {
     controlSelected,
     propertyChanged,
     selectControl,
     reportTelemetry,
     Properties
-} from '@sap-ux/control-property-editor-common';
+} from '@sap-ux-private/control-property-editor-common';
 import { buildControlData } from './control-data';
 import { getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
 import type { ActionSenderFunction, Service, SubscribeFunction, UI5Facade } from './types';

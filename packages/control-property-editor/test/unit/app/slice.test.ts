@@ -1,4 +1,8 @@
-import { changeStackModified, propertyChanged, propertyChangeFailed } from '@sap-ux/control-property-editor-common';
+import {
+    changeStackModified,
+    propertyChanged,
+    propertyChangeFailed
+} from '@sap-ux-private/control-property-editor-common';
 import reducer, { FilterName, filterNodes, changeProperty } from '../../../src/app/slice';
 
 describe('main redux slice', () => {

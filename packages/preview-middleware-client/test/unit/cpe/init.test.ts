@@ -1,5 +1,5 @@
 import init from '../../../src/cpe/init';
-import * as common from '@sap-ux/control-property-editor-common';
+import * as common from '@sap-ux-private/control-property-editor-common';
 import * as flexChange from '../../../src/cpe/changes/flex-change';
 import * as outline from '../../../src/cpe/outline';
 import * as facade from '../../../src/cpe/facade';

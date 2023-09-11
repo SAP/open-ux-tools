@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
-import type { StringControlPropertyWithOptions } from '@sap-ux/control-property-editor-common';
-import { DROPDOWN_EDITOR_TYPE, STRING_VALUE_TYPE } from '@sap-ux/control-property-editor-common';
+import type { StringControlPropertyWithOptions } from '@sap-ux-private/control-property-editor-common';
+import { DROPDOWN_EDITOR_TYPE, STRING_VALUE_TYPE } from '@sap-ux-private/control-property-editor-common';
 import { DropdownEditor, valueChanged } from '../../../../../src/app/panels/properties/DropdownEditor';
 import * as slice from '../../../../../src/app/slice';
 import '@testing-library/jest-dom';

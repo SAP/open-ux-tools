@@ -2,7 +2,7 @@ import { getLibrary } from './utils';
 import type { SchemaForApiJsonFiles, Ui5Property } from './api-json';
 import type { Properties } from './utils';
 import Log from 'sap/base/Log';
-import { PropertiesInfo } from '@sap-ux/control-property-editor-common';
+import { PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
 
 export interface ControlMetadata {
     baseType: string | undefined;

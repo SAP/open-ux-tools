@@ -18,10 +18,10 @@ import {
     FLOAT_VALUE_TYPE,
     INTEGER_VALUE_TYPE,
     BOOLEAN_VALUE_TYPE
-} from '@sap-ux/control-property-editor-common';
+} from '@sap-ux-private/control-property-editor-common';
 import './SapUiIcon.scss';
 import { IconValueHelp } from './IconValueHelp';
-import type { IconDetails } from '@sap-ux/control-property-editor-common';
+import type { IconDetails } from '@sap-ux-private/control-property-editor-common';
 import type { RootState } from '../../store';
 
 /**

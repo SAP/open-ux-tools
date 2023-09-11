@@ -3,14 +3,14 @@ import type {
     SavedPropertyChange,
     PendingPropertyChange,
     UnknownSavedChange
-} from '@sap-ux/control-property-editor-common';
+} from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
     changeStackModified,
     deletePropertyChanges,
     propertyChangeFailed,
     FlexChangesEndPoints
-} from '@sap-ux/control-property-editor-common';
+} from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
 import type { SelectionService } from '../selection';
 
@@ -133,8 +133,8 @@ export class ChangeService {
             }
         });
 
-        const savedChangesResult = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
-        const savedChanges = await savedChangesResult.json();
+        const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
+        const savedChanges = await savedChangesResponse.json();
         const changes = (
             Object.keys(savedChanges ?? {})
                 .map((key): SavedPropertyChange | UnknownSavedChange | undefined => {

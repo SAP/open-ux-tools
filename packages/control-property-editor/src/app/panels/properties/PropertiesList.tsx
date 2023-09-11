@@ -1,8 +1,12 @@
 import type { ReactElement } from 'react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Control } from '@sap-ux/control-property-editor-common';
-import { CHECKBOX_EDITOR_TYPE, DROPDOWN_EDITOR_TYPE, INPUT_EDITOR_TYPE } from '@sap-ux/control-property-editor-common';
+import type { Control } from '@sap-ux-private/control-property-editor-common';
+import {
+    CHECKBOX_EDITOR_TYPE,
+    DROPDOWN_EDITOR_TYPE,
+    INPUT_EDITOR_TYPE
+} from '@sap-ux-private/control-property-editor-common';
 import { Separator } from '../../components/Separator';
 import type { RootState } from '../../store';
 import { DropdownEditor } from './DropdownEditor';

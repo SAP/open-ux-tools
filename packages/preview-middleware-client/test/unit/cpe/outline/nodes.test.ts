@@ -1,6 +1,6 @@
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
-import type { OutlineNode } from '@sap-ux/control-property-editor-common';
+import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
 import { createUi5Facade } from '../../../../src/cpe/facade';
 
 jest.mock('../../../../src/cpe/outline/utils', () => {

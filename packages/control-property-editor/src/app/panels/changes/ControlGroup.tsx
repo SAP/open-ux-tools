@@ -3,7 +3,7 @@ import React from 'react';
 import { Link, Stack } from '@fluentui/react';
 
 import { useAppDispatch } from '../../store';
-import { selectControl } from '@sap-ux/control-property-editor-common';
+import { selectControl } from '@sap-ux-private/control-property-editor-common';
 
 import type { PropertyChangeProps } from './PropertyChange';
 import { PropertyChange } from './PropertyChange';

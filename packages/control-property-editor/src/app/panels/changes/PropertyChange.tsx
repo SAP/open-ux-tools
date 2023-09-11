@@ -6,8 +6,8 @@ import { useDispatch } from 'react-redux';
 import { Stack, StackItem, Text } from '@fluentui/react';
 import { UIIcon, UIIconButton, UiIcons, UIDialog } from '@sap-ux/ui-components';
 
-import type { PropertyChangeDeletionDetails } from '@sap-ux/control-property-editor-common';
-import { convertCamelCaseToPascalCase, deletePropertyChanges } from '@sap-ux/control-property-editor-common';
+import type { PropertyChangeDeletionDetails } from '@sap-ux-private/control-property-editor-common';
+import { convertCamelCaseToPascalCase, deletePropertyChanges } from '@sap-ux-private/control-property-editor-common';
 import { IconName } from '../../icons';
 
 import styles from './PropertyChange.module.scss';

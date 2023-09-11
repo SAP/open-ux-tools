@@ -4,8 +4,8 @@ import type { IGroup, IGroupRenderProps, IGroupHeaderProps } from '@fluentui/rea
 import { Icon } from '@fluentui/react';
 import { UIList } from '@sap-ux/ui-components';
 
-import { selectControl, reportTelemetry } from '@sap-ux/control-property-editor-common';
-import type { Control, OutlineNode } from '@sap-ux/control-property-editor-common';
+import { selectControl, reportTelemetry } from '@sap-ux-private/control-property-editor-common';
+import type { Control, OutlineNode } from '@sap-ux-private/control-property-editor-common';
 
 import type { RootState } from '../../store';
 import { IconName } from '../../icons';
