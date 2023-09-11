@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.15.57
+
+### Patch Changes
+
+-   118692c3: update dependency minimist to v1.2.8
+
 ## 0.15.56
 
 ### Patch Changes
