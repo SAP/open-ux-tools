@@ -161,5 +161,9 @@ export class AdpPreview {
          */
         router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
         router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment as RequestHandler);
+        /**
+         * CONTROLLER Routes
+         */
+        router.post(ApiRoutes.CONTROLLER, this.routesHandler.handleReadAllControllers as RequestHandler);
     }
 }

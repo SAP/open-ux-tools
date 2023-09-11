@@ -112,4 +112,40 @@ export default class RoutesHandler {
             next(e);
         }
     };
+
+    /**
+     * Handler for reading all controller js files from the workspace.
+     *
+     * @param _ Request
+     * @param res Response
+     * @param next Next Function
+     */
+    public handleReadAllControllers = async (_: Request, res: Response, next: NextFunction) => {
+        try {
+            const files = await this.project.byGlob('/**/changes/coding/*.js');
+
+            if (!files || files.length === 0) {
+                res.status(HttpStatusCodes.OK)
+                    .contentType('application/json')
+                    .send({ controllers: [], message: `No controllers found in the project workspace.` });
+                return;
+            }
+
+            const controllers = files.map((f) => ({
+                controllerName: f.getName()
+            }));
+
+            res.status(HttpStatusCodes.OK)
+                .contentType('application/json')
+                .send({
+                    controllers,
+                    message: `${controllers.length} controllers found in the project workspace.`
+                });
+            this.logger.debug(`Read controllers ${JSON.stringify(controllers)}`);
+        } catch (e) {
+            this.logger.error(e.message);
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: e.message });
+            next(e);
+        }
+    };
 }
