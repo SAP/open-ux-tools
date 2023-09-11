@@ -73,7 +73,7 @@ describe('SelectionService', () => {
         );
 
         await service.init(sendActionMock, jest.fn());
-        expect(globalAny.fetch).toHaveBeenCalledWith('/FioriTools/api/getChanges?_=123');
+        expect(globalAny.fetch).toHaveBeenCalledWith('/preview/api/changes?_=123');
         expect(sendActionMock).toHaveBeenCalledWith({
             type: '[ext] change-stack-modified',
             payload: {
@@ -155,7 +155,7 @@ describe('SelectionService', () => {
         );
 
         await service.init(sendActionMock, jest.fn());
-        expect(globalAny.fetch).toHaveBeenCalledWith('/FioriTools/api/getChanges?_=123');
+        expect(globalAny.fetch).toHaveBeenCalledWith('/preview/api/changes?_=123');
         expect(sendActionMock).toHaveBeenCalledWith({
             type: '[ext] change-stack-modified',
             payload: {
@@ -367,7 +367,7 @@ describe('SelectionService', () => {
             })
         );
 
-        expect(globalAny.fetch).toHaveBeenLastCalledWith('/FioriTools/api/removeChanges', {
+        expect(globalAny.fetch).toHaveBeenLastCalledWith('/preview/api/changes', {
             body: '{"fileName":"id_1640106755570_203_propertyChange"}',
             headers: { 'Content-Type': 'application/json' },
             method: 'DELETE'

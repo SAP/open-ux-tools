@@ -17,6 +17,71 @@ import type { SelectionService } from '../selection';
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions, UI5Facade } from '../types';
 import type Event from 'sap/ui/base/Event';
 import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
+import Log from 'sap/base/Log';
+
+interface ChangeContent {
+    property: string;
+    newValue: string;
+    newBinding: string;
+}
+
+interface ChangeSelector {
+    id: string;
+    type: string;
+}
+
+interface Change {
+    fileName: string;
+    controlId: string;
+    propertyName: string;
+    value: string;
+    timestamp: string;
+    selector: ChangeSelector;
+    content: ChangeContent;
+    creation: string;
+}
+/**
+ * Look up property values in object (including nested).
+ *
+ * @param property Path to property using "." to separate nested structures
+ * @param object any
+ * @returns any
+ */
+function getValue(property: string, object: Change): string | undefined {
+    const segments = property.split('.');
+    let current: any = object;
+    for (const segment of segments) {
+        current = current[segment];
+    }
+    return current;
+}
+
+/**
+ * Assert change for its validity. Throws error if no value found in saved changes.
+ *
+ * @param properties array of property name
+ * @param target any
+ */
+function assertChange(properties: string[], target: Change): void {
+    for (const property of properties) {
+        const value = getValue(property, target);
+        if (value === null || value === undefined) {
+            throw new Error(`Invalid change, missing ${property} in the change file`);
+        }
+    }
+}
+
+/**
+ * Modify rta message.
+ *
+ * @param errorMessage error message to be replaced
+ * @param id - control id
+ * @param type - control type
+ * @returns string
+ */
+function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): string {
+    return errorMessage.replace('Error: Applying property changes failed:', '').replace(`${type}#${id}`, '');
+}
 
 /**
  * A Class of ChangeService
@@ -52,7 +117,7 @@ export class ChangeService {
                 } catch (exception) {
                     // send error information
                     let name = '';
-                    const id = action.payload['controlId'] || '';
+                    const id = action.payload.controlId || '';
                     const control = this.ui5.getControlById(id);
                     if (control) {
                         name = control.getMetadata().getName();
@@ -68,13 +133,12 @@ export class ChangeService {
             }
         });
 
-        const savedChanges = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`)
-            .then((response) => response.json())
-            .catch((error) => console.error(error));
+        const savedChangesResult = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
+        const savedChanges = await savedChangesResult.json();
         const changes = (
             Object.keys(savedChanges ?? {})
                 .map((key): SavedPropertyChange | UnknownSavedChange | undefined => {
-                    const change = savedChanges[key];
+                    const change: Change = savedChanges[key];
                     try {
                         assertChange(['fileName', 'selector.id', 'content.property', 'creation'], change);
                         if (
@@ -107,7 +171,6 @@ export class ChangeService {
                             }
                             return unknownChange;
                         }
-                        console.error(error);
                         return undefined;
                     }
                 })
@@ -146,7 +209,7 @@ export class ChangeService {
                 })
             );
 
-        await Promise.all(filesToDelete).catch((error) => console.error(error));
+        await Promise.all(filesToDelete).catch((error) => Log.error(error));
     }
 
     /**
@@ -188,7 +251,7 @@ export class ChangeService {
                             controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
                         };
                     } catch (error) {
-                        console.error(error);
+                        Log.error('Failed: ', error);
                     }
                     return result;
                 })
@@ -201,47 +264,4 @@ export class ChangeService {
             );
         };
     }
-}
-
-/**
- * Modify rta message.
- *
- * @param errorMessage error message to be replaced
- * @param id - control id
- * @param type - control type
- * @returns string
- */
-function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): string {
-    return errorMessage.replace('Error: Applying property changes failed:', '').replace(`${type}#${id}`, '');
-}
-
-/**
- * Assert change for its validity. Throws error if no value found in saved changes.
- *
- * @param properties array of property name
- * @param target any
- */
-function assertChange(properties: string[], target: any): void {
-    for (const property of properties) {
-        const value = getValue(property, target);
-        if (value === null || value === undefined) {
-            throw new Error(`Invalid change, missing ${property} in the change file`);
-        }
-    }
-}
-
-/**
- * Look up property values in object (including nested).
- *
- * @param property Path to property using "." to separate nested structures
- * @param object any
- * @returns any
- */
-function getValue(property: string, object: any): any {
-    const segments = property.split('.');
-    let current = object;
-    for (const segment of segments) {
-        current = current[segment];
-    }
-    return current;
 }

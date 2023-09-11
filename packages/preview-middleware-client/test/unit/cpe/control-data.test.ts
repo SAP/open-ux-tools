@@ -4,58 +4,6 @@ import * as Documentation from '../../../src/cpe/documentation';
 import DataType from 'sap/ui/base/DataType';
 describe('controlData', () => {
     // prepare
-    jest.spyOn(Documentation, 'getDocumentation').mockResolvedValueOnce({
-        activeIcon: {
-            defaultValue: 'test',
-            description: 'test doc',
-            propertyName: 'activeIcon',
-            type: 'testType',
-            propertyType: 'testType'
-        },
-        ariaHasPopup: {
-            defaultValue: 'test',
-            description: 'test doc',
-            propertyName: 'ariaHasPopup',
-            type: 'testType',
-            propertyType: 'testType'
-        },
-        blocked: {
-            defaultValue: 'test',
-            description: 'test description',
-            propertyName: 'blocked',
-            type: 'testType',
-            propertyType: 'testType'
-        },
-        busyIndicatorDelay: {
-            defaultValue: 'test',
-            description: 'test description',
-            propertyName: 'busyIndicatorDelay',
-            type: 'testType',
-            propertyType: 'testType'
-        },
-        fieldGroupIds: {
-            defaultValue: 'test',
-            description: 'test description',
-            propertyName: 'fieldGroupIds',
-            type: 'testType',
-            propertyType: 'testType'
-        },
-        text: {
-            defaultValue: 'test',
-            description: 'test description',
-            propertyName: 'text',
-            type: 'testType',
-            propertyType: 'testType'
-        },
-        width: {
-            defaultValue: 'test',
-            description: 'test description',
-            propertyName: 'width',
-            type: 'testType',
-            propertyType: 'testType'
-        }
-    });
-
     jest.spyOn(sap.ui, 'require').mockImplementation((path) => {
         if (path === 'sap/ui/core/aria/HasPopup') {
             return { None: 'None', Menu: 'Menu', ListBox: 'ListBox' };

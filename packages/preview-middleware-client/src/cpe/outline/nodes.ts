@@ -6,8 +6,8 @@ import { UI5Facade } from '../types';
 /**
  * Transform node.
  *
- * @param input outline view node
  * @param ui5 - facade for ui5 framework methods
+ * @param input outline view node
  * @param getAdditionalData gets additional data for give control id.
  * @returns Promise<OutlineNode[]>
  */

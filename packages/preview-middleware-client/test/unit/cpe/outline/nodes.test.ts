@@ -11,6 +11,10 @@ jest.mock('../../../../src/cpe/outline/utils', () => {
 describe('outline nodes', () => {
     const ui5Facade = createUi5Facade();
     const transformNodes = (nodes: OutlineViewNode[]): Promise<OutlineNode[]> => tn(ui5Facade, nodes);
+    ui5Facade.getControlById = jest.fn().mockReturnValue({
+        getMetadata: jest.fn().mockReturnValue({ getProperty: jest.fn().mockReturnValue('') }),
+        getProperty: jest.fn().mockReturnValue('test')
+    });
     describe('transformNodes', () => {
         test('empty tree', async () => {
             expect(await transformNodes([])).toStrictEqual([]);

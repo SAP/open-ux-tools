@@ -1,13 +1,12 @@
 import type { ExternalAction } from '@sap-ux/control-property-editor-common';
 import { outlineChanged } from '@sap-ux/control-property-editor-common';
 
-import Log from 'sap/base/Log';
-
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type OutlineService from 'sap/ui/rta/command/OutlineService';
 
 import type { UI5Facade } from '../types';
 import { transformNodes } from './nodes';
+import Log from 'sap/base/Log';
 
 /**
  *

@@ -8,20 +8,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import IconPool from 'sap/ui/core/IconPool';
 
-/**
- * A facade for UI5 framework methods.
- *
- * @returns UI5Facade
- */
-export function createUi5Facade(): UI5Facade {
-    return {
-        getControlById,
-        getIcons,
-        getComponent,
-        getOverlay,
-        getClosestOverlayFor
-    };
-}
+
 /**
  * Gets control by id.
  *
@@ -74,7 +61,7 @@ function getClosestOverlayFor<T extends ElementOverlay>(control: Element): T | u
  */
 function getIcons(): IconDetails[] {
     return IconPool.getIconNames('undefined')
-        .map((icon: any) => {
+        .map((icon: string) => {
             const iconInfo = IconPool.getIconInfo(icon) as IconDetails;
             return {
                 name: icon.toLowerCase(),
@@ -82,7 +69,7 @@ function getIcons(): IconDetails[] {
                 fontFamily: iconInfo.fontFamily
             } as IconDetails;
         })
-        .sort((item1: any, item2: any) => {
+        .sort((item1: IconDetails, item2: IconDetails) => {
             if (item1.name < item2.name) {
                 return -1;
             }
@@ -91,4 +78,19 @@ function getIcons(): IconDetails[] {
             }
             return 0;
         });
+}
+
+/**
+ * A facade for UI5 framework methods.
+ *
+ * @returns UI5Facade
+ */
+export function createUi5Facade(): UI5Facade {
+    return {
+        getControlById,
+        getIcons,
+        getComponent,
+        getOverlay,
+        getClosestOverlayFor
+    };
 }

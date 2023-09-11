@@ -4,9 +4,12 @@ import * as flexChange from '../../../src/cpe/changes/flex-change';
 import * as outline from '../../../src/cpe/outline';
 import * as facade from '../../../src/cpe/facade';
 import type Event from 'sap/ui/base/Event';
+import Log from 'sap/base/Log';
+import { promises } from 'dns';
 
 describe('main', () => {
     let sendActionMock: jest.Mock;
+    Log.error = jest.fn();
     const applyChangeSpy = jest
         .spyOn(flexChange, 'applyChange')
         .mockResolvedValueOnce()
@@ -24,7 +27,10 @@ describe('main', () => {
                 return {};
             }
         };
-        (global as any).fetch = jest.fn(() => Promise.resolve(apiJson));
+        (global as any).fetch = jest
+            .fn()
+            .mockImplementationOnce(() => Promise.resolve(apiJson))
+            .mockImplementation(() => Promise.resolve({ json: jest.fn().mockResolvedValue({}) }));
     });
     beforeEach(() => {
         sendActionMock = jest.fn();
@@ -59,7 +65,11 @@ describe('main', () => {
     const rta = {
         attachSelectionChange,
         getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
-        attachUndoRedoStackModified: jest.fn()
+        attachUndoRedoStackModified: jest.fn(),
+        getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR' }),
+        getRootControlInstance: jest.fn().mockReturnValue({
+            getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })
+        })
     } as any;
 
     const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
@@ -103,7 +113,7 @@ describe('main', () => {
 
         // assert
         expect(applyChangeSpy).toBeCalledTimes(1);
-        expect(sendActionMock).toBeCalledTimes(2);
+        expect(sendActionMock).toBeCalledTimes(1);
         expect(initOutlineSpy).toBeCalledTimes(1);
     });
 });

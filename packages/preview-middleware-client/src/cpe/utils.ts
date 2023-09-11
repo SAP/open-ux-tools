@@ -1,6 +1,7 @@
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type Control from 'sap/ui/core/Control';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+import DataType from 'sap/ui/base/DataType';
 
 export interface PropertiesInfo {
     defaultValue: string;
@@ -11,6 +12,15 @@ export interface PropertiesInfo {
 }
 export interface Properties {
     [key: string]: PropertiesInfo;
+}
+
+export interface ManagedObjectMetadataProperties {
+    name: string;
+    defaultValue: string | null;
+    deprecated: boolean;
+    getType: () => DataType;
+    getName: () => string;
+    getDefaultValue: () => unknown;
 }
 
 /**
