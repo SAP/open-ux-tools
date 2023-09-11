@@ -2,14 +2,13 @@
     xmlns="sap.m" 
     xmlns:core="sap.ui.core"
     xmlns:f="sap.ui.layout.form" >
-        <Dialog id="extendNewControllerDialog" title="Extend Controller" contentWidth="500px" class="sapUiRTABorder">
+        <Dialog id="extendNewControllerDialog" title="Extend With Controller" contentWidth="450px" class="sapUiRTABorder">
             <content>
                 <f:SimpleForm id="extendNewControllerDialog_Form"
                     editable="true"
                     layout="ResponsiveGridLayout"
                     labelSpanS="4"
-                    singleContainerFullSize="false"
-                    class="sapUiSmallMargin">
+                    singleContainerFullSize="false">
                     <f:content>
                         <Label text="Controller Name" />
                         <Input 

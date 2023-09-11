@@ -164,6 +164,6 @@ export class AdpPreview {
         /**
          * CONTROLLER Routes
          */
-        router.post(ApiRoutes.CONTROLLER, this.routesHandler.handleReadAllControllers as RequestHandler);
+        router.get(ApiRoutes.CONTROLLER, this.routesHandler.handleReadAllControllers as RequestHandler);
     }
 }
