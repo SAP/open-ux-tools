@@ -13,31 +13,29 @@ import type AddFragment from '../controllers/AddFragment.controller';
  *
  * @param rta Runtime Authoring
  */
-export const initFragment = (rta: RuntimeAuthoring): void => {
+export const initController = (rta: RuntimeAuthoring): void => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
 
     contextMenu.addMenuItem({
-        id: 'ADD_FRAGMENT',
-        text: 'Add: Fragment',
-        handler: async (overlays: UI5Element[]) => await fragmentHandler(overlays, rta),
-        icon: 'sap-icon://attachment-html'
+        id: 'EXTEND_CONTROLLER',
+        text: 'Extend With Controller',
+        handler: async () => await controllerHandler(rta),
+        icon: 'sap-icon://create-form'
     });
 };
 
 /**
  * Handler for new context menu entry
  *
- * @param overlays Control overlays
  * @param rta Runtime Authoring
  */
-export async function fragmentHandler(overlays: UI5Element[], rta: RuntimeAuthoring): Promise<void> {
+export async function controllerHandler(rta: RuntimeAuthoring): Promise<void> {
     const viewXml = '<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"></mvc:View>';
 
     const controller = (await Controller.create({
-        name: 'open.ux.preview.client.adp.controllers.AddFragment'
+        name: 'open.ux.preview.client.adp.controllers.ExtendController'
     })) as unknown as AddFragment;
 
-    controller.overlays = overlays;
     controller.rta = rta;
 
     await XMLView.create({

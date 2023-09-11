@@ -13,9 +13,15 @@ export const enum RequestMethod {
 }
 
 type Fragments = { fragmentName: string }[];
+type Controllers = { controllerName: string }[];
 
 export interface FragmentsResponse {
     fragments: Fragments;
+    message: string;
+}
+
+export interface ControllersResponse {
+    controllers: Controllers;
     message: string;
 }
 
@@ -86,4 +92,13 @@ export async function writeFragment<T>(data: T): Promise<T> {
  */
 export async function getManifestAppdescr<T>(): Promise<T> {
     return request<T>(ApiEndpoints.MANIFEST_APP_DESCRIPTOR, RequestMethod.GET);
+}
+
+/**
+ * Retrieves all controller extensions from the project's workspace
+ *
+ * @returns Generic Promise<T>
+ */
+export async function readControllers<T>(): Promise<T> {
+    return request<T>(ApiEndpoints.CONTROLLER, RequestMethod.GET);
 }
