@@ -4,45 +4,42 @@
     xmlns:f="sap.ui.layout.form" >
         <Dialog id="addNewFragmentDialog" title="Add XML Fragment" contentWidth="500px" class="sapUiRTABorder">
             <content>
-                <VBox class="sapUiSmallMargin">
-                    <f:SimpleForm id="addNewFragmentDialog_Form"
-                        editable="true"
-                        layout="ResponsiveGridLayout"
-                        labelSpanS="4"
-                        singleContainerFullSize="false"
-                        class="sapUiSmallMargin">
-                        <f:content>
-                            <Label text="Control Type" />
-                            <Text text="{/selectedControlName}" />
-                            <Label text="Target Aggregation" />
-                            <ComboBox
-                                change="onAggregationChanged"
-                                selectedKey="{/selectedAggregation/key}"
-                                items="{
-                                    path: '/targetAggregation',
-                                    sorter: { path: 'text' }
-                                }">
-                                <core:Item key="{key}" text="{value}" />
-                            </ComboBox>
-                            <Label text="Index" />
-                            <ComboBox
-                                change="onIndexChanged"
-                                selectedKey='{/selectedIndex}'
-                                items="{
-                                    path: '/index',
-                                    sorter: { path: 'text' }
-                                }">
-                                <core:Item key="{key}" text="{value}" />
-                            </ComboBox>
-                            <Label text="Fragment Name" />
-                            <Input 
-                                description=".fragment.xml" 
-                                value="{/newFragmentName}" 
-                                liveChange="onFragmentNameInputChange">
-                            </Input>
-                        </f:content>
-                    </f:SimpleForm>
-                </VBox >
+                <f:SimpleForm id="addNewFragmentDialog_Form"
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanS="4"
+                    singleContainerFullSize="false">
+                    <f:content>
+                        <Label text="Control Type" />
+                        <Text text="{/selectedControlName}" />
+                        <Label text="Target Aggregation" />
+                        <ComboBox
+                            change="onAggregationChanged"
+                            selectedKey="{/selectedAggregation/key}"
+                            items="{
+                                path: '/targetAggregation',
+                                sorter: { path: 'text' }
+                            }">
+                            <core:Item key="{key}" text="{value}" />
+                        </ComboBox>
+                        <Label text="Index" />
+                        <ComboBox
+                            change="onIndexChanged"
+                            selectedKey='{/selectedIndex}'
+                            items="{
+                                path: '/index',
+                                sorter: { path: 'text' }
+                            }">
+                            <core:Item key="{key}" text="{value}" />
+                        </ComboBox>
+                        <Label text="Fragment Name" />
+                        <Input 
+                            description=".fragment.xml" 
+                            value="{/newFragmentName}" 
+                            liveChange="onFragmentNameInputChange">
+                        </Input>
+                    </f:content>
+                </f:SimpleForm>
             </content>
             <beginButton>
                 <Button 
