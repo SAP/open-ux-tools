@@ -24,7 +24,6 @@ export interface Properties {
     readableName: string;
     value: unknown | boolean;
     isEnabled: boolean;
-    documentation: object;
     options?: { key: string; text: string }[];
     isIcon?: boolean;
 }
@@ -272,13 +271,11 @@ export default class ControlUtils {
      *
      * @param control Control Managed Object
      * @param controlOverlay Control overlay
-     * @param _includeDocumentation Toggle whether to include documentation
      * @returns {BuiltRuntimeControl} Built runtime control
      */
     public static async buildControlData(
         control: ManagedObject,
-        controlOverlay?: ElementOverlay,
-        _includeDocumentation = true
+        controlOverlay?: ElementOverlay
     ): Promise<BuiltRuntimeControl> {
         const controlMetadata = control.getMetadata();
 
@@ -294,9 +291,7 @@ export default class ControlUtils {
         const allProperties = controlMetadata.getAllProperties();
         const propertyNames: string[] = Object.keys(allProperties);
         const properties: Properties[] = [];
-        // const document = includeDocumentation ? await getDocumentation(selectedControlName, selContLibName) : {};
-        // ? Do we need this documentation at all
-        const document: { [key: string]: object } = {};
+
         for (const propertyName of propertyNames) {
             const property = allProperties[propertyName] as MetadataOptionsProperty;
 
@@ -326,16 +321,6 @@ export default class ControlUtils {
                 controlNewData.newValue = bindingInfo.bindingString;
             }
 
-            const documentation = document?.[property.name]
-                ? document[property.name]
-                : {
-                      defaultValue: (property.defaultValue as string) || '-',
-                      description: '',
-                      propertyName: property.name,
-                      type: analyzedType.ui5Type,
-                      propertyType: analyzedType.ui5Type
-                  };
-
             // A property is enabled if:
             // 1. The property supports changes
             // 2. The control has stable ID
@@ -351,7 +336,6 @@ export default class ControlUtils {
                 analyzedType,
                 property,
                 properties,
-                documentation,
                 selectedControlName,
                 controlNewData,
                 isEnabled
@@ -374,7 +358,6 @@ export default class ControlUtils {
      * @param {AnalyzedType} analyzedType  Analyzed type
      * @param {MetadataOptionsProperty} property Property
      * @param {Properties[]} properties Properties array
-     * @param documentation Documentation object
      * @param selectedControlName Selected control name
      * @param {ControlNewData} controlNewData Control new data
      * @param isEnabled Whether property is enabled
@@ -383,7 +366,6 @@ export default class ControlUtils {
         analyzedType: AnalyzedType,
         property: MetadataOptionsProperty,
         properties: Properties[],
-        documentation: object,
         selectedControlName: string,
         controlNewData: ControlNewData,
         isEnabled: boolean
@@ -410,8 +392,7 @@ export default class ControlUtils {
                     readableName,
                     value,
                     isEnabled,
-                    options,
-                    documentation
+                    options
                 });
                 break;
             }
@@ -423,8 +404,7 @@ export default class ControlUtils {
                     readableName,
                     value,
                     isEnabled,
-                    isIcon,
-                    documentation: documentation
+                    isIcon
                 });
                 break;
             }
@@ -435,8 +415,7 @@ export default class ControlUtils {
                     name: property.name,
                     readableName,
                     value: value as unknown as number,
-                    isEnabled,
-                    documentation
+                    isEnabled
                 });
                 break;
             }
@@ -447,8 +426,7 @@ export default class ControlUtils {
                     name: property.name,
                     readableName,
                     value: value as unknown as number,
-                    isEnabled,
-                    documentation
+                    isEnabled
                 });
                 break;
             }
@@ -459,8 +437,7 @@ export default class ControlUtils {
                     name: property.name,
                     readableName,
                     value: value as unknown as boolean,
-                    isEnabled,
-                    documentation
+                    isEnabled
                 });
                 break;
             }
