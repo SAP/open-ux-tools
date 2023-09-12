@@ -37,17 +37,7 @@ declare module 'sap/ui/rta/command/CommandFactory' {
     import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
     import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
     import type Element from 'sap/ui/core/Element';
-    import type { Layer } from 'sap/ui/fl';
-
-    export interface FlexSettings {
-        layer: Layer;
-        developerMode: boolean;
-        baseId?: string;
-        projectId?: string;
-        scenario?: string;
-        namespace?: string;
-        rootNamespace?: string;
-    }
+    import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 
     interface CommandFactory {
         getCommandFor<T extends BaseCommand = BaseCommand>(
@@ -89,6 +79,17 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type Stack from 'sap/ui/rta/command/Stack';
     import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
     import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
+    import type { Layer } from 'sap/ui/fl';
+
+    export interface FlexSettings {
+        layer: Layer;
+        developerMode: boolean;
+        baseId?: string;
+        projectId?: string;
+        scenario?: string;
+        namespace?: string;
+        rootNamespace?: string;
+    }
 
     export type SelectionChangeEvent = Event<SelectionChangeParams>;
     export interface SelectionChangeParams {
@@ -103,13 +104,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getService: <T>(name: 'outline' | string) => Promise<T>;
         getSelection: () => ElementOverlay[];
         getDefaultPlugins: () => { contextMenu: ContextMenu };
-        getFlexSettings: () => { 
-            layer: string;
-            developerMode: boolean;
-            baseId: string;
-            namespace: string;
-            projectId?: string;
-        }
+        getFlexSettings: () => FlexSettings
     }
 
     export default RuntimeAuthoring;
