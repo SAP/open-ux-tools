@@ -61,18 +61,22 @@ function getPropertyDocument(
 }
 
 async function addDocumentationForProperties(control: ManagedObject, controlData: Control): Promise<void> {
-    const controlMetadata = control.getMetadata();
-    const allProperties = controlMetadata.getAllProperties() as unknown as {
-        [name: string]: ManagedObjectMetadataProperties;
-    };
-    const selectedControlName = controlMetadata.getName();
-    const selContLibName = controlMetadata.getLibraryName();
-    // Add the control's properties
-    const document = await getDocumentation(selectedControlName, selContLibName);
-    controlData.properties.map((controlProp) => {
-        const property = allProperties[controlProp.name];
-        controlProp.documentation = getPropertyDocument(property, controlProp.ui5Type, document);
-    });
+    try {
+        const controlMetadata = control.getMetadata();
+        const allProperties = controlMetadata.getAllProperties() as unknown as {
+            [name: string]: ManagedObjectMetadataProperties;
+        };
+        const selectedControlName = controlMetadata.getName();
+        const selContLibName = controlMetadata.getLibraryName();
+        // Add the control's properties
+        const document = await getDocumentation(selectedControlName, selContLibName);
+        controlData.properties.map((controlProp) => {
+            const property = allProperties[controlProp.name];
+            controlProp.documentation = getPropertyDocument(property, controlProp.ui5Type, document);
+        });
+    } catch (e) {
+        Log.error('Document loading failed', e);
+    }
 }
 
 /**
@@ -132,7 +136,7 @@ export class SelectionService implements Service {
                 if (controlOverlay?.isSelectable()) {
                     controlOverlay.setSelected(true); //highlight without firing event only if the layer is selectable
                 } else {
-                    const controlData = await buildControlData(control);
+                    const controlData = buildControlData(control);
                     await addDocumentationForProperties(control, controlData);
                     const controlSelectedAction = controlSelected(controlData);
                     sendAction(controlSelectedAction);
@@ -183,7 +187,7 @@ export class SelectionService implements Service {
                             reportTelemetry({ category: 'Overlay Selection', controlName: name });
                         }
                     } catch (error) {
-                        Log.error('Error in reporting telemetry', error);
+                        Log.error('Failed to report telemetry', error);
                     } finally {
                         const controlData = buildControlData(runtimeControl, overlayControl);
                         await addDocumentationForProperties(runtimeControl, controlData);

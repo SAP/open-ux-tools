@@ -5,7 +5,6 @@ import * as outline from '../../../src/cpe/outline';
 import * as facade from '../../../src/cpe/facade';
 import type Event from 'sap/ui/base/Event';
 import Log from 'sap/base/Log';
-import { promises } from 'dns';
 
 describe('main', () => {
     let sendActionMock: jest.Mock;

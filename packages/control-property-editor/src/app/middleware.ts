@@ -30,6 +30,7 @@ export const communicationMiddleware: Middleware<Dispatch<Action>> = (store: Mid
         },
         function onAction(action) {
             store.dispatch(action);
+            return Promise.resolve();
         }
     );
     return (next: Dispatch<Action>) =>

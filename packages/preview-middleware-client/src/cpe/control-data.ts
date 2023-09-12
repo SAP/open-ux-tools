@@ -182,7 +182,6 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
     };
     const propertyNames = Object.keys(allProperties);
     const properties: ControlProperty[] = [];
-
     for (const propertyName of propertyNames) {
         const property = allProperties[propertyName];
 
