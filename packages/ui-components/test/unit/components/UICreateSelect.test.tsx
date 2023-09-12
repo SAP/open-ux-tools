@@ -26,8 +26,8 @@ describe('<UICreateSelect />', () => {
                 placeholder={props.placeholder}
                 options={props.options}
                 value={props.value}
-                handleCreate={props.handleCreate}
-                handleOnChange={props.handleOnChange}
+                onCreateOption={props.onCreateOption}
+                onChange={props.onChange}
             />
         );
 
@@ -45,8 +45,8 @@ describe('<UICreateSelect />', () => {
             placeholder: 'Search or enter a new value',
             options: defaultOptions,
             value: undefined,
-            handleCreate: jest.fn(),
-            handleOnChange: jest.fn()
+            onCreateOption: jest.fn(),
+            onChange: jest.fn()
         };
         renderUICreateSelect(props);
 
@@ -64,8 +64,8 @@ describe('<UICreateSelect />', () => {
             placeholder: 'Search or enter a new value',
             options: defaultOptions,
             value: defaultOptions[1],
-            handleCreate: jest.fn(),
-            handleOnChange: jest.fn()
+            onCreateOption: jest.fn(),
+            onChange: jest.fn()
         };
         const { container } = renderUICreateSelect(props);
 
@@ -86,8 +86,8 @@ describe('<UICreateSelect />', () => {
             placeholder: 'Search or enter a new value',
             options: defaultOptions,
             value: defaultOptions[1],
-            handleCreate: jest.fn(),
-            handleOnChange: jest.fn()
+            onCreateOption: jest.fn(),
+            onChange: jest.fn()
         };
         const { container } = renderUICreateSelect(props);
 
@@ -109,8 +109,8 @@ describe('<UICreateSelect />', () => {
             placeholder: 'Search or enter a new value',
             options: defaultOptions,
             value: defaultOptions[1],
-            handleCreate: jest.fn(),
-            handleOnChange: jest.fn()
+            onCreateOption: jest.fn(),
+            onChange: jest.fn()
         };
         const { container } = renderUICreateSelect(props);
 
