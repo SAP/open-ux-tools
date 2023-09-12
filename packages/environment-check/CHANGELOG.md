@@ -1,5 +1,24 @@
 # @sap-ux/environment-check
 
+## 0.15.57
+
+### Patch Changes
+
+-   118692c3: update dependency minimist to v1.2.8
+
+## 0.15.56
+
+### Patch Changes
+
+-   Updated dependencies [676f8ba0]
+    -   @sap-ux/axios-extension@1.4.4
+
+## 0.15.55
+
+### Patch Changes
+
+-   fbcc0307: Update to use listDestinations from @sap-ux/btp-utils
+
 ## 0.15.54
 
 ### Patch Changes

@@ -73,6 +73,7 @@ export interface TemplateConfig {
         resources: Record<string, string>;
     };
     flex?: {
+        [key: string]: unknown;
         layer: UI5FlexLayer;
         developerMode: boolean;
         pluginScript?: string;
@@ -147,9 +148,10 @@ export class FlpSandbox {
             local: '.',
             intent: this.config.intent
         });
-
         this.addStandardRoutes();
         if (this.rta) {
+            this.rta.options ??= {};
+            this.rta.options.baseId = componentId ?? manifest['sap.app'].id;
             this.addEditorRoutes(this.rta);
         }
         this.addRoutesForAdditionalApps();
@@ -167,33 +169,33 @@ export class FlpSandbox {
         for (const editor of rta.editors) {
             let previewUrl = editor.path;
             if (editor.developerMode) {
-                let path = dirname(editor.path);
-                if (!path.endsWith('/')) {
-                    path = `${path}/`;
-                }
-                previewUrl = `${path}_inner.html`;
+                previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
-
-                this.router.get(editor.path, async (_req: Request, res: Response) => {
+                this.router.get(editor.path, (async (_req: Request, res: Response) => {
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
                     const html = render(template, {
                         previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`
                     });
                     res.status(200).contentType('html').send(html);
-                });
+                }) as RequestHandler);
+                let path = dirname(editor.path);
+                if (!path.endsWith('/')) {
+                    path = `${path}/`;
+                }
                 this.router.use(`${path}editor`, serveStatic(cpe));
             }
-            this.router.get(previewUrl, async (_req: Request, res: Response) => {
+            this.router.get(previewUrl, (async (_req: Request, res: Response) => {
                 const config = { ...this.templateConfig };
                 config.flex = {
                     layer: rta.layer,
+                    ...rta.options,
                     developerMode: editor.developerMode === true,
                     pluginScript: editor.pluginScript
                 };
                 const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
                 const html = render(template, config);
                 res.status(200).contentType('html').send(html);
-            });
+            }) as RequestHandler);
         }
     }
 

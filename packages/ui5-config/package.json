@@ -38,7 +38,7 @@
     "devDependencies": {
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "@types/lodash": "4.14.197",
+        "@types/lodash": "4.14.198",
         "@types/semver": "7.3.9"
     },
     "engines": {

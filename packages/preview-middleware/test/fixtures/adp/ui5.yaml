@@ -12,6 +12,9 @@ server:
         adp:
           target:
             url: http://example.sap
+        rta:
+          editors:
+          - path: /adp/editor.html
     - name: ui5-proxy-middleware
       afterMiddleware: preview-middleware
       configuration:

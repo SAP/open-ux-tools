@@ -2,7 +2,7 @@ declare module 'sap/ui/rta/command/BaseCommand' {
     import type Element from 'sap/ui/core/Element';
     import type ManagedObject from 'sap/ui/base/ManagedObject';
 
-    interface BaseCommand extends ManagedObject {
+   interface BaseCommand extends ManagedObject {
         execute(): Promise<void>;
         getElement(): Element;
     }
@@ -37,17 +37,7 @@ declare module 'sap/ui/rta/command/CommandFactory' {
     import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
     import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
     import type Element from 'sap/ui/core/Element';
-    import type { Layer } from 'sap/ui/fl';
-
-    export interface FlexSettings {
-        layer: Layer;
-        developerMode: boolean;
-        baseId?: string;
-        projectId?: string;
-        scenario?: string;
-        namespace?: string;
-        rootNamespace?: string;
-    }
+    import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 
     interface CommandFactory {
         getCommandFor<T extends BaseCommand = BaseCommand>(
@@ -124,7 +114,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
 
 declare module 'sap/ui/rta/api/startAdaptation' {
     import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-
+    
     export type RTAPlugin = (rta: RuntimeAuthoring) => void;
     export type StartAdaptation = (options: object, plugin?: RTAPlugin) => void;
 

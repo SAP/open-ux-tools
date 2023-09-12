@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.4.4
+
+### Patch Changes
+
+-   676f8ba0: Note for customer to replace url with destination url.
+
 ## 1.4.3
 
 ### Patch Changes

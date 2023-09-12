@@ -1,5 +1,19 @@
 # @sap-ux/adp-tooling
 
+## 0.2.0
+
+### Minor Changes
+
+-   62148b07: Improving the generated ui5.yaml and package.json
+
+## 0.1.8
+
+### Patch Changes
+
+-   Updated dependencies [676f8ba0]
+    -   @sap-ux/axios-extension@1.4.4
+    -   @sap-ux/system-access@0.2.3
+
 ## 0.1.7
 
 ### Patch Changes
