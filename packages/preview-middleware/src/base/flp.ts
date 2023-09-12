@@ -73,6 +73,7 @@ export interface TemplateConfig {
         resources: Record<string, string>;
     };
     flex?: {
+        [key: string]: unknown;
         layer: UI5FlexLayer;
         developerMode: boolean;
         pluginScript?: string;
@@ -147,9 +148,10 @@ export class FlpSandbox {
             local: '.',
             intent: this.config.intent
         });
-
         this.addStandardRoutes();
         if (this.rta) {
+            this.rta.options ??= {};
+            this.rta.options.baseId = componentId ?? manifest['sap.app'].id;
             this.addEditorRoutes(this.rta);
         }
         this.addRoutesForAdditionalApps();
@@ -180,6 +182,7 @@ export class FlpSandbox {
                 const config = { ...this.templateConfig };
                 config.flex = {
                     layer: rta.layer,
+                    ...rta.options,
                     developerMode: editor.developerMode === true,
                     pluginScript: editor.pluginScript
                 };

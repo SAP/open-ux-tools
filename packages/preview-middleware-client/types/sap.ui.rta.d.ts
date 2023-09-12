@@ -103,6 +103,13 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getService: <T>(name: 'outline' | string) => Promise<T>;
         getSelection: () => ElementOverlay[];
         getDefaultPlugins: () => { contextMenu: ContextMenu };
+        getFlexSettings: () => { 
+            layer: string;
+            developerMode: boolean;
+            baseId: string;
+            namespace: string;
+            projectId?: string;
+        }
     }
 
     export default RuntimeAuthoring;

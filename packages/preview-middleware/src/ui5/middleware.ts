@@ -18,9 +18,14 @@ async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, 
     const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
     if (appVariant) {
         const adp = new AdpPreview(config, rootProject, logger);
-        const layer = await adp.init(JSON.parse(await appVariant.getString()));
+        const variant = JSON.parse(await appVariant.getString());
+        const layer = await adp.init(variant);
+        logger.warn(variant);
         if (flp.rta) {
             flp.rta.layer = layer;
+            flp.rta.options = {
+                projectId: variant.id
+            };
             for (const editor of flp.rta.editors) {
                 editor.pluginScript ??= 'open/ux/preview/client/adp/init';
             }
