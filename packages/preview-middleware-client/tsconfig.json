@@ -6,6 +6,7 @@
     "types"
   ],
   "compilerOptions": {
+    "lib": ["ES2020", "DOM"],
     "target": "es2022",
     "module": "es2022",
     "skipLibCheck": true,
@@ -26,7 +27,8 @@
     },
     "types": [
       "@sapui5/types",
-      "jest"
+      "jest",
+      "node"
     ]
   },
   "references": [

@@ -7,12 +7,16 @@ module.exports = {
     },
     rules: {
         'quotes': ['error', 'single'],
-        'valid-jsdoc': [
+        'valid-jsdoc': ['error', {
+            requireParamType: false,
+            requireReturn: false,
+            requireReturnType: false
+        }],
+        '@typescript-eslint/no-unused-vars': [
             'error',
             {
-                requireParamType: false,
-                requireReturn: false,
-                requireReturnType: false
+                varsIgnorePattern: '^_',
+                argsIgnorePattern: '^_'
             }
         ]
     },

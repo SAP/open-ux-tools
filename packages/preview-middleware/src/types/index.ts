@@ -22,19 +22,22 @@ export interface App {
     intent?: Intent;
 }
 
+export interface RtaConfig {
+    layer: UI5FlexLayer;
+    options?: { [key: string]: unknown };
+    editors: {
+        path: string;
+        developerMode?: boolean;
+        pluginScript?: string;
+    }[];
+}
+
 /**
  * FLP preview configuration.
  */
 export interface FlpConfig {
     path: string;
     intent: Intent;
-    rta?: {
-        layer?: UI5FlexLayer;
-        /**
-         * Optional UI5 module exporting as default a function that adds RTA plugins
-         */
-        pluginModule?: string;
-    };
     /**
      * Optional: if set to true then a locate-reuse-libs script will be attached to the html
      */
@@ -45,8 +48,9 @@ export interface FlpConfig {
 /**
  * Middleware configuration.
  */
-export interface Config {
+export interface MiddlewareConfig {
     flp?: Partial<FlpConfig>;
+    rta?: RtaConfig;
     adp?: AdpPreviewConfig;
     debug?: boolean;
 }
