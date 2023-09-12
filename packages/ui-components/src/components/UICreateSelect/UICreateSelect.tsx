@@ -143,24 +143,14 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
 
     return (
         <CreatableSelect
+            {...props}
             ref={props.creatableRef}
-            defaultMenuIsOpen={props.defaultMenuIsOpen}
             className="ui-create-select"
             classNamePrefix="ui-create-select"
-            isClearable={props.isClearable}
-            isDisabled={props.isDisabled}
-            isLoading={props.isLoading}
-            isValidNewOption={props.isValidNewOption}
             openMenuOnFocus={false}
             createOptionPosition="first"
             allowCreateWhileLoading={true}
             formatOptionLabel={(option) => option.label}
-            placeholder={props.placeholder}
-            onChange={props.onChange}
-            onCreateOption={props.onCreateOption}
-            options={props.options}
-            value={props.value}
-            noOptionsMessage={props.noOptionsMessage}
             formatCreateLabel={formatCreateLabel}
             components={{ ClearIndicator, DropdownIndicator, LoadingIndicator, Option }}
             unstyled={true}
