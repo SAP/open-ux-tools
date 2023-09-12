@@ -97,7 +97,8 @@ server:
     configuration:
       rta:
         layer: CUSTOMER_BASE
-        - path: /local/variant-editor.html
+        editors:
+          - path: /local/variant-editor.html
 ```
 
 
@@ -114,8 +115,9 @@ server:
           url: http://sap.example
         ignoreCertErrors: true
       rta:
-        - path: /adp/editor.html
-          developerMode: true
+        editors:
+          - path: /adp/editor.html
+            developerMode: true
 ```
 
 ### Programmatic Usage
