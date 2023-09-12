@@ -58,7 +58,6 @@ export interface Content {
 }
 
 export const enum FolderNames {
-    Webapp = 'webapp',
     Changes = 'changes',
     Fragments = 'fragments'
 }

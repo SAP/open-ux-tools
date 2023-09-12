@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import Utils from 'sap/ui/fl/Utils';
 import DataType from 'sap/ui/base/DataType';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
@@ -93,7 +92,6 @@ export default class ControlUtils {
 
         if (aggregation) {
             if (!aggregation._sGetter && !control.__calledJSONKeys) {
-                (control.getMetadata() as any).getJSONKeys();
                 // Performance optimization
                 control.__calledJSONKeys = true;
             }

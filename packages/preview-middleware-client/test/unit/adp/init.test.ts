@@ -12,7 +12,8 @@ describe('init', () => {
                         addMenuItem: addMenuItemSpy
                     }
                 };
-            }
+            },
+            getFlexSettings: jest.fn()
         };
 
         init(rta as unknown as RuntimeAuthoring);
