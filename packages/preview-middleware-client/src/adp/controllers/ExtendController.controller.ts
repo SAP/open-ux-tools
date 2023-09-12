@@ -13,8 +13,6 @@ import Controller from 'sap/ui/core/mvc/Controller';
 /** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
 import type EventProvider from 'sap/ui/base/EventProvider';
-import type ManagedObject from 'sap/ui/base/ManagedObject';
-import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
 /** sap.ui.model */
 import JSONModel from 'sap/ui/model/json/JSONModel';
@@ -23,13 +21,10 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 /** sap.ui.dt */
-import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
-import CommandExecutor from '../command-executor';
-import type { ControllersResponse, FragmentsResponse } from '../api-handler';
-import ControlUtils, { type BuiltRuntimeControl } from '../control-utils';
-import { getFragments, getManifestAppdescr, readControllers, writeFragment } from '../api-handler';
+import type { ControllersResponse } from '../api-handler';
+import { readControllers, writeController } from '../api-handler';
 
 type ExtendedEventProvider = EventProvider & {
     setEnabled: (v: boolean) => void;
@@ -81,20 +76,19 @@ export default class ExtendController extends Controller {
      */
     public rta: RuntimeAuthoring;
     /**
-     * RTA Command Executor
+     * Controll Overlays
      */
-    private commandExecutor: CommandExecutor;
+    public overlays: UI5Element[];
 
     /**
      * Initializes controller, fills model with data and opens the dialog
      */
     async onInit() {
         this.model = new JSONModel();
-        this.commandExecutor = new CommandExecutor(this.rta);
 
         this.dialog = (await this.loadFragment({ name: 'open.ux.preview.client.adp.ui.ExtendController' })) as Dialog;
 
-        await this.buildDialogData();
+        await this.buildDialogData(this.overlays);
 
         this.getView()?.addDependent(this.dialog).setModel(this.model);
 
@@ -153,14 +147,11 @@ export default class ExtendController extends Controller {
     async onCreateBtnPress(event: Event) {
         const source = event.getSource() as ExtendedEventProvider;
         source.setEnabled(false);
-        // Need to create a new fragment and a respective change file
-        const controllerNameToCreate = this.model.getProperty('/newControllerName');
-        // const fragmentData = {
-        //     fragmentName: fragmentNameToCreate,
-        //     index: this.model.getProperty('/selectedIndex'),
-        //     targetAggregation: this.model.getProperty('/selectedAggregation/value')
-        // };
-        // await this.createNewFragment(fragmentData);
+
+        const controllerName = this.model.getProperty('/newControllerName');
+        const viewId = this.model.getProperty('viewId');
+
+        await this.createNewController(controllerName, viewId);
 
         this.handleDialogClose();
     }
@@ -186,7 +177,13 @@ export default class ExtendController extends Controller {
      * @param overlays Overlays
      * @param jsonModel JSON Model for the dialog
      */
-    public async buildDialogData(): Promise<void> {
+    public async buildDialogData(overlays: UI5Element[]): Promise<void> {
+        const selectorId = overlays[0].getId();
+
+        const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
+        const viewId: string = overlayControl.getElement().getId();
+        this.model.setProperty('/viewId', viewId);
+
         try {
             const { controllers } = await readControllers<ControllersResponse>();
             this.model.setProperty('/controllersList', controllers);
@@ -199,41 +196,20 @@ export default class ExtendController extends Controller {
     /**
      * Creates a new fragment for the specified control
      *
-     * @param fragmentData Fragment Data
-     * @param fragmentData.index Index for XML Fragment placement
-     * @param fragmentData.fragmentName Fragment name
-     * @param fragmentData.targetAggregation Target aggregation for control
+     * @param controllerName Controller Name
+     * @param viewId View Id
      */
-    private async createNewFragment(fragmentData: CreateFragmentProps): Promise<void> {
-        const { fragmentName, index, targetAggregation } = fragmentData;
+    private async createNewController(controllerName: string, viewId: string): Promise<void> {
         try {
-            await writeFragment<unknown>({ fragmentName });
-            MessageToast.show(`Fragment with name '${fragmentName}' was created.`);
+            /**
+             * Create a new controller from template
+             */
+            await writeController({ controllerName });
+            /**
+             * Call writeChange route
+             */
         } catch (e) {
             // In case of error when creating a new fragment, we should not create a change file
-            MessageToast.show(e.message);
-            throw new Error(e.message);
-        }
-
-        await this.createFragmentChange({ fragmentName, index, targetAggregation });
-    }
-
-    /**
-     * Creates an addXML fragment command and pushes it to the command stack
-     *
-     * @param fragmentData Fragment Data
-     */
-    private async createFragmentChange(fragmentData: CreateFragmentProps) {
-        const { fragmentName, index, targetAggregation } = fragmentData;
-        let manifest: ManifestAppdescr;
-        try {
-            manifest = await getManifestAppdescr<ManifestAppdescr>();
-
-            if (!manifest) {
-                // Highly unlikely since adaptation projects are required to have manifest.appdescr_variant
-                throw new Error('Could not retrieve manifest');
-            }
-        } catch (e) {
             MessageToast.show(e.message);
             throw new Error(e.message);
         }
