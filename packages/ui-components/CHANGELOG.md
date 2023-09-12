@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.5
+
+### Patch Changes
+
+-   30fc4a11: feat(ui-components) add createref as props to UICreateSelect
+
 ## 1.11.4
 
 ### Patch Changes
