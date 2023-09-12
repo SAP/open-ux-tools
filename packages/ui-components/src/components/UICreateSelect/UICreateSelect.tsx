@@ -23,7 +23,6 @@ import { UIHighlightMenuOption } from '../UIContextualMenu';
 
 import './UICreateSelect.scss';
 
-// export { CreatableProps as UICreateSelectProps };
 export { MultiValue as UICreateSelectMultiValue };
 export { ActionMeta as UICreateSelectActionMeta };
 export { Options as UICreateSelectOptions };
