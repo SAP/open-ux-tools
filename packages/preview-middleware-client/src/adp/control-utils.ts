@@ -231,17 +231,6 @@ export default class ControlUtils {
                 return JSON.stringify(rawValue);
             } catch (e) {
                 if (e instanceof Error && e.message.toLowerCase().includes('converting circular structure to json')) {
-                    // some objects can be circular, e.g.:
-                    // var obj = {
-                    //    key1: value,
-                    //    key2: obj
-                    // }
-                    // and JSON.stringify can't handle that so we reach here.
-                    // however, postMessage can't handle that either, and throws:
-                    // "Failed to execute 'postMessage' on 'Window': An object could not be cloned".
-                    // so we need to check whether this is the failure and if so, don't return the rawValue,
-                    // but some default string to act as the property value.
-                    // (BCP: 1780025011)
                     return '<Circular JSON cannot be displayed>';
                 }
 
