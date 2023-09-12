@@ -24,7 +24,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import type { ControllersResponse } from '../api-handler';
-import { readControllers, writeController } from '../api-handler';
+import { readControllers, writeChange, writeController } from '../api-handler';
 
 type ExtendedEventProvider = EventProvider & {
     setEnabled: (v: boolean) => void;
@@ -149,7 +149,7 @@ export default class ExtendController extends Controller {
         source.setEnabled(false);
 
         const controllerName = this.model.getProperty('/newControllerName');
-        const viewId = this.model.getProperty('viewId');
+        const viewId = this.model.getProperty('/viewId');
 
         await this.createNewController(controllerName, viewId);
 
@@ -208,6 +208,18 @@ export default class ExtendController extends Controller {
             /**
              * Call writeChange route
              */
+            const controllerRef = {
+                codeRef: `coding/${controllerName}.js`,
+                viewId
+            };
+
+            const service = await this.rta.getService<{ add: (codeRef: string, viewId: string) => Promise<unknown> }>(
+                'controllerExtension'
+            );
+
+            const change = await service.add(controllerRef.codeRef, controllerRef.viewId);
+
+            await writeChange(change);
         } catch (e) {
             // In case of error when creating a new fragment, we should not create a change file
             MessageToast.show(e.message);
