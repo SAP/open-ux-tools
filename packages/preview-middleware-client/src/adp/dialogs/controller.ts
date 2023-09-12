@@ -6,7 +6,7 @@ import Controller from 'sap/ui/core/mvc/Controller';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import type AddFragment from '../controllers/AddFragment.controller';
+import type ExtendController from '../controllers/ExtendController.controller';
 
 /**
  * Initilizes "Add XML Fragment" functionality and adds a new item to the context menu
@@ -19,7 +19,7 @@ export const initController = (rta: RuntimeAuthoring): void => {
     contextMenu.addMenuItem({
         id: 'EXTEND_CONTROLLER',
         text: 'Extend With Controller',
-        handler: async () => await controllerHandler(rta),
+        handler: async (overlays: UI5Element[]) => await controllerHandler(overlays, rta),
         icon: 'sap-icon://create-form'
     });
 };
@@ -27,16 +27,18 @@ export const initController = (rta: RuntimeAuthoring): void => {
 /**
  * Handler for new context menu entry
  *
+ * @param overlays Control overlays
  * @param rta Runtime Authoring
  */
-export async function controllerHandler(rta: RuntimeAuthoring): Promise<void> {
+export async function controllerHandler(overlays: UI5Element[], rta: RuntimeAuthoring): Promise<void> {
     const viewXml = '<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"></mvc:View>';
 
     const controller = (await Controller.create({
         name: 'open.ux.preview.client.adp.controllers.ExtendController'
-    })) as unknown as AddFragment;
+    })) as unknown as ExtendController;
 
     controller.rta = rta;
+    controller.overlays = overlays;
 
     await XMLView.create({
         definition: viewXml,
