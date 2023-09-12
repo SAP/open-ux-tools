@@ -51,7 +51,8 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         for (const service of services) {
             service.init(sendAction, subscribe);
         }
-        // for initOutline to complete RTA needs to have already been started which can only happen if plugin initialization is complete
+        // For initOutline to complete the RTA needs to already running (to access RTA provided services).
+        // That can only happen if the plugin initialization has completed.
         initOutline(rta, ui5, sendAction);
         const icons = ui5.getIcons();
         sendAction(iconsLoaded(icons));
