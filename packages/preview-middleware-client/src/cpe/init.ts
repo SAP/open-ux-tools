@@ -1,4 +1,4 @@
-import log from 'mock/sap/base/Log';
+import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 export default function(_rta: RuntimeAuthoring) {
