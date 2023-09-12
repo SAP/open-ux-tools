@@ -1,4 +1,5 @@
 export const enum ApiEndpoints {
+    CHANGES = '/preview/api/changes',
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
     MANIFEST_APP_DESCRIPTOR = '/manifest.appdescr_variant'
@@ -111,4 +112,14 @@ export async function readControllers<T>(): Promise<T> {
  */
 export async function writeController<T>(data: T): Promise<T> {
     return request<T>(ApiEndpoints.CONTROLLER, RequestMethod.POST, data);
+}
+
+/**
+ * Writes a change object to the project's workspace
+ *
+ * @param data Data to be send to the server
+ * @returns Generic Promise<T>
+ */
+export async function writeChange<T>(data: T): Promise<T> {
+    return request<T>(ApiEndpoints.CHANGES, RequestMethod.POST, data);
 }
