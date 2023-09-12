@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.2.0
+
+### Minor Changes
+
+-   62148b07: Improving the generated ui5.yaml and package.json
+
 ## 0.1.8
 
 ### Patch Changes
