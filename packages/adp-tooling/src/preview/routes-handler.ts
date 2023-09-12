@@ -168,9 +168,11 @@ export default class RoutesHandler {
             const controllerName = sanitize(data.controllerName);
 
             const sourcePath = this.util.getProject().getSourcePath();
+            const rootPath = this.util.getProject().getRootPath();
+            const projectFolderName = rootPath.split(/[\\/]/).pop();
 
             if (controllerName) {
-                const fullPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Fragments);
+                const fullPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Coding);
                 const filePath = path.join(fullPath, `${controllerName}.js`);
 
                 if (!fs.existsSync(fullPath)) {
@@ -185,13 +187,15 @@ export default class RoutesHandler {
                     return;
                 }
 
+                const controllerExtensionName = `${projectFolderName}.${controllerName}`;
+
                 const controllerTemplateFilePath = path.join(
                     __dirname,
                     '../../templates/rta',
                     TemplateFileName.Controller
                 );
 
-                renderFile(controllerTemplateFilePath, { controllerName }, {}, (err, str) => {
+                renderFile(controllerTemplateFilePath, { controllerExtensionName }, {}, (err, str) => {
                     if (err) {
                         res.status(400).send('Error rendering template: ' + err.message);
                         return;

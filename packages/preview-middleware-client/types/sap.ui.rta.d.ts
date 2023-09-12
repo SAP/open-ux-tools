@@ -2,7 +2,7 @@ declare module 'sap/ui/rta/command/BaseCommand' {
     import type Element from 'sap/ui/core/Element';
     import type ManagedObject from 'sap/ui/base/ManagedObject';
 
-   interface BaseCommand extends ManagedObject {
+    interface BaseCommand extends ManagedObject {
         execute(): Promise<void>;
         getElement(): Element;
     }
@@ -96,12 +96,12 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         selection: ElementOverlay[];
     }
 
-   interface RuntimeAuthoring {
+    interface RuntimeAuthoring {
         attachSelectionChange(handler: (event: SelectionChangeEvent) => void): void;
         attachModeChanged: (handler: (event: Event) => void) => void;
         attachUndoRedoStackModified: (handler: (event: Event) => void) => void;
         getCommandStack: () => Stack;
-        getService: <T>(name: 'outline' | string) => Promise<T>;
+        getService: <T>(name: 'outline' | 'controllerExtension' | string) => Promise<T>;
         getSelection: () => ElementOverlay[];
         getDefaultPlugins: () => { contextMenu: ContextMenu };
     }
@@ -111,7 +111,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
 
 declare module 'sap/ui/rta/api/startAdaptation' {
     import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-    
+
     export type RTAPlugin = (rta: RuntimeAuthoring) => void;
     export type StartAdaptation = (options: object, plugin?: RTAPlugin) => void;
 
