@@ -168,15 +168,15 @@ export class FlpSandbox {
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
-                this.router.get(editor.path, async (_req: Request, res: Response) => {
+                this.router.get(editor.path, (async (_req: Request, res: Response) => {
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
                     const html = render(template, {
                         previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`
                     });
                     res.status(200).contentType('html').send(html);
-                });
+                }) as RequestHandler);
             }
-            this.router.get(previewUrl, async (_req: Request, res: Response) => {
+            this.router.get(previewUrl, (async (_req: Request, res: Response) => {
                 const config = { ...this.templateConfig };
                 config.flex = {
                     layer: rta.layer,
@@ -186,7 +186,7 @@ export class FlpSandbox {
                 const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
                 const html = render(template, config);
                 res.status(200).contentType('html').send(html);
-            });
+            }) as RequestHandler);
         }
     }
 
