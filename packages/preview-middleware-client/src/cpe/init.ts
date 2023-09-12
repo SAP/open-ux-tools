@@ -10,7 +10,7 @@ import { ChangeService } from './changes/service';
 import { loadDefaultLibraries } from './documentation';
 import Log from 'sap/base/Log';
 
-export default async function init(rta: RuntimeAuthoring): Promise<void> {
+export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
 
     const ui5 = createUi5Facade();
@@ -51,10 +51,12 @@ export default async function init(rta: RuntimeAuthoring): Promise<void> {
         for (const service of services) {
             service.init(sendAction, subscribe);
         }
-        await initOutline(rta, ui5, sendAction);
+        // for initOutline to complete RTA needs to have already been started which can only happen if plugin initialization is complete
+        initOutline(rta, ui5, sendAction);
         const icons = ui5.getIcons();
         sendAction(iconsLoaded(icons));
     } catch (error) {
         Log.error('Error during initialization of Control Property Editor', error);
     }
+    return Promise.resolve();
 }
