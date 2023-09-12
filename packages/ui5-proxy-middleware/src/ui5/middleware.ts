@@ -69,13 +69,14 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
 
-    if (!options.configuration?.ui5) {
-        logger.error('Configuration missing, no proxy created.');
-        return (_req, _res, next) => next();
-    }
-
     dotenv.config();
-    const config = options.configuration;
+    const config: UI5ProxyConfig = {
+        ui5: {
+            path: ['/resources', '/test-resources'],
+            url: 'https://ui5.sap.com'
+        },
+        ...options.configuration
+    };
     let ui5Version: string = '';
     try {
         const manifest = await loadManifest(resources.rootProject);

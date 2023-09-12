@@ -5,7 +5,7 @@ The `@sap-ux/ui5-proxy-middleware` is a [Custom UI5 Server Middleware](https://s
 ## Configuration Options
 | Option       | Default Value | Description |
 | ------------ | ------------- | ----------- |
-| `ui5`        | mandatory     | List of mount paths and target urls that should be handled by the proxy |
+| `ui5`        | `object`      | List of mount paths and target urls that should be handled by the proxy. If not provided then `/resources` and `/test-resources` are proxied to `https://ui5.sap.com` |
 | `version`    | `undefined`   | The UI5 version. If this property is not defined, then the `minUI5Version` from the `manifest.json` will be used |
 | `secure`     | true          | Defines if SSL certs should be verified |
 | `debug`      | false         | Enables debug output |
