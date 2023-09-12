@@ -1,7 +1,7 @@
 import type UI5Element from 'sap/ui/core/Element';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { handler, initFragment } from '../../../src/adp/dialogs/fragment';
+import { handler, initFragment } from '../../../../src/adp/dialogs/fragment';
 import XMLView from 'mock/sap/ui/core/mvc/XMLView';
 import Controller from 'mock/sap/ui/core/mvc/Controller';
 

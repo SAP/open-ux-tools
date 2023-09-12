@@ -1,10 +1,22 @@
-import log from 'mock/sap/base/Log';
-import init from '../../../src/adp/init';
-import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-describe('adp', () => {
-    test('init', () => {
-        init(rtaMock);
-        expect(log.debug).toBeCalledTimes(2);
+import init from '../../../src/adp/init';
+
+describe('init', () => {
+    test('initializes client side code', () => {
+        const addMenuItemSpy = jest.fn();
+        const rta = {
+            getDefaultPlugins: () => {
+                return {
+                    contextMenu: {
+                        addMenuItem: addMenuItemSpy
+                    }
+                };
+            }
+        };
+
+        init(rta as unknown as RuntimeAuthoring);
+
+        expect(addMenuItemSpy.mock.calls.length).toBe(1);
     });
 });

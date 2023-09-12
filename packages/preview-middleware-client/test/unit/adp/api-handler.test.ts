@@ -5,7 +5,7 @@ import {
     getManifestAppdescr,
     request,
     writeFragment
-} from '../../src/adp/api-handler';
+} from '../../../src/adp/api-handler';
 import { fetchMock } from 'mock/window';
 
 describe('API Handler', () => {

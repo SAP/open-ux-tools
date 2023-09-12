@@ -4,9 +4,9 @@ import type UI5Element from 'sap/ui/core/Element';
 import type JSONModel from 'sap/ui/model/json/JSONModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import ControlUtils from '../../../src/adp/control-utils';
-import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
-import CommandExecutor from '../../../src/adp/command-executor';
+import ControlUtils from '../../../../src/adp/control-utils';
+import AddFragment from '../../../../src/adp/controllers/AddFragment.controller';
+import CommandExecutor from '../../../../src/adp/command-executor';
 import { fetchMock, sapCoreMock } from 'mock/window';
 
 describe('AddFragment', () => {

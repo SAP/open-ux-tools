@@ -2,7 +2,7 @@
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 
-import ControlUtils, { type MetadataOptionsProperty } from '../../src/adp/control-utils';
+import ControlUtils, { type MetadataOptionsProperty } from '../../../src/adp/control-utils';
 
 describe('client/control-utils', () => {
     describe('getControlAggregationByName', () => {

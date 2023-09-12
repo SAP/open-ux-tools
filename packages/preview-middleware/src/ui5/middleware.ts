@@ -24,7 +24,7 @@ async function initAdp(
 ) {
     const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
     if (appVariant) {
-        const adp = new AdpPreview(config, rootProject, logger);
+        const adp = new AdpPreview(config, rootProject, util, logger);
         const variant = JSON.parse(await appVariant.getString());
         const layer = await adp.init(variant);
         if (flp.rta) {
