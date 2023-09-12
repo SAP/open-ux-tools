@@ -24,11 +24,10 @@ export default async function init(rta: RuntimeAuthoring): Promise<void> {
     }
 
     const selectionService = new SelectionService(rta, ui5);
-    const { layer } = rta.getFlexSettings();
-    const manifest = rta.getRootControlInstance().getManifest();
+    const settings = rta.getFlexSettings();
 
     const changesService = new ChangeService(
-        { rta, generator: 'replace-this-generator', layer, componentId: manifest['sap.app'].id },
+        { rta, generator: 'replace-this-generator', layer: settings.layer, componentId: settings.baseId },
         ui5,
         selectionService
     );
