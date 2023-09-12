@@ -13,7 +13,8 @@ import type {
     GetOptionLabel,
     GetOptionValue
 } from 'react-select';
-import { components } from 'react-select';
+import type { CreatableProps } from 'react-select/creatable';
+import { components, SelectInstance } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
 import { UIIcon } from '../UIIcon';
@@ -22,10 +23,12 @@ import { UIHighlightMenuOption } from '../UIContextualMenu';
 
 import './UICreateSelect.scss';
 
+// export { CreatableProps as UICreateSelectProps };
 export { MultiValue as UICreateSelectMultiValue };
 export { ActionMeta as UICreateSelectActionMeta };
 export { Options as UICreateSelectOptions };
 export { OptionsOrGroups as UICreateSelectOptionsOrGroups };
+export { SelectInstance as UICreateSelectInstance };
 
 export interface UICreateSelectOptionEntry {
     readonly label: string;
@@ -43,28 +46,17 @@ export interface UICreateSelectAccessors<Option> {
     getOptionLabel: GetOptionLabel<Option>;
 }
 
-export type UICreateSelectProps = {
-    defaultMenuIsOpen?: boolean;
-    isClearable: boolean;
-    isLoading: boolean;
-    isDisabled: boolean;
-    placeholder: string;
-    value: UICreateSelectOptionEntry | undefined;
-    options: UICreateSelectOptionEntry[];
+type CreateSelectProps = {
     createText?: string;
-    noOptionsMessage?: ((obj: { inputValue: string }) => React.ReactNode) | undefined;
-    isValidNewOption?: (
-        inputValue: string,
-        selectValue: Options<UICreateSelectOptionEntry>,
-        selectOptions: OptionsOrGroups<UICreateSelectOptionEntry, UICreateSelectGroupEntry>,
-        accessors: UICreateSelectAccessors<UICreateSelectOptionEntry>
-    ) => boolean;
-    handleCreate?: (inputValue: string) => void;
-    handleOnChange?: (
-        newValue: MultiValue<UICreateSelectOptionEntry>,
-        actionMeta: ActionMeta<UICreateSelectOptionEntry>
-    ) => void;
+    creatableRef?: React.MutableRefObject<SelectInstance<
+        UICreateSelectOptionEntry,
+        true,
+        UICreateSelectGroupEntry
+    > | null>;
 };
+
+export type UICreateSelectProps = CreateSelectProps &
+    CreatableProps<UICreateSelectOptionEntry, true, UICreateSelectGroupEntry>;
 
 /**
  * Return a custom dropdown indicator component to be used in the select component.
@@ -144,7 +136,7 @@ const getBackgroundColor = (state: OptionProps<UICreateSelectOptionEntry>): stri
 /**
  * Return a UICreateSelect component.
  *
- * @param {UICreateSelectProps} props to be passed to the component.
+ * @param {CreatableProps} props to be passed to the component.
  * @returns {JSX.Element}
  */
 export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectProps): JSX.Element => {
@@ -152,6 +144,7 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
 
     return (
         <CreatableSelect
+            ref={props.creatableRef}
             defaultMenuIsOpen={props.defaultMenuIsOpen}
             className="ui-create-select"
             classNamePrefix="ui-create-select"
@@ -164,8 +157,8 @@ export const UICreateSelect: FC<UICreateSelectProps> = (props: UICreateSelectPro
             allowCreateWhileLoading={true}
             formatOptionLabel={(option) => option.label}
             placeholder={props.placeholder}
-            onChange={props.handleOnChange}
-            onCreateOption={props.handleCreate}
+            onChange={props.onChange}
+            onCreateOption={props.onCreateOption}
             options={props.options}
             value={props.value}
             noOptionsMessage={props.noOptionsMessage}
