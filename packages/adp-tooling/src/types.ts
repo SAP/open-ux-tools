@@ -64,7 +64,8 @@ export const enum FolderNames {
 }
 
 export const enum TemplateFileName {
-    Fragment = 'fragment.xml'
+    Fragment = 'fragment.xml',
+    Controller = 'controller.ejs'
 }
 
 export const enum HttpStatusCodes {

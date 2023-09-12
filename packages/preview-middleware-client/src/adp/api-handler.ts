@@ -102,3 +102,13 @@ export async function getManifestAppdescr<T>(): Promise<T> {
 export async function readControllers<T>(): Promise<T> {
     return request<T>(ApiEndpoints.CONTROLLER, RequestMethod.GET);
 }
+
+/**
+ * Writes a Controller to the project's workspace
+ *
+ * @param data Data to be send to the server
+ * @returns Generic Promise<T>
+ */
+export async function writeController<T>(data: T): Promise<T> {
+    return request<T>(ApiEndpoints.CONTROLLER, RequestMethod.POST, data);
+}

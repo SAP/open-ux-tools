@@ -7,9 +7,14 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response } from 'express';
 
 import { FolderNames, TemplateFileName, HttpStatusCodes } from '../types';
+import { renderFile } from 'ejs';
 
 interface WriteFragmentBody {
     fragmentName: string;
+}
+
+interface WriteControllerBody {
+    controllerName: string;
 }
 
 /**
@@ -145,6 +150,67 @@ export default class RoutesHandler {
         } catch (e) {
             this.logger.error(e.message);
             res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: e.message });
+            next(e);
+        }
+    };
+
+    /**
+     * Handler for writing a controller file to the workspace.
+     *
+     * @param req Request
+     * @param res Response
+     * @param next Next Function
+     */
+    public handleWriteController = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const data = req.body as WriteControllerBody;
+
+            const controllerName = sanitize(data.controllerName);
+
+            const sourcePath = this.util.getProject().getSourcePath();
+
+            if (controllerName) {
+                const fullPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Fragments);
+                const filePath = path.join(fullPath, `${controllerName}.js`);
+
+                if (!fs.existsSync(fullPath)) {
+                    fs.mkdirSync(fullPath);
+                }
+
+                if (fs.existsSync(filePath)) {
+                    res.status(HttpStatusCodes.CONFLICT).send(
+                        `Controller with name "${controllerName}" already exists`
+                    );
+                    this.logger.debug(`Controller with name "${controllerName}" was created`);
+                    return;
+                }
+
+                const controllerTemplateFilePath = path.join(
+                    __dirname,
+                    '../../templates/rta',
+                    TemplateFileName.Controller
+                );
+
+                renderFile(controllerTemplateFilePath, { controllerName }, {}, (err, str) => {
+                    if (err) {
+                        res.status(400).send('Error rendering template: ' + err.message);
+                        return;
+                    }
+
+                    fs.writeFileSync(filePath, str, { encoding: 'utf8' });
+                });
+
+                const message = 'Controller created!';
+                res.status(HttpStatusCodes.CREATED).send(message);
+                this.logger.debug(`XML Controller with name "${controllerName}" was created`);
+            } else {
+                res.status(HttpStatusCodes.BAD_REQUEST).send('Controller name was not provided!');
+                this.logger.debug('Bad request. Controller name was not provided!');
+            }
+        } catch (e) {
+            const sanitizedMsg = sanitize(e.message);
+            this.logger.error(sanitizedMsg);
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
             next(e);
         }
     };
