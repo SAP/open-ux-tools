@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.7
+
+### Patch Changes
+
+-   93f711c7: 2px border radius is applied for input, dropdown, button components.
+
 ## 1.11.6
 
 ### Patch Changes
