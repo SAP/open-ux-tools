@@ -13,7 +13,19 @@ The `@sap-ux/ui5-proxy-middleware` is a [Custom UI5 Server Middleware](https://s
 | `directLoad` | false         | Defines whether the UI5 sources should be loaded directly from UI5 CDN |
 
 ## Usage
-In order to use the middleware this is the minimal configuration that you need to provide in the `ui5.yaml` of your application.
+In order to use the middleware this is the minimal configuration that you need to provide in the `ui5.yaml` of your application. All requests to `/resources` and `/test-resources` will be proxied to the latest UI5 version at https://ui5.sap.com.
+
+```yaml
+server:
+  customMiddleware:
+  - name: ui5-proxy-middleware
+    afterMiddleware: compression
+```
+
+## Examples
+
+### Defining url and path
+If you want to explicitly define paths that should be proxied to a specific server, the following configuration is required.
 
 ```Yaml
 server:
@@ -44,17 +56,6 @@ server:
 ```
 **NOTE: You can't mix both syntaxes!**
 
-Finally don't forget to add the following in your `package.json`.
-
-```JSON
-"ui5": {
-    "dependencies": [
-        "@sap-ux/ui5-proxy-middleware"
-    ]
-}
-```
-
-## Examples
 ### Loading a specific UI5 version
 To load a specific a UI5 version in your application you can use the `version` parameter, e.g.
 
