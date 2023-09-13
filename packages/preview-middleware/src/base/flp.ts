@@ -206,7 +206,6 @@ export class FlpSandbox {
                     pluginScript: editor.pluginScript
                 };
                 if (editor.developerMode === true) {
-                    config.flex.scenario = 'FE_FROM_SCRATCH';
                     config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
                 }
                 const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');

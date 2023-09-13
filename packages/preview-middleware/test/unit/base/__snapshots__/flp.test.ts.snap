@@ -352,7 +352,7 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"changeUtils: SAPFioriTools-propertyEditor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\",\\"scenario\\":\\"FE_FROM_SCRATCH\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"changeUtils: SAPFioriTools-propertyEditor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
     </script>
 </head>
 
@@ -425,7 +425,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"changeUtils: SAPFioriTools-propertyEditor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\",\\"scenario\\":\\"FE_FROM_SCRATCH\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"changeUtils: SAPFioriTools-propertyEditor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
     </script>
 </head>
 

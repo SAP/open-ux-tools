@@ -29,7 +29,7 @@ export interface RtaConfig {
         baseId?: string;
         projectId?: string;
         generator?: string;
-        scenario?: 'ADAPTATION_PROJECT' | 'FE_FROM_SCRATCH';
+        scenario?: string;
     };
     editors: {
         path: string;
