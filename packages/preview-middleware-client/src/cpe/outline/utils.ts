@@ -20,7 +20,7 @@ export const isEditable = async (ui5: UI5Facade, id = ''): Promise<boolean> => {
         }
         if (controlOverlay) {
             const runtimeControl = getRuntimeControl(controlOverlay);
-            const controlData = await buildControlData(runtimeControl, controlOverlay, false);
+            const controlData = await buildControlData(runtimeControl, controlOverlay);
             const prop = controlData.properties.find((item) => item.isEnabled === true);
             editable = prop !== undefined;
         }

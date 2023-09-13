@@ -1,12 +1,13 @@
-import type { ExternalAction } from '@sap-ux/control-property-editor-common';
+import type { Control, ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import {
     controlSelected,
     propertyChanged,
     selectControl,
-    reportTelemetry
-} from '@sap-ux/control-property-editor-common';
+    reportTelemetry,
+    Properties
+} from '@sap-ux-private/control-property-editor-common';
 import { buildControlData } from './control-data';
-import { getRuntimeControl } from './utils';
+import { getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
 import type { ActionSenderFunction, Service, SubscribeFunction, UI5Facade } from './types';
 
 import type Event from 'sap/ui/base/Event';
@@ -14,13 +15,70 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type { SelectionChangeEvent } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import Log from 'sap/base/Log';
+import { getDocumentation } from './documentation';
 
-export type PropertyChangeEvent = Event<PropertyChangeParams>;
 export interface PropertyChangeParams {
     name: string;
     id: string;
     newValue: string;
 }
+export type PropertyChangeEvent = Event<PropertyChangeParams>;
+
+/**
+ * Change id is a combination of controlId and propertyName.
+ *
+ * @param controlId unique identifier for a control.
+ * @param propertyName name of the control property.
+ * @returns string
+ */
+function propertyChangeId(controlId: string, propertyName: string): string {
+    return [controlId, propertyName].join(',');
+}
+
+/**
+ * Return document of a property.
+ *
+ * @param property - control metadata props.
+ * @param ui5Type - ui5 type
+ * @param document - property that is ignored during design time
+ * @returns PropertiesInfo
+ */
+function getPropertyDocument(
+    property: ManagedObjectMetadataProperties,
+    ui5Type?: string,
+    document?: Properties
+): PropertiesInfo {
+    return document?.[property.name]
+        ? document[property.name]
+        : ({
+              defaultValue: (property.defaultValue as string) || '-',
+              description: '',
+              propertyName: property.name,
+              type: ui5Type || '-',
+              propertyType: ui5Type || '-'
+          } as PropertiesInfo);
+}
+
+async function addDocumentationForProperties(control: ManagedObject, controlData: Control): Promise<void> {
+    try {
+        const controlMetadata = control.getMetadata();
+        const allProperties = controlMetadata.getAllProperties() as unknown as {
+            [name: string]: ManagedObjectMetadataProperties;
+        };
+        const selectedControlName = controlMetadata.getName();
+        const selContLibName = controlMetadata.getLibraryName();
+        // Add the control's properties
+        const document = await getDocumentation(selectedControlName, selContLibName);
+        controlData.properties.map((controlProp) => {
+            const property = allProperties[controlProp.name];
+            controlProp.documentation = getPropertyDocument(property, controlProp.ui5Type, document);
+        });
+    } catch (e) {
+        Log.error('Document loading failed', e);
+    }
+}
+
 /**
  *
  */
@@ -44,7 +102,7 @@ export class SelectionService implements Service {
         const eventOrigin: Set<string> = new Set();
         const onselectionChange = this.createOnSelectionChangeHandler(sendAction, eventOrigin);
         this.rta.attachSelectionChange((event) => {
-            onselectionChange(event).catch((error) => console.error(error));
+            onselectionChange(event).catch((error) => Log.error('Event interrupted: ', error));
         });
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (selectControl.match(action)) {
@@ -53,9 +111,12 @@ export class SelectionService implements Service {
                 if (!control) {
                     const component = this.ui5.getComponent(id);
                     if (component) {
-                        const controlData = await buildControlData(component);
-                        const action = controlSelected(controlData);
-                        sendAction(action);
+                        const controlData = buildControlData(component);
+
+                        // add document
+                        await addDocumentationForProperties(component, controlData);
+                        const controlSelectedAction = controlSelected(controlData);
+                        sendAction(controlSelectedAction);
                     }
                     return;
                 }
@@ -75,9 +136,10 @@ export class SelectionService implements Service {
                 if (controlOverlay?.isSelectable()) {
                     controlOverlay.setSelected(true); //highlight without firing event only if the layer is selectable
                 } else {
-                    const controlData = await buildControlData(control);
-                    const action = controlSelected(controlData);
-                    sendAction(action);
+                    const controlData = buildControlData(control);
+                    await addDocumentationForProperties(control, controlData);
+                    const controlSelectedAction = controlSelected(controlData);
+                    sendAction(controlSelectedAction);
                 }
             }
         });
@@ -125,10 +187,11 @@ export class SelectionService implements Service {
                             reportTelemetry({ category: 'Overlay Selection', controlName: name });
                         }
                     } catch (error) {
-                        console.error('Error in reporting telemetry', error);
+                        Log.error('Failed to report telemetry', error);
                     } finally {
-                        const control = await buildControlData(runtimeControl, overlayControl);
-                        const action = controlSelected(control);
+                        const controlData = buildControlData(runtimeControl, overlayControl);
+                        await addDocumentationForProperties(runtimeControl, controlData);
+                        const action = controlSelected(controlData);
                         sendAction(action);
                         eventOrigin.delete('outline');
                     }
@@ -171,15 +234,4 @@ export class SelectionService implements Service {
             }
         });
     }
-}
-
-/**
- * Change id is a combination of controlId and propertyName.
- *
- * @param controlId unique identifier for a control.
- * @param propertyName name of the control property.
- * @returns string
- */
-function propertyChangeId(controlId: string, propertyName: string): string {
-    return [controlId, propertyName].join(',');
 }

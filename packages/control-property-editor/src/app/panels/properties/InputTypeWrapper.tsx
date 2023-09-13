@@ -13,7 +13,7 @@ import {
     UIDialog
 } from '@sap-ux/ui-components';
 
-import type { ControlProperty, PropertyChangeDeletionDetails } from '@sap-ux/control-property-editor-common';
+import type { ControlProperty, PropertyChangeDeletionDetails } from '@sap-ux-private/control-property-editor-common';
 import {
     CHECKBOX_EDITOR_TYPE,
     deletePropertyChanges,
@@ -21,7 +21,7 @@ import {
     INPUT_EDITOR_TYPE,
     INTEGER_VALUE_TYPE,
     STRING_VALUE_TYPE
-} from '@sap-ux/control-property-editor-common';
+} from '@sap-ux-private/control-property-editor-common';
 
 import { IconName } from '../../icons';
 import { ChangeIndicator } from '../../components/ChangeIndicator';

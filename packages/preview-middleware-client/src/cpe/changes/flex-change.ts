@@ -1,10 +1,20 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import type { PropertyChange } from '@sap-ux/control-property-editor-common';
+import type { PropertyChange } from '@sap-ux-private/control-property-editor-common';
 import type { UI5AdaptationOptions } from '../types';
 
 const developerMode = true;
 const FLScenario = 'FE_FROM_SCRATCH';
+
+/**
+ * Function to check a give value is a binding expression.
+ *
+ * @param value value to be checked.
+ * @returns boolean
+ */
+function isBindingExpression(value: string): boolean {
+    return value.includes('{') && value.includes('}');
+}
 
 /**
  *
@@ -52,14 +62,4 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
     );
 
     await rta.getCommandStack().pushAndExecute(command);
-}
-
-/**
- * Function to check a give value is a binding expression.
- *
- * @param value value to be checked.
- * @returns boolean
- */
-function isBindingExpression(value: string): boolean {
-    return value.includes('{') && value.includes('}');
 }

@@ -9,7 +9,7 @@ import { DeviceType } from '../../../../../src/app/devices';
 import { registerAppIcons } from '../../../../../src/app/icons';
 import { ChangesPanel } from '../../../../../src/app/panels/changes';
 import { initI18n } from '../../../../../src/app/i18n';
-import type { PendingPropertyChange, SavedPropertyChange } from '@sap-ux/control-property-editor-common';
+import type { PendingPropertyChange, SavedPropertyChange } from '@sap-ux-private/control-property-editor-common';
 
 export type State = ReturnType<typeof reducer>;
 

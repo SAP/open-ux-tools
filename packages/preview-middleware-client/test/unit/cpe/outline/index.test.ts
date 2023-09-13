@@ -3,6 +3,7 @@ import { createUi5Facade } from '../../../../src/cpe/facade';
 import { initOutline } from '../../../../src/cpe/outline/index';
 import * as nodes from '../../../../src/cpe/outline/nodes';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import Log from 'sap/base/Log';
 
 jest.useFakeTimers();
 
@@ -11,7 +12,8 @@ describe('index', () => {
     const mockSendAction = jest.fn();
     const mockAttachEvent = jest.fn();
     const transformNodesSpy = jest.spyOn(nodes, 'transformNodes');
-
+    Log.error = jest.fn();
+    Log.info = jest.fn();
     sapCoreMock.byId.mockReturnValue({
         getMetadata: () => {
             return {

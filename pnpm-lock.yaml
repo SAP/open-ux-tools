@@ -441,7 +441,7 @@ importers:
       '@reduxjs/toolkit':
         specifier: 1.6.1
         version: 1.6.1(react-redux@7.2.1)(react@16.14.0)
-      '@sap-ux/control-property-editor-common':
+      '@sap-ux-private/control-property-editor-common':
         specifier: workspace:*
         version: link:../control-property-editor-common
       '@sap-ux/logger':
@@ -1055,7 +1055,7 @@ importers:
 
   packages/preview-middleware-client:
     devDependencies:
-      '@sap-ux/control-property-editor-common':
+      '@sap-ux-private/control-property-editor-common':
         specifier: workspace:*
         version: link:../control-property-editor-common
       '@sap-ux/eslint-plugin-fiori-tools':

@@ -5,7 +5,7 @@ import type {
     CHECKBOX_EDITOR_TYPE,
     DROPDOWN_EDITOR_TYPE,
     INPUT_EDITOR_TYPE
-} from '@sap-ux/control-property-editor-common';
+} from '@sap-ux-private/control-property-editor-common';
 
 import type { PropertyChangeStats } from '../../slice';
 

@@ -52,6 +52,7 @@ interface ControlPropertyBase<T, V, E> {
     isIcon?: boolean;
     label?: string;
     errorMessage?: string;
+    ui5Type?: string;
     documentation?: {
         defaultValue: string;
         description: string;

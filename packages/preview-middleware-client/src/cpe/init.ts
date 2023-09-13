@@ -1,5 +1,5 @@
-import type { ExternalAction } from '@sap-ux/control-property-editor-common';
-import { startPostMessageCommunication, iconsLoaded } from '@sap-ux/control-property-editor-common';
+import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import { startPostMessageCommunication, iconsLoaded } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import type { ActionHandler, Service } from './types';
@@ -8,10 +8,10 @@ import { createUi5Facade } from './facade';
 import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';
 import { loadDefaultLibraries } from './documentation';
-import log from 'sap/base/Log';
+import Log from 'sap/base/Log';
 
-export default async function init(rta: RuntimeAuthoring): Promise<void> {
-    log.info('Initializing Control Property Editor');
+export default function init(rta: RuntimeAuthoring): Promise<void> {
+    Log.info('Initializing Control Property Editor');
 
     const ui5 = createUi5Facade();
     const actionHandlers: ActionHandler[] = [];
@@ -41,7 +41,7 @@ export default async function init(rta: RuntimeAuthoring): Promise<void> {
                     try {
                         await handler(action);
                     } catch (error) {
-                        console.error(error);
+                        Log.error('Handler Failed: ', error);
                     }
                 }
             }
@@ -50,12 +50,13 @@ export default async function init(rta: RuntimeAuthoring): Promise<void> {
         for (const service of services) {
             service.init(sendAction, subscribe);
         }
-        initOutline(rta, ui5, sendAction).catch((error) => {
-            console.error(`Error during initialization of Control Property Editor Outline`, error);
-        });
+        // For initOutline to complete the RTA needs to already running (to access RTA provided services).
+        // That can only happen if the plugin initialization has completed.
+        initOutline(rta, ui5, sendAction);
         const icons = ui5.getIcons();
         sendAction(iconsLoaded(icons));
     } catch (error) {
-        console.error(`Error during initialization of Control Property Editor`, error);
+        Log.error('Error during initialization of Control Property Editor', error);
     }
+    return Promise.resolve();
 }

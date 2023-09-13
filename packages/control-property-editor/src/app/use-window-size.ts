@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { debounce } from '@sap-ux/control-property-editor-common';
+import { debounce } from '@sap-ux-private/control-property-editor-common';
 
 export interface WindowSize {
     width: number | undefined;

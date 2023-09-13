@@ -1,4 +1,4 @@
-import * as common from '@sap-ux/control-property-editor-common';
+import * as common from '@sap-ux-private/control-property-editor-common';
 import { communicationMiddleware } from '../../../src/app/middleware';
 jest.mock('../../../src/app/slice', () => {
     return {
@@ -99,7 +99,7 @@ describe('communication middleware', () => {
     test('select control - send action', () => {
         const action = common.selectControl('01-02');
         const next = jest.fn().mockReturnValue(action);
-        jest.mock('@sap-ux/control-property-editor-common', () => {
+        jest.mock('@sap-ux-private/control-property-editor-common', () => {
             return {
                 selectControl: { type: '[ext] select-control' }
             };
