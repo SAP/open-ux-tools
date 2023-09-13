@@ -19,7 +19,7 @@ import * as baseUtils from '../../src/base/utils';
 import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { Manifest } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 
 describe('utils', () => {
     const existsMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
@@ -55,11 +55,11 @@ describe('utils', () => {
             end: jest.fn()
         };
         const logger = {
-            info: jest.fn()
+            debug: jest.fn()
         };
         proxyRequestHandler(proxyReq as any, res as any, etag, logger as any);
-        expect(logger.info).toHaveBeenCalledTimes(1);
-        expect(logger.info).toHaveBeenCalledWith('/mypath');
+        expect(logger.debug).toHaveBeenCalledTimes(1);
+        expect(logger.debug).toHaveBeenCalledWith('/mypath');
         expect(res.statusCode).toEqual(304);
         expect(res.end).toHaveBeenCalledTimes(1);
     });
@@ -307,7 +307,7 @@ describe('utils', () => {
         setHtmlResponse(res, html);
         expect(res.writeHead).toBeCalledTimes(1);
         expect(res.writeHead).toBeCalledWith(200, {
-            "Content-Type": "text/html"
+            'Content-Type': 'text/html'
         });
         expect(res.write).toHaveBeenCalledWith(html);
         expect(res.end).toBeCalledTimes(1);
@@ -458,7 +458,7 @@ describe('utils', () => {
         const respMock: Response = {} as Partial<Response> as Response;
         respMock.writeHead = jest.fn();
         respMock.write = jest.fn();
-        respMock.end =  jest.fn();
+        respMock.end = jest.fn();
 
         beforeEach(() => {
             nextMock.mockReset();
@@ -469,9 +469,9 @@ describe('utils', () => {
             await baseUtils.injectScripts({ baseUrl: 'index.html' } as any, respMock, nextMock, []);
             expect(respMock.writeHead).toBeCalledTimes(1);
             expect(respMock.writeHead).toBeCalledWith(200, {
-                "Content-Type": "text/html"
+                'Content-Type': 'text/html'
             });
-            expect(respMock.end).toHaveBeenCalled();        
+            expect(respMock.end).toHaveBeenCalled();
             expect(nextMock).not.toHaveBeenCalled();
         });
 

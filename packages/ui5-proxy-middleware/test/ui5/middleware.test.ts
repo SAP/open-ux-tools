@@ -9,7 +9,7 @@ import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 
 // spy on ui5Proxy and injectScripts to verify calls
 const ui5ProxySpy = jest.spyOn(proxy, 'ui5Proxy');
-const injectScriptsMock = jest.spyOn(utils, 'injectScripts').mockImplementation(async (req, res, next) => {
+const injectScriptsMock = jest.spyOn(utils, 'injectScripts').mockImplementation(async (req, res, _next) => {
     if (req.url.includes('error')) {
         throw Error('error with directLoad');
     } else {
@@ -21,10 +21,11 @@ const rootProjectMock = {
     byGlob: jest.fn().mockResolvedValue([])
 };
 
-// middleware function wrapper for testing to simplify tests
 /**
+ * Middleware function wrapper for testing to simplify tests.
  *
- * @param configuration
+ * @param configuration ui5.yaml configuration for testing
+ * @returns instance of a supertest server
  */
 async function getTestServer(configuration: Partial<UI5ProxyConfig> | undefined): Promise<any> {
     const router = await (ui5ProxyMiddleware as any).default({
@@ -43,27 +44,33 @@ describe('middleware', () => {
         const ALTERNATIVE = '/alternative/file.js';
         const INVALID = '/invalid/file.js';
 
-        const ui5Server = 'http://ui5.example';
+        const ui5Server = 'https://ui5.sap.com';
         const altUi5Server = 'http://alternative.example';
         const ui5Version = '1.96.0';
         const runConfigVersion = '1.101.1';
         const runConfigServer = 'https://ui5.runconfig.example';
 
-        nock(ui5Server).get(`/${ui5Version}${CORE}`).reply(200).persist();
-        nock(ui5Server).get(`/${ui5Version}${SANDBOX}`).reply(200).persist();
-        nock(altUi5Server).get(`/${ui5Version}${ALTERNATIVE}`).reply(200).persist();
-        nock(runConfigServer).get(`/${runConfigVersion}${CORE}`).reply(200).persist();
-        nock(runConfigServer).get(`/${runConfigVersion}${SANDBOX}`).reply(200).persist();
+        beforeAll(() => {
+            nock.disableNetConnect();
+            nock.enableNetConnect(/^127\.0\.0\.1(:[0-9]+)?\/?(\/[.\w]*)*$/);
+            nock(ui5Server).get(`${CORE}`).reply(200).persist();
+            nock(ui5Server).get(`${SANDBOX}`).reply(200).persist();
+            nock(ui5Server).get(`/${ui5Version}${CORE}`).reply(200).persist();
+            nock(ui5Server).get(`/${ui5Version}${SANDBOX}`).reply(200).persist();
+            nock(altUi5Server).get(`/${ui5Version}${ALTERNATIVE}`).reply(200).persist();
+            nock(runConfigServer).get(`/${runConfigVersion}${CORE}`).reply(200).persist();
+            nock(runConfigServer).get(`/${runConfigVersion}${SANDBOX}`).reply(200).persist();
+        });
 
-        test('missing configuration', async () => {
-            let server = await getTestServer(undefined);
-            expect(await server.get(CORE)).toMatchObject({ status: 404 });
+        afterAll(() => {
+            nock.enableNetConnect();
+        });
 
-            server = await getTestServer({});
-            expect(await server.get(CORE)).toMatchObject({ status: 404 });
-
-            server = await getTestServer({ ui5: [] });
-            expect(await server.get(CORE)).toMatchObject({ status: 404 });
+        test('no configuration', async () => {
+            const server = await getTestServer(undefined);
+            expect(await server.get(CORE)).toMatchObject({ status: 200 });
+            expect(await server.get(SANDBOX)).toMatchObject({ status: 200 });
+            expect(await server.get(INVALID)).toMatchObject({ status: 404 });
         });
 
         test('flexible configuration', async () => {
