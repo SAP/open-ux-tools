@@ -142,23 +142,16 @@ describe('FlpSandbox', () => {
                         layer: 'CUSTOMER_BASE',
                         editors: [
                             {
-<<<<<<< HEAD
-=======
                                 path: '/my/rta.html'
                             },
                             {
->>>>>>> main
                                 path: '/my/editor.html',
                                 developerMode: true
                             },
                             {
-<<<<<<< HEAD
-                                path: '/my/rta.html'
-=======
                                 path: '/with/plugin.html',
                                 developerMode: true,
                                 pluginScript: 'open/ux/tools/plugin'
->>>>>>> main
                             }
                         ]
                     }
