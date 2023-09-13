@@ -2,6 +2,7 @@ import React from 'react';
 import type { IButtonProps, IButtonStyles, IStyle } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
 import { UIContextualMenu } from '../UIContextualMenu';
+import { COMMON_INPUT_STYLES } from '../UIInput';
 
 /**
  * UIDefaultButton component
@@ -37,7 +38,7 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
                 fontSize: '13px',
                 fontWeight: 400,
                 fontFamily: 'var(--vscode-font-family)',
-                borderRadius: 0,
+                borderRadius: COMMON_INPUT_STYLES.borderRadius,
                 paddingLeft: 13,
                 paddingRight: 13,
                 // Add to use hard coded value here as Theia doesn't support these values correctly
@@ -146,7 +147,7 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
                 padding: 6,
                 height: 22,
                 boxSizing: 'border-box',
-                borderRadius: '0 !important',
+                borderRadius: `0 ${COMMON_INPUT_STYLES.borderRadius}px ${COMMON_INPUT_STYLES.borderRadius}px 0 !important`,
                 borderLeft: 'none',
                 outline: 'transparent',
                 userSelect: 'none',
