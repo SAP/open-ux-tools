@@ -11,7 +11,14 @@ module.exports = {
             requireParamType: false,
             requireReturn: false,
             requireReturnType: false
-        }]
+        }],
+        '@typescript-eslint/no-unused-vars': [
+            'error',
+            {
+                varsIgnorePattern: '^_',
+                argsIgnorePattern: '^_'
+            }
+        ]
     },
     overrides: [
         {
