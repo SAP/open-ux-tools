@@ -3,9 +3,6 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import type { PropertyChange } from '@sap-ux-private/control-property-editor-common';
 import type { UI5AdaptationOptions } from '../types';
 
-const developerMode = true;
-const FLScenario = 'FE_FROM_SCRATCH';
-
 /**
  * Function to check a give value is a binding expression.
  *
@@ -22,20 +19,13 @@ function isBindingExpression(value: string): boolean {
  * @param change changed property of a control
  */
 export async function applyChange(options: UI5AdaptationOptions, change: PropertyChange): Promise<void> {
-    const { layer, componentId, rta, generator } = options;
+    const { rta } = options;
     const modifiedControl = sap.ui.getCore().byId(change.controlId);
     if (!modifiedControl) {
         return;
     }
 
-    const flexSettings = {
-        layer,
-        developerMode,
-        baseId: componentId,
-        projectId: '',
-        scenario: FLScenario,
-        generator // this value is ignored by UI5 version prior to 1.107
-    };
+    const flexSettings = rta.getFlexSettings();
 
     const changeType =
         typeof change.value === 'string' && isBindingExpression(change.value) ? 'BindProperty' : 'Property';
@@ -43,12 +33,12 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
     const modifiedValue =
         typeof change.value === 'string' && isBindingExpression(change.value)
             ? {
-                  generator,
+                  generator: flexSettings.generator,
                   propertyName: change.propertyName,
                   newBinding: change.value
               }
             : {
-                  generator,
+                  generator: flexSettings.generator,
                   propertyName: change.propertyName,
                   newValue: change.value
               };

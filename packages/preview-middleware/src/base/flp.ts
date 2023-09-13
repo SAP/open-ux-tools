@@ -10,6 +10,16 @@ import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 
+const DEVELOPER_MODE_CONFIG = new Map([
+    // Run application in design time mode
+    // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
+    ['xx-designMode', 'true'],
+    // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
+    ['xx-suppressDeactivationOfControllerCode', 'true'],
+    // Make sure that XML preprocessing results are correctly invalidated
+    ['xx-viewCache', 'false']
+]);
+
 /**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
  */
@@ -70,6 +80,7 @@ export interface TemplateConfig {
             writeConnector: string;
             custom: boolean;
         }[];
+        bootstrapOptions: string;
         resources: Record<string, string>;
     };
     flex?: {
@@ -138,7 +149,8 @@ export class FlpSandbox {
                 resources: {
                     ...resources,
                     [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
-                }
+                },
+                bootstrapOptions: ''
             },
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
@@ -152,6 +164,7 @@ export class FlpSandbox {
         if (this.rta) {
             this.rta.options ??= {};
             this.rta.options.baseId = componentId ?? manifest['sap.app'].id;
+            this.rta.options.generator = 'changeUtils: SAPFioriTools-propertyEditor';
             this.addEditorRoutes(this.rta);
         }
         this.addRoutesForAdditionalApps();
@@ -192,6 +205,10 @@ export class FlpSandbox {
                     developerMode: editor.developerMode === true,
                     pluginScript: editor.pluginScript
                 };
+                if (editor.developerMode === true) {
+                    config.flex.scenario = 'FE_FROM_SCRATCH';
+                    config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
+                }
                 const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
                 const html = render(template, config);
                 res.status(200).contentType('html').send(html);
@@ -332,4 +349,30 @@ export class FlpSandbox {
             url: app.target
         };
     }
+}
+
+/**
+ * Creates an attribute string that can be added to an HTML element.
+ *
+ * @param attributes map with attributes and their values
+ * @param indent indentation thats inserted before each attribute
+ * @param prefix value that should be added at the start of to all attribute names
+ * @returns attribute string
+ */
+function serializeDataAttributes(attributes: Map<string, string>, indent = '', prefix = 'data'): string {
+    return [...attributes.entries()]
+        .map(([name, value]) => {
+            return `${indent}${prefix}-${name}="${value}"`;
+        })
+        .join('\n');
+}
+
+/**
+ * Creates an attribute string that can be added to bootstrap script in a HTML file.
+ *
+ * @param config ui5 configuration options
+ * @returns attribute string
+ */
+function serializeUi5Configuration(config: Map<string, string>): string {
+    return '\n' + serializeDataAttributes(config, '        ', 'data-sap-ui');
 }

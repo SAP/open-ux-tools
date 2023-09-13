@@ -11,12 +11,15 @@ describe('flexChange', () => {
     rtaMock.getCommandStack.mockReturnValue({
         pushAndExecute: pushAndExecuteMock
     });
-
-    const testOptions: UI5AdaptationOptions = {
-        rta: rtaMock,
+    const flexSettings = {
         generator: 'testGenerator',
         componentId: 'testComponentId',
         layer: 'VENDOR'
+    };
+    rtaMock.getFlexSettings.mockReturnValue(flexSettings);
+
+    const testOptions: UI5AdaptationOptions = {
+        rta: rtaMock
     };
 
     beforeEach(() => {
@@ -39,7 +42,7 @@ describe('flexChange', () => {
         // assert
         expect(CommandFactory.getCommandFor.mock.calls[0][1]).toBe('Property');
         expect(CommandFactory.getCommandFor.mock.calls[0][2]).toEqual({
-            generator: testOptions.generator,
+            generator: flexSettings.generator,
             propertyName: change.propertyName,
             newValue: change.value
         });
@@ -61,7 +64,7 @@ describe('flexChange', () => {
         // assert
         expect(CommandFactory.getCommandFor.mock.calls[0][1]).toBe('Property');
         expect(CommandFactory.getCommandFor.mock.calls[0][2]).toEqual({
-            generator: testOptions.generator,
+            generator: flexSettings.generator,
             propertyName: change.propertyName,
             newValue: change.value
         });
@@ -83,7 +86,7 @@ describe('flexChange', () => {
         // assert
         expect(CommandFactory.getCommandFor.mock.calls[0][1]).toBe('BindProperty');
         expect(CommandFactory.getCommandFor.mock.calls[0][2]).toEqual({
-            generator: testOptions.generator,
+            generator: flexSettings.generator,
             propertyName: change.propertyName,
             newBinding: change.value
         });

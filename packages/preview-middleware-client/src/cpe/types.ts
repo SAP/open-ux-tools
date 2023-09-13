@@ -1,5 +1,4 @@
 import type { ExternalAction, IconDetails } from '@sap-ux-private/control-property-editor-common';
-import type { Layer } from 'sap/ui/fl';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';
@@ -8,9 +7,6 @@ import type Component from 'sap/ui/core/Component';
 
 export interface UI5AdaptationOptions {
     rta: RuntimeAuthoring;
-    componentId: string;
-    layer: Layer;
-    generator: string;
 }
 
 export type PrimitiveTypes = 'boolean' | 'enum' | 'float' | 'string' | 'any';

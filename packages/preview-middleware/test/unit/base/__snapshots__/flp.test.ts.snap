@@ -28,6 +28,7 @@ Object {
   "basePath": "..",
   "locateReuseLibsScript": false,
   "ui5": Object {
+    "bootstrapOptions": "",
     "flex": Array [
       Object {
         "applyConnector": "/preview/WorkspaceConnector",
@@ -61,6 +62,7 @@ Object {
   "basePath": "..",
   "locateReuseLibsScript": false,
   "ui5": Object {
+    "bootstrapOptions": "",
     "flex": Array [
       Object {
         "applyConnector": "/preview/WorkspaceConnector",
@@ -92,6 +94,7 @@ Object {
   "basePath": "..",
   "locateReuseLibsScript": false,
   "ui5": Object {
+    "bootstrapOptions": "",
     "flex": Array [
       Object {
         "applyConnector": "/preview/WorkspaceConnector",
@@ -243,12 +246,13 @@ exports[`FlpSandbox router rta 1`] = `
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
+        data-sap-ui-bindingSyntax=\\"complex\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"developerMode\\":false}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"changeUtils: SAPFioriTools-propertyEditor\\",\\"developerMode\\":false}'>
     </script>
 </head>
 
@@ -339,12 +343,16 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
+        data-sap-ui-bindingSyntax=\\"complex\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-xx-designMode=\\"true\\"
+        data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
+        data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"changeUtils: SAPFioriTools-propertyEditor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\",\\"scenario\\":\\"FE_FROM_SCRATCH\\"}'>
     </script>
 </head>
 
@@ -408,12 +416,16 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
+        data-sap-ui-bindingSyntax=\\"complex\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-xx-designMode=\\"true\\"
+        data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
+        data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"changeUtils: SAPFioriTools-propertyEditor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\",\\"scenario\\":\\"FE_FROM_SCRATCH\\"}'>
     </script>
 </head>
 
@@ -477,6 +489,7 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
+        data-sap-ui-bindingSyntax=\\"complex\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"

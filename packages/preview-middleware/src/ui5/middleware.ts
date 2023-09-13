@@ -24,7 +24,8 @@ async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, 
         if (flp.rta) {
             flp.rta.layer = layer;
             flp.rta.options = {
-                projectId: variant.id
+                projectId: variant.id,
+                scenario: 'ADAPTATION_PROJECT'
             };
             for (const editor of flp.rta.editors) {
                 editor.pluginScript ??= 'open/ux/preview/client/adp/init';

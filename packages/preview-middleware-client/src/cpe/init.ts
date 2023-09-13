@@ -24,10 +24,11 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
     }
 
     const selectionService = new SelectionService(rta, ui5);
-    const settings = rta.getFlexSettings();
 
     const changesService = new ChangeService(
-        { rta, generator: 'replace-this-generator', layer: settings.layer, componentId: settings.baseId },
+        {
+            rta
+        },
         ui5,
         selectionService
     );

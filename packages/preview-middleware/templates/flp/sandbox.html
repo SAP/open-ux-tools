@@ -50,10 +50,11 @@
         data-sap-ui-theme="<%- ui5.theme %>"
         data-sap-ui-compatVersion="edge"
         data-sap-ui-language="en"
+        data-sap-ui-bindingSyntax="complex"
         data-sap-ui-flexibilityServices='<%- JSON.stringify(ui5.flex) %>'
         data-sap-ui-resourceroots='<%- JSON.stringify(ui5.resources) %>'
         data-sap-ui-frameOptions="allow"
-        data-sap-ui-xx-componentPreload="off"
+        data-sap-ui-xx-componentPreload="off"<%- ui5.bootstrapOptions %>
         data-sap-ui-oninit="module:open/ux/preview/client/flp/init"<% if (locals.flex) { %>
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flex) %>'<% } if (locals.locateReuseLibsScript) { %>
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>>
