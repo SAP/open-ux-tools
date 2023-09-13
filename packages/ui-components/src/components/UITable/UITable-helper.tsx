@@ -148,23 +148,27 @@ export function scrollToRow(idx = 0, table: IDetailsList | null) {
  * Wait for selector.
  *
  * @param {string} selector
+ * @param {number} count - number of tries, after which the element is considered not found
+ *                          (so that the function doesn't run forever)
  * @returns {Promise<Element>}
  */
-export async function waitFor(selector: string) {
+export async function waitFor(selector: string, count = 10): Promise<Element | void> {
+    if (count === 0) {
+        return Promise.reject();
+    }
+    await sleep();
     const el = document.querySelector(selector);
-    return new Promise((resolve) => {
-        if (el) {
-            resolve(el);
-            return;
-        }
-        setTimeout(async () => {
-            const el2 = await waitFor(selector);
-            if (el2) {
-                resolve(el2);
-                return;
-            }
-        }, 100);
-    });
+    return el ? Promise.resolve(el) : waitFor(selector, count - 1);
+}
+
+/**
+ * Promisified setTimeout.
+ *
+ * @param ms
+ * @returns Promise
+ */
+function sleep(ms = 200) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
