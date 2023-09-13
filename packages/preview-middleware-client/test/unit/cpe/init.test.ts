@@ -112,7 +112,7 @@ describe('main', () => {
 
         // assert
         expect(applyChangeSpy).toBeCalledTimes(1);
-        expect(sendActionMock).toBeCalledTimes(1);
+        expect(sendActionMock).toBeCalledTimes(2);
         expect(initOutlineSpy).toBeCalledTimes(1);
     });
 });
