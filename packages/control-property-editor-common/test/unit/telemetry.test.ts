@@ -1,19 +1,35 @@
-import { reportTelemetry } from '../../src/telemetry';
-const globalAny: any = global;
+import { reportTelemetry, reset } from '../../src/telemetry';
+
+export const fetchMock = jest.fn().mockResolvedValue({ status: 200 });
+window.fetch = fetchMock;
+
 describe('reportTelemetry', () => {
-    afterEach(() => {
-        globalAny.fetch = jest.fn(() => Promise.resolve({}));
+    beforeEach(() => {
+        fetchMock.mockClear();
+        reset();
     });
-    test('control not found by id, search by component', () => {
-        globalAny.fetch = jest.fn().mockImplementation().mockResolvedValueOnce('success');
-        reportTelemetry({ category: 'test', propertyName: 'testProperty' });
 
-        expect(globalAny.fetch).toBeCalledTimes(1);
+    test('service available - data send', async () => {
+        await reportTelemetry({ category: 'test', propertyName: 'testProperty' });
+        await reportTelemetry({ category: 'test', propertyName: 'testProperty2' });
+        expect(fetchMock).toBeCalledTimes(3);
     });
-    test('error in sending telemetry', () => {
-        globalAny.fetch = jest.fn().mockImplementation().mockRejectedValueOnce('error');
-        reportTelemetry({ category: 'test', propertyName: 'testProperty' });
 
-        expect(globalAny.fetch).toBeCalledTimes(1);
+    test('service not available - no data send', async () => {
+        fetchMock.mockResolvedValueOnce({ status: 404 });
+        await reportTelemetry({ category: 'test', propertyName: 'testProperty' });
+        await reportTelemetry({ category: 'test', propertyName: 'testProperty2' });
+        await reportTelemetry({ category: 'test', propertyName: 'testProperty3' });
+        expect(fetchMock).toBeCalledTimes(1);
+    });
+
+    test('error caught when sending telemetry data', async () => {
+        fetchMock.mockResolvedValueOnce({ status: 200 });
+        fetchMock.mockRejectedValueOnce('error');
+        try {
+            await reportTelemetry({ category: 'test', propertyName: 'testProperty' });
+        } catch (error) {
+            fail(error);
+        }
     });
 });

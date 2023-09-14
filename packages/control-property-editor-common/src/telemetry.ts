@@ -5,7 +5,7 @@ interface TelemetryData {
 }
 
 const path = '/preview/api/telemetry';
-let enabled: boolean;
+let enabled: boolean | undefined;
 
 async function isEnabled() {
     if (enabled === undefined) {
@@ -39,4 +39,11 @@ export async function reportTelemetry(data: TelemetryData) {
         // something is wrong with the telemetry service
         enabled = false;
     }
+}
+
+/**
+ * Reset the enabled state of the telemetry module.
+ */
+export function reset() {
+    enabled = undefined;
 }
