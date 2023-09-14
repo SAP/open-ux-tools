@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
 import { initIcons } from '@sap-ux/ui-components';
+import { enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 import { initI18n } from './i18n';
 
 import './index.css';
@@ -15,15 +16,19 @@ import { registerAppIcons } from './icons';
 export interface StartOptions {
     previewUrl: string;
     rootElementId: string;
+    telemetry?: boolean;
 }
 
 /**
+ *  Start Control Property Editor with options.
  *
- * @param root0
- * @param root0.previewUrl
- * @param root0.rootElementId
+ * @param options
  */
-export function start({ previewUrl, rootElementId }: StartOptions): void {
+export function start(options: StartOptions): void {
+    const { previewUrl, rootElementId, telemetry = false } = options;
+    if (telemetry) {
+        enableTelemetry();
+    }
     initI18n();
     registerAppIcons();
     initIcons();
