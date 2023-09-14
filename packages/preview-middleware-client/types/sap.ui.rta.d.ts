@@ -96,6 +96,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     }
 
     export interface FlexSettings {
+        [key: string]: boolean | string;
         /**
          * The Layer in which RTA should be started.
          * @default "CUSTOMER"

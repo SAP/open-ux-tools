@@ -9,9 +9,16 @@ import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';
 import { loadDefaultLibraries } from './documentation';
 import Log from 'sap/base/Log';
+import { enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
+    
+    // enable telemetry if requested
+    const flexSettings = rta.getFlexSettings();
+    if (flexSettings.telemetry === true) {
+        enableTelemetry();
+    }
 
     const ui5 = createUi5Facade();
     const actionHandlers: ActionHandler[] = [];
@@ -26,9 +33,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
     const selectionService = new SelectionService(rta, ui5);
 
     const changesService = new ChangeService(
-        {
-            rta
-        },
+        { rta },
         ui5,
         selectionService
     );

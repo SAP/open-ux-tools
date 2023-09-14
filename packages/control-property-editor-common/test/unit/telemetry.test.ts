@@ -1,33 +1,32 @@
-import { reportTelemetry, reset } from '../../src/telemetry';
+import { reportTelemetry, enableTelemetry, disableTelemetry } from '../../src/telemetry';
 
 export const fetchMock = jest.fn().mockResolvedValue({ status: 200 });
 window.fetch = fetchMock;
 
 describe('reportTelemetry', () => {
+    const testEvent = { category: 'test', propertyName: 'testProperty' };
+
     beforeEach(() => {
         fetchMock.mockClear();
-        reset();
     });
 
-    test('service available - data send', async () => {
-        await reportTelemetry({ category: 'test', propertyName: 'testProperty' });
-        await reportTelemetry({ category: 'test', propertyName: 'testProperty2' });
-        expect(fetchMock).toBeCalledTimes(3);
+    test('enabled - data send', async () => {
+        enableTelemetry();
+        await reportTelemetry(testEvent);
+        expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual(testEvent);
     });
 
-    test('service not available - no data send', async () => {
-        fetchMock.mockResolvedValueOnce({ status: 404 });
-        await reportTelemetry({ category: 'test', propertyName: 'testProperty' });
-        await reportTelemetry({ category: 'test', propertyName: 'testProperty2' });
-        await reportTelemetry({ category: 'test', propertyName: 'testProperty3' });
-        expect(fetchMock).toBeCalledTimes(1);
+    test('disabled - no data send', async () => {
+        disableTelemetry();
+        await reportTelemetry(testEvent);
+        await reportTelemetry(testEvent);
+        expect(fetchMock).toBeCalledTimes(0);
     });
 
     test('error caught when sending telemetry data', async () => {
-        fetchMock.mockResolvedValueOnce({ status: 200 });
         fetchMock.mockRejectedValueOnce('error');
         try {
-            await reportTelemetry({ category: 'test', propertyName: 'testProperty' });
+            await reportTelemetry(testEvent);
         } catch (error) {
             fail(error);
         }

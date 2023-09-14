@@ -4,15 +4,14 @@ interface TelemetryData {
     controlName?: string;
 }
 
-const path = '/preview/api/telemetry';
-let enabled: boolean | undefined;
+let enabled = false;
 
-async function isEnabled() {
-    if (enabled === undefined) {
-        const response = await fetch(path, {method: 'HEAD'});
-        enabled = response.status === 200;
-    }
-    return enabled;
+export function enableTelemetry() {
+    enabled = true;
+}
+
+export function disableTelemetry() {
+    enabled = false;
 }
 
 /**
@@ -22,7 +21,7 @@ async function isEnabled() {
  */
 export async function reportTelemetry(data: TelemetryData) {
     try {
-        if (await isEnabled()) {
+        if (enabled) {
             const requestOptions = {
                 method: 'POST',
                 headers: {
@@ -32,18 +31,10 @@ export async function reportTelemetry(data: TelemetryData) {
                 body: JSON.stringify(data)
             };
 
-            await fetch(path, requestOptions);
-
+            await fetch('/preview/api/telemetry', requestOptions);
         }
     } catch (_error) {
         // something is wrong with the telemetry service
-        enabled = false;
+        disableTelemetry();
     }
-}
-
-/**
- * Reset the enabled state of the telemetry module.
- */
-export function reset() {
-    enabled = undefined;
 }
