@@ -178,7 +178,7 @@ export class FlpSandbox {
      * @param rta runtime authoring configuration
      */
     private addEditorRoutes(rta: RtaConfig) {
-        const cpe = dirname(require.resolve('@sap-ux/control-property-editor'));
+        const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
         for (const editor of rta.editors) {
             let previewUrl = editor.path;
             if (editor.developerMode) {

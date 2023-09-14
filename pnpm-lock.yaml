@@ -1006,8 +1006,8 @@ importers:
       '@sap-ux/adp-tooling':
         specifier: workspace:*
         version: link:../adp-tooling
-      '@sap-ux/control-property-editor':
-        specifier: workspace:*
+      '@sap-ux/control-property-editor-sources':
+        specifier: workspace:@sap-ux/control-property-editor@*
         version: link:../control-property-editor
       '@sap-ux/logger':
         specifier: workspace:*
