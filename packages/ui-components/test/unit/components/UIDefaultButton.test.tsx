@@ -30,7 +30,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-button-background)",
               "borderColor": "var(--vscode-contrastBorder, var(--vscode-button-background))",
-              "borderRadius": 0,
+              "borderRadius": 2,
               "color": "var(--vscode-button-foreground)",
               "fontFamily": "var(--vscode-font-family)",
               "fontSize": "13px",
@@ -61,7 +61,7 @@ describe('<UIDefaultButton />', () => {
             Object {
               "backgroundColor": "var(--vscode-button-secondaryBackground, #5f6a79)",
               "borderColor": "var(--vscode-contrastBorder, var(--vscode-button-secondaryBackground, #5f6a79))",
-              "borderRadius": 0,
+              "borderRadius": 2,
               "color": "var(--vscode-button-secondaryForeground, #ffffff)",
               "fontFamily": "var(--vscode-font-family)",
               "fontSize": "13px",
