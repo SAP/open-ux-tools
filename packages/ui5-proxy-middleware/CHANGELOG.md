@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.2.0
+
+### Minor Changes
+
+-   1f250333: Use default config if none is provided.
+
 ## 1.1.35
 
 ### Patch Changes
