@@ -38,7 +38,7 @@ export const proxyRequestHandler = (
     etag: string,
     logger: ToolsLogger
 ): void => {
-    logger.info(proxyReq.path);
+    logger.debug(proxyReq.path);
     if (proxyReq.getHeader('if-none-match') === etag) {
         res.statusCode = 304;
         res.end();
