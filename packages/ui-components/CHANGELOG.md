@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.11.7
+
+### Patch Changes
+
+-   93f711c7: 2px border radius is applied for input, dropdown, button components.
+
+## 1.11.6
+
+### Patch Changes
+
+-   50bf49ac: chore(deps): update storybook to v7.4.1
+
+## 1.11.5
+
+### Patch Changes
+
+-   30fc4a11: feat(ui-components) add createref as props to UICreateSelect
+
 ## 1.11.4
 
 ### Patch Changes
