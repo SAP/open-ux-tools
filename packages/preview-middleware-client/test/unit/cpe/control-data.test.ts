@@ -1,6 +1,5 @@
 import Utils from 'sap/ui/fl/Utils';
 import { buildControlData } from '../../../src/cpe/control-data';
-import * as Documentation from '../../../src/cpe/documentation';
 import DataType from 'sap/ui/base/DataType';
 describe('controlData', () => {
     // prepare

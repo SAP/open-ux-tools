@@ -2,78 +2,79 @@ import type { ID } from 'sap/ui/core/library';
 import * as flexChange from '../../../../src/cpe/changes/flex-change';
 import { ChangeService } from '../../../../src/cpe/changes/service';
 import { changeProperty, deletePropertyChanges } from '@sap-ux-private/control-property-editor-common';
-
-const globalAny = global as any;
+import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 describe('SelectionService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
         return Promise.resolve();
     });
+    let sendActionMock: jest.Mock;
+    let subscribeMock: jest.Mock;
+
+    beforeEach(() => {
+        rtaMock.attachUndoRedoStackModified = jest.fn() as jest.Mock;
+        sendActionMock = jest.fn();
+        subscribeMock = jest.fn();
+    });
 
     test('read workspace changes', async () => {
-        globalAny.fetch = jest.fn(() =>
-            Promise.resolve({
-                json: () =>
-                    Promise.resolve({
-                        change1: {
-                            fileName: 'id_1640106755570_203_propertyChange',
-                            content: {
-                                property: 'enabled',
-                                newValue: true
-                            },
-                            selector: {
-                                id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                                type: 'sap.m.Button'
-                            },
-                            creation: '2021-12-21T17:12:37.301Z'
+        window.fetch = jest.fn().mockResolvedValue({
+            json: () =>
+                Promise.resolve({
+                    change1: {
+                        fileName: 'id_1640106755570_203_propertyChange',
+                        content: {
+                            property: 'enabled',
+                            newValue: true
                         },
-                        change2: {
-                            fileName: 'id_1640106755570_204_propertyChange',
-                            content: {
-                                property: 'enabled',
-                                newBinding: '{i18n>CREATE_OBJECT2}'
-                            },
-                            selector: {
-                                id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                                type: 'sap.m.Button'
-                            },
-                            creation: '2021-12-21T17:13:37.301Z'
+                        selector: {
+                            id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+                            type: 'sap.m.Button'
                         },
-                        change3: {
-                            fileName: 'id_1640106755570_204_propertyChange',
-                            content: {
-                                property: 'enabled',
-                                newBindings: '{i18n>CREATE_OBJECT2}'
-                            },
-                            selector: {
-                                id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                                type: 'sap.m.Button'
-                            },
-                            creation: '2021-12-21T17:13:37.301Z'
+                        creation: '2021-12-21T17:12:37.301Z'
+                    },
+                    change2: {
+                        fileName: 'id_1640106755570_204_propertyChange',
+                        content: {
+                            property: 'enabled',
+                            newBinding: '{i18n>CREATE_OBJECT2}'
                         },
-                        change4: {}
-                    })
-            })
-        ) as jest.Mock;
+                        selector: {
+                            id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+                            type: 'sap.m.Button'
+                        },
+                        creation: '2021-12-21T17:13:37.301Z'
+                    },
+                    change3: {
+                        fileName: 'id_1640106755570_204_propertyChange',
+                        content: {
+                            property: 'enabled',
+                            newBindings: '{i18n>CREATE_OBJECT2}'
+                        },
+                        selector: {
+                            id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+                            type: 'sap.m.Button'
+                        },
+                        creation: '2021-12-21T17:13:37.301Z'
+                    },
+                    change4: {}
+                })
+        });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
         const cache = new Map();
         const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
             return cache.get(id);
         });
-        const attachUndoRedoStackModified = jest.fn();
-        const sendActionMock = jest.fn();
-        const rta = {
-            attachUndoRedoStackModified
-        };
+
         const service = new ChangeService(
-            { rta } as any,
+            { rtaMock } as any,
             { getControlById: getControlByIdSpy } as any,
             {
                 applyControlPropertyChange: jest.fn()
             } as any
         );
 
-        await service.init(sendActionMock, jest.fn());
-        expect(globalAny.fetch).toHaveBeenCalledWith('/preview/api/changes?_=123');
+        await service.init(sendActionMock, subscribeMock);
+        expect(window.fetch).toHaveBeenCalledWith('/preview/api/changes?_=123');
         expect(sendActionMock).toHaveBeenCalledWith({
             type: '[ext] change-stack-modified',
             payload: {
@@ -113,49 +114,44 @@ describe('SelectionService', () => {
     });
 
     test('unknown change with timestamp', async () => {
-        globalAny.fetch = jest.fn(() =>
-            Promise.resolve({
-                json: () =>
-                    Promise.resolve({
-                        change2: {
-                            fileName: 'id_1640106755570_204_propertyChange',
-                            content: {
-                                property: 'enabled',
-                                newBinding: '{i18n>CREATE_OBJECT2}'
-                            },
-                            selector: {
-                                id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                                type: 'sap.m.Button'
-                            },
-                            creation: '2021-12-21T17:13:37.301Z'
+        window.fetch = jest.fn().mockResolvedValue({
+            json: () =>
+                Promise.resolve({
+                    change2: {
+                        fileName: 'id_1640106755570_204_propertyChange',
+                        content: {
+                            property: 'enabled',
+                            newBinding: '{i18n>CREATE_OBJECT2}'
                         },
-                        change3: {
-                            fileName: 'unknown',
-                            creation: '2021-12-21T17:14:37.301Z'
-                        }
-                    })
-            })
-        );
+                        selector: {
+                            id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+                            type: 'sap.m.Button'
+                        },
+                        creation: '2021-12-21T17:13:37.301Z'
+                    },
+                    change3: {
+                        fileName: 'unknown',
+                        creation: '2021-12-21T17:14:37.301Z'
+                    }
+                })
+        });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
         const cache = new Map();
         const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
             return cache.get(id);
         });
-        const attachUndoRedoStackModified = jest.fn();
-        const sendActionMock = jest.fn();
-        const rta = {
-            attachUndoRedoStackModified
-        };
+        rtaMock.attachUndoRedoStackModified = jest.fn();
+
         const service = new ChangeService(
-            { rta } as any,
+            { rtaMock } as any,
             { getControlById: getControlByIdSpy } as any,
             {
                 applyControlPropertyChange: jest.fn()
             } as any
         );
 
-        await service.init(sendActionMock, jest.fn());
-        expect(globalAny.fetch).toHaveBeenCalledWith('/preview/api/changes?_=123');
+        await service.init(sendActionMock, subscribeMock);
+        expect(window.fetch).toHaveBeenCalledWith('/preview/api/changes?_=123');
         expect(sendActionMock).toHaveBeenCalledWith({
             type: '[ext] change-stack-modified',
             payload: {
@@ -184,18 +180,12 @@ describe('SelectionService', () => {
     });
 
     test('undo/redo stack changed', async () => {
-        globalAny.fetch = jest.fn(() =>
-            Promise.resolve({
-                json: () => Promise.resolve({})
-            })
-        );
+        window.fetch = jest.fn().mockResolvedValue({ json: () => Promise.resolve({}) });
         const cache = new Map();
         const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
             return cache.get(id);
         });
-        const attachUndoRedoStackModified = jest.fn();
-        const sendActionMock = jest.fn();
-        const subscribeMock = jest.fn();
+
         function createCommand(properties: Map<string, any>): {
             getProperty: (name: string) => any;
             getElement: () => any;
@@ -228,15 +218,12 @@ describe('SelectionService', () => {
                 ])
             )
         ];
-        const rta = {
-            attachUndoRedoStackModified,
-            getCommandStack: jest.fn().mockReturnValue({
-                getCommands: jest.fn().mockReturnValue(commands),
-                getAllExecutedCommands: jest.fn().mockReturnValue(commands)
-            })
-        };
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(commands),
+            getAllExecutedCommands: jest.fn().mockReturnValue(commands)
+        });
         const service = new ChangeService(
-            { rta } as any,
+            { rtaMock } as any,
             { getControlById: getControlByIdSpy } as any,
             {
                 applyControlPropertyChange: jest.fn()
@@ -245,7 +232,7 @@ describe('SelectionService', () => {
 
         await service.init(sendActionMock, subscribeMock);
 
-        await attachUndoRedoStackModified.mock.calls[0][0]();
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
         expect(sendActionMock).toHaveBeenCalledTimes(2);
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] change-stack-modified',
@@ -274,24 +261,15 @@ describe('SelectionService', () => {
     });
 
     test('change property', async () => {
-        globalAny.fetch = jest.fn(() =>
-            Promise.resolve({
-                json: () => Promise.resolve({})
-            })
-        );
+        window.fetch = jest.fn().mockResolvedValue({
+            json: () => Promise.resolve({})
+        });
         const cache = new Map();
         const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
             return cache.get(id);
         });
-        const attachUndoRedoStackModified = jest.fn();
-        const sendActionMock = jest.fn();
-        const subscribeMock = jest.fn();
-
-        const rta = {
-            attachUndoRedoStackModified
-        };
         const service = new ChangeService(
-            { rta } as any,
+            { rtaMock } as any,
             { getControlById: getControlByIdSpy } as any,
             {
                 applyControlPropertyChange: jest.fn()
@@ -319,38 +297,30 @@ describe('SelectionService', () => {
 
     test('delete property', async () => {
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
-        globalAny.fetch = jest.fn(() =>
-            Promise.resolve({
-                json: () =>
-                    Promise.resolve({
-                        change1: {
-                            fileName: 'id_1640106755570_203_propertyChange',
-                            content: {
-                                property: 'enabled',
-                                newValue: true
-                            },
-                            selector: {
-                                id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                                type: 'sap.m.Button'
-                            },
-                            creation: '2021-12-21T17:12:37.301Z'
-                        }
-                    })
-            })
-        );
+        window.fetch = jest.fn().mockResolvedValue({
+            json: () =>
+                Promise.resolve({
+                    change1: {
+                        fileName: 'id_1640106755570_203_propertyChange',
+                        content: {
+                            property: 'enabled',
+                            newValue: true
+                        },
+                        selector: {
+                            id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+                            type: 'sap.m.Button'
+                        },
+                        creation: '2021-12-21T17:12:37.301Z'
+                    }
+                })
+        });
         const cache = new Map();
         const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
             return cache.get(id);
         });
-        const attachUndoRedoStackModified = jest.fn();
-        const sendActionMock = jest.fn();
-        const subscribeMock = jest.fn();
 
-        const rta = {
-            attachUndoRedoStackModified
-        };
         const service = new ChangeService(
-            { rta } as any,
+            { rtaMock } as any,
             { getControlById: getControlByIdSpy } as any,
             {
                 applyControlPropertyChange: jest.fn()
@@ -367,7 +337,7 @@ describe('SelectionService', () => {
             })
         );
 
-        expect(globalAny.fetch).toHaveBeenLastCalledWith('/preview/api/changes', {
+        expect(window.fetch).toHaveBeenLastCalledWith('/preview/api/changes', {
             body: '{"fileName":"id_1640106755570_203_propertyChange"}',
             headers: { 'Content-Type': 'application/json' },
             method: 'DELETE'

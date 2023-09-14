@@ -5,6 +5,7 @@ import * as outline from '../../../src/cpe/outline';
 import * as facade from '../../../src/cpe/facade';
 import type Event from 'sap/ui/base/Event';
 import Log from 'sap/base/Log';
+import { fetchMock } from 'mock/window';
 
 describe('main', () => {
     let sendActionMock: jest.Mock;
@@ -26,8 +27,7 @@ describe('main', () => {
                 return {};
             }
         };
-        (global as any).fetch = jest
-            .fn()
+        fetchMock
             .mockImplementationOnce(() => Promise.resolve(apiJson))
             .mockImplementation(() => Promise.resolve({ json: jest.fn().mockResolvedValue({}) }));
     });
@@ -42,7 +42,7 @@ describe('main', () => {
     jest.spyOn(facade, 'createUi5Facade').mockImplementation(() => {
         return {
             getControlById: jest.fn().mockReturnValueOnce({
-                name: 'sap,m.Button',
+                name: 'sap.m.Button',
                 getMetadata: jest.fn().mockImplementationOnce(() => {
                     return {
                         getName: jest.fn().mockReturnValueOnce('sap.m.Button')
@@ -64,7 +64,7 @@ describe('main', () => {
     const rta = {
         attachSelectionChange,
         getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
-        attachUndoRedoStackModified: jest.fn(),
+       attachUndoRedoStackModified : jest.fn(),
         getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR' }),
         getRootControlInstance: jest.fn().mockReturnValue({
             getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })

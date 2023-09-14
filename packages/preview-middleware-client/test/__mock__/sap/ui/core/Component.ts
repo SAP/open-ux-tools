@@ -1,5 +1,5 @@
 export default class ComponentMock {
-    static get(id: string) {}
+    static get(_id: string) {}
     static create() {
         return new ComponentMock();
     }

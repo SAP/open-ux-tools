@@ -2,7 +2,6 @@ import * as controlData from '../../../src/cpe/control-data';
 import { SelectionService } from '../../../src/cpe/selection';
 import * as Documentation from '../../../src/cpe/documentation';
 import type { ExternalAction, Control } from '@sap-ux-private/control-property-editor-common';
-import type Component from 'sap/ui/core/Component';
 import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';
 import Log from 'sap/base/Log';
@@ -13,7 +12,6 @@ describe('SelectionService', () => {
     let documentation: jest.SpyInstance<any>;
     Log.error = jest.fn();
     Log.info = jest.fn();
-
     beforeEach(() => {
         buildControlDataSpy = jest.spyOn(controlData, 'buildControlData').mockImplementation((): any => {
             return {
@@ -99,7 +97,7 @@ describe('SelectionService', () => {
         documentation.mockRestore();
     });
     beforeAll(() => {
-        (global as any).fetch = jest.fn(() => Promise.resolve({}));
+        window.fetch = jest.fn().mockResolvedValue({});
     });
 
     test('attaches to RTA selection change', async () => {
