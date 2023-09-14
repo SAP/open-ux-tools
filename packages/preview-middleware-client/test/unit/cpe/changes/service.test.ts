@@ -66,7 +66,7 @@ describe('SelectionService', () => {
         });
 
         const service = new ChangeService(
-            { rtaMock } as any,
+            { rta: rtaMock  } as any,
             { getControlById: getControlByIdSpy } as any,
             {
                 applyControlPropertyChange: jest.fn()
@@ -140,10 +140,9 @@ describe('SelectionService', () => {
         const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
             return cache.get(id);
         });
-        rtaMock.attachUndoRedoStackModified = jest.fn();
 
         const service = new ChangeService(
-            { rtaMock } as any,
+            { rta: rtaMock  } as any,
             { getControlById: getControlByIdSpy } as any,
             {
                 applyControlPropertyChange: jest.fn()
@@ -223,7 +222,7 @@ describe('SelectionService', () => {
             getAllExecutedCommands: jest.fn().mockReturnValue(commands)
         });
         const service = new ChangeService(
-            { rtaMock } as any,
+            { rta: rtaMock } as any,
             { getControlById: getControlByIdSpy } as any,
             {
                 applyControlPropertyChange: jest.fn()
@@ -269,7 +268,7 @@ describe('SelectionService', () => {
             return cache.get(id);
         });
         const service = new ChangeService(
-            { rtaMock } as any,
+            { rta: rtaMock  } as any,
             { getControlById: getControlByIdSpy } as any,
             {
                 applyControlPropertyChange: jest.fn()
@@ -320,7 +319,7 @@ describe('SelectionService', () => {
         });
 
         const service = new ChangeService(
-            { rtaMock } as any,
+            { rta: rtaMock  } as any,
             { getControlById: getControlByIdSpy } as any,
             {
                 applyControlPropertyChange: jest.fn()
