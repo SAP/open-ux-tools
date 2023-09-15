@@ -57,7 +57,7 @@ describe('FlpSandbox', () => {
         });
 
         test('advanced config', () => {
-            const config: FlpConfig = {
+            const flpConfig: FlpConfig = {
                 path: 'my/custom/path',
                 intent: { object: 'movie', action: 'start' },
                 apps: [
@@ -67,9 +67,9 @@ describe('FlpSandbox', () => {
                     }
                 ]
             };
-            const flp = new FlpSandbox(config, mockProject, mockUtils, logger);
-            expect(flp.config.path).toBe(`/${config.path}`);
-            expect(flp.config.apps).toEqual(config.apps);
+            const flp = new FlpSandbox({ flp: flpConfig }, mockProject, mockUtils, logger);
+            expect(flp.config.path).toBe(`/${flpConfig.path}`);
+            expect(flp.config.apps).toEqual(flpConfig.apps);
             expect(flp.config.intent).toStrictEqual({ object: 'movie', action: 'start' });
             expect(flp.router).toBeDefined();
         });
@@ -95,20 +95,22 @@ describe('FlpSandbox', () => {
         test('additional apps', async () => {
             const flp = new FlpSandbox(
                 {
-                    apps: [
-                        {
-                            target: '/simple/app',
-                            local: join(fixtures, 'simple-app')
-                        },
-                        {
-                            target: '/yet/another/app',
-                            local: join(fixtures, 'multi-app'),
-                            intent: {
-                                object: 'myObject',
-                                action: 'action'
+                    flp: {
+                        apps: [
+                            {
+                                target: '/simple/app',
+                                local: join(fixtures, 'simple-app')
+                            },
+                            {
+                                target: '/yet/another/app',
+                                local: join(fixtures, 'multi-app'),
+                                intent: {
+                                    object: 'myObject',
+                                    action: 'action'
+                                }
                             }
-                        }
-                    ]
+                        ]
+                    }
                 },
                 mockProject,
                 mockUtils,
@@ -128,14 +130,30 @@ describe('FlpSandbox', () => {
         beforeAll(async () => {
             const flp = new FlpSandbox(
                 {
-                    apps: [
-                        {
-                            target: '/yet/another/app',
-                            local: join(fixtures, 'multi-app')
-                        }
-                    ],
+                    flp: {
+                        apps: [
+                            {
+                                target: '/yet/another/app',
+                                local: join(fixtures, 'multi-app')
+                            }
+                        ]
+                    },
                     rta: {
-                        layer: 'CUSTOMER_BASE'
+                        layer: 'CUSTOMER_BASE',
+                        editors: [
+                            {
+                                path: '/my/rta.html'
+                            },
+                            {
+                                path: '/my/editor.html',
+                                developerMode: true
+                            },
+                            {
+                                path: '/with/plugin.html',
+                                developerMode: true,
+                                pluginScript: 'open/ux/tools/plugin'
+                            }
+                        ]
                     }
                 },
                 mockProject,
@@ -163,13 +181,21 @@ describe('FlpSandbox', () => {
             expect(logger.warn).toBeCalled();
         });
 
-        test('test/flp.html?fiori-tools-rta-mode=true', async () => {
-            const response = await server.get('/test/flp.html?fiori-tools-rta-mode=true').expect(200);
+        test('rta', async () => {
+            const response = await server.get('/my/rta.html').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
-        test('test/flp.html?fiori-tools-rta-mode=forAdaptation', async () => {
-            const response = await server.get('/test/flp.html?fiori-tools-rta-mode=forAdaptation').expect(200);
+        test('rta with developerMode=true', async () => {
+            let response = await server.get('/my/editor.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            response = await server.get('/my/editor.html.inner.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with developerMode=true and plugin', async () => {
+            await server.get('/with/plugin.html').expect(200);
+            const response = await server.get('/with/plugin.html.inner.html').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 

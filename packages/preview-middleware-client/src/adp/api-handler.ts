@@ -1,3 +1,5 @@
+import type { Layer } from 'sap/ui/fl';
+
 export const enum ApiEndpoints {
     CHANGES = '/preview/api/changes',
     FRAGMENT = '/adp/api/fragment',
@@ -24,6 +26,16 @@ export interface FragmentsResponse {
 export interface ControllersResponse {
     controllers: Controllers;
     message: string;
+}
+export interface ManifestAppdescr {
+    fileName: string;
+    layer: Layer;
+    fileType: string;
+    reference: string;
+    id: string;
+    namespace: string;
+    version: string;
+    content: object[];
 }
 
 /**
@@ -72,8 +84,8 @@ export async function request<T>(endpoint: ApiEndpoints, method: RequestMethod, 
  *
  * @returns Generic Promise<T>
  */
-export async function getFragments<T>(): Promise<T> {
-    return request<T>(ApiEndpoints.FRAGMENT, RequestMethod.GET);
+export async function getFragments(): Promise<FragmentsResponse> {
+    return request<FragmentsResponse>(ApiEndpoints.FRAGMENT, RequestMethod.GET);
 }
 
 /**
@@ -91,8 +103,8 @@ export async function writeFragment<T>(data: T): Promise<T> {
  *
  * @returns Generic Promise<T>
  */
-export async function getManifestAppdescr<T>(): Promise<T> {
-    return request<T>(ApiEndpoints.MANIFEST_APP_DESCRIPTOR, RequestMethod.GET);
+export async function getManifestAppdescr(): Promise<ManifestAppdescr> {
+    return request<ManifestAppdescr>(ApiEndpoints.MANIFEST_APP_DESCRIPTOR, RequestMethod.GET);
 }
 
 /**

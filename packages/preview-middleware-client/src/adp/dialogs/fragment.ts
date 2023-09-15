@@ -31,8 +31,6 @@ export const initFragment = (rta: RuntimeAuthoring): void => {
  * @param rta Runtime Authoring
  */
 export async function fragmentHandler(overlays: UI5Element[], rta: RuntimeAuthoring): Promise<void> {
-    const viewXml = '<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"></mvc:View>';
-
     const controller = (await Controller.create({
         name: 'open.ux.preview.client.adp.controllers.AddFragment'
     })) as unknown as AddFragment;
@@ -41,7 +39,9 @@ export async function fragmentHandler(overlays: UI5Element[], rta: RuntimeAuthor
     controller.rta = rta;
 
     await XMLView.create({
-        definition: viewXml,
+        definition: `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core">
+            <core:Fragment fragmentName="open.ux.preview.client.adp.ui.AddFragment" type="XML" />
+        </mvc:View>`,
         controller
     });
 }

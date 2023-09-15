@@ -1,9 +1,8 @@
-import { isAppStudio, getAppStudioProxyURL } from '@sap-ux/btp-utils';
+import { isAppStudio, getAppStudioProxyURL, listDestinations } from '@sap-ux/btp-utils';
+import type { Destinations } from '@sap-ux/btp-utils';
 import type { Endpoint, CatalogServiceResult } from '../../src/types';
-import { Severity } from '../../src/types';
+import { Severity, UrlServiceType } from '../../src/types';
 import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from '../../src/checks/destination';
-import { UrlServiceType } from '../../src/types';
-import { destinations as destinationsApi } from '@sap/bas-sdk';
 import * as serviceChecks from '../../src/checks/service-checks';
 
 jest.mock('@sap-ux/axios-extension', () => ({
@@ -12,15 +11,16 @@ jest.mock('@sap-ux/axios-extension', () => ({
 }));
 
 jest.mock('@sap/bas-sdk');
-const mockDestinationsApi = destinationsApi as jest.Mocked<typeof destinationsApi>;
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn(),
-    getAppStudioProxyURL: jest.fn()
+    getAppStudioProxyURL: jest.fn(),
+    listDestinations: jest.fn()
 }));
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
 const mockGetAppStudioProxyURL = getAppStudioProxyURL as jest.Mock;
+const mockListDestinations = listDestinations as jest.Mock;
 
 describe('Destination tests, function checkBASDestination()', () => {
     const checkCatalogServicesResult = {
@@ -73,35 +73,31 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
     test('Valid call should return destinations', async () => {
         // Mock setup
         mockGetAppStudioProxyURL.mockResolvedValueOnce('');
-        const data = [
-            {
-                name: 'ONE',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'Internet',
-                description: 'ONE_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    usage: 'odata_abap',
-                    html5DynamicDestination: 'true'
-                },
-                host: 'https://one.dest:123'
+        const data = {
+            'ONE': {
+                Name: 'ONE',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'ONE_DESC',
+                WebIDEEnabled: 'true',
+                WebIDEUsage: 'odata_abap',
+                'HTML5.DynamicDestination': 'true',
+                Host: 'https://one.dest:123'
             },
-            {
-                name: 'TWO',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'OnPremise',
-                description: 'TWO_DESC',
-                basProperties: {
-                    sapClient: '111',
-                    webIDEEnabled: 'true',
-                    usage: 'odata_abap,dev_abap'
-                },
-                host: 'http://two.dest:234'
+            'TWO': {
+                Name: 'TWO',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'OnPremise',
+                Description: 'TWO_DESC',
+                WebIDEEnabled: 'true',
+                WebIDEUsage: 'odata_abap,dev_abap',
+                'sap-client': '111',
+                Host: 'http://two.dest:234'
             }
-        ] as any[];
-        mockDestinationsApi.getDestinations.mockResolvedValueOnce(data);
+        } as Destinations;
+        mockListDestinations.mockResolvedValueOnce(data);
 
         // Test execution
         const destResult = await checkBASDestinations();
@@ -116,6 +112,7 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
                 ProxyType: 'Internet',
                 Description: 'ONE_DESC',
                 'HTML5.DynamicDestination': 'true',
+                WebIDEEnabled: 'true',
                 WebIDEUsage: 'odata_abap',
                 UrlServiceType: 'Catalog Service',
                 Host: 'https://one.dest:123'
@@ -127,6 +124,7 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
                 ProxyType: 'OnPremise',
                 Description: 'TWO_DESC',
                 'sap-client': '111',
+                WebIDEEnabled: 'true',
                 WebIDEUsage: 'odata_abap,dev_abap',
                 UrlServiceType: 'Catalog Service',
                 Host: 'http://two.dest:234'
@@ -140,7 +138,7 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
     test('No destinations and calling checkBASDestinations', async () => {
         // Mock setup
         const data = [];
-        mockDestinationsApi.getDestinations.mockResolvedValueOnce(data);
+        mockListDestinations.mockResolvedValueOnce(data);
 
         // Test execution
         const destResult = await checkBASDestinations();
@@ -152,7 +150,7 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
 
     test('HTTP call returns error for all requests, should be in result messages', async () => {
         // Mock setup
-        mockDestinationsApi.getDestinations.mockImplementationOnce(() => Promise.reject(new Error('HTTP ERROR')));
+        mockListDestinations.mockImplementationOnce(() => Promise.reject(new Error('HTTP ERROR')));
 
         // Test execution
         const destResult = await checkBASDestinations();
@@ -180,22 +178,22 @@ describe('Destination test for classification', () => {
     test('FullServiceUrl', async () => {
         // Mock setup
         mockIsAppStudio.mockReturnValueOnce(true);
-        const data = [
-            {
-                name: 'FUL',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'Internet',
-                description: 'ONE_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    usage: 'USELESS, odata_gen',
-                    additionalData: 'full_url'
-                },
-                host: 'https://one.dest:123'
+
+        const data = {
+            'FUL': {
+                Name: 'FUL',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'ONE_DESC',
+                WebIDEEnabled: 'true',
+                WebIDEUsage: 'USELESS, odata_gen',
+                WebIDEAdditionalData: 'full_url',
+                Host: 'https://one.dest:123'
             }
-        ] as any;
-        mockDestinationsApi.getDestinations.mockResolvedValueOnce(data);
+        } as Destinations;
+
+        mockListDestinations.mockResolvedValueOnce(data);
 
         // Test execution
         const destResult = await checkBASDestinations();
@@ -209,21 +207,20 @@ describe('Destination test for classification', () => {
     test('CatalogServiceUrl', async () => {
         // Mock setup
         mockIsAppStudio.mockReturnValueOnce(true);
-        const data = [
-            {
-                name: 'CAT',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'Internet',
-                description: 'ONE_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    usage: 'USELESS, odata_abap'
-                },
-                host: 'https://one.dest:123'
+
+        const data = {
+            'CAT': {
+                Name: 'CAT',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'ONE_DESC',
+                WebIDEEnabled: 'true',
+                WebIDEUsage: 'USELESS, odata_abap',
+                Host: 'https://one.dest:123'
             }
-        ] as any;
-        mockDestinationsApi.getDestinations.mockResolvedValueOnce(data);
+        } as Destinations;
+        mockListDestinations.mockResolvedValueOnce(data);
 
         // Test execution
         const destResult = await checkBASDestinations();
@@ -237,21 +234,20 @@ describe('Destination test for classification', () => {
     test('PartialUrl', async () => {
         // Mock setup
         mockIsAppStudio.mockReturnValueOnce(true);
-        const data = [
-            {
-                name: 'PAR',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'Internet',
-                description: 'ONE_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    usage: 'odata_gen, odata_abappp'
-                },
-                host: 'https://one.dest:123'
+
+        const data = {
+            'PAR': {
+                Name: 'PAR',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'ONE_DESC',
+                WebIDEEnabled: 'true',
+                WebIDEUsage: 'odata_gen',
+                Host: 'https://one.dest:123'
             }
-        ] as any;
-        mockDestinationsApi.getDestinations.mockResolvedValueOnce(data);
+        } as Destinations;
+        mockListDestinations.mockResolvedValueOnce(data);
 
         // Test execution
         const destResult = await checkBASDestinations();
@@ -263,22 +259,21 @@ describe('Destination test for classification', () => {
     test('InvalidUrl', async () => {
         // Mock setup
         mockIsAppStudio.mockReturnValueOnce(true);
-        const data = [
-            {
-                name: 'INV',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'Internet',
-                description: 'ONE_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    usage: 'odata_gen, odata_abap',
-                    additionalData: 'full_url'
-                },
-                host: 'https://one.dest:123'
+
+        const data = {
+            'INV': {
+                Name: 'INV',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'ONE_DESC',
+                WebIDEEnabled: 'true',
+                WebIDEUsage: 'odata_gen, odata_abap',
+                WebIDEAdditionalData: 'full_url',
+                Host: 'https://one.dest:123'
             }
-        ] as any;
-        mockDestinationsApi.getDestinations.mockResolvedValueOnce(data);
+        } as Destinations;
+        mockListDestinations.mockResolvedValueOnce(data);
 
         // Test execution
         const destResult = await checkBASDestinations();
@@ -289,21 +284,19 @@ describe('Destination test for classification', () => {
     test('InvalidUrl, no WebIDEUsage', async () => {
         // Mock setup
         mockIsAppStudio.mockReturnValueOnce(true);
-        const data = [
-            {
-                name: 'INV',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'Internet',
-                description: 'ONE_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    additionalData: 'full_url'
-                },
-                host: 'https://one.dest:123'
+        const data = {
+            'INV': {
+                Name: 'INV',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'ONE_DESC',
+                WebIDEEnabled: 'true',
+                WebIDEAdditionalData: 'full_url',
+                Host: 'https://one.dest:123'
             }
-        ] as any;
-        mockDestinationsApi.getDestinations.mockResolvedValueOnce(data);
+        } as Destinations;
+        mockListDestinations.mockResolvedValueOnce(data);
 
         // Test execution
         const destResult = await checkBASDestinations();
@@ -314,20 +307,20 @@ describe('Destination test for classification', () => {
     test('InvalidUrl, no WebIDEEnabled', async () => {
         // Mock setup
         mockIsAppStudio.mockReturnValueOnce(true);
-        const data = [
-            {
-                name: 'INV',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'Internet',
-                description: 'ONE_DESC',
-                basProperties: {
-                    additionalData: 'full_url'
-                },
-                host: 'https://one.dest:123'
+
+        const data = {
+            'INV': {
+                Name: 'INV',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'ONE_DESC',
+                WebIDEAdditionalData: 'full_url',
+                Host: 'https://one.dest:123'
             }
-        ] as any;
-        mockDestinationsApi.getDestinations.mockResolvedValueOnce(data);
+        } as Destinations;
+
+        mockListDestinations.mockResolvedValueOnce(data);
 
         // Test execution
         const destResult = await checkBASDestinations();

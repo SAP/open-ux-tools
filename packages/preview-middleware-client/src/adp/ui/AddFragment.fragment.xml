@@ -4,12 +4,11 @@
     xmlns:f="sap.ui.layout.form" >
         <Dialog id="addNewFragmentDialog" title="Add XML Fragment" contentWidth="500px" class="sapUiRTABorder">
             <content>
-                <f:SimpleForm id="SimpleFormChange354"
+                <f:SimpleForm id="addNewFragmentDialog_Form"
                     editable="true"
                     layout="ResponsiveGridLayout"
                     labelSpanS="4"
-                    singleContainerFullSize="false"
-                    class="sapUiSmallMargin">
+                    singleContainerFullSize="false">
                     <f:content>
                         <Label text="Control Type" />
                         <Text text="{/selectedControlName}" />

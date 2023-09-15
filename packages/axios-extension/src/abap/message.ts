@@ -69,12 +69,23 @@ function logLevel(severity: string, msg: string, log: Logger, error = false): vo
  * @param options.msg message string returned from gateway
  * @param options.log logger to be used
  * @param options.host optional url that should logged as clickable url
+ * @param options.isDest optional destination flag
  */
-export function prettyPrintMessage({ msg, log, host }: { msg: string; log: Logger; host?: string }): void {
+export function prettyPrintMessage({
+    msg,
+    log,
+    host,
+    isDest = false
+}: {
+    msg: string;
+    log: Logger;
+    host?: string;
+    isDest?: boolean;
+}): void {
     try {
         const jsonMsg = JSON.parse(msg) as SuccessMessage;
         log.info(jsonMsg.message);
-        logFullURL({ host, path: jsonMsg['longtext_url'], log });
+        logFullURL({ host, path: jsonMsg['longtext_url'], log, isDest });
         if (jsonMsg.details) {
             jsonMsg.details.forEach((entry) => {
                 logLevel(entry.severity, entry.message, log);
@@ -91,13 +102,29 @@ export function prettyPrintMessage({ msg, log, host }: { msg: string; log: Logge
  * @param root0.host hostname
  * @param root0.path path
  * @param root0.log log
+ * @param root0.isDest destination
  */
-function logFullURL({ host, path, log }: { host: string; path?: string; log: Logger }): void {
+function logFullURL({
+    host,
+    path,
+    log,
+    isDest = false
+}: {
+    host: string;
+    path?: string;
+    log: Logger;
+    isDest?: boolean;
+}): void {
     if (host && path) {
         const base = new URL(host).origin; // We only care for the origin value
         // Add this instruction to the user because of this bug in VS Code: https://github.com/microsoft/vscode/issues/144898
         // It undoes the encoding of special characters in the URL sent to the browser
         log.info('Please copy/paste this URL in a browser for more details:');
+        if (isDest) {
+            log.info(
+                '(Note: You will need to replace the host in the URL with the internal host, if your destination is configured using an On-Premise SAP Cloud Connector)'
+            );
+        }
         log.info(new URL(path, base).href);
     }
 }

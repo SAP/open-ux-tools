@@ -1,6 +1,3 @@
-/** sap.ui.fl */
-import type { Layer } from 'sap/ui/fl';
-
 /** sap.m */
 import type Dialog from 'sap/m/Dialog';
 import MessageToast from 'sap/m/MessageToast';
@@ -26,10 +23,9 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
+import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
-import type { FragmentsResponse } from '../api-handler';
-import ControlUtils, { type BuiltRuntimeControl } from '../control-utils';
-import { getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
+import { ManifestAppdescr, getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
 
 type ExtendedEventProvider = EventProvider & {
     setEnabled: (v: boolean) => void;
@@ -51,17 +47,6 @@ interface CreateFragmentProps {
     fragmentName: string;
     index: string | number;
     targetAggregation: string;
-}
-
-export interface ManifestAppdescr {
-    fileName: string;
-    layer: Layer;
-    fileType: string;
-    reference: string;
-    id: string;
-    namespace: string;
-    version: string;
-    content: object[];
 }
 
 /**
@@ -100,11 +85,11 @@ export default class AddFragment extends Controller {
         this.model = new JSONModel();
         this.commandExecutor = new CommandExecutor(this.rta);
 
-        this.dialog = (await this.loadFragment({ name: 'open.ux.preview.client.adp.ui.AddFragment' })) as Dialog;
+        this.dialog = this.byId('addNewFragmentDialog') as unknown as Dialog;
 
-        await this.buildDialogData(this.overlays, this.model);
+        await this.buildDialogData();
 
-        this.getView()?.addDependent(this.dialog).setModel(this.model);
+        this.getView()?.setModel(this.model);
 
         this.dialog.open();
     }
@@ -233,21 +218,16 @@ export default class AddFragment extends Controller {
 
     /**
      * Builds data that is used in the dialog
-     *
-     * @param overlays Overlays
-     * @param jsonModel JSON Model for the dialog
      */
-    public async buildDialogData(overlays: UI5Element[], jsonModel: JSONModel): Promise<void> {
-        const selectorId = overlays[0].getId();
+    public async buildDialogData(): Promise<void> {
+        const selectorId = this.overlays[0].getId();
 
-        let control: BuiltRuntimeControl;
         let controlMetadata: ManagedObjectMetadata;
 
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
         if (overlayControl) {
             this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
             controlMetadata = this.runtimeControl.getMetadata();
-            control = await ControlUtils.buildControlData(this.runtimeControl, overlayControl);
         } else {
             throw new Error('Cannot get overlay control');
         }
@@ -261,7 +241,7 @@ export default class AddFragment extends Controller {
             return false;
         });
         const defaultAggregation = controlMetadata.getDefaultAggregationName();
-        const selectedControlName = control.name;
+        const selectedControlName = controlMetadata.getName();
 
         let selectedControlChildren: string[] | number[] = Object.keys(
             ControlUtils.getControlAggregationByName(this.runtimeControl, defaultAggregation)
@@ -280,9 +260,9 @@ export default class AddFragment extends Controller {
             return parseInt(key);
         });
 
-        jsonModel.setProperty('/selectedControlName', selectedControlName);
-        jsonModel.setProperty('/selectedAggregation', {});
-        jsonModel.setProperty('/indexHandlingFlag', allowIndexForDefaultAggregation);
+        this.model.setProperty('/selectedControlName', selectedControlName);
+        this.model.setProperty('/selectedAggregation', {});
+        this.model.setProperty('/indexHandlingFlag', allowIndexForDefaultAggregation);
 
         const indexArray = this.fillIndexArray(selectedControlChildren);
 
@@ -296,33 +276,33 @@ export default class AddFragment extends Controller {
             controlAggregation.forEach((obj) => {
                 if (obj.value === defaultAggregation) {
                     obj.key = 'default';
-                    jsonModel.setProperty('/selectedAggregation/key', obj.key);
-                    jsonModel.setProperty('/selectedAggregation/value', obj.value);
+                    this.model.setProperty('/selectedAggregation/key', obj.key);
+                    this.model.setProperty('/selectedAggregation/value', obj.value);
                 }
             });
         } else {
-            jsonModel.setProperty('/selectedAggregation/key', controlAggregation[0].key);
-            jsonModel.setProperty('/selectedAggregation/value', controlAggregation[0].value);
+            this.model.setProperty('/selectedAggregation/key', controlAggregation[0].key);
+            this.model.setProperty('/selectedAggregation/value', controlAggregation[0].value);
         }
 
         try {
-            const { fragments } = await getFragments<FragmentsResponse>();
+            const { fragments } = await getFragments();
 
-            jsonModel.setProperty('/filteredFragmentList', {
+            this.model.setProperty('/filteredFragmentList', {
                 newFragmentName: '',
                 selectorId: selectorId,
                 unFilteredFragmentList: fragments // All fragments under /changes/fragments folder
             });
-            jsonModel.setProperty('/fragmentCount', fragments.length);
+            this.model.setProperty('/fragmentCount', fragments.length);
         } catch (e) {
             throw new Error(e.message);
         }
 
-        jsonModel.setProperty('/selectedIndex', indexArray.length - 1);
-        jsonModel.setProperty('/defaultAggregation', defaultAggregation);
-        jsonModel.setProperty('/targetAggregation', controlAggregation);
-        jsonModel.setProperty('/index', indexArray);
-        jsonModel.setProperty('/selectorId', selectorId);
+        this.model.setProperty('/selectedIndex', indexArray.length - 1);
+        this.model.setProperty('/defaultAggregation', defaultAggregation);
+        this.model.setProperty('/targetAggregation', controlAggregation);
+        this.model.setProperty('/index', indexArray);
+        this.model.setProperty('/selectorId', selectorId);
     }
 
     /**
@@ -379,7 +359,7 @@ export default class AddFragment extends Controller {
         const { fragmentName, index, targetAggregation } = fragmentData;
         let manifest: ManifestAppdescr;
         try {
-            manifest = await getManifestAppdescr<ManifestAppdescr>();
+            manifest = await getManifestAppdescr();
 
             if (!manifest) {
                 // Highly unlikely since adaptation projects are required to have manifest.appdescr_variant
@@ -398,7 +378,7 @@ export default class AddFragment extends Controller {
             layer: layer,
             namespace: namespace,
             projectId: id,
-            rootNamespace: (namespace as string).split('/').slice(0, 2).join('/'),
+            rootNamespace: namespace.split('/').slice(0, 2).join('/'),
             scenario: undefined
         };
 

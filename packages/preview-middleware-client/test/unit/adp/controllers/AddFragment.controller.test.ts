@@ -4,9 +4,9 @@ import type UI5Element from 'sap/ui/core/Element';
 import type JSONModel from 'sap/ui/model/json/JSONModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import ControlUtils from '../../../src/adp/control-utils';
-import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
-import CommandExecutor from '../../../src/adp/command-executor';
+import ControlUtils from '../../../../src/adp/control-utils';
+import AddFragment from '../../../../src/adp/controllers/AddFragment.controller';
+import CommandExecutor from '../../../../src/adp/command-executor';
 import { fetchMock, sapCoreMock } from 'mock/window';
 
 describe('AddFragment', () => {
@@ -39,10 +39,11 @@ describe('AddFragment', () => {
                         'dragDropConfig': {},
                         'content': {}
                     }),
-                    getDefaultAggregationName: jest.fn().mockReturnValue('content')
+                    getDefaultAggregationName: jest.fn().mockReturnValue('content'),
+                    getName: jest.fn().mockReturnValue('Toolbar')
                 })
             });
-            ControlUtils.buildControlData = jest.fn().mockResolvedValue({ name: 'selected-control-name' });
+
             ControlUtils.getControlAggregationByName = jest
                 .fn()
                 .mockReturnValue({ 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} });
@@ -57,13 +58,12 @@ describe('AddFragment', () => {
             sapCoreMock.byId.mockReturnValue(overlayControl);
 
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
-
+            addFragment.byId = jest.fn().mockReturnValue({
+                open: jest.fn()
+            });
             addFragment.overlays = overlays as unknown as UI5Element[];
-            try {
-                await addFragment.onInit();
-            } catch (e) {
-                fail('Test should not have failed!');
-            }
+
+            await addFragment.onInit();
         });
     });
 

@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Text, Stack } from '@fluentui/react';
 import type { IStackTokens } from '@fluentui/react';
 
-import { UICreateSelect, UICreateSelectOptionEntry, UICreateSelectMultiValue } from '../src/components/UICreateSelect';
+import {
+    UICreateSelect,
+    UICreateSelectOptionEntry,
+    UICreateSelectMultiValue,
+    UICreateSelectGroupEntry,
+    UICreateSelectInstance
+} from '../src/components/UICreateSelect';
 import { UILabel } from '../src/components/UILabel';
 import { initIcons } from '../src/components/Icons';
 
@@ -27,6 +33,8 @@ export const CreateSelect = (): JSX.Element => {
     const [valueEmpty, setValueEmpty] = useState<UICreateSelectOptionEntry>();
     const [selectedValueEmpty, setSelectedValueEmpty] = useState<UICreateSelectOptionEntry>();
 
+    const selectRef = React.createRef();
+
     const handleCreate = (inputValue: string) => {
         const newOption = createOption(inputValue);
         setIsLoading(true);
@@ -44,6 +52,13 @@ export const CreateSelect = (): JSX.Element => {
         setSelectedValue(val);
     };
 
+    // Ex empty
+    const creatableRef = useRef<UICreateSelectInstance<
+        UICreateSelectOptionEntry,
+        true,
+        UICreateSelectGroupEntry
+    > | null>(null);
+
     const handleCreateEmpty = (inputValue: string) => {
         const newOption = createOption(inputValue);
         setIsLoadingEmpty(true);
@@ -53,6 +68,8 @@ export const CreateSelect = (): JSX.Element => {
             setIsLoadingEmpty(false);
             setOptionsEmpty((prev) => [...prev, newOption]);
             setSelectedValueEmpty(newOption);
+
+            creatableRef.current?.focus();
         }, 1000);
     };
     const handleChangeEmpty = (newValue: UICreateSelectMultiValue<UICreateSelectOptionEntry>) => {
@@ -90,8 +107,8 @@ export const CreateSelect = (): JSX.Element => {
                                 placeholder={'Search or enter a new value'}
                                 options={options}
                                 value={value}
-                                handleCreate={handleCreate}
-                                handleOnChange={handleChange}
+                                onCreateOption={handleCreate}
+                                onChange={handleChange}
                             />
                             <div
                                 style={{
@@ -115,6 +132,7 @@ export const CreateSelect = (): JSX.Element => {
                                 <UILabel>UI Create Select Label</UILabel>
                             </div>
                             <UICreateSelect
+                                creatableRef={creatableRef}
                                 createText={'Add new qualifier'}
                                 isClearable={true}
                                 isLoading={isLoadingEmpty}
@@ -124,8 +142,8 @@ export const CreateSelect = (): JSX.Element => {
                                 options={optionsEmpty}
                                 value={valueEmpty}
                                 noOptionsMessage={generateNoOptionsMessage}
-                                handleCreate={handleCreateEmpty}
-                                handleOnChange={handleChangeEmpty}
+                                onCreateOption={handleCreateEmpty}
+                                onChange={handleChangeEmpty}
                             />
                             <div
                                 style={{
@@ -133,7 +151,7 @@ export const CreateSelect = (): JSX.Element => {
                                     fontFamily: 'var(--vscode-font-family)',
                                     fontSize: '13px'
                                 }}>
-                                Value selected: <b>{selectedValue?.value}</b>
+                                Value selected: <b>{selectedValueEmpty?.value}</b>
                             </div>
                         </div>
                     </div>

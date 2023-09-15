@@ -2,8 +2,8 @@ import MessageToast from 'sap/m/MessageToast';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
-import type { FlexSettings } from 'sap/ui/rta/command/CommandFactory';
 
 /**
  * Class responsible for handling rta calls

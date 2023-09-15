@@ -5,7 +5,7 @@ import {
     getManifestAppdescr,
     request,
     writeFragment
-} from '../../src/adp/api-handler';
+} from '../../../src/adp/api-handler';
 import { fetchMock } from 'mock/window';
 
 describe('API Handler', () => {
@@ -16,18 +16,14 @@ describe('API Handler', () => {
 
         test('GET - parses the response', async () => {
             const jsonSpy = jest.fn();
-            try {
-                fetchMock.mockResolvedValue({
-                    json: jsonSpy,
-                    text: jest.fn(),
-                    ok: true
-                });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
 
-                await request(ApiEndpoints.FRAGMENT, RequestMethod.GET);
-                expect(jsonSpy.mock.calls.length).toBe(1);
-            } catch (e) {
-                fail('Test should not have failed!');
-            }
+            await request(ApiEndpoints.FRAGMENT, RequestMethod.GET);
+            expect(jsonSpy.mock.calls.length).toBe(1);
         });
 
         test('GET - throws error when is not ok', async () => {
@@ -50,34 +46,26 @@ describe('API Handler', () => {
 
         test('POST - gets the text from the response', async () => {
             const textSpy = jest.fn();
-            try {
-                fetchMock.mockResolvedValue({
-                    json: jest.fn(),
-                    text: textSpy,
-                    ok: true
-                });
+            fetchMock.mockResolvedValue({
+                json: jest.fn(),
+                text: textSpy,
+                ok: true
+            });
 
-                await request(ApiEndpoints.FRAGMENT, RequestMethod.POST);
-                expect(textSpy.mock.calls.length).toBe(1);
-            } catch (e) {
-                fail('Test should not have failed!');
-            }
+            await request(ApiEndpoints.FRAGMENT, RequestMethod.POST);
+            expect(textSpy.mock.calls.length).toBe(1);
         });
 
         test('DELETE - parses the response', async () => {
             const jsonSpy = jest.fn();
-            try {
-                fetchMock.mockResolvedValue({
-                    json: jsonSpy,
-                    text: jest.fn(),
-                    ok: true
-                });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
 
-                await request(ApiEndpoints.FRAGMENT, RequestMethod.DELETE);
-                expect(jsonSpy.mock.calls.length).toBe(1);
-            } catch (e) {
-                fail('Test should not have failed!');
-            }
+            await request(ApiEndpoints.FRAGMENT, RequestMethod.DELETE);
+            expect(jsonSpy.mock.calls.length).toBe(1);
         });
     });
 
@@ -95,7 +83,7 @@ describe('API Handler', () => {
                 ok: true
             });
 
-            const data = await getFragments<{ fragments: [] }>();
+            const data = await getFragments();
 
             expect(data.fragments.length).toBe(1);
         });
@@ -129,7 +117,7 @@ describe('API Handler', () => {
                 ok: true
             });
 
-            const data = await getManifestAppdescr<{ layer: string }>();
+            const data = await getManifestAppdescr();
 
             expect(data.layer).toBe('VENDOR');
         });
