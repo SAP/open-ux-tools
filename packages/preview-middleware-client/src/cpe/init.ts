@@ -1,5 +1,9 @@
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
-import { startPostMessageCommunication, iconsLoaded } from '@sap-ux-private/control-property-editor-common';
+import {
+    startPostMessageCommunication,
+    iconsLoaded,
+    enableTelemetry
+} from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import type { ActionHandler, Service } from './types';
@@ -9,11 +13,10 @@ import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';
 import { loadDefaultLibraries } from './documentation';
 import Log from 'sap/base/Log';
-import { enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
-    
+
     // enable telemetry if requested
     const flexSettings = rta.getFlexSettings();
     if (flexSettings.telemetry === true) {
@@ -32,11 +35,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
 
     const selectionService = new SelectionService(rta, ui5);
 
-    const changesService = new ChangeService(
-        { rta },
-        ui5,
-        selectionService
-    );
+    const changesService = new ChangeService({ rta }, ui5, selectionService);
     const services: Service[] = [selectionService, changesService];
     try {
         loadDefaultLibraries();

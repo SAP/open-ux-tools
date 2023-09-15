@@ -123,8 +123,8 @@ export function PropertyChange(propertyChangeProps: PropertyChangeProps): ReactE
                     acceptButtonText={t('CONFIRM_DELETE')}
                     cancelButtonText={t('CANCEL_DELETE')}
                     onCancel={onCancelDelete}
-                    title={t('CONFIRM_DELETE_TITLE')}
                     dialogContentProps={{
+                        title: t('CONFIRM_DELETE_TITLE'),
                         subText: t('CONFIRM_CHANGE_SUMMARY_DELETE_SUBTEXT')
                     }}
                 />

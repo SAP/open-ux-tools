@@ -109,9 +109,9 @@ export default function App(appProps: AppProps): ReactElement {
 
             <UIDialog
                 hidden={!isWarningDialogVisible}
-                title={t('TOOL_DISCLAIMER_TITLE')}
                 closeButtonAriaLabel={t('CLOSE')}
                 dialogContentProps={{
+                    title: t('TOOL_DISCLAIMER_TITLE'),
                     subText: t('TOOL_DISCLAIMER_TEXT')
                 }}
                 acceptButtonText={t('OK')}

@@ -263,7 +263,7 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
                     editor: INPUT_EDITOR_TYPE,
                     name: property.name,
                     readableName,
-                    value: value as unknown as number,
+                    value: value as number,
                     isEnabled,
                     ui5Type
                 });
@@ -275,7 +275,7 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
                     editor: INPUT_EDITOR_TYPE,
                     name: property.name,
                     readableName,
-                    value: value as unknown as number,
+                    value: value as number,
                     isEnabled,
                     ui5Type
                 });
@@ -287,7 +287,7 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
                     editor: CHECKBOX_EDITOR_TYPE,
                     name: property.name,
                     readableName,
-                    value: value as unknown as boolean,
+                    value: value as boolean,
                     isEnabled,
                     ui5Type
                 });

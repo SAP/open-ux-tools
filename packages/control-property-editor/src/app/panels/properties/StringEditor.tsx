@@ -61,21 +61,19 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
     const inputProps: UITextInputProps = {};
 
     inputProps.onBlur = (e) => {
-        try {
-            reportTelemetry({ category: 'Property Change', propertyName: name });
-        } catch (error) {
+        reportTelemetry({ category: 'Property Change', propertyName: name }).catch((error) => {
             console.error(`Error in reporting telemetry`, error);
-        } finally {
-            if (type === FLOAT_VALUE_TYPE && !isExpression(val)) {
-                let newValue: string | number = String(e.target.value);
-                if (type === FLOAT_VALUE_TYPE && !isExpression(newValue)) {
-                    newValue = parseFloat(String(newValue?.trim()));
-                }
-                setCachedValue(controlId, name, InputType.number, newValue);
-                const action = changeProperty({ controlId, propertyName: name, value: newValue, controlName });
-                dispatch(action);
-                setValue(newValue);
+        });
+
+        if (type === FLOAT_VALUE_TYPE && !isExpression(val)) {
+            let newValue: string | number = String(e.target.value);
+            if (type === FLOAT_VALUE_TYPE && !isExpression(newValue)) {
+                newValue = parseFloat(String(newValue?.trim()));
             }
+            setCachedValue(controlId, name, InputType.number, newValue);
+            const action = changeProperty({ controlId, propertyName: name, value: newValue, controlName });
+            dispatch(action);
+            setValue(newValue);
         }
     };
 

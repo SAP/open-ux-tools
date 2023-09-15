@@ -18,8 +18,9 @@ export function disableTelemetry() {
  * Reports telemetry data from Control Property Editor.
  *
  * @param data The TelemetryData object, that needs to be reported
+ * @returns {Promise<void>}
  */
-export async function reportTelemetry(data: TelemetryData) {
+export async function reportTelemetry(data: TelemetryData): Promise<void> {
     try {
         if (enabled) {
             const requestOptions = {

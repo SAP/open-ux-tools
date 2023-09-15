@@ -4,7 +4,7 @@ import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type { UI5Facade } from '../types';
 
-export const isEditable = async (ui5: UI5Facade, id = ''): Promise<boolean> => {
+export const isEditable = (ui5: UI5Facade, id = ''): boolean => {
     let editable = false;
     const control = ui5.getControlById(id);
     if (!control) {
@@ -20,7 +20,7 @@ export const isEditable = async (ui5: UI5Facade, id = ''): Promise<boolean> => {
         }
         if (controlOverlay) {
             const runtimeControl = getRuntimeControl(controlOverlay);
-            const controlData = await buildControlData(runtimeControl, controlOverlay);
+            const controlData = buildControlData(runtimeControl, controlOverlay);
             const prop = controlData.properties.find((item) => item.isEnabled === true);
             editable = prop !== undefined;
         }

@@ -100,64 +100,60 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
                 onClick={onValueHelpButtonClick}
                 disabled={disabled}
             />
-            {isDialogVisible && (
-                <>
-                    <UIDialog
-                        className="icon-dialog"
-                        isOpen={isDialogVisible}
-                        title={t('SELECT_ICON')}
-                        closeButtonAriaLabel={t('CLOSE')}
-                        acceptButtonText={t('OK')}
-                        cancelButtonText={t('CANCEL')}
-                        onAccept={() => {
-                            setDialogVisibility(false);
-                            setItems(icons);
-                            setCachedValue(controlId, propertyName, InputType.string, newValue);
-                            const action = changeProperty({
-                                controlId,
-                                propertyName,
-                                value: newValue
-                            });
-                            dispatch(action);
+            <UIDialog
+                hidden={!isDialogVisible}
+                modalProps={{
+                    className: 'icon-dialog'
+                }}
+                dialogContentProps={{
+                    title: t('SELECT_ICON')
+                }}
+                closeButtonAriaLabel={t('CLOSE')}
+                acceptButtonText={t('OK')}
+                cancelButtonText={t('CANCEL')}
+                onAccept={() => {
+                    setDialogVisibility(false);
+                    setItems(icons);
+                    setCachedValue(controlId, propertyName, InputType.string, newValue);
+                    const action = changeProperty({
+                        controlId,
+                        propertyName,
+                        value: newValue
+                    });
+                    dispatch(action);
+                }}
+                onCancel={() => {
+                    setDialogVisibility(false);
+                    setItems(icons);
+                }}>
+                <div className="filter-icon-div" style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+                    <UISearchBox
+                        className="filter-icons"
+                        autoFocus={false}
+                        disableAnimation={false}
+                        placeholder="Filter Icons"
+                        onChange={onFilterChange}
+                    />
+                </div>
+                <div className="icon-table-div" style={{ height: '100%', position: 'relative', marginTop: '10px' }}>
+                    <UITable
+                        className="icon-table space"
+                        scrollablePaneProps={{
+                            className: 'icon-table'
                         }}
-                        onCancel={() => {
-                            setDialogVisibility(false);
-                            setItems(icons);
-                        }}>
-                        <div
-                            className="filter-icon-div"
-                            style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-                            <UISearchBox
-                                className="filter-icons"
-                                autoFocus={false}
-                                disableAnimation={false}
-                                placeholder="Filter Icons"
-                                onChange={onFilterChange}
-                            />
-                        </div>
-                        <div
-                            className="icon-table-div"
-                            style={{ height: '100%', position: 'relative', marginTop: '10px' }}>
-                            <UITable
-                                className="icon-table space"
-                                scrollablePaneProps={{
-                                    className: 'icon-table'
-                                }}
-                                selectionMode={SelectionMode.single}
-                                dataSetKey={'datasetkey'}
-                                items={items}
-                                columns={columns}
-                                onSelectionChange={onSelectionChange}
-                                ariaLabelForSelectionColumn="Toggle selection"
-                                ariaLabelForSelectAllCheckbox="Toggle selection for all items"
-                                checkButtonAriaLabel="select row"
-                                layoutMode={1}
-                                isHeaderVisible={true}
-                            />
-                        </div>
-                    </UIDialog>
-                </>
-            )}
+                        selectionMode={SelectionMode.single}
+                        dataSetKey={'datasetkey'}
+                        items={items}
+                        columns={columns}
+                        onSelectionChange={onSelectionChange}
+                        ariaLabelForSelectionColumn="Toggle selection"
+                        ariaLabelForSelectAllCheckbox="Toggle selection for all items"
+                        checkButtonAriaLabel="select row"
+                        layoutMode={1}
+                        isHeaderVisible={true}
+                    />
+                </div>
+            </UIDialog>
         </>
     );
 }

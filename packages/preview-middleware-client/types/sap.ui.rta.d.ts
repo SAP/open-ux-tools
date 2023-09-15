@@ -68,7 +68,7 @@ declare module 'sap/ui/rta/command/OutlineService' {
 
     interface OutlineService {
         get(): Promise<OutlineViewNode[]>;
-        attachEvent<T>(eventName: T, handler: (params: T) => void): void;
+        attachEvent<T>(eventName: T, handler: (params: T) => Promise<void>): void;
     }
 
     export default OutlineService;

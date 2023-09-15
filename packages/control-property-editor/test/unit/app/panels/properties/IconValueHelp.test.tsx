@@ -35,11 +35,11 @@ describe('IconValueHelp', () => {
     });
     test('initial load', () => {
         render(<IconValueHelp {...iconValueHelpProps} />);
-        screen.getByRole('button').click();
-
+        const button = screen.getByRole('button');
+        fireEvent.click(button);
         const title = screen.getByRole('heading', { name: /select icon/i });
         const searchBox = screen.getByRole('searchbox');
-        const okButton = screen.getByRole('button', { name: /OK/i });
+        const okButton = screen.getByRole('button', { name: /ok/i });
 
         expect(title).toBeInTheDocument();
         expect(searchBox).toBeInTheDocument();
@@ -52,7 +52,7 @@ describe('IconValueHelp', () => {
         screen.getByText(/testname2/i).click();
         okButton.click();
 
-        screen.getByRole('button').click();
+        fireEvent.click(button);
         const cancelButton = screen.getByRole('button', { name: /cancel/i });
         expect(cancelButton).toBeInTheDocument();
         cancelButton.click();

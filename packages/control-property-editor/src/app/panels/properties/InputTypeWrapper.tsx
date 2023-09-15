@@ -249,8 +249,8 @@ export function InputTypeWrapper(props: InputTypeWrapperProps): ReactElement {
                     acceptButtonText={t('CONFIRM_DELETE')}
                     cancelButtonText={t('CANCEL_DELETE')}
                     onCancel={onCancelDelete}
-                    title={t('CONFIRM_DELETE_TITLE')}
                     dialogContentProps={{
+                        title: t('CONFIRM_DELETE_TITLE'),
                         subText: t('CONFIRM_DELETE_SUBTEXT')
                     }}></UIDialog>
             )}

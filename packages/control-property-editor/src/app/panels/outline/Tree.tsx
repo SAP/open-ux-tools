@@ -146,17 +146,14 @@ export const Tree = (): ReactElement => {
                 group: node,
                 cell: undefined
             });
-            try {
-                const name = (node.data.controlType as string).toLowerCase().startsWith('sap')
-                    ? node.data.controlType
-                    : 'Other Control Types';
-                reportTelemetry({ category: 'Outline Selection', controlName: name });
-            } catch (error) {
+            const name = (node.data.controlType as string).toLowerCase().startsWith('sap')
+                ? node.data.controlType
+                : 'Other Control Types';
+            reportTelemetry({ category: 'Outline Selection', controlName: name }).catch((error) => {
                 console.error(`Error in reporting telemetry`, error);
-            } finally {
-                const action = selectControl(node.key);
-                dispatch(action);
-            }
+            });
+            const action = selectControl(node.key);
+            dispatch(action);
         }
     };
     const onRenderCell = (nestingDepth?: number, item?: OutlineNodeItem, itemIndex?: number): React.ReactNode => {

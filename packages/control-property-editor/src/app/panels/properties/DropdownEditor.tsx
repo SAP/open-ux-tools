@@ -62,23 +62,17 @@ export function DropdownEditor(propertyInputProps: PropertyInputProps<StringCont
                 value?: string
             ): void => {
                 const newValue = option?.key ?? value ?? '';
-                try {
-                    reportTelemetry({ category: 'Property Change', propertyName: name });
-                } catch (error) {
+                reportTelemetry({ category: 'Property Change', propertyName: name }).catch((error) => {
                     console.error(`Error in reporting telemetry`, error);
-                } finally {
-                    dispatch(valueChanged(controlId, name, newValue, controlName));
-                }
+                });
+                dispatch(valueChanged(controlId, name, newValue, controlName));
             }}
             onPendingValueChanged={debounce((option?: UIComboBoxOption, index?: number, value?: string): void => {
                 if (value) {
-                    try {
-                        reportTelemetry({ category: 'Property Change', propertyName: name });
-                    } catch (error) {
+                    reportTelemetry({ category: 'Property Change', propertyName: name }).catch((error) => {
                         console.error(`Error in reporting telemetry`, error);
-                    } finally {
-                        dispatch(valueChanged(controlId, name, value, controlName));
-                    }
+                    });
+                    dispatch(valueChanged(controlId, name, value, controlName));
                 }
             }, 500)}
         />

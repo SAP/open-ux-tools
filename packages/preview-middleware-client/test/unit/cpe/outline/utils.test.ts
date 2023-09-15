@@ -13,12 +13,9 @@ jest.mock('../../../../src/cpe/control-data', () => {
 });
 describe('utils', () => {
     const ui5 = createUi5Facade();
-    const mockGetComponent = jest.fn();
-    const mockGetId = jest.fn();
+    ui5.getComponent = jest.fn();
+    ui5.getControlById = jest.fn();
     beforeEach(() => {
-        sap.ui = {
-            getCore: jest.fn().mockReturnValue({ byId: mockGetId, getComponent: mockGetComponent })
-        } as any;
         OverlayRegistry.getOverlay = jest
             .fn()
             .mockReturnValue({ getElementInstance: jest.fn(), getDomRef: jest.fn().mockReturnValue(undefined) });
@@ -26,13 +23,13 @@ describe('utils', () => {
     });
     describe('isEditable', () => {
         test('control not found by id, search by component', () => {
-            mockGetId.mockReturnValue(null);
-            mockGetComponent.mockReturnValue('mockControl');
+            (ui5.getControlById as jest.Mock).mockReturnValue(null);
+            (ui5.getComponent as jest.Mock).mockReturnValue('mockControl');
             const editable = isEditable(ui5, 'dummyId');
-            expect(editable).toBeTruthy();
+            expect(editable).toBeFalsy();
         });
         test('control found by id, search by getOverlay', () => {
-            mockGetId.mockReturnValue('mockControl');
+            (ui5.getControlById as jest.Mock).mockReturnValue('mockControl');
             const editable = isEditable(ui5, 'dummyId');
             expect(editable).toBeTruthy();
         });

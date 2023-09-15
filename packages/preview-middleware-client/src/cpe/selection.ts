@@ -52,11 +52,11 @@ function getPropertyDocument(
     return document?.[property.name]
         ? document[property.name]
         : ({
-              defaultValue: (property.defaultValue as string) || '-',
+              defaultValue: (property.defaultValue as string) ?? '-',
               description: '',
               propertyName: property.name,
-              type: ui5Type || '-',
-              propertyType: ui5Type || '-'
+              type: ui5Type ?? '-',
+              propertyType: ui5Type ?? '-'
           } as PropertiesInfo);
 }
 
@@ -70,7 +70,7 @@ async function addDocumentationForProperties(control: ManagedObject, controlData
         const selContLibName = controlMetadata.getLibraryName();
         // Add the control's properties
         const document = await getDocumentation(selectedControlName, selContLibName);
-        controlData.properties.map((controlProp) => {
+        controlData.properties.forEach((controlProp) => {
             const property = allProperties[controlProp.name];
             controlProp.documentation = getPropertyDocument(property, controlProp.ui5Type, document);
         });
@@ -122,7 +122,7 @@ export class SelectionService implements Service {
                 }
                 eventOrigin.add('outline');
                 let controlOverlay = this.ui5.getOverlay(control);
-                const selectedOverlayControls = this.rta.getSelection() || [];
+                const selectedOverlayControls = this.rta.getSelection() ?? [];
                 //remove previous selection
                 for (const selectedOverlayControl of selectedOverlayControls) {
                     selectedOverlayControl.setSelected(false); //deselect previously selected control

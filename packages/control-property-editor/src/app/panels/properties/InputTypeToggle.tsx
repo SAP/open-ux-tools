@@ -63,19 +63,16 @@ export function InputTypeToggle(inputTypeToggleProps: InputTypeToggleProps): Rea
                     return;
                 } // click on already selected button should have no effect
                 const newValue = getValueForInputType(controlId, property, inputTypeProps.inputType);
-                try {
-                    reportTelemetry({ category: 'Property Change', propertyName: property.name });
-                } catch (error) {
+                reportTelemetry({ category: 'Property Change', propertyName: property.name }).catch((error) => {
                     console.error(`Error in reporting telemetry`, error);
-                } finally {
-                    const action = changeProperty({
-                        controlId,
-                        propertyName: property.name,
-                        value: newValue,
-                        controlName
-                    });
-                    dispatch(action);
-                }
+                });
+                const action = changeProperty({
+                    controlId,
+                    propertyName: property.name,
+                    value: newValue,
+                    controlName
+                });
+                dispatch(action);
             }}
         />
     );
