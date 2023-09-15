@@ -167,7 +167,7 @@ export async function waitFor(selector: string, count = 10): Promise<Element | v
  * @param ms
  * @returns Promise
  */
-function sleep(ms = 200) {
+export function sleep(ms = 200) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
