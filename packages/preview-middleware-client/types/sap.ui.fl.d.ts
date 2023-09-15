@@ -2,6 +2,15 @@ declare module 'sap/ui/fl' {
     export type Layer = 'USER' | 'PUBLIC' | 'CUSTOMER' | 'CUSTOMER_BASE' | 'PARTNER' | 'VENDOR' | 'BASE';
 }
 
+declare module 'sap/ui/fl/Layer' {
+    const Layer = {
+        CUSTOMER_BASE: 'CUSTOMER_BASE',
+        VENDOR: 'VENDOR'
+    } as const;
+
+    export default Layer;
+}
+
 declare module 'sap/ui/fl/Change' {
     export interface ChangeDefinition {
         service: string;
@@ -40,4 +49,32 @@ declare module 'sap/ui/fl/Utils' {
 
     const Utils: Utils;
     export default Utils;
+}
+
+declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
+    import type { Layer } from 'sap/ui/fl';
+    interface Features {
+        isCondensingEnabled?: boolean;
+        isContextSharingEnabled?: boolean;
+        isKeyUser?: boolean;
+        isProductiveSystem?: boolean;
+        isVariantAdaptationEnabled?: boolean;
+        isVariantSharingEnabled?: boolean;
+    }
+
+    interface Storage {
+        setItem(key: string, change: unknown): Promise<unknown>;
+        removeItem(key: string): Promise<unknown>;
+        clear(): void;
+        getItem(key: string): unknown;
+        getItems(): Promise<unknown[]>;
+    }
+
+    class ObjectStorageConnector {
+        static layers: Layer[];
+        static storage: Storage;
+        static loadFeatures(): Promise<Features>;
+    }
+
+    export default ObjectStorageConnector;
 }

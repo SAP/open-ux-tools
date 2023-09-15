@@ -273,12 +273,7 @@ export class FlpSandbox {
      * @returns template configuration for flex.
      */
     private createFlexHandler(): TemplateConfig['ui5']['flex'] {
-        const workspaceConnectorPath = '/preview/WorkspaceConnector';
-        this.router.get(`/resources${workspaceConnectorPath}.js`, (_req: Request, res: Response) => {
-            res.status(200)
-                .contentType('text/javascript')
-                .send(readFileSync(join(__dirname, '../../templates/flp/workspaceConnector.js'), 'utf-8'));
-        });
+        const workspaceConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
         const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
