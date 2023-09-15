@@ -1,6 +1,3 @@
-/** sap.ui.fl */
-import type { Layer } from 'sap/ui/fl';
-
 /** sap.m */
 import type Dialog from 'sap/m/Dialog';
 import MessageToast from 'sap/m/MessageToast';
@@ -26,10 +23,9 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
+import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
-import type { FragmentsResponse } from '../api-handler';
-import ControlUtils, { type BuiltRuntimeControl } from '../control-utils';
-import { getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
+import { ManifestAppdescr, getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
 
 type ExtendedEventProvider = EventProvider & {
     setEnabled: (v: boolean) => void;
@@ -51,17 +47,6 @@ interface CreateFragmentProps {
     fragmentName: string;
     index: string | number;
     targetAggregation: string;
-}
-
-export interface ManifestAppdescr {
-    fileName: string;
-    layer: Layer;
-    fileType: string;
-    reference: string;
-    id: string;
-    namespace: string;
-    version: string;
-    content: object[];
 }
 
 /**
@@ -240,14 +225,12 @@ export default class AddFragment extends Controller {
     public async buildDialogData(overlays: UI5Element[], jsonModel: JSONModel): Promise<void> {
         const selectorId = overlays[0].getId();
 
-        let control: BuiltRuntimeControl;
         let controlMetadata: ManagedObjectMetadata;
 
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
         if (overlayControl) {
             this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
             controlMetadata = this.runtimeControl.getMetadata();
-            control = await ControlUtils.buildControlData(this.runtimeControl, overlayControl);
         } else {
             throw new Error('Cannot get overlay control');
         }
@@ -261,7 +244,7 @@ export default class AddFragment extends Controller {
             return false;
         });
         const defaultAggregation = controlMetadata.getDefaultAggregationName();
-        const selectedControlName = control.name;
+        const selectedControlName = controlMetadata.getName();
 
         let selectedControlChildren: string[] | number[] = Object.keys(
             ControlUtils.getControlAggregationByName(this.runtimeControl, defaultAggregation)
@@ -306,7 +289,7 @@ export default class AddFragment extends Controller {
         }
 
         try {
-            const { fragments } = await getFragments<FragmentsResponse>();
+            const { fragments } = await getFragments();
 
             jsonModel.setProperty('/filteredFragmentList', {
                 newFragmentName: '',
@@ -379,7 +362,7 @@ export default class AddFragment extends Controller {
         const { fragmentName, index, targetAggregation } = fragmentData;
         let manifest: ManifestAppdescr;
         try {
-            manifest = await getManifestAppdescr<ManifestAppdescr>();
+            manifest = await getManifestAppdescr();
 
             if (!manifest) {
                 // Highly unlikely since adaptation projects are required to have manifest.appdescr_variant
