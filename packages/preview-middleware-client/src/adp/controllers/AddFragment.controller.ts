@@ -85,11 +85,11 @@ export default class AddFragment extends Controller {
         this.model = new JSONModel();
         this.commandExecutor = new CommandExecutor(this.rta);
 
-        this.dialog = (await this.loadFragment({ name: 'open.ux.preview.client.adp.ui.AddFragment' })) as Dialog;
+        this.dialog = this.byId('addNewFragmentDialog') as unknown as Dialog;
 
-        await this.buildDialogData(this.overlays, this.model);
+        await this.buildDialogData();
 
-        this.getView()?.addDependent(this.dialog).setModel(this.model);
+        this.getView()?.setModel(this.model);
 
         this.dialog.open();
     }
@@ -218,12 +218,9 @@ export default class AddFragment extends Controller {
 
     /**
      * Builds data that is used in the dialog
-     *
-     * @param overlays Overlays
-     * @param jsonModel JSON Model for the dialog
      */
-    public async buildDialogData(overlays: UI5Element[], jsonModel: JSONModel): Promise<void> {
-        const selectorId = overlays[0].getId();
+    public async buildDialogData(): Promise<void> {
+        const selectorId = this.overlays[0].getId();
 
         let controlMetadata: ManagedObjectMetadata;
 
@@ -263,9 +260,9 @@ export default class AddFragment extends Controller {
             return parseInt(key);
         });
 
-        jsonModel.setProperty('/selectedControlName', selectedControlName);
-        jsonModel.setProperty('/selectedAggregation', {});
-        jsonModel.setProperty('/indexHandlingFlag', allowIndexForDefaultAggregation);
+        this.model.setProperty('/selectedControlName', selectedControlName);
+        this.model.setProperty('/selectedAggregation', {});
+        this.model.setProperty('/indexHandlingFlag', allowIndexForDefaultAggregation);
 
         const indexArray = this.fillIndexArray(selectedControlChildren);
 
@@ -279,33 +276,33 @@ export default class AddFragment extends Controller {
             controlAggregation.forEach((obj) => {
                 if (obj.value === defaultAggregation) {
                     obj.key = 'default';
-                    jsonModel.setProperty('/selectedAggregation/key', obj.key);
-                    jsonModel.setProperty('/selectedAggregation/value', obj.value);
+                    this.model.setProperty('/selectedAggregation/key', obj.key);
+                    this.model.setProperty('/selectedAggregation/value', obj.value);
                 }
             });
         } else {
-            jsonModel.setProperty('/selectedAggregation/key', controlAggregation[0].key);
-            jsonModel.setProperty('/selectedAggregation/value', controlAggregation[0].value);
+            this.model.setProperty('/selectedAggregation/key', controlAggregation[0].key);
+            this.model.setProperty('/selectedAggregation/value', controlAggregation[0].value);
         }
 
         try {
             const { fragments } = await getFragments();
 
-            jsonModel.setProperty('/filteredFragmentList', {
+            this.model.setProperty('/filteredFragmentList', {
                 newFragmentName: '',
                 selectorId: selectorId,
                 unFilteredFragmentList: fragments // All fragments under /changes/fragments folder
             });
-            jsonModel.setProperty('/fragmentCount', fragments.length);
+            this.model.setProperty('/fragmentCount', fragments.length);
         } catch (e) {
             throw new Error(e.message);
         }
 
-        jsonModel.setProperty('/selectedIndex', indexArray.length - 1);
-        jsonModel.setProperty('/defaultAggregation', defaultAggregation);
-        jsonModel.setProperty('/targetAggregation', controlAggregation);
-        jsonModel.setProperty('/index', indexArray);
-        jsonModel.setProperty('/selectorId', selectorId);
+        this.model.setProperty('/selectedIndex', indexArray.length - 1);
+        this.model.setProperty('/defaultAggregation', defaultAggregation);
+        this.model.setProperty('/targetAggregation', controlAggregation);
+        this.model.setProperty('/index', indexArray);
+        this.model.setProperty('/selectorId', selectorId);
     }
 
     /**

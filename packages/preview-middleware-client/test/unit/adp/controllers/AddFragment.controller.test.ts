@@ -58,7 +58,9 @@ describe('AddFragment', () => {
             sapCoreMock.byId.mockReturnValue(overlayControl);
 
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
-
+            addFragment.byId = jest.fn().mockReturnValue({
+                open: jest.fn()
+            });
             addFragment.overlays = overlays as unknown as UI5Element[];
 
             await addFragment.onInit();
