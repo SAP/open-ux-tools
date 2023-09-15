@@ -39,10 +39,11 @@ describe('AddFragment', () => {
                         'dragDropConfig': {},
                         'content': {}
                     }),
-                    getDefaultAggregationName: jest.fn().mockReturnValue('content')
+                    getDefaultAggregationName: jest.fn().mockReturnValue('content'),
+                    getName: jest.fn().mockReturnValue('Toolbar')
                 })
             });
-            ControlUtils.buildControlData = jest.fn().mockResolvedValue({ name: 'selected-control-name' });
+
             ControlUtils.getControlAggregationByName = jest
                 .fn()
                 .mockReturnValue({ 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} });
@@ -59,11 +60,8 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
 
             addFragment.overlays = overlays as unknown as UI5Element[];
-            try {
-                await addFragment.onInit();
-            } catch (e) {
-                fail('Test should not have failed!');
-            }
+
+            await addFragment.onInit();
         });
     });
 
