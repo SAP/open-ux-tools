@@ -381,7 +381,7 @@ export default class AddFragment extends Controller {
             layer: layer,
             namespace: namespace,
             projectId: id,
-            rootNamespace: (namespace as string).split('/').slice(0, 2).join('/'),
+            rootNamespace: namespace.split('/').slice(0, 2).join('/'),
             scenario: undefined
         };
 
