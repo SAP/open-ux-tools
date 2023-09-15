@@ -1,6 +1,3 @@
-/** sap.ui.fl */
-import type { Layer } from 'sap/ui/fl';
-
 /** sap.m */
 import type Dialog from 'sap/m/Dialog';
 import MessageToast from 'sap/m/MessageToast';
@@ -29,35 +26,9 @@ import { readControllers, writeChange, writeController } from '../api-handler';
 type ExtendedEventProvider = EventProvider & {
     setEnabled: (v: boolean) => void;
     getValue: () => string;
-    getSelectedItem: () => {
-        getTitle: () => string;
-        getText: () => string;
-        getCustomData: () => {
-            [key: string]: () => void;
-        }[];
-    };
-    getSelectedKey: () => string;
     setValueState: (state: ValueState) => void;
     setValueStateText: (text: string) => void;
-    setVisible: (bool: boolean) => void;
 };
-
-interface CreateFragmentProps {
-    fragmentName: string;
-    index: string | number;
-    targetAggregation: string;
-}
-
-export interface ManifestAppdescr {
-    fileName: string;
-    layer: Layer;
-    fileType: string;
-    reference: string;
-    id: string;
-    namespace: string;
-    version: string;
-    content: object[];
-}
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
@@ -86,11 +57,11 @@ export default class ExtendController extends Controller {
     async onInit() {
         this.model = new JSONModel();
 
-        this.dialog = (await this.loadFragment({ name: 'open.ux.preview.client.adp.ui.ExtendController' })) as Dialog;
+        this.dialog = this.byId('extendNewControllerDialog') as unknown as Dialog;
 
-        await this.buildDialogData(this.overlays);
+        await this.buildDialogData();
 
-        this.getView()?.addDependent(this.dialog).setModel(this.model);
+        this.getView()?.setModel(this.model);
 
         this.dialog.open();
     }
@@ -174,11 +145,9 @@ export default class ExtendController extends Controller {
     /**
      * Builds data that is used in the dialog
      *
-     * @param overlays Overlays
-     * @param jsonModel JSON Model for the dialog
      */
-    public async buildDialogData(overlays: UI5Element[]): Promise<void> {
-        const selectorId = overlays[0].getId();
+    public async buildDialogData(): Promise<void> {
+        const selectorId = this.overlays[0].getId();
 
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
         const viewId: string = overlayControl.getElement().getId();

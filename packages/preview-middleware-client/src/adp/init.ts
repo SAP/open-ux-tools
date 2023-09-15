@@ -2,7 +2,7 @@ import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import init from '../cpe/init';
-import { initController } from './dialogs/controller';
+import { initController } from './dialogs/controller-extension';
 import { initFragment } from './dialogs/fragment';
 
 export default function (rta: RuntimeAuthoring) {

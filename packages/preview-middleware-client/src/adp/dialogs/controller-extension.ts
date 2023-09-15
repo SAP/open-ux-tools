@@ -6,7 +6,7 @@ import Controller from 'sap/ui/core/mvc/Controller';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import type ExtendController from '../controllers/ExtendController.controller';
+import type ExtendController from '../controllers/ControllerExtension.controller';
 
 /**
  * Initilizes "Add XML Fragment" functionality and adds a new item to the context menu
@@ -31,8 +31,6 @@ export const initController = (rta: RuntimeAuthoring): void => {
  * @param rta Runtime Authoring
  */
 export async function controllerHandler(overlays: UI5Element[], rta: RuntimeAuthoring): Promise<void> {
-    const viewXml = '<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"></mvc:View>';
-
     const controller = (await Controller.create({
         name: 'open.ux.preview.client.adp.controllers.ExtendController'
     })) as unknown as ExtendController;
@@ -41,7 +39,9 @@ export async function controllerHandler(overlays: UI5Element[], rta: RuntimeAuth
     controller.overlays = overlays;
 
     await XMLView.create({
-        definition: viewXml,
+        definition: `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core">
+            <core:Fragment fragmentName="open.ux.preview.client.adp.ui.ExtendController" type="XML" />
+        </mvc:View>`,
         controller
     });
 }
