@@ -29,7 +29,7 @@ import { FilterName } from '../../slice';
 /**
  * React element for all properties including id & type and property editors.
  *
- * @returns {ReactElement}
+ * @returns ReactElement
  */
 export function PropertiesList(): ReactElement {
     const { t } = useTranslation();

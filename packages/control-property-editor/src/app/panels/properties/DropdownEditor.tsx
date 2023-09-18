@@ -29,8 +29,8 @@ export const valueChanged = (
 /**
  * React element for dropdown editor.
  *
- * @param propertyInputProps
- * @returns {ReactElement}
+ * @param propertyInputProps PropertyInputProps<StringControlPropertyWithOptions>
+ * @returns ReactElement
  */
 export function DropdownEditor(propertyInputProps: PropertyInputProps<StringControlPropertyWithOptions>): ReactElement {
     const {

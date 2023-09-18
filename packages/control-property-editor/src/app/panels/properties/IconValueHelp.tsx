@@ -28,8 +28,8 @@ export interface IconValueHelpProps {
 /**
  * React element for showing ui5 icon values.
  *
- * @param iconValueHelpProps
- * @returns {ReactElement}
+ * @param iconValueHelpProps IconValueHelpProps
+ * @returns ReactElement
  */
 export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElement {
     const { icons, value, propertyName, controlId, disabled } = iconValueHelpProps;
@@ -166,7 +166,7 @@ interface IconColumnProps {
  * React element for showing ui5 icon column.
  *
  * @param props IconColumnProps
- * @returns {ReactElement}
+ * @returns ReactElement
  */
 function IconColumn(props: IconColumnProps): React.JSX.Element {
     const { content, fontFamily } = props;
@@ -190,7 +190,7 @@ interface LabelColumnProps {
  * React element for showing ui5 label column.
  *
  * @param props { name: string; fontFamily: string }
- * @returns {ReactElement}
+ * @returns ReactElement
  */
 function LabelColumn(props: LabelColumnProps): React.JSX.Element {
     const { name, fontFamily } = props;

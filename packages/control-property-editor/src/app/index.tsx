@@ -22,7 +22,7 @@ export interface StartOptions {
 /**
  *  Start Control Property Editor with options.
  *
- * @param options
+ * @param options StartOptions
  */
 export function start(options: StartOptions): void {
     const { previewUrl, rootElementId, telemetry = false } = options;

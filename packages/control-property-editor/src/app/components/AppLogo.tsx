@@ -8,7 +8,7 @@ import styles from './AppLogo.module.scss';
 /**
  * React element for app logo.
  *
- * @returns {ReactElement}
+ * @returns ReactElement
  */
 export function AppLogo(): ReactElement {
     const { t } = useTranslation();
@@ -23,7 +23,7 @@ export function AppLogo(): ReactElement {
 /**
  * React element for app icon.
  *
- * @returns {ReactElement}
+ * @returns ReactElement
  */
 function AppIcon(): ReactElement {
     return (

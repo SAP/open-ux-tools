@@ -18,9 +18,9 @@ const MIN_SCALE = 0.1;
 const FIT_PREVIEW_KEY = 'fit';
 
 /**
- * React elemnt to view changer.
+ * React element to view changer.
  *
- * @returns {ReactElement}
+ * @returns ReactElement
  */
 export function ViewChanger(): ReactElement {
     const { t } = useTranslation();
@@ -67,10 +67,10 @@ export function ViewChanger(): ReactElement {
 
     /**
      *
-     * @param event
-     * @param option
-     * @param index
-     * @param value
+     * @param event React.FormEvent<UIComboBoxRef>
+     * @param option UIComboBoxOption
+     * @param index number
+     * @param value string
      */
     function onChange(
         event: React.FormEvent<UIComboBoxRef>,
@@ -135,8 +135,8 @@ export function ViewChanger(): ReactElement {
 /**
  * Scale in percent.
  *
- * @param scale
- * @returns {string}
+ * @param scale number
+ * @returns scaled value - string
  */
 function scaleInPercent(scale: number): string {
     return `${Math.floor(scale * 100)}%`;

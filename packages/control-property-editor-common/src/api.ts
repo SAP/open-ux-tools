@@ -145,16 +145,16 @@ export interface PayloadAction<T extends string, U> {
     payload: U;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 /**
  * Create matcher.
  *
  * @param type action type
- * @returns (value: any) => value is Y
+ * @returns (value: { type: unknown } | undefined) => value is Y
  */
-function createMatcher<Y>(type: string): (value: any) => value is Y {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return function match(value: any): value is Y {
+function createMatcher<Y extends { type: string }>(
+    type: Y['type']
+): (value: { type: unknown } | undefined) => value is Y {
+    return function match(value: { type: unknown } | undefined): value is Y {
         return value?.type === type;
     };
 }

@@ -10,7 +10,7 @@ import { DeviceToggle } from './DeviceToggle';
 /**
  * React element for Device Selector.
  *
- * @returns {ReactElement}
+ * @returns ReactElement
  */
 export function DeviceSelector(): ReactElement {
     const { t } = useTranslation();

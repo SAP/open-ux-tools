@@ -26,8 +26,8 @@ export interface ChangeStackProps {
 /**
  * React element for Change stack.
  *
- * @param changeStackProps
- * @returns {ReactElement}
+ * @param changeStackProps ChangeStackProps
+ * @returns ReactElement
  */
 export function ChangeStack(changeStackProps: ChangeStackProps): ReactElement {
     const { changes } = changeStackProps;
@@ -68,8 +68,8 @@ export function ChangeStack(changeStackProps: ChangeStackProps): ReactElement {
 /**
  * Generate react attribute key.
  *
- * @param i
- * @returns {string}
+ * @param i number
+ * @returns string
  */
 function getKey(i: number): string {
     return `${i}-separator`;
@@ -80,8 +80,8 @@ type Item = ControlGroupProps | UnknownChangeProps;
 /**
  * Method to convert changes to unknown or control group.
  *
- * @param changes
- * @returns {Item[]}
+ * @param changes Change[]
+ * @returns Item[]
  */
 function convertChanges(changes: Change[]): Item[] {
     const items: Item[] = [];
@@ -123,9 +123,9 @@ function convertChanges(changes: Change[]): Item[] {
 /**
  * Converts a change to ControlPropertyChange.
  *
- * @param change
- * @param changeIndex
- * @returns {ControlPropertyChange}
+ * @param change ValidChange
+ * @param changeIndex number
+ * @returns ControlPropertyChange
  */
 function toPropertyChangeProps(change: ValidChange, changeIndex: number): ControlPropertyChange {
     const { controlId, propertyName, value, controlName } = change;
@@ -156,8 +156,8 @@ function toPropertyChangeProps(change: ValidChange, changeIndex: number): Contro
 /**
  * Returns true, if controlId is defined.
  *
- * @param change
- * @returns {boolean}
+ * @param change ControlGroupProps | UnknownChangeProps
+ * @returns boolean
  */
 export function isKnownChange(change: ControlGroupProps | UnknownChangeProps): change is ControlGroupProps {
     return (change as ControlGroupProps).controlId !== undefined;
@@ -179,9 +179,9 @@ const filterPropertyChanges = (changes: ControlPropertyChange[], query: string):
 /**
  * Filter group in change stack.
  *
- * @param model
- * @param query
- * @returns {Item[]}
+ * @param model Item[]
+ * @param query string
+ * @returns Item[]
  */
 function filterGroup(model: Item[], query: string): Item[] {
     const filteredModel: Item[] = [];

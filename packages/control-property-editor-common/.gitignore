@@ -1,6 +1,1 @@
-/.webpack_cache/
-/.webpack-extension_cache/
-/reports/
-
-# esbuild stats file
-**/esbuild-stats.json
+/coverage/

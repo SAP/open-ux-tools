@@ -4,7 +4,7 @@ const localeDateOptions: Intl.DateTimeFormatOptions = { day: '2-digit', month: '
 /**
  * Gets locale.
  *
- * @returns {string}
+ * @returns string
  */
 function getLocale(): string {
     if (globalThis?.navigator?.languages) {
@@ -22,8 +22,8 @@ function getLocale(): string {
 /**
  * Gets formatted date time based on locale.
  *
- * @param timestamp
- * @returns {string}
+ * @param timestamp number
+ * @returns string
  */
 export function getFormattedDateAndTime(timestamp: number): string {
     const date = new Date(timestamp);

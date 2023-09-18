@@ -1,13 +1,24 @@
 {
-    "extends": "./tsconfig-base.json",
-    "compilerOptions": {
-        "lib": ["ES2021", "DOM"],
-        "strict": true,
-        "strictNullChecks": true
-    },
-    "include": [
-        "src/**/*.ts",
-        "test/**/*.ts",
+  "extends": "./tsconfig-base.json",
+  "compilerOptions": {
+    "lib": [
+      "ES2021",
+      "DOM"
     ],
-    "exclude": ["dist", "coverage"]
+    "strict": true,
+    "strictNullChecks": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "coverage"
+  ],
+  "references": [
+    {
+      "path": "../logger"
+    }
+  ]
 }

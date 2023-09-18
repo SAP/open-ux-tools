@@ -22,8 +22,8 @@ export interface AppProps {
 /**
  * React element for App.
  *
- * @param appProps
- * @returns {ReactElement}
+ * @param appProps - AppProps
+ * @returns ReactElement
  */
 export default function App(appProps: AppProps): ReactElement {
     const { previewUrl } = appProps;

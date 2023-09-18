@@ -17,8 +17,8 @@ export interface UnknownChangeProps {
 /**
  * React element for unknown change in change stack.
  *
- * @param unknownChangeProps
- * @returns {ReactElement}
+ * @param unknownChangeProps UnknownChangeProps
+ * @returns ReactElement
  */
 export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElement {
     const { fileName, timestamp } = unknownChangeProps;

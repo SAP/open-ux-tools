@@ -25,8 +25,8 @@ export interface HeaderFieldProps {
 /**
  * React element for HeaderField.
  *
- * @param headerFieldProps
- * @returns {ReactElement}
+ * @param headerFieldProps HeaderFieldProps
+ * @returns ReactElement
  */
 export function HeaderField(headerFieldProps: HeaderFieldProps): ReactElement {
     const { label, value, documentation, hidden = true } = headerFieldProps;

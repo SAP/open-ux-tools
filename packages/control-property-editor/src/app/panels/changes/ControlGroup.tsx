@@ -21,7 +21,7 @@ export type ControlPropertyChange = Omit<PropertyChangeProps, 'actionClassName'>
 /**
  * React Element for control groups.
  *
- * @param controlGroupProps
+ * @param controlGroupProps ControlGroupProps
  * @returns ReactElement
  */
 export function ControlGroup(controlGroupProps: ControlGroupProps): ReactElement {

@@ -14,10 +14,10 @@ import { reportTelemetry, STRING_VALUE_TYPE } from '@sap-ux-private/control-prop
 /**
  * Get value for input type.
  *
- * @param controlId
- * @param property
- * @param inputType
- * @returns {CacheValue}
+ * @param controlId string
+ * @param property ControlProperty
+ * @param inputType InputType
+ * @returns CacheValue
  */
 export function getValueForInputType(controlId: string, property: ControlProperty, inputType: InputType): CacheValue {
     if (inputType === InputType.booleanTrue) {
@@ -41,8 +41,8 @@ export function getValueForInputType(controlId: string, property: ControlPropert
 /**
  * React element for input type toggle.
  *
- * @param inputTypeToggleProps
- * @returns {ReactElement}
+ * @param inputTypeToggleProps InputTypeToggleProps
+ * @returns ReactElement
  */
 export function InputTypeToggle(inputTypeToggleProps: InputTypeToggleProps): ReactElement {
     const { inputTypeProps, controlId, property, controlName } = inputTypeToggleProps;

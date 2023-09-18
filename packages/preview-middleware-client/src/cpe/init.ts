@@ -13,6 +13,8 @@ import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';
 import { loadDefaultLibraries } from './documentation';
 import Log from 'sap/base/Log';
+import { logger } from './logger';
+
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
@@ -49,7 +51,8 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
                         Log.error('Handler Failed: ', error);
                     }
                 }
-            }
+            },
+            logger
         );
 
         for (const service of services) {

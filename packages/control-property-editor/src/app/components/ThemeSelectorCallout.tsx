@@ -11,7 +11,7 @@ export type ThemeName = 'dark' | 'light' | 'high contrast';
 /**
  * React element for theme selector.
  *
- * @returns {ReactElement}
+ * @returns ReactElement
  */
 export function ThemeSelectorCallout(): ReactElement {
     const { t } = useTranslation();
@@ -22,7 +22,7 @@ export function ThemeSelectorCallout(): ReactElement {
 
     /**
      *
-     * @param newTheme
+     * @param newTheme - ThemeName
      */
     function updateTheme(newTheme: ThemeName): void {
         setTheme(newTheme);
@@ -51,8 +51,8 @@ export function ThemeSelectorCallout(): ReactElement {
     /**
      * React element for theme button.
      *
-     * @param themeButtonProps
-     * @returns {ReactElement}
+     * @param themeButtonProps - ThemeButtonProps
+     * @returns ReactElement
      */
     function createThemeButton(themeButtonProps: ThemeButtonProps): ReactElement {
         const { name, tooltip } = themeButtonProps;
@@ -118,7 +118,7 @@ export function ThemeSelectorCallout(): ReactElement {
 /**
  * Set theme.
  *
- * @param themeName
+ * @param themeName - ThemeName
  */
 export function setThemeOnDocument(themeName: ThemeName): void {
     document.getElementsByTagName('HTML')[0].setAttribute('data-theme', themeName);

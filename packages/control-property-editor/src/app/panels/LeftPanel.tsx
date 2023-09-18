@@ -12,7 +12,7 @@ import './LeftPanel.scss';
 /**
  * React element for left panel containing outline and change stack.
  *
- * @returns {ReactElement}
+ * @returns ReactElement
  */
 export function LeftPanel(): ReactElement {
     return (

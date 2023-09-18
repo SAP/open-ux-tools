@@ -11,8 +11,8 @@ interface ChangeIndicatorProps {
 /**
  * React element for change indicator.
  *
- * @param props
- * @returns {ReactElement}
+ * @param props - ChangeIndicatorProps
+ * @returns ReactElement
  */
 export function ChangeIndicator(props: ChangeIndicatorProps): ReactElement {
     const { saved, pending, id } = props;
@@ -63,8 +63,8 @@ export function ChangeIndicator(props: ChangeIndicatorProps): ReactElement {
 /**
  * React element for change indicator tooltip.
  *
- * @param changeIndicatorProps
- * @returns {ReactElement}
+ * @param changeIndicatorProps - ChangeIndicatorProps
+ * @returns ReactElement
  */
 function ChangeIndicatorTooltip(changeIndicatorProps: ChangeIndicatorProps): ReactElement {
     const { saved, pending } = changeIndicatorProps;

@@ -555,6 +555,9 @@ importers:
 
   packages/control-property-editor-common:
     devDependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       npm-run-all:
         specifier: 4.1.5
         version: 4.1.5

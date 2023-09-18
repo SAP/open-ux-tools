@@ -62,7 +62,7 @@ export const Tree = (): ReactElement => {
         adaptExpandCollapsed(groups, collapsed);
     }, [groups, collapsed, selection]);
 
-    const scrollRef = useCallback((node) => {
+    const scrollRef = useCallback((node: Element) => {
         if (node !== null) {
             setTimeout(() => {
                 // make sure that tree is fully rendered
@@ -159,7 +159,9 @@ export const Tree = (): ReactElement => {
     const onRenderCell = (nestingDepth?: number, item?: OutlineNodeItem, itemIndex?: number): React.ReactNode => {
         const paddingValue = (item?.level ?? 0) * 10 + 45;
         const selectNode = selection.cell?.controlId === item?.controlId ? theme : '';
-        const props: any = {};
+        const props: {
+            ref?: (node: Element) => void;
+        } = {};
         if (selectNode) {
             props.ref = scrollRef;
         }
@@ -218,7 +220,9 @@ export const Tree = (): ReactElement => {
         const chevronTransform =
             props?.group?.key && props.group.isCollapsed ? 'right-chevron-icon' : 'down-chevron-icon';
         const groupName = `${props?.group?.name}`;
-        const refProps: any = {};
+        const refProps: {
+            ref?: (node: Element) => void;
+        } = {};
         if (selectNode) {
             refProps.ref = scrollRef;
         }
@@ -265,7 +269,10 @@ export const Tree = (): ReactElement => {
     };
 
     // workaround for UIList not exposing GroupedList props
-    const listProp: any = {
+    const listProp: {
+        onShouldVirtualize: () => false;
+        usePageCache: boolean;
+    } = {
         onShouldVirtualize: () => false,
         usePageCache: true
     };
@@ -278,7 +285,7 @@ export const Tree = (): ReactElement => {
                 onRenderCell={onRenderCell}
                 groups={groups}
                 onSelect={onSelectHeader}
-                groupProps={groupRenderProps as any}></UIList>
+                groupProps={groupRenderProps}></UIList>
         </div>
     );
 };

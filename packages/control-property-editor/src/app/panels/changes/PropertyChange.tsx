@@ -31,8 +31,8 @@ export interface PropertyChangeProps {
 /**
  * React element for property change.
  *
- * @param propertyChangeProps
- * @returns {ReactElement}
+ * @param propertyChangeProps PropertyChangeProps
+ * @returns ReactElement
  */
 export function PropertyChange(propertyChangeProps: PropertyChangeProps): ReactElement {
     const { controlId, propertyName, value, isActive, timestamp, fileName, actionClassName } = propertyChangeProps;
@@ -136,8 +136,8 @@ export function PropertyChange(propertyChangeProps: PropertyChangeProps): ReactE
 /**
  * Get value icon based on type.
  *
- * @param value
- * @returns {string | undefined}
+ * @param value string | number | boolean
+ * @returns string | undefined
  */
 function getValueIcon(value: string | number | boolean): string | undefined {
     if (typeof value === 'string') {

@@ -11,8 +11,8 @@ export interface ClipboardProps {
 /**
  * React element for Clipboard.
  *
- * @param clipBoardProps
- * @returns {ReactElement}
+ * @param clipBoardProps ClipboardProps
+ * @returns ReactElement
  */
 export function Clipboard(clipBoardProps: ClipboardProps): ReactElement {
     const { label } = clipBoardProps;

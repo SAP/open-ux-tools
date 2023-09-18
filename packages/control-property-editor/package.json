@@ -12,9 +12,7 @@
     },
     "private": false,
     "scripts": {
-        "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
-        "clean": "rimraf ./out ./reports",
-        "clean:all": "npm-run-all clean",
+        "clean": "rimraf ./dist ./coverage *.tsbuildinfo",
         "build": "npm-run-all -l -s clean -p build:compile build:webapp",
         "build:compile": "tsc  --build ./tsconfig.build.json --pretty --dry",
         "build:webapp": "node esbuild.js",

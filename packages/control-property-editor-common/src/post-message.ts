@@ -1,3 +1,5 @@
+import type { Logger } from './types';
+
 export interface PostMessageCommunication<T> {
     sendAction: (action: T) => void;
 
@@ -20,17 +22,18 @@ interface PostMessageAction<T> {
 function isPostMessageAction<T>(data: PostMessageAction<T> | undefined): data is PostMessageAction<T> {
     return data?.type === POST_MESSAGE_ACTION_TYPE && typeof data?.action === 'object';
 }
-
 /**
  * Method to start post message communication.
  *
  * @param target target window
  * @param onActionHandler action handler
+ * @param logger to log info, default: browser console.
  * @returns PostMessageCommunication<T>
  */
 export function startPostMessageCommunication<T>(
     target: Window | (() => Window | undefined) | undefined,
-    onActionHandler: (action: T) => Promise<void>
+    onActionHandler: (action: T) => Promise<void>,
+    logger: Logger = console
 ): PostMessageCommunication<T> {
     /**
      * Returns target windows or undefined.
@@ -56,9 +59,9 @@ export function startPostMessageCommunication<T>(
             return;
         }
         if (isPostMessageAction<T>(event.data)) {
-            onActionHandler(event.data.action).catch((error) => console.error(error));
+            onActionHandler(event.data.action).catch((error) => logger.error(error));
         } else {
-            console.warn(`Unknown message received`, event.data);
+            logger.warn(`Unknown message received ${event.data}`);
         }
     }
 

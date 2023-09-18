@@ -16,8 +16,8 @@ export interface DeviceToggleProps {
 /**
  * React element for device toggle.
  *
- * @param deviceToggleProps
- * @returns {ReactElement}
+ * @param deviceToggleProps DeviceToggleProps
+ * @returns ReactElement
  */
 export function DeviceToggle(deviceToggleProps: DeviceToggleProps): ReactElement {
     const { deviceType, tooltip } = deviceToggleProps;

@@ -29,9 +29,9 @@ const commonVisibleControls = [
 /**
  * Filter model. If none of filter conditions meet, model without filter is returned.
  *
- * @param model
- * @param filterOptions
- * @returns
+ * @param model OutlineNode[]
+ * @param filterOptions FilterOptions[]
+ * @returns OutlineNode[]
  */
 export function getFilteredModel(model: OutlineNode[], filterOptions: FilterOptions[]): OutlineNode[] {
     let filteredModel: OutlineNode[] = [];
@@ -59,9 +59,9 @@ export function getFilteredModel(model: OutlineNode[], filterOptions: FilterOpti
 /**
  * Filter by options.
  *
- * @param model
- * @param filterOption
- * @returns {OutlineNode[]}
+ * @param model OutlineNode[]
+ * @param filterOption FilterOptions
+ * @returns OutlineNode[]
  */
 function filterByQuery(model: OutlineNode[], filterOption: FilterOptions) {
     const filteredModel: OutlineNode[] = [];
@@ -98,9 +98,9 @@ function filterByQuery(model: OutlineNode[], filterOption: FilterOptions) {
 /**
  * Filter by commonly used control.
  *
- * @param model
- * @param filterOption
- * @returns {OutlineNode[]}
+ * @param model OutlineNode[]
+ * @param filterOption FilterOptions
+ * @returns OutlineNode[]
  */
 function filterByCommonlyUsedControls(model: OutlineNode[], filterOption: FilterOptions) {
     const filteredModel: OutlineNode[] = [];

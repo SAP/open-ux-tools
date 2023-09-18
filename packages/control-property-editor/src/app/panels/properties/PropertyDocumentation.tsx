@@ -27,8 +27,8 @@ export interface PropertyDocumentationProps {
 /**
  * React element PropertyDocumentation.
  *
- * @param propDocProps
- * @returns {ReactElement}
+ * @param propDocProps PropertyDocumentationProps
+ * @returns ReactElement
  */
 export function PropertyDocumentation(propDocProps: PropertyDocumentationProps): ReactElement {
     const { propertyName, title, defaultValue, description, propertyType, onDelete } = propDocProps;
@@ -131,8 +131,8 @@ interface ModifiedProps {
 /**
  * React element Modified.
  *
- * @param modifiedProps
- * @returns {ReactElement}
+ * @param modifiedProps ModifiedProps
+ * @returns ReactElement
  */
 function Modified(modifiedProps: ModifiedProps): ReactElement {
     const { pending, saved } = modifiedProps;
@@ -155,8 +155,8 @@ interface DocumentationRowProps {
 /**
  * React element DocumentationRow.
  *
- * @param documentationRowProps
- * @returns {ReactElement}
+ * @param documentationRowProps DocumentationRowProps
+ * @returns ReactElement
  */
 function DocumentationRow(documentationRowProps: DocumentationRowProps): ReactElement {
     const { label, value } = documentationRowProps;

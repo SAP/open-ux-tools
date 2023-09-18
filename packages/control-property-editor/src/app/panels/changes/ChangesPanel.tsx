@@ -20,7 +20,7 @@ import styles from './ChangesPanel.module.scss';
 /**
  * React element for ChangePanel.
  *
- * @returns {ReactElement}
+ * @returns ReactElement
  */
 export function ChangesPanel(): ReactElement {
     const { t } = useTranslation();
@@ -37,7 +37,7 @@ export function ChangesPanel(): ReactElement {
     /**
      * Method renders the ReactElement for ChangePanel.
      *
-     * @returns {ReactElement}
+     * @returns ReactElement
      */
     function renderChanges(): ReactElement {
         if (pending.length === 0 && saved.length === 0) {

@@ -12,8 +12,8 @@ export interface ToolbarProps {
 /**
  * React element with children.
  *
- * @param propsWithChildren
- * @returns {ReactElement}
+ * @param propsWithChildren PropsWithChildren<ToolbarProps>
+ * @returns ReactElement
  */
 export function Toolbar(propsWithChildren: PropsWithChildren<ToolbarProps>): ReactElement {
     const { left, right, children } = propsWithChildren;

@@ -27,8 +27,8 @@ import type { RootState } from '../../store';
 /**
  * React element for string editor in property panel.
  *
- * @param propertyInputProps
- * @returns {ReactElement}
+ * @param propertyInputProps PropertyInputProps
+ * @returns ReactElement
  */
 export function StringEditor(propertyInputProps: PropertyInputProps): ReactElement {
     const {

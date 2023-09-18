@@ -8,8 +8,8 @@ interface SeparatorProps {
 /**
  * React element for seperator.
  *
- * @param separatorProps
- * @returns {ReactElement}
+ * @param separatorProps SeparatorProps & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+ * @returns ReactElement
  */
 export function Separator(
     separatorProps: SeparatorProps & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>

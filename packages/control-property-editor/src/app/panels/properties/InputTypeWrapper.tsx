@@ -128,8 +128,8 @@ export const getInputTypeToggleOptions = (property: ControlProperty, t?: TFuncti
 /**
  * React element for input type wrapper.
  *
- * @param props
- * @returns {ReactElement}
+ * @param props InputTypeWrapperProps
+ * @returns ReactElement
  */
 export function InputTypeWrapper(props: InputTypeWrapperProps): ReactElement {
     const { property, changes } = props;
@@ -152,8 +152,8 @@ export function InputTypeWrapper(props: InputTypeWrapperProps): ReactElement {
 
     /**
      *
-     * @param controlId
-     * @param propertyName
+     * @param controlId string
+     * @param propertyName string
      */
     function showDeleteConfirmation(controlId: string, propertyName: string): void {
         setDialogState({

@@ -6,8 +6,8 @@ import type { InputTypeWrapperProps } from './types';
 /**
  * Input type selector.
  *
- * @param props
- * @returns {ReactElement}
+ * @param props InputTypeWrapperProps
+ * @returns ReactElement
  */
 export function InputTypeSelector(props: InputTypeWrapperProps): ReactElement {
     return (

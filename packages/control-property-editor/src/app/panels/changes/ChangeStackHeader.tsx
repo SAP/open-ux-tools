@@ -14,8 +14,8 @@ export interface ChangeStackHeaderProps {
 /**
  * React element of header of change stack.
  *
- * @param changeStackHeaderProps
- * @returns {ReactElement}
+ * @param changeStackHeaderProps ChangeStackHeaderProps
+ * @returns ReactElement
  */
 export function ChangeStackHeader(changeStackHeaderProps: ChangeStackHeaderProps): ReactElement {
     const { backgroundColor, color, text } = changeStackHeaderProps;

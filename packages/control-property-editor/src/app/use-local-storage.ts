@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 /**
  * Get full control key.
  *
- * @param key
- * @returns {string}
+ * @param key string
+ * @returns string - key value
  */
 function fullKey(key: string): string {
     return `com.sap.ux.control-property-editor.${key}`;
@@ -13,9 +13,9 @@ function fullKey(key: string): string {
 /**
  * Use local storage.
  *
- * @param key
- * @param defaultValue
- * @returns {[T, React.Dispatch<T>]}
+ * @param key string
+ * @param defaultValue T
+ * @returns [value, setValue] [T, React.Dispatch<T>]
  */
 export function useLocalStorage<T>(key: string, defaultValue: T): [T, React.Dispatch<T>] {
     const [value, setValue] = useState(() => {

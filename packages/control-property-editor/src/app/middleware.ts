@@ -16,7 +16,7 @@ import { changeProperty } from './slice';
  * Communication between preview iframe and main application is realized through the communication middleware.
  *
  * @param store - redux store
- * @returns {Function}
+ * @returns Function
  */
 export const communicationMiddleware: Middleware<Dispatch<Action>> = (store: MiddlewareAPI) => {
     const { sendAction } = startPostMessageCommunication<ExternalAction>(

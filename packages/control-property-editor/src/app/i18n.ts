@@ -4,7 +4,7 @@ import * as i18nEn from './i18n/i18n.json';
 
 /**
  *
- * @param language
+ * @param language default to 'en'
  */
 export function initI18n(language = 'en'): void {
     i18n.use(initReactI18next)

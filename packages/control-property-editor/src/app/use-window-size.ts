@@ -10,7 +10,7 @@ export interface WindowSize {
 /**
  * Gets state of window size.
  *
- * @returns {WindowSize}
+ * @returns WindowSize
  */
 export function useWindowSize(): WindowSize {
     const [windowSize, setWindowSize] = useState<WindowSize>({
