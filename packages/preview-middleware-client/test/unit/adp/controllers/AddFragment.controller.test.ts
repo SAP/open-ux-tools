@@ -23,11 +23,9 @@ describe('AddFragment', () => {
         });
 
         test('fills json model with data', async () => {
-            const overlays = [
-                {
-                    getId: jest.fn().mockReturnValue('some-id')
-                }
-            ];
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
 
             ControlUtils.getRuntimeControl = jest.fn().mockReturnValue({
                 getMetadata: jest.fn().mockReturnValue({
@@ -57,11 +55,14 @@ describe('AddFragment', () => {
             };
             sapCoreMock.byId.mockReturnValue(overlayControl);
 
-            const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                overlays as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
             addFragment.byId = jest.fn().mockReturnValue({
                 open: jest.fn()
             });
-            addFragment.overlays = overlays as unknown as UI5Element[];
 
             await addFragment.onInit();
         });
@@ -73,7 +74,11 @@ describe('AddFragment', () => {
         });
 
         test('on selected aggragations changed', () => {
-            const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
 
             const event = {
                 getSource: jest.fn().mockReturnValue({
@@ -95,38 +100,17 @@ describe('AddFragment', () => {
         });
     });
 
-    describe('onIndexChanged', () => {
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
-
-        test('on selected aggragations changed', () => {
-            const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
-
-            const event = {
-                getSource: jest.fn().mockReturnValue({
-                    getSelectedItem: jest.fn().mockReturnValue({ getText: jest.fn().mockReturnValue('0') })
-                })
-            };
-
-            const setPropSpy = jest.fn();
-            addFragment.model = {
-                setProperty: setPropSpy
-            } as unknown as JSONModel;
-
-            addFragment.onIndexChanged(event as unknown as Event);
-
-            expect(setPropSpy.mock.calls.length).toBe(1);
-        });
-    });
-
     describe('onFragmentNameInputChange', () => {
         afterEach(() => {
             jest.restoreAllMocks();
         });
 
         test('sets error when fragment with the same named already exists', () => {
-            const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
 
             const valueStateSpy = jest.fn();
             const event = {
@@ -152,7 +136,11 @@ describe('AddFragment', () => {
         });
 
         test('sets error when the fragment name is empty', () => {
-            const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
 
             const valueStateSpy = jest.fn();
             const event = {
@@ -178,7 +166,11 @@ describe('AddFragment', () => {
         });
 
         test('sets error when the fragment name is has special characters', () => {
-            const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
 
             const valueStateSpy = jest.fn();
             const event = {
@@ -204,7 +196,11 @@ describe('AddFragment', () => {
         });
 
         test('sets create button to true when the fragment name is valid', () => {
-            const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
 
             const valueStateSpy = jest.fn();
             const event = {
@@ -236,7 +232,11 @@ describe('AddFragment', () => {
         });
 
         test('creates new fragment', async () => {
-            const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
 
             const event = {
                 getSource: jest.fn().mockReturnValue({
@@ -270,7 +270,11 @@ describe('AddFragment', () => {
         });
 
         test('creates new fragment', async () => {
-            const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
 
             fetchMock.mockResolvedValue({
                 json: jest.fn(),
@@ -298,7 +302,11 @@ describe('AddFragment', () => {
         });
 
         test('creates new fragment', async () => {
-            const addFragment = new AddFragment('adp.extension.controllers.AddFragment');
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
 
             fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue({ id: '', reference: '', namespace: '', layer: '' }),
