@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.8
+
+### Patch Changes
+
+-   6ab0976e: fix(uitable): fix waitFor function
+
 ## 1.11.7
 
 ### Patch Changes
