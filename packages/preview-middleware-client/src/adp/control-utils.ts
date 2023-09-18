@@ -38,10 +38,6 @@ export default class ControlUtils {
         };
 
         if (aggregation) {
-            if (!aggregation._sGetter && !control.__calledJSONKeys) {
-                // Performance optimization
-                control.__calledJSONKeys = true;
-            }
             // This executes a _sGetter function that can vary from control to control (_sGetter can be: getContent, getItems, etc)
             result = (aggregation._sGetter && control[aggregation._sGetter]()) || [];
 
