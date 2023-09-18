@@ -38733,7 +38733,7 @@ appDescription=A Fiori application.",
   },
   "webapp/manifest.json": Object {
     "contents": "{
-  \\"_version\\": \\"1.49.0\\",
+  \\"_version\\": \\"1.51.0\\",
   \\"sap.app\\": {
     \\"id\\": \\"lropV2_ts_ui5_1_111\\",
     \\"type\\": \\"application\\",
@@ -42214,7 +42214,7 @@ appDescription=A Fiori application.",
   },
   "webapp/manifest.json": Object {
     "contents": "{
-  \\"_version\\": \\"1.49.0\\",
+  \\"_version\\": \\"1.53.0\\",
   \\"sap.app\\": {
     \\"id\\": \\"lropV2_ts_ui5_1_113\\",
     \\"type\\": \\"application\\",
