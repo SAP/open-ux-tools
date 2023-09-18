@@ -94,18 +94,19 @@ export default class AddFragment extends Controller {
     onAggregationChanged(event: Event) {
         const source = event.getSource<ComboBox>();
 
-        let selectedItem = '';
-        if (source.getSelectedItem()) {
-            selectedItem = source.getSelectedItem()?.getText() || '';
+        const selectedKey = source.getSelectedKey();
+        const selectedItem = source.getSelectedItem();
+
+        let selectedItemText = '';
+        if (selectedItem) {
+            selectedItemText = selectedItem.getText();
         }
 
-        const selectedKey = source.getSelectedKey();
-
         this.model.setProperty('/selectedAggregation/key', selectedKey);
-        this.model.setProperty('/selectedAggregation/value', selectedItem);
+        this.model.setProperty('/selectedAggregation/value', selectedItemText);
 
         let newSelectedControlChildren: string[] | number[] = Object.keys(
-            ControlUtils.getControlAggregationByName(this.runtimeControl, selectedItem)
+            ControlUtils.getControlAggregationByName(this.runtimeControl, selectedItemText)
         );
 
         newSelectedControlChildren = newSelectedControlChildren.map((key) => {

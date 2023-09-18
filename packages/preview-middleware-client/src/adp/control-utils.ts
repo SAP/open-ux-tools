@@ -36,12 +36,11 @@ export default class ControlUtils {
 
         if (aggregation) {
             // This executes a _sGetter function that can vary from control to control (_sGetter can be: getContent, getItems, etc)
-            const names = (aggregation._sGetter && (control as ManagedObject & { [key: string]: () => unknown })[aggregation._sGetter]()) || [];
+            const names =
+                (aggregation._sGetter &&
+                    (control as ManagedObject & { [key: string]: () => unknown })[aggregation._sGetter]()) ||
+                [];
 
-            // The aggregation has primitive alternative type
-            if (typeof names !== 'object') {
-                result = [];
-            }
             result = Array.isArray(names) ? names : [names];
         }
         return result;
