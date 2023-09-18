@@ -1,5 +1,8 @@
 /** sap.m */
+import Input from 'sap/m/Input';
+import Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
+import type ComboBox from 'sap/m/ComboBox';
 import MessageToast from 'sap/m/MessageToast';
 
 /** sap.ui.core */
@@ -9,7 +12,6 @@ import Controller from 'sap/ui/core/mvc/Controller';
 
 /** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
-import type EventProvider from 'sap/ui/base/EventProvider';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
@@ -26,22 +28,6 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
 import { ManifestAppdescr, getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
-
-type ExtendedEventProvider = EventProvider & {
-    setEnabled: (v: boolean) => void;
-    getValue: () => string;
-    getSelectedItem: () => {
-        getTitle: () => string;
-        getText: () => string;
-        getCustomData: () => {
-            [key: string]: () => void;
-        }[];
-    };
-    getSelectedKey: () => string;
-    setValueState: (state: ValueState) => void;
-    setValueStateText: (text: string) => void;
-    setVisible: (bool: boolean) => void;
-};
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -68,11 +54,11 @@ export default class AddFragment extends Controller {
     /**
      * Runtime Authoring
      */
-    public rta: RuntimeAuthoring;
+    private rta: RuntimeAuthoring;
     /**
-     * Controll Overlays
+     * Control Overlays
      */
-    public overlays: UI5Element;
+    private overlays: UI5Element;
     /**
      * RTA Command Executor
      */
@@ -80,8 +66,9 @@ export default class AddFragment extends Controller {
 
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
         super(name);
-        this.overlays = overlays;
         this.rta = rta;
+        this.overlays = overlays;
+        this.commandExecutor = new CommandExecutor(this.rta);
     }
 
     /**
@@ -89,7 +76,6 @@ export default class AddFragment extends Controller {
      */
     async onInit() {
         this.model = new JSONModel();
-        this.commandExecutor = new CommandExecutor(this.rta);
 
         this.dialog = this.byId('addNewFragmentDialog') as unknown as Dialog;
 
@@ -106,11 +92,13 @@ export default class AddFragment extends Controller {
      * @param event Event
      */
     onAggregationChanged(event: Event) {
+        const source = event.getSource<ComboBox>();
+
         let selectedItem = '';
-        const source = event.getSource<ExtendedEventProvider>();
         if (source.getSelectedItem()) {
-            selectedItem = source.getSelectedItem().getText();
+            selectedItem = source.getSelectedItem()?.getText() || '';
         }
+
         const selectedKey = source.getSelectedKey();
 
         this.model.setProperty('/selectedAggregation/key', selectedKey);
@@ -136,9 +124,9 @@ export default class AddFragment extends Controller {
      * @param event Event
      */
     onIndexChanged(event: Event) {
-        const source = event.getSource<ExtendedEventProvider>();
-        const selectedIndex = source.getSelectedItem().getText();
-        this.model.setProperty('/selectedIndex', parseInt(selectedIndex));
+        const source = event.getSource<ComboBox>();
+        const selectedIndex = source.getSelectedItem()?.getText();
+        this.model.setProperty('/selectedIndex', selectedIndex);
     }
 
     /**
@@ -147,7 +135,8 @@ export default class AddFragment extends Controller {
      * @param event Event
      */
     onFragmentNameInputChange(event: Event) {
-        const source = event.getSource<ExtendedEventProvider>();
+        const source = event.getSource<Input>();
+
         const fragmentName: string = source.getValue().trim();
         const fragmentList: { fragmentName: string }[] = this.model.getProperty(
             '/filteredFragmentList/unFilteredFragmentList'
@@ -190,7 +179,7 @@ export default class AddFragment extends Controller {
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
-        const source = event.getSource<ExtendedEventProvider>();
+        const source = event.getSource<Button>();
         source.setEnabled(false);
 
         const fragmentName = this.model.getProperty('/fragmentNameToCreate');
@@ -217,7 +206,7 @@ export default class AddFragment extends Controller {
     /**
      * Handles the dialog closing and destruction of it
      */
-    private handleDialogClose() {
+    handleDialogClose() {
         this.dialog.close();
         this.getView()?.destroy();
     }
@@ -225,7 +214,7 @@ export default class AddFragment extends Controller {
     /**
      * Builds data that is used in the dialog
      */
-    public async buildDialogData(): Promise<void> {
+    async buildDialogData(): Promise<void> {
         const selectorId = this.overlays.getId();
 
         let controlMetadata: ManagedObjectMetadata;
@@ -342,7 +331,7 @@ export default class AddFragment extends Controller {
      * @param fragmentData.fragmentName Fragment name
      * @param fragmentData.targetAggregation Target aggregation for control
      */
-    private async createNewFragment(fragmentData: CreateFragmentProps): Promise<void> {
+    async createNewFragment(fragmentData: CreateFragmentProps): Promise<void> {
         const { fragmentName, index, targetAggregation } = fragmentData;
         try {
             await writeFragment<unknown>({ fragmentName });
@@ -361,7 +350,7 @@ export default class AddFragment extends Controller {
      *
      * @param fragmentData Fragment Data
      */
-    private async createFragmentChange(fragmentData: CreateFragmentProps) {
+    async createFragmentChange(fragmentData: CreateFragmentProps) {
         const { fragmentName, index, targetAggregation } = fragmentData;
         let manifest: ManifestAppdescr;
         try {

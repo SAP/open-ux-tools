@@ -4,10 +4,11 @@ import type UI5Element from 'sap/ui/core/Element';
 import type JSONModel from 'sap/ui/model/json/JSONModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
+import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
+import { fetchMock, sapCoreMock } from 'mock/window';
+
 import ControlUtils from '../../../../src/adp/control-utils';
 import AddFragment from '../../../../src/adp/controllers/AddFragment.controller';
-import CommandExecutor from '../../../../src/adp/command-executor';
-import { fetchMock, sapCoreMock } from 'mock/window';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -253,9 +254,9 @@ describe('AddFragment', () => {
             } as unknown as JSONModel;
 
             const createFragmentSpy = jest.fn();
-            // @ts-ignore
+
             addFragment.createNewFragment = createFragmentSpy;
-            // @ts-ignore
+
             addFragment.handleDialogClose = jest.fn();
 
             await addFragment.onCreateBtnPress(event as unknown as Event);
@@ -286,10 +287,8 @@ describe('AddFragment', () => {
 
             const createChangeSpy = jest.fn();
 
-            // @ts-ignore
             addFragment.createFragmentChange = createChangeSpy;
 
-            // @ts-ignore
             await addFragment.createNewFragment(fragmentData);
 
             expect(createChangeSpy.mock.calls.length).toBe(1);
@@ -302,10 +301,15 @@ describe('AddFragment', () => {
         });
 
         test('creates new fragment', async () => {
+            const executeSpy = jest.fn();
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                {
+                    getCommandStack: jest.fn().mockReturnValue({
+                        pushAndExecute: executeSpy
+                    })
+                } as unknown as RuntimeAuthoring
             );
 
             fetchMock.mockResolvedValue({
@@ -316,17 +320,11 @@ describe('AddFragment', () => {
 
             const fragmentData = { fragmentName: 'Share', index: 0, targetAggregation: 'content' };
 
-            const executorSpy = jest.fn();
+            CommandFactory.getCommandFor = jest.fn().mockReturnValue({});
 
-            // @ts-ignore
-            addFragment.commandExecutor = new CommandExecutor({} as unknown as RuntimeAuthoring);
-            // @ts-ignore
-            addFragment.commandExecutor.generateAndExecuteCommand = executorSpy;
-
-            // @ts-ignore
             await addFragment.createFragmentChange(fragmentData);
 
-            expect(executorSpy.mock.calls.length).toBe(1);
+            expect(executeSpy.mock.calls.length).toBe(1);
         });
     });
 });
