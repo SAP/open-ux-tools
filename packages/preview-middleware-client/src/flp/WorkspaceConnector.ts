@@ -49,9 +49,7 @@ const connector = merge({}, ObjectStorageConnector, {
 
         const ui5Version = (await VersionInfo.load()) as { version: string };
         const [majorVersion, minorVersion] = ui5Version.version.split('.').map((v: string) => parseInt(v, 10));
-        if (majorVersion >= 1 && minorVersion >= 90) {
-            features.isVariantAdaptationEnabled = true;
-        }
+        features.isVariantAdaptationEnabled = majorVersion >= 1 && minorVersion >= 90;  
 
         const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
         if (bootstrapConfig) {
