@@ -107,7 +107,7 @@ export default class AddFragment extends Controller {
      */
     onAggregationChanged(event: Event) {
         let selectedItem = '';
-        const source = event.getSource() as ExtendedEventProvider;
+        const source = event.getSource<ExtendedEventProvider>();
         if (source.getSelectedItem()) {
             selectedItem = source.getSelectedItem().getText();
         }
@@ -136,7 +136,7 @@ export default class AddFragment extends Controller {
      * @param event Event
      */
     onIndexChanged(event: Event) {
-        const source = event.getSource() as ExtendedEventProvider;
+        const source = event.getSource<ExtendedEventProvider>();
         const selectedIndex = source.getSelectedItem().getText();
         this.model.setProperty('/selectedIndex', parseInt(selectedIndex));
     }
@@ -147,23 +147,23 @@ export default class AddFragment extends Controller {
      * @param event Event
      */
     onFragmentNameInputChange(event: Event) {
-        const source = event.getSource() as ExtendedEventProvider;
+        const source = event.getSource<ExtendedEventProvider>();
         const fragmentName: string = source.getValue().trim();
         const fragmentList: { fragmentName: string }[] = this.model.getProperty(
             '/filteredFragmentList/unFilteredFragmentList'
         );
-
-        const fileExists = fragmentList.find((f: { fragmentName: string }) => {
-            return f.fragmentName === `${fragmentName}.fragment.xml`;
-        });
-
-        const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName);
 
         if (fragmentName.length <= 0) {
             this.dialog.getBeginButton().setEnabled(false);
             source.setValueState(ValueState.None);
             this.model.setProperty('/fragmentNameToCreate', null);
         } else {
+            const fileExists = fragmentList.find((f: { fragmentName: string }) => {
+                return f.fragmentName === `${fragmentName}.fragment.xml`;
+            });
+
+            const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName);
+
             if (fileExists) {
                 source.setValueState(ValueState.Error);
                 source.setValueStateText(
@@ -190,7 +190,7 @@ export default class AddFragment extends Controller {
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
-        const source = event.getSource() as ExtendedEventProvider;
+        const source = event.getSource<ExtendedEventProvider>();
         source.setEnabled(false);
 
         const fragmentName = this.model.getProperty('/fragmentNameToCreate');
