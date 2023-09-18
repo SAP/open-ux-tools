@@ -74,7 +74,7 @@ describe('AddFragment', () => {
             jest.restoreAllMocks();
         });
 
-        test('on selected aggragations changed', () => {
+        test('on selected aggregations changed', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
