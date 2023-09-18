@@ -28,7 +28,7 @@ export default class ControlUtils {
      * @param name Aggregation name
      * @returns Array of control aggregations
      */
-    public static getControlAggregationByName(control: ManagedObject & { [key: string]: any }, name: string) {
+    public static getControlAggregationByName(control: ManagedObject & { [key: string]: Function }, name: string) {
         let result = [];
         const aggregation = (control ? control.getMetadata().getAllAggregations() : {})[name] as unknown as object & {
             _sGetter: string;
