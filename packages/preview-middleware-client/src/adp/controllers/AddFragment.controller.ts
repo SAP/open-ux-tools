@@ -153,37 +153,34 @@ export default class AddFragment extends Controller {
             '/filteredFragmentList/unFilteredFragmentList'
         );
 
-        const iExistingFileIndex = fragmentList.findIndex((f: { fragmentName: string }) => {
+        const fileExists = fragmentList.find((f: { fragmentName: string }) => {
             return f.fragmentName === `${fragmentName}.fragment.xml`;
         });
 
-        switch (true) {
-            case iExistingFileIndex >= 0:
+        const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName);
+
+        if (fragmentName.length <= 0) {
+            this.dialog.getBeginButton().setEnabled(false);
+            source.setValueState(ValueState.None);
+            this.model.setProperty('/fragmentNameToCreate', null);
+        } else {
+            if (fileExists) {
                 source.setValueState(ValueState.Error);
                 source.setValueStateText(
                     'Enter a different name. The fragment name that you entered already exists in your project.'
                 );
                 this.dialog.getBeginButton().setEnabled(false);
                 this.model.setProperty('/fragmentNameToCreate', null);
-                break;
-            case fragmentName.length <= 0:
-                this.dialog.getBeginButton().setEnabled(false);
-                source.setValueState(ValueState.None);
-                this.model.setProperty('/fragmentNameToCreate', null);
-                break;
-            case !/^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName):
+            } else if (!isValidName) {
                 source.setValueState(ValueState.Error);
                 source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
                 this.dialog.getBeginButton().setEnabled(false);
                 this.model.setProperty('/fragmentNameToCreate', null);
-                break;
-            case fragmentName.length > 0:
+            } else {
                 this.dialog.getBeginButton().setEnabled(true);
                 source.setValueState(ValueState.None);
                 this.model.setProperty('/fragmentNameToCreate', fragmentName);
-                break;
-            default:
-                break;
+            }
         }
     }
 
