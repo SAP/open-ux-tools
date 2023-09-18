@@ -1,24 +1,21 @@
 {
-  "extends": "./tsconfig-base.json",
-  "compilerOptions": {
-    "lib": [
-      "ES2021",
-      "DOM"
-    ],
-    "strict": true,
-    "strictNullChecks": true
-  },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts"
-  ],
-  "exclude": [
-    "dist",
-    "coverage"
-  ],
-  "references": [
-    {
-      "path": "../logger"
-    }
-  ]
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "incremental": true,
+        "lib": ["ES2021", "DOM"],
+        "strictNullChecks": true,
+        "outDir": "dist",
+        "rootDir": "src",
+        "baseUrl": ".",
+        "types": ["node", "jest"],
+        "moduleResolution": "node",
+        "useUnknownInCatchVariables": false
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["dist", "node_modules", "coverage"],
+    "references": [
+        {
+            "path": "../logger"
+        }
+    ]
 }
