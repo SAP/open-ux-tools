@@ -18,7 +18,7 @@
     "skipLibCheck": true,
     "preserveConstEnums": true,
     "importsNotUsedAsValues": "remove",
-    "baseUrl": ".", // This must be specified if "paths" is.
+    "baseUrl": ".",
     "paths": {
       "packages/*": ["packages/*"]
     },
