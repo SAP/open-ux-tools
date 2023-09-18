@@ -44,7 +44,7 @@ declare module 'sap/ui/rta/command/CommandFactory' {
         getCommandFor<T extends BaseCommand = BaseCommand>(
             control: Element | ManagedObject | string,
             commandType: string,
-            settings: any,
+            settings: object,
             designTimeMetadata?: DesignTimeMetadata | null,
             flexSettings?: FlexSettings
         ): Promise<T>;
