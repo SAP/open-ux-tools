@@ -72,11 +72,17 @@ export default class AddFragment extends Controller {
     /**
      * Controll Overlays
      */
-    public overlays: UI5Element[];
+    public overlays: UI5Element;
     /**
      * RTA Command Executor
      */
     private commandExecutor: CommandExecutor;
+
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
+        super(name);
+        this.overlays = overlays;
+        this.rta = rta;
+    }
 
     /**
      * Initializes controller, fills model with data and opens the dialog
@@ -189,13 +195,16 @@ export default class AddFragment extends Controller {
     async onCreateBtnPress(event: Event) {
         const source = event.getSource() as ExtendedEventProvider;
         source.setEnabled(false);
-        // Need to create a new fragment and a respective change file
-        const fragmentNameToCreate = this.model.getProperty('/fragmentNameToCreate');
+
+        const fragmentName = this.model.getProperty('/fragmentNameToCreate');
+        const index = parseInt(this.model.getProperty('/selectedIndex'));
+        const targetAggregation = this.model.getProperty('/selectedAggregation/value');
         const fragmentData = {
-            fragmentName: fragmentNameToCreate,
-            index: this.model.getProperty('/selectedIndex'),
-            targetAggregation: this.model.getProperty('/selectedAggregation/value')
+            index,
+            fragmentName,
+            targetAggregation
         };
+
         await this.createNewFragment(fragmentData);
 
         this.handleDialogClose();
@@ -220,7 +229,7 @@ export default class AddFragment extends Controller {
      * Builds data that is used in the dialog
      */
     public async buildDialogData(): Promise<void> {
-        const selectorId = this.overlays[0].getId();
+        const selectorId = this.overlays.getId();
 
         let controlMetadata: ManagedObjectMetadata;
 

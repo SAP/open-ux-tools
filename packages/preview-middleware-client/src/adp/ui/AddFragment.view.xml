@@ -1,7 +1,7 @@
-<core:FragmentDefinition 
-    xmlns="sap.m" 
+<mvc:View xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
     xmlns:core="sap.ui.core"
-    xmlns:f="sap.ui.layout.form" >
+    xmlns:f="sap.ui.layout.form">
         <Dialog id="addNewFragmentDialog" title="Add XML Fragment" contentWidth="500px" class="sapUiRTABorder">
             <content>
                 <f:SimpleForm id="addNewFragmentDialog_Form"
@@ -24,7 +24,6 @@
                         </ComboBox>
                         <Label text="Index" />
                         <ComboBox
-                            change="onIndexChanged"
                             selectedKey='{/selectedIndex}'
                             items="{
                                 path: '/index',
@@ -57,4 +56,4 @@
                     type="Reject" />
             </endButton>
         </Dialog>
-</core:FragmentDefinition>
+</mvc:View>
