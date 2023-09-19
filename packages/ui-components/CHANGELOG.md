@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.10
+
+### Patch Changes
+
+-   777d9d9d: chore(deps): update babel dependencies
+
 ## 1.11.9
 
 ### Patch Changes
