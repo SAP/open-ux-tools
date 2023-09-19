@@ -40,35 +40,32 @@ interface Change {
     content: ChangeContent;
     creation: string;
 }
+
+type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
 /**
- * Look up property values in object (including nested).
+ * Assert change for its validity. Throws error if no value found in saved changes.
  *
- * @param property Path to property using "." to separate nested structures
- * @param object any
- * @returns any
+ * @param properties array of property name
+ * @param target object which will be checked
  */
-function getValue(property: string, object: Change): string | undefined {
-    const segments = property.split('.');
-    let current: any = object;
-    for (const segment of segments) {
-        current = current[segment];
+function assertProperties<T extends object>(properties: Properties<T>[], target: T): void {
+    for (const property of properties) {
+        const value = target[property];
+        if (value === null || value === undefined) {
+            throw new Error(`Invalid change, missing ${property} in the change file`);
+        }
     }
-    return current;
 }
 
 /**
  * Assert change for its validity. Throws error if no value found in saved changes.
  *
- * @param properties array of property name
- * @param target any
+ * @param change Change object
  */
-function assertChange(properties: string[], target: Change): void {
-    for (const property of properties) {
-        const value = getValue(property, target);
-        if (value === null || value === undefined) {
-            throw new Error(`Invalid change, missing ${property} in the change file`);
-        }
-    }
+function assertChange(change: Change): void {
+    assertProperties(['fileName', 'selector', 'content', 'creation'], change);
+    assertProperties(['id'], change.selector);
+    assertProperties(['property'], change.content);
 }
 
 /**
@@ -140,7 +137,7 @@ export class ChangeService {
                 .map((key): SavedPropertyChange | UnknownSavedChange | undefined => {
                     const change: Change = savedChanges[key];
                     try {
-                        assertChange(['fileName', 'selector.id', 'content.property', 'creation'], change);
+                        assertChange(change);
                         if (
                             [change.content.newValue, change.content.newBinding].every(
                                 (item) => item === undefined || item === null

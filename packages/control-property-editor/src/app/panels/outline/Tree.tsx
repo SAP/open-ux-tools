@@ -111,7 +111,13 @@ export const Tree = (): ReactElement => {
         } else if (item) {
             let current: IGroup | IGroup[] | undefined = groups;
             for (const segment of item.path) {
-                current = (current as any)[segment];
+                if (Array.isArray(current)) {
+                    current = current[parseInt(segment, 10)];
+                } else if (current && segment === 'children') {
+                    current = current.children;
+                } else {
+                    current = undefined;
+                }
                 if (!Array.isArray(current) && current) {
                     current.isCollapsed = false;
                 }
