@@ -18,8 +18,6 @@ It hosts a local Fiori launchpad based on your configuration as well as offers a
 | `rta`                  |           |                  | Optional configuration allowing to add mount points for runtime adaptation                                                          |
 | `rta.layer`            | `string`  | `(calculated)`   | Optional property for defining the runtime adaptation layer for changes (default is `CUSTOMER_BASE` or read from the project for adaptation projects) |
 | `rta.editors`          | `array`   | `undefined`      | Optional list of mount points for editing                                                                                           |
-
-
 | `debug`                | `boolean` | `false`          | Enables debug output                                                                                                                |
 
 ### `flp.apps`
@@ -44,7 +42,6 @@ Array of additional application configurations:
 | Option          | Type               | Description                                                                                    |
 | --------------- | -------------------| -----------------------------------------------------------------------------------------------|
 | `path`          | `string` mandatory | The mount point to be used for the editor.                                                     |
-| `developerMode` | `boolean` optional | Enables/disables the runtime adaptation developer mode (only supported for adaptation projects |
 
 
 ## Usage
@@ -52,7 +49,7 @@ The middleware can be used without configuration. However, since the middleware 
 Example: [./test/fixtures/simple-app/ui5.yaml](./test/fixtures/simple-app/ui5.yaml) 
 
 ### Minimal Configuration
-With no configuration provided, the app will be local FLP will be available at `/test/flp.html` and the log level is `info`.
+With no configuration provided, the local FLP will be available at `/test/flp.html` and the log level is `info`.
 ```Yaml
 server:
   customMiddleware:
@@ -61,7 +58,7 @@ server:
 ```
 
 ### Different Path and Debugging enabled
-With this configuration, the app will be local FLP will be available at `/preview.html` and the log level is `debug`.
+With this configuration, the local FLP will be available at `/test/myFLP.html` and the log level is `debug`.
 ```Yaml
 server:
   customMiddleware:
@@ -69,7 +66,7 @@ server:
     afterMiddleware: compression
     configuration:
       flp: 
-        path: /preview.html
+        path: /test/myFLP.html
       debug: true
 ```
 
@@ -98,12 +95,12 @@ server:
       rta:
         layer: CUSTOMER_BASE
         editors:
-          - path: /local/variant-editor.html
+          - path: /test/variant-editor.html
 ```
 
 
 ### Adaptation Project
-If you want to use the middleware in an adaption project, the additional `adp` object needs to be configured. This example would preview a local adaptation project merged with its reference application from the target system at `http://sap.example` and it will ignore certification validation errors. For adaptation projects, it is also recommended to add the `rta` configuration allowing to edit the project.
+If you want to use the middleware in an adaption project, the additional `adp` object needs to be configured. This example would preview a local adaptation project merged with its reference application from the target system at `http://sap.example` and it will ignore certification validation errors.
 ```Yaml
 server:
   customMiddleware:
@@ -114,10 +111,6 @@ server:
         target: 
           url: http://sap.example
         ignoreCertErrors: true
-      rta:
-        editors:
-          - path: /adp/editor.html
-            developerMode: true
 ```
 
 ### Programmatic Usage
