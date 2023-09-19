@@ -1,7 +1,7 @@
-<core:FragmentDefinition 
-    xmlns="sap.m" 
+<mvc:View xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
     xmlns:core="sap.ui.core"
-    xmlns:f="sap.ui.layout.form" >
+    xmlns:f="sap.ui.layout.form">
         <Dialog id="extendNewControllerDialog" title="Extend With Controller" contentWidth="450px" class="sapUiRTABorder">
             <content>
                 <f:SimpleForm id="extendNewControllerDialog_Form"
@@ -35,4 +35,4 @@
                     type="Reject" />
             </endButton>
         </Dialog>
-</core:FragmentDefinition>
+</mvc:View>

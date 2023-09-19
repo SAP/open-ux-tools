@@ -33,7 +33,7 @@ type ExtendedEventProvider = EventProvider & {
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default class ExtendController extends Controller {
+export default class ControllerExtension extends Controller {
     /**
      * JSON Model that has the data
      */
@@ -45,11 +45,17 @@ export default class ExtendController extends Controller {
     /**
      * Runtime Authoring
      */
-    public rta: RuntimeAuthoring;
+    private rta: RuntimeAuthoring;
     /**
-     * Controll Overlays
+     * Control Overlays
      */
-    public overlays: UI5Element[];
+    private overlays: UI5Element;
+
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
+        super(name);
+        this.rta = rta;
+        this.overlays = overlays;
+    }
 
     /**
      * Initializes controller, fills model with data and opens the dialog
@@ -73,40 +79,37 @@ export default class ExtendController extends Controller {
      */
     onControllerNameInputChange(event: Event) {
         const source = event.getSource() as ExtendedEventProvider;
+
         const controllerName: string = source.getValue().trim();
         const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList');
 
-        const iExistingFileIndex = controllerList.findIndex((f: { controllerName: string }) => {
-            return f.controllerName === `${controllerName}.js`;
-        });
+        if (controllerName.length <= 0) {
+            this.dialog.getBeginButton().setEnabled(false);
+            source.setValueState(ValueState.None);
+            this.model.setProperty('/newControllerName', null);
+        } else {
+            const fileExists = controllerList.find((f: { controllerName: string }) => {
+                return f.controllerName === `${controllerName}.fragment.xml`;
+            });
 
-        switch (true) {
-            case iExistingFileIndex >= 0:
+            const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(controllerName);
+
+            if (fileExists) {
                 source.setValueState(ValueState.Error);
                 source.setValueStateText(
                     'Enter a different name. The controller name that you entered already exists in your project.'
                 );
                 this.dialog.getBeginButton().setEnabled(false);
                 this.model.setProperty('/newControllerName', null);
-                break;
-            case controllerName.length <= 0:
-                this.dialog.getBeginButton().setEnabled(false);
-                source.setValueState(ValueState.None);
-                this.model.setProperty('/newControllerName', null);
-                break;
-            case !/^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(controllerName):
+            } else if (!isValidName) {
                 source.setValueState(ValueState.Error);
                 source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
                 this.dialog.getBeginButton().setEnabled(false);
-                this.model.setProperty('/newControllerName', null);
-                break;
-            case controllerName.length > 0:
+            } else {
                 this.dialog.getBeginButton().setEnabled(true);
                 source.setValueState(ValueState.None);
                 this.model.setProperty('/newControllerName', controllerName);
-                break;
-            default:
-                break;
+            }
         }
     }
 
@@ -137,7 +140,7 @@ export default class ExtendController extends Controller {
     /**
      * Handles the dialog closing and destruction of it
      */
-    private handleDialogClose() {
+    handleDialogClose() {
         this.dialog.close();
         this.getView()?.destroy();
     }
@@ -146,8 +149,8 @@ export default class ExtendController extends Controller {
      * Builds data that is used in the dialog
      *
      */
-    public async buildDialogData(): Promise<void> {
-        const selectorId = this.overlays[0].getId();
+    async buildDialogData(): Promise<void> {
+        const selectorId = this.overlays.getId();
 
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
         const viewId: string = overlayControl.getElement().getId();
