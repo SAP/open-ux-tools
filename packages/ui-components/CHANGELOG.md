@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.12
+
+### Patch Changes
+
+-   a77300c4: chore(uic): re-fix the sleep function tests
+
 ## 1.11.11
 
 ### Patch Changes

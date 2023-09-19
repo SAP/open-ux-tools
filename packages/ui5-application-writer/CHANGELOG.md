@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 0.25.5
+
+### Patch Changes
+
+-   3137514f: use platform independent UI5 CDN URLs
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-config@0.19.2
+
 ## 0.25.4
 
 ### Patch Changes
