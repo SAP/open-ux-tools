@@ -1,5 +1,82 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.13.10
+
+### Patch Changes
+
+-   Updated dependencies [01fa690e]
+-   Updated dependencies [3137514f]
+    -   @sap-ux/fe-fpm-writer@0.23.4
+    -   @sap-ux/ui5-application-writer@0.25.5
+    -   @sap-ux/ui5-config@0.19.2
+    -   @sap-ux/odata-service-writer@0.14.32
+    -   @sap-ux/ui5-test-writer@0.1.10
+
+## 0.13.9
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/fe-fpm-writer@0.23.3
+    -   @sap-ux/odata-service-writer@0.14.31
+    -   @sap-ux/ui5-application-writer@0.25.4
+    -   @sap-ux/ui5-config@0.19.1
+    -   @sap-ux/ui5-test-writer@0.1.10
+
+## 0.13.8
+
+### Patch Changes
+
+-   Updated dependencies [7fd593f0]
+    -   @sap-ux/ui5-application-writer@0.25.3
+    -   @sap-ux/fe-fpm-writer@0.23.2
+    -   @sap-ux/odata-service-writer@0.14.30
+    -   @sap-ux/ui5-test-writer@0.1.10
+
+## 0.13.7
+
+### Patch Changes
+
+-   Updated dependencies [f50523da]
+    -   @sap-ux/odata-service-writer@0.14.30
+
+## 0.13.6
+
+### Patch Changes
+
+-   Updated dependencies [78e726a6]
+    -   @sap-ux/fe-fpm-writer@0.23.2
+
+## 0.13.5
+
+### Patch Changes
+
+-   Updated dependencies [98d40960]
+    -   @sap-ux/odata-service-writer@0.14.29
+
+## 0.13.4
+
+### Patch Changes
+
+-   a794dad7: Update ui5-tooling-transpile in templates
+-   Updated dependencies [a794dad7]
+    -   @sap-ux/ui5-application-writer@0.25.2
+
+## 0.13.3
+
+### Patch Changes
+
+-   Updated dependencies [da6aed84]
+    -   @sap-ux/fe-fpm-writer@0.23.1
+
+## 0.13.2
+
+### Patch Changes
+
+-   Updated dependencies [6e403f27]
+    -   @sap-ux/odata-service-writer@0.14.28
+
 ## 0.13.1
 
 ### Patch Changes

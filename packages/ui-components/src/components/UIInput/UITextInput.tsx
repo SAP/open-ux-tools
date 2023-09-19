@@ -10,6 +10,10 @@ export { ITextField, ITextFieldProps } from '@fluentui/react';
 
 export type UITextInputProps = ITextFieldProps & UIMessagesExtendedProps;
 
+export const COMMON_INPUT_STYLES = {
+    borderRadius: 2
+};
+
 const COLOR_STYLES = {
     regular: {
         backgroundColor: 'var(--vscode-input-background)',
@@ -91,7 +95,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         borderStyle: COLOR_STYLES.regular.borderStyle,
                         borderColor: COLOR_STYLES.regular.borderColor,
                         color: COLOR_STYLES.regular.color,
-                        borderRadius: 0,
+                        borderRadius: COMMON_INPUT_STYLES.borderRadius,
                         boxSizing: 'initial'
                     },
                     // Single line common styles
@@ -112,7 +116,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                     props.disabled && {
                         backgroundColor: COLOR_STYLES.disabled.backgroundColor,
                         opacity: COLOR_STYLES.disabled.opacity,
-                        borderRadius: 0
+                        borderRadius: COMMON_INPUT_STYLES.borderRadius
                     },
                     // Read only container - disable hover style
                     this.props.readOnly && {
@@ -134,7 +138,8 @@ export class UITextInput extends React.Component<UITextInputProps> {
                     props.focused && {
                         selectors: {
                             ':after': {
-                                border: this.getFocusBorder(messageInfo)
+                                border: this.getFocusBorder(messageInfo),
+                                borderRadius: COMMON_INPUT_STYLES.borderRadius
                             }
                         }
                     }
@@ -147,6 +152,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         fontSize: '13px',
                         fontWeight: 'normal',
                         boxSizing: 'border-box',
+                        borderRadius: COMMON_INPUT_STYLES.borderRadius,
                         selectors: {
                             '::placeholder': {
                                 fontSize: 13,

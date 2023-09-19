@@ -1,5 +1,71 @@
 # @sap-ux/environment-check
 
+## 0.15.61
+
+### Patch Changes
+
+-   Updated dependencies [01fa690e]
+-   Updated dependencies [3137514f]
+    -   @sap-ux/axios-extension@1.4.5
+    -   @sap-ux/ui5-config@0.19.2
+    -   @sap-ux/project-access@1.13.5
+
+## 0.15.60
+
+### Patch Changes
+
+-   Updated dependencies [0dbad1b8]
+    -   @sap-ux/store@0.3.13
+
+## 0.15.59
+
+### Patch Changes
+
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+    -   @sap-ux/project-access@1.13.4
+    -   @sap-ux/axios-extension@1.4.4
+
+## 0.15.58
+
+### Patch Changes
+
+-   Updated dependencies [7fd593f0]
+    -   @sap-ux/project-access@1.13.3
+    -   @sap-ux/axios-extension@1.4.4
+
+## 0.15.57
+
+### Patch Changes
+
+-   118692c3: update dependency minimist to v1.2.8
+
+## 0.15.56
+
+### Patch Changes
+
+-   Updated dependencies [676f8ba0]
+    -   @sap-ux/axios-extension@1.4.4
+
+## 0.15.55
+
+### Patch Changes
+
+-   fbcc0307: Update to use listDestinations from @sap-ux/btp-utils
+
+## 0.15.54
+
+### Patch Changes
+
+-   ca7b401a: expose node checker
+
+## 0.15.53
+
+### Patch Changes
+
+-   Updated dependencies [6e403f27]
+    -   @sap-ux/axios-extension@1.4.3
+
 ## 0.15.52
 
 ### Patch Changes

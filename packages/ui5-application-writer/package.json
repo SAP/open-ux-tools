@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-application-writer"
     },
-    "version": "0.25.1",
+    "version": "0.25.5",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -33,23 +33,23 @@
     ],
     "dependencies": {
         "@sap-ux/ui5-config": "workspace:*",
-        "@ui5/manifest": "1.49.2",
-        "ejs": "3.1.7",
+        "@ui5/manifest": "1.59.0",
+        "ejs": "3.1.9",
         "i18next": "21.6.11",
         "lodash": "4.17.21",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "semver": "7.5.3"
+        "semver": "7.5.4"
     },
     "devDependencies": {
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@types/ejs": "3.1.0",
+        "@types/ejs": "3.1.2",
         "@types/fs-extra": "9.0.13",
-        "@types/lodash": "4.14.197",
+        "@types/lodash": "4.14.198",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "@types/semver": "7.3.9",
+        "@types/semver": "7.5.2",
         "fs-extra": "10.0.0"
     },
     "engines": {

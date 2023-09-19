@@ -1,5 +1,23 @@
 # @sap-ux/axios-extension
 
+## 1.4.5
+
+### Patch Changes
+
+-   01fa690e: fix(deps): update dependency @xmldom/xmldom to v0.8.10
+
+## 1.4.4
+
+### Patch Changes
+
+-   676f8ba0: Note for customer to replace url with destination url.
+
+## 1.4.3
+
+### Patch Changes
+
+-   6e403f27: fix(deps): update dependency fast-xml-parser to v4.2.7
+
 ## 1.4.2
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 import express from 'express';
 import supertest from 'supertest';
 import * as previewMiddleware from '../../../src/ui5/middleware';
-import type { Config } from '../../../src/types';
+import type { MiddlewareConfig } from '../../../src/types';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import nock from 'nock';
@@ -18,7 +18,7 @@ jest.mock('@sap-ux/store', () => {
     };
 });
 
-async function getRouter(fixture?: string, configuration: Partial<Config> = {}): Promise<EnhancedRouter> {
+async function getRouter(fixture?: string, configuration: Partial<MiddlewareConfig> = {}): Promise<EnhancedRouter> {
     return await (previewMiddleware as any).default({
         options: { configuration },
         resources: {
@@ -53,7 +53,7 @@ async function getRouter(fixture?: string, configuration: Partial<Config> = {}):
 }
 
 // middleware function wrapper for testing to simplify tests
-async function getTestServer(fixture?: string, configuration: Partial<Config> = {}): Promise<any> {
+async function getTestServer(fixture?: string, configuration: Partial<MiddlewareConfig> = {}): Promise<any> {
     const router = await getRouter(fixture, configuration);
     const app = express();
     app.use(router);
@@ -86,20 +86,27 @@ describe('ui5/middleware', () => {
     test('no config', async () => {
         const server = await getTestServer('simple-app');
         await server.get('/test/flp.html').expect(200);
-        await server.get('/test/locate-reuse-libs.js').expect(404);
+        await server.get('/preview/client/flp/init.js').expect(200);
     });
 
     test('simple config', async () => {
         const path = '/my/preview/is/here.html';
         const server = await getTestServer('simple-app', { flp: { path, libs: true } });
         await server.get(path).expect(200);
-        await server.get('/my/preview/is/locate-reuse-libs.js').expect(200);
+        await server.get('/preview/client/flp/init.js').expect(200);
         await server.get('/test/flp.html').expect(404);
     });
 
     test('adp config', async () => {
-        const server = await getTestServer('adp', { adp: { target: { url } } });
+        const server = await getTestServer('adp', {
+            adp: { target: { url } },
+            rta: {
+                layer: 'CUSTOMER_BASE',
+                editors: [{ path: '/adp/editor.html' }]
+            }
+        });
         await server.get('/test/flp.html').expect(200);
+        await server.get('/adp/editor.html').expect(200);
     });
 
     test('invalid adp config', async () => {

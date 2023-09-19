@@ -1,5 +1,38 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.32
+
+### Patch Changes
+
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-config@0.19.2
+
+## 0.14.31
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+
+## 0.14.30
+
+### Patch Changes
+
+-   f50523da: TechnicalName key might not be present in all scenarios
+
+## 0.14.29
+
+### Patch Changes
+
+-   98d40960: Technical Name key to be schema valid
+
+## 0.14.28
+
+### Patch Changes
+
+-   6e403f27: fix(deps): update dependency fast-xml-parser to v4.2.7
+
 ## 0.14.27
 
 ### Patch Changes

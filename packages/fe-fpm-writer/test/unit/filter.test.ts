@@ -151,6 +151,7 @@ describe('CustomFilter', () => {
                 generateCustomFilterWithEventHandler(filter.name, extension, folder);
 
                 expect(fs.read(join(testDir, 'webapp', 'ext', 'custom', `${extension.fileName}.js`))).toMatchSnapshot();
+                expect(fs.read(getExpectedFragmentPath({ ...filter, folder: folder }))).toMatchSnapshot();
             });
 
             test('"eventHandler" is "object" - create new file with custom function name', () => {

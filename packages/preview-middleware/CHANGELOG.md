@@ -1,5 +1,58 @@
 # @sap-ux/preview-middleware
 
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.2.3
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.2.2
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.2.1
+
+## 0.5.0
+
+### Minor Changes
+
+-   62148b07: Breaking change: separating preview from edit mode
+
+### Patch Changes
+
+-   Updated dependencies [62148b07]
+    -   @sap-ux/adp-tooling@0.2.0
+
+## 0.4.5
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.1.8
+
+## 0.4.4
+
+### Patch Changes
+
+-   a73935c5: No change of functionality, just converted the init script to typescript
+
+## 0.4.3
+
+### Patch Changes
+
+-   9096d8cb: Cleaner FLP sandbox init script
+
+## 0.4.2
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.1.7
+
 ## 0.4.1
 
 ### Patch Changes

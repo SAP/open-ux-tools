@@ -53,33 +53,10 @@
         data-sap-ui-flexibilityServices='<%- JSON.stringify(ui5.flex) %>'
         data-sap-ui-resourceroots='<%- JSON.stringify(ui5.resources) %>'
         data-sap-ui-frameOptions="allow"
-        data-sap-ui-xx-componentPreload="off">
-    </script><% if (locals.locateReuseLibsScript) { %>
-	<script id="locate-reuse-libs" src="<%- locateReuseLibsScript %>" data-sap-ui-manifest-uri="/manifest.json">
-	</script><% } %>
-    <script>
-        sap.ui.getCore().attachInit(function () {<% if (locals.flex) { %>
-            sap.ushell.Container.attachRendererCreatedEvent(function () {
-                sap.ushell.Container.getServiceAsync('AppLifeCycle').then((serviceInstance) => {
-                    serviceInstance.attachAppLoaded((event) => {
-                        var oView = event.getParameter('componentInstance');
-                        sap.ui.require(["sap/ui/rta/api/startAdaptation"], async function (startAdaptation) {
-                            var options = {
-                                rootControl: oView,
-                                validateAppVersion: false,
-                                flexSettings: {
-                                    layer: '<%- flex.layer %>',
-                                    developerMode: <%- flex.developerMode %>
-								}
-                            };
-                            await startAdaptation(options);
-                        });
-                    })
-                });
-            });<% } %>
-            <% if (!locals.locateReuseLibsScript) { %>
-			sap.ushell.Container.createRenderer().placeAt("content");<% } %>
-        });
+        data-sap-ui-xx-componentPreload="off"
+        data-sap-ui-oninit="module:open/ux/preview/client/flp/init"<% if (locals.flex) { %>
+        data-open-ux-preview-flex-settings='<%- JSON.stringify(flex) %>'<% } if (locals.locateReuseLibsScript) { %>
+        data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>>
     </script>
 </head>
 

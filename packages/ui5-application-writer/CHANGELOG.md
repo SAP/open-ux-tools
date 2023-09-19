@@ -1,5 +1,33 @@
 # @sap-ux/ui5-application-writer
 
+## 0.25.5
+
+### Patch Changes
+
+-   3137514f: use platform independent UI5 CDN URLs
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-config@0.19.2
+
+## 0.25.4
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+
+## 0.25.3
+
+### Patch Changes
+
+-   7fd593f0: fix(deps): update dependency @ui5/manifest to v1.59.0
+
+## 0.25.2
+
+### Patch Changes
+
+-   a794dad7: Update ui5-tooling-transpile in templates
+
 ## 0.25.1
 
 ### Patch Changes

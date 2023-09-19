@@ -33,8 +33,8 @@
         "yaml": "2.2.2"
     },
     "devDependencies": {
-        "@types/i18next-fs-backend": "1.0.0",
-        "@types/lodash": "4.14.197"
+        "@types/i18next-fs-backend": "1.1.2",
+        "@types/lodash": "4.14.198"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",

@@ -3,7 +3,7 @@ import { render } from 'ejs';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, relative } from 'path';
-import type { App, FlpConfig } from '../types';
+import type { App, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
@@ -28,15 +28,23 @@ const DEFAULT_THEME = 'sap_horizon';
 const DEFAULT_PATH = '/test/flp.html';
 
 /**
- * Default name of the locate reuse libs script.
- */
-const DEFAULT_LOCATE_LIBS_FILENAME = 'locate-reuse-libs.js';
-/**
  * Default intent
  */
 const DEFAULT_INTENT = {
     object: 'app',
     action: 'preview'
+};
+
+/**
+ * Static settings
+ */
+const PREVIEW_URL = {
+    client: {
+        url: '/preview/client',
+        local: join(__dirname, '../../dist/client'),
+        ns: 'open.ux.preview.client'
+    },
+    api: '/preview/api'
 };
 
 /**
@@ -65,10 +73,12 @@ export interface TemplateConfig {
         resources: Record<string, string>;
     };
     flex?: {
+        [key: string]: unknown;
         layer: UI5FlexLayer;
         developerMode: boolean;
+        pluginScript?: string;
     };
-    locateReuseLibsScript?: string;
+    locateReuseLibsScript?: boolean;
 }
 
 /**
@@ -77,6 +87,7 @@ export interface TemplateConfig {
 export class FlpSandbox {
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
+    public readonly rta?: RtaConfig;
     public readonly router: EnhancedRouter;
 
     /**
@@ -88,22 +99,22 @@ export class FlpSandbox {
      * @param logger logger instance
      */
     constructor(
-        config: Partial<FlpConfig>,
+        config: Partial<MiddlewareConfig>,
         private readonly project: ReaderCollection,
         private readonly utils: MiddlewareUtils,
         private readonly logger: Logger
     ) {
         this.config = {
-            path: config.path ?? DEFAULT_PATH,
-            intent: config.intent ?? DEFAULT_INTENT,
-            apps: config.apps ?? [],
-            rta: config.rta,
-            libs: config.libs
+            path: config.flp?.path ?? DEFAULT_PATH,
+            intent: config.flp?.intent ?? DEFAULT_INTENT,
+            apps: config.flp?.apps ?? [],
+            libs: config.flp?.libs
         };
         if (!this.config.path.startsWith('/')) {
             this.config.path = `/${this.config.path}`;
         }
-        logger.debug(`Config: ${JSON.stringify(this.config)}`);
+        this.rta = config.rta;
+        logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta })}`);
         this.router = createRouter();
     }
 
@@ -124,11 +135,12 @@ export class FlpSandbox {
                 libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
                 theme: supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0],
                 flex,
-                resources: { ...resources }
+                resources: {
+                    ...resources,
+                    [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
+                }
             },
-            locateReuseLibsScript: this.config.libs
-                ? `./${DEFAULT_LOCATE_LIBS_FILENAME}`
-                : await this.findLocateReuseLibsScript()
+            locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
         this.addApp(manifest, {
             componentId,
@@ -136,32 +148,60 @@ export class FlpSandbox {
             local: '.',
             intent: this.config.intent
         });
-
         this.addStandardRoutes();
+        if (this.rta) {
+            this.rta.options ??= {};
+            this.rta.options.baseId = componentId ?? manifest['sap.app'].id;
+            this.addEditorRoutes(this.rta);
+        }
         this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
 
     /**
+     * Add additional routes for configured editors.
+     *
+     * @param rta runtime authoring configuration
+     */
+    private addEditorRoutes(rta: RtaConfig) {
+        for (const editor of rta.editors) {
+            let previewUrl = editor.path;
+            if (editor.developerMode) {
+                previewUrl = `${previewUrl}.inner.html`;
+                editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
+                this.router.get(editor.path, (async (_req: Request, res: Response) => {
+                    const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
+                    const html = render(template, {
+                        previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`
+                    });
+                    res.status(200).contentType('html').send(html);
+                }) as RequestHandler);
+            }
+            this.router.get(previewUrl, (async (_req: Request, res: Response) => {
+                const config = { ...this.templateConfig };
+                config.flex = {
+                    layer: rta.layer,
+                    ...rta.options,
+                    developerMode: editor.developerMode === true,
+                    pluginScript: editor.pluginScript
+                };
+                const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
+                const html = render(template, config);
+                res.status(200).contentType('html').send(html);
+            }) as RequestHandler);
+        }
+    }
+
+    /**
      * Add routes for html and scripts required for a local FLP.
      */
     private addStandardRoutes() {
+        // register static client sources
+        this.router.use(PREVIEW_URL.client.url, serveStatic(PREVIEW_URL.client.local));
+
         // add route for the sandbox.html
         this.router.get(this.config.path, (async (req: Request, res: Response & { _livereload?: boolean }) => {
-            const config = { ...this.templateConfig };
-            const fioriToolsRtaMode = req.query['fiori-tools-rta-mode'];
-            if (fioriToolsRtaMode) {
-                if (this.config.rta?.layer) {
-                    config.flex = {
-                        layer: this.config.rta?.layer,
-                        developerMode: fioriToolsRtaMode === 'forAdaptation'
-                    };
-                } else {
-                    this.logger.error('Fiori tools RTA mode could not be started because the RTA layer is missing.');
-                }
-            }
-
             // warn the user if a file with the same name exists in the filesystem
             const file = await this.project.byPath(this.config.path);
             if (file) {
@@ -169,7 +209,7 @@ export class FlpSandbox {
             }
 
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-            const html = render(template, config);
+            const html = render(template, this.templateConfig);
             // if livereload is enabled, don't send it but let other middleware modify the content
             if (res._livereload) {
                 res.write(html);
@@ -178,16 +218,6 @@ export class FlpSandbox {
                 res.status(200).contentType('html').send(html);
             }
         }) as RequestHandler);
-        // add route for locate-reuse-libs if requested
-        if (this.config.libs && this.templateConfig.locateReuseLibsScript) {
-            const pathParts = this.config.path.split('/');
-            pathParts.pop();
-            pathParts.push(DEFAULT_LOCATE_LIBS_FILENAME);
-            this.router.get(pathParts.join('/'), (_req: Request, res: Response) => {
-                const script = readFileSync(join(__dirname, '../../templates/flp/locate-reuse-libs.js'), 'utf-8');
-                res.status(200).contentType('text/javascript').send(script);
-            });
-        }
     }
 
     /**
@@ -195,13 +225,9 @@ export class FlpSandbox {
      *
      * @returns the location of the locate-reuse-libs script or undefined.
      */
-    private async findLocateReuseLibsScript(): Promise<string | undefined> {
+    private async hasLocateReuseLibsScript(): Promise<boolean | undefined> {
         const files = await this.project.byGlob('**/locate-reuse-libs.js');
-        if (files.length > 0) {
-            return files[0].getPath();
-        } else {
-            return undefined;
-        }
+        return files.length > 0;
     }
 
     /**
@@ -230,7 +256,7 @@ export class FlpSandbox {
                 .contentType('text/javascript')
                 .send(readFileSync(join(__dirname, '../../templates/flp/workspaceConnector.js'), 'utf-8'));
         });
-        const api = '/preview/api/changes';
+        const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
             res.status(200)

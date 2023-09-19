@@ -1,5 +1,60 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.20.8
+
+### Patch Changes
+
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-application-writer@0.25.5
+    -   @sap-ux/ui5-config@0.19.2
+    -   @sap-ux/odata-service-writer@0.14.32
+
+## 0.20.7
+
+### Patch Changes
+
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/odata-service-writer@0.14.31
+    -   @sap-ux/ui5-application-writer@0.25.4
+    -   @sap-ux/ui5-config@0.19.1
+
+## 0.20.6
+
+### Patch Changes
+
+-   Updated dependencies [7fd593f0]
+    -   @sap-ux/ui5-application-writer@0.25.3
+    -   @sap-ux/odata-service-writer@0.14.30
+
+## 0.20.5
+
+### Patch Changes
+
+-   Updated dependencies [f50523da]
+    -   @sap-ux/odata-service-writer@0.14.30
+
+## 0.20.4
+
+### Patch Changes
+
+-   Updated dependencies [98d40960]
+    -   @sap-ux/odata-service-writer@0.14.29
+
+## 0.20.3
+
+### Patch Changes
+
+-   a794dad7: Update ui5-tooling-transpile in templates
+-   Updated dependencies [a794dad7]
+    -   @sap-ux/ui5-application-writer@0.25.2
+
+## 0.20.2
+
+### Patch Changes
+
+-   Updated dependencies [6e403f27]
+    -   @sap-ux/odata-service-writer@0.14.28
+
 ## 0.20.1
 
 ### Patch Changes

@@ -1,5 +1,32 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.23.4
+
+### Patch Changes
+
+-   01fa690e: fix(deps): update dependency @xmldom/xmldom to v0.8.10
+-   3137514f: use platform independent UI5 CDN URLs
+
+## 0.23.3
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+
+## 0.23.2
+
+### Patch Changes
+
+-   78e726a6: Custom Filter Field. Property "eventHandler".
+    1. Generated fragment requires js file when no "eventHandler" is passed.
+    2. Wrong reference to js file is generated in fragment, when "eventHandler.fileName" is passed.
+
+## 0.23.1
+
+### Patch Changes
+
+-   da6aed84: Correction for content of generated fragment for `templateEdit` property: Content is wrapped inside `sap.ui.layout.form.FormElement`
+
 ## 0.23.0
 
 ### Minor Changes

@@ -1,0 +1,39 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "test",
+    "types"
+  ],
+  "compilerOptions": {
+    "lib": ["ES2020", "DOM"],
+    "target": "es2022",
+    "module": "es2022",
+    "skipLibCheck": true,
+    "allowJs": true,
+    "strict": true,
+    "noEmit": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": {
+      "open/ux/preview/client/*": [
+        "./src/*"
+      ],"mock/*": [
+        "./test/__mock__/*"
+      ]
+    },
+    "types": [
+      "@sapui5/types",
+      "jest",
+      "node"
+    ]
+  },
+  "references": [
+    {
+      "path": "../eslint-plugin-fiori-tools"
+    }
+  ]
+}

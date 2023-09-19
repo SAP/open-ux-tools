@@ -1,26 +1,26 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": [
-        "../../types/ui5.d.ts",
-        "src",
-        "src/**/*.json"
-    ],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist"
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/ui5.d.ts",
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../adp-tooling"
     },
-    "references": [
-        {
-            "path": "../adp-tooling"
-        },
-        {
-            "path": "../logger"
-        },
-        {
-            "path": "../project-access"
-        },
-        {
-            "path": "../store"
-        }
-    ]
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../store"
+    }
+  ]
 }
