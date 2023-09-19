@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.4.6
+
+### Patch Changes
+
+-   7b156515: fix(deps): update dependency xpath to v0.0.33
+
 ## 1.4.5
 
 ### Patch Changes
