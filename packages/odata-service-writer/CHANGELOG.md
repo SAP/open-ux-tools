@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.31
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+
 ## 0.14.30
 
 ### Patch Changes
