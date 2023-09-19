@@ -82,7 +82,7 @@ server:
           path:
             - /resources
             - /test-resources
-          url: https://openui5.hana.ondemand.com
+          url: https://sdk.openui5.org
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
