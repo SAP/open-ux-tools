@@ -1,10 +1,10 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
+        "jsx": "react",
         "incremental": true,
         "lib": ["ES2021", "dom"],
         "strictNullChecks": true,
-        "jsx": "react",
         "outDir": "dist",
         "module": "ES6",
         "rootDir": ".",

@@ -39,7 +39,7 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
     const [items, setItems] = useState(icons);
     const [isDialogVisible, setDialogVisibility] = useState(false);
 
-    const onValueHelpButtonClick = (/*event: any*/): void => {
+    const onValueHelpButtonClick = (): void => {
         setDialogVisibility(true);
     };
 
@@ -159,7 +159,7 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
 }
 interface IconColumnProps {
     fontFamily: string;
-    content: any;
+    content: string;
 }
 
 /**

@@ -90,7 +90,10 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
                 disabled={!isEnabled}
                 errorMessage={errorMessage}
                 value={val as string}
-                onChange={(event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue: any): void => {
+                onChange={(
+                    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
+                    newValue: string | undefined
+                ): void => {
                     let value: string | number = String(newValue || '');
                     if (type === FLOAT_VALUE_TYPE && !isExpression(value)) {
                         const index = value.search(/\./) + 1;

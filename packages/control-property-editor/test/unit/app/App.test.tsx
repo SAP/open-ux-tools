@@ -13,6 +13,7 @@ import { registerAppIcons } from '../../../src/app/icons';
 import { DeviceType } from '../../../src/app/devices';
 import { changePreviewScale, initialState } from '../../../src/app/slice';
 
+jest.useFakeTimers({ advanceTimers: true });
 const windowEventListenerMock = mockDomEventListener(window);
 beforeAll(() => {
     mockResizeObserver();
@@ -201,7 +202,7 @@ for (const testCase of testCases) {
         jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => 500);
         windowEventListenerMock.simulateEvent('resize', {});
         // Debounce timeout within resize + within use effect
-        await new Promise((resolve) => setTimeout(resolve, 550));
+        jest.advanceTimersByTime(3000);
         expect(dispatch).toBeCalledWith(changePreviewScale(testCase.expectedScale));
     });
 }
