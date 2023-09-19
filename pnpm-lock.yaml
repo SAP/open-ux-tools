@@ -188,8 +188,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       '@types/prompts':
-        specifier: 2.0.14
-        version: 2.0.14
+        specifier: 2.4.4
+        version: 2.4.4
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
@@ -261,8 +261,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       '@types/prompts':
-        specifier: 2.0.14
-        version: 2.0.14
+        specifier: 2.4.4
+        version: 2.4.4
       axios:
         specifier: 1.4.0
         version: 1.4.0
@@ -359,8 +359,8 @@ importers:
         specifier: ^1.17.5
         version: 1.17.8
       '@types/prompts':
-        specifier: 2.0.14
-        version: 2.0.14
+        specifier: 2.4.4
+        version: 2.4.4
       '@types/proxy-from-env':
         specifier: 1.0.1
         version: 1.0.1
@@ -461,8 +461,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       '@types/prompts':
-        specifier: 2.0.14
-        version: 2.0.14
+        specifier: 2.4.4
+        version: 2.4.4
 
   packages/deploy-tooling:
     dependencies:
@@ -501,8 +501,8 @@ importers:
         specifier: workspace:*
         version: link:../store
       '@types/prompts':
-        specifier: 2.0.14
-        version: 2.0.14
+        specifier: 2.4.4
+        version: 2.4.4
       '@types/yazl':
         specifier: 2.4.2
         version: 2.4.2
@@ -562,8 +562,8 @@ importers:
         specifier: 1.2.2
         version: 1.2.2
       '@types/prompts':
-        specifier: 2.0.14
-        version: 2.0.14
+        specifier: 2.4.4
+        version: 2.4.4
       '@types/vscode':
         specifier: 1.39.0
         version: 1.39.0
@@ -802,8 +802,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       '@types/prompts':
-        specifier: 2.0.14
-        version: 2.0.14
+        specifier: 2.4.4
+        version: 2.4.4
       prompts:
         specifier: 2.4.2
         version: 2.4.2
@@ -888,8 +888,8 @@ importers:
         specifier: 4.17.17
         version: 4.17.17
       '@types/prompts':
-        specifier: 2.0.14
-        version: 2.0.14
+        specifier: 2.4.4
+        version: 2.4.4
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
@@ -1024,8 +1024,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@types/prompts':
-        specifier: 2.0.14
-        version: 2.0.14
+        specifier: 2.4.4
+        version: 2.4.4
       rimraf:
         specifier: 5.0.1
         version: 5.0.1
@@ -7715,10 +7715,11 @@ packages:
     resolution: {integrity: sha512-VjID5MJb1eGKthz2qUerWT8+R4b9N+CHvGCzg9fn4kWZgaF9AhdYikQio3R7wV8YY1NsQKPaCwKz1Yff+aHNUQ==}
     dev: true
 
-  /@types/prompts@2.0.14:
-    resolution: {integrity: sha512-HZBd99fKxRWpYCErtm2/yxUZv6/PBI9J7N4TNFffl5JbrYMHBwF25DjQGTW3b3jmXq+9P6/8fCIb2ee57BFfYA==}
+  /@types/prompts@2.4.4:
+    resolution: {integrity: sha512-p5N9uoTH76lLvSAaYSZtBCdEXzpOOufsRjnhjVSrZGXikVGHX9+cc9ERtHRV4hvBKHyZb1bg4K+56Bd2TqUn4A==}
     dependencies:
-      '@types/node': 12.12.6
+      '@types/node': 12.20.55
+      kleur: 3.0.3
     dev: true
 
   /@types/prop-types@15.7.5:
