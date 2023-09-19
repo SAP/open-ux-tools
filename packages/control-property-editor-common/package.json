@@ -13,7 +13,8 @@
     "private": false,
     "scripts": {
         "clean": "rimraf ./dist ./reports *.tsbuildinfo",
-        "build": "tsc  --build ./tsconfig.json --pretty",
+        "build": "npm-run-all -l -s clean -p build:compile",
+        "build:compile": "tsc  --build ./tsconfig.json --pretty",
         "watch": "build:compile --watch",
         "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles --config='jest.config.js'",
         "lint": "eslint . --ext .ts,.tsx",
