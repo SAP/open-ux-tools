@@ -458,8 +458,8 @@ importers:
         version: 2.4.2
     devDependencies:
       '@types/diff':
-        specifier: 5.0.3
-        version: 5.0.3
+        specifier: 5.0.4
+        version: 5.0.4
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
@@ -949,8 +949,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       '@ui5/manifest':
-        specifier: 1.51.0
-        version: 1.51.0
+        specifier: 1.59.0
+        version: 1.59.0
       vscode-uri:
         specifier: 3.0.7
         version: 3.0.7
@@ -1172,8 +1172,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.49.2
-        version: 1.49.2
+        specifier: 1.59.0
+        version: 1.59.0
       ejs:
         specifier: 3.1.7
         version: 3.1.7
@@ -6282,6 +6282,10 @@ packages:
     resolution: {integrity: sha512-amrLbRqTU9bXMCc6uX0sWpxsQzRIo9z6MJPkH1pkez/qOxuqSZVuryJAWoBRq94CeG8JxY+VK4Le9HtjQR5T9A==}
     dev: true
 
+  /@types/diff@5.0.4:
+    resolution: {integrity: sha512-d7489/WO4B65k0SIqxXtviR9+MrPDipWQF6w+5D7YPrqgu6Qb87JsTdWQaNZo7itcdbViQSev3Jaz7dtKO0+Dg==}
+    dev: true
+
   /@types/doctrine@0.0.3:
     resolution: {integrity: sha512-w5jZ0ee+HaPOaX25X2/2oGR/7rgAQSYII7X7pp0m9KgBfMP7uKfMfTvcpl5Dj+eDBbpxKGiqE+flqDr6XTd2RA==}
     dev: true
@@ -7111,13 +7115,8 @@ packages:
       figures: 5.0.0
     dev: true
 
-  /@ui5/manifest@1.49.2:
-    resolution: {integrity: sha512-nGYI/Tne715IDPtEvOjVOnmDY8lEbF8Q89gdEv9AoPxiHjV1935+DldJSYtEPBFDb2byr+Rhc8R8BClLKLYjkQ==}
-    dev: false
-
-  /@ui5/manifest@1.51.0:
-    resolution: {integrity: sha512-SnKN+33xeEK0NuRRDu4VqBq1AmsJfZ1bq0+fnEoagZyhqyZLiCHmAo6KYu1YLX3klSJuMknhh1sf2mbKUQyNKg==}
-    dev: true
+  /@ui5/manifest@1.59.0:
+    resolution: {integrity: sha512-uNk+dDuhhnXvgMoLOdmrv0CJZgzcXBG2ZdFrmROuejlFBbD3sse0p2a51QBp7n/m+eYwZoe/WbytuYXI2ueNtQ==}
 
   /@ui5/project@3.6.0:
     resolution: {integrity: sha512-5A2nxPeRVYP5j1j9fVbGY5gkkdyf7xdDz3X4PRrl482MIZl5/X5YvnKhxYHRfzkmbzWVVxl7aitOQQrOymaoJw==}

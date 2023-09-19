@@ -7284,7 +7284,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/manifest.json": Object {
     "contents": "{
-  \\"_version\\": \\"1.49.0\\",
+  \\"_version\\": \\"1.53.0\\",
   \\"sap.app\\": {
     \\"id\\": \\"test.me\\",
     \\"type\\": \\"application\\",

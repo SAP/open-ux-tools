@@ -24,32 +24,24 @@ export default class ControlUtils {
     /**
      * Returns control aggregation names in an array
      *
-     * @param control Managed Object runtime controll
+     * @param control Managed Object runtime control
      * @param name Aggregation name
      * @returns Array of control aggregations
      */
-    public static getControlAggregationByName(
-        control: ManagedObject & { __calledJSONKeys?: boolean; [key: string]: any },
-        name: string
-    ) {
-        let result = [];
+    public static getControlAggregationByName(control: ManagedObject, name: string): unknown[] {
+        let result: unknown[] = [];
         const aggregation = (control ? control.getMetadata().getAllAggregations() : {})[name] as unknown as object & {
             _sGetter: string;
         };
 
         if (aggregation) {
-            if (!aggregation._sGetter && !control.__calledJSONKeys) {
-                // Performance optimization
-                control.__calledJSONKeys = true;
-            }
             // This executes a _sGetter function that can vary from control to control (_sGetter can be: getContent, getItems, etc)
-            result = (aggregation._sGetter && control[aggregation._sGetter]()) || [];
+            const names =
+                (aggregation._sGetter &&
+                    (control as ManagedObject & { [key: string]: () => unknown })[aggregation._sGetter]()) ||
+                [];
 
-            // The aggregation has primitive alternative type
-            if (typeof result !== 'object') {
-                result = [];
-            }
-            result = Array.isArray(result) ? result : [result];
+            result = Array.isArray(names) ? names : [names];
         }
         return result;
     }

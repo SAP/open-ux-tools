@@ -1,11 +1,11 @@
 import type UI5Element from 'sap/ui/core/Element';
-import { fragmentHandler, initFragment } from '../../../../src/adp/dialogs/fragment';
+import { DialogNames, handler, initDialogs } from '../../../src/adp/init-dialogs';
 import XMLView from 'mock/sap/ui/core/mvc/XMLView';
 import Controller from 'mock/sap/ui/core/mvc/Controller';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
-describe('Fragment Dialog', () => {
-    describe('initFragment', () => {
+describe('Dialogs', () => {
+    describe('initDialogs', () => {
         afterEach(() => {
             jest.restoreAllMocks();
         });
@@ -17,14 +17,14 @@ describe('Fragment Dialog', () => {
                     addMenuItem: addMenuItemSpy
                 }
             });
-            initFragment(rtaMock);
+            initDialogs(rtaMock);
             expect(addMenuItemSpy.mock.calls.length).toBe(1);
         });
 
         test('addMenuItem handler function', async () => {
             Controller.create.mockResolvedValue({ overlays: {}, rta: {} });
 
-            await fragmentHandler({} as unknown as UI5Element[], rtaMock);
+            await handler({} as unknown as UI5Element, rtaMock, DialogNames.ADD_FRAGMENT);
 
             expect(XMLView.create.mock.calls.length).toBe(1);
         });

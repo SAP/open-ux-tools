@@ -1,5 +1,8 @@
 /** sap.m */
+import Input from 'sap/m/Input';
+import Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
+import type ComboBox from 'sap/m/ComboBox';
 import MessageToast from 'sap/m/MessageToast';
 
 /** sap.ui.core */
@@ -9,7 +12,6 @@ import Controller from 'sap/ui/core/mvc/Controller';
 
 /** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
-import type EventProvider from 'sap/ui/base/EventProvider';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
@@ -26,22 +28,6 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
 import { ManifestAppdescr, getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
-
-type ExtendedEventProvider = EventProvider & {
-    setEnabled: (v: boolean) => void;
-    getValue: () => string;
-    getSelectedItem: () => {
-        getTitle: () => string;
-        getText: () => string;
-        getCustomData: () => {
-            [key: string]: () => void;
-        }[];
-    };
-    getSelectedKey: () => string;
-    setValueState: (state: ValueState) => void;
-    setValueStateText: (text: string) => void;
-    setVisible: (bool: boolean) => void;
-};
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -68,22 +54,28 @@ export default class AddFragment extends Controller {
     /**
      * Runtime Authoring
      */
-    public rta: RuntimeAuthoring;
+    private rta: RuntimeAuthoring;
     /**
-     * Controll Overlays
+     * Control Overlays
      */
-    public overlays: UI5Element[];
+    private overlays: UI5Element;
     /**
      * RTA Command Executor
      */
     private commandExecutor: CommandExecutor;
+
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
+        super(name);
+        this.rta = rta;
+        this.overlays = overlays;
+        this.commandExecutor = new CommandExecutor(this.rta);
+    }
 
     /**
      * Initializes controller, fills model with data and opens the dialog
      */
     async onInit() {
         this.model = new JSONModel();
-        this.commandExecutor = new CommandExecutor(this.rta);
 
         this.dialog = this.byId('addNewFragmentDialog') as unknown as Dialog;
 
@@ -100,18 +92,21 @@ export default class AddFragment extends Controller {
      * @param event Event
      */
     onAggregationChanged(event: Event) {
-        let selectedItem = '';
-        const source = event.getSource() as ExtendedEventProvider;
-        if (source.getSelectedItem()) {
-            selectedItem = source.getSelectedItem().getText();
-        }
+        const source = event.getSource<ComboBox>();
+
         const selectedKey = source.getSelectedKey();
+        const selectedItem = source.getSelectedItem();
+
+        let selectedItemText = '';
+        if (selectedItem) {
+            selectedItemText = selectedItem.getText();
+        }
 
         this.model.setProperty('/selectedAggregation/key', selectedKey);
-        this.model.setProperty('/selectedAggregation/value', selectedItem);
+        this.model.setProperty('/selectedAggregation/value', selectedItemText);
 
         let newSelectedControlChildren: string[] | number[] = Object.keys(
-            ControlUtils.getControlAggregationByName(this.runtimeControl, selectedItem)
+            ControlUtils.getControlAggregationByName(this.runtimeControl, selectedItemText)
         );
 
         newSelectedControlChildren = newSelectedControlChildren.map((key) => {
@@ -130,9 +125,9 @@ export default class AddFragment extends Controller {
      * @param event Event
      */
     onIndexChanged(event: Event) {
-        const source = event.getSource() as ExtendedEventProvider;
-        const selectedIndex = source.getSelectedItem().getText();
-        this.model.setProperty('/selectedIndex', parseInt(selectedIndex));
+        const source = event.getSource<ComboBox>();
+        const selectedIndex = source.getSelectedItem()?.getText();
+        this.model.setProperty('/selectedIndex', selectedIndex);
     }
 
     /**
@@ -141,43 +136,41 @@ export default class AddFragment extends Controller {
      * @param event Event
      */
     onFragmentNameInputChange(event: Event) {
-        const source = event.getSource() as ExtendedEventProvider;
+        const source = event.getSource<Input>();
+
         const fragmentName: string = source.getValue().trim();
         const fragmentList: { fragmentName: string }[] = this.model.getProperty(
             '/filteredFragmentList/unFilteredFragmentList'
         );
 
-        const iExistingFileIndex = fragmentList.findIndex((f: { fragmentName: string }) => {
-            return f.fragmentName === `${fragmentName}.fragment.xml`;
-        });
+        if (fragmentName.length <= 0) {
+            this.dialog.getBeginButton().setEnabled(false);
+            source.setValueState(ValueState.None);
+            this.model.setProperty('/fragmentNameToCreate', null);
+        } else {
+            const fileExists = fragmentList.find((f: { fragmentName: string }) => {
+                return f.fragmentName === `${fragmentName}.fragment.xml`;
+            });
 
-        switch (true) {
-            case iExistingFileIndex >= 0:
+            const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName);
+
+            if (fileExists) {
                 source.setValueState(ValueState.Error);
                 source.setValueStateText(
                     'Enter a different name. The fragment name that you entered already exists in your project.'
                 );
                 this.dialog.getBeginButton().setEnabled(false);
                 this.model.setProperty('/fragmentNameToCreate', null);
-                break;
-            case fragmentName.length <= 0:
-                this.dialog.getBeginButton().setEnabled(false);
-                source.setValueState(ValueState.None);
-                this.model.setProperty('/fragmentNameToCreate', null);
-                break;
-            case !/^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName):
+            } else if (!isValidName) {
                 source.setValueState(ValueState.Error);
                 source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
                 this.dialog.getBeginButton().setEnabled(false);
                 this.model.setProperty('/fragmentNameToCreate', null);
-                break;
-            case fragmentName.length > 0:
+            } else {
                 this.dialog.getBeginButton().setEnabled(true);
                 source.setValueState(ValueState.None);
                 this.model.setProperty('/fragmentNameToCreate', fragmentName);
-                break;
-            default:
-                break;
+            }
         }
     }
 
@@ -187,15 +180,18 @@ export default class AddFragment extends Controller {
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
-        const source = event.getSource() as ExtendedEventProvider;
+        const source = event.getSource<Button>();
         source.setEnabled(false);
-        // Need to create a new fragment and a respective change file
-        const fragmentNameToCreate = this.model.getProperty('/fragmentNameToCreate');
+
+        const fragmentName = this.model.getProperty('/fragmentNameToCreate');
+        const index = parseInt(this.model.getProperty('/selectedIndex'));
+        const targetAggregation = this.model.getProperty('/selectedAggregation/value');
         const fragmentData = {
-            fragmentName: fragmentNameToCreate,
-            index: this.model.getProperty('/selectedIndex'),
-            targetAggregation: this.model.getProperty('/selectedAggregation/value')
+            index,
+            fragmentName,
+            targetAggregation
         };
+
         await this.createNewFragment(fragmentData);
 
         this.handleDialogClose();
@@ -211,7 +207,7 @@ export default class AddFragment extends Controller {
     /**
      * Handles the dialog closing and destruction of it
      */
-    private handleDialogClose() {
+    handleDialogClose() {
         this.dialog.close();
         this.getView()?.destroy();
     }
@@ -219,8 +215,8 @@ export default class AddFragment extends Controller {
     /**
      * Builds data that is used in the dialog
      */
-    public async buildDialogData(): Promise<void> {
-        const selectorId = this.overlays[0].getId();
+    async buildDialogData(): Promise<void> {
+        const selectorId = this.overlays.getId();
 
         let controlMetadata: ManagedObjectMetadata;
 
