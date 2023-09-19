@@ -35,7 +35,7 @@
         "mem-fs-editor": "9.4.0",
         "semver": "7.5.3",
         "xml-formatter": "2.6.1",
-        "xpath": "0.0.32"
+        "xpath": "0.0.33"
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",

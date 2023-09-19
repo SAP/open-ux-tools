@@ -34,7 +34,7 @@
         "lodash": "4.17.21",
         "open": "7.0.3",
         "qs": "6.7.3",
-        "xpath": "0.0.32",
+        "xpath": "0.0.33",
         "@xmldom/xmldom": "0.8.6"
     },
     "devDependencies": {
