@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.11
+
+### Patch Changes
+
+-   0dbad1b8: chore(deps): update dependency typescript to v4.9.5
+
 ## 1.11.10
 
 ### Patch Changes
