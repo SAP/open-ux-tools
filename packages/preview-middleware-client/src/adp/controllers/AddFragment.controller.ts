@@ -332,7 +332,7 @@ export default class AddFragment extends Controller {
      * @param fragmentData.fragmentName Fragment name
      * @param fragmentData.targetAggregation Target aggregation for control
      */
-    async createNewFragment(fragmentData: CreateFragmentProps): Promise<void> {
+    private async createNewFragment(fragmentData: CreateFragmentProps): Promise<void> {
         const { fragmentName, index, targetAggregation } = fragmentData;
         try {
             await writeFragment<unknown>({ fragmentName });
@@ -351,7 +351,7 @@ export default class AddFragment extends Controller {
      *
      * @param fragmentData Fragment Data
      */
-    async createFragmentChange(fragmentData: CreateFragmentProps) {
+    private async createFragmentChange(fragmentData: CreateFragmentProps) {
         const { fragmentName, index, targetAggregation } = fragmentData;
         let manifest: ManifestAppdescr;
         try {

@@ -101,6 +101,36 @@ describe('AddFragment', () => {
         });
     });
 
+    describe('onIndexChanged', () => {
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        test('on selected aggragations changed', () => {
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    getSelectedItem: jest.fn().mockReturnValue({ getText: jest.fn().mockReturnValue('0') })
+                })
+            };
+
+            const setPropertySpy = jest.fn();
+
+            addFragment.model = {
+                setProperty: setPropertySpy
+            } as unknown as JSONModel;
+
+            addFragment.onIndexChanged(event as unknown as Event);
+
+            expect(setPropertySpy.mock.calls.length).toBe(1);
+        });
+    });
+
     describe('onFragmentNameInputChange', () => {
         afterEach(() => {
             jest.restoreAllMocks();
@@ -232,7 +262,55 @@ describe('AddFragment', () => {
             jest.restoreAllMocks();
         });
 
-        test('creates new fragment', async () => {
+        test('creates new fragment and a change', async () => {
+            const executeSpy = jest.fn();
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {
+                    getCommandStack: jest.fn().mockReturnValue({
+                        pushAndExecute: executeSpy
+                    })
+                } as unknown as RuntimeAuthoring
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            addFragment.model = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('0')
+                    .mockReturnValueOnce('content')
+            } as unknown as JSONModel;
+
+            CommandFactory.getCommandFor = jest.fn().mockReturnValue({});
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    id: 'id',
+                    reference: 'reference',
+                    namespace: 'namespace',
+                    layer: 'layer'
+                }),
+                text: jest.fn().mockReturnValue('XML Fragment was created!'),
+                ok: true
+            });
+
+            addFragment.handleDialogClose = jest.fn();
+
+            await addFragment.onCreateBtnPress(event as unknown as Event);
+
+            expect(executeSpy.mock.calls.length).toBe(1);
+        });
+
+        test('throws error when creating new fragment', async () => {
+            const errorMsg = 'Could not create XML Fragment!';
+
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
@@ -253,78 +331,53 @@ describe('AddFragment', () => {
                     .mockReturnValueOnce('content')
             } as unknown as JSONModel;
 
-            const createFragmentSpy = jest.fn();
+            CommandFactory.getCommandFor = jest.fn().mockReturnValue({});
 
-            addFragment.createNewFragment = createFragmentSpy;
+            fetchMock.mockResolvedValue({
+                json: jest.fn(),
+                text: jest.fn().mockRejectedValue({ message: errorMsg }),
+                ok: true
+            });
 
-            addFragment.handleDialogClose = jest.fn();
-
-            await addFragment.onCreateBtnPress(event as unknown as Event);
-
-            expect(createFragmentSpy.mock.calls.length).toBe(1);
-        });
-    });
-
-    describe('createNewFragment', () => {
-        afterEach(() => {
-            jest.restoreAllMocks();
+            try {
+                await addFragment.onCreateBtnPress(event as unknown as Event);
+            } catch (e) {
+                expect(e.message).toBe(errorMsg);
+            }
         });
 
-        test('creates new fragment', async () => {
+        test('throws error when retrieving manifest descriptor', async () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring
             );
 
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            addFragment.model = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('0')
+                    .mockReturnValueOnce('content')
+            } as unknown as JSONModel;
+
             fetchMock.mockResolvedValue({
-                json: jest.fn(),
+                json: jest.fn().mockReturnValue(undefined),
                 text: jest.fn().mockReturnValue('XML Fragment was created!'),
                 ok: true
             });
 
-            const fragmentData = { fragmentName: 'Share', index: 0, targetAggregation: 'content' };
-
-            const createChangeSpy = jest.fn();
-
-            addFragment.createFragmentChange = createChangeSpy;
-
-            await addFragment.createNewFragment(fragmentData);
-
-            expect(createChangeSpy.mock.calls.length).toBe(1);
-        });
-    });
-
-    describe('createFragmentChange', () => {
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
-
-        test('creates new fragment', async () => {
-            const executeSpy = jest.fn();
-            const addFragment = new AddFragment(
-                'adp.extension.controllers.AddFragment',
-                {} as unknown as UI5Element,
-                {
-                    getCommandStack: jest.fn().mockReturnValue({
-                        pushAndExecute: executeSpy
-                    })
-                } as unknown as RuntimeAuthoring
-            );
-
-            fetchMock.mockResolvedValue({
-                json: jest.fn().mockReturnValue({ id: '', reference: '', namespace: '', layer: '' }),
-                text: jest.fn(),
-                ok: true
-            });
-
-            const fragmentData = { fragmentName: 'Share', index: 0, targetAggregation: 'content' };
-
-            CommandFactory.getCommandFor = jest.fn().mockReturnValue({});
-
-            await addFragment.createFragmentChange(fragmentData);
-
-            expect(executeSpy.mock.calls.length).toBe(1);
+            try {
+                await addFragment.onCreateBtnPress(event as unknown as Event);
+            } catch (e) {
+                expect(e.message).toBe('Could not retrieve manifest');
+            }
         });
     });
 });
