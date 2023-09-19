@@ -1,5 +1,31 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.2.2
+
+### Patch Changes
+
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-config@0.19.2
+
+## 1.2.1
+
+### Patch Changes
+
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+
+## 1.2.0
+
+### Minor Changes
+
+-   1f250333: Use default config if none is provided.
+
+## 1.1.35
+
+### Patch Changes
+
+-   118692c3: update dependency http-proxy-middleware to v2.0.6
+
 ## 1.1.34
 
 ### Patch Changes

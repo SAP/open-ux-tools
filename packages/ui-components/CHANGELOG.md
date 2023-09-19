@@ -1,5 +1,53 @@
 # @sap-ux/ui-components
 
+## 1.11.12
+
+### Patch Changes
+
+-   a77300c4: chore(uic): re-fix the sleep function tests
+
+## 1.11.11
+
+### Patch Changes
+
+-   0dbad1b8: chore(deps): update dependency typescript to v4.9.5
+
+## 1.11.10
+
+### Patch Changes
+
+-   777d9d9d: chore(deps): update babel dependencies
+
+## 1.11.9
+
+### Patch Changes
+
+-   de3bc3d5: chore(deps): update storybook monorepo to v7.4.2
+
+## 1.11.8
+
+### Patch Changes
+
+-   6ab0976e: fix(uitable): fix waitFor function
+
+## 1.11.7
+
+### Patch Changes
+
+-   93f711c7: 2px border radius is applied for input, dropdown, button components.
+
+## 1.11.6
+
+### Patch Changes
+
+-   50bf49ac: chore(deps): update storybook to v7.4.1
+
+## 1.11.5
+
+### Patch Changes
+
+-   30fc4a11: feat(ui-components) add createref as props to UICreateSelect
+
 ## 1.11.4
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 0.3.13
+
+### Patch Changes
+
+-   0dbad1b8: chore(deps): update dependency typescript to v4.9.5
+
 ## 0.3.12
 
 ### Patch Changes

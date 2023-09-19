@@ -1,5 +1,40 @@
 # @sap-ux/preview-middleware
 
+## 0.5.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.2.4
+
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.2.3
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.2.2
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.2.1
+
+## 0.5.0
+
+### Minor Changes
+
+-   62148b07: Breaking change: separating preview from edit mode
+
+### Patch Changes
+
+-   Updated dependencies [62148b07]
+    -   @sap-ux/adp-tooling@0.2.0
+
 ## 0.4.5
 
 ### Patch Changes
