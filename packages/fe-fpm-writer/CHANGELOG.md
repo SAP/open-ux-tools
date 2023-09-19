@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.23.5
+
+### Patch Changes
+
+-   7b156515: fix(deps): update dependency xpath to v0.0.33
+
 ## 0.23.4
 
 ### Patch Changes

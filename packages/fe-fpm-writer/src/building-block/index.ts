@@ -147,7 +147,7 @@ function updateViewFile(
 
     // Find target aggregated element and append template as child
     const targetNodes = xpathSelect(aggregationPath, viewDocument);
-    if (targetNodes && targetNodes.length > 0) {
+    if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
         const targetNode = targetNodes[0] as Node;
         const sourceNode = viewDocument.importNode(templateDocument.documentElement, true);
         targetNode.appendChild(sourceNode);
