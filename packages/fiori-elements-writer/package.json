@@ -36,7 +36,7 @@
         "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/ui5-test-writer": "workspace:*",
-        "ejs": "3.1.7",
+        "ejs": "3.1.9",
         "i18next": "20.3.2",
         "lodash": "4.17.21",
         "mem-fs": "2.1.0",
@@ -46,7 +46,7 @@
     },
     "devDependencies": {
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
-        "@types/ejs": "3.1.0",
+        "@types/ejs": "3.1.2",
         "@types/fs-extra": "9.0.13",
         "@types/lodash": "4.14.198",
         "@types/mem-fs-editor": "7.0.1",

@@ -154,8 +154,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       ejs:
-        specifier: 3.1.7
-        version: 3.1.7
+        specifier: 3.1.9
+        version: 3.1.9
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -176,8 +176,8 @@ importers:
         specifier: workspace:*
         version: link:../store
       '@types/ejs':
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.1.2
+        version: 3.1.2
       '@types/express':
         specifier: 4.17.17
         version: 4.17.17
@@ -236,8 +236,8 @@ importers:
         specifier: 4.1.2
         version: 4.1.2
       ejs:
-        specifier: 3.1.7
-        version: 3.1.7
+        specifier: 3.1.9
+        version: 3.1.9
       i18next:
         specifier: 20.3.2
         version: 20.3.2
@@ -252,8 +252,8 @@ importers:
         version: 2.4.2
     devDependencies:
       '@types/ejs':
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.1.2
+        version: 3.1.2
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -593,8 +593,8 @@ importers:
         specifier: 0.8.6
         version: 0.8.6
       ejs:
-        specifier: 3.1.7
-        version: 3.1.7
+        specifier: 3.1.9
+        version: 3.1.9
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -615,8 +615,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@types/ejs':
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.1.2
+        version: 3.1.2
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -645,8 +645,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-test-writer
       ejs:
-        specifier: 3.1.7
-        version: 3.1.7
+        specifier: 3.1.9
+        version: 3.1.9
       i18next:
         specifier: 20.3.2
         version: 20.3.2
@@ -670,8 +670,8 @@ importers:
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
       '@types/ejs':
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.1.2
+        version: 3.1.2
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13
@@ -703,8 +703,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       ejs:
-        specifier: 3.1.7
-        version: 3.1.7
+        specifier: 3.1.9
+        version: 3.1.9
       i18next:
         specifier: 20.3.2
         version: 20.3.2
@@ -725,8 +725,8 @@ importers:
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
       '@types/ejs':
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.1.2
+        version: 3.1.2
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13
@@ -814,8 +814,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       ejs:
-        specifier: 3.1.7
-        version: 3.1.7
+        specifier: 3.1.9
+        version: 3.1.9
       fast-xml-parser:
         specifier: 4.2.7
         version: 4.2.7
@@ -839,8 +839,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@types/ejs':
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.1.2
+        version: 3.1.2
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13
@@ -869,8 +869,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       ejs:
-        specifier: 3.1.7
-        version: 3.1.7
+        specifier: 3.1.9
+        version: 3.1.9
     devDependencies:
       '@private/preview-middleware-client':
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
@@ -882,8 +882,8 @@ importers:
         specifier: workspace:*
         version: link:../store
       '@types/ejs':
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.1.2
+        version: 3.1.2
       '@types/express':
         specifier: 4.17.17
         version: 4.17.17
@@ -1172,8 +1172,8 @@ importers:
         specifier: 1.59.0
         version: 1.59.0
       ejs:
-        specifier: 3.1.7
-        version: 3.1.7
+        specifier: 3.1.9
+        version: 3.1.9
       i18next:
         specifier: 21.6.11
         version: 21.6.11
@@ -1197,8 +1197,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@types/ejs':
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.1.2
+        version: 3.1.2
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13
@@ -1255,8 +1255,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       ejs:
-        specifier: 3.1.7
-        version: 3.1.7
+        specifier: 3.1.9
+        version: 3.1.9
       i18next:
         specifier: 20.3.2
         version: 20.3.2
@@ -1277,8 +1277,8 @@ importers:
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
       '@types/ejs':
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.1.2
+        version: 3.1.2
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13
@@ -1350,8 +1350,8 @@ importers:
   packages/ui5-test-writer:
     dependencies:
       ejs:
-        specifier: 3.1.7
-        version: 3.1.7
+        specifier: 3.1.9
+        version: 3.1.9
       i18next:
         specifier: 20.3.2
         version: 20.3.2
@@ -1366,8 +1366,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@types/ejs':
-        specifier: 3.1.0
-        version: 3.1.0
+        specifier: 3.1.2
+        version: 3.1.2
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13
@@ -6494,7 +6494,7 @@ packages:
   /@types/mem-fs-editor@7.0.1:
     resolution: {integrity: sha512-aixqlCy0k0fZa+J4k7SZ7ZQCuJUmD4YuuMk42Q86YrGNBTZOSSnqkV8QcedBgLF5uR78PXj8HDWIFpXn+eOJbw==}
     dependencies:
-      '@types/ejs': 3.1.0
+      '@types/ejs': 3.1.2
       '@types/glob': 8.1.0
       '@types/json-schema': 7.0.9
       '@types/mem-fs': 1.1.2
@@ -7883,10 +7883,10 @@ packages:
 
   /async@3.2.3:
     resolution: {integrity: sha512-spZRyzKL5l5BZQrr/6m/SqFdBN0q3OCI0f9rjfBzCMBIP4p75P620rR3gTmaksNOhmzgdxcaxdNfMy6anrbM0g==}
+    dev: false
 
   /async@3.2.4:
     resolution: {integrity: sha512-iAB+JbDEGXhyIUavoDl9WP/Jj106Kz9DEn1DPgYw5ruDn0e3Wgi3sKFm55sASdGBNOQB8F59d9qQ7deqrHA8wQ==}
-    dev: false
 
   /asynciterator.prototype@1.0.0:
     resolution: {integrity: sha512-wwHYEIS0Q80f5mosx3L/dfG5t5rjEa9Ft51GTaNt862EnpyGHpgz2RkZvLPp1oF5TnAiTohkEKVEu8pQPJI7Vg==}
@@ -9510,20 +9510,12 @@ packages:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: true
 
-  /ejs@3.1.7:
-    resolution: {integrity: sha512-BIar7R6abbUxDA3bfXrO4DSgwo8I+fB5/1zgujl3HLLjwd6+9iOnrT+t3grn2qbk9vOgBubXOFwX2m9axoFaGw==}
-    engines: {node: '>=0.10.0'}
-    hasBin: true
-    dependencies:
-      jake: 10.8.5
-
   /ejs@3.1.9:
     resolution: {integrity: sha512-rC+QVNMJWv+MtPgkt0y+0rVEIdbtxVADApW9JXrUVlzHetgcyczP/E7DJmWJ4fJCZF2cPcBk0laWO9ZHMG3DmQ==}
     engines: {node: '>=0.10.0'}
     hasBin: true
     dependencies:
       jake: 10.8.5
-    dev: true
 
   /electron-to-chromium@1.4.505:
     resolution: {integrity: sha512-0A50eL5BCCKdxig2SsCXhpuztnB9PfUgRMojj5tMvt8O54lbwz3t6wNgnpiTRosw5QjlJB7ixhVyeg8daLQwSQ==}
@@ -12201,7 +12193,7 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
-      async: 3.2.3
+      async: 3.2.4
       chalk: 4.1.2
       filelist: 1.0.2
       minimatch: 3.1.2
@@ -13359,7 +13351,7 @@ packages:
       binaryextensions: 4.18.0
       commondir: 1.0.1
       deep-extend: 0.6.0
-      ejs: 3.1.7
+      ejs: 3.1.9
       globby: 11.1.0
       isbinaryfile: 4.0.8
       mem-fs: 2.1.0
