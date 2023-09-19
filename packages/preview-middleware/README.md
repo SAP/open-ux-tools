@@ -42,6 +42,7 @@ Array of additional application configurations:
 | Option          | Type               | Description                                                                                    |
 | --------------- | -------------------| -----------------------------------------------------------------------------------------------|
 | `path`          | `string` mandatory | The mount point to be used for the editor.                                                     |
+| `developerMode` | `boolean` optional | Enables/disables the runtime adaptation developer mode (only supported for adaptation projects) |
 
 
 ## Usage
