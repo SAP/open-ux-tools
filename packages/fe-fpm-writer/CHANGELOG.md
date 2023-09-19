@@ -1,5 +1,12 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.23.4
+
+### Patch Changes
+
+-   01fa690e: fix(deps): update dependency @xmldom/xmldom to v0.8.10
+-   3137514f: use platform independent UI5 CDN URLs
+
 ## 0.23.3
 
 ### Patch Changes
