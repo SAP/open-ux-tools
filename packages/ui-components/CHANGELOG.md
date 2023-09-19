@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.9
+
+### Patch Changes
+
+-   de3bc3d5: chore(deps): update storybook monorepo to v7.4.2
+
 ## 1.11.8
 
 ### Patch Changes
