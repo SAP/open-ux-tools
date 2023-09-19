@@ -32,7 +32,7 @@
         "detect-content-type": "1.2.0",
         "fast-xml-parser": "4.2.7",
         "lodash": "4.17.21",
-        "open": "7.0.3",
+        "open": "9.1.0",
         "qs": "6.7.3",
         "xpath": "0.0.33",
         "@xmldom/xmldom": "0.8.10"
