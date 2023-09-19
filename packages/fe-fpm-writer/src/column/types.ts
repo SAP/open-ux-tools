@@ -41,7 +41,7 @@ export interface CustomTableColumn extends CustomElement, EventHandler {
     control?: string;
     /**
      * A string type that represents CSS size values.
-     * Refer to https://openui5.hana.ondemand.com/api/sap.ui.core.CSSSize.
+     * Refer to https://sdk.openui5.org/api/sap.ui.core.CSSSize.
      */
     width?: string;
     /**
