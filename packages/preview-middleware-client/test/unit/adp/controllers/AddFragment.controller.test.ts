@@ -1,7 +1,7 @@
 import type Dialog from 'sap/m/Dialog';
 import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
-import type JSONModel from 'sap/ui/model/json/JSONModel';
+import JSONModel from 'sap/ui/model/json/JSONModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
@@ -18,6 +18,7 @@ describe('AddFragment', () => {
             ok: true
         });
     });
+
     describe('onInit', () => {
         afterEach(() => {
             jest.restoreAllMocks();
@@ -90,14 +91,14 @@ describe('AddFragment', () => {
 
             ControlUtils.getControlAggregationByName = jest.fn().mockReturnValue({ 0: {} });
 
-            const setPropSpy = jest.fn();
+            const setPropertySpy = jest.fn();
             addFragment.model = {
-                setProperty: setPropSpy
+                setProperty: setPropertySpy
             } as unknown as JSONModel;
 
             addFragment.onAggregationChanged(event as unknown as Event);
 
-            expect(setPropSpy.mock.calls.length).toBe(4);
+            expect(setPropertySpy).toHaveBeenCalledTimes(4);
         });
     });
 
@@ -127,11 +128,16 @@ describe('AddFragment', () => {
 
             addFragment.onIndexChanged(event as unknown as Event);
 
-            expect(setPropertySpy.mock.calls.length).toBe(1);
+            expect(setPropertySpy).toHaveBeenCalledWith('/selectedIndex', '0');
         });
     });
 
     describe('onFragmentNameInputChange', () => {
+        const testModel = {
+            setProperty: jest.fn(),
+            getProperty: jest.fn().mockReturnValue([{ fragmentName: 'Delete.fragment.xml' }])
+        } as unknown as JSONModel;
+
         afterEach(() => {
             jest.restoreAllMocks();
         });
@@ -146,16 +152,13 @@ describe('AddFragment', () => {
             const valueStateSpy = jest.fn();
             const event = {
                 getSource: jest.fn().mockReturnValue({
-                    getValue: jest.fn().mockReturnValue('Share'),
+                    getValue: jest.fn().mockReturnValue('Delete'),
                     setValueState: valueStateSpy,
                     setValueStateText: jest.fn()
                 })
             };
 
-            addFragment.model = {
-                setProperty: jest.fn(),
-                getProperty: jest.fn().mockReturnValue([{ fragmentName: 'Share.fragment.xml' }])
-            } as unknown as JSONModel;
+            addFragment.model = testModel;
 
             addFragment.dialog = {
                 getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
@@ -163,7 +166,7 @@ describe('AddFragment', () => {
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy.mock.calls.length).toBe(1);
+            expect(valueStateSpy).toHaveBeenCalledWith('Error');
         });
 
         test('sets error when the fragment name is empty', () => {
@@ -182,10 +185,7 @@ describe('AddFragment', () => {
                 })
             };
 
-            addFragment.model = {
-                setProperty: jest.fn(),
-                getProperty: jest.fn().mockReturnValue([{ fragmentName: 'Delete.fragment.xml' }])
-            } as unknown as JSONModel;
+            addFragment.model = testModel;
 
             addFragment.dialog = {
                 getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
@@ -193,7 +193,7 @@ describe('AddFragment', () => {
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy.mock.calls.length).toBe(1);
+            expect(valueStateSpy).toHaveBeenCalledWith('None');
         });
 
         test('sets error when the fragment name is has special characters', () => {
@@ -212,10 +212,7 @@ describe('AddFragment', () => {
                 })
             };
 
-            addFragment.model = {
-                setProperty: jest.fn(),
-                getProperty: jest.fn().mockReturnValue([{ fragmentName: 'Delete.fragment.xml' }])
-            } as unknown as JSONModel;
+            addFragment.model = testModel;
 
             addFragment.dialog = {
                 getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
@@ -223,7 +220,7 @@ describe('AddFragment', () => {
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy.mock.calls.length).toBe(1);
+            expect(valueStateSpy).toHaveBeenCalledWith('Error');
         });
 
         test('sets create button to true when the fragment name is valid', () => {
@@ -242,10 +239,7 @@ describe('AddFragment', () => {
                 })
             };
 
-            addFragment.model = {
-                setProperty: jest.fn(),
-                getProperty: jest.fn().mockReturnValue([{ fragmentName: 'Delete.fragment.xml' }])
-            } as unknown as JSONModel;
+            addFragment.model = testModel;
 
             addFragment.dialog = {
                 getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
@@ -253,7 +247,7 @@ describe('AddFragment', () => {
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy.mock.calls.length).toBe(1);
+            expect(valueStateSpy).toHaveBeenCalledWith('None');
         });
     });
 
@@ -261,6 +255,9 @@ describe('AddFragment', () => {
         afterEach(() => {
             jest.restoreAllMocks();
         });
+        const testModel = {
+            getProperty: jest.fn().mockReturnValueOnce('Share').mockReturnValueOnce('0').mockReturnValueOnce('content')
+        } as unknown as JSONModel;
 
         test('creates new fragment and a change', async () => {
             const executeSpy = jest.fn();
@@ -280,15 +277,9 @@ describe('AddFragment', () => {
                 })
             };
 
-            addFragment.model = {
-                getProperty: jest
-                    .fn()
-                    .mockReturnValueOnce('Share')
-                    .mockReturnValueOnce('0')
-                    .mockReturnValueOnce('content')
-            } as unknown as JSONModel;
+            addFragment.model = testModel;
 
-            CommandFactory.getCommandFor = jest.fn().mockReturnValue({});
+            CommandFactory.getCommandFor = jest.fn().mockReturnValue({ fileName: 'something.change' });
 
             fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue({
@@ -305,7 +296,7 @@ describe('AddFragment', () => {
 
             await addFragment.onCreateBtnPress(event as unknown as Event);
 
-            expect(executeSpy.mock.calls.length).toBe(1);
+            expect(executeSpy).toHaveBeenCalledWith({ fileName: 'something.change' });
         });
 
         test('throws error when creating new fragment', async () => {
@@ -323,13 +314,7 @@ describe('AddFragment', () => {
                 })
             };
 
-            addFragment.model = {
-                getProperty: jest
-                    .fn()
-                    .mockReturnValueOnce('Share')
-                    .mockReturnValueOnce('0')
-                    .mockReturnValueOnce('content')
-            } as unknown as JSONModel;
+            addFragment.model = testModel;
 
             CommandFactory.getCommandFor = jest.fn().mockReturnValue({});
 
@@ -359,13 +344,7 @@ describe('AddFragment', () => {
                 })
             };
 
-            addFragment.model = {
-                getProperty: jest
-                    .fn()
-                    .mockReturnValueOnce('Share')
-                    .mockReturnValueOnce('0')
-                    .mockReturnValueOnce('content')
-            } as unknown as JSONModel;
+            addFragment.model = testModel;
 
             fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue(undefined),
