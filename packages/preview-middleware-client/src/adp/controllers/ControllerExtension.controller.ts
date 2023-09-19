@@ -1,4 +1,6 @@
 /** sap.m */
+import Input from 'sap/m/Input';
+import Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import MessageToast from 'sap/m/MessageToast';
 
@@ -9,7 +11,6 @@ import Controller from 'sap/ui/core/mvc/Controller';
 
 /** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
-import type EventProvider from 'sap/ui/base/EventProvider';
 
 /** sap.ui.model */
 import JSONModel from 'sap/ui/model/json/JSONModel';
@@ -22,13 +23,6 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import type { ControllersResponse } from '../api-handler';
 import { readControllers, writeChange, writeController } from '../api-handler';
-
-type ExtendedEventProvider = EventProvider & {
-    setEnabled: (v: boolean) => void;
-    getValue: () => string;
-    setValueState: (state: ValueState) => void;
-    setValueStateText: (text: string) => void;
-};
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
@@ -78,7 +72,7 @@ export default class ControllerExtension extends Controller {
      * @param event Event
      */
     onControllerNameInputChange(event: Event) {
-        const source = event.getSource() as ExtendedEventProvider;
+        const source = event.getSource<Input>();
 
         const controllerName: string = source.getValue().trim();
         const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList');
@@ -89,7 +83,7 @@ export default class ControllerExtension extends Controller {
             this.model.setProperty('/newControllerName', null);
         } else {
             const fileExists = controllerList.find((f: { controllerName: string }) => {
-                return f.controllerName === `${controllerName}.fragment.xml`;
+                return f.controllerName === `${controllerName}.js`;
             });
 
             const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(controllerName);
@@ -100,10 +94,9 @@ export default class ControllerExtension extends Controller {
                     'Enter a different name. The controller name that you entered already exists in your project.'
                 );
                 this.dialog.getBeginButton().setEnabled(false);
-                this.model.setProperty('/newControllerName', null);
             } else if (!isValidName) {
                 source.setValueState(ValueState.Error);
-                source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
+                source.setValueStateText('The controller name cannot contain white spaces or special characters.');
                 this.dialog.getBeginButton().setEnabled(false);
             } else {
                 this.dialog.getBeginButton().setEnabled(true);
@@ -119,7 +112,7 @@ export default class ControllerExtension extends Controller {
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
-        const source = event.getSource() as ExtendedEventProvider;
+        const source = event.getSource<Button>();
         source.setEnabled(false);
 
         const controllerName = this.model.getProperty('/newControllerName');
