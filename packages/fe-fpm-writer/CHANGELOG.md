@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.23.3
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+
 ## 0.23.2
 
 ### Patch Changes
