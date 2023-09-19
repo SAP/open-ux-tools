@@ -31,7 +31,6 @@ export async function transformNodes(ui5: UI5Facade, input: OutlineViewNode[]): 
         const current = stack.shift();
         const editable = await isEditable(ui5, current?.id);
         if (current?.type === 'element') {
-            // eslint-disable-next-line no-loop-func
             const children = (current.elements ?? []).flatMap((element: OutlineViewNode) =>
                 element.type === 'aggregation' ? element.elements ?? [] : []
             );

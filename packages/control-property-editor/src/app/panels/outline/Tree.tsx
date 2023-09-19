@@ -201,8 +201,9 @@ export const Tree = (): ReactElement => {
         ) : null;
     };
     const onToggleCollapse = (props?: IGroupHeaderProps): void => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-        props?.onToggleCollapse!(props?.group!);
+        if (props?.onToggleCollapse && props?.group) {
+            props?.onToggleCollapse(props?.group);
+        }
 
         const isCollapsed = props?.group?.isCollapsed;
         if (props?.group) {

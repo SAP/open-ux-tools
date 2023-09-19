@@ -47,7 +47,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
         return (
             <IconValueHelp
                 disabled={!isEnabled}
-                icons={icons || []}
+                icons={icons ?? []}
                 isIcon={isIcon}
                 value={value as string}
                 controlId={controlId}
@@ -94,7 +94,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
                     event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
                     newValue: string | undefined
                 ): void => {
-                    let value: string | number = String(newValue || '');
+                    let value: string | number = String(newValue ?? '');
                     if (type === FLOAT_VALUE_TYPE && !isExpression(value)) {
                         const index = value.search(/\./) + 1;
                         const result = value.substring(0, index) + value.slice(index).replace(/\./g, '');

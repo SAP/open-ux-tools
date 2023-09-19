@@ -22,8 +22,7 @@ beforeAll(() => {
     initIcons();
     // JSDom does not implement this and an error was being
     // thrown from jest-axe because of it.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-empty-function
-    (window as any).getComputedStyle = (): void => {};
+    (window as any).getComputedStyle = jest.fn();
 });
 
 test('renders empty properties panel', () => {

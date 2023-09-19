@@ -166,7 +166,6 @@ function createMatcher<Y extends { type: string }>(
  * @returns Function
  */
 function createActionFactory(prefix: string) {
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     return function createAction<T>(name: string) {
         const actionType = [prefix, name].join(' ');
         /**
