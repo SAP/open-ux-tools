@@ -975,8 +975,8 @@ importers:
         version: 7.9.0
     devDependencies:
       '@types/i18next-fs-backend':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.1.2
+        version: 1.1.2
       '@types/pluralize':
         specifier: 0.0.30
         version: 0.0.30
@@ -1391,8 +1391,8 @@ importers:
         version: 2.2.2
     devDependencies:
       '@types/i18next-fs-backend':
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.1.2
+        version: 1.1.2
       '@types/lodash':
         specifier: 4.14.198
         version: 4.14.198
@@ -7531,10 +7531,10 @@ packages:
     dependencies:
       '@types/node': 17.0.9
 
-  /@types/i18next-fs-backend@1.0.0:
-    resolution: {integrity: sha512-PotQ0NE17NavxXCsdyq9qIKZQOB7+A5O/2nDdvfbfm6/IgvvC1YUO6hxK3nIHASu+QGjO1QV5J8PJw4OL12LMQ==}
+  /@types/i18next-fs-backend@1.1.2:
+    resolution: {integrity: sha512-ZzTRXA5B0x0oGhzKNp08IsYjZpli4LjRZpg3q4j0XFxN5lKG2MVLnR4yHX8PPExBk4sj9Yfk1z9O6CjPrAlmIQ==}
     dependencies:
-      i18next: 19.9.2
+      i18next: 21.6.11
     dev: true
 
   /@types/inquirer@8.2.1:
@@ -12742,12 +12742,6 @@ packages:
     resolution: {integrity: sha512-RFkfy10hNxJqc7MVAp5iAZq0Tum6msBCNebEe3OelOBvrROvzHUPaR8Qe10RQrOGokTm0W4vJGEJzruFkEt+hQ==}
     dev: false
 
-  /i18next@19.9.2:
-    resolution: {integrity: sha512-0i6cuo6ER6usEOtKajUUDj92zlG+KArFia0857xxiEHAQcUwh/RtOQocui1LPJwunSYT574Pk64aNva1kwtxZg==}
-    dependencies:
-      '@babel/runtime': 7.20.13
-    dev: true
-
   /i18next@20.3.2:
     resolution: {integrity: sha512-e8CML2R9Ng2sSQOM80wb/PrM2j8mDm84o/T4Amzn9ArVyNX5/ENWxxAXkRpZdTQNDaxKImF93Wep4mAoozFrKw==}
     dependencies:
@@ -12758,7 +12752,6 @@ packages:
     resolution: {integrity: sha512-tJ2+o0lVO+fhi8bPkCpBAeY1SgkqmQm5NzgPWCQssBrywJw98/o+Kombhty5nxQOpHtvMmsxcOopczUiH6bJxQ==}
     dependencies:
       '@babel/runtime': 7.20.13
-    dev: false
 
   /iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
