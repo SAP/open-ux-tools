@@ -101,7 +101,7 @@ server:
 
 
 ### Adaptation Project
-If you want to use the middleware in an adaption project, the additional `adp` object needs to be configured. This example would preview a local adaptation project merged with its reference application from the target system at `http://sap.example` and it will ignore certification validation errors.
+If you want to use the middleware in an adaption project, the additional `adp` object needs to be configured. This example would preview a local adaptation project merged with its reference application from the target system at `http://sap.example` and it will ignore certification validation errors. For adaptation projects, it is also recommended to add the `rta` configuration allowing to edit the project.
 ```Yaml
 server:
   customMiddleware:
@@ -112,6 +112,10 @@ server:
         target: 
           url: http://sap.example
         ignoreCertErrors: true
+      rta:
+        editors:
+          - path: /test/adaptation-editor.html
+            developerMode: true
 ```
 
 ### Programmatic Usage
