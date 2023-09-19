@@ -19,7 +19,8 @@ describe('waitFor', () => {
 describe('sleep', () => {
     it('should resolve after the specified number of milliseconds', async () => {
         const start = Date.now();
-        await sleep(100);
+        // server is sometimes so fast, that it calculates the difference in -1ms
+        await sleep(110);
         const end = Date.now();
 
         expect(end - start).toBeGreaterThanOrEqual(100);

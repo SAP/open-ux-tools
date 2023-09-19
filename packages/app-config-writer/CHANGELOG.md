@@ -1,5 +1,12 @@
 # @sap-ux/app-config-writer
 
+## 0.1.18
+
+### Patch Changes
+
+-   Updated dependencies [0dbad1b8]
+    -   @sap-ux/store@0.3.13
+
 ## 0.1.17
 
 ### Patch Changes

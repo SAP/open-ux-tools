@@ -35,7 +35,7 @@
         "open": "7.0.3",
         "qs": "6.7.3",
         "xpath": "0.0.33",
-        "@xmldom/xmldom": "0.8.6"
+        "@xmldom/xmldom": "0.8.10"
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",

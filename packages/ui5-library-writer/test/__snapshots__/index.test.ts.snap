@@ -266,7 +266,7 @@ ANY_TEXT=AnyText
     "state": "modified",
   },
   "com.sap.myui5lib/src/com/sap/myui5lib/themes/base/Example.less": Object {
-    "contents": "/* Theme Parameter Toolbox: https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/theming/webapp/index.html */
+    "contents": "/* Theme Parameter Toolbox: https://sdk.openui5.org/test-resources/sap/m/demokit/theming/webapp/index.html */
 
 .myLibPrefixExample,
 .myLibPrefixExampleHighlight {
@@ -877,7 +877,7 @@ ANY_TEXT=AnyText
     "state": "modified",
   },
   "com.sap.myui5tslib113/src/com/sap/myui5tslib113/themes/base/Example.less": Object {
-    "contents": "/* Theme Parameter Toolbox: https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/theming/webapp/index.html */
+    "contents": "/* Theme Parameter Toolbox: https://sdk.openui5.org/test-resources/sap/m/demokit/theming/webapp/index.html */
 
 .myLibPrefixExample,
 .myLibPrefixExampleHighlight {
@@ -1524,7 +1524,7 @@ ANY_TEXT=AnyText
     "state": "modified",
   },
   "com.sap.myui5tslib/src/com/sap/myui5tslib/themes/base/Example.less": Object {
-    "contents": "/* Theme Parameter Toolbox: https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/theming/webapp/index.html */
+    "contents": "/* Theme Parameter Toolbox: https://sdk.openui5.org/test-resources/sap/m/demokit/theming/webapp/index.html */
 
 .myLibPrefixExample,
 .myLibPrefixExampleHighlight {
