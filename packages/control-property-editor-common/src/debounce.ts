@@ -13,6 +13,6 @@ export function debounce(callback: Function, delay: number): (args?: unknown[]) 
 
         timerId = setTimeout(() => {
             callback(...args);
-        }, delay);
+        }, delay) as NodeJS.Timeout;
     };
 }
