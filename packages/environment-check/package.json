@@ -40,7 +40,7 @@
     "devDependencies": {
         "@types/archiver": "5.3.2",
         "@types/minimist": "1.2.2",
-        "@types/prompts": "2.0.14",
+        "@types/prompts": "2.4.4",
         "@types/vscode": "1.39.0"
     },
     "files": [
