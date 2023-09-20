@@ -1,6 +1,6 @@
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
-import type { MiddlewareParameters } from '@ui5/server';
+import type { MiddlewareParameters, MiddlewareUtils } from '@ui5/server';
 import { FlpSandbox } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
@@ -12,15 +12,21 @@ import type { ReaderCollection } from '@ui5/fs';
  * @param rootProject reference to the project
  * @param config configuration from the ui5.yaml
  * @param flp FlpSandbox instance
+ * @param util middleware utilities provided by the UI5 CLI
  * @param logger logger instance
  */
-async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, flp: FlpSandbox, logger: ToolsLogger) {
+async function initAdp(
+    rootProject: ReaderCollection,
+    config: AdpPreviewConfig,
+    flp: FlpSandbox,
+    util: MiddlewareUtils,
+    logger: ToolsLogger
+) {
     const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
     if (appVariant) {
-        const adp = new AdpPreview(config, rootProject, logger);
+        const adp = new AdpPreview(config, rootProject, util, logger);
         const variant = JSON.parse(await appVariant.getString());
         const layer = await adp.init(variant);
-        logger.warn(variant);
         if (flp.rta) {
             flp.rta.layer = layer;
             flp.rta.options = {
@@ -32,6 +38,7 @@ async function initAdp(rootProject: ReaderCollection, config: AdpPreviewConfig, 
         }
         await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
+        adp.addApis(flp.router);
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
     }
@@ -59,7 +66,7 @@ async function createRouter(
     const flp = new FlpSandbox(config, resources.rootProject, middlewareUtil, logger);
 
     if (config.adp) {
-        await initAdp(resources.rootProject, config.adp, flp, logger);
+        await initAdp(resources.rootProject, config.adp, flp, middlewareUtil, logger);
     } else {
         const manifest = await resources.rootProject.byPath('/manifest.json');
         if (manifest) {
