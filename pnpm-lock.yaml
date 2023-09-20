@@ -9232,7 +9232,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.4.0 || ^8.0.0-0 <8.0.0
     dependencies:
-      '@babel/compat-data': 7.22.9
+      '@babel/compat-data': 7.22.20
       '@babel/core': 7.22.11
       '@babel/helper-define-polyfill-provider': 0.4.2(@babel/core@7.22.11)
       semver: 6.3.1
