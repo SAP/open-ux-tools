@@ -7,11 +7,19 @@ import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
 import express from 'express';
 import { readFileSync, existsSync } from 'fs';
+import { renderFile } from 'ejs';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
     message: string;
 }
+
+interface GetControllersResponse {
+    controllers: { controllerName: string }[];
+    message: string;
+}
+
+jest.mock('ejs');
 
 jest.mock('@sap-ux/store', () => {
     return {
@@ -34,6 +42,8 @@ jest.mock('fs', () => ({
     mkdirSync: jest.fn(),
     copyFileSync: jest.fn()
 }));
+
+const mockRenderFile = renderFile as jest.Mock;
 const mockExistsSync = existsSync as jest.Mock;
 
 describe('AdaptationProject', () => {
@@ -268,15 +278,86 @@ describe('AdaptationProject', () => {
             expect(message).toBe(`Fragment with name "${fragmentName}" already exists`);
         });
 
-        test('POST /adp/api/fragment - fragmentName is not provided', async () => {
+        test('POST /adp/api/fragment - fragmentName was not provided', async () => {
             const response = await server.post('/adp/api/fragment').send({ fragmentName: '' }).expect(400);
 
             const message = response.text;
             expect(message).toBe('Fragment name was not provided!');
         });
 
-        test('POST /adp/api/fragment - throws error when fragmentName is undefined', async () => {
+        test('POST /adp/api/fragment - throws error when fragment name is undefined', async () => {
             const response = await server.post('/adp/api/fragment').send({ fragmentName: undefined }).expect(500);
+
+            const message = response.text;
+            expect(message).toBe('Input must be string');
+        });
+
+        test('GET /adp/api/controller', async () => {
+            const expectedNames = [{ controllerName: 'my.js' }, { controllerName: 'other.js' }];
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getName: () => expectedNames[0].controllerName
+                },
+                {
+                    getName: () => expectedNames[1].controllerName
+                }
+            ]);
+            const response = await server.get('/adp/api/controller').expect(200);
+            const data: GetControllersResponse = JSON.parse(response.text);
+            expect(data.controllers).toEqual(expectedNames);
+            expect(data.message).toEqual(`${expectedNames.length} controllers found in the project workspace.`);
+        });
+
+        test('GET /adp/api/controller - returns empty array of controllers', async () => {
+            const response = await server.get('/adp/api/controller').expect(200);
+            const data: GetControllersResponse = JSON.parse(response.text);
+            expect(data.controllers.length).toEqual(0);
+            expect(data.message).toEqual(`No controllers found in the project workspace.`);
+        });
+
+        test('GET /adp/api/controller - throws error', async () => {
+            const errorMsg = 'Could not get controller name.';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getName: () => {
+                        throw new Error(errorMsg);
+                    }
+                }
+            ]);
+            const response = await server.get('/adp/api/controller').expect(500);
+            const data: GetControllersResponse = JSON.parse(response.text);
+            expect(data.message).toEqual(errorMsg);
+        });
+
+        test('POST /adp/api/controller - creates controller', async () => {
+            mockExistsSync.mockReturnValue(false);
+            mockRenderFile.mockReturnValue(true);
+            const controllerName = 'Share';
+            const response = await server.post('/adp/api/controller').send({ controllerName }).expect(201);
+
+            const message = response.text;
+            expect(message).toBe('Controller created!');
+        });
+
+        test('POST /adp/api/controller - controller already exists', async () => {
+            mockExistsSync.mockReturnValueOnce(false).mockResolvedValueOnce(true);
+            mockRenderFile.mockReturnValue(true);
+            const controllerName = 'Share';
+            const response = await server.post('/adp/api/controller').send({ controllerName }).expect(409);
+
+            const message = response.text;
+            expect(message).toBe(`Controller with name "${controllerName}" already exists`);
+        });
+
+        test('POST /adp/api/controller - controller name was not provided', async () => {
+            const response = await server.post('/adp/api/controller').send({ controllerName: '' }).expect(400);
+
+            const message = response.text;
+            expect(message).toBe('Controller name was not provided!');
+        });
+
+        test('POST /adp/api/controller - throws error when controller name is undefined', async () => {
+            const response = await server.post('/adp/api/controller').send({ controllerName: undefined }).expect(500);
 
             const message = response.text;
             expect(message).toBe('Input must be string');
