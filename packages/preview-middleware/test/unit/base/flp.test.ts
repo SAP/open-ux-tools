@@ -60,7 +60,7 @@ describe('FlpSandbox', () => {
             const flpConfig: FlpConfig = {
                 path: 'my/custom/path',
                 intent: { object: 'movie', action: 'start' },
-                ui5Theme: 'sap_fiori_3',
+                theme: 'sap_fiori_3',
                 apps: [
                     {
                         target: '/other/app',
@@ -73,7 +73,7 @@ describe('FlpSandbox', () => {
             expect(flp.config.apps).toEqual(flpConfig.apps);
             expect(flp.config.intent).toStrictEqual({ object: 'movie', action: 'start' });
             expect(flp.router).toBeDefined();
-            expect(flp.config.ui5Theme).toEqual(flpConfig.ui5Theme);
+            expect(flp.config.theme).toEqual(flpConfig.theme);
         });
     });
 
@@ -95,7 +95,7 @@ describe('FlpSandbox', () => {
         });
 
         test('ui5Theme', async () => {
-            const flp = new FlpSandbox({ flp: { ui5Theme: 'sap_fiori_3' } }, mockProject, mockUtils, logger);
+            const flp = new FlpSandbox({ flp: { theme: 'sap_fiori_3' } }, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();

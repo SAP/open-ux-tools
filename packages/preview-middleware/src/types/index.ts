@@ -43,7 +43,7 @@ export interface FlpConfig {
      */
     libs?: boolean;
     apps: App[];
-    ui5Theme?: string;
+    theme?: string;
 }
 
 /**
