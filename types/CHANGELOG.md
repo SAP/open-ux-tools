@@ -1,5 +1,11 @@
 # @sap-ux/types
 
+## 1.0.5
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 1.0.4
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.33
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/ui5-config@0.19.3
+
 ## 0.14.32
 
 ### Patch Changes
