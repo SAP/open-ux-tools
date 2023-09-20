@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.19.2
+
+### Patch Changes
+
+-   3137514f: use platform independent UI5 CDN URLs
+
 ## 0.19.1
 
 ### Patch Changes

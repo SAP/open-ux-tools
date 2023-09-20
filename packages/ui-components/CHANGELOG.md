@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.11.12
+
+### Patch Changes
+
+-   a77300c4: chore(uic): re-fix the sleep function tests
+
+## 1.11.11
+
+### Patch Changes
+
+-   0dbad1b8: chore(deps): update dependency typescript to v4.9.5
+
 ## 1.11.10
 
 ### Patch Changes
