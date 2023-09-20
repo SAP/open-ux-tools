@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.14.0
+
+### Minor Changes
+
+-   42d0cd9d: Outputs `contextPath` instead of `entitySet` for ui5 version 1.94 or greater
+
 ## 0.13.11
 
 ### Patch Changes
