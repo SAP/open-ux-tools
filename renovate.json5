@@ -87,6 +87,10 @@
             matchDepTypes: ['devDependencies']
         },
         {
+            matchPackagePrefixes: ['@types/vscode'],
+            allowedVersions: '1.73.1'
+        },
+        {
             matchPackagePrefixes: [
                 'webpack',
                 'ts-loader',

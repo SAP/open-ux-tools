@@ -1,5 +1,50 @@
 # @sap-ux/preview-middleware
 
+## 0.5.7
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/adp-tooling@0.2.5
+    -   @sap-ux/logger@0.3.8
+
+## 0.5.6
+
+### Patch Changes
+
+-   30825ea6: Add an option for setting the UI5 theme
+
+## 0.5.5
+
+### Patch Changes
+
+-   58424e73: chore(deps): update dependency @ui5/cli to v3.6.0
+
+## 0.5.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.2.4
+
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.2.3
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.2.2
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.2.1
+
 ## 0.5.0
 
 ### Minor Changes

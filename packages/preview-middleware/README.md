@@ -13,13 +13,12 @@ It hosts a local Fiori launchpad based on your configuration as well as offers a
 | `flp.intent.action`    | `string`  | `preview`        | Optional intent action                                                                                                              |
 | `flp.apps`             | `array`   | `undefined`      | Optional additional local apps that are available in local Fiori launchpad                                                          |
 | `flp.libs`             | `boolean` | `undefined`      | Optional flag to add a generic script fetching the paths of used libraries not available in UI5. To disable set it to `false`, if not set, then the project is checked for a `load-reuse-libs` script and if available the libraries are fetched as well. |
+| `flp.theme`             | `string` | `undefined`      | Optional flag for setting the UI5 Theme. |
 | `adp.target`           |           |                  | Required configuration for adaptation projects defining the connected backend                                                       |
 | `adp.ignoreCertErrors` | `boolean` | `false`          | Optional setting to ignore certification validation errors when working with e.g. development systems with self signed certificates |
 | `rta`                  |           |                  | Optional configuration allowing to add mount points for runtime adaptation                                                          |
 | `rta.layer`            | `string`  | `(calculated)`   | Optional property for defining the runtime adaptation layer for changes (default is `CUSTOMER_BASE` or read from the project for adaptation projects) |
 | `rta.editors`          | `array`   | `undefined`      | Optional list of mount points for editing                                                                                           |
-
-
 | `debug`                | `boolean` | `false`          | Enables debug output                                                                                                                |
 
 ### `flp.apps`
@@ -44,7 +43,7 @@ Array of additional application configurations:
 | Option          | Type               | Description                                                                                    |
 | --------------- | -------------------| -----------------------------------------------------------------------------------------------|
 | `path`          | `string` mandatory | The mount point to be used for the editor.                                                     |
-| `developerMode` | `boolean` optional | Enables/disables the runtime adaptation developer mode (only supported for adaptation projects |
+| `developerMode` | `boolean` optional | Enables/disables the runtime adaptation developer mode (only supported for adaptation projects) |
 
 
 ## Usage
@@ -52,7 +51,7 @@ The middleware can be used without configuration. However, since the middleware 
 Example: [./test/fixtures/simple-app/ui5.yaml](./test/fixtures/simple-app/ui5.yaml) 
 
 ### Minimal Configuration
-With no configuration provided, the app will be local FLP will be available at `/test/flp.html` and the log level is `info`.
+With no configuration provided, the local FLP will be available at `/test/flp.html` and the log level is `info`.
 ```Yaml
 server:
   customMiddleware:
@@ -61,7 +60,7 @@ server:
 ```
 
 ### Different Path and Debugging enabled
-With this configuration, the app will be local FLP will be available at `/preview.html` and the log level is `debug`.
+With this configuration, the local FLP will be available at `/test/myFLP.html` and the log level is `debug`.
 ```Yaml
 server:
   customMiddleware:
@@ -69,7 +68,7 @@ server:
     afterMiddleware: compression
     configuration:
       flp: 
-        path: /preview.html
+        path: /test/myFLP.html
       debug: true
 ```
 
@@ -98,7 +97,7 @@ server:
       rta:
         layer: CUSTOMER_BASE
         editors:
-          - path: /local/variant-editor.html
+          - path: /test/variant-editor.html
 ```
 
 
@@ -116,7 +115,7 @@ server:
         ignoreCertErrors: true
       rta:
         editors:
-          - path: /adp/editor.html
+          - path: /test/adaptation-editor.html
             developerMode: true
 ```
 

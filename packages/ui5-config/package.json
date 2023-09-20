@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-config"
     },
-    "version": "0.19.0",
+    "version": "0.19.3",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -33,13 +33,13 @@
     "dependencies": {
         "@sap-ux/yaml": "workspace:*",
         "lodash": "4.17.21",
-        "semver": "7.5.3"
+        "semver": "7.5.4"
     },
     "devDependencies": {
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "@types/lodash": "4.14.198",
-        "@types/semver": "7.3.9"
+        "@types/semver": "7.5.2"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",

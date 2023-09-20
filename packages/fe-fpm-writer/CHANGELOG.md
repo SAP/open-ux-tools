@@ -1,5 +1,30 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.23.6
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
+## 0.23.5
+
+### Patch Changes
+
+-   7b156515: fix(deps): update dependency xpath to v0.0.33
+
+## 0.23.4
+
+### Patch Changes
+
+-   01fa690e: fix(deps): update dependency @xmldom/xmldom to v0.8.10
+-   3137514f: use platform independent UI5 CDN URLs
+
+## 0.23.3
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+
 ## 0.23.2
 
 ### Patch Changes
