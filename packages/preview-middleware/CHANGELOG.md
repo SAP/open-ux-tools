@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.5.6
+
+### Patch Changes
+
+-   30825ea6: Add an option for setting the UI5 theme
+
 ## 0.5.5
 
 ### Patch Changes
