@@ -709,8 +709,8 @@ importers:
         specifier: 2.4.4
         version: 2.4.4
       '@types/vscode':
-        specifier: 1.39.0
-        version: 1.39.0
+        specifier: 1.73.1
+        version: 1.73.1
 
   packages/eslint-plugin-fiori-tools:
     dependencies:
@@ -909,8 +909,8 @@ importers:
         specifier: 4.14.198
         version: 4.14.198
       '@types/vscode':
-        specifier: 1.63.1
-        version: 1.63.1
+        specifier: 1.73.1
+        version: 1.73.1
       jest:
         specifier: '>=29.5.0'
         version: 29.5.0(@types/node@12.20.55)
@@ -8387,12 +8387,8 @@ packages:
       '@types/node': 17.0.9
     dev: true
 
-  /@types/vscode@1.39.0:
-    resolution: {integrity: sha512-rlg0okXDt7NjAyHXbZ2nO1I/VY/8y9w67ltLRrOxXQ46ayvrYZavD4A6zpYrGbs2+ZOEQzcUs+QZOqcVGQIxXQ==}
-    dev: true
-
-  /@types/vscode@1.63.1:
-    resolution: {integrity: sha512-Z+ZqjRcnGfHP86dvx/BtSwWyZPKQ/LBdmAVImY82TphyjOw2KgTKcp7Nx92oNwCTsHzlshwexAG/WiY2JuUm3g==}
+  /@types/vscode@1.73.1:
+    resolution: {integrity: sha512-eArfOrAoZVV+Ao9zQOCaFNaeXj4kTCD+bGS2gyNgIFZH9xVMuLMlRrEkhb22NyxycFWKV1UyTh03vhaVHmqVMg==}
     dev: true
 
   /@types/yargs-parser@20.2.1:

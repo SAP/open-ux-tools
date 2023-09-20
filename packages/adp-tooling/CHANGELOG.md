@@ -1,5 +1,19 @@
 # @sap-ux/adp-tooling
 
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [0760c9f8]
+    -   @sap-ux/axios-extension@1.4.8
+    -   @sap-ux/system-access@0.2.8
+
+## 0.3.0
+
+### Minor Changes
+
+-   ac0adb21: Enhancing the preview-middleware with new functionality such as adding an XML Fragment (creating "addXML" change).
+
 ## 0.2.5
 
 ### Patch Changes
