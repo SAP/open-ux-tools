@@ -57,7 +57,7 @@ export default class ControllerExtension extends Controller {
     async onInit() {
         this.model = new JSONModel();
 
-        this.dialog = this.byId('extendNewControllerDialog') as unknown as Dialog;
+        this.dialog = this.byId('controllerExtensionDialog') as unknown as Dialog;
 
         await this.buildDialogData();
 
