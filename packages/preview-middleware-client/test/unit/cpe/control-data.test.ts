@@ -1,19 +1,20 @@
 import Utils from 'sap/ui/fl/Utils';
 import { buildControlData } from '../../../src/cpe/control-data';
-import DataType from 'mock/sap/ui/base/DataType';
+import { getNameMock } from 'mock/sap/ui/base/DataType';
+import { sapMock } from 'mock/window';
 
 describe('controlData', () => {
     // prepare
-    jest.spyOn(sap.ui, 'require').mockImplementation((path: any) => {
+    sapMock.ui.require.mockImplementation((path: any) => {
         if (path === 'sap/ui/core/aria/HasPopup') {
             return { None: 'None', Menu: 'Menu', ListBox: 'ListBox' };
         }
         return undefined;
     });
-    jest.spyOn(DataType.prototype, 'getName')
-    .mockReturnValueOnce('string')
-    .mockReturnValueOnce('')
-    .mockReturnValueOnce('string');
+    getNameMock
+        .mockReturnValueOnce('string')
+        .mockReturnValueOnce('')
+        .mockReturnValueOnce('string');
 
     jest.spyOn(Utils, 'checkControlId').mockReturnValue(true);
 
