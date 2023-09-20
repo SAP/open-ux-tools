@@ -60,6 +60,7 @@ describe('FlpSandbox', () => {
             const flpConfig: FlpConfig = {
                 path: 'my/custom/path',
                 intent: { object: 'movie', action: 'start' },
+                ui5Theme: 'sap_fiori_3',
                 apps: [
                     {
                         target: '/other/app',
@@ -72,6 +73,7 @@ describe('FlpSandbox', () => {
             expect(flp.config.apps).toEqual(flpConfig.apps);
             expect(flp.config.intent).toStrictEqual({ object: 'movie', action: 'start' });
             expect(flp.router).toBeDefined();
+            expect(flp.config.ui5Theme).toEqual(flpConfig.ui5Theme);
         });
     });
 
