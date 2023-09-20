@@ -114,14 +114,16 @@ export const Tree = (): ReactElement => {
         return undefined;
     }
 
+    type CurrentType = IGroup | IGroup[] | undefined;
+
     /**
      * Sets current item.
      *
-     * @param current IGroup | IGroup[] | undefined,
+     * @param current CurrentType,
      * @param segment string
-     * @returns IGroup | IGroup[] | undefined
+     * @returns CurrentType
      */
-    function setCurrentItem(current: IGroup | IGroup[] | undefined, segment: string): IGroup | IGroup[] | undefined {
+    function setCurrentItem(current: CurrentType, segment: string): CurrentType {
         if (Array.isArray(current)) {
             current = current[parseInt(segment, 10)];
         } else if (current && segment === 'children') {
@@ -152,7 +154,7 @@ export const Tree = (): ReactElement => {
                 cell: undefined
             });
         } else if (item) {
-            let current: IGroup | IGroup[] | undefined = groups;
+            let current: CurrentType = groups;
             for (const segment of item.path) {
                 current = setCurrentItem(current, segment);
             }
