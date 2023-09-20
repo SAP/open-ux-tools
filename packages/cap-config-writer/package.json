@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/cap-config-writer",
     "description": "Add or update configuration for SAP CAP projects",
-    "version": "0.1.20",
+    "version": "0.1.22",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -32,12 +32,12 @@
         "i18next": "20.3.2",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "semver": "7.5.3"
+        "semver": "7.5.4"
     },
     "devDependencies": {
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "@types/semver": "7.3.9"
+        "@types/semver": "7.5.2"
     },
     "engines": {
         "node": ">= 14.16.0"

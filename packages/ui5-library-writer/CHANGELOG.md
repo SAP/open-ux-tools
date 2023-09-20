@@ -1,5 +1,25 @@
 # @sap-ux/ui5-library-writer
 
+## 0.2.8
+
+### Patch Changes
+
+-   3137514f: use platform independent UI5 CDN URLs
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-application-writer@0.25.5
+    -   @sap-ux/ui5-config@0.19.2
+    -   @sap-ux/project-access@1.13.5
+
+## 0.2.7
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-application-writer@0.25.4
+    -   @sap-ux/ui5-config@0.19.1
+    -   @sap-ux/project-access@1.13.4
+
 ## 0.2.6
 
 ### Patch Changes
