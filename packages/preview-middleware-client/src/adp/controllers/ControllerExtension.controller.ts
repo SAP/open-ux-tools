@@ -178,7 +178,7 @@ export default class ControllerExtension extends Controller {
                 viewId
             };
 
-            const service = await this.rta.getService<{ add: (codeRef: string, viewId: string) => Promise<unknown> }>(
+            const service = await this.rta.getService<{ add:(codeRef: string, viewId: string) => Promise<unknown> }>(
                 'controllerExtension'
             );
 
