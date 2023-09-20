@@ -27,8 +27,7 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
-import { ManifestAppdescr, getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
-import { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
+import { getFragments, writeFragment } from '../api-handler';
 
 interface CreateFragmentProps {
     fragmentName: string;
