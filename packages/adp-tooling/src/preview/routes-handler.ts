@@ -183,7 +183,7 @@ export default class RoutesHandler {
                     res.status(HttpStatusCodes.CONFLICT).send(
                         `Controller with name "${controllerName}" already exists`
                     );
-                    this.logger.debug(`Controller with name "${controllerName}" was created`);
+                    this.logger.debug(`Controller with name "${controllerName}" already exists`);
                     return;
                 }
 
@@ -197,8 +197,7 @@ export default class RoutesHandler {
 
                 renderFile(controllerTemplateFilePath, { controllerExtensionName }, {}, (err, str) => {
                     if (err) {
-                        res.status(400).send('Error rendering template: ' + err.message);
-                        return;
+                        throw new Error('Error rendering template: ' + err.message);
                     }
 
                     fs.writeFileSync(filePath, str, { encoding: 'utf8' });
@@ -206,7 +205,7 @@ export default class RoutesHandler {
 
                 const message = 'Controller created!';
                 res.status(HttpStatusCodes.CREATED).send(message);
-                this.logger.debug(`XML Controller with name "${controllerName}" was created`);
+                this.logger.debug(`Controller with name "${controllerName}" was created`);
             } else {
                 res.status(HttpStatusCodes.BAD_REQUEST).send('Controller name was not provided!');
                 this.logger.debug('Bad request. Controller name was not provided!');
