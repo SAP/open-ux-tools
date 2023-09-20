@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.2.0
+
+### Minor Changes
+
+-   ac0adb21: Enhancing the preview-middleware with new functionality such as adding an XML Fragment (creating "addXML" change).
+
 ## 0.1.2
 
 ### Patch Changes
