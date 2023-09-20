@@ -136,8 +136,8 @@ importers:
         specifier: 5.2.11
         version: 5.2.11
       axios:
-        specifier: 0.24.0
-        version: 0.24.0
+        specifier: 0.27.2
+        version: 0.27.2
 
   packages/adp-tooling:
     dependencies:
@@ -9117,10 +9117,11 @@ packages:
       - debug
     dev: false
 
-  /axios@0.24.0:
-    resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
+  /axios@0.27.2:
+    resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
     dependencies:
       follow-redirects: 1.15.2
+      form-data: 4.0.0
     transitivePeerDependencies:
       - debug
     dev: true
