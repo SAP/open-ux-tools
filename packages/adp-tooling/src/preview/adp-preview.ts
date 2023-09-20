@@ -1,11 +1,21 @@
-import type { ToolsLogger } from '@sap-ux/logger';
+import express from 'express';
 import { ZipFile } from 'yazl';
-import type { AdpPreviewConfig, DescriptorVariant } from '../types';
-import type { NextFunction, Request, Response } from 'express';
-import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 import type { ReaderCollection } from '@ui5/fs';
+import type { MiddlewareUtils } from '@ui5/server';
+import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
+
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+
+import RoutesHandler from './routes-handler';
+import type { AdpPreviewConfig, DescriptorVariant } from '../types';
+
+export const enum ApiRoutes {
+    FRAGMENT = '/adp/api/fragment',
+    CONTROLLER = '/adp/api/controller'
+}
 
 /**
  * Create a buffer based on the given zip file object.
@@ -36,6 +46,10 @@ export class AdpPreview {
      * Merged descriptor variant with reference app manifest
      */
     private mergedDescriptor: MergedAppDescriptor;
+    /**
+     * Routes handler class to handle API requests
+     */
+    private routesHandler: RoutesHandler;
 
     /**
      * @returns merged manifest.
@@ -72,13 +86,17 @@ export class AdpPreview {
      *
      * @param config adp config
      * @param project reference to the root of the project
+     * @param util middleware utilities provided by the UI5 CLI
      * @param logger logger instance
      */
     constructor(
         private readonly config: AdpPreviewConfig,
         private readonly project: ReaderCollection,
+        private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
-    ) {}
+    ) {
+        this.routesHandler = new RoutesHandler(project, util, logger);
+    }
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
@@ -130,5 +148,18 @@ export class AdpPreview {
                 next();
             }
         }
+    }
+
+    /**
+     * Add additional APIs to the router that are required for adaptation projects only.
+     *
+     * @param router router that is to be enhanced with the API
+     */
+    addApis(router: Router): void {
+        /**
+         * FRAGMENT Routes
+         */
+        router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
+        router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment as RequestHandler);
     }
 }

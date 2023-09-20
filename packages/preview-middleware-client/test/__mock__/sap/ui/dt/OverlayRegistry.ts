@@ -1,3 +1,10 @@
+// add required functionality for testing here
 export default {
-    getOverlay() {}
+    getOverlay: () => {
+        return {
+            getDesignTimeMetadata: () => {
+                return jest.fn();
+            }
+        };
+    }
 };

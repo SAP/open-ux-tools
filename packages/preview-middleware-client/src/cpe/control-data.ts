@@ -98,7 +98,7 @@ function analyzePropertyType(property: ManagedObjectMetadataProperties): Analyze
         // Determine type from iFrame
         const propertyDataType = DataType.getType(typeName);
 
-        //type which is not a DataType such as Control is not supported
+        // type which is not a DataType such as Control is not supported
         if (propertyDataType && !(propertyDataType instanceof DataType)) {
             return analyzedType;
         }

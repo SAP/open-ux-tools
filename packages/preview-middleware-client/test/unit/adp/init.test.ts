@@ -5,9 +5,15 @@ import * as outline from '../../../src/cpe/outline';
 import * as facade from '../../../src/cpe/facade';
 
 describe('adp', () => {
+    const addMenuItemSpy = jest.fn();
     let initOutlineSpy: jest.SpyInstance;
     rtaMock.attachUndoRedoStackModified = jest.fn();
     rtaMock.attachSelectionChange = jest.fn();
+    rtaMock.getDefaultPlugins.mockReturnValueOnce({
+        contextMenu: {
+            addMenuItem: addMenuItemSpy
+        }
+    });
     jest.spyOn(facade, 'createUi5Facade').mockImplementation(() => {
         return {
             getControlById: jest.fn().mockReturnValueOnce({
@@ -42,5 +48,6 @@ describe('adp', () => {
     test('init', () => {
         init(rtaMock);
         expect(initOutlineSpy).toBeCalledTimes(1);
+        expect(addMenuItemSpy.mock.calls.length).toBe(1);
     });
 });

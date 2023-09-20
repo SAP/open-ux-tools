@@ -19,7 +19,7 @@
         "build:middleware": "tsc --build",
         "build:client": "pnpm -C ../preview-middleware-client run build && copyfiles --exclude **/*-dbg.js --up 4 \"./node_modules/@private/preview-middleware-client/dist/**/*\" \"./dist/client\"",
         "watch": "tsc --watch",
-        "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",

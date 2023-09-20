@@ -35,15 +35,16 @@ declare module 'sap/ui/rta/command/FlexCommand' {
 
 declare module 'sap/ui/rta/command/CommandFactory' {
     import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
+    import type ManagedObject from 'sap/ui/base/ManagedObject';
     import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
     import type Element from 'sap/ui/core/Element';
     import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 
     interface CommandFactory {
         getCommandFor<T extends BaseCommand = BaseCommand>(
-            control: Element | string,
+            control: Element | ManagedObject | string,
             commandType: string,
-            settings: any,
+            settings: object,
             designTimeMetadata?: DesignTimeMetadata | null,
             flexSettings?: FlexSettings
         ): Promise<T>;

@@ -1,5 +1,7 @@
 export default class DataTypeMock {
-    getName() {}
+    getName(): string | undefined {
+        return undefined;
+    }
     static getType() {
         return new DataTypeMock();
     }

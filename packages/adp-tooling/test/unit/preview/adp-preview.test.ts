@@ -1,12 +1,17 @@
 import { ToolsLogger } from '@sap-ux/logger';
 import { AdpPreview } from '../../../src/preview/adp-preview';
-import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { ReaderCollection } from '@ui5/fs';
 import nock from 'nock';
 import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
 import express from 'express';
+import { readFileSync, existsSync } from 'fs';
+
+interface GetFragmentsResponse {
+    fragments: { fragmentName: string }[];
+    message: string;
+}
 
 jest.mock('@sap-ux/store', () => {
     return {
@@ -22,6 +27,14 @@ jest.mock('@sap-ux/store', () => {
 const mockProject = {
     byGlob: jest.fn().mockResolvedValue([])
 };
+
+jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
+    existsSync: jest.fn(),
+    mkdirSync: jest.fn(),
+    copyFileSync: jest.fn()
+}));
+const mockExistsSync = existsSync as jest.Mock;
 
 describe('AdaptationProject', () => {
     const backend = 'https://sap.example';
@@ -50,6 +63,19 @@ describe('AdaptationProject', () => {
         url: '/my/adaptation'
     };
 
+    const middlewareUtil = {
+        getProject() {
+            return {
+                getRootPath() {
+                    return '';
+                },
+                getSourcePath() {
+                    return '/adp.project/webapp';
+                }
+            };
+        }
+    };
+
     beforeAll(() => {
         nock(backend)
             .get((path) => path.startsWith('/sap/bc/lrep/dta_folder/'))
@@ -73,6 +99,7 @@ describe('AdaptationProject', () => {
                     }
                 },
                 mockProject as unknown as ReaderCollection,
+                middlewareUtil,
                 logger
             );
 
@@ -98,6 +125,7 @@ describe('AdaptationProject', () => {
                     }
                 },
                 mockProject as unknown as ReaderCollection,
+                middlewareUtil,
                 logger
             );
 
@@ -106,7 +134,7 @@ describe('AdaptationProject', () => {
         });
     });
     describe('proxy', () => {
-        let server!: SuperTest<Test>;
+        let server: SuperTest<Test>;
         const next = jest.fn().mockImplementation((_req, res) => res.status(200).send());
         beforeAll(async () => {
             const adp = new AdpPreview(
@@ -116,6 +144,7 @@ describe('AdaptationProject', () => {
                     }
                 },
                 mockProject as unknown as ReaderCollection,
+                middlewareUtil,
                 logger
             );
 
@@ -132,7 +161,7 @@ describe('AdaptationProject', () => {
             app.get(`${mockMergedDescriptor.url}/original.file`, next);
             app.use((req) => fail(`${req.path} should have been intercepted.`));
 
-            server = await supertest(app);
+            server = supertest(app);
         });
 
         test('/manifest.json', async () => {
@@ -159,6 +188,98 @@ describe('AdaptationProject', () => {
         test('/original.file', async () => {
             await server.get(`${mockMergedDescriptor.url}/original.file`).expect(200);
             expect(next).toBeCalled();
+        });
+    });
+    describe('addApis', () => {
+        let server: SuperTest<Test>;
+        beforeAll(async () => {
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    }
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            const app = express();
+            adp.addApis(app);
+            server = supertest(app);
+        });
+
+        afterEach(() => {
+            mockExistsSync.mockRestore();
+        });
+
+        test('GET /adp/api/fragment', async () => {
+            const expectedNames = [{ fragmentName: 'my.fragment.xml' }, { fragmentName: 'other.fragment.xml' }];
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getName: () => expectedNames[0].fragmentName
+                },
+                {
+                    getName: () => expectedNames[1].fragmentName
+                }
+            ]);
+            const response = await server.get('/adp/api/fragment').expect(200);
+            const data: GetFragmentsResponse = JSON.parse(response.text);
+            expect(data.fragments).toEqual(expectedNames);
+            expect(data.message).toEqual(`${expectedNames.length} fragments found in the project workspace.`);
+        });
+
+        test('GET /adp/api/fragment - returns empty array of fragment', async () => {
+            const response = await server.get('/adp/api/fragment').expect(200);
+            const data: GetFragmentsResponse = JSON.parse(response.text);
+            expect(data.fragments.length).toEqual(0);
+            expect(data.message).toEqual(`No fragments found in the project workspace.`);
+        });
+
+        test('GET /adp/api/fragment - throws error', async () => {
+            const errorMsg = 'Could not get fragment name.';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getName: () => {
+                        throw new Error(errorMsg);
+                    }
+                }
+            ]);
+            const response = await server.get('/adp/api/fragment').expect(500);
+            const data: GetFragmentsResponse = JSON.parse(response.text);
+            expect(data.message).toEqual(errorMsg);
+        });
+
+        test('POST /adp/api/fragment - creates fragment', async () => {
+            mockExistsSync.mockReturnValue(false);
+            const fragmentName = 'Share';
+            const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(201);
+
+            const message = response.text;
+            expect(message).toBe('XML Fragment created');
+        });
+
+        test('POST /adp/api/fragment - fragment already exists', async () => {
+            mockExistsSync.mockReturnValueOnce(false).mockReturnValueOnce(true);
+            const fragmentName = 'Share';
+            const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(409);
+
+            const message = response.text;
+            expect(message).toBe(`Fragment with name "${fragmentName}" already exists`);
+        });
+
+        test('POST /adp/api/fragment - fragmentName is not provided', async () => {
+            const response = await server.post('/adp/api/fragment').send({ fragmentName: '' }).expect(400);
+
+            const message = response.text;
+            expect(message).toBe('Fragment name was not provided!');
+        });
+
+        test('POST /adp/api/fragment - throws error when fragmentName is undefined', async () => {
+            const response = await server.post('/adp/api/fragment').send({ fragmentName: undefined }).expect(500);
+
+            const message = response.text;
+            expect(message).toBe('Input must be string');
         });
     });
 });
