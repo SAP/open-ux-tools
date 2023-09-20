@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.13.8
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 0.13.7
 
 ### Patch Changes

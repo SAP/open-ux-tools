@@ -1,5 +1,15 @@
 # @sap-ux/ui5-library-writer
 
+## 0.2.9
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/project-access@1.13.6
+    -   @sap-ux/ui5-application-writer@0.25.6
+    -   @sap-ux/ui5-config@0.19.3
+
 ## 0.2.8
 
 ### Patch Changes

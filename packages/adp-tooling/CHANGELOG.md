@@ -1,5 +1,16 @@
 # @sap-ux/adp-tooling
 
+## 0.2.5
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/axios-extension@1.4.7
+    -   @sap-ux/logger@0.3.8
+    -   @sap-ux/system-access@0.2.7
+    -   @sap-ux/ui5-config@0.19.3
+
 ## 0.2.4
 
 ### Patch Changes

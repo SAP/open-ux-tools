@@ -1,5 +1,14 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.2.3
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/logger@0.3.8
+    -   @sap-ux/ui5-config@0.19.3
+
 ## 1.2.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.1.11
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 0.1.10
 
 ### Patch Changes
