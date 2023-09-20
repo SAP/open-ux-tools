@@ -1,5 +1,17 @@
 # @sap-ux/ui5-config
 
+## 0.19.2
+
+### Patch Changes
+
+-   3137514f: use platform independent UI5 CDN URLs
+
+## 0.19.1
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+
 ## 0.19.0
 
 ### Minor Changes
