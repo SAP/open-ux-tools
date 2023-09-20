@@ -1,9 +1,9 @@
 import { screen, fireEvent } from '@testing-library/react';
 import { render } from '../../utils';
 import React from 'react';
-import { initI18n } from '../../../../../src/app/i18n';
-import type { IconValueHelpProps } from '../../../../../src/app/panels/properties/IconValueHelp';
-import { IconValueHelp } from '../../../../../src/app/panels/properties/IconValueHelp';
+import { initI18n } from '../../../../src/i18n';
+import type { IconValueHelpProps } from '../../../../src/panels/properties/IconValueHelp';
+import { IconValueHelp } from '../../../../src/panels/properties/IconValueHelp';
 
 describe('IconValueHelp', () => {
     const iconValueHelpProps: IconValueHelpProps = {

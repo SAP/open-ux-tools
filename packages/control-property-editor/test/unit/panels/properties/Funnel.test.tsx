@@ -2,8 +2,8 @@ import { screen, fireEvent } from '@testing-library/react';
 import { render } from '../../utils';
 import React from 'react';
 import '@testing-library/jest-dom';
-import { Funnel } from '../../../../../src/app/panels/properties/Funnel';
-import { filterNodes } from '../../../../../src/app/slice';
+import { Funnel } from '../../../../src/panels/properties/Funnel';
+import { filterNodes } from '../../../../src/slice';
 
 describe('Funnel', () => {
     test('initial load', () => {

@@ -14,14 +14,14 @@ import {
     INTEGER_VALUE_TYPE,
     STRING_VALUE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
-import { initI18n } from '../../../../../src/app/i18n';
+import { initI18n } from '../../../../src/i18n';
 import {
     getInputTypeToggleOptions,
     getDefaultInputType,
     InputTypeWrapper
-} from '../../../../../src/app/panels/properties/InputTypeWrapper';
-import type { InputTypeToggleOptionProps } from '../../../../../src/app/panels/properties/types';
-import { InputType } from '../../../../../src/app/panels/properties/types';
+} from '../../../../src/panels/properties/InputTypeWrapper';
+import type { InputTypeToggleOptionProps } from '../../../../src/panels/properties/types';
+import { InputType } from '../../../../src/panels/properties/types';
 import { render } from '../../utils';
 
 describe('InputTypeWrapper', () => {

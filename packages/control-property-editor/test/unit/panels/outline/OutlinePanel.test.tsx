@@ -3,15 +3,15 @@ import { screen, fireEvent } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 
 import { render } from '../../utils';
-import { initI18n } from '../../../../../src/app/i18n';
-import { mockResizeObserver } from '../../../../utils/utils';
-import { OutlinePanel } from '../../../../../src/app/panels/outline';
+import { initI18n } from '../../../../src/i18n';
+import { mockResizeObserver } from '../../../utils/utils';
+import { OutlinePanel } from '../../../../src/panels/outline';
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
 import { controlSelected, outlineChanged } from '@sap-ux-private/control-property-editor-common';
-import type { FilterOptions, default as reducer } from '../../../../../src/app/slice';
-import { FilterName, filterNodes } from '../../../../../src/app/slice';
-import { DeviceType } from '../../../../../src/app/devices';
-import { registerAppIcons } from '../../../../../src/app/icons';
+import type { FilterOptions, default as reducer } from '../../../../src/slice';
+import { FilterName, filterNodes } from '../../../../src/slice';
+import { DeviceType } from '../../../../src/devices';
+import { registerAppIcons } from '../../../../src/icons';
 
 export type State = ReturnType<typeof reducer>;
 

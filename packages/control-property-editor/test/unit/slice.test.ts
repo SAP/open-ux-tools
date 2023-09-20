@@ -3,7 +3,7 @@ import {
     propertyChanged,
     propertyChangeFailed
 } from '@sap-ux-private/control-property-editor-common';
-import reducer, { FilterName, filterNodes, changeProperty } from '../../../src/app/slice';
+import reducer, { FilterName, filterNodes, changeProperty } from '../../src/slice';
 
 describe('main redux slice', () => {
     describe('property changed', () => {

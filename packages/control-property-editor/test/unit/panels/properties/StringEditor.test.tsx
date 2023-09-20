@@ -1,7 +1,7 @@
 import { screen, fireEvent } from '@testing-library/react';
 import { render } from '../../utils';
 import React from 'react';
-import { StringEditor } from '../../../../../src/app/panels/properties/StringEditor';
+import { StringEditor } from '../../../../src/panels/properties/StringEditor';
 
 describe('StringEditor', () => {
     const controlId = 'testControlId';

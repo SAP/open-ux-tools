@@ -3,15 +3,15 @@ import { fireEvent, screen } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 
 import { render, mockDomEventListener } from './utils';
-import { initI18n } from '../../../src/app/i18n';
+import { initI18n } from '../../src/i18n';
 
-import App from '../../../src/app/App';
+import App from '../../src/App';
 import { controlSelected } from '@sap-ux-private/control-property-editor-common';
-import { mockResizeObserver } from '../../utils/utils';
-import { InputType } from '../../../src/app/panels/properties/types';
-import { registerAppIcons } from '../../../src/app/icons';
-import { DeviceType } from '../../../src/app/devices';
-import { changePreviewScale, initialState } from '../../../src/app/slice';
+import { mockResizeObserver } from '../utils/utils';
+import { InputType } from '../../src/panels/properties/types';
+import { registerAppIcons } from '../../src/icons';
+import { DeviceType } from '../../src/devices';
+import { changePreviewScale, initialState } from '../../src/slice';
 
 jest.useFakeTimers({ advanceTimers: true });
 const windowEventListenerMock = mockDomEventListener(window);

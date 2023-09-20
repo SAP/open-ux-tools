@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { render } from '../utils';
-import { initI18n } from '../../../../src/app/i18n';
+import { initI18n } from '../../../src/i18n';
 
-import { ChangeIndicator } from '../../../../src/app/components/ChangeIndicator';
-import { mockResizeObserver } from '../../../utils/utils';
+import { ChangeIndicator } from '../../../src/components/ChangeIndicator';
+import { mockResizeObserver } from '../../utils/utils';
 import { initIcons } from '@sap-ux/ui-components';
 
 beforeAll(() => {

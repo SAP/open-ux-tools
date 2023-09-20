@@ -1,6 +1,6 @@
-import { start } from '../../../src/app/index';
-import * as i18n from '../../../src/app/i18n';
-import * as icons from '../../../src/app/icons';
+import { start } from '../../src/index';
+import * as i18n from '../../src/i18n';
+import * as icons from '../../src/icons';
 import * as initIcon from '@sap-ux/ui-components/dist/components/Icons'; // bug in TS 4.6 https://github.com/microsoft/TypeScript/issues/43081
 import ReactDOM from 'react-dom';
 

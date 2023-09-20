@@ -1,4 +1,4 @@
-import { getFormattedDateAndTime } from '../../../../../src/app/panels/changes/utils';
+import { getFormattedDateAndTime } from '../../../../src/panels/changes/utils';
 
 describe('getFormattedDateAndTime', () => {
     let navigatorSpy: jest.SpyInstance;

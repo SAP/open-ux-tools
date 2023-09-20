@@ -3,12 +3,12 @@ import { screen, fireEvent } from '@testing-library/react';
 import { initIcons } from '@sap-ux/ui-components';
 
 import { render } from '../../utils';
-import { FilterName } from '../../../../../src/app/slice';
-import type { FilterOptions, ChangesSlice, default as reducer } from '../../../../../src/app/slice';
-import { DeviceType } from '../../../../../src/app/devices';
-import { registerAppIcons } from '../../../../../src/app/icons';
-import { ChangesPanel } from '../../../../../src/app/panels/changes';
-import { initI18n } from '../../../../../src/app/i18n';
+import { FilterName } from '../../../../src/slice';
+import type { FilterOptions, ChangesSlice, default as reducer } from '../../../../src/slice';
+import { DeviceType } from '../../../../src/devices';
+import { registerAppIcons } from '../../../../src/icons';
+import { ChangesPanel } from '../../../../src/panels/changes';
+import { initI18n } from '../../../../src/i18n';
 import type { PendingPropertyChange, SavedPropertyChange } from '@sap-ux-private/control-property-editor-common';
 
 export type State = ReturnType<typeof reducer>;

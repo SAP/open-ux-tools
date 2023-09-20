@@ -1,6 +1,6 @@
 import * as common from '@sap-ux-private/control-property-editor-common';
-import { communicationMiddleware } from '../../../src/app/middleware';
-jest.mock('../../../src/app/slice', () => {
+import { communicationMiddleware } from '../../src/middleware';
+jest.mock('../../src/slice', () => {
     return {
         changeProperty: { type: '[ext] property-changed' }
     };

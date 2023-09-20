@@ -1,4 +1,5 @@
-import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { IGroup, IGroupRenderProps, IGroupHeaderProps } from '@fluentui/react';
 import { Icon } from '@fluentui/react';
@@ -75,6 +76,13 @@ export const Tree = (): ReactElement => {
         }
     }, []);
 
+    /**
+     * Find in group.
+     *
+     * @param control Control
+     * @param group IGroup
+     * @returns IGroup[] | undefined
+     */
     function findInGroup(control: Control, group: IGroup): IGroup[] | undefined {
         if (group.key === control.id) {
             return [group];
@@ -86,8 +94,16 @@ export const Tree = (): ReactElement => {
                 return [group, ...result];
             }
         }
+        return undefined;
     }
 
+    /**
+     * Find in group collection.
+     *
+     * @param control Control
+     * @param groups  IGroup[]
+     * @returns IGroup[] | undefined
+     */
     function findInGroups(control: Control, groups: IGroup[]): IGroup[] | undefined {
         for (const group of groups) {
             const result = findInGroup(control, group);
@@ -95,9 +111,17 @@ export const Tree = (): ReactElement => {
                 return [group, ...result];
             }
         }
+        return undefined;
     }
 
-    function setCurrentItem(current: IGroup | IGroup[] | undefined, segment: string): void {
+    /**
+     * Sets current item.
+     *
+     * @param current IGroup | IGroup[] | undefined,
+     * @param segment string
+     * @returns IGroup | IGroup[] | undefined
+     */
+    function setCurrentItem(current: IGroup | IGroup[] | undefined, segment: string): IGroup | IGroup[] | undefined {
         if (Array.isArray(current)) {
             current = current[parseInt(segment, 10)];
         } else if (current && segment === 'children') {
@@ -108,8 +132,14 @@ export const Tree = (): ReactElement => {
         if (!Array.isArray(current) && current) {
             current.isCollapsed = false;
         }
+        return current;
     }
 
+    /**
+     * Update selection from preview.
+     *
+     * @param control Control
+     */
     function updateSelectionFromPreview(control: Control): void {
         const item = items.find((item) => item.controlId === control.id);
         const pathToGroup = findInGroups(control, groups);
@@ -124,7 +154,7 @@ export const Tree = (): ReactElement => {
         } else if (item) {
             let current: IGroup | IGroup[] | undefined = groups;
             for (const segment of item.path) {
-                setCurrentItem(current, segment);
+                current = setCurrentItem(current, segment);
             }
             setSelection({
                 group: undefined,
@@ -204,33 +234,37 @@ export const Tree = (): ReactElement => {
             </div>
         ) : null;
     };
-    const onToggleCollapse = (props?: IGroupHeaderProps): void => {
-        if (props?.onToggleCollapse && props?.group) {
-            props?.onToggleCollapse(props?.group);
+    const onToggleCollapse = (groupHeaderProps?: IGroupHeaderProps): void => {
+        if (groupHeaderProps?.onToggleCollapse && groupHeaderProps?.group) {
+            groupHeaderProps?.onToggleCollapse(groupHeaderProps?.group);
         }
 
-        const isCollapsed = props?.group?.isCollapsed;
-        if (props?.group) {
+        const isCollapsed = groupHeaderProps?.group?.isCollapsed;
+        if (groupHeaderProps?.group) {
             if (isCollapsed) {
                 // set collapsed row
-                setCollapsed([...collapsed, props.group]);
+                setCollapsed([...collapsed, groupHeaderProps.group]);
             } else {
                 // filter expanded row
-                const filterNodes = collapsed.filter((item) => !isSame(item.data.path, props.group?.data.path));
+                const filterNodes = collapsed.filter(
+                    (item) => !isSame(item.data.path, groupHeaderProps.group?.data.path)
+                );
                 setCollapsed(filterNodes);
             }
         }
     };
-    const onRenderHeader = (props?: IGroupHeaderProps): React.JSX.Element | null => {
-        const selectNode = selection.group?.key === props?.group?.key ? theme : '';
-        let paddingValue = (props?.group?.level ?? 0) * 10 + 15;
+    const onRenderHeader = (groupHeaderProps?: IGroupHeaderProps): React.JSX.Element | null => {
+        const selectNode = selection.group?.key === groupHeaderProps?.group?.key ? theme : '';
+        let paddingValue = (groupHeaderProps?.group?.level ?? 0) * 10 + 15;
         // add padding to compensate absence of chevron icon
-        if (props?.group?.count === 0) {
+        if (groupHeaderProps?.group?.count === 0) {
             paddingValue += 15;
         }
         const chevronTransform =
-            props?.group?.key && props.group.isCollapsed ? 'right-chevron-icon' : 'down-chevron-icon';
-        const groupName = `${props?.group?.name}`;
+            groupHeaderProps?.group?.key && groupHeaderProps.group.isCollapsed
+                ? 'right-chevron-icon'
+                : 'down-chevron-icon';
+        const groupName = `${groupHeaderProps?.group?.name}`;
         const refProps: {
             ref?: (node: Element) => void;
         } = {};
@@ -238,10 +272,10 @@ export const Tree = (): ReactElement => {
             refProps.ref = scrollRef;
         }
         const focus = filterQuery.filter((item) => item.name === FilterName.focusEditable)[0].value as boolean;
-        const focusEditable = !props?.group?.data?.editable && focus ? 'focusEditable' : '';
-        const controlChange = controlChanges[props?.group?.key ?? ''];
+        const focusEditable = !groupHeaderProps?.group?.data?.editable && focus ? 'focusEditable' : '';
+        const controlChange = controlChanges[groupHeaderProps?.group?.key ?? ''];
         const indicator = controlChange ? (
-            <ChangeIndicator id={`${props?.group?.key ?? ''}--ChangeIndicator`} {...controlChange} />
+            <ChangeIndicator id={`${groupHeaderProps?.group?.key ?? ''}--ChangeIndicator`} {...controlChange} />
         ) : (
             <></>
         );
@@ -249,14 +283,14 @@ export const Tree = (): ReactElement => {
             <div
                 {...refProps}
                 className={`${selectNode} tree-row ${focusEditable}`}
-                onClick={(): void => onSelectHeader(props?.group)}>
+                onClick={(): void => onSelectHeader(groupHeaderProps?.group)}>
                 <span style={{ paddingLeft: paddingValue }} className={`tree-cell`}>
-                    {props?.group?.count !== 0 && (
+                    {groupHeaderProps?.group?.count !== 0 && (
                         <Icon
                             className={`${chevronTransform}`}
                             iconName={IconName.chevron}
                             onClick={(event) => {
-                                onToggleCollapse(props);
+                                onToggleCollapse(groupHeaderProps);
                                 event.stopPropagation();
                             }}
                         />
@@ -301,6 +335,12 @@ export const Tree = (): ReactElement => {
     );
 };
 
+/**
+ * Checks a child can be added.
+ *
+ * @param model OutlineNode[]
+ * @returns boolean
+ */
 function createGroupChild(model: OutlineNode[]): boolean {
     let result = false;
     for (const data of model) {
@@ -313,6 +353,15 @@ function createGroupChild(model: OutlineNode[]): boolean {
     return result;
 }
 
+/**
+ * Get groups.
+ *
+ * @param model OutlineNode[]
+ * @param items  OutlineNodeItem[]
+ * @param level number, default to 0
+ * @param path string
+ * @returns IGroup[]
+ */
 function getGroups(model: OutlineNode[], items: OutlineNodeItem[], level = 0, path: string[] = []): IGroup[] {
     const group: IGroup[] = [];
     for (let i = 0; i < model.length; i++) {

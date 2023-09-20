@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react';
 import { render } from '../../utils';
 import React from 'react';
-import type { ClipboardProps } from '../../../../../src/app/panels/properties/Clipboard';
-import { Clipboard } from '../../../../../src/app/panels/properties/Clipboard';
+import type { ClipboardProps } from '../../../../src/panels/properties/Clipboard';
+import { Clipboard } from '../../../../src/panels/properties/Clipboard';
 
 describe('Clipboard', () => {
     const clipboardProps: ClipboardProps = {

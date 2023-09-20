@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
-import { ViewChanger } from '../../../../../src/app/panels/properties/ViewChanger';
-import { initI18n } from '../../../../../src/app/i18n';
+import { ViewChanger } from '../../../../src/panels/properties/ViewChanger';
+import { initI18n } from '../../../../src/i18n';
 
 import { render } from '../../utils';
 

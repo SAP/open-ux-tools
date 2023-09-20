@@ -4,16 +4,8 @@ module.exports = {
         project: './tsconfig.eslint.json',
         tsconfigRootDir: __dirname
     },
-    overrides: [
-        {
-            parser: '@typescript-eslint/parser',
-            files: ['./test/**/*.tsx'],
-            rules: {
-                'no-loop-func': 'off'
-            }
-        }
-    ],
     rules: {
+        // switched off until we decide logger for webapps
         'no-console': 'off'
     },
     settings: {

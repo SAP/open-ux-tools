@@ -2,10 +2,10 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 
 import { render } from '../utils';
-import { initI18n } from '../../../../src/app/i18n';
+import { initI18n } from '../../../src/i18n';
 
-import { ThemeSelectorCallout } from '../../../../src/app/components/ThemeSelectorCallout';
-import { mockResizeObserver } from '../../../utils/utils';
+import { ThemeSelectorCallout } from '../../../src/components/ThemeSelectorCallout';
+import { mockResizeObserver } from '../../utils/utils';
 import { initIcons } from '@sap-ux/ui-components';
 
 beforeAll(() => {

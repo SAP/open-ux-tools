@@ -1,7 +1,7 @@
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
-import { getFilteredModel } from '../../../../../src/app/panels/outline/utils';
-import type { FilterOptions } from '../../../../../src/app/slice';
-import { FilterName } from '../../../../../src/app/slice';
+import { getFilteredModel } from '../../../../src/panels/outline/utils';
+import type { FilterOptions } from '../../../../src/slice';
+import { FilterName } from '../../../../src/slice';
 const getModel = (editable = true, visible = true, toggleParent = false, toggleChildren = false): OutlineNode[] => {
     const model: OutlineNode[] = [
         {

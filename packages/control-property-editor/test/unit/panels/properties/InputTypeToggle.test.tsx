@@ -12,12 +12,12 @@ import {
     INPUT_EDITOR_TYPE,
     STRING_VALUE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
-import { IconName, registerAppIcons } from '../../../../../src/app/icons';
-import { getValueForInputType, InputTypeToggle } from '../../../../../src/app/panels/properties/InputTypeToggle';
-import type { InputTypeToggleOptionProps } from '../../../../../src/app/panels/properties/types';
-import { InputType } from '../../../../../src/app/panels/properties/types';
+import { IconName, registerAppIcons } from '../../../../src/icons';
+import { getValueForInputType, InputTypeToggle } from '../../../../src/panels/properties/InputTypeToggle';
+import type { InputTypeToggleOptionProps } from '../../../../src/panels/properties/types';
+import { InputType } from '../../../../src/panels/properties/types';
 import { render } from '../../utils';
-import * as slice from '../../../../../src/app/slice';
+import * as slice from '../../../../src/slice';
 
 describe('InputTypeToggle', () => {
     const controlId = 'testControlId';

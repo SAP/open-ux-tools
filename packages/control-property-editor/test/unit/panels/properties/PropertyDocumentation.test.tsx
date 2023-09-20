@@ -1,11 +1,11 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { render } from '../../utils';
-import type { PropertyDocumentationProps } from '../../../../../src/app/panels/properties/PropertyDocumentation';
-import { PropertyDocumentation } from '../../../../../src/app/panels/properties/PropertyDocumentation';
-import { initI18n } from '../../../../../src/app/i18n';
+import type { PropertyDocumentationProps } from '../../../../src/panels/properties/PropertyDocumentation';
+import { PropertyDocumentation } from '../../../../src/panels/properties/PropertyDocumentation';
+import { initI18n } from '../../../../src/i18n';
 
-import { mockResizeObserver } from '../../../../utils/utils';
+import { mockResizeObserver } from '../../../utils/utils';
 
 describe('PropertyDoc', () => {
     beforeAll(() => {

@@ -1,9 +1,9 @@
 import { screen, fireEvent } from '@testing-library/react';
 import { render } from '../../utils';
 import React from 'react';
-import type { HeaderFieldProps } from '../../../../../src/app/panels/properties/HeaderField';
-import { HeaderField } from '../../../../../src/app/panels/properties/HeaderField';
-import { initI18n } from '../../../../../src/app/i18n';
+import type { HeaderFieldProps } from '../../../../src/panels/properties/HeaderField';
+import { HeaderField } from '../../../../src/panels/properties/HeaderField';
+import { initI18n } from '../../../../src/i18n';
 
 describe('HeaderField', () => {
     beforeAll(() => {
