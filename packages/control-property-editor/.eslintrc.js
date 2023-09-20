@@ -5,7 +5,7 @@ module.exports = {
         tsconfigRootDir: __dirname
     },
     rules: {
-        // switched off until we decide logger for webapps
+        // switched off temporarily until logger for webapps
         'no-console': 'off'
     },
     settings: {
