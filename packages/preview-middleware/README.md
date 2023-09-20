@@ -13,6 +13,7 @@ It hosts a local Fiori launchpad based on your configuration as well as offers a
 | `flp.intent.action`    | `string`  | `preview`        | Optional intent action                                                                                                              |
 | `flp.apps`             | `array`   | `undefined`      | Optional additional local apps that are available in local Fiori launchpad                                                          |
 | `flp.libs`             | `boolean` | `undefined`      | Optional flag to add a generic script fetching the paths of used libraries not available in UI5. To disable set it to `false`, if not set, then the project is checked for a `load-reuse-libs` script and if available the libraries are fetched as well. |
+| `flp.theme`             | `string` | `undefined`      | Optional flag for setting the UI5 Theme. |
 | `adp.target`           |           |                  | Required configuration for adaptation projects defining the connected backend                                                       |
 | `adp.ignoreCertErrors` | `boolean` | `false`          | Optional setting to ignore certification validation errors when working with e.g. development systems with self signed certificates |
 | `rta`                  |           |                  | Optional configuration allowing to add mount points for runtime adaptation                                                          |
