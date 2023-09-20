@@ -94,6 +94,13 @@ describe('FlpSandbox', () => {
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
+        test('ui5Theme', async () => {
+            const flp = new FlpSandbox({ flp: { ui5Theme: 'sap_fiori_3' } }, mockProject, mockUtils, logger);
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+            expect(flp.templateConfig).toMatchSnapshot();
+        });
+
         test('additional apps', async () => {
             const flp = new FlpSandbox(
                 {
