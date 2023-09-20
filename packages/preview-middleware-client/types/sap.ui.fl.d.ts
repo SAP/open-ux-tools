@@ -11,7 +11,6 @@ declare module 'sap/ui/fl/Change' {
             generator: string;
         };
     }
-
     interface Change {
         getDefinition: () => ChangeDefinition;
     }

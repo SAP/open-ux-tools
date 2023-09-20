@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aadp-tooling"
     },
-    "version": "0.2.5",
+    "version": "0.3.0",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -39,6 +39,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "sanitize-filename": "1.6.3",
         "ejs": "3.1.9",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",

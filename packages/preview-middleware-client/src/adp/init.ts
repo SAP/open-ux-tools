@@ -1,10 +1,12 @@
+import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import init from '../cpe/init';
-import log from 'sap/base/Log';
+import { initDialogs } from './init-dialogs';
 
-export default function(rta: RuntimeAuthoring) {
-    // custom adaptation project plugin code goes here
-    log.debug('ADP init executed.');
+export default function (rta: RuntimeAuthoring) {
+    // initialize fragment content menu entry
+    initDialogs(rta);
     // also initialize the editor
     init(rta);
+    log.debug('ADP init executed.');
 }

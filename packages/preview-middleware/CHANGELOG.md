@@ -1,5 +1,16 @@
 # @sap-ux/preview-middleware
 
+## 0.6.0
+
+### Minor Changes
+
+-   ac0adb21: Enhancing the preview-middleware with new functionality such as adding an XML Fragment (creating "addXML" change).
+
+### Patch Changes
+
+-   Updated dependencies [ac0adb21]
+    -   @sap-ux/adp-tooling@0.3.0
+
 ## 0.5.7
 
 ### Patch Changes
