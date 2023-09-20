@@ -12,8 +12,18 @@ describe('outline nodes', () => {
     const ui5Facade = createUi5Facade();
     const transformNodes = (nodes: OutlineViewNode[]): Promise<OutlineNode[]> => tn(ui5Facade, nodes);
     ui5Facade.getControlById = jest.fn().mockReturnValue({
-        getMetadata: jest.fn().mockReturnValue({ getProperty: jest.fn().mockReturnValue('') }),
-        getProperty: jest.fn().mockReturnValue('test')
+        getMetadata: jest.fn().mockReturnValue({
+            getProperty: jest
+                .fn()
+                .mockReturnValueOnce('Component')
+                .mockReturnValueOnce('Component')
+                .mockReturnValue('')
+        }),
+        getProperty: jest
+            .fn()
+            .mockReturnValueOnce('Component')
+            .mockReturnValueOnce('Component')
+            .mockReturnValue('')
     });
     describe('transformNodes', () => {
         test('empty tree', async () => {

@@ -444,9 +444,6 @@ importers:
       '@sap-ux-private/control-property-editor-common':
         specifier: workspace:*
         version: link:../control-property-editor-common
-      '@sap-ux/logger':
-        specifier: workspace:*
-        version: link:../logger
       '@sap-ux/ui-components':
         specifier: workspace:*
         version: link:../ui-components

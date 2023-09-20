@@ -33,7 +33,7 @@ const commonConfig = {
         '.svg': 'file'
     },
 
-    external: ['vscode'],
+    external: [],
     plugins: []
 };
 const transformModule = postcssModules({});

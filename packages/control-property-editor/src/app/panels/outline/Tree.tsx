@@ -97,6 +97,19 @@ export const Tree = (): ReactElement => {
         }
     }
 
+    function setCurrentItem(current: IGroup | IGroup[] | undefined, segment: string): void {
+        if (Array.isArray(current)) {
+            current = current[parseInt(segment, 10)];
+        } else if (current && segment === 'children') {
+            current = current.children;
+        } else {
+            current = undefined;
+        }
+        if (!Array.isArray(current) && current) {
+            current.isCollapsed = false;
+        }
+    }
+
     function updateSelectionFromPreview(control: Control): void {
         const item = items.find((item) => item.controlId === control.id);
         const pathToGroup = findInGroups(control, groups);
@@ -111,16 +124,7 @@ export const Tree = (): ReactElement => {
         } else if (item) {
             let current: IGroup | IGroup[] | undefined = groups;
             for (const segment of item.path) {
-                if (Array.isArray(current)) {
-                    current = current[parseInt(segment, 10)];
-                } else if (current && segment === 'children') {
-                    current = current.children;
-                } else {
-                    current = undefined;
-                }
-                if (!Array.isArray(current) && current) {
-                    current.isCollapsed = false;
-                }
+                setCurrentItem(current, segment);
             }
             setSelection({
                 group: undefined,

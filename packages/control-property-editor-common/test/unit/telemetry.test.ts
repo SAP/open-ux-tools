@@ -25,6 +25,7 @@ describe('reportTelemetry', () => {
 
     test('error caught when sending telemetry data', async () => {
         fetchMock.mockRejectedValueOnce('error');
+        enableTelemetry();
         try {
             await reportTelemetry(testEvent);
         } catch (error) {
