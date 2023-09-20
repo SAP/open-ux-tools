@@ -102,6 +102,28 @@ describe('AddFragment', () => {
         });
     });
 
+    describe('closeDialog', () => {
+        test('should close dialog', () => {
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
+
+            const closeSpy = jest.fn();
+
+            addFragment.dialog = {
+                close: closeSpy
+            } as unknown as Dialog;
+
+            addFragment.getView = jest.fn().mockReturnValue({ destroy: jest.fn() });
+
+            addFragment.closeDialog();
+
+            expect(closeSpy).toHaveBeenCalledTimes(1);
+        });
+    });
+
     describe('onIndexChanged', () => {
         afterEach(() => {
             jest.restoreAllMocks();

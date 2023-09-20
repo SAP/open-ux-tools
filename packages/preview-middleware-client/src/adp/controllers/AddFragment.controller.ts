@@ -139,14 +139,12 @@ export default class AddFragment extends Controller {
         const source = event.getSource<Input>();
 
         const fragmentName: string = source.getValue().trim();
-        const fragmentList: { fragmentName: string }[] = this.model.getProperty(
-            '/filteredFragmentList/unFilteredFragmentList'
-        );
+        const fragmentList: { fragmentName: string }[] = this.model.getProperty('/fragmentList');
 
         if (fragmentName.length <= 0) {
             this.dialog.getBeginButton().setEnabled(false);
             source.setValueState(ValueState.None);
-            this.model.setProperty('/fragmentNameToCreate', null);
+            this.model.setProperty('/newFragmentName', null);
         } else {
             const fileExists = fragmentList.find((f: { fragmentName: string }) => {
                 return f.fragmentName === `${fragmentName}.fragment.xml`;
@@ -160,16 +158,14 @@ export default class AddFragment extends Controller {
                     'Enter a different name. The fragment name that you entered already exists in your project.'
                 );
                 this.dialog.getBeginButton().setEnabled(false);
-                this.model.setProperty('/fragmentNameToCreate', null);
             } else if (!isValidName) {
                 source.setValueState(ValueState.Error);
                 source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
                 this.dialog.getBeginButton().setEnabled(false);
-                this.model.setProperty('/fragmentNameToCreate', null);
             } else {
                 this.dialog.getBeginButton().setEnabled(true);
                 source.setValueState(ValueState.None);
-                this.model.setProperty('/fragmentNameToCreate', fragmentName);
+                this.model.setProperty('/newFragmentName', fragmentName);
             }
         }
     }
@@ -183,7 +179,7 @@ export default class AddFragment extends Controller {
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
-        const fragmentName = this.model.getProperty('/fragmentNameToCreate');
+        const fragmentName = this.model.getProperty('/newFragmentName');
         const index = parseInt(this.model.getProperty('/selectedIndex'));
         const targetAggregation = this.model.getProperty('/selectedAggregation/value');
         const fragmentData = {
@@ -243,22 +239,12 @@ export default class AddFragment extends Controller {
             ControlUtils.getControlAggregationByName(this.runtimeControl, defaultAggregation)
         );
 
-        let allowIndexForDefaultAggregation = true;
-        const defaultAggregationDesignTimeMetadata = overlayControl.getDesignTimeMetadata().getData().aggregations[
-            defaultAggregation
-        ];
-
-        if (defaultAggregationDesignTimeMetadata !== undefined) {
-            allowIndexForDefaultAggregation = !defaultAggregationDesignTimeMetadata.specialIndexHandling;
-        }
-
         selectedControlChildren = selectedControlChildren.map((key) => {
             return parseInt(key);
         });
 
         this.model.setProperty('/selectedControlName', selectedControlName);
         this.model.setProperty('/selectedAggregation', {});
-        this.model.setProperty('/indexHandlingFlag', allowIndexForDefaultAggregation);
 
         const indexArray = this.fillIndexArray(selectedControlChildren);
 
@@ -284,21 +270,14 @@ export default class AddFragment extends Controller {
         try {
             const { fragments } = await getFragments();
 
-            this.model.setProperty('/filteredFragmentList', {
-                newFragmentName: '',
-                selectorId: selectorId,
-                unFilteredFragmentList: fragments // All fragments under /changes/fragments folder
-            });
-            this.model.setProperty('/fragmentCount', fragments.length);
+            this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
             throw new Error(e.message);
         }
 
         this.model.setProperty('/selectedIndex', indexArray.length - 1);
-        this.model.setProperty('/defaultAggregation', defaultAggregation);
         this.model.setProperty('/targetAggregation', controlAggregation);
         this.model.setProperty('/index', indexArray);
-        this.model.setProperty('/selectorId', selectorId);
     }
 
     /**
@@ -382,8 +361,6 @@ export default class AddFragment extends Controller {
         const designMetadata = overlay.getDesignTimeMetadata();
 
         const modifiedValue = {
-            fragment:
-                '<!-- Use stable and unique IDs!-->\n<core:FragmentDefinition xmlns:core=\'sap.ui.core\' xmlns=\'sap.m\'>\n\t<!--  add your xml here -->\n</core:FragmentDefinition>',
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,
             index: index ?? 0,
             targetAggregation: targetAggregation ?? 'content'
