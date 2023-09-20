@@ -1,5 +1,13 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.1.11
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/ui5-config@0.19.3
+
 ## 0.1.10
 
 ### Patch Changes

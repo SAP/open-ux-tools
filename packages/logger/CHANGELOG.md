@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.3.8
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 0.3.7
 
 ### Patch Changes

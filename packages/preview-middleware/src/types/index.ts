@@ -49,6 +49,7 @@ export interface FlpConfig {
      */
     libs?: boolean;
     apps: App[];
+    theme?: string;
 }
 
 /**

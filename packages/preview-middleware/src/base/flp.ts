@@ -119,7 +119,8 @@ export class FlpSandbox {
             path: config.flp?.path ?? DEFAULT_PATH,
             intent: config.flp?.intent ?? DEFAULT_INTENT,
             apps: config.flp?.apps ?? [],
-            libs: config.flp?.libs
+            libs: config.flp?.libs,
+            theme: config.flp?.theme
         };
         if (!this.config.path.startsWith('/')) {
             this.config.path = `/${this.config.path}`;
@@ -139,12 +140,14 @@ export class FlpSandbox {
     async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
         const flex = this.createFlexHandler();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
+        const ui5Theme =
+            this.config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
         this.templateConfig = {
             basePath: relative(dirname(this.config.path), '/') ?? '.',
             apps: {},
             ui5: {
                 libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
-                theme: supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0],
+                theme: ui5Theme,
                 flex,
                 resources: {
                     ...resources,

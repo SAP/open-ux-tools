@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.13
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 1.11.12
 
 ### Patch Changes

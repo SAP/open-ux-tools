@@ -112,6 +112,37 @@ Object {
 }
 `;
 
+exports[`FlpSandbox init ui5Theme 1`] = `
+Object {
+  "apps": Object {
+    "app-preview": Object {
+      "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
+      "applicationType": "URL",
+      "description": "This is a very simple application.",
+      "title": "My Simple App",
+      "url": "..",
+    },
+  },
+  "basePath": "..",
+  "locateReuseLibsScript": false,
+  "ui5": Object {
+    "flex": Array [
+      Object {
+        "applyConnector": "/preview/WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "/preview/WorkspaceConnector",
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
+    "resources": Object {
+      "open.ux.preview.client": "/preview/client",
+      "test.fe.v2.app": "..",
+    },
+    "theme": "sap_fiori_3",
+  },
+}
+`;
+
 exports[`FlpSandbox router GET /preview/api/changes 1`] = `"{\\"sap.ui.fl.myid\\":{\\"id\\":\\"myId\\"}}"`;
 
 exports[`FlpSandbox router rta 1`] = `

@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.1.2
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
+## 0.1.1
+
+### Patch Changes
+
+-   58424e73: chore(deps): update dependency @ui5/cli to v3.6.0
+
 ## 0.1.0
 
 ### Minor Changes
