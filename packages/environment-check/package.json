@@ -41,7 +41,7 @@
         "@types/archiver": "5.3.2",
         "@types/minimist": "1.2.2",
         "@types/prompts": "2.4.4",
-        "@types/vscode": "1.39.0"
+        "@types/vscode": "1.73.1"
     },
     "files": [
         "dist",
