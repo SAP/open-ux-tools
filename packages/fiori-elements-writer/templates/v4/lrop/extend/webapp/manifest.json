@@ -69,8 +69,9 @@
                     "name": "sap.fe.templates.ObjectPage",
                     "options": {
                         "settings": {
-                            "editableHeaderContent": false,
-                            "entitySet": "<%- entityConfig.mainEntityName %>"<% if (type === 'feop') { %>,
+                            "editableHeaderContent": false,<% if (entityConfig.contextPath) { %>
+                            "contextPath": "<%- entityConfig.contextPath %>"<% } else { %>
+                            "entitySet": "<%- entityConfig.mainEntityName %>"<% } %><% if (type === 'feop') { %>,
                             "content": {
                                 "header": {
                                     "visible": false,
@@ -93,8 +94,9 @@
                         "name": "sap.fe.templates.ObjectPage",
                         "options": {
                             "settings": {
-                                "editableHeaderContent": false,
-                                "entitySet": "<%- entityConfig.navigationEntity.EntitySet %>"
+                                "editableHeaderContent": false,<% if (entityConfig.navigationEntity.contextPath) { %>
+                                "contextPath": "<%- entityConfig.navigationEntity.contextPath %>"<% } else { %>
+                                "entitySet": "<%- entityConfig.navigationEntity.EntitySet %>"<% } %>
                             }
                         }
                     }<%
