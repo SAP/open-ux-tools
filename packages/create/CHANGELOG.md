@@ -1,5 +1,18 @@
 # @sap-ux/create
 
+## 0.4.24
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/adp-tooling@0.2.5
+    -   @sap-ux/app-config-writer@0.1.21
+    -   @sap-ux/cap-config-writer@0.1.23
+    -   @sap-ux/logger@0.3.8
+    -   @sap-ux/mockserver-config-writer@0.1.11
+    -   @sap-ux/project-access@1.13.6
+
 ## 0.4.23
 
 ### Patch Changes

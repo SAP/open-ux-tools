@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.23.6
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 0.23.5
 
 ### Patch Changes

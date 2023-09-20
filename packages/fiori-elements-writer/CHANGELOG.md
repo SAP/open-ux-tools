@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.14.1
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/fe-fpm-writer@0.23.6
+    -   @sap-ux/odata-service-writer@0.14.33
+    -   @sap-ux/ui5-application-writer@0.25.6
+    -   @sap-ux/ui5-config@0.19.3
+    -   @sap-ux/ui5-test-writer@0.1.11
+
 ## 0.14.0
 
 ### Minor Changes

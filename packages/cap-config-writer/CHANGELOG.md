@@ -1,5 +1,13 @@
 # @sap-ux/cap-config-writer
 
+## 0.1.23
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/project-access@1.13.6
+
 ## 0.1.22
 
 ### Patch Changes

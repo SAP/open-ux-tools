@@ -1,5 +1,14 @@
 # @sap-ux/preview-middleware
 
+## 0.5.7
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/adp-tooling@0.2.5
+    -   @sap-ux/logger@0.3.8
+
 ## 0.5.6
 
 ### Patch Changes

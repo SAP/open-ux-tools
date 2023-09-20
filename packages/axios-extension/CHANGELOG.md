@@ -1,5 +1,14 @@
 # @sap-ux/axios-extension
 
+## 1.4.7
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/btp-utils@0.11.9
+    -   @sap-ux/logger@0.3.8
+
 ## 1.4.6
 
 ### Patch Changes
