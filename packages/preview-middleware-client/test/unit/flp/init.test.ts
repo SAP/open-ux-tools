@@ -12,8 +12,13 @@ describe('flp/init', () => {
 
     test('setI18nTitle', () => {
         const title = '~testTitle';
-        mockBundle.hasText.mockReturnValue(true);
         mockBundle.getText.mockReturnValue(title);
+        
+        mockBundle.hasText.mockReturnValueOnce(true);
+        setI18nTitle();
+        expect(document.title).toBe(title);
+        
+        mockBundle.hasText.mockReturnValueOnce(false);
         setI18nTitle();
         expect(document.title).toBe(title);
     });
