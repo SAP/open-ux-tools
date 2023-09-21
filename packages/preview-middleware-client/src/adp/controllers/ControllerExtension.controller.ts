@@ -18,11 +18,18 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
+/** sap.ui.fl */
+import Utils from 'sap/ui/fl/Utils';
+
 /** sap.ui.dt */
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import type { ControllersResponse } from '../api-handler';
 import { readControllers, writeChange, writeController } from '../api-handler';
+
+interface ControllerExtensionService {
+    add: (codeRef: string, viewId: string) => Promise<unknown>;
+}
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
@@ -140,15 +147,22 @@ export default class ControllerExtension extends Controller {
 
     /**
      * Builds data that is used in the dialog
-     *
      */
     async buildDialogData(): Promise<void> {
         const selectorId = this.overlays.getId();
-
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
-        const viewId: string = overlayControl.getElement().getId();
+        const control = overlayControl.getElement();
+        const viewId = Utils.getViewForControl(control).getId();
+
         this.model.setProperty('/viewId', viewId);
 
+        await this.getControllers();
+    }
+
+    /**
+     * Retrieves controller files and fills the model with data
+     */
+    async getControllers(): Promise<void> {
         try {
             const { controllers } = await readControllers<ControllersResponse>();
             this.model.setProperty('/controllersList', controllers);
@@ -166,27 +180,22 @@ export default class ControllerExtension extends Controller {
      */
     private async createNewController(controllerName: string, viewId: string): Promise<void> {
         try {
-            /**
-             * Create a new controller from template
-             */
             await writeController({ controllerName });
-            /**
-             * Call writeChange route
-             */
+
             const controllerRef = {
                 codeRef: `coding/${controllerName}.js`,
                 viewId
             };
 
-            const service = await this.rta.getService<{ add: (codeRef: string, viewId: string) => Promise<unknown> }>(
-                'controllerExtension'
-            );
+            const service = await this.rta.getService<ControllerExtensionService>('controllerExtension');
 
             const change = await service.add(controllerRef.codeRef, controllerRef.viewId);
 
             await writeChange(change);
         } catch (e) {
-            // In case of error when creating a new fragment, we should not create a change file
+            // We want to update the model incase we have already created a controller file but failed when creating a change file,
+            // so when the user types the same controller name again he does not get 409 from the server, instead an error is shown in the UI
+            await this.getControllers();
             MessageToast.show(e.message);
             throw new Error(e.message);
         }
