@@ -45,6 +45,24 @@ async function initAdp(
 }
 
 /**
+ * The developer mode is only supported for adaptation projects, therefore, notify the user if it is wrongly configured and then disable it.
+ *
+ * @param config configurations from the ui5.yaml
+ * @param logger logger instance
+ */
+function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): void {
+    if (config.rta && config.adp === undefined) {
+        config.rta.editors.forEach((editor) => {
+            if (editor.developerMode) {
+                logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
+                logger.warn(`developerMode for ${editor.path} disabled`);
+                editor.developerMode = false;
+            }
+        });
+    }
+}
+
+/**
  * Create the router that is to be exposed as UI5 middleware.
  *
  * @param param0 parameters provider by UI5
@@ -61,6 +79,7 @@ async function createRouter(
     // setting defaults
     const config = options.configuration ?? {};
     config.flp ??= {};
+    sanitizeConfig(config, logger);
 
     // configure the FLP sandbox based on information from the manifest
     const flp = new FlpSandbox(config, resources.rootProject, middlewareUtil, logger);
