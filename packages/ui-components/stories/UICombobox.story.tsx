@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Stack } from '@fluentui/react';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 
-import { UIComboBox, UISelectableOptionMenuItemType } from '../src/components/UIComboBox';
+import { UIComboBox, UISelectableOptionMenuItemType, UIDefaultButton, UIDialog } from '../src/components';
 import { UICheckbox } from '../src/components/UICheckbox';
 import { data, groupsData } from '../test/__mock__/select-data';
 
@@ -347,5 +347,30 @@ export const groupsAndSeparators = () => {
                 label="Menu items with dividers and headers - multi select"
             />
         </div>
+    );
+};
+
+export const multiSelectInDialog = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const onToggle = () => {
+        setIsOpen(!isOpen);
+    };
+    return (
+        <>
+            <UIDefaultButton onClick={onToggle} primary>
+                Open Dialog
+            </UIDefaultButton>
+            <UIDialog
+                isOpen={isOpen}
+                isOpenAnimated={true}
+                isBlocking={true}
+                title={'Header Title'}
+                acceptButtonText={'Accept'}
+                cancelButtonText={'Cancel'}
+                onCancel={onToggle}
+                onDismiss={onToggle}>
+                <UIComboBox label="Dummy" highlight={true} options={data} multiSelect={true} />
+            </UIDialog>
+        </>
     );
 };
