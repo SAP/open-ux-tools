@@ -90,7 +90,7 @@ export default class RoutesHandler {
                 const filePath = path.join(fullPath, `${fragmentName}.fragment.xml`);
 
                 if (!fs.existsSync(fullPath)) {
-                    fs.mkdirSync(fullPath);
+                    fs.mkdirSync(fullPath, { recursive: true });
                 }
 
                 if (fs.existsSync(filePath)) {
@@ -176,7 +176,7 @@ export default class RoutesHandler {
                 const filePath = path.join(fullPath, `${controllerName}.js`);
 
                 if (!fs.existsSync(fullPath)) {
-                    fs.mkdirSync(fullPath);
+                    fs.mkdirSync(fullPath, { recursive: true });
                 }
 
                 if (fs.existsSync(filePath)) {
