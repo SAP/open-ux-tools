@@ -150,12 +150,12 @@ export function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(fioriTheme);
     //SAP Business Suite Theme font family and URI
-    const bSuiteTheme = {
+    const suiteTheme = {
         fontFamily: 'BusinessSuiteInAppSymbols',
         fontURI: sap.ui.require.toUrl('sap/ushell/themes/base/fonts/')
     };
     //Registering to the icon pool
-    IconPool.registerFont(bSuiteTheme);
+    IconPool.registerFont(suiteTheme);
 }
 
 /**
@@ -186,8 +186,8 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
     // Register RTA if configured
     if (flex) {
         sap.ushell.Container.attachRendererCreatedEvent(async function () {
-            const serviceInstance = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
-            serviceInstance.attachAppLoaded(event => {
+            const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
+            lifecycleService.attachAppLoaded(event => {
                 const view = event.getParameter('componentInstance');
                 const libs = ['sap/ui/rta/api/startAdaptation'];
                 const flexSettings = JSON.parse(flex);
