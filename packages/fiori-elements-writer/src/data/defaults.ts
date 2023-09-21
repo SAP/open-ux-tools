@@ -88,7 +88,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
             feApp.ui5.version ?? TemplateTypeAttributes[feApp.template.type].minimumUi5Version[feApp.service.version]!;
     }
 
-    // if not explictly disabled, enable the SAP Fiori tools
+    // if not explictely disabled, enable the SAP Fiori tools
     feApp.appOptions = feApp.appOptions ?? {};
     if (feApp.appOptions.sapux !== false) {
         feApp.appOptions.sapux = true;
