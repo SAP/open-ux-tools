@@ -160,25 +160,29 @@ export function registerSAPFonts() {
 
 /**
  * Read the application title from the resource bundle and set it as document title.
+ *
+ * @param i18nKey optional parameter to define the i18n key to be used for the title.
  */
-export function setI18nTitle() {
+export function setI18nTitle(i18nKey = 'appTitle') {
     const locale = sap.ui.getCore().getConfiguration().getLanguage();
     const resourceBundle = ResourceBundle.create({
         url: 'i18n/i18n.properties',
         locale
     }) as ResourceBundle;
-    document.title = resourceBundle.getText('appTitle') ?? document.title;
+    if (resourceBundle.hasText(i18nKey)) {
+        document.title = resourceBundle.getText(i18nKey) ?? document.title;
+    }
 }
 
 /**
- * Apply additional configuration.
+ * Apply additional configuration and initialize sandbox.
  *
  * @param params init parameters read from the script tag
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
  * @returns promise
  */
-export function configure({ appUrls, flex }: { appUrls?: string | null; flex?: string | null }): Promise<void> {
+export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: string | null }): Promise<void> {
     // Register RTA if configured
     if (flex) {
         sap.ushell.Container.attachRendererCreatedEvent(async function () {
@@ -205,27 +209,20 @@ export function configure({ appUrls, flex }: { appUrls?: string | null; flex?: s
 
     // Load custom library paths if configured
     if (appUrls) {
-        return registerComponentDependencyPaths(JSON.parse(appUrls));
-    } else {
-        return Promise.resolve();
+        await registerComponentDependencyPaths(JSON.parse(appUrls));
     }
-}
 
-/**
- * Initialize the FLP sandbox.
- */
-export function init() {
+    // init
     setI18nTitle();
     registerSAPFonts();
-    sap.ushell.Container.createRenderer().placeAt('content');
+    const renderer = await sap.ushell.Container.createRenderer(true);
+    renderer.placeAt('content');
 }
 
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
-    configure({
+    init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings')
-    })
-        .then(init)
-        .catch(() => Log.error('Sandbox initialization failed.'));
+    }).catch(() => Log.error('Sandbox initialization failed.'));
 }
