@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import prompts from 'prompts';
+import { prompt } from 'inquirer';
 import { removeMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
 import { hasFileDeletes, validateBasePath } from '../../validation';
@@ -38,7 +38,7 @@ async function removeMockserverConfiguration(basePath: string, force: boolean) {
         let doCommit = true;
         if (hasDeletions && !force) {
             doCommit = (
-                await prompts([
+                await prompt([
                     {
                         type: 'confirm',
                         name: 'doCommit',

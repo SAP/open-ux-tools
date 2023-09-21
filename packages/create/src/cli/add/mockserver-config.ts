@@ -1,6 +1,6 @@
 import { relative } from 'path';
 import type { Command } from 'commander';
-import { prompt } from 'prompts';
+import { prompt } from 'inquirer';
 import { getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig, getMockserverConfigQuestions } from '@sap-ux/mockserver-config-writer';
 import type { MockserverConfig } from '@sap-ux/mockserver-config-writer';
