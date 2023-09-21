@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.6.3
+
+### Patch Changes
+
+-   555c0ac5: Disable unsupported mode to prevent incorrect changes
+
 ## 0.6.2
 
 ### Patch Changes
