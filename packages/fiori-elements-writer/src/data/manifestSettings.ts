@@ -14,7 +14,7 @@ import { render } from 'ejs';
  * @param fs - A reference to the in memory file system
  * @param targetPath - The target application path
  * @param rootTemplatesPath - The root path where the manifest templates will be found
- * @param feApp - The applicaiton config to be used by the manifest templates
+ * @param feApp - The application config to be used by the manifest templates
  */
 export function extendManifestJson<T>(
     fs: Editor,
