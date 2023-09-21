@@ -188,16 +188,16 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
         sap.ushell.Container.attachRendererCreatedEvent(async function () {
             const serviceInstance = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             serviceInstance.attachAppLoaded(event => {
-                const oView = event.getParameter('componentInstance');
-                const requiredLibs = ['sap/ui/rta/api/startAdaptation'];
+                const view = event.getParameter('componentInstance');
+                const libs = ['sap/ui/rta/api/startAdaptation'];
                 const flexSettings = JSON.parse(flex);
                 if (flexSettings.pluginScript) {
-                    requiredLibs.push(flexSettings.pluginScript);
+                    libs.push(flexSettings.pluginScript);
                     delete flexSettings.pluginScript;
                 }
-                sap.ui.require(requiredLibs, function (startAdaptation: StartAdaptation, pluginScript?: RTAPlugin) {
+                sap.ui.require(libs, function (startAdaptation: StartAdaptation, pluginScript?: RTAPlugin) {
                     const options = {
-                        rootControl: oView,
+                        rootControl:view,
                         validateAppVersion: false,
                         flexSettings
                     };
