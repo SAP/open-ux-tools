@@ -126,11 +126,12 @@ Object {
   "basePath": "..",
   "locateReuseLibsScript": false,
   "ui5": Object {
+    "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "/preview/WorkspaceConnector",
+        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
-        "writeConnector": "/preview/WorkspaceConnector",
+        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
