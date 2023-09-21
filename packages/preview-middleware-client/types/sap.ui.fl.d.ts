@@ -23,6 +23,11 @@ declare module 'sap/ui/fl/Utils' {
 
     interface Utils {
         checkControlId(control: ManagedObject): boolean;
+        getViewForControl(control: ManagedObject): ControlView;
+    }
+
+    interface ControlView {
+        getId(): string;
     }
 
     const Utils: Utils;

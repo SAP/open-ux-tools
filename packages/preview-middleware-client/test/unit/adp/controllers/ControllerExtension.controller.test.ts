@@ -46,6 +46,42 @@ describe('ControllerExtension', () => {
 
             await controllerExt.onInit();
         });
+
+        test('throws error when trying to get controllers from the project workspace', async () => {
+            const errorMsg = 'Could not retrieve controllers!';
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const overlayControl = {
+                getElement: jest.fn().mockReturnValue({
+                    getId: jest.fn().mockReturnValue('::Toolbar')
+                })
+            };
+            sapCoreMock.byId.mockReturnValue(overlayControl);
+
+            const controllerExt = new ControllerExtension(
+                'adp.extension.controllers.ControllerExtension',
+                overlays as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
+
+            controllerExt.byId = jest.fn().mockReturnValue({
+                open: jest.fn()
+            });
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockRejectedValue({ message: errorMsg }),
+                text: jest.fn(),
+                ok: true
+            });
+
+            try {
+                await controllerExt.onInit();
+            } catch (e) {
+                expect(e.message).toBe(errorMsg);
+            }
+        });
     });
 
     describe('closeDialog', () => {
@@ -195,7 +231,8 @@ describe('ControllerExtension', () => {
         });
 
         const testModel = {
-            getProperty: jest.fn().mockReturnValueOnce('Share').mockReturnValueOnce('::Toolbar')
+            getProperty: jest.fn().mockReturnValueOnce('Share').mockReturnValueOnce('::Toolbar'),
+            setProperty: jest.fn()
         } as unknown as JSONModel;
 
         test('creates new controller and a change', async () => {
@@ -246,8 +283,8 @@ describe('ControllerExtension', () => {
             controllerExt.model = testModel;
 
             fetchMock.mockResolvedValue({
-                json: jest.fn(),
-                text: jest.fn().mockRejectedValue({ message: errorMsg }),
+                json: jest.fn().mockReturnValue([]),
+                text: jest.fn().mockRejectedValueOnce({ message: errorMsg }),
                 ok: true
             });
 
