@@ -9,6 +9,7 @@
     },
     "scripts": {
         "build": "cd ../../.. && pnpm build",
+        "serve": "ui5 serve",
         "start": "ui5 serve --open /my/custom/path/preview.html#app-preview",
         "rta": "ui5 serve --open /my/custom/path/preview.html?fiori-tools-rta-mode=true#app-preview"
     }
