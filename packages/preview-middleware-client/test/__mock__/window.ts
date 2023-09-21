@@ -22,7 +22,8 @@ export const sapMock = {
     ushell: {
         Container: {
             createRenderer: jest.fn().mockReturnValue({ placeAt: jest.fn() }),
-            attachRendererCreatedEvent: jest.fn().mockImplementation((cb: () => Promise<void>) => cb())
+            attachRendererCreatedEvent: jest.fn(),
+            getServiceAsync: jest.fn()
         }
     }
 };
@@ -30,4 +31,4 @@ export const sapMock = {
 (sapMock.ui.require as any).toUrl = jest.fn();
 
 window.fetch = fetchMock;
-window.sap = sapMock as unknown as typeof sap;
+window.sap = sapMock as unknown as typeof sap & typeof sapMock;

@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.6.2
+
+### Patch Changes
+
+-   0798e88e: Improving the FLP init script
+
 ## 0.6.1
 
 ### Patch Changes
