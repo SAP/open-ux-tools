@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.4.8
+
+### Patch Changes
+
+-   0760c9f8: Support UAA credentials if available
+
 ## 1.4.7
 
 ### Patch Changes
