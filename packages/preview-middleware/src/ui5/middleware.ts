@@ -52,12 +52,12 @@ async function initAdp(
  */
 function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): void {
     if (config.rta && config.adp === undefined) {
-        config.rta.editors.forEach((editor) => {
+        config.rta.editors = config.rta.editors.filter((editor) => {
             if (editor.developerMode) {
                 logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
                 logger.warn(`developerMode for ${editor.path} disabled`);
-                editor.developerMode = false;
             }
+            return !editor.developerMode;
         });
     }
 }
