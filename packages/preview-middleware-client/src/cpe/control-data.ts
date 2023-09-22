@@ -143,7 +143,6 @@ function normalizeObjectPropertyValue(rawValue: unknown): unknown {
                 // "Failed to execute 'postMessage' on 'Window': An object could not be cloned".
                 // so we need to check whether this is the failure and if so, don't return the rawValue,
                 // but some default string to act as the property value.
-                // (BCP: 1780025011)
                 return '<Circular JSON cannot be displayed>';
             }
 

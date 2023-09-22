@@ -3,10 +3,8 @@
   "include": [
     "src",
     "test",
+    "test/**/*.json",
     "types"
-  ],
-  "files": [
-    "./test/fixtures/api.json"
   ],
   "compilerOptions": {
     "lib": ["ES2020", "DOM"],
