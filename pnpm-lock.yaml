@@ -4013,7 +4013,7 @@ packages:
       find-cache-dir: 2.1.0
       make-dir: 2.1.0
       pirates: 4.0.5
-      source-map-support: 0.5.21
+      source-map-support: 0.5.16
     dev: true
 
   /@babel/regjsgen@0.8.0:
@@ -17919,6 +17919,13 @@ packages:
       glob: 7.2.0
     dev: true
 
+  /rimraf@3.0.0:
+    resolution: {integrity: sha512-NDGVxTsjqfunkds7CqsOiEnxln4Bo7Nddl3XhS4pXg5OzwkLqJ971ZVAAnB+DDLnF76N+VnDEiBHaVV8I06SUg==}
+    hasBin: true
+    dependencies:
+      glob: 7.2.0
+    dev: true
+
   /rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
     hasBin: true
@@ -18410,6 +18417,13 @@ packages:
 
   /source-map-support@0.5.13:
     resolution: {integrity: sha512-SHSKFHadjVA5oR4PPqhtAVdcBWwRYVd6g6cAXnIbRiIwc2EhPrTuKUBdSLvlEKyIP3GCf89fltvcZiP9MMFA1w==}
+    dependencies:
+      buffer-from: 1.1.2
+      source-map: 0.6.1
+    dev: true
+
+  /source-map-support@0.5.16:
+    resolution: {integrity: sha512-efyLRJDr68D9hBBNIPWFjhpFzURh+KJykQwvMyW5UiZzYwoF6l4YMMDIJJEyFWxWCqfyxLzz6tSfUFR+kXXsVQ==}
     dependencies:
       buffer-from: 1.1.2
       source-map: 0.6.1
@@ -19021,7 +19035,7 @@ packages:
     resolution: {integrity: sha512-76SUhtfqR2Ijn+xllcI5P1oyannHNHByD80W1q447gU3mp9G9PSpGdWmjUOHRDPiHYacIk66W7ubDTuPF3BEtQ==}
     engines: {node: '>=8.17.0'}
     dependencies:
-      rimraf: 3.0.2
+      rimraf: 3.0.0
     dev: true
 
   /tmpl@1.0.5:
