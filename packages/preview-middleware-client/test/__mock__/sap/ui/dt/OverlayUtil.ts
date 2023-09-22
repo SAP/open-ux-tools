@@ -1,3 +1,5 @@
+import { mockOverlay } from './OverlayRegistry';
+
 export default {
-    getClosestOverlayFor() {}
+    getClosestOverlayFor: jest.fn().mockReturnValue(mockOverlay)
 };

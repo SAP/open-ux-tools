@@ -1,6 +1,5 @@
 export default {
-    getIconInfo() {},
-    getIconNames() {},
+    getIconInfo: jest.fn(),
+    getIconNames: jest.fn(),
     registerFont: jest.fn()
-
 };

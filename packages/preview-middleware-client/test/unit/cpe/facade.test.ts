@@ -1,44 +1,26 @@
-import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { createUi5Facade } from '../../../src/cpe/facade';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
-import IconPool from 'sap/ui/core/IconPool';
+import IconPool from 'mock/sap/ui/core/IconPool';
 import Component from 'sap/ui/core/Component';
 import { sapCoreMock } from 'mock/window';
+import OverlayRegistry, { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
+import type Element from 'sap/ui/core/Element';
 
 describe('Facade', () => {
-    const testComponent = { id: '~id'};
-    const mockGetIconNames = jest.fn().mockReturnValueOnce(['Reject', 'Accedental-Leave', 'Accept']);
-    const mockGetIconInfo = jest.fn();
-    sapCoreMock.byId.mockReturnValue('control');
+    const testElement = {} as Element;
+    const testComponent = { id: '~id'};    
+    sapCoreMock.byId.mockReturnValue(testElement);
     sapCoreMock.getComponent.mockReturnValue(testComponent);
-    
-    beforeEach(() => {
-        IconPool.getIconNames = mockGetIconNames;
-        IconPool.getIconInfo = mockGetIconInfo
-            .mockReturnValueOnce({
-                content: 'reject',
-                fontFamily: 'SAP-Icons'
-            })
-            .mockReturnValueOnce({
-                content: 'accendental-leave',
-                fontFamily: 'SAP-Icons'
-            })
-            .mockReturnValueOnce({
-                content: 'accept',
-                fontFamily: 'SAP-Icons'
-            });
-        OverlayRegistry.getOverlay = jest.fn().mockReturnValue('testOverlay1');
-        OverlayUtil.getClosestOverlayFor = jest.fn().mockReturnValue('testOverlay2');
-    });
 
     afterEach(() => {
         jest.clearAllMocks();
     });
 
     test('getControlById', () => {
-        const control = createUi5Facade().getControlById('abc');
-        expect(sapCoreMock.byId).toBeCalledTimes(1);
-        expect(control).toStrictEqual('control');
+        const id = '~testId';
+        const control = createUi5Facade().getControlById(id);
+        expect(sapCoreMock.byId).toBeCalledWith(id);
+        expect(control).toStrictEqual(testElement);
     });
 
     test('getComponent - deprecated', () => {
@@ -57,25 +39,43 @@ describe('Facade', () => {
     });
 
     test('getOverlay', () => {
-        const overlay = createUi5Facade().getOverlay({} as any);
-
-        expect(OverlayRegistry.getOverlay).toBeCalledTimes(1);
-        expect(overlay).toStrictEqual('testOverlay1');
+        const overlay = createUi5Facade().getOverlay(testElement);
+        expect(OverlayRegistry.getOverlay).toBeCalledWith(testElement);
+        expect(overlay).toStrictEqual(mockOverlay);
     });
 
     test('getClosestOverlayFor', () => {
-        const overlay = createUi5Facade().getClosestOverlayFor({} as any);
-
-        expect(OverlayUtil.getClosestOverlayFor).toBeCalledTimes(1);
-        expect(overlay).toStrictEqual('testOverlay2');
+        const overlay = createUi5Facade().getClosestOverlayFor(testElement);
+        expect(OverlayUtil.getClosestOverlayFor).toBeCalledWith(testElement);
+        expect(overlay).toStrictEqual(mockOverlay);
     });
 
     describe('getIcons', () => {
+        const testIcons = {
+            Reject: {
+                content: 'reject',
+                fontFamily: 'SAP-Icons'
+            },
+            'Accedental-Leave': {
+                content: 'accendental-leave',
+                fontFamily: 'SAP-Icons'
+            },
+            Accept: {
+                content: 'accept',
+                fontFamily: 'SAP-Icons'
+            }
+        }
+        IconPool.getIconNames.mockReturnValueOnce(Object.keys(testIcons));
+        IconPool.getIconInfo
+            .mockReturnValueOnce(testIcons.Reject)
+            .mockReturnValueOnce(testIcons['Accedental-Leave'])
+            .mockReturnValueOnce(testIcons.Accept);
+
         test('control not found by id, search by component', () => {
             const icons = createUi5Facade().getIcons();
 
-            expect(mockGetIconNames).toBeCalledTimes(1);
-            expect(mockGetIconInfo).toBeCalledTimes(3);
+            expect(IconPool.getIconNames).toBeCalled();
+            expect(IconPool.getIconInfo).toBeCalledTimes(Object.keys(testIcons).length);
             expect(icons).toMatchInlineSnapshot(`
                 Array [
                   Object {
