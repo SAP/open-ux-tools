@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.14.2
+
+### Patch Changes
+
+-   e20c2ced: Reverts use of `contextPath` in place of `entitySet`
+
 ## 0.14.1
 
 ### Patch Changes
