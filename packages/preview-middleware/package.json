@@ -39,6 +39,7 @@
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/adp-tooling": "workspace:*",
+        "@sap-ux/control-property-editor-sources": "workspace:@sap-ux/control-property-editor@*",
         "ejs": "3.1.9"
     },
     "devDependencies": {

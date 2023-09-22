@@ -1,0 +1,109 @@
+.sapUiIcon:before {
+    content: attr(data-sap-ui-icon-content);
+    speak: none;
+    font-weight: normal;
+    -webkit-font-smoothing: antialiased;
+}
+
+.icon-dialog {
+    .ms-Dialog-main {
+        height: 100%;
+        max-height: calc(100% - 23rem);
+        .ms-Modal-scrollableContent {
+            height: 100%;
+            > div {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                .ms-Dialog-inner {
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    .ms-Dialog-content {
+                        height: 100%;
+                        bottom: 10px;
+                        overflow: hidden;
+                    }
+                }
+            }
+        }
+    }
+}
+$medium: 800px;
+$small: 600px;
+$mini: 400px;
+
+@media screen and (max-height: $medium) {
+    .icon-dialog .ms-Dialog-main {
+        max-height: calc(100% - 8rem);
+    }
+}
+
+@media screen and (max-height: $small) {
+    .icon-dialog .ms-Dialog-main {
+        max-height: calc(100% - 4rem);
+    }
+}
+
+@media screen and (max-height: $mini) {
+    .icon-dialog .ms-Dialog-main {
+        max-height: calc(100% - 50px);
+    }
+}
+
+.icon-table {
+    margin-bottom: 46px;
+    overflow-x: hidden;
+    border-bottom: 1px solid var(--vscode-scm-providerBorder);
+    .ms-DetailsHeader-cell .not-editable-icon {
+        display: none;
+    }
+
+    .ms-DetailsRow-fields:hover {
+        cursor: pointer;
+        background-color: var(--vscode-dropdown-background);
+        color: var(--vscode-dropdown-foreground);
+    }
+
+    .is-selected .ms-DetailsRow-fields {
+        color: var(--vscode-list-activeSelectionForeground) !important;
+        background-color: var(--vscode-list-activeSelectionBackground) !important;
+    }
+
+    .root-226:focus .ms-DetailsRow-cell {
+        color: var(--vscode-background) !important;
+    }
+
+    .ms-ScrollablePane .ms-FocusZone .ms-DetailsHeader-cell {
+        box-shadow: inset 0 1px 0 var(--vscode-scm-providerBorder), inset 0 -1px 0 var(--vscode-scm-providerBorder),
+            inset -1px 0 0 var(--vscode-scm-providerBorder), inset 1px 0 0 var(--vscode-scm-providerBorder);
+    }
+
+    .ms-ScrollablePane .ms-FocusZone .ms-DetailsRow-fields .ms-DetailsRow-cell:last-child {
+        box-shadow: none;
+    }
+}
+
+.icon-textField {
+    .ms-TextField-wrapper {
+        .ms-TextField-fieldGroup {
+            .ms-TextField-suffix {
+                color: var(--vscode-input-foreground);
+                background-color: var(--vscode-input-background);
+                padding: 1px;
+            }
+        }
+    }
+}
+
+.tablediv {
+    .ms-ScrollablePane .ms-FocusZone {
+        background: var(--vscode-tab-inactiveBackground);
+    }
+}
+
+.filter-icon-div {
+    .filter-icons {
+        margin-top: 20px;
+    }
+}

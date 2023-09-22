@@ -27,7 +27,7 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
-import { ManifestAppdescr, getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
+import { getFragments, writeFragment } from '../api-handler';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -332,30 +332,8 @@ export default class AddFragment extends Controller {
      */
     private async createFragmentChange(fragmentData: CreateFragmentProps) {
         const { fragmentName, index, targetAggregation } = fragmentData;
-        let manifest: ManifestAppdescr;
-        try {
-            manifest = await getManifestAppdescr();
 
-            if (!manifest) {
-                // Highly unlikely since adaptation projects are required to have manifest.appdescr_variant
-                throw new Error('Could not retrieve manifest');
-            }
-        } catch (e) {
-            MessageToast.show(e.message);
-            throw new Error(e.message);
-        }
-
-        const { id, reference, namespace, layer } = manifest;
-
-        const flexSettings = {
-            baseId: reference,
-            developerMode: true,
-            layer: layer,
-            namespace: namespace,
-            projectId: id,
-            rootNamespace: namespace.split('/').slice(0, 2).join('/'),
-            scenario: undefined
-        };
+        const flexSettings = this.rta.getFlexSettings();
 
         const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
         const designMetadata = overlay.getDesignTimeMetadata();

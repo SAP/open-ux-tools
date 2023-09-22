@@ -1,0 +1,3729 @@
+{
+  "$schema-ref": "http://schemas.sap.com/sapui5/designtime/api.json/1.0",
+  "version": "1.108.16",
+  "library": "sap.ui.comp",
+  "symbols": [
+    {
+      "kind": "class",
+      "name": "sap.ui.comp.filterbar.FilterBar",
+      "basename": "FilterBar",
+      "resource": "sap/ui/comp/filterbar/FilterBar.js",
+      "module": "sap/ui/comp/filterbar/FilterBar",
+      "export": "",
+      "static": true,
+      "visibility": "public",
+      "extends": "sap.ui.layout.Grid",
+      "description": "The <code>FilterBar</code> displays filters in a user-friendly manner to populate values for a query. The <code>FilterBar</code> consists of a row containing the {@link sap.ui.comp.variants.VariantManagement <code>VariantManagement</code>} control, the related buttons, and an area underneath displaying the filters.\n\nThe filters are arranged in a logical row that is divided depending on the space available and the width of the filters. The area containing the filters can be hidden or shown using the <b>Hide FilterBar</b> / <b>Show FilterBar</b> button. The <b>Go</b> button triggers the search event, and the <b>Adapt Filters</b> button shows the <code>Adapt Filters Dialog</code>.\n\nIn this dialog, the user has full control over the <code>FilterBar</code>.",
+      "ui5-metadata": {
+        "stereotype": "control",
+        "properties": [
+          {
+            "name": "persistencyKey",
+            "type": "string",
+            "defaultValue": "",
+            "group": "Misc",
+            "visibility": "public",
+            "description": "Key used to access personalization data. Only if the persistencyKey is provided, will the <code>VariantManagement</code> control be used.",
+            "methods": ["getPersistencyKey", "setPersistencyKey"]
+          },
+          {
+            "name": "advancedMode",
+            "type": "boolean",
+            "defaultValue": false,
+            "group": "Misc",
+            "visibility": "public",
+            "description": "The advanced mode is only relevant for the value help scenario. UI representation is different from the standard FilterBar.",
+            "methods": ["getAdvancedMode", "setAdvancedMode"]
+          },
+          {
+            "name": "expandAdvancedArea",
+            "type": "boolean",
+            "defaultValue": false,
+            "group": "Misc",
+            "visibility": "public",
+            "description": "Collapses/expands the advanced area.",
+            "deprecated": {
+              "since": "1.30.0",
+              "text": "Replaced by property <code>filterBarExpanded</code> This property is mapped to the filterBarExpanded property."
+            },
+            "methods": ["getExpandAdvancedArea", "setExpandAdvancedArea"]
+          },
+          {
+            "name": "searchEnabled",
+            "type": "boolean",
+            "defaultValue": true,
+            "group": "Misc",
+            "visibility": "public",
+            "description": "Enables/disables the Search button.",
+            "deprecated": {
+              "since": "1.32.0"
+            },
+            "methods": ["getSearchEnabled", "setSearchEnabled"]
+          },
+          {
+            "name": "filterBarExpanded",
+            "type": "boolean",
+            "defaultValue": true,
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.26.1",
+            "description": "Shows the filters area. When property <code>useToolbar</code> is set to <code>false</code>, <code>filterBarExpanded</code> is set to <code>true</code> automatically. <b>Note:</b> When <code>SmartFilterBar</code> is used inside a <code>ValueHelpDialog</code>, it is initially collapsed. The filter bar is initially expanded in the following cases:\n\n- When there is no basic search field. - When <code>preventInitialDataFetchInValueHelpDialog</code> is set to <code>true</code> or the <code>fetchValues</code> property of the <code>valueList</code> annotation is set to <code>2</code>. - When there are mandatory fields, all fields are expanded (not only the first 7).",
+            "methods": ["getFilterBarExpanded", "setFilterBarExpanded"]
+          },
+          {
+            "name": "considerGroupTitle",
+            "type": "boolean",
+            "defaultValue": false,
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.28.0",
+            "description": "If this property is set, then the label for filters will be prefixed with the group title.",
+            "methods": ["getConsiderGroupTitle", "setConsiderGroupTitle"]
+          },
+          {
+            "name": "showClearButton",
+            "type": "boolean",
+            "defaultValue": false,
+            "group": "Misc",
+            "visibility": "public",
+            "description": "Handles visibility of the Clear button on the Filters dialog.",
+            "deprecated": {
+              "since": "1.84"
+            },
+            "methods": ["getShowClearButton", "setShowClearButton"]
+          },
+          {
+            "name": "showRestoreButton",
+            "type": "boolean",
+            "defaultValue": true,
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.26.1",
+            "description": "Handles visibility of the \"Restore\" button on the \"Filters\" dialog. <b>Note:</b> Restore works only automatically when a property <code>persistencyKey</code> is set and therefore Variant Management is used. In all other cases the \"restore\" behavior needs to be implemented by the app, based on the event <code>reset</code>. Since 1.84 the \"Restore\" button text is changed to \"Reset\"",
+            "methods": ["getShowRestoreButton", "setShowRestoreButton"]
+          },
+          {
+            "name": "showGoOnFB",
+            "type": "boolean",
+            "defaultValue": true,
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.28.0",
+            "description": "Handles visibility of the Go button on the FilterBar.",
+            "methods": ["getShowGoOnFB", "setShowGoOnFB"]
+          },
+          {
+            "name": "showRestoreOnFB",
+            "type": "boolean",
+            "defaultValue": false,
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.28.0",
+            "description": "Handles visibility of the Restore button on the FilterBar.",
+            "methods": ["getShowRestoreOnFB", "setShowRestoreOnFB"]
+          },
+          {
+            "name": "showClearOnFB",
+            "type": "boolean",
+            "defaultValue": false,
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.28.0",
+            "description": "Handles visibility of the Clear button on the FilterBar.",
+            "methods": ["getShowClearOnFB", "setShowClearOnFB"]
+          },
+          {
+            "name": "showGoButton",
+            "type": "boolean",
+            "defaultValue": null,
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.26.1",
+            "description": "Handles visibility of the Go button on the FilterBar.",
+            "deprecated": {
+              "since": "1.28.0",
+              "text": "Replaced by property <code>showGoOnFB</code>"
+            },
+            "methods": ["getShowGoButton", "setShowGoButton"]
+          },
+          {
+            "name": "deltaVariantMode",
+            "type": "boolean",
+            "defaultValue": true,
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.34.0",
+            "description": "Stores the delta as compared to the standard variant.",
+            "methods": ["getDeltaVariantMode", "setDeltaVariantMode"]
+          },
+          {
+            "name": "filterContainerWidth",
+            "type": "string",
+            "defaultValue": "12rem",
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.34.0",
+            "description": "Sets the width of the filters container.",
+            "methods": ["getFilterContainerWidth", "setFilterContainerWidth"]
+          },
+          {
+            "name": "useToolbar",
+            "type": "boolean",
+            "defaultValue": true,
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.38.0",
+            "description": "Determines what design is used. Default is the design with toolbar. If the property <code>useToolbar</code> is set to <code>false</code>, the property <code>filterBarExpanded</code> is set to <code>true</code> automatically. <b>Note:</b><br> If set to <code>false</code>, the <code>VariantManagement</code> control is not available at all. This scenario is only intended for the {@link sap.ui.comp.smartfilterbar.SmartFilterBar}.",
+            "methods": ["getUseToolbar", "setUseToolbar"]
+          },
+          {
+            "name": "header",
+            "type": "string",
+            "defaultValue": "",
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.38.0",
+            "description": "Specifies header text that is shown in the toolbar on the first position. This property is ignored, when <code>useToolbar</code> is set to <code>false</code>.",
+            "methods": ["getHeader", "setHeader"]
+          },
+          {
+            "name": "showFilterConfiguration",
+            "type": "boolean",
+            "defaultValue": true,
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.38.0",
+            "description": "Handles visibility of the Filters button on the FilterBar.",
+            "methods": ["getShowFilterConfiguration", "setShowFilterConfiguration"]
+          },
+          {
+            "name": "useSnapshot",
+            "type": "boolean",
+            "defaultValue": null,
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.44",
+            "description": "Determines the behavior when <code>reset</code> is executed. <br> <b>Note:</b> This property is only relevant if no variant management is used, and the filter bar is not used in the advanced mode. A snapshot shows the current state of the filter bar, just before the Filters dialog is opened. <ul> <li><code>undefined</code> (default) defines the standard behavior: snapshot will be applied after <code>reset</code> was triggered</li> <li><code>false</code> defines that the snapshot will not be applied</li> <li><code>true</code>is not considered at all</li> </ul>",
+            "methods": ["getUseSnapshot", "setUseSnapshot"]
+          },
+          {
+            "name": "isRunningInValueHelpDialog",
+            "type": "boolean",
+            "defaultValue": false,
+            "group": "Misc",
+            "visibility": "public",
+            "description": "Sets whether the filter bar should look like the filters area in a ValueHelpDialog. True for SmartFilterBar when used in a ValueHelpDialog. False otherwise.",
+            "methods": ["getIsRunningInValueHelpDialog", "setIsRunningInValueHelpDialog"]
+          },
+          {
+            "name": "disableSearchMatchesPatternWarning",
+            "type": "boolean",
+            "defaultValue": false,
+            "group": "Misc",
+            "visibility": "public",
+            "since": "1.102",
+            "description": "Disables the warning for special symbols.\n\n<b>Note:</b> Changing the values here after the SmartFilter is initialized (<code>initialise</code> event was fired) has no effect.",
+            "methods": ["getDisableSearchMatchesPatternWarning", "setDisableSearchMatchesPatternWarning"]
+          }
+        ],
+        "aggregations": [
+          {
+            "name": "filterItems",
+            "singularName": "filterItem",
+            "type": "sap.ui.comp.filterbar.FilterItem",
+            "cardinality": "0..n",
+            "visibility": "public",
+            "description": "Filters belonging to the basic group.",
+            "deprecated": {
+              "since": "1.48.0",
+              "text": "Use aggregation <code>filterGroupItems</code> instead."
+            },
+            "methods": [
+              "getFilterItems",
+              "destroyFilterItems",
+              "insertFilterItem",
+              "addFilterItem",
+              "removeFilterItem",
+              "indexOfFilterItem",
+              "removeAllFilterItems"
+            ]
+          },
+          {
+            "name": "filterGroupItems",
+            "singularName": "filterGroupItem",
+            "type": "sap.ui.comp.filterbar.FilterGroupItem",
+            "cardinality": "0..n",
+            "visibility": "public",
+            "description": "Contains all FilterBar filters. <br> <code>Note:</code>In case a filter has to be added to the basic group <ul> <li>the property <code>groupName</code> has to be set to the constant <code>sap.ui.comp.filterbar.FilterBar.INTERNAL_GROUP</code></li> <li>the property <code>groupLabel</code> will be handled internally and will be ignored, if set</li> <li>the property <code>partOfCurrentVariant</code> has to be set to <code>true</code></li> <li>if the property <code>visibleInFilterBar</code> is set to <code>true</code>, the property <code>partOfCurrentVariant</code> will be set internally also to <code>true</code></li> </ul>",
+            "methods": [
+              "getFilterGroupItems",
+              "destroyFilterGroupItems",
+              "insertFilterGroupItem",
+              "addFilterGroupItem",
+              "removeFilterGroupItem",
+              "indexOfFilterGroupItem",
+              "removeAllFilterGroupItems"
+            ]
+          },
+          {
+            "name": "_parameters",
+            "singularName": "_parameter",
+            "type": "sap.ui.comp.filterbar.FilterGroupItem",
+            "cardinality": "0..n",
+            "visibility": "hidden",
+            "description": "Special handling for analytic parameters.",
+            "methods": [
+              "get_parameters",
+              "destroy_parameters",
+              "insert_parameter",
+              "add_parameter",
+              "remove_parameter",
+              "indexOf_parameter",
+              "removeAll_parameters"
+            ]
+          }
+        ],
+        "associations": [
+          {
+            "name": "basicSearch",
+            "singularName": "basicSearch",
+            "type": "sap.m.SearchField",
+            "cardinality": "0..1",
+            "visibility": "public",
+            "since": "1.30.0",
+            "description": "Populates the basic search area on the FilterBar and the Filters dialog.",
+            "methods": ["getBasicSearch", "setBasicSearch"]
+          }
+        ],
+        "events": [
+          {
+            "name": "cancel",
+            "visibility": "public",
+            "description": "This event is fired when the Cancel button on the Filters dialog is pressed and the variant is marked as dirty.",
+            "methods": ["attachCancel", "detachCancel", "fireCancel"]
+          },
+          {
+            "name": "reset",
+            "visibility": "public",
+            "description": "This event is fired when the Restore button is pressed.",
+            "parameters": {
+              "selectionSet": {
+                "name": "selectionSet",
+                "type": "sap.ui.core.Control[]",
+                "description": "Visible controls"
+              }
+            },
+            "methods": ["attachReset", "detachReset", "fireReset"]
+          },
+          {
+            "name": "search",
+            "visibility": "public",
+            "description": "This event is fired when the Go button is pressed.",
+            "parameters": {
+              "selectionSet": {
+                "name": "selectionSet",
+                "type": "sap.ui.core.Control[]",
+                "description": "Visible controls"
+              },
+              "firedFromFilterBar": {
+                "name": "firedFromFilterBar",
+                "type": "boolean",
+                "since": "1.107",
+                "description": "Is event fired due to user action in FilterBar"
+              }
+            },
+            "methods": ["attachSearch", "detachSearch", "fireSearch"]
+          },
+          {
+            "name": "beforeVariantSave",
+            "visibility": "public",
+            "description": "This event is fired before a variant is saved. The event can be used to adapt the data of the custom filters, which will be saved as variant later.",
+            "deprecated": {
+              "since": "1.48.2",
+              "text": "Replaced by the event <code>beforeVariantFetch</code>"
+            },
+            "parameters": {
+              "context": {
+                "name": "context",
+                "type": "string",
+                "description": "Context of the event. Can also be <code>null</code> or <code>undefined</code>"
+              }
+            },
+            "methods": ["attachBeforeVariantSave", "detachBeforeVariantSave", "fireBeforeVariantSave"]
+          },
+          {
+            "name": "beforeVariantFetch",
+            "visibility": "public",
+            "since": "1.28.13",
+            "description": "This event is fired before a variant is fetched.",
+            "methods": ["attachBeforeVariantFetch", "detachBeforeVariantFetch", "fireBeforeVariantFetch"]
+          },
+          {
+            "name": "afterVariantLoad",
+            "visibility": "public",
+            "description": "This event is fired after a variant has been loaded and applied to the FilterBar. The event can be used to adapt custom filters with data from the variant.",
+            "parameters": {
+              "context": {
+                "name": "context",
+                "type": "string",
+                "description": "Context of the event. Can also be <code>null</code> or <code>undefined</code>"
+              },
+              "executeOnSelect": {
+                "name": "executeOnSelect",
+                "type": "boolean",
+                "since": "1.44.0",
+                "description": "executeOnSelect indicates if the variant will trigger search"
+              }
+            },
+            "methods": ["attachAfterVariantLoad", "detachAfterVariantLoad", "fireAfterVariantLoad"]
+          },
+          {
+            "name": "filterChange",
+            "visibility": "public",
+            "description": "This event is fired when a filter or multiple filters has changed.",
+            "methods": ["attachFilterChange", "detachFilterChange", "fireFilterChange"]
+          },
+          {
+            "name": "clear",
+            "visibility": "public",
+            "description": "This event is fired when the Clear button is pressed. The consumer has to clear all filters.",
+            "parameters": {
+              "selectionSet": {
+                "name": "selectionSet",
+                "type": "sap.ui.core.Control[]",
+                "description": "Visible controls"
+              }
+            },
+            "methods": ["attachClear", "detachClear", "fireClear"]
+          },
+          {
+            "name": "initialise",
+            "visibility": "public",
+            "description": "This event is fired when the FilterBar is initialized to indicate that metadata are available.",
+            "methods": ["attachInitialise", "detachInitialise", "fireInitialise"]
+          },
+          {
+            "name": "initialized",
+            "visibility": "public",
+            "since": "1.38.0",
+            "description": "This event is fired after the <code>FilterBar</code> has been initialized, the user's default variant has been applied, and a stable filter state has been achieved. With this event all relevant filter information, for example, for navigation-related actions, is available via {@link sap.ui.comp.filterbar.FilterBar#getUiState}.",
+            "methods": ["attachInitialized", "detachInitialized", "fireInitialized"]
+          },
+          {
+            "name": "afterVariantSave",
+            "visibility": "public",
+            "description": "This event is fired after a variant has been saved.",
+            "methods": ["attachAfterVariantSave", "detachAfterVariantSave", "fireAfterVariantSave"]
+          },
+          {
+            "name": "filtersDialogClosed",
+            "visibility": "public",
+            "since": "1.34.0",
+            "description": "This event is fired after the filters dialog is closed.",
+            "parameters": {
+              "context": {
+                "name": "context",
+                "type": "string",
+                "description": "Context of the event. Can also be <code>null</code> or <code>undefined</code>"
+              }
+            },
+            "methods": ["attachFiltersDialogClosed", "detachFiltersDialogClosed", "fireFiltersDialogClosed"]
+          },
+          {
+            "name": "filtersDialogBeforeOpen",
+            "visibility": "public",
+            "since": "1.48.0",
+            "description": "This event is fired after the filters dialog is opened.",
+            "methods": ["attachFiltersDialogBeforeOpen", "detachFiltersDialogBeforeOpen", "fireFiltersDialogBeforeOpen"]
+          },
+          {
+            "name": "filtersDialogSearch",
+            "visibility": "public",
+            "since": "1.48.0",
+            "description": "This event is fired when the Go button on the filters dialog is pressed.",
+            "deprecated": {
+              "since": "1.84"
+            },
+            "methods": ["attachFiltersDialogSearch", "detachFiltersDialogSearch", "fireFiltersDialogSearch"]
+          },
+          {
+            "name": "filtersDialogCancel",
+            "visibility": "public",
+            "since": "1.48.0",
+            "description": "This event is fired when the Cancel button on the filters dialog is pressed.",
+            "methods": ["attachFiltersDialogCancel", "detachFiltersDialogCancel", "fireFiltersDialogCancel"]
+          },
+          {
+            "name": "filtersDialogSearchForFilters",
+            "visibility": "public",
+            "since": "1.48.0",
+            "description": "This event is fired when search field of the filter dialog is changed.",
+            "deprecated": {
+              "since": "1.84"
+            },
+            "parameters": {
+              "newValue": {
+                "name": "newValue",
+                "type": "string",
+                "description": "Contains the entered search filed value"
+              }
+            },
+            "methods": [
+              "attachFiltersDialogSearchForFilters",
+              "detachFiltersDialogSearchForFilters",
+              "fireFiltersDialogSearchForFilters"
+            ]
+          },
+          {
+            "name": "assignedFiltersChanged",
+            "visibility": "public",
+            "since": "1.38.0",
+            "description": "This event is fired when the filters information has changed. It indicates specifically that the count of assigned filters may be changed. One of the intended reaction to this event would be to call <code>retrieveFiltersWithValuesAsText</code> method.",
+            "methods": ["attachAssignedFiltersChanged", "detachAssignedFiltersChanged", "fireAssignedFiltersChanged"]
+          }
+        ],
+        "designtime": "sap/ui/comp/designtime/filterbar/FilterBar.designtime"
+      },
+      "constructor": {
+        "visibility": "public",
+        "parameters": [
+          {
+            "name": "sId",
+            "type": "string",
+            "optional": true,
+            "description": "ID for the new control, generated automatically if no ID is given"
+          },
+          {
+            "name": "mSettings",
+            "type": "object",
+            "optional": true,
+            "description": "initial settings for the new control"
+          }
+        ],
+        "description": "Constructor for a new FilterBar.\n\nAccepts an object literal <code>mSettings</code> that defines initial property values, aggregated and associated objects as well as event handlers. See {@link sap.ui.base.ManagedObject#constructor} for a general description of the syntax of the settings object.",
+        "references": [
+          "{@link topic:2ae520a67c44495ab5dbc69668c47a7f Filter Bar}",
+          "{@link fiori:https://experience.sap.com/fiori-design-web/filter-bar/ Filter Bar}"
+        ]
+      },
+      "events": [
+        {
+          "name": "afterVariantLoad",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false,
+                  "parameterProperties": {
+                    "context": {
+                      "name": "context",
+                      "type": "string",
+                      "optional": false,
+                      "description": "Context of the event. Can also be <code>null</code> or <code>undefined</code>"
+                    },
+                    "executeOnSelect": {
+                      "name": "executeOnSelect",
+                      "type": "boolean",
+                      "optional": false,
+                      "description": "executeOnSelect indicates if the variant will trigger search"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "description": "This event is fired after a variant has been loaded and applied to the FilterBar. The event can be used to adapt custom filters with data from the variant."
+        },
+        {
+          "name": "afterVariantSave",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false
+                }
+              }
+            }
+          ],
+          "description": "This event is fired after a variant has been saved."
+        },
+        {
+          "name": "assignedFiltersChanged",
+          "visibility": "public",
+          "since": "1.38.0",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false
+                }
+              }
+            }
+          ],
+          "description": "This event is fired when the filters information has changed. It indicates specifically that the count of assigned filters may be changed. One of the intended reaction to this event would be to call <code>retrieveFiltersWithValuesAsText</code> method."
+        },
+        {
+          "name": "beforeVariantFetch",
+          "visibility": "public",
+          "since": "1.28.13",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false
+                }
+              }
+            }
+          ],
+          "description": "This event is fired before a variant is fetched."
+        },
+        {
+          "name": "beforeVariantSave",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false,
+                  "parameterProperties": {
+                    "context": {
+                      "name": "context",
+                      "type": "string",
+                      "optional": false,
+                      "description": "Context of the event. Can also be <code>null</code> or <code>undefined</code>"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "description": "This event is fired before a variant is saved. The event can be used to adapt the data of the custom filters, which will be saved as variant later.",
+          "deprecated": {
+            "since": "1.48.2",
+            "text": "Replaced by the event <code>beforeVariantFetch</code>"
+          }
+        },
+        {
+          "name": "cancel",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false
+                }
+              }
+            }
+          ],
+          "description": "This event is fired when the Cancel button on the Filters dialog is pressed and the variant is marked as dirty."
+        },
+        {
+          "name": "clear",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false,
+                  "parameterProperties": {
+                    "selectionSet": {
+                      "name": "selectionSet",
+                      "type": "sap.ui.core.Control[]",
+                      "optional": false,
+                      "description": "Visible controls"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "description": "This event is fired when the Clear button is pressed. The consumer has to clear all filters."
+        },
+        {
+          "name": "filterChange",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false
+                }
+              }
+            }
+          ],
+          "description": "This event is fired when a filter or multiple filters has changed."
+        },
+        {
+          "name": "filtersDialogBeforeOpen",
+          "visibility": "public",
+          "since": "1.48.0",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false
+                }
+              }
+            }
+          ],
+          "description": "This event is fired after the filters dialog is opened."
+        },
+        {
+          "name": "filtersDialogCancel",
+          "visibility": "public",
+          "since": "1.48.0",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false
+                }
+              }
+            }
+          ],
+          "description": "This event is fired when the Cancel button on the filters dialog is pressed."
+        },
+        {
+          "name": "filtersDialogClosed",
+          "visibility": "public",
+          "since": "1.34.0",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false,
+                  "parameterProperties": {
+                    "context": {
+                      "name": "context",
+                      "type": "string",
+                      "optional": false,
+                      "description": "Context of the event. Can also be <code>null</code> or <code>undefined</code>"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "description": "This event is fired after the filters dialog is closed."
+        },
+        {
+          "name": "filtersDialogSearch",
+          "visibility": "public",
+          "since": "1.48.0",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false
+                }
+              }
+            }
+          ],
+          "description": "This event is fired when the Go button on the filters dialog is pressed.",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "filtersDialogSearchForFilters",
+          "visibility": "public",
+          "since": "1.48.0",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false,
+                  "parameterProperties": {
+                    "newValue": {
+                      "name": "newValue",
+                      "type": "string",
+                      "optional": false,
+                      "description": "Contains the entered search filed value"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "description": "This event is fired when search field of the filter dialog is changed.",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "initialise",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false
+                }
+              }
+            }
+          ],
+          "description": "This event is fired when the FilterBar is initialized to indicate that metadata are available."
+        },
+        {
+          "name": "initialized",
+          "visibility": "public",
+          "since": "1.38.0",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false
+                }
+              }
+            }
+          ],
+          "description": "This event is fired after the <code>FilterBar</code> has been initialized, the user's default variant has been applied, and a stable filter state has been achieved. With this event all relevant filter information, for example, for navigation-related actions, is available via {@link sap.ui.comp.filterbar.FilterBar#getUiState}."
+        },
+        {
+          "name": "reset",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false,
+                  "parameterProperties": {
+                    "selectionSet": {
+                      "name": "selectionSet",
+                      "type": "sap.ui.core.Control[]",
+                      "optional": false,
+                      "description": "Visible controls"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "description": "This event is fired when the Restore button is pressed."
+        },
+        {
+          "name": "search",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "oControlEvent",
+              "type": "sap.ui.base.Event",
+              "parameterProperties": {
+                "getSource": {
+                  "name": "getSource",
+                  "type": "sap.ui.base.EventProvider",
+                  "optional": false
+                },
+                "getParameters": {
+                  "name": "getParameters",
+                  "type": "object",
+                  "optional": false,
+                  "parameterProperties": {
+                    "selectionSet": {
+                      "name": "selectionSet",
+                      "type": "sap.ui.core.Control[]",
+                      "optional": false,
+                      "description": "Visible controls"
+                    },
+                    "firedFromFilterBar": {
+                      "name": "firedFromFilterBar",
+                      "type": "boolean",
+                      "optional": false,
+                      "description": "Is event fired due to user action in FilterBar"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "description": "This event is fired when the Go button is pressed."
+        }
+      ],
+      "methods": [
+        {
+          "name": "_addParameter",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to this in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oParameter",
+              "type": "sap.ui.comp.filterbar.FilterGroupItem",
+              "optional": false,
+              "description": "adding a analytical parameter"
+            }
+          ],
+          "description": "Adds a <code>FilterGroupItem</code> element to the aggregation <code>_parameters</code>."
+        },
+        {
+          "name": "_isPhone",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "boolean",
+            "description": "<code>True</code> if phone, <code>false</code> otherwise"
+          },
+          "description": "Checks if running on phone."
+        },
+        {
+          "name": "_isTablet",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "boolean",
+            "description": "<code>True</code> if tablet, <code>false</code> otherwise"
+          },
+          "description": "Checks if running on tablet."
+        },
+        {
+          "name": "_retrieveCurrentSelectionSet",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "array",
+            "description": "all visible controls/filter name & controls"
+          },
+          "parameters": [
+            {
+              "name": "bWithName",
+              "type": "boolean",
+              "optional": false,
+              "description": "determines the returning structure. Either list of controls, or list of filter name and control."
+            },
+            {
+              "name": "bConsiderParameters",
+              "type": "boolean",
+              "optional": false,
+              "description": "determines if parameters should be considered."
+            }
+          ],
+          "description": "Retrieves the controls for all visible filters."
+        },
+        {
+          "name": "_updateToolbarText",
+          "visibility": "protected",
+          "description": "Updates the 'Filters'-button text with the count of filters with values"
+        },
+        {
+          "name": "addAdaptFilterDialogCustomContent",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "mCustomView",
+              "type": "object",
+              "optional": false,
+              "parameterProperties": {
+                "item": {
+                  "name": "item",
+                  "type": "sap.m.SegmentedButtonItem",
+                  "optional": false,
+                  "description": "the custom button used in the view switch"
+                },
+                "content": {
+                  "name": "content",
+                  "type": "sap.ui.core.Control",
+                  "optional": false,
+                  "description": "the content displayed in the custom view"
+                },
+                "search": {
+                  "name": "search",
+                  "type": "function",
+                  "optional": true,
+                  "description": "callback triggered by search - executed with the string as parameter"
+                },
+                "filterSelect": {
+                  "name": "filterSelect",
+                  "type": "function",
+                  "optional": true,
+                  "description": "callback triggered by the <code>Select</code> control in the header area - executed with the selected key as parameter"
+                },
+                "selectionChange": {
+                  "name": "selectionChange",
+                  "type": "function",
+                  "optional": true,
+                  "description": "callback triggered by selecting a view - executed with the key as parameter\n\nNote: This API is designed to fulfill the need of adding visual filters to \"Adapt Filters\" dialog so applications can achieve the ALP scenario in free style. Other usages are not encouraged."
+                }
+              },
+              "description": "the setting for the custom view"
+            }
+          ],
+          "description": "Enables to add application specific content as a custom view to the new adapt filters dialog."
+        },
+        {
+          "name": "addFilterDialogContent",
+          "visibility": "public",
+          "returnValue": {
+            "type": "sap.ui.core.Control|null",
+            "description": "<code>oContent</code> added or <code>null</code> when filters dialog is not active"
+          },
+          "parameters": [
+            {
+              "name": "oContent",
+              "type": "sap.ui.core.Control",
+              "optional": false,
+              "description": "to be added; if empty, nothing is inserted."
+            }
+          ],
+          "description": "Enables to add application specific content to the filters dialog. If the content was not yet added it will be added. The content will be set to visible, all other filters dialog content will be set to invisible. Not implemented yet for the new Adapt Filters Dialog",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "addFilterGroupItem",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oFilterGroupItem",
+              "type": "sap.ui.comp.filterbar.FilterGroupItem",
+              "optional": false,
+              "description": "The filterGroupItem to add; if empty, nothing is inserted"
+            }
+          ],
+          "description": "Adds some filterGroupItem to the aggregation {@link #getFilterGroupItems filterGroupItems}."
+        },
+        {
+          "name": "addFilterItem",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oFilterItem",
+              "type": "sap.ui.comp.filterbar.FilterItem",
+              "optional": false,
+              "description": "The filterItem to add; if empty, nothing is inserted"
+            }
+          ],
+          "description": "Adds some filterItem to the aggregation {@link #getFilterItems filterItems}.",
+          "deprecated": {
+            "since": "1.48.0",
+            "text": "Use aggregation <code>filterGroupItems</code> instead."
+          }
+        },
+        {
+          "name": "applyVariant",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "oVariant",
+              "type": "object",
+              "optional": false,
+              "description": "JSON object"
+            },
+            {
+              "name": "sContext",
+              "type": "string",
+              "optional": false,
+              "description": "Describes in which context the variant is applied. The context is passed on to the application via the afterVariantLoad event"
+            },
+            {
+              "name": "bInitial",
+              "type": "boolean",
+              "optional": false,
+              "description": "indicates if the apply was executed during the initialization phase."
+            }
+          ],
+          "description": "Applies the variant."
+        },
+        {
+          "name": "attachAfterVariantLoad",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:afterVariantLoad afterVariantLoad} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired after a variant has been loaded and applied to the FilterBar. The event can be used to adapt custom filters with data from the variant."
+        },
+        {
+          "name": "attachAfterVariantSave",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:afterVariantSave afterVariantSave} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired after a variant has been saved."
+        },
+        {
+          "name": "attachAssignedFiltersChanged",
+          "visibility": "public",
+          "since": "1.38.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:assignedFiltersChanged assignedFiltersChanged} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired when the filters information has changed. It indicates specifically that the count of assigned filters may be changed. One of the intended reaction to this event would be to call <code>retrieveFiltersWithValuesAsText</code> method."
+        },
+        {
+          "name": "attachBeforeVariantFetch",
+          "visibility": "public",
+          "since": "1.28.13",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:beforeVariantFetch beforeVariantFetch} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired before a variant is fetched."
+        },
+        {
+          "name": "attachBeforeVariantSave",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:beforeVariantSave beforeVariantSave} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired before a variant is saved. The event can be used to adapt the data of the custom filters, which will be saved as variant later.",
+          "deprecated": {
+            "since": "1.48.2",
+            "text": "Replaced by the event <code>beforeVariantFetch</code>"
+          }
+        },
+        {
+          "name": "attachCancel",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:cancel cancel} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired when the Cancel button on the Filters dialog is pressed and the variant is marked as dirty."
+        },
+        {
+          "name": "attachClear",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:clear clear} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired when the Clear button is pressed. The consumer has to clear all filters."
+        },
+        {
+          "name": "attachFilterChange",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:filterChange filterChange} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired when a filter or multiple filters has changed."
+        },
+        {
+          "name": "attachFiltersDialogBeforeOpen",
+          "visibility": "public",
+          "since": "1.48.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:filtersDialogBeforeOpen filtersDialogBeforeOpen} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired after the filters dialog is opened."
+        },
+        {
+          "name": "attachFiltersDialogCancel",
+          "visibility": "public",
+          "since": "1.48.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:filtersDialogCancel filtersDialogCancel} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired when the Cancel button on the filters dialog is pressed."
+        },
+        {
+          "name": "attachFiltersDialogClosed",
+          "visibility": "public",
+          "since": "1.34.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:filtersDialogClosed filtersDialogClosed} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired after the filters dialog is closed."
+        },
+        {
+          "name": "attachFiltersDialogSearch",
+          "visibility": "public",
+          "since": "1.48.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:filtersDialogSearch filtersDialogSearch} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired when the Go button on the filters dialog is pressed.",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "attachFiltersDialogSearchForFilters",
+          "visibility": "public",
+          "since": "1.48.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:filtersDialogSearchForFilters filtersDialogSearchForFilters} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired when search field of the filter dialog is changed.",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "attachInitialise",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:initialise initialise} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired when the FilterBar is initialized to indicate that metadata are available."
+        },
+        {
+          "name": "attachInitialized",
+          "visibility": "public",
+          "since": "1.38.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:initialized initialized} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired after the <code>FilterBar</code> has been initialized, the user's default variant has been applied, and a stable filter state has been achieved. With this event all relevant filter information, for example, for navigation-related actions, is available via {@link sap.ui.comp.filterbar.FilterBar#getUiState}."
+        },
+        {
+          "name": "attachReset",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:reset reset} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired when the Restore button is pressed."
+        },
+        {
+          "name": "attachSearch",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oData",
+              "type": "object",
+              "optional": true,
+              "description": "An application-specific payload object that will be passed to the event handler along with the event object when firing the event"
+            },
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object to call the event handler with. Defaults to this <code>sap.ui.comp.filterbar.FilterBar</code> itself"
+            }
+          ],
+          "description": "Attaches event handler <code>fnFunction</code> to the {@link #event:search search} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nWhen called, the context of the event handler (its <code>this</code>) will be bound to <code>oListener</code> if specified, otherwise it will be bound to this <code>sap.ui.comp.filterbar.FilterBar</code> itself.\n\nThis event is fired when the Go button is pressed."
+        },
+        {
+          "name": "clearVariantSelection",
+          "visibility": "public",
+          "description": "Resets the current selection in the variant management control to standard."
+        },
+        {
+          "name": "destroyFilterGroupItems",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "description": "Destroys all the filterGroupItems in the aggregation {@link #getFilterGroupItems filterGroupItems}."
+        },
+        {
+          "name": "destroyFilterItems",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "description": "Destroys all the filterItems in the aggregation {@link #getFilterItems filterItems}.",
+          "deprecated": {
+            "since": "1.48.0",
+            "text": "Use aggregation <code>filterGroupItems</code> instead."
+          }
+        },
+        {
+          "name": "detachAfterVariantLoad",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:afterVariantLoad afterVariantLoad} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachAfterVariantSave",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:afterVariantSave afterVariantSave} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachAssignedFiltersChanged",
+          "visibility": "public",
+          "since": "1.38.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:assignedFiltersChanged assignedFiltersChanged} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachBeforeVariantFetch",
+          "visibility": "public",
+          "since": "1.28.13",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:beforeVariantFetch beforeVariantFetch} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachBeforeVariantSave",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:beforeVariantSave beforeVariantSave} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration.",
+          "deprecated": {
+            "since": "1.48.2",
+            "text": "Replaced by the event <code>beforeVariantFetch</code>"
+          }
+        },
+        {
+          "name": "detachCancel",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:cancel cancel} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachClear",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:clear clear} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachFilterChange",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:filterChange filterChange} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachFiltersDialogBeforeOpen",
+          "visibility": "public",
+          "since": "1.48.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:filtersDialogBeforeOpen filtersDialogBeforeOpen} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachFiltersDialogCancel",
+          "visibility": "public",
+          "since": "1.48.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:filtersDialogCancel filtersDialogCancel} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachFiltersDialogClosed",
+          "visibility": "public",
+          "since": "1.34.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:filtersDialogClosed filtersDialogClosed} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachFiltersDialogSearch",
+          "visibility": "public",
+          "since": "1.48.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:filtersDialogSearch filtersDialogSearch} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration.",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "detachFiltersDialogSearchForFilters",
+          "visibility": "public",
+          "since": "1.48.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:filtersDialogSearchForFilters filtersDialogSearchForFilters} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration.",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "detachInitialise",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:initialise initialise} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachInitialized",
+          "visibility": "public",
+          "since": "1.38.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:initialized initialized} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachReset",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:reset reset} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "detachSearch",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "fnFunction",
+              "type": "function(sap.ui.base.Event) : void",
+              "optional": false,
+              "description": "The function to be called, when the event occurs"
+            },
+            {
+              "name": "oListener",
+              "type": "object",
+              "optional": true,
+              "description": "Context object on which the given function had to be called"
+            }
+          ],
+          "description": "Detaches event handler <code>fnFunction</code> from the {@link #event:search search} event of this <code>sap.ui.comp.filterbar.FilterBar</code>.\n\nThe passed function and listener object must match the ones used for event registration."
+        },
+        {
+          "name": "determineControlByFilterItem",
+          "visibility": "public",
+          "returnValue": {
+            "type": "sap.ui.core.Control",
+            "description": "The corresponding control. If no match is found <code>null</code> is returned."
+          },
+          "parameters": [
+            {
+              "name": "oFilterItem",
+              "type": "sap.ui.comp.filterbar.FilterItem",
+              "optional": false,
+              "description": "From the aggregations"
+            },
+            {
+              "name": "bConsiderParameters",
+              "type": "boolean",
+              "optional": false,
+              "description": "check also analytics parameter"
+            }
+          ],
+          "description": "Retrieves the control associated to the filter."
+        },
+        {
+          "name": "determineControlByName",
+          "visibility": "public",
+          "returnValue": {
+            "type": "sap.ui.core.Control",
+            "description": "The corresponding control, if no match is found, <code>null</code> is returned."
+          },
+          "parameters": [
+            {
+              "name": "sName",
+              "type": "string",
+              "optional": false,
+              "description": "Name of the filter."
+            },
+            {
+              "name": "sGroupName",
+              "type": "string",
+              "optional": true,
+              "description": "Group name of the filter; <code>null</code> for filter that belongs to basic group."
+            }
+          ],
+          "description": "Retrieves the control based on the name and group name."
+        },
+        {
+          "name": "determineFilterItemByName",
+          "visibility": "public",
+          "returnValue": {
+            "type": "sap.ui.comp.filterbar.FilterGroupItem",
+            "description": "the corresponding filter item. If no match is found <code>null</code> will returned."
+          },
+          "parameters": [
+            {
+              "name": "sName",
+              "type": "string",
+              "optional": false,
+              "description": "the control's name"
+            },
+            {
+              "name": "sGroupName",
+              "type": "string",
+              "optional": false,
+              "description": "the filter's group name"
+            }
+          ],
+          "description": "Retrieves the filter corresponding to the filter name."
+        },
+        {
+          "name": "determineLabelByName",
+          "visibility": "public",
+          "returnValue": {
+            "type": "sap.m.Label",
+            "description": "The associated Label, if no match is found, <code>null</code> is returned."
+          },
+          "parameters": [
+            {
+              "name": "sName",
+              "type": "string",
+              "optional": false,
+              "description": "Name of the filter."
+            },
+            {
+              "name": "sGroupName",
+              "type": "string",
+              "optional": false,
+              "description": "Group name of the filter; <code>null</code> for filter that belongs to basic group."
+            }
+          ],
+          "description": "Retrieves the associated label based on the name and group name."
+        },
+        {
+          "name": "determineMandatoryFilterItems",
+          "visibility": "public",
+          "returnValue": {
+            "type": "array",
+            "description": "Of visible mandatory filters"
+          },
+          "description": "Retrieves the mandatory filters."
+        },
+        {
+          "name": "extend",
+          "visibility": "public",
+          "static": true,
+          "returnValue": {
+            "type": "function",
+            "description": "Created class / constructor function"
+          },
+          "parameters": [
+            {
+              "name": "sClassName",
+              "type": "string",
+              "optional": false,
+              "description": "Name of the class being created"
+            },
+            {
+              "name": "oClassInfo",
+              "type": "object",
+              "optional": true,
+              "description": "Object literal with information about the class"
+            },
+            {
+              "name": "FNMetaImpl",
+              "type": "function",
+              "optional": true,
+              "description": "Constructor function for the metadata object; if not given, it defaults to the metadata implementation used by this class"
+            }
+          ],
+          "description": "Creates a new subclass of class sap.ui.comp.filterbar.FilterBar with name <code>sClassName</code> and enriches it with the information contained in <code>oClassInfo</code>.\n\n<code>oClassInfo</code> might contain the same kind of information as described in {@link sap.ui.layout.Grid.extend}."
+        },
+        {
+          "name": "fetchVariant",
+          "visibility": "public",
+          "returnValue": {
+            "type": "Object",
+            "description": "An arbitrary Object with an example structure:<br><pre>{<br>  filterBarVariant: any,<br>  filterbar: [<br>    {<br>      group: string,<br>      name: string,<br>      partOfCurrentVariant: boolean,<br>      visible: boolean,<br>      visibleInFilterBar: boolean<br>    },<br>    ...<br>  ],<br>  orderedFilterItems: string,<br>  singleInputsTextArrangementData: string,<br>  version: string|undefined,<br>  basicSearch: string|undefined<br>}</pre>"
+          },
+          "description": "Creates and returns the variant representation."
+        },
+        {
+          "name": "fireAfterVariantSave",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:afterVariantSave afterVariantSave} to attached listeners."
+        },
+        {
+          "name": "fireAssignedFiltersChanged",
+          "visibility": "protected",
+          "since": "1.38.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:assignedFiltersChanged assignedFiltersChanged} to attached listeners."
+        },
+        {
+          "name": "fireBeforeVariantFetch",
+          "visibility": "protected",
+          "since": "1.28.13",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:beforeVariantFetch beforeVariantFetch} to attached listeners."
+        },
+        {
+          "name": "fireCancel",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:cancel cancel} to attached listeners."
+        },
+        {
+          "name": "fireClear",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "parameterProperties": {
+                "selectionSet": {
+                  "name": "selectionSet",
+                  "type": "sap.ui.core.Control[]",
+                  "optional": true,
+                  "description": "Visible controls"
+                }
+              },
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:clear clear} to attached listeners."
+        },
+        {
+          "name": "fireFiltersDialogBeforeOpen",
+          "visibility": "protected",
+          "since": "1.48.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:filtersDialogBeforeOpen filtersDialogBeforeOpen} to attached listeners."
+        },
+        {
+          "name": "fireFiltersDialogCancel",
+          "visibility": "protected",
+          "since": "1.48.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:filtersDialogCancel filtersDialogCancel} to attached listeners."
+        },
+        {
+          "name": "fireFiltersDialogClosed",
+          "visibility": "protected",
+          "since": "1.34.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "parameterProperties": {
+                "context": {
+                  "name": "context",
+                  "type": "string",
+                  "optional": true,
+                  "description": "Context of the event. Can also be <code>null</code> or <code>undefined</code>"
+                }
+              },
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:filtersDialogClosed filtersDialogClosed} to attached listeners."
+        },
+        {
+          "name": "fireFiltersDialogSearch",
+          "visibility": "protected",
+          "since": "1.48.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:filtersDialogSearch filtersDialogSearch} to attached listeners.",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "fireFiltersDialogSearchForFilters",
+          "visibility": "protected",
+          "since": "1.48.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "parameterProperties": {
+                "newValue": {
+                  "name": "newValue",
+                  "type": "string",
+                  "optional": true,
+                  "description": "Contains the entered search filed value"
+                }
+              },
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:filtersDialogSearchForFilters filtersDialogSearchForFilters} to attached listeners.",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "fireInitialise",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:initialise initialise} to attached listeners."
+        },
+        {
+          "name": "fireInitialized",
+          "visibility": "protected",
+          "since": "1.38.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:initialized initialized} to attached listeners."
+        },
+        {
+          "name": "fireReset",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "parameterProperties": {
+                "selectionSet": {
+                  "name": "selectionSet",
+                  "type": "sap.ui.core.Control[]",
+                  "optional": true,
+                  "description": "Visible controls"
+                }
+              },
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:reset reset} to attached listeners."
+        },
+        {
+          "name": "fireSearch",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "mParameters",
+              "type": "object",
+              "optional": true,
+              "parameterProperties": {
+                "selectionSet": {
+                  "name": "selectionSet",
+                  "type": "sap.ui.core.Control[]",
+                  "optional": true,
+                  "description": "Visible controls"
+                },
+                "firedFromFilterBar": {
+                  "name": "firedFromFilterBar",
+                  "type": "boolean",
+                  "optional": true,
+                  "description": "Is event fired due to user action in FilterBar"
+                }
+              },
+              "description": "Parameters to pass along with the event"
+            }
+          ],
+          "description": "Fires event {@link #event:search search} to attached listeners."
+        },
+        {
+          "name": "getAdvancedMode",
+          "visibility": "public",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>advancedMode</code>"
+          },
+          "description": "Gets current value of property {@link #getAdvancedMode advancedMode}.\n\nThe advanced mode is only relevant for the value help scenario. UI representation is different from the standard FilterBar.\n\nDefault value is <code>false</code>."
+        },
+        {
+          "name": "getAllFilterItems",
+          "visibility": "public",
+          "returnValue": {
+            "type": "array",
+            "description": "filters Of the current variant"
+          },
+          "parameters": [
+            {
+              "name": "bConsiderOnlyVisibleFields",
+              "type": "boolean",
+              "optional": false,
+              "description": "Indicates that only visible filters are retrieved. <b>Note:</b> hidden filters are treated as visible filters."
+            }
+          ],
+          "description": "Retrieves filters belonging to the current variant."
+        },
+        {
+          "name": "getBasicSearch",
+          "visibility": "public",
+          "since": "1.30.0",
+          "returnValue": {
+            "type": "sap.ui.core.ID"
+          },
+          "description": "ID of the element which is the current target of the association {@link #getBasicSearch basicSearch}, or <code>null</code>."
+        },
+        {
+          "name": "getBasicSearchName",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "string",
+            "description": "name of the basic search field."
+          },
+          "description": "Determine the internal basic search field name."
+        },
+        {
+          "name": "getBasicSearchValue",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "string",
+            "description": "current value of the basic search field."
+          },
+          "description": "Determine the value of the basic search."
+        },
+        {
+          "name": "getConsiderGroupTitle",
+          "visibility": "public",
+          "since": "1.28.0",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>considerGroupTitle</code>"
+          },
+          "description": "Gets current value of property {@link #getConsiderGroupTitle considerGroupTitle}.\n\nIf this property is set, then the label for filters will be prefixed with the group title.\n\nDefault value is <code>false</code>."
+        },
+        {
+          "name": "getCurrentVariantId",
+          "visibility": "public",
+          "since": "1.28.0",
+          "returnValue": {
+            "type": "string",
+            "description": "ID of the current variant"
+          },
+          "description": "Retrieves the current variant ID."
+        },
+        {
+          "name": "getDataSuiteFormat",
+          "visibility": "public",
+          "since": "1.28.0",
+          "returnValue": {
+            "type": "string",
+            "description": "JSON string representing the selection variant for UI navigation; <code>null</code> otherwise"
+          },
+          "parameters": [
+            {
+              "name": "bConsiderAllFilters",
+              "type": "boolean",
+              "optional": false,
+              "description": "also include empty/invisible fields filter data"
+            }
+          ],
+          "description": "Retrieves the current variant as selection variant for UI navigation",
+          "deprecated": {
+            "since": "1.48",
+            "text": "replaced by {@link sap.ui.comp.filterbar.FilterBar#getUiState}"
+          }
+        },
+        {
+          "name": "getDeltaVariantMode",
+          "visibility": "public",
+          "since": "1.34.0",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>deltaVariantMode</code>"
+          },
+          "description": "Gets current value of property {@link #getDeltaVariantMode deltaVariantMode}.\n\nStores the delta as compared to the standard variant.\n\nDefault value is <code>true</code>."
+        },
+        {
+          "name": "getDescriptionForKeys",
+          "visibility": "protected",
+          "since": "1.75",
+          "parameters": [
+            {
+              "name": "aFiltersWithValuesToBeRead",
+              "type": "array",
+              "optional": false,
+              "description": "List of filters with value keys to be retrieved"
+            }
+          ],
+          "description": "Reads the descriptions for given filters and value keys."
+        },
+        {
+          "name": "getDisableSearchMatchesPatternWarning",
+          "visibility": "public",
+          "since": "1.102",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>disableSearchMatchesPatternWarning</code>"
+          },
+          "description": "Gets current value of property {@link #getDisableSearchMatchesPatternWarning disableSearchMatchesPatternWarning}.\n\nDisables the warning for special symbols.\n\n<b>Note:</b> Changing the values here after the SmartFilter is initialized (<code>initialise</code> event was fired) has no effect.\n\nDefault value is <code>false</code>."
+        },
+        {
+          "name": "getFilterBarExpanded",
+          "visibility": "public",
+          "since": "1.26.1",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>filterBarExpanded</code>"
+          },
+          "description": "Gets current value of property {@link #getFilterBarExpanded filterBarExpanded}.\n\nShows the filters area. When property <code>useToolbar</code> is set to <code>false</code>, <code>filterBarExpanded</code> is set to <code>true</code> automatically. <b>Note:</b> When <code>SmartFilterBar</code> is used inside a <code>ValueHelpDialog</code>, it is initially collapsed. The filter bar is initially expanded in the following cases:\n\n- When there is no basic search field. - When <code>preventInitialDataFetchInValueHelpDialog</code> is set to <code>true</code> or the <code>fetchValues</code> property of the <code>valueList</code> annotation is set to <code>2</code>. - When there are mandatory fields, all fields are expanded (not only the first 7).\n\nDefault value is <code>true</code>."
+        },
+        {
+          "name": "getFilterContainerWidth",
+          "visibility": "public",
+          "since": "1.34.0",
+          "returnValue": {
+            "type": "string",
+            "description": "Value of property <code>filterContainerWidth</code>"
+          },
+          "description": "Gets current value of property {@link #getFilterContainerWidth filterContainerWidth}.\n\nSets the width of the filters container.\n\nDefault value is <code>\"12rem\"</code>."
+        },
+        {
+          "name": "getFilterDialogContent",
+          "visibility": "public",
+          "returnValue": {
+            "type": "array",
+            "description": "of filters dialog content."
+          },
+          "description": "Returns the filter dialog content. <code>Node:</code>The original content is a {@link sap.ui.layout.form.Form Form}. The form may be enhanced with a toolbar to enable the inner switch to an added custom content. Besides such operations, the original content should not be manipulated in any way.",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "getFilterGroupItems",
+          "visibility": "public",
+          "returnValue": {
+            "type": "sap.ui.comp.filterbar.FilterGroupItem[]"
+          },
+          "description": "Gets content of aggregation {@link #getFilterGroupItems filterGroupItems}.\n\nContains all FilterBar filters. <br> <code>Note:</code>In case a filter has to be added to the basic group <ul> <li>the property <code>groupName</code> has to be set to the constant <code>sap.ui.comp.filterbar.FilterBar.INTERNAL_GROUP</code></li> <li>the property <code>groupLabel</code> will be handled internally and will be ignored, if set</li> <li>the property <code>partOfCurrentVariant</code> has to be set to <code>true</code></li> <li>if the property <code>visibleInFilterBar</code> is set to <code>true</code>, the property <code>partOfCurrentVariant</code> will be set internally also to <code>true</code></li> </ul>"
+        },
+        {
+          "name": "getFilterItems",
+          "visibility": "public",
+          "returnValue": {
+            "type": "sap.ui.comp.filterbar.FilterItem[]"
+          },
+          "description": "Gets content of aggregation {@link #getFilterItems filterItems}.\n\nFilters belonging to the basic group.",
+          "deprecated": {
+            "since": "1.48.0",
+            "text": "Use aggregation <code>filterGroupItems</code> instead."
+          }
+        },
+        {
+          "name": "getHeader",
+          "visibility": "public",
+          "since": "1.38.0",
+          "returnValue": {
+            "type": "string",
+            "description": "Value of property <code>header</code>"
+          },
+          "description": "Gets current value of property {@link #getHeader header}.\n\nSpecifies header text that is shown in the toolbar on the first position. This property is ignored, when <code>useToolbar</code> is set to <code>false</code>.\n\nDefault value is <code>empty string</code>."
+        },
+        {
+          "name": "getInitializedPromise",
+          "visibility": "public",
+          "returnValue": {
+            "type": "Promise"
+          },
+          "description": "Returns promise which will be resolve when the initialized event is fired."
+        },
+        {
+          "name": "getIsRunningInValueHelpDialog",
+          "visibility": "public",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>isRunningInValueHelpDialog</code>"
+          },
+          "description": "Gets current value of property {@link #getIsRunningInValueHelpDialog isRunningInValueHelpDialog}.\n\nSets whether the filter bar should look like the filters area in a ValueHelpDialog. True for SmartFilterBar when used in a ValueHelpDialog. False otherwise.\n\nDefault value is <code>false</code>."
+        },
+        {
+          "name": "getMetadata",
+          "visibility": "public",
+          "static": true,
+          "returnValue": {
+            "type": "sap.ui.core.ElementMetadata",
+            "description": "Metadata object describing this class"
+          },
+          "description": "Returns a metadata object for class sap.ui.comp.filterbar.FilterBar."
+        },
+        {
+          "name": "getPersistencyKey",
+          "visibility": "public",
+          "returnValue": {
+            "type": "string",
+            "description": "Value of property <code>persistencyKey</code>"
+          },
+          "description": "Gets current value of property {@link #getPersistencyKey persistencyKey}.\n\nKey used to access personalization data. Only if the persistencyKey is provided, will the <code>VariantManagement</code> control be used.\n\nDefault value is <code>empty string</code>."
+        },
+        {
+          "name": "getSearchEnabled",
+          "visibility": "public",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>searchEnabled</code>"
+          },
+          "description": "Gets current value of property {@link #getSearchEnabled searchEnabled}.\n\nEnables/disables the Search button.\n\nDefault value is <code>true</code>.",
+          "deprecated": {
+            "since": "1.32.0"
+          }
+        },
+        {
+          "name": "getShowClearButton",
+          "visibility": "public",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>showClearButton</code>"
+          },
+          "description": "Gets current value of property {@link #getShowClearButton showClearButton}.\n\nHandles visibility of the Clear button on the Filters dialog.\n\nDefault value is <code>false</code>.",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "getShowClearOnFB",
+          "visibility": "public",
+          "since": "1.28.0",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>showClearOnFB</code>"
+          },
+          "description": "Gets current value of property {@link #getShowClearOnFB showClearOnFB}.\n\nHandles visibility of the Clear button on the FilterBar.\n\nDefault value is <code>false</code>."
+        },
+        {
+          "name": "getShowFilterConfiguration",
+          "visibility": "public",
+          "since": "1.38.0",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>showFilterConfiguration</code>"
+          },
+          "description": "Gets current value of property {@link #getShowFilterConfiguration showFilterConfiguration}.\n\nHandles visibility of the Filters button on the FilterBar.\n\nDefault value is <code>true</code>."
+        },
+        {
+          "name": "getShowGoButton",
+          "visibility": "public",
+          "since": "1.26.1",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>showGoButton</code>"
+          },
+          "description": "Gets current value of property {@link #getShowGoButton showGoButton}.\n\nHandles visibility of the Go button on the FilterBar.",
+          "deprecated": {
+            "since": "1.28.0",
+            "text": "Replaced by property <code>showGoOnFB</code>"
+          }
+        },
+        {
+          "name": "getShowGoOnFB",
+          "visibility": "public",
+          "since": "1.28.0",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>showGoOnFB</code>"
+          },
+          "description": "Gets current value of property {@link #getShowGoOnFB showGoOnFB}.\n\nHandles visibility of the Go button on the FilterBar.\n\nDefault value is <code>true</code>."
+        },
+        {
+          "name": "getShowRestoreButton",
+          "visibility": "public",
+          "since": "1.26.1",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>showRestoreButton</code>"
+          },
+          "description": "Gets current value of property {@link #getShowRestoreButton showRestoreButton}.\n\nHandles visibility of the \"Restore\" button on the \"Filters\" dialog. <b>Note:</b> Restore works only automatically when a property <code>persistencyKey</code> is set and therefore Variant Management is used. In all other cases the \"restore\" behavior needs to be implemented by the app, based on the event <code>reset</code>. Since 1.84 the \"Restore\" button text is changed to \"Reset\"\n\nDefault value is <code>true</code>."
+        },
+        {
+          "name": "getShowRestoreOnFB",
+          "visibility": "public",
+          "since": "1.28.0",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>showRestoreOnFB</code>"
+          },
+          "description": "Gets current value of property {@link #getShowRestoreOnFB showRestoreOnFB}.\n\nHandles visibility of the Restore button on the FilterBar.\n\nDefault value is <code>false</code>."
+        },
+        {
+          "name": "getUiState",
+          "visibility": "public",
+          "since": "1.48",
+          "returnValue": {
+            "type": "sap.ui.comp.state.UIState",
+            "description": "object representing the ui-state. Currently only the SelectionVariant part is considered."
+          },
+          "parameters": [
+            {
+              "name": "mProperties",
+              "type": "Object<string,any>",
+              "optional": false,
+              "parameterProperties": {
+                "allFilters": {
+                  "name": "allFilters",
+                  "type": "boolean",
+                  "optional": true,
+                  "defaultValue": false,
+                  "description": "include empty/invisible fields filter data"
+                }
+              },
+              "description": "controls the API behavior"
+            }
+          ],
+          "description": "Retrieves the current UI state of the <code>FilterBar</code> control.<br> The current UI state represents the data suite format."
+        },
+        {
+          "name": "getUseSnapshot",
+          "visibility": "public",
+          "since": "1.44",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>useSnapshot</code>"
+          },
+          "description": "Gets current value of property {@link #getUseSnapshot useSnapshot}.\n\nDetermines the behavior when <code>reset</code> is executed. <br> <b>Note:</b> This property is only relevant if no variant management is used, and the filter bar is not used in the advanced mode. A snapshot shows the current state of the filter bar, just before the Filters dialog is opened. <ul> <li><code>undefined</code> (default) defines the standard behavior: snapshot will be applied after <code>reset</code> was triggered</li> <li><code>false</code> defines that the snapshot will not be applied</li> <li><code>true</code>is not considered at all</li> </ul>"
+        },
+        {
+          "name": "getUseToolbar",
+          "visibility": "public",
+          "since": "1.38.0",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Value of property <code>useToolbar</code>"
+          },
+          "description": "Gets current value of property {@link #getUseToolbar useToolbar}.\n\nDetermines what design is used. Default is the design with toolbar. If the property <code>useToolbar</code> is set to <code>false</code>, the property <code>filterBarExpanded</code> is set to <code>true</code> automatically. <b>Note:</b><br> If set to <code>false</code>, the <code>VariantManagement</code> control is not available at all. This scenario is only intended for the {@link sap.ui.comp.smartfilterbar.SmartFilterBar}.\n\nDefault value is <code>true</code>."
+        },
+        {
+          "name": "getVariantManagement",
+          "visibility": "public",
+          "since": "1.44.0",
+          "returnValue": {
+            "type": "sap.ui.comp.variants.VariantManagement",
+            "description": "the associated VariantManagement control."
+          },
+          "description": "Returns the associated VariantManagement control. The returned VariantManagement instance should not be cached or manipulated in any ways. It should offer the application a convenient way to verify the dirty state and to check for page variant scenario. The method may return <code>null</code> or a disabled VariantManagement control."
+        },
+        {
+          "name": "hideGoButton",
+          "visibility": "protected",
+          "since": "1.40.4",
+          "description": "Hides the Go button on FilterBar. Allows to hide the Go-button for dedicated scenarios, like liveMode."
+        },
+        {
+          "name": "indexOfFilterGroupItem",
+          "visibility": "public",
+          "returnValue": {
+            "type": "int",
+            "description": "The index of the provided control in the aggregation if found, or -1 otherwise"
+          },
+          "parameters": [
+            {
+              "name": "oFilterGroupItem",
+              "type": "sap.ui.comp.filterbar.FilterGroupItem",
+              "optional": false,
+              "description": "The filterGroupItem whose index is looked for"
+            }
+          ],
+          "description": "Checks for the provided <code>sap.ui.comp.filterbar.FilterGroupItem</code> in the aggregation {@link #getFilterGroupItems filterGroupItems}. and returns its index if found or -1 otherwise."
+        },
+        {
+          "name": "indexOfFilterItem",
+          "visibility": "public",
+          "returnValue": {
+            "type": "int",
+            "description": "The index of the provided control in the aggregation if found, or -1 otherwise"
+          },
+          "parameters": [
+            {
+              "name": "oFilterItem",
+              "type": "sap.ui.comp.filterbar.FilterItem",
+              "optional": false,
+              "description": "The filterItem whose index is looked for"
+            }
+          ],
+          "description": "Checks for the provided <code>sap.ui.comp.filterbar.FilterItem</code> in the aggregation {@link #getFilterItems filterItems}. and returns its index if found or -1 otherwise.",
+          "deprecated": {
+            "since": "1.48.0",
+            "text": "Use aggregation <code>filterGroupItems</code> instead."
+          }
+        },
+        {
+          "name": "isCurrentVariantExecuteOnSelectEnabled",
+          "visibility": "public",
+          "returnValue": {
+            "type": "boolean",
+            "description": "Flag 'executeOnSelect' flag. If variant management is disabled <code>false</code> is returned."
+          },
+          "description": "Returns the information whether the flag 'executeOnSelect' is set or not on current variant."
+        },
+        {
+          "name": "isCurrentVariantStandard",
+          "visibility": "public",
+          "since": "1.44.0",
+          "returnValue": {
+            "type": "boolean|undefined",
+            "description": "indicates if the current variant is the standard variant. In case the variant management does not exists, <code>undefined</code> is returned."
+          },
+          "description": "Determines if the current variant is the standard variant"
+        },
+        {
+          "name": "isDialogOpen",
+          "visibility": "protected",
+          "returnValue": {
+            "type": "boolean",
+            "description": "State of filters dialog"
+          },
+          "description": "Determines if the filters dialog is opened."
+        },
+        {
+          "name": "registerApplyData",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to this in order to allow method chaining."
+          },
+          "parameters": [
+            {
+              "name": "fCallBack",
+              "type": "function",
+              "optional": false,
+              "description": "Called when a variant must be applied"
+            }
+          ],
+          "description": "Registration of a callback function. The provided callback function is executed when a variant must be applied. The callback function will receive the corresponding data set containing all relevant data in JSON, as initially provided by the callback for fetchData."
+        },
+        {
+          "name": "registerFetchData",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to this in order to allow method chaining."
+          },
+          "parameters": [
+            {
+              "name": "fCallBack",
+              "type": "function",
+              "optional": false,
+              "description": "Called when a variant must be fetched"
+            }
+          ],
+          "description": "Registration of a callback function. The provided callback function is executed when saving a variant is triggered and must provide all relevant fields and values in JSON."
+        },
+        {
+          "name": "registerGetFiltersWithValues",
+          "visibility": "public",
+          "since": "1.26.1",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to this in order to allow method chaining."
+          },
+          "parameters": [
+            {
+              "name": "fCallBack",
+              "type": "function",
+              "optional": false,
+              "description": "Called when a variant must be applied"
+            }
+          ],
+          "description": "Registration of a callback function. The provided callback function is executed to obtain the filters with values."
+        },
+        {
+          "name": "removeAllFilterGroupItems",
+          "visibility": "public",
+          "returnValue": {
+            "type": "sap.ui.comp.filterbar.FilterGroupItem[]",
+            "description": "An array of the removed elements (might be empty)."
+          },
+          "description": "Removes all entries in the aggregation filterGroupItems."
+        },
+        {
+          "name": "removeAllFilterItems",
+          "visibility": "public",
+          "returnValue": {
+            "type": "sap.ui.comp.filterbar.FilterItem[]",
+            "description": "An array of the removed elements (might be empty)."
+          },
+          "description": "Removes all entries in the aggregation filterItems.",
+          "deprecated": {
+            "since": "1.48.0",
+            "text": "Use aggregation <code>filterGroupItems</code> instead."
+          }
+        },
+        {
+          "name": "removeAllFilters",
+          "visibility": "public",
+          "description": "Removes all entries in the aggregations filterItems, filterGroupItems, basicSearch"
+        },
+        {
+          "name": "removeFilterGroupItem",
+          "visibility": "public",
+          "returnValue": {
+            "type": "sap.ui.comp.filterbar.FilterGroupItem|null",
+            "description": "The removed filterGroupItem or <code>null</code>"
+          },
+          "parameters": [
+            {
+              "name": "vFilterGroupItem",
+              "type": "int|string|sap.ui.comp.filterbar.FilterGroupItem",
+              "optional": false,
+              "description": "The filterGroupItem to remove or its index or id"
+            }
+          ],
+          "description": "Removes a filterGroupItem from the aggregation {@link #getFilterGroupItems filterGroupItems}."
+        },
+        {
+          "name": "removeFilterItem",
+          "visibility": "public",
+          "returnValue": {
+            "type": "sap.ui.comp.filterbar.FilterItem|null",
+            "description": "The removed filterItem or <code>null</code>"
+          },
+          "parameters": [
+            {
+              "name": "vFilterItem",
+              "type": "int|string|sap.ui.comp.filterbar.FilterItem",
+              "optional": false,
+              "description": "The filterItem to remove or its index or id"
+            }
+          ],
+          "description": "Removes a filterItem from the aggregation {@link #getFilterItems filterItems}.",
+          "deprecated": {
+            "since": "1.48.0",
+            "text": "Use aggregation <code>filterGroupItems</code> instead."
+          }
+        },
+        {
+          "name": "rerenderFilters",
+          "visibility": "protected",
+          "description": "Adapts the visibility for all filter containers."
+        },
+        {
+          "name": "restoreGoButton",
+          "visibility": "protected",
+          "since": "1.40.4",
+          "description": "Restores the visibility of the Go button on FilterBar. The visibility of the Go button will be set, according to the showGoOnFB property."
+        },
+        {
+          "name": "retrieveFiltersWithValues",
+          "visibility": "public",
+          "returnValue": {
+            "type": "array",
+            "description": "Filter labels that represents relevant filters with values"
+          },
+          "description": "Retrieves the labels of all visible filters that belongs to the current variant and have an assigned value."
+        },
+        {
+          "name": "retrieveFiltersWithValuesAsText",
+          "visibility": "public",
+          "returnValue": {
+            "type": "string",
+            "description": "A string that contains the number of set filters and their names"
+          },
+          "description": "Returns a summary string that contains information about the filters currently assigned. The string starts with the number of set filters, followed by \"filters active\" and their labels.<br> Example:<br> <i>(3) filters active: Company Code, Fiscal Year, Customer</i>"
+        },
+        {
+          "name": "retrieveFiltersWithValuesAsTextExpanded",
+          "visibility": "public",
+          "returnValue": {
+            "type": "string",
+            "description": "A string that contains the number of set filters and their names"
+          },
+          "description": "Returns a summary string that contains information about the filters currently assigned. This string is intended to be used in expanded state. The string starts with the total number of filters set, followed by \"filters active\" and if available non-visible, the number of the non-visible with label \"hidden\" in brackets.<br> Example:<br> <i>(3) filters active (1 hidden)</i>"
+        },
+        {
+          "name": "search",
+          "visibility": "public",
+          "returnValue": {
+            "type": "boolean",
+            "description": "indicates the validation result. true means no validation errors."
+          },
+          "description": "Executes the search event. Controls of all visible filters will be passed as event-parameters."
+        },
+        {
+          "name": "setAdvancedMode",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bAdvancedMode",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": false,
+              "description": "New value for property <code>advancedMode</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getAdvancedMode advancedMode}.\n\nThe advanced mode is only relevant for the value help scenario. UI representation is different from the standard FilterBar.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>false</code>."
+        },
+        {
+          "name": "setBasicSearch",
+          "visibility": "public",
+          "since": "1.30.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "oBasicSearch",
+              "type": "sap.ui.core.ID|sap.m.SearchField",
+              "optional": false,
+              "description": "ID of an element which becomes the new target of this basicSearch association; alternatively, an element instance may be given"
+            }
+          ],
+          "description": "Sets the associated {@link #getBasicSearch basicSearch}."
+        },
+        {
+          "name": "setConsiderGroupTitle",
+          "visibility": "public",
+          "since": "1.28.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bConsiderGroupTitle",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": false,
+              "description": "New value for property <code>considerGroupTitle</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getConsiderGroupTitle considerGroupTitle}.\n\nIf this property is set, then the label for filters will be prefixed with the group title.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>false</code>."
+        },
+        {
+          "name": "setContentHeight",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "fHeight",
+              "type": "float",
+              "optional": false,
+              "description": "the content height of the filters dialog."
+            }
+          ],
+          "description": "Sets the height of the content area of the dialog. The passed dimension will be interpreted as 'px'."
+        },
+        {
+          "name": "setContentWidth",
+          "visibility": "public",
+          "parameters": [
+            {
+              "name": "fWidth",
+              "type": "float",
+              "optional": false,
+              "description": "the content width of the filters dialog."
+            }
+          ],
+          "description": "Sets the width of the content area of the dialog. The passed dimension will be interpreted as 'px'."
+        },
+        {
+          "name": "setCurrentVariantId",
+          "visibility": "public",
+          "since": "1.28.0",
+          "parameters": [
+            {
+              "name": "sVariantId",
+              "type": "string",
+              "optional": false,
+              "description": "ID of the variant"
+            },
+            {
+              "name": "bDoNotApplyVariant",
+              "type": "boolean",
+              "optional": false,
+              "description": "If set to <code>true</code>, the <code>applyVariant</code> method is not executed yet. Relevant during navigation, when called before the initialise event has been executed."
+            }
+          ],
+          "description": "Sets the current variant ID."
+        },
+        {
+          "name": "setDataSuiteFormat",
+          "visibility": "public",
+          "since": "1.28.0",
+          "parameters": [
+            {
+              "name": "sSuiteData",
+              "type": "string",
+              "optional": false,
+              "description": "Represents the selection variants for UI navigation"
+            },
+            {
+              "name": "bReplace",
+              "type": "boolean",
+              "optional": false,
+              "description": "Replaces existing filter data"
+            }
+          ],
+          "description": "Sets the selection variant for UI navigation to FilterBar.",
+          "deprecated": {
+            "since": "1.48",
+            "text": "replaced by {@link sap.ui.comp.filterbar.FilterBar#setUiState}"
+          }
+        },
+        {
+          "name": "setDeltaVariantMode",
+          "visibility": "public",
+          "since": "1.34.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bDeltaVariantMode",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": true,
+              "description": "New value for property <code>deltaVariantMode</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getDeltaVariantMode deltaVariantMode}.\n\nStores the delta as compared to the standard variant.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>true</code>."
+        },
+        {
+          "name": "setDisableSearchMatchesPatternWarning",
+          "visibility": "public",
+          "since": "1.102",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bDisableSearchMatchesPatternWarning",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": false,
+              "description": "New value for property <code>disableSearchMatchesPatternWarning</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getDisableSearchMatchesPatternWarning disableSearchMatchesPatternWarning}.\n\nDisables the warning for special symbols.\n\n<b>Note:</b> Changing the values here after the SmartFilter is initialized (<code>initialise</code> event was fired) has no effect.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>false</code>."
+        },
+        {
+          "name": "setFilterBarExpanded",
+          "visibility": "public",
+          "since": "1.26.1",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bFilterBarExpanded",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": true,
+              "description": "New value for property <code>filterBarExpanded</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getFilterBarExpanded filterBarExpanded}.\n\nShows the filters area. When property <code>useToolbar</code> is set to <code>false</code>, <code>filterBarExpanded</code> is set to <code>true</code> automatically. <b>Note:</b> When <code>SmartFilterBar</code> is used inside a <code>ValueHelpDialog</code>, it is initially collapsed. The filter bar is initially expanded in the following cases:\n\n- When there is no basic search field. - When <code>preventInitialDataFetchInValueHelpDialog</code> is set to <code>true</code> or the <code>fetchValues</code> property of the <code>valueList</code> annotation is set to <code>2</code>. - When there are mandatory fields, all fields are expanded (not only the first 7).\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>true</code>."
+        },
+        {
+          "name": "setFilterContainerWidth",
+          "visibility": "public",
+          "since": "1.34.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "sFilterContainerWidth",
+              "type": "string",
+              "optional": true,
+              "defaultValue": "\"12rem\"",
+              "description": "New value for property <code>filterContainerWidth</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getFilterContainerWidth filterContainerWidth}.\n\nSets the width of the filters container.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>\"12rem\"</code>."
+        },
+        {
+          "name": "setHeader",
+          "visibility": "public",
+          "since": "1.38.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "sHeader",
+              "type": "string",
+              "optional": true,
+              "defaultValue": "\"\"",
+              "description": "New value for property <code>header</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getHeader header}.\n\nSpecifies header text that is shown in the toolbar on the first position. This property is ignored, when <code>useToolbar</code> is set to <code>false</code>.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>empty string</code>."
+        },
+        {
+          "name": "setIsRunningInValueHelpDialog",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bIsRunningInValueHelpDialog",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": false,
+              "description": "New value for property <code>isRunningInValueHelpDialog</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getIsRunningInValueHelpDialog isRunningInValueHelpDialog}.\n\nSets whether the filter bar should look like the filters area in a ValueHelpDialog. True for SmartFilterBar when used in a ValueHelpDialog. False otherwise.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>false</code>."
+        },
+        {
+          "name": "setPersistencyKey",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "sPersistencyKey",
+              "type": "string",
+              "optional": true,
+              "defaultValue": "\"\"",
+              "description": "New value for property <code>persistencyKey</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getPersistencyKey persistencyKey}.\n\nKey used to access personalization data. Only if the persistencyKey is provided, will the <code>VariantManagement</code> control be used.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>empty string</code>."
+        },
+        {
+          "name": "setSearchEnabled",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bSearchEnabled",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": true,
+              "description": "New value for property <code>searchEnabled</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getSearchEnabled searchEnabled}.\n\nEnables/disables the Search button.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>true</code>.",
+          "deprecated": {
+            "since": "1.32.0"
+          }
+        },
+        {
+          "name": "setShowClearButton",
+          "visibility": "public",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bShowClearButton",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": false,
+              "description": "New value for property <code>showClearButton</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getShowClearButton showClearButton}.\n\nHandles visibility of the Clear button on the Filters dialog.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>false</code>.",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "setShowClearOnFB",
+          "visibility": "public",
+          "since": "1.28.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bShowClearOnFB",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": false,
+              "description": "New value for property <code>showClearOnFB</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getShowClearOnFB showClearOnFB}.\n\nHandles visibility of the Clear button on the FilterBar.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>false</code>."
+        },
+        {
+          "name": "setShowFilterConfiguration",
+          "visibility": "public",
+          "since": "1.38.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bShowFilterConfiguration",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": true,
+              "description": "New value for property <code>showFilterConfiguration</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getShowFilterConfiguration showFilterConfiguration}.\n\nHandles visibility of the Filters button on the FilterBar.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>true</code>."
+        },
+        {
+          "name": "setShowGoButton",
+          "visibility": "public",
+          "since": "1.26.1",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bShowGoButton",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": null,
+              "description": "New value for property <code>showGoButton</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getShowGoButton showGoButton}.\n\nHandles visibility of the Go button on the FilterBar.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.",
+          "deprecated": {
+            "since": "1.28.0",
+            "text": "Replaced by property <code>showGoOnFB</code>"
+          }
+        },
+        {
+          "name": "setShowGoOnFB",
+          "visibility": "public",
+          "since": "1.28.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bShowGoOnFB",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": true,
+              "description": "New value for property <code>showGoOnFB</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getShowGoOnFB showGoOnFB}.\n\nHandles visibility of the Go button on the FilterBar.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>true</code>."
+        },
+        {
+          "name": "setShowOldFilterDialog",
+          "visibility": "protected",
+          "description": "Once set, the activation of the 'Adapt Filters' button will open the 'old' filters dialog. This method offers an intermediate solution for the visual filters scenario, which relies on the old filters dialog.",
+          "deprecated": {
+            "since": "1.84"
+          }
+        },
+        {
+          "name": "setShowRestoreButton",
+          "visibility": "public",
+          "since": "1.26.1",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bShowRestoreButton",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": true,
+              "description": "New value for property <code>showRestoreButton</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getShowRestoreButton showRestoreButton}.\n\nHandles visibility of the \"Restore\" button on the \"Filters\" dialog. <b>Note:</b> Restore works only automatically when a property <code>persistencyKey</code> is set and therefore Variant Management is used. In all other cases the \"restore\" behavior needs to be implemented by the app, based on the event <code>reset</code>. Since 1.84 the \"Restore\" button text is changed to \"Reset\"\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>true</code>."
+        },
+        {
+          "name": "setShowRestoreOnFB",
+          "visibility": "public",
+          "since": "1.28.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bShowRestoreOnFB",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": false,
+              "description": "New value for property <code>showRestoreOnFB</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getShowRestoreOnFB showRestoreOnFB}.\n\nHandles visibility of the Restore button on the FilterBar.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>false</code>."
+        },
+        {
+          "name": "setUiState",
+          "visibility": "public",
+          "since": "1.48",
+          "parameters": [
+            {
+              "name": "oUiState",
+              "type": "sap.ui.comp.state.UIState",
+              "optional": false,
+              "description": "object representing the ui-state. Currently only the SelectionVariant part is considered."
+            },
+            {
+              "name": "mProperties",
+              "type": "Object<string,any>",
+              "optional": false,
+              "parameterProperties": {
+                "replace": {
+                  "name": "replace",
+                  "type": "boolean",
+                  "optional": false,
+                  "description": "Replaces existing filter data"
+                },
+                "strictMode": {
+                  "name": "strictMode",
+                  "type": "boolean",
+                  "optional": false,
+                  "description": "Determines filters and parameters based on the name.<BR> <ul> <li><code>true</code>: Determines filters and parameters based on their exact name and type. If there is no exact match, the filter/parameter will be ignored.</li> <li><code>false</code>: Determines parameters first following this rule set: <ul> <li>If a parameter is found, use it.</li> <li>If a filter is found, check first if a matching parameter exists with the filter name prefixed with \"P_\". If there is a match, use it as parameter, otherwise use it as filter.</li> </ul> </ul>"
+                }
+              },
+              "description": "controls the API behavior"
+            }
+          ],
+          "description": "Sets the current UI state of the <code>FilterBar</code> control.<br> The current UI state represents the data suite format."
+        },
+        {
+          "name": "setUiStateAsVariant",
+          "visibility": "public",
+          "since": "1.54",
+          "parameters": [
+            {
+              "name": "oUiState",
+              "type": "sap.ui.comp.state.UIState",
+              "optional": false,
+              "description": "object representing the ui-state.Only the SelectionVariant part is considered."
+            }
+          ],
+          "description": "Apply the SelectionPresentationVariant annotated information as a variant. The current UI state represents the data suite format."
+        },
+        {
+          "name": "setUseSnapshot",
+          "visibility": "public",
+          "since": "1.44",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bUseSnapshot",
+              "type": "boolean",
+              "optional": false,
+              "description": "New value for property <code>useSnapshot</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getUseSnapshot useSnapshot}.\n\nDetermines the behavior when <code>reset</code> is executed. <br> <b>Note:</b> This property is only relevant if no variant management is used, and the filter bar is not used in the advanced mode. A snapshot shows the current state of the filter bar, just before the Filters dialog is opened. <ul> <li><code>undefined</code> (default) defines the standard behavior: snapshot will be applied after <code>reset</code> was triggered</li> <li><code>false</code> defines that the snapshot will not be applied</li> <li><code>true</code>is not considered at all</li> </ul>\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored."
+        },
+        {
+          "name": "setUseToolbar",
+          "visibility": "public",
+          "since": "1.38.0",
+          "returnValue": {
+            "type": "this",
+            "description": "Reference to <code>this</code> in order to allow method chaining"
+          },
+          "parameters": [
+            {
+              "name": "bUseToolbar",
+              "type": "boolean",
+              "optional": true,
+              "defaultValue": true,
+              "description": "New value for property <code>useToolbar</code>"
+            }
+          ],
+          "description": "Sets a new value for property {@link #getUseToolbar useToolbar}.\n\nDetermines what design is used. Default is the design with toolbar. If the property <code>useToolbar</code> is set to <code>false</code>, the property <code>filterBarExpanded</code> is set to <code>true</code> automatically. <b>Note:</b><br> If set to <code>false</code>, the <code>VariantManagement</code> control is not available at all. This scenario is only intended for the {@link sap.ui.comp.smartfilterbar.SmartFilterBar}.\n\nWhen called with a value of <code>null</code> or <code>undefined</code>, the default value of the property will be restored.\n\nDefault value is <code>true</code>."
+        },
+        {
+          "name": "showAdaptFilterDialog",
+          "visibility": "restricted",
+          "allowedFor": ["sap.ui.generic"],
+          "parameters": [
+            {
+              "name": "sView",
+              "type": "string",
+              "optional": false,
+              "description": "initially shown view"
+            }
+          ],
+          "description": "Opens the Adapt Filters Dialog"
+        },
+        {
+          "name": "showAdaptFilterDialogForKeyUser",
+          "visibility": "restricted",
+          "allowedFor": ["sap.ui.rta"],
+          "parameters": [
+            {
+              "name": "sStyleClass",
+              "type": "string",
+              "optional": false,
+              "description": "indicating the ui adaption area"
+            },
+            {
+              "name": "fCallBack",
+              "type": "function",
+              "optional": false,
+              "description": "will be executed, once the dialog closes with 'Save'"
+            }
+          ],
+          "description": "Opens the Adapt Filters Dialog for the UI adaptation. <br><b>Note:</b> This function must only be used internally during the UI adaptation."
+        },
+        {
+          "name": "showFilterDialog",
+          "visibility": "public",
+          "description": "For backward compatibility. Creates adapt filters dialog"
+        },
+        {
+          "name": "variantsInitialized",
+          "visibility": "protected",
+          "description": "This method will be called by the SmartVariantMangement and indicates, that the standard variant was obtained. It indicates, that the variant management is fully initialized."
+        }
+      ]
+    }
+  ]
+}

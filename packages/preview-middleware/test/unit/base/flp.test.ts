@@ -209,8 +209,7 @@ describe('FlpSandbox', () => {
         });
 
         test('WorkspaceConnector.js', async () => {
-            const response = await server.get('/resources/preview/WorkspaceConnector.js').expect(200);
-            expect(response.text).toMatchSnapshot();
+            await server.get('/preview/client/flp/WorkspaceConnector.js').expect(200);
         });
 
         test('GET /preview/api/changes', async () => {

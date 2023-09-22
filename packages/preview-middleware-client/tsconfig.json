@@ -3,6 +3,7 @@
   "include": [
     "src",
     "test",
+    "test/**/*.json",
     "types"
   ],
   "compilerOptions": {
@@ -12,7 +13,6 @@
     "skipLibCheck": true,
     "allowJs": true,
     "strict": true,
-    "noEmit": true,
     "strictPropertyInitialization": false,
     "moduleResolution": "node",
     "rootDir": ".",
@@ -32,6 +32,9 @@
     ]
   },
   "references": [
+    {
+      "path": "../control-property-editor-common"
+    }, 
     {
       "path": "../eslint-plugin-fiori-tools"
     }

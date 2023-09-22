@@ -28,11 +28,12 @@ Object {
   "basePath": "..",
   "locateReuseLibsScript": false,
   "ui5": Object {
+    "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "/preview/WorkspaceConnector",
+        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
-        "writeConnector": "/preview/WorkspaceConnector",
+        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
     ],
     "libs": "",
@@ -61,11 +62,12 @@ Object {
   "basePath": "..",
   "locateReuseLibsScript": false,
   "ui5": Object {
+    "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "/preview/WorkspaceConnector",
+        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
-        "writeConnector": "/preview/WorkspaceConnector",
+        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
     ],
     "libs": "",
@@ -92,11 +94,12 @@ Object {
   "basePath": "..",
   "locateReuseLibsScript": false,
   "ui5": Object {
+    "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "/preview/WorkspaceConnector",
+        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
-        "writeConnector": "/preview/WorkspaceConnector",
+        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
@@ -123,11 +126,12 @@ Object {
   "basePath": "..",
   "locateReuseLibsScript": false,
   "ui5": Object {
+    "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "/preview/WorkspaceConnector",
+        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
-        "writeConnector": "/preview/WorkspaceConnector",
+        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
@@ -141,85 +145,6 @@ Object {
 `;
 
 exports[`FlpSandbox router GET /preview/api/changes 1`] = `"{\\"sap.ui.fl.myid\\":{\\"id\\":\\"myId\\"}}"`;
-
-exports[`FlpSandbox router WorkspaceConnector.js 1`] = `
-"sap.ui.define(
-    [
-        'sap/base/util/merge',
-        'sap/ui/fl/write/api/connectors/ObjectStorageConnector',
-        'sap/ui/fl/Layer',
-        'sap/base/util/UriParameters'
-    ],
-    function (merge, ObjectStorageConnector, Layer, UriParameters) {
-        'use strict';
-        var url = new URL(window.location.toString());
-        var uriParameters = UriParameters.fromURL(url.href);
-        var rtaMode = uriParameters.get('fiori-tools-rta-mode');
-        var generator =
-            rtaMode === 'forAdaptation'
-                ? 'changeUtils: SAPFioriTools-propertyEditor'
-                : 'changeUtils: SAPFioriTools-variants';
-        var path = '/preview/api/changes'; 
-        var WorkspaceConnector = merge({}, ObjectStorageConnector, {
-            layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
-            storage: {
-                _itemsStoredAsObjects: true,
-                setItem: function (_sKey, vValue) {
-                    // update generator
-                    if (vValue && vValue.support) {
-                        vValue.support.generator = generator;
-                    }
-                    $.ajax({
-                        type: 'POST',
-                        url: path,
-                        data: JSON.stringify(vValue, null, 2),
-                        contentType: 'application/json'
-                    });
-                },
-                removeItem: function (sKey) {
-                    $.ajax({
-                        type: 'DELETE',
-                        url: path,
-                        data: JSON.stringify({ fileName: sKey }),
-                        contentType: 'application/json'
-                    });
-                },
-                clear: function () {
-                    // not implemented
-                },
-                getItem: function (_sKey) {
-                    // not implemented
-                },
-                getItems: async function () {
-                    const changes = await $.ajax({
-                        url: path,
-                        type: 'GET',
-                        cache: false,
-                        dataType: 'json'
-                    });
-                    return changes;
-                }
-            },
-            loadFeatures: function () {
-                return ObjectStorageConnector.loadFeatures().then(function (settings) {
-                    const [majorVersion, minorVersion] = sap.ui.version.split('.').map((v) => parseInt(v, 10));
-                    if (majorVersion >= 1 && minorVersion >= 90) {
-                        settings.isVariantAdaptationEnabled = true;
-                    }
-
-                    if (rtaMode === 'forAdaptation') {
-                        settings.isVariantAdaptationEnabled = false;
-                    }
-                    return settings;
-                });
-            }
-        });
-
-        return WorkspaceConnector;
-    },
-    true
-);"
-`;
 
 exports[`FlpSandbox router rta 1`] = `
 "<!DOCTYPE HTML>
@@ -274,12 +199,13 @@ exports[`FlpSandbox router rta 1`] = `
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-bindingSyntax=\\"complex\\"
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"developerMode\\":false}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"changeUtils: SAPFioriTools-propertyEditor\\",\\"developerMode\\":false}'>
     </script>
 </head>
 
@@ -297,26 +223,22 @@ exports[`FlpSandbox router rta with developerMode=true 1`] = `
         <meta charset=\\"utf-8\\" />
         <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />
         <meta name=\\"theme-color\\" content=\\"#000000\\" />
-        <meta name=\\"description\\" content=\\"Web page for rendering Open UX Tools Control Property Editor\\" />
+        <meta name=\\"description\\" content=\\"Web page for rendering SAP Fiori Tools Control Property Editor\\" />
         <link rel=\\"shortcut icon\\" type=\\"image/x-icon\\" href=\\"./editor/favicon.ico\\" />
         <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"./editor/app.css\\" />
         <title>Control Property Editor</title>
-        <style>
-            body, html {
-                margin: 0;
-                padding: 0;
-                height: 100%;
-                overflow: hidden;
-            }
-            iframe {
-                width: 100%;
-                height: 100%;
-                border: none;
-            }
-        </style>
     </head>
     <body>
-        <iframe src=\\"/my/editor.html.inner.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#app-preview\\"></iframe>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <div id=\\"root\\"></div>
+        <script type=\\"module\\">
+            import { start } from './editor/app.js';
+            start({
+                previewUrl: '/my/editor.html.inner.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#app-preview',
+                telemetry: false,
+                rootElementId: 'root'
+            });
+        </script>
     </body>
 </html>
 "
@@ -375,12 +297,16 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-bindingSyntax=\\"complex\\"
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-xx-designMode=\\"true\\"
+        data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
+        data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"changeUtils: SAPFioriTools-propertyEditor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
     </script>
 </head>
 
@@ -444,12 +370,16 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-bindingSyntax=\\"complex\\"
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-xx-designMode=\\"true\\"
+        data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
+        data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"changeUtils: SAPFioriTools-propertyEditor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
     </script>
 </head>
 
@@ -513,7 +443,8 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"/preview/WorkspaceConnector\\",\\"writeConnector\\":\\"/preview/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-bindingSyntax=\\"complex\\"
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
