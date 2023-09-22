@@ -57,8 +57,6 @@
         cursor: pointer;
         background-color: var(--vscode-dropdown-background);
         color: var(--vscode-dropdown-foreground);
-        // color: var(--vscode-list-activeSelectionForeground);
-        // background-color: var(--vscode-list-activeSelectionBackground);
         outline: 1px dashed var(--vscode-contrastActiveBorder);
     }
     align-items: center;
@@ -92,9 +90,6 @@
 }
 
 .app-panel-selected-bg.tree-row {
-    // svg path {
-    //     fill: var(--vscode-list-activeSelectionForeground);
-    // }
     color: var(--vscode-list-activeSelectionForeground);
     background-color: var(--vscode-list-activeSelectionBackground);
     outline: 1px solid var(--vscode-contrastActiveBorder);

@@ -9,7 +9,6 @@ export enum IconName {
     eyeClosed = 'eyeClosed',
     lock = 'lock',
     noEdit = 'noEdit',
-    chevron = 'chevron',
     editable = 'editable',
     boolTrue = 'boolTrue',
     boolFalse = 'boolFalse',
@@ -182,16 +181,6 @@ export function registerAppIcons(): void {
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M10.5648 2.01545C11.1451 2.5957 11.1451 3.53648 10.5648 4.11674L3.68155 11H1V8.31845L7.88326 1.43519C8.46352 0.854936 9.4043 0.854936 9.98456 1.43519L10.5648 2.01545ZM8.58369 2.13562C8.77711 1.9422 9.0907 1.9422 9.28412 2.13562L9.86438 2.71588C10.0578 2.9093 10.0578 3.30658 9.86438 3.5L4.46695 8.81373L3.18626 7.53305L8.58369 2.13562ZM3.76653 9.51416L2.48584 8.23348L1.99055 8.72876V10.0094H3.27124L3.76653 9.51416Z"
-                        fill="var(--vscode-icon-foreground)"
-                    />
-                </svg>
-            ),
-            chevron: (
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M4.70711 2.14999L8.56066 6.00355L4.70711 9.8571L4 9.14999L7.14645 6.00355L4 2.8571L4.70711 2.14999Z"
                         fill="var(--vscode-icon-foreground)"
                     />
                 </svg>

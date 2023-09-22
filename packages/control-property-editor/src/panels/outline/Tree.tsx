@@ -3,7 +3,7 @@ import type { ReactElement } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { IGroup, IGroupRenderProps, IGroupHeaderProps } from '@fluentui/react';
 import { Icon } from '@fluentui/react';
-import { UIList } from '@sap-ux/ui-components';
+import { UIList, UiIcons } from '@sap-ux/ui-components';
 
 import { selectControl, reportTelemetry } from '@sap-ux-private/control-property-editor-common';
 import type { Control, OutlineNode } from '@sap-ux-private/control-property-editor-common';
@@ -37,10 +37,8 @@ export const Tree = (): ReactElement => {
         const filteredModel = getFilteredModel(model, filterQuery);
         return { groups: getGroups(filteredModel, items), items };
     }, [model, filterQuery, selection]);
-    const theme =
-        document.getElementsByTagName('HTML')[0].getAttribute('data-theme') === 'high contrast'
-            ? 'app-panel-hc-selected-bg'
-            : 'app-panel-selected-bg';
+    const selectedClassName =
+        localStorage.getItem('theme') === 'high contrast' ? 'app-panel-hc-selected-bg' : 'app-panel-selected-bg';
 
     useEffect(() => {
         if (selection.cell === undefined && selection.group === undefined && selectedControl !== undefined) {
@@ -200,15 +198,21 @@ export const Tree = (): ReactElement => {
     };
     const onRenderCell = (nestingDepth?: number, item?: OutlineNodeItem, itemIndex?: number): React.ReactNode => {
         const paddingValue = (item?.level ?? 0) * 10 + 45;
-        const selectNode = selection.cell?.controlId === item?.controlId ? theme : '';
+        const classNames: string[] = ['tree-row'];
         const props: {
-            ref?: (node: Element) => void;
+            ref?: (node: HTMLDivElement) => void;
         } = {};
-        if (selectNode) {
+
+        if (selection.cell?.controlId === item?.controlId) {
             props.ref = scrollRef;
+            classNames.push(selectedClassName);
         }
-        const focus = filterQuery.filter((item) => item.name === FilterName.focusEditable)[0].value as boolean;
-        const focusEditable = !item?.editable && focus ? 'focusEditable' : '';
+
+        const focus = filterQuery.find((item) => item.name === FilterName.focusEditable)?.value;
+        if (!item?.editable && focus === true) {
+            classNames.push('focusEditable');
+        }
+
         const controlChange = controlChanges[item?.controlId ?? ''];
         const indicator = controlChange ? (
             <ChangeIndicator id={`${item?.controlId}--ChangeIndicator`} {...controlChange} />
@@ -216,10 +220,7 @@ export const Tree = (): ReactElement => {
             <></>
         );
         return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
-            <div
-                className={`${selectNode} tree-row ${focusEditable}`}
-                onClick={(): void => onSelectCell(item)}
-                id={item.controlId}>
+            <div className={classNames.join(' ')} onClick={(): void => onSelectCell(item)} id={item.controlId}>
                 <div
                     {...props}
                     className={`tree-cell`}
@@ -256,7 +257,7 @@ export const Tree = (): ReactElement => {
         }
     };
     const onRenderHeader = (groupHeaderProps?: IGroupHeaderProps): React.JSX.Element | null => {
-        const selectNode = selection.group?.key === groupHeaderProps?.group?.key ? theme : '';
+        const selectNode = selection.group?.key === groupHeaderProps?.group?.key ? selectedClassName : '';
         let paddingValue = (groupHeaderProps?.group?.level ?? 0) * 10 + 15;
         // add padding to compensate absence of chevron icon
         if (groupHeaderProps?.group?.count === 0) {
@@ -268,7 +269,7 @@ export const Tree = (): ReactElement => {
                 : 'down-chevron-icon';
         const groupName = `${groupHeaderProps?.group?.name}`;
         const refProps: {
-            ref?: (node: Element) => void;
+            ref?: (node: HTMLDivElement) => void;
         } = {};
         if (selectNode) {
             refProps.ref = scrollRef;
@@ -290,7 +291,7 @@ export const Tree = (): ReactElement => {
                     {groupHeaderProps?.group?.count !== 0 && (
                         <Icon
                             className={`${chevronTransform}`}
-                            iconName={IconName.chevron}
+                            iconName={UiIcons.Chevron}
                             onClick={(event) => {
                                 onToggleCollapse(groupHeaderProps);
                                 event.stopPropagation();
