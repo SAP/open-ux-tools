@@ -6884,7 +6884,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"contextPath\\": \\"/Travel\\",
+              \\"entitySet\\": \\"Travel\\",
               \\"navigation\\": {
                 \\"_Booking\\": {
                   \\"detail\\": {
@@ -6902,7 +6902,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"contextPath\\": \\"/Booking\\"
+              \\"entitySet\\": \\"Booking\\"
             }
           }
         }
