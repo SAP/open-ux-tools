@@ -12,5 +12,4 @@ config.transform = {
         }
     ]
 };
-config.setupFiles = ['<rootDir>/setup-mock.js'];
 module.exports = config;

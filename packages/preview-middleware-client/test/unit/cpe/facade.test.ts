@@ -3,14 +3,16 @@ import { createUi5Facade } from '../../../src/cpe/facade';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import IconPool from 'sap/ui/core/IconPool';
 import Component from 'sap/ui/core/Component';
+import { sapCoreMock } from 'mock/window';
 
 describe('Facade', () => {
+    const testComponent = { id: '~id'};
     const mockGetIconNames = jest.fn().mockReturnValueOnce(['Reject', 'Accedental-Leave', 'Accept']);
     const mockGetIconInfo = jest.fn();
-    const mockById = jest.fn().mockReturnValue('control');
-    const mockComponent = jest.fn().mockReturnValue({});
+    sapCoreMock.byId.mockReturnValue('control');
+    sapCoreMock.getComponent.mockReturnValue(testComponent);
+    
     beforeEach(() => {
-        sap.ui.getCore = jest.fn().mockReturnValue({ byId: mockById, getComponent: mockComponent });
         IconPool.getIconNames = mockGetIconNames;
         IconPool.getIconInfo = mockGetIconInfo
             .mockReturnValueOnce({
@@ -29,29 +31,29 @@ describe('Facade', () => {
         OverlayUtil.getClosestOverlayFor = jest.fn().mockReturnValue('testOverlay2');
     });
 
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     test('getControlById', () => {
         const control = createUi5Facade().getControlById('abc');
-
-        expect(sap.ui.getCore).toBeCalledTimes(1);
-        expect(mockById).toBeCalledTimes(1);
+        expect(sapCoreMock.byId).toBeCalledTimes(1);
         expect(control).toStrictEqual('control');
     });
 
     test('getComponent - deprecated', () => {
-        Component.get = undefined as any;
-        const component = createUi5Facade().getComponent('abc');
-
-        expect(sap.ui.getCore).toBeCalledTimes(1);
-        expect(mockComponent).toBeCalledTimes(1);
-        expect(component).toStrictEqual({});
+        (Component as any).get = undefined;
+        const component = createUi5Facade().getComponent(testComponent.id);
+        expect(sapCoreMock.getComponent).toBeCalledWith(testComponent.id);
+        expect(component).toStrictEqual(testComponent);
     });
 
     test('getComponent', () => {
-        Component.get = jest.fn().mockReturnValue({});
-        const component = createUi5Facade().getComponent('abc');
-
-        expect(Component.get).toBeCalledTimes(1);
-        expect(component).toStrictEqual({});
+        Component.get = jest.fn().mockReturnValue(testComponent);
+        const component = createUi5Facade().getComponent(testComponent.id);
+        expect(Component.get).toBeCalledWith(testComponent.id);
+        expect(sapCoreMock.getComponent).not.toBeCalled();
+        expect(component).toStrictEqual(testComponent);
     });
 
     test('getOverlay', () => {

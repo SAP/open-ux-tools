@@ -1,3 +1,4 @@
+import { sapMock } from 'mock/window';
 import { getLibrary, getRuntimeControl } from '../../../src/cpe/utils';
 
 describe('getRuntimeControl', () => {
@@ -41,13 +42,9 @@ describe('getRuntimeControl', () => {
     });
 });
 describe('getLibrary', () => {
-    let requireSpy: jest.SpyInstance;
-    beforeEach(() => {
-        requireSpy = jest.spyOn(sap.ui, 'require');
-    });
-
+    
     afterEach(() => {
-        requireSpy.mockReset();
+        sapMock.ui.require.mockReset();
     });
     test('getLibrary - valid library', async () => {
         const mockCtrl = {
@@ -56,7 +53,7 @@ describe('getLibrary', () => {
             })
         };
         const promise = getLibrary('sap.m.Button');
-        const callBk = requireSpy.mock.calls[0][1];
+        const callBk = sapMock.ui.require.mock.calls[0][1];
         if (callBk) {
             callBk(mockCtrl);
         }
@@ -69,7 +66,7 @@ describe('getLibrary', () => {
             getMetadata: jest.fn().mockReturnValue(undefined)
         };
         const promise = getLibrary('random.lib.Control');
-        const callBk = requireSpy.mock.calls[0][1];
+        const callBk = sapMock.ui.require.mock.calls[0][1];
         if (callBk) {
             callBk(mockCtrl);
         }
