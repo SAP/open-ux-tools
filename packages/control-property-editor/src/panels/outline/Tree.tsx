@@ -9,7 +9,6 @@ import { selectControl, reportTelemetry } from '@sap-ux-private/control-property
 import type { Control, OutlineNode } from '@sap-ux-private/control-property-editor-common';
 
 import type { RootState } from '../../store';
-import { IconName } from '../../icons';
 import type { ControlChanges, FilterOptions } from '../../slice';
 import { FilterName } from '../../slice';
 import { NoControlFound } from './NoControlFound';
