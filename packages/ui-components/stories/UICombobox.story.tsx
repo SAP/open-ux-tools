@@ -1,13 +1,13 @@
 import type { SetStateAction } from 'react';
 import React, { useState } from 'react';
-import { Stack } from '@fluentui/react';
+import { ContextualMenu, Stack } from '@fluentui/react';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 
-import { UIComboBox, UISelectableOptionMenuItemType, UIDefaultButton, UIDialog } from '../src/components';
+import { UIComboBox, UISelectableOptionMenuItemType, UIDefaultButton, UIDialog, UIIcon } from '../src/components';
 import { UICheckbox } from '../src/components/UICheckbox';
 import { data, groupsData } from '../test/__mock__/select-data';
 
-import { initIcons } from '../src/components/Icons';
+import { UiIcons, initIcons } from '../src/components/Icons';
 
 initIcons();
 
@@ -367,8 +367,21 @@ export const multiSelectInDialog = () => {
                 title={'Header Title'}
                 acceptButtonText={'Accept'}
                 cancelButtonText={'Cancel'}
+                modalProps={{
+                    dragOptions: {
+                        moveMenuItemText: 'Move',
+                        closeMenuItemText: 'Close',
+                        menu: ContextualMenu,
+                        keepInBounds: true
+                    }
+                }}
                 onCancel={onToggle}
                 onDismiss={onToggle}>
+                <UIComboBox label="Dummy" highlight={true} options={data} multiSelect={true} />
+                <UIComboBox label="Dummy" highlight={true} options={data} multiSelect={true} />
+                <UIComboBox label="Dummy" highlight={true} options={data} multiSelect={true} />
+                <UIComboBox label="Dummy" highlight={true} options={data} multiSelect={true} />
+                <UIComboBox label="Dummy" highlight={true} options={data} multiSelect={true} />
                 <UIComboBox label="Dummy" highlight={true} options={data} multiSelect={true} />
             </UIDialog>
         </>
