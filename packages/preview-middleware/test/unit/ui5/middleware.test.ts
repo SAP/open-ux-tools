@@ -97,6 +97,22 @@ describe('ui5/middleware', () => {
         await server.get('/test/flp.html').expect(404);
     });
 
+    test('unsupported editor config', async () => {
+        const path = '/test/editor.html';
+        const server = await getTestServer('simple-app', {
+            rta: {
+                layer: 'CUSTOMER_BASE',
+                editors: [
+                    {
+                        path,
+                        developerMode: true
+                    }
+                ]
+            }
+        });
+        await server.get(path).expect(404);
+    });
+
     test('adp config', async () => {
         const server = await getTestServer('adp', {
             adp: { target: { url } },
