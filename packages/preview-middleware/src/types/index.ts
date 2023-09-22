@@ -24,7 +24,13 @@ export interface App {
 
 export interface RtaConfig {
     layer: UI5FlexLayer;
-    options?: { [key: string]: unknown };
+    options?: {
+        [key: string]: unknown;
+        baseId?: string;
+        projectId?: string;
+        generator?: string;
+        scenario?: string;
+    };
     editors: {
         path: string;
         developerMode?: boolean;

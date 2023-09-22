@@ -69,7 +69,7 @@ declare module 'sap/ui/rta/command/OutlineService' {
 
     interface OutlineService {
         get(): Promise<OutlineViewNode[]>;
-        attachEvent<T>(eventName: string, handler: (params: T) => void): void;
+        attachEvent<T>(eventName: T, handler: (params: T) => Promise<void>): void;
     }
 
     export default OutlineService;
@@ -77,24 +77,54 @@ declare module 'sap/ui/rta/command/OutlineService' {
 
 declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type Event from 'sap/ui/base/Event';
+    import type Component from 'sap/ui/core/Component';
     import type Stack from 'sap/ui/rta/command/Stack';
     import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
     import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
     import type { Layer } from 'sap/ui/fl';
 
-    export interface FlexSettings {
-        layer: Layer;
-        developerMode: boolean;
-        baseId?: string;
-        projectId?: string;
-        scenario?: string;
-        namespace?: string;
-        rootNamespace?: string;
-    }
+    type Manifest = {
+        [key: string]: unknown;
+        'sap.app': {
+            [key: string]: string;
+            id: string;
+        };
+    };
 
     export type SelectionChangeEvent = Event<SelectionChangeParams>;
     export interface SelectionChangeParams {
         selection: ElementOverlay[];
+    }
+
+    export interface FlexSettings {
+        [key: string]: boolean | string;
+        /**
+         * The Layer in which RTA should be started.
+         * @default "CUSTOMER"
+         */
+        layer: Layer;
+        /**
+         * Whether RTA is started in DeveloperMode Mode.
+         * @default true
+         */
+        developerMode: boolean;
+        /**
+         * Base ID of the app
+         */
+        baseId: string;
+        /**
+         * Project ID
+         */
+        projectId?: string;
+        /**
+         * Key representing the current scenario
+         */
+        scenario?: Scenario;
+        /**
+         * Generator of the change. Will be saved in the change.
+         * This value is ignored by UI5 version prior to 1.107
+         */
+        generator: string;
     }
 
     interface RuntimeAuthoring {
@@ -102,10 +132,13 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         attachModeChanged: (handler: (event: Event) => void) => void;
         attachUndoRedoStackModified: (handler: (event: Event) => void) => void;
         getCommandStack: () => Stack;
+        getFlexSettings: () => FlexSettings;
         getService: <T>(name: 'outline' | 'controllerExtension' | string) => Promise<T>;
         getSelection: () => ElementOverlay[];
         getDefaultPlugins: () => { contextMenu: ContextMenu };
-        getFlexSettings: () => FlexSettings
+        getRootControlInstance: () => {
+            getManifest(): Manifest;
+        } & Component;
     }
 
     export default RuntimeAuthoring;

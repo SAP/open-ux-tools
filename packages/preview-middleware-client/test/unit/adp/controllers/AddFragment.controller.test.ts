@@ -9,6 +9,7 @@ import { fetchMock, sapCoreMock } from 'mock/window';
 
 import ControlUtils from '../../../../src/adp/control-utils';
 import AddFragment from '../../../../src/adp/controllers/AddFragment.controller';
+import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -283,14 +284,13 @@ describe('AddFragment', () => {
 
         test('creates new fragment and a change', async () => {
             const executeSpy = jest.fn();
+            rtaMock.getCommandStack.mockReturnValue({
+                pushAndExecute: executeSpy
+            });
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {
-                    getCommandStack: jest.fn().mockReturnValue({
-                        pushAndExecute: executeSpy
-                    })
-                } as unknown as RuntimeAuthoring
+                rtaMock
             );
 
             const event = {
@@ -350,34 +350,6 @@ describe('AddFragment', () => {
                 await addFragment.onCreateBtnPress(event as unknown as Event);
             } catch (e) {
                 expect(e.message).toBe(errorMsg);
-            }
-        });
-
-        test('throws error when retrieving manifest descriptor', async () => {
-            const addFragment = new AddFragment(
-                'adp.extension.controllers.AddFragment',
-                {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
-            );
-
-            const event = {
-                getSource: jest.fn().mockReturnValue({
-                    setEnabled: jest.fn()
-                })
-            };
-
-            addFragment.model = testModel;
-
-            fetchMock.mockResolvedValue({
-                json: jest.fn().mockReturnValue(undefined),
-                text: jest.fn().mockReturnValue('XML Fragment was created!'),
-                ok: true
-            });
-
-            try {
-                await addFragment.onCreateBtnPress(event as unknown as Event);
-            } catch (e) {
-                expect(e.message).toBe('Could not retrieve manifest');
             }
         });
     });

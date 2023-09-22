@@ -122,7 +122,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             fs
         );
     } else {
-        // Copy odata version specific common templates and version specific, floorplan specific templates
+        // Copy version specific common templates and version specific, floorplan specific templates
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
         [join(templateVersionPath, 'common', 'add'), join(templateVersionPath, feApp.template.type, 'add')].forEach(
             (templatePath) => {
