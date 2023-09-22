@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.7.0
+
+### Minor Changes
+
+-   0f2ac46a: Added support for running an editor with SAPUI5 adaptation projects
+
 ## 0.6.3
 
 ### Patch Changes
