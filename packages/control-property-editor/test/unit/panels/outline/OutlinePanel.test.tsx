@@ -121,7 +121,7 @@ describe('OutlinePanel', () => {
         expect(two).toBeInTheDocument();
         // click on arrow right of one
         // Note: react testing lib does not expand it
-        const arrowRight = container.querySelector('[data-icon-name="chevron"]') as Element;
+        const arrowRight = container.querySelector('[data-icon-name="Chevron"]') as Element;
         expect(arrowRight).toBeInTheDocument();
         fireEvent.click(arrowRight);
         // check first child of one
@@ -273,7 +273,7 @@ describe('OutlinePanel', () => {
         store.dispatch(action);
         const model = getModel(true, false);
         store.dispatch(outlineChanged(model));
-        const arrowRight = container.querySelector('[data-icon-name="chevron"]') as Element;
+        const arrowRight = container.querySelector('[data-icon-name="Chevron"]') as Element;
         // expand first node
         fireEvent.click(arrowRight);
         // select node
@@ -297,7 +297,7 @@ describe('OutlinePanel', () => {
         store.dispatch(action);
         const model = getModel(true, false);
         store.dispatch(outlineChanged(model));
-        const arrowRight = container.querySelector('[data-icon-name="chevron"]') as Element;
+        const arrowRight = container.querySelector('[data-icon-name="Chevron"]') as Element;
         // expand first node
         fireEvent.click(arrowRight);
 
@@ -344,7 +344,7 @@ describe('OutlinePanel', () => {
             icons: []
         };
         const { container } = render(<OutlinePanel />, { initialState });
-        const arrowRight = container.querySelector('[data-icon-name="chevron"]') as Element;
+        const arrowRight = container.querySelector('[data-icon-name="Chevron"]') as Element;
         expect(arrowRight).toBeInTheDocument();
         fireEvent.click(arrowRight);
         const indicator = container.querySelectorAll('svg circle');
