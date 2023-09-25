@@ -63,7 +63,24 @@ export async function validateBeforeDeploy(input: ValidationInput,
  * @returns Formatted summary string
  */
 export function formatSummary(summary: SummaryRecord[]): string {
-    let summaryStr = '';
+    let summaryStr = summary
+        .map((next) => {
+            let statusSymbol;
+            switch(next.status) {
+                case SummaryStatus.Valid:
+                    statusSymbol = '√';
+                    break;
+                case SummaryStatus.Invalid:
+                    statusSymbol = '×';
+                    break;
+                case SummaryStatus.Unknown:
+                default:
+                    statusSymbol = '?';
+                    break;
+            }
+            return `${statusSymbol} ${next.message}`;
+        })
+        .reduce((aggregated, current) => `${aggregated}${current}\n`);
 
     return summaryStr;
 }
