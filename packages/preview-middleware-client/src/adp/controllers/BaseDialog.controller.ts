@@ -37,10 +37,6 @@ export default abstract class BaseDialog extends Controller {
      */
     protected commandExecutor: CommandExecutor;
 
-    constructor(name: string) {
-        super(name);
-    }
-
     abstract onCreateBtnPress(event: Event): Promise<void>;
 
     abstract buildDialogData(): Promise<void>;
