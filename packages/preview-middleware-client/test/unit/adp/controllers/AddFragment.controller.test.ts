@@ -63,11 +63,15 @@ describe('AddFragment', () => {
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring
             );
+
+            const openSpy = jest.fn();
             addFragment.byId = jest.fn().mockReturnValue({
-                open: jest.fn()
+                open: openSpy
             });
 
             await addFragment.onInit();
+
+            expect(openSpy).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -103,7 +107,7 @@ describe('AddFragment', () => {
         });
     });
 
-    describe('closeDialog', () => {
+    describe('handleDialogClose', () => {
         test('should close dialog', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
@@ -119,7 +123,7 @@ describe('AddFragment', () => {
 
             addFragment.getView = jest.fn().mockReturnValue({ destroy: jest.fn() });
 
-            addFragment.closeDialog();
+            addFragment.handleDialogClose();
 
             expect(closeSpy).toHaveBeenCalledTimes(1);
         });

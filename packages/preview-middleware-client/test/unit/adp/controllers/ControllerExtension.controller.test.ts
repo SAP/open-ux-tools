@@ -1,7 +1,7 @@
 import type Dialog from 'sap/m/Dialog';
 import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
-import JSONModel from 'sap/ui/model/json/JSONModel';
+import type JSONModel from 'sap/ui/model/json/JSONModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { fetchMock, sapCoreMock } from 'mock/window';
@@ -40,11 +40,14 @@ describe('ControllerExtension', () => {
                 {} as unknown as RuntimeAuthoring
             );
 
+            const openSpy = jest.fn();
             controllerExt.byId = jest.fn().mockReturnValue({
-                open: jest.fn()
+                open: openSpy
             });
 
             await controllerExt.onInit();
+
+            expect(openSpy).toHaveBeenCalledTimes(1);
         });
 
         test('throws error when trying to get controllers from the project workspace', async () => {
@@ -84,7 +87,7 @@ describe('ControllerExtension', () => {
         });
     });
 
-    describe('closeDialog', () => {
+    describe('handleDialogClose', () => {
         test('should close dialog', () => {
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
@@ -100,7 +103,7 @@ describe('ControllerExtension', () => {
 
             controllerExt.getView = jest.fn().mockReturnValue({ destroy: jest.fn() });
 
-            controllerExt.closeDialog();
+            controllerExt.handleDialogClose();
 
             expect(closeSpy).toHaveBeenCalledTimes(1);
         });
