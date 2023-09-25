@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import sanitize from 'sanitize-filename';
-import type { ReaderCollection } from '@ui5/fs';
+import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response } from 'express';
@@ -35,6 +35,48 @@ export default class RoutesHandler {
     ) {}
 
     /**
+     * Reads files from workspace by given search pattern.
+     *
+     * @param pattern Search pattern
+     * @returns Array of files
+     */
+    private async readAllFilesByGlob(pattern: string): Promise<Resource[]> {
+        return (await this.project.byGlob(pattern)) || [];
+    }
+
+    /**
+     * Sends response with data to the client.
+     *
+     * @param res Response
+     * @param fileNames File names object array
+     * @param key Key that is send in the send object
+     */
+    private sendFilesResponse(res: Response, fileNames: object[], key: 'fragments' | 'controllers') {
+        res.status(HttpStatusCodes.OK)
+            .contentType('application/json')
+            .send({
+                [key]: fileNames,
+                message: `${fileNames.length} ${key} found in the project workspace.`
+            });
+        this.logger.debug(`Read fragments ${JSON.stringify(fileNames)}`);
+    }
+
+    /**
+     * Sanitizes and handles error messages.
+     *
+     * @param res Response
+     * @param next Next function
+     * @param e Error
+     * @param e.message Error message
+     */
+    private handleErrorMessage(res: Response, next: NextFunction, e: { message: string }): void {
+        const sanitizedMsg = sanitize(e.message);
+        this.logger.error(sanitizedMsg);
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: sanitizedMsg });
+        next(e);
+    }
+
+    /**
      * Handler for reading all fragment files from the workspace.
      *
      * @param _ Request
@@ -43,30 +85,15 @@ export default class RoutesHandler {
      */
     public handleReadAllFragments = async (_: Request, res: Response, next: NextFunction) => {
         try {
-            const files = await this.project.byGlob('/**/changes/**/*.fragment.xml');
+            const files = await this.readAllFilesByGlob('/**/changes/**/*.fragment.xml');
 
-            if (!files || files.length === 0) {
-                res.status(HttpStatusCodes.OK)
-                    .contentType('application/json')
-                    .send({ fragments: [], message: `No fragments found in the project workspace.` });
-                return;
-            }
-
-            const fragments = files.map((f) => ({
+            const fileNames = files.map((f) => ({
                 fragmentName: f.getName()
             }));
 
-            res.status(HttpStatusCodes.OK)
-                .contentType('application/json')
-                .send({
-                    fragments,
-                    message: `${fragments.length} fragments found in the project workspace.`
-                });
-            this.logger.debug(`Read fragments ${JSON.stringify(fragments)}`);
+            this.sendFilesResponse(res, fileNames, 'fragments');
         } catch (e) {
-            this.logger.error(e.message);
-            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: e.message });
-            next(e);
+            this.handleErrorMessage(res, next, e);
         }
     };
 
@@ -127,30 +154,15 @@ export default class RoutesHandler {
      */
     public handleReadAllControllers = async (_: Request, res: Response, next: NextFunction) => {
         try {
-            const files = await this.project.byGlob('/**/changes/coding/*.js');
+            const files = await this.readAllFilesByGlob('/**/changes/**/*.js');
 
-            if (!files || files.length === 0) {
-                res.status(HttpStatusCodes.OK)
-                    .contentType('application/json')
-                    .send({ controllers: [], message: `No controllers found in the project workspace.` });
-                return;
-            }
-
-            const controllers = files.map((f) => ({
+            const fileNames = files.map((f) => ({
                 controllerName: f.getName()
             }));
 
-            res.status(HttpStatusCodes.OK)
-                .contentType('application/json')
-                .send({
-                    controllers,
-                    message: `${controllers.length} controllers found in the project workspace.`
-                });
-            this.logger.debug(`Read controllers ${JSON.stringify(controllers)}`);
+            this.sendFilesResponse(res, fileNames, 'controllers');
         } catch (e) {
-            this.logger.error(e.message);
-            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: e.message });
-            next(e);
+            this.handleErrorMessage(res, next, e);
         }
     };
 

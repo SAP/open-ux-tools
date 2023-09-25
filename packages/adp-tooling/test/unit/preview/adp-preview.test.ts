@@ -1,13 +1,13 @@
-import { ToolsLogger } from '@sap-ux/logger';
-import { AdpPreview } from '../../../src/preview/adp-preview';
-import { join } from 'path';
-import type { ReaderCollection } from '@ui5/fs';
 import nock from 'nock';
-import type { SuperTest, Test } from 'supertest';
-import supertest from 'supertest';
+import { join } from 'path';
 import express from 'express';
-import { readFileSync, existsSync } from 'fs';
-import { renderFile } from 'ejs';
+import supertest from 'supertest';
+import { ToolsLogger } from '@sap-ux/logger';
+import type { ReaderCollection } from '@ui5/fs';
+import type { SuperTest, Test } from 'supertest';
+import { readFileSync, existsSync, writeFileSync } from 'fs';
+
+import { AdpPreview } from '../../../src/preview/adp-preview';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -18,8 +18,6 @@ interface GetControllersResponse {
     controllers: { controllerName: string }[];
     message: string;
 }
-
-jest.mock('ejs');
 
 jest.mock('@sap-ux/store', () => {
     return {
@@ -40,10 +38,11 @@ jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
     existsSync: jest.fn(),
     mkdirSync: jest.fn(),
+    writeFileSync: jest.fn(),
     copyFileSync: jest.fn()
 }));
 
-const mockRenderFile = renderFile as jest.Mock;
+const mockWriteFileSync = writeFileSync as jest.Mock;
 const mockExistsSync = existsSync as jest.Mock;
 
 describe('AdaptationProject', () => {
@@ -243,11 +242,11 @@ describe('AdaptationProject', () => {
             const response = await server.get('/adp/api/fragment').expect(200);
             const data: GetFragmentsResponse = JSON.parse(response.text);
             expect(data.fragments.length).toEqual(0);
-            expect(data.message).toEqual(`No fragments found in the project workspace.`);
+            expect(data.message).toEqual(`0 fragments found in the project workspace.`);
         });
 
         test('GET /adp/api/fragment - throws error', async () => {
-            const errorMsg = 'Could not get fragment name.';
+            const errorMsg = 'Could not get fragment name';
             mockProject.byGlob.mockResolvedValueOnce([
                 {
                     getName: () => {
@@ -312,11 +311,11 @@ describe('AdaptationProject', () => {
             const response = await server.get('/adp/api/controller').expect(200);
             const data: GetControllersResponse = JSON.parse(response.text);
             expect(data.controllers.length).toEqual(0);
-            expect(data.message).toEqual(`No controllers found in the project workspace.`);
+            expect(data.message).toEqual(`0 controllers found in the project workspace.`);
         });
 
         test('GET /adp/api/controller - throws error', async () => {
-            const errorMsg = 'Could not get controller name.';
+            const errorMsg = 'Could not get controller name';
             mockProject.byGlob.mockResolvedValueOnce([
                 {
                     getName: () => {
@@ -331,17 +330,17 @@ describe('AdaptationProject', () => {
 
         test('POST /adp/api/controller - creates controller', async () => {
             mockExistsSync.mockReturnValue(false);
-            mockRenderFile.mockReturnValue(true);
             const controllerName = 'Share';
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(201);
 
             const message = response.text;
+            expect(mockWriteFileSync).toHaveBeenCalledTimes(1);
             expect(message).toBe('Controller created!');
         });
 
         test('POST /adp/api/controller - controller already exists', async () => {
             mockExistsSync.mockReturnValueOnce(false).mockResolvedValueOnce(true);
-            mockRenderFile.mockReturnValue(true);
+
             const controllerName = 'Share';
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(409);
 
