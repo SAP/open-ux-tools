@@ -7,7 +7,6 @@ import MessageToast from 'sap/m/MessageToast';
 /** sap.ui.core */
 import { ValueState } from 'sap/ui/core/library';
 import type UI5Element from 'sap/ui/core/Element';
-import Controller from 'sap/ui/core/mvc/Controller';
 
 /** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
@@ -26,6 +25,7 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import type { ControllersResponse } from '../api-handler';
 import { readControllers, writeChange, writeController } from '../api-handler';
+import BaseDialog from './BaseDialog.controller';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<unknown>;
@@ -34,36 +34,18 @@ interface ControllerExtensionService {
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default class ControllerExtension extends Controller {
-    /**
-     * JSON Model that has the data
-     */
-    public model: JSONModel;
-    /**
-     * Dialog instance
-     */
-    public dialog: Dialog;
-    /**
-     * Runtime Authoring
-     */
-    private rta: RuntimeAuthoring;
-    /**
-     * Control Overlays
-     */
-    private overlays: UI5Element;
-
+export default class ControllerExtension extends BaseDialog {
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
+        this.model = new JSONModel();
     }
 
     /**
      * Initializes controller, fills model with data and opens the dialog
      */
     async onInit() {
-        this.model = new JSONModel();
-
         this.dialog = this.byId('controllerExtensionDialog') as unknown as Dialog;
 
         await this.buildDialogData();
@@ -128,21 +110,6 @@ export default class ControllerExtension extends Controller {
         await this.createNewController(controllerName, viewId);
 
         this.handleDialogClose();
-    }
-
-    /**
-     * Handles the closing of the dialog
-     */
-    closeDialog() {
-        this.handleDialogClose();
-    }
-
-    /**
-     * Handles the dialog closing and destruction of it
-     */
-    handleDialogClose() {
-        this.dialog.close();
-        this.getView()?.destroy();
     }
 
     /**
