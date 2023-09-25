@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.7.2
+
+### Patch Changes
+
+-   4f2d9ed8: Bump packages to release the dep fix
+-   Updated dependencies [4f2d9ed8]
+    -   @sap-ux/adp-tooling@0.3.3
+
 ## 0.7.1
 
 ### Patch Changes
