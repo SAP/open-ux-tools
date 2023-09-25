@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.3.2
+
+### Patch Changes
+
+-   b3baa9a1: Fixes/removes the express dependency
+
 ## 0.3.1
 
 ### Patch Changes

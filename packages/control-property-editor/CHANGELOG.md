@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.2.1
+
+### Patch Changes
+
+-   b3baa9a1: Fixes/removes the express dependency
+
 ## 0.2.0
 
 ### Minor Changes
