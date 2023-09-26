@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.23.7
+
+### Patch Changes
+
+-   7a2229ff: Fix. Avoid overwrite of existing extension fragment file while creating new filter field.
+
 ## 0.23.6
 
 ### Patch Changes
