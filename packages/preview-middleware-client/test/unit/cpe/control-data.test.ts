@@ -1,7 +1,8 @@
-import Utils from 'sap/ui/fl/Utils';
+import Utils from 'mock/sap/ui/fl/Utils';
 import { buildControlData } from '../../../src/cpe/control-data';
 import { getNameMock } from 'mock/sap/ui/base/DataType';
 import { sapMock } from 'mock/window';
+import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
 
 describe('controlData', () => {
     // prepare
@@ -11,35 +12,29 @@ describe('controlData', () => {
         }
         return undefined;
     });
-    getNameMock
-        .mockReturnValueOnce('string')
-        .mockReturnValueOnce('')
-        .mockReturnValueOnce('string');
-
-    jest.spyOn(Utils, 'checkControlId').mockReturnValue(true);
-
-    const controlOverlay = {
-        getDesignTimeMetadata: jest.fn().mockReturnValue({
-            getData: jest.fn().mockReturnValue({
-                properties: {
-                    blocked: { ignore: false },
-                    busyIndicatorDelay: { ignore: true },
-                    fieldGroupIds: { ignore: true },
-                    text: { ignore: false },
-                    width: { ignore: true },
-                    activeIcon: { ignore: true },
-                    ariaHasPopup: { ignore: true },
-                    test: { ignore: true }
-                }
-            })
-        }),
-        isSelectable: jest.fn().mockImplementation(() => true)
-    };
+    getNameMock.mockReturnValueOnce('string').mockReturnValueOnce('').mockReturnValueOnce('string');
+    const getDataMock = jest.fn()
+    mockOverlay.getDesignTimeMetadata.mockReturnValue({
+        getData: getDataMock.mockReturnValue({
+            properties: {
+                blocked: { ignore: false },
+                busyIndicatorDelay: { ignore: true },
+                fieldGroupIds: { ignore: true },
+                text: { ignore: false },
+                width: { ignore: true },
+                activeIcon: { ignore: true },
+                ariaHasPopup: { ignore: true },
+                test: { ignore: true }
+            }
+        })
+    });
+    mockOverlay.isSelectable.mockImplementation(() => true)
+    const getAllPropertiesMock = jest.fn();
     const control = {
         getMetadata: jest.fn().mockReturnValueOnce({
             getName: jest.fn().mockReturnValue('sap.m.Button'),
             getLibraryName: jest.fn().mockReturnValue('sap.m'),
-            getAllProperties: jest.fn().mockReturnValue({
+            getAllProperties: getAllPropertiesMock.mockReturnValue({
                 activeIcon: {
                     name: 'activeIcon',
                     type: 'sap.ui.core.URI',
@@ -197,9 +192,16 @@ describe('controlData', () => {
 
     test('buildControlData', async () => {
         // act
-        const result = await buildControlData(control as any, controlOverlay as any);
+        const result = await buildControlData(control as any, mockOverlay as any);
 
         // assert
         expect(result).toMatchSnapshot();
+
+        expect(control.getMetadata).toBeCalledWith();
+        expect(getNameMock).toBeCalledWith();
+        expect(Utils.checkControlId).toBeCalledWith(control);
+        expect(mockOverlay.getDesignTimeMetadata).toBeCalledWith(),
+        expect(getDataMock).toBeCalledWith();
+        expect(getAllPropertiesMock).toBeCalledWith();
     });
 });

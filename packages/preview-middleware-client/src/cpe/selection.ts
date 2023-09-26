@@ -8,7 +8,7 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 import { buildControlData } from './control-data';
 import { getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
-import type { ActionSenderFunction, Service, SubscribeFunction, UI5Facade } from './types';
+import type { ActionSenderFunction, Service, SubscribeFunction } from './types';
 
 import type Event from 'sap/ui/base/Event';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
@@ -17,6 +17,9 @@ import type { SelectionChangeEvent } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import Log from 'sap/base/Log';
 import { getDocumentation } from './documentation';
+import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+import OverlayUtil from 'sap/ui/dt/OverlayUtil';
+import { getComponent } from './ui5Utils';
 
 export interface PropertyChangeParams {
     name: string;
@@ -90,7 +93,7 @@ export class SelectionService implements Service {
      * @param rta - rta object.
      * @param ui5 - facade for ui5 framework methods
      */
-    constructor(private readonly rta: RuntimeAuthoring, private readonly ui5: UI5Facade) {}
+    constructor(private readonly rta: RuntimeAuthoring) {}
 
     /**
      * Initialize selection service.
@@ -107,9 +110,9 @@ export class SelectionService implements Service {
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (selectControl.match(action)) {
                 const id = action.payload;
-                const control = this.ui5.getControlById(id);
+                const control = sap.ui.getCore().byId(id);
                 if (!control) {
-                    const component = this.ui5.getComponent(id);
+                    const component = getComponent(id);
                     if (component) {
                         const controlData = buildControlData(component);
 
@@ -121,7 +124,7 @@ export class SelectionService implements Service {
                     return;
                 }
                 eventOrigin.add('outline');
-                let controlOverlay = this.ui5.getOverlay(control);
+                let controlOverlay = OverlayRegistry.getOverlay(control);
                 const selectedOverlayControls = this.rta.getSelection() ?? [];
                 //remove previous selection
                 for (const selectedOverlayControl of selectedOverlayControls) {
@@ -130,7 +133,7 @@ export class SelectionService implements Service {
 
                 if (!controlOverlay?.getDomRef()) {
                     //look for closest control in order to highlight in UI the (without firing the selection event)
-                    controlOverlay = this.ui5.getClosestOverlayFor(control);
+                    controlOverlay = OverlayUtil.getClosestOverlayFor(control);
                 }
 
                 if (controlOverlay?.isSelectable()) {
@@ -173,7 +176,7 @@ export class SelectionService implements Service {
             }
             this.activeChangeHandlers.clear();
             if (Array.isArray(selection) && selection.length === 1) {
-                const overlayControl = this.ui5.getControlById<ElementOverlay>(selection[0].getId());
+                const overlayControl = sap.ui.getCore().byId(selection[0].getId()) as ElementOverlay;
                 if (overlayControl) {
                     const runtimeControl = getRuntimeControl(overlayControl);
                     const controlName = runtimeControl.getMetadata().getName();

@@ -8,12 +8,12 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import type { ActionHandler, Service } from './types';
 import { initOutline } from './outline/index';
-import { createUi5Facade } from './facade';
 import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';
 import { loadDefaultLibraries } from './documentation';
 import Log from 'sap/base/Log';
 import { logger } from './logger';
+import { getIcons } from './ui5Utils';
 
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
@@ -25,7 +25,6 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         enableTelemetry();
     }
 
-    const ui5 = createUi5Facade();
     const actionHandlers: ActionHandler[] = [];
     /**
      *
@@ -35,9 +34,9 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         actionHandlers.push(handler);
     }
 
-    const selectionService = new SelectionService(rta, ui5);
+    const selectionService = new SelectionService(rta);
 
-    const changesService = new ChangeService({ rta }, ui5, selectionService);
+    const changesService = new ChangeService({ rta }, selectionService);
     const services: Service[] = [selectionService, changesService];
     try {
         loadDefaultLibraries();
@@ -60,10 +59,10 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         }
         // For initOutline to complete the RTA needs to already running (to access RTA provided services).
         // That can only happen if the plugin initialization has completed.
-        initOutline(rta, ui5, sendAction).catch((error) =>
+        initOutline(rta, sendAction).catch((error) =>
             Log.error('Error during initialization of Control Property Editor', error)
         );
-        const icons = ui5.getIcons();
+        const icons = getIcons();
         sendAction(iconsLoaded(icons));
     } catch (error) {
         Log.error('Error during initialization of Control Property Editor', error);

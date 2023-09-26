@@ -1,8 +1,8 @@
-import type { ID } from 'sap/ui/core/library';
 import * as flexChange from '../../../../src/cpe/changes/flex-change';
 import { ChangeService } from '../../../../src/cpe/changes/service';
 import { changeProperty, deletePropertyChanges } from '@sap-ux-private/control-property-editor-common';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import { fetchMock } from 'mock/window';
 describe('SelectionService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
         return Promise.resolve();
@@ -14,10 +14,11 @@ describe('SelectionService', () => {
         rtaMock.attachUndoRedoStackModified = jest.fn() as jest.Mock;
         sendActionMock = jest.fn();
         subscribeMock = jest.fn();
+        fetchMock.mockClear();
     });
 
     test('read workspace changes', async () => {
-        window.fetch = jest.fn().mockResolvedValue({
+        fetchMock.mockResolvedValue({
             json: () =>
                 Promise.resolve({
                     change1: {
@@ -60,21 +61,16 @@ describe('SelectionService', () => {
                 })
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
-        const cache = new Map();
-        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
-            return cache.get(id);
-        });
 
         const service = new ChangeService(
-            { rta: rtaMock  } as any,
-            { getControlById: getControlByIdSpy } as any,
+            { rta: rtaMock } as any,
             {
                 applyControlPropertyChange: jest.fn()
             } as any
         );
 
         await service.init(sendActionMock, subscribeMock);
-        expect(window.fetch).toHaveBeenCalledWith('/preview/api/changes?_=123');
+        expect(fetchMock).toHaveBeenCalledWith('/preview/api/changes?_=123');
         expect(sendActionMock).toHaveBeenCalledWith({
             type: '[ext] change-stack-modified',
             payload: {
@@ -114,7 +110,7 @@ describe('SelectionService', () => {
     });
 
     test('unknown change with timestamp', async () => {
-        window.fetch = jest.fn().mockResolvedValue({
+        fetchMock.mockResolvedValue({
             json: () =>
                 Promise.resolve({
                     change2: {
@@ -136,21 +132,16 @@ describe('SelectionService', () => {
                 })
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
-        const cache = new Map();
-        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
-            return cache.get(id);
-        });
 
         const service = new ChangeService(
-            { rta: rtaMock  } as any,
-            { getControlById: getControlByIdSpy } as any,
+            { rta: rtaMock } as any,
             {
                 applyControlPropertyChange: jest.fn()
             } as any
         );
 
         await service.init(sendActionMock, subscribeMock);
-        expect(window.fetch).toHaveBeenCalledWith('/preview/api/changes?_=123');
+        expect(fetchMock).toHaveBeenCalledWith('/preview/api/changes?_=123');
         expect(sendActionMock).toHaveBeenCalledWith({
             type: '[ext] change-stack-modified',
             payload: {
@@ -179,12 +170,7 @@ describe('SelectionService', () => {
     });
 
     test('undo/redo stack changed', async () => {
-        window.fetch = jest.fn().mockResolvedValue({ json: () => Promise.resolve({}) });
-        const cache = new Map();
-        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
-            return cache.get(id);
-        });
-
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
         function createCommand(properties: Map<string, any>): {
             getProperty: (name: string) => any;
             getElement: () => any;
@@ -223,7 +209,6 @@ describe('SelectionService', () => {
         });
         const service = new ChangeService(
             { rta: rtaMock } as any,
-            { getControlById: getControlByIdSpy } as any,
             {
                 applyControlPropertyChange: jest.fn()
             } as any
@@ -260,16 +245,12 @@ describe('SelectionService', () => {
     });
 
     test('change property', async () => {
-        window.fetch = jest.fn().mockResolvedValue({
+        fetchMock.mockResolvedValue({
             json: () => Promise.resolve({})
         });
-        const cache = new Map();
-        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
-            return cache.get(id);
-        });
+
         const service = new ChangeService(
-            { rta: rtaMock  } as any,
-            { getControlById: getControlByIdSpy } as any,
+            { rta: rtaMock } as any,
             {
                 applyControlPropertyChange: jest.fn()
             } as any
@@ -296,7 +277,7 @@ describe('SelectionService', () => {
 
     test('delete property', async () => {
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
-        window.fetch = jest.fn().mockResolvedValue({
+        fetchMock.mockResolvedValue({
             json: () =>
                 Promise.resolve({
                     change1: {
@@ -313,14 +294,9 @@ describe('SelectionService', () => {
                     }
                 })
         });
-        const cache = new Map();
-        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
-            return cache.get(id);
-        });
 
         const service = new ChangeService(
-            { rta: rtaMock  } as any,
-            { getControlById: getControlByIdSpy } as any,
+            { rta: rtaMock } as any,
             {
                 applyControlPropertyChange: jest.fn()
             } as any
@@ -336,10 +312,10 @@ describe('SelectionService', () => {
             })
         );
 
-        expect(window.fetch).toHaveBeenLastCalledWith('/preview/api/changes', {
-            body: '{"fileName":"id_1640106755570_203_propertyChange"}',
-            headers: { 'Content-Type': 'application/json' },
-            method: 'DELETE'
+        expect(fetchMock).toHaveBeenLastCalledWith('/preview/api/changes', {
+            'body': '{"fileName":"id_1640106755570_203_propertyChange"}',
+            'headers': { 'Content-Type': 'application/json' },
+            'method': 'DELETE'
         });
     });
 });
