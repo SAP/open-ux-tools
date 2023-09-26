@@ -81,7 +81,9 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
 
     // create a fragment file
     const fragmentPath = join(config.path, `${config.fragmentFile}.fragment.xml`);
-    fs.copyTpl(getTemplatePath(`filter/fragment.xml`), fragmentPath, config);
+    if (!fs.exists(fragmentPath)) {
+        fs.copyTpl(getTemplatePath(`filter/fragment.xml`), fragmentPath, config);
+    }
 
     return fs;
 }
