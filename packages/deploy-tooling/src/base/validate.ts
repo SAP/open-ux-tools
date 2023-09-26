@@ -4,15 +4,20 @@ import { TransportRequest } from '@sap-ux/axios-extension/src/abap/types';
 import type { Logger } from '@sap-ux/logger';
 
 export type ValidationInput = {
-    package: string;
     appName: string;
-    transport: string;
-    description: string;
+    description: string | undefined;
+    package: string | undefined;
+    transport: string | undefined;
 };
 
 export type ValidationOutput = {
     summary: SummaryRecord[],
     result: boolean
+    intermediate: {
+        isValidPackageText: boolean | undefined,
+        isValidTransportText: boolean | undefined,
+        isValidPackage: boolean | undefined
+    }
 }
 
 export type SummaryRecord = {
@@ -27,12 +32,13 @@ export enum SummaryStatus {
 }
 
 const summaryMessage = {
-    clientCheckPass: '',
-    packageCheckPass: '',
-    packageNotFound: '',
-    transportCheckPass: '',
-    transportNotFound: '',
-    adtAccessError: ''
+    clientCheckPass: 'SAPUI5 ABAP Repository follows the rules of creating BSP application',
+    packageCheckPass: 'Package is found on ABAP system',
+    packageNotFound: 'Package does not exist on ABAP system',
+    pacakgeAdtAccessError: 'Package could not be validated. Please check manually.',
+    transportCheckPass: 'Transport Request is found on ABAP system',
+    transportNotFound: 'Transport Request does not exist on ABAP system',
+    transportAdtAccessError: 'Transport Request could not be validated. Please check manually.'
 };
 
 /**
@@ -47,7 +53,12 @@ export async function validateBeforeDeploy(input: ValidationInput,
 
     const output = {
         summary: [],
-        result: true
+        result: true,
+        intermediate: {
+            isValidPackageText: undefined,
+            isValidTransportText: undefined,
+            isValidPackage: undefined
+        }
     }
 
     validateInputFormat(input, output);
@@ -66,7 +77,7 @@ export function formatSummary(summary: SummaryRecord[]): string {
     let summaryStr = summary
         .map((next) => {
             let statusSymbol;
-            switch(next.status) {
+            switch (next.status) {
                 case SummaryStatus.Valid:
                     statusSymbol = '√';
                     break;
@@ -92,6 +103,9 @@ export function formatSummary(summary: SummaryRecord[]): string {
  * @returns 
  */
 function validateInputFormat(input: ValidationInput, output: ValidationOutput): void {
+    output.intermediate.isValidPackageText = true;
+    output.intermediate.isValidTransportText = true;
+
     output.summary.push({
         message: summaryMessage.clientCheckPass,
         status: SummaryStatus.Valid
@@ -134,7 +148,7 @@ async function validatePackage(
     } catch (e) {
         logger.error(e);
         output.summary.push({
-            message: summaryMessage.adtAccessError,
+            message: summaryMessage.pacakgeAdtAccessError,
             status: SummaryStatus.Unknown
         });
         output.result = false;
@@ -159,7 +173,7 @@ async function validateTransportRequest(
         if (!adtService) {
             throw new Error('AdtService cannot be instantiated');
         }
-        const trList = await adtService.getTransportRequests(input.package, input.appName);
+        const trList = await adtService.getTransportRequests(input.package!, input.appName);
         const isValidTrList = trList.findIndex((tr: TransportRequest) => tr.transportNumber === input.transport) >= 0;
 
         if (isValidTrList) {
@@ -177,7 +191,7 @@ async function validateTransportRequest(
     } catch (e) {
         logger.error(e);
         output.summary.push({
-            message: summaryMessage.adtAccessError,
+            message: summaryMessage.transportAdtAccessError,
             status: SummaryStatus.Unknown
         });
         output.result = false;
