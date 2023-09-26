@@ -27,8 +27,7 @@
     },
     "types": [
       "@sapui5/types",
-      "jest",
-      "node"
+      "jest"
     ]
   },
   "references": [
