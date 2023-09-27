@@ -10,7 +10,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/control-property-editor-common"
     },
-    "private": false,
+    "private": true,
     "scripts": {
         "clean": "rimraf ./dist ./reports *.tsbuildinfo",
         "build": "npm-run-all -l -s clean -p build:compile",
