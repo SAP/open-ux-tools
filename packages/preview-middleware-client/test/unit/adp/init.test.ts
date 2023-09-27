@@ -1,7 +1,7 @@
 import init from '../../../src/adp/init';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
-import * as ui5Utils from '../../../src/cpe/ui5Utils';
+import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import * as outline from '../../../src/cpe/outline';
 
 describe('adp', () => {
@@ -28,7 +28,7 @@ describe('adp', () => {
         });
         jest.spyOn(ui5Utils, 'getIcons').mockImplementation(() => {
             return [];
-        })
+        });
     });
     test('init', () => {
         init(rtaMock);

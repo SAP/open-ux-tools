@@ -5,7 +5,7 @@ import * as outline from '../../../src/cpe/outline';
 import type Event from 'sap/ui/base/Event';
 import Log from 'mock/sap/base/Log';
 import { fetchMock, sapCoreMock } from 'mock/window';
-import * as ui5Utils from '../../../src/cpe/ui5Utils';
+import * as ui5Utils from '../../../src/cpe/ui5-utils';
 
 describe('main', () => {
     let sendActionMock: jest.Mock;

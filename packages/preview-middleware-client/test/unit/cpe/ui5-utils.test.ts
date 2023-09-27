@@ -2,11 +2,11 @@ import IconPool from 'mock/sap/ui/core/IconPool';
 import Component from 'sap/ui/core/Component';
 import { sapCoreMock } from 'mock/window';
 import type Element from 'sap/ui/core/Element';
-import { getComponent, getIcons } from '../../../src/cpe/ui5Utils';
+import { getComponent, getIcons } from '../../../src/cpe/ui5-utils';
 
 describe('ui5Utils', () => {
     const testElement = {} as Element;
-    const testComponent = { id: '~id'};    
+    const testComponent = { id: '~id' };
     sapCoreMock.byId.mockReturnValue(testElement);
     sapCoreMock.getComponent.mockReturnValue(testComponent);
 
@@ -29,8 +29,6 @@ describe('ui5Utils', () => {
         expect(component).toStrictEqual(testComponent);
     });
 
-  
-
     describe('getIcons', () => {
         const testIcons = {
             Reject: {
@@ -45,7 +43,7 @@ describe('ui5Utils', () => {
                 content: 'accept',
                 fontFamily: 'SAP-Icons'
             }
-        }
+        };
         IconPool.getIconNames.mockReturnValueOnce(Object.keys(testIcons));
         IconPool.getIconInfo
             .mockReturnValueOnce(testIcons.Reject)

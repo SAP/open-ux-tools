@@ -13,8 +13,7 @@ import { ChangeService } from './changes/service';
 import { loadDefaultLibraries } from './documentation';
 import Log from 'sap/base/Log';
 import { logger } from './logger';
-import { getIcons } from './ui5Utils';
-
+import { getIcons } from './ui5-utils';
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
