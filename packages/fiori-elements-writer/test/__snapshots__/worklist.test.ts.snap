@@ -6864,7 +6864,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"name\\": \\"sap.fe.templates.ListReport\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"variantManagement\\": \\"Page\\",
               \\"hideFilterBar\\": true,
               \\"navigation\\": {
@@ -6884,7 +6884,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"navigation\\": {
                 \\"_Booking\\": {
                   \\"detail\\": {
@@ -6902,7 +6902,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Booking\\"
+              \\"contextPath\\": \\"/Travel/_Booking\\"
             }
           }
         }
