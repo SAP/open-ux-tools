@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.15.0
+
+### Minor Changes
+
+-   b40035dc: Uses `contextPath` routing target config option instead of `entitySet` if applicable
+
 ## 0.14.3
 
 ### Patch Changes
