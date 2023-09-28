@@ -41,24 +41,18 @@ export default class RoutesHandler {
      * @returns Array of files
      */
     private async readAllFilesByGlob(pattern: string): Promise<Resource[]> {
-        return (await this.project.byGlob(pattern)) || [];
+        return this.project.byGlob(pattern) || [];
     }
 
     /**
      * Sends response with data to the client.
      *
      * @param res Response
-     * @param fileNames File names object array
-     * @param key Key that is send in the send object
+     * @param data Data that is send in the send object
+     * @param contentType Content type, defaults to json
      */
-    private sendFilesResponse(res: Response, fileNames: object[], key: 'fragments' | 'controllers') {
-        res.status(HttpStatusCodes.OK)
-            .contentType('application/json')
-            .send({
-                [key]: fileNames,
-                message: `${fileNames.length} ${key} found in the project workspace.`
-            });
-        this.logger.debug(`Read fragments ${JSON.stringify(fileNames)}`);
+    private sendFilesResponse(res: Response, data: object | string, contentType: string = 'application/json') {
+        res.status(HttpStatusCodes.OK).contentType(contentType).send(data);
     }
 
     /**
@@ -85,13 +79,17 @@ export default class RoutesHandler {
      */
     public handleReadAllFragments = async (_: Request, res: Response, next: NextFunction) => {
         try {
-            const files = await this.readAllFilesByGlob('/**/changes/**/*.fragment.xml');
+            const files = await this.readAllFilesByGlob('/**/changes/fragments/*.fragment.xml');
 
             const fileNames = files.map((f) => ({
                 fragmentName: f.getName()
             }));
 
-            this.sendFilesResponse(res, fileNames, 'fragments');
+            this.sendFilesResponse(res, {
+                fragments: fileNames,
+                message: `${fileNames.length} fragments found in the project workspace.`
+            });
+            this.logger.debug(`Read fragments ${JSON.stringify(fileNames)}`);
         } catch (e) {
             this.handleErrorMessage(res, next, e);
         }
@@ -112,31 +110,32 @@ export default class RoutesHandler {
 
             const sourcePath = this.util.getProject().getSourcePath();
 
-            if (fragmentName) {
-                const fullPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Fragments);
-                const filePath = path.join(fullPath, `${fragmentName}.fragment.xml`);
-
-                if (!fs.existsSync(fullPath)) {
-                    fs.mkdirSync(fullPath, { recursive: true });
-                }
-
-                if (fs.existsSync(filePath)) {
-                    res.status(HttpStatusCodes.CONFLICT).send(`Fragment with name "${fragmentName}" already exists`);
-                    this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
-                    return;
-                }
-
-                // Copy the template XML Fragment to the project's workspace
-                const fragmentTemplatePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
-                fs.copyFileSync(fragmentTemplatePath, filePath);
-
-                const message = 'XML Fragment created';
-                res.status(HttpStatusCodes.CREATED).send(message);
-                this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
-            } else {
+            if (!fragmentName) {
                 res.status(HttpStatusCodes.BAD_REQUEST).send('Fragment name was not provided!');
                 this.logger.debug('Bad request. Fragment name was not provided!');
+                return;
             }
+
+            const fullPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Fragments);
+            const filePath = path.join(fullPath, `${fragmentName}.fragment.xml`);
+
+            if (!fs.existsSync(fullPath)) {
+                fs.mkdirSync(fullPath, { recursive: true });
+            }
+
+            if (fs.existsSync(filePath)) {
+                res.status(HttpStatusCodes.CONFLICT).send(`Fragment with name "${fragmentName}" already exists`);
+                this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
+                return;
+            }
+
+            // Copy the template XML Fragment to the project's workspace
+            const fragmentTemplatePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
+            fs.copyFileSync(fragmentTemplatePath, filePath);
+
+            const message = 'XML Fragment created';
+            res.status(HttpStatusCodes.CREATED).send(message);
+            this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);
             this.logger.error(sanitizedMsg);
@@ -154,13 +153,17 @@ export default class RoutesHandler {
      */
     public handleReadAllControllers = async (_: Request, res: Response, next: NextFunction) => {
         try {
-            const files = await this.readAllFilesByGlob('/**/changes/**/*.js');
+            const files = await this.readAllFilesByGlob('/**/changes/coding/*.js');
 
             const fileNames = files.map((f) => ({
                 controllerName: f.getName()
             }));
 
-            this.sendFilesResponse(res, fileNames, 'controllers');
+            this.sendFilesResponse(res, {
+                controllers: fileNames,
+                message: `${fileNames.length} controllers found in the project workspace.`
+            });
+            this.logger.debug(`Read controllers ${JSON.stringify(fileNames)}`);
         } catch (e) {
             this.handleErrorMessage(res, next, e);
         }
@@ -173,55 +176,52 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleWriteController = async (req: Request, res: Response, next: NextFunction) => {
+    public handleWriteControllerExt = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data = req.body as WriteControllerBody;
 
-            const controllerName = sanitize(data.controllerName);
+            const controllerExtName = sanitize(data.controllerName);
 
             const sourcePath = this.util.getProject().getSourcePath();
             const rootPath = this.util.getProject().getRootPath();
             const projectFolderName = rootPath.split(/[\\/]/).pop();
 
-            if (controllerName) {
-                const fullPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Coding);
-                const filePath = path.join(fullPath, `${controllerName}.js`);
-
-                if (!fs.existsSync(fullPath)) {
-                    fs.mkdirSync(fullPath, { recursive: true });
-                }
-
-                if (fs.existsSync(filePath)) {
-                    res.status(HttpStatusCodes.CONFLICT).send(
-                        `Controller with name "${controllerName}" already exists`
-                    );
-                    this.logger.debug(`Controller with name "${controllerName}" already exists`);
-                    return;
-                }
-
-                const controllerExtensionName = `${projectFolderName}.${controllerName}`;
-
-                const controllerTemplateFilePath = path.join(
-                    __dirname,
-                    '../../templates/rta',
-                    TemplateFileName.Controller
-                );
-
-                renderFile(controllerTemplateFilePath, { controllerExtensionName }, {}, (err, str) => {
-                    if (err) {
-                        throw new Error('Error rendering template: ' + err.message);
-                    }
-
-                    fs.writeFileSync(filePath, str, { encoding: 'utf8' });
-                });
-
-                const message = 'Controller created!';
-                res.status(HttpStatusCodes.CREATED).send(message);
-                this.logger.debug(`Controller with name "${controllerName}" was created`);
-            } else {
-                res.status(HttpStatusCodes.BAD_REQUEST).send('Controller name was not provided!');
-                this.logger.debug('Bad request. Controller name was not provided!');
+            if (!controllerExtName) {
+                res.status(HttpStatusCodes.BAD_REQUEST).send('Controller extension name was not provided!');
+                this.logger.debug('Bad request. Controller extension name was not provided!');
+                return;
             }
+
+            const fullPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Coding);
+            const filePath = path.join(fullPath, `${controllerExtName}.js`);
+
+            if (!fs.existsSync(fullPath)) {
+                fs.mkdirSync(fullPath, { recursive: true });
+            }
+
+            if (fs.existsSync(filePath)) {
+                res.status(HttpStatusCodes.CONFLICT).send(
+                    `Controller extension with name "${controllerExtName}" already exists`
+                );
+                this.logger.debug(`Controller extension with name "${controllerExtName}" already exists`);
+                return;
+            }
+
+            const controllerExtPath = `${projectFolderName}.${controllerExtName}`;
+
+            const controllerTemplateFilePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Controller);
+
+            renderFile(controllerTemplateFilePath, { controllerExtPath }, {}, (err, str) => {
+                if (err) {
+                    throw new Error('Error rendering template: ' + err.message);
+                }
+
+                fs.writeFileSync(filePath, str, { encoding: 'utf8' });
+            });
+
+            const message = 'Controller extension created!';
+            res.status(HttpStatusCodes.CREATED).send(message);
+            this.logger.debug(`Controller extension with name "${controllerExtName}" was created`);
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);
             this.logger.error(sanitizedMsg);

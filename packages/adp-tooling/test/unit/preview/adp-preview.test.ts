@@ -335,7 +335,7 @@ describe('AdaptationProject', () => {
 
             const message = response.text;
             expect(mockWriteFileSync).toHaveBeenCalledTimes(1);
-            expect(message).toBe('Controller created!');
+            expect(message).toBe('Controller extension created!');
         });
 
         test('POST /adp/api/controller - controller already exists', async () => {
@@ -345,14 +345,14 @@ describe('AdaptationProject', () => {
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(409);
 
             const message = response.text;
-            expect(message).toBe(`Controller with name "${controllerName}" already exists`);
+            expect(message).toBe(`Controller extension with name "${controllerName}" already exists`);
         });
 
         test('POST /adp/api/controller - controller name was not provided', async () => {
             const response = await server.post('/adp/api/controller').send({ controllerName: '' }).expect(400);
 
             const message = response.text;
-            expect(message).toBe('Controller name was not provided!');
+            expect(message).toBe('Controller extension name was not provided!');
         });
 
         test('POST /adp/api/controller - throws error when controller name is undefined', async () => {
