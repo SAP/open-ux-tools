@@ -48,7 +48,7 @@ export default class RoutesHandler {
      * Sends response with data to the client.
      *
      * @param res Response
-     * @param data Data that is send in the send object
+     * @param data Data that is sent to the client
      * @param contentType Content type, defaults to json
      */
     private sendFilesResponse(res: Response, data: object | string, contentType: string = 'application/json') {
