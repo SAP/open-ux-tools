@@ -159,6 +159,11 @@ describe('ui5-test-writer', () => {
                 description: 'Fullscreen With LR only',
                 dirPath: 'FullScreenLR',
                 scriptName: undefined
+            },
+            {
+                description: 'Fullscreen LR-OP using contextPath',
+                dirPath: 'FullScreenLROPContextPath',
+                scriptName: undefined
             }
         ];
 

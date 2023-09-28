@@ -86,17 +86,22 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
         target?.name &&
         target.name in SupportedPageTypes &&
         target?.id &&
-        target?.options?.settings?.entitySet
+        (target?.options?.settings?.entitySet || target?.options?.settings?.contextPath)
     ) {
-        return {
+        const pageConfig: FEV4OPAPageConfig = {
             appPath,
             appID,
             targetKey,
             componentID: target.id,
-            entitySet: target.options.settings.entitySet,
             template: SupportedPageTypes[target.name],
             isStartup: false
         };
+        if (target.options.settings.entitySet) {
+            pageConfig.entitySet = target.options.settings.entitySet;
+        } else if (target.options.settings.contextPath) {
+            pageConfig.contextPath = target.options.settings.contextPath;
+        }
+        return pageConfig;
     } else {
         return undefined;
     }
