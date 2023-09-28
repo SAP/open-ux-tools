@@ -41,7 +41,7 @@ export default class RoutesHandler {
      * @returns Array of files
      */
     private async readAllFilesByGlob(pattern: string): Promise<Resource[]> {
-        return this.project.byGlob(pattern) || [];
+        return this.project.byGlob(pattern);
     }
 
     /**
