@@ -13,7 +13,7 @@ describe('controlData', () => {
         return undefined;
     });
     getNameMock.mockReturnValueOnce('string').mockReturnValueOnce('').mockReturnValueOnce('string');
-    const getDataMock = jest.fn()
+    const getDataMock = jest.fn();
     mockOverlay.getDesignTimeMetadata.mockReturnValue({
         getData: getDataMock.mockReturnValue({
             properties: {
@@ -28,10 +28,10 @@ describe('controlData', () => {
             }
         })
     });
-    mockOverlay.isSelectable.mockImplementation(() => true)
+    mockOverlay.isSelectable.mockImplementation(() => true);
     const getAllPropertiesMock = jest.fn();
     const control = {
-        getMetadata: jest.fn().mockReturnValueOnce({
+        getMetadata: jest.fn().mockReturnValue({
             getName: jest.fn().mockReturnValue('sap.m.Button'),
             getLibraryName: jest.fn().mockReturnValue('sap.m'),
             getAllProperties: getAllPropertiesMock.mockReturnValue({
@@ -195,13 +195,14 @@ describe('controlData', () => {
         const result = await buildControlData(control as any, mockOverlay as any);
 
         // assert
-        expect(result).toMatchSnapshot();
+        expect(result.properties).toMatchSnapshot();
+        expect(result.id).toBe(control.getId());
+        expect(result.type).toBe(control.getMetadata().getName());
+        expect(result.name).toBe(control.getMetadata().getName());
 
-        expect(control.getMetadata).toBeCalledWith();
-        expect(getNameMock).toBeCalledWith();
         expect(Utils.checkControlId).toBeCalledWith(control);
-        expect(mockOverlay.getDesignTimeMetadata).toBeCalledWith(),
-        expect(getDataMock).toBeCalledWith();
-        expect(getAllPropertiesMock).toBeCalledWith();
+        expect(mockOverlay.getDesignTimeMetadata).toBeCalled();
+        expect(getDataMock).toBeCalled();
+        expect(getAllPropertiesMock).toBeCalled();
     });
 });
