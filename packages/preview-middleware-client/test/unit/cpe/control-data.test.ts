@@ -14,21 +14,21 @@ describe('controlData', () => {
     });
     getNameMock.mockReturnValueOnce('string').mockReturnValueOnce('').mockReturnValueOnce('string');
     const getDataMock = jest.fn();
+    const getDataMockData = {
+        properties: {
+            blocked: { ignore: false },
+            busyIndicatorDelay: { ignore: true },
+            fieldGroupIds: { ignore: true },
+            text: { ignore: false },
+            width: { ignore: true },
+            activeIcon: { ignore: true },
+            ariaHasPopup: { ignore: true },
+            test: { ignore: true }
+        }
+    };
     mockOverlay.getDesignTimeMetadata.mockReturnValue({
-        getData: getDataMock.mockReturnValue({
-            properties: {
-                blocked: { ignore: false },
-                busyIndicatorDelay: { ignore: true },
-                fieldGroupIds: { ignore: true },
-                text: { ignore: false },
-                width: { ignore: true },
-                activeIcon: { ignore: true },
-                ariaHasPopup: { ignore: true },
-                test: { ignore: true }
-            }
-        })
+        getData: getDataMock.mockReturnValue(getDataMockData)
     });
-    mockOverlay.isSelectable.mockImplementation(() => true);
     const getAllPropertiesMock = jest.fn();
     const control = {
         getMetadata: jest.fn().mockReturnValue({
@@ -161,7 +161,7 @@ describe('controlData', () => {
                 }
             })
         }),
-        getId: jest.fn().mockImplementation(() => 'testID'),
+        getId: jest.fn(),
         getProperty: jest
             .fn()
             .mockReturnValueOnce('')
@@ -183,18 +183,32 @@ describe('controlData', () => {
             .mockReturnValue(undefined)
     };
     Utils.checkControlId = jest.fn((control) => {
-        if (control.getId) {
+        if (control.getId()) {
             return true;
         } else {
             return false;
         }
     });
 
-    test('buildControlData', async () => {
+    test('buildControlData', () => {
+        control.getId.mockImplementation(() => 'testID');
+        mockOverlay.isSelectable.mockResolvedValueOnce(false).mockReturnValue(true);
+
         // act
-        const result = await buildControlData(control as any, mockOverlay as any);
+        const result = buildControlData(control as any, mockOverlay as any);
 
         // assert
+        expect(result).toMatchSnapshot();
+    });
+
+    test('buildControlData - disabled properties for noStableId', () => {
+        control.getId.mockImplementation(() => '');
+        mockOverlay.isSelectable.mockReturnValue(true);
+
+        // act
+        const result = buildControlData(control as any, mockOverlay as any);
+
+        // result.properties.name === 'blocked' and result.properties.name === 'text' are isEnabled: false for no stableId
         expect(result).toMatchSnapshot();
     });
 });
