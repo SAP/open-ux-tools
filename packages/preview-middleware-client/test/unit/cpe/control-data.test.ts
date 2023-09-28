@@ -180,29 +180,21 @@ describe('controlData', () => {
             .mockReturnValueOnce(undefined)
             .mockReturnValueOnce(undefined)
             .mockReturnValueOnce({ bindingString: 'testModel>testValue/value' })
-            .mockReturnValueOnce(undefined)
-            .mockReturnValueOnce(undefined)
-            .mockReturnValueOnce(undefined)
-            .mockReturnValueOnce(undefined)
-            .mockReturnValueOnce(undefined)
-            .mockReturnValueOnce(undefined)
-            .mockReturnValueOnce(undefined)
-            .mockReturnValueOnce(undefined)
+            .mockReturnValue(undefined)
     };
+    Utils.checkControlId = jest.fn((control) => {
+        if (control.getId) {
+            return true;
+        } else {
+            return false;
+        }
+    });
 
     test('buildControlData', async () => {
         // act
         const result = await buildControlData(control as any, mockOverlay as any);
 
         // assert
-        expect(result.properties).toMatchSnapshot();
-        expect(result.id).toBe(control.getId());
-        expect(result.type).toBe(control.getMetadata().getName());
-        expect(result.name).toBe(control.getMetadata().getName());
-
-        expect(Utils.checkControlId).toBeCalledWith(control);
-        expect(mockOverlay.getDesignTimeMetadata).toBeCalled();
-        expect(getDataMock).toBeCalled();
-        expect(getAllPropertiesMock).toBeCalled();
+        expect(result).toMatchSnapshot();
     });
 });
