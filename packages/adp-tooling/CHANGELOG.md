@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.3.4
+
+### Patch Changes
+
+-   9d0140fa: Make express peer dependency
+
 ## 0.3.3
 
 ### Patch Changes

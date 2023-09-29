@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.7.3
+
+### Patch Changes
+
+-   9d0140fa: Make express peer dependency
+-   Updated dependencies [9d0140fa]
+    -   @sap-ux/adp-tooling@0.3.4
+
 ## 0.7.2
 
 ### Patch Changes
