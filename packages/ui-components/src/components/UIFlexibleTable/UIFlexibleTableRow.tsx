@@ -213,12 +213,12 @@ function isRowDisabled(value: unknown): boolean {
 function getRowStyles(isDragDisabled: boolean, isDragged: boolean): CSSProperties {
     const style: CSSProperties = {
         pointerEvents: 'all',
-        touchAction: 'auto'
+        cursor: isDragged ? 'grabbing' : 'inherit'
     };
     if (isDragDisabled) {
         style.cursor = 'default';
+        style.touchAction = 'auto';
     }
-    style.cursor = isDragged ? 'grabbing' : 'inherit';
     return style;
 }
 
@@ -252,7 +252,6 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
     const { isDragged, isSelected, isOutOfBounds, value } = params;
     const isRow = row && rowIndex !== undefined;
     const isDragDisabled = isRowDisabled(value);
-    console.log('UIFlexibleTableRow ' + isDragDisabled);
     if (isRow) {
         rowCells.push(rowData);
 
