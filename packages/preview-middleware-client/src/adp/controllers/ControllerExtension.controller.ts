@@ -159,6 +159,7 @@ export default class ControllerExtension extends BaseDialog {
             const change = await service.add(controllerRef.codeRef, controllerRef.viewId);
 
             await writeChange(change);
+            MessageToast.show(`Controller extension with name '${controllerName}' was created.`);
         } catch (e) {
             // We want to update the model incase we have already created a controller file but failed when creating a change file,
             // so when the user types the same controller name again he does not get 409 from the server, instead an error is shown in the UI
