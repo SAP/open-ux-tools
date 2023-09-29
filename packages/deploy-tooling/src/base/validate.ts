@@ -21,6 +21,12 @@ export type SummaryRecord = {
     status: SummaryStatus
 }
 
+/**
+ * Type definitiono of a map for validator functions. Each intput name defined in type ValidationInput is used as key.
+ * Use validators map to access the validator function for each input name.
+ */
+type Validators = Record<keyof ValidationInput, (input: string | undefined) => string | boolean>;
+
 export enum SummaryStatus {
     Valid,
     Invalid,
@@ -39,9 +45,15 @@ const summaryMessage = {
     transportNotRequired: 'Transport Request is not required for local package',
 };
 
-type Validators = { [K in keyof ValidationInput]?: (input: string | undefined) => string | boolean };
+/**
+ * Validators map that binds validator implementation to each input in a ValidatorInput
+ * @see Validators
+ */
 const validators: Validators = {
-    appName: () => { return true; }
+    appName: () => { return true; },
+    description: () => { return true; },
+    package: () => { return true; },
+    transport: () => { return true; }
 };
 
 /**
@@ -109,7 +121,7 @@ function validateInputTextFormat(input: ValidationInput, output: ValidationOutpu
     Object.keys(input).forEach((inputField) => {
         const keyValidationInput = inputField as keyof ValidationInput;
         const validatorFn = validators[keyValidationInput];
-        if (!validatorFn) { 
+        if (!validatorFn) {
             return;
         }
         const validationResult = validatorFn(input[keyValidationInput]);
