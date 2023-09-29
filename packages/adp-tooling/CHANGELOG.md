@@ -1,5 +1,31 @@
 # @sap-ux/adp-tooling
 
+## 0.3.4
+
+### Patch Changes
+
+-   9d0140fa: Make express peer dependency
+
+## 0.3.3
+
+### Patch Changes
+
+-   4f2d9ed8: Bump packages to release the dep fix
+
+## 0.3.2
+
+### Patch Changes
+
+-   b3baa9a1: Fixes/removes the express dependency
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [0760c9f8]
+    -   @sap-ux/axios-extension@1.4.8
+    -   @sap-ux/system-access@0.2.8
+
 ## 0.3.0
 
 ### Minor Changes

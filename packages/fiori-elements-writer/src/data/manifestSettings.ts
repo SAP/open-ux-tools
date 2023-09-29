@@ -44,7 +44,7 @@ export function extendManifestJson<T>(
             entityConfig.contextPath = `/${entityConfig.mainEntityName}`;
 
             if (entityConfig.navigationEntity?.EntitySet) {
-                entityConfig.navigationEntity.contextPath = `/${entityConfig.navigationEntity.EntitySet}`;
+                entityConfig.navigationEntity.contextPath = `${entityConfig.contextPath}/${entityConfig.navigationEntity.Name}`;
             }
         }
     }

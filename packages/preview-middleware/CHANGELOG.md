@@ -1,5 +1,53 @@
 # @sap-ux/preview-middleware
 
+## 0.7.3
+
+### Patch Changes
+
+-   9d0140fa: Make express peer dependency
+-   Updated dependencies [9d0140fa]
+    -   @sap-ux/adp-tooling@0.3.4
+
+## 0.7.2
+
+### Patch Changes
+
+-   4f2d9ed8: Bump packages to release the dep fix
+-   Updated dependencies [4f2d9ed8]
+    -   @sap-ux/adp-tooling@0.3.3
+
+## 0.7.1
+
+### Patch Changes
+
+-   b3baa9a1: Fixes/removes the express dependency
+-   Updated dependencies [b3baa9a1]
+    -   @sap-ux/adp-tooling@0.3.2
+
+## 0.7.0
+
+### Minor Changes
+
+-   0f2ac46a: Added support for running an editor with SAPUI5 adaptation projects
+
+## 0.6.3
+
+### Patch Changes
+
+-   555c0ac5: Disable unsupported mode to prevent incorrect changes
+
+## 0.6.2
+
+### Patch Changes
+
+-   0798e88e: Improving the FLP init script
+
+## 0.6.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.3.1
+
 ## 0.6.0
 
 ### Minor Changes

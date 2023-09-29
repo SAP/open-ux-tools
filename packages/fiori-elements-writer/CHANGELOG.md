@@ -1,5 +1,38 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.15.2
+
+### Patch Changes
+
+-   Updated dependencies [bf1281ca]
+    -   @sap-ux/ui5-test-writer@0.2.0
+
+## 0.15.1
+
+### Patch Changes
+
+-   Updated dependencies [c11f6c02]
+    -   @sap-ux/fe-fpm-writer@0.23.8
+
+## 0.15.0
+
+### Minor Changes
+
+-   b40035dc: Uses `contextPath` routing target config option instead of `entitySet` if applicable
+
+## 0.14.3
+
+### Patch Changes
+
+-   Updated dependencies [7a2229ff]
+    -   @sap-ux/fe-fpm-writer@0.23.7
+
+## 0.14.2
+
+### Patch Changes
+
+-   e20c2ced: Reverts use of `contextPath` in place of `entitySet`
+
 ## 0.14.1
 
 ### Patch Changes

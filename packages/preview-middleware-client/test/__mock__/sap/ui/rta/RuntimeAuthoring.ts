@@ -4,7 +4,7 @@ const RuntimeAuthoringMock = {
     getDefaultPlugins: jest.fn(),
     getService: jest.fn(),
     getCommandStack: jest.fn(),
-    getFlexSettings: jest.fn()
+    getFlexSettings: jest.fn().mockReturnValue({})
 };
 
 export default RuntimeAuthoringMock as unknown as RuntimeAuthoring & typeof RuntimeAuthoringMock;

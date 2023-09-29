@@ -30,7 +30,8 @@ async function initAdp(
         if (flp.rta) {
             flp.rta.layer = layer;
             flp.rta.options = {
-                projectId: variant.id
+                projectId: variant.id,
+                scenario: 'ADAPTATION_PROJECT'
             };
             for (const editor of flp.rta.editors) {
                 editor.pluginScript ??= 'open/ux/preview/client/adp/init';
@@ -41,6 +42,24 @@ async function initAdp(
         adp.addApis(flp.router);
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
+    }
+}
+
+/**
+ * The developer mode is only supported for adaptation projects, therefore, notify the user if it is wrongly configured and then disable it.
+ *
+ * @param config configurations from the ui5.yaml
+ * @param logger logger instance
+ */
+function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): void {
+    if (config.rta && config.adp === undefined) {
+        config.rta.editors = config.rta.editors.filter((editor) => {
+            if (editor.developerMode) {
+                logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
+                logger.warn(`developerMode for ${editor.path} disabled`);
+            }
+            return !editor.developerMode;
+        });
     }
 }
 
@@ -61,6 +80,7 @@ async function createRouter(
     // setting defaults
     const config = options.configuration ?? {};
     config.flp ??= {};
+    sanitizeConfig(config, logger);
 
     // configure the FLP sandbox based on information from the manifest
     const flp = new FlpSandbox(config, resources.rootProject, middlewareUtil, logger);

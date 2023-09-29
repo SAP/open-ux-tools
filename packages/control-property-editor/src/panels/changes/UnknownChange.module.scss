@@ -1,0 +1,46 @@
+.item {
+    padding: 5px 15px 5px 15px;
+}
+.text {
+    line-height: 18px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--vscode-editor-foreground);
+    width: 240px;
+}
+.timestamp {
+    color: var(--vscode-editor-foreground);
+    font-size: 11px;
+    line-height: 15px;
+    opacity: 0.5;
+    
+}
+.textHeader {
+    display: inline-block;
+    color: var(--vscode-textLink-foreground);
+    font-size: 13px;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 18px;
+}
+
+.property {
+    overflow-wrap: anywhere;
+}
+
+.item:hover {
+    background-color: var(--vscode-dropdown-background);
+    color: var(--vscode-dropdown-foreground);
+    outline: 1px dashed var(--vscode-contrastActiveBorder);
+    .actions {
+        visibility: visible;
+    }
+}
+
+.actions {
+    visibility: hidden;
+}

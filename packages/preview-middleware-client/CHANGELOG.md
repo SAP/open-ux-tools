@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.3.0
+
+### Minor Changes
+
+-   0f2ac46a: Enhanced the client to be able to communicate with a wrapping frame running the @sap-ux/control-property-editor.
+
+## 0.2.1
+
+### Patch Changes
+
+-   0798e88e: Improving the FLP init script
+
 ## 0.2.0
 
 ### Minor Changes

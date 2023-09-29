@@ -1,3 +1,8 @@
+document.getElementById = jest.fn();
+export const documentMock = document as unknown as  typeof document & {
+    getElementById: jest.Mock
+};
+
 export const fetchMock = jest.fn();
 export const sapCoreMock = {
     byId: jest.fn(),
@@ -9,9 +14,7 @@ export const sapCoreMock = {
 export const sapMock = {
     ui: {
         getCore: jest.fn().mockReturnValue(sapCoreMock),
-        require: {
-            toUrl: jest.fn()
-        },
+        require: jest.fn(),
         loader: {
             config: jest.fn()
         }
@@ -19,10 +22,13 @@ export const sapMock = {
     ushell: {
         Container: {
             createRenderer: jest.fn().mockReturnValue({ placeAt: jest.fn() }),
-            attachRendererCreatedEvent: jest.fn().mockImplementation((cb: () => Promise<void>) => cb())
+            attachRendererCreatedEvent: jest.fn(),
+            getServiceAsync: jest.fn()
         }
     }
 };
 
+(sapMock.ui.require as any).toUrl = jest.fn();
+
 window.fetch = fetchMock;
-window.sap = sapMock as unknown as typeof sap;
+window.sap = sapMock as unknown as typeof sap & typeof sapMock;
