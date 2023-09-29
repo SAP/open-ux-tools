@@ -14,11 +14,6 @@ export type ValidationInput = {
 export type ValidationOutput = {
     summary: SummaryRecord[],
     result: boolean
-    intermediate: {
-        isValidPackageText: boolean | undefined,
-        isValidTransportText: boolean | undefined,
-        isValidPackage: boolean | undefined
-    }
 }
 
 export type SummaryRecord = {
@@ -39,7 +34,8 @@ const summaryMessage = {
     pacakgeAdtAccessError: 'Package could not be validated. Please check manually.',
     transportCheckPass: 'Transport Request is found on ABAP system',
     transportNotFound: 'Transport Request does not exist on ABAP system',
-    transportAdtAccessError: 'Transport Request could not be validated. Please check manually.'
+    transportAdtAccessError: 'Transport Request could not be validated. Please check manually.',
+    transportNotRequired: 'Transport Request is not required for local package'
 };
 
 /**
@@ -54,14 +50,10 @@ export async function validateBeforeDeploy(input: ValidationInput,
 
     const output = {
         summary: [],
-        result: true,
-        intermediate: {
-            isValidPackageText: undefined,
-            isValidTransportText: undefined,
-            isValidPackage: undefined
-        }
+        result: true
     }
 
+    // output is passed by reference and status updated during the internal pipeline below.
     validateInputFormat(input, output);
     await validatePackage(input, output, provider, logger);
     await validateTransportRequest(input, output, provider, logger);
@@ -104,8 +96,6 @@ export function formatSummary(summary: SummaryRecord[]): string {
  * @returns 
  */
 function validateInputFormat(input: ValidationInput, output: ValidationOutput): void {
-    output.intermediate.isValidPackageText = true;
-    output.intermediate.isValidTransportText = true;
 
     output.summary.push({
         message: summaryMessage.clientCheckPass,
@@ -126,6 +116,10 @@ async function validatePackage(
     provider: AbapServiceProvider,
     logger: Logger
 ): Promise<void> {
+    if (output.result === false) {
+        return;
+    }
+
     try {
         const adtService = await provider.getAdtService<ListPackageService>(ListPackageService);
         if (!adtService) {
@@ -169,6 +163,10 @@ async function validateTransportRequest(
     provider: AbapServiceProvider,
     logger: Logger
 ): Promise<void> {
+    if (output.result === false) {
+        return;
+    }
+
     try {
         const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
         if (!adtService) {
@@ -190,11 +188,22 @@ async function validateTransportRequest(
             output.result = false;
         }
     } catch (e) {
-        logger.error(e);
-        output.summary.push({
-            message: summaryMessage.transportAdtAccessError,
-            status: SummaryStatus.Unknown
-        });
-        output.result = false;
+        // TransportChecksService.getTransportRequests() API is used to provide valid
+        // transport request list. If input packge is local package, no transport request
+        // is returned and LocalPackageError is thrown as exception. 
+        // LocalPackageError is acceptable for validation purpose here.
+        if (e.message === TransportChecksService.LocalPackageError) {
+            output.summary.push({
+                message: summaryMessage.transportNotRequired,
+                status: SummaryStatus.Valid
+            });
+        } else {
+            logger.error(e);
+            output.summary.push({
+                message: summaryMessage.transportAdtAccessError,
+                status: SummaryStatus.Unknown
+            });
+            output.result = false;
+        }
     }
 }
