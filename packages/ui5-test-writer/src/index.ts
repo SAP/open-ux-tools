@@ -96,10 +96,11 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
             template: SupportedPageTypes[target.name],
             isStartup: false
         };
-        if (target.options.settings.entitySet) {
-            pageConfig.entitySet = target.options.settings.entitySet;
-        } else if (target.options.settings.contextPath) {
+
+        if (target.options.settings.contextPath) {
             pageConfig.contextPath = target.options.settings.contextPath;
+        } else if (target.options.settings.entitySet) {
+            pageConfig.entitySet = target.options.settings.entitySet;
         }
         return pageConfig;
     } else {
