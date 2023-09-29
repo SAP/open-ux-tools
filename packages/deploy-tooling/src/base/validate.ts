@@ -28,14 +28,20 @@ export enum SummaryStatus {
 }
 
 const summaryMessage = {
-    clientCheckPass: 'SAPUI5 ABAP Repository follows the rules of creating BSP application',
+    allClientCheckPass: 'SAPUI5 ABAP Repository follows the rules of creating BSP application',
+    noErrorMessageFromValidator: 'Validator did not return readable error message',
     packageCheckPass: 'Package is found on ABAP system',
     packageNotFound: 'Package does not exist on ABAP system',
     pacakgeAdtAccessError: 'Package could not be validated. Please check manually.',
     transportCheckPass: 'Transport Request is found on ABAP system',
     transportNotFound: 'Transport Request does not exist on ABAP system',
     transportAdtAccessError: 'Transport Request could not be validated. Please check manually.',
-    transportNotRequired: 'Transport Request is not required for local package'
+    transportNotRequired: 'Transport Request is not required for local package',
+};
+
+type Validators = { [K in keyof ValidationInput]?: (input: string | undefined) => string | boolean };
+const validators: Validators = {
+    appName: () => { return true; }
 };
 
 /**
@@ -54,7 +60,7 @@ export async function validateBeforeDeploy(input: ValidationInput,
     }
 
     // output is passed by reference and status updated during the internal pipeline below.
-    validateInputFormat(input, output);
+    validateInputTextFormat(input, output);
     await validatePackage(input, output, provider, logger);
     await validateTransportRequest(input, output, provider, logger);
 
@@ -95,12 +101,41 @@ export function formatSummary(summary: SummaryRecord[]): string {
  * @param input 
  * @returns 
  */
-function validateInputFormat(input: ValidationInput, output: ValidationOutput): void {
+function validateInputTextFormat(input: ValidationInput, output: ValidationOutput): void {
 
-    output.summary.push({
-        message: summaryMessage.clientCheckPass,
-        status: SummaryStatus.Valid
+    // A series of client-side validations. No early termination of detecting invalid inputs.
+    // Setting output.result to false if any of the checks is invalid.
+    // Add individual error messages into output.summary array if validation failed.
+    Object.keys(input).forEach((inputField) => {
+        const keyValidationInput = inputField as keyof ValidationInput;
+        const validatorFn = validators[keyValidationInput];
+        if (!validatorFn) { 
+            return;
+        }
+        const validationResult = validatorFn(input[keyValidationInput]);
+        if (typeof (validationResult) === 'string') {
+            output.summary.push({
+                message: validationResult,
+                status: SummaryStatus.Invalid
+            });
+            output.result = false;
+        } else if (validationResult !== true) {
+            output.summary.push({
+                message: summaryMessage.noErrorMessageFromValidator,
+                status: SummaryStatus.Invalid
+            });
+            output.result = false;
+        }
     });
+
+
+    // If all the text validation passed, only show the following success message.
+    if (output.result) {
+        output.summary.push({
+            message: summaryMessage.allClientCheckPass,
+            status: SummaryStatus.Valid
+        });
+    }
 }
 
 /**
