@@ -9,8 +9,9 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     return new ListReport(
         {
             appId: '<%- appID %>',
-            componentId: '<%- componentID %>',
-            entitySet: '<%- entitySet %>'
+            componentId: '<%- componentID %>',<% if (locals.contextPath) { %>
+            contextPath: '<%- contextPath %>'<% } else if (locals.entitySet) { %>
+            entitySet: '<%- entitySet %>'<% } %>
         },
         CustomPageDefinitions
     );
