@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.2.0
+
+### Minor Changes
+
+-   bf1281ca: Adds support for "contextPath"
+
 ## 0.1.11
 
 ### Patch Changes
