@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.4.0
+
+### Minor Changes
+
+-   b023f4cb: Enhancing the preview-middleware with new functionality such as Controller Extension (creating "codeExt" change).
+
 ## 0.3.1
 
 ### Patch Changes
