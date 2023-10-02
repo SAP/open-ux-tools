@@ -25,6 +25,7 @@ describe('CustomHeaderSection generateCustomHeaderSection', () => {
             folder: 'extensions/custom',
             title: 'New Custom Header Section',
             subTitle: 'Custom Header section subtitle',
+            stashed: false,
             edit,
             requestGroupId: RequestGroupId.Decoration,
             flexSettings: {
