@@ -4,10 +4,13 @@ import type UI5Element from 'sap/ui/core/Element';
 
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+
 import AddFragment from './controllers/AddFragment.controller';
+import ControllerExtension from './controllers/ControllerExtension.controller';
 
 export const enum DialogNames {
-    ADD_FRAGMENT = 'AddFragment'
+    ADD_FRAGMENT = 'AddFragment',
+    CONTROLLER_EXTENSION = 'ControllerExtension'
 }
 
 /**
@@ -24,6 +27,13 @@ export const initDialogs = (rta: RuntimeAuthoring): void => {
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT),
         icon: 'sap-icon://attachment-html'
     });
+
+    contextMenu.addMenuItem({
+        id: 'EXTEND_CONTROLLER',
+        text: 'Extend With Controller',
+        handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
+        icon: 'sap-icon://create-form'
+    });
 };
 
 /**
@@ -34,7 +44,10 @@ export const initDialogs = (rta: RuntimeAuthoring): void => {
  * @param dialogName Dialog name
  */
 export async function handler(overlays: UI5Element, rta: RuntimeAuthoring, dialogName: DialogNames): Promise<void> {
-    const controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlays, rta);
+    const controller =
+        dialogName === DialogNames.ADD_FRAGMENT
+            ? new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlays, rta)
+            : new ControllerExtension(`open.ux.preview.client.adp.controllers.${dialogName}`, overlays, rta);
 
     await XMLView.create({
         viewName: `open.ux.preview.client.adp.ui.${dialogName}`,

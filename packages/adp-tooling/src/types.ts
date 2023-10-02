@@ -59,11 +59,13 @@ export interface Content {
 
 export const enum FolderNames {
     Changes = 'changes',
-    Fragments = 'fragments'
+    Fragments = 'fragments',
+    Coding = 'coding'
 }
 
 export const enum TemplateFileName {
-    Fragment = 'fragment.xml'
+    Fragment = 'fragment.xml',
+    Controller = 'controller.ejs'
 }
 
 export const enum HttpStatusCodes {

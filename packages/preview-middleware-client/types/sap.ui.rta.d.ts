@@ -133,7 +133,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         attachUndoRedoStackModified: (handler: (event: Event) => void) => void;
         getCommandStack: () => Stack;
         getFlexSettings: () => FlexSettings;
-        getService: <T>(name: 'outline' | string) => Promise<T>;
+        getService: <T>(name: 'outline' | 'controllerExtension' | string) => Promise<T>;
         getSelection: () => ElementOverlay[];
         getDefaultPlugins: () => { contextMenu: ContextMenu };
         getRootControlInstance: () => {

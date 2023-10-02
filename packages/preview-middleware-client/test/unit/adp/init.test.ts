@@ -33,6 +33,6 @@ describe('adp', () => {
     test('init', () => {
         init(rtaMock);
         expect(initOutlineSpy).toBeCalledTimes(1);
-        expect(addMenuItemSpy.mock.calls.length).toBe(1);
+        expect(addMenuItemSpy).toBeCalledTimes(2);
     });
 });

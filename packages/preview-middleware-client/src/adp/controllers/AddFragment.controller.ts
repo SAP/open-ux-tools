@@ -8,11 +8,9 @@ import MessageToast from 'sap/m/MessageToast';
 /** sap.ui.core */
 import { ValueState } from 'sap/ui/core/library';
 import type UI5Element from 'sap/ui/core/Element';
-import Controller from 'sap/ui/core/mvc/Controller';
 
 /** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
-import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
 /** sap.ui.model */
@@ -28,6 +26,7 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
 import { getFragments, writeFragment } from '../api-handler';
+import BaseDialog from './BaseDialog.controller';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -38,36 +37,12 @@ interface CreateFragmentProps {
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default class AddFragment extends Controller {
-    /**
-     * Runtime control managed object
-     */
-    public runtimeControl: ManagedObject;
-    /**
-     * JSON Model that has the data
-     */
-    public model: JSONModel;
-    /**
-     * Dialog instance
-     */
-    public dialog: Dialog;
-    /**
-     * Runtime Authoring
-     */
-    private rta: RuntimeAuthoring;
-    /**
-     * Control Overlays
-     */
-    private overlays: UI5Element;
-    /**
-     * RTA Command Executor
-     */
-    private commandExecutor: CommandExecutor;
-
+export default class AddFragment extends BaseDialog {
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
+        this.model = new JSONModel();
         this.commandExecutor = new CommandExecutor(this.rta);
     }
 
@@ -75,8 +50,6 @@ export default class AddFragment extends Controller {
      * Initializes controller, fills model with data and opens the dialog
      */
     async onInit() {
-        this.model = new JSONModel();
-
         this.dialog = this.byId('addNewFragmentDialog') as unknown as Dialog;
 
         await this.buildDialogData();
@@ -191,21 +164,6 @@ export default class AddFragment extends Controller {
         await this.createNewFragment(fragmentData);
 
         this.handleDialogClose();
-    }
-
-    /**
-     * Handles the closing of the dialog
-     */
-    closeDialog() {
-        this.handleDialogClose();
-    }
-
-    /**
-     * Handles the dialog closing and destruction of it
-     */
-    handleDialogClose() {
-        this.dialog.close();
-        this.getView()?.destroy();
     }
 
     /**
