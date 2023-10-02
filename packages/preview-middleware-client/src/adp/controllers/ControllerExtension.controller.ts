@@ -24,7 +24,7 @@ import Utils from 'sap/ui/fl/Utils';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import type { ControllersResponse } from '../api-handler';
-import { readControllers, writeChange, writeController } from '../api-handler';
+import { getManifestAppdescr, readControllers, writeChange, writeController } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 
 interface ControllerExtensionService {
@@ -147,7 +147,8 @@ export default class ControllerExtension extends BaseDialog {
      */
     private async createNewController(controllerName: string, viewId: string): Promise<void> {
         try {
-            await writeController({ controllerName });
+            const manifest = await getManifestAppdescr();
+            await writeController({ controllerName, projectId: manifest.id });
 
             const controllerRef = {
                 codeRef: `coding/${controllerName}.js`,

@@ -15,6 +15,7 @@ interface WriteFragmentBody {
 
 interface WriteControllerBody {
     controllerName: string;
+    projectId: string;
 }
 
 /**
@@ -181,10 +182,9 @@ export default class RoutesHandler {
             const data = req.body as WriteControllerBody;
 
             const controllerExtName = sanitize(data.controllerName);
+            const projectId = data.projectId;
 
             const sourcePath = this.util.getProject().getSourcePath();
-            const rootPath = this.util.getProject().getRootPath();
-            const projectFolderName = rootPath.split(/[\\/]/).pop();
 
             if (!controllerExtName) {
                 res.status(HttpStatusCodes.BAD_REQUEST).send('Controller extension name was not provided!');
@@ -207,7 +207,7 @@ export default class RoutesHandler {
                 return;
             }
 
-            const controllerExtPath = `${projectFolderName}.${controllerExtName}`;
+            const controllerExtPath = `${projectId}.${controllerExtName}`;
 
             const controllerTemplateFilePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Controller);
 

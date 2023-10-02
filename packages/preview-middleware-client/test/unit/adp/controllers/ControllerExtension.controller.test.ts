@@ -257,7 +257,7 @@ describe('ControllerExtension', () => {
             controllerExt.model = testModel;
 
             fetchMock.mockResolvedValue({
-                json: jest.fn(),
+                json: jest.fn().mockReturnValue({ controllers: [], id: 'adp.app' }),
                 text: jest.fn().mockReturnValueOnce('Controller was created!').mockReturnValueOnce('Change created'),
                 ok: true
             });
