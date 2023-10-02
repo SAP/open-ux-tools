@@ -7,6 +7,7 @@ import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
 describe('flexChange', () => {
     // prepare
+    const control = { name: 'sap.m.Button' };
     const pushAndExecuteMock = jest.fn();
     rtaMock.getCommandStack.mockReturnValue({
         pushAndExecute: pushAndExecuteMock
@@ -21,6 +22,10 @@ describe('flexChange', () => {
     const testOptions: UI5AdaptationOptions = {
         rta: rtaMock
     };
+    const mockCommand = {
+        command: 'testCommand'
+    }
+    CommandFactory.getCommandFor.mockReturnValue(mockCommand);
 
     beforeEach(() => {
         pushAndExecuteMock.mockClear();
@@ -28,7 +33,7 @@ describe('flexChange', () => {
     });
 
     test('applyChange - simple property', async () => {
-        sapCoreMock.byId.mockReturnValueOnce({ name: 'sap.m.Button' });
+        sapCoreMock.byId.mockReturnValueOnce(control);
         const change: PropertyChange = {
             controlId: 'testId',
             propertyName: 'blocked',
@@ -36,25 +41,25 @@ describe('flexChange', () => {
             controlName: 'controlName'
         };
 
+
         // act
         await applyChange(testOptions, change);
 
         // assert
-        expect(CommandFactory.getCommandFor.mock.calls[0][1]).toBe('Property');
-        expect(CommandFactory.getCommandFor.mock.calls[0][2]).toEqual({
+        expect(CommandFactory.getCommandFor).toBeCalledWith(control, 'Property', {
             generator: flexSettings.generator,
             propertyName: change.propertyName,
             newValue: change.value
-        });
-        expect(pushAndExecuteMock).toBeCalled();
+        }, null, flexSettings);
+        expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
     });
 
     test('applyChange - simple string', async () => {
-        sapCoreMock.byId.mockReturnValueOnce({ name: 'sap.m.Button' });
+        sapCoreMock.byId.mockReturnValueOnce(control);
         const change: PropertyChange = {
             controlId: 'testId',
-            propertyName: 'enabled',
-            value: 'false',
+            propertyName: 'text',
+            value: 'apply',
             controlName: 'controlName'
         };
 
@@ -62,17 +67,16 @@ describe('flexChange', () => {
         await applyChange(testOptions, change);
 
         // assert
-        expect(CommandFactory.getCommandFor.mock.calls[0][1]).toBe('Property');
-        expect(CommandFactory.getCommandFor.mock.calls[0][2]).toEqual({
+        expect(CommandFactory.getCommandFor).toBeCalledWith(control, 'Property', {
             generator: flexSettings.generator,
             propertyName: change.propertyName,
             newValue: change.value
-        });
-        expect(pushAndExecuteMock).toBeCalled();
+        }, null, flexSettings);
+        expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
     });
 
     test('applyChange - binding expression', async () => {
-        sapCoreMock.byId.mockReturnValueOnce({ name: 'sap.m.Button' });
+        sapCoreMock.byId.mockReturnValueOnce(control);
         const change: PropertyChange = {
             controlId: 'testId',
             propertyName: 'enabled',
@@ -84,13 +88,12 @@ describe('flexChange', () => {
         await applyChange(testOptions, change);
 
         // assert
-        expect(CommandFactory.getCommandFor.mock.calls[0][1]).toBe('BindProperty');
-        expect(CommandFactory.getCommandFor.mock.calls[0][2]).toEqual({
+        expect(CommandFactory.getCommandFor).toBeCalledWith(control, 'BindProperty', {
             generator: flexSettings.generator,
             propertyName: change.propertyName,
             newBinding: change.value
-        });
-        expect(pushAndExecuteMock).toBeCalled();
+        }, null, flexSettings);
+        expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
     });
 
     test('applyChange - undefined control', async () => {

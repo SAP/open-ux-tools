@@ -1,12 +1,10 @@
 import { logger } from '../../../src/cpe/logger';
-import Log from 'sap/base/Log';
+import Log from 'mock/sap/base/Log';
+
 describe('logger', () => {
     beforeEach(() => {
-        Log.info = jest.fn();
-        Log.error = jest.fn();
-        Log.warning = jest.fn();
-        Log.debug = jest.fn();
-    });
+        Log.error.mockClear();
+    })
     test('info', async () => {
         logger.info('test');
         expect(Log.info).toBeCalledTimes(1);

@@ -1,7 +1,7 @@
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
-import { createUi5Facade } from '../../../../src/cpe/facade';
+import { sapCoreMock } from 'mock/window';
 
 jest.mock('../../../../src/cpe/outline/utils', () => {
     return {
@@ -9,9 +9,8 @@ jest.mock('../../../../src/cpe/outline/utils', () => {
     };
 });
 describe('outline nodes', () => {
-    const ui5Facade = createUi5Facade();
-    const transformNodes = (nodes: OutlineViewNode[]): Promise<OutlineNode[]> => tn(ui5Facade, nodes);
-    ui5Facade.getControlById = jest.fn().mockReturnValue({
+    const transformNodes = (nodes: OutlineViewNode[]): Promise<OutlineNode[]> => tn(nodes);
+    sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
             getProperty: jest
                 .fn()
