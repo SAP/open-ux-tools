@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.3.1
+
+### Patch Changes
+
+-   a7eda7c5: Fix and reuse manual mocks in unit test, removing ui5Facade, updating tsconfig
+
 ## 0.3.0
 
 ### Minor Changes

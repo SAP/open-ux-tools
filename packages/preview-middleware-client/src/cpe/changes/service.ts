@@ -14,7 +14,7 @@ import {
 import { applyChange } from './flex-change';
 import type { SelectionService } from '../selection';
 
-import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions, UI5Facade } from '../types';
+import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
 import type Event from 'sap/ui/base/Event';
 import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
 import Log from 'sap/base/Log';
@@ -93,7 +93,6 @@ export class ChangeService {
      */
     constructor(
         private readonly options: UI5AdaptationOptions,
-        private readonly ui5: UI5Facade,
         private readonly selectionService: SelectionService
     ) {}
 
@@ -115,7 +114,7 @@ export class ChangeService {
                     // send error information
                     let name = '';
                     const id = action.payload.controlId || '';
-                    const control = this.ui5.getControlById(id);
+                    const control = sap.ui.getCore().byId(id);
                     if (control) {
                         name = control.getMetadata().getName();
                     }

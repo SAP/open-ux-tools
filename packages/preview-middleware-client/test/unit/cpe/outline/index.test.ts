@@ -1,5 +1,4 @@
 import { sapCoreMock } from 'mock/window';
-import { createUi5Facade } from '../../../../src/cpe/facade';
 import { initOutline } from '../../../../src/cpe/outline/index';
 import * as nodes from '../../../../src/cpe/outline/nodes';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
@@ -8,7 +7,6 @@ import Log from 'sap/base/Log';
 jest.useFakeTimers();
 
 describe('index', () => {
-    const ui5 = createUi5Facade();
     const mockSendAction = jest.fn();
     const mockAttachEvent = jest.fn();
     const transformNodesSpy = jest.spyOn(nodes, 'transformNodes');
@@ -32,7 +30,7 @@ describe('index', () => {
     });
     rtaMock.getService.mockReturnValue({
         attachEvent: mockAttachEvent,
-        get: jest.fn().mockResolvedValue('views')
+        get: jest.fn().mockResolvedValue('mockViewNodes')
     });
     afterEach(() => {
         mockSendAction.mockClear();
@@ -50,7 +48,7 @@ describe('index', () => {
                 visible: true
             }
         ]);
-        await initOutline(rtaMock, ui5, mockSendAction);
+        await initOutline(rtaMock, mockSendAction);
         expect(mockAttachEvent).toMatchInlineSnapshot(`
             [MockFunction] {
               "calls": Array [
@@ -70,7 +68,7 @@ describe('index', () => {
         const syncOutline = mockAttachEvent.mock.calls[0][1];
         syncOutline.call();
         await jest.advanceTimersByTimeAsync(4000);
-        expect(transformNodesSpy).toHaveBeenCalledTimes(1);
+        expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
         expect(mockSendAction).toMatchInlineSnapshot(`
             [MockFunction] {
               "calls": Array [
@@ -102,7 +100,7 @@ describe('index', () => {
 
     test('initOutline - exception', async () => {
         transformNodesSpy.mockRejectedValue('error');
-        await initOutline(rtaMock, ui5, mockSendAction);
+        await initOutline(rtaMock, mockSendAction);
         const syncOutline = mockAttachEvent.mock.calls[0][1];
         syncOutline.call();
         await jest.advanceTimersByTimeAsync(4000);
@@ -124,9 +122,11 @@ describe('index', () => {
             }
         ]);
         transformNodesSpy.mockRejectedValue('error');
-        await initOutline(rtaMock, ui5, mockSendAction);
+       
+        await initOutline(rtaMock, mockSendAction);
         const syncOutline = mockAttachEvent.mock.calls[0][1];
         syncOutline.call();
         await jest.advanceTimersByTimeAsync(4000);
+        expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
     });
 });

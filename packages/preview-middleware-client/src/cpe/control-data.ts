@@ -292,7 +292,6 @@ export function buildControlData(control: ManagedObject, controlOverlay?: Elemen
                 });
                 break;
             }
-            default:
         }
     }
     return {

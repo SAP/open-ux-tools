@@ -1,7 +1,9 @@
 export const mockOverlay = {
-    getDesignTimeMetadata: () => {
-        return jest.fn();
-    }
+    getDesignTimeMetadata: jest.fn(),
+    isSelectable: jest.fn(),
+    setSelected: jest.fn(),
+    getDomRef: jest.fn(),
+    getElementInstance: jest.fn()
 };
 
 export default {
