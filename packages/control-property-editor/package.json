@@ -15,7 +15,7 @@
         "clean": "rimraf ./dist ./coverage *.tsbuildinfo",
         "build": "npm-run-all -l -s clean -p build:compile build:webapp",
         "build:compile": "tsc  --build ./tsconfig.json --pretty --dry",
-        "build:webapp": "node esbuild.js",
+        "build:webapp": "node esbuild.js && copyfiles  --up -1 \"./src/favicon.ico\" \"./dist\"",
         "watch": "npm-run-all -p watch:*",
         "watch:webapp": "node esbuild.js --watch --minify=false",
         "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles --config='jest.config.js'",

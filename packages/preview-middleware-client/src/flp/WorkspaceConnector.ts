@@ -3,13 +3,33 @@ import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorage
 import Layer from 'sap/ui/fl/Layer';
 import VersionInfo from 'sap/ui/VersionInfo';
 
-const path = '/preview/api/changes'; 
+const path = '/preview/api/changes';
+interface Change {
+    support?: {
+        generator?: string;
+    };
+}
+
+function getFlexSettings() {
+    let result;
+    const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
+    if (bootstrapConfig) {
+        result = bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings');
+    }
+    return result;
+}
 
 const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
     storage: {
         _itemsStoredAsObjects: true,
-        setItem: function (_key: string, change: unknown) {
+        setItem: function (_key: string, change: Change) {
+            const settings = getFlexSettings();
+            if (settings) {
+                change.support ??= {};
+                change.support.generator = JSON.parse(settings).generator;
+            }
+
             return fetch(path, {
                 method: 'POST',
                 body: JSON.stringify(change, null, 2),
@@ -49,14 +69,10 @@ const connector = merge({}, ObjectStorageConnector, {
 
         const ui5Version = (await VersionInfo.load()) as { version: string };
         const [majorVersion, minorVersion] = ui5Version.version.split('.').map((v: string) => parseInt(v, 10));
-        features.isVariantAdaptationEnabled = majorVersion >= 1 && minorVersion >= 90;  
-
-        const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
-        if (bootstrapConfig) {
-            const settings = bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings');
-            if (settings && JSON.parse(settings).developerMode) {
-                features.isVariantAdaptationEnabled = false;
-            }
+        features.isVariantAdaptationEnabled = majorVersion >= 1 && minorVersion >= 90;
+        const settings = getFlexSettings();
+        if (settings && JSON.parse(settings).developerMode) {
+            features.isVariantAdaptationEnabled = false;
         }
 
         return features;

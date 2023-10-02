@@ -167,7 +167,6 @@ export class FlpSandbox {
         if (this.rta) {
             this.rta.options ??= {};
             this.rta.options.baseId = componentId ?? manifest['sap.app'].id;
-            this.rta.options.generator = 'changeUtils: SAPFioriTools-propertyEditor';
             this.addEditorRoutes(this.rta);
         }
         this.addRoutesForAdditionalApps();
@@ -206,6 +205,7 @@ export class FlpSandbox {
                 config.flex = {
                     layer: rta.layer,
                     ...rta.options,
+                    generator: editor.generator,
                     developerMode: editor.developerMode === true,
                     pluginScript: editor.pluginScript
                 };

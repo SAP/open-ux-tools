@@ -151,16 +151,19 @@ describe('FlpSandbox', () => {
                         layer: 'CUSTOMER_BASE',
                         editors: [
                             {
-                                path: '/my/rta.html'
+                                path: '/my/rta.html',
+                                generator: 'tool-variant-config'
                             },
                             {
                                 path: '/my/editor.html',
-                                developerMode: true
+                                developerMode: true,
+                                generator: 'tool-property-editor'
                             },
                             {
                                 path: '/with/plugin.html',
                                 developerMode: true,
-                                pluginScript: 'open/ux/tools/plugin'
+                                pluginScript: 'open/ux/tools/plugin',
+                                generator: 'tool-plugin'
                             }
                         ]
                     }
