@@ -1,8 +1,8 @@
 import init from '../../../src/adp/init';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
+import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import * as outline from '../../../src/cpe/outline';
-import * as facade from '../../../src/cpe/facade';
 
 describe('adp', () => {
     const addMenuItemSpy = jest.fn();
@@ -13,24 +13,6 @@ describe('adp', () => {
         contextMenu: {
             addMenuItem: addMenuItemSpy
         }
-    });
-    jest.spyOn(facade, 'createUi5Facade').mockImplementation(() => {
-        return {
-            getControlById: jest.fn().mockReturnValueOnce({
-                name: 'sap.m.Button',
-                getMetadata: jest.fn().mockImplementationOnce(() => {
-                    return {
-                        getName: jest.fn().mockReturnValueOnce('sap.m.Button')
-                    };
-                })
-            }),
-            getIcons: jest.fn().mockImplementation(() => {
-                return ['testIcon1', 'testIcon2'];
-            }),
-            getClosestOverlayFor: jest.fn(),
-            getComponent: jest.fn(),
-            getOverlay: jest.fn()
-        };
     });
     beforeAll(() => {
         const apiJson = {
@@ -44,10 +26,13 @@ describe('adp', () => {
         initOutlineSpy = jest.spyOn(outline, 'initOutline').mockImplementation(() => {
             return Promise.resolve();
         });
+        jest.spyOn(ui5Utils, 'getIcons').mockImplementation(() => {
+            return [];
+        });
     });
     test('init', () => {
         init(rtaMock);
         expect(initOutlineSpy).toBeCalledTimes(1);
-        expect(addMenuItemSpy.mock.calls.length).toBe(1);
+        expect(addMenuItemSpy).toBeCalledTimes(2);
     });
 });

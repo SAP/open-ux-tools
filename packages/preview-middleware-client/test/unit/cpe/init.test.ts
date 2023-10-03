@@ -2,14 +2,13 @@ import init from '../../../src/cpe/init';
 import * as common from '@sap-ux-private/control-property-editor-common';
 import * as flexChange from '../../../src/cpe/changes/flex-change';
 import * as outline from '../../../src/cpe/outline';
-import * as facade from '../../../src/cpe/facade';
 import type Event from 'sap/ui/base/Event';
-import Log from 'sap/base/Log';
-import { fetchMock } from 'mock/window';
+import Log from 'mock/sap/base/Log';
+import { fetchMock, sapCoreMock } from 'mock/window';
+import * as ui5Utils from '../../../src/cpe/ui5-utils';
 
 describe('main', () => {
     let sendActionMock: jest.Mock;
-    Log.error = jest.fn();
     const applyChangeSpy = jest
         .spyOn(flexChange, 'applyChange')
         .mockResolvedValueOnce()
@@ -39,23 +38,28 @@ describe('main', () => {
         initOutlineSpy.mockClear();
     });
 
-    jest.spyOn(facade, 'createUi5Facade').mockImplementation(() => {
-        return {
-            getControlById: jest.fn().mockReturnValueOnce({
-                name: 'sap.m.Button',
-                getMetadata: jest.fn().mockImplementationOnce(() => {
-                    return {
-                        getName: jest.fn().mockReturnValueOnce('sap.m.Button')
-                    };
-                })
-            }),
-            getIcons: jest.fn().mockImplementation(() => {
-                return ['testIcon1', 'testIcon2'];
-            }),
-            getClosestOverlayFor: jest.fn(),
-            getComponent: jest.fn(),
-            getOverlay: jest.fn()
-        };
+    sapCoreMock.byId.mockReturnValueOnce({
+        name: 'sap.m.Button',
+        getMetadata: jest.fn().mockImplementationOnce(() => {
+            return {
+                getName: jest.fn().mockReturnValueOnce('sap.m.Button')
+            };
+        })
+    });
+    const mockIconResult = [
+        {
+            content: 'testIcon1',
+            fontFamily: 'sap-icon-font',
+            name: 'testIcon1'
+        },
+        {
+            content: 'testIcon2',
+            fontFamily: 'sap-icon-font',
+            name: 'testIcon2'
+        }
+    ];
+    jest.spyOn(ui5Utils, 'getIcons').mockImplementation(() => {
+        return mockIconResult;
     });
     const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
         return newHandler;
@@ -64,7 +68,7 @@ describe('main', () => {
     const rta = {
         attachSelectionChange,
         getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
-       attachUndoRedoStackModified : jest.fn(),
+        attachUndoRedoStackModified: jest.fn(),
         getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR' }),
         getRootControlInstance: jest.fn().mockReturnValue({
             getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })
@@ -80,39 +84,48 @@ describe('main', () => {
         await init(rta);
         const callBackFn = spyPostMessage.mock.calls[0][1];
         // apply change without error
+        const payload = {
+            controlId:
+                'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy',
+            propertyName: 'enabled',
+            value: false
+        };
         await callBackFn({
             type: '[ext] change-property',
-            payload: {
-                controlId:
-                    'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy',
-                propertyName: 'enabled',
-                value: false
-            }
+            payload
         });
 
         //assert
-        expect(applyChangeSpy).toBeCalledTimes(1);
-        expect(initOutlineSpy).toBeCalledTimes(1);
+        expect(applyChangeSpy).toBeCalledWith({ rta: rta }, payload);
+        expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock);
     });
     test('init - rta exception', async () => {
         initOutlineSpy.mockRejectedValue('error');
         await init(rta);
         const callBackFn = spyPostMessage.mock.calls[0][1];
-
+        const payload = {
+            controlId:
+                'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy',
+            propertyName: 'enabled',
+            value: 'falsee'
+        };
         // apply change
         await callBackFn({
             type: '[ext] change-property',
-            payload: {
-                controlId:
-                    'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy',
-                propertyName: 'enabled',
-                value: 'falsee'
-            }
+            payload
         });
 
         // assert
-        expect(applyChangeSpy).toBeCalledTimes(1);
-        expect(sendActionMock).toBeCalledTimes(2);
-        expect(initOutlineSpy).toBeCalledTimes(1);
+        expect(applyChangeSpy).toBeCalledWith({ rta: rta }, payload);
+        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
+            type: '[ext] icons-loaded',
+            payload: mockIconResult
+        });
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] change-stack-modified',
+            payload: { saved: [], pending: [] }
+        });
+        expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock);
+        expect(Log.error).toBeCalledWith('Error during initialization of Control Property Editor', 'error');
     });
 });
