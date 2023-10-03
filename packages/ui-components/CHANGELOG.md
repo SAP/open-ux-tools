@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.16
+
+### Patch Changes
+
+-   2039c789: UIFlexibleTable. Fix - impossible to scroll with touch when user touches disabled row.
+
 ## 1.11.15
 
 ### Patch Changes
