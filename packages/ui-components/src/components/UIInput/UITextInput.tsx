@@ -153,6 +153,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         fontWeight: 'normal',
                         boxSizing: 'border-box',
                         borderRadius: COMMON_INPUT_STYLES.borderRadius,
+                        fontFamily: 'var(--vscode-font-family)',
                         selectors: {
                             '::placeholder': {
                                 fontSize: 13,
