@@ -156,10 +156,14 @@ export class AdpPreview {
      * @param router router that is to be enhanced with the API
      */
     addApis(router: Router): void {
-        /**
-         * FRAGMENT Routes
-         */
         router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
         router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment as RequestHandler);
+
+        router.get(ApiRoutes.CONTROLLER, this.routesHandler.handleReadAllControllers as RequestHandler);
+        router.post(
+            ApiRoutes.CONTROLLER,
+            express.json(),
+            this.routesHandler.handleWriteControllerExt as RequestHandler
+        );
     }
 }

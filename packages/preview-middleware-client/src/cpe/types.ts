@@ -1,9 +1,5 @@
-import type { ExternalAction, IconDetails } from '@sap-ux-private/control-property-editor-common';
+import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import type Element from 'sap/ui/core/Element';
-import type { ID } from 'sap/ui/core/library';
-import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
-import type Component from 'sap/ui/core/Component';
 
 export interface UI5AdaptationOptions {
     rta: RuntimeAuthoring;
@@ -44,10 +40,3 @@ export interface Service {
     init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void;
 }
 
-export interface UI5Facade {
-    getControlById: <T extends Element>(id: ID) => T | undefined;
-    getIcons: () => IconDetails[];
-    getComponent: <T extends Component>(id: ID) => T | undefined;
-    getOverlay: <T extends ElementOverlay>(control: Element) => T | undefined;
-    getClosestOverlayFor: <T extends ElementOverlay>(control: Element) => T | undefined;
-}

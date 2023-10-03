@@ -4,38 +4,38 @@ import * as Documentation from '../../../src/cpe/documentation';
 import type { ExternalAction, Control } from '@sap-ux-private/control-property-editor-common';
 import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';
-import Log from 'sap/base/Log';
+import { fetchMock, sapCoreMock } from 'mock/window';
+import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
 
 describe('SelectionService', () => {
     const sendActionMock = jest.fn();
     let buildControlDataSpy: jest.SpyInstance<any>;
     let documentation: jest.SpyInstance<any>;
-    Log.error = jest.fn();
-    Log.info = jest.fn();
+    const mockControlData = {
+        id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy', //the id of the underlying control/aggregation
+        type: 'sap.m.Button', //the name of the ui5 class of the control/aggregation
+        properties: [
+            {
+                editor: 'checkbox',
+                name: 'activeIcon',
+                readableName: 'test',
+                type: 'boolean',
+                isEnabled: false,
+                value: 'true'
+            },
+            {
+                editor: 'dropdown',
+                name: 'ariaHasPopup',
+                readableName: 'test',
+                type: 'string',
+                isEnabled: false,
+                value: 'test'
+            }
+        ]
+    } as Control;
     beforeEach(() => {
         buildControlDataSpy = jest.spyOn(controlData, 'buildControlData').mockImplementation((): any => {
-            return {
-                id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy', //the id of the underlying control/aggregation
-                type: 'sap.m.Button', //the name of the ui5 class of the control/aggregation
-                properties: [
-                    {
-                        editor: 'checkbox',
-                        name: 'activeIcon',
-                        readableName: 'test',
-                        type: 'boolean',
-                        isEnabled: false,
-                        value: 'true'
-                    },
-                    {
-                        editor: 'dropdown',
-                        name: 'ariaHasPopup',
-                        readableName: 'test',
-                        type: 'string',
-                        isEnabled: false,
-                        value: 'test'
-                    }
-                ]
-            } as Control;
+            return mockControlData;
         });
         documentation = jest.spyOn(Documentation, 'getDocumentation').mockImplementation(() =>
             Promise.resolve({
@@ -97,13 +97,13 @@ describe('SelectionService', () => {
         documentation.mockRestore();
     });
     beforeAll(() => {
-        window.fetch = jest.fn().mockResolvedValue({});
+        fetchMock.mockResolvedValue({});
     });
 
     test('attaches to RTA selection change', async () => {
         let handler: ((event: Event) => Promise<void>) | undefined;
         const cache = new Map();
-        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id: ID) => {
             return cache.get(id);
         });
         const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([]);
@@ -114,13 +114,7 @@ describe('SelectionService', () => {
             attachSelectionChange,
             getService: jest.fn().mockReturnValue({ get: jest.fn(), attachEvent: jest.fn() })
         } as any;
-        const service = new SelectionService(rta, {
-            getControlById: getControlByIdSpy,
-            getIcons: jest.fn(),
-            getClosestOverlayFor: jest.fn(),
-            getComponent: jest.fn(),
-            getOverlay: jest.fn()
-        });
+        const service = new SelectionService(rta);
         await service.init(jest.fn(), jest.fn());
         expect(handler).not.toBeUndefined();
         if (handler !== undefined) {
@@ -128,7 +122,6 @@ describe('SelectionService', () => {
                 getParameter: selectionChangeGetParameterSpy
             } as any);
         }
-        expect(selectionChangeGetParameterSpy).toHaveBeenCalledTimes(1);
         expect(selectionChangeGetParameterSpy).toHaveBeenCalledWith('selection');
     });
 
@@ -289,7 +282,7 @@ describe('SelectionService', () => {
                 }
             ]
         ]);
-        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id: ID) => {
             return cache.get(id);
         });
         const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([
@@ -304,13 +297,7 @@ describe('SelectionService', () => {
             attachSelectionChange,
             getService: jest.fn().mockReturnValue({ get: jest.fn(), attachEvent: jest.fn() })
         } as any;
-        const service = new SelectionService(rta, {
-            getControlById: getControlByIdSpy,
-            getOverlay: jest.fn(),
-            getComponent: jest.fn(),
-            getClosestOverlayFor: jest.fn(),
-            getIcons: jest.fn()
-        });
+        const service = new SelectionService(rta);
         const sendActionSpy = jest.fn();
         await service.init(sendActionSpy, jest.fn());
         expect(handler).not.toBeUndefined();
@@ -339,10 +326,13 @@ describe('SelectionService', () => {
                 }
             } as any);
         }
-        expect(sendActionSpy).toHaveBeenCalledTimes(2);
         expect(sendActionSpy).toHaveBeenNthCalledWith(1, {
             payload: { controlId: 'control1', newValue: 'newText', propertyName: 'text' },
             type: '[ext] property-changed'
+        });
+        expect(sendActionSpy).toHaveBeenNthCalledWith(2, {
+            payload: { id: 'control1', name: 'controlName', type: 'controlType', properties: [] },
+            type: '[ext] control-selected'
         });
     });
 
@@ -508,7 +498,7 @@ describe('SelectionService', () => {
                 }
             ]
         ]);
-        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id: ID) => {
             return cache.get(id);
         });
         const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([
@@ -523,13 +513,7 @@ describe('SelectionService', () => {
             attachSelectionChange,
             getService: jest.fn().mockReturnValue({ get: jest.fn(), attachEvent: jest.fn() })
         } as any;
-        const service = new SelectionService(rta, {
-            getControlById: getControlByIdSpy,
-            getIcons: jest.fn(),
-            getClosestOverlayFor: jest.fn(),
-            getComponent: jest.fn(),
-            getOverlay: jest.fn()
-        });
+        const service = new SelectionService(rta);
         const sendActionSpy = jest.fn();
         await service.init(sendActionSpy, jest.fn());
         expect(handler).not.toBeUndefined();
@@ -562,7 +546,10 @@ describe('SelectionService', () => {
             } as any);
         }
 
-        expect(sendActionSpy).toHaveBeenCalledTimes(1);
+        expect(sendActionSpy).toHaveBeenCalledWith({
+            payload: { id: 'control1', type: 'controlType', name: 'controlName', properties: [] },
+            type: '[ext] control-selected'
+        });
     });
 
     test('select control', async () => {
@@ -570,7 +557,6 @@ describe('SelectionService', () => {
         function subscribe(handler: (action: ExternalAction) => Promise<void> | void): void {
             actionHandlers.push(handler);
         }
-
         const cache = new Map();
         cache.set(
             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy',
@@ -606,10 +592,10 @@ describe('SelectionService', () => {
             })
         } as any);
 
-        const getControlByIdSpy = jest.fn().mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id: ID) => {
             return cache.get(id);
         });
-        const getComponentSpy = jest.fn().mockImplementation(() => {
+        sapCoreMock.getComponent.mockImplementation(() => {
             return {
                 getMetadata: jest.fn().mockReturnValue({
                     getName: jest.fn().mockReturnValue('activeIcon'),
@@ -689,29 +675,16 @@ describe('SelectionService', () => {
                 })
             } as any;
         });
-        const getOverlaySpy = jest.fn().mockImplementation();
 
-        const getClosestOverlayForSpy = jest
-            .fn()
-            .mockImplementationOnce(() => {
-                return { isSelectable: jest.fn().mockReturnValue(true), setSelected: jest.fn() } as any;
-            })
-            .mockImplementationOnce(() => {
-                return { isSelectable: jest.fn().mockReturnValue(false) } as any;
-            });
+        mockOverlay.isSelectable.mockReturnValue(true);
+        mockOverlay.isSelectable.mockReturnValue(false);
         const attachSelectionChange = jest.fn().mockImplementation();
         const rta = {
             attachSelectionChange,
             getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
             getService: jest.fn().mockReturnValue({ get: jest.fn(), attachEvent: jest.fn() })
         } as any;
-        const service = new SelectionService(rta, {
-            getControlById: getControlByIdSpy,
-            getComponent: getComponentSpy,
-            getOverlay: getOverlaySpy,
-            getClosestOverlayFor: getClosestOverlayForSpy,
-            getIcons: jest.fn()
-        });
+        const service = new SelectionService(rta);
         await service.init(sendActionMock, subscribe);
 
         for (const handler2 of actionHandlers) {
@@ -734,7 +707,9 @@ describe('SelectionService', () => {
                 payload: 'testIdfinal'
             });
         }
-        expect(sendActionMock).toBeCalledTimes(2);
-        expect(buildControlDataSpy).toBeCalledTimes(2);
+        expect(sendActionMock).toHaveBeenNthCalledWith(1, { type: '[ext] control-selected', payload: mockControlData });
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, { type: '[ext] control-selected', payload: mockControlData });
+        expect(buildControlDataSpy).toHaveBeenNthCalledWith(1, {});
+        expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'));
     });
 });

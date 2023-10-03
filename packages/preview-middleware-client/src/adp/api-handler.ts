@@ -1,6 +1,7 @@
 import type { Layer } from 'sap/ui/fl';
 
 export const enum ApiEndpoints {
+    CHANGES = '/preview/api/changes',
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
     MANIFEST_APP_DESCRIPTOR = '/manifest.appdescr_variant'
@@ -15,9 +16,15 @@ export const enum RequestMethod {
 }
 
 type Fragments = { fragmentName: string }[];
+type Controllers = { controllerName: string }[];
 
 export interface FragmentsResponse {
     fragments: Fragments;
+    message: string;
+}
+
+export interface ControllersResponse {
+    controllers: Controllers;
     message: string;
 }
 
@@ -99,4 +106,33 @@ export async function writeFragment<T>(data: T): Promise<T> {
  */
 export async function getManifestAppdescr(): Promise<ManifestAppdescr> {
     return request<ManifestAppdescr>(ApiEndpoints.MANIFEST_APP_DESCRIPTOR, RequestMethod.GET);
+}
+
+/**
+ * Retrieves all controller extensions from the project's workspace
+ *
+ * @returns Generic Promise<T>
+ */
+export async function readControllers<T>(): Promise<T> {
+    return request<T>(ApiEndpoints.CONTROLLER, RequestMethod.GET);
+}
+
+/**
+ * Writes a Controller to the project's workspace
+ *
+ * @param data Data to be send to the server
+ * @returns Generic Promise<T>
+ */
+export async function writeController<T>(data: T): Promise<T> {
+    return request<T>(ApiEndpoints.CONTROLLER, RequestMethod.POST, data);
+}
+
+/**
+ * Writes a change object to the project's workspace
+ *
+ * @param data Data to be send to the server
+ * @returns Generic Promise<T>
+ */
+export async function writeChange<T>(data: T): Promise<T> {
+    return request<T>(ApiEndpoints.CHANGES, RequestMethod.POST, data);
 }
