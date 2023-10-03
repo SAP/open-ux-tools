@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.15
+
+### Patch Changes
+
+-   a1c0d41f: UITextField. Fix - apply font family using vscode variable to UITextField input.
+
 ## 1.11.14
 
 ### Patch Changes
