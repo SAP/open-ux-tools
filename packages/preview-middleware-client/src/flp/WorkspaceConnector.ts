@@ -10,11 +10,15 @@ interface Change {
     };
 }
 
-function getFlexSettings() {
+function getFlexSettings(): {
+    generator?: string;
+    developerMode?: boolean;
+} {
     let result;
     const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
-    if (bootstrapConfig) {
-        result = bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings');
+    const flexSetting = bootstrapConfig?.getAttribute('data-open-ux-preview-flex-settings');
+    if (flexSetting) {
+        result = JSON.parse(flexSetting);
     }
     return result;
 }
@@ -27,7 +31,7 @@ const connector = merge({}, ObjectStorageConnector, {
             const settings = getFlexSettings();
             if (settings) {
                 change.support ??= {};
-                change.support.generator = JSON.parse(settings).generator;
+                change.support.generator = settings.generator;
             }
 
             return fetch(path, {
@@ -71,7 +75,7 @@ const connector = merge({}, ObjectStorageConnector, {
         const [majorVersion, minorVersion] = ui5Version.version.split('.').map((v: string) => parseInt(v, 10));
         features.isVariantAdaptationEnabled = majorVersion >= 1 && minorVersion >= 90;
         const settings = getFlexSettings();
-        if (settings && JSON.parse(settings).developerMode) {
+        if (settings?.developerMode) {
             features.isVariantAdaptationEnabled = false;
         }
 
