@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.18
+
+### Patch Changes
+
+-   80b95469: fix(ui-components): fix focus state for the split button
+
 ## 1.11.17
 
 ### Patch Changes
