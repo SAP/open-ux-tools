@@ -13,7 +13,7 @@ interface Change {
 function getFlexSettings(): {
     generator?: string;
     developerMode?: boolean;
-} {
+} | undefined {
     let result;
     const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
     const flexSetting = bootstrapConfig?.getAttribute('data-open-ux-preview-flex-settings');
