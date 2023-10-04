@@ -486,15 +486,15 @@ importers:
       body-parser:
         specifier: 1.20.1
         version: 1.20.1
-      copyfiles:
-        specifier: 2.4.1
-        version: 2.4.1
       ejs:
         specifier: 3.1.7
         version: 3.1.7
       esbuild-plugin-alias:
         specifier: 0.2.1
         version: 0.2.1
+      esbuild-plugin-copy:
+        specifier: 2.1.1
+        version: 2.1.1(esbuild@0.14.49)
       eslint-plugin-react:
         specifier: 7.32.2
         version: 7.32.2(eslint@8.49.0)
@@ -11721,6 +11721,18 @@ packages:
     resolution: {integrity: sha512-jyfL/pwPqaFXyKnj8lP8iLk6Z0m099uXR45aSN8Av1XD4vhvQutxxPzgA2bTcAwQpa1zCXDcWOlhFgyP3GKqhQ==}
     dev: true
 
+  /esbuild-plugin-copy@2.1.1(esbuild@0.14.49):
+    resolution: {integrity: sha512-Bk66jpevTcV8KMFzZI1P7MZKZ+uDcrZm2G2egZ2jNIvVnivDpodZI+/KnpL3Jnap0PBdIHU7HwFGB8r+vV5CVw==}
+    peerDependencies:
+      esbuild: '>= 0.14.0'
+    dependencies:
+      chalk: 4.1.2
+      chokidar: 3.5.3
+      esbuild: 0.14.49
+      fs-extra: 10.1.0
+      globby: 11.1.0
+    dev: true
+
   /esbuild-register@3.4.2(esbuild@0.18.20):
     resolution: {integrity: sha512-kG/XyTDyz6+YDuyfB9ZoSIOOmgyFCH+xPRtsCa8W85HLRV5Csp+o3jWVbOSHgSLfyLc5DmP+KFDNwty4mEjC+Q==}
     peerDependencies:
@@ -12877,6 +12889,15 @@ packages:
       universalify: 2.0.0
     dev: true
 
+  /fs-extra@10.1.0:
+    resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      graceful-fs: 4.2.11
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+    dev: true
+
   /fs-extra@11.1.1:
     resolution: {integrity: sha512-MGIE4HOvQCeUCzmlHs0vXpih4ysz4wg9qiSAu6cd42lVwPbTM1TjV7RusoyQqMmk/95gdQZX72u+YW+c3eEpFQ==}
     engines: {node: '>=14.14'}
@@ -13246,6 +13267,7 @@ packages:
 
   /graceful-fs@4.2.9:
     resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==}
+    dev: true
 
   /grapheme-splitter@1.0.4:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
@@ -19670,7 +19692,7 @@ packages:
     resolution: {integrity: sha512-BoJDj+ca3D9xOuPEM6RWVtWQtvEPQiQYn82LvdxhLWplfQsBzBqtgK0yhCP0s1BNTi6dH9BO+dzybvyQIacifg==}
     engines: {node: '>=4'}
     dependencies:
-      graceful-fs: 4.2.9
+      graceful-fs: 4.2.11
       pify: 2.3.0
       strip-bom-buf: 1.0.0
       strip-bom-stream: 2.0.0
