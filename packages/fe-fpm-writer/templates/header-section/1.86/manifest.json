@@ -26,7 +26,7 @@
                                                 "subTitle": "<%- subTitle %>",
                                             <% } %>
                                             <% if (typeof stashed !== 'undefined') { %> 
-                                                "stashed": "<%- stashed %>",
+                                                "stashed": <%- stashed %>,
                                             <% } %>
                                             "requestGroupId": "<%- requestGroupId %>",
                                             "flexSettings": {

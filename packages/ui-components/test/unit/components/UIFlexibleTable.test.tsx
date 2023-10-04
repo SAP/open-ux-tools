@@ -904,6 +904,34 @@ describe('<UIFlexibleTable />', () => {
                 'row-1'
             );
         });
+
+        it('Disabled reorder row', () => {
+            const enabledRowIndex = 0;
+            const disablerRowIndex = 1;
+            wrapper.setProps({
+                rows: rows.map((row, index) => ({ ...row, disabled: index === disablerRowIndex }))
+            });
+            // Check enabled row
+            const enabledRow = wrapper.find('li').at(enabledRowIndex);
+            expect(enabledRow.prop('style')).toEqual(
+                expect.objectContaining({
+                    cursor: 'inherit',
+                    touchAction: 'none',
+                    userSelect: 'none',
+                    pointerEvents: 'all'
+                })
+            );
+            // Check disabled row
+            const disabledRow = wrapper.find('li').at(disablerRowIndex);
+            expect(disabledRow.prop('style')).toEqual(
+                expect.objectContaining({
+                    cursor: 'default',
+                    touchAction: 'auto',
+                    userSelect: 'none',
+                    pointerEvents: 'all'
+                })
+            );
+        });
     });
 
     describe('InlineFlex layout', () => {

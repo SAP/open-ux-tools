@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.23.9
+
+### Patch Changes
+
+-   d880c217: Correction for `stashed` property of header sections in manifest template: Property type is changed from string to boolean
+
 ## 0.23.8
 
 ### Patch Changes
