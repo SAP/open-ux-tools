@@ -218,7 +218,14 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
                 }
             },
             splitButtonDivider: dividerStyle,
-            splitButtonDividerDisabled: dividerStyle
+            splitButtonDividerDisabled: dividerStyle,
+            splitButtonContainerFocused: {
+                '.ms-Fabric--isFocusVisible &:focus:after': {
+                    border: 'none',
+                    outlineColor: 'var(--vscode-focusBorder)',
+                    inset: -2
+                }
+            }
         };
     };
 
