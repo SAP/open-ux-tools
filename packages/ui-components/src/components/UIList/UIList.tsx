@@ -5,14 +5,16 @@ import type {
     IGroupRenderProps,
     IGroupHeaderProps,
     IGroupHeaderStyles,
-    IListProps
+    IListProps,
+    IGroupedListProps
 } from '@fluentui/react';
 import { GroupedList } from '@fluentui/react';
 
 import { UiIcons } from '../Icons';
 
 import './UIList.scss';
-export interface ListProps {
+
+export interface ListProps extends IGroupedListProps {
     groups: IGroup[];
     groupProps?: IGroupRenderProps;
     items: never[];
