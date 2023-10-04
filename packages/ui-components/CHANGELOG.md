@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.17
+
+### Patch Changes
+
+-   38d70e31: UIList. Fix - ListProps interface is extended from fluent-ui IGroupedListProps
+
 ## 1.11.16
 
 ### Patch Changes
