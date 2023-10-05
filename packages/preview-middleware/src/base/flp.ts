@@ -167,7 +167,6 @@ export class FlpSandbox {
         if (this.rta) {
             this.rta.options ??= {};
             this.rta.options.baseId = componentId ?? manifest['sap.app'].id;
-            this.rta.options.generator = 'changeUtils: SAPFioriTools-propertyEditor';
             this.addEditorRoutes(this.rta);
         }
         this.addRoutesForAdditionalApps();
@@ -201,11 +200,15 @@ export class FlpSandbox {
                 }
                 this.router.use(`${path}editor`, serveStatic(cpe));
             }
+            const defaultGenerator = editor.developerMode
+                ? '@sap-ux/control-property-editor'
+                : '@sap-ux/preview-middleware';
             this.router.get(previewUrl, (async (_req: Request, res: Response) => {
                 const config = { ...this.templateConfig };
                 config.flex = {
                     layer: rta.layer,
                     ...rta.options,
+                    generator: editor.generator ?? defaultGenerator,
                     developerMode: editor.developerMode === true,
                     pluginScript: editor.pluginScript
                 };

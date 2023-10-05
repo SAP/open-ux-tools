@@ -1,5 +1,6 @@
 const { esbuildOptionsBrowser, build } = require('../../esbuildConfig');
 const NodeModulesPolyfills = require('@esbuild-plugins/node-modules-polyfill');
+const { copy } = require('esbuild-plugin-copy');
 const alias = require('esbuild-plugin-alias');
 
 // Set esbuild options for this build
@@ -16,7 +17,15 @@ esbuildOptions.entryPoints = {
     app: './src/index.tsx'
 };
 esbuildOptions.format = 'esm';
-esbuildOptions.plugins = esbuildOptions.plugins.concat([NodeModulesPolyfills.NodeModulesPolyfillPlugin()]);
+esbuildOptions.plugins = esbuildOptions.plugins.concat(
+    [NodeModulesPolyfills.NodeModulesPolyfillPlugin()],
+    copy({
+        assets: {
+            from: ['./src/favicon.ico'],
+            to: ['./']
+        }
+    })
+);
 
 module.exports = {
     esbuildOptions

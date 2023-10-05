@@ -24,6 +24,16 @@ describe('flp/WorkspaceConnector', () => {
             }));
         });
 
+        test('setItem, generator - tool-variant', async () => {
+            const change = { data: '~Data' };
+            documentMock.getElementById.mockReturnValueOnce({
+                getAttribute: () => JSON.stringify({ generator: 'tool-variant' })
+            })
+
+            await connector.storage.setItem('~notUsed', change);
+            expect((change as any).support.generator).toBe('tool-variant');
+        });
+
         test('removeItem', async () => {
             const key = '~Key';
             await connector.storage.removeItem(key);
