@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.4.1
+
+### Patch Changes
+
+-   8029360f: Add favicon for CPE and generator for variant-config
+
 ## 0.4.0
 
 ### Minor Changes
