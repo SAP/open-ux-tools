@@ -205,7 +205,7 @@ export class FlpSandbox {
                 config.flex = {
                     layer: rta.layer,
                     ...rta.options,
-                    generator: editor.generator,
+                    generator: editor.generator ?? '@sap-ux/control-property-editor',
                     developerMode: editor.developerMode === true,
                     pluginScript: editor.pluginScript
                 };

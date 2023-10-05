@@ -162,8 +162,7 @@ describe('FlpSandbox', () => {
                             {
                                 path: '/with/plugin.html',
                                 developerMode: true,
-                                pluginScript: 'open/ux/tools/plugin',
-                                generator: 'tool-plugin'
+                                pluginScript: 'open/ux/tools/plugin'
                             }
                         ]
                     }
