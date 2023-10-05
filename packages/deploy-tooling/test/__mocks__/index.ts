@@ -18,6 +18,8 @@ type MockedAxiosExtension = {
     };
     mockedAdtServiceMethod: {
         createTransportRequest: jest.Mock;
+        listPackages: jest.Mock;
+        getTransportRequests: jest.Mock;
     };
 };
 export const mockedUi5RepoService = (mockedAxiosExtension as unknown as MockedAxiosExtension)

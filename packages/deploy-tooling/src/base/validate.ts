@@ -2,7 +2,7 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { TransportChecksService, ListPackageService } from '@sap-ux/axios-extension';
 import { TransportRequest } from '@sap-ux/axios-extension/src/abap/types';
 import type { Logger } from '@sap-ux/logger';
-import chalk from 'chalk';
+import { green, red, yellow } from 'chalk';
 
 export type ValidationInput = {
     appName: string;
@@ -33,9 +33,10 @@ export enum SummaryStatus {
     Unknown
 }
 
-const summaryMessage = {
+export const summaryMessage = {
     allClientCheckPass: 'SAPUI5 ABAP Repository follows the rules of creating BSP application',
     noErrorMessageFromValidator: 'Validator did not return readable error message',
+    adtServiceUndefined: 'AdtService cannot be instantiated',
     packageCheckPass: 'Package is found on ABAP system',
     packageNotFound: 'Package does not exist on ABAP system',
     pacakgeAdtAccessError: 'Package could not be validated. Please check manually.',
@@ -90,19 +91,19 @@ export function formatSummary(summary: SummaryRecord[]): string {
             let statusSymbol;
             switch (next.status) {
                 case SummaryStatus.Valid:
-                    statusSymbol = chalk.green('√');
+                    statusSymbol = green('√');
                     break;
                 case SummaryStatus.Invalid:
-                    statusSymbol = chalk.red('×');
+                    statusSymbol = red('×');
                     break;
                 case SummaryStatus.Unknown:
                 default:
-                    statusSymbol = chalk.yellow('?');
+                    statusSymbol = yellow('?');
                     break;
             }
             return `${statusSymbol} ${next.message}`;
         })
-        .reduce((aggregated, current) => `${aggregated}${current}\n`);
+        .reduce((aggregated, current) => `${aggregated}\r\n${current}`);
 
     return summaryStr;
 }
@@ -170,8 +171,14 @@ async function validatePackage(
     try {
         const adtService = await provider.getAdtService<ListPackageService>(ListPackageService);
         if (!adtService) {
-            throw new Error('AdtService cannot be instantiated');
+            output.summary.push({
+                message: `${summaryMessage.adtServiceUndefined} for ListPackageService`,
+                status: SummaryStatus.Unknown
+            });
+            output.result = false;
+            return;
         }
+
         const packages = await adtService.listPackages({ phrase: input.package });
         const isValidPackage = packages.findIndex((packageName: string) => packageName === input.package) >= 0;
 
@@ -217,8 +224,14 @@ async function validateTransportRequest(
     try {
         const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
         if (!adtService) {
-            throw new Error('AdtService cannot be instantiated');
+            output.summary.push({
+                message: `${summaryMessage.adtServiceUndefined} for TransportChecksService`,
+                status: SummaryStatus.Unknown
+            });
+            output.result = false;
+            return;
         }
+
         const trList = await adtService.getTransportRequests(input.package!, input.appName);
         const isValidTrList = trList.findIndex((tr: TransportRequest) => tr.transportNumber === input.transport) >= 0;
 
