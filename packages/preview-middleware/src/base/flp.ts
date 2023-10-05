@@ -200,12 +200,15 @@ export class FlpSandbox {
                 }
                 this.router.use(`${path}editor`, serveStatic(cpe));
             }
+            const defaultGenerator = editor.developerMode
+                ? '@sap-ux/control-property-editor'
+                : '@sap-ux/preview-middleware';
             this.router.get(previewUrl, (async (_req: Request, res: Response) => {
                 const config = { ...this.templateConfig };
                 config.flex = {
                     layer: rta.layer,
                     ...rta.options,
-                    generator: editor.generator ?? '@sap-ux/control-property-editor',
+                    generator: editor.generator ?? defaultGenerator,
                     developerMode: editor.developerMode === true,
                     pluginScript: editor.pluginScript
                 };
