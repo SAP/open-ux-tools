@@ -1,0 +1,7 @@
+{
+    "PROMPT_ABAP_APPDESC_LENGTH": "Deployment Description should not exceed 60 characters",
+    "ERROR_INVALID_CLIENT": "[{{client}}] is invalid. Enter blank or a value between 000-999",
+    "PROMPT_ABAP_TRANSPORT_NO_REQUIRED": "Provide a transport request for your application",
+    "PROMPT_ABAP_PACKAGE_WARN": "Provide a package",
+    "ERROR_INVALID_URL": "Invalid URL: [{{input}}]"
+}

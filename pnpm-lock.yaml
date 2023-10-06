@@ -605,6 +605,12 @@ importers:
         specifier: 2.4.4
         version: 2.4.4
 
+  packages/deploy-input-validator:
+    dependencies:
+      i18next:
+        specifier: 20.3.2
+        version: 20.3.2
+
   packages/deploy-tooling:
     dependencies:
       '@sap-ux/axios-extension':
