@@ -259,13 +259,19 @@ async function tryDeploy(
             config.createTransport = false;
         }
         if (config.test === true) {
-            const validateOutput = await validateBeforeDeploy({ 
-                appName: config.app.name,
-                description: config.app.description,
-                transport: config.app.transport,
-                package: config.app.package
-             }, provider, logger);
-             logger.info(formatSummary(validateOutput.summary));
+            const validateOutput = await validateBeforeDeploy(
+                {
+                    appName: { value: config.app.name ?? '', helpers: [''] },
+                    description: { value: config.app.description ?? '' },
+                    package: { value: config.app.package ?? '' },
+                    transport: { value: config.app.transport ?? '', helpers: [config.app.package ?? ''] },
+                    client: { value: config.target.client ?? '' },
+                    url: { value: config.target.url ?? '' }
+                },
+                provider,
+                logger
+            );
+            logger.info(formatSummary(validateOutput.summary));
         }
         const service = getUi5AbapRepositoryService(provider, config, logger);
         await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });

@@ -619,6 +619,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/deploy-input-validator':
+        specifier: workspace:*
+        version: link:../deploy-input-validator
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger

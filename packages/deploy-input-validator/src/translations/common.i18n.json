@@ -3,5 +3,11 @@
     "ERROR_INVALID_CLIENT": "[{{client}}] is invalid. Enter blank or a value between 000-999",
     "PROMPT_ABAP_TRANSPORT_NO_REQUIRED": "Provide a transport request for your application",
     "PROMPT_ABAP_PACKAGE_WARN": "Provide a package",
-    "ERROR_INVALID_URL": "Invalid URL: [{{input}}]"
+    "ERROR_INVALID_URL": "Invalid URL: [{{input}}]",
+    "PROMPT_ABAP_APPNAME_REQUIRED": "Application name required",
+    "PROMPT_ABAP_INVALID_NAMESPACE": "Namespace invalid as there are too many forward slashes",
+    "PROMPT_ABAP_INVALID_NAMESPACE_LENGTH": "Namespace limited to 10 characters, entered {{length}}",
+    "PROMPT_ABAP_INVALID_APPNAME_LENGTH": "Application name limited to 15 characters, entered {{length}}",
+    "PROMPT_ABAP_INVALID_APPNAME": "Application name needs to be prefixed with [{{prefix}}]",
+    "ERROR_CHARACTERS_FORBIDDEN_IN_APP_NAME": "Only alphanumeric, underscore and slash characters are allowe"
 }

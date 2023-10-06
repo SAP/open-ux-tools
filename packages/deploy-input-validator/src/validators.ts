@@ -1,5 +1,12 @@
 import { t } from './i18n';
 
+/**
+ * Validator Fiori app name is compatbiel with Fiori project requirements.
+ *
+ * @param name Fiori app name
+ * @param prefix Prefix required by backend system
+ * @returns True or error message
+ */
 export function validateAppName(name: string, prefix: string): boolean | string {
     const errorMessages: string[] = [];
 
@@ -42,7 +49,13 @@ export function validateAppName(name: string, prefix: string): boolean | string 
     }
 }
 
-export function validateAppDescription(description: string):  boolean | string {
+/**
+ * Validate Fiori app description length is not exceeding 60 characters.
+ *
+ * @param description Fiori app description
+ * @returns true or error message
+ */
+export function validateAppDescription(description: string): boolean | string {
     const errorMessages: string[] = [];
 
     if (description.length > 60) {
@@ -56,10 +69,16 @@ export function validateAppDescription(description: string):  boolean | string {
     }
 }
 
+/**
+ * Client number is either empty or 3 digit string.
+ *
+ * @param client ABAP system client number
+ * @returns true or error message
+ */
 export function validateClient(client: string): boolean | string {
     const c = client?.trim() || '';
 
-    let isValid = c === '' || !!c.match(/^[0-9]{3}$/);
+    const isValid = c === '' || !!c.match(/^[0-9]{3}$/);
 
     if (isValid) {
         return true;
@@ -68,11 +87,14 @@ export function validateClient(client: string): boolean | string {
     }
 }
 
-
-export function validateTransportRequestNumber(
-    transportRequest: string,
-    packageName: string,
-): boolean | string {
+/**
+ * Transport request number is not required for local package.
+ *
+ * @param transportRequest Transport request number
+ * @param packageName Package name
+ * @returns true or error message
+ */
+export function validateTransportRequestNumber(transportRequest: string, packageName: string): boolean | string {
     if (!packageName.match(/^[$LlTt]/) && !transportRequest?.trim()) {
         return t('PROMPT_ABAP_TRANSPORT_NO_REQUIRED');
     } else {
@@ -80,6 +102,12 @@ export function validateTransportRequestNumber(
     }
 }
 
+/**
+ * Validate package name cannot be empty.
+ *
+ * @param input Package name
+ * @returns true or error message
+ */
 export function validatePackage(input: string): boolean | string {
     if (!input?.trim()) {
         return t('PROMPT_ABAP_PACKAGE_WARN');
@@ -88,6 +116,12 @@ export function validatePackage(input: string): boolean | string {
     }
 }
 
+/**
+ * Validate url input is valid url format.
+ *
+ * @param input Backend ABAP system url
+ * @returns true or error message
+ */
 export function validateUrl(input: string): boolean | string {
     try {
         const url = new URL(input);
