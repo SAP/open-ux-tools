@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.20.10
+
+### Patch Changes
+
+-   c53a1665: Small fix in App.controller.js template
+
 ## 0.20.9
 
 ### Patch Changes
