@@ -7,7 +7,7 @@ import { t } from './i18n';
  * @param prefix Prefix required by backend system
  * @returns True or error message
  */
-export function validateAppName(name: string, prefix: string): boolean | string {
+export function validateAppName(name: string, prefix?: string): boolean | string {
     const errorMessages: string[] = [];
 
     const length = name ? name.trim().length : 0;
@@ -59,13 +59,9 @@ export function validateAppDescription(description: string): boolean | string {
     const errorMessages: string[] = [];
 
     if (description.length > 60) {
-        errorMessages.push(t('PROMPT_ABAP_APPDESC_LENGTH'));
-    }
-
-    if (errorMessages.length === 0) {
-        return true;
+        return t('PROMPT_ABAP_APPDESC_LENGTH');
     } else {
-        return errorMessages.join('\n') + (errorMessages.length > 1 ? '\n' : '');
+        return true;
     }
 }
 
@@ -95,7 +91,9 @@ export function validateClient(client: string): boolean | string {
  * @returns true or error message
  */
 export function validateTransportRequestNumber(transportRequest: string, packageName: string): boolean | string {
-    if (!packageName.match(/^[$LlTt]/) && !transportRequest?.trim()) {
+    const regex = /^[$LlTt]/;
+
+    if (regex.test(packageName) && transportRequest?.trim()) {
         return t('PROMPT_ABAP_TRANSPORT_NO_REQUIRED');
     } else {
         return true;
