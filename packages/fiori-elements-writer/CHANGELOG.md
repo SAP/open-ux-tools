@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.15.4
+
+### Patch Changes
+
+-   65010b09: fix - use patch version 0 for ui5 types semver for more reliable installs
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-application-writer@0.25.7
+    -   @sap-ux/ui5-config@0.19.4
+    -   @sap-ux/odata-service-writer@0.14.34
+    -   @sap-ux/fe-fpm-writer@0.23.9
+    -   @sap-ux/ui5-test-writer@0.2.0
+
 ## 0.15.3
 
 ### Patch Changes

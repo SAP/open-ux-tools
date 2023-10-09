@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.19.4
+
+### Patch Changes
+
+-   65010b09: fix - use patch version 0 for ui5 types semver for more reliable installs
+
 ## 0.19.3
 
 ### Patch Changes
