@@ -34,7 +34,7 @@ export function validateAppName(name: string, prefix?: string): boolean | string
     }
 
     if (length) {
-        if (prefix && !name?.toUpperCase()?.startsWith(prefix.toUpperCase())) {
+        if (prefix && !name.toUpperCase().startsWith(prefix.toUpperCase())) {
             errorMessages.push(t('PROMPT_ABAP_INVALID_APPNAME', { prefix }));
         }
         if (!name.match(/^[A-Za-z0-9_/]*$/)) {

@@ -40,6 +40,14 @@ describe('deploy input validators', () => {
             expect(output).toEqual(t('PROMPT_ABAP_INVALID_APPNAME_LENGTH', { length: appName.length }));
         });
 
+        test('validateAppName - invalid namespace length, invalid app name length', () => {
+            const ns = "ns1looooooonooog";
+            const appName = "appnamelooooooonooooooog";
+            const output = validateAppName(`/${ns}/${appName}`);
+            expect(output).toContain(t('PROMPT_ABAP_INVALID_NAMESPACE_LENGTH', { length: ns.length }));
+            expect(output).toContain(t('PROMPT_ABAP_INVALID_APPNAME_LENGTH', { length: appName.length }));
+        });
+
         test('validateAppName - invalid app name length', () => {
             const appName = "appnamelooooooonooooooog";
             const output = validateAppName(appName);
@@ -61,6 +69,12 @@ describe('deploy input validators', () => {
             expect(output).toContain(t('PROMPT_ABAP_INVALID_APPNAME_LENGTH', { length: appName.length }));
             expect(output).toContain(t('PROMPT_ABAP_INVALID_APPNAME', { prefix }));
             expect(output).toContain(t('ERROR_CHARACTERS_FORBIDDEN_IN_APP_NAME'));
+        });
+
+        test('validateAppName - app name undefined', () => {
+            const appName = undefined as any;
+            const output = validateAppName(appName);
+            expect(output).toContain(t('PROMPT_ABAP_APPNAME_REQUIRED'));
         });
     });
 
