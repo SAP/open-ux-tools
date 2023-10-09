@@ -12,10 +12,10 @@ local package because non-local package that is not associated with any transpor
 
 `@sap-ux/deploy-tooling`: 
 
-No API level change for this module. The new feature is to run validators on deploy configuration in `ui5-deploy.yaml` and returns found issues. This new feature is only
-activated when running deploy in `test` mode.
+A new feature is introduced to run validators on deploy configuration in `ui5-deploy.yaml` and returns found issues. This new feature is only activated when running deploy in the existing `test` mode. No additional parameter required to include this invaliation.
 
 `@sap-ux/deploy-input-validator`:
 
-A new module taht includes validator utility functions fr deploy configuration inputs.
+A new module that includes validator utility functions for deploy configuration inputs. Please refer to the
+unit test file in `deploy-input-validator/test/validators.test.ts` for use cases.
 
