@@ -56,8 +56,6 @@ export function validateAppName(name: string, prefix?: string): boolean | string
  * @returns true or error message
  */
 export function validateAppDescription(description: string): boolean | string {
-    const errorMessages: string[] = [];
-
     if (description.length > 60) {
         return t('PROMPT_ABAP_APPDESC_LENGTH');
     } else {
