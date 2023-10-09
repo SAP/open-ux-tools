@@ -173,6 +173,7 @@ async function getSystemPrefix(output: ValidationOutput, provider: AbapServicePr
 /**
  * Helper function to proces input validation result. Avoids sonarqube warning about
  * increasing complexity.
+ *
  * @param validationResult Validation result is either true or error message
  * @param output validation output
  */
@@ -276,8 +277,7 @@ async function validateTransportRequestWithAdt(
         }
 
         const trList = await adtService.getTransportRequests(input.package, input.appName);
-        const isValidTrList =
-            trList.findIndex((tr: TransportRequest) => tr.transportNumber === input.transport) >= 0;
+        const isValidTrList = trList.findIndex((tr: TransportRequest) => tr.transportNumber === input.transport) >= 0;
 
         if (isValidTrList) {
             output.summary.push({
