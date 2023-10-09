@@ -2,7 +2,7 @@ import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { formatSummary, summaryMessage, validateBeforeDeploy } from '../../../src/base/validate';
 import { mockedProvider, mockedAdtService } from '../../__mocks__';
 import { green, red, yellow } from 'chalk';
-import { ListPackageService, TransportChecksService } from '@sap-ux/axios-extension';
+import { AtoService, ListPackageService, TransportChecksService } from '@sap-ux/axios-extension';
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
 
@@ -10,6 +10,8 @@ describe('deploy-test validation', () => {
     beforeEach(() => {
         mockedAdtService.listPackages.mockReset();
         mockedAdtService.getTransportRequests.mockReset();
+        mockedAdtService.getAtoInfo.mockReset();
+        mockedProvider.getAdtService.mockReturnValue(mockedAdtService);
     });
 
     describe('Input format validation', () => {
@@ -20,6 +22,9 @@ describe('deploy-test validation', () => {
                 { transportNumber: 'T000002' },
                 { transportNumber: 'T000003' }
             ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'Z'
+            });
             const output = await validateBeforeDeploy(
                 {
                     appName: 'ZAPP1',
@@ -46,6 +51,9 @@ describe('deploy-test validation', () => {
                 { transportNumber: 'T000002' },
                 { transportNumber: 'T000003' }
             ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'Z'
+            });
 
             const output = await validateBeforeDeploy(
                 {
@@ -71,6 +79,9 @@ describe('deploy-test validation', () => {
                 { transportNumber: 'T000002' },
                 { transportNumber: 'T000003' }
             ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'Z'
+            });
 
             const output = await validateBeforeDeploy(
                 {
@@ -96,6 +107,9 @@ describe('deploy-test validation', () => {
                 { transportNumber: 'T000002' },
                 { transportNumber: 'T000003' }
             ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'Z'
+            });
 
             const output = await validateBeforeDeploy(
                 {
@@ -115,7 +129,17 @@ describe('deploy-test validation', () => {
         });
 
         test('adtService error', async () => {
-            mockedProvider.getAdtService.mockReturnValueOnce(undefined);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'Z'
+            });
+
+            mockedProvider.getAdtService.mockImplementation((adtServiceClass) => {
+                if (adtServiceClass.name === 'AtoService') {
+                    return mockedAdtService;
+                } else {
+                    return undefined;
+                }
+            });
 
             const output = await validateBeforeDeploy(
                 {
@@ -132,6 +156,8 @@ describe('deploy-test validation', () => {
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.adtServiceUndefined} for ListPackageService`);
+
+
         });
     });
 
@@ -143,6 +169,9 @@ describe('deploy-test validation', () => {
                 { transportNumber: 'T000002' },
                 { transportNumber: 'T000003' }
             ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'Z'
+            });
 
             const output = await validateBeforeDeploy(
                 {
@@ -168,6 +197,9 @@ describe('deploy-test validation', () => {
                 { transportNumber: 'T000002' },
                 { transportNumber: 'T000003' }
             ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'Z'
+            });
 
             const output = await validateBeforeDeploy(
                 {
@@ -189,6 +221,9 @@ describe('deploy-test validation', () => {
         test('Error validate transport request number', async () => {
             mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
             mockedAdtService.getTransportRequests.mockRejectedValueOnce(new Error(''));
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'Z'
+            });
 
             const output = await validateBeforeDeploy(
                 {
@@ -212,6 +247,9 @@ describe('deploy-test validation', () => {
             mockedAdtService.getTransportRequests.mockRejectedValueOnce(
                 new Error(TransportChecksService.LocalPackageError)
             );
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'Z'
+            });
 
             const output = await validateBeforeDeploy(
                 {
@@ -231,16 +269,19 @@ describe('deploy-test validation', () => {
         });
 
         test('adtService error', async () => {
+            mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'Z'
+            });
             mockedProvider.getAdtService.mockImplementation((adtServiceClass) => {
-                if (adtServiceClass === ListPackageService) {
+                if (adtServiceClass.name === 'AtoService') {
                     return mockedAdtService;
-                }
-                if (adtServiceClass === TransportChecksService) {
+                } else if (adtServiceClass.name === 'ListPackageService') {
+                    return mockedAdtService;
+                } else {
                     return undefined;
                 }
-                return undefined;
             });
-            mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
 
             const output = await validateBeforeDeploy(
                 {

@@ -1,5 +1,5 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { TransportChecksService, ListPackageService } from '@sap-ux/axios-extension';
+import { TransportChecksService, ListPackageService, AtoService } from '@sap-ux/axios-extension';
 import type { TransportRequest } from '@sap-ux/axios-extension/src/abap/types';
 import type { Logger } from '@sap-ux/logger';
 import { green, red, yellow } from 'chalk';
@@ -47,7 +47,8 @@ export const summaryMessage = {
     transportCheckPass: 'Transport Request is found on ABAP system',
     transportNotFound: 'Transport Request does not exist on ABAP system',
     transportAdtAccessError: 'Transport Request could not be validated. Please check manually.',
-    transportNotRequired: 'Transport Request is not required for local package'
+    transportNotRequired: 'Transport Request is not required for local package',
+    atoAdtAccessError: 'App name could not be validated. Please check manually.'
 };
 
 /**
@@ -69,7 +70,7 @@ export async function validateBeforeDeploy(
     };
 
     // output is passed by reference and status updated during the internal pipeline below.
-    validateInputTextFormat(input, output);
+    await validateInputTextFormat(input, output, provider, logger);
     await validatePackageWithAdt(input, output, provider, logger);
     await validateTransportRequestWithAdt(input, output, provider, logger);
 
@@ -112,12 +113,18 @@ export function formatSummary(summary: SummaryRecord[]): string {
  * @param input Deploy config that needs to be validated
  * @param output Validation output
  */
-function validateInputTextFormat(input: ValidationInputs, output: ValidationOutput): void {
+async function validateInputTextFormat(
+    input: ValidationInputs,
+    output: ValidationOutput,
+    provider: AbapServiceProvider,
+    logger: Logger): Promise<void> {
+    // Prepare backend info for validation
+    const prefix = await getSystemPrefix(output, provider, logger);
+
     // A sequence of client-side validations. No early termination of detecting invalid inputs.
     // Setting output.result to false if any of the checks is invalid.
     // Add individual error messages into output.summary array if validation failed.
-
-    let result = validateAppName(input.appName);
+    let result = validateAppName(input.appName, prefix);
     processInputValidationResult(result, output);
     result = validateAppDescription(input.description);
     processInputValidationResult(result, output);
@@ -137,6 +144,30 @@ function validateInputTextFormat(input: ValidationInputs, output: ValidationOutp
             status: SummaryStatus.Valid
         });
     }
+}
+
+async function getSystemPrefix(output: ValidationOutput, provider: AbapServiceProvider, logger: Logger): Promise<string | undefined> {
+    try {
+        const adtService = await provider.getAdtService<AtoService>(AtoService);
+        if (!adtService) {
+            output.summary.push({
+                message: `${summaryMessage.adtServiceUndefined} for AtoService`,
+                status: SummaryStatus.Unknown
+            });
+            output.result = false;
+            return undefined;
+        }
+
+        const atoSettings = await adtService.getAtoInfo();
+        return atoSettings?.developmentPrefix;
+    } catch(e) {
+        logger.error(e);
+        output.summary.push({
+            message: summaryMessage.atoAdtAccessError,
+            status: SummaryStatus.Unknown
+        });
+        output.result = false;
+    }  
 }
 
 /**
