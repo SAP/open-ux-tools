@@ -20,61 +20,61 @@ describe('deploy input validators', () => {
 
         test('validateAppName - empty length', () => {
             const output = validateAppName('');
-            expect(output).toEqual(t('PROMPT_ABAP_APPNAME_REQUIRED'));
+            expect(output).toEqual(t('AbapAppNameRequired'));
         });
 
         test('validateAppName - invalid namespace', () => {
             const output = validateAppName('/ns1/ns2/ns3/ztest');
-            expect(output).toEqual(t('PROMPT_ABAP_INVALID_NAMESPACE'));
+            expect(output).toEqual(t('AbapInvalidNamespace'));
         });
 
         test('validateAppName - invalid namespace length', () => {
             const ns = "ns1looooooonooog";
             const output = validateAppName(`/${ns}/ztest`);
-            expect(output).toEqual(t('PROMPT_ABAP_INVALID_NAMESPACE_LENGTH', { length: ns.length }));
+            expect(output).toEqual(t('AbapInvalidNamespaceLength', { length: ns.length }));
         });
 
         test('validateAppName - valid namespace length, invalid app name length', () => {
             const appName = "appnamelooooooonooooooog";
             const output = validateAppName(`/ns/${appName}`);
-            expect(output).toEqual(t('PROMPT_ABAP_INVALID_APPNAME_LENGTH', { length: appName.length }));
+            expect(output).toEqual(t('AbapInvalidAppNameLength', { length: appName.length }));
         });
 
         test('validateAppName - invalid namespace length, invalid app name length', () => {
             const ns = "ns1looooooonooog";
             const appName = "appnamelooooooonooooooog";
             const output = validateAppName(`/${ns}/${appName}`);
-            expect(output).toContain(t('PROMPT_ABAP_INVALID_NAMESPACE_LENGTH', { length: ns.length }));
-            expect(output).toContain(t('PROMPT_ABAP_INVALID_APPNAME_LENGTH', { length: appName.length }));
+            expect(output).toContain(t('AbapInvalidNamespaceLength', { length: ns.length }));
+            expect(output).toContain(t('AbapInvalidAppNameLength', { length: appName.length }));
         });
 
         test('validateAppName - invalid app name length', () => {
             const appName = "appnamelooooooonooooooog";
             const output = validateAppName(appName);
-            expect(output).toEqual(t('PROMPT_ABAP_INVALID_APPNAME_LENGTH', { length: appName.length }));
+            expect(output).toEqual(t('AbapInvalidAppNameLength', { length: appName.length }));
         });
 
         test('validateAppName - invalid app name prefix', () => {
             const appName = "appnamelooooooonooooooog";
             const prefix = "Z";
             const output = validateAppName(appName, prefix);
-            expect(output).toContain(t('PROMPT_ABAP_INVALID_APPNAME_LENGTH', { length: appName.length }));
-            expect(output).toContain(t('PROMPT_ABAP_INVALID_APPNAME', { prefix }));
+            expect(output).toContain(t('AbapInvalidAppNameLength', { length: appName.length }));
+            expect(output).toContain(t('AbapInvalidAppName', { prefix }));
         });
 
         test('validateAppName - invalid app name prefix', () => {
             const appName = "appname-looooooonooooooog";
             const prefix = "Z";
             const output = validateAppName(appName, prefix);
-            expect(output).toContain(t('PROMPT_ABAP_INVALID_APPNAME_LENGTH', { length: appName.length }));
-            expect(output).toContain(t('PROMPT_ABAP_INVALID_APPNAME', { prefix }));
-            expect(output).toContain(t('ERROR_CHARACTERS_FORBIDDEN_IN_APP_NAME'));
+            expect(output).toContain(t('AbapInvalidAppNameLength', { length: appName.length }));
+            expect(output).toContain(t('AbapInvalidAppName', { prefix }));
+            expect(output).toContain(t('CharactersForbiddenInAppName'));
         });
 
         test('validateAppName - app name undefined', () => {
             const appName = undefined as any;
             const output = validateAppName(appName);
-            expect(output).toContain(t('PROMPT_ABAP_APPNAME_REQUIRED'));
+            expect(output).toContain(t('AbapAppNameRequired'));
         });
     });
 
@@ -86,7 +86,7 @@ describe('deploy input validators', () => {
 
         test('validateAppDescription - invalid description', () => {
             const output = validateAppDescription('This is a loooooooooooooooooooooooooooooooooooooooooooooooooooooooog description');
-            expect(output).toContain(t('PROMPT_ABAP_APPDESC_LENGTH'));
+            expect(output).toContain(t('AbapAppDescLength'));
         });
     });
 
@@ -114,7 +114,7 @@ describe('deploy input validators', () => {
         test('validateClient - invalid if not 3 digits', () => {
             const client = '01';
             const output = validateClient(client);
-            expect(output).toContain(t('ERROR_INVALID_CLIENT', { client }));
+            expect(output).toContain(t('InvalidClient', { client }));
         });
     });
     
@@ -156,27 +156,27 @@ describe('deploy input validators', () => {
 
         test('validateTransportRequestNumber - Invalid tr for local package prefix $', () => {
             const output = validateTransportRequestNumber('T0000001', '$TMP');
-            expect(output).toContain(t('PROMPT_ABAP_TRANSPORT_NO_REQUIRED'));
+            expect(output).toContain(t('AbapTransportNumRequired'));
         });
 
         test('validateTransportRequestNumber - Invalid tr for local package prefix T', () => {
             const output = validateTransportRequestNumber('T0000001', 'TPACKAGE');
-            expect(output).toContain(t('PROMPT_ABAP_TRANSPORT_NO_REQUIRED'));
+            expect(output).toContain(t('AbapTransportNumRequired'));
         });
 
         test('validateTransportRequestNumber - Invalid tr for local package prefix t', () => {
             const output = validateTransportRequestNumber('T0000001', 'tPACKAGE');
-            expect(output).toContain(t('PROMPT_ABAP_TRANSPORT_NO_REQUIRED'));
+            expect(output).toContain(t('AbapTransportNumRequired'));
         });
 
         test('validateTransportRequestNumber - Invalid tr for local package prefix L', () => {
             const output = validateTransportRequestNumber('T0000001', 'LPACKAGE');
-            expect(output).toContain(t('PROMPT_ABAP_TRANSPORT_NO_REQUIRED'));
+            expect(output).toContain(t('AbapTransportNumRequired'));
         });
 
         test('validateTransportRequestNumber - Invalid tr for local package prefix l', () => {
             const output = validateTransportRequestNumber('T0000001', 'lPACKAGE');
-            expect(output).toContain(t('PROMPT_ABAP_TRANSPORT_NO_REQUIRED'));
+            expect(output).toContain(t('AbapTransportNumRequired'));
         });
     });
 
@@ -188,12 +188,12 @@ describe('deploy input validators', () => {
 
         test('validatePackage - invali package if undefined', () => {
             const output = validatePackage(undefined as any);
-            expect(output).toContain(t('PROMPT_ABAP_PACKAGE_WARN'));
+            expect(output).toContain(t('AbapPackageWarn'));
         });
 
         test('validatePackage - invali package if empty', () => {
             const output = validatePackage('');
-            expect(output).toContain(t('PROMPT_ABAP_PACKAGE_WARN'));
+            expect(output).toContain(t('AbapPackageWarn'));
         });
     });
 
@@ -207,7 +207,7 @@ describe('deploy input validators', () => {
         test('validateUrl - invalid url', () => {
             const url = 'https//test.dev';
             const output = validateUrl(url);
-            expect(output).toContain(t('ERROR_INVALID_URL', { input: url }));
+            expect(output).toContain(t('InvalidUrl', { input: url }));
         });
     });
 });

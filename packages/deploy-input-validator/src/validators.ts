@@ -1,4 +1,5 @@
 import { t } from './i18n';
+import { EOL } from 'os';
 
 /**
  * Validator Fiori app name is compatbiel with Fiori project requirements.
@@ -12,17 +13,17 @@ export function validateAppName(name: string, prefix?: string): boolean | string
 
     const length = name ? name.trim().length : 0;
     if (!length) {
-        errorMessages.push(t('PROMPT_ABAP_APPNAME_REQUIRED'));
+        errorMessages.push(t('AbapAppNameRequired'));
     } else if (name.split('/').length - 1 >= 3) {
-        errorMessages.push(t('PROMPT_ABAP_INVALID_NAMESPACE'));
+        errorMessages.push(t('AbapInvalidNamespace'));
     } else if (name.match(/^\/.*\/\w*$/g)) {
         const splitNames = name.split('/');
         let errMsg;
         if (splitNames[1].length > 10) {
-            errMsg = t('PROMPT_ABAP_INVALID_NAMESPACE_LENGTH', { length: splitNames[1].length });
+            errMsg = t('AbapInvalidNamespaceLength', { length: splitNames[1].length });
         }
         if (splitNames[2].length > 15) {
-            errMsg = `${errMsg ? errMsg + ', ' : ''}${t('PROMPT_ABAP_INVALID_APPNAME_LENGTH', {
+            errMsg = `${errMsg ? errMsg + ', ' : ''}${t('AbapInvalidAppNameLength', {
                 length: splitNames[2].length
             })}`;
         }
@@ -30,22 +31,24 @@ export function validateAppName(name: string, prefix?: string): boolean | string
             errorMessages.push(errMsg);
         }
     } else if (length > 15) {
-        errorMessages.push(t('PROMPT_ABAP_INVALID_APPNAME_LENGTH', { length }));
+        errorMessages.push(t('AbapInvalidAppNameLength', { length }));
     }
 
     if (length) {
         if (prefix && !name.toUpperCase().startsWith(prefix.toUpperCase())) {
-            errorMessages.push(t('PROMPT_ABAP_INVALID_APPNAME', { prefix }));
+            errorMessages.push(t('AbapInvalidAppName', { prefix }));
         }
         if (!name.match(/^[A-Za-z0-9_/]*$/)) {
-            errorMessages.push(t('ERROR_CHARACTERS_FORBIDDEN_IN_APP_NAME'));
+            errorMessages.push(t('CharactersForbiddenInAppName'));
         }
     }
 
     if (errorMessages.length === 0) {
         return true;
+    } else if (errorMessages.length === 1) {
+        return errorMessages[0];
     } else {
-        return errorMessages.join('\n') + (errorMessages.length > 1 ? '\n' : '');
+        return `${t('InvalidAppNameMultipleReason')}${EOL}${errorMessages.join(EOL)}${EOL}`;
     }
 }
 
@@ -57,7 +60,7 @@ export function validateAppName(name: string, prefix?: string): boolean | string
  */
 export function validateAppDescription(description: string): boolean | string {
     if (description.length > 60) {
-        return t('PROMPT_ABAP_APPDESC_LENGTH');
+        return t('AbapAppDescLength');
     } else {
         return true;
     }
@@ -77,7 +80,7 @@ export function validateClient(client: string): boolean | string {
     if (isValid) {
         return true;
     } else {
-        return t('ERROR_INVALID_CLIENT', { client });
+        return t('InvalidClient', { client });
     }
 }
 
@@ -92,7 +95,7 @@ export function validateTransportRequestNumber(transportRequest: string, package
     const regex = /^[$LlTt]/;
 
     if (regex.test(packageName) && transportRequest?.trim()) {
-        return t('PROMPT_ABAP_TRANSPORT_NO_REQUIRED');
+        return t('AbapTransportNumRequired');
     } else {
         return true;
     }
@@ -106,7 +109,7 @@ export function validateTransportRequestNumber(transportRequest: string, package
  */
 export function validatePackage(input: string): boolean | string {
     if (!input?.trim()) {
-        return t('PROMPT_ABAP_PACKAGE_WARN');
+        return t('AbapPackageWarn');
     } else {
         return true;
     }
@@ -123,6 +126,6 @@ export function validateUrl(input: string): boolean | string {
         const url = new URL(input);
         return !!url.protocol && !!url.host;
     } catch {
-        return t('ERROR_INVALID_URL', { input });
+        return t('InvalidUrl', { input });
     }
 }

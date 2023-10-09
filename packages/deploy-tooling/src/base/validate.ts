@@ -11,6 +11,7 @@ import {
     validateTransportRequestNumber,
     validateUrl
 } from '@sap-ux/deploy-input-validator';
+import { EOL } from 'os';
 
 export type ValidationInputs = {
     appName: string;
@@ -86,7 +87,7 @@ export async function validateBeforeDeploy(
 export function formatSummary(summary: SummaryRecord[]): string {
     const summaryStr = summary
         .map((next) => {
-            let statusSymbol;
+            let statusSymbol = '';
             switch (next.status) {
                 case SummaryStatus.Valid:
                     statusSymbol = green('√');
@@ -101,7 +102,9 @@ export function formatSummary(summary: SummaryRecord[]): string {
             }
             return `${statusSymbol} ${next.message}`;
         })
-        .reduce((aggregated, current) => `${aggregated}\r\n${current}`);
+        .reduce((aggregated, current) => {
+            return `${aggregated}${EOL}${current}`;
+        }, '');
 
     return summaryStr;
 }
@@ -112,12 +115,15 @@ export function formatSummary(summary: SummaryRecord[]): string {
  *
  * @param input Deploy config that needs to be validated
  * @param output Validation output
+ * @param provider AbapServiceProvider
+ * @param logger Logger from the calling context
  */
 async function validateInputTextFormat(
     input: ValidationInputs,
     output: ValidationOutput,
     provider: AbapServiceProvider,
-    logger: Logger): Promise<void> {
+    logger: Logger
+): Promise<void> {
     // Prepare backend info for validation
     const prefix = await getSystemPrefix(output, provider, logger);
 
@@ -146,7 +152,20 @@ async function validateInputTextFormat(
     }
 }
 
-async function getSystemPrefix(output: ValidationOutput, provider: AbapServiceProvider, logger: Logger): Promise<string | undefined> {
+/**
+ * Helper function that calls ADT service to retrieve system specific prefix
+ * requirement for Fiori app name.
+ *
+ * @param output Validation output
+ * @param provider AbapServiceProvider
+ * @param logger Logger from the calling context
+ * @returns System specific development prefix constraint for Fiori app name
+ */
+async function getSystemPrefix(
+    output: ValidationOutput,
+    provider: AbapServiceProvider,
+    logger: Logger
+): Promise<string | undefined> {
     try {
         const adtService = await provider.getAdtService<AtoService>(AtoService);
         if (!adtService) {
@@ -160,14 +179,15 @@ async function getSystemPrefix(output: ValidationOutput, provider: AbapServicePr
 
         const atoSettings = await adtService.getAtoInfo();
         return atoSettings?.developmentPrefix;
-    } catch(e) {
+    } catch (e) {
         logger.error(e);
         output.summary.push({
             message: summaryMessage.atoAdtAccessError,
             status: SummaryStatus.Unknown
         });
         output.result = false;
-    }  
+        return undefined;
+    }
 }
 
 /**

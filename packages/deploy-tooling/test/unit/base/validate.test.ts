@@ -2,7 +2,8 @@ import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { formatSummary, summaryMessage, validateBeforeDeploy } from '../../../src/base/validate';
 import { mockedProvider, mockedAdtService } from '../../__mocks__';
 import { green, red, yellow } from 'chalk';
-import { AtoService, ListPackageService, TransportChecksService } from '@sap-ux/axios-extension';
+import { TransportChecksService } from '@sap-ux/axios-extension';
+import { t } from '@sap-ux/deploy-input-validator/src/i18n';
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
 
@@ -40,6 +41,39 @@ describe('deploy-test validation', () => {
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.allClientCheckPass}`);
+        });
+
+        test('Capture invalid app name', async () => {
+            const appName = 'nslooooooooooooooooooooog/ZAPP1';
+            const prefix = 'Z';
+
+            mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
+            mockedAdtService.getTransportRequests.mockResolvedValueOnce([
+                { transportNumber: 'T000001' },
+                { transportNumber: 'T000002' },
+                { transportNumber: 'T000003' }
+            ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: prefix
+            });
+
+            const output = await validateBeforeDeploy(
+                {
+                    appName,
+                    description: '',
+                    package: 'MYPACKAGE',
+                    transport: 'T000002',
+                    client: '001',
+                    url: 'https://test.dev'
+                },
+                mockedProvider as any,
+                nullLogger
+            );
+            expect(output.result).toBe(false);
+            const summaryStr = formatSummary(output.summary);
+            expect(summaryStr).toContain(`${red('×')} ${t('InvalidAppNameMultipleReason')}`);
+            expect(summaryStr).toContain(`${t('AbapInvalidAppNameLength', { length: appName.length })}`);
+            expect(summaryStr).toContain(`${t('AbapInvalidAppName', { prefix })}`);
         });
     });
 
@@ -156,8 +190,6 @@ describe('deploy-test validation', () => {
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.adtServiceUndefined} for ListPackageService`);
-
-
         });
     });
 
