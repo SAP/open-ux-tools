@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.4.1
+
+### Patch Changes
+
+-   5747ca18: Fix: build and editor script for generated projects
+
 ## 0.4.0
 
 ### Minor Changes
