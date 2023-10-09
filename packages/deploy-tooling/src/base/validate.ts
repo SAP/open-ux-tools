@@ -13,17 +13,12 @@ import {
 } from '@sap-ux/deploy-input-validator';
 
 export type ValidationInputs = {
-    appName: ValidationInput;
-    description: ValidationInput;
-    package: ValidationInput;
-    transport: ValidationInput;
-    client: ValidationInput;
-    url: ValidationInput;
-};
-
-export type ValidationInput = {
-    value: string;
-    helpers?: string[];
+    appName: string;
+    description: string;
+    package: string;
+    transport: string;
+    client: string;
+    url: string;
 };
 
 export type ValidationOutput = {
@@ -35,12 +30,6 @@ export type SummaryRecord = {
     message: string;
     status: SummaryStatus;
 };
-
-/**
- * Type definitiono of a map for validator functions. Each intput name defined in type ValidationInput is used as key.
- * Use validators map to access the validator function for each input name.
- */
-type Validators = Record<keyof ValidationInputs, (input: string, ...helpers: string[]) => string | boolean>;
 
 export enum SummaryStatus {
     Valid,
@@ -62,20 +51,6 @@ export const summaryMessage = {
 };
 
 /**
- * Validators map that binds validator implementation to each input in a ValidatorInput
- *
- * @see Validators
- */
-const validators: Validators = {
-    appName: validateAppName,
-    description: validateAppDescription,
-    package: validatePackage,
-    transport: validateTransportRequestNumber,
-    client: validateClient,
-    url: validateUrl
-};
-
-/**
  * Validation of deploy configuration before running deploy-test.
  *
  * @param input Deploy configuration that needs to be validated
@@ -89,7 +64,7 @@ export async function validateBeforeDeploy(
     logger: Logger
 ): Promise<ValidationOutput> {
     const output = {
-        summary: [],
+        summary: [] as SummaryRecord[],
         result: true
     };
 
@@ -138,33 +113,22 @@ export function formatSummary(summary: SummaryRecord[]): string {
  * @param output Validation output
  */
 function validateInputTextFormat(input: ValidationInputs, output: ValidationOutput): void {
-    // A series of client-side validations. No early termination of detecting invalid inputs.
+    // A sequence of client-side validations. No early termination of detecting invalid inputs.
     // Setting output.result to false if any of the checks is invalid.
     // Add individual error messages into output.summary array if validation failed.
-    Object.keys(input).forEach((inputField) => {
-        const keyValidationInput = inputField as keyof ValidationInputs;
-        const validatorFn = validators[keyValidationInput];
-        if (!validatorFn) {
-            return;
-        }
-        const validationResult = validatorFn(
-            input[keyValidationInput].value,
-            ...(input[keyValidationInput].helpers ?? [])
-        );
-        if (typeof validationResult === 'string') {
-            output.summary.push({
-                message: validationResult,
-                status: SummaryStatus.Invalid
-            });
-            output.result = false;
-        } else if (validationResult !== true) {
-            output.summary.push({
-                message: summaryMessage.noErrorMessageFromValidator,
-                status: SummaryStatus.Invalid
-            });
-            output.result = false;
-        }
-    });
+
+    let result = validateAppName(input.appName);
+    processInputValidationResult(result, output);
+    result = validateAppDescription(input.description);
+    processInputValidationResult(result, output);
+    result = validateTransportRequestNumber(input.transport, input.package);
+    processInputValidationResult(result, output);
+    result = validatePackage(input.package);
+    processInputValidationResult(result, output);
+    result = validateClient(input.client);
+    processInputValidationResult(result, output);
+    result = validateUrl(input.url);
+    processInputValidationResult(result, output);
 
     // If all the text validation passed, only show the following success message.
     if (output.result) {
@@ -172,6 +136,28 @@ function validateInputTextFormat(input: ValidationInputs, output: ValidationOutp
             message: summaryMessage.allClientCheckPass,
             status: SummaryStatus.Valid
         });
+    }
+}
+
+/**
+ * Helper function to proces input validation result. Avoids sonarqube warning about
+ * increasing complexity.
+ * @param validationResult Validation result is either true or error message
+ * @param output validation output
+ */
+function processInputValidationResult(validationResult: boolean | string, output: ValidationOutput) {
+    if (typeof validationResult === 'string') {
+        output.summary.push({
+            message: validationResult,
+            status: SummaryStatus.Invalid
+        });
+        output.result = false;
+    } else if (validationResult !== true) {
+        output.summary.push({
+            message: summaryMessage.noErrorMessageFromValidator,
+            status: SummaryStatus.Invalid
+        });
+        output.result = false;
     }
 }
 
@@ -204,8 +190,8 @@ async function validatePackageWithAdt(
             return;
         }
 
-        const packages = await adtService.listPackages({ phrase: input.package.value });
-        const isValidPackage = packages.findIndex((packageName: string) => packageName === input.package.value) >= 0;
+        const packages = await adtService.listPackages({ phrase: input.package });
+        const isValidPackage = packages.findIndex((packageName: string) => packageName === input.package) >= 0;
 
         if (isValidPackage) {
             output.summary.push({
@@ -258,9 +244,9 @@ async function validateTransportRequestWithAdt(
             return;
         }
 
-        const trList = await adtService.getTransportRequests(input.package.value, input.appName.value);
+        const trList = await adtService.getTransportRequests(input.package, input.appName);
         const isValidTrList =
-            trList.findIndex((tr: TransportRequest) => tr.transportNumber === input.transport.value) >= 0;
+            trList.findIndex((tr: TransportRequest) => tr.transportNumber === input.transport) >= 0;
 
         if (isValidTrList) {
             output.summary.push({

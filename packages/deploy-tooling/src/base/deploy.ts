@@ -261,12 +261,12 @@ async function tryDeploy(
         if (config.test === true) {
             const validateOutput = await validateBeforeDeploy(
                 {
-                    appName: { value: config.app.name ?? '', helpers: [''] },
-                    description: { value: config.app.description ?? '' },
-                    package: { value: config.app.package ?? '' },
-                    transport: { value: config.app.transport ?? '', helpers: [config.app.package ?? ''] },
-                    client: { value: config.target.client ?? '' },
-                    url: { value: config.target.url ?? '' }
+                    appName: config.app.name,
+                    description: config.app.description ?? '',
+                    package: config.app.package ?? '',
+                    transport: config.app.transport ?? '',
+                    client: config.target.client ?? '',
+                    url: config.target.url ?? ''
                 },
                 provider,
                 logger
