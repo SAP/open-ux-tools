@@ -13,36 +13,47 @@ export function validateAppName(name: string, prefix?: string): boolean | string
 
     const length = name ? name.trim().length : 0;
     if (!length) {
-        errorMessages.push(t('AbapAppNameRequired'));
-    } else if (name.split('/').length > 3) {
+        return t('AbapAppNameRequired');
+    }
+
+    if (name.split('/').length > 3) {
         errorMessages.push(t('AbapInvalidNamespace'));
     } else if (/^\/.*\/\w*$/g.test(name)) {
         const splitNames = name.split('/');
-        let errMsg;
+        let accumulatedMsg = '';
         if (splitNames[1].length > 10) {
-            errMsg = t('AbapInvalidNamespaceLength', { length: splitNames[1].length });
+            const errMsg = t('AbapInvalidNamespaceLength', { length: splitNames[1].length });
+            accumulatedMsg += `${errMsg}, `;
         }
         if (splitNames[2].length > 15) {
-            errMsg = `${errMsg ? errMsg + ', ' : ''}${t('AbapInvalidAppNameLength', {
-                length: splitNames[2].length
-            })}`;
+            const errMsg = t('AbapInvalidAppNameLength', { length: splitNames[2].length });
+            accumulatedMsg += `${errMsg}, `;
         }
-        if (errMsg) {
-            errorMessages.push(errMsg);
+        if (accumulatedMsg) {
+            accumulatedMsg = accumulatedMsg.substring(0, accumulatedMsg.length - 2);
+            errorMessages.push(accumulatedMsg);
         }
     } else if (length > 15) {
         errorMessages.push(t('AbapInvalidAppNameLength', { length }));
     }
 
-    if (length) {
-        if (prefix && !name.toUpperCase().startsWith(prefix.toUpperCase())) {
-            errorMessages.push(t('AbapInvalidAppName', { prefix }));
-        }
-        if (!(/^[A-Za-z0-9_/]*$/).test(name)) {
-            errorMessages.push(t('CharactersForbiddenInAppName'));
-        }
+    if (prefix && !name.toUpperCase().startsWith(prefix.toUpperCase())) {
+        errorMessages.push(t('AbapInvalidAppName', { prefix }));
+    }
+    if (!/^[A-Za-z0-9_/]*$/.test(name)) {
+        errorMessages.push(t('CharactersForbiddenInAppName'));
     }
 
+    return processErrorMessages(errorMessages);
+}
+
+/**
+ * Helper function to format an array of error messages to a single string.
+ *
+ * @param errorMessages Array of error messages
+ * @returns Returns true or formatted error message string
+ */
+function processErrorMessages(errorMessages: string[]): boolean | string {
     if (errorMessages.length === 0) {
         return true;
     } else if (errorMessages.length === 1) {
@@ -75,7 +86,7 @@ export function validateAppDescription(description: string): boolean | string {
 export function validateClient(client: string): boolean | string {
     const formattedInput = client?.trim() || '';
 
-    const isValid = formattedInput === '' || !!(/^\d{3}$/).test(formattedInput);
+    const isValid = formattedInput === '' || /^\d{3}$/.test(formattedInput);
 
     if (isValid) {
         return true;
