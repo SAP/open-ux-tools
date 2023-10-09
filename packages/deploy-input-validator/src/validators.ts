@@ -14,7 +14,7 @@ export function validateAppName(name: string, prefix?: string): boolean | string
     const length = name ? name.trim().length : 0;
     if (!length) {
         errorMessages.push(t('AbapAppNameRequired'));
-    } else if (name.split('/').length - 1 >= 3) {
+    } else if (name.split('/').length > 3) {
         errorMessages.push(t('AbapInvalidNamespace'));
     } else if ((/^\/.*\/\w*$/g).test(name)) {
         const splitNames = name.split('/');
@@ -38,7 +38,7 @@ export function validateAppName(name: string, prefix?: string): boolean | string
         if (prefix && !name.toUpperCase().startsWith(prefix.toUpperCase())) {
             errorMessages.push(t('AbapInvalidAppName', { prefix }));
         }
-        if (!name.match(/^[A-Za-z0-9_/]*$/)) {
+        if (!(/^[A-Za-z0-9_/]*$/).test(name)) {
             errorMessages.push(t('CharactersForbiddenInAppName'));
         }
     }
@@ -75,7 +75,7 @@ export function validateAppDescription(description: string): boolean | string {
 export function validateClient(client: string): boolean | string {
     const formattedInput = client?.trim() || '';
 
-    const isValid = formattedInput === '' || !!(/^[\d]{3}$/).test(formattedInput);
+    const isValid = formattedInput === '' || !!(/^\d{3}$/).test(formattedInput);
 
     if (isValid) {
         return true;
