@@ -38,7 +38,7 @@ export function validateAppName(name: string, prefix?: string): boolean | string
         if (prefix && !name.toUpperCase().startsWith(prefix.toUpperCase())) {
             errorMessages.push(t('AbapInvalidAppName', { prefix }));
         }
-        if (!(/^[A-Za-z0-9_/]*$/).test(name)) {
+        if (!/^[A-Za-z0-9_/]*$/.test(name)) {
             errorMessages.push(t('CharactersForbiddenInAppName'));
         }
     }
@@ -75,7 +75,7 @@ export function validateAppDescription(description: string): boolean | string {
 export function validateClient(client: string): boolean | string {
     const formattedInput = client?.trim() || '';
 
-    const isValid = formattedInput === '' || !!(/^\d{3}$/).test(formattedInput);
+    const isValid = formattedInput === '' || !!/^\d{3}$/.test(formattedInput);
 
     if (isValid) {
         return true;
