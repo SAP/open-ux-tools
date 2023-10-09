@@ -40,7 +40,6 @@ export enum SummaryStatus {
 
 export const summaryMessage = {
     allClientCheckPass: 'SAPUI5 ABAP Repository follows the rules of creating BSP application',
-    noErrorMessageFromValidator: 'Validator did not return readable error message',
     adtServiceUndefined: 'AdtService cannot be instantiated',
     packageCheckPass: 'Package is found on ABAP system',
     packageNotFound: 'Package does not exist on ABAP system',
@@ -49,7 +48,7 @@ export const summaryMessage = {
     transportNotFound: 'Transport Request does not exist on ABAP system',
     transportAdtAccessError: 'Transport Request could not be validated. Please check manually.',
     transportNotRequired: 'Transport Request is not required for local package',
-    atoAdtAccessError: 'App name could not be validated. Please check manually.'
+    atoAdtAccessError: 'Development prefix could not be validated. Please check manually.'
 };
 
 /**
@@ -205,11 +204,8 @@ function processInputValidationResult(validationResult: boolean | string, output
         });
         output.result = false;
     } else if (validationResult !== true) {
-        output.summary.push({
-            message: summaryMessage.noErrorMessageFromValidator,
-            status: SummaryStatus.Invalid
-        });
-        output.result = false;
+        // Strict check for validator functions that return false instead of error message.
+        throw new Error('Expect error message string returned from validation function instead of false');
     }
 }
 
