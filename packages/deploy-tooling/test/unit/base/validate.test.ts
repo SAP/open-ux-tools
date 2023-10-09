@@ -14,7 +14,7 @@ describe('deploy-test validation', () => {
 
     describe('Input format validation', () => {
         test('Valid input text format', async () => {
-            mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'TESTPACKAGE1']);
+            mockedAdtService.listPackages.mockResolvedValueOnce(Promise.resolve(['TESTPACKAGE', 'TESTPACKAGE1']));
             mockedAdtService.getTransportRequests.mockResolvedValueOnce([
                 { transportNumber: 'T000001' },
                 { transportNumber: 'T000002' },
@@ -40,7 +40,7 @@ describe('deploy-test validation', () => {
 
     describe('Validate package name against ADT', () => {
         test('Valid package name', async () => {
-            mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'TESTPACKAGE1']);
+            mockedAdtService.listPackages.mockResolvedValueOnce(Promise.resolve(['TESTPACKAGE', 'TESTPACKAGE1']));
             mockedAdtService.getTransportRequests.mockResolvedValueOnce([
                 { transportNumber: 'T000001' },
                 { transportNumber: 'T000002' },
