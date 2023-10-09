@@ -16,7 +16,7 @@ export function validateAppName(name: string, prefix?: string): boolean | string
         errorMessages.push(t('AbapAppNameRequired'));
     } else if (name.split('/').length > 3) {
         errorMessages.push(t('AbapInvalidNamespace'));
-    } else if ((/^\/.*\/\w*$/g).test(name)) {
+    } else if (/^\/.*\/\w*$/g.test(name)) {
         const splitNames = name.split('/');
         let errMsg;
         if (splitNames[1].length > 10) {
