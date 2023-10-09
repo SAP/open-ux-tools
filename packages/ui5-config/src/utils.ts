@@ -36,7 +36,7 @@ export function getEsmTypesVersion(minUI5Version?: string) {
     } else if (semVer.lt(version, UI5_DEFAULT.ESM_TYPES_VERSION_SINCE)) {
         return `~${UI5_DEFAULT.ESM_TYPES_VERSION_SINCE}`;
     } else {
-        return `~${semVer.major(version)}.${semVer.minor(version)}.${semVer.patch(version)}`;
+        return `~${semVer.major(version)}.${semVer.minor(version)}.0`;
     }
 }
 
@@ -53,7 +53,7 @@ export function getTypesVersion(minUI5Version?: string) {
     } else if (semVer.lt(version, UI5_DEFAULT.TYPES_VERSION_SINCE)) {
         return `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`;
     } else {
-        return `~${semVer.major(version)}.${semVer.minor(version)}.${semVer.patch(version)}`;
+        return `~${semVer.major(version)}.${semVer.minor(version)}.0`;
     }
 }
 
