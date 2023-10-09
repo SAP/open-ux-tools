@@ -62,7 +62,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
                 rta: {
                     editors: [
                         {
-                            path: 'local/editor.html',
+                            path: '/local/editor.html',
                             developerMode: true
                         }
                     ]
