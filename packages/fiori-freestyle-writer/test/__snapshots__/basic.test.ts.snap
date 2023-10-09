@@ -153,7 +153,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -2803,7 +2803,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -3580,7 +3580,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -4358,7 +4358,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -4917,7 +4917,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }

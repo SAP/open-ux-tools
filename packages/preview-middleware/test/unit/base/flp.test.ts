@@ -161,6 +161,10 @@ describe('FlpSandbox', () => {
                                 path: '/with/plugin.html',
                                 developerMode: true,
                                 pluginScript: 'open/ux/tools/plugin'
+                            },
+                            {
+                                path: '/my/editorWithConfig.html',
+                                generator: 'test-generator'
                             }
                         ]
                     }
@@ -245,6 +249,11 @@ describe('FlpSandbox', () => {
                 .set('Content-Type', 'application/json')
                 .send({ hello: 'world' })
                 .expect(400);
+        });
+
+        test('editor with config', async () => {
+            const response = await server.get('/test/flp.html').expect(200);
+            expect(response.text).toMatchSnapshot();
         });
     });
 });

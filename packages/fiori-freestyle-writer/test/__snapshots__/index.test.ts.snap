@@ -206,7 +206,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"test.me.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }

@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 0.7.5
+
+### Patch Changes
+
+-   8029360f: Add favicon for CPE and generator for variant-config
+
+## 0.7.4
+
+### Patch Changes
+
+-   Updated dependencies [b023f4cb]
+    -   @sap-ux/adp-tooling@0.4.0
+
 ## 0.7.3
 
 ### Patch Changes

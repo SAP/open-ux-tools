@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.2.3
+
+### Patch Changes
+
+-   8029360f: Add favicon for CPE and generator for variant-config
+
 ## 0.2.2
 
 ### Patch Changes

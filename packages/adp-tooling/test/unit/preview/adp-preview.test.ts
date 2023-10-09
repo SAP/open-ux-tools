@@ -1,15 +1,21 @@
-import { ToolsLogger } from '@sap-ux/logger';
-import { AdpPreview } from '../../../src/preview/adp-preview';
-import { join } from 'path';
-import type { ReaderCollection } from '@ui5/fs';
 import nock from 'nock';
-import type { SuperTest, Test } from 'supertest';
-import supertest from 'supertest';
+import { join } from 'path';
 import express from 'express';
-import { readFileSync, existsSync } from 'fs';
+import supertest from 'supertest';
+import { ToolsLogger } from '@sap-ux/logger';
+import type { ReaderCollection } from '@ui5/fs';
+import type { SuperTest, Test } from 'supertest';
+import { readFileSync, existsSync, writeFileSync } from 'fs';
+
+import { AdpPreview } from '../../../src/preview/adp-preview';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
+    message: string;
+}
+
+interface GetControllersResponse {
+    controllers: { controllerName: string }[];
     message: string;
 }
 
@@ -32,8 +38,11 @@ jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
     existsSync: jest.fn(),
     mkdirSync: jest.fn(),
+    writeFileSync: jest.fn(),
     copyFileSync: jest.fn()
 }));
+
+const mockWriteFileSync = writeFileSync as jest.Mock;
 const mockExistsSync = existsSync as jest.Mock;
 
 describe('AdaptationProject', () => {
@@ -233,11 +242,11 @@ describe('AdaptationProject', () => {
             const response = await server.get('/adp/api/fragment').expect(200);
             const data: GetFragmentsResponse = JSON.parse(response.text);
             expect(data.fragments.length).toEqual(0);
-            expect(data.message).toEqual(`No fragments found in the project workspace.`);
+            expect(data.message).toEqual(`0 fragments found in the project workspace.`);
         });
 
         test('GET /adp/api/fragment - throws error', async () => {
-            const errorMsg = 'Could not get fragment name.';
+            const errorMsg = 'Could not get fragment name';
             mockProject.byGlob.mockResolvedValueOnce([
                 {
                     getName: () => {
@@ -268,15 +277,86 @@ describe('AdaptationProject', () => {
             expect(message).toBe(`Fragment with name "${fragmentName}" already exists`);
         });
 
-        test('POST /adp/api/fragment - fragmentName is not provided', async () => {
+        test('POST /adp/api/fragment - fragmentName was not provided', async () => {
             const response = await server.post('/adp/api/fragment').send({ fragmentName: '' }).expect(400);
 
             const message = response.text;
             expect(message).toBe('Fragment name was not provided!');
         });
 
-        test('POST /adp/api/fragment - throws error when fragmentName is undefined', async () => {
+        test('POST /adp/api/fragment - throws error when fragment name is undefined', async () => {
             const response = await server.post('/adp/api/fragment').send({ fragmentName: undefined }).expect(500);
+
+            const message = response.text;
+            expect(message).toBe('Input must be string');
+        });
+
+        test('GET /adp/api/controller', async () => {
+            const expectedNames = [{ controllerName: 'my.js' }, { controllerName: 'other.js' }];
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getName: () => expectedNames[0].controllerName
+                },
+                {
+                    getName: () => expectedNames[1].controllerName
+                }
+            ]);
+            const response = await server.get('/adp/api/controller').expect(200);
+            const data: GetControllersResponse = JSON.parse(response.text);
+            expect(data.controllers).toEqual(expectedNames);
+            expect(data.message).toEqual(`${expectedNames.length} controllers found in the project workspace.`);
+        });
+
+        test('GET /adp/api/controller - returns empty array of controllers', async () => {
+            const response = await server.get('/adp/api/controller').expect(200);
+            const data: GetControllersResponse = JSON.parse(response.text);
+            expect(data.controllers.length).toEqual(0);
+            expect(data.message).toEqual(`0 controllers found in the project workspace.`);
+        });
+
+        test('GET /adp/api/controller - throws error', async () => {
+            const errorMsg = 'Could not get controller name';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getName: () => {
+                        throw new Error(errorMsg);
+                    }
+                }
+            ]);
+            const response = await server.get('/adp/api/controller').expect(500);
+            const data: GetControllersResponse = JSON.parse(response.text);
+            expect(data.message).toEqual(errorMsg);
+        });
+
+        test('POST /adp/api/controller - creates controller', async () => {
+            mockExistsSync.mockReturnValue(false);
+            const controllerName = 'Share';
+            const response = await server.post('/adp/api/controller').send({ controllerName }).expect(201);
+
+            const message = response.text;
+            expect(mockWriteFileSync).toHaveBeenCalledTimes(1);
+            expect(message).toBe('Controller extension created!');
+        });
+
+        test('POST /adp/api/controller - controller already exists', async () => {
+            mockExistsSync.mockReturnValueOnce(false).mockResolvedValueOnce(true);
+
+            const controllerName = 'Share';
+            const response = await server.post('/adp/api/controller').send({ controllerName }).expect(409);
+
+            const message = response.text;
+            expect(message).toBe(`Controller extension with name "${controllerName}" already exists`);
+        });
+
+        test('POST /adp/api/controller - controller name was not provided', async () => {
+            const response = await server.post('/adp/api/controller').send({ controllerName: '' }).expect(400);
+
+            const message = response.text;
+            expect(message).toBe('Controller extension name was not provided!');
+        });
+
+        test('POST /adp/api/controller - throws error when controller name is undefined', async () => {
+            const response = await server.post('/adp/api/controller').send({ controllerName: undefined }).expect(500);
 
             const message = response.text;
             expect(message).toBe('Input must be string');

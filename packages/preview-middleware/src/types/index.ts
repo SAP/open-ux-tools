@@ -28,13 +28,13 @@ export interface RtaConfig {
         [key: string]: unknown;
         baseId?: string;
         projectId?: string;
-        generator?: string;
         scenario?: string;
     };
     editors: {
         path: string;
         developerMode?: boolean;
         pluginScript?: string;
+        generator?: string;
     }[];
 }
 
