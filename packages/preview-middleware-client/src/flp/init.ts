@@ -215,7 +215,7 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
     // init
     setI18nTitle();
     registerSAPFonts();
-    const renderer = await sap.ushell.Container.createRenderer(true);
+    const renderer = await sap.ushell.Container.createRenderer(undefined, true);
     renderer.placeAt('content');
 }
 

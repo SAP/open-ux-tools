@@ -6,5 +6,6 @@ declare namespace sap.ushell {
         static attachRendererCreatedEvent(callback: Function): void;
         static createRenderer(): ComponentContainer;
         static createRenderer(async: true): Promise<ComponentContainer>;
+        static createRenderer(renderer?: string, async?: true): Promise<ComponentContainer>;
     }
 }
