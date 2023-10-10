@@ -113,3 +113,25 @@ Object {
   },
 }
 `;
+
+exports[`Unit tests for navigation config generation generate inbound nav config entries 6`] = `
+Object {
+  "_version": "1.38.0",
+  "sap.app": Object {
+    "crossNavigation": Object {
+      "inbounds": Object {
+        "semanticObject1-action1": Object {
+          "action": "action1",
+          "semanticObject": "semanticObject1",
+          "signature": Object {
+            "additionalParameters": "allowed",
+            "parameters": Object {},
+          },
+        },
+      },
+    },
+    "id": "testNameSpace.alpv2",
+    "type": "application",
+  },
+}
+`;
