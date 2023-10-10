@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.7.8
+
+### Patch Changes
+
+-   913e2a53: support createRenderer method for maintenance versions
+
 ## 0.7.7
 
 ### Patch Changes
