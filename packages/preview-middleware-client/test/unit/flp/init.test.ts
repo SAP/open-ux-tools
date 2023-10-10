@@ -67,7 +67,7 @@ describe('flp/init', () => {
         test('nothing configured', async () => {
             await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
-            expect(sapMock.ushell.Container.createRenderer).toBeCalled();
+            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
         });
 
         test('flex configured', async () => {
@@ -77,7 +77,7 @@ describe('flp/init', () => {
             };
             await init({ flex: JSON.stringify(flexSettings) });
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
-            expect(sapMock.ushell.Container.createRenderer).toBeCalled();
+            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
             const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock.calls[0][0] as () => Promise<void>;
             
             // testing the nested callbacks

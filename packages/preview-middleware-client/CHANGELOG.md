@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.4.2
+
+### Patch Changes
+
+-   d66dd0aa: support createRenderer method for maintenance versions
+
 ## 0.4.1
 
 ### Patch Changes
