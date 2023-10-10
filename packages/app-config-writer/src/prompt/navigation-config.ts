@@ -104,7 +104,7 @@ function getPrompts(inboundKeys: string[]): PromptObject[] {
             name: 'subTitle',
             type: (prev, values) => (values.overwrite !== false ? 'text' : false),
             message: t('prompt.message.subtitle', { ns: NAV_CONFIG_NS }),
-            format: (val) => val?.trim(),
+            format: (val) => val?.trim()
         }
     ];
 }
