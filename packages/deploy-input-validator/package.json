@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/deploy-input-validator",
     "version": "0.0.1",
-    "description": "Library to invalid deploy configuration input formats",
+    "description": "Library to validate deploy configuration input formats",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
