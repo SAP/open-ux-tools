@@ -9,6 +9,6 @@
     "AbapInvalidNamespaceLength": "Namespace limited to 10 characters, entered {{length}}",
     "AbapInvalidAppNameLength": "Application name limited to 15 characters, entered {{length}}",
     "AbapInvalidAppName": "Application name needs to be prefixed with [{{prefix}}]",
-    "CharactersForbiddenInAppName": "Only alphanumeric, underscore and slash characters are allowe",
+    "CharactersForbiddenInAppName": "Only alphanumeric, underscore and slash characters are allowed",
     "InvalidAppNameMultipleReason": "Application name is invaid for multiple reasons:"
 }
