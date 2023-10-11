@@ -677,7 +677,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      */
     private onTextInputChange(e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue = ''): void {
         this.setState((prevState) => {
-            const editedCell = prevState.editedCell || this.activeElement;
+            const editedCell = prevState.editedCell ?? this.activeElement;
             if (editedCell) {
                 editedCell.newValue = newValue;
 
@@ -695,7 +695,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     private onComboBoxChange = (option?: IComboBoxOption): void => {
         this.setState((prevState) => {
-            const editedCell = prevState.editedCell || this.activeElement;
+            const editedCell = prevState.editedCell ?? this.activeElement;
             if (editedCell && option) {
                 editedCell.newValue = option.text;
             }
