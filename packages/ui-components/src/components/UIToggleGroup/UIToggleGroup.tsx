@@ -59,7 +59,7 @@ export class UIToggleGroup extends React.Component<UIToggleGroupProps, UIToggleG
         let isSelected = false;
 
         if (option && option.itemKey) {
-            this.setState(prevState => ({
+            this.setState((prevState) => ({
                 options: prevState.options.map(
                     (entry: ToggleGroupOption, index: number, options: ToggleGroupOption[]) => {
                         if (entry.key === option.itemKey) {
@@ -88,7 +88,7 @@ export class UIToggleGroup extends React.Component<UIToggleGroupProps, UIToggleG
 
     public onFocus = (_evt: React.FocusEvent<HTMLButtonElement>, option?: UIToggleGroupOptionProps): void => {
         if (option && option.itemKey) {
-            this.setState(prevState => ({
+            this.setState((prevState) => ({
                 options: prevState.options.map((entry: ToggleGroupOption) => {
                     if (entry.key === option.itemKey) {
                         return {
@@ -107,7 +107,7 @@ export class UIToggleGroup extends React.Component<UIToggleGroupProps, UIToggleG
     };
 
     public onBlur = (_evt: React.FocusEvent<HTMLButtonElement>, _option?: UIToggleGroupOptionProps): void => {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             options: prevState.options.map((entry: ToggleGroupOption) => {
                 return {
                     ...entry,

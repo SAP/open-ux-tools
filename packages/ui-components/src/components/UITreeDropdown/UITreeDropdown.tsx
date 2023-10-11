@@ -424,14 +424,14 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     handleOnChangeValue = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         const query = event.target as HTMLInputElement;
 
-        this.setState(prevState => {
+        this.setState((prevState) => {
             const newState = {
                 hasSelected: false,
                 value: query.value,
                 items: prevState.originalItems.filter((item) => this.filterElement(query.value, item)),
                 query: query.value,
                 valueChanged: true
-            } as UITreeDropdownState
+            } as UITreeDropdownState;
 
             if (!prevState.isMenuOpen) {
                 this.toggleMenu(false);
@@ -463,7 +463,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
             this.props.onParameterValueChange('');
         }
 
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             items: prevState.originalItems,
             query: ''
         }));
@@ -712,8 +712,9 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * @returns {string} Class names of wrapper element.
      */
     private getClassNames(): string {
-        let classNames = `ui-treeDropdown-wrapper ui-treeDropdown-wrapper-menu${this.state.isMenuOpen ? '-open' : '-close'
-            } ui-treeDropdown-wrapper-${this.state.uiidInput}`;
+        let classNames = `ui-treeDropdown-wrapper ui-treeDropdown-wrapper-menu${
+            this.state.isMenuOpen ? '-open' : '-close'
+        } ui-treeDropdown-wrapper-${this.state.uiidInput}`;
         if (this.state.isDisabled) {
             classNames += ' disabled';
         }
@@ -734,12 +735,14 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
         }
         return (
             <div
-                className={`ui-treeDropdown ui-treeDropDown-${this.state.uiidInput} ${this.props.label ? 'ui-treeDropdown-with-label' : ''
-                    }`}>
+                className={`ui-treeDropdown ui-treeDropDown-${this.state.uiidInput} ${
+                    this.props.label ? 'ui-treeDropdown-with-label' : ''
+                }`}>
                 {this.props.label && (
                     <label
-                        className={`${this.props.required ? 'required' : ''} ${this.state.isDisabled ? 'disabled' : ''
-                            }`}>
+                        className={`${this.props.required ? 'required' : ''} ${
+                            this.state.isDisabled ? 'disabled' : ''
+                        }`}>
                         {this.props.label}
                     </label>
                 )}

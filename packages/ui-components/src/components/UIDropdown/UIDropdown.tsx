@@ -77,14 +77,17 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
     };
 
     onClick = (/* event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number */): void => {
-        this.setState(prevState => ({ isOpen: !prevState.isOpen }), () => {
-            if (this.props.multiSelect && this.props.onHandleOpen) {
-                if (this.state.isOpen) {
-                    this.setState(prevState => ({ isOpen: !prevState.isOpen }));
-                    this.props.onHandleOpen();
+        this.setState(
+            (prevState) => ({ isOpen: !prevState.isOpen }),
+            () => {
+                if (this.props.multiSelect && this.props.onHandleOpen) {
+                    if (this.state.isOpen) {
+                        this.setState((prevState) => ({ isOpen: !prevState.isOpen }));
+                        this.props.onHandleOpen();
+                    }
                 }
             }
-        });
+        );
     };
 
     onChange = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number): void => {
