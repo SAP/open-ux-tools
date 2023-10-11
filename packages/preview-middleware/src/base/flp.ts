@@ -175,14 +175,13 @@ export class FlpSandbox {
     }
 
     /**
-     * Gets the FLP sandbox for an editor.
+     * Generates the FLP sandbox for an editor.
      *
-     * @param _req (not used) original request
-     * @param res response of the request
      * @param rta runtime authoring configuration
      * @param editor editor configuration
+     * @returns FLP sandbox html
      */
-    private async getSandboxForEditor(_req: Request, res: Response, rta: RtaConfig, editor: Editor) {
+    private generateSandboxForEditor(rta: RtaConfig, editor: Editor): string {
         const defaultGenerator = editor.developerMode
             ? '@sap-ux/control-property-editor'
             : '@sap-ux/preview-middleware';
@@ -204,8 +203,7 @@ export class FlpSandbox {
             config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
         }
         const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-        const html = render(template, config);
-        res.status(200).contentType('html').send(html);
+        return render(template, config);
     }
 
     /**
@@ -235,8 +233,9 @@ export class FlpSandbox {
                 this.router.use(`${path}editor`, serveStatic(cpe));
             }
 
-            this.router.get(previewUrl, (async (req: Request, res: Response) => {
-                await this.getSandboxForEditor(req, res, rta, editor);
+            this.router.get(previewUrl, (async (_req: Request, res: Response) => {
+                const html = this.generateSandboxForEditor(rta, editor);
+                res.status(200).contentType('html').send(html);
             }) as RequestHandler);
         }
     }
