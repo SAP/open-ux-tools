@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.2.0
+
+### Minor Changes
+
+-   277a0fb1: fix: no longer writes optional properties when not provided
+
 ## 0.1.23
 
 ### Patch Changes
