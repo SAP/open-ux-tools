@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.7.9
+
+### Patch Changes
+
+-   59167357: Adds sap.ui.rta to preload libs for variants management and adaptation projects
+
 ## 0.7.8
 
 ### Patch Changes
