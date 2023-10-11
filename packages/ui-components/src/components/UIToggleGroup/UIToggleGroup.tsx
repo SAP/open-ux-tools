@@ -59,36 +59,40 @@ export class UIToggleGroup extends React.Component<UIToggleGroupProps, UIToggleG
         let isSelected = false;
 
         if (option && option.itemKey) {
-            this.setState(prevState => ({
-                options: prevState.options.map(
-                    (entry: ToggleGroupOption, index: number, options: ToggleGroupOption[]) => {
-                        if (entry.key === option.itemKey) {
-                            isSelected = !options[index].selected;
-                            return {
-                                ...entry,
-                                selected: isSelected,
-                                focused: options[index].focused
-                            };
-                        } else {
-                            return {
-                                ...entry,
-                                selected: false,
-                                focused: false
-                            };
+            this.setState((prevState) => {
+                const newState = {
+                    options: prevState.options.map(
+                        (entry: ToggleGroupOption, index: number, options: ToggleGroupOption[]) => {
+                            if (entry.key === option.itemKey) {
+                                isSelected = !options[index].selected;
+                                return {
+                                    ...entry,
+                                    selected: isSelected,
+                                    focused: options[index].focused
+                                };
+                            } else {
+                                return {
+                                    ...entry,
+                                    selected: false,
+                                    focused: false
+                                };
+                            }
                         }
-                    }
-                )
-            }));
+                    )
+                }
 
-            if (this.props.onChange) {
-                this.props.onChange?.(option.itemKey, isSelected);
-            }
+                if (this.props.onChange) {
+                    this.props.onChange?.(option.itemKey, isSelected);
+                }
+
+                return newState;
+            });
         }
     };
 
     public onFocus = (_evt: React.FocusEvent<HTMLButtonElement>, option?: UIToggleGroupOptionProps): void => {
         if (option && option.itemKey) {
-            this.setState(prevState => ({
+            this.setState((prevState) => ({
                 options: prevState.options.map((entry: ToggleGroupOption) => {
                     if (entry.key === option.itemKey) {
                         return {
@@ -107,7 +111,7 @@ export class UIToggleGroup extends React.Component<UIToggleGroupProps, UIToggleG
     };
 
     public onBlur = (_evt: React.FocusEvent<HTMLButtonElement>, _option?: UIToggleGroupOptionProps): void => {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             options: prevState.options.map((entry: ToggleGroupOption) => {
                 return {
                     ...entry,

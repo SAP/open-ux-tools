@@ -436,7 +436,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * It is called when the menu Open and Dismiss to handle the toggleRefresh state.
      */
     private toggleRefresh(): void {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             toggleRefresh: !prevState.toggleRefresh
         }));
     }
