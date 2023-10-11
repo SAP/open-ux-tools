@@ -676,26 +676,31 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param newValue
      */
     private onTextInputChange(e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue = ''): void {
-        const editedCell = this.state.editedCell || this.activeElement;
-        if (editedCell) {
-            editedCell.newValue = newValue;
-        }
-        this.setState({ editedCell });
-        const column = editedCell?.column;
-        if (column && typeof column.validate === 'function') {
-            this.validateCell(newValue);
-        }
-        if (this.props.renderInputs) {
-            this.saveCell(false, newValue);
-        }
+        this.setState((prevState) => {
+            const editedCell = prevState.editedCell || this.activeElement;
+            if (editedCell) {
+                editedCell.newValue = newValue;
+
+                const column = editedCell?.column;
+                if (column && typeof column.validate === 'function') {
+                    this.validateCell(newValue);
+                }
+                if (this.props.renderInputs) {
+                    this.saveCell(false, newValue);
+                }
+            }
+            return { editedCell };
+        });
     }
 
     private onComboBoxChange = (option?: IComboBoxOption): void => {
-        const editedCell = this.state.editedCell || this.activeElement;
-        if (editedCell && option) {
-            editedCell.newValue = option.text;
-        }
-        this.setState({ editedCell });
+        this.setState((prevState) => {
+            const editedCell = prevState.editedCell || this.activeElement;
+            if (editedCell && option) {
+                editedCell.newValue = option.text;
+            }
+            return { editedCell };
+        });
     };
 
     private readonly onDropdownCellValueChange = (
