@@ -3,7 +3,7 @@ import { render } from 'ejs';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, relative } from 'path';
-import type { App, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
+import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
@@ -175,6 +175,40 @@ export class FlpSandbox {
     }
 
     /**
+     * Gets the FLP sandbox for an editor.
+     *
+     * @param _req (not used) original request
+     * @param res response of the request
+     * @param rta runtime authoring configuration
+     * @param editor editor configuration
+     */
+    private async getSandboxForEditor(_req: Request, res: Response, rta: RtaConfig, editor: Editor) {
+        const defaultGenerator = editor.developerMode
+            ? '@sap-ux/control-property-editor'
+            : '@sap-ux/preview-middleware';
+        const config = { ...this.templateConfig };
+        /* sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects */
+        if (!config.ui5.libs.includes('sap.ui.rta')) {
+            const libs = config.ui5.libs.split(',');
+            libs.push('sap.ui.rta');
+            config.ui5.libs = libs.join(',');
+        }
+        config.flex = {
+            layer: rta.layer,
+            ...rta.options,
+            generator: editor.generator ?? defaultGenerator,
+            developerMode: editor.developerMode === true,
+            pluginScript: editor.pluginScript
+        };
+        if (editor.developerMode === true) {
+            config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
+        }
+        const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
+        const html = render(template, config);
+        res.status(200).contentType('html').send(html);
+    }
+
+    /**
      * Add additional routes for configured editors.
      *
      * @param rta runtime authoring configuration
@@ -200,30 +234,9 @@ export class FlpSandbox {
                 }
                 this.router.use(`${path}editor`, serveStatic(cpe));
             }
-            const defaultGenerator = editor.developerMode
-                ? '@sap-ux/control-property-editor'
-                : '@sap-ux/preview-middleware';
-            this.router.get(previewUrl, (async (_req: Request, res: Response) => {
-                const config = { ...this.templateConfig };
-                /* sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects */
-                if (!config.ui5.libs.includes('sap.ui.rta')) {
-                    const libs = config.ui5.libs.split(',');
-                    libs.push('sap.ui.rta');
-                    config.ui5.libs = libs.join(',');
-                }
-                config.flex = {
-                    layer: rta.layer,
-                    ...rta.options,
-                    generator: editor.generator ?? defaultGenerator,
-                    developerMode: editor.developerMode === true,
-                    pluginScript: editor.pluginScript
-                };
-                if (editor.developerMode === true) {
-                    config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
-                }
-                const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-                const html = render(template, config);
-                res.status(200).contentType('html').send(html);
+
+            this.router.get(previewUrl, (async (req: Request, res: Response) => {
+                await this.getSandboxForEditor(req, res, rta, editor);
             }) as RequestHandler);
         }
     }
