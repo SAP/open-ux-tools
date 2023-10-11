@@ -79,7 +79,7 @@ export class UIToggleGroup extends React.Component<UIToggleGroupProps, UIToggleG
                             }
                         }
                     )
-                }
+                };
 
                 if (this.props.onChange) {
                     this.props.onChange?.(option.itemKey, isSelected);
