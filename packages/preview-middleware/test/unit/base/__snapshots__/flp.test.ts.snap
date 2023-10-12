@@ -43,7 +43,7 @@ Object {
       "test.fe.v2.app": "/simple/app",
       "test.fe.v2.other": "/yet/another/app",
     },
-    "theme": "sap_belize",
+    "theme": "sap_fiori_3",
   },
 }
 `;
@@ -75,7 +75,7 @@ Object {
       "my.id": "..",
       "open.ux.preview.client": "/preview/client",
     },
-    "theme": "sap_belize",
+    "theme": "sap_fiori_3",
   },
 }
 `;
@@ -107,7 +107,7 @@ Object {
       "open.ux.preview.client": "/preview/client",
       "test.fe.v2.app": "..",
     },
-    "theme": "sap_belize",
+    "theme": "sap_horizon_dark",
   },
 }
 `;
@@ -196,7 +196,7 @@ exports[`FlpSandbox router editor with config 1`] = `
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ui.rta\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
@@ -268,7 +268,7 @@ exports[`FlpSandbox router rta 1`] = `
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ui.rta\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
@@ -366,7 +366,7 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ui.rta\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
@@ -439,7 +439,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ui.rta\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
@@ -512,7 +512,7 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ui.rta\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
