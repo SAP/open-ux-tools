@@ -525,7 +525,9 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
         if (e.key === 'Escape') {
             this.cancelEdit();
-            focusEditedCell(this.state.editedCell, this.props);
+            focusEditedCell(this.state.editedCell, this.props).catch(() => {
+                // Ignore focus cell error
+            });
             showFocus();
             return;
         }

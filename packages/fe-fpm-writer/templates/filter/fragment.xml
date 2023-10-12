@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"><%if (typeof eventHandler !== 'undefined') {%>
+        <ComboBox
+            id="<%- controlID %>"
+            core:require="{handler: '<%- eventHandler.split('.').slice(0, -1).join('/') %>'}"
+            selectedKey="{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: '<%- eventHandler %>' }}"
+        ><% } else { %>
+        <ComboBox id="<%- controlID %>"><% } %>
+            <items>
+                <core:Item key="0" text="Item1"/>
+                <core:Item key="1" text="Item2"/>
+                <core:Item key="2" text="Item3"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>

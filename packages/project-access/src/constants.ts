@@ -1,6 +1,11 @@
 export const FileName = {
+    AdaptationConfig: 'config.json',
+    ExtConfigJson: '.extconfig.json',
     Manifest: 'manifest.json',
+    ManifestAppDescrVar: 'manifest.appdescr_variant',
+    MtaYaml: 'mta.yaml',
     Package: 'package.json',
+    Pom: 'pom.xml',
     Tsconfig: 'tsconfig.json',
     Ui5Yaml: 'ui5.yaml',
     Ui5LocalYaml: 'ui5-local.yaml',

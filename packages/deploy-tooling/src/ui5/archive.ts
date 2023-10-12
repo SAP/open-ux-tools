@@ -9,17 +9,26 @@ import { createBuffer } from '../base';
  * @param logger - reference to the logger instance
  * @param workspace - reference to the UI5 tooling workspace object
  * @param projectName - project properties and configuration
+ * @param exclude - array of regex patterns used to exclude folders from archive
+ * @returns {*}  {Promise<Buffer>} - archive
  */
-export async function createUi5Archive(logger: ToolsLogger, workspace: DuplexCollection, projectName: string) {
+export async function createUi5Archive(
+    logger: ToolsLogger,
+    workspace: DuplexCollection,
+    projectName: string,
+    exclude: string[] = []
+): Promise<Buffer> {
     logger.info('Creating archive with UI5 build result.');
     const prefix = `/resources/${projectName}/`;
     const zip = new ZipFile();
     const resources = await workspace.byGlob(`${prefix}**/*`);
     for (const resource of resources) {
-        const path = resource.getPath().replace(prefix, '');
-        logger.debug(`Adding ${path}`);
-        const buffer = await resource.getBuffer();
-        zip.addBuffer(buffer, path);
+        if (!exclude.some((regex) => RegExp(regex, 'g').exec(resource.getPath()))) {
+            const path = resource.getPath().replace(prefix, '');
+            logger.debug(`Adding ${path}`);
+            const buffer = await resource.getBuffer();
+            zip.addBuffer(buffer, path);
+        }
     }
     logger.info('Archive created.');
     return createBuffer(zip);

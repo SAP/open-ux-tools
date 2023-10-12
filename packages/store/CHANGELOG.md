@@ -1,5 +1,35 @@
 # @sap-ux/store
 
+## 0.3.14
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/logger@0.3.8
+
+## 0.3.13
+
+### Patch Changes
+
+-   0dbad1b8: chore(deps): update dependency typescript to v4.9.5
+
+## 0.3.12
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/logger@0.3.7
+
+## 0.3.11
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/logger@0.3.6
+
 ## 0.3.10
 
 ### Patch Changes

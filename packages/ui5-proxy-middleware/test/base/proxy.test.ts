@@ -3,7 +3,7 @@ import * as hpm from 'http-proxy-middleware';
 import * as utils from '../../src/base/utils';
 import { ToolsLogger } from '@sap-ux/logger';
 
-describe('ui5Proxy', () => {
+describe('proxy', () => {
     const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
 
     beforeEach(() => {

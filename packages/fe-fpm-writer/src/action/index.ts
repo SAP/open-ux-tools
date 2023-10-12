@@ -92,8 +92,10 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
             fs,
             config,
             config.eventHandler,
-            false,
-            config.typescript,
+            {
+                controllerSuffix: false,
+                typescript: config.typescript
+            },
             contextParameter
         );
     }

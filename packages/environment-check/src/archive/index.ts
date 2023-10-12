@@ -19,6 +19,7 @@ interface ArchiveProjectOptions {
  * @param options.projectRoot - root of the project, where package.json is located
  * @param options.targetFolder - optional, target folder where to create the archive
  * @param options.targetFileName - optional file name, defaults to project folder + timestamp + .zip
+ * @returns {*}  {Promise<{ path: string; size: string }>}
  */
 export async function archiveProject({
     projectRoot,
@@ -52,7 +53,7 @@ export async function archiveProject({
                 zip.file(join(projectRoot, file), { name: file });
             }
             writeStream.on('close', () => resolve({ path: targetPath, size: byteNumberToSizeString(zip.pointer()) }));
-            zip.finalize();
+            zip.finalize().catch((error) => reject(error));
         } catch (error) {
             reject(error);
         }
@@ -71,13 +72,16 @@ async function getFileList(cwd: string): Promise<string[]> {
     const hasGitignore = existsSync(gitignorePath);
     const globPattern = hasGitignore ? ['**'] : ['**', '.cdsrc.json', '.extconfig.json'];
     const dot = hasGitignore;
-    const ignores = hasGitignore ? (await promises.readFile(gitignorePath)).toString() : ['**/.env', '**/node_modules'];
+    const ignores = hasGitignore
+        ? `${(await promises.readFile(gitignorePath)).toString()}\n**/.git`
+        : ['**/.env', '**/.git', '**/node_modules'];
     const skip = hasGitignore ? undefined : ['**/node_modules/**'];
 
     const files = await glob(globPattern, {
         cwd,
         dot,
         ignore: ignore().add(ignores),
+        mark: true,
         skip
     });
     return files;

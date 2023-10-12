@@ -49,7 +49,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -92,7 +92,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -132,7 +132,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -206,7 +206,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"test.me.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -1034,7 +1034,8 @@ title=My Test App",
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
@@ -1211,6 +1212,25 @@ title=My Test App",
     };
 })(sap);
 
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
@@ -1243,6 +1263,7 @@ sap.registerComponentDependencyPaths(manifestUri)
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -1256,6 +1277,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
                 // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
                     sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
                         var oResourceBundle = ResourceBundle.create({
@@ -1268,6 +1290,7 @@ sap.registerComponentDependencyPaths(manifestUri)
             }
         } else {
             sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
                 // initialize the ushell sandbox component
                 sap.ushell.Container.createRenderer().placeAt(\\"content\\");
             });
@@ -1349,7 +1372,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -1392,7 +1415,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -1432,7 +1455,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -1521,7 +1544,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
         getContentDensityClass : function() {
             if (this._sContentDensityClass === undefined) {
                 // check whether FLP has already set the content density class; do nothing in this case
-                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
+                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api, fiori-custom/sap-browser-api-warning
                 if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                     this._sContentDensityClass = \\"\\";
                 } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -2212,7 +2235,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
          * @public
          */
         onNavBack: function() {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         },
 
@@ -3372,7 +3395,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
@@ -3549,6 +3573,25 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     };
 })(sap);
 
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
@@ -3581,6 +3624,7 @@ sap.registerComponentDependencyPaths(manifestUri)
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -3594,6 +3638,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
                 // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
                     sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
                         var oResourceBundle = ResourceBundle.create({
@@ -3606,6 +3651,7 @@ sap.registerComponentDependencyPaths(manifestUri)
             }
         } else {
             sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
                 // initialize the ushell sandbox component
                 sap.ushell.Container.createRenderer().placeAt(\\"content\\");
             });
@@ -3966,7 +4012,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -4009,7 +4055,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -4049,7 +4095,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -4132,7 +4178,7 @@ server:
         getContentDensityClass : function() {
             if (this._sContentDensityClass === undefined) {
                 // check whether FLP has already set the content density class; do nothing in this case
-                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
+                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api, fiori-custom/sap-browser-api-warning
                 if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                     this._sContentDensityClass = \\"\\";
                 } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -4538,7 +4584,7 @@ server:
          * @public
          */
         onNavBack : function() {
-            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         },
 
@@ -5527,7 +5573,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
@@ -5704,6 +5751,25 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     };
 })(sap);
 
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
@@ -5736,6 +5802,7 @@ sap.registerComponentDependencyPaths(manifestUri)
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -5749,6 +5816,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
                 // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
                     sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
                         var oResourceBundle = ResourceBundle.create({
@@ -5761,6 +5829,7 @@ sap.registerComponentDependencyPaths(manifestUri)
             }
         } else {
             sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
                 // initialize the ushell sandbox component
                 sap.ushell.Container.createRenderer().placeAt(\\"content\\");
             });

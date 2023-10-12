@@ -1,5 +1,148 @@
 # @sap-ux/axios-extension
 
+## 1.4.8
+
+### Patch Changes
+
+-   0760c9f8: Support UAA credentials if available
+
+## 1.4.7
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/btp-utils@0.11.9
+    -   @sap-ux/logger@0.3.8
+
+## 1.4.6
+
+### Patch Changes
+
+-   7b156515: fix(deps): update dependency xpath to v0.0.33
+
+## 1.4.5
+
+### Patch Changes
+
+-   01fa690e: fix(deps): update dependency @xmldom/xmldom to v0.8.10
+
+## 1.4.4
+
+### Patch Changes
+
+-   676f8ba0: Note for customer to replace url with destination url.
+
+## 1.4.3
+
+### Patch Changes
+
+-   6e403f27: fix(deps): update dependency fast-xml-parser to v4.2.7
+
+## 1.4.2
+
+### Patch Changes
+
+-   29e71f68: Remove unnecessary uri encoding on the package name within ADT service query implementation `getTransportRequests`.
+
+## 1.4.1
+
+### Patch Changes
+
+-   24e45780: Updated dependency: axios@1.4.0
+-   Updated dependencies [24e45780]
+    -   @sap-ux/btp-utils@0.11.8
+
+## 1.4.0
+
+### Minor Changes
+
+-   d2fd9a58: Enhanced LREP service to support merging of app descriptor variants
+
+## 1.3.6
+
+### Patch Changes
+
+-   23059e62: log longtext_url as clickable link
+
+## 1.3.5
+
+### Patch Changes
+
+-   69b88bcc: TransportChecksService API method `getTransportRequests` now encodes the packageName within its implementation.
+
+## 1.3.4
+
+### Patch Changes
+
+-   da6fbb04: remove trailing slash from uaa url
+
+## 1.3.3
+
+### Patch Changes
+
+-   1599efac: encode app name for tr requests
+
+## 1.3.2
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/btp-utils@0.11.7
+    -   @sap-ux/logger@0.3.7
+
+## 1.3.1
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+
+## 1.3.0
+
+### Minor Changes
+
+-   42dc7395: handle btp uaa credentials
+
+## 1.2.8
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/btp-utils@0.11.6
+    -   @sap-ux/logger@0.3.6
+
+## 1.2.7
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+
+## 1.2.6
+
+### Patch Changes
+
+-   2d279633: handle 401 for undeployment
+
+## 1.2.5
+
+### Patch Changes
+
+-   aeb4cd83: handle entry severity in logging
+
+## 1.2.4
+
+### Patch Changes
+
+-   aeba5509: Better error logging when test mode is enabled
+
+## 1.2.3
+
+### Patch Changes
+
+-   31eb27c4: Only eject the fetch request interceptor when a valid csrf token is received
+
 ## 1.2.2
 
 ### Patch Changes

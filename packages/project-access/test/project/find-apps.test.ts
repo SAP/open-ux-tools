@@ -1,6 +1,13 @@
 import { basename, dirname, join } from 'path';
 import type { WorkspaceFolder } from '../../src';
-import { findAllApps, findProjectRoot, getAppRootFromWebappPath } from '../../src';
+import { findAllApps, findCapProjects, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from '../../src';
+
+/**
+ * To get CAP project type we call cds --version using child_process.spawn() and cache global install path.
+ * During pipeline test there is no local or global installation of @sap/cds, which is causing test delays
+ * due to many spawn calls. Mock child_process to speed up test execution.
+ */
+jest.mock('child_process');
 
 const testDataRoot = join(__dirname, '..', 'test-data');
 
@@ -167,5 +174,134 @@ describe('Test getAppRootFromManifestPath()', () => {
         const appRoot = join(testDataRoot, 'project', 'webapp-path', 'custom-webapp-path');
         const manifestPath = join(appRoot, 'src', 'webapp');
         expect(await getAppRootFromWebappPath(manifestPath)).toBe(appRoot);
+    });
+});
+
+describe('Test findFioriArtifacts()', () => {
+    test('Find all artifacts', async () => {
+        const result = await findFioriArtifacts({
+            wsFolders: [join(testDataRoot, 'project/find-all-apps')],
+            artifacts: ['adaptations', 'applications', 'extensions', 'libraries']
+        });
+        expect(result.applications?.length).toBeGreaterThan(0);
+        expect(result.adaptations).toEqual([
+            {
+                appRoot: join(testDataRoot, 'project/find-all-apps/adaptations/valid-adaptation'),
+                manifestAppdescrVariantPath: join(
+                    testDataRoot,
+                    'project/find-all-apps/adaptations/valid-adaptation/webapp/manifest.appdescr_variant'
+                )
+            }
+        ]);
+        expect(result.extensions).toEqual([
+            {
+                appRoot: join(testDataRoot, 'project/find-all-apps/extensions/valid-extension'),
+                manifestPath: join(
+                    testDataRoot,
+                    'project/find-all-apps/extensions/valid-extension/webapp/manifest.json'
+                ),
+                manifest: {
+                    'sap.app': {
+                        'type': 'application'
+                    }
+                }
+            }
+        ]);
+        expect(result.libraries).toEqual([
+            {
+                manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library/src/manifest.json'),
+                manifest: {
+                    'sap.app': {
+                        'type': 'library'
+                    }
+                },
+                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/valid-library')
+            }
+        ]);
+    });
+
+    test('Find all libraries to check reading without cached manifest', async () => {
+        const result = await findFioriArtifacts({
+            wsFolders: [join(testDataRoot, 'project/find-all-apps/libraries')],
+            artifacts: ['libraries']
+        });
+        expect(result.applications).toBeUndefined();
+        expect(result.adaptations).toBeUndefined();
+        expect(result.extensions).toBeUndefined();
+        expect(result.libraries).toEqual([
+            {
+                manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library/src/manifest.json'),
+                manifest: {
+                    'sap.app': {
+                        'type': 'library'
+                    }
+                },
+                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/valid-library')
+            }
+        ]);
+    });
+
+    test('Find all extensions without cached manifest', async () => {
+        const result = await findFioriArtifacts({
+            wsFolders: [join(testDataRoot, 'project/find-all-apps/extensions')],
+            artifacts: ['extensions']
+        });
+        expect(result.applications).toBeUndefined();
+        expect(result.adaptations).toBeUndefined();
+        expect(result.libraries).toBeUndefined();
+        expect(result.extensions).toEqual([
+            {
+                appRoot: join(testDataRoot, 'project/find-all-apps/extensions/valid-extension'),
+                manifestPath: join(
+                    testDataRoot,
+                    'project/find-all-apps/extensions/valid-extension/webapp/manifest.json'
+                ),
+                manifest: {
+                    'sap.app': {
+                        'type': 'application'
+                    }
+                }
+            }
+        ]);
+    });
+
+    test('Find all extensions and libraries, libraries have no result', async () => {
+        const result = await findFioriArtifacts({
+            wsFolders: [join(testDataRoot, 'project/find-all-apps/extensions')],
+            artifacts: ['libraries', 'extensions']
+        });
+        expect(result.applications).toBeUndefined();
+        expect(result.adaptations).toBeUndefined();
+        expect(result.libraries?.length).toBe(0);
+        expect(result.extensions).toEqual([
+            {
+                appRoot: join(testDataRoot, 'project/find-all-apps/extensions/valid-extension'),
+                manifestPath: join(
+                    testDataRoot,
+                    'project/find-all-apps/extensions/valid-extension/webapp/manifest.json'
+                ),
+                manifest: {
+                    'sap.app': {
+                        'type': 'application'
+                    }
+                }
+            }
+        ]);
+    });
+});
+
+describe('Test findCapProjects()', () => {
+    test('Find CAP projects', async () => {
+        const capProjects = (await findCapProjects({ wsFolders: [join(__dirname, '../test-data/project')] })).sort();
+        const expectedProjects = [
+            join(__dirname, '../test-data/project/cap-root/valid-cap-root'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_fiori_elements'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_freestyle'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_mix'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_freestyle'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements')
+        ].sort();
+        expect(capProjects).toEqual(expectedProjects);
     });
 });

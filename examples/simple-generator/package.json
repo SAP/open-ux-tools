@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/generator-simple-fe",
-    "version": "0.2.98",
+    "version": "0.2.167",
     "description": "Simple example of a yeoman generator for Fiori elements.",
     "license": "SEE LICENSE IN LICENSE",
     "private": true,
@@ -10,7 +10,7 @@
         "start": "yo ./generators/app",
         "build": "pnpm clean && tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf generators coverage *.tsbuildinfo",
+        "clean": "rimraf --glob generators coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix"
@@ -21,15 +21,15 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
-        "@sap-ux/store": "workspace:*",
-        "yeoman-generator": "5.6.1"
+        "@sap-ux/system-access": "workspace:*",
+        "yeoman-generator": "5.9.0"
     },
     "devDependencies": {
-        "@types/yeoman-environment": "2.10.6",
-        "@types/yeoman-generator": "5.2.9",
+        "@types/yeoman-environment": "2.10.8",
+        "@types/yeoman-generator": "5.2.11",
         "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
-        "axios": "0.24.0"
+        "axios": "0.27.2"
     },
     "files": [
         "generators",

@@ -4,6 +4,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Ui5App } from '../src';
 import { generate, isTypescriptEnabled, enableTypescript } from '../src';
+import { updatePackageJSONDependencyToUseLocalPath } from './common';
 
 describe('UI5 templates', () => {
     const fs = create(createStorage());
@@ -55,6 +56,7 @@ describe('UI5 templates', () => {
         };
         projectDir = join(outputDir, 'testapp-withtoolsid');
         await generate(projectDir, ui5AppConfig, fs);
+        await updatePackageJSONDependencyToUseLocalPath(projectDir, fs);
         expect((fs.readJSON(join(projectDir, '/webapp/manifest.json')) as any)['sap.app']['sourceTemplate'])
             .toMatchInlineSnapshot(`
             Object {
@@ -87,6 +89,7 @@ describe('UI5 templates', () => {
         expect(await isTypescriptEnabled(projectDir, fs)).toBe(false);
         // enable ts
         await enableTypescript(projectDir, fs);
+        await updatePackageJSONDependencyToUseLocalPath(projectDir, fs);
         expect(await isTypescriptEnabled(projectDir, fs)).toBe(true);
     });
 

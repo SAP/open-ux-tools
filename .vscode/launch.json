@@ -79,6 +79,16 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "eslint-plugin-fiori-tools: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/eslint-plugin-fiori-tools"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "fiori-freestyle-writer: Debug Current Jest File with UX_DEBUG & UX_DEBUG_FULL",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
@@ -106,12 +116,48 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "ui5-library-writer: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/ui5-library-writer",
+            "env": {
+                "UX_DEBUG": "false"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "yaml: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "cwd": "${workspaceFolder}/packages/yaml"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "cap-config-writer: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/cap-config-writer"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "ui-components: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/ui-components"
         }
     ]
 }

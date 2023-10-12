@@ -1,5 +1,185 @@
 # @sap-ux/ui-components
 
+## 1.11.18
+
+### Patch Changes
+
+-   80b95469: fix(ui-components): fix focus state for the split button
+
+## 1.11.17
+
+### Patch Changes
+
+-   38d70e31: UIList. Fix - ListProps interface is extended from fluent-ui IGroupedListProps
+
+## 1.11.16
+
+### Patch Changes
+
+-   2039c789: UIFlexibleTable. Fix - impossible to scroll with touch when user touches disabled row.
+
+## 1.11.15
+
+### Patch Changes
+
+-   a1c0d41f: UITextField. Fix - apply font family using vscode variable to UITextField input.
+
+## 1.11.14
+
+### Patch Changes
+
+-   67179f36: chore(deps): update storybook monorepo to v7.4.3
+
+## 1.11.13
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
+## 1.11.12
+
+### Patch Changes
+
+-   a77300c4: chore(uic): re-fix the sleep function tests
+
+## 1.11.11
+
+### Patch Changes
+
+-   0dbad1b8: chore(deps): update dependency typescript to v4.9.5
+
+## 1.11.10
+
+### Patch Changes
+
+-   777d9d9d: chore(deps): update babel dependencies
+
+## 1.11.9
+
+### Patch Changes
+
+-   de3bc3d5: chore(deps): update storybook monorepo to v7.4.2
+
+## 1.11.8
+
+### Patch Changes
+
+-   6ab0976e: fix(uitable): fix waitFor function
+
+## 1.11.7
+
+### Patch Changes
+
+-   93f711c7: 2px border radius is applied for input, dropdown, button components.
+
+## 1.11.6
+
+### Patch Changes
+
+-   50bf49ac: chore(deps): update storybook to v7.4.1
+
+## 1.11.5
+
+### Patch Changes
+
+-   30fc4a11: feat(ui-components) add createref as props to UICreateSelect
+
+## 1.11.4
+
+### Patch Changes
+
+-   27f9cdf9: feat(ui-components) add the noOptionsMessage to UICreateSelect
+
+## 1.11.3
+
+### Patch Changes
+
+-   540c38c2: feat(ui-components) add UICreateSelect component
+
+## 1.11.2
+
+### Patch Changes
+
+-   4c2eef88: UIFlexibleTable. Text of column title is not fully visible
+
+## 1.11.1
+
+### Patch Changes
+
+-   b9320dbf: update devDependencies
+
+## 1.11.0
+
+### Minor Changes
+
+-   cb80467e: feat: add GoLeft and GoRight icons
+
+## 1.10.0
+
+### Minor Changes
+
+-   c908acf2: feat(562): update star icon and add history icon
+
+## 1.9.0
+
+### Minor Changes
+
+-   8577ffa4: Enhancements for DropdownMenues. UICombobox, UIDropdown and UIContextualMenu - support headers and separators. UIContextualMenu - support item text with icons(rendered on right).
+
+## 1.8.5
+
+### Patch Changes
+
+-   d3e7d06b: Fixes for 'promises should not be misused' sonar bugs
+
+## 1.8.4
+
+### Patch Changes
+
+-   deb06c73: `terminal` icon added
+
+## 1.8.3
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 1.8.2
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
+## 1.8.1
+
+### Patch Changes
+
+-   e315fd8a: fix: make icon positioning consistent in searchbox inputs
+
+## 1.8.0
+
+### Minor Changes
+
+-   5c34522c: fix on click logic
+
+## 1.7.0
+
+### Minor Changes
+
+-   8c3aecc6: update to ui action callout component
+
+## 1.6.0
+
+### Minor Changes
+
+-   14c4c34f: feat: update clipboard icons
+
+## 1.5.1
+
+### Patch Changes
+
+-   6b26d421: UITranslationInput. Generic type for "entries" property("I18nBundle" type) - generic type is used as parameter when "onShowExistingEntry" is called.
+
 ## 1.5.0
 
 ### Minor Changes

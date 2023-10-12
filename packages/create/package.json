@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/create",
     "description": "SAP Fiori tools module to add or remove features",
-    "version": "0.1.5",
+    "version": "0.4.34",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -20,7 +20,7 @@
     },
     "scripts": {
         "build": "tsc --build",
-        "clean": "rimraf dist coverage *.tsbuildinfo",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
@@ -34,7 +34,9 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/app-config-writer": "workspace:*",
+        "@sap-ux/cap-config-writer": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/mockserver-config-writer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
@@ -44,8 +46,8 @@
         "prompts": "2.4.2"
     },
     "devDependencies": {
-        "@types/diff": "5.0.2",
+        "@types/diff": "5.0.4",
         "@types/mem-fs-editor": "7.0.1",
-        "@types/prompts": "2.0.14"
+        "@types/prompts": "2.4.4"
     }
 }

@@ -12,11 +12,11 @@ describe('store', () => {
         });
 
         it('returns a truthy object for a valid entity', async () => {
-            expect(getService({ entityName: Entities.BackendSystem })).resolves.toBeTruthy();
+            await expect(getService({ entityName: Entities.BackendSystem })).resolves.toBeTruthy();
         });
 
         it('throws an error for an invalid entity name', async () => {
-            expect(getService({ entityName: 'foo' as EnityName })).rejects.toThrow(
+            await expect(getService({ entityName: 'foo' as EnityName })).rejects.toThrow(
                 i18n.text('error.unsupportedEntity')
             );
         });

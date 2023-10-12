@@ -607,9 +607,9 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * Recursive method finds menu item info object in tree menu items by passed value/key of item.
      *
      * @param {string} [value] Value/key of item.
-     * @param {IContextualMenuItem[]} [items=[]] Menu items.
+     * @param {IContextualMenuItem[]} [items] Menu items.
      * @param {TreeItemInfo} [parent] Item's parent object.
-     * @param {number} [level=0] Level of item in tree structure.
+     * @param {number} [level] Level of item in tree structure.
      * @returns {TreeItemInfo | undefined} Found menu item.
      */
     findItemByValue = (
@@ -662,7 +662,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * Method works with any level menu.
      *
      * @param {string} [value] Value/key of item.
-     * @param {IContextualMenuItem[]} [items=[]] Target menu items.
+     * @param {IContextualMenuItem[]} [items] Target menu items.
      */
     focusItemWithValue = (value?: string, items: IContextualMenuItem[] = []): void => {
         const selectedItem = this.findItemByValue(value, items);

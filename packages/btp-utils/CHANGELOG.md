@@ -1,5 +1,29 @@
 # @sap-ux/btp-utils
 
+## 0.11.9
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
+## 0.11.8
+
+### Patch Changes
+
+-   24e45780: Updated dependency: axios@1.4.0
+
+## 0.11.7
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 0.11.6
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
 ## 0.11.5
 
 ### Patch Changes

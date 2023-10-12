@@ -1,29 +1,61 @@
-import { dirname, join, parse, sep } from 'path';
-import type { AllAppResults, Manifest, Package, WorkspaceFolder } from '../types';
+import { basename, dirname, join, parse, sep } from 'path';
+import type {
+    AdaptationResults,
+    AllAppResults,
+    ExtensionResults,
+    FioriArtifactTypes,
+    FoundFioriArtifacts,
+    LibraryResults,
+    Manifest,
+    Package,
+    WorkspaceFolder
+} from '../types';
 import { FileName } from '../constants';
-import { fileExists, findFiles, findFileUp, readJSON } from '../file';
+import { fileExists, findBy, findFileUp, readJSON } from '../file';
 import { hasDependency } from './dependencies';
-import { getCapProjectType, isCapJavaProject, isCapNodeJsProject } from './cap';
+import { getCapProjectType } from './cap';
 import { getWebappPath } from './ui5-config';
 
+/**
+ * Map artifact to file that is specific to the artifact type. Some artifacts can
+ * be identified by the same file, like app and library have file 'manifest.json'.
+ * Further filtering for specific artifact types happens in the filter{Artifact}
+ * functions.
+ */
+const filterFileMap: Record<FioriArtifactTypes, string> = {
+    applications: FileName.Manifest,
+    adaptations: FileName.ManifestAppDescrVar,
+    extensions: FileName.ExtConfigJson,
+    libraries: FileName.Manifest
+};
+
+/**
+ * Type that is used locally only to keep list of found files with cache of the
+ * content in order to avoid multiple file reads.
+ */
+type FileMapAndCache = { [path: string]: null | string | object };
+
+/**
+ * Default folders to exclude from search.
+ */
+const excludeFolders = ['.git', 'node_modules', 'dist'];
 /**
  * WorkspaceFolder type guard.
  *
  * @param value - value to type check
  * @returns - true: is a vscode workspace array; no: not a vscode workspace array
  */
-function isWorkspaceFolder(value: WorkspaceFolder[] | string[]): value is WorkspaceFolder[] {
+function isWorkspaceFolder(value: readonly WorkspaceFolder[] | string[]): value is WorkspaceFolder[] {
     return value && (value as WorkspaceFolder[]).length > 0 && (value as WorkspaceFolder[])[0].uri !== undefined;
 }
 
 /**
- * Search all manifest.json files in given workspaces. This is used as starting point to find all tools
- * supported apps.
+ * Convert workspace root folders to root paths.
  *
- * @param wsFolders - workspace folders
- * @returns - array of path to manifest.json files
+ * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
+ * @returns - root paths
  */
-async function findAllManifest(wsFolders: WorkspaceFolder[] | string[] | undefined): Promise<string[]> {
+function wsFoldersToRootPaths(wsFolders: readonly WorkspaceFolder[] | string[] | undefined): string[] {
     // extract root path if provided as VSCode folder
     let wsRoots: string[];
     if (wsFolders && isWorkspaceFolder(wsFolders)) {
@@ -34,18 +66,9 @@ async function findAllManifest(wsFolders: WorkspaceFolder[] | string[] | undefin
                 wsRoots.push(folder.uri.fsPath);
             });
     } else {
-        wsRoots = wsFolders || [];
+        wsRoots = (wsFolders ?? []) as string[];
     }
-    // find all manifest files
-    const manifests: string[] = [];
-    for (const root of wsRoots) {
-        try {
-            manifests.push(...(await findFiles(FileName.Manifest, root, ['.git', 'node_modules', 'dist'])));
-        } catch {
-            // ignore exceptions during find
-        }
-    }
-    return manifests;
+    return wsRoots;
 }
 
 /**
@@ -54,6 +77,7 @@ async function findAllManifest(wsFolders: WorkspaceFolder[] | string[] | undefin
  * @param path path of a project file
  * @param sapuxRequired if true, only find sapux projects
  * @param silent if true, then does not throw an error but returns an empty path
+ * @returns {*}  {Promise<string>} - Project Root
  */
 export async function findProjectRoot(path: string, sapuxRequired = true, silent = false): Promise<string> {
     const packageJson = await findFileUp(FileName.Package, path);
@@ -79,7 +103,6 @@ export async function findProjectRoot(path: string, sapuxRequired = true, silent
 
 /**
  * Find app root and project root from given paths and sapux entry.
- *
  *
  * @param sapux - value of sapux in package.json, either boolean or string array
  * @param path - path where the search started from
@@ -159,7 +182,7 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
         if (appPckJson.sapux) {
             return findRootsWithSapux(appPckJson.sapux, path, appRoot);
         }
-        if (isCapNodeJsProject(appPckJson) || (await isCapJavaProject(appRoot))) {
+        if ((await getCapProjectType(appRoot)) !== undefined) {
             // App is part of a CAP project, but doesn't have own package.json and is not mentioned in sapux array
             // in root -> not supported
             return null;
@@ -202,23 +225,38 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
 
 /**
  * Find all app that are supported by Fiori tools for a given list of roots (workspace folders).
+ * This is a convenient function to retrieve all apps. Same result can be achieved with call
+ * findFioriArtifacts({ wsFolders, artifacts: ['applications'] }); from same module.
  *
  * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
-export async function findAllApps(wsFolders: WorkspaceFolder[] | string[] | undefined): Promise<AllAppResults[]> {
-    const result: AllAppResults[] = [];
-    const manifestPaths = await findAllManifest(wsFolders);
+export async function findAllApps(
+    wsFolders: readonly WorkspaceFolder[] | string[] | undefined
+): Promise<AllAppResults[]> {
+    const findResults = await findFioriArtifacts({ wsFolders, artifacts: ['applications'] });
+    return findResults.applications ?? [];
+}
 
+/**
+ * Filter Fiori apps from a list of files.
+ *
+ * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
+ * @returns - results as path to apps plus files already parsed, e.g. manifest.json
+ */
+async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResults[]> {
+    const result: AllAppResults[] = [];
+    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
         try {
             // All UI5 apps have at least sap.app: { id: <ID>, type: "application" } in manifest.json
-            const manifest = await readJSON<Manifest>(join(manifestPath, FileName.Manifest));
+            pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
+            const manifest = pathMap[manifestPath] as Manifest;
             if (!manifest['sap.app'] || !manifest['sap.app'].id || manifest['sap.app'].type !== 'application') {
                 continue;
             }
             const roots = await findRootsForPath(manifestPath);
-            if (roots) {
+            if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig)))) {
                 result.push({ appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest, manifestPath });
             }
         } catch {
@@ -226,4 +264,176 @@ export async function findAllApps(wsFolders: WorkspaceFolder[] | string[] | unde
         }
     }
     return result;
+}
+
+/**
+ * Filter adaptation projects from a list of files.
+ *
+ * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
+ * @returns - results as array of found adaptation projects.
+ */
+async function filterAdaptations(pathMap: FileMapAndCache): Promise<AdaptationResults[]> {
+    const results: AdaptationResults[] = [];
+    const manifestAppDescrVars = Object.keys(pathMap).filter((path) => path.endsWith(FileName.ManifestAppDescrVar));
+    for (const manifestAppDescrVar of manifestAppDescrVars) {
+        const adpPath = await findFileUp('.adp', dirname(manifestAppDescrVar));
+        if (adpPath && (await fileExists(join(adpPath, FileName.AdaptationConfig)))) {
+            results.push({ appRoot: dirname(adpPath), manifestAppdescrVariantPath: manifestAppDescrVar });
+        }
+    }
+    return results;
+}
+
+/**
+ * Filter extensions projects from a list of files.
+ *
+ * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
+ * @returns - results as array of found extension projects.
+ */
+async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResults[]> {
+    const results: ExtensionResults[] = [];
+    const extensionConfigs = Object.keys(pathMap).filter((path) => basename(path) === FileName.ExtConfigJson);
+    for (const extensionConfig of extensionConfigs) {
+        try {
+            let manifest: Manifest | null = null;
+            let manifestPath = Object.keys(pathMap).find(
+                (path) => path.startsWith(dirname(extensionConfig) + sep) && basename(path) === FileName.Manifest
+            );
+            if (manifestPath) {
+                pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
+                manifest = pathMap[manifestPath] as Manifest;
+            } else {
+                const manifests = await findBy({
+                    fileNames: [FileName.Manifest],
+                    root: dirname(extensionConfig),
+                    excludeFolders
+                });
+                if (manifests.length === 1) {
+                    [manifestPath] = manifests;
+                    manifest = await readJSON<Manifest>(manifestPath);
+                }
+            }
+            if (manifestPath && manifest) {
+                results.push({ appRoot: dirname(extensionConfig), manifest, manifestPath });
+            }
+        } catch {
+            // ignore exceptions for invalid manifests
+        }
+    }
+    return results;
+}
+
+/**
+ * Filter extensions projects from a list of files.
+ *
+ * @param pathMap - path to files
+ * @returns - results as array of found library projects.
+ */
+async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults[]> {
+    const results: LibraryResults[] = [];
+    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
+    for (const manifestPath of manifestPaths) {
+        try {
+            pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
+            const manifest = pathMap[manifestPath] as Manifest;
+            if (manifest['sap.app'] && manifest['sap.app'].type === 'library') {
+                const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath));
+                const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
+                if (projectRoot && (await fileExists(join(projectRoot, FileName.Ui5Yaml)))) {
+                    results.push({ projectRoot, manifestPath, manifest });
+                }
+            }
+        } catch {
+            // ignore exceptions for invalid manifests
+        }
+    }
+    return results;
+}
+
+/**
+ * Get the files to search for according to requested artifact type.
+ *
+ * @param artifacts - requests artifacts like apps, adaptations, extensions
+ * @returns - array of filenames to search for
+ */
+function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
+    const uniqueFilterFiles = new Set<string>();
+    for (const artifact of artifacts) {
+        if (filterFileMap[artifact]) {
+            uniqueFilterFiles.add(filterFileMap[artifact]);
+        }
+    }
+    return Array.from(uniqueFilterFiles);
+}
+/**
+ * Find all requested Fiori artifacts like apps, adaptations, extensions, that are supported by Fiori tools, for a given list of roots (workspace folders).
+ *
+ * @param options - find options
+ * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
+ * @param options.artifacts - list of artifacts to search for: 'application', 'adaptation', 'extension' see FioriArtifactTypes
+ * @returns - data structure containing the search results, for app e.g. as path to app plus files already parsed, e.g. manifest.json
+ */
+export async function findFioriArtifacts(options: {
+    wsFolders?: readonly WorkspaceFolder[] | string[];
+    artifacts: FioriArtifactTypes[];
+}): Promise<FoundFioriArtifacts> {
+    const results: FoundFioriArtifacts = {};
+    const fileNames: string[] = getFilterFileNames(options.artifacts);
+    const wsRoots = wsFoldersToRootPaths(options.wsFolders);
+    const pathMap: FileMapAndCache = {};
+    for (const root of wsRoots) {
+        try {
+            const foundFiles = await findBy({
+                fileNames,
+                root,
+                excludeFolders
+            });
+            foundFiles.forEach((path) => (pathMap[path] = null));
+        } catch {
+            // ignore exceptions during find
+        }
+    }
+    if (options.artifacts.includes('applications')) {
+        results.applications = await filterApplications(pathMap);
+    }
+    if (options.artifacts.includes('adaptations')) {
+        results.adaptations = await filterAdaptations(pathMap);
+    }
+    if (options.artifacts.includes('extensions')) {
+        results.extensions = await filterExtensions(pathMap);
+    }
+    if (options.artifacts.includes('libraries')) {
+        results.libraries = await filterLibraries(pathMap);
+    }
+    return results;
+}
+
+/**
+ * Find all CAP project roots by locating pom.xml or package.json in a given workspace.
+ *
+ * @param options - find options
+ * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
+ * @returns - root file paths that may contain a CAP project
+ */
+export async function findCapProjects(options: {
+    readonly wsFolders: WorkspaceFolder[] | string[];
+}): Promise<string[]> {
+    const result = new Set<string>();
+    const excludeFolders = ['node_modules', 'dist', 'src', 'webapp', 'MDKModule', 'gen'];
+    const fileNames = [FileName.Pom, FileName.Package];
+    const wsRoots = wsFoldersToRootPaths(options.wsFolders);
+    for (const root of wsRoots) {
+        const filesToCheck = await findBy({
+            fileNames,
+            root,
+            excludeFolders
+        });
+        const foldersToCheck = Array.from(new Set(filesToCheck.map((file) => dirname(file)))); //only directories without duplicates
+        for (const folderToCheck of foldersToCheck) {
+            if ((await getCapProjectType(folderToCheck)) !== undefined) {
+                result.add(folderToCheck);
+            }
+        }
+    }
+    return Array.from(result);
 }

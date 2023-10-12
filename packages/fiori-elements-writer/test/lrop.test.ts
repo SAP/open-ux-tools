@@ -10,12 +10,14 @@ import {
     v4Service,
     v2TemplateSettings,
     v2Service,
-    projectChecks
+    projectChecks,
+    updatePackageJSONDependencyToUseLocalPath
 } from './common';
-import { UI5_DEFAULT } from '@sap-ux/ui5-application-writer/src/data/defaults';
 
 const TEST_NAME = 'lropTemplates';
-jest.setTimeout(120000); // Needed when debug.debugFull
+if (debug?.enabled) {
+    jest.setTimeout(360000);
+}
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
@@ -31,7 +33,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
 
     const lropConfigs: Array<{ name: string; config: FioriElementsApp<LROPSettings> }> = [
         {
-            name: 'lropV4',
+            name: 'lrop_v4',
             config: {
                 ...Object.assign(feBaseConfig('felrop1'), {
                     template: {
@@ -43,7 +45,23 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
-            name: 'lropV4noUi5Version',
+            name: 'lrop_v4_1.94',
+            config: {
+                ...Object.assign(feBaseConfig('felrop194'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    },
+                    ui5: {
+                        ...feBaseConfig('felrop194'),
+                        version: '1.94.0' // Testing 1.94 specific changes
+                    }
+                }),
+                service: v4Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lrop_v4_no_ui5_version',
             config: {
                 ...Object.assign(feBaseConfig('felropui5', false), {
                     template: {
@@ -55,15 +73,16 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
-            name: 'lropV4_addTests',
+            name: 'lrop_v4_addtests',
             config: {
-                ...Object.assign(feBaseConfig('lropV4AddTests'), {
+                ...Object.assign(feBaseConfig('lrop_v4_addtests'), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v4TemplateSettings
                     },
                     appOptions: {
-                        ...feBaseConfig('lropV4AddTests').appOptions,
+                        ...feBaseConfig('lrop_v4_addtests').appOptions,
+                        generateIndex: true,
                         addTests: true
                     }
                 }),
@@ -71,7 +90,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
-            name: 'lropV2',
+            name: 'lrop_v2',
             config: {
                 ...Object.assign(feBaseConfig('felrop2'), {
                     template: {
@@ -156,9 +175,9 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
-            name: 'lropV2_ts',
+            name: 'lrop_v2_ts',
             config: {
-                ...Object.assign(feBaseConfig('lropV2_ts'), {
+                ...Object.assign(feBaseConfig('lrop_v2_ts'), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v2TemplateSettings
@@ -210,9 +229,27 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
+            name: 'lropV2_ts_ui5_1_113',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_113'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.113.0'
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
             name: 'lropV2_without_start-noflp',
             config: {
-                ...Object.assign(feBaseConfig('lropV2_ts'), {
+                ...Object.assign(feBaseConfig('lrop_v2_ts'), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v2TemplateSettings
@@ -236,9 +273,10 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         const fs = await generate(testPath, config);
         expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);

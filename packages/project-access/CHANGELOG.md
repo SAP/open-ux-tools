@@ -1,5 +1,190 @@
 # @sap-ux/project-access
 
+## 1.13.7
+
+### Patch Changes
+
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-config@0.19.4
+
+## 1.13.6
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/ui5-config@0.19.3
+
+## 1.13.5
+
+### Patch Changes
+
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-config@0.19.2
+
+## 1.13.4
+
+### Patch Changes
+
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+
+## 1.13.3
+
+### Patch Changes
+
+-   7fd593f0: fix(deps): update dependency @ui5/manifest to v1.59.0
+
+## 1.13.2
+
+### Patch Changes
+
+-   164d52b5: chore(deps): update dependency vscode-uri to v3.0.7
+
+## 1.13.1
+
+### Patch Changes
+
+-   56dc4c59: Fix for leading slashes on Windows
+
+## 1.13.0
+
+### Minor Changes
+
+-   d13264b3: Add function to search for CAP project roots in local folders or workspace
+
+## 1.12.1
+
+### Patch Changes
+
+-   f880ea76: fix for async function definition
+
+## 1.12.0
+
+### Minor Changes
+
+-   6feb0cea: Add fallback to load @sap/cds from any module location
+
+## 1.11.2
+
+### Patch Changes
+
+-   Updated dependencies [375ca861]
+    -   @sap-ux/ui5-config@0.19.0
+
+## 1.11.1
+
+### Patch Changes
+
+-   88861559: Fix for module loading after installation
+
+## 1.11.0
+
+### Minor Changes
+
+-   1c267b37: Adding getMtaPath(appRoot: string, fs: Editor) utility function. It helps to identify if the input Fiori app is part of a MTA project or not.
+
+## 1.10.2
+
+### Patch Changes
+
+-   c18f957a: add readonly for WorkspaceFolder usage
+
+## 1.10.1
+
+### Patch Changes
+
+-   95a8daae: Ignore leading or trailing slashes when searching for services in CAP project
+
+## 1.10.0
+
+### Minor Changes
+
+-   ff74ee09: Add functionality to convert CDS into EDMX
+
+## 1.9.1
+
+### Patch Changes
+
+-   5ab0638f: Fix "getCapModelAndServices" for CDS v7
+
+## 1.9.0
+
+### Minor Changes
+
+-   42b1de7b: Add utils method for getting absolute and reference uri for cap resources
+
+## 1.8.4
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-config@0.18.2
+
+## 1.8.3
+
+### Patch Changes
+
+-   Updated dependencies [d9355692]
+    -   @sap-ux/ui5-config@0.18.1
+
+## 1.8.2
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+
+## 1.8.1
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/ui5-config@0.17.1
+
+## 1.8.0
+
+### Minor Changes
+
+-   61f4ecc7: Add cds-plugin-ui5 to CAP project
+
+## 1.7.0
+
+### Minor Changes
+
+-   31207b95: abstract ui5-app-writer functions into appropriate modules
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-config@0.17.0
+
+## 1.6.0
+
+### Minor Changes
+
+-   71a06864: Add path to manifest.appdescr_variant to search results of search for adaptation projects
+
+## 1.5.1
+
+### Patch Changes
+
+-   7ed591a8: properly handle "@sap/cds" dynamic import
+
+## 1.5.0
+
+### Minor Changes
+
+-   d80f6f34: Add findFioriArtifacts() to allow searching for apps, adaptation projects, extension projects, and libraries
+
+## 1.4.0
+
+### Minor Changes
+
+-   f50c3517: Add getCapEnvironment() to allow getting project specific configuration
+
 ## 1.3.1
 
 ### Patch Changes

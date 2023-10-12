@@ -1,5 +1,251 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.20.11
+
+### Patch Changes
+
+-   65010b09: fix - use patch version 0 for ui5 types semver for more reliable installs
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-application-writer@0.25.7
+    -   @sap-ux/ui5-config@0.19.4
+    -   @sap-ux/odata-service-writer@0.14.34
+
+## 0.20.10
+
+### Patch Changes
+
+-   c53a1665: Small fix in App.controller.js template
+
+## 0.20.9
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/odata-service-writer@0.14.33
+    -   @sap-ux/ui5-application-writer@0.25.6
+    -   @sap-ux/ui5-config@0.19.3
+
+## 0.20.8
+
+### Patch Changes
+
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-application-writer@0.25.5
+    -   @sap-ux/ui5-config@0.19.2
+    -   @sap-ux/odata-service-writer@0.14.32
+
+## 0.20.7
+
+### Patch Changes
+
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/odata-service-writer@0.14.31
+    -   @sap-ux/ui5-application-writer@0.25.4
+    -   @sap-ux/ui5-config@0.19.1
+
+## 0.20.6
+
+### Patch Changes
+
+-   Updated dependencies [7fd593f0]
+    -   @sap-ux/ui5-application-writer@0.25.3
+    -   @sap-ux/odata-service-writer@0.14.30
+
+## 0.20.5
+
+### Patch Changes
+
+-   Updated dependencies [f50523da]
+    -   @sap-ux/odata-service-writer@0.14.30
+
+## 0.20.4
+
+### Patch Changes
+
+-   Updated dependencies [98d40960]
+    -   @sap-ux/odata-service-writer@0.14.29
+
+## 0.20.3
+
+### Patch Changes
+
+-   a794dad7: Update ui5-tooling-transpile in templates
+-   Updated dependencies [a794dad7]
+    -   @sap-ux/ui5-application-writer@0.25.2
+
+## 0.20.2
+
+### Patch Changes
+
+-   Updated dependencies [6e403f27]
+    -   @sap-ux/odata-service-writer@0.14.28
+
+## 0.20.1
+
+### Patch Changes
+
+-   b63aea83: Update ui5 yaml spec to 3.1
+-   Updated dependencies [b63aea83]
+    -   @sap-ux/ui5-application-writer@0.25.1
+
+## 0.20.0
+
+### Minor Changes
+
+-   de0b13f2: Update templates to use Typescript version 5
+
+### Patch Changes
+
+-   Updated dependencies [de0b13f2]
+    -   @sap-ux/ui5-application-writer@0.25.0
+
+## 0.19.17
+
+### Patch Changes
+
+-   44df3d5c: fix lint warnings in locate-reuse-libs.js
+-   Updated dependencies [44df3d5c]
+    -   @sap-ux/ui5-application-writer@0.24.3
+
+## 0.19.16
+
+### Patch Changes
+
+-   29179b5f: Add SAP icon loading in flpsandbox.html
+-   Updated dependencies [29179b5f]
+    -   @sap-ux/ui5-application-writer@0.24.2
+
+## 0.19.15
+
+### Patch Changes
+
+-   Updated dependencies [375ca861]
+    -   @sap-ux/ui5-config@0.19.0
+    -   @sap-ux/odata-service-writer@0.14.27
+    -   @sap-ux/ui5-application-writer@0.24.1
+
+## 0.19.14
+
+### Patch Changes
+
+-   6d8e3f1c: Adding deprecation message for old templates
+
+## 0.19.13
+
+### Patch Changes
+
+-   Updated dependencies [eba8741e]
+    -   @sap-ux/ui5-application-writer@0.24.0
+
+## 0.19.12
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-application-writer@0.23.5
+    -   @sap-ux/odata-service-writer@0.14.26
+    -   @sap-ux/ui5-config@0.18.2
+
+## 0.19.11
+
+### Patch Changes
+
+-   Updated dependencies [d9355692]
+    -   @sap-ux/odata-service-writer@0.14.25
+    -   @sap-ux/ui5-application-writer@0.23.4
+    -   @sap-ux/ui5-config@0.18.1
+
+## 0.19.10
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+    -   @sap-ux/odata-service-writer@0.14.24
+    -   @sap-ux/ui5-application-writer@0.23.3
+
+## 0.19.9
+
+### Patch Changes
+
+-   743a5dc7: Chore - bump version of @sap-ux/eslint-plugin-fiori-tools used in templates
+-   Updated dependencies [743a5dc7]
+    -   @sap-ux/ui5-application-writer@0.23.2
+
+## 0.19.8
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/odata-service-writer@0.14.23
+    -   @sap-ux/ui5-application-writer@0.23.1
+    -   @sap-ux/ui5-config@0.17.1
+
+## 0.19.7
+
+### Patch Changes
+
+-   Updated dependencies [e4f9748b]
+    -   @sap-ux/odata-service-writer@0.14.22
+
+## 0.19.6
+
+### Patch Changes
+
+-   7aed929c: disable search in flpSandbox
+
+## 0.19.5
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-application-writer@0.23.0
+    -   @sap-ux/ui5-config@0.17.0
+    -   @sap-ux/odata-service-writer@0.14.21
+
+## 0.19.4
+
+### Patch Changes
+
+-   0aa02ab0: TBI - Clean up eslint warnings in generated projects
+
+## 0.19.3
+
+### Patch Changes
+
+-   Updated dependencies [906b7fea]
+    -   @sap-ux/ui5-application-writer@0.22.3
+
+## 0.19.2
+
+### Patch Changes
+
+-   495a22cb: Use @sap-ux/eslint-plugin-fiori-tools for JS projects with eslint option
+-   Updated dependencies [495a22cb]
+    -   @sap-ux/ui5-application-writer@0.22.2
+
+## 0.19.1
+
+### Patch Changes
+
+-   91e95ef8: BUG - Generated Controller Extensions do not always work with TS
+-   Updated dependencies [91e95ef8]
+    -   @sap-ux/ui5-application-writer@0.22.1
+
+## 0.19.0
+
+### Minor Changes
+
+-   7ac0cb40: Add new module containing an eslint plugin with reusable eslint configs
+
+### Patch Changes
+
+-   Updated dependencies [7ac0cb40]
+    -   @sap-ux/ui5-application-writer@0.22.0
+
 ## 0.18.1
 
 ### Patch Changes

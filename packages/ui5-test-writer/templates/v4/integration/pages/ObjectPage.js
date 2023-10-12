@@ -9,8 +9,9 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     return new ObjectPage(
         {
             appId: '<%- appID %>',
-            componentId: '<%- componentID %>',
-            entitySet: '<%- entitySet %>'
+            componentId: '<%- componentID %>',<% if (locals.contextPath) { %>
+            contextPath: '<%- contextPath %>'<% } else if (locals.entitySet) { %>
+            entitySet: '<%- entitySet %>'<% } %>
         },
         CustomPageDefinitions
     );

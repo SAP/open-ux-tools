@@ -1,5 +1,35 @@
 # @sap-ux/ui5-test-writer
 
+## 0.2.0
+
+### Minor Changes
+
+-   bf1281ca: Adds support for "contextPath"
+
+## 0.1.11
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
+## 0.1.10
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 0.1.9
+
+### Patch Changes
+
+-   080f89ac: Opa tests to use flpSandbox.html when index.html is not generated
+
+## 0.1.8
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
 ## 0.1.7
 
 ### Patch Changes

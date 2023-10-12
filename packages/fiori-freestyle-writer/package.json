@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-freestyle-writer",
     "description": "SAP Fiori freestyle application writer",
-    "version": "0.18.1",
+    "version": "0.20.11",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -15,7 +15,7 @@
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
@@ -35,7 +35,7 @@
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "ejs": "3.1.7",
+        "ejs": "3.1.9",
         "i18next": "20.3.2",
         "lodash": "4.17.21",
         "mem-fs": "2.1.0",
@@ -43,9 +43,10 @@
         "read-pkg-up": "7.0.1"
     },
     "devDependencies": {
-        "@types/ejs": "3.1.0",
+        "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
+        "@types/ejs": "3.1.2",
         "@types/fs-extra": "9.0.13",
-        "@types/lodash": "4.14.176",
+        "@types/lodash": "4.14.198",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
         "fs-extra": "10.0.0"

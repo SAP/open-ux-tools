@@ -1,5 +1,158 @@
 # @sap-ux/ui5-application-writer
 
+## 0.25.7
+
+### Patch Changes
+
+-   65010b09: fix - use patch version 0 for ui5 types semver for more reliable installs
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-config@0.19.4
+
+## 0.25.6
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/ui5-config@0.19.3
+
+## 0.25.5
+
+### Patch Changes
+
+-   3137514f: use platform independent UI5 CDN URLs
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-config@0.19.2
+
+## 0.25.4
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+
+## 0.25.3
+
+### Patch Changes
+
+-   7fd593f0: fix(deps): update dependency @ui5/manifest to v1.59.0
+
+## 0.25.2
+
+### Patch Changes
+
+-   a794dad7: Update ui5-tooling-transpile in templates
+
+## 0.25.1
+
+### Patch Changes
+
+-   b63aea83: Update ui5 yaml spec to 3.1
+
+## 0.25.0
+
+### Minor Changes
+
+-   de0b13f2: Update templates to use Typescript version 5
+
+## 0.24.3
+
+### Patch Changes
+
+-   44df3d5c: fix lint warnings in locate-reuse-libs.js
+
+## 0.24.2
+
+### Patch Changes
+
+-   29179b5f: Add SAP icon loading in flpsandbox.html
+
+## 0.24.1
+
+### Patch Changes
+
+-   Updated dependencies [375ca861]
+    -   @sap-ux/ui5-config@0.19.0
+
+## 0.24.0
+
+### Minor Changes
+
+-   eba8741e: Use @sapui5/types with UI5 1.113 and newer
+
+## 0.23.5
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-config@0.18.2
+
+## 0.23.4
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+-   Updated dependencies [d9355692]
+    -   @sap-ux/ui5-config@0.18.1
+
+## 0.23.3
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+
+## 0.23.2
+
+### Patch Changes
+
+-   743a5dc7: Chore - bump version of @sap-ux/eslint-plugin-fiori-tools used in templates
+
+## 0.23.1
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/ui5-config@0.17.1
+
+## 0.23.0
+
+### Minor Changes
+
+-   31207b95: abstract ui5-app-writer functions into appropriate modules
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-config@0.17.0
+
+## 0.22.3
+
+### Patch Changes
+
+-   906b7fea: Fix: incorrect settings for ui5-middleware-transpile
+
+## 0.22.2
+
+### Patch Changes
+
+-   495a22cb: Use @sap-ux/eslint-plugin-fiori-tools for JS projects with eslint option
+
+## 0.22.1
+
+### Patch Changes
+
+-   91e95ef8: BUG - Generated Controller Extensions do not always work with TS
+
+## 0.22.0
+
+### Minor Changes
+
+-   7ac0cb40: Add new module containing an eslint plugin with reusable eslint configs
+
 ## 0.21.1
 
 ### Patch Changes

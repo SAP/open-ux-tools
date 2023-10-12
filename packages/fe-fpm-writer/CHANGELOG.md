@@ -1,5 +1,140 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.23.9
+
+### Patch Changes
+
+-   d880c217: Correction for `stashed` property of header sections in manifest template: Property type is changed from string to boolean
+
+## 0.23.8
+
+### Patch Changes
+
+-   c11f6c02: Correction for `templateEdit` property in manifest which led to parsing errors: Missing comma is added right after `templateEdit` value if it exists
+
+## 0.23.7
+
+### Patch Changes
+
+-   7a2229ff: Fix. Avoid overwrite of existing extension fragment file while creating new filter field.
+
+## 0.23.6
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
+## 0.23.5
+
+### Patch Changes
+
+-   7b156515: fix(deps): update dependency xpath to v0.0.33
+
+## 0.23.4
+
+### Patch Changes
+
+-   01fa690e: fix(deps): update dependency @xmldom/xmldom to v0.8.10
+-   3137514f: use platform independent UI5 CDN URLs
+
+## 0.23.3
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+
+## 0.23.2
+
+### Patch Changes
+
+-   78e726a6: Custom Filter Field. Property "eventHandler".
+    1. Generated fragment requires js file when no "eventHandler" is passed.
+    2. Wrong reference to js file is generated in fragment, when "eventHandler.fileName" is passed.
+
+## 0.23.1
+
+### Patch Changes
+
+-   da6aed84: Correction for content of generated fragment for `templateEdit` property: Content is wrapped inside `sap.ui.layout.form.FormElement`
+
+## 0.23.0
+
+### Minor Changes
+
+-   c1c9396a: Feature: Custom header sections support for fe-fpm-writer
+
+## 0.22.3
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 0.22.2
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+
+## 0.22.1
+
+### Patch Changes
+
+-   b7b25d00: Fix. Allow to create custom section or subsection without 'position' property.
+
+## 0.22.0
+
+### Minor Changes
+
+-   36ccc8eb: Add support to generate table building blocks
+
+## 0.21.0
+
+### Minor Changes
+
+-   2de44bb9: Feature. Add VBox wrapper container to generated content for custom section and sub section
+
+## 0.20.3
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
+## 0.20.2
+
+### Patch Changes
+
+-   2fc69d95: Fix: generated typescript controller extension does not work with latest ui5-application-writer version
+
+## 0.20.1
+
+### Patch Changes
+
+-   0aa02ab0: TBI - Clean up eslint warnings in generated projects
+
+## 0.20.0
+
+### Minor Changes
+
+-   5c16776d: Generate custom filter
+
+## 0.19.1
+
+### Patch Changes
+
+-   cca1095c: remove of superfluous checks in template
+
+## 0.19.0
+
+### Minor Changes
+
+-   970dc528: Feature: Custom SubSections support for fe-fpm-writer
+
+## 0.18.9
+
+### Patch Changes
+
+-   1522b416: Remove redundant commas from templates
+
 ## 0.18.8
 
 ### Patch Changes

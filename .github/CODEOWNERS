@@ -15,6 +15,9 @@
 # Module: fiori-elements-writer
 /packages/fiori-elements-writer/ @SAP/ux-tools-elements-writer
 
+# Module: eslint-plugin-fiori-tools
+/packages/eslint-plugin-fiori-tools/ @SAP/ux-tools-fiori-freestyle-writer @SAP/ux-tools-elements-writer
+
 # Module: logger
 /packages/logger/ @SAP/ux-tools-logger
 
@@ -44,6 +47,24 @@
 
 # Module: backend-proxy-middleware
 /packages/backend-proxy-middleware/ @SAP/ux-tools-middlewares-and-tasks
+
+# Module: preview-middleware
+/packages/preview-middleware/ @SAP/ux-tools-middlewares-and-tasks
+
+# Module: preview-middleware-client
+/packages/preview-middleware-client/ @SAP/ux-tools-middlewares-and-tasks
+
+# Module: adp-tooling
+/packages/adp-tooling/ @SAP/ux-tools-adp
+
+# Module: deploy-tooling
+/packages/deploy-tooling/ @SAP/ux-tools-deploy
+
+# Module: control-property-editor
+/packages/control-property-editor/ @SAP/ux-tools-control-property-editor
+
+# Module: control-property-editor-common
+/packages/control-property-editor-common/ @SAP/ux-tools-control-property-editor
 
 # Admin
 /.github/ @SAP/ux-tools-admin

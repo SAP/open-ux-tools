@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import { getLogger } from '../tracing';
 import { getAddCommands } from './add';
 import { getRemoveCommands } from './remove';
+import { getGenerateCommands } from './generate';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
@@ -42,6 +43,9 @@ function getCommanderProgram(): Command {
     const version = getVersion();
     program.description(`Configure features for Fiori applications and projects. (${version})`);
     program.version(version);
+
+    // Handler for create-fiori generate <feature> ..
+    program.addCommand(getGenerateCommands());
 
     // Handler for create-fiori add <feature> ..
     program.addCommand(getAddCommands());
