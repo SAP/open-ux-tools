@@ -425,10 +425,13 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         }
     }
 
-    private cancelEdit(): void {
+    private cancelEdit(newEditedCell: EditedCell | undefined = undefined): void {
         this.caretPosition = -1;
-        this.setState({ editedCell: undefined });
-        this.rerenderTable();
+        if (!newEditedCell) {
+            this.setState({ editedCell: undefined }, () => { this.rerenderTable(); });
+        } else {
+            newEditedCell.errorMessage = 'canceled';
+        }
     }
 
     /**
@@ -437,7 +440,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param cancelEdit
      * @param value
      */
-    private saveCell(cancelEdit = false, value?: any): void {
+    private saveCell(cancelEdit = false, value?: any, newEditedCell?: EditedCell): void {
         this.caretPosition = -1;
         if (typeof this.props.onSave === 'function' && this.state.editedCell) {
             const { rowIndex, column } = this.state.editedCell;
@@ -477,7 +480,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             }
         }
         if (cancelEdit) {
-            this.cancelEdit();
+            this.cancelEdit(newEditedCell);
         }
     }
 
@@ -498,7 +501,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             if (this.state.editedCell.errorMessage) {
                 e.preventDefault();
             } else {
-                this.saveCell(true);
+                this.saveCell(true, this.state.editedCell);
             }
         }
     }
@@ -644,7 +647,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      *
      * @param value
      */
-    private validateCell(value: string): void {
+    private validateCell(value: string, newEditedCell: EditedCell): void {
         const editedCell = this.state.editedCell;
         const column = editedCell?.column;
         let errorMessage = '';
@@ -663,9 +666,9 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 this.caretPosition = input.selectionStart || 0;
             }
 
-            editedCell.errorMessage = errorMessage || undefined;
-            this.setState({ editedCell });
-            this.rerenderTable();
+            newEditedCell.errorMessage = errorMessage || undefined;
+            // this.setState({ editedCell });
+            // this.rerenderTable();
         }
     }
 
@@ -683,13 +686,19 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
                 const column = editedCell?.column;
                 if (column && typeof column.validate === 'function') {
-                    this.validateCell(newValue);
+                    this.validateCell(newValue, editedCell);
                 }
                 if (this.props.renderInputs) {
-                    this.saveCell(false, newValue);
+                    this.saveCell(false, newValue, editedCell);
                 }
             }
+
             return { editedCell };
+        }, () => {
+            console.log(this.state.editedCell);
+            if (this.state.editedCell?.errorMessage) {
+                this.rerenderTable();
+            }
         });
     }
 
