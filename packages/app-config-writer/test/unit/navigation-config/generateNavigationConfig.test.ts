@@ -54,6 +54,13 @@ describe('Unit tests for navigation config generation', () => {
             true
         );
         expect(fs.readJSON(join(appPathInboundsExist, 'webapp', 'manifest.json'))).toMatchSnapshot();
+
+        // Optional properties not provided
+        fs = await generateInboundNavigationConfig(appPathNoInbounds, {
+            semanticObject: 'semanticObject1',
+            action: 'action1'
+        });
+        expect(fs.readJSON(join(appPathNoInbounds, 'webapp', 'manifest.json'))).toMatchSnapshot();
     });
 
     test('manifest not found', async () => {
