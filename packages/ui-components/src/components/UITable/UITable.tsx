@@ -667,8 +667,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             }
 
             newEditedCell.errorMessage = errorMessage || undefined;
-            // this.setState({ editedCell });
-            // this.rerenderTable();
         }
     }
 
@@ -693,9 +691,12 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 }
             }
 
-            return { editedCell };
+            if (editedCell.errorMessage === 'canceled') {
+                return { editedCell: undefined};
+            } else {
+                return { editedCell };
+            }
         }, () => {
-            console.log(this.state.editedCell);
             if (this.state.editedCell?.errorMessage) {
                 this.rerenderTable();
             }
