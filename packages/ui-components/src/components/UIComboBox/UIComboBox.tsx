@@ -42,7 +42,6 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
 export interface UIComboBoxState {
     minWidth?: number;
     isListHidden?: boolean;
-    toggleRefresh: boolean;
 }
 
 interface ComboboxItemInfo {
@@ -96,7 +95,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.onRenderOption = this.onRenderOption.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onClick = this.onClick.bind(this);
-        this.toggleRefresh = this.toggleRefresh.bind(this);
         this.handleRefreshButton = this.handleRefreshButton.bind(this);
         this.onPendingValueChanged = this.onPendingValueChanged.bind(this);
         this.onMultiSelectChange = this.onMultiSelectChange.bind(this);
@@ -105,9 +103,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
         initializeComponentRef(this);
 
-        this.state = {
-            toggleRefresh: false
-        };
+        this.state = {};
     }
 
     /**
@@ -429,16 +425,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         if (this.comboBox.current) {
             this.comboBox.current.focus();
         }
-    }
-
-    /**
-     * Method called only when property 'onRefresh' has been defined.
-     * It is called when the menu Open and Dismiss to handle the toggleRefresh state.
-     */
-    private toggleRefresh(): void {
-        this.setState((prevState) => ({
-            toggleRefresh: !prevState.toggleRefresh
-        }));
     }
 
     /**
