@@ -30,7 +30,7 @@ export type EnhancedRouter = Router & {
 /**
  * Default theme
  */
-const DEFAULT_THEME = 'sap_horizon';
+const DEFAULT_THEME = 'sap_belize';
 
 /**
  * Default path for mounting the local FLP.
@@ -142,11 +142,12 @@ export class FlpSandbox {
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         const ui5Theme =
             this.config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
+        const depsLibs = this.rta ? ['sap.ui.rta'] : [];
         this.templateConfig = {
             basePath: relative(dirname(this.config.path), '/') ?? '.',
             apps: {},
             ui5: {
-                libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
+                libs: [...Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}), ...depsLibs].join(','),
                 theme: ui5Theme,
                 flex,
                 resources: {
