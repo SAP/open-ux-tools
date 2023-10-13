@@ -43,7 +43,7 @@ Object {
       "test.fe.v2.app": "/simple/app",
       "test.fe.v2.other": "/yet/another/app",
     },
-    "theme": "sap_fiori_3",
+    "theme": "sap_horizon",
   },
 }
 `;
@@ -75,7 +75,7 @@ Object {
       "my.id": "..",
       "open.ux.preview.client": "/preview/client",
     },
-    "theme": "sap_fiori_3",
+    "theme": "sap_horizon",
   },
 }
 `;

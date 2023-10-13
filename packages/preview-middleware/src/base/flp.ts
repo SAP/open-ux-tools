@@ -30,7 +30,7 @@ export type EnhancedRouter = Router & {
 /**
  * Default theme
  */
-const DEFAULT_THEME = 'sap_fiori_3';
+const DEFAULT_THEME = 'sap_horizon';
 
 /**
  * Default path for mounting the local FLP.
