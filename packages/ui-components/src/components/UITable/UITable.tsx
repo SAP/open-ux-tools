@@ -652,7 +652,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             errorMessage = column.validate(value);
         }
         if (editedCell && editedCell.errorMessage !== errorMessage) {
-            if (typeof editedCell.rowIndex === 'number' && editedCell?.column?.key) {
+            if (typeof editedCell.rowIndex === 'number' && editedCell.column?.key) {
                 const cell = getCellFromCoords(
                     editedCell.rowIndex,
                     editedCell.column.key,
@@ -681,7 +681,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             if (editedCell) {
                 editedCell.newValue = newValue;
 
-                const column = editedCell?.column;
+                const column = editedCell.column;
                 if (column && typeof column.validate === 'function') {
                     this.validateCell(editedCell, newValue);
                 }
