@@ -640,13 +640,12 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     }
 
     /**
-     * Validates cell and if validation gives error - method returns invalid cell.
+     * Validates passed value for cell and updates "errorMessage" property based on validation result.
      *
+     * @param editedCell Cell to validate
      * @param value
-     * @returns Instance of invalid edit cell
      */
-    private validateCell(value: string): EditedCell | undefined {
-        const editedCell = this.state.editedCell;
+    private validateCell(editedCell: EditedCell, value: string): void {
         const column = editedCell?.column;
         let errorMessage = '';
         if (column && typeof column.validate === 'function') {
@@ -667,10 +666,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             editedCell.errorMessage = errorMessage || undefined;
             // Rerender table to show error message
             this.rerenderTable();
-            // Return invalid cell
-            return editedCell;
         }
-        return undefined;
     }
 
     /**
@@ -681,13 +677,13 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      */
     private onTextInputChange(e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue = ''): void {
         this.setState((prevState) => {
-            let editedCell = prevState.editedCell ?? this.activeElement;
+            const editedCell = prevState.editedCell ?? this.activeElement;
             if (editedCell) {
                 editedCell.newValue = newValue;
 
                 const column = editedCell?.column;
                 if (column && typeof column.validate === 'function') {
-                    editedCell = this.validateCell(newValue) ?? editedCell;
+                    this.validateCell(editedCell, newValue);
                 }
                 if (this.props.renderInputs) {
                     this.saveCell(false, newValue);
