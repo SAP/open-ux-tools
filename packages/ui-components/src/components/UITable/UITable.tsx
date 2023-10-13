@@ -425,19 +425,10 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         }
     }
 
-    /**
-     *
-     * @param newEditedCell
-     */
-    private cancelEdit(newEditedCell: EditedCell | undefined = undefined): void {
+    private cancelEdit(): void {
         this.caretPosition = -1;
-        if (!newEditedCell) {
-            this.setState({ editedCell: undefined }, () => {
-                this.rerenderTable();
-            });
-        } else {
-            newEditedCell.errorMessage = 'canceled';
-        }
+        this.setState({ editedCell: undefined });
+        this.rerenderTable();
     }
 
     /**
@@ -445,9 +436,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      *
      * @param cancelEdit
      * @param value
-     * @param newEditedCell
      */
-    private saveCell(cancelEdit = false, value?: any, newEditedCell?: EditedCell): void {
+    private saveCell(cancelEdit = false, value?: any): void {
         this.caretPosition = -1;
         if (typeof this.props.onSave === 'function' && this.state.editedCell) {
             const { rowIndex, column } = this.state.editedCell;
@@ -487,7 +477,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             }
         }
         if (cancelEdit) {
-            this.cancelEdit(newEditedCell);
+            this.cancelEdit();
         }
     }
 
@@ -508,7 +498,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             if (this.state.editedCell.errorMessage) {
                 e.preventDefault();
             } else {
-                this.saveCell(true, this.state.editedCell);
+                this.saveCell(true);
             }
         }
     }
@@ -650,12 +640,13 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     }
 
     /**
-     * Validates cell.
+     * Validates cell and if validation gives error - method returns invalid cell.
      *
      * @param value
-     * @param newEditedCell
+     *
+     * @returns Instance of invalid edit cell
      */
-    private validateCell(value: string, newEditedCell: EditedCell): void {
+    private validateCell(value: string): EditedCell | undefined {
         const editedCell = this.state.editedCell;
         const column = editedCell?.column;
         let errorMessage = '';
@@ -674,8 +665,13 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 this.caretPosition = input.selectionStart || 0;
             }
 
-            newEditedCell.errorMessage = errorMessage || undefined;
+            editedCell.errorMessage = errorMessage || undefined;
+            // Rerender table to show error message
+            this.rerenderTable();
+            // Return invalid cell
+            return editedCell;
         }
+        return undefined;
     }
 
     /**
@@ -685,38 +681,26 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param newValue
      */
     private onTextInputChange(e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue = ''): void {
-        this.setState(
-            (prevState) => {
-                const editedCell = prevState.editedCell ?? this.activeElement;
-                if (editedCell) {
-                    editedCell.newValue = newValue;
+        this.setState((prevState) => {
+            let editedCell = prevState.editedCell || this.activeElement;
+            if (editedCell) {
+                editedCell.newValue = newValue;
 
-                    const column = editedCell?.column;
-                    if (column && typeof column.validate === 'function') {
-                        this.validateCell(newValue, editedCell);
-                    }
-                    if (this.props.renderInputs) {
-                        this.saveCell(false, newValue, editedCell);
-                    }
-
-                    if (editedCell.errorMessage === 'canceled') {
-                        return { editedCell: undefined };
-                    } else {
-                        return { editedCell };
-                    }
+                const column = editedCell?.column;
+                if (column && typeof column.validate === 'function') {
+                    editedCell = this.validateCell(newValue) || editedCell;
                 }
-            },
-            () => {
-                if (this.state.editedCell?.errorMessage) {
-                    this.rerenderTable();
+                if (this.props.renderInputs) {
+                    this.saveCell(false, newValue);
                 }
             }
-        )
+            return { editedCell };
+        });
     }
 
     private onComboBoxChange = (option?: IComboBoxOption): void => {
         this.setState((prevState) => {
-            const editedCell = prevState.editedCell ?? this.activeElement;
+            const editedCell = prevState.editedCell || this.activeElement;
             if (editedCell && option) {
                 editedCell.newValue = option.text;
             }
