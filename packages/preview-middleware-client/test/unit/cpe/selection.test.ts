@@ -713,7 +713,7 @@ describe('SelectionService', () => {
         expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'));
     });
 
-    test('attaches to selected control change - test getBindingInfo object with bindingString/path', async () => {
+    test('attaches to selected control change - test getBindingInfo object bindingString', async () => {
         let handler: ((event: Event) => Promise<void>) | undefined;
         let propertyChangeHandler: ((event: Event) => Promise<void>) | undefined;
         const attachEventSpy = jest
@@ -737,44 +737,12 @@ describe('SelectionService', () => {
                     getElementInstance: jest.fn().mockReturnValue({
                         attachEvent: attachEventSpy,
                         getBindingInfo: mockGetBindingInfo
-                            .mockReturnValueOnce({ path: '{mockPath}' })
                             .mockReturnValueOnce({ bindingString: '{mockBindingString}' })
                             .mockReturnValue({}),
                         getMetadata: jest.fn().mockReturnValue({
                             getName: jest.fn().mockReturnValue('test'),
                             getLibraryName: jest.fn().mockReturnValue('sap.m'),
-                            getAllProperties: jest.fn().mockReturnValue({
-                                activeIcon: {
-                                    name: 'activeIcon',
-                                    type: 'sap.ui.core.URI',
-                                    group: 'Misc',
-                                    defaultValue: null,
-                                    bindable: false,
-                                    getType: jest.fn().mockReturnValue({
-                                        getName: jest.fn().mockReturnValue('sap.ui.core.URI')
-                                    })
-                                },
-                                ariaHasPopup: {
-                                    name: 'ariaHasPopup',
-                                    type: 'sap.ui.core.aria.HasPopup',
-                                    group: 'Accessibility',
-                                    defaultValue: 'None',
-                                    bindable: false,
-                                    getType: jest.fn().mockReturnValue({
-                                        getName: jest.fn().mockReturnValue('sap.ui.core.aria.HasPopup')
-                                    })
-                                },
-                                blocked: {
-                                    name: 'blocked',
-                                    type: 'boolean',
-                                    group: 'Misc',
-                                    defaultValue: false,
-                                    bindable: false,
-                                    getType: jest.fn().mockReturnValue({
-                                        getName: jest.fn().mockReturnValue('boolean')
-                                    })
-                                }
-                            })
+                            getAllProperties: jest.fn().mockReturnValue({})
                         })
                     })
                 }
@@ -798,33 +766,6 @@ describe('SelectionService', () => {
         const service = new SelectionService(rta);
         const sendActionSpy = jest.fn();
         await service.init(sendActionSpy, jest.fn());
-        expect(handler).not.toBeUndefined();
-        // Select control
-        if (handler !== undefined) {
-            await handler({
-                getParameter: selectionChangeGetParameterSpy
-            } as any);
-        }
-
-        expect(propertyChangeHandler).not.toBeUndefined();
-        // Trigger change
-        if (propertyChangeHandler !== undefined) {
-            await propertyChangeHandler({
-                getParameter: (name: string) => {
-                    switch (name) {
-                        case 'name':
-                            return 'text';
-                        case 'id':
-                            return 'control1';
-                        case 'newValue':
-                            return 'newText';
-                        default:
-                            throw 'Unknown';
-                    }
-                }
-            } as any);
-        }
-        expect(mockGetBindingInfo).toBeCalledWith('text');
 
         if (handler !== undefined) {
             await handler({

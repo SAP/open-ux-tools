@@ -219,9 +219,8 @@ export class SelectionService implements Service {
                 this.appliedChangeCache.delete(changeId);
                 return;
             }
-            const info = runtimeControl.getBindingInfo(propertyName) as { path?: string; bindingString?: string };
-            // maintenance version 1.84.35 does not have 'path' property but 'bindingString'
-            const newValue = info?.path ?? info?.bindingString ?? e.getParameter('newValue');
+            const info = runtimeControl.getBindingInfo(propertyName) as { bindingString?: string };
+            const newValue = info?.bindingString ?? e.getParameter('newValue');
             const change = propertyChanged({
                 controlId,
                 propertyName,
