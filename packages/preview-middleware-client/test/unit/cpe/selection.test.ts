@@ -712,4 +712,166 @@ describe('SelectionService', () => {
         expect(buildControlDataSpy).toHaveBeenNthCalledWith(1, {});
         expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'));
     });
+
+    test('attaches to selected control change - test getBindingInfo object with bindingString/path', async () => {
+        let handler: ((event: Event) => Promise<void>) | undefined;
+        let propertyChangeHandler: ((event: Event) => Promise<void>) | undefined;
+        const attachEventSpy = jest
+            .fn()
+            .mockImplementation((eventName: string, newHandler: (event: Event) => Promise<void>) => {
+                if (eventName === '_change') {
+                    propertyChangeHandler = newHandler;
+                }
+            });
+        jest.spyOn(controlData, 'buildControlData').mockReturnValue({
+            id: 'control1',
+            name: 'controlName',
+            type: 'controlType',
+            properties: []
+        });
+        const mockGetBindingInfo = jest.fn();
+        const cache = new Map([
+            [
+                'overlayControl1',
+                {
+                    getElementInstance: jest.fn().mockReturnValue({
+                        attachEvent: attachEventSpy,
+                        getBindingInfo: mockGetBindingInfo
+                            .mockReturnValueOnce({ path: '{mockPath}' })
+                            .mockReturnValueOnce({ bindingString: '{mockBindingString}' })
+                            .mockReturnValue({}),
+                        getMetadata: jest.fn().mockReturnValue({
+                            getName: jest.fn().mockReturnValue('test'),
+                            getLibraryName: jest.fn().mockReturnValue('sap.m'),
+                            getAllProperties: jest.fn().mockReturnValue({
+                                activeIcon: {
+                                    name: 'activeIcon',
+                                    type: 'sap.ui.core.URI',
+                                    group: 'Misc',
+                                    defaultValue: null,
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('sap.ui.core.URI')
+                                    })
+                                },
+                                ariaHasPopup: {
+                                    name: 'ariaHasPopup',
+                                    type: 'sap.ui.core.aria.HasPopup',
+                                    group: 'Accessibility',
+                                    defaultValue: 'None',
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('sap.ui.core.aria.HasPopup')
+                                    })
+                                },
+                                blocked: {
+                                    name: 'blocked',
+                                    type: 'boolean',
+                                    group: 'Misc',
+                                    defaultValue: false,
+                                    bindable: false,
+                                    getType: jest.fn().mockReturnValue({
+                                        getName: jest.fn().mockReturnValue('boolean')
+                                    })
+                                }
+                            })
+                        })
+                    })
+                }
+            ]
+        ]);
+        sapCoreMock.byId.mockImplementation((id: ID) => {
+            return cache.get(id);
+        });
+        const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([
+            {
+                getId: () => 'overlayControl1'
+            }
+        ]);
+        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
+            handler = newHandler;
+        });
+        const rta = {
+            attachSelectionChange,
+            getService: jest.fn().mockReturnValue({ get: jest.fn(), attachEvent: jest.fn() })
+        } as any;
+        const service = new SelectionService(rta);
+        const sendActionSpy = jest.fn();
+        await service.init(sendActionSpy, jest.fn());
+        expect(handler).not.toBeUndefined();
+        // Select control
+        if (handler !== undefined) {
+            await handler({
+                getParameter: selectionChangeGetParameterSpy
+            } as any);
+        }
+
+        expect(propertyChangeHandler).not.toBeUndefined();
+        // Trigger change
+        if (propertyChangeHandler !== undefined) {
+            await propertyChangeHandler({
+                getParameter: (name: string) => {
+                    switch (name) {
+                        case 'name':
+                            return 'text';
+                        case 'id':
+                            return 'control1';
+                        case 'newValue':
+                            return 'newText';
+                        default:
+                            throw 'Unknown';
+                    }
+                }
+            } as any);
+        }
+        expect(mockGetBindingInfo).toBeCalledWith('text');
+
+        if (handler !== undefined) {
+            await handler({
+                getParameter: selectionChangeGetParameterSpy
+            } as any);
+        }
+        // Trigger change
+        if (propertyChangeHandler !== undefined) {
+            await propertyChangeHandler({
+                getParameter: (name: string) => {
+                    switch (name) {
+                        case 'name':
+                            return 'random';
+                        case 'id':
+                            return 'control2';
+                        case 'newValue':
+                            return 'newVal';
+                        default:
+                            throw 'Unknown';
+                    }
+                }
+            } as any);
+        }
+        expect(mockGetBindingInfo).toBeCalledWith('random');
+        
+        if (handler !== undefined) {
+            await handler({
+                getParameter: selectionChangeGetParameterSpy
+            } as any);
+        }
+        // Trigger change
+        if (propertyChangeHandler !== undefined) {
+            await propertyChangeHandler({
+                getParameter: (name: string) => {
+                    switch (name) {
+                        case 'name':
+                            return 'test';
+                        case 'id':
+                            return 'control2';
+                        case 'newValue':
+                            return 'newVal';
+                        default:
+                            throw 'Unknown';
+                    }
+                }
+            } as any);
+        }
+        expect(mockGetBindingInfo).toBeCalledWith('test');
+    });
 });
