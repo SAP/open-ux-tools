@@ -643,7 +643,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * Validates cell and if validation gives error - method returns invalid cell.
      *
      * @param value
-     *
      * @returns Instance of invalid edit cell
      */
     private validateCell(value: string): EditedCell | undefined {
