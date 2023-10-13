@@ -1,14 +1,14 @@
 {
-    "name": "@sap-ux/deploy-input-validator",
-    "version": "0.0.1",
-    "description": "Library to validate deploy configuration input formats",
+    "name": "@sap-ux/project-input-validator",
+    "version": "0.1.0",
+    "description": "Library to validate Fiori project input formats",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/deploy-input-validator"
+        "directory": "packages/project-input-validator"
     },
     "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Adeploy-input-validator"
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aproject-input-validator"
     },
     "license": "Apache-2.0",
     "private": false,

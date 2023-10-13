@@ -1,7 +1,7 @@
 import { t } from "../src/i18n";
 import { validateAppDescription, validateAppName, validateClient, validatePackage, validateTransportRequestNumber, validateUrl } from "../src/validators";
 
-describe('deploy input validators', () => {
+describe('project input validators', () => {
     describe('validateAppName', () => {
         test('validateAppName - valid simple name', () => {
             const output = validateAppName('ZTEST', 'Z');

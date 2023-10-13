@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import type { TOptions } from 'i18next';
 import i18ntranslations from './translations/common.i18n.json';
 
-export const DEPLOY_INPUT_VALIDATOR_NS = 'deploy-input-validator';
+export const PROJECT_INPUT_VALIDATOR_NS = 'project-input-validator';
 
 /**
  * Initialize i18next with the translations for this module.
@@ -11,13 +11,13 @@ export async function initI18n(): Promise<void> {
     await i18next.init({
         resources: {
             en: {
-                [DEPLOY_INPUT_VALIDATOR_NS]: i18ntranslations
+                [PROJECT_INPUT_VALIDATOR_NS]: i18ntranslations
             }
         },
         lng: 'en',
         fallbackLng: 'en',
-        defaultNS: DEPLOY_INPUT_VALIDATOR_NS,
-        ns: [DEPLOY_INPUT_VALIDATOR_NS]
+        defaultNS: PROJECT_INPUT_VALIDATOR_NS,
+        ns: [PROJECT_INPUT_VALIDATOR_NS]
     });
 }
 

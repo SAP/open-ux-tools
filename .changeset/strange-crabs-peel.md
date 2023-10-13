@@ -1,5 +1,5 @@
 ---
-'@sap-ux/deploy-input-validator': minor
+'@sap-ux/project-input-validator': minor
 '@sap-ux/axios-extension': minor
 '@sap-ux/deploy-tooling': patch
 ---
@@ -14,8 +14,8 @@ local package because non-local package that is not associated with any transpor
 
 A new feature is introduced to run validators on deploy configuration in `ui5-deploy.yaml` and returns found issues. This new feature is only activated when running deploy in the existing `test` mode. No additional parameter required to include this validation process.
 
-`@sap-ux/deploy-input-validator`:
+`@sap-ux/project-input-validator`:
 
-A new module that includes validator utility functions for deploy configuration inputs. Please refer to the
-unit test file in `deploy-input-validator/test/validators.test.ts` for use cases.
+A new module that includes validator utility functions for Fiori project inputs. Please refer to the
+unit test file in `project-input-validator/test/validators.test.ts` for use cases.
 

@@ -51,9 +51,6 @@
       "path": "packages/create"
     },
     {
-      "path": "packages/deploy-input-validator"
-    },
-    {
       "path": "packages/deploy-tooling"
     },
     {
@@ -88,6 +85,9 @@
     },
     {
       "path": "packages/project-access"
+    },
+    {
+      "path": "packages/project-input-validator"
     },
     {
       "path": "packages/store"

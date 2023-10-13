@@ -605,12 +605,6 @@ importers:
         specifier: 2.4.4
         version: 2.4.4
 
-  packages/deploy-input-validator:
-    dependencies:
-      i18next:
-        specifier: 20.3.2
-        version: 20.3.2
-
   packages/deploy-tooling:
     dependencies:
       '@sap-ux/axios-extension':
@@ -619,12 +613,12 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
-      '@sap-ux/deploy-input-validator':
-        specifier: workspace:*
-        version: link:../deploy-input-validator
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
       '@sap-ux/system-access':
         specifier: workspace:*
         version: link:../system-access
@@ -1113,6 +1107,12 @@ importers:
       vscode-uri:
         specifier: 3.0.7
         version: 3.0.7
+
+  packages/project-input-validator:
+    dependencies:
+      i18next:
+        specifier: 20.3.2
+        version: 20.3.2
 
   packages/store:
     dependencies:

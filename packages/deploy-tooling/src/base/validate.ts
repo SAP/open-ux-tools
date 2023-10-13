@@ -10,7 +10,7 @@ import {
     validatePackage,
     validateTransportRequestNumber,
     validateUrl
-} from '@sap-ux/deploy-input-validator';
+} from '@sap-ux/project-input-validator';
 import { EOL } from 'os';
 
 export type ValidationInputs = {

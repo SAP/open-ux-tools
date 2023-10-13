@@ -16,10 +16,10 @@
       "path": "../btp-utils"
     },
     {
-      "path": "../deploy-input-validator"
+      "path": "../logger"
     },
     {
-      "path": "../logger"
+      "path": "../project-input-validator"
     },
     {
       "path": "../store"
