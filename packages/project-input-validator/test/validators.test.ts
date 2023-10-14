@@ -1,5 +1,12 @@
-import { t } from "../src/i18n";
-import { validateAppDescription, validateAppName, validateClient, validatePackage, validateTransportRequestNumber, validateUrl } from "../src/validators";
+import { t } from '../src/i18n';
+import {
+    validateAppDescription,
+    validateAppName,
+    validateClient,
+    validatePackage,
+    validateTransportRequestNumber,
+    validateUrl
+} from '../src/validators';
 
 describe('project input validators', () => {
     describe('validateAppName', () => {
@@ -29,42 +36,42 @@ describe('project input validators', () => {
         });
 
         test('validateAppName - invalid namespace length', () => {
-            const ns = "ns1looooooonooog";
+            const ns = 'ns1looooooonooog';
             const output = validateAppName(`/${ns}/ztest`);
             expect(output).toEqual(t('AbapInvalidNamespaceLength', { length: ns.length }));
         });
 
         test('validateAppName - valid namespace length, invalid app name length', () => {
-            const appName = "appnamelooooooonooooooog";
+            const appName = 'appnamelooooooonooooooog';
             const output = validateAppName(`/ns/${appName}`);
             expect(output).toEqual(t('AbapInvalidAppNameLength', { length: appName.length }));
         });
 
         test('validateAppName - invalid namespace length, invalid app name length', () => {
-            const ns = "ns1looooooonooog";
-            const appName = "appnamelooooooonooooooog";
+            const ns = 'ns1looooooonooog';
+            const appName = 'appnamelooooooonooooooog';
             const output = validateAppName(`/${ns}/${appName}`);
             expect(output).toContain(t('AbapInvalidNamespaceLength', { length: ns.length }));
             expect(output).toContain(t('AbapInvalidAppNameLength', { length: appName.length }));
         });
 
         test('validateAppName - invalid app name length', () => {
-            const appName = "appnamelooooooonooooooog";
+            const appName = 'appnamelooooooonooooooog';
             const output = validateAppName(appName);
             expect(output).toEqual(t('AbapInvalidAppNameLength', { length: appName.length }));
         });
 
         test('validateAppName - invalid app name prefix', () => {
-            const appName = "appnamelooooooonooooooog";
-            const prefix = "Z";
+            const appName = 'appnamelooooooonooooooog';
+            const prefix = 'Z';
             const output = validateAppName(appName, prefix);
             expect(output).toContain(t('AbapInvalidAppNameLength', { length: appName.length }));
             expect(output).toContain(t('AbapInvalidAppName', { prefix }));
         });
 
         test('validateAppName - invalid app name prefix', () => {
-            const appName = "appname-looooooonooooooog";
-            const prefix = "Z";
+            const appName = 'appname-looooooonooooooog';
+            const prefix = 'Z';
             const output = validateAppName(appName, prefix);
             expect(output).toContain(t('AbapInvalidAppNameLength', { length: appName.length }));
             expect(output).toContain(t('AbapInvalidAppName', { prefix }));
@@ -85,7 +92,9 @@ describe('project input validators', () => {
         });
 
         test('validateAppDescription - invalid description', () => {
-            const output = validateAppDescription('This is a loooooooooooooooooooooooooooooooooooooooooooooooooooooooog description');
+            const output = validateAppDescription(
+                'This is a loooooooooooooooooooooooooooooooooooooooooooooooooooooooog description'
+            );
             expect(output).toContain(t('AbapAppDescLength'));
         });
     });
@@ -117,7 +126,7 @@ describe('project input validators', () => {
             expect(output).toContain(t('InvalidClient', { client }));
         });
     });
-    
+
     describe('validateTransportRequestNumber', () => {
         test('validateTransportRequestNumber - valid tr', () => {
             const output = validateTransportRequestNumber('T0000001', 'XPACKAGE');
@@ -197,7 +206,6 @@ describe('project input validators', () => {
         });
     });
 
-
     describe('validateUrl', () => {
         test('validateUrl - valid url', () => {
             const output = validateUrl('https://test.dev');
@@ -211,4 +219,3 @@ describe('project input validators', () => {
         });
     });
 });
-
