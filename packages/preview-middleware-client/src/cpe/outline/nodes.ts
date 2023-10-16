@@ -33,7 +33,6 @@ export async function transformNodes(input: OutlineViewNode[]): Promise<OutlineN
                 element.type === 'aggregation' ? element.elements ?? [] : []
             );
             const { text } = getAdditionalData(current.id);
-
             const node: OutlineNode = {
                 controlId: current.id,
                 controlType: current.technicalName,
@@ -41,6 +40,20 @@ export async function transformNodes(input: OutlineViewNode[]): Promise<OutlineN
                 editable,
                 visible: current.visible ?? true,
                 children: await transformNodes(children)
+            };
+
+            items.push(node);
+        }
+
+        if (current?.type === 'extensionPoint') {
+            const node: OutlineNode = {
+                controlId: current.id,
+                controlType: current.type,
+                name: current.name!,
+                editable,
+                visible: current.visible ?? true,
+                children: [],
+                icon: current.icon
             };
 
             items.push(node);
