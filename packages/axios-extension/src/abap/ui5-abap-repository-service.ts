@@ -408,6 +408,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param e error thrown by Axios after sending a request
      * @param e.error error from Axios
      * @param e.host hostname
+     * @param e.isDest
      */
     protected logError({ error, host, isDest }: { error: Error; host?: string; isDest?: boolean }): void {
         this.log.error(error.message);
