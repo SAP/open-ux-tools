@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.4.3
+
+### Patch Changes
+
+-   aef0ccf3: Add bindingString prop for getBindingInfo expression to support maintenance version
+
 ## 0.4.2
 
 ### Patch Changes
