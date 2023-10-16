@@ -16,16 +16,15 @@ describe('cli/config', () => {
     });
 
     describe('getDeploymentConfig', () => {
+        const fixture = join(__dirname, '../../fixtures/simple-app');
         test('valid config path', async () => {
-            expect(await getDeploymentConfig(join(__dirname, '../../test-input/ui5-deploy.yaml'))).toBeDefined();
+            expect(await getDeploymentConfig(join(fixture, 'ui5-deploy.yaml'))).toBeDefined();
         });
         test('invalid config', async () => {
-            await expect(getDeploymentConfig(join(__dirname, '../../test-input/ui5.yaml'))).rejects.toThrowError();
+            await expect(getDeploymentConfig(join(fixture, 'ui5.yaml'))).rejects.toThrowError();
         });
         test('invalid path', async () => {
-            await expect(
-                getDeploymentConfig(join(__dirname, '../../test-input/ui5-invalid.yaml'))
-            ).rejects.toThrowError();
+            await expect(getDeploymentConfig(join(fixture, 'ui5-invalid.yaml'))).rejects.toThrowError();
         });
     });
 
@@ -74,7 +73,7 @@ describe('cli/config', () => {
         });
 
         test('service keys merged correctly', async () => {
-            const cloudServiceKey = join(__dirname, '../../test-input/service-keys.json');
+            const cloudServiceKey = join(__dirname, '../../fixtures/service-keys.json');
             const merged = await mergeConfig(config, {
                 cloud: true,
                 cloudServiceKey
