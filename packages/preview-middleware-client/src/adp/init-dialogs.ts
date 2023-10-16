@@ -7,11 +7,16 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import AddFragment from './controllers/AddFragment.controller';
 import ControllerExtension from './controllers/ControllerExtension.controller';
+import { ExtensionPointData } from './extension-point';
+import ExtensionPoint from './controllers/ExtensionPoint.controller';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
-    CONTROLLER_EXTENSION = 'ControllerExtension'
+    CONTROLLER_EXTENSION = 'ControllerExtension',
+    ADD_FRAGMENT_AT_EXTENSION_POINT = 'ExtensionPoint'
 }
+
+type Controller = AddFragment | ControllerExtension | ExtensionPoint;
 
 /**
  * Adds a new item to the context menu
@@ -34,6 +39,14 @@ export const initDialogs = (rta: RuntimeAuthoring): void => {
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form'
     });
+
+    // contextMenu.addMenuItem({
+    //     id: 'ADD_FRAGMENT_AT_EXTENSION_POINT',
+    //     text: 'Add Fragment at Extension Point',
+    //     handler: async (overlays: UI5Element[]) =>
+    //         await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT),
+    //     icon: 'sap-icon://add-equipment'
+    // });
 };
 
 /**
@@ -42,12 +55,32 @@ export const initDialogs = (rta: RuntimeAuthoring): void => {
  * @param overlays Control overlays
  * @param rta Runtime Authoring
  * @param dialogName Dialog name
+ * @param extensionPointData Control ID
  */
-export async function handler(overlays: UI5Element, rta: RuntimeAuthoring, dialogName: DialogNames): Promise<void> {
-    const controller =
-        dialogName === DialogNames.ADD_FRAGMENT
-            ? new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlays, rta)
-            : new ControllerExtension(`open.ux.preview.client.adp.controllers.${dialogName}`, overlays, rta);
+export async function handler(
+    overlays: UI5Element,
+    rta: RuntimeAuthoring,
+    dialogName: DialogNames,
+    extensionPointData?: ExtensionPointData
+): Promise<void> {
+    let controller: Controller;
+
+    switch (dialogName) {
+        case DialogNames.ADD_FRAGMENT:
+            controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlays, rta);
+            break;
+        case DialogNames.CONTROLLER_EXTENSION:
+            controller = new ControllerExtension(`open.ux.preview.client.adp.controllers.${dialogName}`, overlays, rta);
+            break;
+        case DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT:
+            controller = new ExtensionPoint(
+                `open.ux.preview.client.adp.controllers.${dialogName}`,
+                overlays,
+                rta,
+                extensionPointData
+            );
+            break;
+    }
 
     await XMLView.create({
         viewName: `open.ux.preview.client.adp.ui.${dialogName}`,
