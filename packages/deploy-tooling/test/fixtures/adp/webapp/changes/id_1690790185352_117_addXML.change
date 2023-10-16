@@ -1,0 +1,30 @@
+{
+	"changeType": "addXML",
+	"reference": "adp.example",
+	"namespace": "apps/adp.example/changes/",
+	"projectId": "adp.v2app",
+	"packageName": "$TMP",
+	"moduleName": "adp/example/changes/fragments/test.fragment.xml",
+	"support": {
+		"generator": "sap.ui.rta.command",
+		"sapui5Version": "1.118.0-SNAPSHOT",
+		"command": "addXML"
+	},
+	"originalLanguage": "EN",
+	"layer": "VENDOR",
+	"fileType": "change",
+	"fileName": "id_1690790185352_117_addXML",
+	"content": {
+		"targetAggregation": "content",
+		"index": 7,
+		"fragmentPath": "fragments/test.fragment.xml"
+	},
+	"texts": {},
+	"selector": {
+		"id": "sap.ui.demoapps.rta.fiorielements::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--template::ListReport::TableToolbar",
+		"idIsLocal": false
+	},
+	"dependentSelector": {},
+	"jsOnly": true,
+	"creation": "2023-07-31T07:56:25.435Z"
+}
