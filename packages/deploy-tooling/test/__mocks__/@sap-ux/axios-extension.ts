@@ -1,7 +1,10 @@
 const axiosExt = jest.requireActual('@sap-ux/axios-extension');
 
 const mockedAdtServiceMethod = {
-    createTransportRequest: jest.fn()
+    createTransportRequest: jest.fn(),
+    listPackages: jest.fn(),
+    getTransportRequests: jest.fn(),
+    getAtoInfo: jest.fn()
 };
 
 const mockedUi5AbapRepositoryService = {
