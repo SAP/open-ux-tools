@@ -91,7 +91,7 @@ export default class ExtensionPoint extends BaseDialog {
     }
 
     /**
-     * Creates a new fragment for the specified control
+     * Creates a new fragment for the specified extension point
      *
      * @param fragmentName Fragment name
      */
@@ -109,29 +109,16 @@ export default class ExtensionPoint extends BaseDialog {
     }
 
     /**
-     * Creates an addXML fragment command and pushes it to the command stack
+     * Creates add xml at extension point changes
      *
      * @param fragmentName Fragment name
      */
     private async createFragmentChange(fragmentName: string) {
-        // const flexSettings = this.rta.getFlexSettings();
-
-        // const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
-        // const designMetadata = overlay.getDesignTimeMetadata();
-
         const modifiedValue = {
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,
             extensionPointName: this.extensionPointData?.name
         };
 
         this.extensionPointData?.deffered?.resolve(modifiedValue);
-
-        // await this.commandExecutor.generateAndExecuteCommand(
-        //     this.runtimeControl,
-        //     'addXMLAtExtensionPoint',
-        //     modifiedValue,
-        //     designMetadata,
-        //     flexSettings
-        // );
     }
 }
