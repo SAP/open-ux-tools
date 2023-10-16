@@ -5,7 +5,7 @@ import type { IGroup, IGroupRenderProps, IGroupHeaderProps } from '@fluentui/rea
 import { Icon } from '@fluentui/react';
 import { UIList, UiIcons } from '@sap-ux/ui-components';
 
-import { selectControl, reportTelemetry } from '@sap-ux-private/control-property-editor-common';
+import { selectControl, reportTelemetry, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
 import type { Control, OutlineNode } from '@sap-ux-private/control-property-editor-common';
 
 import type { RootState } from '../../store';
@@ -72,6 +72,35 @@ export const Tree = (): ReactElement => {
             }, 0);
         }
     }, []);
+
+    const handleOpenTooltip = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, tooltipId: string) => {
+        e.preventDefault();
+        const tooltip = document.getElementById(tooltipId);
+
+        if (tooltip) {
+            tooltip.style.visibility = 'visible';
+            tooltip.style.opacity = '1';
+        } else {
+            throw new Error(`Tooltip with id ${tooltipId} not found`);
+        }
+
+        const handleCloseTooltip = () => {
+            const tooltip = document.getElementById(tooltipId);
+            if (tooltip) {
+                tooltip.style.visibility = 'hidden';
+                tooltip.style.opacity = '0';
+            }
+            document.removeEventListener('click', handleCloseTooltip);
+        };
+
+        document.addEventListener('click', handleCloseTooltip);
+    };
+
+    const handleOpenFragmentDialog = (data: OutlineNode) => {
+        if (data.controlType === 'extensionPoint') {
+            dispatch(addExtensionPoint(data));
+        }
+    };
 
     /**
      * Find in group.
@@ -273,6 +302,7 @@ export const Tree = (): ReactElement => {
         if (selectNode) {
             refProps.ref = scrollRef;
         }
+        const isExtensionPoint = groupHeaderProps?.group?.data?.controlType === 'extensionPoint';
         const focus = filterQuery.filter((item) => item.name === FilterName.focusEditable)[0].value as boolean;
         const focusEditable = !groupHeaderProps?.group?.data?.editable && focus ? 'focusEditable' : '';
         const controlChange = controlChanges[groupHeaderProps?.group?.key ?? ''];
@@ -281,12 +311,18 @@ export const Tree = (): ReactElement => {
         ) : (
             <></>
         );
+
+        const tooltipId = `tooltip--${groupHeaderProps?.group?.data.name}`;
+
         return (
             <div
                 {...refProps}
                 className={`${selectNode} tree-row ${focusEditable}`}
                 onClick={(): void => onSelectHeader(groupHeaderProps?.group)}>
-                <span style={{ paddingLeft: paddingValue }} className={`tree-cell`}>
+                <span
+                    style={{ paddingLeft: paddingValue }}
+                    className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
+                    onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
                     {groupHeaderProps?.group?.count !== 0 && (
                         <Icon
                             className={`${chevronTransform}`}
@@ -297,14 +333,25 @@ export const Tree = (): ReactElement => {
                             }}
                         />
                     )}
+                    {isExtensionPoint && (
+                        <Icon className={`${chevronTransform} extension-icon`} iconName={UiIcons.DataSource} />
+                    )}
                     <div
                         style={{
                             cursor: 'pointer',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
-                        }}>
+                        }}
+                        title={isExtensionPoint ? 'extension point' : 'element'}>
                         {groupName}
                     </div>
+                    {isExtensionPoint && (
+                        <div id={tooltipId} className="tooltip">
+                            <button onClick={() => handleOpenFragmentDialog(groupHeaderProps?.group?.data)}>
+                                Add Fragment at Extension Point
+                            </button>
+                        </div>
+                    )}
                 </span>
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>{indicator}</div>
             </div>
@@ -381,6 +428,7 @@ function getGroups(model: OutlineNode[], items: OutlineNodeItem[], level = 0, pa
             isCollapsed: count === 0,
             data: { ...data, path: newPath }
         };
+
         const shouldCreate = createGroupChild(children);
         newGroup.children = shouldCreate ? getGroups(children, items, level + 1, newPath) : [];
         group.push(newGroup);

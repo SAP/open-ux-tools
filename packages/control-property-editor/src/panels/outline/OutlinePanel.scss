@@ -69,6 +69,49 @@
     opacity: 0.55;
 }
 
+.extension-icon {
+    margin-top: 2px;
+}
+
+.tooltip-container {
+    position: relative;
+
+    .tooltip:hover {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+.tooltip {
+    visibility: hidden;
+    // background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    // padding: 5px;
+    position: absolute;
+    z-index: 999;
+    bottom: 85%; /* Position the tooltip above the text */
+    left: 50%;
+    margin-left: -60px; /* Center the tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+    width: auto;
+
+    button {
+        background-color: var(--vscode-textLink-foreground); /* Blue */
+        border: none;
+        color: white;
+        padding: 4px 16px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 12px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+}
 .tree-row-icon {
     display: flex;
     flex-wrap: nowrap;
@@ -94,5 +137,3 @@
     background-color: var(--vscode-list-activeSelectionBackground);
     outline: 1px solid var(--vscode-contrastActiveBorder);
 }
-
-
