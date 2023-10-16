@@ -135,7 +135,8 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getFlexSettings: () => FlexSettings;
         getService: <T>(name: 'outline' | 'controllerExtension' | string) => Promise<T>;
         getSelection: () => ElementOverlay[];
-        getDefaultPlugins: () => { contextMenu: ContextMenu };
+        getDefaultPlugins: () => { [key: string]: uknown; contextMenu: ContextMenu };
+        setPlugins: (defaultPlugins: object) => void;
         getRootControlInstance: () => {
             getManifest(): Manifest;
         } & Component;
