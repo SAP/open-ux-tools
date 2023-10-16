@@ -159,6 +159,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      adm-zip:
+        specifier: 0.5.10
+        version: 0.5.10
       ejs:
         specifier: 3.1.9
         version: 3.1.9
@@ -177,9 +180,6 @@ importers:
       sanitize-filename:
         specifier: 1.6.3
         version: 1.6.3
-      yazl:
-        specifier: 2.5.1
-        version: 2.5.1
     devDependencies:
       '@sap-ux/project-access':
         specifier: workspace:*
@@ -187,6 +187,9 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@types/adm-zip':
+        specifier: 0.5.2
+        version: 0.5.2
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -205,9 +208,6 @@ importers:
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
-      '@types/yazl':
-        specifier: 2.4.2
-        version: 2.4.2
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
@@ -8371,12 +8371,6 @@ packages:
     resolution: {integrity: sha512-pet5WJ9U8yPVRhkwuEIp5ktAeAqRZOq4UdAyWLWzxbtpyXnzbtLdKiXAjJzi/KLmPGS9wk86lUFWZFN6sISo4g==}
     dependencies:
       '@types/yargs-parser': 20.2.1
-    dev: true
-
-  /@types/yazl@2.4.2:
-    resolution: {integrity: sha512-T+9JH8O2guEjXNxqmybzQ92mJUh2oCwDDMSSimZSe1P+pceZiFROZLYmcbqkzV5EUwz6VwcKXCO2S2yUpra6XQ==}
-    dependencies:
-      '@types/node': 12.12.6
     dev: true
 
   /@types/yeoman-environment@2.10.8:
@@ -20276,12 +20270,6 @@ packages:
       buffer-crc32: 0.2.13
       fd-slicer: 1.1.0
     dev: true
-
-  /yazl@2.5.1:
-    resolution: {integrity: sha512-phENi2PLiHnHb6QBVot+dJnaAZ0xosj7p3fWl+znIjBDlnMI2PsZCJZ306BPTFOaHf5qdDEI8x5qFrSOBN5vrw==}
-    dependencies:
-      buffer-crc32: 0.2.13
-    dev: false
 
   /yeoman-generator@5.9.0:
     resolution: {integrity: sha512-sN1e01Db4fdd8P/n/yYvizfy77HdbwzvXmPxps9Gwz2D24slegrkSn+qyj+0nmZhtFwGX2i/cH29QDrvAFT9Aw==}
