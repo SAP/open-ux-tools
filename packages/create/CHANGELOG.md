@@ -1,5 +1,12 @@
 # @sap-ux/create
 
+## 0.4.35
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.4.3
+-   @sap-ux/app-config-writer@0.2.1
+
 ## 0.4.34
 
 ### Patch Changes
