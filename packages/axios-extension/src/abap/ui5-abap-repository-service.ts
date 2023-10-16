@@ -156,6 +156,7 @@ export class Ui5AbapRepositoryService extends ODataService {
         this.log.debug(`Payload:\n${payload}`);
         const config = this.createConfig(bsp.transport, testMode, safeMode);
         const frontendUrl = this.getAbapFrontendUrl();
+        const isDest = /\.dest\//.test(config.baseURL);
         try {
             const response: AxiosResponse | undefined = await this.updateRepoRequest(!!info, bsp.name, payload, config);
             // An app can be successfully deployed after a timeout exception, no value in showing exception headers
@@ -164,7 +165,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                     msg: response.headers['sap-message'],
                     log: this.log,
                     host: frontendUrl,
-                    isDest: /\.dest\//.test(config.baseURL)
+                    isDest
                 });
             }
             if (!testMode) {
@@ -180,14 +181,15 @@ export class Ui5AbapRepositoryService extends ODataService {
                     {
                         error: this.getErrorMessageFromString(response?.data),
                         log: this.log,
-                        host: frontendUrl
+                        host: frontendUrl,
+                        isDest
                     },
                     false
                 );
             }
             return response;
         } catch (error) {
-            this.logError({ error, host: frontendUrl });
+            this.logError({ error, host: frontendUrl, isDest });
             throw error;
         }
     }
@@ -204,11 +206,17 @@ export class Ui5AbapRepositoryService extends ODataService {
         const config = this.createConfig(bsp.transport, testMode);
         const host = this.getAbapFrontendUrl();
         const info: AppInfo = await this.getInfo(bsp.name);
+        const isDest = /\.dest\//.test(config.baseURL);
         try {
             if (info) {
                 const response = await this.deleteRepoRequest(bsp.name, config);
                 if (response?.headers?.['sap-message']) {
-                    prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host });
+                    prettyPrintMessage({
+                        msg: response.headers['sap-message'],
+                        log: this.log,
+                        host,
+                        isDest
+                    });
                 }
                 return response;
             } else {
@@ -216,7 +224,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                 return undefined;
             }
         } catch (error) {
-            this.logError({ error, host });
+            this.logError({ error, host, isDest });
             throw error;
         }
     }
@@ -401,12 +409,12 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param e.error error from Axios
      * @param e.host hostname
      */
-    protected logError({ error, host }: { error: Error; host?: string }): void {
+    protected logError({ error, host, isDest }: { error: Error; host?: string; isDest?: boolean }): void {
         this.log.error(error.message);
         if (isAxiosError(error) && error.response?.data) {
             const errorMessage = this.getErrorMessageFromString(error.response?.data);
             if (errorMessage) {
-                prettyPrintError({ error: errorMessage, host, log: this.log });
+                prettyPrintError({ error: errorMessage, host, log: this.log, isDest });
             } else {
                 this.log.error(error.response.data.toString());
             }
