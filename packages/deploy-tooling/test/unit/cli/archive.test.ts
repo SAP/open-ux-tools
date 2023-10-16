@@ -4,7 +4,7 @@ import { getArchive } from '../../../src/cli/archive';
 import { createUi5Archive } from '../../../src/ui5/archive';
 import axios from 'axios';
 import type { Resource } from '@ui5/fs';
-import { ZipFile } from 'yazl';
+import AdmZip from 'adm-zip';
 
 jest.mock('axios');
 
@@ -83,19 +83,20 @@ describe('Archive Generation', () => {
     const mockProject = {
         byGlob: jest.fn().mockResolvedValue(files)
     };
-    const zipFileSpy = jest.spyOn(ZipFile.prototype, 'addBuffer');
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     test('Create archive with exclude parameter', async () => {
-        await createUi5Archive(nullLogger, mockProject as any, projectName, ['/test/']);
-        expect(zipFileSpy).toBeCalledTimes(1);
+        const buffer = await createUi5Archive(nullLogger, mockProject as any, projectName, ['/test/']);
+        const zip = new AdmZip(buffer);
+        expect(zip.getEntryCount()).toBe(1);
     });
 
     test('Create archive to include everything', async () => {
-        await createUi5Archive(nullLogger, mockProject as any, projectName);
-        expect(zipFileSpy).toBeCalledTimes(2);
+        const buffer = await createUi5Archive(nullLogger, mockProject as any, projectName);
+        const zip = new AdmZip(buffer);
+        expect(zip.getEntryCount()).toBe(2);
     });
 });

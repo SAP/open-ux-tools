@@ -47,12 +47,12 @@
         "commander": "9.4.0",
         "dotenv": "16.3.1",
         "prompts": "2.4.2",
-        "yazl": "2.5.1"
+        "adm-zip": "0.5.10"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
         "@types/prompts": "2.4.4",
-        "@types/yazl": "2.4.2"
+        "@types/adm-zip": "0.5.2"
     },
     "ui5": {
         "dependencies": []

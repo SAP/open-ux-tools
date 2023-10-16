@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { readFile } from 'fs';
-import { ZipFile } from 'yazl';
+import ZipFile from 'adm-zip';
 import { relative } from 'path';
 import type { CliOptions } from '../types';
-import { createBuffer, getFileNames } from '../base/archive';
+import { getFileNames } from '../base/archive';
 import type { Logger } from '@sap-ux/logger';
 import { Agent } from 'https';
 
@@ -67,10 +67,10 @@ function createArchiveFromFolder(logger: Logger, path: string): Promise<Buffer> 
         for (const filePath of files) {
             const relPath = relative(path, filePath);
             logger.debug(`Adding ${relPath}`);
-            zip.addFile(filePath, relPath);
+            zip.addLocalFile(filePath, relPath);
         }
         logger.info(`Archive created from ${path}.`);
-        return createBuffer(zip);
+        return zip.toBufferPromise();
     } catch (error) {
         throw new Error(`Archive creation has failed. Please ensure ${path} is valid and accessible.`);
     }

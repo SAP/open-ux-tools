@@ -622,6 +622,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      adm-zip:
+        specifier: 0.5.10
+        version: 0.5.10
       axios:
         specifier: 1.4.0
         version: 1.4.0
@@ -634,19 +637,16 @@ importers:
       prompts:
         specifier: 2.4.2
         version: 2.4.2
-      yazl:
-        specifier: 2.5.1
-        version: 2.5.1
     devDependencies:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@types/adm-zip':
+        specifier: 0.5.2
+        version: 0.5.2
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4
-      '@types/yazl':
-        specifier: 2.4.2
-        version: 2.4.2
 
   packages/environment-check:
     dependencies:
@@ -7777,6 +7777,12 @@ packages:
       '@tufjs/canonical-json': 1.0.0
       minimatch: 9.0.2
 
+  /@types/adm-zip@0.5.2:
+    resolution: {integrity: sha512-33OTTnnW3onOE6HJuoqsi7T7Ojupz7zO/Vs5ddRNVCYQnu4lg05RqH/pr9eidHGvGyYfdO4uPO9cvegAMixBCQ==}
+    dependencies:
+      '@types/node': 12.20.55
+    dev: true
+
   /@types/archiver@5.3.2:
     resolution: {integrity: sha512-IctHreBuWE5dvBDz/0WeKtyVKVRs4h75IblxOACL92wU66v+HGAfEYAOyXkOFphvRJMhuXdI9huDXpX0FC6lCw==}
     dependencies:
@@ -9155,6 +9161,11 @@ packages:
     resolution: {integrity: sha512-4B/qKCfeE/ODUaAUpSwfzazo5x29WD4r3vXiWsB7I2mSDAihwEqKO+g8GELZUQSSAo5e1XTYh3ZVfLyxBc12nA==}
     engines: {node: '>= 10.0.0'}
     dev: true
+
+  /adm-zip@0.5.10:
+    resolution: {integrity: sha512-x0HvcHqVJNTPk/Bw8JbLWlWoo6Wwnsug0fnYYro1HBrjxZ3G7/AZk7Ahv8JwDe1uIcz8eBqvu86FuF1POiG7vQ==}
+    engines: {node: '>=6.0'}
+    dev: false
 
   /agent-base@5.1.1:
     resolution: {integrity: sha512-TMeqbNl2fMW0nMjTEPOwe3J/PRFP4vqeoNuQMG0HlMrtm5QxKqdvAkZ1pRBQ/ulIyDD5Yq0nJ7YbdD8ey0TO3g==}
