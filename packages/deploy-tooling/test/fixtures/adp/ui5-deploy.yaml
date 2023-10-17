@@ -7,6 +7,8 @@ builder:
   - name: abap-deploy-task
     afterTask: replaceVersion
     configuration:
+      app:
+        package: $TMP
       target:
         url: https://sap.example
         destination: SAP

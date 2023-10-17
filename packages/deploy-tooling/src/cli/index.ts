@@ -30,7 +30,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .addOption(new Option('--url <target-url>', 'URL of target ABAP system').conflicts('destination'))
         .addOption(new Option('--client <sap-client>', 'Client number of target ABAP system').conflicts('destination'))
         .addOption(new Option('--cloud', 'Target is an ABAP Cloud system').conflicts('destination'))
-        .addOption(new Option('--service <service-path>', 'Target SAPUI5 Repository OData Service'))
+        .addOption(new Option('--service <service-path>', 'Target alias for deployment service'))
         .addOption(
             new Option(
                 '--cloud-service-key <file-location>',
@@ -69,6 +69,11 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .option(
             '--test',
             `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing (use --no-test to deactivate it).`
+        )
+        .addOption(
+            new Option('--lrep', 'Deploy to the layered repository (only supported for adaptation projects)').conflicts(
+                ['test']
+            )
         );
 
     if (name === 'deploy') {
@@ -135,7 +140,7 @@ async function prepareRun(cmd: Command) {
 }
 
 /**
- * Function that is to be execute when the exposed deploy command is executed.
+ * Function that is to be executed when the exposed deploy command is executed.
  */
 export async function runDeploy(): Promise<void> {
     const cmd = createCommand('deploy');
@@ -149,7 +154,7 @@ export async function runDeploy(): Promise<void> {
 }
 
 /**
- * Function that is to be execute when the exposed undeploy command is executed.
+ * Function that is to be executed when the exposed undeploy command is executed.
  */
 export async function runUndeploy(): Promise<void> {
     const cmd = createCommand('undeploy');

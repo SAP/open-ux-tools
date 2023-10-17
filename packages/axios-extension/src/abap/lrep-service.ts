@@ -6,6 +6,7 @@ import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'fs';
 import { isAxiosError } from '../base/odata-request-error';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { TransportConfig } from './ui5-abap-repository-service';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 /**
@@ -31,21 +32,11 @@ export type Namespace = NamespaceObject | string;
 /**
  * Required configuration to deploy an adaptation project.
  */
-export interface AdaptationConfig {
+export interface AdaptationConfig extends TransportConfig {
     /**
      * Namespace either as string or object
      */
     namespace: Namespace;
-
-    /**
-     * Optional ABAP package name
-     */
-    package?: string;
-
-    /**
-     * Optional transport request
-     */
-    transport?: string;
 
     /**
      * Optional layer (default: CUSTOMER_BASE)
@@ -96,6 +87,16 @@ type Layer = 'VENDOR' | 'CUSTOMER_BASE';
  */
 function getNamespaceAsString(namespace: Namespace): string {
     return typeof namespace !== 'string' ? `apps/${namespace['reference']}/appVariants/${namespace['id']}/` : namespace;
+}
+
+/**
+ * Check if a variable is a buffer.
+ *
+ * @param input variable to be checked
+ * @returns true if the input is a buffer
+ */
+function isBuffer(input: string | Buffer): input is Buffer {
+    return (input as Buffer).BYTES_PER_ELEMENT !== undefined;
 }
 
 /**
@@ -167,12 +168,12 @@ export class LayeredRepositoryService extends Axios implements Service {
     /**
      * Deploy the given archive either by creating a new folder in the layered repository or updating an existing one.
      *
-     * @param archivePath path to a zip archive containing the adaptation project
+     * @param archive path to a zip archive or archive as buffer containing the adaptation project
      * @param config adataption project deployment configuration
      * @returns the Axios response object for futher processing
      */
-    public async deploy(archivePath: string, config: AdaptationConfig): Promise<AxiosResponse> {
-        const archive = readFileSync(archivePath);
+    public async deploy(archive: Buffer | string, config: AdaptationConfig): Promise<AxiosResponse> {
+        const data = isBuffer(archive) ? archive : readFileSync(archive);
 
         const checkResponse = await this.isExistingVariant(config.namespace);
         const params: object = {
@@ -188,7 +189,7 @@ export class LayeredRepositoryService extends Axios implements Service {
         const response = await this.request({
             method: checkResponse.status === 200 ? 'PUT' : 'POST',
             url: DTA_PATH_SUFFIX,
-            data: archive,
+            data,
             params,
             headers: {
                 'Content-Type': 'application/octet-stream'

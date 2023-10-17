@@ -5,19 +5,9 @@ import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
 
 /**
- * Required configuration for the BSP hosting an app.
+ * Required configuration a transportable object.
  */
-export interface BspConfig {
-    /**
-     * Name of the BSP, additionally, the last part of the exposed service path
-     */
-    name: string;
-
-    /**
-     * Optional description of the ABAP development object representing the BSP
-     */
-    description?: string;
-
+export interface TransportConfig {
     /**
      * Optional package for the ABAP development object
      */
@@ -27,6 +17,21 @@ export interface BspConfig {
      * Optional transport request to record the changes
      */
     transport?: string;
+}
+
+/**
+ * Required configuration for the BSP hosting an app.
+ */
+export interface BspConfig extends TransportConfig {
+    /**
+     * Name of the BSP, additionally, the last part of the exposed service path
+     */
+    name: string;
+
+    /**
+     * Optional description of the ABAP development object representing the BSP
+     */
+    description?: string;
 }
 
 /**

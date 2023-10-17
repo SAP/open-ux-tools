@@ -2,6 +2,7 @@ export {
     AppInfo,
     BspConfig,
     DeployConfig,
+    TransportConfig,
     Ui5AbapRepositoryService,
     UndeployConfig
 } from './ui5-abap-repository-service';
