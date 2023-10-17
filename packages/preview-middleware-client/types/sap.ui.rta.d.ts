@@ -57,7 +57,7 @@ declare module 'sap/ui/rta/command/CommandFactory' {
 declare module 'sap/ui/rta/command/OutlineService' {
     export interface OutlineViewNode {
         id: string;
-        type: 'aggregation' | 'element';
+        type: 'aggregation' | 'element' | 'extensionPoint';
         technicalName: string;
         editable: boolean;
         elements?: OutlineViewNode[];

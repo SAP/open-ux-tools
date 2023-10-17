@@ -1,4 +1,4 @@
-import View from 'sap/ui/core/mvc/View';
+import type View from 'sap/ui/core/mvc/View';
 import type UI5Element from 'sap/ui/core/Element';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
@@ -8,17 +8,16 @@ import { SubscribeFunction } from '../cpe/types';
 import { DialogNames, handler } from './init-dialogs';
 
 export interface ExtensionPointData {
-    controlId: string;
-    controlType: string;
+    index: number;
     name: string;
-    visible: boolean;
-    editable: boolean;
-    defaultContent?: string[];
-    aggregation?: string[];
-    aggregationName?: string;
-    targetControl?: UI5Element;
     view?: View;
-    deffered?: Deferred<any>;
+    createdControls: [];
+    fragmentId?: string | undefined;
+    aggregation: string[];
+    aggregationName: string;
+    deffered: Deferred<any>;
+    defaultContent: string[];
+    targetControl: UI5Element;
 }
 
 interface Deferred<T> {
@@ -37,7 +36,13 @@ function createDeferred<T>(): Deferred<T> {
     return { promise, resolve: resolve!, reject: reject! };
 }
 
+type ActionService = {
+    execute: (controlId: string, actionId: string) => void;
+};
+
 export default class ExtensionPointService {
+    private readonly actionId = 'CTX_ADDXML_AT_EXTENSIONPOINT';
+
     constructor(private readonly rta: RuntimeAuthoring) {}
 
     public init(subscribe: SubscribeFunction) {
@@ -45,14 +50,11 @@ export default class ExtensionPointService {
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (addExtensionPoint.match(action)) {
                 try {
-                    const { controlId, controlType, name, visible, editable } = action.payload;
-                    await handler({} as UI5Element, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {
-                        controlId,
-                        controlType,
-                        name,
-                        visible,
-                        editable
-                    });
+                    const { controlId } = action.payload;
+
+                    const service = await this.rta.getService<ActionService>('action');
+
+                    service.execute(controlId, this.actionId);
                 } catch (e) {}
             }
         });
@@ -62,7 +64,7 @@ export default class ExtensionPointService {
         // @ts-ignore
         jQuery.sap.require('sap.ui.rta.plugin.AddXMLAtExtensionPoint');
         // @ts-ignore
-        var commandFactory = new sap.ui.rta.command.CommandFactory({
+        const commandFactory = new sap.ui.rta.command.CommandFactory({
             flexSettings: this.rta.getFlexSettings()
         });
 

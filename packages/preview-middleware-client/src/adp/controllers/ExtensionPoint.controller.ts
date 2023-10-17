@@ -27,7 +27,6 @@ import { ExtensionPointData } from '../extension-point';
  */
 export default class ExtensionPoint extends BaseDialog {
     public readonly extensionPointData: ExtensionPointData | undefined;
-    public isFromOutlineTree: boolean;
 
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, extensionPointData?: ExtensionPointData) {
         super(name);
@@ -43,7 +42,6 @@ export default class ExtensionPoint extends BaseDialog {
      */
     async onInit() {
         this.dialog = this.byId('addFragmentAtExtPointDialog') as unknown as Dialog;
-        this.isFromOutlineTree = this.extensionPointData?.controlType === 'extensionPoint';
 
         await this.buildDialogData();
 
@@ -70,14 +68,12 @@ export default class ExtensionPoint extends BaseDialog {
 
     /**
      * Builds data that is used in the dialog
-     *
-     * @param controlId Control ID
      */
     async buildDialogData(): Promise<void> {
-        const selectorId = this.extensionPointData?.controlId ?? this.overlays.getId();
+        const selectorId = this.overlays.getId();
 
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
-        this.runtimeControl = this.isFromOutlineTree ? overlayControl : overlayControl.getElement();
+        this.runtimeControl = overlayControl.getElement();
 
         this.model.setProperty('/extensionPointName', this.extensionPointData?.name);
 
@@ -105,7 +101,7 @@ export default class ExtensionPoint extends BaseDialog {
             throw new Error(e.message);
         }
 
-        await this.createFragmentChange(fragmentName);
+        await this.createExtensionPointFragmentChange(fragmentName);
     }
 
     /**
@@ -113,7 +109,7 @@ export default class ExtensionPoint extends BaseDialog {
      *
      * @param fragmentName Fragment name
      */
-    private async createFragmentChange(fragmentName: string) {
+    private async createExtensionPointFragmentChange(fragmentName: string) {
         const modifiedValue = {
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,
             extensionPointName: this.extensionPointData?.name
