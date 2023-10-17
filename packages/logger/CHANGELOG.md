@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.3.9
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+
 ## 0.3.8
 
 ### Patch Changes

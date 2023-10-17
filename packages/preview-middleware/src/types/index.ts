@@ -22,6 +22,13 @@ export interface App {
     intent?: Intent;
 }
 
+export interface Editor {
+    path: string;
+    developerMode?: boolean;
+    pluginScript?: string;
+    generator?: string;
+}
+
 export interface RtaConfig {
     layer: UI5FlexLayer;
     options?: {
@@ -30,12 +37,7 @@ export interface RtaConfig {
         projectId?: string;
         scenario?: string;
     };
-    editors: {
-        path: string;
-        developerMode?: boolean;
-        pluginScript?: string;
-        generator?: string;
-    }[];
+    editors: Editor[];
 }
 
 /**

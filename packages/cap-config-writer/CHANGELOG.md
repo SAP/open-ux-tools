@@ -1,5 +1,17 @@
 # @sap-ux/cap-config-writer
 
+## 0.1.26
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.13.8
+
+## 0.1.25
+
+### Patch Changes
+
+-   52aaddd3: chore(cap-config-writer) update the cds-plugin-ui5 to ^0.6.13
+
 ## 0.1.24
 
 ### Patch Changes

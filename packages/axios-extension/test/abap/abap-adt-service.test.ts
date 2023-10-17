@@ -213,9 +213,9 @@ describe('Transport checks', () => {
             .post(AdtServices.TRANSPORT_CHECKS)
             .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-3.xml'));
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        expect(await transportChecksService?.getTransportRequests(testLocalPackage, testExistProject)).toStrictEqual(
-            []
-        );
+        await expect(
+            transportChecksService?.getTransportRequests(testLocalPackage, testExistProject)
+        ).rejects.toThrowError(TransportChecksService.LocalPackageError);
     });
 
     test('New package name: no transport number available', async () => {
