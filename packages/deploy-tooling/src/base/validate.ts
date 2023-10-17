@@ -99,7 +99,7 @@ export function formatSummary(summary: SummaryRecord[]): string {
                     statusSymbol = yellow('?');
                     break;
             }
-            return `${statusSymbol} ${next.message}`;
+            return `${'    '}${statusSymbol} ${next.message}`;
         })
         .reduce((aggregated, current) => {
             return `${aggregated}${EOL}${current}`;
