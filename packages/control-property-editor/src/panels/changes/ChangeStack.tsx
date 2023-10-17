@@ -101,7 +101,7 @@ function convertChanges(changes: Change[]): Item[] {
                     controlId: change.controlId,
                     text: convertCamelCaseToPascalCase(change.controlName as string),
                     changeIndex: i,
-                    changes: [toPropertyChangeProps(change, i)]
+                    changes: [classifyChange(change, i)]
                 };
             } else {
                 group = {

@@ -52,12 +52,16 @@ export function ControlGroup(controlGroupProps: ControlGroupProps): ReactElement
             </Stack.Item>
             {changes.map((change: any) => (
                 <Stack.Item
-                    data-testid={`${stackName}-${controlId}-${change.propertyName ?? change.changeType}-${change.changeIndex}`}
+                    data-testid={`${stackName}-${controlId}-${change.propertyName ?? change.changeType}-${
+                        change.changeIndex
+                    }`}
                     key={`${change.changeIndex}`}
                     className={styles.item}>
-                        {['propertyChange', 'propertyBindingChange'].includes(change.changeType) ? (
-                            <PropertyChange {...change} actionClassName={styles.actions} />
-                        ) : <OtherChange {...change} actionClassName={styles.actions} /> } 
+                    {['propertyChange', 'propertyBindingChange'].includes(change.changeType) ? (
+                        <PropertyChange {...change} actionClassName={styles.actions} />
+                    ) : (
+                        <OtherChange {...change} actionClassName={styles.actions} />
+                    )}
                 </Stack.Item>
             ))}
         </Stack>

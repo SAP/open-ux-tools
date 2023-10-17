@@ -132,7 +132,7 @@ export interface UnknownSavedChange {
     timestamp?: number;
 }
 export type ValidChange = PendingPropertyChange | SavedPropertyChange | PendingOtherChange;
-export type Change = ValidChange | UnknownSavedChange | PendingOtherChange;
+export type Change = ValidChange | UnknownSavedChange;
 
 export interface ChangeStackModified {
     pending: PendingPropertyChange[];
