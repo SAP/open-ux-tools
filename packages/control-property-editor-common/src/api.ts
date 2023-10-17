@@ -123,6 +123,7 @@ export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> ex
     kind: 'valid';
     fileName: string;
     timestamp: number;
+    changeType: string;
 }
 
 export interface UnknownSavedChange {

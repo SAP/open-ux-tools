@@ -40,6 +40,7 @@ interface Change {
     selector: ChangeSelector;
     content: ChangeContent;
     creation: string;
+    changeType: string;
 }
 
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
@@ -150,7 +151,8 @@ export class ChangeService {
                             propertyName: change.content.property,
                             value: change.content.newValue ?? change.content.newBinding,
                             timestamp: new Date(change.creation).getTime(),
-                            controlName: change.selector.type.split('.').pop()
+                            controlName: change.selector.type.split('.').pop(),
+                            changeType: change.changeType
                         };
                     } catch (error) {
                         // Gracefully handle change files with invalid content
