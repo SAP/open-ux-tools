@@ -48,7 +48,7 @@ export async function transformNodes(input: OutlineViewNode[]): Promise<OutlineN
         if (current?.type === 'extensionPoint') {
             const node: OutlineNode = {
                 controlId: current.id,
-                controlType: current.type,
+                controlType: current.technicalName,
                 name: current.name!,
                 editable,
                 visible: current.visible ?? true,

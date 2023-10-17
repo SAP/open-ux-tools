@@ -302,7 +302,7 @@ export const Tree = (): ReactElement => {
         if (selectNode) {
             refProps.ref = scrollRef;
         }
-        const isExtensionPoint = groupHeaderProps?.group?.data?.controlType === 'extensionPoint';
+        const isExtensionPoint = groupHeaderProps?.group?.data?.controlType === 'sap.ui.extensionpoint';
         const focus = filterQuery.filter((item) => item.name === FilterName.focusEditable)[0].value as boolean;
         const focusEditable = !groupHeaderProps?.group?.data?.editable && focus ? 'focusEditable' : '';
         const controlChange = controlChanges[groupHeaderProps?.group?.key ?? ''];
@@ -312,7 +312,8 @@ export const Tree = (): ReactElement => {
             <></>
         );
 
-        const tooltipId = `tooltip--${groupHeaderProps?.group?.data.name}`;
+        const elementName = groupHeaderProps?.group?.data.name;
+        const tooltipId = `tooltip--${elementName}`;
 
         return (
             <div
@@ -342,7 +343,7 @@ export const Tree = (): ReactElement => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
                         }}
-                        title={isExtensionPoint ? 'extension point' : 'element'}>
+                        title={isExtensionPoint ? elementName : 'element'}>
                         {groupName}
                     </div>
                     {isExtensionPoint && (
