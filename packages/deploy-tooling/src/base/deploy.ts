@@ -231,8 +231,7 @@ async function runCommand(
         logger
     );
     logger.info(
-        `Starting to ${command === TryCommands.Deploy ? 'deploy' : 'undeploy'}${
-            config.test === true ? ' in test mode' : ''
+        `Starting to ${command === TryCommands.Deploy ? 'deploy' : 'undeploy'}${config.test === true ? ' in test mode' : ''
         }.`
     );
     await deploymentCommands[command](provider, config, logger, archive);
@@ -280,11 +279,9 @@ async function tryDeploy(
         const service = getUi5AbapRepositoryService(provider, config, logger);
         await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
         if (config.test === true) {
-            if (!validateOutput || validateOutput.result === true) {
-                logger.info(
-                    'Deployment in TestMode completed. A successful TestMode execution does not necessarily mean that your upload will be successful.'
-                );
-            }
+            logger.info(
+                'Deployment in TestMode completed. A successful TestMode execution does not necessarily mean that your upload will be successful.'
+            );
         } else {
             logger.info('Deployment Successful.');
         }
