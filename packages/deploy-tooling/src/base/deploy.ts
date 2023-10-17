@@ -274,7 +274,11 @@ async function tryDeploy(
                 logger
             );
             if (!validateOutput.result) {
-                logger.info(`Results of validating the deployment configuration settings:${formatSummary(validateOutput.summary)}`);
+                logger.info(
+                    `Results of validating the deployment configuration settings:${formatSummary(
+                        validateOutput.summary
+                    )}`
+                );
             }
         }
         const service = getUi5AbapRepositoryService(provider, config, logger);
