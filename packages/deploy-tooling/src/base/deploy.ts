@@ -231,7 +231,8 @@ async function runCommand(
         logger
     );
     logger.info(
-        `Starting to ${command === TryCommands.Deploy ? 'deploy' : 'undeploy'}${config.test === true ? ' in test mode' : ''
+        `Starting to ${command === TryCommands.Deploy ? 'deploy' : 'undeploy'}${
+            config.test === true ? ' in test mode' : ''
         }.`
     );
     await deploymentCommands[command](provider, config, logger, archive);
