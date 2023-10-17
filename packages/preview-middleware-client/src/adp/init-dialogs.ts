@@ -39,14 +39,6 @@ export const initDialogs = (rta: RuntimeAuthoring): void => {
         handler: async (overlays: UI5Element[]) => await handler(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form'
     });
-
-    // contextMenu.addMenuItem({
-    //     id: 'ADD_FRAGMENT_AT_EXTENSION_POINT',
-    //     text: 'Add Fragment at Extension Point',
-    //     handler: async (overlays: UI5Element[]) =>
-    //         await handler(overlays[0], rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT),
-    //     icon: 'sap-icon://add-equipment'
-    // });
 };
 
 /**

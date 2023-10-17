@@ -1,6 +1,8 @@
 import type View from 'sap/ui/core/mvc/View';
 import type UI5Element from 'sap/ui/core/Element';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import AddXMLAtExtensionPoint from 'sap/ui/rta/plugin/AddXMLAtExtensionPoint';
+import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 
 import { ExternalAction, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
 
@@ -16,7 +18,7 @@ export interface ExtensionPointData {
     aggregation: string[];
     aggregationName: string;
     deffered: Deferred<any>;
-    defaultContent: string[];
+    defaultContent?: string[];
     targetControl: UI5Element;
 }
 
@@ -26,6 +28,13 @@ interface Deferred<T> {
     reject: (reason?: any) => void;
 }
 
+/**
+ * Defers the resolution of the promise, stores resolve/reject functions so that they can be accessed at a later stage.
+ *
+ * @description A Deferred object contains an unresolved promise along with the functions to resolve or reject that promise.
+ *
+ * @returns {Deferred} Deferred object
+ */
 function createDeferred<T>(): Deferred<T> {
     let resolve: Deferred<T>['resolve'];
     let reject: Deferred<T>['reject'];
@@ -43,10 +52,18 @@ type ActionService = {
 export default class ExtensionPointService {
     private readonly actionId = 'CTX_ADDXML_AT_EXTENSIONPOINT';
 
+    /**
+     * @param rta Runtime Authoring
+     */
     constructor(private readonly rta: RuntimeAuthoring) {}
 
+    /**
+     * Initializes communication with CPE, and the extension point plugin.
+     *
+     * @param subscribe Handles actions from CPE
+     */
     public init(subscribe: SubscribeFunction) {
-        this.initAddXMLAtExtensionPointPlugin();
+        this.initPlugin();
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (addExtensionPoint.match(action)) {
                 try {
@@ -55,35 +72,39 @@ export default class ExtensionPointService {
                     const service = await this.rta.getService<ActionService>('action');
 
                     service.execute(controlId, this.actionId);
-                } catch (e) {}
+                } catch (e) {
+                    throw new Error(`Failed to execute service with actionId: ${this.actionId}`);
+                }
             }
         });
     }
 
-    public initAddXMLAtExtensionPointPlugin() {
-        // @ts-ignore
-        jQuery.sap.require('sap.ui.rta.plugin.AddXMLAtExtensionPoint');
-        // @ts-ignore
-        const commandFactory = new sap.ui.rta.command.CommandFactory({
-            flexSettings: this.rta.getFlexSettings()
+    /**
+     * Initializes Add XML at Extension Point plugin and adds it to the default RTA plugins.
+     */
+    public initPlugin() {
+        const flexSettings = this.rta.getFlexSettings();
+        const commandFactory = new CommandFactory({
+            flexSettings
         });
 
-        // @ts-ignore
-        const addXMLAtExtensionPointPlugin = new sap.ui.rta.plugin.AddXMLAtExtensionPoint({
+        const plugin = new AddXMLAtExtensionPoint({
             commandFactory,
-            fragmentHandler: async (overlay: UI5Element, info: ExtensionPointData[]) => {
-                let deffered: Deferred<any> = createDeferred(); // Create a new Deferred object
-                await handler(overlay, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {
-                    name: info[0]?.name,
-                    defaultContent: info[0]?.defaultContent,
-                    deffered
-                } as ExtensionPointData);
-                return deffered.promise;
-            }
+            fragmentHandler: async (overlay: UI5Element, info: ExtensionPointData[]) =>
+                await this.fragmentHandler(overlay, info[0])
         });
 
         const defaultPlugins = this.rta.getDefaultPlugins();
-        defaultPlugins['addXMLAtExtensionPoint'] = addXMLAtExtensionPointPlugin;
+        defaultPlugins['addXMLAtExtensionPoint'] = plugin;
         this.rta.setPlugins(defaultPlugins);
+    }
+
+    public async fragmentHandler(overlay: UI5Element, info: ExtensionPointData) {
+        let deffered: Deferred<any> = createDeferred();
+        await handler(overlay, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {
+            name: info?.name,
+            deffered
+        } as ExtensionPointData);
+        return deffered.promise;
     }
 }
