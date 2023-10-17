@@ -203,8 +203,8 @@ export class LayeredRepositoryService extends Axios implements Service {
     /**
      * Undeploy the archive identified by the configuration.
      *
-     * @param config adataption project deployment configuration
-     * @returns the Axios response object for futher processing
+     * @param config adaptation project deployment configuration
+     * @returns the Axios response object for further processing
      */
     public async undeploy(config: AdaptationConfig): Promise<AxiosResponse> {
         const checkResponse = await this.isExistingVariant(config.namespace);
@@ -218,10 +218,20 @@ export class LayeredRepositoryService extends Axios implements Service {
         if (config.transport) {
             params['changelist'] = config.transport;
         }
-        const response = await this.delete(DTA_PATH_SUFFIX, { params });
-        this.tryLogResponse(response, 'Undeployment successful.');
-
-        return response;
+        try {
+            const response = await this.delete(DTA_PATH_SUFFIX, { params });
+            this.tryLogResponse(response, 'Undeployment successful.');
+            return response;
+        } catch (error) {
+            this.log.error('Undeployment failed');
+            this.log.debug(error);
+            if (isAxiosError(error) && error.response?.status === 405) {
+                this.log.error(
+                    'Newer version of SAP_UI required, please check https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/delete-adaptation-project'
+                );
+            }
+            throw error;
+        }
     }
 
     /**
