@@ -107,6 +107,15 @@ export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> 
      * Indicates if change is before or after current position in undo redo stack
      */
     isActive: boolean;
+    changeType: string;
+}
+
+export interface PendingOtherChange {
+    type: 'pending';
+    isActive: boolean;
+    changeType: string;
+    controlId: string;
+    controlName: string;
 }
 
 export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
@@ -122,8 +131,8 @@ export interface UnknownSavedChange {
     fileName: string;
     timestamp?: number;
 }
-export type ValidChange = PendingPropertyChange | SavedPropertyChange;
-export type Change = ValidChange | UnknownSavedChange;
+export type ValidChange = PendingPropertyChange | SavedPropertyChange | PendingOtherChange;
+export type Change = ValidChange | UnknownSavedChange | PendingOtherChange;
 
 export interface ChangeStackModified {
     pending: PendingPropertyChange[];

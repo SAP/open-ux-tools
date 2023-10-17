@@ -2,7 +2,8 @@ import type {
     ExternalAction,
     SavedPropertyChange,
     PendingPropertyChange,
-    UnknownSavedChange
+    UnknownSavedChange,
+    PendingOtherChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
@@ -91,10 +92,7 @@ export class ChangeService {
      * @param ui5 facade for ui5 framework methods.
      * @param selectionService selection service instance.
      */
-    constructor(
-        private readonly options: UI5AdaptationOptions,
-        private readonly selectionService: SelectionService
-    ) {}
+    constructor(private readonly options: UI5AdaptationOptions, private readonly selectionService: SelectionService) {}
 
     /**
      *
@@ -220,44 +218,70 @@ export class ChangeService {
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
             const inactiveCommandCount = allCommands.length - executedCommands.length;
-
-            const activeChanges = allCommands
-                .map((command: BaseCommand, i): PendingPropertyChange | undefined => {
-                    let result: PendingPropertyChange | undefined;
-                    try {
-                        const selector = command.getProperty('selector');
-                        const changeType = command.getProperty('changeType');
-                        let value = '';
-                        switch (changeType) {
-                            case 'propertyChange':
-                                value = command.getProperty('newValue');
-                                break;
-                            case 'propertyBindingChange':
-                                value = command.getProperty('newBinding');
-                                break;
-                            default:
-                                throw new Error(`Invalid changeType ${changeType}`);
-                        }
-                        result = {
-                            type: 'pending',
-                            controlId: selector.id,
-                            propertyName: command.getProperty('propertyName'),
-                            isActive: i >= inactiveCommandCount,
-                            value,
-                            controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
-                        };
-                    } catch (error) {
-                        Log.error('Failed: ', error);
+            const activeChanges: (PendingPropertyChange | PendingOtherChange | undefined)[] = [];
+            allCommands.forEach((command: BaseCommand, i): void => {
+                try {
+                    if (command.getCommands && command.getCommands()) {
+                        const subCommands = command.getCommands();
+                        subCommands.forEach((command) => {
+                            activeChanges.push(this.prepareChangeType(command, inactiveCommandCount, i));
+                        });
+                    } else {
+                        activeChanges.push(this.prepareChangeType(command, inactiveCommandCount, i));
                     }
-                    return result;
-                })
-                .filter((change): boolean => !!change) as PendingPropertyChange[];
+                } catch (error) {
+                    Log.error('Failed: ', error);
+                }
+            });
+
+            activeChanges.filter((change): boolean => !!change) as PendingPropertyChange[];
             sendAction(
                 changeStackModified({
                     saved: this.savedChanges,
-                    pending: activeChanges
+                    pending: activeChanges as PendingPropertyChange[]
                 })
             );
         };
+    }
+
+    private prepareChangeType(
+        command: BaseCommand,
+        inactiveCommandCount: number,
+        index: number
+    ): PendingPropertyChange | PendingOtherChange | undefined {
+        let result: PendingPropertyChange | PendingOtherChange | undefined;
+        let value = '';
+        const selector = command.getSelector();
+        const changeType = command.getChangeType();
+        switch (changeType) {
+            case 'propertyChange':
+                value = command.getProperty('newValue');
+                break;
+            case 'propertyBindingChange':
+                value = command.getProperty('newBinding');
+                break;
+        }
+        if (['propertyChange', 'propertyBindingChange'].includes(changeType)) {
+            result = {
+                type: 'pending',
+                changeType,
+                controlId: selector.id,
+                propertyName: command.getProperty('propertyName'),
+                isActive: index >= inactiveCommandCount,
+                value,
+                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
+            };
+        } else {
+            //const propertyName = changeType.split(/(?=[A-Z])/).join(' ');
+            result = {
+                type: 'pending',
+                controlId: selector.id,
+                changeType,
+                isActive: index >= inactiveCommandCount,
+                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
+            };
+        }
+
+        return result;
     }
 }

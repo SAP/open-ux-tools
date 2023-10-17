@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Stack } from '@fluentui/react';
 
-import type { Change, ValidChange } from '@sap-ux-private/control-property-editor-common';
+import type { Change, PendingOtherChange, ValidChange } from '@sap-ux-private/control-property-editor-common';
 
 import { Separator } from '../../components';
 import type { ControlGroupProps, ControlPropertyChange } from './ControlGroup';
@@ -87,7 +87,8 @@ function convertChanges(changes: Change[]): Item[] {
     const items: Item[] = [];
     let i = 0;
     while (i < changes.length) {
-        const change = changes[i];
+        const change: Change = changes[i];
+        let group: ControlGroupProps;
         if (change.type === 'saved' && change.kind === 'unknown') {
             items.push({
                 fileName: change.fileName,
@@ -95,12 +96,21 @@ function convertChanges(changes: Change[]): Item[] {
             });
             i++;
         } else {
-            const group: ControlGroupProps = {
-                controlId: change.controlId,
-                text: convertCamelCaseToPascalCase(change.controlName),
-                changeIndex: i,
-                changes: [toPropertyChangeProps(change, i)]
-            };
+            if (['propertyChange', 'propertyBindingChange'].includes(change.changeType)) {
+                group = {
+                    controlId: change.controlId,
+                    text: convertCamelCaseToPascalCase(change.controlName as string),
+                    changeIndex: i,
+                    changes: [toPropertyChangeProps(change, i)]
+                };
+            } else {
+                group = {
+                    controlId: change.controlId,
+                    text: convertCamelCaseToPascalCase(change.controlName as string),
+                    changeIndex: i,
+                    changes: [change as PendingOtherChange]
+                };
+            }
             items.push(group);
             i++;
             while (i < changes.length) {
@@ -112,7 +122,7 @@ function convertChanges(changes: Change[]): Item[] {
                 ) {
                     break;
                 }
-                group.changes.push(toPropertyChangeProps(nextChange, i));
+                group.changes.push(classifyChange(nextChange, i));
                 i++;
             }
         }
@@ -121,21 +131,32 @@ function convertChanges(changes: Change[]): Item[] {
 }
 
 /**
- * Converts a change to ControlPropertyChange.
+ * Classify Change for grouping.
  *
  * @param change ValidChange
  * @param changeIndex number
  * @returns ControlPropertyChange
  */
-function toPropertyChangeProps(change: ValidChange, changeIndex: number): ControlPropertyChange {
-    const { controlId, propertyName, value, controlName } = change;
-    const base = {
-        controlId,
-        controlName,
-        propertyName,
-        value,
-        changeIndex
-    };
+function classifyChange(change: ValidChange, changeIndex: number): ControlPropertyChange {
+    const { controlId, propertyName, value, controlName, changeType } = change;
+    let base;
+    if (['propertyChange', 'propertyBindingChange'].includes(changeType)) {
+        base = {
+            controlId,
+            controlName,
+            propertyName,
+            value,
+            changeIndex,
+            changeType
+        };
+    } else {
+        base = {
+            controlId,
+            controlName,
+            changeIndex,
+            changeType
+        };
+    }
     if (change.type === 'pending') {
         const { isActive } = change;
         return {
