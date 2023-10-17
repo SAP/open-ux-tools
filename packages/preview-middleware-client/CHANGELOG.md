@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.4.4
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+
 ## 0.4.3
 
 ### Patch Changes

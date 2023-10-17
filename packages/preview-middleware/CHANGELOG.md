@@ -1,5 +1,14 @@
 # @sap-ux/preview-middleware
 
+## 0.7.12
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/adp-tooling@0.4.4
+
 ## 0.7.11
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @sap-ux/ui5-config
 
+## 0.19.5
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/yaml@0.13.9
+
 ## 0.19.4
 
 ### Patch Changes

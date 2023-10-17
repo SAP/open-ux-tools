@@ -1,5 +1,14 @@
 # @sap-ux/odata-cli
 
+## 0.11.38
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/axios-extension@1.5.1
+
 ## 0.11.37
 
 ### Patch Changes
