@@ -158,5 +158,10 @@ describe('AbapServiceProvider', () => {
             const service = provider.getLayeredRepository();
             expect(service).toBe(provider.service(LayeredRepositoryService.PATH));
         });
+        test('LayeredRepositoryService with alias', () => {
+            const alias = '/alias/path';
+            const service = provider.getLayeredRepository(alias);
+            expect(service).toBe(provider.service(alias));
+        });
     });
 });
