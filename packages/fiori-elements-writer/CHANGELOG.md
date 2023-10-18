@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.15.6
+
+### Patch Changes
+
+-   4087bffb: Allow more flexible @types type loading for TypeScript generate projects
+-   Updated dependencies [4087bffb]
+    -   @sap-ux/ui5-application-writer@0.25.9
+
 ## 0.15.5
 
 ### Patch Changes
