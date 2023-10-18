@@ -95,7 +95,7 @@ export default class ExtensionPointService {
         });
 
         const defaultPlugins = this.rta.getDefaultPlugins();
-        defaultPlugins['addXMLAtExtensionPoint'] = plugin;
+        defaultPlugins.addXMLAtExtensionPoint = plugin;
         this.rta.setPlugins(defaultPlugins);
     }
 

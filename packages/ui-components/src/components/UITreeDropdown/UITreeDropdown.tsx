@@ -424,15 +424,13 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     handleOnChangeValue = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         const query = event.target as HTMLInputElement;
 
-        const list = this.state.originalItems.filter((item) => this.filterElement(query.value, item));
-
-        this.setState({
+        this.setState((prevState) => ({
             hasSelected: false,
             value: query.value,
-            items: list,
+            items: prevState.originalItems.filter((item) => this.filterElement(query.value, item)),
             query: query.value,
             valueChanged: true
-        });
+        }));
 
         if (!this.state.isMenuOpen) {
             this.toggleMenu(false);
@@ -461,10 +459,10 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
             this.props.onParameterValueChange('');
         }
 
-        this.setState({
-            items: this.state.originalItems,
+        this.setState((prevState) => ({
+            items: prevState.originalItems,
             query: ''
-        });
+        }));
 
         this.toggleMenu(true);
         this.originalValue = undefined;
