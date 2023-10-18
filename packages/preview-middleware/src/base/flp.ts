@@ -57,6 +57,16 @@ const PREVIEW_URL = {
     api: '/preview/api'
 };
 
+export interface CustomConnector {
+    applyConnector: string;
+    writeConnector: string;
+    custom: boolean;
+}
+
+export interface FlexConnector {
+    connector: string;
+}
+
 /**
  * Internal structure used to fill the sandbox.html template
  */
@@ -75,11 +85,7 @@ export interface TemplateConfig {
     ui5: {
         libs: string;
         theme: string;
-        flex: {
-            applyConnector: string;
-            writeConnector: string;
-            custom: boolean;
-        }[];
+        flex: (CustomConnector | FlexConnector)[];
         bootstrapOptions: string;
         resources: Record<string, string>;
     };
@@ -343,6 +349,9 @@ export class FlpSandbox {
                 applyConnector: workspaceConnectorPath,
                 writeConnector: workspaceConnectorPath,
                 custom: true
+            },
+            {
+                connector: 'LocalStorageConnector'
             }
         ];
     }

@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.13.9
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+
 ## 0.13.8
 
 ### Patch Changes

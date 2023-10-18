@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.2.4
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
 ## 0.2.3
 
 ### Patch Changes
