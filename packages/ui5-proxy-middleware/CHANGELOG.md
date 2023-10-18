@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.2.6
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
 ## 1.2.5
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sap-ux/environment-check
 
+## 0.15.68
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/store@0.3.16
+
 ## 0.15.67
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sap-ux/deploy-tooling
 
+## 0.9.19
+
+### Patch Changes
+
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/project-input-validator@0.1.1
+    -   @sap-ux/system-access@0.2.11
+
 ## 0.9.18
 
 ### Patch Changes

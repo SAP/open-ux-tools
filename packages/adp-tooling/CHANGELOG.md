@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.4.5
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.2.11
+
 ## 0.4.4
 
 ### Patch Changes

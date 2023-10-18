@@ -1,5 +1,13 @@
 # @sap-ux/ui5-library-writer
 
+## 0.2.13
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/ui5-application-writer@0.25.10
+
 ## 0.2.12
 
 ### Patch Changes

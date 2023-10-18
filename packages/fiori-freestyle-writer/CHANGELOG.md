@@ -1,5 +1,14 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.20.14
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/odata-service-writer@0.14.36
+    -   @sap-ux/ui5-application-writer@0.25.10
+
 ## 0.20.13
 
 ### Patch Changes
