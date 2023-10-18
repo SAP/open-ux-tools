@@ -2,4 +2,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-Adds LocalStorageConnector to sandbox.html
+Adds local persistence of personalizations across local preview sessions
