@@ -159,6 +159,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      adm-zip:
+        specifier: 0.5.10
+        version: 0.5.10
       ejs:
         specifier: 3.1.9
         version: 3.1.9
@@ -177,9 +180,6 @@ importers:
       sanitize-filename:
         specifier: 1.6.3
         version: 1.6.3
-      yazl:
-        specifier: 2.5.1
-        version: 2.5.1
     devDependencies:
       '@sap-ux/project-access':
         specifier: workspace:*
@@ -187,6 +187,9 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@types/adm-zip':
+        specifier: 0.5.2
+        version: 0.5.2
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -205,9 +208,6 @@ importers:
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
-      '@types/yazl':
-        specifier: 2.4.2
-        version: 2.4.2
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
@@ -625,6 +625,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      adm-zip:
+        specifier: 0.5.10
+        version: 0.5.10
       axios:
         specifier: 1.4.0
         version: 1.4.0
@@ -640,19 +643,16 @@ importers:
       prompts:
         specifier: 2.4.2
         version: 2.4.2
-      yazl:
-        specifier: 2.5.1
-        version: 2.5.1
     devDependencies:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@types/adm-zip':
+        specifier: 0.5.2
+        version: 0.5.2
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4
-      '@types/yazl':
-        specifier: 2.4.2
-        version: 2.4.2
 
   packages/environment-check:
     dependencies:
@@ -7789,6 +7789,12 @@ packages:
       '@tufjs/canonical-json': 1.0.0
       minimatch: 9.0.2
 
+  /@types/adm-zip@0.5.2:
+    resolution: {integrity: sha512-33OTTnnW3onOE6HJuoqsi7T7Ojupz7zO/Vs5ddRNVCYQnu4lg05RqH/pr9eidHGvGyYfdO4uPO9cvegAMixBCQ==}
+    dependencies:
+      '@types/node': 12.20.55
+    dev: true
+
   /@types/archiver@5.3.2:
     resolution: {integrity: sha512-IctHreBuWE5dvBDz/0WeKtyVKVRs4h75IblxOACL92wU66v+HGAfEYAOyXkOFphvRJMhuXdI9huDXpX0FC6lCw==}
     dependencies:
@@ -8377,12 +8383,6 @@ packages:
     resolution: {integrity: sha512-pet5WJ9U8yPVRhkwuEIp5ktAeAqRZOq4UdAyWLWzxbtpyXnzbtLdKiXAjJzi/KLmPGS9wk86lUFWZFN6sISo4g==}
     dependencies:
       '@types/yargs-parser': 20.2.1
-    dev: true
-
-  /@types/yazl@2.4.2:
-    resolution: {integrity: sha512-T+9JH8O2guEjXNxqmybzQ92mJUh2oCwDDMSSimZSe1P+pceZiFROZLYmcbqkzV5EUwz6VwcKXCO2S2yUpra6XQ==}
-    dependencies:
-      '@types/node': 12.12.6
     dev: true
 
   /@types/yeoman-environment@2.10.8:
@@ -9167,6 +9167,11 @@ packages:
     resolution: {integrity: sha512-4B/qKCfeE/ODUaAUpSwfzazo5x29WD4r3vXiWsB7I2mSDAihwEqKO+g8GELZUQSSAo5e1XTYh3ZVfLyxBc12nA==}
     engines: {node: '>= 10.0.0'}
     dev: true
+
+  /adm-zip@0.5.10:
+    resolution: {integrity: sha512-x0HvcHqVJNTPk/Bw8JbLWlWoo6Wwnsug0fnYYro1HBrjxZ3G7/AZk7Ahv8JwDe1uIcz8eBqvu86FuF1POiG7vQ==}
+    engines: {node: '>=6.0'}
+    dev: false
 
   /agent-base@5.1.1:
     resolution: {integrity: sha512-TMeqbNl2fMW0nMjTEPOwe3J/PRFP4vqeoNuQMG0HlMrtm5QxKqdvAkZ1pRBQ/ulIyDD5Yq0nJ7YbdD8ey0TO3g==}
@@ -20270,12 +20275,6 @@ packages:
       buffer-crc32: 0.2.13
       fd-slicer: 1.1.0
     dev: true
-
-  /yazl@2.5.1:
-    resolution: {integrity: sha512-phENi2PLiHnHb6QBVot+dJnaAZ0xosj7p3fWl+znIjBDlnMI2PsZCJZ306BPTFOaHf5qdDEI8x5qFrSOBN5vrw==}
-    dependencies:
-      buffer-crc32: 0.2.13
-    dev: false
 
   /yeoman-generator@5.9.0:
     resolution: {integrity: sha512-sN1e01Db4fdd8P/n/yYvizfy77HdbwzvXmPxps9Gwz2D24slegrkSn+qyj+0nmZhtFwGX2i/cH29QDrvAFT9Aw==}
