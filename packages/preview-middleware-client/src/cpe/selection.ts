@@ -219,8 +219,8 @@ export class SelectionService implements Service {
                 this.appliedChangeCache.delete(changeId);
                 return;
             }
-            const info: { path?: string } = runtimeControl.getBindingInfo(propertyName);
-            const newValue = info?.path ?? e.getParameter('newValue');
+            const info = runtimeControl.getBindingInfo(propertyName) as { bindingString?: string };
+            const newValue = info?.bindingString ?? e.getParameter('newValue');
             const change = propertyChanged({
                 controlId,
                 propertyName,

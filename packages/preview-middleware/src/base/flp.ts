@@ -3,7 +3,7 @@ import { render } from 'ejs';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, relative } from 'path';
-import type { App, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
+import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
@@ -57,6 +57,16 @@ const PREVIEW_URL = {
     api: '/preview/api'
 };
 
+export interface CustomConnector {
+    applyConnector: string;
+    writeConnector: string;
+    custom: boolean;
+}
+
+export interface FlexConnector {
+    connector: string;
+}
+
 /**
  * Internal structure used to fill the sandbox.html template
  */
@@ -75,11 +85,7 @@ export interface TemplateConfig {
     ui5: {
         libs: string;
         theme: string;
-        flex: {
-            applyConnector: string;
-            writeConnector: string;
-            custom: boolean;
-        }[];
+        flex: (CustomConnector | FlexConnector)[];
         bootstrapOptions: string;
         resources: Record<string, string>;
     };
@@ -175,6 +181,38 @@ export class FlpSandbox {
     }
 
     /**
+     * Generates the FLP sandbox for an editor.
+     *
+     * @param rta runtime authoring configuration
+     * @param editor editor configuration
+     * @returns FLP sandbox html
+     */
+    private generateSandboxForEditor(rta: RtaConfig, editor: Editor): string {
+        const defaultGenerator = editor.developerMode
+            ? '@sap-ux/control-property-editor'
+            : '@sap-ux/preview-middleware';
+        const config = { ...this.templateConfig };
+        /* sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects */
+        if (!config.ui5.libs.includes('sap.ui.rta')) {
+            const libs = config.ui5.libs.split(',');
+            libs.push('sap.ui.rta');
+            config.ui5.libs = libs.join(',');
+        }
+        config.flex = {
+            layer: rta.layer,
+            ...rta.options,
+            generator: editor.generator ?? defaultGenerator,
+            developerMode: editor.developerMode === true,
+            pluginScript: editor.pluginScript
+        };
+        if (editor.developerMode === true) {
+            config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
+        }
+        const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
+        return render(template, config);
+    }
+
+    /**
      * Add additional routes for configured editors.
      *
      * @param rta runtime authoring configuration
@@ -186,39 +224,25 @@ export class FlpSandbox {
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
-                this.router.get(editor.path, (async (_req: Request, res: Response) => {
+                this.router.get(editor.path, (_req: Request, res: Response) => {
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
                     const html = render(template, {
                         previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`,
                         telemetry: rta.options?.telemetry ?? false
                     });
                     res.status(200).contentType('html').send(html);
-                }) as RequestHandler);
+                });
                 let path = dirname(editor.path);
                 if (!path.endsWith('/')) {
                     path = `${path}/`;
                 }
                 this.router.use(`${path}editor`, serveStatic(cpe));
             }
-            const defaultGenerator = editor.developerMode
-                ? '@sap-ux/control-property-editor'
-                : '@sap-ux/preview-middleware';
-            this.router.get(previewUrl, (async (_req: Request, res: Response) => {
-                const config = { ...this.templateConfig };
-                config.flex = {
-                    layer: rta.layer,
-                    ...rta.options,
-                    generator: editor.generator ?? defaultGenerator,
-                    developerMode: editor.developerMode === true,
-                    pluginScript: editor.pluginScript
-                };
-                if (editor.developerMode === true) {
-                    config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
-                }
-                const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-                const html = render(template, config);
+
+            this.router.get(previewUrl, (_req: Request, res: Response) => {
+                const html = this.generateSandboxForEditor(rta, editor);
                 res.status(200).contentType('html').send(html);
-            }) as RequestHandler);
+            });
         }
     }
 
@@ -325,6 +349,9 @@ export class FlpSandbox {
                 applyConnector: workspaceConnectorPath,
                 writeConnector: workspaceConnectorPath,
                 custom: true
+            },
+            {
+                connector: 'LocalStorageConnector'
             }
         ];
     }

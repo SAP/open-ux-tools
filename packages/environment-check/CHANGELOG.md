@@ -1,5 +1,31 @@
 # @sap-ux/environment-check
 
+## 0.15.68
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/store@0.3.16
+
+## 0.15.67
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/store@0.3.15
+    -   @sap-ux/axios-extension@1.5.1
+    -   @sap-ux/ui5-config@0.19.5
+    -   @sap-ux/project-access@1.13.8
+
+## 0.15.66
+
+### Patch Changes
+
+-   Updated dependencies [d7492b53]
+    -   @sap-ux/axios-extension@1.5.0
+
 ## 0.15.65
 
 ### Patch Changes

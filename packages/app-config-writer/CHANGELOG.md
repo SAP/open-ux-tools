@@ -1,5 +1,37 @@
 # @sap-ux/app-config-writer
 
+## 0.2.3
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/store@0.3.16
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/store@0.3.15
+    -   @sap-ux/axios-extension@1.5.1
+    -   @sap-ux/ui5-config@0.19.5
+    -   @sap-ux/project-access@1.13.8
+
+## 0.2.1
+
+### Patch Changes
+
+-   Updated dependencies [d7492b53]
+    -   @sap-ux/axios-extension@1.5.0
+
+## 0.2.0
+
+### Minor Changes
+
+-   277a0fb1: fix: no longer writes optional properties when not provided
+
 ## 0.1.23
 
 ### Patch Changes

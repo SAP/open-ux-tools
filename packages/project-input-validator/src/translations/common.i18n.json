@@ -1,0 +1,14 @@
+{
+    "AbapAppDescLength": "Deployment Description should not exceed 60 characters",
+    "InvalidClient": "[{{client}}] is invalid. Enter blank or a value between 000-999",
+    "AbapTransportNumRequired": "Provide a transport request for your application",
+    "AbapPackageWarn": "Provide a package",
+    "InvalidUrl": "Invalid URL: [{{input}}]",
+    "AbapAppNameRequired": "Application name required",
+    "AbapInvalidNamespace": "Namespace invalid as there are too many forward slashes",
+    "AbapInvalidNamespaceLength": "Namespace limited to 10 characters, entered {{length}}",
+    "AbapInvalidAppNameLength": "Application name limited to 15 characters, entered {{length}}",
+    "AbapInvalidAppName": "Application name needs to be prefixed with [{{prefix}}]",
+    "CharactersForbiddenInAppName": "Only alphanumeric, underscore and slash characters are allowed",
+    "InvalidAppNameMultipleReason": "Application name is invaid for multiple reasons:"
+}

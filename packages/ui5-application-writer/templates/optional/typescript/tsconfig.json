@@ -15,8 +15,9 @@
                 "./webapp/*"
             ]
         },
-        "types": [
-            "<%- ui5.typesPackage %>"
+        "typeRoots": [
+            "./node_modules/@types",
+            "./node_modules/<%- ui5.typesPackage %>"
         ]
     },
     "include": [
