@@ -97,7 +97,7 @@ export const Tree = (): ReactElement => {
     };
 
     const handleOpenFragmentDialog = (data: OutlineNode) => {
-        if (data.controlType === 'extensionPoint') {
+        if (data.controlType === 'sap.ui.extensionpoint') {
             dispatch(addExtensionPoint(data));
         }
     };
