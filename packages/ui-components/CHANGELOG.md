@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.19
+
+### Patch Changes
+
+-   a6de5157: Fixed SonarQube issue: "setState" should use a callback when referencing the previous state
+
 ## 1.11.18
 
 ### Patch Changes

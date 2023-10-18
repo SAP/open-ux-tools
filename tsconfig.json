@@ -87,6 +87,9 @@
       "path": "packages/project-access"
     },
     {
+      "path": "packages/project-input-validator"
+    },
+    {
       "path": "packages/store"
     },
     {
