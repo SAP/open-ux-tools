@@ -141,6 +141,31 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
+     * Get the application files as zip archive. This will only work on ABAP systems 2308 or newer.
+     *
+     * @param app application id (BSP application name)
+     * @returns undefined if no app is found or downloading files is not supported, otherwise return the application files as a buffer.
+     */
+    public async downloadFiles(app: string): Promise<Buffer> {
+        try {
+            const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`, {
+                params: {
+                    CodePage: 'UTF8',
+                    DownloadFiles: 'RUNTIME'
+                }
+            });
+            const data = response.odata();
+            return data.ZipArchive ? Buffer.from(data.ZipArchive) : undefined;
+        } catch (error) {
+            this.log.debug(`Retrieving application ${app}, ${error}`);
+            if (isAxiosError(error) && error.response?.status === 404) {
+                return undefined;
+            }
+            throw error;
+        }
+    }
+
+    /**
      * Deploy the given archive either by creating a new BSP or updating an existing one.
      *
      * @param config deployment config

@@ -21,7 +21,8 @@ describe('Ui5AbapRepositoryService', () => {
     const restrictedApp = 'RESTRICTED_APP';
     const validAppInfo: AppInfo = {
         Name: validApp,
-        Package: 'my_package'
+        Package: 'my_package',
+        ZipArchive: 'EncodeZippedDataHere'
     };
     const updateParams = `CodePage='UTF8'&CondenseMessagesInHttpResponseHeader=X&format=json`;
     const sapMessageHeader = JSON.stringify({
@@ -35,11 +36,11 @@ describe('Ui5AbapRepositoryService', () => {
         nock.disableNetConnect();
         // mock an existing and not existing app
         nock(server)
-            .get(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?$format=json`)
+            .get((url) => url.startsWith(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')`))
             .reply(200, { d: validAppInfo })
             .persist();
         nock(server)
-            .get(`${Ui5AbapRepositoryService.PATH}/Repositories('${notExistingApp}')?$format=json`)
+            .get((url) => url.startsWith(`${Ui5AbapRepositoryService.PATH}/Repositories('${notExistingApp}')`))
             .reply(404, 'the app does not exist')
             .persist();
         nock(server)
@@ -69,12 +70,25 @@ describe('Ui5AbapRepositoryService', () => {
         });
 
         test('Non-existing app returning 404', async () => {
-            const info = await service.getInfo(validApp);
-            expect(info).toBeDefined();
+            const info = await service.getInfo(notExistingApp);
+            expect(info).toBeUndefined();
         });
 
         test('Not authorized to access app', async () => {
             await expect(service.getInfo(restrictedApp)).rejects.toThrowError();
+        });
+    });
+
+    describe('downloadFiles', () => {
+        test('Existing app', async () => {
+            const data = await service.downloadFiles(validApp);
+            expect(data).toBeDefined();
+            expect(data.toString()).toEqual(validAppInfo.ZipArchive);
+        });
+
+        test('Non-existing app returning 404', async () => {
+            const data = await service.downloadFiles(notExistingApp);
+            expect(data).toBeUndefined();
         });
     });
 
