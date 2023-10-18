@@ -201,7 +201,7 @@ describe('deploy-test validation', () => {
                 mockedProvider as any,
                 nullLogger
             );
-            // expect(output.result).toBe(true);
+            expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.packageCheckPass}`);
         });
