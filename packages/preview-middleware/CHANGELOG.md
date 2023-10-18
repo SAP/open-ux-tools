@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.7.13
+
+### Patch Changes
+
+-   b6e925f8: Adds local persistence of personalizations across local preview sessions
+
 ## 0.7.12
 
 ### Patch Changes
