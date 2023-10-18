@@ -166,6 +166,33 @@ describe('LayeredRepositoryService', () => {
                 expect(error).toBeDefined();
             }
         });
+
+        test('try undeploying on a too old ABAP system', async () => {
+            nock(server)
+                .get((url) => {
+                    return url.startsWith(
+                        `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                            config.namespace as string
+                        )}&layer=CUSTOMER_BASE`
+                    );
+                })
+                .reply(200, undefined, {
+                    'x-csrf-token': 'token'
+                });
+            nock(server)
+                .delete(
+                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                        config.namespace as string
+                    )}&layer=CUSTOMER_BASE&changelist=${config.transport}`
+                )
+                .reply(405);
+            try {
+                await service.undeploy(config);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
+        });
     });
 
     describe('mergeAppDescriptorVariant', () => {
