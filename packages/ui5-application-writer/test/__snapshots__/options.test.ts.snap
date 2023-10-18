@@ -1036,8 +1036,9 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -1159,8 +1160,9 @@ archive.zip
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
