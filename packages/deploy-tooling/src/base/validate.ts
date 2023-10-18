@@ -227,7 +227,7 @@ async function validatePackageWithAdt(
         return;
     }
 
-    // ADT expects input package 
+    // ADT expects input package
     let inputPackage = input.package;
     if (inputPackage.toUpperCase() === '$TMP') {
         inputPackage = '$TMP';
