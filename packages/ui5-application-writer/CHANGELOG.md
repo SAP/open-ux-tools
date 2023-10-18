@@ -1,5 +1,17 @@
 # @sap-ux/ui5-application-writer
 
+## 0.25.10
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
+## 0.25.9
+
+### Patch Changes
+
+-   4087bffb: Allow more flexible @types type loading for TypeScript generate projects
+
 ## 0.25.8
 
 ### Patch Changes

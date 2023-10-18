@@ -1,5 +1,13 @@
 # @sap-ux/app-config-writer
 
+## 0.2.3
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/store@0.3.16
+
 ## 0.2.2
 
 ### Patch Changes
