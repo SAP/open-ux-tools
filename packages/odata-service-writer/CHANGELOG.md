@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.36
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
 ## 0.14.35
 
 ### Patch Changes

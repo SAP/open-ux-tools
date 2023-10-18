@@ -1,5 +1,13 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.77
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/store@0.3.16
+
 ## 0.6.76
 
 ### Patch Changes

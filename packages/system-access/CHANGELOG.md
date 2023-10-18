@@ -1,5 +1,12 @@
 # @sap-ux/system-access
 
+## 0.2.11
+
+### Patch Changes
+
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/store@0.3.16
+
 ## 0.2.10
 
 ### Patch Changes

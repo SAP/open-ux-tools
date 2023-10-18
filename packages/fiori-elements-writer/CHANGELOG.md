@@ -1,5 +1,15 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.15.7
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/odata-service-writer@0.14.36
+    -   @sap-ux/ui5-application-writer@0.25.10
+    -   @sap-ux/ui5-test-writer@0.2.1
+
 ## 0.15.6
 
 ### Patch Changes

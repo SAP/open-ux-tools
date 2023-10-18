@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 0.3.16
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
 ## 0.3.15
 
 ### Patch Changes

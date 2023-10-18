@@ -1,5 +1,11 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.1.14
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
 ## 0.1.13
 
 ### Patch Changes
