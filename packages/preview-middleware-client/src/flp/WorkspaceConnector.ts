@@ -80,7 +80,7 @@ const connector = merge({}, ObjectStorageConnector, {
             features.isVariantAdaptationEnabled = false;
         }
 
-        if(settings?.scenario === 'ADAPTATION_PROJECT') {
+        if (settings?.scenario === 'ADAPTATION_PROJECT') {
             features.isVariantAdaptationEnabled = true;
         }
 
