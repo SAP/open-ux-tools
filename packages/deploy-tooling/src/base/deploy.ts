@@ -1,4 +1,9 @@
-import type { AbapServiceProvider, Ui5AbapRepositoryService, AxiosError } from '@sap-ux/axios-extension';
+import type {
+    AbapServiceProvider,
+    Ui5AbapRepositoryService,
+    AxiosError,
+    LayeredRepositoryService
+} from '@sap-ux/axios-extension';
 import { isAxiosError, TransportRequestService } from '@sap-ux/axios-extension';
 import type { Logger } from '@sap-ux/logger';
 import { writeFileSync } from 'fs';
@@ -147,19 +152,19 @@ async function axiosErrorRetryHandler(
 }
 
 /**
- * Generate a Ui5AbapRepositoryService instance from the supplied deployment config.
+ * Generate a service instance for deployment from the supplied deployment config.
  *
- * @param provider - instance of the axios-extension abap service provider
+ * @param factoryFn - function to create a service
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  * @returns service returns the UI5 ABAP Repository service
  */
-function getUi5AbapRepositoryService(
-    provider: AbapServiceProvider,
+function getDeployService<T extends Ui5AbapRepositoryService | LayeredRepositoryService>(
+    factoryFn: (alias?: string) => T,
     config: AbapDeployConfig,
     logger: Logger
-): Ui5AbapRepositoryService {
-    const service = provider.getUi5AbapRepository(config.target?.service);
+): T {
+    const service = factoryFn(config.target?.service);
     service.log = logger;
     if (!config.strictSsl) {
         logger.warn(
@@ -240,7 +245,7 @@ async function tryDeployToLrep(
             throw new Error('Deployment in TestMode not supported for deployments to the layered repository.');
         } else {
             logger.debug('Deploying an adaptation project to LREP');
-            const service = provider.getLayeredRepository();
+            const service = getDeployService(provider.getLayeredRepository, config, logger);
             await service.deploy(archive, {
                 namespace: descriptor.namespace,
                 layer: descriptor.layer,
@@ -279,7 +284,7 @@ async function tryDeploy(
                 const validateOutput = await validateBeforeDeploy(config, provider, logger);
                 logger.info(formatSummary(validateOutput.summary));
             }
-            const service = getUi5AbapRepositoryService(provider, config, logger);
+            const service = getDeployService(provider.getUi5AbapRepository, config, logger);
             await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
         } else {
             await tryDeployToLrep(provider, config, logger, archive);
@@ -327,13 +332,13 @@ async function tryUndeploy(provider: AbapServiceProvider, config: AbapDeployConf
                 config.createTransport = false;
             }
             if (config.lrep) {
-                const service = provider.getLayeredRepository();
+                const service = getDeployService(provider.getLayeredRepository, config, logger);
                 await service.undeploy({
                     namespace: config.app.name,
                     transport: config.app.transport
                 });
             } else {
-                const service = getUi5AbapRepositoryService(provider, config, logger);
+                const service = getDeployService(provider.getUi5AbapRepository, config, logger);
                 await service.undeploy({ bsp: config.app, testMode: config.test });
             }
             if (config.test === true) {
