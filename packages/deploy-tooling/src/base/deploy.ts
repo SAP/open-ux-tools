@@ -50,7 +50,7 @@ async function handleError(
         }
     }
     logger.error(`${command === tryDeploy ? 'Deployment' : 'Undeployment'} has failed.`);
-    logger.debug(getConfigForLogging(config as AbapDeployConfig));
+    logger.debug(getConfigForLogging(config));
     if (!config.verbose) {
         logger.error(
             'Change logging level to debug your issue\n\t(see examples https://github.com/SAP/open-ux-tools/tree/main/packages/deploy-tooling#configuration-with-logging-enabled)'
