@@ -258,8 +258,10 @@ async function tryDeploy(
             // Reset as we dont want other flows kicking it off again!
             config.createTransport = false;
         }
+
+        let validateOutput;
         if (config.test === true) {
-            const validateOutput = await validateBeforeDeploy(
+            validateOutput = await validateBeforeDeploy(
                 {
                     appName: config.app.name,
                     description: config.app.description ?? '',
@@ -271,7 +273,13 @@ async function tryDeploy(
                 provider,
                 logger
             );
-            logger.info(formatSummary(validateOutput.summary));
+            if (!validateOutput.result) {
+                logger.info(
+                    `Results of validating the deployment configuration settings:${formatSummary(
+                        validateOutput.summary
+                    )}`
+                );
+            }
         }
         const service = getUi5AbapRepositoryService(provider, config, logger);
         await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });

@@ -1,5 +1,17 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.3.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+    -   @sap-ux/logger@0.4.0
+
 ## 1.2.6
 
 ### Patch Changes
