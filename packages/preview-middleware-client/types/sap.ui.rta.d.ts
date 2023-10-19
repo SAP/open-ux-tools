@@ -38,7 +38,7 @@ declare module 'sap/ui/rta/plugin/AddXMLAtExtensionPoint' {
 
     interface Arguments {
         commandFactory: CommandFactory;
-        fragmentHandler: (overlay: UI5Element, extensionPointInfo: uknown) => void;
+        fragmentHandler: (overlay: UI5Element, extensionPointInfo: uknown) => Promise<void | object>;
     }
 
     export default class AddXMLAtExtensionPoint {

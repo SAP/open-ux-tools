@@ -9,28 +9,33 @@ import { ExternalAction, addExtensionPoint } from '@sap-ux-private/control-prope
 import { SubscribeFunction } from '../cpe/types';
 import { DialogNames, handler } from './init-dialogs';
 
-export interface ExtensionPointData {
-    index: number;
-    name: string;
-    view?: View;
-    createdControls: [];
-    fragmentId?: string | undefined;
-    aggregation: string[];
-    aggregationName: string;
-    deffered: Deferred<any>;
-    defaultContent?: string[];
-    targetControl: UI5Element;
-}
-
 interface Deferred<T> {
     promise: Promise<T>;
     resolve: (value: T | PromiseLike<T>) => void;
-    reject: (reason?: any) => void;
+    reject: (reason?: unknown) => void;
 }
 
 type ActionService = {
     execute: (controlId: string, actionId: string) => void;
 };
+
+type DeferredExtPointData = {
+    fragmentPath: string;
+    extensionPointName: string | undefined;
+};
+
+export interface ExtensionPointData {
+    name: string;
+    deffered: Deferred<DeferredExtPointData>;
+    index?: number;
+    view?: View;
+    createdControls?: [];
+    fragmentId?: string | undefined;
+    aggregation?: string[];
+    aggregationName?: string;
+    defaultContent?: string[];
+    targetControl?: UI5Element;
+}
 
 /**
  * Defers the resolution of the promise, stores resolve/reject functions so that they can be accessed at a later stage.
@@ -39,7 +44,7 @@ type ActionService = {
  *
  * @returns {Deferred} Deferred object
  */
-function createDeferred<T>(): Deferred<T> {
+export function createDeferred<T>(): Deferred<T> {
     let resolve: Deferred<T>['resolve'];
     let reject: Deferred<T>['reject'];
     const promise = new Promise<T>((res, rej) => {
@@ -51,7 +56,6 @@ function createDeferred<T>(): Deferred<T> {
 
 export default class ExtensionPointService {
     private readonly actionId = 'CTX_ADDXML_AT_EXTENSIONPOINT';
-    private prevExtensionPoint: string;
 
     /**
      * @param rta Runtime Authoring
@@ -100,12 +104,21 @@ export default class ExtensionPointService {
         this.rta.setPlugins(defaultPlugins);
     }
 
-    public async fragmentHandler(overlay: UI5Element, info: ExtensionPointData) {
-        let deffered: Deferred<any> = createDeferred();
+    /**
+     * Handler function for AddXMLAtExtensionPoint plugin.
+     *
+     * @param overlay UI5 Element overlay
+     * @param info Extension point data from the plugin
+     * @returns Deffered extension point data that is provided to the plugin
+     */
+    public async fragmentHandler(overlay: UI5Element, info: ExtensionPointData): Promise<DeferredExtPointData> {
+        let deffered: Deferred<DeferredExtPointData> = createDeferred();
+
         await handler(overlay, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {
-            name: info?.name,
+            name: info.name,
             deffered
         } as ExtensionPointData);
+
         return deffered.promise;
     }
 }
