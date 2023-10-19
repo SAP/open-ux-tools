@@ -84,40 +84,53 @@ describe('cli', () => {
             {
                 params: minimumConfigCmd,
                 writeFileSyncCalled: 1,
+                deployFn: mockedUi5RepoService.deploy,
                 object: { retry: true, strictSsl: true },
                 provider: '/bc/my/deploy/service'
             },
             {
                 params: minimumAdpConfigCmd,
-                writeFileSyncCalled: 1,
-                object: { retry: true, strictSsl: true },
-                provider: '/bc/my/deploy/service'
+                writeFileSyncCalled: 0,
+                deployFn: mockedLrepService.deploy,
+                object: { retry: true, strictSsl: true }
             },
             {
                 params: overwriteConfigCmds,
                 writeFileSyncCalled: 1,
+                deployFn: mockedUi5RepoService.deploy,
                 object: { retry: true, strictSsl: true },
                 provider: '/bc/my/deploy/service'
             },
-            { params: cliCmd, writeFileSyncCalled: 0, object: { retry: false, strictSsl: false } },
+            {
+                params: cliCmd,
+                writeFileSyncCalled: 0,
+                deployFn: mockedUi5RepoService.deploy,
+                object: { retry: false, strictSsl: false }
+            },
             {
                 params: cliCmdWithUaa,
                 writeFileSyncCalled: 0,
+                deployFn: mockedUi5RepoService.deploy,
                 object: { retry: false, strictSsl: false },
                 provider: '/bc/my/uaa/deploy/service'
             }
-        ])('successful deploy with different options %s', async ({ params, writeFileSyncCalled, object, provider }) => {
-            process.argv = params;
-            await runDeploy();
-            expect(mockedUi5RepoService.deploy).toBeCalled();
-            expect(mockedProvider.getUi5AbapRepository).toBeCalledWith(provider);
-            expect(writeFileSyncSpy).toHaveBeenCalledTimes(writeFileSyncCalled);
-            if (writeFileSyncCalled > 0) {
-                expect(writeFileSyncSpy.mock.calls[0][0]).toBe('archive.zip');
+        ])(
+            'successful deploy with different options %s',
+            async ({ params, writeFileSyncCalled, object, provider, deployFn }) => {
+                process.argv = params;
+                await runDeploy();
+                expect(deployFn).toBeCalled();
+                if (provider) {
+                    expect(mockedProvider.getUi5AbapRepository).toBeCalledWith(provider);
+                }
+                expect(writeFileSyncSpy).toHaveBeenCalledTimes(writeFileSyncCalled);
+                if (writeFileSyncCalled > 0) {
+                    expect(writeFileSyncSpy.mock.calls[0][0]).toBe('archive.zip');
+                }
+                expect(cliArchiveSpy).toBeCalled();
+                expect(cliArchiveSpy).toBeCalledWith(expect.any(ToolsLogger), expect.objectContaining(object));
             }
-            expect(cliArchiveSpy).toBeCalled();
-            expect(cliArchiveSpy).toBeCalledWith(expect.any(ToolsLogger), expect.objectContaining(object));
-        });
+        );
     });
 
     describe('runUndeploy', () => {
