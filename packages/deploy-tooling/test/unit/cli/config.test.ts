@@ -22,11 +22,13 @@ describe('cli/config', () => {
             ).toBeDefined();
         });
         test('invalid config', async () => {
-            await expect(getDeploymentConfig(join(__dirname, '../../simple-app/ui5.yaml'))).rejects.toThrowError();
+            await expect(
+                getDeploymentConfig(join(__dirname, '../../fixtures/simple-app/ui5.yaml'))
+            ).rejects.toThrowError();
         });
         test('invalid path', async () => {
             await expect(
-                getDeploymentConfig(join(__dirname, '../../simple-app/ui5-invalid.yaml'))
+                getDeploymentConfig(join(__dirname, '../../fixtures/simple-app/ui5-invalid.yaml'))
             ).rejects.toThrowError();
         });
     });
