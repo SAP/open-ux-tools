@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.4.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
 ## 0.3.9
 
 ### Patch Changes

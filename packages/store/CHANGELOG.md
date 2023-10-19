@@ -1,5 +1,16 @@
 # @sap-ux/store
 
+## 0.4.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/logger@0.4.0
+
 ## 0.3.16
 
 ### Patch Changes
