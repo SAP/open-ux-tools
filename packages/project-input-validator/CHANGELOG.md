@@ -1,5 +1,12 @@
 # @sap-ux/project-input-validator
 
+## 0.1.2
+
+### Patch Changes
+
+-   966b396b: - Fixed a typo in validation message
+    -   Fixed a bug in transport number validation and updated unit tests
+
 ## 0.1.1
 
 ### Patch Changes
