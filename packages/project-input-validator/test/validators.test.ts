@@ -163,29 +163,29 @@ describe('project input validators', () => {
             expect(output).toEqual(true);
         });
 
-        test('validateTransportRequestNumber - Invalid tr for local package prefix $', () => {
+        test('validateTransportRequestNumber - tr ignored for local package prefix $', () => {
             const output = validateTransportRequestNumber('T0000001', '$TMP');
-            expect(output).toContain(t('AbapTransportNumRequired'));
+            expect(output).toEqual(true);
         });
 
-        test('validateTransportRequestNumber - Invalid tr for local package prefix T', () => {
+        test('validateTransportRequestNumber - tr ignored for local package prefix T', () => {
             const output = validateTransportRequestNumber('T0000001', 'TPACKAGE');
-            expect(output).toContain(t('AbapTransportNumRequired'));
+            expect(output).toEqual(true);
         });
 
-        test('validateTransportRequestNumber - Invalid tr for local package prefix t', () => {
+        test('validateTransportRequestNumber - tr ignored for local package prefix t', () => {
             const output = validateTransportRequestNumber('T0000001', 'tPACKAGE');
-            expect(output).toContain(t('AbapTransportNumRequired'));
+            expect(output).toEqual(true);
         });
 
-        test('validateTransportRequestNumber - Invalid tr for local package prefix L', () => {
+        test('validateTransportRequestNumber - tr ignored for local package prefix L', () => {
             const output = validateTransportRequestNumber('T0000001', 'LPACKAGE');
-            expect(output).toContain(t('AbapTransportNumRequired'));
+            expect(output).toEqual(true);
         });
 
-        test('validateTransportRequestNumber - Invalid tr for local package prefix l', () => {
+        test('validateTransportRequestNumber - tr ignored for local package prefix l', () => {
             const output = validateTransportRequestNumber('T0000001', 'lPACKAGE');
-            expect(output).toContain(t('AbapTransportNumRequired'));
+            expect(output).toEqual(true);
         });
     });
 
