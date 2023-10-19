@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.7.14
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.4.5
+
 ## 0.7.13
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.2.1
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
 ## 0.2.0
 
 ### Minor Changes

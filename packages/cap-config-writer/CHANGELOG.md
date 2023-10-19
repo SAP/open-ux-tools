@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.1.27
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
 ## 0.1.26
 
 ### Patch Changes
