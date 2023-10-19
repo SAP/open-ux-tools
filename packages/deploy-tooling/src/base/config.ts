@@ -65,6 +65,12 @@ function validateTarget(target: AbapTarget): AbapTarget {
     return target;
 }
 
+/**
+ * Type checking the config object.
+ *
+ * @param config - config to be checked
+ * @returns true if it is of type BSP config
+ */
 export function isBspConfig(config: Partial<BspConfig>): config is BspConfig {
     return (config as BspConfig).name !== undefined;
 }
