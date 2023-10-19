@@ -11,7 +11,15 @@ type MockedStore = {
 export const mockedStoreService = (mockedStore as unknown as MockedStore).mockedService;
 
 type MockedAxiosExtension = {
-    mockedProvider: { getUi5AbapRepository: jest.Mock; getAdtService: jest.Mock };
+    mockedProvider: {
+        getUi5AbapRepository: jest.Mock;
+        getLayeredRepository: jest.Mock;
+        getAdtService: jest.Mock;
+    };
+    mockedLrepService: {
+        deploy: jest.Mock;
+        undeploy: jest.Mock;
+    };
     mockedUi5AbapRepositoryService: {
         deploy: jest.Mock;
         undeploy: jest.Mock;
@@ -25,6 +33,8 @@ type MockedAxiosExtension = {
 };
 export const mockedUi5RepoService = (mockedAxiosExtension as unknown as MockedAxiosExtension)
     .mockedUi5AbapRepositoryService;
+
+export const mockedLrepService = (mockedAxiosExtension as unknown as MockedAxiosExtension).mockedLrepService;
 
 export const mockedAdtService = (mockedAxiosExtension as unknown as MockedAxiosExtension).mockedAdtServiceMethod;
 
