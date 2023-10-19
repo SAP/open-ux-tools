@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/generator-simple-fe",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "Simple example of a yeoman generator for Fiori elements.",
     "license": "Apache-2.0",
     "private": true,

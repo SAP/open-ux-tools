@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.6.1
+
+### Patch Changes
+
+-   3cfaba52: Apply additional logging if the endpoint is a destination
+
 ## 1.6.0
 
 ### Minor Changes
