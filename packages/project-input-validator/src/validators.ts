@@ -105,7 +105,7 @@ export function validateClient(client: string): boolean | string {
 export function validateTransportRequestNumber(transportRequest: string, packageName: string): boolean | string {
     const regex = /^[$LlTt]/;
 
-    if (regex.test(packageName) && transportRequest?.trim()) {
+    if (!regex.test(packageName) && !transportRequest?.trim()) {
         return t('AbapTransportNumRequired');
     } else {
         return true;
