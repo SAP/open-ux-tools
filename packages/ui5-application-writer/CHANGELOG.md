@@ -1,5 +1,16 @@
 # @sap-ux/ui5-application-writer
 
+## 0.26.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+
 ## 0.25.10
 
 ### Patch Changes

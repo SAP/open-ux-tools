@@ -1,5 +1,16 @@
 # @sap-ux/ui5-config
 
+## 0.20.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/yaml@0.14.0
+
 ## 0.19.5
 
 ### Patch Changes
