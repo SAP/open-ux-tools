@@ -221,6 +221,40 @@ async function createProvider(config: AbapDeployConfig, logger: Logger): Promise
 }
 
 /**
+ * Check if the archive is an adapation project and if yes, try to deploy it to the layered repository.
+ *
+ * @param provider - instance of the axios-extension abap service provider
+ * @param config - deployment configuration
+ * @param logger - reference to the logger instance
+ * @param archive - archive file that is to be deployed
+ */
+async function tryDeployToLrep(
+    provider: AbapServiceProvider,
+    config: AbapDeployConfig,
+    logger: Logger,
+    archive: Buffer
+) {
+    logger.debug('No BSP name provided, check if it is an adaptation project');
+    const descriptor = getAppDescriptorVariant(archive);
+    if (descriptor) {
+        if (config.test) {
+            throw new Error('Deployment in TestMode not supported for deployments to the layered repository.');
+        } else {
+            logger.debug('Deploying an adaptation project to LREP');
+            const service = provider.getLayeredRepository();
+            await service.deploy(archive, {
+                namespace: descriptor.namespace,
+                layer: descriptor.layer,
+                package: config.app.package,
+                transport: config.app.transport
+            });
+        }
+    } else {
+        throwConfigMissingError('app-name');
+    }
+}
+
+/**
  * Try executing the deployment command and handle known errors.
  *
  * @param provider - instance of the axios-extension abap service provider
@@ -243,37 +277,13 @@ async function tryDeploy(
         // check if deployment of BSP is requested
         if (isBspConfig(config.app) && !config.lrep) {
             if (config.test === true) {
-                const validateOutput = await validateBeforeDeploy(
-                    {
-                        appName: config.app.name,
-                        description: config.app.description ?? '',
-                        package: config.app.package ?? '',
-                        transport: config.app.transport ?? '',
-                        client: config.target.client ?? '',
-                        url: config.target.url ?? ''
-                    },
-                    provider,
-                    logger
-                );
+                const validateOutput = await validateBeforeDeploy(config, provider, logger);
                 logger.info(formatSummary(validateOutput.summary));
             }
             const service = getUi5AbapRepositoryService(provider, config, logger);
             await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
         } else {
-            const descriptor = getAppDescriptorVariant(archive);
-            if (descriptor) {
-                const service = provider.getLayeredRepository();
-                await service.deploy(archive, {
-                    namespace: descriptor.namespace,
-                    layer: descriptor.layer,
-                    package: config.app.package,
-                    transport: config.app.transport
-                });
-                logger.warn('Deployment in TestMode not supported for deployments to the layered repository.');
-                return;
-            } else {
-                throwConfigMissingError('app-name');
-            }
+            await tryDeployToLrep(provider, config, logger, archive);
         }
         if (config.test === true) {
             logger.info(

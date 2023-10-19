@@ -12,6 +12,7 @@ import {
     validateUrl
 } from '@sap-ux/project-input-validator';
 import { EOL } from 'os';
+import type { AbapDeployConfig } from '../types';
 
 export type ValidationInputs = {
     appName: string;
@@ -54,19 +55,28 @@ export const summaryMessage = {
 /**
  * Validation of deploy configuration before running deploy-test.
  *
- * @param input Deploy configuration that needs to be validated
+ * @param config Deploy configuration that needs to be validated
  * @param provider AbapServiceProvider
  * @param logger Logger used by deploy tooling
  * @returns Validation result and a summary report of identified issues.
  */
 export async function validateBeforeDeploy(
-    input: ValidationInputs,
+    config: AbapDeployConfig,
     provider: AbapServiceProvider,
     logger: Logger
 ): Promise<ValidationOutput> {
     const output = {
         summary: [] as SummaryRecord[],
         result: true
+    };
+
+    const input: ValidationInputs = {
+        appName: config.app.name ?? '',
+        description: config.app.description ?? '',
+        package: config.app.package ?? '',
+        transport: config.app.transport ?? '',
+        client: config.target.client ?? '',
+        url: config.target.url ?? ''
     };
 
     // output is passed by reference and status updated during the internal pipeline below.
