@@ -1,5 +1,38 @@
 # @sap-ux/preview-middleware
 
+## 0.7.14
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.4.5
+
+## 0.7.13
+
+### Patch Changes
+
+-   b6e925f8: Adds local persistence of personalizations across local preview sessions
+
+## 0.7.12
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/adp-tooling@0.4.4
+
+## 0.7.11
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.4.3
+
+## 0.7.10
+
+### Patch Changes
+
+-   aef0ccf3: Add bindingString prop for getBindingInfo expression to support maintenance version
+
 ## 0.7.9
 
 ### Patch Changes

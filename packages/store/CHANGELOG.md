@@ -1,5 +1,19 @@
 # @sap-ux/store
 
+## 0.3.16
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
+## 0.3.15
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+
 ## 0.3.14
 
 ### Patch Changes

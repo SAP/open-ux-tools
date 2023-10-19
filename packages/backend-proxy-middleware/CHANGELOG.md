@@ -1,5 +1,29 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.77
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/store@0.3.16
+
+## 0.6.76
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/store@0.3.15
+    -   @sap-ux/axios-extension@1.5.1
+
+## 0.6.75
+
+### Patch Changes
+
+-   Updated dependencies [d7492b53]
+    -   @sap-ux/axios-extension@1.5.0
+
 ## 0.6.74
 
 ### Patch Changes

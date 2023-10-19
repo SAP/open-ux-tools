@@ -6,6 +6,7 @@ import type { AbapDeployConfig } from '../types';
 import { getConfigForLogging } from './config';
 import { promptConfirmation } from './prompt';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
+import { validateBeforeDeploy, formatSummary } from './validate';
 
 const deploymentCommands = { tryUndeploy, tryDeploy };
 
@@ -256,6 +257,29 @@ async function tryDeploy(
             config.app.transport = await createTransportRequest(config, logger, provider);
             // Reset as we dont want other flows kicking it off again!
             config.createTransport = false;
+        }
+
+        let validateOutput;
+        if (config.test === true) {
+            validateOutput = await validateBeforeDeploy(
+                {
+                    appName: config.app.name,
+                    description: config.app.description ?? '',
+                    package: config.app.package ?? '',
+                    transport: config.app.transport ?? '',
+                    client: config.target.client ?? '',
+                    url: config.target.url ?? ''
+                },
+                provider,
+                logger
+            );
+            if (!validateOutput.result) {
+                logger.info(
+                    `Results of validating the deployment configuration settings:${formatSummary(
+                        validateOutput.summary
+                    )}`
+                );
+            }
         }
         const service = getUi5AbapRepositoryService(provider, config, logger);
         await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
