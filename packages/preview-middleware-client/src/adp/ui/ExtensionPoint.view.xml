@@ -4,7 +4,7 @@
     xmlns:f="sap.ui.layout.form">
         <Dialog id="addFragmentAtExtPointDialog" title="Add XML Fragment at Extension Point" contentWidth="500px" class="sapUiRTABorder">
             <content>
-                <f:SimpleForm id="addNewFragmentDialog_Form"
+                <f:SimpleForm id="addFragmentAtExtPointDialog_Form"
                     editable="true"
                     layout="ResponsiveGridLayout"
                     labelSpanS="4"

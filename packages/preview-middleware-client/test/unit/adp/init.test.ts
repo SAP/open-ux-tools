@@ -9,11 +9,15 @@ describe('adp', () => {
     let initOutlineSpy: jest.SpyInstance;
     rtaMock.attachUndoRedoStackModified = jest.fn();
     rtaMock.attachSelectionChange = jest.fn();
-    rtaMock.getDefaultPlugins.mockReturnValueOnce({
-        contextMenu: {
-            addMenuItem: addMenuItemSpy
-        }
-    });
+    rtaMock.getDefaultPlugins
+        .mockReturnValueOnce({
+            contextMenu: {
+                addMenuItem: addMenuItemSpy
+            }
+        })
+        .mockReturnValueOnce({});
+    const setPluginsSpy = jest.fn();
+    rtaMock.setPlugins = setPluginsSpy;
     beforeAll(() => {
         const apiJson = {
             json: () => {
@@ -34,5 +38,6 @@ describe('adp', () => {
         init(rtaMock);
         expect(initOutlineSpy).toBeCalledTimes(1);
         expect(addMenuItemSpy).toBeCalledTimes(2);
+        expect(setPluginsSpy).toBeCalledTimes(1);
     });
 });

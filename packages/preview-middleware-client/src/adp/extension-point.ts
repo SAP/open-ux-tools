@@ -28,6 +28,10 @@ interface Deferred<T> {
     reject: (reason?: any) => void;
 }
 
+type ActionService = {
+    execute: (controlId: string, actionId: string) => void;
+};
+
 /**
  * Defers the resolution of the promise, stores resolve/reject functions so that they can be accessed at a later stage.
  *
@@ -45,12 +49,9 @@ function createDeferred<T>(): Deferred<T> {
     return { promise, resolve: resolve!, reject: reject! };
 }
 
-type ActionService = {
-    execute: (controlId: string, actionId: string) => void;
-};
-
 export default class ExtensionPointService {
     private readonly actionId = 'CTX_ADDXML_AT_EXTENSIONPOINT';
+    private prevExtensionPoint: string;
 
     /**
      * @param rta Runtime Authoring
