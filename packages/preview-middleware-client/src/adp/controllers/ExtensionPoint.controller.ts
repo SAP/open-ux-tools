@@ -15,9 +15,6 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
-
-import CommandExecutor from '../command-executor';
 import { getFragments, writeFragment } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { ExtensionPointData } from '../extension-point';
@@ -26,15 +23,12 @@ import { ExtensionPointData } from '../extension-point';
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class ExtensionPoint extends BaseDialog {
-    public readonly extensionPointData: ExtensionPointData | undefined;
+    public readonly extensionPointData: ExtensionPointData;
 
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, extensionPointData?: ExtensionPointData) {
+    constructor(name: string, _overlays: UI5Element, _rta: RuntimeAuthoring, extensionPointData: ExtensionPointData) {
         super(name);
-        this.rta = rta;
-        this.overlays = overlays;
         this.model = new JSONModel();
         this.extensionPointData = extensionPointData;
-        this.commandExecutor = new CommandExecutor(this.rta);
     }
 
     /**
@@ -70,11 +64,6 @@ export default class ExtensionPoint extends BaseDialog {
      * Builds data that is used in the dialog
      */
     async buildDialogData(): Promise<void> {
-        const selectorId = this.overlays.getId();
-
-        const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
-        this.runtimeControl = overlayControl.getElement();
-
         this.model.setProperty('/extensionPointName', this.extensionPointData?.name);
 
         try {
@@ -109,12 +98,12 @@ export default class ExtensionPoint extends BaseDialog {
      *
      * @param fragmentName Fragment name
      */
-    private async createExtensionPointFragmentChange(fragmentName: string) {
+    private async createExtensionPointFragmentChange(fragmentName: string): Promise<void> {
         const modifiedValue = {
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,
-            extensionPointName: this.extensionPointData?.name
+            extensionPointName: this.extensionPointData.name
         };
 
-        this.extensionPointData?.deffered?.resolve(modifiedValue);
+        this.extensionPointData.deffered.resolve(modifiedValue);
     }
 }

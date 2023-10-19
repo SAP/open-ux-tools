@@ -69,7 +69,7 @@ export async function handler(
                 `open.ux.preview.client.adp.controllers.${dialogName}`,
                 overlays,
                 rta,
-                extensionPointData
+                extensionPointData!
             );
             break;
     }
