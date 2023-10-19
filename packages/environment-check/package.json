@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/environment-check",
-    "version": "0.15.67",
+    "version": "0.16.0",
     "description": "SAP Fiori environment check",
     "license": "Apache-2.0",
     "bin": {
@@ -31,7 +31,7 @@
         "archiver": "5.3.2",
         "axios": "1.4.0",
         "glob-gitignore": "1.0.14",
-        "i18next": "20.3.2",
+        "i18next": "20.6.1",
         "ignore": "5.2.4",
         "minimist": "1.2.8",
         "prompts": "2.4.2",
@@ -49,6 +49,6 @@
     ],
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
-        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+        "node": ">=18.x"
     }
 }

@@ -1,5 +1,31 @@
 # @sap-ux/create
 
+## 0.5.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/mockserver-config-writer@0.2.0
+    -   @sap-ux/app-config-writer@0.3.0
+    -   @sap-ux/cap-config-writer@0.2.0
+    -   @sap-ux/project-access@1.14.0
+    -   @sap-ux/adp-tooling@0.5.0
+    -   @sap-ux/logger@0.4.0
+
+## 0.4.37
+
+### Patch Changes
+
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/app-config-writer@0.2.3
+    -   @sap-ux/cap-config-writer@0.1.27
+    -   @sap-ux/mockserver-config-writer@0.1.14
+    -   @sap-ux/adp-tooling@0.4.5
+
 ## 0.4.36
 
 ### Patch Changes
