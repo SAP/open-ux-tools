@@ -1,5 +1,14 @@
 # @sap-ux/deploy-tooling
 
+## 0.9.20
+
+### Patch Changes
+
+-   966b396b: - Improve format of reported invalid messages
+    -   Convert $tmp to upper case to pass ADT validation
+-   Updated dependencies [966b396b]
+    -   @sap-ux/project-input-validator@0.1.2
+
 ## 0.9.19
 
 ### Patch Changes
