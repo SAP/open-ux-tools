@@ -102,8 +102,7 @@ async function handle401Error(
         'Please maintain correct credentials to avoid seeing this error\n\t(see help: https://www.npmjs.com/package/@sap/ux-ui5-tooling#setting-environment-variables-in-a-env-file)'
     );
     logger.info('Please enter your credentials.');
-    const service = getUi5AbapRepositoryService(provider, config, logger);
-    const credentials = await getCredentialsWithPrompts(service.defaults.auth?.username);
+    const credentials = await getCredentialsWithPrompts(provider.defaults?.auth?.username);
     if (Object.keys(credentials).length) {
         if (config.target.serviceKey) {
             config.target.serviceKey.uaa.username = credentials.username;
