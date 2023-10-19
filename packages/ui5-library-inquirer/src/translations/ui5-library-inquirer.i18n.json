@@ -1,0 +1,15 @@
+{
+    "PROMPT_LIB_NAME_LABEL": "Library module name",
+    "PROMPT_LIB_NAME_DEFAULT": "library1",
+    "PROMPT_NAMESPACE_LABEL": "Library namespace",
+    "PROMPT_NAMESPACE_DEFAULT": "com.myorg",
+    "PROMPT_UI5_VERSION_LABEL": "Minimum SAPUI5 version",
+    "PROMPT_UI5_VERSION_TOOLTIP": "Represents the minimum version of SAPUI5 that this library requires",
+    "PROMPT_TYPESCRIPT_LABEL": "Enable TypeScript (Experimental)",
+    "PROMPT_LIBRARY_FOLDER_LABEL": "Library folder path",
+    "PROMPT_LIBRARY_FOLDER_TOOLTIP": "The generated library's folder will be a combination of the library's namespace and module name",
+    "ERROR_GENERATING_UI5_LIB": "Error generating reusable UI5 library",
+    "INSTALLING_DEPENDENCIES": "Installing dependencies...",
+    "DEPENDENCIES_INSTALLED": "Library dependencies have been installed.",
+    "ERROR_POST_LIB_GEN_HOOK": "Failed to run hook after library generation"
+}

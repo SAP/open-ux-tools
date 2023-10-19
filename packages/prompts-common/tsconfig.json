@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.json",
+    "include": ["src", "src/**/*.json"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist",
+        "allowSyntheticDefaultImports": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "types": ["node", "jest"],
+        "esModuleInterop": true,
+        "allowJs": true
+    },
+    "references": [
+        {
+            "path": "../btp-utils"
+        },
+        {
+            "path": "../ui5-info"
+        }
+    ]
+}
