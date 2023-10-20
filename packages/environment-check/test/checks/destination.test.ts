@@ -1,4 +1,4 @@
-import { isAppStudio, getAppStudioProxyURL, listDestinations } from '@sap-ux/btp-utils';
+import { getAppStudioProxyURL, listDestinations } from '@sap-ux/btp-utils';
 import type { Destinations } from '@sap-ux/btp-utils';
 import type { Endpoint, CatalogServiceResult } from '../../src/types';
 import { Severity, UrlServiceType } from '../../src/types';
@@ -20,7 +20,6 @@ jest.mock('@sap-ux/btp-utils', () => ({
     listDestinations: jest.fn()
 }));
 
-const mockIsAppStudio = isAppStudio as jest.Mock;
 const mockGetAppStudioProxyURL = getAppStudioProxyURL as jest.Mock;
 const mockListDestinations = listDestinations as jest.Mock;
 
