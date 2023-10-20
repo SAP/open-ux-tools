@@ -1,8 +1,9 @@
 import Controller from 'mock/sap/ui/core/mvc/Controller';
-// import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
-// import type UI5Element from 'sap/ui/core/Element';
+import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import type UI5Element from 'sap/ui/core/Element';
 
-// import ExtensionPointService, { type ExtensionPointData } from '../../../src/adp/extension-point';
+import ExtensionPointService, { type ExtensionPointData } from '../../../src/adp/extension-point';
+import * as utils from '../../../src/adp/utils';
 
 describe('ExtensionPointService', () => {
     describe('fragmentHandler', () => {
@@ -10,17 +11,32 @@ describe('ExtensionPointService', () => {
             Controller.create.mockResolvedValue({ overlays: {}, rta: {} });
         });
 
-        test('should', async () => {
-            // const service = new ExtensionPointService(rtaMock);
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
 
-            // jest.mock('createDeferred')
+        test('should return deferred promise', async () => {
+            const service = new ExtensionPointService(rtaMock);
 
-            // const result = await service.fragmentHandler(
-            //     {} as UI5Element,
-            //     { name: 'some-extension-point' } as ExtensionPointData
-            // );
+            const mockResolve = jest.fn();
+            const mockReject = jest.fn();
 
-            // expect(result)
+            const createDeferredMock = jest.fn().mockReturnValue({
+                promise: new Promise((resolve) => {
+                    resolve(true);
+                }),
+                resolve: mockResolve,
+                reject: mockReject
+            }) as jest.Mock;
+
+            jest.spyOn(utils, 'createDeferred').mockImplementation(createDeferredMock);
+
+            const result = await service.fragmentHandler(
+                {} as UI5Element,
+                { name: 'some-extension-point' } as ExtensionPointData
+            );
+
+            expect(result).toBe(true);
         });
     });
 });

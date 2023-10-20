@@ -12,17 +12,9 @@ describe('outline nodes', () => {
     const transformNodes = (nodes: OutlineViewNode[]): Promise<OutlineNode[]> => tn(nodes);
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
-            getProperty: jest
-                .fn()
-                .mockReturnValueOnce('Component')
-                .mockReturnValueOnce('Component')
-                .mockReturnValue('')
+            getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')
         }),
-        getProperty: jest
-            .fn()
-            .mockReturnValueOnce('Component')
-            .mockReturnValueOnce('Component')
-            .mockReturnValue('')
+        getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')
     });
     describe('transformNodes', () => {
         test('empty tree', async () => {
@@ -48,6 +40,31 @@ describe('outline nodes', () => {
                     editable: false,
                     name: 'Component',
                     visible: true
+                }
+            ]);
+        });
+
+        test('extension point', async () => {
+            expect(
+                await transformNodes([
+                    {
+                        id: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
+                        technicalName: 'sap.ui.extensionpoint',
+                        name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
+                        editable: false,
+                        type: 'extensionPoint',
+                        visible: true
+                    }
+                ])
+            ).toStrictEqual([
+                {
+                    children: [],
+                    controlId: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
+                    controlType: 'sap.ui.extensionpoint',
+                    editable: false,
+                    name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
+                    visible: true,
+                    icon: undefined
                 }
             ]);
         });

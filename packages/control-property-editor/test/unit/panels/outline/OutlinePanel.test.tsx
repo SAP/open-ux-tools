@@ -232,6 +232,14 @@ describe('OutlinePanel', () => {
                 controlType: 'sap.ui.comp.smarttable.SmartTable',
                 editable: true,
                 visible: true
+            },
+            {
+                name: 'ExtensionPoint',
+                controlId: '04',
+                children: [],
+                controlType: 'sap.ui.extensionpoint',
+                editable: true,
+                visible: true
             }
         ];
         const initialState: State = {
