@@ -209,9 +209,9 @@ describe('cli', () => {
     });
 
     describe('createCommand', () => {
-        function makeCommand() {
+        function makeCommand(cmdString?: 'deploy' | 'undeploy') {
             const actionMock = jest.fn();
-            const cmd = createCommand('deploy');
+            const cmd = createCommand(cmdString ?? 'deploy');
             cmd.exitOverride()
                 .configureOutput({
                     writeErr: jest.fn(),
@@ -255,9 +255,19 @@ describe('cli', () => {
             {
                 params: ['--username', '~username', '--cloud-service-key', '~path'],
                 error: /'--username <username>' cannot be used with option '--cloud-service-key <file-location>'/
+            },
+            {
+                cmdString: 'undeploy' as 'undeploy' | 'deploy',
+                params: ['--lrep', '~namespace', '--name', '~name'],
+                error: /'--lrep <namespace>' cannot be used with option '--name <bsp-name>'/
+            },
+            {
+                cmdString: 'undeploy' as 'undeploy' | 'deploy',
+                params: ['--lrep', '~namespace', '--test'],
+                error: /'--lrep <namespace>' cannot be used with option '--test'/
             }
-        ])('conflicting options $params', ({ params, error }) => {
-            const { cmd } = makeCommand();
+        ])('conflicting options $params', ({ cmdString, params, error }) => {
+            const { cmd } = makeCommand(cmdString);
             expect(() => {
                 cmd.parse(params, opts);
             }).toThrow(error);

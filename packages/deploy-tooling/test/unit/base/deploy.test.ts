@@ -2,8 +2,16 @@ import prompts from 'prompts';
 import { createTransportRequest, deploy, undeploy } from '../../../src/base/deploy';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../../../src/types';
-import { mockedStoreService, mockedUi5RepoService, mockCreateForAbap, mockedAdtService } from '../../__mocks__';
+import {
+    mockedStoreService,
+    mockedUi5RepoService,
+    mockCreateForAbap,
+    mockedAdtService,
+    mockedLrepService
+} from '../../__mocks__';
 import type { AbapTarget } from '@sap-ux/system-access';
+import AdmZip from 'adm-zip';
+import { join } from 'path';
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -30,6 +38,7 @@ describe('base/deploy', () => {
 
         beforeEach(() => {
             mockedUi5RepoService.deploy.mockReset();
+            mockedLrepService.deploy.mockReset();
             mockedAdtService.createTransportRequest.mockReset();
         });
 
@@ -194,6 +203,40 @@ describe('base/deploy', () => {
                 expect(error.message).toBe('ADT Service Not Found');
             }
             expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
+        });
+
+        describe('adaptation projects', () => {
+            const adpArchive = new AdmZip();
+            adpArchive.addLocalFolder(join(__dirname, '../../fixtures/adp/webapp'));
+
+            test('No errors deploying to LREP', async () => {
+                mockedStoreService.read.mockResolvedValueOnce(credentials);
+                mockedLrepService.deploy.mockResolvedValue(undefined);
+
+                await deploy(adpArchive.toBuffer(), { app: {}, target }, nullLogger);
+                expect(mockedLrepService.deploy).toBeCalledWith(expect.any(Buffer), {
+                    layer: 'VENDOR',
+                    namespace: 'apps/sap.ui.demoapps.rta.fiorielements/appVariants/adp.example/'
+                });
+            });
+
+            test('Test mode not supporterd in LREP', async () => {
+                try {
+                    await deploy(adpArchive.toBuffer(), { app: {}, target, test: true }, nullLogger);
+                    fail('Should have thrown an error');
+                } catch (error) {
+                    expect(error.message).toMatch(/test mode not supported/);
+                }
+            });
+
+            test('Not an adaptation project but no app name provided', async () => {
+                try {
+                    await deploy(archive, { app: {}, target }, nullLogger);
+                    fail('Should have thrown an error');
+                } catch (error) {
+                    expect(error.message).toMatch(/Invalid deployment configuration/);
+                }
+            });
         });
     });
 

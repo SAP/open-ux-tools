@@ -238,11 +238,11 @@ async function tryDeployToLrep(
     logger: Logger,
     archive: Buffer
 ) {
-    logger.debug('No BSP name provided, check if it is an adaptation project');
+    logger.debug('No BSP name provided, checking if it is an adaptation project');
     const descriptor = getAppDescriptorVariant(archive);
     if (descriptor) {
         if (config.test) {
-            throw new Error('Deployment in TestMode not supported for deployments to the layered repository.');
+            throw new Error('Deployment in test mode not supported for deployments to the layered repository.');
         } else {
             logger.debug('Deploying an adaptation project to LREP');
             const service = getDeployService(provider.getLayeredRepository, config, logger);
