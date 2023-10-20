@@ -69,11 +69,6 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .option(
             '--test',
             `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing (use --no-test to deactivate it).`
-        )
-        .addOption(
-            new Option('--lrep', 'Deploy to the layered repository (only supported for adaptation projects)').conflicts(
-                ['test']
-            )
         );
 
     if (name === 'deploy') {
@@ -104,6 +99,13 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
                     'archivePath'
                 ])
             );
+    } else if (name === 'undeploy') {
+        command.addOption(
+            new Option(
+                '--lrep <namespace>',
+                'Undeploy the given namespace from the layered repository (for adaptation projects)'
+            ).conflicts(['test', 'name'])
+        );
     }
     return command.version(getVersion(), '-v, --version', 'version of the deploy tooling');
 }

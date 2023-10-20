@@ -56,9 +56,9 @@ export interface CommonOptions {
     createTransport?: boolean;
 
     /**
-     * Deploy to the layered repository
+     * Optional layered repository namespace.
      */
-    lrep?: boolean;
+    lrep?: string;
 }
 
 /**

@@ -150,6 +150,19 @@ describe('cli', () => {
             expect(mockedUi5RepoService.undeploy).toBeCalled();
         });
 
+        test('successful undeploy from lrep', async () => {
+            process.argv = [
+                'node',
+                'test',
+                '-c',
+                join(adpFixture, 'ui5-deploy.yaml'),
+                '--lrep',
+                'apps/sap.ui.demoapps.rta.fiorielements/appVariants/adp.example/'
+            ];
+            await runUndeploy();
+            expect(mockedLrepService.undeploy).toBeCalled();
+        });
+
         test('successful undeploy with environment variable and no config file', async () => {
             process.argv = [
                 'node',

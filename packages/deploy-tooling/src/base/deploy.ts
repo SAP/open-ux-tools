@@ -279,7 +279,7 @@ async function tryDeploy(
             config.createTransport = false;
         }
         // check if deployment of BSP is requested
-        if (isBspConfig(config.app) && !config.lrep) {
+        if (isBspConfig(config.app)) {
             if (config.test === true) {
                 const validateOutput = await validateBeforeDeploy(config, provider, logger);
                 if (!validateOutput.result) {
@@ -331,34 +331,32 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
  * @param logger - reference to the logger instance
  */
 async function tryUndeploy(provider: AbapServiceProvider, config: AbapDeployConfig, logger: Logger): Promise<void> {
-    if (isBspConfig(config.app)) {
-        try {
-            if (config.createTransport) {
-                config.app.transport = await createTransportRequest(config, logger, provider);
-                config.createTransport = false;
-            }
-            if (config.lrep) {
-                const service = getDeployService(provider.getLayeredRepository, config, logger);
-                await service.undeploy({
-                    namespace: config.app.name,
-                    transport: config.app.transport
-                });
-            } else {
-                const service = getDeployService(provider.getUi5AbapRepository, config, logger);
-                await service.undeploy({ bsp: config.app, testMode: config.test });
-            }
-            if (config.test === true) {
-                logger.info(
-                    'Undeployment in TestMode completed. A successful TestMode execution does not necessarily mean that your undeploy will be successful.'
-                );
-            } else {
-                logger.info('Undeployment Successful.');
-            }
-        } catch (error) {
-            await handleError(tryUndeploy, error, provider, config, logger, Buffer.from(''));
+    try {
+        if (config.createTransport) {
+            config.app.transport = await createTransportRequest(config, logger, provider);
+            config.createTransport = false;
         }
-    } else {
-        throwConfigMissingError('app-name');
+        if (config.lrep) {
+            const service = getDeployService(provider.getLayeredRepository, config, logger);
+            await service.undeploy({
+                namespace: config.lrep,
+                transport: config.app.transport
+            });
+        } else if (isBspConfig(config.app)) {
+            const service = getDeployService(provider.getUi5AbapRepository, config, logger);
+            await service.undeploy({ bsp: config.app, testMode: config.test });
+        } else {
+            throwConfigMissingError('app-name');
+        }
+        if (config.test === true) {
+            logger.info(
+                'Undeployment in TestMode completed. A successful TestMode execution does not necessarily mean that your undeploy will be successful.'
+            );
+        } else {
+            logger.info('Undeployment Successful.');
+        }
+    } catch (error) {
+        await handleError(tryUndeploy, error, provider, config, logger, Buffer.from(''));
     }
 }
 
