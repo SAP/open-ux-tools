@@ -87,7 +87,7 @@ describe('AdaptationProject', () => {
 
     beforeAll(() => {
         nock(backend)
-            .get((path) => path.startsWith('/sap/bc/lrep/dta_folder/'))
+            .get((path) => path.startsWith('/sap/bc/lrep/actions/getcsrftoken/'))
             .reply(200)
             .persist(true);
         nock(backend)

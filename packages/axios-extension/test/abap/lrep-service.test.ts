@@ -195,6 +195,24 @@ describe('LayeredRepositoryService', () => {
         });
     });
 
+    describe('getCsrfToken', () => {
+        test('successful call', async () => {
+            nock(server).get(`${LayeredRepositoryService.PATH}/actions/getcsrftoken/`).reply(200);
+            const response = await service.getCsrfToken();
+            expect(response).toBeDefined();
+        });
+
+        test('error is thrown', async () => {
+            nock(server).get(`${LayeredRepositoryService.PATH}/actions/getcsrftoken/`).reply(403);
+            try {
+                await service.getCsrfToken();
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
+        });
+    });
+
     describe('mergeAppDescriptorVariant', () => {
         const mockResult = { hello: 'world' };
         test('merge valid app variant', async () => {
