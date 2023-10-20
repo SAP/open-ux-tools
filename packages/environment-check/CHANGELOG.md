@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.16.3
+
+### Patch Changes
+
+-   89113caa: stabilise unit tests
+
 ## 0.16.2
 
 ### Patch Changes
