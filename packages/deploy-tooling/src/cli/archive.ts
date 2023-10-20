@@ -1,9 +1,7 @@
 import axios from 'axios';
 import { readFile } from 'fs';
-import { ZipFile } from 'yazl';
-import { relative } from 'path';
+import ZipFile from 'adm-zip';
 import type { CliOptions } from '../types';
-import { createBuffer, getFileNames } from '../base/archive';
 import type { Logger } from '@sap-ux/logger';
 import { Agent } from 'https';
 
@@ -62,15 +60,13 @@ async function fetchArchiveFromUrl(logger: Logger, url: string, rejectUnauthoriz
 function createArchiveFromFolder(logger: Logger, path: string): Promise<Buffer> {
     try {
         logger.info(`Creating archive from ${path}.`);
-        const files = getFileNames(path);
         const zip = new ZipFile();
-        for (const filePath of files) {
-            const relPath = relative(path, filePath);
-            logger.debug(`Adding ${relPath}`);
-            zip.addFile(filePath, relPath);
+        zip.addLocalFolder(path);
+        for (const entry of zip.getEntries()) {
+            logger.debug(`Adding ${entry.entryName}`);
         }
         logger.info(`Archive created from ${path}.`);
-        return createBuffer(zip);
+        return zip.toBufferPromise();
     } catch (error) {
         throw new Error(`Archive creation has failed. Please ensure ${path} is valid and accessible.`);
     }
