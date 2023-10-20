@@ -9,7 +9,7 @@ import { ToolsLogger } from '@sap-ux/logger';
 import ProcessEnv = NodeJS.ProcessEnv;
 
 describe('cli', () => {
-    const fixture = join(__dirname, '../../test-input/');
+    const fixture = join(__dirname, '../../fixtures/simple-app/');
     const target = 'https://target.example';
     let env: ProcessEnv;
 

@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.7.0
+
+### Minor Changes
+
+-   aa2ff95b: Enhanced LREP and UI5_ABAP_REPO services to support deployment of adaptation projects
+
+## 1.6.1
+
+### Patch Changes
+
+-   3cfaba52: Apply additional logging if the endpoint is a destination
+
 ## 1.6.0
 
 ### Minor Changes
