@@ -176,37 +176,5 @@ describe('ExtensionPoint', () => {
 
             expect(resolveSpy).not.toBeCalled;
         });
-
-        // test('throws error when creating new fragment', async () => {
-        //     const errorMsg = 'Could not create XML Fragment!';
-
-        //     const addFragment = new ExtensionPoint(
-        //         'adp.extension.controllers.ExtensionPoint',
-        //         {} as unknown as UI5Element,
-        //         {} as unknown as RuntimeAuthoring
-        //     );
-
-        //     const event = {
-        //         getSource: jest.fn().mockReturnValue({
-        //             setEnabled: jest.fn()
-        //         })
-        //     };
-
-        //     addFragment.model = testModel;
-
-        //     CommandFactory.getCommandFor = jest.fn().mockReturnValue({});
-
-        //     fetchMock.mockResolvedValue({
-        //         json: jest.fn(),
-        //         text: jest.fn().mockRejectedValue({ message: errorMsg }),
-        //         ok: true
-        //     });
-
-        //     try {
-        //         await addFragment.onCreateBtnPress(event as unknown as Event);
-        //     } catch (e) {
-        //         expect(e.message).toBe(errorMsg);
-        //     }
-        // });
     });
 });
