@@ -1,5 +1,14 @@
 # @sap-ux/adp-tooling
 
+## 0.5.2
+
+### Patch Changes
+
+-   aa2ff95b: Replaced yazl with adm-zip
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/axios-extension@1.7.0
+    -   @sap-ux/system-access@0.3.2
+
 ## 0.5.1
 
 ### Patch Changes
