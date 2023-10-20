@@ -322,6 +322,7 @@ export const Tree = (): ReactElement => {
                 onClick={(): void => onSelectHeader(groupHeaderProps?.group)}>
                 <span
                     style={{ paddingLeft: paddingValue }}
+                    data-testid="tooltip-container"
                     className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
                     onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
                     {groupHeaderProps?.group?.count !== 0 && (

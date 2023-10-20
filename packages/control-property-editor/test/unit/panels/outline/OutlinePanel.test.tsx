@@ -1,5 +1,6 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event'; // Import the user-event library
 import { initIcons } from '@sap-ux/ui-components';
 
 import { render } from '../../utils';
@@ -271,6 +272,50 @@ describe('OutlinePanel', () => {
         const SmartTable = screen.getByText(/SmartTable/i);
         expect(SmartTable).toBeInTheDocument();
     });
+
+    test('handleOpenTooltip should show and hide the tooltip', () => {
+        const model: OutlineNode[] = [
+            {
+                name: 'ExtensionPoint',
+                controlId: '04',
+                children: [],
+                controlType: 'sap.ui.extensionpoint',
+                editable: true,
+                visible: true
+            }
+        ];
+        const initialState: State = {
+            deviceType: DeviceType.Desktop,
+            scale: 1,
+            outline: model,
+            filterQuery: filterInitOptions,
+            selectedControl: undefined,
+            changes: {
+                pending: [],
+                saved: [],
+                controls: {}
+            },
+            icons: []
+        };
+
+        const tooltipId = 'tooltip--ExtensionPoint';
+
+        const { container } = render(<OutlinePanel />, { initialState });
+        const spanElement = screen.getByTestId('tooltip-container');
+
+        // Simulate a right-click event
+        fireEvent.contextMenu(spanElement);
+
+        const tooltip = container.querySelector(`#${tooltipId}`);
+
+        expect(tooltip).toHaveStyle({ visibility: 'visible', opacity: '1' });
+
+        // Close the tooltip
+        fireEvent.click(document); // Simulate a click outside the tooltip
+
+        expect(tooltip).toHaveStyle({ visibility: 'hidden', opacity: '0' });
+    });
+
     test('do not expand to previously selected control', () => {
         const { store, container } = render(<OutlinePanel />);
         // clear default applied filters
