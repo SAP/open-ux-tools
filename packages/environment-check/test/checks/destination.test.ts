@@ -4,6 +4,8 @@ import type { Endpoint, CatalogServiceResult } from '../../src/types';
 import { Severity, UrlServiceType } from '../../src/types';
 import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from '../../src/checks/destination';
 import * as serviceChecks from '../../src/checks/service-checks';
+import axios from 'axios';
+import { t } from '../../src/i18n';
 
 jest.mock('@sap-ux/axios-extension', () => ({
     ...(jest.requireActual('@sap-ux/axios-extension') as object),
@@ -72,7 +74,7 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
 
     test('Valid call should return destinations', async () => {
         // Mock setup
-        mockGetAppStudioProxyURL.mockResolvedValueOnce('');
+        jest.spyOn(axios, 'get').mockResolvedValueOnce('');
         const data = {
             'ONE': {
                 Name: 'ONE',
@@ -137,6 +139,7 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
 
     test('No destinations and calling checkBASDestinations', async () => {
         // Mock setup
+        jest.spyOn(axios, 'get').mockResolvedValueOnce('');
         const data = [];
         mockListDestinations.mockResolvedValueOnce(data);
 
@@ -148,8 +151,23 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
         expect(destResult.messages).toBeDefined();
     });
 
+    test('should log error thrown by getAppStudioProxyURL failure', async () => {
+        // Mock setup
+        mockGetAppStudioProxyURL.mockImplementationOnce(() => {
+            throw new Error('HTTP ERROR');
+        });
+        mockListDestinations.mockResolvedValueOnce(undefined);
+
+        // Test execution
+        const destResult = await checkBASDestinations();
+
+        // Result check
+        expect(destResult.messages.find((e) => e.text.includes(t('warning.reloadFailure')))).toBeDefined();
+    });
+
     test('HTTP call returns error for all requests, should be in result messages', async () => {
         // Mock setup
+        jest.spyOn(axios, 'get').mockResolvedValueOnce('');
         mockListDestinations.mockImplementationOnce(() => Promise.reject(new Error('HTTP ERROR')));
 
         // Test execution
@@ -175,10 +193,12 @@ describe('Destinaton tests, needsUsernamePassword()', () => {
 });
 
 describe('Destination test for classification', () => {
-    test('FullServiceUrl', async () => {
+    beforeEach(() => {
         // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
+        jest.spyOn(axios, 'get').mockResolvedValueOnce('');
+    });
 
+    test('FullServiceUrl', async () => {
         const data = {
             'FUL': {
                 Name: 'FUL',
@@ -205,9 +225,6 @@ describe('Destination test for classification', () => {
     });
 
     test('CatalogServiceUrl', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
-
         const data = {
             'CAT': {
                 Name: 'CAT',
@@ -232,9 +249,6 @@ describe('Destination test for classification', () => {
     });
 
     test('PartialUrl', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
-
         const data = {
             'PAR': {
                 Name: 'PAR',
@@ -257,9 +271,6 @@ describe('Destination test for classification', () => {
     });
 
     test('InvalidUrl', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
-
         const data = {
             'INV': {
                 Name: 'INV',
@@ -282,8 +293,6 @@ describe('Destination test for classification', () => {
         expect(destResult.destinations.find((d) => d.Name === 'INV').UrlServiceType).toEqual(UrlServiceType.InvalidUrl);
     });
     test('InvalidUrl, no WebIDEUsage', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
         const data = {
             'INV': {
                 Name: 'INV',
@@ -305,9 +314,6 @@ describe('Destination test for classification', () => {
         expect(destResult.destinations.find((d) => d.Name === 'INV').UrlServiceType).toEqual(UrlServiceType.InvalidUrl);
     });
     test('InvalidUrl, no WebIDEEnabled', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
-
         const data = {
             'INV': {
                 Name: 'INV',
