@@ -312,8 +312,7 @@ export const Tree = (): ReactElement => {
             <></>
         );
 
-        const elementName = groupHeaderProps?.group?.data.name;
-        const tooltipId = `tooltip--${elementName}`;
+        const tooltipId = `tooltip--${groupName}`;
 
         return (
             <div
@@ -344,7 +343,7 @@ export const Tree = (): ReactElement => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
                         }}
-                        title={isExtensionPoint ? elementName : ''}>
+                        title={isExtensionPoint ? groupName : ''}>
                         {groupName}
                     </div>
                     {isExtensionPoint && (
