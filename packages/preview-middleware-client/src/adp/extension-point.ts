@@ -26,7 +26,7 @@ export interface ExtensionPointData {
     index?: number;
     view?: View;
     createdControls?: [];
-    fragmentId?: string | undefined;
+    fragmentId?: string;
     aggregation?: string[];
     aggregationName?: string;
     defaultContent?: string[];
