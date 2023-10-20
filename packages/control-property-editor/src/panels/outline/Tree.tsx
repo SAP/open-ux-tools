@@ -344,7 +344,7 @@ export const Tree = (): ReactElement => {
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
                         }}
-                        title={isExtensionPoint ? elementName : 'element'}>
+                        title={isExtensionPoint ? elementName : ''}>
                         {groupName}
                     </div>
                     {isExtensionPoint && (
