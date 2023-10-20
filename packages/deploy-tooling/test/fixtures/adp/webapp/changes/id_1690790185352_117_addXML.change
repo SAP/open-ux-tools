@@ -17,7 +17,7 @@
 	"content": {
 		"targetAggregation": "content",
 		"index": 7,
-		"fragmentPath": "fragments/test.fragment.xml"
+		"fragmentPath": "fragments/share.fragment.xml"
 	},
 	"texts": {},
 	"selector": {
