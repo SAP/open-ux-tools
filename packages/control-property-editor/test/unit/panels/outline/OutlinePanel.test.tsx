@@ -1,6 +1,5 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event'; // Import the user-event library
 import { initIcons } from '@sap-ux/ui-components';
 
 import { render } from '../../utils';
