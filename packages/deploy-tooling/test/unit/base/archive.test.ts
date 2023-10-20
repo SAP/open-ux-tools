@@ -1,24 +1,16 @@
 import { join } from 'path';
-import { getFileNames, isAdaptationProject } from '../../../src/base/archive';
-import { existsSync } from 'fs';
+import { getAppDescriptorVariant } from '../../../src/base/archive';
 import AdmZip from 'adm-zip';
+import { readFileSync } from 'fs';
 
 describe('base/archive', () => {
-    const testPath = {
-        adp: join(__dirname, '../../fixtures/adp/webapp')
-    };
+    const fixture = join(__dirname, '../../fixtures/adp/webapp');
 
-    test('getFileNames', () => {
-        const names = getFileNames(testPath.adp);
-        expect(names).toHaveLength(6);
-        for (const name of names) {
-            expect(existsSync(name)).toBe(true);
-        }
-    });
-
-    test('isAdaptationProject', () => {
+    test('getAppDescriptorVariant', () => {
         const zip = new AdmZip();
-        zip.addLocalFolder(testPath.adp);
-        expect(isAdaptationProject(zip.toBuffer())).toBe(true);
+        zip.addLocalFolder(fixture);
+        const actual = getAppDescriptorVariant(zip.toBuffer());
+        const expected = JSON.parse(readFileSync(join(fixture, 'manifest.appdescr_variant'), 'utf-8'));
+        expect(actual).toEqual(expected);
     });
 });

@@ -1,5 +1,25 @@
 # @sap-ux/odata-cli
 
+## 0.12.1
+
+### Patch Changes
+
+-   Updated dependencies [3cfaba52]
+    -   @sap-ux/axios-extension@1.6.1
+
+## 0.12.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/axios-extension@1.6.0
+    -   @sap-ux/btp-utils@0.12.0
+    -   @sap-ux/logger@0.4.0
+
 ## 0.11.38
 
 ### Patch Changes

@@ -99,8 +99,8 @@ export class AdpPreview {
         }
         const buffer = zip.toBuffer();
 
-        // validate namespace & layer combination and fetch csrf token
-        await lrep.isExistingVariant(descriptorVariant.namespace, descriptorVariant.layer);
+        // fetch a merged descriptor from the backend
+        await lrep.getCsrfToken();
         this.mergedDescriptor = (await lrep.mergeAppDescriptorVariant(buffer))[descriptorVariant.id];
 
         return descriptorVariant.layer;

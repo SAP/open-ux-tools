@@ -1,5 +1,11 @@
 # @sap-ux/types
 
+## 1.1.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
 ## 1.0.5
 
 ### Patch Changes

@@ -159,6 +159,30 @@ describe('deploy-test validation', () => {
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.packageCheckPass}`);
         });
 
+        test('Valid package name - small case $tmp', async () => {
+            mockedAdtService.listPackages.mockResolvedValueOnce(['$TMP']);
+            mockedAdtService.getTransportRequests.mockResolvedValueOnce([
+                { transportNumber: 'T000001' },
+                { transportNumber: 'T000002' },
+                { transportNumber: 'T000003' }
+            ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'Z'
+            });
+
+            const output = await validateBeforeDeploy(
+                {
+                    app: { ...app, package: '$tmp' },
+                    target
+                },
+                mockedProvider as any,
+                nullLogger
+            );
+            expect(output.result).toBe(true);
+            const summaryStr = formatSummary(output.summary);
+            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.packageCheckPass}`);
+        });
+
         test('Invalid package name', async () => {
             mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'TESTPACKAGE1']);
             mockedAdtService.getTransportRequests.mockResolvedValueOnce([

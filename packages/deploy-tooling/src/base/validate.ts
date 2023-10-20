@@ -109,7 +109,7 @@ export function formatSummary(summary: SummaryRecord[]): string {
                     statusSymbol = yellow('?');
                     break;
             }
-            return `${statusSymbol} ${next.message}`;
+            return `${'    '}${statusSymbol} ${next.message}`;
         })
         .reduce((aggregated, current) => {
             return `${aggregated}${EOL}${current}`;
@@ -237,6 +237,12 @@ async function validatePackageWithAdt(
         return;
     }
 
+    // ADT expects input package
+    let inputPackage = input.package;
+    if (inputPackage.toUpperCase() === '$TMP') {
+        inputPackage = '$TMP';
+    }
+
     try {
         const adtService = await provider.getAdtService<ListPackageService>(ListPackageService);
         if (!adtService) {
@@ -247,9 +253,8 @@ async function validatePackageWithAdt(
             output.result = false;
             return;
         }
-
-        const packages = await adtService.listPackages({ phrase: input.package });
-        const isValidPackage = packages.findIndex((packageName: string) => packageName === input.package) >= 0;
+        const packages = await adtService.listPackages({ phrase: inputPackage });
+        const isValidPackage = packages.findIndex((packageName: string) => packageName === inputPackage) >= 0;
 
         if (isValidPackage) {
             output.summary.push({

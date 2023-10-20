@@ -137,10 +137,11 @@ function logFullURL({
  * @param options.error error message returned from gateway
  * @param options.log logger to be used
  * @param options.host optional host name to pretty print links
+ * @param options.isDest optional value if additional info should be printed
  * @param showAllMessages optional, show all errors but restrict for certain flows i.e. test mode
  */
 export function prettyPrintError(
-    { error, log, host }: { error: ErrorMessage; log: Logger; host?: string },
+    { error, log, host, isDest }: { error: ErrorMessage; log: Logger; host?: string; isDest?: boolean },
     showAllMessages = true
 ): void {
     if (error) {
@@ -151,7 +152,7 @@ export function prettyPrintError(
             if (!entry.message.startsWith('<![CDATA')) {
                 logLevel(entry.severity, entry.message, log, true);
             }
-            logFullURL({ host, path: entry['longtext_url'], log });
+            logFullURL({ host, path: entry['longtext_url'], log, isDest });
         });
         if (showAllMessages && error.innererror?.Error_Resolution) {
             for (const key in error.innererror.Error_Resolution) {

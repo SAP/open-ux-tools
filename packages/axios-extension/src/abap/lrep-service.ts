@@ -113,6 +113,22 @@ export class LayeredRepositoryService extends Axios implements Service {
     public log: Logger;
 
     /**
+     * Simple request to fetch a CSRF token required for all writing operations.
+     *
+     * @returns the response
+     */
+    public async getCsrfToken() {
+        try {
+            return await this.get('/actions/getcsrftoken/');
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+            }
+            throw error;
+        }
+    }
+
+    /**
      * Merge a given app descriptor variant with the stord app descriptor.
      *
      * @param appDescriptorVariant zip file containing an app descriptor variant
