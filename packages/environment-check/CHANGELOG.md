@@ -1,5 +1,18 @@
 # @sap-ux/environment-check
 
+## 0.16.3
+
+### Patch Changes
+
+-   89113caa: stabilise unit tests
+
+## 0.16.2
+
+### Patch Changes
+
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/axios-extension@1.7.0
+
 ## 0.16.1
 
 ### Patch Changes

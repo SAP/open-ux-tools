@@ -38,7 +38,7 @@ describe('LayeredRepositoryService', () => {
             jest.spyOn(fs, 'readFileSync').mockReturnValue(testData);
         });
 
-        test('deploy new adaptation project', async () => {
+        test('deploy new adaptation project with path', async () => {
             nock(server)
                 .get((url) => {
                     return url.startsWith(
@@ -58,6 +58,29 @@ describe('LayeredRepositoryService', () => {
                 .reply(200);
 
             const response = await service.deploy(archivePath, config);
+            expect(response.status).toBe(200);
+        });
+
+        test('deploy new adaptation project with archive', async () => {
+            nock(server)
+                .get((url) => {
+                    return url.startsWith(
+                        `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                            config.namespace as string
+                        )}&layer=CUSTOMER_BASE`
+                    );
+                })
+                .reply(404);
+
+            nock(server)
+                .post(
+                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                        config.namespace as string
+                    )}&layer=CUSTOMER_BASE&package=${config.package}&changelist=${config.transport}`
+                )
+                .reply(200);
+
+            const response = await service.deploy(testData, config);
             expect(response.status).toBe(200);
         });
 
@@ -138,6 +161,51 @@ describe('LayeredRepositoryService', () => {
 
             try {
                 await service.undeploy(config);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
+        });
+
+        test('try undeploying on a too old ABAP system', async () => {
+            nock(server)
+                .get((url) => {
+                    return url.startsWith(
+                        `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                            config.namespace as string
+                        )}&layer=CUSTOMER_BASE`
+                    );
+                })
+                .reply(200, undefined, {
+                    'x-csrf-token': 'token'
+                });
+            nock(server)
+                .delete(
+                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                        config.namespace as string
+                    )}&layer=CUSTOMER_BASE&changelist=${config.transport}`
+                )
+                .reply(405);
+            try {
+                await service.undeploy(config);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
+        });
+    });
+
+    describe('getCsrfToken', () => {
+        test('successful call', async () => {
+            nock(server).get(`${LayeredRepositoryService.PATH}/actions/getcsrftoken/`).reply(200);
+            const response = await service.getCsrfToken();
+            expect(response).toBeDefined();
+        });
+
+        test('error is thrown', async () => {
+            nock(server).get(`${LayeredRepositoryService.PATH}/actions/getcsrftoken/`).reply(403);
+            try {
+                await service.getCsrfToken();
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();

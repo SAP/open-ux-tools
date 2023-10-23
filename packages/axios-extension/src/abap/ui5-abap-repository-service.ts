@@ -5,19 +5,9 @@ import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
 
 /**
- * Required configuration for the BSP hosting an app.
+ * Required configuration a transportable object.
  */
-export interface BspConfig {
-    /**
-     * Name of the BSP, additionally, the last part of the exposed service path
-     */
-    name: string;
-
-    /**
-     * Optional description of the ABAP development object representing the BSP
-     */
-    description?: string;
-
+export interface TransportConfig {
     /**
      * Optional package for the ABAP development object
      */
@@ -27,6 +17,21 @@ export interface BspConfig {
      * Optional transport request to record the changes
      */
     transport?: string;
+}
+
+/**
+ * Required configuration for the BSP hosting an app.
+ */
+export interface BspConfig extends TransportConfig {
+    /**
+     * Name of the BSP, additionally, the last part of the exposed service path
+     */
+    name: string;
+
+    /**
+     * Optional description of the ABAP development object representing the BSP
+     */
+    description?: string;
 }
 
 /**
@@ -126,6 +131,31 @@ export class Ui5AbapRepositoryService extends ODataService {
         try {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
             return response.odata();
+        } catch (error) {
+            this.log.debug(`Retrieving application ${app}, ${error}`);
+            if (isAxiosError(error) && error.response?.status === 404) {
+                return undefined;
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Get the application files as zip archive. This will only work on ABAP systems 2308 or newer.
+     *
+     * @param app application id (BSP application name)
+     * @returns undefined if no app is found or downloading files is not supported, otherwise return the application files as a buffer.
+     */
+    public async downloadFiles(app: string): Promise<Buffer> {
+        try {
+            const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`, {
+                params: {
+                    CodePage: 'UTF8',
+                    DownloadFiles: 'RUNTIME'
+                }
+            });
+            const data = response.odata();
+            return data.ZipArchive ? Buffer.from(data.ZipArchive) : undefined;
         } catch (error) {
             this.log.debug(`Retrieving application ${app}, ${error}`);
             if (isAxiosError(error) && error.response?.status === 404) {
