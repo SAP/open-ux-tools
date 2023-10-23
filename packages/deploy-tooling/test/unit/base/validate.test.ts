@@ -8,6 +8,21 @@ import { t } from '@sap-ux/project-input-validator/src/i18n';
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
 
 describe('deploy-test validation', () => {
+    // default app for testing
+    const app = {
+        name: 'ZAPP1',
+        description: '',
+        package: 'MYPACKAGE',
+        transport: 'T000002'
+    };
+    // same target used in all tests
+    const target = {
+        client: '001',
+        url: 'https://test.dev'
+    };
+    // standard valid test config
+    const testConfig = { app, target };
+
     beforeEach(() => {
         mockedAdtService.listPackages.mockReset();
         mockedAdtService.getTransportRequests.mockReset();
@@ -26,25 +41,14 @@ describe('deploy-test validation', () => {
             mockedAdtService.getAtoInfo.mockResolvedValueOnce({
                 developmentPrefix: 'Z'
             });
-            const output = await validateBeforeDeploy(
-                {
-                    appName: 'ZAPP1',
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000002',
-                    client: '001',
-                    url: 'https://test.dev'
-                },
-                mockedProvider as any,
-                nullLogger
-            );
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.allClientCheckPass}`);
         });
 
         test('Capture invalid app name', async () => {
-            const appName = 'nslooooooooooooooooooooog/ZAPP1';
+            const name = 'nslooooooooooooooooooooog/ZAPP1';
             const prefix = 'Z';
 
             mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
@@ -59,12 +63,8 @@ describe('deploy-test validation', () => {
 
             const output = await validateBeforeDeploy(
                 {
-                    appName,
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000002',
-                    client: '001',
-                    url: 'https://test.dev'
+                    app: { ...app, name },
+                    target
                 },
                 mockedProvider as any,
                 nullLogger
@@ -72,12 +72,12 @@ describe('deploy-test validation', () => {
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${red('×')} ${t('InvalidAppNameMultipleReason')}`);
-            expect(summaryStr).toContain(`${t('AbapInvalidAppNameLength', { length: appName.length })}`);
+            expect(summaryStr).toContain(`${t('AbapInvalidAppNameLength', { length: name.length })}`);
             expect(summaryStr).toContain(`${t('AbapInvalidAppName', { prefix })}`);
         });
 
         test('adtService error', async () => {
-            const appName = 'nslooooooooooooooooooooog/Z-APP1';
+            const name = 'nslooooooooooooooooooooog/Z-APP1';
             const prefix = 'Z';
 
             mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
@@ -96,12 +96,8 @@ describe('deploy-test validation', () => {
 
             const output = await validateBeforeDeploy(
                 {
-                    appName,
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000002',
-                    client: '001',
-                    url: 'https:/test.dev'
+                    app: { ...app, name },
+                    target
                 },
                 mockedProvider as any,
                 nullLogger
@@ -110,12 +106,12 @@ describe('deploy-test validation', () => {
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.adtServiceUndefined} for AtoService`);
             expect(summaryStr).toContain(`${red('×')} ${t('InvalidAppNameMultipleReason')}`);
-            expect(summaryStr).toContain(`${t('AbapInvalidAppNameLength', { length: appName.length })}`);
+            expect(summaryStr).toContain(`${t('AbapInvalidAppNameLength', { length: name.length })}`);
             expect(summaryStr).toContain(`${t('CharactersForbiddenInAppName')}`);
         });
 
         test('getAtoInfo throws error', async () => {
-            const appName = 'nslooooooooooooooooooooog/Z-APP1';
+            const name = 'nslooooooooooooooooooooog/Z-APP1';
             const prefix = 'Z';
             mockedAdtService.getAtoInfo.mockRejectedValueOnce(new Error(''));
             mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
@@ -130,12 +126,8 @@ describe('deploy-test validation', () => {
 
             const output = await validateBeforeDeploy(
                 {
-                    appName,
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000002',
-                    client: '001',
-                    url: 'https:/test.dev'
+                    app: { ...app, name },
+                    target
                 },
                 mockedProvider as any,
                 nullLogger
@@ -144,7 +136,7 @@ describe('deploy-test validation', () => {
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.atoAdtAccessError}`);
             expect(summaryStr).toContain(`${red('×')} ${t('InvalidAppNameMultipleReason')}`);
-            expect(summaryStr).toContain(`${t('AbapInvalidAppNameLength', { length: appName.length })}`);
+            expect(summaryStr).toContain(`${t('AbapInvalidAppNameLength', { length: name.length })}`);
             expect(summaryStr).toContain(`${t('CharactersForbiddenInAppName')}`);
         });
     });
@@ -161,18 +153,7 @@ describe('deploy-test validation', () => {
                 developmentPrefix: 'Z'
             });
 
-            const output = await validateBeforeDeploy(
-                {
-                    appName: 'ZAPP1',
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000002',
-                    client: '001',
-                    url: 'https://test.dev'
-                },
-                mockedProvider as any,
-                nullLogger
-            );
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.packageCheckPass}`);
@@ -191,12 +172,8 @@ describe('deploy-test validation', () => {
 
             const output = await validateBeforeDeploy(
                 {
-                    appName: 'ZAPP1',
-                    description: '',
-                    package: '$tmp',
-                    transport: 'T000002',
-                    client: '001',
-                    url: 'https://test.dev'
+                    app: { ...app, package: '$tmp' },
+                    target
                 },
                 mockedProvider as any,
                 nullLogger
@@ -217,18 +194,7 @@ describe('deploy-test validation', () => {
                 developmentPrefix: 'Z'
             });
 
-            const output = await validateBeforeDeploy(
-                {
-                    appName: 'ZAPP1',
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000002',
-                    client: '001',
-                    url: 'https://test.dev'
-                },
-                mockedProvider as any,
-                nullLogger
-            );
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${red('×')} ${summaryMessage.packageNotFound}`);
@@ -245,18 +211,7 @@ describe('deploy-test validation', () => {
                 developmentPrefix: 'Z'
             });
 
-            const output = await validateBeforeDeploy(
-                {
-                    appName: 'ZAPP1',
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000002',
-                    client: '001',
-                    url: 'https://test.dev'
-                },
-                mockedProvider as any,
-                nullLogger
-            );
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.pacakgeAdtAccessError}`);
@@ -275,18 +230,7 @@ describe('deploy-test validation', () => {
                 }
             });
 
-            const output = await validateBeforeDeploy(
-                {
-                    appName: 'ZAPP1',
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000002',
-                    client: '001',
-                    url: 'https://test.dev'
-                },
-                mockedProvider as any,
-                nullLogger
-            );
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.adtServiceUndefined} for ListPackageService`);
@@ -305,18 +249,7 @@ describe('deploy-test validation', () => {
                 developmentPrefix: 'Z'
             });
 
-            const output = await validateBeforeDeploy(
-                {
-                    appName: 'ZAPP1',
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000002',
-                    client: '001',
-                    url: 'https://test.dev'
-                },
-                mockedProvider as any,
-                nullLogger
-            );
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportCheckPass}`);
@@ -326,25 +259,13 @@ describe('deploy-test validation', () => {
             mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
             mockedAdtService.getTransportRequests.mockResolvedValueOnce([
                 { transportNumber: 'T000001' },
-                { transportNumber: 'T000002' },
                 { transportNumber: 'T000003' }
             ]);
             mockedAdtService.getAtoInfo.mockResolvedValueOnce({
                 developmentPrefix: 'Z'
             });
 
-            const output = await validateBeforeDeploy(
-                {
-                    appName: 'ZAPP1',
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000004',
-                    client: '001',
-                    url: 'https://test.dev'
-                },
-                mockedProvider as any,
-                nullLogger
-            );
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${red('×')} ${summaryMessage.transportNotFound}`);
@@ -357,18 +278,7 @@ describe('deploy-test validation', () => {
                 developmentPrefix: 'Z'
             });
 
-            const output = await validateBeforeDeploy(
-                {
-                    appName: 'ZAPP1',
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000004',
-                    client: '001',
-                    url: 'https://test.dev'
-                },
-                mockedProvider as any,
-                nullLogger
-            );
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.transportAdtAccessError}`);
@@ -383,18 +293,7 @@ describe('deploy-test validation', () => {
                 developmentPrefix: 'Z'
             });
 
-            const output = await validateBeforeDeploy(
-                {
-                    appName: 'ZAPP1',
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000004',
-                    client: '001',
-                    url: 'https://test.dev'
-                },
-                mockedProvider as any,
-                nullLogger
-            );
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportNotRequired}`);
@@ -415,18 +314,7 @@ describe('deploy-test validation', () => {
                 }
             });
 
-            const output = await validateBeforeDeploy(
-                {
-                    appName: 'ZAPP1',
-                    description: '',
-                    package: 'MYPACKAGE',
-                    transport: 'T000004',
-                    client: '001',
-                    url: 'https://test.dev'
-                },
-                mockedProvider as any,
-                nullLogger
-            );
+            const output = await validateBeforeDeploy(testConfig, mockedProvider as any, nullLogger);
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(

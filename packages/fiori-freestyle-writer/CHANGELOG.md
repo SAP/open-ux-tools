@@ -1,5 +1,18 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.21.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-application-writer@0.26.0
+    -   @sap-ux/odata-service-writer@0.15.0
+    -   @sap-ux/ui5-config@0.20.0
+
 ## 0.20.14
 
 ### Patch Changes

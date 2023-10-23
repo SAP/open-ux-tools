@@ -1,5 +1,16 @@
 # @sap-ux/cap-config-writer
 
+## 0.2.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/project-access@1.14.0
+
 ## 0.1.27
 
 ### Patch Changes

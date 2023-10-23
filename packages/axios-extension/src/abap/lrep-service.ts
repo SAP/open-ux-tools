@@ -6,6 +6,7 @@ import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'fs';
 import { isAxiosError } from '../base/odata-request-error';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { TransportConfig } from './ui5-abap-repository-service';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 /**
@@ -31,21 +32,11 @@ export type Namespace = NamespaceObject | string;
 /**
  * Required configuration to deploy an adaptation project.
  */
-export interface AdaptationConfig {
+export interface AdaptationConfig extends TransportConfig {
     /**
      * Namespace either as string or object
      */
     namespace: Namespace;
-
-    /**
-     * Optional ABAP package name
-     */
-    package?: string;
-
-    /**
-     * Optional transport request
-     */
-    transport?: string;
 
     /**
      * Optional layer (default: CUSTOMER_BASE)
@@ -99,6 +90,16 @@ function getNamespaceAsString(namespace: Namespace): string {
 }
 
 /**
+ * Check if a variable is a buffer.
+ *
+ * @param input variable to be checked
+ * @returns true if the input is a buffer
+ */
+function isBuffer(input: string | Buffer): input is Buffer {
+    return (input as Buffer).BYTES_PER_ELEMENT !== undefined;
+}
+
+/**
  * Path suffix for all DTA actions.
  */
 const DTA_PATH_SUFFIX = '/dta_folder/';
@@ -110,6 +111,22 @@ export class LayeredRepositoryService extends Axios implements Service {
     public static readonly PATH = '/sap/bc/lrep';
 
     public log: Logger;
+
+    /**
+     * Simple request to fetch a CSRF token required for all writing operations.
+     *
+     * @returns the response
+     */
+    public async getCsrfToken() {
+        try {
+            return await this.get('/actions/getcsrftoken/');
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+            }
+            throw error;
+        }
+    }
 
     /**
      * Merge a given app descriptor variant with the stord app descriptor.
@@ -167,12 +184,12 @@ export class LayeredRepositoryService extends Axios implements Service {
     /**
      * Deploy the given archive either by creating a new folder in the layered repository or updating an existing one.
      *
-     * @param archivePath path to a zip archive containing the adaptation project
+     * @param archive path to a zip archive or archive as buffer containing the adaptation project
      * @param config adataption project deployment configuration
      * @returns the Axios response object for futher processing
      */
-    public async deploy(archivePath: string, config: AdaptationConfig): Promise<AxiosResponse> {
-        const archive = readFileSync(archivePath);
+    public async deploy(archive: Buffer | string, config: AdaptationConfig): Promise<AxiosResponse> {
+        const data = isBuffer(archive) ? archive : readFileSync(archive);
 
         const checkResponse = await this.isExistingVariant(config.namespace);
         const params: object = {
@@ -188,7 +205,7 @@ export class LayeredRepositoryService extends Axios implements Service {
         const response = await this.request({
             method: checkResponse.status === 200 ? 'PUT' : 'POST',
             url: DTA_PATH_SUFFIX,
-            data: archive,
+            data,
             params,
             headers: {
                 'Content-Type': 'application/octet-stream'
@@ -202,8 +219,8 @@ export class LayeredRepositoryService extends Axios implements Service {
     /**
      * Undeploy the archive identified by the configuration.
      *
-     * @param config adataption project deployment configuration
-     * @returns the Axios response object for futher processing
+     * @param config adaptation project deployment configuration
+     * @returns the Axios response object for further processing
      */
     public async undeploy(config: AdaptationConfig): Promise<AxiosResponse> {
         const checkResponse = await this.isExistingVariant(config.namespace);
@@ -217,10 +234,20 @@ export class LayeredRepositoryService extends Axios implements Service {
         if (config.transport) {
             params['changelist'] = config.transport;
         }
-        const response = await this.delete(DTA_PATH_SUFFIX, { params });
-        this.tryLogResponse(response, 'Undeployment successful.');
-
-        return response;
+        try {
+            const response = await this.delete(DTA_PATH_SUFFIX, { params });
+            this.tryLogResponse(response, 'Undeployment successful.');
+            return response;
+        } catch (error) {
+            this.log.error('Undeployment failed');
+            this.log.debug(error);
+            if (isAxiosError(error) && error.response?.status === 405) {
+                this.log.error(
+                    'Newer version of SAP_UI required, please check https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/delete-adaptation-project'
+                );
+            }
+            throw error;
+        }
     }
 
     /**

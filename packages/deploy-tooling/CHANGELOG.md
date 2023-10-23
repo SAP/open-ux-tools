@@ -1,5 +1,43 @@
 # @sap-ux/deploy-tooling
 
+## 0.11.0
+
+### Minor Changes
+
+-   e0e9bd9e: Support for deployment of adaptation projects to LREP.
+
+## 0.10.2
+
+### Patch Changes
+
+-   aa2ff95b: Replaced yazl with adm-zip
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/axios-extension@1.7.0
+    -   @sap-ux/system-access@0.3.2
+
+## 0.10.1
+
+### Patch Changes
+
+-   Updated dependencies [3cfaba52]
+    -   @sap-ux/axios-extension@1.6.1
+    -   @sap-ux/system-access@0.3.1
+
+## 0.10.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/axios-extension@1.6.0
+    -   @sap-ux/system-access@0.3.0
+    -   @sap-ux/ui5-config@0.20.0
+    -   @sap-ux/btp-utils@0.12.0
+    -   @sap-ux/logger@0.4.0
+
 ## 0.9.20
 
 ### Patch Changes

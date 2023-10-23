@@ -85,5 +85,14 @@ describe('flp/WorkspaceConnector', () => {
             const features = await connector.loadFeatures();
             expect(features.isVariantAdaptationEnabled).toBe(false);
         });
+
+        test('scenario=ADAPTATION_PROJECT', async () => {
+            VersionInfo.load.mockResolvedValueOnce({ version: '1.118.1' });
+            documentMock.getElementById.mockReturnValueOnce({
+                getAttribute: () => JSON.stringify({ scenario: 'ADAPTATION_PROJECT' })
+            })
+            const features = await connector.loadFeatures();
+            expect(features.isVariantAdaptationEnabled).toBe(true);
+        });
     });
 });

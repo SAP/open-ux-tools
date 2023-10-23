@@ -1,5 +1,42 @@
 # @sap-ux/preview-middleware
 
+## 0.8.4
+
+### Patch Changes
+
+-   96b115d8: Exports the initAdp function so that can be use in @sap/ux-ui5-tooling
+
+## 0.8.3
+
+### Patch Changes
+
+-   5f90873d: The features for all adaptation projects which are loaded from "WorkspaceConnector" in "preview-middleware-client" are with "isVariantAdaptationEnabled=true".
+
+## 0.8.2
+
+### Patch Changes
+
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/adp-tooling@0.5.2
+
+## 0.8.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.5.1
+
+## 0.8.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/adp-tooling@0.5.0
+    -   @sap-ux/logger@0.4.0
+
 ## 0.7.14
 
 ### Patch Changes

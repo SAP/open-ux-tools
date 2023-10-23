@@ -5,10 +5,11 @@ import { readFileSync } from 'fs';
 import { dirname, join, relative } from 'path';
 import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
-import type { Logger } from '@sap-ux/logger';
+import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -403,4 +404,43 @@ function serializeDataAttributes(attributes: Map<string, string>, indent = '', p
  */
 function serializeUi5Configuration(config: Map<string, string>): string {
     return '\n' + serializeDataAttributes(config, '        ', 'data-sap-ui');
+}
+
+/**
+ * Initialize the preview for an adaptation project.
+ *
+ * @param rootProject reference to the project
+ * @param config configuration from the ui5.yaml
+ * @param flp FlpSandbox instance
+ * @param util middleware utilities provided by the UI5 CLI
+ * @param logger logger instance
+ */
+export async function initAdp(
+    rootProject: ReaderCollection,
+    config: AdpPreviewConfig,
+    flp: FlpSandbox,
+    util: MiddlewareUtils,
+    logger: ToolsLogger
+) {
+    const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
+    if (appVariant) {
+        const adp = new AdpPreview(config, rootProject, util, logger);
+        const variant = JSON.parse(await appVariant.getString());
+        const layer = await adp.init(variant);
+        if (flp.rta) {
+            flp.rta.layer = layer;
+            flp.rta.options = {
+                projectId: variant.id,
+                scenario: 'ADAPTATION_PROJECT'
+            };
+            for (const editor of flp.rta.editors) {
+                editor.pluginScript ??= 'open/ux/preview/client/adp/init';
+            }
+        }
+        await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
+        flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
+        adp.addApis(flp.router);
+    } else {
+        throw new Error('ADP configured but no manifest.appdescr_variant found.');
+    }
 }

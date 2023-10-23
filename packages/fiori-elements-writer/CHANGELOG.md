@@ -1,5 +1,20 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.16.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-application-writer@0.26.0
+    -   @sap-ux/odata-service-writer@0.15.0
+    -   @sap-ux/ui5-test-writer@0.3.0
+    -   @sap-ux/fe-fpm-writer@0.24.0
+    -   @sap-ux/ui5-config@0.20.0
+
 ## 0.15.7
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @sap-ux/project-access
 
+## 1.14.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+
 ## 1.13.8
 
 ### Patch Changes
