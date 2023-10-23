@@ -1,5 +1,5 @@
-import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { UI5Version } from '@sap-ux/ui5-info';
+import type { ListChoiceOptions } from 'inquirer';
 
 export interface UI5LibraryAnswers {
     libraryName?: string;
@@ -9,13 +9,11 @@ export interface UI5LibraryAnswers {
     enableTypescript?: boolean;
 }
 
-export interface Options extends UI5LibraryAnswers {
-    // YUI only
-    appWizard?: AppWizard;
-    skipInstall?: boolean;
-}
-
 export interface UI5LibraryPromptInput {
     versions?: UI5Version[];
     targetFolder?: string;
+}
+
+export interface UI5VersionChoice extends ListChoiceOptions {
+    version: UI5Version;
 }

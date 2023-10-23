@@ -1,9 +1,8 @@
 /**
  *
- * Move YUI specific types to YUI
+ * Remove when YUI specific types are available from `"@sap-devx/yeoman-ui-types`
  *
  */
-import type { UI5Version } from '@sap-ux/ui5-info';
 import type {
     ConfirmQuestion as BaseConfirmQuestion,
     InputQuestion as BaseInputQuestion,
@@ -11,9 +10,7 @@ import type {
     PasswordQuestion as BasePasswordQuestion,
     CheckboxQuestion as BaseCheckboxQuestion,
     Answers,
-    ChoiceOptions,
-    Question,
-    ListChoiceOptions
+    ChoiceOptions
 } from 'inquirer';
 
 export interface GuiOptions {
@@ -55,22 +52,4 @@ export interface TileSelectQuestion<T extends Answers = Answers> extends ListQue
 
 export interface CheckboxQuestion<A extends Answers = Answers> extends BaseCheckboxQuestion<A> {
     guiOptions?: GuiOptions;
-}
-
-export interface AutocompleteQuestion extends Question {
-    type: 'autocomplete' | any;
-    source: (previousAnswers: Answers, input: string) => Promise<string[]>;
-    suggestOnly?: boolean; // When false input cannot be used to provide an answer, which must be selected. This only applies to CLI use.
-    /**
-     * Additional messages can be shown based on auto-complete search results
-     */
-    additionalInfo: () => string;
-}
-
-/**
- * Extends Inquirer ListChoiceOptions
- *
- */
-export interface UI5VersionChoice extends ListChoiceOptions {
-    version: UI5Version;
 }

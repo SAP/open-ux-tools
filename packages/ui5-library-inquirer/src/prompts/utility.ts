@@ -2,12 +2,12 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { PLATFORMS } from '../types/constants';
 import { Separator, type ListChoiceOptions } from 'inquirer';
 import * as fuzzy from 'fuzzy';
-import { t } from './i18n';
-import type { UI5Version } from '@sap-ux/ui5-info/src/types';
-import type { UI5VersionChoice } from '../types/question';
+import { t } from '../i18n';
+import type { UI5Version } from '@sap-ux/ui5-info';
+import type { UI5VersionChoice } from '../types/types';
 
 /**
- * Determine if the current environment is cli or YUI (app studio or vscode).
+ * Determine if the current environment is Yo cli or YUI (app studio or vscode).
  *
  * @returns the current platform
  */
@@ -56,11 +56,11 @@ export function ui5VersionsGrouped(versions?: UI5Version[]): (UI5VersionChoice |
                 ({
                     version: mainV,
                     name: isCli
-                        ? `${mainV.semantic} - (${t('ui5VersionLabels.maintained')} ${t('ui5VersionLabels.version', {
+                        ? `${mainV.version} - (${t('ui5VersionLabels.maintained')} ${t('ui5VersionLabels.version', {
                               count: 1
                           })})`
-                        : mainV.semantic,
-                    value: mainV.semantic
+                        : mainV.version,
+                    value: mainV.version
                 } as UI5VersionChoice)
         );
     const notMaintChoices = versions
@@ -70,12 +70,12 @@ export function ui5VersionsGrouped(versions?: UI5Version[]): (UI5VersionChoice |
                 ({
                     version: mainV,
                     name: isCli
-                        ? `${mainV.semantic} - (${t('ui5VersionLabels.outOfMaintenance')} ${t(
+                        ? `${mainV.version} - (${t('ui5VersionLabels.outOfMaintenance')} ${t(
                               'ui5VersionLabels.version',
                               { count: 1 }
                           )})`
-                        : mainV.semantic,
-                    value: mainV.semantic
+                        : mainV.version,
+                    value: mainV.version
                 } as UI5VersionChoice)
         );
 

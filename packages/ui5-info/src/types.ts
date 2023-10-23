@@ -14,32 +14,57 @@ export const enum FioriElementsVersion {
     v4 = 'v4'
 }
 
-export const minUI5VersionForLocalDev = '1.79.0';
-
 export interface UI5VersionFilterOptions {
+    /**
+     * If provided will determine the lowest UI5 version to return based on the minimum support version
+     */
     fioriElementsVersion?: FioriElementsVersion;
     /**
-     * Snapshot url must have been provided to retrieve
+     * The host from which snapshot version may be fetched. If provided snapshots will be included.
      */
-    includeSnapshots?: {
-        url: string;
-    };
+    snapshotVersionsHost?: string;
+    /**
+     * Removes non-numeric versions, for example: 'snapshot-1.120' or 'Latest' (in the case where fallbacks are used)
+     *
+     * If `includeSnapshots` is specified `onlyVersionNumbers` takes precedence
+     */
     onlyVersionNumbers?: boolean;
+    /**
+     * Includes only versions published to npmjs - if none are available the default minimum supported ui5 version will be returned
+     */
     onlyNpmVersion?: boolean;
+    /**
+     * Set this version as the first entry but only if it would be returned based on other filter options
+     */
     ui5SelectedVersion?: string;
+    /**
+     * Sets the minimum UI5 version to return. If `fioriElementsVersion` is also specified then the minimum ui5
+     * version that is supported will take precedence if it is higher
+     */
     minSupportedUI5Version?: string;
+    /**
+     * Will use the cached versions from previous network calls if available otherwise will make network calls and populate cache
+     */
     useCache?: boolean;
+    /**
+     * Some UI5 version services can return duplicates, set this option to make versions unique
+     */
     removeDuplicateVersions?: boolean;
-    groupUI5Versions?: boolean;
-}
-
-export interface Logger {
-    warning: (message: string) => void;
-    error: (message: string) => void;
+    /**
+     * Includes the optional property `maintained` to indicate the UI5 version support level
+     */
+    includeMaintained?: boolean;
+    /**
+     * Adds the property `default` to the default ui5 version
+     */
+    includeDefault?: boolean;
 }
 
 export interface UI5Version {
-    semantic: string;
+    /**
+     * UI5 semantic version
+     */
+    version: string;
     default?: boolean;
     maintained?: boolean;
 }

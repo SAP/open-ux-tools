@@ -1,14 +1,18 @@
 import cmp from 'semver-compare';
 import { coerce, major, minor, valid } from 'semver';
-import type { Logger, UI5VersionFilterOptions, UI5VersionOverview, UI5VersionsResponse, UI5Version } from './types';
+import type { UI5VersionFilterOptions, UI5VersionOverview, UI5VersionsResponse, UI5Version } from './types';
 import { UI5Info, FioriElementsVersion } from './types';
 import { CommandRunner } from './commandRunner';
 import axios from 'axios';
+import { FE_MIN_UI5_VERSION_V2, FE_MIN_UI5_VERSION_V4 } from '@sap-ux/fiori-elements-writer';
+import type { Logger } from '@sap-ux/logger';
+import { ToolsLogger } from '@sap-ux/logger';
+import ui5VersionsFallback from './ui5VersionFallback';
 
-export const MIN_UI5_VERSION = '1.65.0';
-
-const MIN_UI5_VERSION_V2_TEMPLATE = '1.76.0';
-const MIN_UI5_VERSION_V4_TEMPLATE = '1.84.0';
+/**
+ * Lowest UI5 version to return (not necessarily the min supported version)
+ */
+export const DEFAULT_MIN_UI5_VERSION = '1.65.0';
 
 export const DEFAULT_UI5_VERSIONS = [
     UI5Info.DefaultVersion,
@@ -50,352 +54,22 @@ export const DEFAULT_UI5_VERSIONS = [
     '1.68.0',
     '1.67.0',
     '1.66.0',
-    MIN_UI5_VERSION
+    DEFAULT_MIN_UI5_VERSION
 ];
-// Updated Oct-18-2023
-const VERSION_OVERVIEW_FALLBACK: UI5VersionOverview[] = [
-    {
-        version: '1.119.*',
-        support: 'Maintenance'
-    },
-    {
-        version: '1.118.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.117.*',
-        support: 'Maintenance'
-    },
-    {
-        version: '1.116.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.115.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.114.*',
-        support: 'Maintenance'
-    },
-    {
-        version: '1.113.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.112.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.111.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.110.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.109.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.108.*',
-        support: 'Maintenance'
-    },
-    {
-        version: '1.107.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.106.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.105.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.104.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.103.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.102.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.101.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.100.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.99.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.98.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.97.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.96.*',
-        support: 'Maintenance'
-    },
-    {
-        version: '1.95.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.94.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.93.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.92.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.91.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.90.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.89.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.88.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.87.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.86.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.85.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.84.*',
-        support: 'Maintenance'
-    },
-    {
-        version: '1.83.*',
-        support: 'Skipped'
-    },
-    {
-        version: '1.82.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.81.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.80.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.79.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.78.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.77.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.76.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.75.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.74.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.73.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.72.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.71.*',
-        support: 'Maintenance'
-    },
-    {
-        version: '1.70.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.69.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.68.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.67.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.66.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.65.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.64.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.63.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.62.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.61.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.60.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.58.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.56.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.54.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.52.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.50.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.48.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.46.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.44.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.42.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.40.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.38.*',
-        support: 'Maintenance'
-    },
-    {
-        version: '1.36.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.34.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.32.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.30.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.28.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.26.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.24.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '1.22.*',
-        support: 'Out of maintenance'
-    },
-    {
-        version: '*',
-        support: 'Out of maintenance'
-    }
-];
+const VERSION_OVERVIEW_FALLBACK: UI5VersionOverview[] = ui5VersionsFallback;
 
-const consoleLogger = {
-    warning: (message: string): void => {
-        console.warn(message);
-    },
-    error: (message: string): void => {
-        console.error(message);
-    }
-};
 const PASS_THROUGH_STRINGS = new Set(['snapshot', 'snapshot-untested', UI5Info.LatestVersionString]);
 
 // This one holds the actual version, not 'Latest'
 let latestUI5Version: string;
 
-export const enum UI5_VERSIONS_TYPE {
+const enum UI5_VERSIONS_TYPE {
     official = 'officialVersions',
     snapshot = 'snapshotsVersions',
     overview = 'overview'
 }
 
-export const ui5VersionsCache: {
+const ui5VersionsCache: {
     [key in UI5_VERSIONS_TYPE.official | UI5_VERSIONS_TYPE.snapshot | UI5_VERSIONS_TYPE.overview]:
         | string[]
         | UI5VersionOverview[];
@@ -455,7 +129,7 @@ function filterNewerEqual(versions: string[], minVersion: string): string[] {
  */
 async function requestUI5Versions<T>(
     host: string = UI5Info.OfficialUrl,
-    pathname = `/${UI5Info.VersionsFile}`
+    pathname = `/${host === UI5Info.OfficialUrl ? UI5Info.VersionsFile : UI5Info.NeoAppFile}`
 ): Promise<T> {
     const response = await axios.get(new URL(pathname, host).toString(), { responseType: 'json' });
     return response.data;
@@ -499,7 +173,7 @@ async function parseUI5VersionsOverview(): Promise<UI5VersionOverview[]> {
         );
         versions = response.versions;
     } catch (error) {
-        console.warn(
+        new ToolsLogger().warn(
             `Request to '${UI5Info.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
         );
         versions = VERSION_OVERVIEW_FALLBACK;
@@ -567,15 +241,13 @@ const retrieveUI5VersionsCache = async (
 /**
  * Return a list of UI5 versions.
  *
- * @param filterOptions - filter the UI5 versions returned
+ * @param filterOptions - see {@link UI5VersionFilterOptions}  def for filter options explantion
  * @param logger - logger
- * @param returnLatestValue - returns the actual value of 'Latest'
  * @returns UI5 version strings
  */
 async function retrieveUI5Versions(
     filterOptions?: UI5VersionFilterOptions,
-    logger: Logger = consoleLogger,
-    returnLatestValue?: boolean
+    logger: Logger = new ToolsLogger()
 ): Promise<string[]> {
     let officialVersions: string[] = [];
     let snapshotVersions: string[] = [];
@@ -583,44 +255,49 @@ async function retrieveUI5Versions(
     try {
         officialVersions = filterOptions?.onlyNpmVersion
             ? await retrieveNpmUI5Versions(
-                  filterOptions.fioriElementsVersion || FioriElementsVersion.v2,
-                  filterOptions.ui5SelectedVersion
+                  filterOptions.ui5SelectedVersion,
+                  filterOptions.fioriElementsVersion
+                      ? filterOptions.fioriElementsVersion
+                      : filterOptions.minSupportedUI5Version
               )
             : ((await retrieveUI5VersionsCache(UI5_VERSIONS_TYPE.official, filterOptions?.useCache)) as string[]);
     } catch (error) {
-        logger.warning(
+        logger.warn(
             `Request to '${UI5Info.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
         );
         officialVersions = DEFAULT_UI5_VERSIONS.slice();
     }
 
-    if (filterOptions?.includeSnapshots) {
+    if (filterOptions?.snapshotVersionsHost) {
         try {
             snapshotVersions = (await retrieveUI5VersionsCache(
                 UI5_VERSIONS_TYPE.snapshot,
-                filterOptions?.useCache
+                filterOptions?.useCache,
+                filterOptions?.snapshotVersionsHost
             )) as string[];
         } catch (error) {
-            logger.error(`Request to '${filterOptions.includeSnapshots.url}' failed.  Error was: '${error.message}'`);
+            logger.error(`Request to '${filterOptions.snapshotVersionsHost}' failed.  Error was: '${error.message}'`);
         }
     }
 
     let versions = [...officialVersions, ...snapshotVersions].sort(snapshotSort);
 
-    if (filterOptions?.minSupportedUI5Version) {
-        versions = filterNewerEqual(versions, filterOptions?.minSupportedUI5Version);
-    } else if (filterOptions?.fioriElementsVersion && filterOptions.fioriElementsVersion === FioriElementsVersion.v4) {
-        versions = filterNewerEqual(versions, MIN_UI5_VERSION_V4_TEMPLATE);
-    } else {
-        versions = filterNewerEqual(versions, MIN_UI5_VERSION);
+    if (filterOptions?.fioriElementsVersion) {
+        if (filterOptions.fioriElementsVersion === FioriElementsVersion.v4) {
+            versions = filterNewerEqual(versions, FE_MIN_UI5_VERSION_V4);
+        } else {
+            versions = filterNewerEqual(versions, FE_MIN_UI5_VERSION_V2);
+        }
     }
+
+    // Dont return versions older than the default min version
+    versions = filterNewerEqual(versions, filterOptions?.minSupportedUI5Version || DEFAULT_MIN_UI5_VERSION);
 
     if (filterOptions?.onlyVersionNumbers) {
+        if (versions[0].toLocaleLowerCase().includes(UI5Info.LatestVersionString.toLocaleLowerCase())) {
+            versions[0] = latestUI5Version;
+        }
         versions = versions.filter((ele) => ele && /^\d+(\.\d+)*$/.test(ele));
-    }
-
-    if (returnLatestValue && versions[0].includes(UI5Info.LatestVersionString)) {
-        versions[0] = latestUI5Version;
     }
 
     return filterOptions?.removeDuplicateVersions === true ? [...new Set(versions)] : versions;
@@ -657,16 +334,15 @@ function sortUI5Versions(ui5Versions: string[]): string[] {
 /**
  * Retrieve a list of versions based on the odata version i.e. v2 | v4. If a known version is passed in and is a supported version, then only that version is returned.
  *
- * @param {FioriElementsVersion} fioriElementsVersion - OData Service v2 | v4
- * @param {string|undefined} ui5SelectedVersion - selected version i.e. 1.80.0 | latest | ''
+ * @param ui5SelectedVersion - selected version i.e. 1.80.0 | latest | ''
+ * @param minUI5Version - the minimum ui5 version to return
  * @returns promise resolved with UI5 versions available from npm
  */
 async function retrieveNpmUI5Versions(
-    fioriElementsVersion: FioriElementsVersion,
-    ui5SelectedVersion: string | undefined = undefined
+    ui5SelectedVersion: string | undefined = undefined,
+    minUI5Version?: string
 ): Promise<string[]> {
-    const defaultMinVersion: string =
-        fioriElementsVersion === FioriElementsVersion.v2 ? MIN_UI5_VERSION_V2_TEMPLATE : MIN_UI5_VERSION_V4_TEMPLATE;
+    const defaultMinVersion: string = minUI5Version || DEFAULT_MIN_UI5_VERSION;
     let results: string[] = [];
     try {
         const runner = new CommandRunner();
@@ -718,9 +394,9 @@ async function retrieveNpmUI5Versions(
 export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): Promise<UI5Version[]> {
     let filteredUI5Versions;
     try {
-        filteredUI5Versions = await retrieveUI5Versions(filterOptions, undefined, true);
+        filteredUI5Versions = await retrieveUI5Versions(filterOptions);
     } catch (error) {
-        console.warn(
+        new ToolsLogger().warn(
             `Request to '${UI5Info.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
         );
         filteredUI5Versions = DEFAULT_UI5_VERSIONS.slice();
@@ -728,7 +404,7 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
     const defaultUI5Version = filteredUI5Versions[0];
 
     let ui5VersionsOverview: UI5VersionOverview[] | undefined;
-    if (filterOptions?.groupUI5Versions === true) {
+    if (filterOptions?.includeMaintained === true) {
         ui5VersionsOverview = (await retrieveUI5VersionsCache(
             UI5_VERSIONS_TYPE.overview,
             filterOptions?.useCache
@@ -737,10 +413,12 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
 
     return filteredUI5Versions.map((ui5: string) => {
         const ui5Version: UI5Version = {
-            semantic: ui5,
-            default: defaultUI5Version === ui5
+            version: ui5
         };
-        if (filterOptions?.groupUI5Versions === true && ui5VersionsOverview !== undefined) {
+        if (filterOptions?.includeDefault && defaultUI5Version === ui5) {
+            ui5Version.default = true;
+        }
+        if (filterOptions?.includeMaintained === true && ui5VersionsOverview !== undefined) {
             ui5Version.maintained = ui5VersionsOverview.some((v) => {
                 if (v !== undefined) {
                     return (

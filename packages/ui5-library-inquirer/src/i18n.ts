@@ -28,14 +28,13 @@ export async function initI18n(): Promise<void> {
  *
  * @param key i18n key
  * @param options additional options
- * @returns localized string stored for the given key
+ * @returns {string} localized string stored for the given key
  */
 export function t(key: string, options?: TOptions): string {
-    let optionsWithNS = options;
-    if (!optionsWithNS?.ns) {
-        optionsWithNS = Object.assign(options ? options : {}, { ns: NS });
+    if (!options?.ns) {
+        options = Object.assign(options ? options : {}, { ns: NS });
     }
-    return i18next.t(key, optionsWithNS);
+    return i18next.t(key, options);
 }
 
 initI18n().catch(() => {

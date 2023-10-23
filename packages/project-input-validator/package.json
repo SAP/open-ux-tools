@@ -26,9 +26,17 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "i18next": "20.6.1"
+        "i18next": "20.6.1",
+        "validate-npm-package-name": "5.0.0"
     },
-    "devDependencies": {},
+    "devDependencies": {
+        "@sap-devx/yeoman-ui-types": "1.13.0",
+        "@types/validate-npm-package-name": "4.0.1",
+        "@types/i18next": "13.0.0",
+        "@types/mock-fs": "4.13.3",
+        "mock-fs": "5.2.0",
+        "jest-extended": "3.2.3"
+    },
     "files": [
         "dist",
         "LICENSE",

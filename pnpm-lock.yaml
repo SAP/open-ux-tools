@@ -1113,43 +1113,28 @@ importers:
       i18next:
         specifier: 20.6.1
         version: 20.6.1
-
-  packages/prompts-common:
-    dependencies:
-      '@sap-devx/yeoman-ui-types':
-        specifier: 1.12.0
-        version: 1.12.0
-      '@sap-ux/btp-utils':
-        specifier: workspace:*
-        version: link:../btp-utils
-      '@sap-ux/ui5-info':
-        specifier: workspace:*
-        version: link:../ui5-info
-      fuzzy:
-        specifier: 0.1.3
-        version: 0.1.3
-      i18next:
-        specifier: 23.5.1
-        version: 23.5.1
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.0)
-      semver:
-        specifier: 7.5.4
-        version: 7.5.4
       validate-npm-package-name:
         specifier: 5.0.0
         version: 5.0.0
     devDependencies:
-      '@types/inquirer':
-        specifier: 8.2.7
-        version: 8.2.7
-      '@types/semver':
-        specifier: 7.5.3
-        version: 7.5.3
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.13.0
+        version: 1.13.0
+      '@types/i18next':
+        specifier: 13.0.0
+        version: 13.0.0
+      '@types/mock-fs':
+        specifier: 4.13.3
+        version: 4.13.3
       '@types/validate-npm-package-name':
         specifier: 4.0.1
         version: 4.0.1
+      jest-extended:
+        specifier: 3.2.3
+        version: 3.2.3(jest@29.5.0)
+      mock-fs:
+        specifier: 5.2.0
+        version: 5.2.0
 
   packages/store:
     dependencies:
@@ -1444,6 +1429,12 @@ importers:
 
   packages/ui5-info:
     dependencies:
+      '@sap-ux/fiori-elements-writer':
+        specifier: workspace:*
+        version: link:../fiori-elements-writer
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -1473,17 +1464,23 @@ importers:
   packages/ui5-library-inquirer:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.12.0
-        version: 1.12.0
-      '@sap-ux/prompts-common':
+        specifier: 1.13.0
+        version: 1.13.0
+      '@sap-ux/btp-utils':
         specifier: workspace:*
-        version: link:../prompts-common
+        version: link:../btp-utils
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
       '@sap-ux/ui5-info':
         specifier: workspace:*
         version: link:../ui5-info
       '@sap-ux/ui5-library-writer':
         specifier: workspace:*
         version: link:../ui5-library-writer
+      fuzzy:
+        specifier: 0.1.3
+        version: 0.1.3
       i18next:
         specifier: 23.5.1
         version: 23.5.1
@@ -6883,9 +6880,8 @@ packages:
       rollup: 3.29.1
     dev: true
 
-  /@sap-devx/yeoman-ui-types@1.12.0:
-    resolution: {integrity: sha512-uOb6usWJOoz6uWncm6eVLW4gOkGNYWw8RsG947zWryVPqePA5wlhGLdbo+dIj0YCZgN23fKHAfOoghjI/n2Xdw==}
-    dev: false
+  /@sap-devx/yeoman-ui-types@1.13.0:
+    resolution: {integrity: sha512-9rEovvwCWpCcLu3sEtzW/cQcTuZf+nE8kiNMdRA8G1FZLY5r9H+y/xQwaD0mlzW8jA/BxaZbjvWlnEY+6A+maQ==}
 
   /@sap/bas-sdk@3.1.0:
     resolution: {integrity: sha512-zmChDaGXFnkAcYaXvIjEsJ5z2jmW22Pc19xTSTswpl3YlhZTLM2WzEEW//sBhV9/zoKOx2UQfODBp+EM1YghZA==}
@@ -8050,6 +8046,13 @@ packages:
       i18next: 21.10.0
     dev: true
 
+  /@types/i18next@13.0.0:
+    resolution: {integrity: sha512-gp/SIShAuf4WOqi8ey0nuI7qfWaVpMNCcs/xLygrh/QTQIXmlDC1E0TtVejweNW+7SGDY7g0lyxyKZIJuCKIJw==}
+    deprecated: This is a stub types definition. i18next provides its own type definitions, so you do not need this installed.
+    dependencies:
+      i18next: 23.5.1
+    dev: true
+
   /@types/inquirer-autocomplete-prompt@2.0.1:
     resolution: {integrity: sha512-y/IFCMwNnxliCUxc7q1fwYUDkekP0Q+niL1YR9dvD1jKnIq8irirfsPCRXKN1jem82fNGT/91IPOufQTEi8STQ==}
     dependencies:
@@ -8184,6 +8187,12 @@ packages:
 
   /@types/minimist@1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
+    dev: true
+
+  /@types/mock-fs@4.13.3:
+    resolution: {integrity: sha512-PeXnRqMVBkVjHNCxu1wzPBi9cv5uWVl6535XD11NXt8pasJXh2MHxWvJs6d7eyt/V6BGgHZ4O3LF71CVMdMasA==}
+    dependencies:
+      '@types/node': 12.20.55
     dev: true
 
   /@types/ms@0.7.31:
@@ -13715,7 +13724,6 @@ packages:
     resolution: {integrity: sha512-JelYzcaCoFDaa+Ysbfz2JsGAKkrHiMG6S61+HLBUEIPaF40WMwW9hCPymlQGrP+wWawKxKPuSuD71WZscCsWHg==}
     dependencies:
       '@babel/runtime': 7.23.2
-    dev: false
 
   /iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -14537,6 +14545,20 @@ packages:
       '@types/node': 12.20.55
       jest-mock: 29.5.0
       jest-util: 29.6.3
+    dev: true
+
+  /jest-extended@3.2.3(jest@29.5.0):
+    resolution: {integrity: sha512-YcdjfFv3+N2AiWq4aG6gT/r1mfLtDKnbXs0hKXNlL/hf37TKQJTlh2zNwuMUYnvwKRRMtO/X9CfZU1EmOgUREA==}
+    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+    peerDependencies:
+      jest: '>=27.2.5'
+    peerDependenciesMeta:
+      jest:
+        optional: true
+    dependencies:
+      jest: 29.5.0(@types/node@12.20.55)
+      jest-diff: 29.5.0
+      jest-get-type: 29.4.3
     dev: true
 
   /jest-extended@3.2.4(jest@29.5.0):
@@ -15812,6 +15834,11 @@ packages:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
     hasBin: true
+
+  /mock-fs@5.2.0:
+    resolution: {integrity: sha512-2dF2R6YMSZbpip1V1WHKGLNjr/k48uQClqMVb5H3MOvwc9qhYis3/IWbj02qIg/Y8MDXKFF4c5v0rxx2o6xTZw==}
+    engines: {node: '>=12.0.0'}
+    dev: true
 
   /mock-spawn@0.2.6:
     resolution: {integrity: sha512-cMSfGmQlTiCF54a7taY1cUVXuuEKqDR8vLrfN7pI4LCskxwRedupMQB7o5d5Hg5L6rctvtyZJwUxMl3czTd4tg==}

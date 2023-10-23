@@ -1,16 +1,16 @@
 import { t } from '../i18n';
 import type { Answers, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
-import {
-    getPlatform,
-    ui5VersionsGrouped,
-    validateLibModuleName,
-    validateLibNamespace,
-    validateProjectFolder,
-    PLATFORMS,
-    searchChoices
-} from '@sap-ux/prompts-common';
-import type { FileBrowserQuestion, ConfirmQuestion, InputQuestion, AutocompleteQuestion } from '@sap-ux/prompts-common';
-import type { UI5LibraryAnswers, UI5LibraryPromptInput } from '../types';
+import { getPlatform, ui5VersionsGrouped, searchChoices } from './utility';
+import { validateLibModuleName, validateNamespace, validateProjectFolder } from '@sap-ux/project-input-validator';
+import type {
+    FileBrowserQuestion,
+    ConfirmQuestion,
+    InputQuestion,
+    UI5LibraryAnswers,
+    UI5LibraryPromptInput
+} from '../types/';
+import { PLATFORMS } from '../types/constants';
+import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 /**
  * Get the prompts for UI5 library generation.
@@ -24,29 +24,30 @@ export function getQuestions(ui5LibPromptInput?: UI5LibraryPromptInput): Questio
         {
             type: 'input',
             name: 'libraryName',
-            message: t('PROMPT_LIB_NAME_LABEL'),
+            message: t('prompts.libNameLabel'),
             guiOptions: {
                 mandatory: true,
                 breadcrumb: true
             },
             validate: (libraryName): boolean | string => validateLibModuleName(libraryName),
-            default: t('PROMPT_LIB_NAME_DEFAULT')
+            default: t('prompts.libNameDefault')
         } as InputQuestion<UI5LibraryAnswers>,
         {
             type: 'input',
             name: 'namespace',
-            message: t('PROMPT_NAMESPACE_LABEL'),
+            message: t('prompts.namespaceLabel'),
             guiOptions: {
                 mandatory: true,
                 breadcrumb: true
             },
-            validate: (namespace, answers): boolean | string => validateLibNamespace(namespace, answers?.libraryName),
-            default: t('PROMPT_NAMESPACE_DEFAULT')
+            validate: (namespace, answers): boolean | string =>
+                validateNamespace(namespace, answers?.libraryName, false),
+            default: t('prompts.namespaceDefault')
         } as InputQuestion<UI5LibraryAnswers>,
         {
             type: 'input',
             name: 'targetFolder',
-            message: t('PROMPT_LIBRARY_FOLDER_LABEL'),
+            message: t('prompts.libraryFolderLabel'),
             guiType: 'folder-browser',
             guiOptions: {
                 applyDefaultWhenDirty: true,
@@ -61,19 +62,19 @@ export function getQuestions(ui5LibPromptInput?: UI5LibraryPromptInput): Questio
             when: () => !!ui5LibPromptInput?.versions,
             type: getPlatform() === PLATFORMS.CLI ? 'autocomplete' : 'list',
             name: 'ui5Version',
-            message: t('PROMPT_UI5_VERSION_LABEL'),
+            message: t('prompts.ui5VersionLabel'),
             guiOptions: {
-                hint: t('PROMPT_UI5_VERSION_TOOLTIP'),
+                hint: t('prompts.ui5VersionTooltip'),
                 breadcrumb: true
             },
             choices: () => ui5VersionChoices,
             source: (prevAnswers: Answers, input: string) =>
                 searchChoices(input, ui5VersionChoices as ListChoiceOptions[])
-        } as ListQuestion<UI5LibraryAnswers> | AutocompleteQuestion,
+        } as ListQuestion<UI5LibraryAnswers> | AutocompleteQuestionOptions<UI5LibraryAnswers>,
         {
             type: 'confirm',
             name: 'enableTypescript',
-            message: t('PROMPT_TYPESCRIPT_LABEL'),
+            message: t('prompts.typescriptLabel'),
             guiOptions: {
                 breadcrumb: true
             },

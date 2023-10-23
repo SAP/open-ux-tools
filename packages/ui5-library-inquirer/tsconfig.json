@@ -7,7 +7,10 @@
     },
     "references": [
         {
-            "path": "../prompts-common"
+            "path": "../btp-utils"
+        },
+        {
+            "path": "../project-input-validator"
         },
         {
             "path": "../ui5-info"

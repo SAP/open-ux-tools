@@ -4,5 +4,13 @@
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "dist"
-    }
+    },
+    "references": [
+        {
+            "path": "../fiori-elements-writer"
+        },
+        {
+            "path": "../logger"
+        }
+    ]
 }

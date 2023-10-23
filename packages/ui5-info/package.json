@@ -31,6 +31,8 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-ux/fiori-elements-writer": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
         "semver": "7.5.4",
         "semver-compare": "1.0.0"
     },

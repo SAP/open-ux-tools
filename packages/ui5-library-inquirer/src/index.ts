@@ -1,7 +1,7 @@
-import { MIN_UI5_VERSION, getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
+import { getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import inquirer, { type Question } from 'inquirer';
 import { getQuestions } from './prompts';
-import type { UI5LibraryAnswers, UI5LibraryPromptInput } from './types';
+import type { UI5LibraryAnswers, UI5LibraryPromptInput } from './types/types';
 import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**
@@ -12,10 +12,9 @@ import autocomplete from 'inquirer-autocomplete-prompt';
  */
 async function getPrompts(targetFolder?: string): Promise<Question<UI5LibraryAnswers>[]> {
     const filterOptions: UI5VersionFilterOptions = {
-        minSupportedUI5Version: MIN_UI5_VERSION,
         useCache: true,
         removeDuplicateVersions: true,
-        groupUI5Versions: true
+        includeMaintained: true
     };
     const ui5LibPromptInputs: UI5LibraryPromptInput = {
         versions: await getUI5Versions(filterOptions),
@@ -25,7 +24,7 @@ async function getPrompts(targetFolder?: string): Promise<Question<UI5LibraryAns
 }
 
 /**
- * Run the prompts for ui5 library generation inputs.
+ * Prompt for ui5 library generation inputs.
  *
  * @param targetFolder - optional default value for the targetFolder prompt
  * @returns the prompt answers
