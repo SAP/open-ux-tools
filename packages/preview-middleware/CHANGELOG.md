@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.8.4
+
+### Patch Changes
+
+-   96b115d8: Exports the initAdp function so that can be use in @sap/ux-ui5-tooling
+
 ## 0.8.3
 
 ### Patch Changes
