@@ -13,6 +13,7 @@ interface Change {
 function getFlexSettings(): {
     generator?: string;
     developerMode?: boolean;
+    scenario?: string;
 } | undefined {
     let result;
     const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
@@ -77,6 +78,10 @@ const connector = merge({}, ObjectStorageConnector, {
         const settings = getFlexSettings();
         if (settings?.developerMode) {
             features.isVariantAdaptationEnabled = false;
+        }
+
+        if (settings?.scenario === 'ADAPTATION_PROJECT') {
+            features.isVariantAdaptationEnabled = true;
         }
 
         return features;
