@@ -245,7 +245,7 @@ async function tryDeployToLrep(
             throw new Error('Deployment in test mode not supported for deployments to the layered repository.');
         } else {
             logger.debug('Deploying an adaptation project to LREP');
-            const service = getDeployService(provider.getLayeredRepository, config, logger);
+            const service = getDeployService(provider.getLayeredRepository.bind(provider), config, logger);
             await service.deploy(archive, {
                 namespace: descriptor.namespace,
                 layer: descriptor.layer,
@@ -290,7 +290,7 @@ async function tryDeploy(
                     );
                 }
             }
-            const service = getDeployService(provider.getUi5AbapRepository, config, logger);
+            const service = getDeployService(provider.getUi5AbapRepository.bind(provider), config, logger);
             await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
         } else {
             await tryDeployToLrep(provider, config, logger, archive);
@@ -337,13 +337,13 @@ async function tryUndeploy(provider: AbapServiceProvider, config: AbapDeployConf
             config.createTransport = false;
         }
         if (config.lrep) {
-            const service = getDeployService(provider.getLayeredRepository, config, logger);
+            const service = getDeployService(provider.getLayeredRepository.bind(provider), config, logger);
             await service.undeploy({
                 namespace: config.lrep,
                 transport: config.app.transport
             });
         } else if (isBspConfig(config.app)) {
-            const service = getDeployService(provider.getUi5AbapRepository, config, logger);
+            const service = getDeployService(provider.getUi5AbapRepository.bind(provider), config, logger);
             await service.undeploy({ bsp: config.app, testMode: config.test });
         } else {
             throwConfigMissingError('app-name');
