@@ -43,7 +43,8 @@ describe('ExtensionPoint', () => {
 
             const openSpy = jest.fn();
             extPoint.byId = jest.fn().mockReturnValue({
-                open: openSpy
+                open: openSpy,
+                setEscapeHandler: jest.fn()
             });
 
             await extPoint.onInit();
@@ -72,7 +73,8 @@ describe('ExtensionPoint', () => {
 
             const openSpy = jest.fn();
             extPoint.byId = jest.fn().mockReturnValue({
-                open: openSpy
+                open: openSpy,
+                setEscapeHandler: jest.fn()
             });
 
             try {

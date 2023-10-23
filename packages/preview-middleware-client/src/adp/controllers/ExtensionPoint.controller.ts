@@ -37,6 +37,8 @@ export default class ExtensionPoint extends BaseDialog {
     async onInit() {
         this.dialog = this.byId('addFragmentAtExtPointDialog') as unknown as Dialog;
 
+        this.setEscapeHandler();
+
         await this.buildDialogData();
 
         this.getView()?.setModel(this.model);

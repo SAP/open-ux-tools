@@ -83,6 +83,13 @@ export default abstract class BaseDialog extends Controller {
         }
     }
 
+    setEscapeHandler() {
+        this.dialog.setEscapeHandler(({ resolve }) => {
+            this.handleDialogClose();
+            resolve();
+        });
+    }
+
     /**
      * Handles the dialog closing and destruction of it
      */

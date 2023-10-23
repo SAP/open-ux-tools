@@ -66,10 +66,18 @@ describe('AddFragment', () => {
 
             const openSpy = jest.fn();
             addFragment.byId = jest.fn().mockReturnValue({
-                open: openSpy
+                open: openSpy,
+                close: jest.fn(),
+                setEscapeHandler: jest.fn()
             });
 
+            addFragment.getView = jest.fn().mockReturnValue({ destroy: jest.fn(), setModel: jest.fn() });
+
             await addFragment.onInit();
+
+            const escapeHandlerCb = (addFragment.dialog.setEscapeHandler as jest.Mock).mock.calls[0][0];
+
+            escapeHandlerCb({ resolve: jest.fn() });
 
             expect(openSpy).toHaveBeenCalledTimes(1);
         });

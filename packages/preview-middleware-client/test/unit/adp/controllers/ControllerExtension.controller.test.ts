@@ -42,7 +42,8 @@ describe('ControllerExtension', () => {
 
             const openSpy = jest.fn();
             controllerExt.byId = jest.fn().mockReturnValue({
-                open: openSpy
+                open: openSpy,
+                setEscapeHandler: jest.fn()
             });
 
             await controllerExt.onInit();
@@ -70,7 +71,8 @@ describe('ControllerExtension', () => {
             );
 
             controllerExt.byId = jest.fn().mockReturnValue({
-                open: jest.fn()
+                open: jest.fn(),
+                setEscapeHandler: jest.fn()
             });
 
             fetchMock.mockResolvedValue({

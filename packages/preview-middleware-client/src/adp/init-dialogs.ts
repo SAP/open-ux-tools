@@ -74,8 +74,11 @@ export async function handler(
             break;
     }
 
+    const id = dialogName === DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT ? `dialog--${dialogName}` : undefined;
+
     await XMLView.create({
         viewName: `open.ux.preview.client.adp.ui.${dialogName}`,
-        controller
+        controller,
+        id
     });
 }

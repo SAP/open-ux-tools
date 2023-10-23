@@ -50,6 +50,8 @@ export default class AddFragment extends BaseDialog {
     async onInit() {
         this.dialog = this.byId('addNewFragmentDialog') as unknown as Dialog;
 
+        this.setEscapeHandler();
+
         await this.buildDialogData();
 
         this.getView()?.setModel(this.model);

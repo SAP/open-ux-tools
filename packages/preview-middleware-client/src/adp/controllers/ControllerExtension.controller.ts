@@ -48,6 +48,8 @@ export default class ControllerExtension extends BaseDialog {
     async onInit() {
         this.dialog = this.byId('controllerExtensionDialog') as unknown as Dialog;
 
+        this.setEscapeHandler();
+
         await this.buildDialogData();
 
         this.getView()?.setModel(this.model);
