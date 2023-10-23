@@ -2,14 +2,15 @@ import type { ParseOptions } from 'commander';
 import { join } from 'path';
 import { createCommand, runDeploy, runUndeploy } from '../../../src/cli';
 import * as cliArchive from '../../../src/cli/archive';
-import { mockedUi5RepoService, mockedProvider } from '../../__mocks__';
+import { mockedUi5RepoService, mockedLrepService, mockedProvider } from '../../__mocks__';
 import { Command } from 'commander';
 import fs from 'fs';
 import { ToolsLogger } from '@sap-ux/logger';
 import ProcessEnv = NodeJS.ProcessEnv;
 
 describe('cli', () => {
-    const fixture = join(__dirname, '../../fixtures/simple-app/');
+    const appFixture = join(__dirname, '../../fixtures/simple-app/');
+    const adpFixture = join(__dirname, '../../fixtures/adp/');
     const target = 'https://target.example';
     let env: ProcessEnv;
 
@@ -18,6 +19,7 @@ describe('cli', () => {
     });
 
     beforeEach(() => {
+        mockedLrepService.deploy.mockReset();
         mockedUi5RepoService.deploy.mockReset();
         jest.clearAllMocks();
     });
@@ -31,33 +33,32 @@ describe('cli', () => {
         const cliArchiveSpy = jest.spyOn(cliArchive, 'getArchive');
         // Command for deploying with a configuration file, assumes 'dist' is the target archive folder if no archive-folder or archive-path is specified;
         // npx deploy -c ui5-deploy.yaml --archive-folder webapp
-        const minimumConfigCmds = [
+        const minimumConfigCmd = [
             'node',
             'test',
             '-c',
-            join(fixture, 'ui5-deploy.yaml'),
+            join(appFixture, 'ui5-deploy.yaml'),
             '--archive-folder',
             'webapp'
         ];
-        // Command for deploying with a configuration file but overwriting parts of the configuration file
-        // npx deploy -c ui5-deploy.yaml --archive-folder webapp --test --yes --url https://target.example
-        const overwriteConfigCmds = [
+
+        const minimumAdpConfigCmd = [
             'node',
             'test',
             '-c',
-            join(fixture, 'ui5-deploy.yaml'),
+            join(adpFixture, 'ui5-deploy.yaml'),
             '--archive-folder',
-            'webapp',
-            '--test',
-            '--yes',
-            '--url',
-            target
+            'webapp'
         ];
+
+        // Command for deploying with a configuration file but overwriting parts of the configuration file
+        // npx deploy -c ui5-deploy.yaml --archive-folder webapp --test --yes --url https://target.example
+        const overwriteConfigCmds = [...minimumConfigCmd, '--test', '--yes', '--url', target];
 
         // cli command(s), without a configuration file
         // npx deploy --name Z_TEST --description 'Travel App' --package $TMP --transport SAP20230433 --archive-folder webapp --yes --destination ABAP-Target
         // npx deploy --url https://target.example --name Z_TEST --description 'Travel App' --package $TMP --transport SAP20230433 --archive-folder webapp --yes
-        const cliCmds = [
+        const cliCmd = [
             'node',
             'test',
             '--url',
@@ -71,54 +72,95 @@ describe('cli', () => {
             '--transport',
             'SAP20230433',
             '--archive-folder',
-            join(fixture, 'webapp'),
+            join(appFixture, 'webapp'),
             '--yes',
             '--no-retry',
             '--no-strict-ssl'
         ];
 
-        const cliCmdsWithUaa = [...cliCmds, '--cloud-service-env', '--service', '/bc/my/uaa/deploy/service'];
+        const cliCmdWithUaa = [...cliCmd, '--cloud-service-env', '--service', '/bc/my/uaa/deploy/service'];
 
         test.each([
             {
-                params: minimumConfigCmds,
+                params: minimumConfigCmd,
                 writeFileSyncCalled: 1,
+                deployFn: mockedUi5RepoService.deploy,
                 object: { retry: true, strictSsl: true },
                 provider: '/bc/my/deploy/service'
+            },
+            {
+                params: minimumAdpConfigCmd,
+                writeFileSyncCalled: 0,
+                deployFn: mockedLrepService.deploy,
+                object: { retry: true, strictSsl: true }
             },
             {
                 params: overwriteConfigCmds,
                 writeFileSyncCalled: 1,
+                deployFn: mockedUi5RepoService.deploy,
                 object: { retry: true, strictSsl: true },
                 provider: '/bc/my/deploy/service'
             },
-            { params: cliCmds, writeFileSyncCalled: 0, object: { retry: false, strictSsl: false } },
             {
-                params: cliCmdsWithUaa,
+                params: cliCmd,
                 writeFileSyncCalled: 0,
+                deployFn: mockedUi5RepoService.deploy,
+                object: { retry: false, strictSsl: false }
+            },
+            {
+                params: cliCmdWithUaa,
+                writeFileSyncCalled: 0,
+                deployFn: mockedUi5RepoService.deploy,
                 object: { retry: false, strictSsl: false },
                 provider: '/bc/my/uaa/deploy/service'
             }
-        ])('successful deploy with different options %s', async ({ params, writeFileSyncCalled, object, provider }) => {
-            process.argv = params;
-            await runDeploy();
-            expect(mockedUi5RepoService.deploy).toBeCalled();
-            expect(mockedProvider.getUi5AbapRepository).toBeCalledWith(provider);
-            expect(writeFileSyncSpy).toHaveBeenCalledTimes(writeFileSyncCalled);
-            if (writeFileSyncCalled > 0) {
-                expect(writeFileSyncSpy.mock.calls[0][0]).toBe('archive.zip');
+        ])(
+            'successful deploy with different options %s',
+            async ({ params, writeFileSyncCalled, object, provider, deployFn }) => {
+                process.argv = params;
+                await runDeploy();
+                expect(deployFn).toBeCalled();
+                if (provider) {
+                    expect(mockedProvider.getUi5AbapRepository).toBeCalledWith(provider);
+                }
+                expect(writeFileSyncSpy).toHaveBeenCalledTimes(writeFileSyncCalled);
+                if (writeFileSyncCalled > 0) {
+                    expect(writeFileSyncSpy.mock.calls[0][0]).toBe('archive.zip');
+                }
+                expect(cliArchiveSpy).toBeCalled();
+                expect(cliArchiveSpy).toBeCalledWith(expect.any(ToolsLogger), expect.objectContaining(object));
             }
-            expect(cliArchiveSpy).toBeCalled();
-            expect(cliArchiveSpy).toBeCalledWith(expect.any(ToolsLogger), expect.objectContaining(object));
-        });
+        );
     });
 
     describe('runUndeploy', () => {
         test('successful undeploy with configuration file', async () => {
             const target = 'https://target.example';
-            process.argv = ['node', 'test', '-c', join(fixture, 'ui5-deploy.yaml'), '--test', '--yes', '--url', target];
+            process.argv = [
+                'node',
+                'test',
+                '-c',
+                join(appFixture, 'ui5-deploy.yaml'),
+                '--test',
+                '--yes',
+                '--url',
+                target
+            ];
             await runUndeploy();
             expect(mockedUi5RepoService.undeploy).toBeCalled();
+        });
+
+        test('successful undeploy from lrep', async () => {
+            process.argv = [
+                'node',
+                'test',
+                '-c',
+                join(adpFixture, 'ui5-deploy.yaml'),
+                '--lrep',
+                'apps/sap.ui.demoapps.rta.fiorielements/appVariants/adp.example/'
+            ];
+            await runUndeploy();
+            expect(mockedLrepService.undeploy).toBeCalled();
         });
 
         test('successful undeploy with environment variable and no config file', async () => {
@@ -167,9 +209,9 @@ describe('cli', () => {
     });
 
     describe('createCommand', () => {
-        function makeCommand() {
+        function makeCommand(cmdString?: 'deploy' | 'undeploy') {
             const actionMock = jest.fn();
-            const cmd = createCommand('deploy');
+            const cmd = createCommand(cmdString ?? 'deploy');
             cmd.exitOverride()
                 .configureOutput({
                     writeErr: jest.fn(),
@@ -184,7 +226,7 @@ describe('cli', () => {
 
         test('minimum parameters', () => {
             const { cmd } = makeCommand();
-            const config = join(fixture, 'ui5-deploy.yaml');
+            const config = join(appFixture, 'ui5-deploy.yaml');
             cmd.parse(['-c', config], opts);
             expect(cmd.opts().config).toBe(config);
         });
@@ -213,9 +255,19 @@ describe('cli', () => {
             {
                 params: ['--username', '~username', '--cloud-service-key', '~path'],
                 error: /'--username <username>' cannot be used with option '--cloud-service-key <file-location>'/
+            },
+            {
+                cmdString: 'undeploy' as 'undeploy' | 'deploy',
+                params: ['--lrep', '~namespace', '--name', '~name'],
+                error: /'--lrep <namespace>' cannot be used with option '--name <bsp-name>'/
+            },
+            {
+                cmdString: 'undeploy' as 'undeploy' | 'deploy',
+                params: ['--lrep', '~namespace', '--test'],
+                error: /'--lrep <namespace>' cannot be used with option '--test'/
             }
-        ])('conflicting options $params', ({ params, error }) => {
-            const { cmd } = makeCommand();
+        ])('conflicting options $params', ({ cmdString, params, error }) => {
+            const { cmd } = makeCommand(cmdString);
             expect(() => {
                 cmd.parse(params, opts);
             }).toThrow(error);

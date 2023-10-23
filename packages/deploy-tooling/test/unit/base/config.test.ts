@@ -3,6 +3,7 @@ import { getConfigForLogging, replaceEnvVariables, validateConfig } from '../../
 import type { AbapDeployConfig } from '../../../src/types';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
+
 jest.mock('@sap-ux/btp-utils');
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
@@ -57,7 +58,7 @@ describe('base/config', () => {
             } as AbapDeployConfig;
             const configForLogging = getConfigForLogging(config);
             expect(configForLogging.credentials).toBe('hidden');
-            expect(configForLogging.app.name).toBe(config.app.name);
+            expect(configForLogging.app).toEqual(config.app);
         });
     });
 
@@ -87,8 +88,6 @@ describe('base/config', () => {
 
         test('incorrect app', () => {
             const config = { app: { ...validConfig.app }, target: validConfig.target };
-            delete (config.app as any).name;
-            expect(() => validateConfig(config)).toThrowError();
             delete (config as any).app;
             expect(() => validateConfig(config)).toThrowError();
         });
