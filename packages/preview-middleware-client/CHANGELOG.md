@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.5.1
+
+### Patch Changes
+
+-   5f90873d: The features for all adaptation projects which are loaded from "WorkspaceConnector" in "preview-middleware-client" are with "isVariantAdaptationEnabled=true".
+
 ## 0.5.0
 
 ### Minor Changes
