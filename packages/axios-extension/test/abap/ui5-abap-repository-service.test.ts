@@ -1,6 +1,6 @@
 import nock from 'nock';
-import type { AppInfo, AbapServiceProvider } from '../../src';
-import { Ui5AbapRepositoryService, createForAbap, createForDestination, ErrorMessage } from '../../src';
+import type { AppInfo, AbapServiceProvider, ErrorMessage } from '../../src';
+import { Ui5AbapRepositoryService, createForAbap, createForDestination } from '../../src';
 import mockErrorDetails from './mockResponses/errordetails.json';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
