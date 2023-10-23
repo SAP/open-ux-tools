@@ -327,7 +327,9 @@ describe('initAdp', () => {
     test('initAdp', async () => {
         const config = { adp: { target: { url } } };
         const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, {} as MiddlewareUtils, logger);
-        const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {});
+        const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
         await initAdp(mockAdpProject, config.adp, flp, {} as MiddlewareUtils, logger);
         expect(adpToolingMock).toBeCalled();
         expect(flpInitMock).toBeCalled();
