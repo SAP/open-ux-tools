@@ -1,6 +1,6 @@
 import nock from 'nock';
 import type { AppInfo, AbapServiceProvider } from '../../src';
-import { Ui5AbapRepositoryService, createForAbap, createForDestination } from '../../src';
+import { Ui5AbapRepositoryService, createForAbap, createForDestination, ErrorMessage } from '../../src';
 import mockErrorDetails from './mockResponses/errordetails.json';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
@@ -126,6 +126,41 @@ describe('Ui5AbapRepositoryService', () => {
             expect(loggerMock.info).toHaveBeenCalledTimes(7); // Ensures the logFullURL method is called to support destinations
             expect(loggerMock.warn).toHaveBeenCalledTimes(0);
             expect(loggerMock.error).toHaveBeenCalledTimes(0);
+        });
+
+        test('deploy new app with destination with 400 error', async () => {
+            const error: ErrorMessage = {
+                code: '400',
+                message: {
+                    value: '~message'
+                },
+                innererror: {
+                    transactionid: '~id',
+                    timestamp: '~time',
+                    'Error_Resolution': {
+                        abc: '~message'
+                    },
+                    errordetails: [
+                        {
+                            code: '1',
+                            message: '~message',
+                            severity: 'error',
+                            longtext_url: '~longtext_url'
+                        }
+                    ]
+                }
+            };
+            nock(`https://${destination.Name}.dest`)
+                .defaultReplyHeaders({
+                    'sap-message': sapMessageHeader
+                })
+                .put(
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${notExistingApp}')?saml2=disabled&${updateParams}`,
+                    (body) => body.indexOf(archive.toString('base64')) !== -1
+                )
+                .reply(400, JSON.stringify({ error }));
+            await expect(destinationService.deploy({ archive, bsp: { name: notExistingApp } })).rejects.toThrowError();
+            expect(loggerMock.info).toHaveBeenCalledTimes(4); // Ensures the logError flow is handled
         });
 
         test('deploy new app', async () => {
