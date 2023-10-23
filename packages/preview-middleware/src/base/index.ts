@@ -1,1 +1,1 @@
-export { FlpSandbox } from './flp';
+export { FlpSandbox, initAdp } from './flp';
