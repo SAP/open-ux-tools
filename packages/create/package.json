@@ -20,6 +20,7 @@
     },
     "scripts": {
         "build": "tsc --build",
+        "madge": "madge --warning --circular --extensions ts ./src",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",

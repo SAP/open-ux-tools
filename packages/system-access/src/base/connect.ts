@@ -15,7 +15,7 @@ import {
 } from '@sap-ux/axios-extension';
 import { getCredentialsFromStore, getCredentialsWithPrompts, isBasicAuth, isServiceAuth } from './credentials';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
-import { questions } from './prompts';
+import { questions } from './basePrompts';
 import prompts from 'prompts';
 import { readFileSync } from 'fs';
 
