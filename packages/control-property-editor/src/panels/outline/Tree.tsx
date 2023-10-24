@@ -80,20 +80,19 @@ export const Tree = (): ReactElement => {
         if (tooltip) {
             tooltip.style.visibility = 'visible';
             tooltip.style.opacity = '1';
+
+            const handleCloseTooltip = (event: MouseEvent) => {
+                if (tooltip && !tooltip.contains(event.target as Node)) {
+                    tooltip.style.visibility = 'hidden';
+                    tooltip.style.opacity = '0';
+                    document.removeEventListener('click', handleCloseTooltip);
+                }
+            };
+
+            document.addEventListener('click', handleCloseTooltip);
         } else {
-            throw new Error(`Tooltip with id ${tooltipId} not found`);
+            console.warn(`Tooltip with id ${tooltipId} not found`);
         }
-
-        const handleCloseTooltip = () => {
-            const tooltip = document.getElementById(tooltipId);
-            if (tooltip) {
-                tooltip.style.visibility = 'hidden';
-                tooltip.style.opacity = '0';
-            }
-            document.removeEventListener('click', handleCloseTooltip);
-        };
-
-        document.addEventListener('click', handleCloseTooltip);
     };
 
     const handleOpenFragmentDialog = (data: OutlineNode) => {
