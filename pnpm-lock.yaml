@@ -1407,6 +1407,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      axios:
+        specifier: 0.26.0
+        version: 0.26.0
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -1414,18 +1417,12 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
     devDependencies:
-      '@types/inquirer':
-        specifier: 8.2.7
-        version: 8.2.7
       '@types/semver':
         specifier: ^7.5.3
         version: 7.5.3
       '@types/semver-compare':
         specifier: 1.0.1
         version: 1.0.1
-      axios:
-        specifier: 0.26.0
-        version: 0.26.0
       mock-spawn:
         specifier: 0.2.6
         version: 0.2.6
@@ -9654,7 +9651,7 @@ packages:
       follow-redirects: 1.15.2
     transitivePeerDependencies:
       - debug
-    dev: true
+    dev: false
 
   /axios@0.27.2:
     resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
