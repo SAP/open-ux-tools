@@ -3,8 +3,8 @@ export const enum UI5Info {
     //SnapshotUrl = 'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com',
     NeoAppFile = 'neo-app.json',
     VersionsFile = 'version.json?sap-ui-config-patches=true&sap-ui-config-showall=true',
-    DefaultVersion = 'Latest',
     LatestVersionString = 'Latest',
+    DefaultVersion = LatestVersionString,
     VersionsOverview = 'versionoverview.json',
     VersionExternalFile = 'version.json'
 }

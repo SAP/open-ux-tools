@@ -11,7 +11,7 @@ export class CommandRunner {
      * @param args - args
      * @returns promise resolved with stderr, stderr or rejected with error text
      */
-    run(cmd: string, args: string[] = []): Promise<any | void> {
+    run(cmd: string, args: string[] = []): Promise<string> {
         return new Promise((resolve, reject) => {
             const stack: any = [];
             const spawnedCmd = spawn(cmd, args, {});

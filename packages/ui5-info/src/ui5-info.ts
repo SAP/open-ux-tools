@@ -253,13 +253,9 @@ async function retrieveUI5Versions(
     let snapshotVersions: string[] = [];
 
     try {
+        const minUI5Version = filterOptions?.fioriElementsVersion ?? filterOptions?.minSupportedUI5Version;
         officialVersions = filterOptions?.onlyNpmVersion
-            ? await retrieveNpmUI5Versions(
-                  filterOptions.ui5SelectedVersion,
-                  filterOptions.fioriElementsVersion
-                      ? filterOptions.fioriElementsVersion
-                      : filterOptions.minSupportedUI5Version
-              )
+            ? await retrieveNpmUI5Versions(filterOptions.ui5SelectedVersion, minUI5Version)
             : ((await retrieveUI5VersionsCache(UI5_VERSIONS_TYPE.official, filterOptions?.useCache)) as string[]);
     } catch (error) {
         logger.warn(
@@ -291,7 +287,7 @@ async function retrieveUI5Versions(
     }
 
     // Dont return versions older than the default min version
-    versions = filterNewerEqual(versions, filterOptions?.minSupportedUI5Version || DEFAULT_MIN_UI5_VERSION);
+    versions = filterNewerEqual(versions, filterOptions?.minSupportedUI5Version ?? DEFAULT_MIN_UI5_VERSION);
 
     if (filterOptions?.onlyVersionNumbers) {
         if (versions[0].toLocaleLowerCase().includes(UI5Info.LatestVersionString.toLocaleLowerCase())) {
@@ -342,14 +338,14 @@ async function retrieveNpmUI5Versions(
     ui5SelectedVersion: string | undefined = undefined,
     minUI5Version?: string
 ): Promise<string[]> {
-    const defaultMinVersion: string = minUI5Version || DEFAULT_MIN_UI5_VERSION;
+    const defaultMinVersion: string = minUI5Version ?? DEFAULT_MIN_UI5_VERSION;
     let results: string[] = [];
     try {
         const runner = new CommandRunner();
         const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
         const npmVersions = await runner.run(npm, ['show', '@sapui5/distribution-metadata', 'versions', '--no-color']);
         results = npmVersions
-            .replace(/[\r?\n|\r[\] ']/g, '') // Remove all chars, new lines and empty space
+            .replace(/[\r?\n|[\] ']/g, '') // Remove all chars, new lines and empty space
             .trim()
             .split(',');
     } catch (e) {
@@ -362,7 +358,7 @@ async function retrieveNpmUI5Versions(
         ? versions.filter((ele: string) => ele && /^\d+(\.\d+)*$/.test(ele))
         : [defaultMinVersion];
 
-    if (ui5SelectedVersion && ui5SelectedVersion.length) {
+    if (ui5SelectedVersion?.length) {
         const latestMinIdx = latestVersions.findIndex((v: string) => v === ui5SelectedVersion);
 
         if (latestMinIdx === -1) {
