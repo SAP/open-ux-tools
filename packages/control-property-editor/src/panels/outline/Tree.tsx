@@ -82,7 +82,7 @@ export const Tree = (): ReactElement => {
             tooltip.style.opacity = '1';
 
             const handleCloseTooltip = (event: MouseEvent) => {
-                if (tooltip && !tooltip.contains(event.target as Node)) {
+                if (!tooltip.contains(event.target as Node)) {
                     tooltip.style.visibility = 'hidden';
                     tooltip.style.opacity = '0';
                     document.removeEventListener('click', handleCloseTooltip);
