@@ -115,6 +115,8 @@ async function handle401Error(
         } else {
             config.credentials = credentials;
         }
+        // Need to re-init the provider with the updated credentials
+        provider = await createProvider(config, logger);
         await command(provider, config, logger, archive);
         return true;
     } else {
