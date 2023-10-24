@@ -47,9 +47,8 @@ describe('Test Validator functions', () => {
         expect(validateModuleName('project1')).toBe(true);
         expect(validateModuleName('project_')).toBe(true);
         expect(validateModuleName('project-')).toBe(true);
-        // Neg tests - deliberately not testing string matches from 3rd party lib
-        // since we need to get new localized messages from KM for release
-        // Basic set of tests since we are essentially testing a 3rd party lib
+
+        // Tests that error string is returned
         expect(validateModuleName('')).toBeString();
         expect(validateModuleName('projecT1')).toBeString();
         expect(validateModuleName('.project1')).toBeString();
@@ -89,7 +88,7 @@ describe('Test Validator functions', () => {
 
     it('Tests for validateProjectFolder', () => {
         expect(validateProjectFolder('doesntexistfolder$', 'projname')).toEqual(t('ui5.folderDoesNotExist'));
-        expect(validateProjectFolder(__dirname, 'newprojectname123')).toBeTrue();
+        expect(validateProjectFolder(__dirname, 'newprojectname123')).toBe(true);
         expect(validateProjectFolder(join(__dirname, '..'), 'test')).toEqual(
             t('ui5.moduleAlreadyExists', { folderName: 'test' })
         );
