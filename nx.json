@@ -9,7 +9,8 @@
           "test",
           "build:extension",
           "build:storybook",
-          "build:storybook:bundle"
+          "build:storybook:bundle",
+          "madge"
         ],
         "accessToken": "ZjFiYzA4OTYtYjFlNS00NTI2LTk4OTktNWZiYTAyMGE0ZGRmfHJlYWQtd3JpdGU=",
         "canTrackAnalytics": false,
@@ -58,6 +59,12 @@
     "build:storybook": {
       "outputs": [
         "{projectRoot}/storybook"
+      ]
+    },
+    "madge": { 
+      "inputs": [
+        "default",
+        "^prod"
       ]
     }
   },
