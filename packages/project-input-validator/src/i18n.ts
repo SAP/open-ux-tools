@@ -1,6 +1,6 @@
 import i18next from 'i18next';
 import type { TOptions } from 'i18next';
-import i18ntranslations from './translations/common.i18n.json';
+import i18ntranslations from './translations/project-input-validator.i18n.json';
 
 export const PROJECT_INPUT_VALIDATOR_NS = 'project-input-validator';
 
@@ -22,16 +22,19 @@ export async function initI18n(): Promise<void> {
 }
 
 /**
- * Helper function facading the call to i18next.
+ * Helper function facading the call to i18next. Unless a namespace option is provided the local namespace will be used.
  *
  * @param key i18n key
  * @param options additional options
  * @returns {string} localized string stored for the given key
  */
 export function t(key: string, options?: TOptions): string {
+    if (!options?.ns) {
+        options = Object.assign(options ? options : {}, { ns: PROJECT_INPUT_VALIDATOR_NS });
+    }
     return i18next.t(key, options);
 }
 
 initI18n().catch(() => {
-    // Ignore any errors since the write will still work
+    // needed by lint
 });

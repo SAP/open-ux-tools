@@ -1,8 +1,8 @@
-import { t } from './i18n';
+import { t } from '../i18n';
 import { EOL } from 'os';
 
 /**
- * Validator Fiori app name is compatbiel with Fiori project requirements.
+ * Validator Fiori app name is compatble with Fiori project requirements.
  *
  * @param name Fiori app name
  * @param prefix Prefix required by backend system
@@ -78,24 +78,6 @@ export function validateAppDescription(description: string): boolean | string {
 }
 
 /**
- * Client number is either empty or 3 digit string.
- *
- * @param client ABAP system client number
- * @returns true or error message
- */
-export function validateClient(client: string): boolean | string {
-    const formattedInput = client?.trim() || '';
-
-    const isValid = formattedInput === '' || /^\d{3}$/.test(formattedInput);
-
-    if (isValid) {
-        return true;
-    } else {
-        return t('InvalidClient', { client });
-    }
-}
-
-/**
  * Transport request number is not required for local package.
  *
  * @param transportRequest Transport request number
@@ -123,20 +105,5 @@ export function validatePackage(input: string): boolean | string {
         return t('AbapPackageWarn');
     } else {
         return true;
-    }
-}
-
-/**
- * Validate url input is valid url format.
- *
- * @param input Backend ABAP system url
- * @returns true or error message
- */
-export function validateUrl(input: string): boolean | string {
-    try {
-        const url = new URL(input);
-        return !!url.protocol && !!url.host;
-    } catch {
-        return t('InvalidUrl', { input });
     }
 }
