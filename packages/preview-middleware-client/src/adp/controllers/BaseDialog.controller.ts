@@ -83,6 +83,9 @@ export default abstract class BaseDialog extends Controller {
         }
     }
 
+    /**
+     * Sets custom function that fires when user presses escape key.
+     */
     setEscapeHandler() {
         this.dialog.setEscapeHandler(({ resolve }) => {
             this.handleDialogClose();
@@ -91,7 +94,7 @@ export default abstract class BaseDialog extends Controller {
     }
 
     /**
-     * Handles the dialog closing and destruction of it
+     * Handles the dialog closing and destruction of it.
      */
     handleDialogClose() {
         this.dialog.close();
