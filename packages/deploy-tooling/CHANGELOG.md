@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.11.1
+
+### Patch Changes
+
+-   4568e82b: Ensure provider is updated with credentials after 401 is returned
+
 ## 0.11.0
 
 ### Minor Changes
