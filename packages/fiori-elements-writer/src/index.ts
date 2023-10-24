@@ -16,6 +16,7 @@ import type { TemplateOptions } from './data/templateAttributes';
 import { changesPreviewToVersion, escapeFLPText } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
+import { oldestSupportedUI5VersionV2, oldestSupportedUI5VersionV4 } from './data/templateAttributes';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -175,5 +176,11 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     return fs;
 }
 
-export { generate, FioriElementsApp, App };
+export {
+    generate,
+    FioriElementsApp,
+    App,
+    oldestSupportedUI5VersionV2 as FE_MIN_UI5_VERSION_V2,
+    oldestSupportedUI5VersionV4 as FE_MIN_UI5_VERSION_V4
+};
 export * from './types';

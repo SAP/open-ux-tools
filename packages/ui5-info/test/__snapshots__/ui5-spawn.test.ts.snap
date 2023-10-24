@@ -1,0 +1,123 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Retrieve NPM UI5 mocking spawn process Validate exception spawn flow 1`] = `
+[
+  {
+    "version": "1.104.0",
+  },
+  {
+    "version": "1.103.0",
+  },
+  {
+    "version": "1.102.0",
+  },
+  {
+    "version": "1.101.0",
+  },
+  {
+    "version": "1.100.0",
+  },
+  {
+    "version": "1.99.0",
+  },
+  {
+    "version": "1.98.0",
+  },
+  {
+    "version": "1.97.0",
+  },
+  {
+    "version": "1.96.0",
+  },
+  {
+    "version": "1.95.0",
+  },
+  {
+    "version": "1.94.0",
+  },
+  {
+    "version": "1.93.0",
+  },
+  {
+    "version": "1.92.0",
+  },
+  {
+    "version": "1.91.0",
+  },
+  {
+    "version": "1.90.0",
+  },
+  {
+    "version": "1.89.0",
+  },
+  {
+    "version": "1.88.0",
+  },
+  {
+    "version": "1.87.0",
+  },
+  {
+    "version": "1.86.0",
+  },
+  {
+    "version": "1.85.0",
+  },
+  {
+    "version": "1.84.0",
+  },
+  {
+    "version": "1.82.0",
+  },
+  {
+    "version": "1.81.0",
+  },
+  {
+    "version": "1.80.0",
+  },
+  {
+    "version": "1.79.0",
+  },
+  {
+    "version": "1.78.0",
+  },
+  {
+    "version": "1.77.0",
+  },
+  {
+    "version": "1.76.0",
+  },
+  {
+    "version": "1.75.0",
+  },
+  {
+    "version": "1.74.0",
+  },
+  {
+    "version": "1.73.0",
+  },
+  {
+    "version": "1.72.0",
+  },
+  {
+    "version": "1.71.0",
+  },
+  {
+    "version": "1.70.0",
+  },
+  {
+    "version": "1.69.0",
+  },
+  {
+    "version": "1.68.0",
+  },
+  {
+    "version": "1.67.0",
+  },
+  {
+    "version": "1.66.0",
+  },
+  {
+    "version": "1.65.0",
+  },
+]
+`;
