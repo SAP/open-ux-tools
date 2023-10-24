@@ -71,6 +71,7 @@ describe('base/deploy', () => {
         });
 
         test('Successful retry after known axios error', async () => {
+            mockCreateForAbap.mockClear();
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             mockedUi5RepoService.deploy.mockRejectedValueOnce(axiosError(412));
             await deploy(archive, { app, target, yes: true }, nullLogger);
@@ -80,6 +81,7 @@ describe('base/deploy', () => {
             expect(mockCreateForAbap).toBeCalledWith(
                 expect.objectContaining({ auth: { password: '~password', username: '~username' } })
             );
+            expect(mockCreateForAbap).toBeCalledTimes(3);
         });
 
         test('Successful retry after known axios error (cloud target)', async () => {
