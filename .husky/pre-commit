@@ -1,1 +1,3 @@
 #!/bin/sh
+pnpm run:pretty-quick
+pnpm audit
