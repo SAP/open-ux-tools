@@ -96,6 +96,38 @@ describe('getUI5Versions', () => {
         });
         expect(axiosGetSpy).not.toHaveBeenCalled();
         expect(versions1).toEqual(versions2);
+
+        axiosGetSpy.mockClear();
+        const versions3 = await getUI5Versions({
+            useCache: true,
+            snapshotVersionsHost
+        });
+        expect(axiosGetSpy).toHaveBeenCalled();
+        expect(versions3).toMatchSnapshot();
+
+        axiosGetSpy.mockClear();
+        const versions4 = await getUI5Versions({
+            useCache: true,
+            snapshotVersionsHost
+        });
+        expect(axiosGetSpy).not.toHaveBeenCalled();
+        expect(versions4).toEqual(versions3);
+
+        axiosGetSpy.mockClear();
+        const versions5 = await getUI5Versions({
+            useCache: true,
+            includeMaintained: true
+        });
+        expect(axiosGetSpy).toHaveBeenCalled();
+        expect(versions5).toMatchSnapshot();
+
+        axiosGetSpy.mockClear();
+        const versions6 = await getUI5Versions({
+            useCache: true,
+            includeMaintained: true
+        });
+        expect(axiosGetSpy).not.toHaveBeenCalled();
+        expect(versions5).toEqual(versions6);
     });
 
     test('filterOptions: mark default versions - `includeDefault`', async () => {
