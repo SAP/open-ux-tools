@@ -66,6 +66,7 @@ export interface CustomConnector {
 
 export interface FlexConnector {
     connector: string;
+    layers: string[];
 }
 
 /**
@@ -352,7 +353,8 @@ export class FlpSandbox {
                 custom: true
             },
             {
-                connector: 'LocalStorageConnector'
+                connector: 'LocalStorageConnector',
+                layers: ['CUSTOMER', 'USER']
             }
         ];
     }
