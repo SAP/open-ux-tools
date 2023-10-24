@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.11.0
+
+### Minor Changes
+
+-   e0e9bd9e: Support for deployment of adaptation projects to LREP.
+
 ## 0.10.2
 
 ### Patch Changes

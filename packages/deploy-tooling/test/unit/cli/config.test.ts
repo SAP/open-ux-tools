@@ -16,20 +16,15 @@ describe('cli/config', () => {
     });
 
     describe('getDeploymentConfig', () => {
+        const fixture = join(__dirname, '../../fixtures/simple-app');
         test('valid config path', async () => {
-            expect(
-                await getDeploymentConfig(join(__dirname, '../../fixtures/simple-app/ui5-deploy.yaml'))
-            ).toBeDefined();
+            expect(await getDeploymentConfig(join(fixture, 'ui5-deploy.yaml'))).toBeDefined();
         });
         test('invalid config', async () => {
-            await expect(
-                getDeploymentConfig(join(__dirname, '../../fixtures/simple-app/ui5.yaml'))
-            ).rejects.toThrowError();
+            await expect(getDeploymentConfig(join(fixture, 'ui5.yaml'))).rejects.toThrowError();
         });
         test('invalid path', async () => {
-            await expect(
-                getDeploymentConfig(join(__dirname, '../../fixtures/simple-app/ui5-invalid.yaml'))
-            ).rejects.toThrowError();
+            await expect(getDeploymentConfig(join(fixture, 'ui5-invalid.yaml'))).rejects.toThrowError();
         });
     });
 
