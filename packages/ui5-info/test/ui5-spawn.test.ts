@@ -129,9 +129,7 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
             };
         });
         const runner = new CommandRunner();
-        await runner.run('fakeCmd').catch((e) => {
-            expect(e).toEqual('Command failed with error: spawn ENOENT');
-        });
+        await expect(() => runner.run('fakeCmd')).rejects.toThrowError('Command failed with error: spawn ENOENT');
     });
 
     it('Validate spawn flow on windows', async () => {

@@ -24,11 +24,11 @@ export class CommandRunner {
                 stack.push(data.toString());
             });
             spawnedCmd.on('error', (error) => {
-                reject(`Command failed with error: ${error.message}`);
+                reject(new Error(`Command failed with error: ${error.message}`));
             });
             spawnedCmd.on('close', (errorCode) => {
                 if (errorCode !== 0) {
-                    reject(`Command failed, \`${cmd} ${args.join(' ')}\`, ${stack.join(', ')}`);
+                    reject(new Error(`Command failed, \`${cmd} ${args.join(' ')}\`, ${stack.join(', ')}`));
                 }
                 resolve(response);
             });

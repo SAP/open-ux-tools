@@ -13,9 +13,11 @@ import ui5VersionsFallback from './ui5VersionFallback';
  * Lowest UI5 version to return (not necessarily the min supported version)
  */
 export const DEFAULT_MIN_UI5_VERSION = '1.65.0';
+const LatestVersionString = 'Latest';
+const DefaultVersion = LatestVersionString;
 
 export const DEFAULT_UI5_VERSIONS = [
-    UI5Info.DefaultVersion,
+    DefaultVersion,
     '1.104.0',
     '1.103.0',
     '1.102.0',
@@ -58,7 +60,7 @@ export const DEFAULT_UI5_VERSIONS = [
 ];
 const VERSION_OVERVIEW_FALLBACK: UI5VersionOverview[] = ui5VersionsFallback;
 
-const PASS_THROUGH_STRINGS = new Set(['snapshot', 'snapshot-untested', UI5Info.LatestVersionString]);
+const PASS_THROUGH_STRINGS = new Set(['snapshot', 'snapshot-untested', LatestVersionString]);
 
 // This one holds the actual version, not 'Latest'
 let latestUI5Version: string;
@@ -89,7 +91,7 @@ const ui5VersionsCache: {
 function snapshotSort(a: string, b: string): number {
     a = a.replace('snapshot-', '');
     b = b.replace('snapshot-', '');
-    const versions = [UI5Info.DefaultVersion, 'snapshot', 'untested'];
+    const versions = [DefaultVersion, 'snapshot', 'untested'];
     // Sort 'Latest', 'snapshot' and 'snapshot-untested' in order
     if (versions.indexOf(a) > -1 && versions.indexOf(b) > -1) {
         return a.localeCompare(b);
@@ -149,7 +151,7 @@ async function parseUI5Versions(url = UI5Info.OfficialUrl.toString()): Promise<s
             if (route.path === '/') {
                 latestUI5Version = route.target.version;
             }
-            return route.path === '/' ? UI5Info.DefaultVersion : route.target.version;
+            return route.path === '/' ? DefaultVersion : route.target.version;
         });
     } else {
         latestUI5Version = response['latest'].version;
@@ -279,18 +281,19 @@ async function retrieveUI5Versions(
     let versions = [...officialVersions, ...snapshotVersions].sort(snapshotSort);
 
     if (filterOptions?.fioriElementsVersion) {
-        if (filterOptions.fioriElementsVersion === FioriElementsVersion.v4) {
-            versions = filterNewerEqual(versions, FE_MIN_UI5_VERSION_V4);
-        } else {
-            versions = filterNewerEqual(versions, FE_MIN_UI5_VERSION_V2);
-        }
+        versions = filterNewerEqual(
+            versions,
+            filterOptions.fioriElementsVersion === FioriElementsVersion.v4
+                ? FE_MIN_UI5_VERSION_V4
+                : FE_MIN_UI5_VERSION_V2
+        );
     }
 
     // Dont return versions older than the default min version
     versions = filterNewerEqual(versions, filterOptions?.minSupportedUI5Version ?? DEFAULT_MIN_UI5_VERSION);
 
     if (filterOptions?.onlyVersionNumbers) {
-        if (versions[0].toLocaleLowerCase().includes(UI5Info.LatestVersionString.toLocaleLowerCase())) {
+        if (versions[0].toLocaleLowerCase().includes(LatestVersionString.toLocaleLowerCase())) {
             versions[0] = latestUI5Version;
         }
         versions = versions.filter((ele) => ele && /^\d+(\.\d+)*$/.test(ele));
@@ -364,7 +367,7 @@ async function retrieveNpmUI5Versions(
         if (latestMinIdx === -1) {
             if (
                 cmp(ui5SelectedVersion, latestVersions.slice(-1)[0]) > 0 ||
-                ui5SelectedVersion === UI5Info.LatestVersionString ||
+                ui5SelectedVersion === LatestVersionString ||
                 !valid(ui5SelectedVersion)
             ) {
                 // Return latest supported version if selected version is not available yet or is 'Latest' or not valid
