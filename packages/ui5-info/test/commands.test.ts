@@ -3,6 +3,7 @@ jest.disableAutomock();
 import * as cp from 'child_process';
 import { executeNpmUI5VersionsCmd } from '../src/commands';
 import { getUI5Versions } from '../src/ui5-info';
+import os from 'os';
 
 jest.mock('child_process');
 const mockedCp = jest.mocked(cp, { shallow: true });
@@ -236,8 +237,9 @@ describe('Test commands internals', () => {
 
     it('Execute with error code 1', async () => {
         mockedSpawn.setDefault(mockedSpawn.simple(1, '', 'stack trace'));
+        const npmCmd = os.platform() === 'win32' ? 'npm.cmd' : 'npm';
         await expect(executeNpmUI5VersionsCmd()).rejects.toMatchInlineSnapshot(
-            `[Error: Command failed, \`npm show @sapui5/distribution-metadata versions --no-color\`, stack trace]`
+            `[Error: Command failed, \`${npmCmd} show @sapui5/distribution-metadata versions --no-color\`, stack trace]`
         );
     });
 });
