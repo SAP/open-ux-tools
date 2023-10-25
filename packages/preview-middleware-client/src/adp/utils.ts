@@ -12,11 +12,17 @@ export interface Deferred<T> {
  * @returns {Deferred} Deferred object
  */
 export function createDeferred<T>(): Deferred<T> {
-    let resolve: Deferred<T>['resolve'];
-    let reject: Deferred<T>['reject'];
+    let resolve: Deferred<T>['resolve'] | null = null;
+    let reject: Deferred<T>['reject'] | null = null;
+
     const promise = new Promise<T>((res, rej) => {
         resolve = res;
         reject = rej;
     });
-    return { promise, resolve: resolve!, reject: reject! };
+
+    if (resolve === null || reject === null) {
+        throw new Error('Failed to initialize resolve and reject functions.');
+    }
+
+    return { promise, resolve, reject };
 }

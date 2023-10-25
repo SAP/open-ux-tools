@@ -20,5 +20,22 @@ describe('utils', () => {
 
             global.Promise = originalPromise;
         });
+
+        it('should create a deferred object', () => {
+            const mockPromiseConstructor = jest.fn((executor) => {
+                executor(null, null);
+            });
+
+            const originalPromise = global.Promise;
+            global.Promise = mockPromiseConstructor as unknown as PromiseConstructor;
+
+            try {
+                createDeferred<object>();
+            } catch (e) {
+                expect(e.message).toBe('Failed to initialize resolve and reject functions.');
+            }
+
+            global.Promise = originalPromise;
+        });
     });
 });
