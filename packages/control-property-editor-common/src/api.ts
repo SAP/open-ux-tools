@@ -18,7 +18,7 @@ export type PropertyValue = string | boolean | number;
 
 export interface PropertyChange<T extends PropertyValue = PropertyValue> {
     controlId: string;
-    controlName?: string;
+    controlName: string;
     propertyName: string;
     value: T;
 }
@@ -133,7 +133,7 @@ export interface UnknownSavedChange {
     controlId?: string;
     timestamp?: number;
 }
-export type ValidChange = PendingPropertyChange | SavedPropertyChange | PendingOtherChange;
+export type ValidChange = PendingPropertyChange | PendingOtherChange | SavedPropertyChange;
 export type Change = ValidChange | UnknownSavedChange;
 
 export interface ChangeStackModified {

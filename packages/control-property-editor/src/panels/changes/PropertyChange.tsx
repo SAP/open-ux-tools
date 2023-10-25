@@ -17,6 +17,7 @@ export interface PropertyChangeProps {
     controlId: string;
     controlName: string;
     changeIndex: number;
+    changeType: string;
     propertyName: string;
     value: string | number | boolean;
     isActive: boolean;

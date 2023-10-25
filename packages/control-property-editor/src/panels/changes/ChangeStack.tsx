@@ -6,6 +6,8 @@ import { Stack } from '@fluentui/react';
 import type {
     Change,
     PendingOtherChange,
+    PendingPropertyChange,
+    SavedPropertyChange,
     UnknownSavedChange,
     ValidChange
 } from '@sap-ux-private/control-property-editor-common';
@@ -102,6 +104,7 @@ function convertChanges(changes: Change[]): Item[] {
             if (['propertyChange', 'propertyBindingChange'].includes(change.changeType)) {
                 group = {
                     controlId: change.controlId,
+                    controlName: change.controlName,
                     text: convertCamelCaseToPascalCase(change.controlName as string),
                     changeIndex: i,
                     changes: [classifyChange(change, i)]
@@ -109,6 +112,7 @@ function convertChanges(changes: Change[]): Item[] {
             } else {
                 group = {
                     controlId: change.controlId,
+                    controlName: change.controlName,
                     text: convertCamelCaseToPascalCase(change.controlName as string),
                     changeIndex: i,
                     changes: [change as PendingOtherChange]
@@ -189,9 +193,9 @@ function arrangeSavedChanges(changes: UnknownSavedChange[]): Item[] {
  * @returns ControlPropertyChange
  */
 function classifyChange(change: ValidChange, changeIndex: number): ControlPropertyChange {
-    const { controlId, propertyName, value, controlName, changeType } = change;
     let base;
-    if (['propertyChange', 'propertyBindingChange'].includes(changeType)) {
+    if (['propertyChange', 'propertyBindingChange'].includes(change.changeType)) {
+        const { controlId, propertyName, value, controlName, changeType } = change as PendingPropertyChange;
         base = {
             controlId,
             controlName,
@@ -201,6 +205,7 @@ function classifyChange(change: ValidChange, changeIndex: number): ControlProper
             changeType
         };
     } else {
+        const { controlId, controlName, changeType } = change;
         base = {
             controlId,
             controlName,
@@ -235,13 +240,16 @@ export function isKnownChange(change: ControlGroupProps | UnknownChangeProps): c
     return (change as ControlGroupProps).controlId !== undefined;
 }
 
-const filterPropertyChanges = (changes: ControlPropertyChange[], query: string): ControlPropertyChange[] => {
+const filterChanges = (changes: Change[], query: string): Change[] => {
     return changes.filter((item) => {
+        item = item as SavedPropertyChange;
         return (
             !query ||
             item.propertyName.trim().toLowerCase().includes(query) ||
+            item.changeType.trim().toLowerCase().includes(query) ||
             convertCamelCaseToPascalCase(item.propertyName.toString()).trim().toLowerCase().includes(query) ||
             item.value.toString().trim().toLowerCase().includes(query) ||
+            item.fileName.toString().trim().toLowerCase().includes(query) ||
             convertCamelCaseToPascalCase(item.value.toString()).trim().toLowerCase().includes(query) ||
             (item.timestamp && getFormattedDateAndTime(item.timestamp).trim().toLowerCase().includes(query))
         );
@@ -275,7 +283,7 @@ function filterGroup(model: Item[], query: string): Item[] {
         if (controlPropModel.changes.length <= 0) {
             continue;
         }
-        const data = filterPropertyChanges(controlPropModel.changes, query);
+        const data = filterChanges(controlPropModel.changes as Change[], query);
 
         if (parentMatch) {
             // parent matched filter query and pushed already to `filterModel`. only  replace matched children
@@ -283,7 +291,7 @@ function filterGroup(model: Item[], query: string): Item[] {
             // add node and its matched children
         } else if (data.length > 0) {
             const newFilterModel = { ...item, changes: data };
-            filteredModel.push(newFilterModel);
+            filteredModel.push(newFilterModel as Item);
         }
     }
 

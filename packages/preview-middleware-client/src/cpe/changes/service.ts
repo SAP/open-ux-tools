@@ -151,7 +151,7 @@ export class ChangeService {
                             propertyName: change.content.property,
                             value: change.content.newValue ?? change.content.newBinding,
                             timestamp: new Date(change.creation).getTime(),
-                            controlName: change.selector.type.split('.').pop(),
+                            controlName: change.selector.type ? (change.selector.type.split('.').pop() as string) : '',
                             changeType: change.changeType
                         };
                     } catch (error) {

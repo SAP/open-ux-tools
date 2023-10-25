@@ -15,6 +15,7 @@ import styles from './ControlGroup.module.scss';
 export interface ControlGroupProps {
     text: string;
     controlId: string;
+    controlName: string;
     changeIndex: number;
     changes: ControlPropertyChange[] | OtherChangeProps[];
 }
