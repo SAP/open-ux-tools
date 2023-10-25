@@ -1,5 +1,60 @@
 # @sap-ux/adp-tooling
 
+## 0.5.2
+
+### Patch Changes
+
+-   aa2ff95b: Replaced yazl with adm-zip
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/axios-extension@1.7.0
+    -   @sap-ux/system-access@0.3.2
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [3cfaba52]
+    -   @sap-ux/axios-extension@1.6.1
+    -   @sap-ux/system-access@0.3.1
+
+## 0.5.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/axios-extension@1.6.0
+    -   @sap-ux/system-access@0.3.0
+    -   @sap-ux/ui5-config@0.20.0
+    -   @sap-ux/logger@0.4.0
+
+## 0.4.5
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.2.11
+
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/axios-extension@1.5.1
+    -   @sap-ux/system-access@0.2.10
+    -   @sap-ux/ui5-config@0.19.5
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [d7492b53]
+    -   @sap-ux/axios-extension@1.5.0
+    -   @sap-ux/system-access@0.2.9
+
 ## 0.4.2
 
 ### Patch Changes

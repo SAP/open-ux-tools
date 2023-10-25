@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-service-writer"
     },
-    "version": "0.14.34",
+    "version": "0.15.0",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -35,7 +35,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.9",
         "fast-xml-parser": "4.2.7",
-        "i18next": "20.3.2",
+        "i18next": "20.6.1",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prettify-xml": "1.2.0",
@@ -53,6 +53,6 @@
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
-        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+        "node": ">=18.x"
     }
 }

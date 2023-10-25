@@ -1,5 +1,87 @@
 # @sap-ux/deploy-tooling
 
+## 0.11.1
+
+### Patch Changes
+
+-   4568e82b: Ensure provider is updated with credentials after 401 is returned
+
+## 0.11.0
+
+### Minor Changes
+
+-   e0e9bd9e: Support for deployment of adaptation projects to LREP.
+
+## 0.10.2
+
+### Patch Changes
+
+-   aa2ff95b: Replaced yazl with adm-zip
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/axios-extension@1.7.0
+    -   @sap-ux/system-access@0.3.2
+
+## 0.10.1
+
+### Patch Changes
+
+-   Updated dependencies [3cfaba52]
+    -   @sap-ux/axios-extension@1.6.1
+    -   @sap-ux/system-access@0.3.1
+
+## 0.10.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/axios-extension@1.6.0
+    -   @sap-ux/system-access@0.3.0
+    -   @sap-ux/ui5-config@0.20.0
+    -   @sap-ux/btp-utils@0.12.0
+    -   @sap-ux/logger@0.4.0
+
+## 0.9.20
+
+### Patch Changes
+
+-   966b396b: - Improve format of reported invalid messages
+    -   Convert $tmp to upper case to pass ADT validation
+-   Updated dependencies [966b396b]
+    -   @sap-ux/project-input-validator@0.1.2
+
+## 0.9.19
+
+### Patch Changes
+
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/project-input-validator@0.1.1
+    -   @sap-ux/system-access@0.2.11
+
+## 0.9.18
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/axios-extension@1.5.1
+    -   @sap-ux/system-access@0.2.10
+    -   @sap-ux/ui5-config@0.19.5
+
+## 0.9.17
+
+### Patch Changes
+
+-   d7492b53: A new feature is introduced to run validators on deploy configuration in `ui5-deploy.yaml` and returns found issues. This new feature is only activated when running deploy in the existing `test` mode. No additional parameter required to include this validation process.
+-   Updated dependencies [d7492b53]
+-   Updated dependencies [d7492b53]
+    -   @sap-ux/axios-extension@1.5.0
+    -   @sap-ux/project-input-validator@0.1.0
+    -   @sap-ux/system-access@0.2.9
+
 ## 0.9.16
 
 ### Patch Changes

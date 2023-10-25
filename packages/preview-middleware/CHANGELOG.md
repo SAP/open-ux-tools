@@ -1,5 +1,81 @@
 # @sap-ux/preview-middleware
 
+## 0.8.5
+
+### Patch Changes
+
+-   942f7752: Fixes the configuration of the LocalStorageConnector to avoid conflicts with the WorkspaceConnector
+
+## 0.8.4
+
+### Patch Changes
+
+-   96b115d8: Exports the initAdp function so that can be use in @sap/ux-ui5-tooling
+
+## 0.8.3
+
+### Patch Changes
+
+-   5f90873d: The features for all adaptation projects which are loaded from "WorkspaceConnector" in "preview-middleware-client" are with "isVariantAdaptationEnabled=true".
+
+## 0.8.2
+
+### Patch Changes
+
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/adp-tooling@0.5.2
+
+## 0.8.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.5.1
+
+## 0.8.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/adp-tooling@0.5.0
+    -   @sap-ux/logger@0.4.0
+
+## 0.7.14
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.4.5
+
+## 0.7.13
+
+### Patch Changes
+
+-   b6e925f8: Adds local persistence of personalizations across local preview sessions
+
+## 0.7.12
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/adp-tooling@0.4.4
+
+## 0.7.11
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.4.3
+
+## 0.7.10
+
+### Patch Changes
+
+-   aef0ccf3: Add bindingString prop for getBindingInfo expression to support maintenance version
+
 ## 0.7.9
 
 ### Patch Changes

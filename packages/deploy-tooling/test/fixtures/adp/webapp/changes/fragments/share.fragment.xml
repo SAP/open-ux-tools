@@ -1,0 +1,4 @@
+<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <Button id="my-test-button2" text="Share" press=".extension.adp.example.share.onBtnPress" />
+</core:FragmentDefinition>

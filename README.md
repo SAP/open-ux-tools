@@ -30,7 +30,7 @@ The repository contains no private modules i.e. all modules are published to [np
 Additionally, we have the `./examples` folder containing show case implementations using multiple of our modules together. 
 
 ## Requirements
-Everything is released as node modules requiring node with a version matching `">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"`.
+Everything is released as node modules requiring node with a version matching `">=18"`.
 
 ## Contributing
 Please check the [Development Conventions and Guidelines](./docs/Guidelines.md) document as well as the [Development Setup](#development-setup) section in this document.

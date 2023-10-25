@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.5.1
+
+### Patch Changes
+
+-   5f90873d: The features for all adaptation projects which are loaded from "WorkspaceConnector" in "preview-middleware-client" are with "isVariantAdaptationEnabled=true".
+
+## 0.5.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+## 0.4.4
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+
+## 0.4.3
+
+### Patch Changes
+
+-   aef0ccf3: Add bindingString prop for getBindingInfo expression to support maintenance version
+
 ## 0.4.2
 
 ### Patch Changes

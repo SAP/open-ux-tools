@@ -1,5 +1,28 @@
 # @sap-ux/odata-service-writer
 
+## 0.15.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+
+## 0.14.36
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
+## 0.14.35
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+
 ## 0.14.34
 
 ### Patch Changes
