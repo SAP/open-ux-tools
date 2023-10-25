@@ -130,6 +130,7 @@ export interface UnknownSavedChange {
     type: 'saved';
     kind: 'unknown';
     fileName: string;
+    controlId?: string;
     timestamp?: number;
 }
 export type ValidChange = PendingPropertyChange | SavedPropertyChange | PendingOtherChange;

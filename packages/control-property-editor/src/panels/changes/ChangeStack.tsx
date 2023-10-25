@@ -3,7 +3,12 @@ import React from 'react';
 
 import { Stack } from '@fluentui/react';
 
-import type { Change, PendingOtherChange, ValidChange } from '@sap-ux-private/control-property-editor-common';
+import type {
+    Change,
+    PendingOtherChange,
+    UnknownSavedChange,
+    ValidChange
+} from '@sap-ux-private/control-property-editor-common';
 
 import { Separator } from '../../components';
 import type { ControlGroupProps, ControlPropertyChange } from './ControlGroup';
@@ -85,15 +90,13 @@ type Item = ControlGroupProps | UnknownChangeProps;
  */
 function convertChanges(changes: Change[]): Item[] {
     const items: Item[] = [];
+    const savedItems: UnknownSavedChange[] = [];
     let i = 0;
     while (i < changes.length) {
         const change: Change = changes[i];
         let group: ControlGroupProps;
         if (change.type === 'saved' && change.kind === 'unknown') {
-            items.push({
-                fileName: change.fileName,
-                timestamp: change.timestamp
-            });
+            savedItems.push(change);
             i++;
         } else {
             if (['propertyChange', 'propertyBindingChange'].includes(change.changeType)) {
@@ -126,6 +129,54 @@ function convertChanges(changes: Change[]): Item[] {
                 i++;
             }
         }
+    }
+    items.push(...arrangeSavedChanges(savedItems));
+    return items;
+}
+
+/**
+ * Arrange Saved Change.
+ *
+ * @param changes UnknownSavedChange
+ * @returns Item
+ */
+function arrangeSavedChanges(changes: UnknownSavedChange[]): Item[] {
+    const items: Item[] = [];
+    let i = 0;
+
+    // sort the changes based on the same control ID
+    changes &&
+        changes.sort((a, b) => {
+            // Compare the 'controlId' property of the objects
+            const firstControlID = a.controlId ? a.controlId : '';
+            const secondControlID = b.controlId ? b.controlId : '';
+            if (firstControlID < secondControlID) {
+                return -1;
+            }
+            if (firstControlID > secondControlID) {
+                return 1;
+            }
+            return 0;
+        });
+
+    // set the header flag, which is used in UI to set Saved Items Header.
+    while (i < changes.length) {
+        const change: Change = changes[i];
+        const previousChange = changes[i - 1];
+        if (previousChange && previousChange?.controlId === change?.controlId) {
+            items.push({
+                fileName: change.fileName,
+                timestamp: change.timestamp,
+                header: false
+            });
+        } else {
+            items.push({
+                fileName: change.fileName,
+                timestamp: change.timestamp,
+                header: true
+            });
+        }
+        i++; // Increment i at the end of each iteration
     }
     return items;
 }

@@ -12,6 +12,8 @@ import { getFormattedDateAndTime } from './utils';
 export interface UnknownChangeProps {
     fileName: string;
     timestamp?: number;
+    controlId?: string;
+    header?: boolean;
 }
 
 /**
@@ -21,7 +23,7 @@ export interface UnknownChangeProps {
  * @returns ReactElement
  */
 export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElement {
-    const { fileName, timestamp } = unknownChangeProps;
+    const { fileName, timestamp, header } = unknownChangeProps;
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [dialogState, setDialogState] = useState<PropertyChangeDeletionDetails | undefined>(undefined);
@@ -46,14 +48,17 @@ export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElem
                 <Stack.Item className={styles.property}>
                     <Stack horizontal>
                         <Stack.Item>
-                            <Text className={styles.textHeader}>
-                                {name} {t('CHANGE')}
-                            </Text>
+                            {header && (
+                                <Text className={styles.textHeader}>
+                                    {name} {t('CHANGE')}
+                                </Text>
+                            )}
                             <Text className={styles.text} title={fileName}>
                                 {t('FILE')}
                                 {fileName}
                             </Text>
                         </Stack.Item>
+
                         {fileName && (
                             <Stack.Item className={styles.actions}>
                                 <UIIconButton

@@ -160,7 +160,8 @@ export class ChangeService {
                             const unknownChange: UnknownSavedChange = {
                                 type: 'saved',
                                 kind: 'unknown',
-                                fileName: change.fileName
+                                fileName: change.fileName,
+                                controlId: change.selector.id
                             };
                             if (change.creation) {
                                 unknownChange.timestamp = new Date(change.creation).getTime();
