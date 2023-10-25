@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.8.5
+
+### Patch Changes
+
+-   942f7752: Fixes the configuration of the LocalStorageConnector to avoid conflicts with the WorkspaceConnector
+
 ## 0.8.4
 
 ### Patch Changes
