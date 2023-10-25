@@ -1401,9 +1401,6 @@ importers:
 
   packages/ui5-info:
     dependencies:
-      '@sap-ux/fiori-elements-writer':
-        specifier: workspace:*
-        version: link:../fiori-elements-writer
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger

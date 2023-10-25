@@ -4,13 +4,13 @@ Gets UI5 version info for available UI5 versions.
 
 ## Installation
 Npm
-`npm install --save @sap-ux/ui5-library-writer`
+`npm install --save @sap-ux/ui5-info`
 
 Yarn
-`yarn add @sap-ux/ui5-library-writer`
+`yarn add @sap-ux/ui5-info`
 
 Pnpm
-`pnpm add @sap-ux/ui5-library-writer`
+`pnpm add @sap-ux/ui5-info`
 
 
 ## Usage

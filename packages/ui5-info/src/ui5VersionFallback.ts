@@ -1,13 +1,13 @@
 import type { UI5VersionOverview } from './types';
 
-const supportState = {
+export const supportState = {
     maintenance: 'Maintenance',
     outOfMaintenance: 'Out of maintenance',
     skipped: 'Skipped'
 } as const;
 
 // Updated Oct-18-2023
-export default [
+export const ui5VersionFallbacks = [
     {
         version: '1.119.*',
         support: supportState.maintenance

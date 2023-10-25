@@ -1,86 +1,24 @@
 import cmp from 'semver-compare';
 import { coerce, major, minor, valid } from 'semver';
 import type { UI5VersionFilterOptions, UI5VersionOverview, UI5VersionsResponse, UI5Version } from './types';
-import { UI5Info, FioriElementsVersion } from './types';
-import { CommandRunner } from './commandRunner';
+import { executeNpmUI5VersionsCmd } from './commands';
 import axios from 'axios';
-import { FE_MIN_UI5_VERSION_V2, FE_MIN_UI5_VERSION_V4 } from '@sap-ux/fiori-elements-writer';
 import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
-import ui5VersionsFallback from './ui5VersionFallback';
-
-/**
- * Lowest UI5 version to return (not necessarily the min supported version)
- */
-export const DEFAULT_MIN_UI5_VERSION = '1.65.0';
-const LatestVersionString = 'Latest';
-const DefaultVersion = LatestVersionString;
-
-export const DEFAULT_UI5_VERSIONS = [
+import { ui5VersionFallbacks } from './ui5VersionFallback';
+import {
+    DEFAULT_MIN_UI5_VERSION,
+    DEFAULT_UI5_VERSIONS,
     DefaultVersion,
-    '1.104.0',
-    '1.103.0',
-    '1.102.0',
-    '1.101.0',
-    '1.100.0',
-    '1.99.0',
-    '1.98.0',
-    '1.97.0',
-    '1.96.0',
-    '1.95.0',
-    '1.94.0',
-    '1.93.0',
-    '1.92.0',
-    '1.91.0',
-    '1.90.0',
-    '1.89.0',
-    '1.88.0',
-    '1.87.0',
-    '1.86.0',
-    '1.85.0',
-    '1.84.0',
-    '1.82.0',
-    '1.81.0',
-    '1.80.0',
-    '1.79.0',
-    '1.78.0',
-    '1.77.0',
-    '1.76.0',
-    '1.75.0',
-    '1.74.0',
-    '1.73.0',
-    '1.72.0',
-    '1.71.0',
-    '1.70.0',
-    '1.69.0',
-    '1.68.0',
-    '1.67.0',
-    '1.66.0',
-    DEFAULT_MIN_UI5_VERSION
-];
-const VERSION_OVERVIEW_FALLBACK: UI5VersionOverview[] = ui5VersionsFallback;
-
-const PASS_THROUGH_STRINGS = new Set(['snapshot', 'snapshot-untested', LatestVersionString]);
+    LatestVersionString,
+    UI5VersionRequestInfo,
+    UI5_VERSIONS_TYPE,
+    ui5VersionsCache
+} from './constants';
 
 // This one holds the actual version, not 'Latest'
 let latestUI5Version: string;
-
-const enum UI5_VERSIONS_TYPE {
-    official = 'officialVersions',
-    snapshot = 'snapshotsVersions',
-    overview = 'overview'
-}
-
-const ui5VersionsCache: {
-    [key in UI5_VERSIONS_TYPE.official | UI5_VERSIONS_TYPE.snapshot | UI5_VERSIONS_TYPE.overview]:
-        | string[]
-        | UI5VersionOverview[];
-} = {
-    officialVersions: [],
-    snapshotsVersions: [],
-    overview: []
-};
-
+const PASS_THROUGH_STRINGS = new Set(['snapshot', 'snapshot-untested', LatestVersionString]);
 /**
  * Sort function for snapshot versions.
  *
@@ -130,8 +68,12 @@ function filterNewerEqual(versions: string[], minVersion: string): string[] {
  * @returns ui5 versions in json format as defined by the generic type
  */
 async function requestUI5Versions<T>(
-    host: string = UI5Info.OfficialUrl,
-    pathname = `/${host === UI5Info.OfficialUrl ? UI5Info.VersionsFile : UI5Info.NeoAppFile}`
+    host: string = UI5VersionRequestInfo.OfficialUrl,
+    pathname = `/${
+        host === UI5VersionRequestInfo.OfficialUrl
+            ? UI5VersionRequestInfo.VersionsFile
+            : UI5VersionRequestInfo.NeoAppFile
+    }`
 ): Promise<T> {
     const response = await axios.get(new URL(pathname, host).toString(), { responseType: 'json' });
     return response.data;
@@ -143,7 +85,7 @@ async function requestUI5Versions<T>(
  * @param url - optional, url from which to request the UI5 versions
  * @returns ui5 version strings
  */
-async function parseUI5Versions(url = UI5Info.OfficialUrl.toString()): Promise<string[]> {
+async function parseUI5Versions(url = UI5VersionRequestInfo.OfficialUrl.toString()): Promise<string[]> {
     const response = await requestUI5Versions<UI5VersionsResponse>(url);
     let result: string[] = [];
     if (Array.isArray(response.routes)) {
@@ -170,15 +112,15 @@ async function parseUI5VersionsOverview(): Promise<UI5VersionOverview[]> {
     let versions: UI5VersionOverview[] = [];
     try {
         const response = await requestUI5Versions<{ versions: UI5VersionOverview[] }>(
-            UI5Info.OfficialUrl,
-            `/${UI5Info.VersionsOverview}`
+            UI5VersionRequestInfo.OfficialUrl,
+            `/${UI5VersionRequestInfo.VersionsOverview}`
         );
         versions = response.versions;
     } catch (error) {
         new ToolsLogger().warn(
-            `Request to '${UI5Info.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
+            `Request to '${UI5VersionRequestInfo.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
         );
-        versions = VERSION_OVERVIEW_FALLBACK;
+        versions = ui5VersionFallbacks;
     }
     result = versions.map((ver: any) => {
         const parsedVersion = coerce(ver.version)?.version;
@@ -209,7 +151,7 @@ const retrieveUI5VersionsCache = async (
     if (!useCache) {
         switch (type) {
             case UI5_VERSIONS_TYPE.official:
-                return parseUI5Versions(UI5Info.OfficialUrl);
+                return parseUI5Versions(UI5VersionRequestInfo.OfficialUrl);
             case UI5_VERSIONS_TYPE.snapshot:
                 if (snapshotUrl) {
                     return parseUI5Versions(snapshotUrl);
@@ -224,7 +166,7 @@ const retrieveUI5VersionsCache = async (
     if (ui5VersionsCache[type].length === 0) {
         switch (type) {
             case UI5_VERSIONS_TYPE.official:
-                ui5VersionsCache[type] = await parseUI5Versions(UI5Info.OfficialUrl);
+                ui5VersionsCache[type] = await parseUI5Versions(UI5VersionRequestInfo.OfficialUrl);
                 break;
             case UI5_VERSIONS_TYPE.snapshot:
                 if (snapshotUrl) {
@@ -255,13 +197,13 @@ async function retrieveUI5Versions(
     let snapshotVersions: string[] = [];
 
     try {
-        const minUI5Version = filterOptions?.fioriElementsVersion ?? filterOptions?.minSupportedUI5Version;
+        const minUI5Version = filterOptions?.minSupportedUI5Version ?? DEFAULT_MIN_UI5_VERSION;
         officialVersions = filterOptions?.onlyNpmVersion
             ? await retrieveNpmUI5Versions(filterOptions.ui5SelectedVersion, minUI5Version)
             : ((await retrieveUI5VersionsCache(UI5_VERSIONS_TYPE.official, filterOptions?.useCache)) as string[]);
     } catch (error) {
         logger.warn(
-            `Request to '${UI5Info.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
+            `Request to '${UI5VersionRequestInfo.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
         );
         officialVersions = DEFAULT_UI5_VERSIONS.slice();
     }
@@ -280,15 +222,6 @@ async function retrieveUI5Versions(
 
     let versions = [...officialVersions, ...snapshotVersions].sort(snapshotSort);
 
-    if (filterOptions?.fioriElementsVersion) {
-        versions = filterNewerEqual(
-            versions,
-            filterOptions.fioriElementsVersion === FioriElementsVersion.v4
-                ? FE_MIN_UI5_VERSION_V4
-                : FE_MIN_UI5_VERSION_V2
-        );
-    }
-
     // Dont return versions older than the default min version
     versions = filterNewerEqual(versions, filterOptions?.minSupportedUI5Version ?? DEFAULT_MIN_UI5_VERSION);
 
@@ -299,7 +232,8 @@ async function retrieveUI5Versions(
         versions = versions.filter((ele) => ele && /^\d+(\.\d+)*$/.test(ele));
     }
 
-    return filterOptions?.removeDuplicateVersions === true ? [...new Set(versions)] : versions;
+    // Remove duplicates, as they may be returned from some UI5 version APIs
+    return [...new Set(versions)];
 }
 
 /**
@@ -344,13 +278,7 @@ async function retrieveNpmUI5Versions(
     const defaultMinVersion: string = minUI5Version ?? DEFAULT_MIN_UI5_VERSION;
     let results: string[] = [];
     try {
-        const runner = new CommandRunner();
-        const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-        const npmVersions = await runner.run(npm, ['show', '@sapui5/distribution-metadata', 'versions', '--no-color']);
-        results = npmVersions
-            .replace(/[\r?\n|[\] ']/g, '') // Remove all chars, new lines and empty space
-            .trim()
-            .split(',');
+        results = await executeNpmUI5VersionsCmd();
     } catch (e) {
         results = DEFAULT_UI5_VERSIONS.slice();
     }
@@ -385,10 +313,10 @@ async function retrieveNpmUI5Versions(
 }
 
 /**
- * Retreive the UI5 Versions.
+ * Get the UI5 versions filtered by the specified options.
  *
- * @param filterOptions - filter the UI5 versions returned
- * @returns returns array of UI5 versions.
+ * @param filterOptions - filter the UI5 versions returned. See {@link UI5VersionFilterOptions} for more information.
+ * @returns array of UI5 versions of type {@link UI5Version}.
  */
 export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): Promise<UI5Version[]> {
     let filteredUI5Versions;
@@ -396,7 +324,7 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
         filteredUI5Versions = await retrieveUI5Versions(filterOptions);
     } catch (error) {
         new ToolsLogger().warn(
-            `Request to '${UI5Info.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
+            `Request to '${UI5VersionRequestInfo.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
         );
         filteredUI5Versions = DEFAULT_UI5_VERSIONS.slice();
     }

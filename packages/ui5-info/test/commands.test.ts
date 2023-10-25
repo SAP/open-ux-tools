@@ -1,13 +1,17 @@
 jest.disableAutomock();
 
 import * as cp from 'child_process';
-import { CommandRunner } from '../src/commandRunner';
+import { executeNpmUI5VersionsCmd } from '../src/commands';
 import { getUI5Versions } from '../src/ui5-info';
 
 jest.mock('child_process');
 const mockedCp = jest.mocked(cp, { shallow: true });
 const originalPlatform = process.platform;
 
+/**
+ * Tests that excercise commands.ts
+ *
+ */
 describe('Retrieve NPM UI5 mocking spawn process', () => {
     beforeEach(() => {
         Object.defineProperty(process, 'platform', {
@@ -98,10 +102,34 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
         });
         const retrievedUI5Versions = await getUI5Versions({
             onlyNpmVersion: true
-        }); // Will throw an exception
-        expect(retrievedUI5Versions[0]).toEqual({ version: '1.104.0' });
-        expect(retrievedUI5Versions.length).toEqual(39);
-        expect(retrievedUI5Versions).toMatchSnapshot();
+        }); // expect defaults
+        expect(retrievedUI5Versions[0]).toEqual({ version: '1.119.0' });
+        expect(retrievedUI5Versions.length).toEqual(7);
+        expect(retrievedUI5Versions).toMatchInlineSnapshot(`
+            [
+              {
+                "version": "1.119.0",
+              },
+              {
+                "version": "1.117.0",
+              },
+              {
+                "version": "1.114.0",
+              },
+              {
+                "version": "1.108.0",
+              },
+              {
+                "version": "1.96.0",
+              },
+              {
+                "version": "1.84.0",
+              },
+              {
+                "version": "1.71.0",
+              },
+            ]
+        `);
         expect(mockedCp.spawn).toBeCalled();
         expect(mockedCp.spawn).nthCalledWith(
             1,
@@ -128,8 +156,7 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
                 error: new Error('spawn ENOENT')
             };
         });
-        const runner = new CommandRunner();
-        await expect(() => runner.run('fakeCmd')).rejects.toThrowError('Command failed with error: spawn ENOENT');
+        await expect(() => executeNpmUI5VersionsCmd()).rejects.toThrowError('Command failed with error: spawn ENOENT');
     });
 
     it('Validate spawn flow on windows', async () => {
@@ -179,6 +206,38 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
             'npm.cmd',
             ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'],
             {}
+        );
+    });
+});
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const mockSpawn = require('mock-spawn');
+import childProcess from 'child_process';
+
+describe('Test commands internals', () => {
+    jest.setTimeout(10000);
+    let mockedSpawn = mockSpawn();
+
+    beforeEach(() => {
+        mockedSpawn = mockSpawn();
+        childProcess.spawn = mockedSpawn;
+    });
+
+    it('Fails to spawn with error', async () => {
+        mockedSpawn.setDefault(mockedSpawn.simple(1, 'Some log', 'stderr buffer'));
+        mockedSpawn.sequence.add({ throws: new Error('spawn ENOENT') });
+        await expect(executeNpmUI5VersionsCmd()).rejects.toThrowError('spawn ENOENT');
+    });
+
+    it('Execute with success', async () => {
+        mockedSpawn.setDefault(mockedSpawn.simple(0, `['1', '2', '3']`));
+        await expect(executeNpmUI5VersionsCmd()).resolves.toEqual(['1', '2', '3']);
+    });
+
+    it('Execute with error code 1', async () => {
+        mockedSpawn.setDefault(mockedSpawn.simple(1, '', 'stack trace'));
+        await expect(executeNpmUI5VersionsCmd()).rejects.toMatchInlineSnapshot(
+            `[Error: Command failed, \`npm show @sapui5/distribution-metadata versions --no-color\`, stack trace]`
         );
     });
 });

@@ -1,21 +1,6 @@
-export const enum UI5Info {
-    OfficialUrl = 'https://ui5.sap.com',
-    NeoAppFile = 'neo-app.json',
-    VersionsFile = 'version.json?sap-ui-config-patches=true&sap-ui-config-showall=true',
-    VersionsOverview = 'versionoverview.json',
-    VersionExternalFile = 'version.json'
-}
-
-export const enum FioriElementsVersion {
-    v2 = 'v2',
-    v4 = 'v4'
-}
+export type FioriElementsVersion = 'v2' | 'v4';
 
 export interface UI5VersionFilterOptions {
-    /**
-     * If provided will determine the lowest UI5 version to return based on the minimum support version
-     */
-    fioriElementsVersion?: FioriElementsVersion;
     /**
      * The host from which snapshot version may be fetched. If provided snapshots will be included.
      */
@@ -43,10 +28,6 @@ export interface UI5VersionFilterOptions {
      * Will use the cached versions from previous network calls if available otherwise will make network calls and populate cache
      */
     useCache?: boolean;
-    /**
-     * Some UI5 version services can return duplicates, set this option to make versions unique
-     */
-    removeDuplicateVersions?: boolean;
     /**
      * Includes the optional property `maintained` to indicate the UI5 version support level
      */
