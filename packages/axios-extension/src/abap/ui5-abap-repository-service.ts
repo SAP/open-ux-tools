@@ -106,6 +106,7 @@ function encodeXmlValue(xmlValue: string): string {
 export class Ui5AbapRepositoryService extends ODataService {
     public static readonly PATH = '/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV';
     private readonly publicUrl: string;
+    private readonly isDest: boolean;
 
     /**
      * Extension of the base constructor to set preferred response format if not provided by caller.
@@ -119,6 +120,7 @@ export class Ui5AbapRepositoryService extends ODataService {
         config.headers['Accept'] = config.headers['Accept'] ?? 'application/json,application/xml,text/plain,*/*';
         super(config);
         this.publicUrl = config.publicUrl || this.defaults.baseURL;
+        this.isDest = /\.dest\//.test(this.defaults.baseURL);
     }
 
     /**
@@ -186,7 +188,6 @@ export class Ui5AbapRepositoryService extends ODataService {
         this.log.debug(`Payload:\n${payload}`);
         const config = this.createConfig(bsp.transport, testMode, safeMode);
         const frontendUrl = this.getAbapFrontendUrl();
-        const isDest = /\.dest\//.test(config.baseURL);
         try {
             const response: AxiosResponse | undefined = await this.updateRepoRequest(!!info, bsp.name, payload, config);
             // An app can be successfully deployed after a timeout exception, no value in showing exception headers
@@ -195,7 +196,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                     msg: response.headers['sap-message'],
                     log: this.log,
                     host: frontendUrl,
-                    isDest
+                    isDest: this.isDest
                 });
             }
             if (!testMode) {
@@ -212,14 +213,14 @@ export class Ui5AbapRepositoryService extends ODataService {
                         error: this.getErrorMessageFromString(response?.data),
                         log: this.log,
                         host: frontendUrl,
-                        isDest
+                        isDest: this.isDest
                     },
                     false
                 );
             }
             return response;
         } catch (error) {
-            this.logError({ error, host: frontendUrl, isDest });
+            this.logError({ error, host: frontendUrl });
             throw error;
         }
     }
@@ -235,8 +236,8 @@ export class Ui5AbapRepositoryService extends ODataService {
     public async undeploy({ bsp, testMode = false }: UndeployConfig): Promise<AxiosResponse | undefined> {
         const config = this.createConfig(bsp.transport, testMode);
         const host = this.getAbapFrontendUrl();
+
         const info: AppInfo = await this.getInfo(bsp.name);
-        const isDest = /\.dest\//.test(config.baseURL);
         try {
             if (info) {
                 const response = await this.deleteRepoRequest(bsp.name, config);
@@ -245,7 +246,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                         msg: response.headers['sap-message'],
                         log: this.log,
                         host,
-                        isDest
+                        isDest: this.isDest
                     });
                 }
                 return response;
@@ -254,7 +255,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                 return undefined;
             }
         } catch (error) {
-            this.logError({ error, host, isDest });
+            this.logError({ error, host });
             throw error;
         }
     }
@@ -438,14 +439,13 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param e error thrown by Axios after sending a request
      * @param e.error error from Axios
      * @param e.host hostname
-     * @param e.isDest
      */
-    protected logError({ error, host, isDest }: { error: Error; host?: string; isDest?: boolean }): void {
+    protected logError({ error, host }: { error: Error; host?: string }): void {
         this.log.error(error.message);
         if (isAxiosError(error) && error.response?.data) {
             const errorMessage = this.getErrorMessageFromString(error.response?.data);
             if (errorMessage) {
-                prettyPrintError({ error: errorMessage, host, log: this.log, isDest });
+                prettyPrintError({ error: errorMessage, host, log: this.log, isDest: this.isDest });
             } else {
                 this.log.error(error.response.data.toString());
             }
