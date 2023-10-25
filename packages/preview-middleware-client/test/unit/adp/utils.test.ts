@@ -21,7 +21,7 @@ describe('utils', () => {
             global.Promise = originalPromise;
         });
 
-        it('should create a deferred object', () => {
+        it('should throw error when resolve or reject are null', () => {
             const mockPromiseConstructor = jest.fn((executor) => {
                 executor(null, null);
             });
