@@ -1,10 +1,11 @@
 import { spawn } from 'child_process';
 
 /**
- * Executes an npm command to extract the supported npm versions from the npm registry
- * 
+ * Executes an npm command to extract the supported npm versions from the npm registry.
+ *
+ * @returns ui5 versions
  */
-export function executeNpmUI5VersionsCmd(): Promise<string[]> {        
+export function executeNpmUI5VersionsCmd(): Promise<string[]> {
     return new Promise((resolve, reject) => {
         const cmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
         const args = ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'];
@@ -26,9 +27,12 @@ export function executeNpmUI5VersionsCmd(): Promise<string[]> {
             if (errorCode !== 0) {
                 return reject(new Error(`Command failed, \`${cmd} ${args.join(' ')}\`, ${stack.join(', ')}`));
             }
-            return resolve(response.replace(/[\r?\n|[\] ']/g, '') // Remove all chars, new lines and empty space
-            .trim()
-            .split(','));
+            return resolve(
+                response
+                    .replace(/[\r?\n|[\] ']/g, '') // Remove all chars, new lines and empty space
+                    .trim()
+                    .split(',')
+            );
         });
     });
 }

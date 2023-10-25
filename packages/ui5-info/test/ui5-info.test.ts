@@ -202,9 +202,7 @@ describe('getUI5Versions: npm listed versions', () => {
     });
 
     it('Validate UI5 version lists is sorted', async () => {
-        const commandRunSpy = jest
-            .spyOn(commands, 'executeNpmUI5VersionsCmd')
-            .mockResolvedValue(ui5VersionsStr176);
+        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(ui5VersionsStr176);
 
         const retrievedUI5Versions = await getUI5Versions({ onlyNpmVersion: true });
         expect(commandRunSpy).toHaveBeenCalledTimes(1);
@@ -213,9 +211,7 @@ describe('getUI5Versions: npm listed versions', () => {
     });
 
     it('Validate UI5 version lists is sorted with snapshot versions', async () => {
-        const commandRunSpy = jest
-            .spyOn(commands, 'executeNpmUI5VersionsCmd')
-            .mockResolvedValue(ui5VersionsStr176);
+        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(ui5VersionsStr176);
         const retrievedUI5Versions = await getUI5Versions({ onlyNpmVersion: true });
         expect(commandRunSpy).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.79.1' }); // Sorted
@@ -223,9 +219,7 @@ describe('getUI5Versions: npm listed versions', () => {
     });
 
     it('Return a UI5 version if a non supported version is selected', async () => {
-        const commandRunSpy = jest
-            .spyOn(commands, 'executeNpmUI5VersionsCmd')
-            .mockResolvedValue(ui5VersionsStr176);
+        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(ui5VersionsStr176);
         const retrievedUI5Versions = await getUI5Versions({ onlyNpmVersion: true, ui5SelectedVersion: '1.80.0' }); // Not supported
         expect(commandRunSpy).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.79.1' }); // Only return supported version from NPM
@@ -233,9 +227,7 @@ describe('getUI5Versions: npm listed versions', () => {
     });
 
     it('Validate UI5 NPM versions are returned when a min UI5 version is specified', async () => {
-        const commandRunSpy = jest
-            .spyOn(commands, 'executeNpmUI5VersionsCmd')
-            .mockResolvedValue(ui5VersionsStr179);
+        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(ui5VersionsStr179);
 
         let retrievedUI5Versions = await getUI5Versions({
             onlyNpmVersion: true,
@@ -256,9 +248,7 @@ describe('getUI5Versions: npm listed versions', () => {
     });
 
     it('Validate UI5 version returns a supported version for a non supported selected version', async () => {
-        const commandRunSpy = jest
-            .spyOn(commands, 'executeNpmUI5VersionsCmd')
-            .mockResolvedValue(ui5VersionsStr176);
+        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(ui5VersionsStr176);
         let versions = await getUI5Versions({ onlyNpmVersion: true, ui5SelectedVersion: '1.74.0' }); // Not supported
         expect(versions[0]).toEqual({ version: '1.76.0' });
         versions = await getUI5Versions({ onlyNpmVersion: true, ui5SelectedVersion: '1.74-supported' }); // Not supported
@@ -277,9 +267,7 @@ describe('getUI5Versions: npm listed versions', () => {
     });
 
     it('Return a UI5 version if no npm versions are found - part 1', async () => {
-        const commandRunSpy = jest
-            .spyOn(commands, 'executeNpmUI5VersionsCmd')
-            .mockResolvedValue([]);
+        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue([]);
         const retrievedUI5Versions = await getUI5Versions({ onlyNpmVersion: true });
         expect(commandRunSpy).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.65.0' }); // Return min version since NPM returns an empty string
@@ -287,9 +275,7 @@ describe('getUI5Versions: npm listed versions', () => {
     });
 
     it('Return a UI5 version if no npm versions are found - part 2', async () => {
-        const commandRunSpy = jest
-            .spyOn(commands, 'executeNpmUI5VersionsCmd')
-            .mockResolvedValue([]);
+        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue([]);
         const retrievedUI5Versions = await getUI5Versions({ onlyNpmVersion: true, minSupportedUI5Version: '1.76.0' });
         expect(commandRunSpy).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.76.0' }); // Return min version since NPM returns an empty string
@@ -298,9 +284,7 @@ describe('getUI5Versions: npm listed versions', () => {
 
     it('Never return duplicate versions', async () => {
         const ui5DuplicateVer = ['1.90.1', '1.90.1'];
-        const commandRunSpy = jest
-            .spyOn(commands, 'executeNpmUI5VersionsCmd')
-            .mockResolvedValue(ui5DuplicateVer);
+        const commandRunSpy = jest.spyOn(commands, 'executeNpmUI5VersionsCmd').mockResolvedValue(ui5DuplicateVer);
         const retrievedUI5Versions = await getUI5Versions({ onlyNpmVersion: true });
         expect(commandRunSpy).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.90.1' });
