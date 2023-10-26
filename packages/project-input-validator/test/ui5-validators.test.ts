@@ -65,11 +65,13 @@ describe('Test Validator functions', () => {
         expect(validateLibModuleName('library_1')).toEqual(t('ui5.lowerAlphaNumericOnly'));
     });
 
-    it.only('Tests for validateProjectFolder file permissions', async () => {
+    it('Tests for validateProjectFolder file permissions', async () => {
         const path = join(__dirname, '/test-tmp');
         try {
             await fs.mkdir(path);
-        } catch {}
+        } catch {
+            // lint
+        }
         await fs.chmod(path, 0o444);
         expect(validateProjectFolder(path, 'anything')).toEqual(t('ui5.folderDoesNotHaveCorrectPermissions'));
         await fs.rmdir(path);

@@ -1,9 +1,7 @@
-import { join } from 'path';
+import { join, posix } from 'path';
 import { t } from '../i18n';
-import { existsSync, lstatSync } from 'fs';
+import { existsSync, lstatSync, accessSync, constants } from 'fs';
 import validateNpmPackageName from 'validate-npm-package-name';
-import { accessSync, constants } from 'fs';
-import { posix } from 'path';
 
 /**
  * Validator: UI5 application namespace.
@@ -20,7 +18,7 @@ function validateNamespacePattern(namespace: string, moduleName = '', allowUnder
     if (!/^[a-zA-Z]/.test(namespace)) {
         return t('ui5.namespaceMustStartWithLetter');
     }
-    if (/\.$/.test(namespace)) {
+    if (namespace.endsWith('.')) {
         return t('ui5.namespaceEndInPeriod');
     }
     if (namespace.toUpperCase() === 'SAP') {
@@ -33,7 +31,7 @@ function validateNamespacePattern(namespace: string, moduleName = '', allowUnder
         return t('ui5.namespaceNumberAfterPeriod');
     }
 
-    if (allowUnderscore && !/^[\w\d.]+$/.test(namespace)) {
+    if (allowUnderscore && !/^[\w.]+$/.test(namespace)) {
         return t('ui5.namespaceSpecialCharacter');
     } else if (!allowUnderscore && !/^[a-z0-9.]*$/g.test(namespace)) {
         return t('ui5.lowerAlphaNumericDotsOnly');
@@ -145,9 +143,9 @@ export function validateModuleName(moduleName: string): boolean | string {
     if (valid.validForNewPackages && valid.validForOldPackages) {
         return true;
     }
-    return [...(valid.errors || []), ...(valid.warnings || [])]
+    return [...(valid.errors || []), ...(valid.warnings ?? [])]
         .filter((msg) => !!msg)
-        .map((msg) => messageMap[msg] || t('ui5.invalidModuleName'))
+        .map((msg) => messageMap[msg] ?? t('ui5.invalidModuleName'))
         .join(', ');
 }
 
