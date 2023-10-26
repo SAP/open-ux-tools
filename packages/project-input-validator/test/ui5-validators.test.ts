@@ -7,13 +7,9 @@ import {
     validateNamespace,
     validateLibModuleName
 } from '../src/ui5/validators';
-import mockFs from 'mock-fs';
+import fs from 'fs/promises';
 
 describe('Test Validator functions', () => {
-    afterEach(async () => {
-        mockFs.restore();
-    });
-
     it('Should return validation message for invalid namespace strings', () => {
         expect(validateNamespace('')).toBe(false);
         expect(validateNamespace('AbCd234')).toBe(t('ui5.inputValueContainsCapital', { promptName: 'Namespace' }));
@@ -69,21 +65,16 @@ describe('Test Validator functions', () => {
         expect(validateLibModuleName('library_1')).toEqual(t('ui5.lowerAlphaNumericOnly'));
     });
 
-    //test seprated because of mockFs file state
-    it('Tests for validateProjectFolder file permissions', () => {
-        mockFs({
-            'some/dir': mockFs.directory({
-                // no write permissions on folder
-                mode: 0o444,
-                items: {
-                    file1: 'file one content'
-                }
-            })
-        });
-
-        expect(validateProjectFolder('some/dir', 'newProjectname1234')).toEqual(
-            t('ui5.folderDoesNotHaveCorrectPermissions')
-        );
+    it.only('Tests for validateProjectFolder file permissions', async () => {
+        const path = join(__dirname, '/test-tmp');
+        try {
+            await fs.mkdir(path);
+            await fs.chmod(path, 0o444);
+        } catch {
+            fail('Error creating test directory');
+        }
+        expect(validateProjectFolder(path, 'anything')).toEqual(t('ui5.folderDoesNotHaveCorrectPermissions'));
+        await fs.rmdir(path);
     });
 
     it('Tests for validateProjectFolder', () => {
