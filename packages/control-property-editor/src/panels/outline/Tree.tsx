@@ -22,22 +22,28 @@ interface OutlineNodeItem extends OutlineNode {
 
 export const Tree = (): ReactElement => {
     const dispatch = useDispatch();
+
+    const [collapsed, setCollapsed] = useState<IGroup[]>([]);
     const [selection, setSelection] = useState<{ group: undefined | IGroup; cell: undefined | OutlineNodeItem }>({
         group: undefined,
         cell: undefined
     });
-    const [collapsed, setCollapsed] = useState<IGroup[]>([]);
+
     const filterQuery = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery);
     const selectedControl = useSelector<RootState, Control | undefined>((state) => state.selectedControl);
     const controlChanges = useSelector<RootState, ControlChanges>((state) => state.changes.controls);
     const model: OutlineNode[] = useSelector<RootState, OutlineNode[]>((state) => state.outline);
+
     const { groups, items } = useMemo(() => {
         const items: OutlineNodeItem[] = [];
         const filteredModel = getFilteredModel(model, filterQuery);
         return { groups: getGroups(filteredModel, items), items };
     }, [model, filterQuery, selection]);
+
     const selectedClassName =
         localStorage.getItem('theme') === 'high contrast' ? 'app-panel-hc-selected-bg' : 'app-panel-selected-bg';
+
+    const tooltipEventListeners: Record<string, (event: MouseEvent) => void> = {};
 
     useEffect(() => {
         if (selection.cell === undefined && selection.group === undefined && selectedControl !== undefined) {
@@ -73,6 +79,34 @@ export const Tree = (): ReactElement => {
         }
     }, []);
 
+    /**
+     * Closes a tooltip and removes the associated event listener.
+     *
+     * @param tooltipId The unique identifier for the tooltip.
+     * @param eventListener The specific event listener to remove (optional).
+     */
+    const closeTooltip = (tooltipId: string, eventListener?: (event: MouseEvent) => void) => {
+        const tooltip = document.getElementById(tooltipId);
+
+        if (tooltip) {
+            tooltip.style.visibility = 'hidden';
+            tooltip.style.opacity = '0';
+        }
+
+        if (eventListener) {
+            document.removeEventListener('click', eventListener);
+        } else if (tooltipId in tooltipEventListeners) {
+            document.removeEventListener('click', tooltipEventListeners[tooltipId]);
+            delete tooltipEventListeners[tooltipId];
+        }
+    };
+
+    /**
+     * Handles the opening of a tooltip and associates an event listener with it.
+     *
+     * @param e The click event that triggered the tooltip.
+     * @param tooltipId The unique identifier for the tooltip.
+     */
     const handleOpenTooltip = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, tooltipId: string) => {
         e.preventDefault();
         const tooltip = document.getElementById(tooltipId);
@@ -83,11 +117,11 @@ export const Tree = (): ReactElement => {
 
             const handleCloseTooltip = (event: MouseEvent) => {
                 if (!tooltip.contains(event.target as Node)) {
-                    tooltip.style.visibility = 'hidden';
-                    tooltip.style.opacity = '0';
-                    document.removeEventListener('click', handleCloseTooltip);
+                    closeTooltip(tooltipId, handleCloseTooltip);
                 }
             };
+
+            tooltipEventListeners[tooltipId] = handleCloseTooltip;
 
             document.addEventListener('click', handleCloseTooltip);
         } else {
@@ -95,8 +129,9 @@ export const Tree = (): ReactElement => {
         }
     };
 
-    const handleOpenFragmentDialog = (data: OutlineNode) => {
+    const handleOpenFragmentDialog = (data: OutlineNode, tooltipId: string) => {
         if (data.controlType === 'sap.ui.extensionpoint') {
+            closeTooltip(tooltipId);
             dispatch(addExtensionPoint(data));
         }
     };
@@ -352,7 +387,9 @@ export const Tree = (): ReactElement => {
                     </div>
                     {isExtensionPoint && (
                         <div id={tooltipId} className="tooltip">
-                            <button onClick={() => handleOpenFragmentDialog(groupHeaderProps?.group?.data)}>
+                            <button
+                                data-testid="tooltip-dialog-button"
+                                onClick={() => handleOpenFragmentDialog(groupHeaderProps?.group?.data, tooltipId)}>
                                 Add Fragment at Extension Point
                             </button>
                         </div>

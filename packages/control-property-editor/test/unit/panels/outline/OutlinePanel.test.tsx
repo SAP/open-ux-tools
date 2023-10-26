@@ -315,6 +315,50 @@ describe('OutlinePanel', () => {
         expect(tooltip).toHaveStyle({ visibility: 'hidden', opacity: '0' });
     });
 
+    test('should show and hide when clicking button to open dialog', () => {
+        const model: OutlineNode[] = [
+            {
+                name: 'ExtensionPoint',
+                controlId: '04',
+                children: [],
+                controlType: 'sap.ui.extensionpoint',
+                editable: true,
+                visible: true
+            }
+        ];
+        const initialState: State = {
+            deviceType: DeviceType.Desktop,
+            scale: 1,
+            outline: model,
+            filterQuery: filterInitOptions,
+            selectedControl: undefined,
+            changes: {
+                pending: [],
+                saved: [],
+                controls: {}
+            },
+            icons: []
+        };
+
+        const tooltipId = 'tooltip--ExtensionPoint';
+
+        const { container } = render(<OutlinePanel />, { initialState });
+        const spanElement = screen.getByTestId('tooltip-container');
+        const buttonElement = screen.getByTestId('tooltip-dialog-button');
+
+        // Simulate a right-click event
+        fireEvent.contextMenu(spanElement);
+
+        const tooltip = container.querySelector(`#${tooltipId}`);
+
+        expect(tooltip).toHaveStyle({ visibility: 'visible', opacity: '1' });
+
+        // Close the tooltip
+        fireEvent.click(buttonElement); // Simulate a click on the tooltip button
+
+        expect(tooltip).toHaveStyle({ visibility: 'hidden', opacity: '0' });
+    });
+
     test('do not expand to previously selected control', () => {
         const { store, container } = render(<OutlinePanel />);
         // clear default applied filters
