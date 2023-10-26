@@ -1,22 +1,21 @@
 {
-    "name": "@sap-ux/ui5-config",
-    "description": "Library to UI5 configuration artifacts",
+    "name": "@sap-ux/ui5-info",
+    "description": "SAP Fiori UI5 info",
+    "version": "0.1.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/ui5-config"
+        "directory": "packages/generator-common"
     },
     "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-config"
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-info"
     },
-    "version": "0.20.0",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc --build",
-        "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
-        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
@@ -27,17 +26,19 @@
     "files": [
         "LICENSE",
         "dist",
+        "templates",
         "!dist/*.map",
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/yaml": "workspace:*",
-        "lodash": "4.17.21",
+        "@sap-ux/logger": "workspace:*",
+        "axios": "1.4.0",
         "semver": "7.5.4"
     },
     "devDependencies": {
-        "@types/lodash": "4.14.198",
-        "@types/semver": "7.5.2"
+        "@types/semver": "7.5.4",
+        "mock-spawn": "0.2.6",
+        "nock": "11.8.2"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
