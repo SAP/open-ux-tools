@@ -1,0 +1,558 @@
+{
+    "maven": {
+        "groupId": "com.sap.ui5.dist",
+        "artifactId": "sapui5-sdk-dist",
+        "version": "1.83.0-SNAPSHOT",
+        "classifier": "hcp-static",
+        "type": "zip"
+    },
+    "welcomeFile": "index.html",
+    "authenticationMethod": "none",
+    "cacheControl": [
+        {
+            "maxAge": 31536000
+        }
+    ],
+    "routes": [
+        {
+            "path": "/jquerysecfix-1.80",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "jquerysecfix-1.80",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview jquerysecfix-1.80"
+        },
+        {
+            "path": "/jquerysecfix-1.79",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "jquerysecfix-1.79",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview jquerysecfix-1.79"
+        },
+        {
+            "path": "/jquerysecfix-1.78",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "jquerysecfix-1.78",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview jquerysecfix-1.78"
+        },
+        {
+            "path": "/jquerysecfix-1.71",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "jquerysecfix-1.71",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview jquerysecfix-1.71"
+        },
+        {
+            "path": "/jquerysecfix-1.60",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "jquerysecfix-1.60",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview jquerysecfix-1.60"
+        },
+        {
+            "path": "/jquerysecfix-1.52",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "jquerysecfix-1.52",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview jquerysecfix-1.52"
+        },
+        {
+            "path": "/jquerysecfix-1.44",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "jquerysecfix-1.44",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview jquerysecfix-1.44"
+        },
+        {
+            "path": "/jquerysecfix-1.38",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "jquerysecfix-1.38",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview jquerysecfix-1.38"
+        },
+        {
+            "path": "/snapshot-1.83",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.83",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.83"
+        },
+        {
+            "path": "/snapshot-1.82",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.82",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.82"
+        },
+        {
+            "path": "/snapshot-1.81",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.81",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.81"
+        },
+        {
+            "path": "/snapshot-1.80",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.80",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.80"
+        },
+        {
+            "path": "/snapshot-1.79",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.79",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.79"
+        },
+        {
+            "path": "/snapshot-1.78",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.78",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.78"
+        },
+        {
+            "path": "/snapshot-1.77",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.77",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.77"
+        },
+        {
+            "path": "/snapshot-1.76",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.76",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.76"
+        },
+        {
+            "path": "/snapshot-1.75",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.75",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.75"
+        },
+        {
+            "path": "/snapshot-1.74",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.74",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.74"
+        },
+        {
+            "path": "/snapshot-1.73",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.73",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.73"
+        },
+        {
+            "path": "/snapshot-1.72",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.72",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.72"
+        },
+        {
+            "path": "/snapshot-1.71",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.71",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.71"
+        },
+        {
+            "path": "/snapshot-1.70",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.70",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.70"
+        },
+        {
+            "path": "/snapshot-1.69",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.69",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.69"
+        },
+        {
+            "path": "/snapshot-1.68",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.68",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.68"
+        },
+        {
+            "path": "/snapshot-1.67",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.67",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.67"
+        },
+        {
+            "path": "/snapshot-1.66",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.66",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.66"
+        },
+        {
+            "path": "/snapshot-1.65",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.65",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.65"
+        },
+        {
+            "path": "/snapshot-1.64",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.64",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.64"
+        },
+        {
+            "path": "/snapshot-1.63",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.63",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.63"
+        },
+        {
+            "path": "/snapshot-1.62",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.62",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.62"
+        },
+        {
+            "path": "/snapshot-1.61",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.61",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.61"
+        },
+        {
+            "path": "/snapshot-1.60",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.60",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.60"
+        },
+        {
+            "path": "/snapshot-1.58",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.58",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.58"
+        },
+        {
+            "path": "/snapshot-1.56",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.56",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.56"
+        },
+        {
+            "path": "/snapshot-1.54",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.54",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.54"
+        },
+        {
+            "path": "/snapshot-1.52",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.52",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.52"
+        },
+        {
+            "path": "/snapshot-1.50",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.50",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.50"
+        },
+        {
+            "path": "/snapshot-1.48",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.48",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.48"
+        },
+        {
+            "path": "/snapshot-1.46",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.46",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.46"
+        },
+        {
+            "path": "/snapshot-1.44",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.44",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.44"
+        },
+        {
+            "path": "/snapshot-1.42",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.42",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.42"
+        },
+        {
+            "path": "/snapshot-1.40",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.40",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.40"
+        },
+        {
+            "path": "/snapshot-1.38",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.38",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.38"
+        },
+        {
+            "path": "/snapshot-1.36",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.36",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.36"
+        },
+        {
+            "path": "/snapshot-1.34",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.34",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.34"
+        },
+        {
+            "path": "/snapshot-1.32",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.32",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.32"
+        },
+        {
+            "path": "/snapshot-1.28",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-1.28",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-1.28"
+        },
+        {
+            "path": "/snapshot-untested",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot-untested",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot-untested"
+        },
+        {
+            "path": "/snapshot",
+            "target": {
+                "type": "application",
+                "name": "sapui5preview",
+                "version": "snapshot",
+                "resolutionType": "localAccount",
+                "preferLocal": true
+            },
+            "description": "sapui5preview snapshot"
+        }
+    ],
+    "ui5CacheBuster": true
+}
