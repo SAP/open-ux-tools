@@ -25,6 +25,7 @@ import { FilterName } from '../../slice';
 import type { RootState } from '../../store';
 import { convertCamelCaseToPascalCase } from '@sap-ux-private/control-property-editor-common';
 import { getFormattedDateAndTime } from './utils';
+import { OtherChangeProps } from './OtherChange';
 
 export interface ChangeStackProps {
     changes: Change[];
@@ -92,13 +93,16 @@ type Item = ControlGroupProps | UnknownChangeProps;
  */
 function convertChanges(changes: Change[]): Item[] {
     const items: Item[] = [];
-    const savedItems: UnknownSavedChange[] = [];
     let i = 0;
     while (i < changes.length) {
         const change: Change = changes[i];
         let group: ControlGroupProps;
         if (change.type === 'saved' && change.kind === 'unknown') {
-            savedItems.push(change);
+            items.push({
+                fileName: change.fileName,
+                timestamp: change.timestamp,
+                header: true
+            });
             i++;
         } else {
             if (['propertyChange', 'propertyBindingChange'].includes(change.changeType)) {
@@ -129,58 +133,10 @@ function convertChanges(changes: Change[]): Item[] {
                 ) {
                     break;
                 }
-                group.changes.push(classifyChange(nextChange, i));
+                group.changes.push(classifyChange(nextChange, i) as ControlPropertyChange);
                 i++;
             }
         }
-    }
-    items.push(...arrangeSavedChanges(savedItems));
-    return items;
-}
-
-/**
- * Arrange Saved Change.
- *
- * @param changes UnknownSavedChange
- * @returns Item
- */
-function arrangeSavedChanges(changes: UnknownSavedChange[]): Item[] {
-    const items: Item[] = [];
-    let i = 0;
-
-    // sort the changes based on the same control ID
-    changes &&
-        changes.sort((a, b) => {
-            // Compare the 'controlId' property of the objects
-            const firstControlID = a.controlId ? a.controlId : '';
-            const secondControlID = b.controlId ? b.controlId : '';
-            if (firstControlID < secondControlID) {
-                return -1;
-            }
-            if (firstControlID > secondControlID) {
-                return 1;
-            }
-            return 0;
-        });
-
-    // set the header flag, which is used in UI to set Saved Items Header.
-    while (i < changes.length) {
-        const change: Change = changes[i];
-        const previousChange = changes[i - 1];
-        if (previousChange && previousChange?.controlId === change?.controlId) {
-            items.push({
-                fileName: change.fileName,
-                timestamp: change.timestamp,
-                header: false
-            });
-        } else {
-            items.push({
-                fileName: change.fileName,
-                timestamp: change.timestamp,
-                header: true
-            });
-        }
-        i++; // Increment i at the end of each iteration
     }
     return items;
 }
@@ -192,7 +148,7 @@ function arrangeSavedChanges(changes: UnknownSavedChange[]): Item[] {
  * @param changeIndex number
  * @returns ControlPropertyChange
  */
-function classifyChange(change: ValidChange, changeIndex: number): ControlPropertyChange {
+function classifyChange(change: ValidChange, changeIndex: number): ControlPropertyChange | OtherChangeProps {
     let base;
     if (['propertyChange', 'propertyBindingChange'].includes(change.changeType)) {
         const { controlId, propertyName, value, controlName, changeType } = change as PendingPropertyChange;
@@ -240,20 +196,35 @@ export function isKnownChange(change: ControlGroupProps | UnknownChangeProps): c
     return (change as ControlGroupProps).controlId !== undefined;
 }
 
-const filterChanges = (changes: Change[], query: string): Change[] => {
+const filterPropertyChanges = (changes: ControlPropertyChange[], query: string): ControlPropertyChange[] => {
     return changes.filter((item) => {
-        item = item as SavedPropertyChange;
+        item = item as ControlPropertyChange;
         return (
             !query ||
             item.propertyName.trim().toLowerCase().includes(query) ||
-            item.changeType.trim().toLowerCase().includes(query) ||
             convertCamelCaseToPascalCase(item.propertyName.toString()).trim().toLowerCase().includes(query) ||
             item.value.toString().trim().toLowerCase().includes(query) ||
-            item.fileName.toString().trim().toLowerCase().includes(query) ||
             convertCamelCaseToPascalCase(item.value.toString()).trim().toLowerCase().includes(query) ||
             (item.timestamp && getFormattedDateAndTime(item.timestamp).trim().toLowerCase().includes(query))
         );
     });
+};
+
+const isQueryMatchesChange = (item: UnknownChangeProps, query: string): boolean => {
+    const parts = item.fileName.split('_');
+    const changeName = parts[parts.length - 1];
+    const name = convertCamelCaseToPascalCase(changeName + 'Change');
+    let dateTime = '';
+    if (item.timestamp) {
+        dateTime = getFormattedDateAndTime(item.timestamp).trim();
+    }
+    
+    return (
+        !query ||
+        item.fileName.trim().toLowerCase().includes(query) ||
+        name.trim().toLowerCase().includes(query) ||
+        dateTime.toLowerCase().includes(query)
+    );
 };
 
 /**
@@ -271,6 +242,9 @@ function filterGroup(model: Item[], query: string): Item[] {
     for (const item of model) {
         let parentMatch = false;
         if (!isKnownChange(item)) {
+            if (isQueryMatchesChange(item, query)) {
+                filteredModel.push({ ...item, changes: [] });
+            }
             continue;
         }
         const name = item.text.trim().toLowerCase();
@@ -283,7 +257,7 @@ function filterGroup(model: Item[], query: string): Item[] {
         if (controlPropModel.changes.length <= 0) {
             continue;
         }
-        const data = filterChanges(controlPropModel.changes as Change[], query);
+        const data = filterPropertyChanges(controlPropModel.changes as ControlPropertyChange[], query);
 
         if (parentMatch) {
             // parent matched filter query and pushed already to `filterModel`. only  replace matched children

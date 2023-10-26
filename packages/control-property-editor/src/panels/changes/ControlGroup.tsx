@@ -19,7 +19,7 @@ export interface ControlGroupProps {
     changeIndex: number;
     changes: ControlPropertyChange[] | OtherChangeProps[];
 }
-export type ControlPropertyChange = Omit<PropertyChangeProps, 'actionClassName'> | OtherChangeProps;
+export type ControlPropertyChange = Omit<PropertyChangeProps, 'actionClassName'>;
 
 /**
  * React Element for control groups.
