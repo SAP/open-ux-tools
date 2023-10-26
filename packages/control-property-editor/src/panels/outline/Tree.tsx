@@ -248,8 +248,7 @@ export const Tree = (): ReactElement => {
         );
         return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
             <div
-                role="presentation"
-                tabIndex={0}
+                aria-hidden
                 id={item.controlId}
                 className={classNames.join(' ')}
                 onClick={(): void => onSelectCell(item)}>
@@ -321,8 +320,7 @@ export const Tree = (): ReactElement => {
         return (
             <div
                 {...refProps}
-                role="presentation"
-                tabIndex={0}
+                aria-hidden
                 className={`${selectNode} tree-row ${focusEditable}`}
                 onClick={(): void => onSelectHeader(groupHeaderProps?.group)}>
                 <span
