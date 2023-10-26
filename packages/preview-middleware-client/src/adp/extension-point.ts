@@ -91,7 +91,7 @@ export default class ExtensionPointService {
      * @returns Deffered extension point data that is provided to the plugin
      */
     public async fragmentHandler(overlay: UI5Element, info: ExtensionPointData): Promise<DeferredExtPointData> {
-        let deffered: Deferred<DeferredExtPointData> = createDeferred();
+        let deffered = createDeferred<DeferredExtPointData>();
 
         await handler(overlay, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {
             name: info.name,
