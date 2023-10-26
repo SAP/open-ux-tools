@@ -7,21 +7,19 @@ import overviewResponse from './testdata/overview-response.json';
 import { getUI5Versions } from '../src/ui5-info';
 import * as commands from '../src/commands';
 import { ToolsLogger } from '@sap-ux/logger';
-import { UI5VersionRequestInfo } from '../src/constants';
+import { ui5VersionRequestInfo } from '../src/constants';
 
 const snapshotVersionsHost = 'http://ui5.versions.snapshots';
-// Require for axios to work with nock
-axios.defaults.adapter = require('axios/lib/adapters/http');
 
 describe('getUI5Versions', () => {
     beforeEach(() => {
-        nock(UI5VersionRequestInfo.OfficialUrl)
-            .get(`/${UI5VersionRequestInfo.VersionsFile}`)
+        nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
             .reply(200, officialResponse);
-        nock(snapshotVersionsHost).get(`/${UI5VersionRequestInfo.NeoAppFile}`).reply(200, snapshotResponse);
-        nock(UI5VersionRequestInfo.OfficialUrl)
+        nock(snapshotVersionsHost).get(`/${ui5VersionRequestInfo.NeoAppFile}`).reply(200, snapshotResponse);
+        nock(ui5VersionRequestInfo.OfficialUrl)
             .persist()
-            .get(`/${UI5VersionRequestInfo.VersionsOverview}`)
+            .get(`/${ui5VersionRequestInfo.VersionsOverview}`)
             .reply(200, overviewResponse);
     });
 
@@ -132,7 +130,7 @@ describe('getUI5Versions: Handle error cases while getting UI5 versions: ', () =
     const logErrorSpy = jest.spyOn(ToolsLogger.prototype, 'error');
 
     beforeEach(() => {
-        nock(UI5VersionRequestInfo.OfficialUrl).get(`/${UI5VersionRequestInfo.VersionsFile}`).reply(500, '');
+        nock(ui5VersionRequestInfo.OfficialUrl).get(`/${ui5VersionRequestInfo.VersionsFile}`).reply(500, '');
     });
 
     afterEach(() => {
@@ -165,8 +163,8 @@ describe('getUI5Versions: Handle fatal cases while getting UI5 versions: ', () =
     const logErrorSpy = jest.spyOn(ToolsLogger.prototype, 'error');
 
     beforeEach(() => {
-        nock(UI5VersionRequestInfo.OfficialUrl)
-            .get(`/${UI5VersionRequestInfo.VersionsFile}`)
+        nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
             .replyWithError('Fatal error');
     });
 

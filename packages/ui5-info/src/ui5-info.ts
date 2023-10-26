@@ -7,18 +7,18 @@ import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
 import { ui5VersionFallbacks } from './ui5VersionFallback';
 import {
-    DEFAULT_MIN_UI5_VERSION,
-    DEFAULT_UI5_VERSIONS,
-    DefaultVersion,
-    LatestVersionString,
-    UI5VersionRequestInfo,
-    UI5_VERSIONS_TYPE,
+    defaultMinUi5Version,
+    defaultUi5Versions,
+    defaultVersion,
+    latestVersionString,
+    ui5VersionRequestInfo,
+    ui5VersionsType,
     ui5VersionsCache
 } from './constants';
 
-// This one holds the actual version, not 'Latest'
+// Semantic version equivalent of 'Latest'
 let latestUI5Version: string;
-const PASS_THROUGH_STRINGS = new Set(['snapshot', 'snapshot-untested', LatestVersionString]);
+const passThroughStrings = new Set(['snapshot', 'snapshot-untested', latestVersionString]);
 /**
  * Sort function for snapshot versions.
  *
@@ -29,7 +29,7 @@ const PASS_THROUGH_STRINGS = new Set(['snapshot', 'snapshot-untested', LatestVer
 function snapshotSort(a: string, b: string): number {
     a = a.replace('snapshot-', '');
     b = b.replace('snapshot-', '');
-    const versions = [DefaultVersion, 'snapshot', 'untested'];
+    const versions = [defaultVersion, 'snapshot', 'untested'];
     // Sort 'Latest', 'snapshot' and 'snapshot-untested' in order
     if (versions.indexOf(a) > -1 && versions.indexOf(b) > -1) {
         return a.localeCompare(b);
@@ -51,7 +51,7 @@ function snapshotSort(a: string, b: string): number {
  */
 function filterNewerEqual(versions: string[], minVersion: string): string[] {
     return versions.filter((version) => {
-        if (PASS_THROUGH_STRINGS.has(version)) {
+        if (passThroughStrings.has(version)) {
             return true;
         } else if (version.startsWith('snapshot-')) {
             version = version.replace('snapshot-', '');
@@ -68,11 +68,11 @@ function filterNewerEqual(versions: string[], minVersion: string): string[] {
  * @returns ui5 versions in json format as defined by the generic type
  */
 async function requestUI5Versions<T>(
-    host: string = UI5VersionRequestInfo.OfficialUrl,
+    host: string = ui5VersionRequestInfo.OfficialUrl,
     pathname = `/${
-        host === UI5VersionRequestInfo.OfficialUrl
-            ? UI5VersionRequestInfo.VersionsFile
-            : UI5VersionRequestInfo.NeoAppFile
+        host === ui5VersionRequestInfo.OfficialUrl
+            ? ui5VersionRequestInfo.VersionsFile
+            : ui5VersionRequestInfo.NeoAppFile
     }`
 ): Promise<T> {
     const response = await axios.get(new URL(pathname, host).toString(), { responseType: 'json' });
@@ -85,7 +85,7 @@ async function requestUI5Versions<T>(
  * @param url - optional, url from which to request the UI5 versions
  * @returns ui5 version strings
  */
-async function parseUI5Versions(url = UI5VersionRequestInfo.OfficialUrl.toString()): Promise<string[]> {
+async function parseUI5Versions(url = ui5VersionRequestInfo.OfficialUrl.toString()): Promise<string[]> {
     const response = await requestUI5Versions<UI5VersionsResponse>(url);
     let result: string[] = [];
     if (Array.isArray(response.routes)) {
@@ -93,7 +93,7 @@ async function parseUI5Versions(url = UI5VersionRequestInfo.OfficialUrl.toString
             if (route.path === '/') {
                 latestUI5Version = route.target.version;
             }
-            return route.path === '/' ? DefaultVersion : route.target.version;
+            return route.path === '/' ? defaultVersion : route.target.version;
         });
     } else {
         latestUI5Version = response['latest'].version;
@@ -112,13 +112,13 @@ async function parseUI5VersionsOverview(): Promise<UI5VersionOverview[]> {
     let versions: UI5VersionOverview[] = [];
     try {
         const response = await requestUI5Versions<{ versions: UI5VersionOverview[] }>(
-            UI5VersionRequestInfo.OfficialUrl,
-            `/${UI5VersionRequestInfo.VersionsOverview}`
+            ui5VersionRequestInfo.OfficialUrl,
+            `/${ui5VersionRequestInfo.VersionsOverview}`
         );
         versions = response.versions;
     } catch (error) {
         new ToolsLogger().warn(
-            `Request to '${UI5VersionRequestInfo.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
+            `Request to '${ui5VersionRequestInfo.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
         );
         versions = ui5VersionFallbacks;
     }
@@ -144,20 +144,20 @@ async function parseUI5VersionsOverview(): Promise<UI5VersionOverview[]> {
  * @returns Array of UI5 versions
  */
 const retrieveUI5VersionsCache = async (
-    type: UI5_VERSIONS_TYPE.official | UI5_VERSIONS_TYPE.snapshot | UI5_VERSIONS_TYPE.overview,
+    type: ui5VersionsType.official | ui5VersionsType.snapshot | ui5VersionsType.overview,
     useCache = false,
     snapshotUrl?: string
 ): Promise<string[] | UI5VersionOverview[]> => {
     if (!useCache) {
         switch (type) {
-            case UI5_VERSIONS_TYPE.official:
-                return parseUI5Versions(UI5VersionRequestInfo.OfficialUrl);
-            case UI5_VERSIONS_TYPE.snapshot:
+            case ui5VersionsType.official:
+                return parseUI5Versions(ui5VersionRequestInfo.OfficialUrl);
+            case ui5VersionsType.snapshot:
                 if (snapshotUrl) {
                     return parseUI5Versions(snapshotUrl);
                 }
                 break;
-            case UI5_VERSIONS_TYPE.overview:
+            case ui5VersionsType.overview:
                 return parseUI5VersionsOverview();
             default:
         }
@@ -165,15 +165,15 @@ const retrieveUI5VersionsCache = async (
 
     if (ui5VersionsCache[type].length === 0) {
         switch (type) {
-            case UI5_VERSIONS_TYPE.official:
-                ui5VersionsCache[type] = await parseUI5Versions(UI5VersionRequestInfo.OfficialUrl);
+            case ui5VersionsType.official:
+                ui5VersionsCache[type] = await parseUI5Versions(ui5VersionRequestInfo.OfficialUrl);
                 break;
-            case UI5_VERSIONS_TYPE.snapshot:
+            case ui5VersionsType.snapshot:
                 if (snapshotUrl) {
                     ui5VersionsCache[type] = await parseUI5Versions(snapshotUrl);
                 }
                 break;
-            case UI5_VERSIONS_TYPE.overview:
+            case ui5VersionsType.overview:
                 ui5VersionsCache[type] = await parseUI5VersionsOverview();
                 break;
             default:
@@ -197,21 +197,21 @@ async function retrieveUI5Versions(
     let snapshotVersions: string[] = [];
 
     try {
-        const minUI5Version = filterOptions?.minSupportedUI5Version ?? DEFAULT_MIN_UI5_VERSION;
+        const minUI5Version = filterOptions?.minSupportedUI5Version ?? defaultMinUi5Version;
         officialVersions = filterOptions?.onlyNpmVersion
             ? await retrieveNpmUI5Versions(filterOptions.ui5SelectedVersion, minUI5Version)
-            : ((await retrieveUI5VersionsCache(UI5_VERSIONS_TYPE.official, filterOptions?.useCache)) as string[]);
+            : ((await retrieveUI5VersionsCache(ui5VersionsType.official, filterOptions?.useCache)) as string[]);
     } catch (error) {
         logger.warn(
-            `Request to '${UI5VersionRequestInfo.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
+            `Request to '${ui5VersionRequestInfo.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
         );
-        officialVersions = DEFAULT_UI5_VERSIONS.slice();
+        officialVersions = defaultUi5Versions.slice();
     }
 
     if (filterOptions?.snapshotVersionsHost) {
         try {
             snapshotVersions = (await retrieveUI5VersionsCache(
-                UI5_VERSIONS_TYPE.snapshot,
+                ui5VersionsType.snapshot,
                 filterOptions?.useCache,
                 filterOptions?.snapshotVersionsHost
             )) as string[];
@@ -223,10 +223,10 @@ async function retrieveUI5Versions(
     let versions = [...officialVersions, ...snapshotVersions].sort(snapshotSort);
 
     // Dont return versions older than the default min version
-    versions = filterNewerEqual(versions, filterOptions?.minSupportedUI5Version ?? DEFAULT_MIN_UI5_VERSION);
+    versions = filterNewerEqual(versions, filterOptions?.minSupportedUI5Version ?? defaultMinUi5Version);
 
     if (filterOptions?.onlyVersionNumbers) {
-        if (versions[0].toLocaleLowerCase().includes(LatestVersionString.toLocaleLowerCase())) {
+        if (versions[0].toLocaleLowerCase().includes(latestVersionString.toLocaleLowerCase())) {
             versions[0] = latestUI5Version;
         }
         versions = versions.filter((ele) => ele && /^\d+(\.\d+)*$/.test(ele));
@@ -275,12 +275,12 @@ async function retrieveNpmUI5Versions(
     ui5SelectedVersion: string | undefined = undefined,
     minUI5Version?: string
 ): Promise<string[]> {
-    const defaultMinVersion: string = minUI5Version ?? DEFAULT_MIN_UI5_VERSION;
+    const defaultMinVersion: string = minUI5Version ?? defaultMinUi5Version;
     let results: string[] = [];
     try {
         results = await executeNpmUI5VersionsCmd();
     } catch (e) {
-        results = DEFAULT_UI5_VERSIONS.slice();
+        results = defaultUi5Versions.slice();
     }
     const sortedUI5Versions = sortUI5Versions(results);
 
@@ -295,7 +295,7 @@ async function retrieveNpmUI5Versions(
         if (latestMinIdx === -1) {
             if (
                 cmp(ui5SelectedVersion, latestVersions.slice(-1)[0]) > 0 ||
-                ui5SelectedVersion === LatestVersionString ||
+                ui5SelectedVersion === latestVersionString ||
                 !valid(ui5SelectedVersion)
             ) {
                 // Return latest supported version if selected version is not available yet or is 'Latest' or not valid
@@ -324,16 +324,16 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
         filteredUI5Versions = await retrieveUI5Versions(filterOptions);
     } catch (error) {
         new ToolsLogger().warn(
-            `Request to '${UI5VersionRequestInfo.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
+            `Request to '${ui5VersionRequestInfo.OfficialUrl}' failed. Error was: '${error.message}'. Fallback to default UI5 versions`
         );
-        filteredUI5Versions = DEFAULT_UI5_VERSIONS.slice();
+        filteredUI5Versions = defaultUi5Versions.slice();
     }
     const defaultUI5Version = filteredUI5Versions[0];
 
     let ui5VersionsOverview: UI5VersionOverview[] | undefined;
     if (filterOptions?.includeMaintained === true) {
         ui5VersionsOverview = (await retrieveUI5VersionsCache(
-            UI5_VERSIONS_TYPE.overview,
+            ui5VersionsType.overview,
             filterOptions?.useCache
         )) as UI5VersionOverview[];
     }
