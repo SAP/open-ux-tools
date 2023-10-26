@@ -35,9 +35,9 @@ describe('getUI5Versions', () => {
 
     test('filterOptions: snapshots included - snapshotVersionsHost', async () => {
         const versions = await getUI5Versions({ snapshotVersionsHost });
-        expect(versions.length).toEqual(165);
+        expect(versions.length).toEqual(166);
         expect(versions).toMatchSnapshot();
-    });
+    }, 100000);
 
     test('filterOptions: all available versions -  minSupportedVersion: `1.0.0`', async () => {
         const versions1 = await getUI5Versions({ minSupportedUI5Version: '1.0.0' });

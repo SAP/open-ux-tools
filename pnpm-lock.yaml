@@ -1410,16 +1410,10 @@ importers:
       semver:
         specifier: 7.5.4
         version: 7.5.4
-      semver-compare:
-        specifier: 1.0.0
-        version: 1.0.0
     devDependencies:
       '@types/semver':
         specifier: 7.5.4
         version: 7.5.4
-      '@types/semver-compare':
-        specifier: 1.0.2
-        version: 1.0.2
       mock-spawn:
         specifier: 0.2.6
         version: 0.2.6
@@ -8274,10 +8268,6 @@ packages:
 
   /@types/scheduler@0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
-
-  /@types/semver-compare@1.0.2:
-    resolution: {integrity: sha512-9qyAejfgFEnY9MKw1SvFJ4YbDhB23qXlIBEWpz7E5bngaAlwd9G9vLBt0fY1U3KmpoV7I5km+bKGYBJ/Xyudhg==}
-    dev: true
 
   /@types/semver@7.5.2:
     resolution: {integrity: sha512-7aqorHYgdNO4DM36stTiGO3DvKoex9TQRwsJU6vMaFGyqpBA1MNZkz+PG3gaNUPpTAOYhT1WR7M1JyA3fbS9Cw==}
@@ -18162,10 +18152,6 @@ packages:
   /select-hose@2.0.0:
     resolution: {integrity: sha512-mEugaLK+YfkijB4fx0e6kImuJdCIt2LxCRcbEYPqRGCs4F2ogyfZU5IAZRdjCP8JPq2AtdNoC/Dux63d9Kiryg==}
     dev: true
-
-  /semver-compare@1.0.0:
-    resolution: {integrity: sha512-YM3/ITh2MJ5MtzaM429anh+x2jiLVjqILF4m4oyQB18W7Ggea7BfqdH/wGMK7dDiMghv/6WG7znWMwUDzJiXow==}
-    dev: false
 
   /semver-diff@4.0.0:
     resolution: {integrity: sha512-0Ju4+6A8iOnpL/Thra7dZsSlOHYAHIeMxfhWQRI1/VLcT3WDBZKKtQt/QkBOsiIN9ZpuvHE6cGZ0x4glCMmfiA==}

@@ -1,4 +1,3 @@
-import cmp from 'semver-compare';
 import { coerce, major, minor, valid } from 'semver';
 import type { UI5VersionFilterOptions, UI5VersionOverview, UI5VersionsResponse, UI5Version } from './types';
 import { executeNpmUI5VersionsCmd } from './commands';
@@ -19,6 +18,34 @@ import {
 // Semantic version equivalent of 'Latest'
 let latestUI5Version: string;
 const passThroughStrings = new Set(['snapshot', 'snapshot-untested', latestVersionString]);
+
+const ui5VersionStrCmp = (a: string, b: string) => {
+    const a1 = a.split('.');
+    const b1 = b.split('.');
+    const len = Math.max(a1.length, b1.length);
+
+    for (let i = 0; i < len; i++) {
+        const _a = +a1[i] || 0;
+        const _b = +b1[i] || 0;
+        if (_a === _b) {
+            continue;
+        } else {
+            return _a > _b ? 1 : -1;
+        }
+    }
+    return 0;
+};
+
+/**
+ * Sorts UI5 version strings.
+ *
+ * @param ui5Versions - versions to be sorted
+ * @returns sorted versions
+ */
+function sortUI5Versions(ui5Versions: string[]): string[] {
+    return ui5Versions.filter(Boolean).sort(ui5VersionStrCmp).reverse(); // Safety check to always ensure the list is sorted
+}
+
 /**
  * Sort function for snapshot versions.
  *
@@ -36,10 +63,10 @@ function snapshotSort(a: string, b: string): number {
     }
     // Sort 'Latest', 'snapshot' and 'snapshot-untested' to the top of the UI5 version list
     if (versions.indexOf(a) > -1 || versions.indexOf(b) > -1) {
-        return cmp(a, b);
+        return ui5VersionStrCmp(a, b);
     }
     // Ensure snapshot is sorted to top of patch versions
-    return cmp(b + '.999', a + '.999');
+    return ui5VersionStrCmp(b + '.999', a + '.999');
 }
 
 /**
@@ -56,7 +83,7 @@ function filterNewerEqual(versions: string[], minVersion: string): string[] {
         } else if (version.startsWith('snapshot-')) {
             version = version.replace('snapshot-', '');
         }
-        return cmp(version, minVersion) >= 0;
+        return ui5VersionStrCmp(version, minVersion) >= 0;
     });
 }
 
@@ -237,34 +264,6 @@ async function retrieveUI5Versions(
 }
 
 /**
- * Sorts UI5 versions.
- *
- * @param ui5Versions - versions to be sorted
- * @returns sorted versions
- */
-function sortUI5Versions(ui5Versions: string[]): string[] {
-    return ui5Versions
-        .filter(Boolean)
-        .sort((a: string, b: string) => {
-            const a1 = a.split('.');
-            const b1 = b.split('.');
-            const len = Math.max(a1.length, b1.length);
-
-            for (let i = 0; i < len; i++) {
-                const _a = +a1[i] || 0;
-                const _b = +b1[i] || 0;
-                if (_a === _b) {
-                    continue;
-                } else {
-                    return _a > _b ? 1 : -1;
-                }
-            }
-            return 0;
-        })
-        .reverse(); // Safety check to always ensure the list is sorted
-}
-
-/**
  * Retrieve a list of versions based on the odata version i.e. v2 | v4. If a known version is passed in and is a supported version, then only that version is returned.
  *
  * @param ui5SelectedVersion - selected version i.e. 1.80.0 | latest | ''
@@ -294,7 +293,7 @@ async function retrieveNpmUI5Versions(
 
         if (latestMinIdx === -1) {
             if (
-                cmp(ui5SelectedVersion, latestVersions.slice(-1)[0]) > 0 ||
+                ui5VersionStrCmp(ui5SelectedVersion, latestVersions.slice(-1)[0]) > 0 ||
                 ui5SelectedVersion === latestVersionString ||
                 !valid(ui5SelectedVersion)
             ) {

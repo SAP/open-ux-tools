@@ -2330,6 +2330,9 @@ exports[`getUI5Versions filterOptions: loads and use cached versions - useCache:
     "version": "snapshot-1.66",
   },
   {
+    "version": "snapshot-1.65",
+  },
+  {
     "version": "1.65.1",
   },
 ]
@@ -3998,6 +4001,9 @@ exports[`getUI5Versions filterOptions: snapshots included - snapshotVersionsHost
   },
   {
     "version": "snapshot-1.66",
+  },
+  {
+    "version": "snapshot-1.65",
   },
   {
     "version": "1.65.1",
