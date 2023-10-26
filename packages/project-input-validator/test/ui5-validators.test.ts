@@ -69,10 +69,8 @@ describe('Test Validator functions', () => {
         const path = join(__dirname, '/test-tmp');
         try {
             await fs.mkdir(path);
-            await fs.chmod(path, 0o444);
-        } catch {
-            fail('Error creating test directory');
-        }
+        } catch {}
+        await fs.chmod(path, 0o444);
         expect(validateProjectFolder(path, 'anything')).toEqual(t('ui5.folderDoesNotHaveCorrectPermissions'));
         await fs.rmdir(path);
     });
