@@ -88,6 +88,14 @@ export default abstract class BaseDialog extends Controller {
         }
     }
 
+    /**
+     * Sets validation properties for an input field and enables/disables a dialog button.
+     *
+     * @param source The input field to set validation properties for.
+     * @param valueState The validation state for the input field (e.g., 'Error', 'Warning', 'Success').
+     * @param enabled `true` to enable the dialog button, `false` to disable it.
+     * @param stateText The text associated with the validation state to display as a tooltip or message.
+     */
     setInputValidation(source: Input, valueState: ValueState, enabled: boolean, stateText: string) {
         source.setValueState(valueState);
         source.setValueStateText(stateText);
