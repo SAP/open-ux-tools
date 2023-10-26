@@ -247,7 +247,13 @@ export const Tree = (): ReactElement => {
             <></>
         );
         return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
-            <div className={classNames.join(' ')} onClick={(): void => onSelectCell(item)} id={item.controlId}>
+            <div
+                role="button"
+                tabIndex={0}
+                id={item.controlId}
+                className={classNames.join(' ')}
+                onClick={(): void => onSelectCell(item)}
+                onKeyDown={(): void => onSelectCell(item)}>
                 <div
                     {...props}
                     className={`tree-cell`}
@@ -316,8 +322,11 @@ export const Tree = (): ReactElement => {
         return (
             <div
                 {...refProps}
+                role="button"
+                tabIndex={0}
                 className={`${selectNode} tree-row ${focusEditable}`}
-                onClick={(): void => onSelectHeader(groupHeaderProps?.group)}>
+                onClick={(): void => onSelectHeader(groupHeaderProps?.group)}
+                onKeyDown={(): void => onSelectHeader(groupHeaderProps?.group)}>
                 <span
                     style={{ paddingLeft: paddingValue }}
                     data-testid="tooltip-container"
