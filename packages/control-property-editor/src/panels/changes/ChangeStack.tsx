@@ -198,15 +198,19 @@ export function isKnownChange(change: ControlGroupProps | UnknownChangeProps): c
 
 const filterPropertyChanges = (changes: ControlPropertyChange[], query: string): ControlPropertyChange[] => {
     return changes.filter((item) => {
-        item = item as ControlPropertyChange;
-        return (
-            !query ||
-            item.propertyName.trim().toLowerCase().includes(query) ||
-            convertCamelCaseToPascalCase(item.propertyName.toString()).trim().toLowerCase().includes(query) ||
-            item.value.toString().trim().toLowerCase().includes(query) ||
-            convertCamelCaseToPascalCase(item.value.toString()).trim().toLowerCase().includes(query) ||
-            (item.timestamp && getFormattedDateAndTime(item.timestamp).trim().toLowerCase().includes(query))
-        );
+        if (item.propertyName) {
+            return (
+                !query ||
+                item.propertyName.trim().toLowerCase().includes(query) ||
+                convertCamelCaseToPascalCase(item.propertyName.toString()).trim().toLowerCase().includes(query) ||
+                item.value.toString().trim().toLowerCase().includes(query) ||
+                convertCamelCaseToPascalCase(item.value.toString()).trim().toLowerCase().includes(query) ||
+                (item.timestamp && getFormattedDateAndTime(item.timestamp).trim().toLowerCase().includes(query))
+            );
+        } else if (item.changeType) {
+            const changeType = convertCamelCaseToPascalCase(item.changeType);
+            return !query || changeType.trim().toLowerCase().includes(query);
+        }
     });
 };
 
@@ -218,7 +222,6 @@ const isQueryMatchesChange = (item: UnknownChangeProps, query: string): boolean 
     if (item.timestamp) {
         dateTime = getFormattedDateAndTime(item.timestamp).trim();
     }
-    
     return (
         !query ||
         item.fileName.trim().toLowerCase().includes(query) ||
