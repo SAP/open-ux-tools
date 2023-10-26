@@ -69,29 +69,34 @@ export default class ControllerExtension extends BaseDialog {
         const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList');
 
         if (controllerName.length <= 0) {
-            this.dialog.getBeginButton().setEnabled(false);
-            source.setValueState(ValueState.None);
+            this.setInputValidation(source, ValueState.None, false, '');
             this.model.setProperty('/newControllerName', null);
         } else {
-            const fileExists = controllerList.find((f: { controllerName: string }) => {
-                return f.controllerName === `${controllerName}.js`;
-            });
+            const fileExists = controllerList.find(
+                (f: { controllerName: string }) => f.controllerName === `${controllerName}.js`
+            );
+
+            if (fileExists) {
+                this.setInputValidation(
+                    source,
+                    ValueState.Error,
+                    false,
+                    'Enter a different name. The controller name that you entered already exists in your project.'
+                );
+                return;
+            }
 
             const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(controllerName);
 
-            if (fileExists) {
-                source.setValueState(ValueState.Error);
-                source.setValueStateText(
-                    'Enter a different name. The controller name that you entered already exists in your project.'
+            if (!isValidName) {
+                this.setInputValidation(
+                    source,
+                    ValueState.Error,
+                    false,
+                    'The controller name cannot contain white spaces or special characters.'
                 );
-                this.dialog.getBeginButton().setEnabled(false);
-            } else if (!isValidName) {
-                source.setValueState(ValueState.Error);
-                source.setValueStateText('The controller name cannot contain white spaces or special characters.');
-                this.dialog.getBeginButton().setEnabled(false);
             } else {
-                this.dialog.getBeginButton().setEnabled(true);
-                source.setValueState(ValueState.None);
+                this.setInputValidation(source, ValueState.Success, true, '');
                 this.model.setProperty('/newControllerName', controllerName);
             }
         }

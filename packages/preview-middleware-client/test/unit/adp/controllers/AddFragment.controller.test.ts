@@ -10,6 +10,7 @@ import { fetchMock, sapCoreMock } from 'mock/window';
 import ControlUtils from '../../../../src/adp/control-utils';
 import AddFragment from '../../../../src/adp/controllers/AddFragment.controller';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import { ValueState } from 'mock/sap/ui/core/library';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -201,7 +202,7 @@ describe('AddFragment', () => {
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy).toHaveBeenCalledWith('Error');
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
 
         test('sets error when the fragment name is empty', () => {
@@ -228,7 +229,7 @@ describe('AddFragment', () => {
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy).toHaveBeenCalledWith('None');
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.None);
         });
 
         test('sets error when the fragment name is has special characters', () => {
@@ -255,7 +256,7 @@ describe('AddFragment', () => {
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy).toHaveBeenCalledWith('Error');
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
 
         test('sets create button to true when the fragment name is valid', () => {
@@ -282,7 +283,7 @@ describe('AddFragment', () => {
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy).toHaveBeenCalledWith('None');
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Success);
         });
     });
 

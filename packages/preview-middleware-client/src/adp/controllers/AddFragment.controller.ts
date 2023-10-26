@@ -190,6 +190,7 @@ export default class AddFragment extends BaseDialog {
 
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
+            MessageToast.show(e.message);
             throw new Error(e.message);
         }
 

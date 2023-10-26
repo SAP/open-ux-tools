@@ -7,6 +7,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { fetchMock, sapCoreMock } from 'mock/window';
 
 import ControllerExtension from '../../../../src/adp/controllers/ControllerExtension.controller';
+import { ValueState } from 'mock/sap/ui/core/library';
 
 describe('ControllerExtension', () => {
     beforeAll(() => {
@@ -145,7 +146,7 @@ describe('ControllerExtension', () => {
 
             controllerExt.onControllerNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy).toHaveBeenCalledWith('Error');
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
 
         test('sets error when the controller name is empty', () => {
@@ -172,7 +173,7 @@ describe('ControllerExtension', () => {
 
             controllerExt.onControllerNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy).toHaveBeenCalledWith('None');
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.None);
         });
 
         test('sets error when the controller name is has special characters', () => {
@@ -199,7 +200,7 @@ describe('ControllerExtension', () => {
 
             controllerExt.onControllerNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy).toHaveBeenCalledWith('Error');
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
 
         test('sets create button to true when the controller name is valid', () => {
@@ -226,7 +227,7 @@ describe('ControllerExtension', () => {
 
             controllerExt.onControllerNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy).toHaveBeenCalledWith('None');
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Success);
         });
     });
 

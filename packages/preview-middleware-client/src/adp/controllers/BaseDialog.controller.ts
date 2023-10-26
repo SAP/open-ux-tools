@@ -55,32 +55,43 @@ export default abstract class BaseDialog extends Controller {
         const fragmentList: { fragmentName: string }[] = this.model.getProperty('/fragmentList');
 
         if (fragmentName.length <= 0) {
-            this.dialog.getBeginButton().setEnabled(false);
-            source.setValueState(ValueState.None);
+            this.setInputValidation(source, ValueState.None, false, '');
             this.model.setProperty('/newFragmentName', null);
         } else {
-            const fileExists = fragmentList.find((f: { fragmentName: string }) => {
-                return f.fragmentName === `${fragmentName}.fragment.xml`;
-            });
+            const fileExists = fragmentList.find(
+                (f: { fragmentName: string }) => f.fragmentName === `${fragmentName}.fragment.xml`
+            );
+
+            if (fileExists) {
+                this.setInputValidation(
+                    source,
+                    ValueState.Error,
+                    false,
+                    'Enter a different name. The fragment name that you entered already exists in your project.'
+                );
+                return;
+            }
 
             const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName);
 
-            if (fileExists) {
-                source.setValueState(ValueState.Error);
-                source.setValueStateText(
-                    'Enter a different name. The fragment name that you entered already exists in your project.'
+            if (!isValidName) {
+                this.setInputValidation(
+                    source,
+                    ValueState.Error,
+                    false,
+                    'A Fragment Name cannot contain white spaces or special characters.'
                 );
-                this.dialog.getBeginButton().setEnabled(false);
-            } else if (!isValidName) {
-                source.setValueState(ValueState.Error);
-                source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
-                this.dialog.getBeginButton().setEnabled(false);
             } else {
-                this.dialog.getBeginButton().setEnabled(true);
-                source.setValueState(ValueState.None);
+                this.setInputValidation(source, ValueState.Success, true, '');
                 this.model.setProperty('/newFragmentName', fragmentName);
             }
         }
+    }
+
+    setInputValidation(source: Input, valueState: ValueState, enabled: boolean, stateText: string) {
+        source.setValueState(valueState);
+        source.setValueStateText(stateText);
+        this.dialog.getBeginButton().setEnabled(enabled);
     }
 
     /**
