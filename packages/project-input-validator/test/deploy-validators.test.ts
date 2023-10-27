@@ -25,61 +25,60 @@ describe('project input validators', () => {
 
         test('validateAppName - empty length', () => {
             const output = validateAppName('');
-            expect(output).toEqual(t('AbapAppNameRequired'));
+            expect(output).toEqual(t('deploy.abapAppNameRequired'));
         });
-
         test('validateAppName - invalid namespace', () => {
             const output = validateAppName('/ns1/ns2/ns3/ztest');
-            expect(output).toEqual(t('AbapInvalidNamespace'));
+            expect(output).toEqual(t('deploy.abapInvalidNamespace'));
         });
 
         test('validateAppName - invalid namespace length', () => {
             const ns = 'ns1looooooonooog';
             const output = validateAppName(`/${ns}/ztest`);
-            expect(output).toEqual(t('AbapInvalidNamespaceLength', { length: ns.length }));
+            expect(output).toEqual(t('deploy.abapInvalidNamespaceLength', { length: ns.length }));
         });
 
         test('validateAppName - valid namespace length, invalid app name length', () => {
             const appName = 'appnamelooooooonooooooog';
             const output = validateAppName(`/ns/${appName}`);
-            expect(output).toEqual(t('AbapInvalidAppNameLength', { length: appName.length }));
+            expect(output).toEqual(t('deploy.abapInvalidAppNameLength', { length: appName.length }));
         });
 
         test('validateAppName - invalid namespace length, invalid app name length', () => {
             const ns = 'ns1looooooonooog';
             const appName = 'appnamelooooooonooooooog';
             const output = validateAppName(`/${ns}/${appName}`);
-            expect(output).toContain(t('AbapInvalidNamespaceLength', { length: ns.length }));
-            expect(output).toContain(t('AbapInvalidAppNameLength', { length: appName.length }));
+            expect(output).toContain(t('deploy.abapInvalidNamespaceLength', { length: ns.length }));
+            expect(output).toContain(t('deploy.abapInvalidAppNameLength', { length: appName.length }));
         });
 
         test('validateAppName - invalid app name length', () => {
             const appName = 'appnamelooooooonooooooog';
             const output = validateAppName(appName);
-            expect(output).toEqual(t('AbapInvalidAppNameLength', { length: appName.length }));
+            expect(output).toEqual(t('deploy.abapInvalidAppNameLength', { length: appName.length }));
         });
 
         test('validateAppName - invalid app name prefix', () => {
             const appName = 'appnamelooooooonooooooog';
             const prefix = 'Z';
             const output = validateAppName(appName, prefix);
-            expect(output).toContain(t('AbapInvalidAppNameLength', { length: appName.length }));
-            expect(output).toContain(t('AbapInvalidAppName', { prefix }));
+            expect(output).toContain(t('deploy.abapInvalidAppNameLength', { length: appName.length }));
+            expect(output).toContain(t('deploy.abapInvalidAppName', { prefix }));
         });
 
         test('validateAppName - invalid app name prefix', () => {
             const appName = 'appname-looooooonooooooog';
             const prefix = 'Z';
             const output = validateAppName(appName, prefix);
-            expect(output).toContain(t('AbapInvalidAppNameLength', { length: appName.length }));
-            expect(output).toContain(t('AbapInvalidAppName', { prefix }));
-            expect(output).toContain(t('CharactersForbiddenInAppName'));
+            expect(output).toContain(t('deploy.abapInvalidAppNameLength', { length: appName.length }));
+            expect(output).toContain(t('deploy.abapInvalidAppName', { prefix }));
+            expect(output).toContain(t('deploy.charactersForbiddenInAppName'));
         });
 
         test('validateAppName - app name undefined', () => {
             const appName = undefined as any;
             const output = validateAppName(appName);
-            expect(output).toContain(t('AbapAppNameRequired'));
+            expect(output).toContain(t('deploy.abapAppNameRequired'));
         });
     });
 
@@ -93,7 +92,7 @@ describe('project input validators', () => {
             const output = validateAppDescription(
                 'This is a loooooooooooooooooooooooooooooooooooooooooooooooooooooooog description'
             );
-            expect(output).toContain(t('AbapAppDescLength'));
+            expect(output).toContain(t('deploy.abapAppDescLength'));
         });
     });
 
@@ -167,12 +166,12 @@ describe('project input validators', () => {
 
         test('validatePackage - invali package if undefined', () => {
             const output = validatePackage(undefined as any);
-            expect(output).toContain(t('AbapPackageWarn'));
+            expect(output).toContain(t('deploy.abapPackageWarn'));
         });
 
         test('validatePackage - invali package if empty', () => {
             const output = validatePackage('');
-            expect(output).toContain(t('AbapPackageWarn'));
+            expect(output).toContain(t('deploy.abapPackageWarn'));
         });
     });
 });

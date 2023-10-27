@@ -1,15 +1,15 @@
 {
     "deploy": {
-        "AbapAppDescLength": "Deployment Description should not exceed 60 characters",
-        "AbapTransportNumRequired": "Provide a transport request for your application",
-        "AbapPackageWarn": "Provide a package",
-        "AbapAppNameRequired": "Application name required",
-        "AbapInvalidNamespace": "Namespace invalid as there are too many forward slashes",
-        "AbapInvalidNamespaceLength": "Namespace limited to 10 characters, entered {{length}}",
-        "AbapInvalidAppNameLength": "Application name limited to 15 characters, entered {{length}}",
-        "AbapInvalidAppName": "Application name needs to be prefixed with [{{prefix}}]",
-        "CharactersForbiddenInAppName": "Only alphanumeric, underscore and slash characters are allowed",
-        "InvalidAppNameMultipleReason": "Application name is invalid for multiple reasons:"
+        "a": "Deployment Description should not exceed 60 characters",
+        "abapTransportNumRequired": "Provide a transport request for your application",
+        "abapPackageWarn": "Provide a package",
+        "abapAppNameRequired": "Application name required",
+        "abapInvalidNamespace": "Namespace invalid as there are too many forward slashes",
+        "abapInvalidNamespaceLength": "Namespace limited to 10 characters, entered {{length}}",
+        "abapInvalidAppNameLength": "Application name limited to 15 characters, entered {{length}}",
+        "abapInvalidAppName": "Application name needs to be prefixed with [{{prefix}}]",
+        "charactersForbiddenInAppName": "Only alphanumeric, underscore and slash characters are allowed",
+        "invalidAppNameMultipleReason": "Application name is invalid for multiple reasons:"
     },
     "ui5": {
         "namespaceMustStartWithLetter": "The namespace must start with a letter",
@@ -43,7 +43,7 @@
         "moduleAlreadyExists": "The folder: {{folderName}} already exists at the specified path"
     },
     "general": {
-        "InvalidUrl": "Invalid URL: [{{input}}]",
-        "InvalidClient": "[{{client}}] is invalid. Enter blank or a value between 000-999"
+        "invalidUrl": "Invalid URL: [{{-input}}]",
+        "invalidClient": "[{{client}}] is invalid. Enter blank or a value between 000-999"
     }
 }

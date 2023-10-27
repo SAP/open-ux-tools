@@ -14,7 +14,7 @@ export function validateClient(client: string): boolean | string {
     if (isValid) {
         return true;
     } else {
-        return t('InvalidClient', { client });
+        return t('general.invalidClient', { client });
     }
 }
 
@@ -29,6 +29,6 @@ export function validateUrl(input: string): boolean | string {
         const url = new URL(input);
         return !!url.protocol && !!url.host;
     } catch {
-        return t('InvalidUrl', { input });
+        return t('general.invalidUrl', { input });
     }
 }

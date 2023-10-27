@@ -26,7 +26,7 @@ describe('project input validators', () => {
         test('validateClient - invalid if not 3 digits', () => {
             const client = '01';
             const output = validateClient(client);
-            expect(output).toContain(t('InvalidClient', { client }));
+            expect(output).toContain(t('general.invalidClient', { client }));
         });
     });
 
@@ -39,7 +39,7 @@ describe('project input validators', () => {
         test('validateUrl - invalid url', () => {
             const url = 'https//test.dev';
             const output = validateUrl(url);
-            expect(output).toContain(t('InvalidUrl', { input: url }));
+            expect(output).toContain(t('general.invalidUrl', { input: url }));
         });
     });
 });
