@@ -64,42 +64,40 @@ export default class ControllerExtension extends BaseDialog {
      */
     onControllerNameInputChange(event: Event) {
         const source = event.getSource<Input>();
+        const beginBtn = this.dialog.getBeginButton();
 
         const controllerName: string = source.getValue().trim();
         const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList');
 
         if (controllerName.length <= 0) {
-            this.setInputValidation(source, ValueState.None, false, '');
+            source.setValueState(ValueState.None);
+            beginBtn.setEnabled(false);
             this.model.setProperty('/newControllerName', null);
-        } else {
-            const fileExists = controllerList.find(
-                (f: { controllerName: string }) => f.controllerName === `${controllerName}.js`
-            );
-
-            if (fileExists) {
-                this.setInputValidation(
-                    source,
-                    ValueState.Error,
-                    false,
-                    'Enter a different name. The controller name that you entered already exists in your project.'
-                );
-                return;
-            }
-
-            const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(controllerName);
-
-            if (!isValidName) {
-                this.setInputValidation(
-                    source,
-                    ValueState.Error,
-                    false,
-                    'The controller name cannot contain white spaces or special characters.'
-                );
-            } else {
-                this.setInputValidation(source, ValueState.Success, true, '');
-                this.model.setProperty('/newControllerName', controllerName);
-            }
         }
+
+        const fileExists = controllerList.some((f) => f.controllerName === `${controllerName}.js`);
+
+        if (fileExists) {
+            source.setValueState(ValueState.Error);
+            source.setValueStateText(
+                'Enter a different name. The controller name that you entered already exists in your project.'
+            );
+            beginBtn.setEnabled(false);
+            return;
+        }
+
+        const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(controllerName);
+
+        if (!isValidName) {
+            source.setValueState(ValueState.Error);
+            source.setValueStateText('The controller name cannot contain white spaces or special characters.');
+            beginBtn.setEnabled(false);
+            return;
+        }
+
+        source.setValueState(ValueState.Success);
+        beginBtn.setEnabled(true);
+        this.model.setProperty('/newControllerName', controllerName);
     }
 
     /**

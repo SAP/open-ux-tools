@@ -50,56 +50,41 @@ export default abstract class BaseDialog extends Controller {
      */
     onFragmentNameInputChange(event: Event) {
         const source = event.getSource<Input>();
+        const beginBtn = this.dialog.getBeginButton();
 
         const fragmentName: string = source.getValue().trim();
         const fragmentList: { fragmentName: string }[] = this.model.getProperty('/fragmentList');
 
         if (fragmentName.length <= 0) {
-            this.setInputValidation(source, ValueState.None, false, '');
+            source.setValueState(ValueState.None);
+            beginBtn.setEnabled(false);
             this.model.setProperty('/newFragmentName', null);
-        } else {
-            const fileExists = fragmentList.find(
-                (f: { fragmentName: string }) => f.fragmentName === `${fragmentName}.fragment.xml`
-            );
-
-            if (fileExists) {
-                this.setInputValidation(
-                    source,
-                    ValueState.Error,
-                    false,
-                    'Enter a different name. The fragment name that you entered already exists in your project.'
-                );
-                return;
-            }
-
-            const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName);
-
-            if (!isValidName) {
-                this.setInputValidation(
-                    source,
-                    ValueState.Error,
-                    false,
-                    'A Fragment Name cannot contain white spaces or special characters.'
-                );
-            } else {
-                this.setInputValidation(source, ValueState.Success, true, '');
-                this.model.setProperty('/newFragmentName', fragmentName);
-            }
+            return;
         }
-    }
 
-    /**
-     * Sets validation properties for an input field and enables/disables a dialog button.
-     *
-     * @param source The input field to set validation properties for.
-     * @param valueState The validation state for the input field (e.g., 'Error', 'Warning', 'Success').
-     * @param enabled `true` to enable the dialog button, `false` to disable it.
-     * @param stateText The text associated with the validation state to display as a tooltip or message.
-     */
-    setInputValidation(source: Input, valueState: ValueState, enabled: boolean, stateText: string) {
-        source.setValueState(valueState);
-        source.setValueStateText(stateText);
-        this.dialog.getBeginButton().setEnabled(enabled);
+        const fileExists = fragmentList.some((f) => f.fragmentName === `${fragmentName}.fragment.xml`);
+
+        if (fileExists) {
+            source.setValueState(ValueState.Error);
+            source.setValueStateText(
+                'Enter a different name. The fragment name that you entered already exists in your project.'
+            );
+            beginBtn.setEnabled(false);
+            return;
+        }
+
+        const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName);
+
+        if (!isValidName) {
+            source.setValueState(ValueState.Error);
+            source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
+            beginBtn.setEnabled(false);
+            return;
+        }
+
+        source.setValueState(ValueState.Success);
+        beginBtn.setEnabled(true);
+        this.model.setProperty('/newFragmentName', fragmentName);
     }
 
     /**
