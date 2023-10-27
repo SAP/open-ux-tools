@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.17.0
+
+### Minor Changes
+
+-   5654d5cc: Adds @sap-ux/ui5-info
+
 ## 0.16.0
 
 ### Minor Changes
