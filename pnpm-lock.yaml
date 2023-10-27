@@ -1120,9 +1120,6 @@ importers:
       '@types/i18next':
         specifier: 13.0.0
         version: 13.0.0
-      '@types/mock-fs':
-        specifier: 4.13.3
-        version: 4.13.3
       '@types/validate-npm-package-name':
         specifier: 4.0.1
         version: 4.0.1
@@ -8126,12 +8123,6 @@ packages:
 
   /@types/minimist@1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
-    dev: true
-
-  /@types/mock-fs@4.13.3:
-    resolution: {integrity: sha512-PeXnRqMVBkVjHNCxu1wzPBi9cv5uWVl6535XD11NXt8pasJXh2MHxWvJs6d7eyt/V6BGgHZ4O3LF71CVMdMasA==}
-    dependencies:
-      '@types/node': 18.11.9
     dev: true
 
   /@types/ms@0.7.31:

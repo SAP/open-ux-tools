@@ -32,7 +32,6 @@
     "devDependencies": {
         "@types/validate-npm-package-name": "4.0.1",
         "@types/i18next": "13.0.0",
-        "@types/mock-fs": "4.13.3",
         "jest-extended": "3.2.4"
     },
     "files": [

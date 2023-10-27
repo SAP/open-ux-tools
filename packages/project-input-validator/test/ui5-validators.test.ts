@@ -8,6 +8,9 @@ import {
     validateLibModuleName
 } from '../src/ui5/validators';
 import fs from 'fs/promises';
+import os from 'os';
+
+const itSkipIfWin = os.platform() === 'win32' ? it.skip : it;
 
 describe('Test Validator functions', () => {
     it('Should return validation message for invalid namespace strings', () => {
@@ -65,7 +68,13 @@ describe('Test Validator functions', () => {
         expect(validateLibModuleName('library_1')).toEqual(t('ui5.lowerAlphaNumericOnly'));
     });
 
-    it('Tests for validateProjectFolder file permissions', async () => {
+    /**
+     * Its not easily possible to change low level file permissions, e.g. to deny write on Windows using node.
+     * Using chmod does not work, the folder is still writable. Running `icacls` in a child process might work but might be overkill.
+     * The previously used mock-fs is broken on Node 20.8 and cannot be used until a fix is available. Hopefully soon...
+     *
+     */
+    itSkipIfWin('Tests for validateProjectFolder file permissions', async () => {
         const path = join(__dirname, '/test-tmp');
         try {
             await fs.mkdir(path);
