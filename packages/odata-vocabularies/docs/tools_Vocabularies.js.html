@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: tools/Vocabularies.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: tools/Vocabularies.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+var __importDefault = (this &amp;&amp; this.__importDefault) || function (mod) {
+    return (mod &amp;&amp; mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const path_1 = __importDefault(require("path"));
+const mkdirp_1 = __importDefault(require("mkdirp"));
+const fs_1 = __importDefault(require("fs"));
+const node_fetch_1 = __importDefault(require("node-fetch"));
+const prettier_1 = __importDefault(require("prettier"));
+exports.SUPPORTED_VOCABULARIES = {
+    'Org.OData.Aggregation.V1': {
+        uri: 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Aggregation.V1.json'
+    },
+    'com.sap.vocabularies.Analytics.v1': {
+        uri: 'https://sap.github.io/odata-vocabularies/vocabularies/Analytics.json'
+    },
+    'Org.OData.Authorization.V1': {
+        uri: 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Authorization.V1.json'
+    },
+    'Org.OData.Capabilities.V1': {
+        uri: 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.json'
+    },
+    'com.sap.vocabularies.CodeList.v1': {
+        uri: 'https://sap.github.io/odata-vocabularies/vocabularies/CodeList.json'
+    },
+    'com.sap.vocabularies.Common.v1': {
+        uri: 'https://sap.github.io/odata-vocabularies/vocabularies/Common.json'
+    },
+    'com.sap.vocabularies.Communication.v1': {
+        uri: 'https://sap.github.io/odata-vocabularies/vocabularies/Communication.json'
+    },
+    'Org.OData.Core.V1': {
+        uri: 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.json'
+    },
+    'Org.OData.Measures.V1': {
+        uri: 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Measures.V1.json'
+    },
+    'com.sap.vocabularies.PersonalData.v1': {
+        uri: 'https://sap.github.io/odata-vocabularies/vocabularies/PersonalData.json'
+    },
+    'com.sap.vocabularies.Session.v1': {
+        uri: 'https://sap.github.io/odata-vocabularies/vocabularies/Session.json'
+    },
+    'Org.OData.Repeatability.V1': {
+        uri: 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Repeatability.V1.json'
+    },
+    'Org.OData.Temporal.V1': {
+        uri: 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Temporal.V1.json'
+    },
+    'com.sap.vocabularies.UI.v1': {
+        uri: 'https://sap.github.io/odata-vocabularies/vocabularies/UI.json'
+    },
+    'Org.OData.Validation.V1': {
+        uri: 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Validation.V1.json'
+    }
+};
+exports.VOCABULARIES_LOCATION = path_1.default.join('src', 'resources');
+/**
+ * Returns vocabulary content
+ *
+ * @param url - A string containing the URL to which the request is sent
+ *
+ * @public
+ */
+async function getVocabulary(url) {
+    const response = await node_fetch_1.default(url);
+    const json = await response.json();
+    return json;
+}
+exports.getVocabulary = getVocabulary;
+/**
+ * Updates vocabulary resources in project
+ *
+ * Vocabulary data is uglified (alias -> namespace) to remove complexity for further processing
+ *
+ * @public
+ */
+async function updateVocabularies() {
+    const date = new Date();
+    const vocabularies = Object.assign(exports.SUPPORTED_VOCABULARIES);
+    mkdirp_1.default.sync(exports.VOCABULARIES_LOCATION);
+    for (const namespace in vocabularies) {
+        // fetch vocabulary content
+        const vocabulary = vocabularies[namespace];
+        vocabulary.file = path_1.default.join(exports.VOCABULARIES_LOCATION, `${namespace}.ts`);
+        vocabulary.content = await getVocabulary(vocabulary.uri);
+        // uglify
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        const contentUglified = uglify(vocabulary.content);
+        // stringify
+        const contentStringified = JSON.stringify(contentUglified, null, 4);
+        const contentFile = `// Last content update: ${date}\n\nexport default ${contentStringified}`;
+        // prettify
+        const options = await prettier_1.default.resolveConfig(vocabulary.file);
+        options.parser = 'typescript';
+        vocabulary.filePrettified = prettier_1.default.format(contentFile, options);
+        // write to file system
+        fs_1.default.writeFileSync(vocabulary.file, vocabulary.filePrettified, 'utf8');
+        // log
+        console.log(`Vocabulary file updated: ${namespace}`);
+    }
+    return vocabularies;
+}
+exports.updateVocabularies = updateVocabularies;
+/**
+ * Returns mapping: alias -> namespace
+ *
+ * @param vocabulary - Vocabulary (JSON CSDL data)
+ *
+ * @private
+ */
+function getNamespaceAliasMapping(vocabulary) {
+    const namespace = {};
+    namespace['Edm'] = 'Edm';
+    for (const propertyName in vocabulary) {
+        const property = vocabulary[propertyName];
+        if (propertyName === '$Reference') {
+            // references
+            for (const url in property) {
+                const reference = property[url]['$Include'][0];
+                namespace[reference.$Alias] = reference.$Namespace;
+            }
+        }
+        else if (!propertyName.startsWith('$')) {
+            // schema
+            namespace[property.$Alias] = propertyName;
+        }
+    }
+    return namespace;
+}
+exports.getNamespaceAliasMapping = getNamespaceAliasMapping;
+/**
+ * Substitute aliases by namespaces in value
+ *
+ * @param value                 - Value
+ * @param namespaceAliasMapping - Mapping: alias->namespace
+ *
+ * @private
+ */
+function convertValue(value, namespaceAliasMapping) {
+    if (typeof value === 'string') {
+        for (const alias in namespaceAliasMapping) {
+            value = value.replace(alias, namespaceAliasMapping[alias]);
+        }
+    }
+    else if (Array.isArray(value)) {
+        for (let i = 0; i &lt; value.length; i++) {
+            value[i] = convertValue(value[i], namespaceAliasMapping);
+        }
+    }
+    return value;
+}
+exports.convertValue = convertValue;
+/**
+ * Returns the fully qualified name
+ *
+ * @param {string} name                  - Alias qualified name (or full qualified name)
+ * @param {object} namespaceAliasMapping - Mapping: alias->namespace
+ *
+ * @private
+ */
+function getFullyQualifiedName(name, namespaceAliasMapping) {
+    let result;
+    if (typeof name === 'string') {
+        const segments = name.split('.');
+        if (segments.length === 2) {
+            const alias = segments[0];
+            const base = segments[1];
+            result = `${namespaceAliasMapping[alias]}.${base}`;
+        }
+        else if (segments.length > 2) {
+            result = name;
+        }
+    }
+    else {
+        console.warn(name);
+    }
+    return result;
+}
+exports.getFullyQualifiedName = getFullyQualifiedName;
+/**
+ * Substitute aliases by namespaces in key
+ *
+ * @param key                   - Object key
+ * @param namespaceAliasMapping - Mapping: alias->namespace
+ *
+ * @private
+ */
+function convertKey(key, namespaceAliasMapping) {
+    const [nonAnnotationSegment, ...segments] = key.split('@');
+    for (let i = 0; i &lt; segments.length; i++) {
+        segments[i] = getFullyQualifiedName(segments[i], namespaceAliasMapping);
+    }
+    const newKey = [nonAnnotationSegment, ...segments].join('@');
+    return newKey;
+}
+exports.convertKey = convertKey;
+/**
+ * Rename a single key of an object preserving the key sequence
+ *
+ * @param {object} object  - Object containing a key to be renamed
+ * @param {string} name    - Name of the key to be renamed
+ * @param {string} newName - New name of the key
+ *
+ * @private
+ */
+function renameKey(object, name, newName) {
+    const newObject = {};
+    Object.keys(object).forEach((key) => {
+        const value = object[key];
+        if (key === name) {
+            newObject[newName] = value;
+        }
+        else {
+            newObject[key] = value;
+        }
+    });
+    return newObject;
+}
+exports.renameKey = renameKey;
+/**
+ * Substitute aliases by namespaces
+ *
+ * (Aliases are kept in references and descriptions)
+ *
+ * @param object                - CSDL JSON data
+ * @param namespaceAliasMapping - Mapping: alias->namespace
+ *
+ * @private
+ */
+function uglifyAnnotations(object, namespaceAliasMapping) {
+    for (const key in object) {
+        const newKey = getFullyQualifiedName(key, namespaceAliasMapping);
+        object = renameKey(object, key, newKey);
+    }
+    return object;
+}
+exports.uglifyAnnotations = uglifyAnnotations;
+/**
+ * Substitute aliases by namespaces
+ *
+ * (Aliases are kept in references and descriptions)
+ *
+ * @param object                - CSDL JSON data
+ * @param namespaceAliasMapping - Mapping: alias->namespace
+ *
+ * @private
+ */
+function uglify(object, namespaceAliasMapping) {
+    if (typeof object === 'object') {
+        if (namespaceAliasMapping === undefined) {
+            namespaceAliasMapping = getNamespaceAliasMapping(object);
+        }
+        for (let key in object) {
+            const propertyValue = object[key];
+            if (key === '$Type' || key === '$BaseTerm' || key === '$BaseType' || key === '@type') {
+                object[key] = convertValue(propertyValue, namespaceAliasMapping);
+            }
+            else if (key.indexOf('@') >= 0) {
+                const newKey = convertKey(key, namespaceAliasMapping);
+                object = renameKey(object, key, newKey);
+                key = newKey;
+                if (!key.endsWith('@Org.OData.Core.V1.Description') &amp;&amp;
+                    !key.endsWith('@Org.OData.Core.V1.LongDescription')) {
+                    object[key] = convertValue(propertyValue, namespaceAliasMapping);
+                }
+            }
+            if (key === '$Annotations') {
+                object[key] = uglifyAnnotations(propertyValue, namespaceAliasMapping);
+            }
+            object[key] = uglify(object[key], namespaceAliasMapping);
+        }
+    }
+    return object;
+}
+exports.uglify = uglify;
+//# sourceMappingURL=Vocabularies.js.map</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="VocabularyService.html">VocabularyService</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Edm">Edm</a></li><li><a href="global.html#EdmType">EdmType</a></li><li><a href="global.html#EdmxElementName">EdmxElementName</a></li><li><a href="global.html#getVocabulary">getVocabulary</a></li><li><a href="global.html#PROPERTY_KIND">PROPERTY_KIND</a></li><li><a href="global.html#TargetKindValue">TargetKindValue</a></li><li><a href="global.html#TermApplicability">TermApplicability</a></li><li><a href="global.html#TYPE_DEFINITION_KIND">TYPE_DEFINITION_KIND</a></li><li><a href="global.html#updateVocabularies">updateVocabularies</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Mar 31 2020 14:06:58 GMT+0100 (Irish Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
