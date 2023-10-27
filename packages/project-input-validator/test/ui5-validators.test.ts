@@ -72,7 +72,7 @@ describe('Test Validator functions', () => {
         } catch {
             // lint
         }
-        await fs.chmod(path, 0o444);
+        await fs.chmod(path, fs.constants.O_RDONLY);
         expect(validateProjectFolder(path, 'anything')).toEqual(t('ui5.folderDoesNotHaveCorrectPermissions'));
         await fs.rmdir(path);
     });
