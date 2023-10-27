@@ -143,7 +143,7 @@ export function validateModuleName(moduleName: string): boolean | string {
     if (valid.validForNewPackages && valid.validForOldPackages) {
         return true;
     }
-    return [...(valid.errors || []), ...(valid.warnings ?? [])]
+    return [...(valid.errors ?? []), ...(valid.warnings ?? [])]
         .filter((msg) => !!msg)
         .map((msg) => messageMap[msg] ?? t('ui5.invalidModuleName'))
         .join(', ');
