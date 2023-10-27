@@ -89,6 +89,7 @@ export async function validateBeforeDeploy(
 
 /**
  * Format a list of summary records that is ready to be printed on the console.
+ * The reduce function makes sure a EOL is added at the beginning of the output.
  *
  * @param summary A list of summary records
  * @returns Formatted summary string
