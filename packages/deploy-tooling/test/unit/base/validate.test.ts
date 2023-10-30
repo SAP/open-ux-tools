@@ -71,9 +71,9 @@ describe('deploy-test validation', () => {
             );
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${red('×')} ${t('InvalidAppNameMultipleReason')}`);
-            expect(summaryStr).toContain(`${t('AbapInvalidAppNameLength', { length: name.length })}`);
-            expect(summaryStr).toContain(`${t('AbapInvalidAppName', { prefix })}`);
+            expect(summaryStr).toContain(`${red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
+            expect(summaryStr).toContain(`${t('deploy.abapInvalidAppNameLength', { length: name.length })}`);
+            expect(summaryStr).toContain(`${t('deploy.abapInvalidAppName', { prefix })}`);
         });
 
         test('adtService error', async () => {
@@ -105,9 +105,9 @@ describe('deploy-test validation', () => {
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.adtServiceUndefined} for AtoService`);
-            expect(summaryStr).toContain(`${red('×')} ${t('InvalidAppNameMultipleReason')}`);
-            expect(summaryStr).toContain(`${t('AbapInvalidAppNameLength', { length: name.length })}`);
-            expect(summaryStr).toContain(`${t('CharactersForbiddenInAppName')}`);
+            expect(summaryStr).toContain(`${red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
+            expect(summaryStr).toContain(`${t('deploy.abapInvalidAppNameLength', { length: name.length })}`);
+            expect(summaryStr).toContain(`${t('deploy.charactersForbiddenInAppName')}`);
         });
 
         test('getAtoInfo throws error', async () => {
@@ -135,9 +135,9 @@ describe('deploy-test validation', () => {
             expect(output.result).toBe(false);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${yellow('?')} ${summaryMessage.atoAdtAccessError}`);
-            expect(summaryStr).toContain(`${red('×')} ${t('InvalidAppNameMultipleReason')}`);
-            expect(summaryStr).toContain(`${t('AbapInvalidAppNameLength', { length: name.length })}`);
-            expect(summaryStr).toContain(`${t('CharactersForbiddenInAppName')}`);
+            expect(summaryStr).toContain(`${red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
+            expect(summaryStr).toContain(`${t('deploy.abapInvalidAppNameLength', { length: name.length })}`);
+            expect(summaryStr).toContain(`${t('deploy.charactersForbiddenInAppName')}`);
         });
     });
 
