@@ -7,8 +7,6 @@ import type {
     Change,
     PendingOtherChange,
     PendingPropertyChange,
-    SavedPropertyChange,
-    UnknownSavedChange,
     ValidChange
 } from '@sap-ux-private/control-property-editor-common';
 
@@ -25,7 +23,7 @@ import { FilterName } from '../../slice';
 import type { RootState } from '../../store';
 import { convertCamelCaseToPascalCase } from '@sap-ux-private/control-property-editor-common';
 import { getFormattedDateAndTime } from './utils';
-import { OtherChangeProps } from './OtherChange';
+import type { OtherChangeProps } from './OtherChange';
 
 export interface ChangeStackProps {
     changes: Change[];

@@ -61,7 +61,9 @@ export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElem
                             </Stack>
                             <Stack horizontal>
                                 <Stack.Item className={styles.controllabel}>{t('CONTROL')}</Stack.Item>
-                                <Stack.Item className={styles.controlText} title={controlId}>{controlId}</Stack.Item>
+                                <Stack.Item className={styles.controlText} title={controlId}>
+                                    {controlId}
+                                </Stack.Item>
                             </Stack>
                         </Stack.Item>
 
