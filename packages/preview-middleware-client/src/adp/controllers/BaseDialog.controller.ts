@@ -49,15 +49,19 @@ export default abstract class BaseDialog extends Controller {
      * @param event Event
      */
     onFragmentNameInputChange(event: Event) {
-        const source = event.getSource<Input>();
+        const input = event.getSource<Input>();
         const beginBtn = this.dialog.getBeginButton();
 
-        const fragmentName: string = source.getValue().trim();
+        const fragmentName: string = input.getValue().trim();
         const fragmentList: { fragmentName: string }[] = this.model.getProperty('/fragmentList');
 
+        const updateDialogState = (valueState: ValueState, valueStateText = '') => {
+            input.setValueState(valueState).setValueStateText(valueStateText);
+            beginBtn.setEnabled(valueState === ValueState.Success);
+        };
+
         if (fragmentName.length <= 0) {
-            source.setValueState(ValueState.None);
-            beginBtn.setEnabled(false);
+            updateDialogState(ValueState.None);
             this.model.setProperty('/newFragmentName', null);
             return;
         }
@@ -65,25 +69,21 @@ export default abstract class BaseDialog extends Controller {
         const fileExists = fragmentList.some((f) => f.fragmentName === `${fragmentName}.fragment.xml`);
 
         if (fileExists) {
-            source.setValueState(ValueState.Error);
-            source.setValueStateText(
+            updateDialogState(
+                ValueState.Error,
                 'Enter a different name. The fragment name that you entered already exists in your project.'
             );
-            beginBtn.setEnabled(false);
             return;
         }
 
         const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName);
 
         if (!isValidName) {
-            source.setValueState(ValueState.Error);
-            source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
-            beginBtn.setEnabled(false);
+            updateDialogState(ValueState.Error, 'The fragment name cannot contain white spaces or special characters.');
             return;
         }
 
-        source.setValueState(ValueState.Success);
-        beginBtn.setEnabled(true);
+        updateDialogState(ValueState.Success);
         this.model.setProperty('/newFragmentName', fragmentName);
     }
 

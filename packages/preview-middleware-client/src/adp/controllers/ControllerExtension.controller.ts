@@ -63,15 +63,19 @@ export default class ControllerExtension extends BaseDialog {
      * @param event Event
      */
     onControllerNameInputChange(event: Event) {
-        const source = event.getSource<Input>();
+        const input = event.getSource<Input>();
         const beginBtn = this.dialog.getBeginButton();
 
-        const controllerName: string = source.getValue().trim();
+        const controllerName: string = input.getValue().trim();
         const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList');
 
+        const updateDialogState = (valueState: ValueState, valueStateText = '') => {
+            input.setValueState(valueState).setValueStateText(valueStateText);
+            beginBtn.setEnabled(valueState === ValueState.Success);
+        };
+
         if (controllerName.length <= 0) {
-            source.setValueState(ValueState.None);
-            beginBtn.setEnabled(false);
+            updateDialogState(ValueState.None);
             this.model.setProperty('/newControllerName', null);
             return;
         }
@@ -79,25 +83,24 @@ export default class ControllerExtension extends BaseDialog {
         const fileExists = controllerList.some((f) => f.controllerName === `${controllerName}.js`);
 
         if (fileExists) {
-            source.setValueState(ValueState.Error);
-            source.setValueStateText(
+            updateDialogState(
+                ValueState.Error,
                 'Enter a different name. The controller name that you entered already exists in your project.'
             );
-            beginBtn.setEnabled(false);
             return;
         }
 
         const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(controllerName);
 
         if (!isValidName) {
-            source.setValueState(ValueState.Error);
-            source.setValueStateText('The controller name cannot contain white spaces or special characters.');
-            beginBtn.setEnabled(false);
+            updateDialogState(
+                ValueState.Error,
+                'The controller name cannot contain white spaces or special characters.'
+            );
             return;
         }
 
-        source.setValueState(ValueState.Success);
-        beginBtn.setEnabled(true);
+        updateDialogState(ValueState.Success);
         this.model.setProperty('/newControllerName', controllerName);
     }
 

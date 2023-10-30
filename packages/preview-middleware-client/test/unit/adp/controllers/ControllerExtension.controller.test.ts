@@ -129,12 +129,11 @@ describe('ControllerExtension', () => {
                 {} as unknown as RuntimeAuthoring
             );
 
-            const valueStateSpy = jest.fn();
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     getValue: jest.fn().mockReturnValue('Delete'),
-                    setValueState: valueStateSpy,
-                    setValueStateText: jest.fn()
+                    setValueState: valueStateSpy
                 })
             };
 
@@ -156,12 +155,11 @@ describe('ControllerExtension', () => {
                 {} as unknown as RuntimeAuthoring
             );
 
-            const valueStateSpy = jest.fn();
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     getValue: jest.fn().mockReturnValue(''),
-                    setValueState: valueStateSpy,
-                    setValueStateText: jest.fn()
+                    setValueState: valueStateSpy
                 })
             };
 
@@ -183,12 +181,11 @@ describe('ControllerExtension', () => {
                 {} as unknown as RuntimeAuthoring
             );
 
-            const valueStateSpy = jest.fn();
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     getValue: jest.fn().mockReturnValue('Share 2$5!'),
-                    setValueState: valueStateSpy,
-                    setValueStateText: jest.fn()
+                    setValueState: valueStateSpy
                 })
             };
 
@@ -210,12 +207,11 @@ describe('ControllerExtension', () => {
                 {} as unknown as RuntimeAuthoring
             );
 
-            const valueStateSpy = jest.fn();
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     getValue: jest.fn().mockReturnValue('Share'),
-                    setValueState: valueStateSpy,
-                    setValueStateText: jest.fn()
+                    setValueState: valueStateSpy
                 })
             };
 
