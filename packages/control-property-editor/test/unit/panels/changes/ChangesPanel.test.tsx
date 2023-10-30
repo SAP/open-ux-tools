@@ -33,7 +33,8 @@ const getModel = (saved = false): ChangesSlice => {
                       propertyName: 'testPropertyName1',
                       type: 'pending',
                       value: 'testValue1',
-                      isActive: true
+                      isActive: true,
+                      changeType: 'propertyChange'
                   },
                   {
                       controlId: 'testId1BoolFalse',
@@ -41,7 +42,8 @@ const getModel = (saved = false): ChangesSlice => {
                       propertyName: 'testPropertyNameBoolFalse',
                       type: 'pending',
                       value: false,
-                      isActive: true
+                      isActive: true,
+                      changeType: 'propertyChange'
                   },
                   {
                       controlId: 'testId1Exp',
@@ -49,7 +51,8 @@ const getModel = (saved = false): ChangesSlice => {
                       propertyName: 'testPropertyNameExp',
                       type: 'pending',
                       value: '{expression}',
-                      isActive: true
+                      isActive: true,
+                      changeType: 'propertyBindingChange'
                   }
               ] as PendingPropertyChange[])
             : [],
@@ -63,7 +66,8 @@ const getModel = (saved = false): ChangesSlice => {
                       value: 'testValue2',
                       fileName: 'testFileName',
                       kind: 'valid',
-                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime()
+                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
+                      changeType: 'propertyChange'
                   },
                   {
                       controlId: 'testId3',
@@ -73,7 +77,8 @@ const getModel = (saved = false): ChangesSlice => {
                       value: true,
                       fileName: 'testFileNameBool',
                       kind: 'valid',
-                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime()
+                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
+                      changeType: 'propertyChange'
                   },
                   {
                       controlId: 'testId4',
@@ -83,7 +88,8 @@ const getModel = (saved = false): ChangesSlice => {
                       value: 2,
                       fileName: 'testFileNameNum',
                       kind: 'valid',
-                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime()
+                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
+                      changeType: 'propertyChange'
                   }
               ] as SavedPropertyChange[])
             : []
@@ -211,7 +217,9 @@ describe('ChangePanel', () => {
                 {
                     fileName: 'testFileName2',
                     type: 'saved',
-                    kind: 'unknown'
+                    kind: 'unknown',
+                    controlId: 'someSelectorId',
+                    header: true
                 } as any
             ]
         };
@@ -230,11 +238,20 @@ describe('ChangePanel', () => {
         const savedChangesTitle = screen.getByText(/saved changes/i);
         expect(savedChangesTitle).toBeInTheDocument();
 
-        const title = screen.getByText(/Test File Name2/i);
+        const title = screen.getByText(/Test File Name2 Change/i);
         expect(title).toBeInTheDocument();
 
-        const value = screen.getByText(/File: testFileName2/i);
-        expect(value).toBeInTheDocument();
+        const fileLabel = screen.getByText(/file:/i);
+        expect(fileLabel).toBeInTheDocument();
+
+        const fileName = screen.getByText(/testfilename2/i);
+        expect(fileName).toBeInTheDocument();
+
+        const selectorIdLabel = screen.getByText(/selector id:/i);
+        expect(selectorIdLabel).toBeInTheDocument();
+
+        const selectorId = screen.getByText(/someSelectorId/i);
+        expect(selectorId).toBeInTheDocument();
 
         const deleteButton = screen.getAllByRole('button')[0];
         const iTagAttributes = deleteButton?.children?.item(0)?.children?.item(0)?.attributes;
