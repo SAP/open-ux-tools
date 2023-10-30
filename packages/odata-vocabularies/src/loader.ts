@@ -26,7 +26,7 @@ import {
     CDS_VOCABULARY_NAMESPACE
 } from './types/vocabularyService';
 import type { EdmNameType } from './types/names';
-import type { Property, Term as CDSLTerm, SchemaElement } from '@sap-ux/vocabularies/CSDL';
+
 const PROPERTY_PATTERN = /^([A-Za-z0-9_]){1,128}$/;
 
 const SUPPORTED_VOCABULARY_NAMESPACES: Set<VocabularyNamespace> = new Set([
@@ -56,17 +56,27 @@ const SUPPORTED_VOCABULARY_NAMESPACES: Set<VocabularyNamespace> = new Set([
     'com.sap.vocabularies.HTML5.v1'
 ]);
 
-let vocabulariesInformationStatic: VocabulariesInformation | null = null;
-let vocabulariesInformationStaticCds: VocabulariesInformation | null = null;
+let vocabulariesInformationStatic: VocabulariesInformation = null;
+let vocabulariesInformationStaticCds: VocabulariesInformation = null;
 
+/**
+ *
+ * @param termName
+ * @param prefix
+ */
 function getDefinitionAnnotationKey(termName: EdmNameType.QualifiedName, prefix = ''): string {
     const [alias, term] = termName.split('.');
     const namespace = ALIAS_TO_NAMESPACE.get(alias as VocabularyAlias);
     return prefix + '@' + namespace + '.' + term;
 }
 
-function fillBaseProperties(base: BaseVocabularyObject, raw: Property): void {
-    let propName: string;
+/**
+ *
+ * @param base
+ * @param raw
+ */
+function fillBaseProperties(base: BaseVocabularyObject, raw: unknown): void {
+    let propName: any;
     propName = getDefinitionAnnotationKey('Core.Description');
     if (raw[propName] !== undefined) {
         base.description = raw[propName];
@@ -81,21 +91,30 @@ function fillBaseProperties(base: BaseVocabularyObject, raw: Property): void {
     }
     // deprecated status
     const revs = raw[getDefinitionAnnotationKey('Core.Revisions')] || [];
-    const deprecatedRevisions = revs.find((rev) => rev['Kind'] === 'Deprecated');
+    const deprecatedRevisions = revs.find((rev: unknown) => rev['Kind'] === 'Deprecated');
     if (deprecatedRevisions) {
         base.deprecated = true;
         base.deprecatedDescription = deprecatedRevisions['Description'];
     }
 }
 
-function fillPrimitiveTypeProperties(primitiveType: PrimitiveType, raw: Property): void {
+/**
+ *
+ * @param primitiveType
+ * @param raw
+ */
+function fillPrimitiveTypeProperties(primitiveType: PrimitiveType, raw: unknown): void {
     fillBaseProperties(primitiveType, raw);
     if (raw['$UnderlyingType'] !== undefined) {
         primitiveType.underlyingType = raw['$UnderlyingType'];
     }
 }
 
-function getFacets(raw: Property): Facets | null {
+/**
+ *
+ * @param raw
+ */
+function getFacets(raw: unknown): Facets | null {
     const facets: Facets = {};
     if (raw['$Nullable'] !== undefined) {
         facets.isNullable = !!raw['$Nullable'];
@@ -106,7 +125,11 @@ function getFacets(raw: Property): Facets | null {
     return Object.keys(facets).length ? facets : null;
 }
 
-function parseAllowedValues(raw: Property): AllowedValues[] {
+/**
+ *
+ * @param raw
+ */
+function parseAllowedValues(raw: unknown): AllowedValues[] {
     const rawAllowedValue = raw[getDefinitionAnnotationKey('Validation.AllowedValues')];
     const allowedValues: AllowedValues[] = [];
     if (rawAllowedValue && rawAllowedValue.length) {
@@ -121,7 +144,11 @@ function parseAllowedValues(raw: Property): AllowedValues[] {
     return allowedValues;
 }
 
-function getConstraints(raw: Property): Constraints {
+/**
+ *
+ * @param raw
+ */
+function getConstraints(raw: unknown): Constraints {
     const constraints: Constraints = {};
     const allowedValues: AllowedValues[] = parseAllowedValues(raw);
     if (allowedValues && allowedValues.length) {
@@ -146,6 +173,11 @@ function getConstraints(raw: Property): Constraints {
     return constraints;
 }
 
+/**
+ *
+ * @param name
+ * @param raw
+ */
 function parseTypeDefinition(name: string, raw: unknown): TypeDefinition {
     const typeDef: TypeDefinition = { kind: Edm.TYPE_DEFINITION_KIND, name: name };
     fillPrimitiveTypeProperties(typeDef, raw);
@@ -161,6 +193,11 @@ function parseTypeDefinition(name: string, raw: unknown): TypeDefinition {
     return typeDef;
 }
 
+/**
+ *
+ * @param name
+ * @param raw
+ */
 export function parseEnumTypeDefinition(name: string, raw: unknown): EnumType {
     const enumType: EnumType = {
         kind: Edm.ENUM_TYPE_KIND,
@@ -194,6 +231,11 @@ export function parseEnumTypeDefinition(name: string, raw: unknown): EnumType {
     return enumType;
 }
 
+/**
+ *
+ * @param name
+ * @param raw
+ */
 function parseComplexType(name: string, raw: unknown): ComplexType {
     const complexType: ComplexType = { kind: Edm.COMPLEX_TYPE_KIND, name: name, properties: new Map() };
     fillPrimitiveTypeProperties(complexType, raw);
@@ -241,7 +283,12 @@ function parseComplexType(name: string, raw: unknown): ComplexType {
     return complexType;
 }
 
-function parseTerm(name: string, raw: CDSLTerm): Term {
+/**
+ *
+ * @param name
+ * @param raw
+ */
+function parseTerm(name: string, raw: unknown): Term {
     const term: Term = {
         kind: Edm.TERM_KIND,
         name: name,
@@ -253,8 +300,7 @@ function parseTerm(name: string, raw: CDSLTerm): Term {
         term.defaultValue = raw['$DefaultValue'];
     }
     if (raw['$AppliesTo'] !== undefined) {
-        // TODO consolidate two different types
-        term.appliesTo = raw.$AppliesTo as TargetKindValue[];
+        term.appliesTo = raw['$AppliesTo'];
     }
     if (raw['$BaseTerm'] !== undefined) {
         term.baseTerm = raw['$BaseTerm'];
@@ -276,8 +322,13 @@ function parseTerm(name: string, raw: CDSLTerm): Term {
     return term;
 }
 
-function parseSchemaElements(identifier: string, element: SchemaElement): VocabularyObject {
-    let vocabularyObject: VocabularyObject | null = null;
+/**
+ *
+ * @param identifier
+ * @param element
+ */
+function parseSchemaElements(identifier: string, element): VocabularyObject {
+    let vocabularyObject: VocabularyObject = null;
     if (element.$Kind !== undefined) {
         switch (element.$Kind) {
             case 'EnumType':
@@ -294,7 +345,7 @@ function parseSchemaElements(identifier: string, element: SchemaElement): Vocabu
                 break;
         }
     }
-    return vocabularyObject as VocabularyObject;
+    return vocabularyObject;
 }
 
 export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesInformation => {
@@ -314,6 +365,11 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
         Map<EdmNameType.FullyQualifiedName, boolean>
     > = new Map();
     const upperCaseNameMap: Map<string, string | Map<string, string>> = new Map();
+    /**
+     *
+     * @param name
+     * @param propertyName
+     */
     function addToUpperCaseNameMap(name: string, propertyName?: string): void {
         const upperCaseName = name.toUpperCase();
         const currentEntry = upperCaseNameMap.get(upperCaseName);
@@ -334,22 +390,26 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
         }
     }
 
+    /**
+     *
+     * @param vocabulary
+     */
     function getVocabularyUri(vocabulary: any): string {
-        let url: string | undefined = '';
+        let url = '';
         const links = (vocabulary && vocabulary['@Org.OData.Core.V1.Links']) || [];
         const linkMap: Map<string, string> = new Map();
         links.forEach((link) => linkMap.set(link.rel || '', link.href || ''));
         // get url pointing to latest version xml - if not available use alternative
-        if (linkMap.has('latest-version') && linkMap.get('latest-version')?.endsWith('.xml')) {
+        if (linkMap.has('latest-version') && linkMap.get('latest-version').endsWith('.xml')) {
             url = linkMap.get('latest-version');
-        } else if (linkMap.has('alternate') && linkMap.get('alternate')?.endsWith('.xml')) {
+        } else if (linkMap.has('alternate') && linkMap.get('alternate').endsWith('.xml')) {
             url = linkMap.get('alternate');
         } else if (linkMap.has('latest-version')) {
             url = linkMap.get('latest-version');
         } else if (linkMap.has('alternate')) {
             url = linkMap.get('alternate');
         }
-        return url as string;
+        return url;
     }
 
     NAMESPACE_TO_ALIAS.forEach((alias, namespace) => {
@@ -386,7 +446,7 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
                         if (vocabularyObject.kind === Edm.TERM_KIND) {
                             (vocabularyObject.appliesTo || ['']).forEach((targetKind) => {
                                 byTarget.set(targetKind, byTarget.get(targetKind) || new Set());
-                                byTarget.get(targetKind)?.add(fqName);
+                                byTarget.get(targetKind).add(fqName);
                             });
                         } else if (vocabularyObject.kind === Edm.COMPLEX_TYPE_KIND) {
                             vocabularyObject.properties.forEach((property) => {
@@ -406,7 +466,7 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
                                     }
                                 }
                                 derivedTypesPerType.set(baseType, derivedTypesPerType.get(baseType) || new Map());
-                                derivedTypesPerType.get(baseType)?.set(fqName, !!vocabularyObject.isAbstract);
+                                derivedTypesPerType.get(baseType).set(fqName, !!vocabularyObject.isAbstract);
                             }
                         }
                         if (vocabularyObject.kind === Edm.ENUM_TYPE_KIND) {
@@ -436,6 +496,10 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
     return vocabulariesInformation;
 };
 
+/**
+ *
+ * @param allowedTerm
+ */
 function getFullyQualifiedAllowedTermName(allowedTerm: string) {
     const segments = allowedTerm.split('.');
     if (segments.length !== 2) {

@@ -205,8 +205,8 @@ $AppliesTo: ['EntityContainer'],
 'Specifies a service implementation.'
 },
 },
-
-
+ 
+ 
 'com.sap.vocabularies.CDS.asserts.v1': {
 $Alias: 'assert',
 '@Common.Experimental': true,
@@ -240,8 +240,8 @@ $AppliesTo: ['Property'],
 'See: https://cap.cloud.sap/docs/guides/providing-services#assert-range'
 },
 },
-
-
+ 
+ 
 'com.sap.vocabularies.CDS.odata.v1': {
 $Alias: 'odata',
 '@Common.Experimental': true,
@@ -271,7 +271,7 @@ $AppliesTo: ['EntityType', 'EntitySet'],
 },
 },
 }
-  */
+ */
 
 // AssertUnique: {
 //     $Kind: 'Term',

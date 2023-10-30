@@ -3,13 +3,6 @@ import mkdirp from 'mkdirp';
 import fs from 'fs';
 import fetch from 'node-fetch';
 import prettier from 'prettier';
-import type {
-    EntityType,
-    Property,
-    SchemaElement,
-    Term,
-    CSDL
-} from '@sap-ux/vocabularies/CSDL';
 interface SupportedVocabularies {
     [key: string]: {
         uri: string;
@@ -98,12 +91,11 @@ export const VOCABULARIES_LOCATION = path.join('src', 'resources');
  * Returns vocabulary content
  *
  * @param url - A string containing the URL to which the request is sent
- *
  * @public
  */
-export async function getVocabulary(url: string): Promise<object> {
+export async function getVocabulary(url: string): Promise<string> {
     const response = await fetch(url);
-    return response.json() as object;
+    return response.json();
 }
 
 /**
@@ -153,7 +145,6 @@ export async function updateVocabularies(): Promise<any> {
  * Returns mapping: alias -> namespace
  *
  * @param vocabulary - Vocabulary (JSON CSDL data)
- *
  * @private
  */
 export function getNamespaceAliasMapping(vocabulary): any {
@@ -185,7 +176,6 @@ export function getNamespaceAliasMapping(vocabulary): any {
  *
  * @param value                 - Value
  * @param namespaceAliasMapping - Mapping: alias->namespace
- *
  * @private
  */
 export function convertValue(value: any, namespaceAliasMapping: any): any {
@@ -209,11 +199,10 @@ export function convertValue(value: any, namespaceAliasMapping: any): any {
  *
  * @param {string} name                  - Alias qualified name (or full qualified name)
  * @param {object} namespaceAliasMapping - Mapping: alias->namespace
- *
  * @private
  */
 export function getFullyQualifiedName(name: string, namespaceAliasMapping: any): string {
-    let result: string = '';
+    let result: string;
 
     if (typeof name === 'string') {
         const segments = name.split('.');
@@ -236,7 +225,6 @@ export function getFullyQualifiedName(name: string, namespaceAliasMapping: any):
  *
  * @param key                   - Object key
  * @param namespaceAliasMapping - Mapping: alias->namespace
- *
  * @private
  */
 export function convertKey(key: string, namespaceAliasMapping: any): any {
@@ -253,11 +241,10 @@ export function convertKey(key: string, namespaceAliasMapping: any): any {
  * @param {object} object  - Object containing a key to be renamed
  * @param {string} name    - Name of the key to be renamed
  * @param {string} newName - New name of the key
- *
  * @private
  */
 export function renameKey(object: any, name: string, newName: string): any {
-    const newObject: { [key: string]: string } = {};
+    const newObject = {};
 
     Object.keys(object).forEach((key) => {
         const value = object[key];
@@ -279,10 +266,9 @@ export function renameKey(object: any, name: string, newName: string): any {
  *
  * @param object                - CSDL JSON data
  * @param namespaceAliasMapping - Mapping: alias->namespace
- *
  * @private
  */
-export function uglifyAnnotations(object: object, namespaceAliasMapping?: object): any {
+export function uglifyAnnotations(object, namespaceAliasMapping?): any {
     for (const key in object) {
         const newKey = getFullyQualifiedName(key, namespaceAliasMapping);
         object = renameKey(object, key, newKey);
@@ -298,10 +284,9 @@ export function uglifyAnnotations(object: object, namespaceAliasMapping?: object
  *
  * @param object                - CSDL JSON data
  * @param namespaceAliasMapping - Mapping: alias->namespace
- *
  * @private
  */
-export function uglify(object: CSDL, namespaceAliasMapping?: object): any {
+export function uglify(object, namespaceAliasMapping?): any {
     if (typeof object === 'object') {
         if (namespaceAliasMapping === undefined) {
             namespaceAliasMapping = getNamespaceAliasMapping(object);

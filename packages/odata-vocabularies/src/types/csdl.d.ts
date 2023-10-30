@@ -215,7 +215,6 @@ declare namespace CSDL {
         '@Org.OData.Validation.V1.AllowedTerms': string[];
     }
 
-    
     /**
      * Entity Type
      */

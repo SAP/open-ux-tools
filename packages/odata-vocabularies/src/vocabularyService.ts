@@ -33,6 +33,7 @@ import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND } from './types/base
 
 /**
  * Vocabulary service class
+ *
  * @class
  */
 export class VocabularyService {
@@ -44,6 +45,10 @@ export class VocabularyService {
     private readonly upperCaseNameMap: Map<string, string | Map<string, string>>;
     readonly cdsVocabulary: CdsVocabulary;
 
+    /**
+     *
+     * @param fullyQualifiedName
+     */
     private resolveName(fullyQualifiedName: FullyQualifiedName): { namespace: Namespace; name: SimpleIdentifier } {
         const parts = (fullyQualifiedName || '').trim().split('.');
         const name = parts.pop() || '';
@@ -51,6 +56,11 @@ export class VocabularyService {
         return { namespace, name };
     }
 
+    /**
+     *
+     * @param type
+     * @param complyingType
+     */
     private isOfType(type: FullyQualifiedTypeName, complyingType: FullyQualifiedTypeName): boolean {
         let isOfType = false;
         if (type === complyingType) {
@@ -72,6 +82,10 @@ export class VocabularyService {
         return isOfType;
     }
 
+    /**
+     *
+     * @param includeCds
+     */
     constructor(includeCds?: boolean) {
         let vocabularyInformation = loadVocabulariesInformation(includeCds);
         // add cds specific annotations (TextArrangement and Capabilities) on fly
@@ -124,6 +138,7 @@ export class VocabularyService {
      * Add CDS specific annotation terms
      *
      * CDS documentation recommends using a shortcut with below listed annotation terms
+     *
      * @Common.TextArrangement
      * @Capabilities.Insertable
      * @Capabilities.Updatable
@@ -233,6 +248,8 @@ export class VocabularyService {
 
     /**
      * Returns default alias.
+     *
+     * @param namespace
      */
     getDefaultAlias(namespace: string): VocabularyAlias | undefined {
         return NAMESPACE_TO_ALIAS.get(namespace as VocabularyNamespace);
@@ -240,6 +257,7 @@ export class VocabularyService {
 
     /**
      * Returns map of all vocabularies supported by this library.
+     *
      * @returns {Map<Namespace, Vocabulary>} - map of vocabularies
      */
     getVocabularies(): Map<Namespace, Vocabulary> {
@@ -305,6 +323,7 @@ export class VocabularyService {
      *
      * @param termName       - Name of vocabulary term
      * @param targetKind     - Target kind, see symbolic values in http://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_Applicability
+     * @param targetKinds
      * @param targetType     - Type of the annotated element
      * @returns                TermApplicability: {IsValid|TermNotApplicable|TypeNotApplicable|UnknownTerm|UnknownVocabulary|UnSupportedVocabulary}
      */
@@ -455,10 +474,19 @@ export class VocabularyService {
         return values;
     }
 
+    /**
+     *
+     * @param element
+     */
     private getElementType(element: Term | ComplexTypeProperty): VocabularyObject {
         return this.getType(element.type) || this.getTerm(element.type);
     }
 
+    /**
+     *
+     * @param element
+     * @param elementType
+     */
     private getFormattedTypeText(element: VocabularyObject | ComplexTypeProperty, elementType: VocabularyType): string {
         let sResultText = '';
         if (element.kind === TERM_KIND || element.kind === 'Property') {
@@ -475,6 +503,10 @@ export class VocabularyService {
         return sResultText;
     }
 
+    /**
+     *
+     * @param object
+     */
     private getFormattedNullableText(object: VocabularyObject | ComplexTypeProperty): string {
         let sResultText = '';
         const isNullable =
