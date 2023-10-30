@@ -5,7 +5,7 @@ config.globals = {
     }
 };
 // config.testResultsProcessor =  'jest-sonar-reporter';
-config.coverageDirectory.push('reports/test/unit/coverage');
+//config.coverageDirectory.push('reports/test/unit/coverage');
 config.modulePathIgnorePatterns.push('<rootDir>/test/test-output');
 config.modulePathIgnorePatterns.push('<rootDir>/templates');
 config.testPathIgnorePatterns = ['<rootDir>/node_modules/', '<rootDir>/dist/'];

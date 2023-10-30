@@ -18,7 +18,7 @@ describe('vocabularies', () => {
         jest.resetAllMocks();
     });
 
-    it('getNamespaceAliasMapping', function () {
+    it('getNamespaceAliasMapping', () => {
         // Arrange
         const vocabularies = {
             $Version: '4.0',
@@ -51,7 +51,7 @@ describe('vocabularies', () => {
         expect(result).toEqual(expectedResult);
     });
 
-    it('getFullyQualifiedName - Term with Alias', function () {
+    it('getFullyQualifiedName - Term with Alias', () => {
         // Arrange
         const namespaceAliasMapping = {
             Edm: 'Edm',
@@ -67,7 +67,7 @@ describe('vocabularies', () => {
         expect(result).toEqual('Org.OData.Core.V1.Description');
     });
 
-    it('getFullyQualifiedName - Term with full namespace', function () {
+    it('getFullyQualifiedName - Term with full namespace', () => {
         // Arrange
         const namespaceAliasMapping = {
             Edm: 'Edm',
@@ -83,7 +83,7 @@ describe('vocabularies', () => {
         expect(result).toEqual('Org.OData.Core.V1.Description');
     });
 
-    it('renameKey', function () {
+    it('renameKey', () => {
         // Arrange
         const object = {
             '@Core.Description': 'Terms to describe which data in a given entity model can be aggregated, and how.'
@@ -100,7 +100,7 @@ describe('vocabularies', () => {
         expect(result).toEqual(expectedObject);
     });
 
-    it('uglifyAnnotations', function () {
+    it('uglifyAnnotations', () => {
         // Arrange
         const object = {
             'Aggregation.CustomAggregate': {
@@ -133,7 +133,7 @@ describe('vocabularies', () => {
         expect(result).toEqual(expectedOutput);
     });
 
-    it('uglify', function () {
+    it('uglify', () => {
         // Arrange
         const vocabularies = {
             $Version: '4.0',
@@ -299,29 +299,29 @@ describe('vocabularies', () => {
         }
     });
 
-    describe('convertKey', function () {
+    describe('convertKey', () => {
         let namespaceAliasMapping: any;
 
-        beforeEach(function () {
+        beforeEach(() => {
             namespaceAliasMapping = {
                 alias0: 'namespace0',
                 alias1: 'namespace1'
             };
         });
 
-        it('@alias1.myTerm', function () {
+        it('@alias1.myTerm', () => {
             // Act/Assert
             expect(Vocabularies.convertKey('@alias1.myTerm', namespaceAliasMapping)).toEqual('@namespace1.myTerm');
         });
 
-        it('@alias1.myTerm1@alias0.myTerm0', function () {
+        it('@alias1.myTerm1@alias0.myTerm0', () => {
             // Act/Assert
             expect(Vocabularies.convertKey('@alias1.myTerm1@alias0.myTerm0', namespaceAliasMapping)).toEqual(
                 '@namespace1.myTerm1@namespace0.myTerm0'
             );
         });
 
-        it('prop@alias1.myTerm', function () {
+        it('prop@alias1.myTerm', () => {
             // Act/Assert
             expect(Vocabularies.convertKey('prop@alias1.myTerm', namespaceAliasMapping)).toEqual(
                 'prop@namespace1.myTerm'
@@ -329,10 +329,10 @@ describe('vocabularies', () => {
         });
     });
 
-    describe('convertValue', function () {
+    describe('convertValue', () => {
         let namespaceAliasMapping: any;
 
-        beforeEach(function () {
+        beforeEach(() => {
             namespaceAliasMapping = {
                 alias0: 'namespace0',
                 alias1: 'namespace1',
@@ -340,13 +340,13 @@ describe('vocabularies', () => {
             };
         });
 
-        it('string value', function () {
+        it('string value', () => {
             expect(Vocabularies.convertValue('alias1.myTermSomeOtherText', namespaceAliasMapping)).toEqual(
                 'namespace1.myTermSomeOtherText'
             );
         });
 
-        it('string value with namespace', function () {
+        it('string value with namespace', () => {
             expect(Vocabularies.convertValue('Hierarchy.Level', namespaceAliasMapping)).toEqual(
                 'com.sap.vocabularies.Hierarchy.v1.Level'
             );
@@ -355,7 +355,7 @@ describe('vocabularies', () => {
             );
         });
 
-        it('array value', function () {
+        it('array value', () => {
             expect(Vocabularies.convertValue(['alias1.myTerm1', 'alias0.myTerm0'], namespaceAliasMapping)).toEqual([
                 'namespace1.myTerm1',
                 'namespace0.myTerm0'

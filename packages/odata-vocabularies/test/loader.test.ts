@@ -1,5 +1,4 @@
 import { loadVocabulariesInformation } from './../src/loader';
-import { EdmNameType } from './../src/types/names';
 import type { Term } from './../src/types/vocabularyService';
 import { ENTITY_TYPE_KIND } from './../src/types/baseTypes';
 

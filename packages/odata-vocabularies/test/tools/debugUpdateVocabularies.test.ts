@@ -5,7 +5,7 @@ import * as Vocabularies from '../../src/tools/Vocabularies';
 //
 // Skipped by default. Enable for debugging, only!
 // -----------------------------------------------------------------
-it.skip('DEBUG ONLY: updateVocabularies', async function () {
+it.skip('DEBUG ONLY: updateVocabularies', async () => {
     const vocabularies: any = await Vocabularies.updateVocabularies();
     expect(vocabularies).toBeTruthy;
 });

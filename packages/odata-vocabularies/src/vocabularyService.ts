@@ -48,6 +48,7 @@ export class VocabularyService {
     /**
      *
      * @param fullyQualifiedName
+     * @returns
      */
     private resolveName(fullyQualifiedName: FullyQualifiedName): { namespace: Namespace; name: SimpleIdentifier } {
         const parts = (fullyQualifiedName || '').trim().split('.');
@@ -60,6 +61,7 @@ export class VocabularyService {
      *
      * @param type
      * @param complyingType
+     * @returns {boolean}
      */
     private isOfType(type: FullyQualifiedTypeName, complyingType: FullyQualifiedTypeName): boolean {
         let isOfType = false;
@@ -85,6 +87,7 @@ export class VocabularyService {
     /**
      *
      * @param includeCds
+     * @returns {boolean}
      */
     constructor(includeCds?: boolean) {
         let vocabularyInformation = loadVocabulariesInformation(includeCds);
@@ -135,15 +138,16 @@ export class VocabularyService {
     }
 
     /**
-     * Add CDS specific annotation terms
+     * Add CDS specific annotation terms.
      *
-     * CDS documentation recommends using a shortcut with below listed annotation terms
+     * CDS documentation recommends using a shortcut with below listed annotation terms.
      *
-     * @Common.TextArrangement
-     * @Capabilities.Insertable
-     * @Capabilities.Updatable
-     * @Capabilities.Deletable
-     * @Capabilities.Readable
+     * Common.TextArrangement.
+     * Capabilities.Insertable.
+     * Capabilities.Updatable.
+     * Capabilities.Deletable.
+     * Capabilities.Readable.
+     *
      * @param vocabularyInformation - vocabulary information
      * @returns vocabularyInformation - vocabularyInformation added with shortcut terms
      */
@@ -250,6 +254,7 @@ export class VocabularyService {
      * Returns default alias.
      *
      * @param namespace
+     * @returns {VocabularyAlias} Sap Oasis Vocabulary Alias;
      */
     getDefaultAlias(namespace: string): VocabularyAlias | undefined {
         return NAMESPACE_TO_ALIAS.get(namespace as VocabularyNamespace);
@@ -288,9 +293,9 @@ export class VocabularyService {
     }
 
     /**
-     * Returns all terms which are applicable for a given context.
+     *  Returns all terms which are applicable for a given context.
      *
-     * The context is defined by the following parameters:
+     * The context is defined by the following parameters.
      *
      * @param targetKinds - Target kinds, see symbolic values in http://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_Applicability
      * @param targetType  - Type name of the annotated element.
@@ -322,8 +327,7 @@ export class VocabularyService {
      * The result describes whether the term is applicable or gives a reason why it is not applicable.
      *
      * @param termName       - Name of vocabulary term
-     * @param targetKind     - Target kind, see symbolic values in http://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_Applicability
-     * @param targetKinds
+     * @param targetKinds     - Target kind, see symbolic values in http://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_Applicability
      * @param targetType     - Type of the annotated element
      * @returns                TermApplicability: {IsValid|TermNotApplicable|TypeNotApplicable|UnknownTerm|UnknownVocabulary|UnSupportedVocabulary}
      */
@@ -477,6 +481,7 @@ export class VocabularyService {
     /**
      *
      * @param element
+     * @returns {object} - vocabulary object
      */
     private getElementType(element: Term | ComplexTypeProperty): VocabularyObject {
         return this.getType(element.type) || this.getTerm(element.type);
@@ -486,6 +491,7 @@ export class VocabularyService {
      *
      * @param element
      * @param elementType
+     * @returns {string} - element type
      */
     private getFormattedTypeText(element: VocabularyObject | ComplexTypeProperty, elementType: VocabularyType): string {
         let sResultText = '';
@@ -506,6 +512,7 @@ export class VocabularyService {
     /**
      *
      * @param object
+     * @returns {string} - text
      */
     private getFormattedNullableText(object: VocabularyObject | ComplexTypeProperty): string {
         let sResultText = '';
@@ -553,30 +560,35 @@ export class VocabularyService {
     }
 
     /**
-     * Returns the names of all derived types for a given type (including the provided type name)
+     * Returns the names of all derived types for a given type (including the provided type name).
      *
      * @param typeName        - Name of the vocabulary type for which you want to get the derived types
      * @param includeAbstract - true: include names of abstract types in addition to concrete types,
      *                          false: return concrete types only
-     * @returns {Set<FullyQualifiedName>} - names of all derived types for a given type
+     * @returns {Set<FullyQualifiedName>} - Returns the names of all derived types for a given type (including the provided type name)
      */
     getDerivedTypeNames(typeName: FullyQualifiedName, includeAbstract?: boolean): Set<FullyQualifiedName> {
-        let names: { fName: FullyQualifiedName; isAbstract: boolean }[] = [];
+        let names = [];
         const type = this.dictionary.get(typeName);
+        const that = this;
+        function collectDerivedTypes(name) {
+            const derivedTypesMap = that.derivedTypesPerType?.get(name) || new Map();
+            derivedTypesMap.forEach((isAbstract, derivedName) => {
+                names.push({ fName: derivedName, isAbstract: isAbstract });
+                collectDerivedTypes(derivedName);
+            });
+        }
+
         if (type && type.kind === COMPLEX_TYPE_KIND) {
-            // recursively collect all derived types
             names.push({ fName: typeName, isAbstract: type.isAbstract as boolean });
-            for (let i = 0; i < names.length; i++) {
-                const name = names[i].fName;
-                (this.derivedTypesPerType.get(name) || new Map()).forEach((isAbstract, derivedName) => {
-                    names.push({ fName: derivedName, isAbstract: isAbstract });
-                });
-            }
+            collectDerivedTypes(typeName);
+
             // filter out abstract types if required
             if (!includeAbstract) {
                 names = names.filter((entry) => !entry.isAbstract);
             }
         }
+
         return new Set(names.map((entry) => entry.fName));
     }
 

@@ -88,10 +88,10 @@ export const SUPPORTED_VOCABULARIES: SupportedVocabularies = {
 export const VOCABULARIES_LOCATION = path.join('src', 'resources');
 
 /**
- * Returns vocabulary content
  *
  * @param url - A string containing the URL to which the request is sent
  * @public
+ * @returns {string} - Returns vocabulary content
  */
 export async function getVocabulary(url: string): Promise<string> {
     const response = await fetch(url);
@@ -99,11 +99,12 @@ export async function getVocabulary(url: string): Promise<string> {
 }
 
 /**
- * Updates vocabulary resources in project
+ * Updates vocabulary resources in project.
  *
- * Vocabulary data is uglified (alias -> namespace) to remove complexity for further processing
+ * Vocabulary data is uglified (alias -> namespace) to remove complexity for further processing.
  *
  * @public
+ * @returns
  */
 export async function updateVocabularies(): Promise<any> {
     const date = new Date();
@@ -142,10 +143,10 @@ export async function updateVocabularies(): Promise<any> {
 }
 
 /**
- * Returns mapping: alias -> namespace
  *
  * @param vocabulary - Vocabulary (JSON CSDL data)
  * @private
+ * @returns {object} Returns mapping: alias -> namespace
  */
 export function getNamespaceAliasMapping(vocabulary): any {
     const namespace = {};
@@ -172,11 +173,11 @@ export function getNamespaceAliasMapping(vocabulary): any {
 }
 
 /**
- * Substitute aliases by namespaces in value
  *
  * @param value                 - Value
  * @param namespaceAliasMapping - Mapping: alias->namespace
  * @private
+ * @returns  Substitute aliases by namespaces in value
  */
 export function convertValue(value: any, namespaceAliasMapping: any): any {
     if (typeof value === 'string') {
@@ -195,11 +196,11 @@ export function convertValue(value: any, namespaceAliasMapping: any): any {
 }
 
 /**
- * Returns the fully qualified name
  *
  * @param {string} name                  - Alias qualified name (or full qualified name)
  * @param {object} namespaceAliasMapping - Mapping: alias->namespace
  * @private
+ * @returns {string} Returns the fully qualified name
  */
 export function getFullyQualifiedName(name: string, namespaceAliasMapping: any): string {
     let result: string;
@@ -221,11 +222,11 @@ export function getFullyQualifiedName(name: string, namespaceAliasMapping: any):
 }
 
 /**
- * Substitute aliases by namespaces in key
  *
  * @param key                   - Object key
  * @param namespaceAliasMapping - Mapping: alias->namespace
  * @private
+ * @returns Substitute aliases by namespaces in key
  */
 export function convertKey(key: string, namespaceAliasMapping: any): any {
     const [nonAnnotationSegment, ...segments] = key.split('@');
@@ -236,12 +237,12 @@ export function convertKey(key: string, namespaceAliasMapping: any): any {
 }
 
 /**
- * Rename a single key of an object preserving the key sequence
  *
  * @param {object} object  - Object containing a key to be renamed
  * @param {string} name    - Name of the key to be renamed
  * @param {string} newName - New name of the key
  * @private
+ * @returns Rename a single key of an object preserving the key sequence
  */
 export function renameKey(object: any, name: string, newName: string): any {
     const newObject = {};
@@ -260,13 +261,11 @@ export function renameKey(object: any, name: string, newName: string): any {
 }
 
 /**
- * Substitute aliases by namespaces
- *
- * (Aliases are kept in references and descriptions)
  *
  * @param object                - CSDL JSON data
  * @param namespaceAliasMapping - Mapping: alias->namespace
  * @private
+ * @returns {object} Substitute aliases by namespaces (Aliases are kept in references and descriptions)
  */
 export function uglifyAnnotations(object, namespaceAliasMapping?): any {
     for (const key in object) {
@@ -278,13 +277,14 @@ export function uglifyAnnotations(object, namespaceAliasMapping?): any {
 }
 
 /**
- * Substitute aliases by namespaces
+ * Substitute aliases by namespaces.
  *
- * (Aliases are kept in references and descriptions)
+ * (Aliases are kept in references and descriptions).
  *
  * @param object                - CSDL JSON data
  * @param namespaceAliasMapping - Mapping: alias->namespace
  * @private
+ * @returns {object}
  */
 export function uglify(object, namespaceAliasMapping?): any {
     if (typeof object === 'object') {

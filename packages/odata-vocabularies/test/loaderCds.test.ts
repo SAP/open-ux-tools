@@ -1,5 +1,4 @@
 import { loadVocabulariesInformation } from '../src/loader';
-import { EdmNameType } from '../src/types/names';
 import { PROPERTY_KIND } from '../src/types/baseTypes';
 
 declare const expect: jest.Expect;

@@ -1,5 +1,8 @@
-# Supported Vocabularies
+# @sap-ux/odata-vocabularies
 
+Library that contains the most recent copies of the OData vocabularies authored by OASIS and SAP
+
+## Supported Vocabularies
 [OASIS Vocabularies](https://oasis-tcs.github.io/odata-vocabularies)
 * Aggregation
 * Authorization
@@ -27,22 +30,18 @@
 * Session
 * UI
 
-# Usage
+## Installation
+Npm
+`npm install --save @sap-ux/odata-vocabularies`
 
-1. Add the Vocabularies library to package.json as a dependency in your project:
+Yarn
+`yarn add @sap-ux/odata-vocabularies`
 
-    ```typescript
-    yarn add @sap/ux-odata-vocabularies 
-    ```
-    [check latest library version here](https://github.wdf.sap.corp/ux-engineering/tools-suite/blob/master/packages/lib/vocabularies/package.json#L3)
+Pnpm
+`pnpm add @sap-ux/odata-vocabularies`
 
-1. Run yarn install and yarn build at monorepo root folder
 
-    ```typescript
-    yarn install @sap/ux-odata-vocabularies@<latest_library_version>
-    yarn build --scope @sap/ux-odata-vocabularies
-    ```
-    [check latest library version here](https://github.wdf.sap.corp/ux-engineering/tools-suite/blob/master/packages/lib/vocabularies/package.json#L3)
+## Usage
 
 1. Import the needed functions in your modules
 
@@ -50,8 +49,7 @@
     import { VocabularyService } from '@sap/ux-odata-vocabularies';
     ```
 
-# Vocabulary API
-
+## Vocabulary API
 The vocabulary API is implemented via class VocabularyService and currently exposes the following functions:
 
 * checkTermApplicability
@@ -66,5 +64,3 @@ The vocabulary API is implemented via class VocabularyService and currently expo
 * getVocabularies
 * getVocabulary
 * getVocabularyNamespace
-
-For usage examples have a look at our [unit tests](https://github.wdf.sap.corp/ux-engineering/tools-suite/blob/master/packages/lib/vocabularies/test/vocabularyService.test.ts)

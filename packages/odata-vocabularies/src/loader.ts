@@ -63,6 +63,7 @@ let vocabulariesInformationStaticCds: VocabulariesInformation = null;
  *
  * @param termName
  * @param prefix
+ * @returns {string} - term with namespace
  */
 function getDefinitionAnnotationKey(termName: EdmNameType.QualifiedName, prefix = ''): string {
     const [alias, term] = termName.split('.');
@@ -113,6 +114,7 @@ function fillPrimitiveTypeProperties(primitiveType: PrimitiveType, raw: unknown)
 /**
  *
  * @param raw
+ * @returns { Facets | null}
  */
 function getFacets(raw: unknown): Facets | null {
     const facets: Facets = {};
@@ -128,6 +130,7 @@ function getFacets(raw: unknown): Facets | null {
 /**
  *
  * @param raw
+ * @returns {AllowedValues[]}
  */
 function parseAllowedValues(raw: unknown): AllowedValues[] {
     const rawAllowedValue = raw[getDefinitionAnnotationKey('Validation.AllowedValues')];
@@ -147,6 +150,7 @@ function parseAllowedValues(raw: unknown): AllowedValues[] {
 /**
  *
  * @param raw
+ * @returns {Constraints}
  */
 function getConstraints(raw: unknown): Constraints {
     const constraints: Constraints = {};
@@ -177,6 +181,7 @@ function getConstraints(raw: unknown): Constraints {
  *
  * @param name
  * @param raw
+ * @returns {TypeDefinition}
  */
 function parseTypeDefinition(name: string, raw: unknown): TypeDefinition {
     const typeDef: TypeDefinition = { kind: Edm.TYPE_DEFINITION_KIND, name: name };
@@ -197,6 +202,7 @@ function parseTypeDefinition(name: string, raw: unknown): TypeDefinition {
  *
  * @param name
  * @param raw
+ * @returns {EnumType}
  */
 export function parseEnumTypeDefinition(name: string, raw: unknown): EnumType {
     const enumType: EnumType = {
@@ -235,6 +241,7 @@ export function parseEnumTypeDefinition(name: string, raw: unknown): EnumType {
  *
  * @param name
  * @param raw
+ * @returns {ComplexType}
  */
 function parseComplexType(name: string, raw: unknown): ComplexType {
     const complexType: ComplexType = { kind: Edm.COMPLEX_TYPE_KIND, name: name, properties: new Map() };
@@ -287,6 +294,7 @@ function parseComplexType(name: string, raw: unknown): ComplexType {
  *
  * @param name
  * @param raw
+ * @returns {Term}
  */
 function parseTerm(name: string, raw: unknown): Term {
     const term: Term = {
@@ -326,6 +334,7 @@ function parseTerm(name: string, raw: unknown): Term {
  *
  * @param identifier
  * @param element
+ * @returns {VocabularyObject}
  */
 function parseSchemaElements(identifier: string, element): VocabularyObject {
     let vocabularyObject: VocabularyObject = null;
@@ -348,6 +357,11 @@ function parseSchemaElements(identifier: string, element): VocabularyObject {
     return vocabularyObject;
 }
 
+/**
+ *
+ * @param includeCds
+ * @returns {VocabulariesInformation}
+ */
 export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesInformation => {
     // try to use cache
     if (includeCds && vocabulariesInformationStaticCds) {
@@ -393,6 +407,7 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
     /**
      *
      * @param vocabulary
+     * @returns {string} - url
      */
     function getVocabularyUri(vocabulary: any): string {
         let url = '';
@@ -499,8 +514,9 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
 /**
  *
  * @param allowedTerm
+ * @returns {string}
  */
-function getFullyQualifiedAllowedTermName(allowedTerm: string) {
+function getFullyQualifiedAllowedTermName(allowedTerm: string): string {
     const segments = allowedTerm.split('.');
     if (segments.length !== 2) {
         return allowedTerm;
