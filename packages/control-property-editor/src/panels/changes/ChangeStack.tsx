@@ -101,7 +101,8 @@ function convertChanges(changes: Change[]): Item[] {
             items.push({
                 fileName: change.fileName,
                 timestamp: change.timestamp,
-                header: true
+                header: true,
+                controlId: change.controlId ?? ''
             });
             i++;
         } else {
@@ -187,13 +188,13 @@ function classifyChange(change: ValidChange, changeIndex: number): ControlProper
 }
 
 /**
- * Returns true, if controlId is defined.
+ * Returns true, if controlName is defined.
  *
  * @param change ControlGroupProps | UnknownChangeProps
  * @returns boolean
  */
 export function isKnownChange(change: ControlGroupProps | UnknownChangeProps): change is ControlGroupProps {
-    return (change as ControlGroupProps).controlId !== undefined;
+    return (change as ControlGroupProps).controlName !== undefined;
 }
 
 const filterPropertyChanges = (changes: ControlPropertyChange[], query: string): ControlPropertyChange[] => {

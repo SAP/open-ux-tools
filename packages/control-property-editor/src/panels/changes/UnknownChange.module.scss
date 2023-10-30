@@ -9,8 +9,45 @@
     white-space: nowrap;
     color: var(--vscode-editor-foreground);
     width: 240px;
+    direction: rtl;
+    text-align: left;
+}
+.filelabel {
+    min-width: 30px;
+    margin-top: 5px;
+}
+.fileText {
+    margin-top: 5px;
+    line-height: 18px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--vscode-editor-foreground);
+    width: 210px;
+    direction: rtl;
+    text-align: left;
+    text-overflow: ellipsis;
+}
+.controllabel {
+    min-width: 72px;
+    margin-top: 5px;
+}
+.controlText {
+    margin-top: 5px;
+    line-height: 18px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--vscode-editor-foreground);
+    width: 168px;
+    direction: rtl;
+    text-align: left;
+    text-overflow: ellipsis;
 }
 .timestamp {
+    margin-top: 5px;
     color: var(--vscode-editor-foreground);
     font-size: 11px;
     line-height: 15px;
@@ -19,7 +56,7 @@
 }
 .textHeader {
     display: inline-block;
-    color: var(--vscode-textLink-foreground);
+    color: var(--vscode-foreground);
     font-size: 13px;
     font-weight: bold;
     text-overflow: ellipsis;

@@ -23,7 +23,7 @@ export interface UnknownChangeProps {
  * @returns ReactElement
  */
 export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElement {
-    const { fileName, timestamp, header } = unknownChangeProps;
+    const { fileName, timestamp, header, controlId } = unknownChangeProps;
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [dialogState, setDialogState] = useState<PropertyChangeDeletionDetails | undefined>(undefined);
@@ -53,10 +53,16 @@ export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElem
                                     {name} {t('CHANGE')}
                                 </Text>
                             )}
-                            <Text className={styles.text} title={fileName}>
-                                {t('FILE')}
-                                {fileName}
-                            </Text>
+                            <Stack horizontal>
+                                <Stack.Item className={styles.filelabel}>{t('FILE')}</Stack.Item>
+                                <Stack.Item className={styles.fileText} title={fileName}>
+                                    {fileName}
+                                </Stack.Item>
+                            </Stack>
+                            <Stack horizontal>
+                                <Stack.Item className={styles.controllabel}>{t('CONTROL')}</Stack.Item>
+                                <Stack.Item className={styles.controlText} title={controlId}>{controlId}</Stack.Item>
+                            </Stack>
                         </Stack.Item>
 
                         {fileName && (
