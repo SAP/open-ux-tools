@@ -73,6 +73,7 @@ export default class ControllerExtension extends BaseDialog {
             source.setValueState(ValueState.None);
             beginBtn.setEnabled(false);
             this.model.setProperty('/newControllerName', null);
+            return;
         }
 
         const fileExists = controllerList.some((f) => f.controllerName === `${controllerName}.js`);
