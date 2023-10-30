@@ -1113,6 +1113,19 @@ importers:
       i18next:
         specifier: 20.6.1
         version: 20.6.1
+      validate-npm-package-name:
+        specifier: 5.0.0
+        version: 5.0.0
+    devDependencies:
+      '@types/i18next':
+        specifier: 13.0.0
+        version: 13.0.0
+      '@types/validate-npm-package-name':
+        specifier: 4.0.1
+        version: 4.0.1
+      jest-extended:
+        specifier: 3.2.4
+        version: 3.2.4(jest@29.5.0)
 
   packages/store:
     dependencies:
@@ -7975,6 +7988,13 @@ packages:
       i18next: 21.10.0
     dev: true
 
+  /@types/i18next@13.0.0:
+    resolution: {integrity: sha512-gp/SIShAuf4WOqi8ey0nuI7qfWaVpMNCcs/xLygrh/QTQIXmlDC1E0TtVejweNW+7SGDY7g0lyxyKZIJuCKIJw==}
+    deprecated: This is a stub types definition. i18next provides its own type definitions, so you do not need this installed.
+    dependencies:
+      i18next: 21.10.0
+    dev: true
+
   /@types/inquirer@8.2.1:
     resolution: {integrity: sha512-wKW3SKIUMmltbykg4I5JzCVzUhkuD9trD6efAmYgN2MrSntY0SMRQzEnD3mkyJ/rv9NLbTC7g3hKKE86YwEDLw==}
     dependencies:
@@ -8341,6 +8361,10 @@ packages:
 
   /@types/uuid@3.4.11:
     resolution: {integrity: sha512-CJNkbEu4IdVuBMRVaNC2GjASgJK7ziqDlVXWuJ1pvhOLADl7nzxhTKjHRdOmo2SuXuygcWBmzgYgn9foTX0UiA==}
+    dev: true
+
+  /@types/validate-npm-package-name@4.0.1:
+    resolution: {integrity: sha512-yzivVVAvMhDeboopQ49JNZ+9aCQV5jy4KfUw2LLFJ08oNyNFnG2Il7p/giMQBcJi4FVVqcl2vBIEll6YrKrS/Q==}
     dev: true
 
   /@types/vinyl@2.0.7:

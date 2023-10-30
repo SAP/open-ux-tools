@@ -13,6 +13,12 @@ import type { AbapTarget } from '@sap-ux/system-access';
 import AdmZip from 'adm-zip';
 import { join } from 'path';
 
+import * as validate from '../../../src/base/validate';
+import { SummaryStatus } from '../../../src/base/validate';
+
+const validateBeforeDeployMock = jest.spyOn(validate, 'validateBeforeDeploy');
+const formatSummaryMock = jest.spyOn(validate, 'formatSummary');
+
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
     const app: AbapDeployConfig['app'] = {
@@ -40,6 +46,8 @@ describe('base/deploy', () => {
             mockedUi5RepoService.deploy.mockReset();
             mockedLrepService.deploy.mockReset();
             mockedAdtService.createTransportRequest.mockReset();
+            validateBeforeDeployMock.mockReset();
+            formatSummaryMock.mockReset();
         });
 
         test('No errors locally with url', async () => {
@@ -68,6 +76,39 @@ describe('base/deploy', () => {
             );
             expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
             expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
+        });
+
+        test('Log validation summaries regardless of validation result', async () => {
+            mockedStoreService.read.mockResolvedValueOnce(credentials);
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+            validateBeforeDeployMock.mockResolvedValueOnce({
+                result: true,
+                summary: [{ message: 'Test', status: SummaryStatus.Valid }]
+            });
+
+            await deploy(archive, { app, target }, nullLogger);
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: undefined,
+                safeMode: undefined
+            });
+            mockedUi5RepoService.deploy.mockClear();
+
+            await deploy(archive, { app, target, test: true, safe: false, credentials }, nullLogger);
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
+            mockedUi5RepoService.deploy.mockClear();
+            mockCreateForAbap.mockClear();
+
+            const params = { hello: 'world' };
+            await deploy(
+                archive,
+                { app, target: { ...target, params }, test: true, safe: false, credentials },
+                nullLogger
+            );
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
+            expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
+            expect(formatSummaryMock).toHaveBeenCalled();
         });
 
         test('Successful retry after known axios error', async () => {
