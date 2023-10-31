@@ -53,6 +53,20 @@ const getModel = (saved = false): ChangesSlice => {
                       value: '{expression}',
                       isActive: true,
                       changeType: 'propertyBindingChange'
+                  },
+                  {
+                      controlId: 'ListReport::TableToolbar',
+                      controlName: 'OverflowToolbar',
+                      type: 'pending',
+                      isActive: true,
+                      changeType: 'addXML'
+                  },
+                  {
+                      controlId: 'FieldGroup::TechnicalData::FormGroup',
+                      controlName: 'Group',
+                      type: 'pending',
+                      isActive: true,
+                      changeType: 'addFields'
                   }
               ] as PendingPropertyChange[])
             : [],
@@ -64,6 +78,17 @@ const getModel = (saved = false): ChangesSlice => {
                       propertyName: 'testPropertyName2',
                       type: 'saved',
                       value: 'testValue2',
+                      fileName: 'testFileName',
+                      kind: 'valid',
+                      timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
+                      changeType: 'propertyChange'
+                  },
+                  {
+                      controlId: 'testId2',
+                      controlName: 'controlName2',
+                      propertyName: 'Icon',
+                      type: 'saved',
+                      value: 'sap-icon://accept',
                       fileName: 'testFileName',
                       kind: 'valid',
                       timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
@@ -90,6 +115,20 @@ const getModel = (saved = false): ChangesSlice => {
                       kind: 'valid',
                       timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
                       changeType: 'propertyChange'
+                  },
+                  {
+                      controlId: 'supplierView--supplierForm',
+                      type: 'saved',
+                      fileName: 'id_1698648267087_373_moveSimpleFormField',
+                      kind: 'unknown',
+                      timestamp: new Date('2023-10-11T12:06:53.939Z').getTime()
+                  },
+                  {
+                      controlId: 'supplierView--supplierForm',
+                      type: 'saved',
+                      fileName: 'id_1698648267088_374_moveSimpleFormField',
+                      kind: 'unknown',
+                      timestamp: new Date('2023-10-12T12:06:53.939Z').getTime()
                   }
               ] as SavedPropertyChange[])
             : []
@@ -121,7 +160,7 @@ describe('ChangePanel', () => {
         expect(noControlFound).toBeInTheDocument();
     });
 
-    test('ChangePanel with unsaved changes', () => {
+    test('unsaved changes - all changes', () => {
         const model = getModel();
         const initialState: State = {
             deviceType: DeviceType.Desktop,
@@ -146,9 +185,15 @@ describe('ChangePanel', () => {
 
         const value = screen.getByText(/testValue1/i);
         expect(value).toBeInTheDocument();
+
+        const controlToolbar = screen.getByRole('button', { name: /overflow toolbar/i });
+        expect(controlToolbar).toBeInTheDocument();
+
+        const changeAddXML = screen.getByText(/add x m l/i);
+        expect(changeAddXML).toBeInTheDocument();
     });
 
-    test('ChangePanel with saved changes', () => {
+    test('saved changes - property change', () => {
         const model = getModel(true);
         const initialState: State = {
             deviceType: DeviceType.Desktop,
@@ -174,6 +219,9 @@ describe('ChangePanel', () => {
 
         const value1 = screen.getByText(/testValue2/i);
         expect(value1).toBeInTheDocument();
+
+        const propertyIcon = screen.getByText(/sap\-icon:\/\/accept/i);
+        expect(propertyIcon).toBeInTheDocument();
 
         const deleteButton = screen.getAllByRole('button')[1];
         const iTagAttributes = deleteButton?.children?.item(0)?.children?.item(0)?.attributes;
@@ -209,7 +257,7 @@ describe('ChangePanel', () => {
         expect(screen.queryByText(/Test Property Name2/i)).toStrictEqual(null);
     });
 
-    test('ChangePanel with unknown saved changes', () => {
+    test('saved changes - Other change', () => {
         const model: ChangesSlice = {
             controls: {} as any,
             pending: [],
@@ -274,5 +322,51 @@ describe('ChangePanel', () => {
         fireEvent.click(deleteButton);
         const confirmButton = screen.getByRole('button', { name: /^Delete$/i });
         confirmButton.click();
+    });
+
+    test('Filter unsaved changes', () => {
+        const model = getModel();
+        const filterInitOptions: FilterOptions[] = [{ name: FilterName.changeSummaryFilterQuery, value: 'toolbar' }];
+        const initialState: State = {
+            deviceType: DeviceType.Desktop,
+            scale: 1,
+            outline: {} as any,
+            filterQuery: filterInitOptions,
+            selectedControl: undefined,
+            changes: model,
+            icons: []
+        };
+        render(<ChangesPanel />, { initialState });
+
+        // check unsaved changes
+        const savedChangesTitle = screen.getByText(/unsaved changes/i);
+        expect(savedChangesTitle).toBeInTheDocument();
+
+        const controlToolbar = screen.getByRole('button', { name: /overflow toolbar/i });
+        expect(controlToolbar).toBeInTheDocument();
+    });
+
+    test('Filter saved changes', () => {
+        const model = getModel(true);
+        const filterInitOptions: FilterOptions[] = [
+            { name: FilterName.changeSummaryFilterQuery, value: 'Simple Form' }
+        ];
+        const initialState: State = {
+            deviceType: DeviceType.Desktop,
+            scale: 1,
+            outline: {} as any,
+            filterQuery: filterInitOptions,
+            selectedControl: undefined,
+            changes: model,
+            icons: []
+        };
+        render(<ChangesPanel />, { initialState });
+
+        // check unsaved changes
+        const savedChangesTitle = screen.getByText(/saved changes/i);
+        expect(savedChangesTitle).toBeInTheDocument();
+
+        const formFieldChange = screen.getByText(/id_1698648267087_373_movesimpleformfield/i);
+        expect(formFieldChange).toBeInTheDocument();
     });
 });
