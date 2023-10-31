@@ -20,11 +20,20 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 /** sap.ui.fl */
 import Utils from 'sap/ui/fl/Utils';
 
+/** sap.ui.layout */
+import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
+
 /** sap.ui.dt */
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
-import type { ControllersResponse } from '../api-handler';
-import { getManifestAppdescr, readControllers, writeChange, writeController } from '../api-handler';
+import type { CodeExtResponse, ControllersResponse } from '../api-handler';
+import {
+    getExistingController,
+    getManifestAppdescr,
+    readControllers,
+    writeChange,
+    writeController
+} from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 
 interface ControllerExtensionService {
@@ -119,11 +128,41 @@ export default class ControllerExtension extends BaseDialog {
         const selectorId = this.overlays.getId();
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
         const control = overlayControl.getElement();
-        const viewId = Utils.getViewForControl(control).getId();
+        const view = Utils.getViewForControl(control);
+        const viewId = view.getId();
+        const controllerName = view.getController().getMetadata().getName();
 
-        this.model.setProperty('/viewId', viewId);
+        const { controllerExists, controllerPath } = await this.getExistingController(controllerName);
 
-        await this.getControllers();
+        if (controllerExists) {
+            this.model.setProperty('/controllerExists', controllerExists);
+            this.model.setProperty('/controllerPath', controllerPath);
+
+            const form = this.byId('controllerExtensionDialog_Form') as SimpleForm;
+            form.setVisible(false);
+
+            const messageForm = this.byId('controllerExtensionDialog_Form--existingController') as SimpleForm;
+            messageForm.setVisible(true);
+        } else {
+            this.model.setProperty('/viewId', viewId);
+
+            await this.getControllers();
+        }
+    }
+
+    /**
+     * Retrieves existing controller data if found in the project's workspace.
+     *
+     * @param controllerName Controller name that exists in the view
+     * @returns Returns path to existing controller if found
+     */
+    async getExistingController(controllerName: string): Promise<CodeExtResponse> {
+        try {
+            return getExistingController(controllerName);
+        } catch (e) {
+            MessageToast.show(e.message);
+            throw new Error(e.message);
+        }
     }
 
     /**
