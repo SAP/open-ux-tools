@@ -5,10 +5,9 @@ import { Link, Stack } from '@fluentui/react';
 import { useAppDispatch } from '../../store';
 import { selectControl } from '@sap-ux-private/control-property-editor-common';
 
-import type { PropertyChangeProps } from './PropertyChange';
+import type { ChangeProps } from './ChangesPanel';
 import { PropertyChange } from './PropertyChange';
 import { OtherChange } from './OtherChange';
-import type { OtherChangeProps } from './OtherChange';
 
 import styles from './ControlGroup.module.scss';
 
@@ -17,9 +16,9 @@ export interface ControlGroupProps {
     controlId: string;
     controlName: string;
     changeIndex: number;
-    changes: ControlPropertyChange[] | OtherChangeProps[];
+    changes: ControlChange[];
 }
-export type ControlPropertyChange = Omit<PropertyChangeProps, 'actionClassName'>;
+export type ControlChange = Omit<ChangeProps, 'actionClassName'>;
 
 /**
  * React Element for control groups.
@@ -30,7 +29,7 @@ export type ControlPropertyChange = Omit<PropertyChangeProps, 'actionClassName'>
 export function ControlGroup(controlGroupProps: ControlGroupProps): ReactElement {
     const { text, controlId, changes } = controlGroupProps;
     const dispatch = useAppDispatch();
-    const stackName = (changes[0] as PropertyChangeProps).timestamp ? `saved-changes-stack` : `unsaved-changes-stack`;
+    const stackName = (changes[0] as ChangeProps).timestamp ? `saved-changes-stack` : `unsaved-changes-stack`;
     return (
         <Stack>
             <Stack.Item className={styles.header}>

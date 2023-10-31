@@ -5,13 +5,7 @@ import { Stack, Text } from '@fluentui/react';
 import { convertCamelCaseToPascalCase } from '@sap-ux-private/control-property-editor-common';
 
 import styles from './OtherChange.module.scss';
-
-export interface OtherChangeProps {
-    changeType: string;
-    isActive: boolean;
-    controlId: string;
-    controlName: string;
-}
+import type { ChangeProps } from './ChangesPanel';
 
 /**
  * React element for Other change.
@@ -19,7 +13,7 @@ export interface OtherChangeProps {
  * @param OtherChangeProps OtherChangeProps
  * @returns ReactElement
  */
-export function OtherChange(OtherChangeProps: OtherChangeProps): ReactElement {
+export function OtherChange(OtherChangeProps: ChangeProps): ReactElement {
     const { changeType, isActive } = OtherChangeProps;
     return (
         <>

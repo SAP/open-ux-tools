@@ -9,7 +9,7 @@ import { DeviceType } from '../../../../src/devices';
 import { registerAppIcons } from '../../../../src/icons';
 import { ChangesPanel } from '../../../../src/panels/changes';
 import { initI18n } from '../../../../src/i18n';
-import type { PendingPropertyChange, SavedPropertyChange } from '@sap-ux-private/control-property-editor-common';
+import type { PendingChange, SavedPropertyChange } from '@sap-ux-private/control-property-editor-common';
 
 export type State = ReturnType<typeof reducer>;
 
@@ -68,7 +68,7 @@ const getModel = (saved = false): ChangesSlice => {
                       isActive: true,
                       changeType: 'addFields'
                   }
-              ] as PendingPropertyChange[])
+              ] as PendingChange[])
             : [],
         saved: saved
             ? ([

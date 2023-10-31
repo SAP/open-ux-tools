@@ -1,9 +1,8 @@
 import type {
     ExternalAction,
+    PendingChange,
     SavedPropertyChange,
-    PendingPropertyChange,
-    UnknownSavedChange,
-    PendingOtherChange
+    UnknownSavedChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
@@ -221,7 +220,7 @@ export class ChangeService {
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
             const inactiveCommandCount = allCommands.length - executedCommands.length;
-            const activeChanges: (PendingPropertyChange | PendingOtherChange | undefined)[] = [];
+            const activeChanges: PendingChange[] = [];
             allCommands.forEach((command: BaseCommand, i): void => {
                 try {
                     if (command.getCommands && command.getCommands()) {
@@ -237,11 +236,11 @@ export class ChangeService {
                 }
             });
 
-            activeChanges.filter((change): boolean => !!change) as PendingPropertyChange[];
+            activeChanges.filter((change): boolean => !!change);
             sendAction(
                 changeStackModified({
                     saved: this.savedChanges,
-                    pending: activeChanges as PendingPropertyChange[]
+                    pending: activeChanges
                 })
             );
         };
@@ -251,8 +250,8 @@ export class ChangeService {
         command: BaseCommand,
         inactiveCommandCount: number,
         index: number
-    ): PendingPropertyChange | PendingOtherChange | undefined {
-        let result: PendingPropertyChange | PendingOtherChange | undefined;
+    ): PendingChange {
+        let result: PendingChange;
         let value = '';
         const selector = command.getSelector();
         const changeType = command.getChangeType();
@@ -275,7 +274,6 @@ export class ChangeService {
                 controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
             };
         } else {
-            //const propertyName = changeType.split(/(?=[A-Z])/).join(' ');
             result = {
                 type: 'pending',
                 controlId: selector.id,

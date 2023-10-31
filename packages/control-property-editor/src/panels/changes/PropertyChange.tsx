@@ -12,22 +12,7 @@ import { IconName } from '../../icons';
 
 import styles from './PropertyChange.module.scss';
 import { getFormattedDateAndTime } from './utils';
-
-export interface PropertyChangeProps {
-    controlId: string;
-    controlName: string;
-    changeIndex: number;
-    changeType: string;
-    propertyName: string;
-    value: string | number | boolean;
-    isActive: boolean;
-    timestamp?: number;
-    fileName?: string;
-    /**
-     * Class used for showing and hiding actions
-     */
-    actionClassName: string;
-}
+import type { ChangeProps } from './ChangesPanel';
 
 /**
  * React element for property change.
@@ -35,7 +20,7 @@ export interface PropertyChangeProps {
  * @param propertyChangeProps PropertyChangeProps
  * @returns ReactElement
  */
-export function PropertyChange(propertyChangeProps: PropertyChangeProps): ReactElement {
+export function PropertyChange(propertyChangeProps: ChangeProps): ReactElement {
     const { controlId, propertyName, value, isActive, timestamp, fileName, actionClassName } = propertyChangeProps;
     const { t } = useTranslation();
     const dispatch = useDispatch();
