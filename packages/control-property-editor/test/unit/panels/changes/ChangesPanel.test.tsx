@@ -189,7 +189,7 @@ describe('ChangePanel', () => {
         const controlToolbar = screen.getByRole('button', { name: /overflow toolbar/i });
         expect(controlToolbar).toBeInTheDocument();
 
-        const changeAddXML = screen.getByText(/add x m l/i);
+        const changeAddXML = screen.getByText(/add xml/i);
         expect(changeAddXML).toBeInTheDocument();
     });
 
