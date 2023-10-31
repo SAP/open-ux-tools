@@ -380,6 +380,7 @@ describe('SelectionService', () => {
         );
 
         expect(applyChangeSpy.mock.calls[0][1]).toStrictEqual({
+            changeType: "propertyChange",
             controlId: 'control1',
             controlName: 'button',
             propertyName: 'text',
@@ -420,7 +421,8 @@ describe('SelectionService', () => {
             deletePropertyChanges({
                 controlId:
                     'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                propertyName: 'enabled'
+                propertyName: 'enabled',
+                fileName: 'id_1640106755570_203_propertyChange'
             })
         );
 
