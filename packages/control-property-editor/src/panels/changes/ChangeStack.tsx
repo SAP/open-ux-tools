@@ -96,23 +96,13 @@ function convertChanges(changes: Change[]): Item[] {
             });
             i++;
         } else {
-            if (change.changeType === 'propertyChange' || change.changeType === 'propertyBindingChange') {
-                group = {
-                    controlId: change.controlId,
-                    controlName: change.controlName,
-                    text: convertCamelCaseToPascalCase(change.controlName),
-                    changeIndex: i,
-                    changes: [classifyChange(change, i)]
-                };
-            } else {
-                group = {
-                    controlId: change.controlId,
-                    controlName: change.controlName,
-                    text: convertCamelCaseToPascalCase(change.controlName),
-                    changeIndex: i,
-                    changes: [classifyChange(change, i)]
-                };
-            }
+            group = {
+                controlId: change.controlId,
+                controlName: change.controlName,
+                text: convertCamelCaseToPascalCase(change.controlName),
+                changeIndex: i,
+                changes: [classifyChange(change, i)]
+            };
             items.push(group);
             i++;
             while (i < changes.length) {

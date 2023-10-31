@@ -223,7 +223,7 @@ export class ChangeService {
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
             const inactiveCommandCount = allCommands.length - executedCommands.length;
-            const activeChanges: PendingChange[] = [];
+            let activeChanges: PendingChange[] = [];
             allCommands.forEach((command: BaseCommand, i): void => {
                 try {
                     if (command.getCommands && command.getCommands()) {
@@ -239,7 +239,7 @@ export class ChangeService {
                 }
             });
 
-            activeChanges.filter((change): boolean => !!change);
+            activeChanges = activeChanges.filter((change): boolean => !!change);
             sendAction(
                 changeStackModified({
                     saved: this.savedChanges,
