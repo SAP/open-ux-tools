@@ -18,6 +18,19 @@
                         </Input>
                     </f:content>
                 </f:SimpleForm>
+                <f:SimpleForm id="controllerExtensionDialog_Form--existingController"
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanS="9"
+                    visible="false"
+                    singleContainerFullSize="false">
+                    <f:content>
+                        <Label text="Controller extension has already been created" />
+                        <Link
+                            text="Open file"
+                            href="vscode://file/{/controllerPath}" />                        
+                    </f:content>
+                </f:SimpleForm>
             </content>
             <beginButton>
                 <Button 
