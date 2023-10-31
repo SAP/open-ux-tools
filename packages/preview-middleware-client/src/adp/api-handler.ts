@@ -4,6 +4,7 @@ export const enum ApiEndpoints {
     CHANGES = '/preview/api/changes',
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
+    CODE_EXT = '/adp/api/code_ext',
     MANIFEST_APP_DESCRIPTOR = '/manifest.appdescr_variant'
 }
 
@@ -21,6 +22,11 @@ type Controllers = { controllerName: string }[];
 export interface FragmentsResponse {
     fragments: Fragments;
     message: string;
+}
+
+export interface CodeExtResponse {
+    controllerExists: boolean;
+    controllerPath: string;
 }
 
 export interface ControllersResponse {
@@ -125,6 +131,16 @@ export async function readControllers<T>(): Promise<T> {
  */
 export async function writeController<T>(data: T): Promise<T> {
     return request<T>(ApiEndpoints.CONTROLLER, RequestMethod.POST, data);
+}
+
+/**
+ * Checks for existing controller in the project's workspace
+ *
+ * @param controllerName Name of the controller
+ * @returns {CodeExtResponse} Returns path to existing controller if found
+ */
+export async function getExistingController(controllerName: string): Promise<CodeExtResponse> {
+    return request<CodeExtResponse>(`${ApiEndpoints.CODE_EXT}/${controllerName}` as ApiEndpoints, RequestMethod.GET);
 }
 
 /**

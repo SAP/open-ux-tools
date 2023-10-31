@@ -1,13 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { renderFile } from 'ejs';
 import sanitize from 'sanitize-filename';
-import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
+import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
 import { FolderNames, TemplateFileName, HttpStatusCodes } from '../types';
-import { renderFile } from 'ejs';
 
 interface WriteFragmentBody {
     fragmentName: string;
@@ -165,6 +165,64 @@ export default class RoutesHandler {
                 message: `${fileNames.length} controllers found in the project workspace.`
             });
             this.logger.debug(`Read controllers ${JSON.stringify(fileNames)}`);
+        } catch (e) {
+            this.handleErrorMessage(res, next, e);
+        }
+    };
+
+    /**
+     * Handler for retrieving existing controller extension data from the workspace.
+     *
+     * @param req Request
+     * @param res Response
+     * @param next Next Function
+     */
+    public handleGetCodingExtension = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const params = req.params as { controllerName: string };
+            const controllerName = sanitize(params.controllerName);
+            const codeExtFiles = await this.readAllFilesByGlob('/**/changes/*_codeExt.change');
+
+            let controllerExists = false;
+            let controllerPath = '';
+
+            const sourcePath = this.util.getProject().getSourcePath();
+
+            for (const file of codeExtFiles) {
+                const fileStr = await file.getString();
+                const change = JSON.parse(fileStr) as {
+                    selector: {
+                        controllerName: string;
+                    };
+                    content: {
+                        codeRef: string;
+                    };
+                };
+
+                if (change.selector.controllerName === controllerName) {
+                    const fileName = change.content.codeRef.replace('coding/', '');
+                    controllerPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Coding, fileName);
+                    controllerExists = true;
+                    break;
+                }
+            }
+
+            if (!fs.existsSync(controllerPath)) {
+                res.status(HttpStatusCodes.NOT_FOUND).send({
+                    message: `Controller extension file was not found at ${controllerPath}`
+                });
+                return;
+            }
+
+            this.sendFilesResponse(res, {
+                controllerExists,
+                controllerPath
+            });
+            this.logger.debug(
+                controllerExists
+                    ? `Controller exists at '${controllerPath}'`
+                    : `Controller with controllerName '${controllerName}' does not exist`
+            );
         } catch (e) {
             this.handleErrorMessage(res, next, e);
         }
