@@ -28,6 +28,7 @@
                         <Label text="Controller extension has already been created" />
                         <Link
                             text="Open file"
+                            emphasized="true"
                             href="vscode://file/{/controllerPath}" />                        
                     </f:content>
                 </f:SimpleForm>

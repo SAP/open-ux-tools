@@ -143,6 +143,8 @@ export default class ControllerExtension extends BaseDialog {
 
             const messageForm = this.byId('controllerExtensionDialog_Form--existingController') as SimpleForm;
             messageForm.setVisible(true);
+
+            this.dialog.getBeginButton().setVisible(false);
         } else {
             this.model.setProperty('/viewId', viewId);
 
