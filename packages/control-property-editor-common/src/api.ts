@@ -21,6 +21,7 @@ export interface PropertyChange<T extends PropertyValue = PropertyValue> {
     controlName: string;
     propertyName: string;
     value: T;
+    changeType: string;
 }
 export interface PropertyChanged<T extends PropertyValue = PropertyValue> {
     controlId: string;
@@ -101,21 +102,29 @@ export interface IconDetails {
     fontFamily: string;
 }
 
-export interface PendingChange<T extends PropertyValue = PropertyValue> extends Partial<PropertyChange<T>> {
+export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
     type: 'pending';
     /**
      * Indicates if change is before or after current position in undo redo stack
      */
     isActive: boolean;
-    changeType: string;
 }
+
+export interface PendingOtherChange {
+    type: 'pending';
+    isActive: boolean;
+    changeType: string;
+    controlId: string;
+    controlName: string;
+}
+
+export type PendingChange = PendingPropertyChange | PendingOtherChange;
 
 export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
     type: 'saved';
     kind: 'valid';
     fileName: string;
     timestamp: number;
-    changeType: string;
 }
 
 export interface UnknownSavedChange {
@@ -125,7 +134,7 @@ export interface UnknownSavedChange {
     controlId?: string;
     timestamp?: number;
 }
-export type ValidChange = PendingChange | SavedPropertyChange;
+export type ValidChange = PendingPropertyChange | SavedPropertyChange;
 export type Change = ValidChange | UnknownSavedChange;
 
 export interface ChangeStackModified {

@@ -1,9 +1,7 @@
 import type { ReactElement } from 'react';
 import React from 'react';
-
 import { Stack } from '@fluentui/react';
-
-import type { Change, PendingChange, ValidChange } from '@sap-ux-private/control-property-editor-common';
+import type { Change, ValidChange } from '@sap-ux-private/control-property-editor-common';
 
 import { Separator } from '../../components';
 import type { ControlGroupProps, ControlChange } from './ControlGroup';
@@ -257,7 +255,7 @@ function filterGroup(model: Item[], query: string): Item[] {
 
         if (parentMatch) {
             // parent matched filter query and pushed already to `filterModel`. only  replace matched children
-            (filteredModel[filteredModel.length - 1]).changes = controlPropModel.changes;
+            (filteredModel[filteredModel.length - 1]as ControlGroupProps).changes = controlPropModel.changes;
             // add node and its matched children
         } else if (data.length > 0) {
             const newFilterModel = { ...item, changes: data };

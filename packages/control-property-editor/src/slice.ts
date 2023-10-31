@@ -5,7 +5,7 @@ import type {
     Control,
     IconDetails,
     OutlineNode,
-    PendingChange,
+    PendingPropertyChange,
     PropertyChange,
     SavedPropertyChange
 } from '@sap-ux-private/control-property-editor-common';
@@ -36,7 +36,7 @@ interface SliceState {
 
 export interface ChangesSlice {
     controls: ControlChanges;
-    pending: PendingChange[];
+    pending: PendingPropertyChange[];
     saved: SavedPropertyChange[];
 }
 export interface ControlChanges {
@@ -57,7 +57,7 @@ export interface PropertyChangeStats {
     pending: number;
     saved: number;
     lastSavedChange?: SavedPropertyChange;
-    lastChange?: PendingChange;
+    lastChange?: PendingPropertyChange;
 }
 
 export const enum FilterName {
@@ -189,28 +189,26 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     } else if (type === 'saved') {
                         control.saved++;
                     }
-                    if (propertyName) {
-                        const property = control.properties[propertyName]
-                            ? {
-                                  pending: control.properties[propertyName].pending,
-                                  saved: control.properties[propertyName].saved,
-                                  lastSavedChange: control.properties[propertyName].lastSavedChange,
-                                  lastChange: control.properties[propertyName].lastChange
-                              }
-                            : {
-                                  pending: 0,
-                                  saved: 0
-                              };
-                        if (change.type === 'pending') {
-                            property.pending++;
-                            property.lastChange = change;
-                        } else if (change.type === 'saved') {
-                            property.lastSavedChange = change;
-                            property.saved++;
-                        }
-                        control.properties[propertyName] = property;
-                        state.changes.controls[key] = control;
+                    const property = control.properties[propertyName]
+                        ? {
+                              pending: control.properties[propertyName].pending,
+                              saved: control.properties[propertyName].saved,
+                              lastSavedChange: control.properties[propertyName].lastSavedChange,
+                              lastChange: control.properties[propertyName].lastChange
+                          }
+                        : {
+                              pending: 0,
+                              saved: 0
+                          };
+                    if (change.type === 'pending') {
+                        property.pending++;
+                        property.lastChange = change;
+                    } else if (change.type === 'saved') {
+                        property.lastSavedChange = change;
+                        property.saved++;
                     }
+                    control.properties[propertyName] = property;
+                    state.changes.controls[key] = control;
                 }
             })
 });
