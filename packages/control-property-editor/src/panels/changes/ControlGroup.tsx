@@ -29,7 +29,7 @@ export type ControlChange = Omit<ChangeProps, 'actionClassName'>;
 export function ControlGroup(controlGroupProps: ControlGroupProps): ReactElement {
     const { text, controlId, changes } = controlGroupProps;
     const dispatch = useAppDispatch();
-    const stackName = (changes[0] as ChangeProps).timestamp ? `saved-changes-stack` : `unsaved-changes-stack`;
+    const stackName = changes[0].timestamp ? `saved-changes-stack` : `unsaved-changes-stack`;
     return (
         <Stack>
             <Stack.Item className={styles.header}>
@@ -50,7 +50,7 @@ export function ControlGroup(controlGroupProps: ControlGroupProps): ReactElement
                     {text}
                 </Link>
             </Stack.Item>
-            {changes.map((change: any) => (
+            {changes.map((change) => (
                 <Stack.Item
                     data-testid={`${stackName}-${controlId}-${change.propertyName ?? change.changeType}-${
                         change.changeIndex

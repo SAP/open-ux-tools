@@ -102,7 +102,7 @@ function convertChanges(changes: Change[]): Item[] {
                 group = {
                     controlId: change.controlId,
                     controlName: change.controlName,
-                    text: convertCamelCaseToPascalCase(change.controlName as string),
+                    text: convertCamelCaseToPascalCase(change.controlName),
                     changeIndex: i,
                     changes: [classifyChange(change, i)]
                 };
@@ -144,7 +144,7 @@ function convertChanges(changes: Change[]): Item[] {
 function classifyChange(change: ValidChange, changeIndex: number): ControlChange {
     let base;
     if (['propertyChange', 'propertyBindingChange'].includes(change.changeType)) {
-        const { controlId, propertyName, value, controlName, changeType } = change as PendingChange;
+        const { controlId, propertyName, value, controlName, changeType } = change;
         base = {
             controlId,
             controlName,
@@ -253,15 +253,15 @@ function filterGroup(model: Item[], query: string): Item[] {
         if (controlPropModel.changes.length <= 0) {
             continue;
         }
-        const data = filterPropertyChanges(controlPropModel.changes as ControlChange[], query);
+        const data = filterPropertyChanges(controlPropModel.changes, query);
 
         if (parentMatch) {
             // parent matched filter query and pushed already to `filterModel`. only  replace matched children
-            (filteredModel[filteredModel.length - 1] as ControlGroupProps).changes = controlPropModel.changes;
+            (filteredModel[filteredModel.length - 1]).changes = controlPropModel.changes;
             // add node and its matched children
         } else if (data.length > 0) {
             const newFilterModel = { ...item, changes: data };
-            filteredModel.push(newFilterModel as Item);
+            filteredModel.push(newFilterModel);
         }
     }
 
