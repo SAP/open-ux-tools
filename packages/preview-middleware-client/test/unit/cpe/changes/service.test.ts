@@ -222,14 +222,14 @@ describe('SelectionService', () => {
                 ])
             )
         ];
-        function createCompositeCommand(properties: Map<string, any>): {
+        function createCompositeCommand(): {
             getCommands: () => any;
         } {
             return {
                 getCommands: jest.fn().mockReturnValue(subCommands)
             };
         }
-        const compositeCommand = [createCompositeCommand(new Map<string, any>([['name', 'composite']]))];
+        const compositeCommand = [createCompositeCommand()];
 
         rtaMock.getCommandStack.mockReturnValue({
             getCommands: jest.fn().mockReturnValue(compositeCommand),
@@ -380,7 +380,7 @@ describe('SelectionService', () => {
         );
 
         expect(applyChangeSpy.mock.calls[0][1]).toStrictEqual({
-            changeType: "propertyChange",
+            changeType: 'propertyChange',
             controlId: 'control1',
             controlName: 'button',
             propertyName: 'text',

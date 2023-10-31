@@ -255,7 +255,7 @@ function filterGroup(model: Item[], query: string): Item[] {
 
         if (parentMatch) {
             // parent matched filter query and pushed already to `filterModel`. only  replace matched children
-            (filteredModel[filteredModel.length - 1]as ControlGroupProps).changes = controlPropModel.changes;
+            (filteredModel[filteredModel.length - 1] as ControlGroupProps).changes = controlPropModel.changes;
             // add node and its matched children
         } else if (data.length > 0) {
             const newFilterModel = { ...item, changes: data };
