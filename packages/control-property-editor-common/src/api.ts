@@ -15,13 +15,13 @@ export interface Control {
     properties: ControlProperty[];
 }
 export type PropertyValue = string | boolean | number;
-
+export type PropertyChangeType = 'propertyChange' | 'propertyBindingChange';
 export interface PropertyChange<T extends PropertyValue = PropertyValue> {
     controlId: string;
     controlName: string;
     propertyName: string;
     value: T;
-    changeType: string;
+    changeType: PropertyChangeType;
 }
 export interface PropertyChanged<T extends PropertyValue = PropertyValue> {
     controlId: string;

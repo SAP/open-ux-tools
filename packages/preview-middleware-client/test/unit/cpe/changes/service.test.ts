@@ -374,7 +374,8 @@ describe('SelectionService', () => {
                 controlId: 'control1',
                 propertyName: 'text',
                 controlName: 'button',
-                value: 'abc'
+                value: 'abc',
+                changeType: 'propertyChange'
             })
         );
 

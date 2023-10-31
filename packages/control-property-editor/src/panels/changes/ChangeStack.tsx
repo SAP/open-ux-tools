@@ -96,7 +96,7 @@ function convertChanges(changes: Change[]): Item[] {
             });
             i++;
         } else {
-            if (['propertyChange', 'propertyBindingChange'].includes(change.changeType)) {
+            if (change.changeType === 'propertyChange' || change.changeType === 'propertyBindingChange') {
                 group = {
                     controlId: change.controlId,
                     controlName: change.controlName,
@@ -110,7 +110,7 @@ function convertChanges(changes: Change[]): Item[] {
                     controlName: change.controlName,
                     text: convertCamelCaseToPascalCase(change.controlName),
                     changeIndex: i,
-                    changes: [change]
+                    changes: [classifyChange(change, i)]
                 };
             }
             items.push(group);
@@ -137,11 +137,11 @@ function convertChanges(changes: Change[]): Item[] {
  *
  * @param change ValidChange
  * @param changeIndex number
- * @returns ControlPropertyChange
+ * @returns ControlChange
  */
 function classifyChange(change: ValidChange, changeIndex: number): ControlChange {
     let base;
-    if (['propertyChange', 'propertyBindingChange'].includes(change.changeType)) {
+    if (change.changeType === 'propertyChange' || change.changeType === 'propertyBindingChange') {
         const { controlId, propertyName, value, controlName, changeType } = change;
         base = {
             controlId,

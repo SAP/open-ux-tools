@@ -142,6 +142,9 @@ export class ChangeService {
                         ) {
                             throw new Error('Invalid change, missing new value in the change file');
                         }
+                        if (change.changeType !== 'propertyChange' && change.changeType !== 'propertyBindingChange') {
+                            throw new Error('Unknown Change Type');
+                        }
                         return {
                             type: 'saved',
                             kind: 'valid',
@@ -246,11 +249,7 @@ export class ChangeService {
         };
     }
 
-    private prepareChangeType(
-        command: BaseCommand,
-        inactiveCommandCount: number,
-        index: number
-    ): PendingChange {
+    private prepareChangeType(command: BaseCommand, inactiveCommandCount: number, index: number): PendingChange {
         let result: PendingChange;
         let value = '';
         const selector = command.getSelector();
@@ -263,7 +262,7 @@ export class ChangeService {
                 value = command.getProperty('newBinding');
                 break;
         }
-        if (['propertyChange', 'propertyBindingChange'].includes(changeType)) {
+        if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
             result = {
                 type: 'pending',
                 changeType,
