@@ -1,8 +1,8 @@
 ---
 '@sap-ux-private/control-property-editor-common': minor
-'@sap-ux-private/preview-middleware': minor
 '@sap-ux-private/preview-middleware-client': minor
 '@sap-ux/control-property-editor': minor
+'@sap-ux/preview-middleware': minor
 ---
 
-support all RTA commands in Control Property Editor
+support all kind of changes from command stack
