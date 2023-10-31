@@ -185,8 +185,15 @@ export default class RoutesHandler {
 
             let controllerExists = false;
             let controllerPath = '';
+            let controllerPathFromRoot = '';
 
-            const sourcePath = this.util.getProject().getSourcePath();
+            const project = this.util.getProject();
+            const sourcePath = project.getSourcePath();
+            const rootPath = project.getRootPath();
+            const projectName = rootPath.split(/[\\/]/).slice(-1)[0];
+
+            const getPath = (projectPath: string, fileName: string) =>
+                path.join(projectPath, FolderNames.Changes, FolderNames.Coding, fileName).replace(/[\\/]/g, path.sep);
 
             for (const file of codeExtFiles) {
                 const fileStr = await file.getString();
@@ -201,13 +208,14 @@ export default class RoutesHandler {
 
                 if (change.selector.controllerName === controllerName) {
                     const fileName = change.content.codeRef.replace('coding/', '');
-                    controllerPath = path.join(sourcePath, FolderNames.Changes, FolderNames.Coding, fileName);
+                    controllerPath = getPath(sourcePath, fileName);
+                    controllerPathFromRoot = getPath(projectName, fileName);
                     controllerExists = true;
                     break;
                 }
             }
 
-            if (!fs.existsSync(controllerPath)) {
+            if (controllerExists && !fs.existsSync(controllerPath)) {
                 res.status(HttpStatusCodes.NOT_FOUND).send({
                     message: `Controller extension file was not found at ${controllerPath}`
                 });
@@ -216,7 +224,8 @@ export default class RoutesHandler {
 
             this.sendFilesResponse(res, {
                 controllerExists,
-                controllerPath
+                controllerPath,
+                controllerPathFromRoot
             });
             this.logger.debug(
                 controllerExists

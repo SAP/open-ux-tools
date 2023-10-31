@@ -21,15 +21,12 @@
                 <f:SimpleForm id="controllerExtensionDialog_Form--existingController"
                     editable="true"
                     layout="ResponsiveGridLayout"
-                    labelSpanS="9"
+                    labelSpanS="12"
                     visible="false"
                     singleContainerFullSize="false">
                     <f:content>
-                        <Label text="Controller extension has already been created" />
-                        <Link
-                            text="Open file"
-                            emphasized="true"
-                            href="vscode://file/{/controllerPath}" />                        
+                        <Label text="Controller extension has already been created, please use" />
+                        <Text text="{/controllerPathFromRoot}" />
                     </f:content>
                 </f:SimpleForm>
             </content>

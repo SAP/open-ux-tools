@@ -111,12 +111,19 @@ export default class ControllerExtension extends BaseDialog {
      */
     async onCreateBtnPress(event: Event) {
         const source = event.getSource<Button>();
-        source.setEnabled(false);
+        const controllerExists = this.model.getProperty('/controllerExists');
+        const controllerPath = this.model.getProperty('/controllerPath');
 
-        const controllerName = this.model.getProperty('/newControllerName');
-        const viewId = this.model.getProperty('/viewId');
+        if (!controllerExists) {
+            source.setEnabled(false);
 
-        await this.createNewController(controllerName, viewId);
+            const controllerName = this.model.getProperty('/newControllerName');
+            const viewId = this.model.getProperty('/viewId');
+
+            await this.createNewController(controllerName, viewId);
+        } else {
+            window.open(`vscode://file/${controllerPath}`);
+        }
 
         this.handleDialogClose();
     }
@@ -132,11 +139,14 @@ export default class ControllerExtension extends BaseDialog {
         const viewId = view.getId();
         const controllerName = view.getController().getMetadata().getName();
 
-        const { controllerExists, controllerPath } = await this.getExistingController(controllerName);
+        const { controllerExists, controllerPath, controllerPathFromRoot } = await this.getExistingController(
+            controllerName
+        );
 
         if (controllerExists) {
             this.model.setProperty('/controllerExists', controllerExists);
             this.model.setProperty('/controllerPath', controllerPath);
+            this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
 
             const form = this.byId('controllerExtensionDialog_Form') as SimpleForm;
             form.setVisible(false);
@@ -144,7 +154,8 @@ export default class ControllerExtension extends BaseDialog {
             const messageForm = this.byId('controllerExtensionDialog_Form--existingController') as SimpleForm;
             messageForm.setVisible(true);
 
-            this.dialog.getBeginButton().setVisible(false);
+            this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
+            this.dialog.getEndButton().setText('Close');
         } else {
             this.model.setProperty('/viewId', viewId);
 
