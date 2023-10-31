@@ -233,7 +233,7 @@ export class ChangeService {
                         activeChanges.push(this.prepareChangeType(command, inactiveCommandCount, i));
                     }
                 } catch (error) {
-                    Log.error('Failed: ', error);
+                    Log.error('CPE: Change creation Failed', error);
                 }
             });
 

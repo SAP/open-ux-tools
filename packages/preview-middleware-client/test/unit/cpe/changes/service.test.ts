@@ -22,6 +22,7 @@ describe('SelectionService', () => {
             json: () =>
                 Promise.resolve({
                     change1: {
+                        changeType: 'propertyChange',
                         fileName: 'id_1640106755570_203_propertyChange',
                         content: {
                             property: 'enabled',
@@ -34,6 +35,7 @@ describe('SelectionService', () => {
                         creation: '2021-12-21T17:12:37.301Z'
                     },
                     change2: {
+                        changeType: 'propertyChange',
                         fileName: 'id_1640106755570_204_propertyChange',
                         content: {
                             property: 'enabled',
@@ -46,6 +48,7 @@ describe('SelectionService', () => {
                         creation: '2021-12-21T17:13:37.301Z'
                     },
                     change3: {
+                        changeType: 'propertyChange',
                         fileName: 'id_1640106755570_204_propertyChange',
                         content: {
                             property: 'enabled',
@@ -77,6 +80,7 @@ describe('SelectionService', () => {
                 pending: [],
                 saved: [
                     {
+                        changeType: 'propertyChange',
                         type: 'saved',
                         kind: 'valid',
                         fileName: 'id_1640106755570_204_propertyChange',
@@ -90,10 +94,13 @@ describe('SelectionService', () => {
                     {
                         type: 'saved',
                         kind: 'unknown',
+                        controlId:
+                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         fileName: 'id_1640106755570_204_propertyChange',
                         timestamp: 1640106817301
                     },
                     {
+                        changeType: 'propertyChange',
                         type: 'saved',
                         kind: 'valid',
                         fileName: 'id_1640106755570_203_propertyChange',
@@ -114,6 +121,7 @@ describe('SelectionService', () => {
             json: () =>
                 Promise.resolve({
                     change2: {
+                        changeType: 'propertyChange',
                         fileName: 'id_1640106755570_204_propertyChange',
                         content: {
                             property: 'enabled',
@@ -126,8 +134,13 @@ describe('SelectionService', () => {
                         creation: '2021-12-21T17:13:37.301Z'
                     },
                     change3: {
+                        changeType: 'addXML',
                         fileName: 'unknown',
-                        creation: '2021-12-21T17:14:37.301Z'
+                        creation: '2021-12-21T17:14:37.301Z',
+                        selector: {
+                            id: 'SEPMRA_C_PD_Product--template::ListReport::TableToolbar',
+                            idIsLocal: false
+                        }
                     }
                 })
         });
@@ -151,11 +164,13 @@ describe('SelectionService', () => {
                         type: 'saved',
                         kind: 'unknown',
                         fileName: 'unknown',
-                        timestamp: 1640106877301
+                        timestamp: 1640106877301,
+                        controlId: 'SEPMRA_C_PD_Product--template::ListReport::TableToolbar'
                     },
                     {
                         type: 'saved',
                         kind: 'valid',
+                        changeType: 'propertyChange',
                         fileName: 'id_1640106755570_204_propertyChange',
                         controlName: 'Button',
                         controlId:
@@ -169,11 +184,99 @@ describe('SelectionService', () => {
         });
     });
 
+    test('composite command', async () => {
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        function createCommand(properties: Map<string, any>): {
+            getElement: () => any;
+            getSelector: () => any;
+            getChangeType: () => string;
+        } {
+            const cache = new Map(properties);
+            return {
+                getElement: jest.fn().mockReturnValue({
+                    getMetadata: jest
+                        .fn()
+                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') })
+                }),
+                getSelector: jest.fn().mockReturnValue({
+                    id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                }),
+                getChangeType: (): any => {
+                    return cache.get('changeType');
+                }
+            };
+        }
+        const subCommands = [
+            createCommand(
+                new Map<string, any>([
+                    ['selector', { id: 'SEPMRA_C_PD_Product--supplierView--supplierForm' }],
+                    ['changeType', 'addSimpleFormField'],
+                    ['name', 'addDelegateProperty']
+                ])
+            ),
+            createCommand(
+                new Map<string, any>([
+                    ['selector', { id: 'supplierForm_SEPMRA_C_PD_SupplierType_FaxNumber' }],
+                    ['changeType', 'addSimpleFormField'],
+                    ['name', 'addDelegateProperty']
+                ])
+            )
+        ];
+        function createCompositeCommand(properties: Map<string, any>): {
+            getCommands: () => any;
+        } {
+            return {
+                getCommands: jest.fn().mockReturnValue(subCommands)
+            };
+        }
+        const compositeCommand = [createCompositeCommand(new Map<string, any>([['name', 'composite']]))];
+
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(compositeCommand),
+            getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
+        });
+        const service = new ChangeService(
+            { rta: rtaMock } as any,
+            {
+                applyControlPropertyChange: jest.fn()
+            } as any
+        );
+
+        await service.init(sendActionMock, subscribeMock);
+
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+        expect(sendActionMock).toHaveBeenCalledTimes(2);
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] change-stack-modified',
+            payload: {
+                saved: [],
+                pending: [
+                    {
+                        changeType: 'addSimpleFormField',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        isActive: true,
+                        controlName: 'SimpleForm',
+                        type: 'pending'
+                    },
+                    {
+                        changeType: 'addSimpleFormField',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        isActive: true,
+                        controlName: 'SimpleForm',
+                        type: 'pending'
+                    }
+                ]
+            }
+        });
+    });
+
     test('undo/redo stack changed', async () => {
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
         function createCommand(properties: Map<string, any>): {
             getProperty: (name: string) => any;
             getElement: () => any;
+            getSelector: () => any;
+            getChangeType: () => string;
         } {
             const cache = new Map(properties);
             return {
@@ -182,7 +285,13 @@ describe('SelectionService', () => {
                 },
                 getElement: jest.fn().mockReturnValue({
                     getMetadata: jest.fn().mockReturnValue({ getName: jest.fn().mockReturnValue('sap.m.Button') })
-                })
+                }),
+                getSelector: jest.fn().mockReturnValue({
+                    id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                }),
+                getChangeType: (): any => {
+                    return cache.get('changeType');
+                }
             };
         }
         const commands = [
@@ -224,7 +333,8 @@ describe('SelectionService', () => {
                 saved: [],
                 pending: [
                     {
-                        controlId: 'control1',
+                        changeType: 'propertyChange',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         isActive: true,
                         propertyName: 'text',
                         controlName: 'Button',
@@ -232,7 +342,8 @@ describe('SelectionService', () => {
                         value: 'abc'
                     },
                     {
-                        controlId: 'control1',
+                        changeType: 'propertyBindingChange',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         isActive: true,
                         propertyName: 'text',
                         controlName: 'Button',
