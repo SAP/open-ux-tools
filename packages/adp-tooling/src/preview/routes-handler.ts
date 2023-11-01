@@ -216,9 +216,11 @@ export default class RoutesHandler {
             }
 
             if (controllerExists && !fs.existsSync(controllerPath)) {
+                const errorMsg = `Controller extension file was not found at ${controllerPath}`;
                 res.status(HttpStatusCodes.NOT_FOUND).send({
-                    message: `Controller extension file was not found at ${controllerPath}`
+                    message: errorMsg
                 });
+                this.logger.debug(errorMsg);
                 return;
             }
 

@@ -19,6 +19,12 @@ interface GetControllersResponse {
     message: string;
 }
 
+interface CodeExtResponse {
+    controllerExists: boolean;
+    controllerPath: string;
+    controllerPathFromRoot: string;
+}
+
 jest.mock('@sap-ux/store', () => {
     return {
         ...jest.requireActual('@sap-ux/store'),
@@ -76,7 +82,7 @@ describe('AdaptationProject', () => {
         getProject() {
             return {
                 getRootPath() {
-                    return '';
+                    return '/projects/adp.project';
                 },
                 getSourcePath() {
                     return '/adp.project/webapp';
@@ -360,6 +366,65 @@ describe('AdaptationProject', () => {
 
             const message = response.text;
             expect(message).toBe('Input must be string');
+        });
+
+        test('GET /adp/api/code_ext/:controllerName - returns existing controller data', async () => {
+            mockExistsSync.mockReturnValue(true);
+            const changeFileStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js"}}';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getString: () => changeFileStr
+                }
+            ]);
+            const response = await server
+                .get('/adp/api/code_ext/sap.suite.ui.generic.template.ListReport.view.ListReport')
+                .expect(200);
+            const data: CodeExtResponse = JSON.parse(response.text);
+            expect(data.controllerExists).toEqual(true);
+        });
+
+        test('GET /adp/api/code_ext/:controllerName - returns empty existing controller data (no control found)', async () => {
+            mockExistsSync.mockReturnValue(true);
+            const changeFileStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js"}}';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getString: () => changeFileStr
+                }
+            ]);
+            const response = await server.get('/adp/api/code_ext/sap.suite.ui.generic.template.Dummy').expect(200);
+            const data: CodeExtResponse = JSON.parse(response.text);
+            expect(data.controllerExists).toEqual(false);
+        });
+
+        test('GET /adp/api/code_ext/:controllerName - returns not found if no controller extension file was found locally', async () => {
+            mockExistsSync.mockReturnValue(false);
+            const changeFileStr =
+                '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js"}}';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getString: () => changeFileStr
+                }
+            ]);
+            await server.get('/adp/api/code_ext/sap.suite.ui.generic.template.ListReport.view.ListReport').expect(404);
+        });
+
+        test('GET /adp/api/code_ext/:controllerName - throws error', async () => {
+            const errorMsg = 'Could not retrieve existing controller data!';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getString: () => {
+                        throw new Error(errorMsg);
+                    }
+                }
+            ]);
+
+            try {
+                await server.get('/adp/api/code_ext/sap.suite.ui.generic.template.ListReport.view.ListReport');
+            } catch (e) {
+                expect(e.message).toEqual(errorMsg);
+            }
         });
     });
 });
