@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`names/namespaces.ts getAliasInformation 1`] = `
+Object {
+  "aliasMap": Object {
+    "Common": "com.sap.vocabularies.Common.v1",
+    "Communication": "com.sap.vocabularies.Communication.v1",
+    "SEPMRA_PROD_MAN": "SEPMRA_PROD_MAN",
+    "UI": "com.sap.vocabularies.UI.v1",
+    "com.sap.vocabularies.Common.v1": "com.sap.vocabularies.Common.v1",
+    "com.sap.vocabularies.Communication.v1": "com.sap.vocabularies.Communication.v1",
+    "com.sap.vocabularies.UI.v1": "com.sap.vocabularies.UI.v1",
+    "test": "test",
+  },
+  "aliasMapMetadata": Object {
+    "test": "test",
+  },
+  "aliasMapVocabulary": Object {
+    "Common": "com.sap.vocabularies.Common.v1",
+    "Communication": "com.sap.vocabularies.Communication.v1",
+    "SEPMRA_PROD_MAN": "SEPMRA_PROD_MAN",
+    "UI": "com.sap.vocabularies.UI.v1",
+    "com.sap.vocabularies.Common.v1": "com.sap.vocabularies.Common.v1",
+    "com.sap.vocabularies.Communication.v1": "com.sap.vocabularies.Communication.v1",
+    "com.sap.vocabularies.UI.v1": "com.sap.vocabularies.UI.v1",
+  },
+  "currentFileAlias": "",
+  "currentFileNamespace": "test",
+  "reverseAliasMap": Object {
+    "SEPMRA_PROD_MAN": "SEPMRA_PROD_MAN",
+    "com.sap.vocabularies.Common.v1": "Common",
+    "com.sap.vocabularies.Communication.v1": "Communication",
+    "com.sap.vocabularies.UI.v1": "UI",
+    "test": "test",
+  },
+}
+`;
+
+exports[`names/namespaces.ts getAllNamespacesAndReferences 1`] = `
+Array [
+  Object {
+    "name": "test",
+    "type": "namespace",
+  },
+  Object {
+    "alias": "Common",
+    "name": "com.sap.vocabularies.Common.v1",
+    "type": "reference",
+  },
+  Object {
+    "alias": "UI",
+    "name": "com.sap.vocabularies.UI.v1",
+    "type": "reference",
+  },
+  Object {
+    "alias": "Communication",
+    "name": "com.sap.vocabularies.Communication.v1",
+    "type": "reference",
+  },
+  Object {
+    "alias": "SEPMRA_PROD_MAN",
+    "name": "SEPMRA_PROD_MAN",
+    "type": "reference",
+  },
+]
+`;

@@ -1,0 +1,32 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "outDir": "dist",
+    "rootDir": "./src",
+    "lib": [
+      "ES2021",
+      "ESNext.BigInt"
+    ],
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "preserveConstEnums": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
+  "references": []
+}

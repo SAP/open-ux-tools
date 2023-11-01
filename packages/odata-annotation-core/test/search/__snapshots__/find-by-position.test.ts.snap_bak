@@ -1,0 +1,350 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`find-by-position.ts findPathToPosition element after syntax error 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms'][0]['content'][1]['content'][1]['attributes']['']['name']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element attribute area 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms'][0]['attributes']['']['name']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element attribute name 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][1]['terms'][0]['content'][1]['content'][1]['content'][3]['attributes']['Path']['name']",
+  "remainingString": "h",
+  "startString": "Pat",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element attribute value 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][1]['terms'][0]['content'][1]['content'][1]['content'][3]['attributes']['Path']['value']",
+  "remainingString": "roduct/@UI.CriticalityLabels/0/Label",
+  "startString": "P",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element content after unclosed element 1`] = `
+Object {
+  "path": "targets/0/terms/0/content/0/text",
+  "range": Object {
+    "end": Object {
+      "character": 16,
+      "line": 7,
+    },
+    "start": Object {
+      "character": 48,
+      "line": 6,
+    },
+  },
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element element content 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][1]['terms'][0]['content'][1]['content'][1]['content'][0]['text']",
+  "remainingString": "
+                            ",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element element content before annotation 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms'][0]['attributes']['']['name']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element element content before annotation for completion 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element element content with no name range 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms'][0]['content'][0]['text']",
+  "remainingString": "test",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element empty attribute value 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms'][0]['attributes']['String']['value']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element empty element content 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms'][0]['content'][1]['content'][0]['text']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element empty element name 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms'][0]['content'][1]['name']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element name 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][1]['terms'][0]['content'][1]['content'][1]['name']",
+  "remainingString": "cord",
+  "startString": "Re",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element text node value 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][2]['terms'][0]['content'][1]['content'][1]['content'][5]['content'][1]['content'][0]['text']",
+  "remainingString": "egatedPrice",
+  "startString": "Aggr",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition element unclosed element name 1`] = `
+Object {
+  "path": "targets/0/terms/0/content/0/name/$0",
+  "range": Object {
+    "end": Object {
+      "character": 49,
+      "line": 6,
+    },
+    "start": Object {
+      "character": 49,
+      "line": 6,
+    },
+  },
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition namespace schema content 1`] = `
+Object {
+  "found": true,
+  "path": "$['namespace']['targets']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition reference reference alias 1`] = `
+Object {
+  "found": true,
+  "path": "$['references'][0]['alias']",
+  "remainingString": "s",
+  "startString": "Analytic",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition reference reference namespace name 1`] = `
+Object {
+  "found": true,
+  "path": "$['references'][0]['name']",
+  "remainingString": "cs.v1",
+  "startString": "com.sap.vocabularies.Analyti",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition target annotation element name 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition target target content 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts findPathToPosition target target name 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][1]['name']",
+  "remainingString": "dents/priority",
+  "startString": "IncidentService.Inci",
+}
+`;
+
+exports[`find-by-position.ts getPositionData basic empty path 1`] = `
+Object {
+  "found": true,
+  "path": "$",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts getPositionData basic root 1`] = `
+Object {
+  "found": true,
+  "path": "$['']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts getPositionData elements attribute area 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms'][0]['attributes']['$0']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts getPositionData elements attribute name 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][1]['terms'][0]['content'][1]['content'][1]['content'][3]['attributes']['Path']['name']",
+  "remainingString": "h",
+  "startString": "Pat",
+}
+`;
+
+exports[`find-by-position.ts getPositionData elements attribute value 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][1]['terms'][0]['content'][1]['content'][1]['content'][3]['attributes']['Path']['value']",
+  "remainingString": "roduct/@UI.CriticalityLabels/0/Label",
+  "startString": "P",
+}
+`;
+
+exports[`find-by-position.ts getPositionData elements element content 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][1]['terms'][0]['content'][1]['content'][1]['content'][0]['text']",
+  "remainingString": "
+                            ",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts getPositionData elements empty element content 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms'][0]['content'][1]['content']['$0']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts getPositionData elements empty element name 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms'][0]['content'][1]['name']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts getPositionData elements name 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][1]['terms'][0]['content'][1]['content'][1]['name']",
+  "remainingString": "cord",
+  "startString": "Re",
+}
+`;
+
+exports[`find-by-position.ts getPositionData elements text node value 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][2]['terms'][0]['content'][1]['content'][1]['content'][5]['content'][1]['content'][0]['text']",
+  "remainingString": "egatedPrice",
+  "startString": "Aggr",
+}
+`;
+
+exports[`find-by-position.ts getPositionData namespace schema content 1`] = `
+Object {
+  "found": true,
+  "path": "$['namespace']['targets']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts getPositionData references alias 1`] = `
+Object {
+  "found": true,
+  "path": "$['references'][0]['alias']",
+  "remainingString": "s",
+  "startString": "Analytic",
+}
+`;
+
+exports[`find-by-position.ts getPositionData references name 1`] = `
+Object {
+  "found": true,
+  "path": "$['references'][0]['name']",
+  "remainingString": "cs.v1",
+  "startString": "com.sap.vocabularies.Analyti",
+}
+`;
+
+exports[`find-by-position.ts getPositionData targets annotation element name 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts getPositionData targets content 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][0]['terms']",
+  "remainingString": "",
+  "startString": "",
+}
+`;
+
+exports[`find-by-position.ts getPositionData targets name 1`] = `
+Object {
+  "found": true,
+  "path": "$['targets'][1]['name']",
+  "remainingString": "dents/priority",
+  "startString": "IncidentService.Inci",
+}
+`;

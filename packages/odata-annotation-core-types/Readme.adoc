@@ -1,0 +1,5 @@
+= OData Annotation Core Types
+
+**(Internal use only)**
+
+Package containing common types for working with OData annotations.
