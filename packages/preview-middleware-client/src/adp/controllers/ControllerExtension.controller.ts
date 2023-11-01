@@ -112,7 +112,6 @@ export default class ControllerExtension extends BaseDialog {
     async onCreateBtnPress(event: Event) {
         const source = event.getSource<Button>();
         const controllerExists = this.model.getProperty('/controllerExists');
-        const controllerPath = this.model.getProperty('/controllerPath');
 
         if (!controllerExists) {
             source.setEnabled(false);
@@ -122,6 +121,7 @@ export default class ControllerExtension extends BaseDialog {
 
             await this.createNewController(controllerName, viewId);
         } else {
+            const controllerPath = this.model.getProperty('/controllerPath');
             window.open(`vscode://file/${controllerPath}`);
         }
 
@@ -171,7 +171,8 @@ export default class ControllerExtension extends BaseDialog {
      */
     async getExistingController(controllerName: string): Promise<CodeExtResponse> {
         try {
-            return getExistingController(controllerName);
+            const data = await getExistingController(controllerName);
+            return data;
         } catch (e) {
             MessageToast.show(e.message);
             throw new Error(e.message);
