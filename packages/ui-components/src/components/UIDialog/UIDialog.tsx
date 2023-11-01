@@ -32,6 +32,7 @@ export const DIALOG_STYLES = {
     background: 'var(--vscode-editorWidget-background)',
     boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)',
     borderColor: 'var(--vscode-editorWidget-border)',
+    borderRadius: 4,
     vPadding: 20,
     vPaddingHalf: 10,
     hPadding: 45,
@@ -268,7 +269,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                     backgroundColor: DIALOG_STYLES.background,
                     border: `1px solid ${DIALOG_STYLES.borderColor}`,
                     boxShadow: DIALOG_STYLES.boxShadow,
-                    borderRadius: 0,
+                    borderRadius: DIALOG_STYLES.borderRadius,
                     minHeight: 100,
                     ...(scrollArea === UIDialogScrollArea.Content && {
                         overflow: 'hidden',
