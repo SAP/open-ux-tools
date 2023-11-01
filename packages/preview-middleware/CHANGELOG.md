@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.8.7
+
+### Patch Changes
+
+-   8d16d0b3: Exports FlpConfig and RtaConfig types for usage in @sap/ux-ui5-tooling
+
 ## 0.8.6
 
 ### Patch Changes
