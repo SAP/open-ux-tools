@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.20
+
+### Patch Changes
+
+-   767e1c36: UIDialog, UICallout, UIContextualMenu, dropdown menus - apply border radius. 4px for UIDialog and UICallout. 2px for contextual and dropdown menus
+
 ## 1.11.19
 
 ### Patch Changes
