@@ -4,6 +4,7 @@ import { mockedProvider, mockedAdtService } from '../../__mocks__';
 import { green, red, yellow } from 'chalk';
 import { TransportChecksService } from '@sap-ux/axios-extension';
 import { t } from '@sap-ux/project-input-validator/src/i18n';
+import exp from 'constants';
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
 
@@ -74,6 +75,37 @@ describe('deploy-test validation', () => {
             expect(summaryStr).toContain(`${red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
             expect(summaryStr).toContain(`${t('deploy.abapInvalidAppNameLength', { length: name.length })}`);
             expect(summaryStr).toContain(`${t('deploy.abapInvalidAppName', { prefix })}`);
+        });
+
+
+        test('Skip validating url if destination is provided', async () => {
+            const name = 'nslooooooooooooooooooooog/ZAPP1';
+            const prefix = 'Z';
+            const destination = 'TestDestination';
+            mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
+            mockedAdtService.getTransportRequests.mockResolvedValueOnce([
+                { transportNumber: 'T000001' },
+                { transportNumber: 'T000002' },
+                { transportNumber: 'T000003' }
+            ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: prefix
+            });
+
+            const output = await validateBeforeDeploy(
+                {
+                    app: { ...app, name },
+                    target: { ...target, destination, url: undefined }
+                },
+                mockedProvider as any,
+                nullLogger
+            );
+            expect(output.result).toBe(false);
+            const summaryStr = formatSummary(output.summary);
+            expect(summaryStr).toContain(`${red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
+            expect(summaryStr).toContain(`${t('deploy.abapInvalidAppNameLength', { length: name.length })}`);
+            expect(summaryStr).toContain(`${t('deploy.abapInvalidAppName', { prefix })}`);
+            expect(summaryStr).not.toContain(`${t('general.invalidUrl')}`);
         });
 
         test('adtService error', async () => {

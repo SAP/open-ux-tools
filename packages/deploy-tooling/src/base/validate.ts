@@ -21,6 +21,7 @@ export type ValidationInputs = {
     transport: string;
     client: string;
     url: string;
+    destination: string;
 };
 
 export type ValidationOutput = {
@@ -76,7 +77,8 @@ export async function validateBeforeDeploy(
         package: config.app.package ?? '',
         transport: config.app.transport ?? '',
         client: config.target.client ?? '',
-        url: config.target.url ?? ''
+        url: config.target.url ?? '',
+        destination: config.target.destination ?? ''
     };
 
     // output is passed by reference and status updated during the internal pipeline below.
@@ -150,8 +152,10 @@ async function validateInputTextFormat(
     processInputValidationResult(result, output);
     result = validateClient(input.client);
     processInputValidationResult(result, output);
-    result = validateUrl(input.url);
-    processInputValidationResult(result, output);
+    if (!input.destination) {
+        result = validateUrl(input.url);
+        processInputValidationResult(result, output);
+    }
 
     // If all the text validation passed, only show the following success message.
     if (output.result) {
