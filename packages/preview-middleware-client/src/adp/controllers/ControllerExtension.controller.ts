@@ -40,6 +40,11 @@ interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<unknown>;
 }
 
+interface ControllerInfo {
+    controllerName: string;
+    viewId: string;
+}
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
@@ -129,47 +134,83 @@ export default class ControllerExtension extends BaseDialog {
     }
 
     /**
-     * Builds data that is used in the dialog
+     * Builds data that is used in the dialog.
      */
     async buildDialogData(): Promise<void> {
         const selectorId = this.overlays.getId();
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
-        const control = overlayControl.getElement();
-        const view = Utils.getViewForControl(control);
-        const viewId = view.getId();
-        const controllerName = view.getController().getMetadata().getName();
+
+        const { controllerName, viewId } = this.getControllerInfo(overlayControl);
 
         const { controllerExists, controllerPath, controllerPathFromRoot } = await this.getExistingController(
             controllerName
         );
 
         if (controllerExists) {
-            this.model.setProperty('/controllerExists', controllerExists);
-            this.model.setProperty('/controllerPath', controllerPath);
-            this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
-
-            const form = this.byId('controllerExtensionDialog_Form') as SimpleForm;
-            form.setVisible(false);
-
-            const messageForm = this.byId('controllerExtensionDialog_Form--existingController') as SimpleForm;
-            messageForm.setVisible(true);
-
-            this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
-            this.dialog.getEndButton().setText('Close');
+            this.updateModelForExistingController(controllerExists, controllerPath, controllerPathFromRoot);
         } else {
-            this.model.setProperty('/viewId', viewId);
+            this.updateModelForNewController(viewId);
 
             await this.getControllers();
         }
     }
 
     /**
+     * Gets controller name and view ID for the given overlay control.
+     *
+     * @param overlayControl The overlay control.
+     * @returns The controller name and view ID.
+     */
+    private getControllerInfo(overlayControl: ElementOverlay): ControllerInfo {
+        const control = overlayControl.getElement();
+        const view = Utils.getViewForControl(control);
+        const controllerName = view.getController().getMetadata().getName();
+        const viewId = view.getId();
+        return { controllerName, viewId };
+    }
+
+    /**
+     * Updates the model properties for an existing controller.
+     *
+     * @param controllerExists Whether the controller exists
+     * @param controllerPath The controller path
+     * @param controllerPathFromRoot The controller path from the project root
+     */
+    private updateModelForExistingController(
+        controllerExists: boolean,
+        controllerPath: string,
+        controllerPathFromRoot: string
+    ): void {
+        this.model.setProperty('/controllerExists', controllerExists);
+        this.model.setProperty('/controllerPath', controllerPath);
+        this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
+
+        const form = this.byId('controllerExtensionDialog_Form') as SimpleForm;
+        form.setVisible(false);
+
+        const messageForm = this.byId('controllerExtensionDialog_Form--existingController') as SimpleForm;
+        messageForm.setVisible(true);
+
+        this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
+        this.dialog.getEndButton().setText('Close');
+    }
+
+    /**
+     * Updates the model property for a new controller.
+     *
+     * @param viewId The view ID
+     */
+    private updateModelForNewController(viewId: string): void {
+        this.model.setProperty('/viewId', viewId);
+    }
+
+    /**
      * Retrieves existing controller data if found in the project's workspace.
      *
      * @param controllerName Controller name that exists in the view
-     * @returns Returns path to existing controller if found
+     * @returns Returnsexisting controller data
      */
-    async getExistingController(controllerName: string): Promise<CodeExtResponse> {
+    private async getExistingController(controllerName: string): Promise<CodeExtResponse> {
         try {
             const data = await getExistingController(controllerName);
             return data;
