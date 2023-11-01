@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import styles from './UnknownChange.module.scss';
 import { UIIconButton, UiIcons, UIDialog } from '@sap-ux/ui-components';
 import type { PropertyChangeDeletionDetails } from '@sap-ux-private/control-property-editor-common';
-import { deletePropertyChanges, toSpacedWords } from '@sap-ux-private/control-property-editor-common';
+import { convertCamelCaseToPascalCase, deletePropertyChanges } from '@sap-ux-private/control-property-editor-common';
 import { getFormattedDateAndTime } from './utils';
 
 export interface UnknownChangeProps {
@@ -39,7 +39,7 @@ export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElem
 
     const parts = fileName.split('_');
     const changeName = parts[parts.length - 1];
-    const name = toSpacedWords(changeName);
+    const name = convertCamelCaseToPascalCase(changeName);
     return (
         <>
             <Stack className={styles.item}>
