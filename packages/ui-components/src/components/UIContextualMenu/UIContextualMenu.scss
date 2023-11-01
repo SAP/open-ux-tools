@@ -36,10 +36,10 @@
     box-shadow: none;
     background: $menu-background;
     border: 1px solid $menu-border-color;
-    border-radius: 0;
+    border-radius: $menu-border-radius;
 
     .ms-Callout-main {
-        border-radius: 0;
+        border-radius: $menu-border-radius;
         background: $menu-background;
         // workaround. resolves callout root element borders being cut or invisible
         transform: translateZ(0);

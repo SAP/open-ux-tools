@@ -18,7 +18,8 @@ export const CALLOUT_STYLES = {
     boxShadow:
         '0 2px 6px rgb(0 0 0 / 20%), 0 0 0 1px var(--vscode-contrastBorder, var(--vscode-editorSuggestWidget-border))',
     text: 'var(--vscode-editorSuggestWidget-foreground)',
-    font: 'var(--vscode-font-family)'
+    font: 'var(--vscode-font-family)',
+    borderRadius: 4
 };
 
 export enum UICalloutContentPadding {
@@ -51,7 +52,7 @@ export const getCalloutStyle = (props: UICalloutProps): ICalloutContentStyles =>
         root: {
             boxShadow: CALLOUT_STYLES.boxShadow,
             backgroundColor: 'transparent',
-            borderRadius: 0,
+            borderRadius: CALLOUT_STYLES.borderRadius,
             ...extractRawStyles(props.styles, 'root')
         },
         beak: {
@@ -61,13 +62,14 @@ export const getCalloutStyle = (props: UICalloutProps): ICalloutContentStyles =>
         },
         beakCurtain: {
             backgroundColor: CALLOUT_STYLES.background,
+            borderRadius: CALLOUT_STYLES.borderRadius,
             ...extractRawStyles(props.styles, 'beakCurtain')
         },
         calloutMain: {
             backgroundColor: CALLOUT_STYLES.background,
             color: CALLOUT_STYLES.text,
             fontFamily: CALLOUT_STYLES.font,
-            borderRadius: 0,
+            borderRadius: CALLOUT_STYLES.borderRadius,
             minWidth: props.calloutMinWidth ?? 300,
             boxSizing: 'border-box',
             padding: CALLOUT_CONTENT_PADDING.get(props.contentPadding || UICalloutContentPadding.None),
