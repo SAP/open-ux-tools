@@ -177,7 +177,7 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleGetCodingExtension = async (req: Request, res: Response, next: NextFunction) => {
+    public handleGetControllerExtensionData = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const params = req.params as { controllerName: string };
             const controllerName = sanitize(params.controllerName);

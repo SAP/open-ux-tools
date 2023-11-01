@@ -146,6 +146,6 @@ export class AdpPreview {
             this.routesHandler.handleWriteControllerExt as RequestHandler
         );
 
-        router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetCodingExtension as RequestHandler);
+        router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
     }
 }
