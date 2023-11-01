@@ -1,6 +1,9 @@
-import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
-import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
+
+import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
+import type { Scenario } from 'sap/ui/fl/Scenario';
+
+import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
 import { sapCoreMock } from 'mock/window';
 
 jest.mock('../../../../src/cpe/outline/utils', () => {
@@ -9,7 +12,8 @@ jest.mock('../../../../src/cpe/outline/utils', () => {
     };
 });
 describe('outline nodes', () => {
-    const transformNodes = (nodes: OutlineViewNode[]): Promise<OutlineNode[]> => tn(nodes);
+    const transformNodes = (nodes: OutlineViewNode[], scenario: Scenario): Promise<OutlineNode[]> =>
+        tn(nodes, scenario);
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
             getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')
@@ -18,20 +22,23 @@ describe('outline nodes', () => {
     });
     describe('transformNodes', () => {
         test('empty tree', async () => {
-            expect(await transformNodes([])).toStrictEqual([]);
+            expect(await transformNodes([], 'UI_ADAPTATION')).toStrictEqual([]);
         });
 
         test('single element', async () => {
             expect(
-                await transformNodes([
-                    {
-                        id: 'application-preview-app-component',
-                        technicalName: 'v2flex.Component',
-                        editable: false,
-                        type: 'element',
-                        visible: true
-                    }
-                ])
+                await transformNodes(
+                    [
+                        {
+                            id: 'application-preview-app-component',
+                            technicalName: 'v2flex.Component',
+                            editable: false,
+                            type: 'element',
+                            visible: true
+                        }
+                    ],
+                    'UI_ADAPTATION'
+                )
             ).toStrictEqual([
                 {
                     children: [],
@@ -46,16 +53,19 @@ describe('outline nodes', () => {
 
         test('extension point', async () => {
             expect(
-                await transformNodes([
-                    {
-                        id: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
-                        technicalName: 'sap.ui.extensionpoint',
-                        name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
-                        editable: false,
-                        type: 'extensionPoint',
-                        visible: true
-                    }
-                ])
+                await transformNodes(
+                    [
+                        {
+                            id: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
+                            technicalName: 'sap.ui.extensionpoint',
+                            name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
+                            editable: false,
+                            type: 'extensionPoint',
+                            visible: true
+                        }
+                    ],
+                    'ADAPTATION_PROJECT'
+                )
             ).toStrictEqual([
                 {
                     children: [],
@@ -71,32 +81,35 @@ describe('outline nodes', () => {
 
         test('aggregation', async () => {
             expect(
-                await transformNodes([
-                    {
-                        id: 'application-preview-app-component',
-                        technicalName: 'v2flex.Component',
-                        editable: false,
-                        type: 'element',
-                        visible: true,
-                        elements: [
-                            {
-                                id: 'application-preview-app-component',
-                                technicalName: 'rootControl',
-                                editable: false,
-                                type: 'aggregation',
-                                elements: [
-                                    {
-                                        id: '__layout0',
-                                        technicalName: 'sap.f.FlexibleColumnLayout',
-                                        editable: false,
-                                        type: 'element',
-                                        visible: true
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ])
+                await transformNodes(
+                    [
+                        {
+                            id: 'application-preview-app-component',
+                            technicalName: 'v2flex.Component',
+                            editable: false,
+                            type: 'element',
+                            visible: true,
+                            elements: [
+                                {
+                                    id: 'application-preview-app-component',
+                                    technicalName: 'rootControl',
+                                    editable: false,
+                                    type: 'aggregation',
+                                    elements: [
+                                        {
+                                            id: '__layout0',
+                                            technicalName: 'sap.f.FlexibleColumnLayout',
+                                            editable: false,
+                                            type: 'element',
+                                            visible: true
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    'UI_ADAPTATION'
+                )
             ).toStrictEqual([
                 {
                     controlId: 'application-preview-app-component',
