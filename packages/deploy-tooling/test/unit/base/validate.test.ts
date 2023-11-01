@@ -76,7 +76,6 @@ describe('deploy-test validation', () => {
             expect(summaryStr).toContain(`${t('deploy.abapInvalidAppName', { prefix })}`);
         });
 
-
         test('Skip validating url if destination is provided', async () => {
             const name = 'nslooooooooooooooooooooog/ZAPP1';
             const prefix = 'Z';
