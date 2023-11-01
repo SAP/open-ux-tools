@@ -34,3 +34,5 @@ export {
 } from './annotationFile';
 
 export * from './utils';
+
+export * from '@sap-ux/odata-annotation-core-types';
