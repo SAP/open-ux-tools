@@ -1,5 +1,0 @@
-= OData Annotation Core
-
-**(Internal use only)**
-
-Package containing low level building blocks and utility functions for working with OData annotations.

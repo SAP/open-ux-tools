@@ -272,25 +272,24 @@ export class MetadataService implements IMetadataService {
         if (element) {
             return element;
         }
-        if (!element && path) {
-            // check if first segment represents action function name (without signature)
-            const segments = path.split('/');
-            const topLevelName = segments.shift();
-            if (!topLevelName) {
-                return undefined;
-            }
-            const actionFunctionOverloads = this.getActionFunctionOverloads(topLevelName);
-            if (actionFunctionOverloads) {
-                const remainingSegments = segments.join('/');
-                for (const overloadName of actionFunctionOverloads) {
-                    const newPath = overloadName + (remainingSegments ? '/' + remainingSegments : '');
-                    const element = this.lookup(newPath);
-                    if (element) {
-                        return element;
-                    }
+        // check if first segment represents action function name (without signature)
+        const segments = path.split('/');
+        const topLevelName = segments.shift();
+        if (!topLevelName) {
+            return undefined;
+        }
+        const actionFunctionOverloads = this.getActionFunctionOverloads(topLevelName);
+        if (actionFunctionOverloads) {
+            const remainingSegments = segments.join('/');
+            for (const overloadName of actionFunctionOverloads) {
+                const newPath = overloadName + (remainingSegments ? '/' + remainingSegments : '');
+                const element = this.lookup(newPath);
+                if (element) {
+                    return element;
                 }
             }
         }
+
         return undefined;
     }
 
