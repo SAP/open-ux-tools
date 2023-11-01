@@ -4,7 +4,6 @@ import { mockedProvider, mockedAdtService } from '../../__mocks__';
 import { green, red, yellow } from 'chalk';
 import { TransportChecksService } from '@sap-ux/axios-extension';
 import { t } from '@sap-ux/project-input-validator/src/i18n';
-import exp from 'constants';
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
 
