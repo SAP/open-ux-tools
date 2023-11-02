@@ -25,7 +25,7 @@
                     visible="false"
                     singleContainerFullSize="false">
                     <f:content>
-                        <Label text="Controller extension has already been created, please use" />
+                        <Label text="An existing controller extension has been found. Please use the previously created extension controller" />
                         <Text text="{/controllerPathFromRoot}" />
                     </f:content>
                 </f:SimpleForm>
