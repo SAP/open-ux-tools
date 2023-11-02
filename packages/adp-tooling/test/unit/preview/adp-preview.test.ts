@@ -410,7 +410,7 @@ describe('AdaptationProject', () => {
                     getString: () => changeFileStr
                 }
             ]);
-            await server.get('/adp/api/code_ext/sap.suite.ui.generic.template.ListReport.view.ListReport').expect(404);
+            await server.get('/adp/api/code_ext/sap.suite.ui.generic.template.ListReport.view.ListReport').expect(500);
         });
 
         test('GET /adp/api/code_ext/:controllerName - throws error', async () => {
