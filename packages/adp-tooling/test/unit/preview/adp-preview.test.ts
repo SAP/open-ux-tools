@@ -86,6 +86,9 @@ describe('AdaptationProject', () => {
                 },
                 getSourcePath() {
                     return '/adp.project/webapp';
+                },
+                getName() {
+                    return 'adp.project';
                 }
             };
         }

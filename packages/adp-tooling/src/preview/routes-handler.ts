@@ -8,6 +8,7 @@ import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
 import { FolderNames, TemplateFileName, HttpStatusCodes } from '../types';
+import type { CodeExtChange } from '../types';
 
 interface WriteFragmentBody {
     fragmentName: string;
@@ -189,22 +190,14 @@ export default class RoutesHandler {
 
             const project = this.util.getProject();
             const sourcePath = project.getSourcePath();
-            const rootPath = project.getRootPath();
-            const projectName = rootPath.split(/[\\/]/).slice(-1)[0];
+            const projectName = project.getName();
 
             const getPath = (projectPath: string, fileName: string) =>
                 path.join(projectPath, FolderNames.Changes, FolderNames.Coding, fileName).replace(/[\\/]/g, path.sep);
 
             for (const file of codeExtFiles) {
                 const fileStr = await file.getString();
-                const change = JSON.parse(fileStr) as {
-                    selector: {
-                        controllerName: string;
-                    };
-                    content: {
-                        codeRef: string;
-                    };
-                };
+                const change = JSON.parse(fileStr) as CodeExtChange;
 
                 if (change.selector.controllerName === controllerName) {
                     const fileName = change.content.codeRef.replace('coding/', '');
