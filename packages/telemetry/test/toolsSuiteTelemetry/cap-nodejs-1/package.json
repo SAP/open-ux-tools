@@ -1,0 +1,11 @@
+{
+  "name": "@capire/bookshop",
+  "cds": {
+    "folders": {
+      "app": "test/app",
+      "db": "test/db",
+      "srv": "test/srv"
+    }
+  },
+  "sapux": []
+}

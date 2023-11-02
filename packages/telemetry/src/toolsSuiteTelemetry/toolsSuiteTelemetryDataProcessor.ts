@@ -1,0 +1,305 @@
+/**
+ * A callback function to be called by generic telemetry API. It takes the init settings options
+ * passed to initTelemetrySettings API call, as well as properties and measurements passed to
+ * ClientFactory.getTelemetryClient().report() as input. The output is specific properties and
+ * measurements that are common th the tools suite telemetry events. These common
+ * properties and measurements are then attached to every telemetry event.
+ * @returns
+ */
+
+import { isAppStudio } from '@sap/ux-common-utils';
+import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
+import yaml from 'yaml';
+/**
+ * Import with Tree shaking behaviour '@sap/ux-project-access/dist/project/utils'
+ * performance optimization to remove unreachable code automatically from esbuild.
+ * Esbuild will only bundle parts of your packages that you actually use
+ *
+ * Note: Without Tree shaking import '@sap/ux-project-access'
+ * packages consuming telemetry need to add dependencies manually (for ex: sap/cds)
+ * Further, size of generated .vsix will be increased by esbuild
+ * */
+import {
+    findProjectRoot,
+    getProjectType,
+    getAppProgrammingLanguage,
+    getAppType
+} from '@sap/ux-project-access/dist/project/utils';
+import { readFile, fileExists, readJSON } from '@sap/ux-project-access/dist/common/file';
+import { isCapJavaProject, isCapNodeJsProject } from '@sap/ux-cds/dist/utils/capProject';
+import { ProjectType } from '@sapux/project-spec';
+import type { CommonFioriProjectProperties, InternalFeature, SourceTemplate } from './types';
+import { ODataSource, DeployTarget, CommonProperties, ToolsId } from './types';
+import { isInternalFeaturesSettingEnabled } from '@sap/ux-feature-toggle';
+import { spawn } from 'child_process';
+import os from 'os';
+
+/**
+ * @param initSettings Pass to initTelemetrySettings() api
+ *  - internalFeaturesEnabled
+ * @param telemetryHelperProperties Pass to report ApplicationInsightClient.report()
+ *  - appPath
+ * @returns
+ */
+export async function processToolsSuiteTelemetry(
+    telemetryHelperProperties: Record<string, string>
+): Promise<CommonFioriProjectProperties> {
+    const commonProperties = await getCommonProperties();
+
+    let appProperties = {} as Record<string, string>;
+    if (telemetryHelperProperties) {
+        appProperties = await getAppProperties(telemetryHelperProperties['appPath']);
+    }
+
+    return { ...commonProperties, ...appProperties };
+}
+
+export async function getCommonProperties(): Promise<CommonFioriProjectProperties> {
+    const commonProperties = {} as CommonFioriProjectProperties;
+    commonProperties[CommonProperties.DevSpace] = await getSbasDevspace();
+    commonProperties[CommonProperties.AppStudio] = isAppStudio();
+    commonProperties[CommonProperties.AppStudioBackwardCompatible] = commonProperties[CommonProperties.AppStudio];
+    commonProperties[CommonProperties.InternlVsExternal] = getInternalVsExternal();
+    commonProperties[CommonProperties.InternlVsExternalBackwardCompatible] =
+        commonProperties[CommonProperties.InternlVsExternal];
+
+    commonProperties[CommonProperties.NodeVersion] = (await getProcessVersions()).node;
+    return commonProperties;
+}
+
+/**
+ * Obtain dev space type from SBAS rest api.
+ * @returns SBAS Dev Space Name. Empty string is returned if unable to fetch workspace type or the environment is not SBAS
+ */
+async function getSbasDevspace(): Promise<string> {
+    if (isAppStudio()) {
+        try {
+            const h20Url = process.env.H2O_URL;
+            const workspaceId = process.env.WORKSPACE_ID.replace('workspaces-', '');
+            const url = `${h20Url}/ws-manager/api/v1/workspace/${workspaceId}`;
+
+            const response = await axios.get(url);
+            if (response.data) {
+                const workspaceConfig = response.data;
+                const devspace = workspaceConfig?.config?.annotations?.pack;
+                return devspace ? devspace : '';
+            }
+        } catch (error) {
+            // handling error
+        }
+    }
+    return '';
+}
+
+/**
+ * Feature to be implemented in next US #16043
+ * @param appPath
+ * @returns Properties to be append to properties in telemetry event
+ */
+async function getAppProperties(appPath: string): Promise<Record<string, string>> {
+    if (!appPath) {
+        return {};
+    }
+    const templateType = await getTemplateType(appPath);
+    const deployTarget = await getDeployTarget(appPath);
+    const odataSource = await getODataSource(appPath);
+    const sourceTemplate = await getManifestSourceTemplate(appPath);
+    const appProgrammingLanguage = await getAppProgrammingLanguage(appPath);
+    const applicationType = await getAppType(appPath, appPath);
+    const output = {};
+    output[CommonProperties.TemplateType] = templateType;
+    output[CommonProperties.DeployTargetType] = deployTarget;
+    output[CommonProperties.ODataSourceType] = odataSource;
+    output[CommonProperties.AppToolsId] = sourceTemplate.toolsId;
+    output[CommonProperties.AppProgrammingLanguage] = appProgrammingLanguage;
+    output[CommonProperties.TemplateId] = sourceTemplate.id;
+    output[CommonProperties.TemplateVersion] = sourceTemplate.version;
+    output[CommonProperties.ApplicationType] = applicationType;
+
+    return output;
+}
+
+/**
+ * Read template type from README.md of an Fiori app. This will be improved once we have the floor
+ * plan information added to e.g. manifest.json of generated app.
+ * @param appPath Root folder path of Fiori app
+ * @returns Template type used in the Fiori app
+ */
+async function getTemplateType(appPath: string): Promise<string> {
+    const readmeFilePath = path.join(appPath, 'README.md');
+    if (fs.existsSync(readmeFilePath)) {
+        const readmeContent = await fs.promises.readFile(readmeFilePath, 'utf-8');
+        if (readmeContent) {
+            let templateType = '';
+            const lines = readmeContent.split(/\r?\n/);
+            for (const line of lines) {
+                // Check if the line matches the pattern |**Template Used**<br>{{TemplateType}}|
+                const match = line.match(/\|\*\*Template Used\*\*<br>.*\|/g);
+                if (match && match.length > 0) {
+                    // Extract {{TemplateType}} from the matching pattern
+                    // templateType = line.match(/[^|**Template Used**<br>].*[^|]/g)[0];
+                    templateType = line.replace('|**Template Used**<br>', '').replace('|', '').trim();
+                    break;
+                }
+            }
+            return templateType;
+        }
+    }
+    return '';
+}
+
+/**
+ * Find OData Source type of a given app folder path.
+ * @param appPath Root folder path of Fiori app
+ * @returns Project Type ABAP | CAPJava | CAPNode | UNKNOWN
+ */
+async function getODataSource(appPath: string): Promise<string> {
+    try {
+        // First attempt: Loop up a folder that contain a pacakge.json that has sapux property as project root
+        // If appPath has package.json that contains sapux, it is EDMX project type and we derive odata source
+        // is ABAP.
+        let projectRoot;
+        try {
+            projectRoot = await findProjectRoot(appPath);
+        } catch {
+            // No project root can be found
+        }
+
+        // Second attempt: For FF app, package.json does not have sapux property. Try to find the
+        // first parent folder that contain pacakge.json as CAP root. If no such folder exists,
+        // use appPath as project root.
+        if (!projectRoot) {
+            try {
+                const appParentFolder = path.dirname(appPath);
+                projectRoot = await findProjectRoot(appParentFolder, false);
+            } catch (e) {
+                // No project root can be found at parent folder.
+            }
+        }
+
+        // Third attempt: CAPJava that doesn't have package.json at project root. We assume
+        // the project has default structure <projectRoot>/app/<appPath>, and use parent folder
+        // path two levels above appPath as projectRoot. This should cover most cases until we have
+        // a better solution
+        let isCapJavaWithoutPackageJson = false;
+        if (!projectRoot) {
+            const directParentFolder = path.dirname(appPath);
+            const twoLevelUpParentFolder = path.dirname(directParentFolder);
+            isCapJavaWithoutPackageJson = await isCapJavaProject(twoLevelUpParentFolder);
+            projectRoot = isCapJavaWithoutPackageJson ? twoLevelUpParentFolder : appPath;
+        }
+
+        if (isCapJavaWithoutPackageJson) {
+            return ODataSource.CAPJava;
+        }
+        const projectType = await getProjectType(projectRoot);
+        if (projectType === ProjectType.Cap) {
+            if (await isCapJavaProject(projectRoot)) {
+                return ODataSource.CAPJava;
+            } else if (await isCapNodeJsProject(projectRoot)) {
+                return ODataSource.CAPNode;
+            }
+        } else if (projectType === ProjectType.Edmx) {
+            return ODataSource.ABAP;
+        }
+    } catch (e) {
+        return ODataSource.UNKNOWN;
+    }
+}
+
+/**
+ * Read ui5-deploy.yaml to decide if it is CF or ABAP deploy target
+ * @param appPath  appPath Root folder path of Fiori app
+ * @returns CF | ABAP | NO_DEPLOY_CONFIG | UNKNOWN_DEPLOY_CONFIG
+ */
+async function getDeployTarget(appPath: string): Promise<string> {
+    let deployTarget = DeployTarget.NO_DEPLOY_CONFIG;
+    const deployConfigPath = path.join(appPath, 'ui5-deploy.yaml');
+
+    try {
+        if (await fileExists(deployConfigPath)) {
+            const deployConfigContent = await readFile(deployConfigPath);
+            const deployConfig = yaml.parse(deployConfigContent);
+            const customTasks = deployConfig?.builder?.customTasks;
+
+            if (customTasks) {
+                const isAbapDeployTarget = customTasks.some((task) => task.name === 'deploy-to-abap');
+                deployTarget = isAbapDeployTarget ? DeployTarget.ABAP : DeployTarget.CF;
+            } else {
+                deployTarget = DeployTarget.UNKNOWN_DEPLOY_CONFIG;
+            }
+        }
+    } catch (error) {
+        console.log(`[Telemetry]: ${error.message}`);
+    }
+
+    return deployTarget;
+}
+
+/**
+ * Convert init setting property internalFeaturesEnabled to string value.
+ * @returns String value 'internal' | 'external' to be backward compatible with existing telemetry data format.
+ */
+function getInternalVsExternal(): InternalFeature {
+    return isInternalFeaturesSettingEnabled() ? 'internal' : 'external';
+}
+
+/**
+ * Read the manifest.json for the app and locate the tools id
+ * @param appPath appPath Root folder path of Fiori app
+ * @returns sourceTemplate section of data from manifest.json
+ */
+async function getManifestSourceTemplate(appPath: string): Promise<SourceTemplate> {
+    let sourceTemplate: SourceTemplate;
+    try {
+        const manifestPath = path.join(appPath, 'webapp', 'manifest.json');
+        if (fs.existsSync(manifestPath)) {
+            const manifest = await readJSON(manifestPath);
+            sourceTemplate = manifest['sap.app']?.sourceTemplate;
+        }
+    } catch (err) {
+        console.log(`[Telemetry]: ${err.message}`);
+    }
+    sourceTemplate = sourceTemplate ?? {};
+    sourceTemplate.id = sourceTemplate.id ?? '';
+    sourceTemplate.version = sourceTemplate.version ?? '';
+    sourceTemplate.toolsId = sourceTemplate.toolsId ?? ToolsId.NO_TOOLS_ID;
+
+    return sourceTemplate;
+}
+
+async function getProcessVersions(): Promise<NodeJS.ProcessVersions> {
+    try {
+        const output = await spawnCommand('node', ['-p', 'JSON.stringify(process.versions)']);
+        return JSON.parse(output);
+    } catch {
+        return {} as NodeJS.ProcessVersions;
+    }
+}
+
+export function spawnCommand(command: string, commandArgs: string[]): Promise<string> {
+    const spawnOptions = /^win/.test(process.platform)
+        ? { windowsVerbatimArguments: true, shell: true, cwd: os.homedir() }
+        : { cwd: os.homedir() };
+
+    return new Promise((resolve, reject) => {
+        let output = '';
+        const spawnProcess = spawn(command, commandArgs, spawnOptions);
+        spawnProcess.stdout.on('data', (data) => {
+            const newData = data.toString();
+            output += newData;
+        });
+        spawnProcess.stderr.on('data', (data) => {
+            const newData = data.toString();
+            output += newData;
+        });
+        spawnProcess.on('exit', () => {
+            resolve(output);
+        });
+        spawnProcess.on('error', (error) => {
+            reject(error);
+        });
+    });
+}

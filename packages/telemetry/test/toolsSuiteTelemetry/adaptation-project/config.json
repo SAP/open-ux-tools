@@ -1,0 +1,10 @@
+{
+    "componentname": "fin.co.costcenter.manage.v2",
+    "safeMode": false,
+    "appvariant": "fin.test.appvar.av1",
+    "layer": "VENDOR",
+    "sourceSystem": "UYTCLNT902",
+    "isFioriElement": true,
+    "environment": "ABAP",
+    "ui5Version": "snapshot"
+}

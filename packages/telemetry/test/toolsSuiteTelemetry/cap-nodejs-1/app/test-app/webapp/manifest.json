@@ -1,0 +1,37 @@
+{
+  "_version": "1.39.0",
+  "sap.app":
+  {
+    "id": "test.jl.zcatalogjl1508",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion":
+    {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate":
+    {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.7.1",
+      "toolsId": "5437d5df-446c-4d9e-82ec-addd717c6043"
+    },
+    "dataSources":
+    {
+      "mainService":
+      {
+        "uri": "/sap/opu/odata/dmo/API_TRAVEL_U_V2/",
+        "type": "OData",
+        "settings":
+        {
+          "annotations":
+          [],
+          "localUri": "localService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      }
+    }
+  }
+}
