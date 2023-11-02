@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.11.21
+
+### Patch Changes
+
+-   95f951f9: styling changes for UIActionCallout
+
 ## 1.11.20
 
 ### Patch Changes
