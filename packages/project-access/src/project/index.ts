@@ -2,6 +2,8 @@ export {
     getCapCustomPaths,
     getCapModelAndServices,
     getCapProjectType,
+    getCdsFiles,
+    getCdsRoots,
     isCapJavaProject,
     isCapNodeJsProject,
     getCapEnvironment,

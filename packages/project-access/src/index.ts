@@ -10,6 +10,8 @@ export {
     getCapEnvironment,
     getCapModelAndServices,
     getCapProjectType,
+    getCdsFiles,
+    getCdsRoots,
     getMtaPath,
     getNodeModulesPath,
     getWebappPath,
