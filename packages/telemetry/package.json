@@ -33,7 +33,12 @@
         "yaml": "2.3.3"
     },
     "devDependencies": {
-        "jest-extended": "3.2.4"
+        "jest-extended": "3.2.4",
+        "memfs": "3.4.13",
+        "ts-jest": "29.1.1",
+        "ts-node": "8.5.2",
+        "typescript": "4.9.5",
+        "unionfs": "4.4.0"
     },
     "files": [
         "dist",
