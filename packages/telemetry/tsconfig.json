@@ -1,8 +1,16 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["src", "src/**/*.json"],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist"
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../store"
     }
+  ]
 }
