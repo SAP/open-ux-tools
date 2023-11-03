@@ -50,13 +50,13 @@ class ApplicationInsightClient extends Client {
         properties: { [key: string]: string | boolean },
         measurements: { [key: string]: number },
         sampleRate: SampleRate | undefined,
-        ignoreSettings?: boolean
+        ignoreSettings: boolean = false
     ): Promise<void> {
-        if ((ignoreSettings !== undefined && !ignoreSettings) || !TelemetrySystem.telemetryEnabled) {
-            return;
+        if (!ignoreSettings || TelemetrySystem.telemetryEnabled) {
+            const { client, event } = this.prepareClientAndEvent(eventName, properties, measurements, sampleRate);
+            return this.trackEventBlocking(client, event);
         }
-        const { client, event } = this.prepareClientAndEvent(eventName, properties, measurements, sampleRate);
-        return this.trackEventBlocking(client, event);
+        return Promise.resolve();
     }
 
     /**
@@ -92,7 +92,7 @@ class ApplicationInsightClient extends Client {
         sampleRate: SampleRate | undefined
     ): { client: appInsights.TelemetryClient; event: appInsights.Contracts.EventTelemetry } {
         const processedSampleRate: SampleRate = sampleRate ? sampleRate : SampleRate.NoSampling;
-        const client: appInsights.TelemetryClient = this.clients.get(processedSampleRate);
+        const client = this.clients.get(processedSampleRate) as appInsights.TelemetryClient ;
 
         const eventHeader: EventHeader = new EventHeader(this.extensionName, eventName);
         const event: appInsights.Contracts.EventTelemetry = {

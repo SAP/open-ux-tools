@@ -18,19 +18,12 @@ class ClientFactory {
             return client;
         }
 
-        if (TelemetrySystem.manifest) {
-            client = new clientConstructor(
-                telemetryPackageJSON.azureInstrumentationKey,
-                TelemetrySystem.manifest.name,
-                TelemetrySystem.manifest.version
-            );
-        } else {
-            client = new clientConstructor(
-                telemetryPackageJSON.azureInstrumentationKey,
-                telemetryPackageJSON.name,
-                telemetryPackageJSON.version
-            );
-        }
+        client = new clientConstructor(
+            telemetryPackageJSON.azureInstrumentationKey,
+            telemetryPackageJSON.name,
+            telemetryPackageJSON.version
+        );
+
         ClientFactory.clientMap.set(clientConstructor.name, client);
         return client;
     }

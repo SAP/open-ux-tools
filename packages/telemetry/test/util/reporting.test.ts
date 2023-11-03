@@ -5,10 +5,12 @@ const spyTrackEvent = jest.fn();
 
 jest.mock('applicationinsights', () => {
     class TelemetryClient {
+
         public config: any;
         public channel: any;
         public addTelemetryProcessor: any;
         public trackEvent: any;
+
         constructor() {
             this.config = {
                 samplingPercentage: 0

@@ -43,7 +43,8 @@ const parseErrorStack = (errorStack: string): string[] => {
     return parsedStack;
 };
 
-let reportingTelemetryClient;
+let reportingTelemetryClient: appInsights.TelemetryClient;
+
 if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY?.trim() !== 'true') {
     reportingTelemetryClient = new appInsights.TelemetryClient(telemetryPackageJSON.azureInstrumentationKey);
     configAzureTelemetryClient(reportingTelemetryClient);
