@@ -36,7 +36,10 @@ async function prompt(promptOptions?: UI5LibraryPromptOptions): Promise<UI5Libra
     if (promptOptions?.useAutocomplete) {
         inquirer.registerPrompt('autocomplete', autocomplete);
     }
-    return inquirer.prompt(ui5LibPrompts);
+    const ui5LibAnswers = await inquirer.prompt(ui5LibPrompts);
+    // Return semantic version string instead of `UI5Version` type
+    ui5LibAnswers.ui5Version = ui5LibAnswers.ui5Version?.version;
+    return ui5LibAnswers;
 }
 
 export { getPrompts, prompt, type UI5LibraryPromptOptions, type UI5LibraryAnswers };
