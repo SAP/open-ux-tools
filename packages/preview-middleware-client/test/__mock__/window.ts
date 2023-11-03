@@ -1,6 +1,6 @@
 document.getElementById = jest.fn();
-export const documentMock = document as unknown as  typeof document & {
-    getElementById: jest.Mock
+export const documentMock = document as unknown as typeof document & {
+    getElementById: jest.Mock;
 };
 
 export const fetchMock = jest.fn();
