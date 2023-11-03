@@ -62,6 +62,8 @@ export default class ControllerExtension extends BaseDialog {
     async onInit() {
         this.dialog = this.byId('controllerExtensionDialog') as unknown as Dialog;
 
+        this.setEscapeHandler();
+
         await this.buildDialogData();
 
         this.getView()?.setModel(this.model);
@@ -75,38 +77,45 @@ export default class ControllerExtension extends BaseDialog {
      * @param event Event
      */
     onControllerNameInputChange(event: Event) {
-        const source = event.getSource<Input>();
+        const input = event.getSource<Input>();
+        const beginBtn = this.dialog.getBeginButton();
 
-        const controllerName: string = source.getValue().trim();
+        const controllerName: string = input.getValue().trim();
         const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList');
 
+        const updateDialogState = (valueState: ValueState, valueStateText = '') => {
+            input.setValueState(valueState).setValueStateText(valueStateText);
+            beginBtn.setEnabled(valueState === ValueState.Success);
+        };
+
         if (controllerName.length <= 0) {
-            this.dialog.getBeginButton().setEnabled(false);
-            source.setValueState(ValueState.None);
+            updateDialogState(ValueState.None);
             this.model.setProperty('/newControllerName', null);
-        } else {
-            const fileExists = controllerList.find((f: { controllerName: string }) => {
-                return f.controllerName === `${controllerName}.js`;
-            });
-
-            const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(controllerName);
-
-            if (fileExists) {
-                source.setValueState(ValueState.Error);
-                source.setValueStateText(
-                    'Enter a different name. The controller name that you entered already exists in your project.'
-                );
-                this.dialog.getBeginButton().setEnabled(false);
-            } else if (!isValidName) {
-                source.setValueState(ValueState.Error);
-                source.setValueStateText('The controller name cannot contain white spaces or special characters.');
-                this.dialog.getBeginButton().setEnabled(false);
-            } else {
-                this.dialog.getBeginButton().setEnabled(true);
-                source.setValueState(ValueState.None);
-                this.model.setProperty('/newControllerName', controllerName);
-            }
+            return;
         }
+
+        const fileExists = controllerList.some((f) => f.controllerName === `${controllerName}.js`);
+
+        if (fileExists) {
+            updateDialogState(
+                ValueState.Error,
+                'Enter a different name. The controller name that you entered already exists in your project.'
+            );
+            return;
+        }
+
+        const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(controllerName);
+
+        if (!isValidName) {
+            updateDialogState(
+                ValueState.Error,
+                'The controller name cannot contain white spaces or special characters.'
+            );
+            return;
+        }
+
+        updateDialogState(ValueState.Success);
+        this.model.setProperty('/newControllerName', controllerName);
     }
 
     /**
