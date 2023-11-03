@@ -17,4 +17,4 @@ Pnpm
 `pnpm add @sap-ux/project-input-validator`
 
 ## Usage
-See example usage in [test folder](./test/validators.test.ts).
+See example usage in [test folder](./test).
