@@ -6,7 +6,7 @@ import { Icon } from '@fluentui/react';
 import { UIList, UiIcons } from '@sap-ux/ui-components';
 
 import { selectControl, reportTelemetry, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
-import type { Control, OutlineNode } from '@sap-ux-private/control-property-editor-common';
+import type { Control, OutlineNode, Scenario } from '@sap-ux-private/control-property-editor-common';
 
 import type { RootState } from '../../store';
 import type { ControlChanges, FilterOptions } from '../../slice';
@@ -33,6 +33,7 @@ export const Tree = (): ReactElement => {
     const selectedControl = useSelector<RootState, Control | undefined>((state) => state.selectedControl);
     const controlChanges = useSelector<RootState, ControlChanges>((state) => state.changes.controls);
     const model: OutlineNode[] = useSelector<RootState, OutlineNode[]>((state) => state.outline);
+    const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
 
     const { groups, items } = useMemo(() => {
         const items: OutlineNodeItem[] = [];
@@ -358,43 +359,66 @@ export const Tree = (): ReactElement => {
                 aria-hidden
                 className={`${selectNode} tree-row ${focusEditable}`}
                 onClick={(): void => onSelectHeader(groupHeaderProps?.group)}>
-                <span
-                    style={{ paddingLeft: paddingValue }}
-                    data-testid="tooltip-container"
-                    className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
-                    onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
-                    {groupHeaderProps?.group?.count !== 0 && (
-                        <Icon
-                            className={`${chevronTransform}`}
-                            iconName={UiIcons.Chevron}
-                            onClick={(event) => {
-                                onToggleCollapse(groupHeaderProps);
-                                event.stopPropagation();
-                            }}
-                        />
-                    )}
-                    {isExtensionPoint && (
-                        <Icon className={`${chevronTransform} extension-icon`} iconName={UiIcons.DataSource} />
-                    )}
-                    <div
-                        style={{
-                            cursor: 'pointer',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis'
-                        }}
-                        title={isExtensionPoint ? groupName : ''}>
-                        {groupName}
-                    </div>
-                    {isExtensionPoint && (
-                        <div id={tooltipId} className="tooltip">
-                            <button
-                                data-testid="tooltip-dialog-button"
-                                onClick={() => handleOpenFragmentDialog(groupHeaderProps?.group?.data, tooltipId)}>
-                                Add Fragment at Extension Point
-                            </button>
+                {scenario !== 'ADAPTATION_PROJECT' ? (
+                    <span style={{ paddingLeft: paddingValue }} className="tree-cell">
+                        {groupHeaderProps?.group?.count !== 0 && (
+                            <Icon
+                                className={`${chevronTransform}`}
+                                iconName={UiIcons.Chevron}
+                                onClick={(event) => {
+                                    onToggleCollapse(groupHeaderProps);
+                                    event.stopPropagation();
+                                }}
+                            />
+                        )}
+                        <div
+                            style={{
+                                cursor: 'pointer',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                            }}>
+                            {groupName}
                         </div>
-                    )}
-                </span>
+                    </span>
+                ) : (
+                    <span
+                        style={{ paddingLeft: paddingValue }}
+                        data-testid="tooltip-container"
+                        className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
+                        onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
+                        {groupHeaderProps?.group?.count !== 0 && (
+                            <Icon
+                                className={`${chevronTransform}`}
+                                iconName={UiIcons.Chevron}
+                                onClick={(event) => {
+                                    onToggleCollapse(groupHeaderProps);
+                                    event.stopPropagation();
+                                }}
+                            />
+                        )}
+                        {isExtensionPoint && (
+                            <Icon className={`${chevronTransform} extension-icon`} iconName={UiIcons.DataSource} />
+                        )}
+                        <div
+                            style={{
+                                cursor: 'pointer',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                            }}
+                            title={isExtensionPoint ? groupName : ''}>
+                            {groupName}
+                        </div>
+                        {isExtensionPoint && (
+                            <div id={tooltipId} className="tooltip">
+                                <button
+                                    data-testid="tooltip-dialog-button"
+                                    onClick={() => handleOpenFragmentDialog(groupHeaderProps?.group?.data, tooltipId)}>
+                                    Add Fragment at Extension Point
+                                </button>
+                            </div>
+                        )}
+                    </span>
+                )}
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>{indicator}</div>
             </div>
         );

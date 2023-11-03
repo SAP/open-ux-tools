@@ -7,7 +7,7 @@ import { initI18n } from '../../../../src/i18n';
 import { mockResizeObserver } from '../../../utils/utils';
 import { OutlinePanel } from '../../../../src/panels/outline';
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
-import { controlSelected, outlineChanged } from '@sap-ux-private/control-property-editor-common';
+import { Scenario, controlSelected, outlineChanged } from '@sap-ux-private/control-property-editor-common';
 import type { FilterOptions, default as reducer } from '../../../../src/slice';
 import { FilterName, filterNodes } from '../../../../src/slice';
 import { DeviceType } from '../../../../src/devices';
@@ -104,6 +104,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
+            scenario: 'UI_ADAPTATION',
             selectedControl: undefined,
             changes: {
                 pending: [],
@@ -138,6 +139,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
+            scenario: 'UI_ADAPTATION',
             selectedControl: undefined,
             changes: {
                 pending: [],
@@ -184,6 +186,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
+            scenario: 'UI_ADAPTATION',
             selectedControl: undefined,
             changes: {
                 pending: [],
@@ -232,14 +235,6 @@ describe('OutlinePanel', () => {
                 controlType: 'sap.ui.comp.smarttable.SmartTable',
                 editable: true,
                 visible: true
-            },
-            {
-                name: 'ExtensionPoint',
-                controlId: '04',
-                children: [],
-                controlType: 'sap.ui.extensionpoint',
-                editable: true,
-                visible: true
             }
         ];
         const initialState: State = {
@@ -247,6 +242,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
+            scenario: 'UI_ADAPTATION',
             selectedControl: undefined,
             changes: {
                 pending: [],
@@ -288,6 +284,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
+            scenario: 'ADAPTATION_PROJECT',
             selectedControl: undefined,
             changes: {
                 pending: [],
@@ -315,7 +312,7 @@ describe('OutlinePanel', () => {
         expect(tooltip).toHaveStyle({ visibility: 'hidden', opacity: '0' });
     });
 
-    test('should show and hide when clicking button to open dialog', () => {
+    test('should show and hide tooltip when clicking button to open dialog', () => {
         const model: OutlineNode[] = [
             {
                 name: 'ExtensionPoint',
@@ -331,6 +328,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
+            scenario: 'ADAPTATION_PROJECT',
             selectedControl: undefined,
             changes: {
                 pending: [],
@@ -418,6 +416,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: getModel(true, true, true, true),
             filterQuery: filterInitOptions,
+            scenario: 'UI_ADAPTATION',
             selectedControl: undefined,
             changes: {
                 pending: [],
