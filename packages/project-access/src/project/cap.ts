@@ -1,12 +1,21 @@
 import { spawn } from 'child_process';
 import { dirname, join, normalize, relative, sep } from 'path';
 import { FileName } from '../constants';
-import type { CapCustomPaths, CapProjectType, CdsEnvironment, csn, Package } from '../types';
+import type {
+    CapCustomPaths,
+    CapProjectType,
+    CdsEnvironment,
+    csn,
+    LinkedModel,
+    Package,
+    ServiceDefinitions
+} from '../types';
 import { fileExists, readFile, readJSON } from '../file';
 import { loadModuleFromProject } from './module-loader';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
+    linked: (model: csn) => LinkedModel;
     load: (paths: string | string[]) => Promise<csn>;
     compile: {
         to: {
@@ -192,6 +201,42 @@ export async function getCdsRoots(projectRoot: string, clearCache = false): Prom
         }
     }
     return roots;
+}
+
+/**
+ * Return a list of services in a CAP project.
+ *
+ * @param projectRoot - root of the CAP project, where the package.json is
+ * @param ignoreErrors - in case loading the cds model throws an error, try to use the model from the exception object
+ * @returns - array of service definitions
+ */
+export async function getCdsServices(projectRoot: string, ignoreErrors = true): Promise<ServiceDefinitions[]> {
+    let cdsServices: ServiceDefinitions[] = [];
+    try {
+        const cds = await loadCdsModuleFromProject(projectRoot);
+        const roots: string[] = await getCdsRoots(projectRoot);
+        let model;
+        try {
+            model = await cds.load(roots);
+        } catch (e) {
+            if (ignoreErrors && e.model) {
+                model = e.model;
+            } else {
+                throw e;
+            }
+        }
+        const linked = cds.linked(model);
+        if (Array.isArray(linked.services)) {
+            cdsServices = linked.services;
+        } else {
+            Object.keys(linked.services).forEach((service) => {
+                cdsServices.push(linked.services[service] as ServiceDefinitions);
+            });
+        }
+    } catch (error) {
+        throw Error(`Error while resolving cds roots for '${projectRoot}'. ${error}`);
+    }
+    return cdsServices;
 }
 
 /**

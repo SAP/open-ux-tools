@@ -12,6 +12,7 @@ export {
     getCapProjectType,
     getCdsFiles,
     getCdsRoots,
+    getCdsServices,
     getMtaPath,
     getNodeModulesPath,
     getWebappPath,

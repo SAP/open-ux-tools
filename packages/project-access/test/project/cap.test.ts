@@ -8,6 +8,7 @@ import {
     getCapEnvironment,
     getCdsFiles,
     getCdsRoots,
+    getCdsServices,
     isCapNodeJsProject,
     isCapJavaProject,
     getCapModelAndServices,
@@ -314,7 +315,7 @@ describe('Test getCapCustomPaths()', () => {
     });
 });
 
-describe('Test getCapEnvironment', () => {
+describe('Test getCapEnvironment()', () => {
     afterEach(() => {
         jest.restoreAllMocks();
     });
@@ -473,7 +474,7 @@ describe('toReferenceUri', () => {
     });
 });
 
-describe('Test getCdsFiles', () => {
+describe('Test getCdsFiles()', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
     });
@@ -586,7 +587,7 @@ describe('Test getCdsFiles', () => {
     });
 });
 
-describe('Test getCdsRoots', () => {
+describe('Test getCdsRoots()', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
     });
@@ -642,6 +643,85 @@ describe('Test getCdsRoots', () => {
             join('/any/project/services')
         ]);
         expect(cdsMock.resolve.cache).toEqual({});
+    });
+});
+
+describe('Test getCdsServices()', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    test('Get services, cds replies with array', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockResolvedValue({
+                services: [
+                    { kind: 'service', '@path': '/service1' },
+                    { kind: 'service', '@path': '/service2' }
+                ]
+            }),
+            linked: jest.fn().mockImplementation((l) => l),
+            resolve: jest.fn().mockImplementation((path) => [path])
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution
+        const services = await getCdsServices('any/root');
+
+        // Check results
+        expect(services).toEqual([
+            { kind: 'service', '@path': '/service1' },
+            { kind: 'service', '@path': '/service2' }
+        ]);
+    });
+
+    test('Get services, cds throws error with service as object, ignoreErrors is true', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => {
+                const error = new Error() as Error & {
+                    model: { services: { [service: string]: { kind: string; '@path': string } } };
+                };
+                error.model = {
+                    services: {
+                        service1: { kind: 'service', '@path': '/service1' },
+                        service2: { kind: 'service', '@path': '/service2' }
+                    }
+                };
+                throw error;
+            }),
+            linked: jest.fn().mockImplementation((l) => l),
+            resolve: jest.fn().mockImplementation((path) => [path])
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution
+        const services = await getCdsServices('any/root');
+
+        // Check results
+        expect(services).toEqual([
+            { kind: 'service', '@path': '/service1' },
+            { kind: 'service', '@path': '/service2' }
+        ]);
+    });
+
+    test('Get services, cds throws error with service as object, ignoreErrors is false', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => {
+                throw new Error('CDS_LOAD_ERROR');
+            }),
+            resolve: jest.fn().mockImplementation((path) => [path])
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution and result check
+        try {
+            await getCdsServices('any/root', false);
+            fail('Call to getCdsServices() should have thrown an error but did not');
+        } catch (error) {
+            expect(error.toString()).toContain('CDS_LOAD_ERROR');
+        }
     });
 });
 
