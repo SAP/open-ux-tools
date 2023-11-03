@@ -676,10 +676,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         },
                         ...(this.props.multiSelect && {
                             preventDismissOnEvent: this.preventDismissOnEvent,
-                            onPositioned: this.applyDialogResize,
-                            onDismiss: () => {
-                                console.log('dismisss!!!!');
-                            }
+                            onPositioned: this.applyDialogResize
                         })
                     }}
                     styles={{
