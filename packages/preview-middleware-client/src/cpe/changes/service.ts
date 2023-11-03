@@ -163,7 +163,7 @@ export class ChangeService {
                                 type: 'saved',
                                 kind: 'unknown',
                                 fileName: change.fileName,
-                                controlId: change.selector.id
+                                controlId: change.selector?.id // some changes may not have selector
                             };
                             if (change.creation) {
                                 unknownChange.timestamp = new Date(change.creation).getTime();
