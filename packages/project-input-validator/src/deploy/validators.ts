@@ -59,10 +59,7 @@ function processErrorMessages(errorMessages: string[]): boolean | string {
     } else if (errorMessages.length === 1) {
         return errorMessages[0];
     } else {
-        const indentErrorMessageRows =
-            errorMessages
-                .map(errorMessage => `${' '.repeat(8)}${errorMessage}`)
-                .join(EOL);
+        const indentErrorMessageRows = errorMessages.map((errorMessage) => `${' '.repeat(8)}${errorMessage}`).join(EOL);
         return `${t('deploy.invalidAppNameMultipleReason')}${EOL}${indentErrorMessageRows}${EOL}`;
     }
 }
