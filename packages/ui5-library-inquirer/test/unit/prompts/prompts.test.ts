@@ -8,7 +8,7 @@ import * as projectInputValidators from '@sap-ux/project-input-validator';
 
 jest.mock('@sap-ux/project-input-validator', () => {
     return {
-        __esModule: true, //    <----- this __esModule: true is important
+        __esModule: true,
         ...jest.requireActual('@sap-ux/project-input-validator')
     };
 });

@@ -2,7 +2,7 @@ import { Separator, type ListChoiceOptions } from 'inquirer';
 import * as fuzzy from 'fuzzy';
 import { t } from '../i18n';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import type { UI5VersionChoice } from '../types/types';
+import type { UI5VersionChoice } from '../types';
 
 /**
  * Finds the search value in the provided list using `fuzzy` search.
@@ -16,7 +16,7 @@ export function searchChoices(searchVal: string, searchList: ListChoiceOptions[]
         ? fuzzy
               .filter(searchVal, searchList, {
                   // Only `choice.name` searching is supported, as this is what is presented to the user by Inquirer
-                  extract: (choice: ListChoiceOptions) => choice.name || ''
+                  extract: (choice: ListChoiceOptions) => choice.name ?? ''
               })
               .map((el) => el.original)
         : searchList;

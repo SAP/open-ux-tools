@@ -1,7 +1,7 @@
 import { getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import inquirer, { type Question } from 'inquirer';
 import { getQuestions } from './prompts';
-import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types/types';
+import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
 import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**
@@ -31,7 +31,7 @@ async function getPrompts(promptOptions?: UI5LibraryPromptOptions): Promise<Ques
  * @returns the prompt answers
  */
 async function prompt(promptOptions?: UI5LibraryPromptOptions): Promise<UI5LibraryAnswers> {
-    const ui5LibPrompts = await getPrompts(promptOptions);
+    const ui5LibPrompts = await exports.getPrompts(promptOptions);
 
     if (promptOptions?.useAutocomplete) {
         inquirer.registerPrompt('autocomplete', autocomplete);

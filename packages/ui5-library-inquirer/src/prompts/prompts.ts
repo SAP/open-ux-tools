@@ -58,7 +58,7 @@ export function getQuestions(
                 mandatory: true,
                 breadcrumb: true
             },
-            default: options?.targetFolder || process.cwd(),
+            default: options?.targetFolder ?? process.cwd(),
             validate: (target, answers): boolean | string =>
                 validateProjectFolder(target, `${answers?.namespace}.${answers?.libraryName}`)
         } as FileBrowserQuestion<UI5LibraryAnswers>,
@@ -84,5 +84,5 @@ export function getQuestions(
             },
             default: false
         } as ConfirmQuestion
-    ] as Question<UI5LibraryAnswers>[];
+    ] as Question<UI5LibraryAnswers>[] | AutocompleteQuestionOptions<UI5LibraryAnswers>[];
 }

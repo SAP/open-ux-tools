@@ -29,7 +29,7 @@ export async function initI18n(): Promise<void> {
  */
 export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
-        options = Object.assign(options ? options : {}, { ns: ui5LibI18nNamespace });
+        options = Object.assign(options ?? {}, { ns: ui5LibI18nNamespace });
     }
     return i18next.t(key, options);
 }
