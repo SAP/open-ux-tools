@@ -109,7 +109,8 @@ describe('ControllerExtension', () => {
                     getBeginButton: jest
                         .fn()
                         .mockReturnValue({ setText: jest.fn().mockReturnValue({ setEnabled: setEnabledSpy }) }),
-                    getEndButton: jest.fn().mockReturnValue({ setText: setTextSpy })
+                    getEndButton: jest.fn().mockReturnValue({ setText: setTextSpy }),
+                    setEscapeHandler: jest.fn()
                 })
                 .mockReturnValue({
                     setVisible: jest.fn()
@@ -143,7 +144,8 @@ describe('ControllerExtension', () => {
 
             const openSpy = jest.fn();
             controllerExt.byId = jest.fn().mockReturnValue({
-                open: openSpy
+                open: openSpy,
+                setEscapeHandler: jest.fn()
             });
 
             fetchMock.mockResolvedValue({
