@@ -54,17 +54,19 @@ export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElem
                                 </Text>
                             )}
                             <Stack horizontal>
-                                <Stack.Item className={styles.filelabel}>{t('FILE')}</Stack.Item>
+                                <Stack.Item className={styles.fileLabel}>{t('FILE')}</Stack.Item>
                                 <Stack.Item className={styles.fileText} title={fileName}>
                                     {fileName}
                                 </Stack.Item>
                             </Stack>
-                            <Stack horizontal>
-                                <Stack.Item className={styles.controllabel}>{t('CONTROL')}</Stack.Item>
-                                <Stack.Item className={styles.controlText} title={controlId}>
-                                    {controlId}
-                                </Stack.Item>
-                            </Stack>
+                            {controlId && (
+                                <Stack horizontal>
+                                    <Stack.Item className={styles.controlLabel}>{t('CONTROL')}</Stack.Item>
+                                    <Stack.Item className={styles.controlText} title={controlId}>
+                                        {controlId}
+                                    </Stack.Item>
+                                </Stack>
+                            )}
                         </Stack.Item>
 
                         {fileName && (
