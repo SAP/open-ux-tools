@@ -231,3 +231,8 @@ export type RuleType =
     | typeof ODATA_PATH_SEPARATOR_RULE
     | typeof INVALID_PRIMITIVE_TYPE
     | string;
+
+export interface CompilerMessage {
+    hasSyntaxErrors: boolean;
+    messages: DiagnosticBase[];
+}
