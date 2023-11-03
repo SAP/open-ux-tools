@@ -43,6 +43,7 @@ export interface UIComboBoxState {
     minWidth?: number;
     isListHidden?: boolean;
     toggleRefresh: boolean;
+    doNotLayer?: boolean;
 }
 
 interface ComboboxItemInfo {
@@ -76,6 +77,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     static defaultProps = { openMenuOnClick: true };
     // Reference to fluent ui combobox
     private comboBox = React.createRef<ComboBoxRef>();
+    private elementRef = React.createRef<HTMLDivElement>();
     private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
     private query = '';
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
@@ -639,10 +641,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 dialog.style.left = `${dialogPos.left}px`;
             }
 
-            const resizeTarget = document.querySelector('.ms-Dialog-content') as HTMLElement;
-            if (resizeTarget) {
-                resizeTarget.style.marginBottom = `${diff}px`;
-            }
+            // const resizeTarget = document.querySelector('.ms-Dialog-content') as HTMLElement;
+            // if (resizeTarget) {
+            //     resizeTarget.style.marginBottom = `${diff}px`;
+            // }
         }
     };
 
@@ -659,6 +661,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             <div ref={this.props.wrapperRef} className={this.getClassNames(messageInfo)}>
                 <ComboBox
                     componentRef={this.comboBox}
+                    ref={this.elementRef}
                     disabled={disabled}
                     iconButtonProps={{
                         iconProps: {
@@ -669,6 +672,11 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         calloutMaxHeight: 200,
                         className: 'ts-Callout ts-Callout-Dropdown',
                         styles: {
+                            ...(this.state.doNotLayer && {
+                                root: {
+                                    position: 'static'
+                                }
+                            }),
                             ...(this.props.useComboBoxAsMenuMinWidth && {
                                 calloutMain: {
                                     minWidth: this.state.minWidth,
@@ -676,9 +684,39 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                                 }
                             })
                         },
+                        doNotLayer: this.state.doNotLayer,
+                        //target: '.ms-Dialog-main'
                         ...(this.props.multiSelect && {
-                            preventDismissOnEvent: this.preventDismissOnEvent,
-                            onPositioned: this.applyDialogResize
+                            //preventDismissOnEvent: this.preventDismissOnEvent,
+                            preventDismissOnEvent: () => {
+                                console.log('preventDismissOnEvent aaaaaaaaa');
+                                this.setState({
+                                    doNotLayer: false
+                                });
+                                return false;
+                            },
+                            onLayerMounted: () => {
+                                console.log('onLayerMounted aaaaaaaaa');
+                                const calloutPosition = document.querySelector('.ts-Callout')?.getBoundingClientRect();
+                                const inputPosition = this.elementRef.current?.getBoundingClientRect();
+                                const position = {
+                                    beakPosition: {},
+                                    elementPosition: {
+                                        top: inputPosition?.bottom
+                                    },
+                                    targetEdge: {}
+                                } as ICalloutPositionedInfo;
+                                console.log(calloutPosition);
+                                console.log(inputPosition);
+                                this.applyDialogResize(position);
+                                this.setState({
+                                    doNotLayer: true
+                                });
+                            },
+                            onPositioned: () => {
+                                console.log('onPositioned aaaaaaaaa');
+                            }
+                            //onPositioned: this.applyDialogResize
                         })
                     }}
                     styles={{
@@ -727,7 +765,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                     })}
                     {...(this.props.multiSelect && {
                         onScrollToItem: this.onScrollToItem,
-                        onMenuDismiss: this.resetDialogResize,
+                        // onMenuDismiss: this.resetDialogResize,
                         ...(this.props.onChange && {
                             onChange: this.onMultiSelectChange
                         })
