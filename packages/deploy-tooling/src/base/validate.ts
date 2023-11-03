@@ -167,10 +167,11 @@ async function validateInputTextFormat(
 
 /**
  * A wrapper of validateUrl(). It uses same logic in system-access module's createAbapServiceProvider()
- * function to determine the deploy target. Only validate URL for on-prem ABAP deploy target.  
+ * function to determine the deploy target. Only validate URL for on-prem ABAP deploy target.
+ *
  * @param destination
- * @param url 
- * @returns 
+ * @param url
+ * @returns
  */
 function validateUrlForOnPremTargetOnly(destination: string, url: string): boolean | string {
     if (isAppStudio() && destination) {
