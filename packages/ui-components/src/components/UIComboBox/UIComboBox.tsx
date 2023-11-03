@@ -583,20 +583,18 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private resetOptions: any = {};
     private resetDialogResize = () => {
         console.log('resetDialogResize');
-        setTimeout(() => {
-            const dialog = document.querySelector('.ms-Dialog-main') as HTMLElement;
-            const dialogPos = dialog.getBoundingClientRect();
-            if (dialog && dialogPos) {
-                for (const styleName in this.resetOptions) {
-                    dialog.style[styleName as any] = this.resetOptions[styleName];
-                }
+        const dialog = document.querySelector('.ms-Dialog-main') as HTMLElement;
+        const dialogPos = dialog.getBoundingClientRect();
+        if (dialog && dialogPos) {
+            for (const styleName in this.resetOptions) {
+                dialog.style[styleName as any] = this.resetOptions[styleName];
             }
+        }
 
-            const resizeTarget = document.querySelector('.ms-Dialog-content') as HTMLElement;
-            if (resizeTarget) {
-                resizeTarget.style.marginBottom = '';
-            }
-        }, 100);
+        const resizeTarget = document.querySelector('.ms-Dialog-content') as HTMLElement;
+        if (resizeTarget) {
+            resizeTarget.style.marginBottom = '';
+        }
     };
     private preventDismissOnEvent = (
         event: Event | React.FocusEvent<Element> | React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>
@@ -678,7 +676,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         },
                         ...(this.props.multiSelect && {
                             preventDismissOnEvent: this.preventDismissOnEvent,
-                            onPositioned: this.applyDialogResize
+                            onPositioned: this.applyDialogResize,
+                            onDismiss: () => {
+                                console.log('dismisss!!!!');
+                            }
                         })
                     }}
                     styles={{
@@ -703,7 +704,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                     {...this.props}
                     {...(this.props.highlight && {
                         onInput: this.onInput,
-                        onMenuDismissed: this.reserQuery,
+                        //onMenuDismissed: this.reserQuery,
                         onResolveOptions: this.onResolveOptions,
                         onRenderItem: this.onRenderItem,
                         onRenderOption: this.onRenderOption,
@@ -727,7 +728,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                     })}
                     {...(this.props.multiSelect && {
                         onScrollToItem: this.onScrollToItem,
-                        onMenuDismiss: this.resetDialogResize,
+                        onMenuDismissed: this.resetDialogResize,
                         ...(this.props.onChange && {
                             onChange: this.onMultiSelectChange
                         })
