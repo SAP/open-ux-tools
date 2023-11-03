@@ -1,6 +1,7 @@
 import { ClientFactory } from '../../src/client';
 import type { Client } from '../../src/client/client';
 import * as telemetryPackageJSON from '../../package.json';
+import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
 
 const spyTrackEvent: jest.Mock = jest.fn();
 
@@ -20,7 +21,7 @@ jest.mock('applicationinsights', () => {
             this.addTelemetryProcessor = (fn: any) => {
                 fn({ tags: {} });
             };
-            this.trackEvent = (...args) => spyTrackEvent(args);
+            this.trackEvent = (event: EventTelemetry) => spyTrackEvent(event);
         }
     }
     return { TelemetryClient };

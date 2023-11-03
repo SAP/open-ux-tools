@@ -1,5 +1,6 @@
 import { reportRuntimeError, reportEnableTelemetryOnOff } from '../../src/util/reporting';
 import { EventName } from '../../src';
+import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
 
 const spyTrackEvent = jest.fn();
 
@@ -21,13 +22,13 @@ jest.mock('applicationinsights', () => {
             this.addTelemetryProcessor = (fn: any) => {
                 fn({ tags: {} });
             };
-            this.trackEvent = (...args) => spyTrackEvent(...args);
+            this.trackEvent = (event: EventTelemetry) => spyTrackEvent(event);
         }
     }
     return { TelemetryClient };
 });
 
-let telemetrySetting = null;
+let telemetrySetting: string | undefined;
 
 describe('Error reporting', () => {
     beforeAll(() => {

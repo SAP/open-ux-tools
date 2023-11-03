@@ -2,6 +2,8 @@ import { ClientFactory } from '../../src/client';
 import { TelemetrySystem } from '../../src/system/system';
 import { EventName } from '../../src/client/model/EventName';
 import { SampleRate } from '../../src/client/model/SampleRate';
+import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
+import FlushOptions from 'applicationinsights/out/Library/FlushOptions';
 
 const trackEventMock = jest.fn();
 const flushMock = jest.fn();
@@ -24,10 +26,10 @@ jest.mock('applicationinsights', () => {
             this.addTelemetryProcessor = (fn: any) => {
                 fn({ tags: {} });
             };
-            this.trackEvent = (...args) => trackEventMock(args);
-            this.flush = (...args) => {
-                flushMock(args);
-                args[0].callback();
+            this.trackEvent = (event: EventTelemetry) => trackEventMock(event);
+            this.flush = (options: FlushOptions | undefined) => {
+                flushMock(options);
+                options && options.callback && options.callback('testCallbackValue');
             };
         }
     }
@@ -37,7 +39,6 @@ jest.mock('applicationinsights', () => {
 describe('ClientFactory Send Report Blocking Tests', () => {
     beforeEach(() => {
         TelemetrySystem.telemetryEnabled = true;
-        TelemetrySystem.WORKSTREAM = 'extension';
     });
     afterEach(() => {
         TelemetrySystem.telemetryEnabled = false;

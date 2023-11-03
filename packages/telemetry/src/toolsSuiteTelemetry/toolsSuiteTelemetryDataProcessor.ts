@@ -7,7 +7,7 @@
  * @returns
  */
 
-import { isAppStudio } from '@sap/ux-common-utils';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
@@ -25,14 +25,14 @@ import {
     findProjectRoot,
     getProjectType,
     getAppProgrammingLanguage,
-    getAppType
-} from '@sap/ux-project-access/dist/project/utils';
-import { readFile, fileExists, readJSON } from '@sap/ux-project-access/dist/common/file';
+    getAppType,
+    readFile, fileExists, readJSON
+} from '@sap-ux/project-access';
 import { isCapJavaProject, isCapNodeJsProject } from '@sap/ux-cds/dist/utils/capProject';
 import { ProjectType } from '@sapux/project-spec';
 import type { CommonFioriProjectProperties, InternalFeature, SourceTemplate } from './types';
 import { ODataSource, DeployTarget, CommonProperties, ToolsId } from './types';
-import { isInternalFeaturesSettingEnabled } from '@sap/ux-feature-toggle';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { spawn } from 'child_process';
 import os from 'os';
 
@@ -44,7 +44,7 @@ import os from 'os';
  * @returns
  */
 export async function processToolsSuiteTelemetry(
-    telemetryHelperProperties: Record<string, string>
+    telemetryHelperProperties: Record<string, string> | undefined
 ): Promise<CommonFioriProjectProperties> {
     const commonProperties = await getCommonProperties();
 

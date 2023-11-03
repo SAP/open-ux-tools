@@ -4,10 +4,10 @@ import type { EventName } from './model/EventName';
 abstract class Client {
     abstract report(
         event: EventName,
-        properties: { [key: string]: string },
-        metrics: { [key: string]: number },
+        properties: Record<string, string>,
+        metrics: Record<string, number>,
         sampleRate: SampleRate | undefined,
-        telemetryHelperProperties?: { [key: string]: string },
+        telemetryHelperProperties?: Record<string, string>,
         ignoreSettings?: boolean
     ): Promise<void>;
 

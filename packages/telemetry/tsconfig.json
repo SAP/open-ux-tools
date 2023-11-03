@@ -10,6 +10,12 @@
   },
   "references": [
     {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
       "path": "../store"
     }
   ]

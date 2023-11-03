@@ -4,7 +4,7 @@ import { debug } from '../util/cloudDebugger';
 import { TelemetrySystem } from '../../src/system/system';
 import type { manifest, VSCodeManifest } from '../system/types';
 import { getService, Entity, TelemetrySetting, TelemetrySettingKey, getFilesystemWatcherFor } from '@sap-ux/store';
-import { isAppStudio } from '@sap/ux-common-utils';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
