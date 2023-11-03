@@ -7,7 +7,7 @@ import { initI18n } from '../../../../src/i18n';
 import { mockResizeObserver } from '../../../utils/utils';
 import { OutlinePanel } from '../../../../src/panels/outline';
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
-import { Scenario, controlSelected, outlineChanged } from '@sap-ux-private/control-property-editor-common';
+import { controlSelected, outlineChanged } from '@sap-ux-private/control-property-editor-common';
 import type { FilterOptions, default as reducer } from '../../../../src/slice';
 import { FilterName, filterNodes } from '../../../../src/slice';
 import { DeviceType } from '../../../../src/devices';
