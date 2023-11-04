@@ -492,7 +492,7 @@ describe('Test getCdsFiles()', () => {
 
         // Check results
         expect(cdsFiles).toEqual(['file1', 'file2']);
-        expect(cdsMock.load).toBeCalledWith(['db/', 'srv/', 'app/', 'schema', 'services']);
+        expect(cdsMock.load).toBeCalledWith([join('db/'), join('srv/'), join('app/'), 'schema', 'services']);
     });
 
     test('Get CDS files from project, but no $sources', async () => {
