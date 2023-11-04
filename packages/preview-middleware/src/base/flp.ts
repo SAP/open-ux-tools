@@ -10,6 +10,7 @@ import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import { UI5Config } from '@sap-ux/ui5-config';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -426,6 +427,7 @@ export async function initAdp(
 ) {
     const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
     if (appVariant) {
+        await validateUI5VersionForAdp(util, logger);
         const adp = new AdpPreview(config, rootProject, util, logger);
         const variant = JSON.parse(await appVariant.getString());
         const layer = await adp.init(variant);
@@ -444,5 +446,31 @@ export async function initAdp(
         adp.addApis(flp.router);
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
+    }
+}
+
+/**
+ * Validate UI5 version for an adaptation project.
+ *
+ * @param util middleware utilities provided by the UI5 CLI
+ * @param logger logger instance
+ */
+async function validateUI5VersionForAdp(util: MiddlewareUtils, logger: ToolsLogger) {
+    const ui5ConfigPath = join(util.getProject().getRootPath(), 'ui5.yaml');
+    const ui5Config = await UI5Config.newInstance(readFileSync(ui5ConfigPath, 'utf8'));
+    let ui5Version: string | undefined;
+    try {
+        ui5Version = ui5Config.getUI5ProxyMiddlewareUI5Version();
+    } catch (error) {
+        logger.info(`Error occured while trying to get ui5-proxy-middleware ui5 version. Error: ${error.message}`);
+    }
+    if (ui5Version) {
+        logger.info(`ADP project ui5 version detected: ${ui5Version}`);
+        const [majorVersion, minorVersion] = ui5Version.split('.').map((v: string) => parseInt(v, 10));
+        if (majorVersion <= 1 && minorVersion <= 71) {
+            throw new Error(
+                `The current SAPUI5 version set for this Adaptation project is ${ui5Version}. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71`
+            );
+        }
     }
 }

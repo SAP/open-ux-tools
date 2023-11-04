@@ -373,6 +373,41 @@ export class UI5Config {
     }
 
     /**
+     * Tries reading the UI5 version defined in ui5-proxy-middleware configuration from the config.
+     *
+     * @returns Ui5 version from ui5-proxy-middleware configuration
+     * @memberof UI5Config
+     */
+    public getUI5ProxyMiddlewareUI5Version(): string | undefined {
+        let middlewareList: YAMLSeq<unknown>;
+        try {
+            middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
+        } catch (error) {
+            throw new Error('Custom middlewares are not defined in ui5.yaml.');
+        }
+
+        const proxyMiddleware = this.document.findItem(
+            middlewareList,
+            (item: any) => item.name === 'ui5-proxy-middleware'
+        );
+        if (!proxyMiddleware) {
+            throw new Error('Could not find ui5-proxy-middleware defined in ui5.yaml.');
+        }
+
+        let ui5ProxyMiddlewareConfiguration: { version?: string };
+
+        try {
+            ui5ProxyMiddlewareConfiguration = this.document
+                .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
+                .toJSON();
+        } catch (error) {
+            throw new Error('Cannot find ui5-proxy-middleware configuration in ui5.yaml.');
+        }
+
+        return ui5ProxyMiddlewareConfiguration?.version ?? undefined;
+    }
+
+    /**
      * Returns a string representation of the config.
      *
      * @returns {string} the string representation

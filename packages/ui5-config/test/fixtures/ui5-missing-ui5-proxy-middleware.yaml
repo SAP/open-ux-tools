@@ -1,0 +1,40 @@
+specVersion: '3.0'
+metadata:
+  name: app.variant4
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    environment: ABAP
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        adp:
+          ignoreCertErrors: true
+          target:
+            url: https://ldciuyt.wdf.sap.corp:44300
+            destination: https://ldciuyt.wdf.sap.corp:44300
+            client: '902'
+        flp:
+          path: /test/flp.html
+        rta:
+          editors: 
+          - path: /local/editor.html
+            developerMode: true
+        debug: true
+    - name: backend-proxy-middleware
+      afterMiddleware: preview-middleware
+      configuration:
+        backend:
+          path: /sap
+          url: https://ldciuyt.wdf.sap.corp:44300
+          destination: UYT_928
+          client: '902'
+          autoRewrite: true
+        options:
+          secure: false
+          xfwd: true

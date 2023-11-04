@@ -1,5 +1,3 @@
-# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
 specVersion: "3.0"
 metadata:
   name: my.f1873
@@ -18,7 +16,6 @@ server:
     - name: ui5-proxy-middleware
       afterMiddleware: preview-middleware
       configuration:
-        version: 1.119.2
         ui5:
           path:
             - /resources

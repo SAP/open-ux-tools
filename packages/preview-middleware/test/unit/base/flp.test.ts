@@ -13,6 +13,7 @@ import express from 'express';
 import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
+import { UI5Config } from '@sap-ux/ui5-config';
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -315,6 +316,14 @@ describe('initAdp', () => {
     } as unknown as ReaderCollection;
     const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as ToolsLogger;
 
+    const middlewareUtils = {
+        getProject: () => {
+            return {
+                getRootPath: () => `${__dirname}../../../fixtures/adp`
+            };
+        }
+    };
+
     test('initAdp: throw an error if no adp project', async () => {
         const flp = new FlpSandbox({}, mockNonAdpProject, {} as MiddlewareUtils, logger);
         try {
@@ -326,12 +335,37 @@ describe('initAdp', () => {
 
     test('initAdp', async () => {
         const config = { adp: { target: { url } } };
-        const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, {} as MiddlewareUtils, logger);
+        const flp = new FlpSandbox(
+            { adp: { target: { url } } },
+            mockAdpProject,
+            middlewareUtils as MiddlewareUtils,
+            logger
+        );
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
-        await initAdp(mockAdpProject, config.adp, flp, {} as MiddlewareUtils, logger);
+
+        await initAdp(mockAdpProject, config.adp, flp, middlewareUtils as MiddlewareUtils, logger);
         expect(adpToolingMock).toBeCalled();
         expect(flpInitMock).toBeCalled();
+    });
+
+    test('initAdp: throw error if ui5 version defined in ui5-proxy-middleware is less than 1.71', async () => {
+        const config = { adp: { target: { url } } };
+        const flp = new FlpSandbox(
+            { adp: { target: { url } } },
+            mockAdpProject,
+            middlewareUtils as MiddlewareUtils,
+            logger
+        );
+
+        const getUI5ProxyMiddlewareUI5VersionSpy = jest.spyOn(UI5Config.prototype, 'getUI5ProxyMiddlewareUI5Version');
+        getUI5ProxyMiddlewareUI5VersionSpy.mockReturnValueOnce('1.70');
+
+        try {
+            await initAdp(mockAdpProject, config.adp, flp, middlewareUtils as MiddlewareUtils, logger);
+        } catch (error) {
+            expect(error.message).toEqual(`The current SAPUI5 version set for this Adaptation project is 1.70. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71`)
+        }
     });
 });
