@@ -44,25 +44,15 @@ describe('API test', () => {
             [
               {
                 "name": "1.118.0 - (Maintained version)",
-                "value": {
-                  "default": true,
-                  "maintained": true,
-                  "version": "1.118.0",
-                },
+                "value": "1.118.0",
               },
               {
                 "name": "1.117.0 - (Maintained version)",
-                "value": {
-                  "maintained": true,
-                  "version": "1.117.0",
-                },
+                "value": "1.117.0",
               },
               {
                 "name": "1.116.0 - (Out of maintenance version)",
-                "value": {
-                  "maintained": false,
-                  "version": "1.116.0",
-                },
+                "value": "1.116.0",
               },
             ]
         `);
@@ -104,11 +94,7 @@ describe('API test', () => {
             libraryName: 'testName',
             namespace: 'testNS',
             targetFolder: 'some/test/folder',
-            ui5Version: {
-                version: '1.2.4',
-                default: true,
-                maintained: true
-            }
+            ui5Version: '1.2.4'
         };
 
         const getPromptsSpy = jest.spyOn(ui5LibInqApi, 'getPrompts').mockResolvedValue(questions);
@@ -143,11 +129,7 @@ describe('API test', () => {
             libraryName: 'testName',
             namespace: 'testNS',
             targetFolder: 'some/test/folder',
-            ui5Version: {
-                version: '1.2.4',
-                default: true,
-                maintained: true
-            }
+            ui5Version: '1.2.4'
         };
 
         const getPromptsSpy = jest.spyOn(ui5LibInqApi, 'getPrompts').mockResolvedValue(questions);

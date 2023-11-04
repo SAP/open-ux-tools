@@ -24,25 +24,15 @@ describe('utility.ts', () => {
             [
               {
                 "name": "1.118.0 - (Maintained version)",
-                "value": {
-                  "default": true,
-                  "maintained": true,
-                  "version": "1.118.0",
-                },
+                "value": "1.118.0",
               },
               {
                 "name": "1.117.0 - (Maintained version)",
-                "value": {
-                  "maintained": true,
-                  "version": "1.117.0",
-                },
+                "value": "1.117.0",
               },
               {
                 "name": "1.116.0 - (Out of maintenance version)",
-                "value": {
-                  "maintained": false,
-                  "version": "1.116.0",
-                },
+                "value": "1.116.0",
               },
             ]
         `);
@@ -55,18 +45,11 @@ describe('utility.ts', () => {
               },
               {
                 "name": "1.118.0",
-                "value": {
-                  "default": true,
-                  "maintained": true,
-                  "version": "1.118.0",
-                },
+                "value": "1.118.0",
               },
               {
                 "name": "1.117.0",
-                "value": {
-                  "maintained": true,
-                  "version": "1.117.0",
-                },
+                "value": "1.117.0",
               },
               Separator {
                 "line": "[2mOut of maintenance versions[22m",
@@ -74,10 +57,7 @@ describe('utility.ts', () => {
               },
               {
                 "name": "1.116.0",
-                "value": {
-                  "maintained": false,
-                  "version": "1.116.0",
-                },
+                "value": "1.116.0",
               },
             ]
         `);

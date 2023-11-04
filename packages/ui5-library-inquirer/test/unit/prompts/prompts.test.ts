@@ -21,27 +21,15 @@ describe('getPrompts', () => {
         },
         {
             name: '1.1.0',
-            value: {
-                version: '1.1.0',
-                default: false,
-                maintained: true
-            }
+            value: '1.1.0'
         },
         {
             name: '2.1.0',
-            value: {
-                version: '2.1.0',
-                default: true,
-                maintained: true
-            }
+            value: '2.1.0'
         },
         {
             name: '1.1.0-snapshot',
-            value: {
-                version: '1.1.0-snapshot',
-                default: true,
-                maintained: true
-            }
+            value: '1.1.0-snapshot'
         },
         {
             line: '[2mOut of maintenance versions[22m',
@@ -49,11 +37,7 @@ describe('getPrompts', () => {
         },
         {
             name: '0.1.0',
-            value: {
-                version: '0.1.0',
-                default: true,
-                maintained: true
-            }
+            value: '0.1.0'
         }
     ];
 

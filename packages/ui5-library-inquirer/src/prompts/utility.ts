@@ -48,7 +48,7 @@ export function ui5VersionsGrouped(
                               count: 1
                           })})`
                         : mainV.version,
-                    value: mainV
+                    value: mainV.version
                 } as UI5VersionChoice)
         );
     const notMaintChoices = versions
@@ -62,7 +62,7 @@ export function ui5VersionsGrouped(
                               { count: 1 }
                           )})`
                         : mainV.version,
-                    value: mainV
+                    value: mainV.version
                 } as UI5VersionChoice)
         );
 

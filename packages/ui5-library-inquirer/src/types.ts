@@ -5,7 +5,6 @@ import type {
     Answers,
     ListChoiceOptions
 } from 'inquirer';
-import type { UI5Version } from '@sap-ux/ui5-info';
 
 export interface UI5LibraryAnswers {
     libraryName?: string;
@@ -31,7 +30,7 @@ export interface UI5LibraryPromptOptions {
 }
 
 export interface UI5VersionChoice extends ListChoiceOptions {
-    value: UI5Version;
+    value: string; // UI5 semantic version
 }
 
 /**
