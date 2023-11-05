@@ -1,5 +1,17 @@
 # @sap-ux/btp-utils
 
+## 0.12.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+## 0.11.9
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 0.11.8
 
 ### Patch Changes

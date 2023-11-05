@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aadp-tooling"
     },
-    "version": "0.1.5",
+    "version": "0.5.3",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -39,30 +39,33 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "ejs": "3.1.7",
+        "sanitize-filename": "1.6.3",
+        "ejs": "3.1.9",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2",
-        "yazl": "2.5.1"
+        "adm-zip": "0.5.10"
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
-        "@types/ejs": "3.1.0",
+        "@types/ejs": "3.1.2",
         "@types/express": "4.17.17",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "@types/prompts": "2.0.14",
+        "@types/prompts": "2.4.4",
         "@types/supertest": "2.0.12",
-        "@types/yazl": "2.4.2",
-        "dotenv": "16.0.0",
-        "express": "4.18.2",
+        "@types/adm-zip": "0.5.2",
+        "dotenv": "16.3.1",
         "nock": "13.2.1",
         "rimraf": "5.0.1",
-        "supertest": "6.3.2"
+        "supertest": "6.3.3"
+    },
+    "peerDependencies": {
+        "express": "4"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
-        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+        "node": ">=18.x"
     }
 }

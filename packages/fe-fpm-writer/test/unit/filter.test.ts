@@ -151,6 +151,7 @@ describe('CustomFilter', () => {
                 generateCustomFilterWithEventHandler(filter.name, extension, folder);
 
                 expect(fs.read(join(testDir, 'webapp', 'ext', 'custom', `${extension.fileName}.js`))).toMatchSnapshot();
+                expect(fs.read(getExpectedFragmentPath({ ...filter, folder: folder }))).toMatchSnapshot();
             });
 
             test('"eventHandler" is "object" - create new file with custom function name', () => {
@@ -295,6 +296,36 @@ describe('CustomFilter', () => {
                 expect(fs.exists(getControllerPath(filter, languageConfig.typescript))).toBeTruthy();
                 expect(fs.read(getControllerPath(filter, languageConfig.typescript))).toMatchSnapshot();
             });
+        });
+
+        test('Avoid overwrite for existing extension files', () => {
+            const fileName = 'Existing';
+            const target = join(testDir, 'different-folder');
+            const folder = join('ext', 'different');
+            // Copy manifest
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            // Prepare existing extension files
+            const fragmentPath = join(target, `webapp/${folder}/${fileName}.fragment.xml`);
+            fs.write(fragmentPath, 'fragmentContent');
+            const handlerPath = join(target, `webapp/${folder}/${fileName}.js`);
+            fs.write(handlerPath, 'handlerContent');
+            generateCustomFilter(
+                target,
+                {
+                    ...filter,
+                    folder,
+                    eventHandler: {
+                        fileName
+                    },
+                    fragmentFile: fileName
+                },
+                fs
+            );
+
+            expect(fs.exists(handlerPath)).toBe(true);
+            expect(fs.read(handlerPath)).toEqual('handlerContent');
+            expect(fs.exists(fragmentPath)).toBe(true);
+            expect(fs.read(fragmentPath)).toEqual('fragmentContent');
         });
     });
 });

@@ -39,3 +39,46 @@ export interface AdpWriterConfig {
         description?: string;
     };
 }
+
+export interface ManifestAppdescr {
+    fileName: string;
+    layer: string;
+    fileType: string;
+    reference: string;
+    id: string;
+    namespace: string;
+    version: string;
+    content: Content[];
+}
+
+export interface Content {
+    changeType: string;
+    content: object;
+    texts?: object;
+}
+
+export const enum FolderNames {
+    Changes = 'changes',
+    Fragments = 'fragments',
+    Coding = 'coding'
+}
+
+export const enum TemplateFileName {
+    Fragment = 'fragment.xml',
+    Controller = 'controller.ejs'
+}
+
+export const enum HttpStatusCodes {
+    OK = 200,
+    CREATED = 201,
+    NO_CONTENT = 204,
+    BAD_REQUEST = 400,
+    UNAUTHORIZED = 401,
+    FORBIDDEN = 403,
+    NOT_FOUND = 404,
+    METHOD_NOT_ALLOWED = 405,
+    CONFLICT = 409,
+    INTERNAL_SERVER_ERROR = 500,
+    NOT_IMPLEMETED = 501,
+    SERVICE_UNAVAILABLE = 503
+}

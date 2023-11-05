@@ -1,5 +1,75 @@
 # @sap-ux/project-access
 
+## 1.14.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+
+## 1.13.8
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+
+## 1.13.7
+
+### Patch Changes
+
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-config@0.19.4
+
+## 1.13.6
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/ui5-config@0.19.3
+
+## 1.13.5
+
+### Patch Changes
+
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-config@0.19.2
+
+## 1.13.4
+
+### Patch Changes
+
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+
+## 1.13.3
+
+### Patch Changes
+
+-   7fd593f0: fix(deps): update dependency @ui5/manifest to v1.59.0
+
+## 1.13.2
+
+### Patch Changes
+
+-   164d52b5: chore(deps): update dependency vscode-uri to v3.0.7
+
+## 1.13.1
+
+### Patch Changes
+
+-   56dc4c59: Fix for leading slashes on Windows
+
+## 1.13.0
+
+### Minor Changes
+
+-   d13264b3: Add function to search for CAP project roots in local folders or workspace
+
 ## 1.12.1
 
 ### Patch Changes

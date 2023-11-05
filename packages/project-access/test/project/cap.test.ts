@@ -87,7 +87,20 @@ describe('Test getCapModelAndServices()', () => {
                 })
             },
             load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
-            compile: { to: { serviceinfo: jest.fn().mockImplementation(() => 'SERVICES') } }
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => [
+                        {
+                            'name': 'Forwardslash',
+                            'urlPath': 'odata/service/with/forwardslash/'
+                        },
+                        {
+                            'name': 'Backslash',
+                            'urlPath': '\\odata\\service\\with\\backslash/'
+                        }
+                    ])
+                }
+            }
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
 
@@ -95,7 +108,19 @@ describe('Test getCapModelAndServices()', () => {
         const capMS = await getCapModelAndServices('PROJECT_ROOT');
 
         // Check results
-        expect(capMS).toEqual({ model: 'MODEL', services: 'SERVICES' });
+        expect(capMS).toEqual({
+            model: 'MODEL',
+            services: [
+                {
+                    'name': 'Forwardslash',
+                    'urlPath': 'odata/service/with/forwardslash/'
+                },
+                {
+                    'name': 'Backslash',
+                    'urlPath': 'odata/service/with/backslash/'
+                }
+            ]
+        });
         expect(cdsMock.load).toBeCalledWith([
             join('PROJECT_ROOT', 'APP'),
             join('PROJECT_ROOT', 'SRV'),
@@ -104,7 +129,7 @@ describe('Test getCapModelAndServices()', () => {
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
     });
 
-    test('cds v7 exports', async () => {
+    test('Get model and services, but services are empty', async () => {
         // Mock setup
         const cdsMock = {
             env: {
@@ -116,25 +141,21 @@ describe('Test getCapModelAndServices()', () => {
                     }
                 })
             },
-            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
-            compile: { to: { serviceinfo: jest.fn().mockImplementation(() => 'SERVICES') } }
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL_NO_SERVICES')),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => null)
+                }
+            }
         };
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => {
-            return Promise.resolve({
-                default: cdsMock
-            });
-        });
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
         // Test execution
-        const capMS = await getCapModelAndServices('PROJECT_ROOT');
+        const capMS = await getCapModelAndServices('ROOT_PATH');
 
         // Check results
-        expect(capMS).toEqual({ model: 'MODEL', services: 'SERVICES' });
-        expect(cdsMock.load).toBeCalledWith([
-            join('PROJECT_ROOT', 'APP'),
-            join('PROJECT_ROOT', 'SRV'),
-            join('PROJECT_ROOT', 'DB')
-        ]);
-        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
+        expect(capMS.services).toEqual([]);
+        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
     });
 });
 

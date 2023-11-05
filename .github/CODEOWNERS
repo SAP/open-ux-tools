@@ -49,13 +49,22 @@
 /packages/backend-proxy-middleware/ @SAP/ux-tools-middlewares-and-tasks
 
 # Module: preview-middleware
-/packages/preview-middleware/ @SAP/ux-tools-middlewares-and-tasks @SAP/ux-tools-adp
+/packages/preview-middleware/ @SAP/ux-tools-middlewares-and-tasks
+
+# Module: preview-middleware-client
+/packages/preview-middleware-client/ @SAP/ux-tools-middlewares-and-tasks
 
 # Module: adp-tooling
 /packages/adp-tooling/ @SAP/ux-tools-adp
 
 # Module: deploy-tooling
 /packages/deploy-tooling/ @SAP/ux-tools-deploy
+
+# Module: control-property-editor
+/packages/control-property-editor/ @SAP/ux-tools-control-property-editor
+
+# Module: control-property-editor-common
+/packages/control-property-editor-common/ @SAP/ux-tools-control-property-editor
 
 # Admin
 /.github/ @SAP/ux-tools-admin

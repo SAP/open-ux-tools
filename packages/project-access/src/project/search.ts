@@ -13,7 +13,7 @@ import type {
 import { FileName } from '../constants';
 import { fileExists, findBy, findFileUp, readJSON } from '../file';
 import { hasDependency } from './dependencies';
-import { getCapProjectType, isCapJavaProject, isCapNodeJsProject } from './cap';
+import { getCapProjectType } from './cap';
 import { getWebappPath } from './ui5-config';
 
 /**
@@ -182,7 +182,7 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
         if (appPckJson.sapux) {
             return findRootsWithSapux(appPckJson.sapux, path, appRoot);
         }
-        if (isCapNodeJsProject(appPckJson) || (await isCapJavaProject(appRoot))) {
+        if ((await getCapProjectType(appRoot)) !== undefined) {
             // App is part of a CAP project, but doesn't have own package.json and is not mentioned in sapux array
             // in root -> not supported
             return null;
@@ -406,4 +406,34 @@ export async function findFioriArtifacts(options: {
         results.libraries = await filterLibraries(pathMap);
     }
     return results;
+}
+
+/**
+ * Find all CAP project roots by locating pom.xml or package.json in a given workspace.
+ *
+ * @param options - find options
+ * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
+ * @returns - root file paths that may contain a CAP project
+ */
+export async function findCapProjects(options: {
+    readonly wsFolders: WorkspaceFolder[] | string[];
+}): Promise<string[]> {
+    const result = new Set<string>();
+    const excludeFolders = ['node_modules', 'dist', 'src', 'webapp', 'MDKModule', 'gen'];
+    const fileNames = [FileName.Pom, FileName.Package];
+    const wsRoots = wsFoldersToRootPaths(options.wsFolders);
+    for (const root of wsRoots) {
+        const filesToCheck = await findBy({
+            fileNames,
+            root,
+            excludeFolders
+        });
+        const foldersToCheck = Array.from(new Set(filesToCheck.map((file) => dirname(file)))); //only directories without duplicates
+        for (const folderToCheck of foldersToCheck) {
+            if ((await getCapProjectType(folderToCheck)) !== undefined) {
+                result.add(folderToCheck);
+            }
+        }
+    }
+    return Array.from(result);
 }

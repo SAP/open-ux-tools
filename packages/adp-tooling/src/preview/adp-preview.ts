@@ -1,31 +1,20 @@
-import type { ToolsLogger } from '@sap-ux/logger';
-import { ZipFile } from 'yazl';
-import type { AdpPreviewConfig, DescriptorVariant } from '../types';
-import type { NextFunction, Request, Response } from 'express';
-import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+import express from 'express';
+import ZipFile from 'adm-zip';
 import type { ReaderCollection } from '@ui5/fs';
+import type { MiddlewareUtils } from '@ui5/server';
+import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
+
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
-/**
- * Create a buffer based on the given zip file object.
- *
- * @param zip object representing a zip file
- * @returns a buffer
- */
-async function createBuffer(zip: ZipFile): Promise<Buffer> {
-    await new Promise<void>((resolve) => {
-        zip.end({ forceZip64Format: false }, () => {
-            resolve();
-        });
-    });
+import RoutesHandler from './routes-handler';
+import type { AdpPreviewConfig, DescriptorVariant } from '../types';
 
-    const chunks: Buffer[] = [];
-    for await (const chunk of zip.outputStream) {
-        chunks.push(chunk as Buffer);
-    }
-
-    return Buffer.concat(chunks);
+export const enum ApiRoutes {
+    FRAGMENT = '/adp/api/fragment',
+    CONTROLLER = '/adp/api/controller'
 }
 
 /**
@@ -36,6 +25,10 @@ export class AdpPreview {
      * Merged descriptor variant with reference app manifest
      */
     private mergedDescriptor: MergedAppDescriptor;
+    /**
+     * Routes handler class to handle API requests
+     */
+    private routesHandler: RoutesHandler;
 
     /**
      * @returns merged manifest.
@@ -72,13 +65,17 @@ export class AdpPreview {
      *
      * @param config adp config
      * @param project reference to the root of the project
+     * @param util middleware utilities provided by the UI5 CLI
      * @param logger logger instance
      */
     constructor(
         private readonly config: AdpPreviewConfig,
         private readonly project: ReaderCollection,
+        private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
-    ) {}
+    ) {
+        this.routesHandler = new RoutesHandler(project, util, logger);
+    }
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
@@ -98,12 +95,12 @@ export class AdpPreview {
         const zip = new ZipFile();
         const files = await this.project.byGlob('**/*.*');
         for (const file of files) {
-            zip.addBuffer(await file.getBuffer(), file.getPath().substring(1));
+            zip.addFile(file.getPath().substring(1), await file.getBuffer());
         }
-        const buffer = await createBuffer(zip);
+        const buffer = zip.toBuffer();
 
-        // validate namespace & layer combination and fetch csrf token
-        await lrep.isExistingVariant(descriptorVariant.namespace, descriptorVariant.layer);
+        // fetch a merged descriptor from the backend
+        await lrep.getCsrfToken();
         this.mergedDescriptor = (await lrep.mergeAppDescriptorVariant(buffer))[descriptorVariant.id];
 
         return descriptorVariant.layer;
@@ -130,5 +127,22 @@ export class AdpPreview {
                 next();
             }
         }
+    }
+
+    /**
+     * Add additional APIs to the router that are required for adaptation projects only.
+     *
+     * @param router router that is to be enhanced with the API
+     */
+    addApis(router: Router): void {
+        router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
+        router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment as RequestHandler);
+
+        router.get(ApiRoutes.CONTROLLER, this.routesHandler.handleReadAllControllers as RequestHandler);
+        router.post(
+            ApiRoutes.CONTROLLER,
+            express.json(),
+            this.routesHandler.handleWriteControllerExt as RequestHandler
+        );
     }
 }

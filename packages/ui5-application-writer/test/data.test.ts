@@ -39,7 +39,7 @@ describe('Setting defaults', () => {
             input: { framework: 'OpenUI5' },
             expected: {
                 framework: 'OpenUI5',
-                frameworkUrl: 'https://openui5.hana.ondemand.com',
+                frameworkUrl: 'https://sdk.openui5.org',
                 version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
@@ -55,7 +55,7 @@ describe('Setting defaults', () => {
             input: { framework: 'OpenUI5', version: '1.72.0' },
             expected: {
                 framework: 'OpenUI5',
-                frameworkUrl: 'https://openui5.hana.ondemand.com',
+                frameworkUrl: 'https://sdk.openui5.org',
                 version: '1.72.0',
                 localVersion: '1.72.0',
                 minUI5Version: '1.72.0',
@@ -88,7 +88,7 @@ describe('Setting defaults', () => {
         {
             input: {
                 ui5Libs: ['sap.m', 'sap.fe'],
-                frameworkUrl: 'https://sapui5.hana.ondemand.com/',
+                frameworkUrl: 'https://ui5.sap.com/',
                 descriptorVersion: '1.12.1',
                 typesVersion: '1.95.0',
                 minUI5Version: '1.80.0',
@@ -96,7 +96,7 @@ describe('Setting defaults', () => {
             },
             expected: {
                 framework: 'SAPUI5',
-                frameworkUrl: 'https://sapui5.hana.ondemand.com/',
+                frameworkUrl: 'https://ui5.sap.com/',
                 version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
                 localVersion: '1.95.6',
                 minUI5Version: '1.80.0',
@@ -119,7 +119,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.95.0',
                 minUI5Version: '1.80.1',
                 descriptorVersion: '1.24.0',
-                typesVersion: '~1.80.1',
+                typesVersion: '~1.80.0',
                 typesPackage: UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
@@ -177,7 +177,7 @@ describe('Setting defaults', () => {
                 localVersion: 'snapshot-1.98',
                 minUI5Version: 'snapshot-1.78.6',
                 descriptorVersion: '1.22.0',
-                typesVersion: '~1.78.6',
+                typesVersion: '~1.78.0',
                 typesPackage: UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
@@ -194,7 +194,7 @@ describe('Setting defaults', () => {
                 version: '1.199.0',
                 localVersion: '1.199.0',
                 minUI5Version: '1.199.0',
-                descriptorVersion: '1.49.0',
+                descriptorVersion: '1.58.0',
                 typesVersion: `~1.199.0`,
                 typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
                 ui5Theme: 'sap_fiori_3',
@@ -213,7 +213,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.97.2',
                 minUI5Version: '1.97.2',
                 descriptorVersion: '1.37.0',
-                typesVersion: '~1.97.2',
+                typesVersion: '~1.97.0',
                 typesPackage: UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs

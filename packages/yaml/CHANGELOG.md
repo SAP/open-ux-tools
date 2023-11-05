@@ -1,5 +1,23 @@
 # @sap-ux/yaml
 
+## 0.14.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+## 0.13.9
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+
+## 0.13.8
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 0.13.7
 
 ### Patch Changes

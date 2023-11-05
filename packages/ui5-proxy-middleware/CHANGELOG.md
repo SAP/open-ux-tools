@@ -1,5 +1,79 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.3.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+    -   @sap-ux/logger@0.4.0
+
+## 1.2.6
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
+## 1.2.5
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/ui5-config@0.19.5
+
+## 1.2.4
+
+### Patch Changes
+
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-config@0.19.4
+
+## 1.2.3
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/logger@0.3.8
+    -   @sap-ux/ui5-config@0.19.3
+
+## 1.2.2
+
+### Patch Changes
+
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-config@0.19.2
+
+## 1.2.1
+
+### Patch Changes
+
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+
+## 1.2.0
+
+### Minor Changes
+
+-   1f250333: Use default config if none is provided.
+
+## 1.1.35
+
+### Patch Changes
+
+-   118692c3: update dependency http-proxy-middleware to v2.0.6
+
+## 1.1.34
+
+### Patch Changes
+
+-   bce98f84: Support usage when running in connect server like approuter
+
 ## 1.1.33
 
 ### Patch Changes

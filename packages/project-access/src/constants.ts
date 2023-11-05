@@ -5,6 +5,7 @@ export const FileName = {
     ManifestAppDescrVar: 'manifest.appdescr_variant',
     MtaYaml: 'mta.yaml',
     Package: 'package.json',
+    Pom: 'pom.xml',
     Tsconfig: 'tsconfig.json',
     Ui5Yaml: 'ui5.yaml',
     Ui5LocalYaml: 'ui5-local.yaml',

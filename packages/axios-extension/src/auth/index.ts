@@ -49,7 +49,7 @@ export function attachUaaAuthInterceptor(
     };
 
     const oneTimeInterceptorId = provider.interceptors.request.use(async (request: InternalAxiosRequestConfig) => {
-        token = token ?? (await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb));
+        token = token ?? (await getToken());
         // add token as auth header
         request.headers = request.headers ?? new AxiosHeaders();
         request.headers.authorization = `bearer ${token}`;

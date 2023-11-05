@@ -15,7 +15,7 @@ import { readManifest } from '../navigation-config';
  */
 export async function promptInboundNavigationConfig(
     basePath: string
-): Promise<{ config: Partial<ManifestNamespace.Inbound[string]> | undefined; fs: Editor }> {
+): Promise<{ config: ManifestNamespace.Inbound[string] | undefined; fs: Editor }> {
     const fs = create(createStorage());
     const { manifest } = await readManifest(basePath, fs);
 
@@ -24,6 +24,11 @@ export async function promptInboundNavigationConfig(
     // Exit if overwrite is false
     if (config?.overwrite === false) {
         config = undefined;
+    }
+    // prompting returns '' for optional `subTitle` instead of undefined
+    // this would result in the value being written
+    if (config?.subTitle === '') {
+        config.subTitle = undefined;
     }
 
     return {

@@ -1,5 +1,256 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.17.0
+
+### Minor Changes
+
+-   5654d5cc: Adds @sap-ux/ui5-info
+
+## 0.16.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-application-writer@0.26.0
+    -   @sap-ux/odata-service-writer@0.15.0
+    -   @sap-ux/ui5-test-writer@0.3.0
+    -   @sap-ux/fe-fpm-writer@0.24.0
+    -   @sap-ux/ui5-config@0.20.0
+
+## 0.15.7
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/odata-service-writer@0.14.36
+    -   @sap-ux/ui5-application-writer@0.25.10
+    -   @sap-ux/ui5-test-writer@0.2.1
+
+## 0.15.6
+
+### Patch Changes
+
+-   4087bffb: Allow more flexible @types type loading for TypeScript generate projects
+-   Updated dependencies [4087bffb]
+    -   @sap-ux/ui5-application-writer@0.25.9
+
+## 0.15.5
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+-   @sap-ux/odata-service-writer@0.14.35
+-   @sap-ux/ui5-application-writer@0.25.8
+-   @sap-ux/fe-fpm-writer@0.23.9
+-   @sap-ux/ui5-test-writer@0.2.0
+
+## 0.15.4
+
+### Patch Changes
+
+-   65010b09: fix - use patch version 0 for ui5 types semver for more reliable installs
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-application-writer@0.25.7
+    -   @sap-ux/ui5-config@0.19.4
+    -   @sap-ux/odata-service-writer@0.14.34
+    -   @sap-ux/fe-fpm-writer@0.23.9
+    -   @sap-ux/ui5-test-writer@0.2.0
+
+## 0.15.3
+
+### Patch Changes
+
+-   Updated dependencies [d880c217]
+    -   @sap-ux/fe-fpm-writer@0.23.9
+
+## 0.15.2
+
+### Patch Changes
+
+-   Updated dependencies [bf1281ca]
+    -   @sap-ux/ui5-test-writer@0.2.0
+
+## 0.15.1
+
+### Patch Changes
+
+-   Updated dependencies [c11f6c02]
+    -   @sap-ux/fe-fpm-writer@0.23.8
+
+## 0.15.0
+
+### Minor Changes
+
+-   b40035dc: Uses `contextPath` routing target config option instead of `entitySet` if applicable
+
+## 0.14.3
+
+### Patch Changes
+
+-   Updated dependencies [7a2229ff]
+    -   @sap-ux/fe-fpm-writer@0.23.7
+
+## 0.14.2
+
+### Patch Changes
+
+-   e20c2ced: Reverts use of `contextPath` in place of `entitySet`
+
+## 0.14.1
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/fe-fpm-writer@0.23.6
+    -   @sap-ux/odata-service-writer@0.14.33
+    -   @sap-ux/ui5-application-writer@0.25.6
+    -   @sap-ux/ui5-config@0.19.3
+    -   @sap-ux/ui5-test-writer@0.1.11
+
+## 0.14.0
+
+### Minor Changes
+
+-   42d0cd9d: Outputs `contextPath` instead of `entitySet` for ui5 version 1.94 or greater
+
+## 0.13.11
+
+### Patch Changes
+
+-   Updated dependencies [7b156515]
+    -   @sap-ux/fe-fpm-writer@0.23.5
+
+## 0.13.10
+
+### Patch Changes
+
+-   Updated dependencies [01fa690e]
+-   Updated dependencies [3137514f]
+    -   @sap-ux/fe-fpm-writer@0.23.4
+    -   @sap-ux/ui5-application-writer@0.25.5
+    -   @sap-ux/ui5-config@0.19.2
+    -   @sap-ux/odata-service-writer@0.14.32
+    -   @sap-ux/ui5-test-writer@0.1.10
+
+## 0.13.9
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/fe-fpm-writer@0.23.3
+    -   @sap-ux/odata-service-writer@0.14.31
+    -   @sap-ux/ui5-application-writer@0.25.4
+    -   @sap-ux/ui5-config@0.19.1
+    -   @sap-ux/ui5-test-writer@0.1.10
+
+## 0.13.8
+
+### Patch Changes
+
+-   Updated dependencies [7fd593f0]
+    -   @sap-ux/ui5-application-writer@0.25.3
+    -   @sap-ux/fe-fpm-writer@0.23.2
+    -   @sap-ux/odata-service-writer@0.14.30
+    -   @sap-ux/ui5-test-writer@0.1.10
+
+## 0.13.7
+
+### Patch Changes
+
+-   Updated dependencies [f50523da]
+    -   @sap-ux/odata-service-writer@0.14.30
+
+## 0.13.6
+
+### Patch Changes
+
+-   Updated dependencies [78e726a6]
+    -   @sap-ux/fe-fpm-writer@0.23.2
+
+## 0.13.5
+
+### Patch Changes
+
+-   Updated dependencies [98d40960]
+    -   @sap-ux/odata-service-writer@0.14.29
+
+## 0.13.4
+
+### Patch Changes
+
+-   a794dad7: Update ui5-tooling-transpile in templates
+-   Updated dependencies [a794dad7]
+    -   @sap-ux/ui5-application-writer@0.25.2
+
+## 0.13.3
+
+### Patch Changes
+
+-   Updated dependencies [da6aed84]
+    -   @sap-ux/fe-fpm-writer@0.23.1
+
+## 0.13.2
+
+### Patch Changes
+
+-   Updated dependencies [6e403f27]
+    -   @sap-ux/odata-service-writer@0.14.28
+
+## 0.13.1
+
+### Patch Changes
+
+-   b63aea83: Update ui5 yaml spec to 3.1
+-   Updated dependencies [b63aea83]
+    -   @sap-ux/ui5-application-writer@0.25.1
+
+## 0.13.0
+
+### Minor Changes
+
+-   de0b13f2: Update templates to use Typescript version 5
+
+### Patch Changes
+
+-   Updated dependencies [de0b13f2]
+    -   @sap-ux/ui5-application-writer@0.25.0
+
+## 0.12.27
+
+### Patch Changes
+
+-   44df3d5c: fix lint warnings in locate-reuse-libs.js
+-   Updated dependencies [44df3d5c]
+    -   @sap-ux/ui5-application-writer@0.24.3
+
+## 0.12.26
+
+### Patch Changes
+
+-   b69c21f3: Enable LocalStorageConnector in v4 templates
+
+## 0.12.25
+
+### Patch Changes
+
+-   Updated dependencies [c1c9396a]
+    -   @sap-ux/fe-fpm-writer@0.23.0
+
+## 0.12.24
+
+### Patch Changes
+
+-   29179b5f: Add SAP icon loading in flpsandbox.html
+-   Updated dependencies [29179b5f]
+    -   @sap-ux/ui5-application-writer@0.24.2
+
 ## 0.12.23
 
 ### Patch Changes

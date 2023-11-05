@@ -39,7 +39,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     if (!fs) {
         fs = create(createStorage());
     }
-    const tmplPath = join(__dirname, '../../templates');
+    const tmplPath = join(__dirname, '../../templates/project');
     const fullConfig = setDefaults(config);
 
     fs.copyTpl(join(tmplPath, '**/*.*'), join(basePath), fullConfig, undefined, {
@@ -58,7 +58,15 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
                 adp: {
                     target: fullConfig.target,
                     ignoreCertErrors: false
-                } as AdpPreviewConfig
+                } as AdpPreviewConfig,
+                rta: {
+                    editors: [
+                        {
+                            path: '/local/editor.html',
+                            developerMode: true
+                        }
+                    ]
+                }
             }
         },
         {

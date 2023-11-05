@@ -1,6 +1,6 @@
 import { basename, dirname, join } from 'path';
 import type { WorkspaceFolder } from '../../src';
-import { findAllApps, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from '../../src';
+import { findAllApps, findCapProjects, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from '../../src';
 
 /**
  * To get CAP project type we call cds --version using child_process.spawn() and cache global install path.
@@ -287,5 +287,21 @@ describe('Test findFioriArtifacts()', () => {
                 }
             }
         ]);
+    });
+});
+
+describe('Test findCapProjects()', () => {
+    test('Find CAP projects', async () => {
+        const capProjects = (await findCapProjects({ wsFolders: [join(__dirname, '../test-data/project')] })).sort();
+        const expectedProjects = [
+            join(__dirname, '../test-data/project/cap-root/valid-cap-root'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_fiori_elements'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_freestyle'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_mix'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_freestyle'),
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements')
+        ].sort();
+        expect(capProjects).toEqual(expectedProjects);
     });
 });

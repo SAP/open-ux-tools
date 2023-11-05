@@ -1,0 +1,5 @@
+{
+    "extends": "../tsconfig.json",
+    "include": ["*.d.ts", "sapui5"],
+    "exclude": [ "node_modules"]
+}

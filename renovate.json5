@@ -32,7 +32,7 @@
 
     assigneesFromCodeOwners: true,
 
-    ignorePaths: ['**/templates/**', '**/test-input/**', '**/test-output/**', '**/test/fixtures/**', '**/test/test-data/**'],
+    ignorePaths: ['**/templates/**', '**/test-input/**', '**/test-output/**', '**/test/fixtures/**', '**/test/fixture/**', '**/test/test-data/**'],
 
     packageRules: [
         {
@@ -85,6 +85,10 @@
             matchPackagePrefixes: ['nx', '@​nrwl/nx-cloud'],
             groupName: 'dev dependencies [nx]',
             matchDepTypes: ['devDependencies']
+        },
+        {
+            matchPackagePrefixes: ['@types/vscode'],
+            allowedVersions: '1.73.1'
         },
         {
             matchPackagePrefixes: [

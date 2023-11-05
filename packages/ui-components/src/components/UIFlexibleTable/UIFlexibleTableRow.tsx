@@ -190,6 +190,54 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
 }
 
 /**
+ * Method checks if passed row is disabled for drag.
+ *
+ * @param value Row item value.
+ * @returns {boolean} Is row disabled for drag.
+ */
+function isRowDisabled(value: unknown): boolean {
+    let disabled = false;
+    if (value && typeof value === 'object' && 'disabled' in value) {
+        disabled = !!value.disabled;
+    }
+    return disabled;
+}
+
+/**
+ * Method returns CSS styles for row item element.
+ *
+ * @param isDragDisabled Is row disabled for drag.
+ * @param isDragged True if row is currently dragging.
+ * @returns {string} CSS styles for row item element.
+ */
+function getRowStyles(isDragDisabled: boolean, isDragged: boolean): CSSProperties {
+    const style: CSSProperties = {
+        pointerEvents: 'all',
+        cursor: isDragged ? 'grabbing' : 'inherit'
+    };
+    if (isDragDisabled) {
+        style.cursor = 'default';
+        style.touchAction = 'auto';
+    }
+    return style;
+}
+
+/**
+ * Method returns class name for row index parity.
+ *
+ * @param rowIndex Row index.
+ * @returns {string} Class name string.
+ */
+function getParityClassName(rowIndex?: number): string {
+    let className = '';
+    if (rowIndex !== undefined) {
+        // Index is zero based - odd/even opposite
+        className = rowIndex % 2 === 0 ? 'odd' : 'even';
+    }
+    return className;
+}
+
+/**
  * UIFlexibleTableRow component.
  *
  * @exports
@@ -201,9 +249,9 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
     const row = params.value as UIFlexibleTableRowType<T>;
     const rowIndex = params.index;
     const rowCells: Array<React.ReactElement> = [];
-    const { isDragged, isSelected, isOutOfBounds } = params;
+    const { isDragged, isSelected, isOutOfBounds, value } = params;
     const isRow = row && rowIndex !== undefined;
-
+    const isDragDisabled = isRowDisabled(value);
     if (isRow) {
         rowCells.push(rowData);
 
@@ -214,11 +262,6 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
             );
         }
     }
-    let parityClassName = '';
-    if (rowIndex !== undefined) {
-        // Index is zero based - odd/even opposite
-        parityClassName = rowIndex % 2 === 0 ? 'odd' : 'even';
-    }
 
     const rowClassName = composeClassNames('flexible-table-content-table-row', [
         tableProps.noRowBackground ? 'no-background' : '',
@@ -227,7 +270,7 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
         isOutOfBounds ? 'out-of-bounds' : '',
         row.className ?? '',
         tableProps.lockVertically ? 'locked-axis' : 'unlocked-axis',
-        parityClassName,
+        getParityClassName(rowIndex),
         tableProps.reverseBackground && !tableProps.noRowBackground ? 'reverse-background' : '',
         dynamicClassName
     ]);
@@ -241,15 +284,13 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
 
     const style: CSSProperties = {
         ...params.props.style,
-        pointerEvents: 'all',
-        cursor: isDragged ? 'grabbing' : 'inherit'
+        ...getRowStyles(isDragDisabled, isDragged)
     };
 
     if (tableProps.isContentLoading) {
         style.pointerEvents = 'none';
         style.cursor = 'none';
     }
-
     return (
         <li
             {...params.props}

@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Asystem-access"
     },
-    "version": "0.2.0",
+    "version": "0.3.3",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -42,11 +42,11 @@
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
-        "@types/prompts": "2.0.14",
+        "@types/prompts": "2.4.4",
         "rimraf": "5.0.1"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
-        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+        "node": ">=18.x"
     }
 }

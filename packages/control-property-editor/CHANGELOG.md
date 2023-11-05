@@ -1,0 +1,37 @@
+# @sap-ux/control-property-editor
+
+## 0.3.0
+
+### Minor Changes
+
+-   318e040e: Enables creation of XML fragments for Extension Points from the outline tree (when right-clicking on extension point) or from the application (when clicking on control).
+
+## 0.2.4
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
+## 0.2.3
+
+### Patch Changes
+
+-   8029360f: Add favicon for CPE and generator for variant-config
+
+## 0.2.2
+
+### Patch Changes
+
+-   4f2d9ed8: Bump packages to release the dep fix
+
+## 0.2.1
+
+### Patch Changes
+
+-   b3baa9a1: Fixes/removes the express dependency
+
+## 0.2.0
+
+### Minor Changes
+
+-   0f2ac46a: Initial version of the @sap-ux/control-property-editor

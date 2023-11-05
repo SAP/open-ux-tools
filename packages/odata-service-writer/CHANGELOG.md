@@ -1,5 +1,76 @@
 # @sap-ux/odata-service-writer
 
+## 0.15.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+
+## 0.14.36
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
+## 0.14.35
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+
+## 0.14.34
+
+### Patch Changes
+
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-config@0.19.4
+
+## 0.14.33
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/ui5-config@0.19.3
+
+## 0.14.32
+
+### Patch Changes
+
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-config@0.19.2
+
+## 0.14.31
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+
+## 0.14.30
+
+### Patch Changes
+
+-   f50523da: TechnicalName key might not be present in all scenarios
+
+## 0.14.29
+
+### Patch Changes
+
+-   98d40960: Technical Name key to be schema valid
+
+## 0.14.28
+
+### Patch Changes
+
+-   6e403f27: fix(deps): update dependency fast-xml-parser to v4.2.7
+
 ## 0.14.27
 
 ### Patch Changes

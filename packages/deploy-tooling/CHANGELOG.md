@@ -1,5 +1,200 @@
 # @sap-ux/deploy-tooling
 
+## 0.11.4
+
+### Patch Changes
+
+-   70bf0627: When validation result is successful, the successful log messages should still be printed on the console.
+
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [d31cfeff]
+    -   @sap-ux/project-input-validator@0.2.0
+
+## 0.11.2
+
+### Patch Changes
+
+-   Updated dependencies [fa4537b2]
+    -   @sap-ux/axios-extension@1.7.1
+    -   @sap-ux/system-access@0.3.3
+
+## 0.11.1
+
+### Patch Changes
+
+-   4568e82b: Ensure provider is updated with credentials after 401 is returned
+
+## 0.11.0
+
+### Minor Changes
+
+-   e0e9bd9e: Support for deployment of adaptation projects to LREP.
+
+## 0.10.2
+
+### Patch Changes
+
+-   aa2ff95b: Replaced yazl with adm-zip
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/axios-extension@1.7.0
+    -   @sap-ux/system-access@0.3.2
+
+## 0.10.1
+
+### Patch Changes
+
+-   Updated dependencies [3cfaba52]
+    -   @sap-ux/axios-extension@1.6.1
+    -   @sap-ux/system-access@0.3.1
+
+## 0.10.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/axios-extension@1.6.0
+    -   @sap-ux/system-access@0.3.0
+    -   @sap-ux/ui5-config@0.20.0
+    -   @sap-ux/btp-utils@0.12.0
+    -   @sap-ux/logger@0.4.0
+
+## 0.9.20
+
+### Patch Changes
+
+-   966b396b: - Improve format of reported invalid messages
+    -   Convert $tmp to upper case to pass ADT validation
+-   Updated dependencies [966b396b]
+    -   @sap-ux/project-input-validator@0.1.2
+
+## 0.9.19
+
+### Patch Changes
+
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/project-input-validator@0.1.1
+    -   @sap-ux/system-access@0.2.11
+
+## 0.9.18
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/axios-extension@1.5.1
+    -   @sap-ux/system-access@0.2.10
+    -   @sap-ux/ui5-config@0.19.5
+
+## 0.9.17
+
+### Patch Changes
+
+-   d7492b53: A new feature is introduced to run validators on deploy configuration in `ui5-deploy.yaml` and returns found issues. This new feature is only activated when running deploy in the existing `test` mode. No additional parameter required to include this validation process.
+-   Updated dependencies [d7492b53]
+-   Updated dependencies [d7492b53]
+    -   @sap-ux/axios-extension@1.5.0
+    -   @sap-ux/project-input-validator@0.1.0
+    -   @sap-ux/system-access@0.2.9
+
+## 0.9.16
+
+### Patch Changes
+
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-config@0.19.4
+    -   @sap-ux/axios-extension@1.4.8
+    -   @sap-ux/system-access@0.2.8
+
+## 0.9.15
+
+### Patch Changes
+
+-   Updated dependencies [0760c9f8]
+    -   @sap-ux/axios-extension@1.4.8
+    -   @sap-ux/system-access@0.2.8
+
+## 0.9.14
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/axios-extension@1.4.7
+    -   @sap-ux/btp-utils@0.11.9
+    -   @sap-ux/logger@0.3.8
+    -   @sap-ux/system-access@0.2.7
+    -   @sap-ux/ui5-config@0.19.3
+
+## 0.9.13
+
+### Patch Changes
+
+-   Updated dependencies [7b156515]
+    -   @sap-ux/axios-extension@1.4.6
+    -   @sap-ux/system-access@0.2.6
+
+## 0.9.12
+
+### Patch Changes
+
+-   Updated dependencies [01fa690e]
+-   Updated dependencies [3137514f]
+    -   @sap-ux/axios-extension@1.4.5
+    -   @sap-ux/ui5-config@0.19.2
+    -   @sap-ux/system-access@0.2.5
+
+## 0.9.11
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.2.4
+
+## 0.9.10
+
+### Patch Changes
+
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+    -   @sap-ux/axios-extension@1.4.4
+    -   @sap-ux/system-access@0.2.3
+
+## 0.9.9
+
+### Patch Changes
+
+-   Updated dependencies [676f8ba0]
+    -   @sap-ux/axios-extension@1.4.4
+    -   @sap-ux/system-access@0.2.3
+
+## 0.9.8
+
+### Patch Changes
+
+-   Updated dependencies [6e403f27]
+    -   @sap-ux/axios-extension@1.4.3
+    -   @sap-ux/system-access@0.2.2
+
+## 0.9.7
+
+### Patch Changes
+
+-   Updated dependencies [29e71f68]
+    -   @sap-ux/axios-extension@1.4.2
+    -   @sap-ux/system-access@0.2.1
+
+## 0.9.6
+
+### Patch Changes
+
+-   30a7f6ae: apply exclude param when generating archive zip
+
 ## 0.9.5
 
 ### Patch Changes

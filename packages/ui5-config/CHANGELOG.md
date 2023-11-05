@@ -1,5 +1,49 @@
 # @sap-ux/ui5-config
 
+## 0.20.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/yaml@0.14.0
+
+## 0.19.5
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/yaml@0.13.9
+
+## 0.19.4
+
+### Patch Changes
+
+-   65010b09: fix - use patch version 0 for ui5 types semver for more reliable installs
+
+## 0.19.3
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/yaml@0.13.8
+
+## 0.19.2
+
+### Patch Changes
+
+-   3137514f: use platform independent UI5 CDN URLs
+
+## 0.19.1
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+
 ## 0.19.0
 
 ### Minor Changes
