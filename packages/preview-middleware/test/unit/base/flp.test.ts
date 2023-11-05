@@ -365,7 +365,9 @@ describe('initAdp', () => {
         try {
             await initAdp(mockAdpProject, config.adp, flp, middlewareUtils as MiddlewareUtils, logger);
         } catch (error) {
-            expect(error.message).toEqual(`The current SAPUI5 version set for this Adaptation project is 1.70. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71`)
+            expect(error.message).toEqual(
+                `The current SAPUI5 version set for this Adaptation project is 1.70. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71`
+            );
         }
     });
 });
