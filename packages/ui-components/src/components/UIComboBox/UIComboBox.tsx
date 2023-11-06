@@ -102,6 +102,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.onMultiSelectChange = this.onMultiSelectChange.bind(this);
         this.onScrollToItem = this.onScrollToItem.bind(this);
         this.setFocus = this.setFocus.bind(this);
+        this.onMenuDismiss = this.onMenuDismiss.bind(this);
 
         initializeComponentRef(this);
 
@@ -644,6 +645,15 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         }
     };
 
+    private onMenuDismiss(): void {
+        const { multiSelect, onMenuDismiss } = this.props;
+        if (multiSelect) {
+            this.resetDialogResize();
+        }
+        // Call external listener
+        onMenuDismiss?.();
+    }
+
     /**
      * @returns {JSX.Element}
      */
@@ -701,7 +711,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                     {...this.props}
                     {...(this.props.highlight && {
                         onInput: this.onInput,
-                        //onMenuDismissed: this.reserQuery,
+                        onMenuDismissed: this.reserQuery,
                         onResolveOptions: this.onResolveOptions,
                         onRenderItem: this.onRenderItem,
                         onRenderOption: this.onRenderOption,
@@ -709,6 +719,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         onPendingValueChanged: this.onPendingValueChanged
                     })}
                     autofill={this.getAutofillProps()}
+                    onMenuDismiss={this.onMenuDismiss}
                     {...(this.props.useComboBoxAsMenuMinWidth && {
                         // Use 'onMenuOpen', because there can be dynamic size of combobox
                         onMenuOpen: this.calculateMenuMinWidth.bind(this)
@@ -725,7 +736,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                     })}
                     {...(this.props.multiSelect && {
                         onScrollToItem: this.onScrollToItem,
-                        onMenuDismissed: this.resetDialogResize,
                         ...(this.props.onChange && {
                             onChange: this.onMultiSelectChange
                         })
