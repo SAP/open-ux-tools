@@ -33,6 +33,19 @@ declare module 'sap/ui/rta/command/FlexCommand' {
     export default FlexCommand;
 }
 
+declare module 'sap/ui/rta/plugin/AddXMLAtExtensionPoint' {
+    import type CommandFactory from 'sap/ui/rta/command/CommandFactory';
+
+    interface Arguments {
+        commandFactory: CommandFactory;
+        fragmentHandler: (overlay: UI5Element, extensionPointInfo: uknown) => Promise<void | object>;
+    }
+
+    export default class AddXMLAtExtensionPoint {
+        constructor(_: Arguments) {}
+    }
+}
+
 declare module 'sap/ui/rta/command/CommandFactory' {
     import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
     import type ManagedObject from 'sap/ui/base/ManagedObject';
@@ -40,8 +53,14 @@ declare module 'sap/ui/rta/command/CommandFactory' {
     import type Element from 'sap/ui/core/Element';
     import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 
-    interface CommandFactory {
-        getCommandFor<T extends BaseCommand = BaseCommand>(
+    interface Arguments {
+        flexSettings?: FlexSettings;
+    }
+
+    export default class CommandFactory {
+        constructor(_: Arguments) {}
+
+        static async getCommandFor<T extends BaseCommand = BaseCommand>(
             control: Element | ManagedObject | string,
             commandType: string,
             settings: object,
@@ -49,15 +68,12 @@ declare module 'sap/ui/rta/command/CommandFactory' {
             flexSettings?: FlexSettings
         ): Promise<T>;
     }
-
-    const CommandFactory: CommandFactory;
-    export default CommandFactory;
 }
 
 declare module 'sap/ui/rta/command/OutlineService' {
     export interface OutlineViewNode {
         id: string;
-        type: 'aggregation' | 'element';
+        type: 'aggregation' | 'element' | 'extensionPoint';
         technicalName: string;
         editable: boolean;
         elements?: OutlineViewNode[];
@@ -135,7 +151,8 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getFlexSettings: () => FlexSettings;
         getService: <T>(name: 'outline' | 'controllerExtension' | string) => Promise<T>;
         getSelection: () => ElementOverlay[];
-        getDefaultPlugins: () => { contextMenu: ContextMenu };
+        getDefaultPlugins: () => { [key: string]: uknown; contextMenu: ContextMenu };
+        setPlugins: (defaultPlugins: object) => void;
         getRootControlInstance: () => {
             getManifest(): Manifest;
         } & Component;

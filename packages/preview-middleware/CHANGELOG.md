@@ -1,5 +1,23 @@
 # @sap-ux/preview-middleware
 
+## 0.9.0
+
+### Minor Changes
+
+-   318e040e: Enables creation of XML fragments for Extension Points from the outline tree (when right-clicking on extension point) or from the application (when clicking on control).
+
+## 0.8.7
+
+### Patch Changes
+
+-   8d16d0b3: Exports FlpConfig and RtaConfig types for usage in @sap/ux-ui5-tooling
+
+## 0.8.6
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.5.3
+
 ## 0.8.5
 
 ### Patch Changes

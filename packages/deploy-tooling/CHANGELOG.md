@@ -1,5 +1,26 @@
 # @sap-ux/deploy-tooling
 
+## 0.11.4
+
+### Patch Changes
+
+-   70bf0627: When validation result is successful, the successful log messages should still be printed on the console.
+
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [d31cfeff]
+    -   @sap-ux/project-input-validator@0.2.0
+
+## 0.11.2
+
+### Patch Changes
+
+-   Updated dependencies [fa4537b2]
+    -   @sap-ux/axios-extension@1.7.1
+    -   @sap-ux/system-access@0.3.3
+
 ## 0.11.1
 
 ### Patch Changes

@@ -1,9 +1,10 @@
 import nock from 'nock';
-import type { AppInfo } from '../../src';
-import { Ui5AbapRepositoryService, createForAbap } from '../../src';
+import type { AppInfo, AbapServiceProvider, ErrorMessage } from '../../src';
+import { Ui5AbapRepositoryService, createForAbap, createForDestination } from '../../src';
 import mockErrorDetails from './mockResponses/errordetails.json';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
+import { WebIDEUsage as WebIDEUsageType, type Destination } from '@sap-ux/btp-utils';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -28,15 +29,30 @@ describe('Ui5AbapRepositoryService', () => {
     const sapMessageHeader = JSON.stringify({
         code: '200',
         message: '~message',
+        longtext_url: '~LongText',
         details: [{ code: '200', message: '~message', severity: 'info' }]
     });
     const service = createForAbap({ baseURL: server }).getUi5AbapRepository();
+    const destination: Destination = {
+        Name: 'name',
+        Type: 'HTTP',
+        Authentication: 'NoAuthentication',
+        ProxyType: 'OnPremise',
+        Host: 'https://destination.example',
+        Description: 'description',
+        WebIDEUsage: WebIDEUsageType.ODATA_ABAP
+    };
+    const destinationService = (createForDestination({}, destination) as AbapServiceProvider).getUi5AbapRepository();
 
     beforeAll(() => {
         nock.disableNetConnect();
         // mock an existing and not existing app
         nock(server)
             .get((url) => url.startsWith(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')`))
+            .reply(200, { d: validAppInfo })
+            .persist();
+        nock(`https://${destination.Name}.dest`)
+            .get(`${Ui5AbapRepositoryService.PATH}/Repositories('NOT_EXISTING_APP')?saml2=disabled&$format=json`)
             .reply(200, { d: validAppInfo })
             .persist();
         nock(server)
@@ -94,6 +110,58 @@ describe('Ui5AbapRepositoryService', () => {
 
     describe('deploy', () => {
         const archive = Buffer.from('TestData');
+
+        test('deploy new app with destination', async () => {
+            nock(`https://${destination.Name}.dest`)
+                .defaultReplyHeaders({
+                    'sap-message': sapMessageHeader
+                })
+                .put(
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${notExistingApp}')?saml2=disabled&${updateParams}`,
+                    (body) => body.indexOf(archive.toString('base64')) !== -1
+                )
+                .reply(200);
+            const response = await destinationService.deploy({ archive, bsp: { name: notExistingApp } });
+            expect(response.data).toBeDefined();
+            expect(loggerMock.info).toHaveBeenCalledTimes(7); // Ensures the logFullURL method is called to support destinations
+            expect(loggerMock.warn).toHaveBeenCalledTimes(0);
+            expect(loggerMock.error).toHaveBeenCalledTimes(0);
+        });
+
+        test('deploy new app with destination with 400 error', async () => {
+            const error: ErrorMessage = {
+                code: '400',
+                message: {
+                    value: '~message'
+                },
+                innererror: {
+                    transactionid: '~id',
+                    timestamp: '~time',
+                    'Error_Resolution': {
+                        abc: '~message'
+                    },
+                    errordetails: [
+                        {
+                            code: '1',
+                            message: '~message',
+                            severity: 'error',
+                            longtext_url: '~longtext_url'
+                        }
+                    ]
+                }
+            };
+            nock(`https://${destination.Name}.dest`)
+                .defaultReplyHeaders({
+                    'sap-message': sapMessageHeader
+                })
+                .put(
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${notExistingApp}')?saml2=disabled&${updateParams}`,
+                    (body) => body.indexOf(archive.toString('base64')) !== -1
+                )
+                .reply(400, JSON.stringify({ error }));
+            await expect(destinationService.deploy({ archive, bsp: { name: notExistingApp } })).rejects.toThrowError();
+            expect(loggerMock.info).toHaveBeenCalledTimes(4); // Ensures the logError flow is handled
+        });
 
         test('deploy new app', async () => {
             nock(server)
@@ -237,6 +305,25 @@ describe('Ui5AbapRepositoryService', () => {
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
             expect(response?.status).toBe(200);
+            expect(loggerMock.info).toHaveBeenCalledTimes(4);
+            expect(loggerMock.warn).toHaveBeenCalledTimes(0);
+            expect(loggerMock.error).toHaveBeenCalledTimes(0);
+        });
+
+        test('successful undeploy with additional message using destination', async () => {
+            nock(`https://${destination.Name}.dest`)
+                .defaultReplyHeaders({
+                    'sap-message': sapMessageHeader
+                })
+                .delete(
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${notExistingApp}')?saml2=disabled&${updateParams}`
+                )
+                .reply(202);
+            const response = await destinationService.undeploy({ bsp: { name: notExistingApp } });
+            expect(response?.status).toBe(202);
+            expect(loggerMock.debug).toHaveBeenCalledTimes(0);
+            expect(loggerMock.info).toHaveBeenCalledTimes(5);
+            expect(loggerMock.error).toHaveBeenCalledTimes(0);
         });
 
         test('failed removal', async () => {
