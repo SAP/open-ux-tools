@@ -5,7 +5,7 @@ import type { IGroup, IGroupRenderProps, IGroupHeaderProps } from '@fluentui/rea
 import { Icon } from '@fluentui/react';
 import { UIList, UiIcons } from '@sap-ux/ui-components';
 
-import { selectControl, reportTelemetry } from '@sap-ux-private/control-property-editor-common';
+import { selectControl, reportTelemetry, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
 import type { Control, OutlineNode } from '@sap-ux-private/control-property-editor-common';
 
 import type { RootState } from '../../store';
@@ -22,22 +22,28 @@ interface OutlineNodeItem extends OutlineNode {
 
 export const Tree = (): ReactElement => {
     const dispatch = useDispatch();
+
+    const [collapsed, setCollapsed] = useState<IGroup[]>([]);
     const [selection, setSelection] = useState<{ group: undefined | IGroup; cell: undefined | OutlineNodeItem }>({
         group: undefined,
         cell: undefined
     });
-    const [collapsed, setCollapsed] = useState<IGroup[]>([]);
+
     const filterQuery = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery);
     const selectedControl = useSelector<RootState, Control | undefined>((state) => state.selectedControl);
     const controlChanges = useSelector<RootState, ControlChanges>((state) => state.changes.controls);
     const model: OutlineNode[] = useSelector<RootState, OutlineNode[]>((state) => state.outline);
+
     const { groups, items } = useMemo(() => {
         const items: OutlineNodeItem[] = [];
         const filteredModel = getFilteredModel(model, filterQuery);
         return { groups: getGroups(filteredModel, items), items };
     }, [model, filterQuery, selection]);
+
     const selectedClassName =
         localStorage.getItem('theme') === 'high contrast' ? 'app-panel-hc-selected-bg' : 'app-panel-selected-bg';
+
+    const tooltipEventListeners: Record<string, (event: MouseEvent) => void> = {};
 
     useEffect(() => {
         if (selection.cell === undefined && selection.group === undefined && selectedControl !== undefined) {
@@ -72,6 +78,63 @@ export const Tree = (): ReactElement => {
             }, 0);
         }
     }, []);
+
+    /**
+     * Closes a tooltip and removes the associated event listener.
+     *
+     * @param tooltipId The unique identifier for the tooltip.
+     * @param eventListener The specific event listener to remove (optional).
+     */
+    const closeTooltip = (tooltipId: string, eventListener?: (event: MouseEvent) => void) => {
+        const tooltip = document.getElementById(tooltipId);
+
+        if (tooltip) {
+            tooltip.style.visibility = 'hidden';
+            tooltip.style.opacity = '0';
+        }
+
+        if (eventListener) {
+            document.removeEventListener('click', eventListener);
+        } else if (tooltipId in tooltipEventListeners) {
+            document.removeEventListener('click', tooltipEventListeners[tooltipId]);
+            delete tooltipEventListeners[tooltipId];
+        }
+    };
+
+    /**
+     * Handles the opening of a tooltip and associates an event listener with it.
+     *
+     * @param e The click event that triggered the tooltip.
+     * @param tooltipId The unique identifier for the tooltip.
+     */
+    const handleOpenTooltip = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, tooltipId: string) => {
+        e.preventDefault();
+        const tooltip = document.getElementById(tooltipId);
+
+        if (tooltip) {
+            tooltip.style.visibility = 'visible';
+            tooltip.style.opacity = '1';
+
+            const handleCloseTooltip = (event: MouseEvent) => {
+                if (!tooltip.contains(event.target as Node)) {
+                    closeTooltip(tooltipId, handleCloseTooltip);
+                }
+            };
+
+            tooltipEventListeners[tooltipId] = handleCloseTooltip;
+
+            document.addEventListener('click', handleCloseTooltip);
+        } else {
+            console.warn(`Tooltip with id ${tooltipId} not found`);
+        }
+    };
+
+    const handleOpenFragmentDialog = (data: OutlineNode, tooltipId: string) => {
+        if (data.controlType === 'sap.ui.extensionpoint') {
+            closeTooltip(tooltipId);
+            dispatch(addExtensionPoint(data));
+        }
+    };
 
     /**
      * Find in group.
@@ -219,7 +282,11 @@ export const Tree = (): ReactElement => {
             <></>
         );
         return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
-            <div className={classNames.join(' ')} onClick={(): void => onSelectCell(item)} id={item.controlId}>
+            <div
+                aria-hidden
+                id={item.controlId}
+                className={classNames.join(' ')}
+                onClick={(): void => onSelectCell(item)}>
                 <div
                     {...props}
                     className={`tree-cell`}
@@ -273,6 +340,7 @@ export const Tree = (): ReactElement => {
         if (selectNode) {
             refProps.ref = scrollRef;
         }
+        const isExtensionPoint = groupHeaderProps?.group?.data?.controlType === 'sap.ui.extensionpoint';
         const focus = filterQuery.filter((item) => item.name === FilterName.focusEditable)[0].value as boolean;
         const focusEditable = !groupHeaderProps?.group?.data?.editable && focus ? 'focusEditable' : '';
         const controlChange = controlChanges[groupHeaderProps?.group?.key ?? ''];
@@ -281,12 +349,20 @@ export const Tree = (): ReactElement => {
         ) : (
             <></>
         );
+
+        const tooltipId = `tooltip--${groupName}`;
+
         return (
             <div
                 {...refProps}
+                aria-hidden
                 className={`${selectNode} tree-row ${focusEditable}`}
                 onClick={(): void => onSelectHeader(groupHeaderProps?.group)}>
-                <span style={{ paddingLeft: paddingValue }} className={`tree-cell`}>
+                <span
+                    style={{ paddingLeft: paddingValue }}
+                    data-testid="tooltip-container"
+                    className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
+                    onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
                     {groupHeaderProps?.group?.count !== 0 && (
                         <Icon
                             className={`${chevronTransform}`}
@@ -297,14 +373,27 @@ export const Tree = (): ReactElement => {
                             }}
                         />
                     )}
+                    {isExtensionPoint && (
+                        <Icon className={`${chevronTransform} extension-icon`} iconName={UiIcons.DataSource} />
+                    )}
                     <div
                         style={{
                             cursor: 'pointer',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis'
-                        }}>
+                        }}
+                        title={isExtensionPoint ? groupName : ''}>
                         {groupName}
                     </div>
+                    {isExtensionPoint && (
+                        <div id={tooltipId} className="tooltip">
+                            <button
+                                data-testid="tooltip-dialog-button"
+                                onClick={() => handleOpenFragmentDialog(groupHeaderProps?.group?.data, tooltipId)}>
+                                Add Fragment at Extension Point
+                            </button>
+                        </div>
+                    )}
                 </span>
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>{indicator}</div>
             </div>
@@ -381,6 +470,7 @@ function getGroups(model: OutlineNode[], items: OutlineNodeItem[], level = 0, pa
             isCollapsed: count === 0,
             data: { ...data, path: newPath }
         };
+
         const shouldCreate = createGroupChild(children);
         newGroup.children = shouldCreate ? getGroups(children, items, level + 1, newPath) : [];
         group.push(newGroup);
