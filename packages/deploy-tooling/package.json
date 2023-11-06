@@ -54,7 +54,7 @@
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
         "@types/prompts": "2.4.4",
-        "@types/adm-zip": "0.5.2"
+        "@types/adm-zip": "0.5.3"
     },
     "ui5": {
         "dependencies": []

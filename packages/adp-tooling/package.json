@@ -55,7 +55,7 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.4",
         "@types/supertest": "2.0.12",
-        "@types/adm-zip": "0.5.2",
+        "@types/adm-zip": "0.5.3",
         "dotenv": "16.3.1",
         "nock": "13.2.1",
         "rimraf": "5.0.1",
