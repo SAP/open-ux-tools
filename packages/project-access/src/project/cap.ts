@@ -34,6 +34,7 @@ interface ResolveWithCache {
 interface ServiceInfo {
     name: string;
     urlPath: string;
+    runtime?: string;
 }
 
 /**
@@ -129,7 +130,8 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
         services = services.map((value) => {
             return {
                 name: value.name,
-                urlPath: uniformUrl(value.urlPath)
+                urlPath: uniformUrl(value.urlPath),
+                runtime: value.runtime
             };
         });
     }

@@ -100,6 +100,11 @@ describe('Test getCapModelAndServices()', () => {
                         {
                             'name': 'Backslash',
                             'urlPath': '\\odata\\service\\with\\backslash/'
+                        },
+                        {
+                            'name': 'withRuntime',
+                            'urlPath': 'url',
+                            'runtime': 'Node.js'
                         }
                     ])
                 }
@@ -121,6 +126,11 @@ describe('Test getCapModelAndServices()', () => {
                 {
                     'name': 'Backslash',
                     'urlPath': 'odata/service/with/backslash/'
+                },
+                {
+                    'name': 'withRuntime',
+                    'urlPath': 'url',
+                    'runtime': 'Node.js'
                 }
             ]
         });
