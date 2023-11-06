@@ -1,7 +1,7 @@
 import type {
     ExternalAction,
+    PendingChange,
     SavedPropertyChange,
-    PendingPropertyChange,
     UnknownSavedChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
@@ -39,6 +39,7 @@ interface Change {
     selector: ChangeSelector;
     content: ChangeContent;
     creation: string;
+    changeType: string;
 }
 
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
@@ -91,10 +92,7 @@ export class ChangeService {
      * @param ui5 facade for ui5 framework methods.
      * @param selectionService selection service instance.
      */
-    constructor(
-        private readonly options: UI5AdaptationOptions,
-        private readonly selectionService: SelectionService
-    ) {}
+    constructor(private readonly options: UI5AdaptationOptions, private readonly selectionService: SelectionService) {}
 
     /**
      *
@@ -144,6 +142,9 @@ export class ChangeService {
                         ) {
                             throw new Error('Invalid change, missing new value in the change file');
                         }
+                        if (change.changeType !== 'propertyChange' && change.changeType !== 'propertyBindingChange') {
+                            throw new Error('Unknown Change Type');
+                        }
                         return {
                             type: 'saved',
                             kind: 'valid',
@@ -152,7 +153,8 @@ export class ChangeService {
                             propertyName: change.content.property,
                             value: change.content.newValue ?? change.content.newBinding,
                             timestamp: new Date(change.creation).getTime(),
-                            controlName: change.selector.type.split('.').pop()
+                            controlName: change.selector.type ? (change.selector.type.split('.').pop() as string) : '',
+                            changeType: change.changeType
                         };
                     } catch (error) {
                         // Gracefully handle change files with invalid content
@@ -160,7 +162,8 @@ export class ChangeService {
                             const unknownChange: UnknownSavedChange = {
                                 type: 'saved',
                                 kind: 'unknown',
-                                fileName: change.fileName
+                                fileName: change.fileName,
+                                controlId: change.selector?.id // some changes may not have selector
                             };
                             if (change.creation) {
                                 unknownChange.timestamp = new Date(change.creation).getTime();
@@ -220,38 +223,23 @@ export class ChangeService {
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
             const inactiveCommandCount = allCommands.length - executedCommands.length;
-
-            const activeChanges = allCommands
-                .map((command: BaseCommand, i): PendingPropertyChange | undefined => {
-                    let result: PendingPropertyChange | undefined;
-                    try {
-                        const selector = command.getProperty('selector');
-                        const changeType = command.getProperty('changeType');
-                        let value = '';
-                        switch (changeType) {
-                            case 'propertyChange':
-                                value = command.getProperty('newValue');
-                                break;
-                            case 'propertyBindingChange':
-                                value = command.getProperty('newBinding');
-                                break;
-                            default:
-                                throw new Error(`Invalid changeType ${changeType}`);
-                        }
-                        result = {
-                            type: 'pending',
-                            controlId: selector.id,
-                            propertyName: command.getProperty('propertyName'),
-                            isActive: i >= inactiveCommandCount,
-                            value,
-                            controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
-                        };
-                    } catch (error) {
-                        Log.error('Failed: ', error);
+            let activeChanges: PendingChange[] = [];
+            allCommands.forEach((command: BaseCommand, i): void => {
+                try {
+                    if (typeof command.getCommands === 'function') {
+                        const subCommands = command.getCommands();
+                        subCommands.forEach((command) => {
+                            activeChanges.push(this.prepareChangeType(command, inactiveCommandCount, i));
+                        });
+                    } else {
+                        activeChanges.push(this.prepareChangeType(command, inactiveCommandCount, i));
                     }
-                    return result;
-                })
-                .filter((change): boolean => !!change) as PendingPropertyChange[];
+                } catch (error) {
+                    Log.error('CPE: Change creation Failed', error);
+                }
+            });
+
+            activeChanges = activeChanges.filter((change): boolean => !!change);
             sendAction(
                 changeStackModified({
                     saved: this.savedChanges,
@@ -259,5 +247,41 @@ export class ChangeService {
                 })
             );
         };
+    }
+
+    private prepareChangeType(command: BaseCommand, inactiveCommandCount: number, index: number): PendingChange {
+        let result: PendingChange;
+        let value = '';
+        const selector = command.getSelector();
+        const changeType = command.getChangeType();
+        switch (changeType) {
+            case 'propertyChange':
+                value = command.getProperty('newValue');
+                break;
+            case 'propertyBindingChange':
+                value = command.getProperty('newBinding');
+                break;
+        }
+        if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
+            result = {
+                type: 'pending',
+                changeType,
+                controlId: selector.id,
+                propertyName: command.getProperty('propertyName'),
+                isActive: index >= inactiveCommandCount,
+                value,
+                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
+            };
+        } else {
+            result = {
+                type: 'pending',
+                controlId: selector.id,
+                changeType,
+                isActive: index >= inactiveCommandCount,
+                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
+            };
+        }
+
+        return result;
     }
 }
