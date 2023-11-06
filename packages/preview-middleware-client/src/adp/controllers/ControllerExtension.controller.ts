@@ -107,6 +107,11 @@ export default class ControllerExtension extends BaseDialog {
             );
             return;
         }
+        
+        updateDialogState(ValueState.Success);
+        this.model.setProperty('/newControllerName', controllerName);
+    }
+
 
     /**
      * Handles create button press

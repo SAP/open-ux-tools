@@ -201,28 +201,29 @@ describe('ControllerExtension', () => {
         });
 
         test('sets error when the controller name exceeds 64 characters', () => {
-            const controllerExt = new ControllerExtension('adp.extension.controllers.ControllerExtension',
+            const controllerExt = new ControllerExtension(
+            'adp.extension.controllers.ControllerExtension',
             {} as unknown as UI5Element,
             {} as unknown as RuntimeAuthoring
             );
             
-            const valueStateSpy = jest.fn()
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     getValue: jest.fn().mockReturnValue('thisisverylongnamethisisverylongnamethisisverylongnamethisisveryl'),
                     setValueState: valueStateSpy,
-                    setValueStateText: jest.fn()
                 })
             };
 
             controllerExt.model = testModel;
+            
             controllerExt.dialog = {
                 getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
             } as unknown as Dialog;
 
             controllerExt.onControllerNameInputChange(event as unknown as Event)
             
-            expect(valueStateSpy).toHaveBeenCalledWith('Error')
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error)
         })
 
         test('sets create button to true when the controller name is valid', () => {
