@@ -6,11 +6,7 @@ import { Text, Stack } from '@fluentui/react';
 
 import { UIIcon, UIIconButton, UiIcons } from '@sap-ux/ui-components';
 
-import type {
-    Control,
-    SavedPropertyChange,
-    PendingPropertyChange
-} from '@sap-ux-private/control-property-editor-common';
+import type { Control, SavedPropertyChange, PendingChange } from '@sap-ux-private/control-property-editor-common';
 import { Separator } from '../../components';
 import type { RootState } from '../../store';
 
@@ -42,7 +38,7 @@ export function PropertyDocumentation(propDocProps: PropertyDocumentationProps):
               pending: number;
               saved: number;
               lastSavedChange?: SavedPropertyChange;
-              lastChange?: PendingPropertyChange;
+              lastChange?: PendingChange;
           }
         | undefined
     >((state) => state.changes.controls[control?.id ?? '']?.properties[propertyName]);
