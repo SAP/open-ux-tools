@@ -6,6 +6,7 @@ Provides Inquirer based prompting to allow input and validation of data required
 ## Installation
 Npm
 `npm install --save @sap-ux/ui5-library-writer`
+`npm install --save @sap-ux/ui5-library-inquirer`
 
 Yarn
 `yarn add @sap-ux/ui5-library-writer`
