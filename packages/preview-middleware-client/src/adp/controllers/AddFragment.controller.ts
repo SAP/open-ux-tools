@@ -1,12 +1,10 @@
 /** sap.m */
-import Input from 'sap/m/Input';
 import Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import type ComboBox from 'sap/m/ComboBox';
 import MessageToast from 'sap/m/MessageToast';
 
 /** sap.ui.core */
-import { ValueState } from 'sap/ui/core/library';
 import type UI5Element from 'sap/ui/core/Element';
 
 /** sap.ui.base */
@@ -51,6 +49,8 @@ export default class AddFragment extends BaseDialog {
      */
     async onInit() {
         this.dialog = this.byId('addNewFragmentDialog') as unknown as Dialog;
+
+        this.setEscapeHandler();
 
         await this.buildDialogData();
 
@@ -101,46 +101,6 @@ export default class AddFragment extends BaseDialog {
         const source = event.getSource<ComboBox>();
         const selectedIndex = source.getSelectedItem()?.getText();
         this.model.setProperty('/selectedIndex', selectedIndex);
-    }
-
-    /**
-     * Handles fragment name input change
-     *
-     * @param event Event
-     */
-    onFragmentNameInputChange(event: Event) {
-        const source = event.getSource<Input>();
-
-        const fragmentName: string = source.getValue().trim();
-        const fragmentList: { fragmentName: string }[] = this.model.getProperty('/fragmentList');
-
-        if (fragmentName.length <= 0) {
-            this.dialog.getBeginButton().setEnabled(false);
-            source.setValueState(ValueState.None);
-            this.model.setProperty('/newFragmentName', null);
-        } else {
-            const fileExists = fragmentList.find((f: { fragmentName: string }) => {
-                return f.fragmentName === `${fragmentName}.fragment.xml`;
-            });
-
-            const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName);
-
-            if (fileExists) {
-                source.setValueState(ValueState.Error);
-                source.setValueStateText(
-                    'Enter a different name. The fragment name that you entered already exists in your project.'
-                );
-                this.dialog.getBeginButton().setEnabled(false);
-            } else if (!isValidName) {
-                source.setValueState(ValueState.Error);
-                source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
-                this.dialog.getBeginButton().setEnabled(false);
-            } else {
-                this.dialog.getBeginButton().setEnabled(true);
-                source.setValueState(ValueState.None);
-                this.model.setProperty('/newFragmentName', fragmentName);
-            }
-        }
     }
 
     /**
@@ -230,6 +190,7 @@ export default class AddFragment extends BaseDialog {
 
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
+            MessageToast.show(e.message);
             throw new Error(e.message);
         }
 
