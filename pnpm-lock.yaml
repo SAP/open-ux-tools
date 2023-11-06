@@ -188,8 +188,8 @@ importers:
         specifier: workspace:*
         version: link:../store
       '@types/adm-zip':
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -648,8 +648,8 @@ importers:
         specifier: workspace:*
         version: link:../store
       '@types/adm-zip':
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4
@@ -7774,10 +7774,10 @@ packages:
       '@tufjs/canonical-json': 1.0.0
       minimatch: 9.0.2
 
-  /@types/adm-zip@0.5.2:
-    resolution: {integrity: sha512-33OTTnnW3onOE6HJuoqsi7T7Ojupz7zO/Vs5ddRNVCYQnu4lg05RqH/pr9eidHGvGyYfdO4uPO9cvegAMixBCQ==}
+  /@types/adm-zip@0.5.3:
+    resolution: {integrity: sha512-LfeDIiFdvphelYY2aMWTyQBr5cTb1EL9Qcu19jFizdt2sL/jL+fy1fE8IgAKBFI5XfbGukaRDDM5PiJTrovAhA==}
     dependencies:
-      '@types/node': 12.20.55
+      '@types/node': 18.11.9
     dev: true
 
   /@types/archiver@5.3.2:
