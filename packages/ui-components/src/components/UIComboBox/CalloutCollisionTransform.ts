@@ -19,7 +19,10 @@ export interface CalloutCollisionTransformProps {
 export class CalloutCollisionTransform {
     private resetOptions: Partial<CSSStyleDeclaration> = {};
     private props: CalloutCollisionTransformProps;
+    // ToDo
     private source: React.RefObject<HTMLElement>;
+    // Placeholder element for additional space
+    private placeholder?: HTMLElement;
 
     /**
      * Initializes class with options.
@@ -35,7 +38,11 @@ export class CalloutCollisionTransform {
         this.preventDismissOnEvent = this.preventDismissOnEvent.bind(this);
     }
 
-    //private getContainer(): void {}
+    private createPlaceholder(size: number): HTMLElement {
+        const element = document.createElement('div');
+        element.style.height = `${size}px`;
+        return element;
+    }
 
     /**
      *
@@ -71,8 +78,9 @@ export class CalloutCollisionTransform {
                 dialog.style.top = `${dialogPos.top}px`;
                 dialog.style.left = `${dialogPos.left}px`;
             }
-            // Gap to make target visible
-            targetElement.style.paddingTop = `${diff}px`;
+            // Apply placeholder element - gap to make target visible
+            this.placeholder = this.createPlaceholder(diff);
+            targetElement.prepend(this.placeholder);
         }
     }
 
@@ -87,10 +95,11 @@ export class CalloutCollisionTransform {
                 }
             }
         }
-
+        // Remove placeholder element
         const targetElement = document.querySelector(this.props.target) as HTMLElement;
-        if (targetElement) {
-            targetElement.style.paddingTop = '';
+        if (targetElement && this.placeholder) {
+            targetElement.removeChild(this.placeholder);
+            this.placeholder = undefined;
         }
     }
 
