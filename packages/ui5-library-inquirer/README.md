@@ -13,6 +13,7 @@ Yarn
 
 Pnpm
 `pnpm add @sap-ux/ui5-library-writer`
+`pnpm add @sap-ux/ui5-library-inquirer`
 
 ## Usage
 
