@@ -226,7 +226,7 @@ export class ChangeService {
             let activeChanges: PendingChange[] = [];
             allCommands.forEach((command: BaseCommand, i): void => {
                 try {
-                    if (command.getCommands && command.getCommands()) {
+                    if (typeof command.getCommands === 'function') {
                         const subCommands = command.getCommands();
                         subCommands.forEach((command) => {
                             activeChanges.push(this.prepareChangeType(command, inactiveCommandCount, i));

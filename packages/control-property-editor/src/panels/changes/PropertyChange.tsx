@@ -20,7 +20,7 @@ import type { ChangeProps } from './ChangesPanel';
  * @param propertyChangeProps PropertyChangeProps
  * @returns ReactElement
  */
-export function PropertyChange(propertyChangeProps: ChangeProps): ReactElement {
+export function PropertyChange(propertyChangeProps: Readonly<ChangeProps>): ReactElement {
     const { controlId, propertyName, value, isActive, timestamp, fileName, actionClassName } = propertyChangeProps;
     const { t } = useTranslation();
     const dispatch = useDispatch();

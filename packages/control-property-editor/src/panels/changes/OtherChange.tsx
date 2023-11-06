@@ -13,31 +13,29 @@ import type { ChangeProps } from './ChangesPanel';
  * @param OtherChangeProps OtherChangeProps
  * @returns ReactElement
  */
-export function OtherChange(OtherChangeProps: ChangeProps): ReactElement {
+export function OtherChange(OtherChangeProps: Readonly<ChangeProps>): ReactElement {
     const { changeType, isActive } = OtherChangeProps;
     return (
-        <>
-            <Stack
-                tokens={{
-                    childrenGap: 5
-                }}
-                className={styles.container}
-                style={{
-                    opacity: isActive ? 1 : 0.4
-                }}>
-                <Stack.Item className={styles.changeType}>
-                    <Stack
-                        horizontal
-                        horizontalAlign={'space-between'}
-                        tokens={{
-                            childrenGap: 5
-                        }}>
-                        <Stack.Item>
-                            <Text className={styles.text}>{convertCamelCaseToPascalCase(changeType)}</Text>
-                        </Stack.Item>
-                    </Stack>
-                </Stack.Item>
-            </Stack>
-        </>
+        <Stack
+            tokens={{
+                childrenGap: 5
+            }}
+            className={styles.container}
+            style={{
+                opacity: isActive ? 1 : 0.4
+            }}>
+            <Stack.Item className={styles.changeType}>
+                <Stack
+                    horizontal
+                    horizontalAlign={'space-between'}
+                    tokens={{
+                        childrenGap: 5
+                    }}>
+                    <Stack.Item>
+                        <Text className={styles.text}>{convertCamelCaseToPascalCase(changeType)}</Text>
+                    </Stack.Item>
+                </Stack>
+            </Stack.Item>
+        </Stack>
     );
 }
