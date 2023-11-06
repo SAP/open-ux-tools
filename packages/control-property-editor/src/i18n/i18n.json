@@ -64,5 +64,6 @@
   "CONFIRM_CHANGE_SUMMARY_DELETE_SUBTEXT": "Are you sure you want to delete the change for this property? This action cannot be undone.",
   "NO_CONTROL_CHANGES_FOUND": "No Control Changes Found",
   "CHANGE": "Change",
-  "FILE": "File: "
+  "FILE": "File: ",
+  "CONTROL": "Selector Id: "
 }
