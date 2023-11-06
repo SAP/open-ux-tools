@@ -2,23 +2,12 @@ import type { ICalloutPositionedInfo } from '@fluentui/react';
 
 const defaultProps: CalloutCollisionTransformProps = {
     target: '.ms-Dialog-actions',
-    container: {
-        position: '.ms-Dialog-main',
-        offset: '.ms-Dialog-content'
-    }
+    container: '.ms-Dialog-main'
 };
-
-export interface CalloutCollisionTransformContainer {
-    // Position element where position should be applied
-    // ToDo check for absolute??
-    position: string;
-    // Element where offset transformation should be applied
-    offset: string;
-}
 
 export interface CalloutCollisionTransformProps {
     // Parent selectors
-    container: CalloutCollisionTransformContainer;
+    container: string;
     target: string;
 }
 
@@ -51,7 +40,7 @@ export class CalloutCollisionTransform {
         console.log('applyTransformation(CalloutCollisionTransform)');
         console.log(position);
         // Just demo code...
-        const targetElement = document.querySelector(this.props.target);
+        const targetElement = document.querySelector(this.props.target) as HTMLElement;
         if (targetElement && position) {
             const targetPosition = targetElement.getBoundingClientRect();
             // ToDo - get height
@@ -63,7 +52,7 @@ export class CalloutCollisionTransform {
                 return;
             }
 
-            const dialog = document.querySelector(this.props.container.position) as HTMLElement;
+            const dialog = document.querySelector(this.props.container) as HTMLElement;
             const dialogPos = dialog.getBoundingClientRect();
             if (dialog && dialogPos) {
                 this.resetOptions = {
@@ -77,17 +66,14 @@ export class CalloutCollisionTransform {
                 dialog.style.top = `${dialogPos.top}px`;
                 dialog.style.left = `${dialogPos.left}px`;
             }
-
-            const resizeTarget = document.querySelector(this.props.container.offset) as HTMLElement;
-            if (resizeTarget) {
-                resizeTarget.style.marginBottom = `${diff}px`;
-            }
+            // Gap to make target visible
+            targetElement.style.paddingTop = `${diff}px`;
         }
     }
 
     public resetTransformation(): void {
         console.log('resetTransformation(CalloutCollisionTransform)');
-        const dialog = document.querySelector(this.props.container.position) as HTMLElement;
+        const dialog = document.querySelector(this.props.container) as HTMLElement;
         const dialogPos = dialog.getBoundingClientRect();
         if (dialog && dialogPos) {
             for (const styleName in this.resetOptions) {
@@ -97,9 +83,9 @@ export class CalloutCollisionTransform {
             }
         }
 
-        const resizeTarget = document.querySelector(this.props.container.offset) as HTMLElement;
-        if (resizeTarget) {
-            resizeTarget.style.marginBottom = '';
+        const targetElement = document.querySelector(this.props.target) as HTMLElement;
+        if (targetElement) {
+            targetElement.style.paddingTop = '';
         }
     }
 
