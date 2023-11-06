@@ -34,6 +34,7 @@ export class CalloutCollisionTransform {
 
     /**
      * Initializes class with options.
+     *
      * @param source Source element.
      * @param props Transformation properties.
      */
@@ -47,6 +48,10 @@ export class CalloutCollisionTransform {
 
     //private getContainer(): void {}
 
+    /**
+     *
+     * @param position
+     */
     public applyTransformation(position?: ICalloutPositionedInfo): void {
         console.log('applyTransformation(CalloutCollisionTransform)');
         console.log(position);
