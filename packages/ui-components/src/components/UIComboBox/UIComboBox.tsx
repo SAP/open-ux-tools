@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IComboBoxProps, IComboBoxState, IAutofillProps, ICalloutPositionedInfo } from '@fluentui/react';
+import type { IComboBoxProps, IComboBoxState, IAutofillProps } from '@fluentui/react';
 import {
     ComboBox,
     IComboBox,
@@ -18,6 +18,7 @@ import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
 import { isDropdownEmpty } from '../UIDropdown';
+import { CalloutCollisionTransform } from './CalloutCollisionTransform';
 
 export {
     IComboBoxOption as UIComboBoxOption,
@@ -76,10 +77,12 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     static defaultProps = { openMenuOnClick: true };
     // Reference to fluent ui combobox
     private comboBox = React.createRef<ComboBoxRef>();
+    private domRef = React.createRef<HTMLDivElement>();
     private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
     private query = '';
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
+    private CalloutCollisionTransform = new CalloutCollisionTransform(this.domRef);
 
     /**
      * Initializes component properties.
@@ -581,74 +584,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         return autofill;
     }
 
-    private resetOptions: any = {};
-    private resetDialogResize = () => {
-        console.log('resetDialogResize');
-        const dialog = document.querySelector('.ms-Dialog-main') as HTMLElement;
-        const dialogPos = dialog.getBoundingClientRect();
-        if (dialog && dialogPos) {
-            for (const styleName in this.resetOptions) {
-                dialog.style[styleName as any] = this.resetOptions[styleName];
-            }
-        }
-
-        const resizeTarget = document.querySelector('.ms-Dialog-content') as HTMLElement;
-        if (resizeTarget) {
-            resizeTarget.style.marginBottom = '';
-        }
-    };
-    private preventDismissOnEvent = (
-        event: Event | React.FocusEvent<Element> | React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>
-    ) => {
-        console.log('preventDismissOnEvent');
-        const targetElement = document.querySelector('.ms-Dialog-actions') as HTMLElement;
-        if (event.type === 'focus' && targetElement.contains(event.target as HTMLElement)) {
-            return true;
-        }
-        return false;
-    };
-    private applyDialogResize = (position?: ICalloutPositionedInfo) => {
-        console.log('onPositioned');
-        console.log(position);
-        // Just demo code...
-        const targetElement = document.querySelector('.ms-Dialog-actions');
-        if (targetElement && position) {
-            const targetPosition = targetElement.getBoundingClientRect();
-            // ToDo - get height
-            const height = 200 + 20;
-            const top = position.elementPosition.top || 0;
-            const diff = top + height - targetPosition.top;
-            console.log(`isOverlapped -> ${diff}`);
-            if (diff < 0) {
-                return;
-            }
-
-            const dialog = document.querySelector('.ms-Dialog-main') as HTMLElement;
-            const dialogPos = dialog.getBoundingClientRect();
-            if (dialog && dialogPos) {
-                this.resetOptions = {
-                    transform: dialog.style.transform,
-                    position: dialog.style.position,
-                    top: dialog.style.top,
-                    left: dialog.style.left
-                };
-                dialog.style.transform = '';
-                dialog.style.position = 'absolute';
-                dialog.style.top = `${dialogPos.top}px`;
-                dialog.style.left = `${dialogPos.left}px`;
-            }
-
-            const resizeTarget = document.querySelector('.ms-Dialog-content') as HTMLElement;
-            if (resizeTarget) {
-                resizeTarget.style.marginBottom = `${diff}px`;
-            }
-        }
-    };
-
     private onMenuDismiss(): void {
         const { multiSelect, onMenuDismiss } = this.props;
         if (multiSelect) {
-            this.resetDialogResize();
+            this.CalloutCollisionTransform.resetTransformation();
         }
         // Call external listener
         onMenuDismiss?.();
@@ -667,6 +606,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             <div ref={this.props.wrapperRef} className={this.getClassNames(messageInfo)}>
                 <ComboBox
                     componentRef={this.comboBox}
+                    ref={this.domRef}
                     disabled={disabled}
                     iconButtonProps={{
                         iconProps: {
@@ -685,8 +625,8 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                             })
                         },
                         ...(this.props.multiSelect && {
-                            preventDismissOnEvent: this.preventDismissOnEvent,
-                            onPositioned: this.applyDialogResize
+                            preventDismissOnEvent: this.CalloutCollisionTransform.preventDismissOnEvent,
+                            onPositioned: this.CalloutCollisionTransform.applyTransformation
                         })
                     }}
                     styles={{
