@@ -5,6 +5,8 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 
+type CommandNames = 'addXML';
+
 /**
  * Class responsible for handling rta calls
  */
@@ -26,7 +28,7 @@ export default class CommandExecutor {
      */
     public async generateAndExecuteCommand(
         runtimeControl: ManagedObject,
-        commandName: 'addXML',
+        commandName: CommandNames,
         modifiedValue: object,
         designMetadata: DesignTimeMetadata,
         flexSettings: FlexSettings

@@ -94,6 +94,8 @@ export interface OutlineNode {
     visible: boolean;
     editable: boolean;
     children: OutlineNode[];
+    icon?: string;
+    extensionPointInfo?: string;
 }
 
 export interface IconDetails {
@@ -205,6 +207,7 @@ const createExternalAction = createActionFactory(EXTERNAL_ACTION_PREFIX);
 export const iconsLoaded = createExternalAction<IconDetails[]>('icons-loaded');
 export const controlSelected = createExternalAction<Control>('control-selected');
 export const selectControl = createExternalAction<string>('select-control');
+export const addExtensionPoint = createExternalAction<OutlineNode>('add-extension-point');
 export const deletePropertyChanges = createExternalAction<PropertyChangeDeletionDetails>('delete-property-changes');
 export const outlineChanged = createExternalAction<OutlineNode[]>('outline-changed');
 export const changeProperty = createExternalAction<PropertyChange>('change-property');
@@ -220,5 +223,6 @@ export type ExternalAction =
     | ReturnType<typeof propertyChanged>
     | ReturnType<typeof outlineChanged>
     | ReturnType<typeof selectControl>
+    | ReturnType<typeof addExtensionPoint>
     | ReturnType<typeof propertyChangeFailed>
     | ReturnType<typeof changeStackModified>;

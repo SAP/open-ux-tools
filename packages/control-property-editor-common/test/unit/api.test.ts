@@ -1,4 +1,5 @@
 import {
+    addExtensionPoint,
     changeProperty,
     changeStackModified,
     controlSelected,
@@ -9,7 +10,7 @@ import {
     propertyChanged,
     selectControl
 } from '../../src/api';
-import type { Control, ChangeStackModified, PropertyChange } from '../../src/api';
+import type { Control, ChangeStackModified, PropertyChange, OutlineNode } from '../../src/api';
 
 describe('createExternalAction', () => {
     test('iconsLoaded', () => {
@@ -139,6 +140,23 @@ describe('createExternalAction', () => {
         } as ChangeStackModified;
         const changedProp = changeStackModified(payload);
         expect(changedProp.type).toBe('[ext] change-stack-modified');
+        expect(changedProp.payload).toStrictEqual(payload);
+    });
+
+    test('addExtensionPoint', () => {
+        const payload = {
+            controlId: 'testId',
+            errorMessage: 'testError',
+            propertyName: 'testProp',
+            controlType: 'sap.ui.extensionpoint',
+            name: 'testExtensionPoint',
+            visible: true,
+            editable: true,
+            children: []
+        } as OutlineNode;
+
+        const changedProp = addExtensionPoint(payload);
+        expect(changedProp.type).toBe('[ext] add-extension-point');
         expect(changedProp.payload).toStrictEqual(payload);
     });
 });
