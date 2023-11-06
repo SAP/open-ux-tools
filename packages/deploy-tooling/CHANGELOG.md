@@ -1,5 +1,13 @@
 # @sap-ux/deploy-tooling
 
+## 0.11.5
+
+### Patch Changes
+
+-   d0e46a5c: Do not validate url if destination is present
+-   Updated dependencies [d0e46a5c]
+    -   @sap-ux/project-input-validator@0.2.1
+
 ## 0.11.4
 
 ### Patch Changes
