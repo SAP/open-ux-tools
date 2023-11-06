@@ -87,6 +87,10 @@ export default class ControllerExtension extends BaseDialog {
                 source.setValueState(ValueState.Error);
                 source.setValueStateText('The controller name cannot contain white spaces or special characters.');
                 this.dialog.getBeginButton().setEnabled(false);
+            } else if(controllerName.length > 64) {
+                source.setValueState(ValueState.Error);
+                source.setValueStateText('A controller file name cannot contain more than 64 characters.');
+                this.dialog.getBeginButton().setEnabled(false);
             } else {
                 this.dialog.getBeginButton().setEnabled(true);
                 source.setValueState(ValueState.None);
