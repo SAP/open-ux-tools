@@ -15,12 +15,13 @@ export interface Control {
     properties: ControlProperty[];
 }
 export type PropertyValue = string | boolean | number;
-
+export type PropertyChangeType = 'propertyChange' | 'propertyBindingChange';
 export interface PropertyChange<T extends PropertyValue = PropertyValue> {
     controlId: string;
-    controlName?: string;
+    controlName: string;
     propertyName: string;
     value: T;
+    changeType: PropertyChangeType;
 }
 export interface PropertyChanged<T extends PropertyValue = PropertyValue> {
     controlId: string;
@@ -93,6 +94,8 @@ export interface OutlineNode {
     visible: boolean;
     editable: boolean;
     children: OutlineNode[];
+    icon?: string;
+    extensionPointInfo?: string;
 }
 
 export interface IconDetails {
@@ -109,6 +112,16 @@ export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> 
     isActive: boolean;
 }
 
+export interface PendingOtherChange {
+    type: 'pending';
+    isActive: boolean;
+    changeType: string;
+    controlId: string;
+    controlName: string;
+}
+
+export type PendingChange = PendingPropertyChange | PendingOtherChange;
+
 export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
     type: 'saved';
     kind: 'valid';
@@ -120,13 +133,14 @@ export interface UnknownSavedChange {
     type: 'saved';
     kind: 'unknown';
     fileName: string;
+    controlId?: string;
     timestamp?: number;
 }
 export type ValidChange = PendingPropertyChange | SavedPropertyChange;
 export type Change = ValidChange | UnknownSavedChange;
 
 export interface ChangeStackModified {
-    pending: PendingPropertyChange[];
+    pending: PendingChange[];
     saved: SavedPropertyChange[];
 }
 
@@ -193,6 +207,7 @@ const createExternalAction = createActionFactory(EXTERNAL_ACTION_PREFIX);
 export const iconsLoaded = createExternalAction<IconDetails[]>('icons-loaded');
 export const controlSelected = createExternalAction<Control>('control-selected');
 export const selectControl = createExternalAction<string>('select-control');
+export const addExtensionPoint = createExternalAction<OutlineNode>('add-extension-point');
 export const deletePropertyChanges = createExternalAction<PropertyChangeDeletionDetails>('delete-property-changes');
 export const outlineChanged = createExternalAction<OutlineNode[]>('outline-changed');
 export const changeProperty = createExternalAction<PropertyChange>('change-property');
@@ -208,5 +223,6 @@ export type ExternalAction =
     | ReturnType<typeof propertyChanged>
     | ReturnType<typeof outlineChanged>
     | ReturnType<typeof selectControl>
+    | ReturnType<typeof addExtensionPoint>
     | ReturnType<typeof propertyChangeFailed>
     | ReturnType<typeof changeStackModified>;

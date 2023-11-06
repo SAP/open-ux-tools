@@ -7,6 +7,11 @@ import { t } from '@sap-ux/project-input-validator/src/i18n';
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
 
+import { isAppStudio } from '@sap-ux/btp-utils';
+
+jest.mock('@sap-ux/btp-utils');
+const mockIsAppStudio = isAppStudio as jest.Mock;
+
 describe('deploy-test validation', () => {
     // default app for testing
     const app = {
@@ -74,6 +79,58 @@ describe('deploy-test validation', () => {
             expect(summaryStr).toContain(`${red('×')} ${t('deploy.invalidAppNameMultipleReason')}`);
             expect(summaryStr).toContain(`${t('deploy.abapInvalidAppNameLength', { length: name.length })}`);
             expect(summaryStr).toContain(`${t('deploy.abapInvalidAppName', { prefix })}`);
+        });
+
+        test('Detect invalid deploy target', async () => {
+            const name = 'ZAPP1';
+            const prefix = 'Z';
+            mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
+            mockedAdtService.getTransportRequests.mockResolvedValueOnce([
+                { transportNumber: 'T000001' },
+                { transportNumber: 'T000002' },
+                { transportNumber: 'T000003' }
+            ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: prefix
+            });
+
+            const output = await validateBeforeDeploy(
+                {
+                    app: { ...app, name },
+                    target: { ...target, url: '' }
+                },
+                mockedProvider as any,
+                nullLogger
+            );
+            expect(output.result).toBe(false);
+            const summaryStr = formatSummary(output.summary);
+            expect(summaryStr).toContain(`${t('Invalid deploy target')}`);
+        });
+
+        test('Skip validating url if destination is provided', async () => {
+            mockIsAppStudio.mockReturnValueOnce(true);
+            const name = 'ZAPP1';
+            const prefix = 'Z';
+            const destination = 'TestDestination';
+            mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
+            mockedAdtService.getTransportRequests.mockResolvedValueOnce([
+                { transportNumber: 'T000001' },
+                { transportNumber: 'T000002' },
+                { transportNumber: 'T000003' }
+            ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: prefix
+            });
+
+            const output = await validateBeforeDeploy(
+                {
+                    app: { ...app, name },
+                    target: { ...target, destination, url: '' }
+                },
+                mockedProvider as any,
+                nullLogger
+            );
+            expect(output.result).toBe(true);
         });
 
         test('adtService error', async () => {

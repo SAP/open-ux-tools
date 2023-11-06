@@ -1,4 +1,5 @@
 export enum ValueState {
     None = 'None',
-    Error = 'Error'
+    Error = 'Error',
+    Success = 'Success'
 }
