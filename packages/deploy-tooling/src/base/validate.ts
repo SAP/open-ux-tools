@@ -82,6 +82,10 @@ export async function validateBeforeDeploy(
         destination: config.target.destination ?? ''
     };
 
+    if (input.package.toUpperCase() === '$TMP') {
+        input.package = '$TMP';
+    }
+
     // output is passed by reference and status updated during the internal pipeline below.
     await validateInputTextFormat(input, output, provider, logger);
     await validatePackageWithAdt(input, output, provider, logger);
@@ -261,10 +265,7 @@ async function validatePackageWithAdt(
     }
 
     // ADT expects input package
-    let inputPackage = input.package;
-    if (inputPackage.toUpperCase() === '$TMP') {
-        inputPackage = '$TMP';
-    }
+    const inputPackage = input.package;
 
     try {
         const adtService = await provider.getAdtService<ListPackageService>(ListPackageService);
