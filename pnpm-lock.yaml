@@ -188,8 +188,8 @@ importers:
         specifier: workspace:*
         version: link:../store
       '@types/adm-zip':
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
@@ -648,8 +648,8 @@ importers:
         specifier: workspace:*
         version: link:../store
       '@types/adm-zip':
-        specifier: 0.5.2
-        version: 0.5.2
+        specifier: 0.5.3
+        version: 0.5.3
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4
@@ -1094,8 +1094,8 @@ importers:
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
       '@sapui5/types':
-        specifier: 1.117.1
-        version: 1.117.1
+        specifier: 1.120.0
+        version: 1.120.0
       '@ui5/cli':
         specifier: 3.6.0
         version: 3.6.0
@@ -6868,8 +6868,8 @@ packages:
       url: 0.11.0
     dev: false
 
-  /@sapui5/types@1.117.1:
-    resolution: {integrity: sha512-7mAr+HLF1FdK7b4n9R3OHazv43RbjoucqfEVUQPgDpj7dT63U8E3gj21NUQ7J17hLXd7eQLtsGudTqDLLHz1QA==}
+  /@sapui5/types@1.120.0:
+    resolution: {integrity: sha512-LsZHfRb7YIc8LBymsgtetUq2IuaMemBIIxHtOoStAPwgUYvpFroW/smrXHVV5pgP9S6iJKOOjCQoDKKXIBhAGw==}
     dependencies:
       '@types/jquery': 3.5.13
       '@types/offscreencanvas': 2019.6.4
@@ -7800,10 +7800,10 @@ packages:
       '@tufjs/canonical-json': 1.0.0
       minimatch: 9.0.2
 
-  /@types/adm-zip@0.5.2:
-    resolution: {integrity: sha512-33OTTnnW3onOE6HJuoqsi7T7Ojupz7zO/Vs5ddRNVCYQnu4lg05RqH/pr9eidHGvGyYfdO4uPO9cvegAMixBCQ==}
+  /@types/adm-zip@0.5.3:
+    resolution: {integrity: sha512-LfeDIiFdvphelYY2aMWTyQBr5cTb1EL9Qcu19jFizdt2sL/jL+fy1fE8IgAKBFI5XfbGukaRDDM5PiJTrovAhA==}
     dependencies:
-      '@types/node': 12.20.55
+      '@types/node': 18.11.9
     dev: true
 
   /@types/archiver@5.3.2:
