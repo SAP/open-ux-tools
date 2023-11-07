@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IComboBoxProps, IComboBoxState, IAutofillProps } from '@fluentui/react';
+import type { IComboBoxProps, IComboBoxState, IAutofillProps, ICalloutProps } from '@fluentui/react';
 import {
     ComboBox,
     IComboBox,
@@ -39,6 +39,7 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     isLoading?: boolean;
     isForceEnabled?: boolean;
     readOnly?: boolean;
+    calloutCollisionTransformation?: boolean;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -585,12 +586,40 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         return autofill;
     }
 
+    /**
+     * Method checks if callout collision transformation is enabled.
+     *
+     * @returns True if callout collision transformation is enabled.
+     */
+    private isCalloutCollisionTransformationEnabled(): boolean {
+        const { multiSelect, calloutCollisionTransformation } = this.props;
+        return !!(multiSelect && calloutCollisionTransformation);
+    }
+
+    /**
+     * Method checks if callout collision transformation is enabled.
+     *
+     * @returns True if callout collision transformation is enabled.
+     */
+    private getCalloutCollisionTransformationProps(): ICalloutProps | undefined {
+        if (this.isCalloutCollisionTransformationEnabled()) {
+            return {
+                preventDismissOnEvent: this.calloutCollisionTransform.preventDismissOnEvent,
+                onPositioned: this.calloutCollisionTransform.applyTransformation
+            };
+        }
+        return undefined;
+    }
+
+    /**
+     * Called when the ComboBox menu is dismissed.
+     */
     private onMenuDismissed(): void {
-        const { highlight, multiSelect, onMenuDismissed } = this.props;
+        const { highlight, onMenuDismissed } = this.props;
         if (highlight) {
             this.reserQuery();
         }
-        if (multiSelect) {
+        if (this.isCalloutCollisionTransformationEnabled()) {
             this.calloutCollisionTransform.resetTransformation();
         }
         // Call external listener
@@ -631,10 +660,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                                 }
                             })
                         },
-                        ...(this.props.multiSelect && {
-                            preventDismissOnEvent: this.calloutCollisionTransform.preventDismissOnEvent,
-                            onPositioned: this.calloutCollisionTransform.applyTransformation
-                        })
+                        ...this.getCalloutCollisionTransformationProps()
                     }}
                     styles={{
                         label: {
