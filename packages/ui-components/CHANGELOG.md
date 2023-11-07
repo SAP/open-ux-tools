@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.12.1
+
+### Patch Changes
+
+-   9896d6f4: add `footer` icon
+
 ## 1.12.0
 
 ### Minor Changes
