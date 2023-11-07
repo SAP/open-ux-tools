@@ -1,23 +1,19 @@
 import React, { useState } from 'react';
-import type { SetStateAction } from 'react';
-import { ContextualMenu, Stack } from '@fluentui/react';
-import type { ICalloutProps, IComboBox, IComboBoxOption, IDropdownOption } from '@fluentui/react';
+import { ContextualMenu } from '@fluentui/react';
+import type { IDropdownOption } from '@fluentui/react';
 
 import {
     UIComboBox,
-    UISelectableOptionMenuItemType,
     UIDefaultButton,
     UIDialog,
-    UIIcon,
     UIDropdown,
     UITextInput,
     UICallout,
-    UICalloutProps
+    UICheckbox,
+    initIcons
 } from '../src/components';
-import { UICheckbox } from '../src/components/UICheckbox';
-import { data, groupsData } from '../test/__mock__/select-data';
+import { data } from '../test/__mock__/select-data';
 
-import { UiIcons, initIcons } from '../src/components/Icons';
 import { CalloutCollisionTransform } from '../src/components/UIComboBox/CalloutCollisionTransform';
 
 initIcons();
@@ -31,18 +27,6 @@ enum ControlTypes {
 }
 
 const controlTypesOptions = Object.values(ControlTypes).map((value) => ({ key: value, text: value }));
-
-const getCalloutCollisionTransformationProps = (
-    calloutCollisionTransform: CalloutCollisionTransform
-): Pick<ICalloutProps, 'preventDismissOnEvent' | 'layerProps'> => {
-    return {
-        preventDismissOnEvent: calloutCollisionTransform.preventDismissOnEvent,
-        layerProps: {
-            onLayerDidMount: calloutCollisionTransform.applyTransformation,
-            onLayerWillUnmount: calloutCollisionTransform.resetTransformation
-        }
-    };
-};
 
 const CustomCallout = (props: { id: string }) => {
     const domRef = React.useRef<HTMLDivElement>(null);
@@ -62,29 +46,25 @@ const CustomCallout = (props: { id: string }) => {
                     }}
                 />
             </div>
-            {isOpen && (
-                <UICallout
-                    target={`#${id}`}
-                    hidden={!isOpen}
-                    isBeakVisible={true}
-                    beakWidth={5}
-                    directionalHint={4}
-                    onDismiss={() => setIsOpen(!isOpen)}
-                    calloutWidth={300}
-                    calloutMinWidth={300}
-                    {...getCalloutCollisionTransformationProps(calloutCollisionTransform.current)}
-                    popupProps={{
-                        ref: menuDomRef
-                    }}>
-                    <div>
-                        lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris
-                        nisi ut aliquip ex ea commodo consequat duis aute irure dolor in reprehenderit in voluptate
-                        velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident
-                        sunt in culpa qui officia deserunt
-                    </div>
-                </UICallout>
-            )}
+            <UICallout
+                target={`#${id}`}
+                hidden={!isOpen}
+                isBeakVisible={true}
+                beakWidth={5}
+                directionalHint={4}
+                onDismiss={() => {
+                    setIsOpen(!isOpen);
+                    calloutCollisionTransform.current.resetTransformation();
+                }}
+                calloutWidth={300}
+                calloutMinWidth={300}
+                preventDismissOnEvent={calloutCollisionTransform.current.preventDismissOnEvent}
+                onPositioned={calloutCollisionTransform.current.applyTransformation}
+                popupProps={{
+                    ref: menuDomRef
+                }}>
+                <div style={{ height: 150, width: 300, backgroundColor: 'green' }} />
+            </UICallout>
         </>
     );
 };

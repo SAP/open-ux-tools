@@ -1,5 +1,3 @@
-import type { ICalloutPositionedInfo } from '@fluentui/react';
-
 // Default properties which applies for dialog scenario with footer buttons
 const defaultProps: CalloutCollisionTransformProps = {
     target: '.ms-Dialog-actions',
@@ -115,8 +113,6 @@ export class CalloutCollisionTransform {
      * Method calculates callout overlap with target and applies transformation to make target visible.
      */
     public applyTransformation(): void {
-        console.log('applyTransformation(CalloutCollisionTransform)');
-
         const elements = this.getElements();
         if (!elements) {
             return;
@@ -153,7 +149,6 @@ export class CalloutCollisionTransform {
      * Method resets current applied transformation.
      */
     public resetTransformation(): void {
-        console.log('resetTransformation(CalloutCollisionTransform)');
         const elements = this.getElements();
         if (!elements) {
             return;
@@ -161,7 +156,7 @@ export class CalloutCollisionTransform {
         const { container, target } = elements;
         for (const styleName in this.originalStyle) {
             if (this.originalStyle[styleName]) {
-                container.dom.style[styleName] = this.originalStyle[styleName] || '';
+                container.dom.style[styleName] = this.originalStyle[styleName] ?? '';
             }
         }
         this.originalStyle = {};
@@ -181,7 +176,6 @@ export class CalloutCollisionTransform {
     public preventDismissOnEvent = (
         event: Event | React.FocusEvent<Element> | React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>
     ): boolean => {
-        console.log('preventDismissOnEvent(CalloutCollisionTransform)');
         const elements = this.getElements();
         if (event.type === 'focus' && elements?.target.dom.contains(event.target as HTMLElement)) {
             return true;
