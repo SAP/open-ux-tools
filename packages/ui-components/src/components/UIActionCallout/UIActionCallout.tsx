@@ -72,7 +72,7 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
         this.icon = props.icon;
         this.onClick = props.onClick;
         this.anchorClicked = false;
-        this.isError = props.isError || false;
+        this.isError = props.isError ?? false;
     }
 
     private onCalloutClick() {
