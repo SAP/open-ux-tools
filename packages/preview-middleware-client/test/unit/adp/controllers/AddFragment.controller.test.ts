@@ -256,7 +256,7 @@ describe('AddFragment', () => {
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
 
-        test('sets error when the fragment name has more than 64 characters', () => {
+        test('sets error when the fragment name exceeds 64 characters', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
