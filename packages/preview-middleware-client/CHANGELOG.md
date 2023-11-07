@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.7.1
+
+### Patch Changes
+
+-   ca61803e: Fixed controller extension/fragment name longer than 64 chars error not showing up
+
+## 0.7.0
+
+### Minor Changes
+
+-   6d2d2255: support all kind of changes from command stack
+
 ## 0.6.0
 
 ### Minor Changes
