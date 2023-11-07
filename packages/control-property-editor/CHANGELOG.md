@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.4.0
+
+### Minor Changes
+
+-   6d2d2255: support all kind of changes from command stack
+
+## 0.3.1
+
+### Patch Changes
+
+-   c800f248: chore(deps): update dependency postcss to v8.4.31 [security]
+
 ## 0.3.0
 
 ### Minor Changes

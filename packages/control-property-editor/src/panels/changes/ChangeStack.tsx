@@ -1,12 +1,10 @@
 import type { ReactElement } from 'react';
 import React from 'react';
-
 import { Stack } from '@fluentui/react';
-
 import type { Change, ValidChange } from '@sap-ux-private/control-property-editor-common';
 
 import { Separator } from '../../components';
-import type { ControlGroupProps, ControlPropertyChange } from './ControlGroup';
+import type { ControlGroupProps, ControlChange } from './ControlGroup';
 import { ControlGroup } from './ControlGroup';
 import type { UnknownChangeProps } from './UnknownChange';
 import { UnknownChange } from './UnknownChange';
@@ -87,19 +85,23 @@ function convertChanges(changes: Change[]): Item[] {
     const items: Item[] = [];
     let i = 0;
     while (i < changes.length) {
-        const change = changes[i];
+        const change: Change = changes[i];
+        let group: ControlGroupProps;
         if (change.type === 'saved' && change.kind === 'unknown') {
             items.push({
                 fileName: change.fileName,
-                timestamp: change.timestamp
+                timestamp: change.timestamp,
+                header: true,
+                controlId: change.controlId ?? ''
             });
             i++;
         } else {
-            const group: ControlGroupProps = {
+            group = {
                 controlId: change.controlId,
+                controlName: change.controlName,
                 text: convertCamelCaseToPascalCase(change.controlName),
                 changeIndex: i,
-                changes: [toPropertyChangeProps(change, i)]
+                changes: [classifyChange(change, i)]
             };
             items.push(group);
             i++;
@@ -112,7 +114,7 @@ function convertChanges(changes: Change[]): Item[] {
                 ) {
                     break;
                 }
-                group.changes.push(toPropertyChangeProps(nextChange, i));
+                group.changes.push(classifyChange(nextChange, i));
                 i++;
             }
         }
@@ -121,21 +123,33 @@ function convertChanges(changes: Change[]): Item[] {
 }
 
 /**
- * Converts a change to ControlPropertyChange.
+ * Classify Change for grouping.
  *
  * @param change ValidChange
  * @param changeIndex number
- * @returns ControlPropertyChange
+ * @returns ControlChange
  */
-function toPropertyChangeProps(change: ValidChange, changeIndex: number): ControlPropertyChange {
-    const { controlId, propertyName, value, controlName } = change;
-    const base = {
-        controlId,
-        controlName,
-        propertyName,
-        value,
-        changeIndex
-    };
+function classifyChange(change: ValidChange, changeIndex: number): ControlChange {
+    let base;
+    if (change.changeType === 'propertyChange' || change.changeType === 'propertyBindingChange') {
+        const { controlId, propertyName, value, controlName, changeType } = change;
+        base = {
+            controlId,
+            controlName,
+            propertyName,
+            value,
+            changeIndex,
+            changeType
+        };
+    } else {
+        const { controlId, controlName, changeType } = change;
+        base = {
+            controlId,
+            controlName,
+            changeIndex,
+            changeType
+        };
+    }
     if (change.type === 'pending') {
         const { isActive } = change;
         return {
@@ -154,26 +168,47 @@ function toPropertyChangeProps(change: ValidChange, changeIndex: number): Contro
 }
 
 /**
- * Returns true, if controlId is defined.
+ * Returns true, if controlName is defined.
  *
  * @param change ControlGroupProps | UnknownChangeProps
  * @returns boolean
  */
 export function isKnownChange(change: ControlGroupProps | UnknownChangeProps): change is ControlGroupProps {
-    return (change as ControlGroupProps).controlId !== undefined;
+    return (change as ControlGroupProps).controlName !== undefined;
 }
 
-const filterPropertyChanges = (changes: ControlPropertyChange[], query: string): ControlPropertyChange[] => {
+const filterPropertyChanges = (changes: ControlChange[], query: string): ControlChange[] => {
     return changes.filter((item) => {
-        return (
-            !query ||
-            item.propertyName.trim().toLowerCase().includes(query) ||
-            convertCamelCaseToPascalCase(item.propertyName.toString()).trim().toLowerCase().includes(query) ||
-            item.value.toString().trim().toLowerCase().includes(query) ||
-            convertCamelCaseToPascalCase(item.value.toString()).trim().toLowerCase().includes(query) ||
-            (item.timestamp && getFormattedDateAndTime(item.timestamp).trim().toLowerCase().includes(query))
-        );
+        if (item.propertyName) {
+            return (
+                !query ||
+                item.propertyName.trim().toLowerCase().includes(query) ||
+                convertCamelCaseToPascalCase(item.propertyName.toString()).trim().toLowerCase().includes(query) ||
+                item.value.toString().trim().toLowerCase().includes(query) ||
+                convertCamelCaseToPascalCase(item.value.toString()).trim().toLowerCase().includes(query) ||
+                (item.timestamp && getFormattedDateAndTime(item.timestamp).trim().toLowerCase().includes(query))
+            );
+        } else if (item.changeType) {
+            const changeType = convertCamelCaseToPascalCase(item.changeType);
+            return !query || changeType.trim().toLowerCase().includes(query);
+        }
     });
+};
+
+const isQueryMatchesChange = (item: UnknownChangeProps, query: string): boolean => {
+    const parts = item.fileName.split('_');
+    const changeName = parts[parts.length - 1];
+    const name = convertCamelCaseToPascalCase(changeName + 'Change');
+    let dateTime = '';
+    if (item.timestamp) {
+        dateTime = getFormattedDateAndTime(item.timestamp).trim();
+    }
+    return (
+        !query ||
+        item.fileName.trim().toLowerCase().includes(query) ||
+        name.trim().toLowerCase().includes(query) ||
+        dateTime.toLowerCase().includes(query)
+    );
 };
 
 /**
@@ -191,6 +226,9 @@ function filterGroup(model: Item[], query: string): Item[] {
     for (const item of model) {
         let parentMatch = false;
         if (!isKnownChange(item)) {
+            if (isQueryMatchesChange(item, query)) {
+                filteredModel.push({ ...item, changes: [] });
+            }
             continue;
         }
         const name = item.text.trim().toLowerCase();
