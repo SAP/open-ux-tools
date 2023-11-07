@@ -5,18 +5,20 @@ import { Link, Stack } from '@fluentui/react';
 import { useAppDispatch } from '../../store';
 import { selectControl } from '@sap-ux-private/control-property-editor-common';
 
-import type { PropertyChangeProps } from './PropertyChange';
+import type { ChangeProps } from './ChangesPanel';
 import { PropertyChange } from './PropertyChange';
+import { OtherChange } from './OtherChange';
 
 import styles from './ControlGroup.module.scss';
 
 export interface ControlGroupProps {
     text: string;
     controlId: string;
+    controlName: string;
     changeIndex: number;
-    changes: ControlPropertyChange[];
+    changes: ControlChange[];
 }
-export type ControlPropertyChange = Omit<PropertyChangeProps, 'actionClassName'>;
+export type ControlChange = Omit<ChangeProps, 'actionClassName'>;
 
 /**
  * React Element for control groups.
@@ -50,10 +52,16 @@ export function ControlGroup(controlGroupProps: ControlGroupProps): ReactElement
             </Stack.Item>
             {changes.map((change) => (
                 <Stack.Item
-                    data-testid={`${stackName}-${controlId}-${change.propertyName}-${change.changeIndex}`}
+                    data-testid={`${stackName}-${controlId}-${change.propertyName ?? change.changeType}-${
+                        change.changeIndex
+                    }`}
                     key={`${change.changeIndex}`}
                     className={styles.item}>
-                    <PropertyChange {...change} actionClassName={styles.actions} />
+                    {['propertyChange', 'propertyBindingChange'].includes(change.changeType) ? (
+                        <PropertyChange {...change} actionClassName={styles.actions} />
+                    ) : (
+                        <OtherChange {...change} actionClassName={styles.actions} />
+                    )}
                 </Stack.Item>
             ))}
         </Stack>

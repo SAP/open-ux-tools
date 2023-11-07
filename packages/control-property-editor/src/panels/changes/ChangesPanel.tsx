@@ -17,6 +17,22 @@ import { ChangeStackHeader } from './ChangeStackHeader';
 
 import styles from './ChangesPanel.module.scss';
 
+export interface ChangeProps {
+    controlId: string;
+    controlName: string;
+    changeIndex: number;
+    changeType: string;
+    propertyName: string;
+    value: string | number | boolean;
+    isActive: boolean;
+    timestamp?: number;
+    fileName?: string;
+    /**
+     * Class used for showing and hiding actions
+     */
+    actionClassName: string;
+}
+
 /**
  * React element for ChangePanel.
  *
