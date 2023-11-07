@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.12.0
+
+### Minor Changes
+
+-   22a21267: UISplitButton update state on props change
+
 ## 1.11.21
 
 ### Patch Changes
