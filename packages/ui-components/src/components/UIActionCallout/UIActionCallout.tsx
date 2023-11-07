@@ -99,7 +99,7 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
                 target={`#${this.targetElementId}`}
                 isBeakVisible={true}
                 doNotLayer={true}
-                beakWidth={4}
+                beakWidth={10}
                 calloutMaxWidth={230}
                 calloutMinWidth={230}
                 directionalHint={DirectionalHint.bottomLeftEdge}
