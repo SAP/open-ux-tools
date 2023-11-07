@@ -114,9 +114,18 @@ export default class ControllerExtension extends BaseDialog {
             return;
         }
 
+       if(controllerName.length > 64) {
+            updateDialogState(
+                ValueState.Error,
+                'A controller file name cannot contain more than 64 characters.'
+            );
+            return;
+        }
+        
         updateDialogState(ValueState.Success);
         this.model.setProperty('/newControllerName', controllerName);
     }
+
 
     /**
      * Handles create button press
