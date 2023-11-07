@@ -17777,6 +17777,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 
             opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
+                
+                When.onTheTravelList.onFilterBar().iExecuteSearch();
+                
                 Then.onTheTravelList.onTable().iCheckRows();
 
                 When.onTheTravelList.onTable().iPressRow(0);

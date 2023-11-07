@@ -17,6 +17,9 @@ sap.ui.define([
 <% if (startLR) { %>
             opaTest("Navigate to ObjectPage", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
+                <% if (!hideFilterBar) { %>
+                When.onThe<%- startLR%>.onFilterBar().iExecuteSearch();
+                <%} %>
                 Then.onThe<%- startLR%>.onTable().iCheckRows();
 <% if (navigatedOP) { %>
                 When.onThe<%- startLR%>.onTable().iPressRow(0);

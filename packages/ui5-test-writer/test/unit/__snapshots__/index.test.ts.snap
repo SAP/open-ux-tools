@@ -187,6 +187,9 @@ Object {
 
             opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
+                
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                
                 Then.onTheEmployeesList.onTable().iCheckRows();
 
                 When.onTheEmployeesList.onTable().iPressRow(0);
@@ -526,6 +529,9 @@ Object {
 
             opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
+                
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                
                 Then.onTheEmployeesList.onTable().iCheckRows();
 
                 When.onTheEmployeesList.onTable().iPressRow(0);
@@ -840,6 +846,9 @@ Object {
 
             opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
+                
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                
                 Then.onTheEmployeesList.onTable().iCheckRows();
 
                 When.onTheEmployeesList.onTable().iPressRow(0);
@@ -1154,6 +1163,9 @@ Object {
 
             opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
+                
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                
                 Then.onTheEmployeesList.onTable().iCheckRows();
 
                 When.onTheEmployeesList.onTable().iPressRow(0);
@@ -1445,6 +1457,9 @@ Object {
 
             opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
+                
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                
                 Then.onTheEmployeesList.onTable().iCheckRows();
 
             });
@@ -2300,6 +2315,9 @@ Object {
 
             opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
+                
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                
                 Then.onTheEmployeesList.onTable().iCheckRows();
 
                 When.onTheEmployeesList.onTable().iPressRow(0);
@@ -2701,6 +2719,9 @@ Object {
 
             opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
+                
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                
                 Then.onTheEmployeesList.onTable().iCheckRows();
 
                 When.onTheEmployeesList.onTable().iPressRow(0);
@@ -3081,6 +3102,9 @@ Object {
 
             opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
+                
+                When.onTheEmployeesListTarget.onFilterBar().iExecuteSearch();
+                
                 Then.onTheEmployeesListTarget.onTable().iCheckRows();
 
                 When.onTheEmployeesListTarget.onTable().iPressRow(0);

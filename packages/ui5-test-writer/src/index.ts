@@ -33,13 +33,18 @@ function readManifest(fs: Editor, basePath: string): Manifest {
  * @param manifest - the app descriptor of the app
  * @returns the application type. An exception is thrown if it can't be found or if it's not supported
  */
-function getAppTypeFromManifest(manifest: Manifest): string {
+function getAppTypeAndHideFilterBarFromManifest(manifest: Manifest): {
+    applicationType: string;
+    hideFilterBar: boolean;
+} {
     const appTargets = manifest['sap.ui5']?.routing?.targets;
+    let hideFilterBar = false;
     let isFEV4 = false;
     for (const targetKey in appTargets) {
         const target = appTargets[targetKey] as FEV4ManifestTarget;
         if (target.type === 'Component' && target.name && target.name in SupportedPageTypes) {
             isFEV4 = true;
+            hideFilterBar = target.options?.settings?.hideFilterBar ?? false;
         }
     }
 
@@ -47,7 +52,7 @@ function getAppTypeFromManifest(manifest: Manifest): string {
         throw new ValidationError(t('error.badApplicationType'));
     }
 
-    return 'v4'; // For the time being, only FE V4 is supported
+    return { applicationType: 'v4', hideFilterBar }; // For the time being, only FE V4 is supported
 }
 
 /**
@@ -116,11 +121,13 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
  * @param opaConfig.htmlTarget - the name of the html file that will be used in the OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
+ * @param hideFilterBar - whether the filter bar should be hidden in the generated tests
  * @returns OPA test configuration object
  */
 function createConfig(
     manifest: Manifest,
-    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string }
+    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
+    hideFilterBar: boolean
 ): FEV4OPAConfig {
     // General application info
     const { appID, appPath } = getAppFromManifest(manifest, opaConfig.appID);
@@ -130,7 +137,8 @@ function createConfig(
         appPath,
         pages: [],
         opaJourneyFileName: opaConfig.scriptName ?? 'FirstJourney',
-        htmlTarget: opaConfig.htmlTarget ?? 'index.html'
+        htmlTarget: opaConfig.htmlTarget ?? 'index.html',
+        hideFilterBar
     };
 
     // Identify startup targets from the routes
@@ -261,9 +269,9 @@ export function generateOPAFiles(
     const editor = fs || create(createStorage());
 
     const manifest = readManifest(editor, basePath);
-    const applicationType = getAppTypeFromManifest(manifest);
+    const { applicationType, hideFilterBar } = getAppTypeAndHideFilterBarFromManifest(manifest);
 
-    const config = createConfig(manifest, opaConfig);
+    const config = createConfig(manifest, opaConfig, hideFilterBar);
 
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
     const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
@@ -294,7 +302,8 @@ export function generateOPAFiles(
     const journeyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
-        navigatedOP: LROP.pageOP?.targetKey
+        navigatedOP: LROP.pageOP?.targetKey,
+        hideFilterBar: config.hideFilterBar
     };
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration/FirstJourney.js'),
@@ -328,7 +337,7 @@ export function generatePageObjectFile(
     const editor = fs || create(createStorage());
 
     const manifest = readManifest(editor, basePath);
-    const applicationType = getAppTypeFromManifest(manifest);
+    const { applicationType } = getAppTypeAndHideFilterBarFromManifest(manifest);
 
     const pageConfig = createPageConfig(manifest, pageObjectParameters.targetKey, pageObjectParameters.appID);
     if (pageConfig) {
