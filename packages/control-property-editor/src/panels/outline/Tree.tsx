@@ -20,6 +20,20 @@ interface OutlineNodeItem extends OutlineNode {
     path: string[];
 }
 
+type CommonHeaderCellProps = {
+    groupHeaderProps?: IGroupHeaderProps;
+    selectNode: string;
+    paddingValue: number;
+    chevronTransform: string;
+    groupName: string;
+    refProps: {
+        ref?: (node: HTMLDivElement) => void;
+    };
+    focusEditable: string;
+    controlChange?: object;
+    indicator: JSX.Element;
+};
+
 export const Tree = (): ReactElement => {
     const dispatch = useDispatch();
 
@@ -243,6 +257,7 @@ export const Tree = (): ReactElement => {
         const action = selectControl(item.controlId);
         dispatch(action);
     };
+
     const onSelectHeader = (node: IGroup | undefined): void => {
         if (node) {
             setSelection({
@@ -259,6 +274,7 @@ export const Tree = (): ReactElement => {
             dispatch(action);
         }
     };
+
     const onRenderCell = (nestingDepth?: number, item?: OutlineNodeItem, itemIndex?: number): React.ReactNode => {
         const paddingValue = (item?.level ?? 0) * 10 + 45;
         const classNames: string[] = ['tree-row'];
@@ -304,6 +320,7 @@ export const Tree = (): ReactElement => {
             </div>
         ) : null;
     };
+
     const onToggleCollapse = (groupHeaderProps?: IGroupHeaderProps): void => {
         if (groupHeaderProps?.onToggleCollapse && groupHeaderProps?.group) {
             groupHeaderProps?.onToggleCollapse(groupHeaderProps?.group);
@@ -323,6 +340,102 @@ export const Tree = (): ReactElement => {
             }
         }
     };
+
+    const handleChevronClick = (e: React.MouseEvent, groupHeaderProps: IGroupHeaderProps | undefined) => {
+        onToggleCollapse(groupHeaderProps);
+        e.stopPropagation();
+    };
+
+    const HeaderContent: React.FC<CommonHeaderCellProps> = ({
+        groupHeaderProps,
+        paddingValue,
+        chevronTransform,
+        groupName
+    }) => {
+        return (
+            <span style={{ paddingLeft: paddingValue }} className="tree-cell">
+                {groupHeaderProps?.group?.count !== 0 && (
+                    <Icon
+                        className={`${chevronTransform}`}
+                        iconName={UiIcons.Chevron}
+                        onClick={(e) => handleChevronClick(e, groupHeaderProps)}
+                    />
+                )}
+                <div style={{ cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis' }}>{groupName}</div>
+            </span>
+        );
+    };
+
+    const TooltipAndExtensionPoint: React.FC<CommonHeaderCellProps> = ({
+        groupHeaderProps,
+        paddingValue,
+        chevronTransform,
+        groupName
+    }) => {
+        const tooltipId = `tooltip--${groupName}`;
+        const isExtensionPoint = groupHeaderProps?.group?.data?.controlType === 'sap.ui.extensionpoint';
+
+        const handleContextMenu = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>): void => {
+            if (isExtensionPoint) {
+                handleOpenTooltip(e, tooltipId);
+            }
+        };
+
+        const handleExtensionPointClick = () => {
+            handleOpenFragmentDialog(groupHeaderProps?.group?.data, tooltipId);
+        };
+
+        return (
+            <span
+                style={{ paddingLeft: paddingValue }}
+                data-testid="tooltip-container"
+                className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
+                onContextMenu={handleContextMenu}>
+                {groupHeaderProps?.group?.count !== 0 && (
+                    <Icon
+                        className={`${chevronTransform}`}
+                        iconName={UiIcons.Chevron}
+                        onClick={(e) => handleChevronClick(e, groupHeaderProps)}
+                    />
+                )}
+                {isExtensionPoint && (
+                    <Icon className={`${chevronTransform} extension-icon`} iconName={UiIcons.DataSource} />
+                )}
+                <div
+                    style={{ cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    title={isExtensionPoint ? groupName : ''}>
+                    {groupName}
+                </div>
+                {isExtensionPoint && (
+                    <div id={tooltipId} className="tooltip">
+                        <button data-testid="tooltip-dialog-button" onClick={handleExtensionPointClick}>
+                            Add Fragment at Extension Point
+                        </button>
+                    </div>
+                )}
+            </span>
+        );
+    };
+
+    const HeaderCell: React.FC<CommonHeaderCellProps> = (props) => {
+        const { refProps, selectNode, focusEditable, groupHeaderProps, indicator } = props;
+
+        return (
+            <div
+                {...refProps}
+                aria-hidden
+                className={`${selectNode} tree-row ${focusEditable}`}
+                onClick={(): void => onSelectHeader(groupHeaderProps?.group)}>
+                {scenario !== 'ADAPTATION_PROJECT' ? (
+                    <HeaderContent {...props} />
+                ) : (
+                    <TooltipAndExtensionPoint {...props} />
+                )}
+                <div style={{ marginLeft: '10px', marginRight: '10px' }}>{indicator}</div>
+            </div>
+        );
+    };
+
     const onRenderHeader = (groupHeaderProps?: IGroupHeaderProps): React.JSX.Element | null => {
         const selectNode = selection.group?.key === groupHeaderProps?.group?.key ? selectedClassName : '';
         let paddingValue = (groupHeaderProps?.group?.level ?? 0) * 10 + 15;
@@ -341,7 +454,7 @@ export const Tree = (): ReactElement => {
         if (selectNode) {
             refProps.ref = scrollRef;
         }
-        const isExtensionPoint = groupHeaderProps?.group?.data?.controlType === 'sap.ui.extensionpoint';
+
         const focus = filterQuery.filter((item) => item.name === FilterName.focusEditable)[0].value as boolean;
         const focusEditable = !groupHeaderProps?.group?.data?.editable && focus ? 'focusEditable' : '';
         const controlChange = controlChanges[groupHeaderProps?.group?.key ?? ''];
@@ -351,76 +464,18 @@ export const Tree = (): ReactElement => {
             <></>
         );
 
-        const tooltipId = `tooltip--${groupName}`;
-
         return (
-            <div
-                {...refProps}
-                aria-hidden
-                className={`${selectNode} tree-row ${focusEditable}`}
-                onClick={(): void => onSelectHeader(groupHeaderProps?.group)}>
-                {scenario !== 'ADAPTATION_PROJECT' ? (
-                    <span style={{ paddingLeft: paddingValue }} className="tree-cell">
-                        {groupHeaderProps?.group?.count !== 0 && (
-                            <Icon
-                                className={`${chevronTransform}`}
-                                iconName={UiIcons.Chevron}
-                                onClick={(event) => {
-                                    onToggleCollapse(groupHeaderProps);
-                                    event.stopPropagation();
-                                }}
-                            />
-                        )}
-                        <div
-                            style={{
-                                cursor: 'pointer',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis'
-                            }}>
-                            {groupName}
-                        </div>
-                    </span>
-                ) : (
-                    <span
-                        style={{ paddingLeft: paddingValue }}
-                        data-testid="tooltip-container"
-                        className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
-                        onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
-                        {groupHeaderProps?.group?.count !== 0 && (
-                            <Icon
-                                className={`${chevronTransform}`}
-                                iconName={UiIcons.Chevron}
-                                onClick={(event) => {
-                                    onToggleCollapse(groupHeaderProps);
-                                    event.stopPropagation();
-                                }}
-                            />
-                        )}
-                        {isExtensionPoint && (
-                            <Icon className={`${chevronTransform} extension-icon`} iconName={UiIcons.DataSource} />
-                        )}
-                        <div
-                            style={{
-                                cursor: 'pointer',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis'
-                            }}
-                            title={isExtensionPoint ? groupName : ''}>
-                            {groupName}
-                        </div>
-                        {isExtensionPoint && (
-                            <div id={tooltipId} className="tooltip">
-                                <button
-                                    data-testid="tooltip-dialog-button"
-                                    onClick={() => handleOpenFragmentDialog(groupHeaderProps?.group?.data, tooltipId)}>
-                                    Add Fragment at Extension Point
-                                </button>
-                            </div>
-                        )}
-                    </span>
-                )}
-                <div style={{ marginLeft: '10px', marginRight: '10px' }}>{indicator}</div>
-            </div>
+            <HeaderCell
+                groupHeaderProps={groupHeaderProps}
+                selectNode={selectNode}
+                paddingValue={paddingValue}
+                chevronTransform={chevronTransform}
+                groupName={groupName}
+                refProps={refProps}
+                focusEditable={focusEditable}
+                controlChange={controlChange}
+                indicator={indicator}
+            />
         );
     };
     const groupRenderProps: IGroupRenderProps = {

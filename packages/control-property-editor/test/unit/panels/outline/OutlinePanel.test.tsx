@@ -139,7 +139,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: 'UI_ADAPTATION',
+            scenario: scenario.UiAdaptation,
             selectedControl: undefined,
             changes: {
                 pending: [],
