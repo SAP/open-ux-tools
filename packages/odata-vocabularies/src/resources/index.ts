@@ -1,3 +1,5 @@
+import type { CSDL } from '@sap-ux/vocabularies/CSDL';
+
 import Aggregation from './Org.OData.Aggregation.V1';
 import Auth from './Org.OData.Authorization.V1';
 import Capabilities from './Org.OData.Capabilities.V1';
@@ -136,7 +138,7 @@ export const ALIAS_TO_NAMESPACE: Map<VocabularyAlias, VocabularyNamespace> = new
     ['HTML5', 'com.sap.vocabularies.HTML5.v1']
 ]);
 
-export default {
+const vocabularies: Record<string, CSDL> = {
     Aggregation,
     Auth,
     Capabilities,
@@ -162,3 +164,5 @@ export default {
     UI,
     HTML5
 };
+
+export default vocabularies;

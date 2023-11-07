@@ -1,6 +1,6 @@
 import { loadVocabulariesInformation } from './../src/loader';
-import type { Term } from './../src/types/vocabularyService';
-import { ENTITY_TYPE_KIND } from './../src/types/baseTypes';
+import type { Term } from '../src/types/vocabulary-service';
+import { ENTITY_TYPE_KIND } from '../src/types/base-types';
 
 declare const expect: jest.Expect;
 
@@ -29,7 +29,7 @@ describe('lib vocabulary loader', () => {
         // Act
         const specificTargetKind = vocabularyInformation.byTarget.get(target);
         // Expect
-        expect(specificTargetKind.has(term)).toBeTruthy();
+        expect(specificTargetKind?.has(term)).toBeTruthy();
     });
     it('namespace listed with alias ', () => {
         // Expect

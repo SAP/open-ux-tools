@@ -1,4 +1,5 @@
-// Last content update: Mon Oct 30 2023 12:01:41 GMT+0100 (GMT+01:00)
+// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
     '$Version': '4.01',
@@ -2178,4 +2179,4 @@ export default {
                 'Possible values are\n        \n- Namespace-qualified name of an action or function (`foo.bar`)\n- Namespace-qualified name of an action or function followed by parentheses with the parameter signature to identify a specific overload, like in an [annotation target](https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_Target) (`foo.bar(baz.qux)`)\n- Simple name of an action import or function import of the annotated service (`quux`)\n- Namespace-qualified name of an entity container, followed by a slash and the simple name of an action import or function import in any referenced schema (`foo.corge/quux`)'
         }
     }
-};
+} as CSDL;

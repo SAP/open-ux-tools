@@ -1,4 +1,5 @@
-// Last content update: Mon Oct 30 2023 12:01:41 GMT+0100 (GMT+01:00)
+// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
     '$Version': '4.0',
@@ -188,4 +189,4 @@ export default {
                 'Sensitive data is a colloquial term usually including the following data:\n\n-  Special categories of personal data such as data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, or trade union membership, and the processing of genetic data, biometric data, data concerning health or sex life or sexual orientation\n\n-  Personal data subject to professional secrecy\n\n-  Personal data relating to criminal or administrative offences\n\n-  Personal data concerning bank or credit card accounts\n\nSee also: [What personal data is considered sensitive?](https://ec.europa.eu/info/law/law-topic/data-protection/reform/rules-business-and-organisations/legal-grounds-processing-data/sensitive-data/what-personal-data-considered-sensitive_en)'
         }
     }
-};
+} as CSDL;

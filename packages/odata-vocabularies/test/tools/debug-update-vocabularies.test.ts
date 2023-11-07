@@ -1,4 +1,4 @@
-import * as Vocabularies from '../../src/tools/Vocabularies';
+import * as Vocabularies from '../../tools/update';
 
 // -----------------------------------------------------------------
 // Please keep this test for easier debugging:
@@ -7,5 +7,5 @@ import * as Vocabularies from '../../src/tools/Vocabularies';
 // -----------------------------------------------------------------
 it.skip('DEBUG ONLY: updateVocabularies', async () => {
     const vocabularies: any = await Vocabularies.updateVocabularies();
-    expect(vocabularies).toBeTruthy;
+    expect(vocabularies).toBeTruthy();
 });

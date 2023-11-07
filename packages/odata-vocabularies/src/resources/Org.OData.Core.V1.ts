@@ -1,4 +1,5 @@
-// Last content update: Mon Oct 30 2023 12:01:41 GMT+0100 (GMT+01:00)
+// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
     '$Version': '4.0',
@@ -701,4 +702,4 @@ export default {
                 'The select-list of a context URL MUST be `(@Core.AnyStructure)` if it would otherwise be empty,\n          but this instance annotation SHOULD be omitted from the response value.'
         }
     }
-};
+} as CSDL;

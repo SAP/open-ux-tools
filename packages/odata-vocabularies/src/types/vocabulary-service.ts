@@ -8,9 +8,9 @@
  * Typescript types should represent at minimum those features of a vocabulary object that are used in
  * annotation-modeler core or annotation modeler APIs
  */
-import type { FullyQualifiedName, FullyQualifiedTypeName, Namespace, SimpleIdentifier, TargetKind } from './baseTypes';
+import type { FullyQualifiedName, FullyQualifiedTypeName, Namespace, SimpleIdentifier, TargetKind } from './base-types';
 
-import type { COMPLEX_TYPE_KIND, ENUM_TYPE_KIND, TERM_KIND, TYPE_DEFINITION_KIND } from './baseTypes';
+import type { COMPLEX_TYPE_KIND, ENUM_TYPE_KIND, TERM_KIND, TYPE_DEFINITION_KIND, PROPERTY_KIND } from './base-types';
 
 import type { VocabularyNamespace } from '../resources';
 
@@ -138,7 +138,6 @@ export interface TypeDefinition extends PrimitiveType {
 /**
  * Property of a complex type ("$Kind": "Property")
  */
-export const PROPERTY_KIND = 'Property';
 
 export interface ComplexTypeProperty extends BaseVocabularyObject {
     kind: typeof PROPERTY_KIND;
@@ -176,41 +175,40 @@ export interface ExpandedComplexType extends ComplexTypeBase {
 /**
  * target kinds - available values for AppliesTo
  */
-export enum TargetKindValue {
-    Action = 'Action',
-    ActionImport = 'ActionImport',
-    Annotation = 'Annotation',
-    Apply = 'Apply', // Application of a client-side function in an annotation
-    Cast = 'Cast', // Type Cast annotation expression
-    Collection = 'Collection', // Entity Set or collection-valued Property or Navigation Property
-    ComplexType = 'ComplexType',
-    EntityContainer = 'EntityContainer',
-    EntitySet = 'EntitySet',
-    EntityType = 'EntityType',
-    EnumType = 'EnumType',
-    Function = 'Function',
-    FunctionImport = 'FunctionImport',
-    If = 'If', // Conditional annotation expression
-    Include = 'Include', // Reference to an Included Schema
-    IsOf = 'IsOf', // Type Check annotation expression
-    LabeledElement = 'LabeledElement', // Labeled Element expression
-    Member = 'Member', // Enumeration Member
-    NavigationProperty = 'NavigationProperty',
-    Null = 'Null', // Null annotation expression
-    OnDelete = 'OnDelete', // On-Delete Action of a navigation property
-    Parameter = 'Parameter', // Action of Function Parameter
-    Property = 'Property', // Property of a structured type
-    PropertyValue = 'PropertyValue', // Property value of a Record annotation expression
-    Record = 'Record', // Record annotation expression
-    Reference = 'Reference', // Reference to another CSDL document
-    ReferentialConstraint = 'ReferentialConstraint', //Referential Constraint of a navigation property
-    ReturnType = 'ReturnType', // Return Type of an Action or Function
-    Schema = 'Schema',
-    Singleton = 'Singleton',
-    Term = 'Term',
-    TypeDefinition = 'TypeDefinition',
-    UrlRef = 'UrlRef' // UrlRef annotation expression
-}
+export type TargetKindValue =
+    | 'Action'
+    | 'ActionImport'
+    | 'Annotation'
+    | 'Apply' // Application of a client-side function in an annotation
+    | 'Cast' // Type Cast annotation expression
+    | 'Collection' // Entity Set or collection-valued Property or Navigation Property
+    | 'ComplexType'
+    | 'EntityContainer'
+    | 'EntitySet'
+    | 'EntityType'
+    | 'EnumType'
+    | 'Function'
+    | 'FunctionImport'
+    | 'If' // Conditional annotation expression
+    | 'Include' // Reference to an Included Schema
+    | 'IsOf' // Type Check annotation expression
+    | 'LabeledElement' // Labeled Element expression
+    | 'Member' // Enumeration Member
+    | 'NavigationProperty'
+    | 'Null'
+    | 'OnDelete' // On-Delete Action of a navigation property
+    | 'Parameter' // Action of Function Parameter
+    | 'Property' // Property of a structured type
+    | 'PropertyValue' // Property value of a Record annotation expression
+    | 'Record' // Record annotation expression
+    | 'Reference' // Reference to another CSDL document
+    | 'ReferentialConstraint' //Referential Constraint of a navigation property
+    | 'ReturnType' // Return Type of an Action or Function
+    | 'Schema'
+    | 'Singleton'
+    | 'Term'
+    | 'TypeDefinition'
+    | 'UrlRef'; // UrlRef annotation expression
 
 /**
  * possible results for checking applicability of term

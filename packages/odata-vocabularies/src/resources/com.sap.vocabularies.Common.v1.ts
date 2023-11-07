@@ -1,4 +1,5 @@
-// Last content update: Mon Oct 30 2023 12:01:41 GMT+0100 (GMT+01:00)
+// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
     '$Version': '4.0',
@@ -772,7 +773,9 @@ export default {
             '$Kind': 'Term',
             '$AppliesTo': ['Property', 'Parameter'],
             '@Org.OData.Core.V1.Description':
-                'Contains the qualifier of the ValueList or ValueListMapping that should be used for validation'
+                'Contains the qualifier of the ValueList or ValueListMapping that should be used for validation',
+            '@Org.OData.Core.V1.LongDescription':
+                'An empty string identifies the ValueList or ValueListMapping without a qualifier.'
         },
         'ValueListReferences': {
             '$Kind': 'Term',
@@ -1567,4 +1570,4 @@ export default {
             '@Org.OData.Core.V1.Description': 'Base URL for WebSocket connections'
         }
     }
-};
+} as CSDL;

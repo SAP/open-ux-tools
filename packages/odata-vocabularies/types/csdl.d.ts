@@ -193,7 +193,7 @@ declare namespace CSDL {
      * via the `patternProperty` "^@".
      */
 
-    export type SchemaWrapper = Schema & Dictionary<SchemaElement | Action[] | Function[]>;
+    export type SchemaWrapper = Schema & Dictionary<SchemaElement | Action[] | Function[], string>;
 
     export type SchemaElement = EntityType | ComplexType | EnumType | TypeDefinition | Term | EntityContainer;
 
@@ -211,8 +211,9 @@ declare namespace CSDL {
     }
 
     export interface CSDLAnnotations {
-        '@Org.OData.Core.V1.Description': string;
-        '@Org.OData.Validation.V1.AllowedTerms': string[];
+        '@Org.OData.Core.V1.Description'?: string;
+        '@Org.OData.Core.V1.LongDescription'?: string;
+        [term: string]: any;
     }
 
     /**

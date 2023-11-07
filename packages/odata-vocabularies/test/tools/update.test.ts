@@ -1,17 +1,14 @@
-jest.mock('mkdirp');
-jest.mock('node-fetch');
-jest.mock('fs');
+jest.mock('axios');
+jest.mock('fs/promises');
 jest.mock('prettier');
 
-import * as Vocabularies from '../../src/tools/Vocabularies';
+import * as Vocabularies from '../../tools/update';
 
-import path from 'path';
-import mkdirp from 'mkdirp';
-import fs from 'fs';
-import fetch, { Response } from 'node-fetch';
+import { join } from 'path';
+import fs from 'fs/promises';
+import axios from 'axios';
 import prettier from 'prettier';
-
-const fWrapper = { fetch };
+import type { CSDL, CSDLAnnotations } from '@sap-ux/vocabularies/CSDL';
 
 describe('vocabularies', () => {
     beforeEach(() => {
@@ -20,7 +17,7 @@ describe('vocabularies', () => {
 
     it('getNamespaceAliasMapping', () => {
         // Arrange
-        const vocabularies = {
+        const vocabularies: CSDL = {
             $Version: '4.0',
             $Reference: {
                 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.json': {
@@ -102,7 +99,7 @@ describe('vocabularies', () => {
 
     it('uglifyAnnotations', () => {
         // Arrange
-        const object = {
+        const object: CSDLAnnotations = {
             'Aggregation.CustomAggregate': {
                 '@Validation.ApplicableTerms@Core.Description':
                     'Adding a list of other terms that can be annotated to it.',
@@ -135,7 +132,7 @@ describe('vocabularies', () => {
 
     it('uglify', () => {
         // Arrange
-        const vocabularies = {
+        const vocabularies: CSDL = {
             $Version: '4.0',
             $Reference: {
                 'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.json': {
@@ -184,42 +181,39 @@ describe('vocabularies', () => {
         const fakeResponse: Response = new Response();
         fakeResponse.json = async (): Promise<unknown> => Promise.resolve('mockResponse');
 
-        const fetchSpy = jest
-            .spyOn(fWrapper, 'fetch')
-            .mockImplementationOnce(async () => Promise.resolve(fakeResponse));
+        const axiosSpy = jest
+            .spyOn(axios, 'get')
+            .mockImplementationOnce(async () => Promise.resolve({ data: 'vocabularyData' }));
 
         // Act
         const result = await Vocabularies.getVocabulary('someUrl');
 
         // Assert
-        expect(result).toBe('mockResponse');
-        expect(fetchSpy).toHaveBeenCalledTimes(1);
-        expect(fetchSpy).toHaveBeenCalledWith('someUrl');
+        expect(result).toBe('vocabularyData');
+        expect(axiosSpy).toHaveBeenCalledTimes(1);
+        expect(axiosSpy).toHaveBeenCalledWith('someUrl', { 'responseType': 'json' });
     });
 
     it('updateVocabularies', async () => {
         // Arrange
-        function getMockContent(namespace): any {
-            const content = {};
-
-            content[namespace] = {
-                $alias: `alias_${namespace}`
+        function getMockContent(namespace: string): any {
+            const content = {
+                namespace: {
+                    $alias: `alias_${namespace}`
+                }
             };
 
             return content;
         }
 
-        const mockSupportedVocabularies = {
+        const mockSupportedVocabularies: Vocabularies.SupportedVocabularies = {
             namespaceA: {
-                alias: 'alias_namespaceA',
                 uri: 'uri_namespaceA'
             },
             namespaceB: {
-                alias: 'alias_namespaceB',
                 uri: 'uri_namespaceB'
             },
             namespaceC: {
-                alias: 'alias_namespaceC',
                 uri: 'uri_namespaceC',
                 update: false
             }
@@ -230,71 +224,51 @@ describe('vocabularies', () => {
             get: jest.fn(() => mockSupportedVocabularies)
         });
 
-        const mkdirpSpy = jest.spyOn(mkdirp, 'sync');
-        const fetchSpy = jest.spyOn(fWrapper, 'fetch');
+        const axiosSpy = jest.spyOn(axios, 'get');
         const prettierSpy = jest.spyOn(prettier, 'resolveConfig');
-        const fsSpy = jest.spyOn(fs, 'writeFileSync');
         const consoleSpy = jest.spyOn(console, 'log');
 
         for (const namespace in Vocabularies.SUPPORTED_VOCABULARIES) {
             const mockContent = getMockContent(namespace);
 
-            const fakeResponse: Response = new Response();
-            fakeResponse.json = async (): Promise<unknown> => Promise.resolve(mockContent);
-
-            // ToDo; isololate 'getVocabulary' instead of 'fetch'
-            fetchSpy.mockImplementationOnce(async () => Promise.resolve(fakeResponse));
-            (prettier.format as any).mockReturnValueOnce(`prettifiedJson_${namespace}`);
+            axiosSpy.mockImplementationOnce(async () => Promise.resolve({ data: mockContent }));
+            jest.spyOn(prettier, 'format').mockReturnValueOnce(`prettifiedJson_${namespace}`);
         }
-        (prettier.resolveConfig as any).mockResolvedValue({});
+        jest.spyOn(prettier, 'resolveConfig').mockResolvedValue({});
         jest.spyOn(console, 'log').mockImplementation(() => undefined);
 
         try {
             // Act
-            const vocabularies: any = await Vocabularies.updateVocabularies();
+            await Vocabularies.updateVocabularies();
 
             // Assert
 
             // -- Check result
-            expect(Object.keys(vocabularies).length).toEqual(numberOfMockVocabularies);
-            let numberOfSkippedVocabularies = 0;
-            for (const namespace in vocabularies) {
-                const vocabulary = vocabularies[namespace];
-                if (vocabulary.update === false) {
-                    numberOfSkippedVocabularies++;
-                    continue;
-                }
-                const mockContent = getMockContent(namespace);
-                expect(vocabulary.alias).toEqual(mockContent[namespace].$alias);
-                expect(vocabulary.content).toEqual(mockContent);
-                expect(vocabulary.file).toEqual(`${path.join(Vocabularies.VOCABULARIES_LOCATION, namespace)}.ts`);
-                expect(vocabulary.filePrettified).toEqual(`prettifiedJson_${namespace}`);
-                expect(vocabulary.uri).toEqual(mockSupportedVocabularies[namespace].uri);
-            }
+            const numberOfSkippedVocabularies = 1;
             const numberOfNonSkippedVocabularies = numberOfMockVocabularies - numberOfSkippedVocabularies;
 
             // -- check function calls (data flow)
-            expect(mkdirpSpy).toHaveBeenCalledTimes(1);
-            expect(mkdirpSpy).toHaveBeenCalledWith(Vocabularies.VOCABULARIES_LOCATION);
-            expect(fetchSpy).toHaveBeenCalledTimes(numberOfNonSkippedVocabularies);
+            expect(fs.mkdir).toHaveBeenCalledTimes(1);
+            expect(fs.mkdir).toHaveBeenCalledWith(Vocabularies.VOCABULARIES_LOCATION);
+            expect(axiosSpy).toHaveBeenCalledTimes(numberOfNonSkippedVocabularies);
             expect(prettierSpy).toHaveBeenCalledTimes(numberOfNonSkippedVocabularies);
-            expect(fsSpy).toHaveBeenCalledTimes(numberOfNonSkippedVocabularies);
+            expect(fs.writeFile).toHaveBeenCalledTimes(numberOfNonSkippedVocabularies);
             expect(consoleSpy).toHaveBeenCalledTimes(numberOfNonSkippedVocabularies);
 
-            Object.keys(vocabularies).forEach((namespace, idx) => {
-                const vocabulary = vocabularies[namespace];
+            Object.keys(mockSupportedVocabularies).forEach((namespace, index) => {
+                const vocabulary = mockSupportedVocabularies[namespace];
+                const callNumber = index + 1;
                 if (vocabulary.update === false) {
                     return;
                 }
-
-                expect(fetchSpy.mock.calls[idx][0]).toBe(vocabulary.uri);
-                expect(prettierSpy.mock.calls[idx][0]).toBe(vocabulary.file);
-                expect(fsSpy.mock.calls[idx][0]).toBe(vocabulary.file);
-                expect(fsSpy.mock.calls[idx][1]).toBe(vocabulary.filePrettified);
-                expect(fsSpy.mock.calls[idx][2]).toBe('utf8');
-                expect(consoleSpy.mock.calls[idx][0]).toBe(`Vocabulary file updated: ${namespace}`);
+                const path = `${join(Vocabularies.VOCABULARIES_LOCATION, namespace)}.ts`;
+                expect(axiosSpy).toHaveBeenNthCalledWith(callNumber, vocabulary.uri, { 'responseType': 'json' });
+                expect(prettierSpy).toHaveBeenNthCalledWith(callNumber, path);
+                expect(fs.writeFile).toHaveBeenNthCalledWith(callNumber, path, `prettifiedJson_${namespace}`, 'utf8');
+                expect(consoleSpy).toHaveBeenNthCalledWith(callNumber, `Vocabulary file updated: ${namespace}`);
             });
         } catch (err) {
+            console.log(err);
             expect(false).toBeTruthy();
         }
     });

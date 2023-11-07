@@ -4,12 +4,19 @@
 
 /**
  * String types used for documentation purposes
+ * See symbolic values listed in http://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_Applicability
  */
-export type TargetKind = string; // see symbolic values listed in http://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_Applicability
-export type SimpleIdentifier = string; // "starts with a letter or underscore, followed by at most 127 letters, underscores or digits"
+export type TargetKind = string;
+/**
+ * starts with a letter or underscore, followed by at most 127 letters, underscores or digits
+ */
+export type SimpleIdentifier = string;
 export type Name = SimpleIdentifier;
 export type Alias = SimpleIdentifier;
-export type Namespace = string; // "dot separated sequence of SimpleIdentifier"
+/**
+ * dot separated sequence of SimpleIdentifier
+ */
+export type Namespace = string;
 export type NameQualifier = SimpleIdentifier | string; //  <Namespace|Alias>
 export type AliasQualifiedName = string; // <Alias>.<Name>
 export type FullyQualifiedName = string; // <Namespace>.<Name>

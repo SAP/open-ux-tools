@@ -1,6 +1,5 @@
-import { VocabularyService } from '../src/vocabularyService';
-import type { Term } from '../src/types/vocabularyService';
-import { TargetKindValue } from '../src/types/vocabularyService';
+import { VocabularyService } from '../src/vocabulary-service';
+import type { Term } from '../src/types/vocabulary-service';
 declare const expect: jest.Expect;
 
 const vocabularyService = new VocabularyService(true);
@@ -54,7 +53,7 @@ describe('getVocabulary(CDS)', () => {
             isCollection: false,
             description: 'Entities can be inserted',
             defaultValue: true,
-            appliesTo: [TargetKindValue.EntitySet] //added
+            appliesTo: ['EntitySet'] //added
         };
 
         const term = vocabularyService.getTerm('Org.OData.Capabilities.V1.Insertable');
@@ -71,7 +70,7 @@ describe('getVocabulary(CDS)', () => {
             isCollection: false,
             description: 'Entities can be deleted',
             defaultValue: true,
-            appliesTo: [TargetKindValue.EntitySet] //added
+            appliesTo: ['EntitySet'] //added
         };
 
         const term = vocabularyService.getTerm('Org.OData.Capabilities.V1.Deletable');
@@ -88,7 +87,7 @@ describe('getVocabulary(CDS)', () => {
             isCollection: false,
             description: 'Entities can be updated',
             defaultValue: true,
-            appliesTo: [TargetKindValue.EntitySet] //added
+            appliesTo: ['EntitySet'] //added
         };
 
         const term = vocabularyService.getTerm('Org.OData.Capabilities.V1.Updatable');
@@ -105,7 +104,7 @@ describe('getVocabulary(CDS)', () => {
             isCollection: false,
             description: 'Entities can be retrieved',
             defaultValue: true,
-            appliesTo: [TargetKindValue.EntitySet]
+            appliesTo: ['EntitySet']
         };
 
         const term = vocabularyService.getTerm('Org.OData.Capabilities.V1.Readable');

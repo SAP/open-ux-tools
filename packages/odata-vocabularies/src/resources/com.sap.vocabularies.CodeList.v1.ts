@@ -1,4 +1,5 @@
-// Last content update: Mon Oct 30 2023 12:01:41 GMT+0100 (GMT+01:00)
+// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
     '$Version': '4.01',
@@ -86,4 +87,4 @@ export default {
                 'The Configuration Deprecation Code indicates whether a code list value is valid (deprecation code is empty/space), deprecated (deprecation code `W`), or revoked (deprecation code `E`). '
         }
     }
-};
+} as CSDL;

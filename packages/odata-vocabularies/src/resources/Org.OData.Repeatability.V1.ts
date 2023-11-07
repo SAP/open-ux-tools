@@ -1,4 +1,5 @@
-// Last content update: Mon Oct 30 2023 12:01:41 GMT+0100 (GMT+01:00)
+// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
     '$Version': '4.0',
@@ -58,4 +59,4 @@ export default {
                 'Clients can delete a single remembered request by sending a\n\n`DELETE $RepeatableRequestWithRequestID/{Repeatability-Request-ID}`\n\nrequest to the service root.'
         }
     }
-};
+} as CSDL;

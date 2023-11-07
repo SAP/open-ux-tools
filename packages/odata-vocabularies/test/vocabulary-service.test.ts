@@ -1,6 +1,6 @@
-import { ENTITY_TYPE_KIND, PROPERTY_KIND, COLLECTION_KIND, ENTITY_SET_KIND } from './../src/types/baseTypes';
-import { TermApplicability } from './../src/types/vocabularyService';
-import { VocabularyService } from './../src/vocabularyService';
+import { ENTITY_TYPE_KIND, PROPERTY_KIND, COLLECTION_KIND, ENTITY_SET_KIND } from '../src/types/base-types';
+import { TermApplicability } from '../src/types/vocabulary-service';
+import { VocabularyService } from '../src/vocabulary-service';
 declare const expect: jest.Expect;
 
 const vocabularyService = new VocabularyService();
@@ -39,7 +39,7 @@ describe('getVocabularyNamespace()', () => {
 
     it('invalidName.space', () => {
         // Expect
-        expect(vocabularyService.getVocabularyNamespace('invalidName.space')).toMatchInlineSnapshot(`null`);
+        expect(vocabularyService.getVocabularyNamespace('invalidName.space')).toStrictEqual(undefined);
     });
 });
 
@@ -185,9 +185,7 @@ describe('getType()', () => {
               "values": Array [
                 Object {
                   "description": "Value axes scale automatically",
-                  "experimental": undefined,
                   "kind": "Member",
-                  "longDescription": undefined,
                   "name": "AutoScale",
                   "value": 0,
                 },
@@ -195,9 +193,7 @@ describe('getType()', () => {
                   "description": "Fixed minimum and maximum values are applied, which are derived from the @UI.MeasureAttributes.DataPoint/MinimumValue and .../MaximumValue annotation by default.
                     For stacking chart types with multiple measures, they are taken from ChartAxisScalingType/FixedScaleMultipleStackedMeasuresBoundaryValues.
                         ",
-                  "experimental": undefined,
                   "kind": "Member",
-                  "longDescription": undefined,
                   "name": "FixedScale",
                   "value": 1,
                 },
@@ -259,10 +255,10 @@ describe('getDerivedTypeNames', () => {
         expect(vocabularyService.getDerivedTypeNames(namespace + '.DataFieldAbstract')).toMatchInlineSnapshot(`
             Set {
               "com.sap.vocabularies.UI.v1.DataFieldForAnnotation",
-              "com.sap.vocabularies.UI.v1.DataFieldForAction",
-              "com.sap.vocabularies.UI.v1.DataFieldForIntentBasedNavigation",
               "com.sap.vocabularies.UI.v1.DataFieldForActionGroup",
               "com.sap.vocabularies.UI.v1.DataField",
+              "com.sap.vocabularies.UI.v1.DataFieldForAction",
+              "com.sap.vocabularies.UI.v1.DataFieldForIntentBasedNavigation",
               "com.sap.vocabularies.UI.v1.DataFieldWithAction",
               "com.sap.vocabularies.UI.v1.DataFieldWithIntentBasedNavigation",
               "com.sap.vocabularies.UI.v1.DataFieldWithNavigationPath",
@@ -279,10 +275,10 @@ describe('getDerivedTypeNames', () => {
               "com.sap.vocabularies.UI.v1.DataFieldAbstract",
               "com.sap.vocabularies.UI.v1.DataFieldForAnnotation",
               "com.sap.vocabularies.UI.v1.DataFieldForActionAbstract",
-              "com.sap.vocabularies.UI.v1.DataFieldForAction",
-              "com.sap.vocabularies.UI.v1.DataFieldForIntentBasedNavigation",
               "com.sap.vocabularies.UI.v1.DataFieldForActionGroup",
               "com.sap.vocabularies.UI.v1.DataField",
+              "com.sap.vocabularies.UI.v1.DataFieldForAction",
+              "com.sap.vocabularies.UI.v1.DataFieldForIntentBasedNavigation",
               "com.sap.vocabularies.UI.v1.DataFieldWithAction",
               "com.sap.vocabularies.UI.v1.DataFieldWithIntentBasedNavigation",
               "com.sap.vocabularies.UI.v1.DataFieldWithNavigationPath",
@@ -423,7 +419,7 @@ describe('getComplexTypeProperty()', () => {
 });
 
 describe('getDocumentation()', () => {
-    it('Term,', () => {
+    it('Term', () => {
         // Expect
         expect(vocabularyService.getDocumentation('com.sap.vocabularies.UI.v1.LineItem')).toMatchInlineSnapshot(`
             Array [
@@ -447,7 +443,7 @@ describe('getDocumentation()', () => {
         `);
     });
 
-    it('Complex Type,', () => {
+    it('Complex Type', () => {
         // Expect
         expect(vocabularyService.getDocumentation('com.sap.vocabularies.UI.v1.DataFieldForAction'))
             .toMatchInlineSnapshot(`
@@ -467,7 +463,83 @@ describe('getDocumentation()', () => {
         `);
     });
 
-    it('Complex Type Property,', () => {
+    it('Deprecated', () => {
+        expect(vocabularyService.getDocumentation('com.sap.vocabularies.Analytics.v1.Dimension'))
+            .toMatchInlineSnapshot(`
+            Array [
+              "**Deprecated:** Deprecated in favor of [\`AnalyticalContext/Dimension\`](#AnalyticalContext) 
+            ",
+              "**Kind:** Term 
+            ",
+              "**Description:** A property holding the key of a dimension in an analytical context 
+            ",
+              "**Base Term:** Org.OData.Aggregation.V1.Groupable 
+            ",
+              "**Applies To:** Property 
+            ",
+              "**Type:** Org.OData.Core.V1.Tag 
+            ",
+              "**Type Description:** This is the type to use for all tagging terms 
+            ",
+              "**DefaultValue:** true 
+            ",
+              "**Nullable:** false 
+            ",
+            ]
+        `);
+    });
+
+    it('Requires Type', () => {
+        expect(vocabularyService.getDocumentation('com.sap.vocabularies.Common.v1.IsCalendarYear'))
+            .toMatchInlineSnapshot(`
+            Array [
+              "**Kind:** Term 
+            ",
+              "**Description:** Property encodes a year number as string following the logical pattern (-?)YYYY(Y*) consisting of an optional
+                        minus sign for years B.C. followed by at least four digits. The string matches the regex pattern -?([1-9][0-9]{3,}|0[0-9]{3})
+                       
+            ",
+              "**Applies To:** Property 
+            ",
+              "**Type:** Org.OData.Core.V1.Tag 
+            ",
+              "**Type Description:** This is the type to use for all tagging terms 
+            ",
+              "**Require Type:** Edm.String 
+            ",
+              "**DefaultValue:** true 
+            ",
+              "**Nullable:** false 
+            ",
+            ]
+        `);
+    });
+
+    it('Experimental', () => {
+        expect(vocabularyService.getDocumentation('com.sap.vocabularies.Common.v1.IsLanguageIdentifier'))
+            .toMatchInlineSnapshot(`
+            Array [
+              "**Experimental:** Terms, types, and properties annotated with this term are experimental and can be changed incompatibly or removed completely any time without prior warning. Do not use or rely on experimental terms, types, and properties in production environments. 
+            ",
+              "**Kind:** Term 
+            ",
+              "**Description:** An identifier to distinguish multiple texts in different languages for the same entity 
+            ",
+              "**Applies To:** Property 
+            ",
+              "**Type:** Org.OData.Core.V1.Tag 
+            ",
+              "**Type Description:** This is the type to use for all tagging terms 
+            ",
+              "**DefaultValue:** true 
+            ",
+              "**Nullable:** false 
+            ",
+            ]
+        `);
+    });
+
+    it('Complex Type Property', () => {
         // Expect
         expect(vocabularyService.getDocumentation('com.sap.vocabularies.UI.v1.DataFieldForAction', 'Label'))
             .toMatchInlineSnapshot(`
@@ -484,7 +556,7 @@ describe('getDocumentation()', () => {
         `);
     });
 
-    it('Enum Type,', () => {
+    it('Enum Type', () => {
         // Expect
         expect(vocabularyService.getDocumentation('com.sap.vocabularies.UI.v1.ImportanceType', 'Low'))
             .toMatchInlineSnapshot(`

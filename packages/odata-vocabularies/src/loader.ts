@@ -1,8 +1,18 @@
+import type {
+    CSDLAnnotations,
+    UnboxContent,
+    TypeDefinition as CSDLTypeDefinition,
+    SchemaElement,
+    EnumTypeBase,
+    ComplexType as CSDLComplexType,
+    Term as CSDLTerm,
+    CSDL
+} from '@sap-ux/vocabularies/CSDL';
+
 import type { VocabularyAlias, VocabularyNamespace } from './resources';
 import VOCABULARIES, { ALIAS_TO_NAMESPACE, NAMESPACE_TO_ALIAS } from './resources';
-import type { Edmx } from './types/edmx';
-import { Edm } from './types/edm';
 import type {
+    EdmNameType,
     Constraints,
     BaseVocabularyObject,
     ComplexType,
@@ -18,14 +28,17 @@ import type {
     Vocabulary,
     AllowedValues,
     VocabulariesInformation
-} from './types/vocabularyService';
+} from './types';
 import {
     ENUM_VALUE_KIND,
     PROPERTY_KIND,
     CDS_VOCABULARY_ALIAS,
-    CDS_VOCABULARY_NAMESPACE
-} from './types/vocabularyService';
-import type { EdmNameType } from './types/names';
+    CDS_VOCABULARY_NAMESPACE,
+    TYPE_DEFINITION_KIND,
+    ENUM_TYPE_KIND,
+    COMPLEX_TYPE_KIND,
+    TERM_KIND
+} from './types';
 
 const PROPERTY_PATTERN = /^([A-Za-z0-9_]){1,128}$/;
 
@@ -56,121 +69,116 @@ const SUPPORTED_VOCABULARY_NAMESPACES: Set<VocabularyNamespace> = new Set([
     'com.sap.vocabularies.HTML5.v1'
 ]);
 
-let vocabulariesInformationStatic: VocabulariesInformation = null;
-let vocabulariesInformationStaticCds: VocabulariesInformation = null;
+let vocabulariesInformationStatic: VocabulariesInformation | undefined;
+let vocabulariesInformationStaticCds: VocabulariesInformation | undefined;
 
 /**
  *
- * @param termName
- * @param prefix
- * @returns {string} - term with namespace
+ * @param base Vocabulary object
+ * @param raw CSDL object
+ * @param prefix Annotation prefix
  */
-function getDefinitionAnnotationKey(termName: EdmNameType.QualifiedName, prefix = ''): string {
-    const [alias, term] = termName.split('.');
-    const namespace = ALIAS_TO_NAMESPACE.get(alias as VocabularyAlias);
-    return prefix + '@' + namespace + '.' + term;
-}
+function fillBaseProperties<T extends UnboxContent<CSDLAnnotations>>(
+    base: BaseVocabularyObject,
+    raw: T,
+    prefix: string = ''
+): void {
+    const description = raw[`${prefix}@Org.OData.Core.V1.Description`];
+    if (description !== undefined) {
+        base.description = description;
+    }
+    const longDescription = raw[`${prefix}@Org.OData.Core.V1.LongDescription`];
+    if (longDescription !== undefined) {
+        base.longDescription = longDescription;
+    }
+    const experimental = raw[`${prefix}@com.sap.vocabularies.Common.v1.Experimental`];
+    if (experimental !== undefined) {
+        base.experimental = experimental;
+    }
 
-/**
- *
- * @param base
- * @param raw
- */
-function fillBaseProperties(base: BaseVocabularyObject, raw: unknown): void {
-    let propName: any;
-    propName = getDefinitionAnnotationKey('Core.Description');
-    if (raw[propName] !== undefined) {
-        base.description = raw[propName];
-    }
-    propName = getDefinitionAnnotationKey('Core.LongDescription');
-    if (raw[propName] !== undefined) {
-        base.longDescription = raw[propName];
-    }
-    propName = getDefinitionAnnotationKey('Common.Experimental');
-    if (raw[propName] !== undefined) {
-        base.experimental = raw[propName];
-    }
     // deprecated status
-    const revs = raw[getDefinitionAnnotationKey('Core.Revisions')] || [];
-    const deprecatedRevisions = revs.find((rev: unknown) => rev['Kind'] === 'Deprecated');
+    const revisions = raw[`${prefix}@Org.OData.Core.V1.Revisions`] ?? [];
+    const deprecatedRevisions = revisions.find(
+        (revision: { Kind: string; Description: string }) => revision.Kind === 'Deprecated'
+    );
     if (deprecatedRevisions) {
         base.deprecated = true;
-        base.deprecatedDescription = deprecatedRevisions['Description'];
+        base.deprecatedDescription = deprecatedRevisions.Description;
     }
 }
 
 /**
  *
- * @param primitiveType
- * @param raw
+ * @param primitiveType Vocabulary Object
+ * @param raw CSDL Object
  */
-function fillPrimitiveTypeProperties(primitiveType: PrimitiveType, raw: unknown): void {
+function fillPrimitiveTypeProperties(primitiveType: PrimitiveType, raw: SchemaElement): void {
     fillBaseProperties(primitiveType, raw);
-    if (raw['$UnderlyingType'] !== undefined) {
-        primitiveType.underlyingType = raw['$UnderlyingType'];
+    if (raw.$UnderlyingType !== undefined) {
+        primitiveType.underlyingType = raw.$UnderlyingType;
     }
 }
 
 /**
  *
- * @param raw
- * @returns { Facets | null}
+ * @param raw CSDL Object
+ * @returns Facets
  */
-function getFacets(raw: unknown): Facets | null {
+function getFacets(raw: SchemaElement): Facets | undefined {
     const facets: Facets = {};
-    if (raw['$Nullable'] !== undefined) {
-        facets.isNullable = !!raw['$Nullable'];
+    if (raw.$Nullable !== undefined) {
+        facets.isNullable = !!raw.$Nullable;
     }
-    if (raw['$Precision'] !== undefined && Number.isInteger(raw['$Precision'])) {
-        facets.precision = raw['$Precision'];
+    if (raw.$Precision !== undefined && Number.isInteger(raw.$Precision)) {
+        facets.precision = raw.$Precision;
     }
-    return Object.keys(facets).length ? facets : null;
+    return Object.keys(facets).length ? facets : undefined;
 }
 
 /**
  *
- * @param raw
- * @returns {AllowedValues[]}
+ * @param raw CSDL Object
+ * @returns Allowed values
  */
-function parseAllowedValues(raw: unknown): AllowedValues[] {
-    const rawAllowedValue = raw[getDefinitionAnnotationKey('Validation.AllowedValues')];
-    const allowedValues: AllowedValues[] = [];
-    if (rawAllowedValue && rawAllowedValue.length) {
-        rawAllowedValue.forEach((rawValue) => {
-            allowedValues.push({
-                value: rawValue.Value,
-                description: rawValue['@Org.OData.Core.V1.Description'],
-                longDescription: rawValue['@Org.OData.Core.V1.LongDescription'] || ''
-            });
-        });
+function parseAllowedValues(raw: UnboxContent<CSDLAnnotations>): AllowedValues[] {
+    const rawAllowedValue = raw['@Org.OData.Validation.V1.AllowedValues'];
+    if (rawAllowedValue?.length) {
+        return rawAllowedValue.map((rawValue: UnboxContent<CSDLAnnotations> & { Value: unknown }) => ({
+            value: rawValue.Value,
+            description: rawValue['@Org.OData.Core.V1.Description'],
+            longDescription: rawValue['@Org.OData.Core.V1.LongDescription'] ?? ''
+        }));
     }
-    return allowedValues;
+    return [];
 }
 
 /**
  *
- * @param raw
- * @returns {Constraints}
+ * @param raw CSDL Object
+ * @returns Constraints
  */
-function getConstraints(raw: unknown): Constraints {
+function getConstraints(raw: UnboxContent<CSDLAnnotations>): Constraints {
     const constraints: Constraints = {};
     const allowedValues: AllowedValues[] = parseAllowedValues(raw);
     if (allowedValues && allowedValues.length) {
         constraints.allowedValues = allowedValues;
     }
-    const allowedTerms = raw[getDefinitionAnnotationKey('Validation.AllowedTerms')];
+
+    const allowedTerms = raw['@Org.OData.Validation.V1.AllowedTerms'];
     if (allowedTerms && allowedTerms.length) {
-        constraints.allowedTerms = allowedTerms.map((allowedTerm) => getFullyQualifiedAllowedTermName(allowedTerm));
+        constraints.allowedTerms = allowedTerms.map(getFullyQualifiedAllowedTermName);
     }
-    const propName = getDefinitionAnnotationKey('Core.IsLanguageDependent');
-    if (raw[propName] !== undefined) {
-        constraints.isLanguageDependent = !!raw[propName];
+
+    const isLanguageDependent = raw['@Org.OData.Core.V1.IsLanguageDependent'];
+    if (isLanguageDependent !== undefined) {
+        constraints.isLanguageDependent = !!isLanguageDependent;
     }
-    const requiresType = raw[getDefinitionAnnotationKey('Core.RequiresType')];
+
+    const requiresType = raw['@Org.OData.Core.V1.RequiresType'];
     if (requiresType) {
         constraints.requiresType = requiresType;
     }
-    const openPropertyTypeConstraints = raw[getDefinitionAnnotationKey('Validation.OpenPropertyTypeConstraint')];
+    const openPropertyTypeConstraints = raw['@Org.OData.Validation.V1.OpenPropertyTypeConstraint'];
     if (openPropertyTypeConstraints) {
         constraints.openPropertyTypeConstraints = openPropertyTypeConstraints;
     }
@@ -179,12 +187,12 @@ function getConstraints(raw: unknown): Constraints {
 
 /**
  *
- * @param name
- * @param raw
- * @returns {TypeDefinition}
+ * @param name Name of the type definition
+ * @param raw CSDL Object
+ * @returns Vocabulary Object
  */
-function parseTypeDefinition(name: string, raw: unknown): TypeDefinition {
-    const typeDef: TypeDefinition = { kind: Edm.TYPE_DEFINITION_KIND, name: name };
+function parseTypeDefinition(name: string, raw: CSDLTypeDefinition): TypeDefinition {
+    const typeDef: TypeDefinition = { kind: TYPE_DEFINITION_KIND, name: name };
     fillPrimitiveTypeProperties(typeDef, raw);
     const facets = getFacets(raw);
     if (facets) {
@@ -200,13 +208,13 @@ function parseTypeDefinition(name: string, raw: unknown): TypeDefinition {
 
 /**
  *
- * @param name
- * @param raw
- * @returns {EnumType}
+ * @param name Name of the enum
+ * @param raw CSDL Object
+ * @returns Vocabulary Object
  */
-export function parseEnumTypeDefinition(name: string, raw: unknown): EnumType {
+export function parseEnumTypeDefinition(name: string, raw: EnumTypeBase): EnumType {
     const enumType: EnumType = {
-        kind: Edm.ENUM_TYPE_KIND,
+        kind: ENUM_TYPE_KIND,
         name: name,
         isFlags: false,
         values: [],
@@ -214,21 +222,19 @@ export function parseEnumTypeDefinition(name: string, raw: unknown): EnumType {
     };
     try {
         fillPrimitiveTypeProperties(enumType, raw);
-        enumType.isFlags = raw['$IsFlags'] === true;
+        enumType.isFlags = raw.$IsFlags === true;
 
         // scan for enum values
         enumType.values = Object.keys(raw)
             .filter((key) => !key.match(/(^\$\w+)|(\w*(@\w+)+)/g))
             .map((key) => {
-                const prop: unknown = raw[key];
+                const value = parseInt(raw[key], 10);
                 const enumValue: EnumValue = {
                     kind: ENUM_VALUE_KIND,
                     name: key,
-                    value: prop as number,
-                    description: raw[getDefinitionAnnotationKey('Core.Description', key)],
-                    longDescription: raw[getDefinitionAnnotationKey('Core.LongDescription', key)],
-                    experimental: raw[getDefinitionAnnotationKey('Common.Experimental', key)]
+                    value
                 };
+                fillBaseProperties(enumValue, raw, key);
                 return enumValue;
             });
     } catch (e) {
@@ -239,21 +245,21 @@ export function parseEnumTypeDefinition(name: string, raw: unknown): EnumType {
 
 /**
  *
- * @param name
- * @param raw
- * @returns {ComplexType}
+ * @param name Name of the complex type
+ * @param raw CSDL Object
+ * @returns Vocabulary Object
  */
-function parseComplexType(name: string, raw: unknown): ComplexType {
-    const complexType: ComplexType = { kind: Edm.COMPLEX_TYPE_KIND, name: name, properties: new Map() };
+function parseComplexType(name: string, raw: CSDLComplexType): ComplexType {
+    const complexType: ComplexType = { kind: COMPLEX_TYPE_KIND, name: name, properties: new Map() };
     fillPrimitiveTypeProperties(complexType, raw);
-    if (raw['$BaseType'] !== undefined) {
-        complexType.baseType = raw['$BaseType'];
+    if (raw.$BaseType !== undefined) {
+        complexType.baseType = raw.$BaseType;
     }
-    if (raw['$Abstract'] !== undefined) {
-        complexType.isAbstract = !!raw['$Abstract'];
+    if (raw.$Abstract !== undefined) {
+        complexType.isAbstract = !!raw.$Abstract;
     }
-    if (raw['$OpenType'] !== undefined) {
-        complexType.isOpenType = !!raw['$OpenType'];
+    if (raw.$OpenType !== undefined) {
+        complexType.isOpenType = !!raw.$OpenType;
     }
 
     // collect properties
@@ -264,12 +270,12 @@ function parseComplexType(name: string, raw: unknown): ComplexType {
             const property: ComplexTypeProperty = {
                 kind: PROPERTY_KIND,
                 name: key,
-                type: propRaw['$Type'] || 'Edm.String',
-                isCollection: !!propRaw['$Collection']
+                type: propRaw.$Type ?? 'Edm.String',
+                isCollection: !!propRaw.$Collection
             };
             fillBaseProperties(property, propRaw);
-            if (propRaw['$DefaultValue'] !== undefined) {
-                property.defaultValue = propRaw['$DefaultValue'];
+            if (propRaw.$DefaultValue !== undefined) {
+                property.defaultValue = propRaw.$DefaultValue;
             }
             // facets
             const facets = getFacets(propRaw);
@@ -278,7 +284,7 @@ function parseComplexType(name: string, raw: unknown): ComplexType {
             }
             // constraints
             const constraints = getConstraints(propRaw);
-            const derivedTypeConstraints = propRaw[getDefinitionAnnotationKey('Validation.DerivedTypeConstraint')];
+            const derivedTypeConstraints = propRaw['@Org.OData.Validation.V1.DerivedTypeConstraint'];
             if (derivedTypeConstraints && derivedTypeConstraints.length) {
                 constraints.derivedTypeConstraints = derivedTypeConstraints;
             }
@@ -292,29 +298,29 @@ function parseComplexType(name: string, raw: unknown): ComplexType {
 
 /**
  *
- * @param name
- * @param raw
- * @returns {Term}
+ * @param name Name of the term
+ * @param raw CSDL Object
+ * @returns Vocabulary Object
  */
-function parseTerm(name: string, raw: unknown): Term {
+function parseTerm(name: string, raw: CSDLTerm): Term {
     const term: Term = {
-        kind: Edm.TERM_KIND,
+        kind: TERM_KIND,
         name: name,
-        type: raw['$Type'] || 'Edm.String',
-        isCollection: !!raw['$Collection']
+        type: raw.$Type ?? 'Edm.String',
+        isCollection: !!raw.$Collection
     };
     fillBaseProperties(term, raw);
-    if (raw['$DefaultValue'] !== undefined) {
-        term.defaultValue = raw['$DefaultValue'];
+    if (raw.$DefaultValue !== undefined) {
+        term.defaultValue = raw.$DefaultValue;
     }
-    if (raw['$AppliesTo'] !== undefined) {
-        term.appliesTo = raw['$AppliesTo'];
+    if (raw.$AppliesTo !== undefined) {
+        term.appliesTo = raw.$AppliesTo;
     }
-    if (raw['$BaseTerm'] !== undefined) {
-        term.baseTerm = raw['$BaseTerm'];
+    if (raw.$BaseTerm !== undefined) {
+        term.baseTerm = raw.$BaseTerm;
     }
-    if (raw['$CdsName'] !== undefined) {
-        term.cdsName = raw['$CdsName'];
+    if (raw.$CdsName !== undefined) {
+        term.cdsName = raw.$CdsName;
     }
 
     // facets
@@ -332,35 +338,35 @@ function parseTerm(name: string, raw: unknown): Term {
 
 /**
  *
- * @param identifier
- * @param element
- * @returns {VocabularyObject}
+ * @param identifier Name
+ * @param element CSDL Object
+ * @returns Vocabulary Object
  */
-function parseSchemaElements(identifier: string, element): VocabularyObject {
-    let vocabularyObject: VocabularyObject = null;
+function parseSchemaElements(identifier: string, element: SchemaElement): VocabularyObject | undefined {
     if (element.$Kind !== undefined) {
         switch (element.$Kind) {
             case 'EnumType':
-                vocabularyObject = parseEnumTypeDefinition(identifier, element);
-                break;
+                return parseEnumTypeDefinition(identifier, element);
+
             case 'TypeDefinition':
-                vocabularyObject = parseTypeDefinition(identifier, element);
-                break;
+                return parseTypeDefinition(identifier, element);
+
             case 'ComplexType':
-                vocabularyObject = parseComplexType(identifier, element);
-                break;
+                return parseComplexType(identifier, element);
+
             case 'Term':
-                vocabularyObject = parseTerm(identifier, element);
-                break;
+                return parseTerm(identifier, element);
+
+            default:
         }
     }
-    return vocabularyObject;
+    return undefined;
 }
 
 /**
  *
- * @param includeCds
- * @returns {VocabulariesInformation}
+ * @param includeCds Flag indicating if CDS vocabularies should be loaded
+ * @returns Vocabularies
  */
 export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesInformation => {
     // try to use cache
@@ -379,12 +385,8 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
         Map<EdmNameType.FullyQualifiedName, boolean>
     > = new Map();
     const upperCaseNameMap: Map<string, string | Map<string, string>> = new Map();
-    /**
-     *
-     * @param name
-     * @param propertyName
-     */
-    function addToUpperCaseNameMap(name: string, propertyName?: string): void {
+
+    const addToUpperCaseNameMap = (name: string, propertyName?: string): void => {
         const upperCaseName = name.toUpperCase();
         const currentEntry = upperCaseNameMap.get(upperCaseName);
         if (!propertyName) {
@@ -402,30 +404,28 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
             }
             (upperCaseNameMap.get(upperCaseName) as Map<string, string>).set(upperCasePropName, propertyName);
         }
-    }
+    };
 
-    /**
-     *
-     * @param vocabulary
-     * @returns {string} - url
-     */
-    function getVocabularyUri(vocabulary: any): string {
-        let url = '';
-        const links = (vocabulary && vocabulary['@Org.OData.Core.V1.Links']) || [];
+    const getVocabularyUri = (vocabulary: any): string => {
+        const links: { rel?: string; href?: string }[] = vocabulary?.['@Org.OData.Core.V1.Links'] ?? [];
         const linkMap: Map<string, string> = new Map();
-        links.forEach((link) => linkMap.set(link.rel || '', link.href || ''));
-        // get url pointing to latest version xml - if not available use alternative
-        if (linkMap.has('latest-version') && linkMap.get('latest-version').endsWith('.xml')) {
-            url = linkMap.get('latest-version');
-        } else if (linkMap.has('alternate') && linkMap.get('alternate').endsWith('.xml')) {
-            url = linkMap.get('alternate');
-        } else if (linkMap.has('latest-version')) {
-            url = linkMap.get('latest-version');
-        } else if (linkMap.has('alternate')) {
-            url = linkMap.get('alternate');
+        for (const link of links) {
+            linkMap.set(link.rel ?? '', link.href ?? '');
         }
-        return url;
-    }
+        // get url pointing to latest version xml - if not available use alternative
+        const latestVersion = linkMap.get('latest-version');
+        const alternate = linkMap.get('alternate');
+        if (latestVersion?.endsWith('.xml')) {
+            return latestVersion;
+        } else if (alternate?.endsWith('.xml')) {
+            return alternate;
+        } else if (latestVersion) {
+            return latestVersion;
+        } else if (alternate) {
+            return alternate;
+        }
+        return '';
+    };
 
     NAMESPACE_TO_ALIAS.forEach((alias, namespace) => {
         if (!includeCds && alias === CDS_VOCABULARY_ALIAS) {
@@ -442,7 +442,7 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
         }
         const alias = NAMESPACE_TO_ALIAS.get(namespace);
         if (alias) {
-            const document = VOCABULARIES[alias] as Edmx.Json.Document;
+            const document: CSDL = VOCABULARIES[alias];
             if (document) {
                 const vocabulary = document[namespace];
                 supportedVocabularies.set(namespace, {
@@ -458,33 +458,33 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
                     if (vocabularyObject) {
                         dictionary.set(fqName, vocabularyObject);
                         addToUpperCaseNameMap(fqName);
-                        if (vocabularyObject.kind === Edm.TERM_KIND) {
-                            (vocabularyObject.appliesTo || ['']).forEach((targetKind) => {
-                                byTarget.set(targetKind, byTarget.get(targetKind) || new Set());
-                                byTarget.get(targetKind).add(fqName);
-                            });
-                        } else if (vocabularyObject.kind === Edm.COMPLEX_TYPE_KIND) {
+                        if (vocabularyObject.kind === TERM_KIND) {
+                            for (const targetKind of vocabularyObject.appliesTo ?? ['']) {
+                                byTarget.set(targetKind, byTarget.get(targetKind) ?? new Set());
+                                byTarget.get(targetKind)?.add(fqName);
+                            }
+                        } else if (vocabularyObject.kind === COMPLEX_TYPE_KIND) {
                             vocabularyObject.properties.forEach((property) => {
                                 addToUpperCaseNameMap(fqName, property.name);
                             });
                             const baseType = vocabularyObject.baseType;
                             if (baseType) {
-                                const baseName = baseType.split('.').pop();
+                                const baseName = baseType.split('.').pop() ?? '';
                                 const baseElement = vocabulary[baseName];
                                 if (baseElement) {
                                     const vocabularyBaseObject = parseSchemaElements(baseType, baseElement);
                                     // add property of baseType to fqName
-                                    if (vocabularyBaseObject && vocabularyBaseObject.kind === Edm.COMPLEX_TYPE_KIND) {
+                                    if (vocabularyBaseObject?.kind === COMPLEX_TYPE_KIND) {
                                         vocabularyBaseObject.properties.forEach((property) => {
                                             addToUpperCaseNameMap(fqName, property.name);
                                         });
                                     }
                                 }
                                 derivedTypesPerType.set(baseType, derivedTypesPerType.get(baseType) || new Map());
-                                derivedTypesPerType.get(baseType).set(fqName, !!vocabularyObject.isAbstract);
+                                derivedTypesPerType.get(baseType)?.set(fqName, !!vocabularyObject.isAbstract);
                             }
                         }
-                        if (vocabularyObject.kind === Edm.ENUM_TYPE_KIND) {
+                        if (vocabularyObject.kind === ENUM_TYPE_KIND) {
                             vocabularyObject.values.forEach((value) => {
                                 addToUpperCaseNameMap(fqName, value.name);
                             });
@@ -513,8 +513,8 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
 
 /**
  *
- * @param allowedTerm
- * @returns {string}
+ * @param allowedTerm Term name
+ * @returns fully qualified term name
  */
 function getFullyQualifiedAllowedTermName(allowedTerm: string): string {
     const segments = allowedTerm.split('.');

@@ -1,4 +1,5 @@
-// Last content update: Mon Oct 30 2023 12:01:41 GMT+0100 (GMT+01:00)
+// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
     '$Version': '4.0',
@@ -24,6 +25,14 @@ export default {
                 {
                     '$Namespace': 'com.sap.vocabularies.Common.v1',
                     '$Alias': 'Common'
+                }
+            ]
+        },
+        'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Validation.V1.json': {
+            '$Include': [
+                {
+                    '$Namespace': 'Org.OData.Validation.V1',
+                    '$Alias': 'Validation'
                 }
             ]
         }
@@ -62,7 +71,7 @@ export default {
             '$Kind': 'ComplexType',
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.LongDescription':
-                "The properties in this complex type contain information about\na node in the result set of a hierarchical request. If the same node occurs multiple times\nwith different parents, certain properties may differ between the occurrences.\nThe properties are derived when hierarchical transformations\nare applied whose first parameter has the annotated entity type\nand whose second parameter is the annotation qualifier.\n\nFor requests like\n```\nSalesOrganizations?$apply=\ndescendants(..., ID, filter(ID eq 'US'), keep start)\n/ancestors(..., ID, filter(contains(Name, 'New York')), keep start)\n/Hierarchy.TopLevels(..., NodeProperty='ID', Levels=2)\n&$top=10\n```\nor\n```\nSalesOrganizations?$apply=groupby((rolluprecursive(..., ID,\n  descendants(..., ID, filter(ID eq 'US')),\n  ancestors(..., ID, filter(contains(Name, 'New York')), keep start))), aggregate(...))\n/Hierarchy.TopLevels(..., NodeProperty='ID', Levels=2)\n&$top=10\n```\n(where `...,` stands for hierarchy nodes and hierarchy qualifier)\nthe following collections of hierarchy nodes are distinguished:\n|Collection|Definition|Value|Where in request|\n|----------|----------|-----|----------------|\n|sub-hierarchy|output set of a `descendants` transformation, possibly embedded in a `rolluprecursive` transformation, that is not preceded by an `ancestors` or `descendants` transformation|US sales organizations|rows 1–2|\n|matching nodes|see [`MatchCount`](#MatchCount)|US sales organizations with \"New York\" in their name|output set of `filter` transformation in row 3|\n|unlimited hierarchy|output set of the last `ancestors`, `descendants` or `traverse` transformation, possibly embedded in a `rolluprecursive` transformation, disregarding numeric fifth parameters|US sales organizations with leaves containing \"New York\"|rows 1–3|\n|limited hierarchy|output set of the last `ancestors`, `descendants`, `traverse` or [`Hierarchy.TopLevels`](#TopLevels) transformation, possibly embedded in a `rolluprecursive` transformation|2 levels of US sales organizations with leaves containing \"New York\"|rows 1–4|\n",
+                "The properties in this complex type contain information about\na node in the result set of a hierarchical request. If the same node occurs multiple times\nwith different parents, certain properties may differ between the occurrences.\nThe properties are derived when hierarchical transformations\nare applied whose first parameter has the annotated entity type\nand whose second parameter is the annotation qualifier.\n\nFor requests like\n```\nSalesOrganizations?$apply=\ndescendants(..., ID, filter(ID eq 'US'), keep start)\n/ancestors(..., ID, filter(contains(Name, 'New York')), keep start)\n/Hierarchy.TopLevels(..., NodeProperty='ID', Levels=2)\n&$top=10\n```\nor\n```\nSalesOrganizations?$apply=groupby((rolluprecursive(..., ID,\n  descendants(..., ID, filter(ID eq 'US')),\n  ancestors(..., ID, filter(contains(Name, 'New York')), keep start))), aggregate(...))\n/Hierarchy.TopLevels(..., NodeProperty='ID', Levels=2)\n&$top=10\n```\n(where `...,` stands for hierarchy nodes and hierarchy qualifier)\nthe following collections of hierarchy nodes are distinguished:\n\n|Collection|Definition|Value|Where in request|\n|----------|----------|-----|----------------|\n|sub-hierarchy|output set of a `descendants` transformation, possibly embedded in a `rolluprecursive` transformation, that is not preceded by an `ancestors` or `descendants` transformation|US sales organizations|rows 1–2|\n|matching nodes|see [`MatchCount`](#MatchCount)|US sales organizations with \"New York\" in their name|output set of `filter` transformation in row 3|\n|unlimited hierarchy|output set of the last `ancestors`, `descendants` or `traverse` transformation, possibly embedded in a `rolluprecursive` transformation, disregarding numeric fifth parameters|US sales organizations with leaves containing \"New York\"|rows 1–3|\n|limited hierarchy|output set of the last `ancestors`, `descendants`, `traverse` or [`Hierarchy.TopLevels`](#TopLevels) transformation, possibly embedded in a `rolluprecursive` transformation|2 levels of US sales organizations with leaves containing \"New York\"|rows 1–4|\n",
             'ExternalKey': {
                 '$Nullable': true,
                 '@Org.OData.Core.V1.Description': 'Human-readable key value for a node',
@@ -103,6 +112,13 @@ export default {
                     'Number of ancestors an occurrence of a node has in the limited hierarchy',
                 '@Org.OData.Core.V1.LongDescription':
                     'This equals the number of ancestors in the sub-hierarchy, if the request involves a sub-hierarchy.'
+            },
+            'LimitedRank': {
+                '$Type': 'Edm.Int64',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Rank of a node in the limited hierarchy in preorder or postorder',
+                '@Org.OData.Core.V1.LongDescription':
+                    'The rank of a node is the index of the node in the sequence of nodes\n            created from a preorder or postorder traversal of the limited hierarchy. The first node in the traversal has rank 0.'
             },
             'SiblingRank': {
                 '$Type': 'Edm.Int64',
@@ -199,7 +215,7 @@ export default {
                         '@Org.OData.Core.V1.Description':
                             'The number n of levels to be output, absent means all levels',
                         '@Org.OData.Core.V1.OptionalParameter': {},
-                        '@undefined.Minimum': 1
+                        '@Org.OData.Validation.V1.Minimum': 1
                     },
                     {
                         '$Name': 'Show',
@@ -296,4 +312,4 @@ export default {
             }
         ]
     }
-};
+} as CSDL;

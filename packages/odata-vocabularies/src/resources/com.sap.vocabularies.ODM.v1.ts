@@ -1,4 +1,5 @@
-// Last content update: Mon Oct 30 2023 12:01:41 GMT+0100 (GMT+01:00)
+// Last content update: Tue Nov 07 2023 12:06:19 GMT+0200 (Eastern European Standard Time)
+import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
     '$Version': '4.0',
@@ -73,6 +74,22 @@ export default {
                 'Name of an ODM entity as a general concept, not a concrete version thereof',
             '@Org.OData.Core.V1.LongDescription':
                 'The annotated OData entity is one of many representations of the ODM entity. Annotating the OData entity with this term helps consumers find APIs that process or expose the same entity.'
+        },
+        'oidReference': {
+            '$Kind': 'Term',
+            '$Type': 'com.sap.vocabularies.ODM.v1.oidReferenceType',
+            '$AppliesTo': ['Property'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description': 'Specification of a referenced entity',
+            '@Org.OData.Core.V1.LongDescription':
+                'Annotating the property with this term helps consumers to determine the referenced entity and find APIs that process or expose the same entity.'
+        },
+        'oidReferenceType': {
+            '$Kind': 'ComplexType',
+            'entityName': {
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description': 'Name of a referenced ODM entity'
+            }
         }
     }
-};
+} as CSDL;
