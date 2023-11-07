@@ -3,4 +3,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-Fixed controller extension name longer than 64 chars error not showing up
+Fixed controller extension/fragment name longer than 64 chars error not showing up
