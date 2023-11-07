@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.3.0
+
+### Minor Changes
+
+-   6d2d2255: support all kind of changes from command stack
+
 ## 0.2.0
 
 ### Minor Changes
