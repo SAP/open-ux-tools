@@ -10,7 +10,7 @@ import {
     propertyChanged,
     selectControl
 } from '../../src/api';
-import type { Control, ChangeStackModified, OutlineNode } from '../../src/api';
+import type { Control, ChangeStackModified, PropertyChange, OutlineNode } from '../../src/api';
 
 describe('createExternalAction', () => {
     test('iconsLoaded', () => {
@@ -70,6 +70,8 @@ describe('createExternalAction', () => {
             {
                 children: [],
                 controlId: 'testId',
+                controlName: 'input',
+                changeType: 'propertyChange',
                 controlType: 'testType',
                 editable: true,
                 name: 'testControl',
@@ -82,7 +84,13 @@ describe('createExternalAction', () => {
     });
 
     test('changeProperty', () => {
-        const payload = { controlId: 'testId', newValue: 'testNewVal', propertyName: 'testProp', value: 'testVal' };
+        const payload: PropertyChange = {
+            controlId: 'testId',
+            controlName: 'input',
+            value: 'oldValue',
+            propertyName: 'testProp',
+            changeType: 'propertyChange'
+        };
         const changedProp = changeProperty(payload);
         expect(changedProp.type).toBe('[ext] change-property');
         expect(changedProp.payload).toStrictEqual(payload);

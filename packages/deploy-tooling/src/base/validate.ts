@@ -13,6 +13,7 @@ import {
 } from '@sap-ux/project-input-validator';
 import { EOL } from 'os';
 import type { AbapDeployConfig } from '../types';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 export type ValidationInputs = {
     appName: string;
@@ -21,6 +22,7 @@ export type ValidationInputs = {
     transport: string;
     client: string;
     url: string;
+    destination: string;
 };
 
 export type ValidationOutput = {
@@ -76,7 +78,8 @@ export async function validateBeforeDeploy(
         package: config.app.package ?? '',
         transport: config.app.transport ?? '',
         client: config.target.client ?? '',
-        url: config.target.url ?? ''
+        url: config.target.url ?? '',
+        destination: config.target.destination ?? ''
     };
 
     // output is passed by reference and status updated during the internal pipeline below.
@@ -110,7 +113,7 @@ export function formatSummary(summary: SummaryRecord[]): string {
                     statusSymbol = yellow('?');
                     break;
             }
-            return `${'    '}${statusSymbol} ${next.message}`;
+            return `${' '.repeat(4)}${statusSymbol} ${next.message}`;
         })
         .reduce((aggregated, current) => {
             return `${aggregated}${EOL}${current}`;
@@ -150,7 +153,7 @@ async function validateInputTextFormat(
     processInputValidationResult(result, output);
     result = validateClient(input.client);
     processInputValidationResult(result, output);
-    result = validateUrl(input.url);
+    result = validateUrlForOnPremTargetOnly(input.destination, input.url);
     processInputValidationResult(result, output);
 
     // If all the text validation passed, only show the following success message.
@@ -159,6 +162,25 @@ async function validateInputTextFormat(
             message: summaryMessage.allClientCheckPass,
             status: SummaryStatus.Valid
         });
+    }
+}
+
+/**
+ * A wrapper of validateUrl(). It uses same logic in system-access module's createAbapServiceProvider()
+ * function to determine the deploy target. Only validate URL for on-prem ABAP deploy target.
+ *
+ * @param destination
+ * @param url
+ * @returns
+ */
+function validateUrlForOnPremTargetOnly(destination: string, url: string): boolean | string {
+    if (isAppStudio() && destination) {
+        // No validation required for destination name
+        return true;
+    } else if (url) {
+        return validateUrl(url);
+    } else {
+        return 'Invalid deploy target';
     }
 }
 

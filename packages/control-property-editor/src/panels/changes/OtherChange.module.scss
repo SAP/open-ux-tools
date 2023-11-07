@@ -1,5 +1,4 @@
-.text,
-.timestamp {
+.text {
     color: var(--vscode-editor-foreground);
 }
 
@@ -9,12 +8,6 @@
     display: inline-block;
 }
 
-.timestamp {
-    font-size: 11px;
-    line-height: 15px;
-    opacity: 0.5;
-}
-
-.property {
+.changeType {
     overflow-wrap: anywhere;
 }
