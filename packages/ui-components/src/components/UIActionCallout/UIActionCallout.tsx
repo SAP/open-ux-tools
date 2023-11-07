@@ -1,7 +1,7 @@
 import { DirectionalHint } from '@fluentui/react';
 import React from 'react';
 import { UiIcons } from '../Icons';
-import { UICallout } from '../UICallout';
+import { UICallout, getCalloutStyle } from '../UICallout';
 import { UIIcon } from '../UIIcon';
 import './UIActionCallout.scss';
 
@@ -21,6 +21,8 @@ export interface ActionCalloutProps {
     icon?: UIIcon;
     /** Call back function to be called on every click */
     onClick?(): void;
+    /** Border colour */
+    isError?: boolean;
 }
 
 export interface IActionCalloutDetail {
@@ -52,6 +54,7 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
     private icon: UIIcon | undefined;
     private onClick: ActionCalloutProps['onClick'];
     private anchorClicked: boolean;
+    private isError: ActionCalloutProps['isError'];
 
     /**
      * Initializes component properties.
@@ -69,6 +72,7 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
         this.icon = props.icon;
         this.onClick = props.onClick;
         this.anchorClicked = false;
+        this.isError = props.isError || false;
     }
 
     private onCalloutClick() {
@@ -105,7 +109,10 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 styles={{
                     calloutMain: { padding: '10px' },
-                    root: { position: this.showInline === false ? 'absolute' : 'sticky' }
+                    root: {
+                        position: this.showInline === false ? 'absolute' : 'sticky',
+                        border: this.isError === true ? 'thin solid var(--vscode-errorForeground)' : 'thin solid none'
+                    }
                 }}>
                 {(this.icon && this.icon.render()) || <UIIcon iconName={UiIcons.HelpAction}></UIIcon>}
                 {/* We do not use the 'UILink' here as it or its 'link' component do not expose a 'ref' to the underlying HTMLElement, needed to trigger click */}
