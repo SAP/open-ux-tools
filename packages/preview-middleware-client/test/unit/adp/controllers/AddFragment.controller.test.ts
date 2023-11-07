@@ -1,5 +1,5 @@
 import type Dialog from 'sap/m/Dialog';
-import type Event from 'sap/ui/base/Event';
+import Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
@@ -255,6 +255,32 @@ describe('AddFragment', () => {
 
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
+
+        test('sets error when the fragment name has more than 64 characters', () => {
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
+
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    getValue: jest.fn().mockReturnValue('thisisverylongnamethisisverylongnamethisisverylongnamethisisveryl'),
+                    setValueState: valueStateSpy
+                })
+            };
+
+            addFragment.model = testModel;
+            
+            addFragment.dialog = {
+                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+            } as unknown as Dialog;
+
+            addFragment.onFragmentNameInputChange(event as unknown as Event);
+
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
+        })
 
         test('sets create button to true when the fragment name is valid', () => {
             const addFragment = new AddFragment(
