@@ -7,7 +7,7 @@ import { initI18n } from '../../../../src/i18n';
 import { mockResizeObserver } from '../../../utils/utils';
 import { OutlinePanel } from '../../../../src/panels/outline';
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
-import { controlSelected, outlineChanged } from '@sap-ux-private/control-property-editor-common';
+import { controlSelected, outlineChanged, scenario } from '@sap-ux-private/control-property-editor-common';
 import type { FilterOptions, default as reducer } from '../../../../src/slice';
 import { FilterName, filterNodes } from '../../../../src/slice';
 import { DeviceType } from '../../../../src/devices';
@@ -104,7 +104,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: 'UI_ADAPTATION',
+            scenario: scenario.UiAdaptation,
             selectedControl: undefined,
             changes: {
                 pending: [],
@@ -186,7 +186,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: 'UI_ADAPTATION',
+            scenario: scenario.UiAdaptation,
             selectedControl: undefined,
             changes: {
                 pending: [],
@@ -242,7 +242,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: 'UI_ADAPTATION',
+            scenario: scenario.UiAdaptation,
             selectedControl: undefined,
             changes: {
                 pending: [],
@@ -284,7 +284,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: 'ADAPTATION_PROJECT',
+            scenario: scenario.AdaptationProject,
             selectedControl: undefined,
             changes: {
                 pending: [],
@@ -328,7 +328,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: model,
             filterQuery: filterInitOptions,
-            scenario: 'ADAPTATION_PROJECT',
+            scenario: scenario.AdaptationProject,
             selectedControl: undefined,
             changes: {
                 pending: [],
@@ -416,7 +416,7 @@ describe('OutlinePanel', () => {
             scale: 1,
             outline: getModel(true, true, true, true),
             filterQuery: filterInitOptions,
-            scenario: 'UI_ADAPTATION',
+            scenario: scenario.UiAdaptation,
             selectedControl: undefined,
             changes: {
                 pending: [],
