@@ -38,13 +38,15 @@ function getAppTypeAndHideFilterBarFromManifest(manifest: Manifest): {
     hideFilterBar: boolean;
 } {
     const appTargets = manifest['sap.ui5']?.routing?.targets;
-    let hideFilterBar = false;
+    let hideFilterBar: boolean = false;
     let isFEV4 = false;
     for (const targetKey in appTargets) {
         const target = appTargets[targetKey] as FEV4ManifestTarget;
         if (target.type === 'Component' && target.name && target.name in SupportedPageTypes) {
             isFEV4 = true;
-            hideFilterBar = target.options?.settings?.hideFilterBar ?? false;
+            if (SupportedPageTypes[target.name] === 'ListReport') {
+                hideFilterBar = target.options?.settings?.hideFilterBar ?? false;
+            }
         }
     }
 
