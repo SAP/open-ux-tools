@@ -26,8 +26,9 @@ describe('Dialogs', () => {
 
             await handler({} as unknown as UI5Element, rtaMock, DialogNames.ADD_FRAGMENT);
             await handler({} as unknown as UI5Element, rtaMock, DialogNames.CONTROLLER_EXTENSION);
+            await handler({} as unknown as UI5Element, rtaMock, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT);
 
-            expect(XMLView.create).toHaveBeenCalledTimes(2);
+            expect(XMLView.create).toHaveBeenCalledTimes(3);
         });
     });
 });

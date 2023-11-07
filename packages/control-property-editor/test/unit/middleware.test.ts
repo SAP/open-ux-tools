@@ -113,4 +113,24 @@ describe('communication middleware', () => {
         `);
         expect(sendActionfn).toHaveBeenCalledTimes(1);
     });
+
+    test('add extension point - send action', () => {
+        const action = common.addExtensionPoint({ controlId: 'control1' } as common.OutlineNode);
+        const next = jest.fn().mockReturnValue(action);
+        jest.mock('@sap-ux-private/control-property-editor-common', () => {
+            return {
+                addExtensionPoint: { type: '[ext] add-extension-point' }
+            };
+        });
+        const result = middleWare(next)(action);
+        expect(result).toMatchInlineSnapshot(`
+            Object {
+              "payload": Object {
+                "controlId": "control1",
+              },
+              "type": "[ext] add-extension-point",
+            }
+        `);
+        expect(sendActionfn).toHaveBeenCalledTimes(1);
+    });
 });

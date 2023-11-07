@@ -1,5 +1,29 @@
 # @sap-ux/preview-middleware
 
+## 0.10.1
+
+### Patch Changes
+
+-   ca61803e: Fixed controller extension/fragment name longer than 64 chars error not showing up
+
+## 0.10.0
+
+### Minor Changes
+
+-   6d2d2255: support all kind of changes from command stack
+
+## 0.9.0
+
+### Minor Changes
+
+-   318e040e: Enables creation of XML fragments for Extension Points from the outline tree (when right-clicking on extension point) or from the application (when clicking on control).
+
+## 0.8.7
+
+### Patch Changes
+
+-   8d16d0b3: Exports FlpConfig and RtaConfig types for usage in @sap/ux-ui5-tooling
+
 ## 0.8.6
 
 ### Patch Changes

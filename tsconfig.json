@@ -107,6 +107,9 @@
             "path": "packages/ui5-info"
         },
         {
+            "path": "packages/ui5-library-inquirer"
+        },
+        {
             "path": "packages/ui5-library-writer"
         },
         {

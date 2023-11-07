@@ -1,5 +1,26 @@
 # @sap-ux/deploy-tooling
 
+## 0.11.5
+
+### Patch Changes
+
+-   d0e46a5c: Do not validate url if destination is present
+-   Updated dependencies [d0e46a5c]
+    -   @sap-ux/project-input-validator@0.2.1
+
+## 0.11.4
+
+### Patch Changes
+
+-   70bf0627: When validation result is successful, the successful log messages should still be printed on the console.
+
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [d31cfeff]
+    -   @sap-ux/project-input-validator@0.2.0
+
 ## 0.11.2
 
 ### Patch Changes
