@@ -107,7 +107,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.onMultiSelectChange = this.onMultiSelectChange.bind(this);
         this.onScrollToItem = this.onScrollToItem.bind(this);
         this.setFocus = this.setFocus.bind(this);
-        this.onMenuDismissed = this.onMenuDismissed.bind(this);
 
         initializeComponentRef(this);
 
@@ -587,43 +586,24 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
-     * Method checks if callout collision transformation is enabled.
-     *
-     * @returns True if callout collision transformation is enabled.
-     */
-    private isCalloutCollisionTransformationEnabled(): boolean {
-        const { multiSelect, calloutCollisionTransformation } = this.props;
-        return !!(multiSelect && calloutCollisionTransformation);
-    }
-
-    /**
-     * Method checks if callout collision transformation is enabled.
+     * Method returns additional callout props for callout collision transformation if feature is enabled.
+     * Callout collision transformation checks if dropdown menu overlaps with dialog action/submit buttons
+     *  and if overlap happens, then additional offset is applied to make action buttons visible.
      *
      * @returns True if callout collision transformation is enabled.
      */
     private getCalloutCollisionTransformationProps(): ICalloutProps | undefined {
-        if (this.isCalloutCollisionTransformationEnabled()) {
+        const { multiSelect, calloutCollisionTransformation } = this.props;
+        if (multiSelect && calloutCollisionTransformation) {
             return {
                 preventDismissOnEvent: this.calloutCollisionTransform.preventDismissOnEvent,
-                onPositioned: this.calloutCollisionTransform.applyTransformation
+                layerProps: {
+                    onLayerDidMount: this.calloutCollisionTransform.applyTransformation,
+                    onLayerWillUnmount: this.calloutCollisionTransform.resetTransformation
+                }
             };
         }
         return undefined;
-    }
-
-    /**
-     * Called when the ComboBox menu is dismissed.
-     */
-    private onMenuDismissed(): void {
-        const { highlight, onMenuDismissed } = this.props;
-        if (highlight) {
-            this.reserQuery();
-        }
-        if (this.isCalloutCollisionTransformationEnabled()) {
-            this.calloutCollisionTransform.resetTransformation();
-        }
-        // Call external listener
-        onMenuDismissed?.();
     }
 
     /**
@@ -684,7 +664,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                     {...this.props}
                     {...(this.props.highlight && {
                         onInput: this.onInput,
-                        onMenuDismissed: this.onMenuDismissed,
+                        onMenuDismissed: this.reserQuery,
                         onResolveOptions: this.onResolveOptions,
                         onRenderItem: this.onRenderItem,
                         onRenderOption: this.onRenderOption,

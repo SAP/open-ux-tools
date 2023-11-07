@@ -22,6 +22,7 @@ interface TransformationElement {
 interface TransformationElements {
     container: TransformationElement;
     target: TransformationElement;
+    source: TransformationElement;
     callout?: TransformationElement;
 }
 
@@ -81,8 +82,9 @@ export class CalloutCollisionTransform {
      * @returns DOM elements and rectangles of associated elements.
      */
     private getElements(): TransformationElements | undefined {
-        const container = this.source.current?.closest<HTMLElement>(this.props.container);
-        if (container) {
+        const source = this.source.current;
+        const container = source?.closest<HTMLElement>(this.props.container);
+        if (container && source) {
             const target = container?.querySelector<HTMLElement>(this.props.target);
             if (target) {
                 const elements: TransformationElements = {
@@ -93,6 +95,10 @@ export class CalloutCollisionTransform {
                     target: {
                         dom: target,
                         rect: target.getBoundingClientRect()
+                    },
+                    source: {
+                        dom: source,
+                        rect: source.getBoundingClientRect()
                     }
                 };
                 const callout = this.callout.current;
@@ -107,19 +113,18 @@ export class CalloutCollisionTransform {
 
     /**
      * Method calculates callout overlap with target and applies transformation to make target visible.
-     *
-     * @param position Position of callout/dropdown menu.
      */
-    public applyTransformation(position?: ICalloutPositionedInfo): void {
+    public applyTransformation(): void {
         console.log('applyTransformation(CalloutCollisionTransform)');
+
         const elements = this.getElements();
         if (!elements) {
             return;
         }
-        const { container, target, callout } = elements;
-        if (callout && position) {
+        const { container, target, callout, source } = elements;
+        if (callout) {
             const height = callout.rect.height + TRANSFORMATION_OFFSET;
-            const top = position.elementPosition.top || 0;
+            const top = source.rect.bottom || 0;
             const diff = top + height - target.rect.top;
             if (diff < 0) {
                 return;

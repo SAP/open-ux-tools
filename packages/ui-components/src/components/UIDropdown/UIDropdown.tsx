@@ -3,7 +3,8 @@ import type {
     IDropdownProps,
     IDropdownStyles,
     ICalloutContentStyleProps,
-    ICalloutContentStyles
+    ICalloutContentStyles,
+    ICalloutProps
 } from '@fluentui/react';
 import { Dropdown, DropdownMenuItemType, IDropdownOption, ResponsiveMode } from '@fluentui/react';
 
@@ -12,6 +13,7 @@ import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
 import { isDropdownEmpty } from './utils';
+import { CalloutCollisionTransform } from '../UIComboBox/CalloutCollisionTransform';
 
 import './UIDropdown.scss';
 
@@ -24,6 +26,7 @@ export interface UIDropdownProps extends IDropdownProps, UIMessagesExtendedProps
     onHandleRenderTitle?(items: IDropdownOption[] | undefined): JSX.Element;
     useDropdownAsMenuMinWidth?: boolean;
     readOnly?: boolean;
+    calloutCollisionTransformation?: boolean;
 }
 
 export interface UIDropdownState {
@@ -44,6 +47,10 @@ const ERROR_BORDER_COLOR = 'var(--vscode-inputValidation-errorBorder)';
  * @extends {React.Component<UIDropdownProps, UIDropdownState>}
  */
 export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState> {
+    private dropdownDomRef = React.createRef<HTMLDivElement>();
+    private menuDomRef = React.createRef<HTMLDivElement>();
+    private calloutCollisionTransform = new CalloutCollisionTransform(this.dropdownDomRef, this.menuDomRef);
+
     /**
      * Initializes component properties.
      *
@@ -225,6 +232,27 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
     }
 
     /**
+     * Method returns additional callout props for callout collision transformation if feature is enabled.
+     * Callout collision transformation checks if dropdown menu overlaps with dialog action/submit buttons
+     *  and if overlap happens, then additional offset is applied to make action buttons visible.
+     *
+     * @returns True if callout collision transformation is enabled.
+     */
+    private getCalloutCollisionTransformationProps(): ICalloutProps | undefined {
+        const { multiSelect, calloutCollisionTransformation } = this.props;
+        if (multiSelect && calloutCollisionTransformation) {
+            return {
+                preventDismissOnEvent: this.calloutCollisionTransform.preventDismissOnEvent,
+                layerProps: {
+                    onLayerDidMount: this.calloutCollisionTransform.applyTransformation,
+                    onLayerWillUnmount: this.calloutCollisionTransform.resetTransformation
+                }
+            };
+        }
+        return undefined;
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
@@ -254,10 +282,15 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
 
         return (
             <Dropdown
+                ref={this.dropdownDomRef}
                 calloutProps={{
                     calloutMaxHeight: 200,
                     styles: this.props.useDropdownAsMenuMinWidth ? this.getCalloutStylesForUseAsMinWidth : undefined,
-                    className: 'ts-Callout ts-Callout-Dropdown'
+                    className: 'ts-Callout ts-Callout-Dropdown',
+                    popupProps: {
+                        ref: this.menuDomRef
+                    },
+                    ...this.getCalloutCollisionTransformationProps()
                 }}
                 onRenderCaretDown={this.onRenderCaretDown}
                 onClick={this.onClick}
