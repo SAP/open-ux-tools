@@ -21,7 +21,10 @@ interface TransformationElement {
 interface TransformationElements {
     container: TransformationElement;
     target: TransformationElement;
+    callout?: TransformationElement;
 }
+
+const TRANSFORMATION_OFFSET = 20;
 
 /**
  * This class is responsible for Dialog/Container element transformation to avoid collision/overlap between Callout/Dropdown Menu and target element.
@@ -33,6 +36,7 @@ export class CalloutCollisionTransform {
     private props: CalloutCollisionTransformProps;
     // Source reference of anchor element
     private source: React.RefObject<HTMLElement>;
+    private callout: React.RefObject<HTMLElement>;
     // Placeholder element for additional space
     private placeholder?: HTMLElement;
     // Original style properties of container
@@ -42,10 +46,16 @@ export class CalloutCollisionTransform {
      * Initializes class with options.
      *
      * @param source Source element.
+     * @param callout Dropdown menu/callout element.
      * @param props Transformation properties.
      */
-    constructor(source: React.RefObject<HTMLElement>, props: CalloutCollisionTransformProps = defaultProps) {
+    constructor(
+        source: React.RefObject<HTMLElement>,
+        callout: React.RefObject<HTMLElement>,
+        props: CalloutCollisionTransformProps = defaultProps
+    ) {
         this.source = source;
+        this.callout = callout;
         this.props = props;
         this.applyTransformation = this.applyTransformation.bind(this);
         this.resetTransformation = this.resetTransformation.bind(this);
@@ -63,7 +73,7 @@ export class CalloutCollisionTransform {
         if (container) {
             const target = container?.querySelector<HTMLElement>(this.props.target);
             if (target) {
-                return {
+                const elements: TransformationElements = {
                     container: {
                         dom: container,
                         rect: container.getBoundingClientRect()
@@ -73,6 +83,11 @@ export class CalloutCollisionTransform {
                         rect: target.getBoundingClientRect()
                     }
                 };
+                const callout = this.callout.current;
+                if (callout) {
+                    elements.callout = { dom: callout, rect: callout.getBoundingClientRect() };
+                }
+                return elements;
             }
         }
     }
@@ -87,10 +102,9 @@ export class CalloutCollisionTransform {
         if (!elements) {
             return;
         }
-        const { container, target } = elements;
-        if (target && position) {
-            // ToDo - get height
-            const height = 200 + 20;
+        const { container, target, callout } = elements;
+        if (callout && position) {
+            const height = callout.rect.height + TRANSFORMATION_OFFSET;
             const top = position.elementPosition.top || 0;
             const diff = top + height - target.rect.top;
             if (diff < 0) {

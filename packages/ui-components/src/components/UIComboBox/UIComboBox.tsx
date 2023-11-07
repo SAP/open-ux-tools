@@ -77,12 +77,13 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     static defaultProps = { openMenuOnClick: true };
     // Reference to fluent ui combobox
     private comboBox = React.createRef<ComboBoxRef>();
-    private domRef = React.createRef<HTMLDivElement>();
+    private comboboxDomRef = React.createRef<HTMLDivElement>();
+    private menuDomRef = React.createRef<HTMLDivElement>();
     private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
     private query = '';
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
-    private CalloutCollisionTransform = new CalloutCollisionTransform(this.domRef);
+    private calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
 
     /**
      * Initializes component properties.
@@ -105,7 +106,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.onMultiSelectChange = this.onMultiSelectChange.bind(this);
         this.onScrollToItem = this.onScrollToItem.bind(this);
         this.setFocus = this.setFocus.bind(this);
-        this.onMenuDismiss = this.onMenuDismiss.bind(this);
+        this.onMenuDismissed = this.onMenuDismissed.bind(this);
 
         initializeComponentRef(this);
 
@@ -584,13 +585,16 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         return autofill;
     }
 
-    private onMenuDismiss(): void {
-        const { multiSelect, onMenuDismiss } = this.props;
+    private onMenuDismissed(): void {
+        const { highlight, multiSelect, onMenuDismissed } = this.props;
+        if (highlight) {
+            this.reserQuery();
+        }
         if (multiSelect) {
-            this.CalloutCollisionTransform.resetTransformation();
+            this.calloutCollisionTransform.resetTransformation();
         }
         // Call external listener
-        onMenuDismiss?.();
+        onMenuDismissed?.();
     }
 
     /**
@@ -606,7 +610,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             <div ref={this.props.wrapperRef} className={this.getClassNames(messageInfo)}>
                 <ComboBox
                     componentRef={this.comboBox}
-                    ref={this.domRef}
+                    ref={this.comboboxDomRef}
                     disabled={disabled}
                     iconButtonProps={{
                         iconProps: {
@@ -615,6 +619,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                     }}
                     calloutProps={{
                         calloutMaxHeight: 200,
+                        popupProps: {
+                            ref: this.menuDomRef
+                        },
                         className: 'ts-Callout ts-Callout-Dropdown',
                         styles: {
                             ...(this.props.useComboBoxAsMenuMinWidth && {
@@ -625,8 +632,8 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                             })
                         },
                         ...(this.props.multiSelect && {
-                            preventDismissOnEvent: this.CalloutCollisionTransform.preventDismissOnEvent,
-                            onPositioned: this.CalloutCollisionTransform.applyTransformation
+                            preventDismissOnEvent: this.calloutCollisionTransform.preventDismissOnEvent,
+                            onPositioned: this.calloutCollisionTransform.applyTransformation
                         })
                     }}
                     styles={{
@@ -651,7 +658,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                     {...this.props}
                     {...(this.props.highlight && {
                         onInput: this.onInput,
-                        onMenuDismissed: this.reserQuery,
+                        onMenuDismissed: this.onMenuDismissed,
                         onResolveOptions: this.onResolveOptions,
                         onRenderItem: this.onRenderItem,
                         onRenderOption: this.onRenderOption,
@@ -659,7 +666,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         onPendingValueChanged: this.onPendingValueChanged
                     })}
                     autofill={this.getAutofillProps()}
-                    onMenuDismiss={this.onMenuDismiss}
                     {...(this.props.useComboBoxAsMenuMinWidth && {
                         // Use 'onMenuOpen', because there can be dynamic size of combobox
                         onMenuOpen: this.calculateMenuMinWidth.bind(this)
