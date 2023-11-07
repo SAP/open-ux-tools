@@ -119,7 +119,7 @@ describe('main', () => {
         expect(applyChangeSpy).toBeCalledWith({ rta: rta }, payload);
         expect(sendActionMock).toHaveBeenNthCalledWith(1, {
             type: '[ext] scenario-loaded',
-            payload: 'UiAdaptation'
+            payload: 'UI_ADAPTATION'
         });
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] icons-loaded',
