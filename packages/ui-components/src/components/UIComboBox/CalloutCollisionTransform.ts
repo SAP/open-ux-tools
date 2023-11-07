@@ -1,15 +1,16 @@
 import type { ICalloutPositionedInfo } from '@fluentui/react';
 
+// Default properties which applies for dialog scenario with footer buttons
 const defaultProps: CalloutCollisionTransformProps = {
     target: '.ms-Dialog-actions',
-    container: '.ms-Dialog-main'
+    container: '.ms-Dialog-main',
+    absolute: true
 };
 
 export interface CalloutCollisionTransformProps {
     // Parent selectors
     container: string;
     target: string;
-    // ToOo
     absolute?: boolean;
 }
 
@@ -62,12 +63,23 @@ export class CalloutCollisionTransform {
         this.preventDismissOnEvent = this.preventDismissOnEvent.bind(this);
     }
 
+    /**
+     * Method creates placeholder element with given size.
+     *
+     * @param size Size of placeholder.
+     * @returns HTML element for placeholder.
+     */
     private createPlaceholder(size: number): HTMLElement {
         const element = document.createElement('div');
         element.style.height = `${size}px`;
         return element;
     }
 
+    /**
+     * Method returns DOM elements and rectangles of associated elements(container, target, callout).
+     *
+     * @returns DOM elements and rectangles of associated elements.
+     */
     private getElements(): TransformationElements | undefined {
         const container = this.source.current?.closest<HTMLElement>(this.props.container);
         if (container) {
@@ -90,11 +102,13 @@ export class CalloutCollisionTransform {
                 return elements;
             }
         }
+        return undefined;
     }
 
     /**
+     * Method calculates callout overlap with target and applies transformation to make target visible.
      *
-     * @param position
+     * @param position Position of callout/dropdown menu.
      */
     public applyTransformation(position?: ICalloutPositionedInfo): void {
         console.log('applyTransformation(CalloutCollisionTransform)');
@@ -110,25 +124,29 @@ export class CalloutCollisionTransform {
             if (diff < 0) {
                 return;
             }
-
-            const containerStyle = container.dom.style;
-            this.originalStyle = {
-                transform: containerStyle.transform,
-                position: containerStyle.position,
-                top: containerStyle.top,
-                left: containerStyle.left
-            };
-            containerStyle.transform = '';
-            containerStyle.position = 'absolute';
-            containerStyle.top = `${container.rect.top}px`;
-            containerStyle.left = `${container.rect.left}px`;
-
+            // Apply absolute position to fix position and avoid recentering
+            if (this.props.absolute) {
+                const containerStyle = container.dom.style;
+                this.originalStyle = {
+                    transform: containerStyle.transform,
+                    position: containerStyle.position,
+                    top: containerStyle.top,
+                    left: containerStyle.left
+                };
+                containerStyle.transform = '';
+                containerStyle.position = 'absolute';
+                containerStyle.top = `${container.rect.top}px`;
+                containerStyle.left = `${container.rect.left}px`;
+            }
             // Apply placeholder element - gap to make target visible
             this.placeholder = this.createPlaceholder(diff);
             target.dom.prepend(this.placeholder);
         }
     }
 
+    /**
+     * Method resets current applied transformation.
+     */
     public resetTransformation(): void {
         console.log('resetTransformation(CalloutCollisionTransform)');
         const elements = this.getElements();
@@ -141,6 +159,7 @@ export class CalloutCollisionTransform {
                 container.dom.style[styleName] = this.originalStyle[styleName] || '';
             }
         }
+        this.originalStyle = {};
         // Remove placeholder element
         if (this.placeholder) {
             target.dom.removeChild(this.placeholder);
@@ -148,9 +167,15 @@ export class CalloutCollisionTransform {
         }
     }
 
+    /**
+     * Method prevents callout dismiss/close if focus/click on target elements.
+     *
+     * @param event Triggered event to check.
+     * @returns Returns true if callout should not be closed.
+     */
     public preventDismissOnEvent = (
         event: Event | React.FocusEvent<Element> | React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>
-    ) => {
+    ): boolean => {
         console.log('preventDismissOnEvent(CalloutCollisionTransform)');
         const elements = this.getElements();
         if (event.type === 'focus' && elements?.target.dom.contains(event.target as HTMLElement)) {
