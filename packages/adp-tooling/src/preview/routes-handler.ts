@@ -193,7 +193,7 @@ export default class RoutesHandler {
             const projectName = project.getName();
 
             const getPath = (projectPath: string, fileName: string) =>
-                path.join(projectPath, FolderNames.Changes, FolderNames.Coding, fileName).replace(/[\\/]/g, path.sep);
+                path.normalize(path.join(projectPath, FolderNames.Changes, FolderNames.Coding, fileName));
 
             for (const file of codeExtFiles) {
                 const fileStr = await file.getString();
