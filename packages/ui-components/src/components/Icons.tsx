@@ -872,8 +872,8 @@ export function initIcons(): void {
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
                         fill={COLORS.default}
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
                         d="M16 1C16 0.447715 15.5523 0 15 0H1C0.447715 0 0 0.447715 0 1V15C0 15.5523 0.447715 16 1 16H15C15.5523 16 16 15.5523 16 15V1ZM15 12.001H1V15H15V12.001ZM15 1H1V11.002H15V1Z"
                     />
                 </svg>
