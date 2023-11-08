@@ -358,7 +358,9 @@ describe('deploy-test validation', () => {
 
         test('Valid local package name - small case $tmp', async () => {
             mockedAdtService.listPackages.mockResolvedValueOnce(['$TMP']);
-            mockedAdtService.getTransportRequests.mockRejectedValueOnce(new Error(TransportChecksService.LocalPackageError));
+            mockedAdtService.getTransportRequests.mockRejectedValueOnce(
+                new Error(TransportChecksService.LocalPackageError)
+            );
             mockedAdtService.getAtoInfo.mockResolvedValueOnce({
                 developmentPrefix: 'Z'
             });
@@ -372,12 +374,11 @@ describe('deploy-test validation', () => {
                 nullLogger
             );
             expect(output.result).toBe(true);
-            expect(mockedAdtService.listPackages).toBeCalledWith({"phrase": "$TMP"});
-            expect(mockedAdtService.getTransportRequests).toBeCalledWith("$TMP", "ZAPP1");
+            expect(mockedAdtService.listPackages).toBeCalledWith({ 'phrase': '$TMP' });
+            expect(mockedAdtService.getTransportRequests).toBeCalledWith('$TMP', 'ZAPP1');
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportNotRequired}`);
         });
-
 
         test('adtService error', async () => {
             mockedAdtService.listPackages.mockResolvedValueOnce(['TESTPACKAGE', 'MYPACKAGE']);
