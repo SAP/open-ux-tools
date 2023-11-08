@@ -419,7 +419,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             if (tryCount === 2) {
                 this.log.warn('Warning: retry undeploy to handle a backend rejection...');
             }
-            return await this.delete(`/Repositories('${encodeURIComponent(appName)}')`, config);
+            return await this.delete(`/Repositories('${appName}')`, config);
         } catch (error) {
             if (error?.response?.status === 400) {
                 // Kill the flow after 1 attempt
