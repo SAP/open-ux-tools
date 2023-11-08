@@ -238,6 +238,8 @@ describe('deploy-test validation', () => {
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.packageCheckPass}`);
+            expect(summaryStr).toContain(`${yellow('?')} Package name contains lower case letter(s). $TMP is used for ADT validation.`);
+
         });
 
         test('Invalid package name', async () => {
@@ -356,7 +358,7 @@ describe('deploy-test validation', () => {
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportNotRequired}`);
         });
 
-        test('Valid local package name - small case $tmp', async () => {
+        test('Valid package name - small case local package $tmp', async () => {
             mockedAdtService.listPackages.mockResolvedValueOnce(['$TMP']);
             mockedAdtService.getTransportRequests.mockRejectedValueOnce(
                 new Error(TransportChecksService.LocalPackageError)
@@ -378,6 +380,39 @@ describe('deploy-test validation', () => {
             expect(mockedAdtService.getTransportRequests).toBeCalledWith('$TMP', 'ZAPP1');
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportNotRequired}`);
+            expect(summaryStr).toContain(`${yellow('?')} Package name contains lower case letter(s). $TMP is used for ADT validation.`);
+        });
+
+        test('Valid transport - small case transport number', async () => {
+            mockedAdtService.listPackages.mockResolvedValueOnce(['TEST']);
+            mockedAdtService.getTransportRequests.mockResolvedValueOnce([
+                { transportNumber: 'T000001' },
+                { transportNumber: 'T000002' }
+            ]);
+            mockedAdtService.getAtoInfo.mockResolvedValueOnce({
+                developmentPrefix: 'Z'
+            });
+
+            const output = await validateBeforeDeploy(
+                {
+                    app: {
+                        ...testConfig.app,
+                        package: 'test',
+                        transport: 't000002'
+                    },
+                    target: {...testConfig.target}
+                },
+                mockedProvider as any,
+                nullLogger
+            );
+            expect(output.result).toBe(true);
+            expect(mockedAdtService.listPackages).toBeCalledWith({ 'phrase': 'TEST' });
+            expect(mockedAdtService.getTransportRequests).toBeCalledWith('TEST', 'ZAPP1');
+            const summaryStr = formatSummary(output.summary);
+            expect(summaryStr).toContain(`${yellow('?')} Package name contains lower case letter(s). TEST is used for ADT validation.`);
+            expect(summaryStr).toContain(`${yellow('?')} Transport request number contains lower case letter(s). T000002 is used for ADT validation.`);
+            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.packageCheckPass}`);
+            expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportCheckPass}`);
         });
 
         test('adtService error', async () => {
