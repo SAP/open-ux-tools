@@ -18,7 +18,7 @@ import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
 import { isDropdownEmpty } from '../UIDropdown';
-import { CalloutCollisionTransform } from './CalloutCollisionTransform';
+import { CalloutCollisionTransform } from '../UICallout';
 
 export {
     IComboBoxOption as UIComboBoxOption,

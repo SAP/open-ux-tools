@@ -10,11 +10,10 @@ import {
     UITextInput,
     UICallout,
     UICheckbox,
-    initIcons
+    initIcons,
+    CalloutCollisionTransform
 } from '../src/components';
 import { data } from '../test/__mock__/select-data';
-
-import { CalloutCollisionTransform } from '../src/components/UIComboBox/CalloutCollisionTransform';
 
 initIcons();
 

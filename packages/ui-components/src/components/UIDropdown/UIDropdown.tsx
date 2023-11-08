@@ -13,7 +13,7 @@ import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
 import { isDropdownEmpty } from './utils';
-import { CalloutCollisionTransform } from '../UIComboBox/CalloutCollisionTransform';
+import { CalloutCollisionTransform } from '../UICallout';
 
 import './UIDropdown.scss';
 
