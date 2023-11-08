@@ -238,8 +238,9 @@ describe('deploy-test validation', () => {
             expect(output.result).toBe(true);
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.packageCheckPass}`);
-            expect(summaryStr).toContain(`${yellow('?')} Package name contains lower case letter(s). $TMP is used for ADT validation.`);
-
+            expect(summaryStr).toContain(
+                `${yellow('?')} Package name contains lower case letter(s). $TMP is used for ADT validation.`
+            );
         });
 
         test('Invalid package name', async () => {
@@ -380,7 +381,9 @@ describe('deploy-test validation', () => {
             expect(mockedAdtService.getTransportRequests).toBeCalledWith('$TMP', 'ZAPP1');
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportNotRequired}`);
-            expect(summaryStr).toContain(`${yellow('?')} Package name contains lower case letter(s). $TMP is used for ADT validation.`);
+            expect(summaryStr).toContain(
+                `${yellow('?')} Package name contains lower case letter(s). $TMP is used for ADT validation.`
+            );
         });
 
         test('Valid transport - small case transport number', async () => {
@@ -400,7 +403,7 @@ describe('deploy-test validation', () => {
                         package: 'test',
                         transport: 't000002'
                     },
-                    target: {...testConfig.target}
+                    target: { ...testConfig.target }
                 },
                 mockedProvider as any,
                 nullLogger
@@ -409,8 +412,14 @@ describe('deploy-test validation', () => {
             expect(mockedAdtService.listPackages).toBeCalledWith({ 'phrase': 'TEST' });
             expect(mockedAdtService.getTransportRequests).toBeCalledWith('TEST', 'ZAPP1');
             const summaryStr = formatSummary(output.summary);
-            expect(summaryStr).toContain(`${yellow('?')} Package name contains lower case letter(s). TEST is used for ADT validation.`);
-            expect(summaryStr).toContain(`${yellow('?')} Transport request number contains lower case letter(s). T000002 is used for ADT validation.`);
+            expect(summaryStr).toContain(
+                `${yellow('?')} Package name contains lower case letter(s). TEST is used for ADT validation.`
+            );
+            expect(summaryStr).toContain(
+                `${yellow(
+                    '?'
+                )} Transport request number contains lower case letter(s). T000002 is used for ADT validation.`
+            );
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.packageCheckPass}`);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportCheckPass}`);
         });

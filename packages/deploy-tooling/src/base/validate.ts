@@ -82,7 +82,6 @@ export async function validateBeforeDeploy(
         destination: config.target.destination ?? ''
     };
 
-
     // output is passed by reference and status updated during the internal pipeline below.
     await validateInputTextFormat(input, output, provider, logger);
     convertInputsForAdtValidations(input, output);
@@ -124,10 +123,12 @@ export function formatSummary(summary: SummaryRecord[]): string {
     return summaryStr;
 }
 
-function convertInputsForAdtValidations(
-    input: ValidationInputs,
-    output: ValidationOutput): void {
-
+/**
+ *
+ * @param input
+ * @param output
+ */
+function convertInputsForAdtValidations(input: ValidationInputs, output: ValidationOutput): void {
     const upperCasePackageName = input.package.toUpperCase();
     const upperCaseTransport = input.transport.toUpperCase();
     if (upperCasePackageName !== input.package) {
@@ -145,7 +146,6 @@ function convertInputsForAdtValidations(
         });
     }
 }
-
 
 /**
  * Client-side validation on the deploy configuration based on the
