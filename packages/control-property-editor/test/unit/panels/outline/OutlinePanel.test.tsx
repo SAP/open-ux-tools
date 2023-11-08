@@ -120,7 +120,7 @@ describe('OutlinePanel', () => {
             },
             icons: []
         };
-        const { container } = render(<OutlinePanel />, { initialState });
+        render(<OutlinePanel />, { initialState });
         // check one
         const one = screen.getAllByText(/one/i)[0];
         expect(one).toBeInTheDocument();
