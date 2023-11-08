@@ -1,5 +1,29 @@
 # @sap-ux/ui-components
 
+## 1.12.3
+
+### Patch Changes
+
+-   c53c31e3: Update Icons.tsx
+
+## 1.12.2
+
+### Patch Changes
+
+-   37f4e176: Parameterise UI Action Aallout border colour
+
+## 1.12.1
+
+### Patch Changes
+
+-   9896d6f4: add `footer` icon
+
+## 1.12.0
+
+### Minor Changes
+
+-   22a21267: UISplitButton update state on props change
+
 ## 1.11.21
 
 ### Patch Changes
