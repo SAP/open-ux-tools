@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import type { IGroup, IGroupRenderProps, IGroupHeaderProps } from '@fluentui/react';
 import { Icon } from '@fluentui/react';
 import { UIList, UiIcons } from '@sap-ux/ui-components';
+import { useTranslation } from 'react-i18next';
 
 import { selectControl, reportTelemetry, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
 import type { Control, OutlineNode } from '@sap-ux-private/control-property-editor-common';
@@ -22,6 +23,7 @@ interface OutlineNodeItem extends OutlineNode {
 
 export const Tree = (): ReactElement => {
     const dispatch = useDispatch();
+    const { t } = useTranslation();
 
     const [collapsed, setCollapsed] = useState<IGroup[]>([]);
     const [selection, setSelection] = useState<{ group: undefined | IGroup; cell: undefined | OutlineNodeItem }>({
@@ -390,7 +392,7 @@ export const Tree = (): ReactElement => {
                             <button
                                 data-testid="tooltip-dialog-button"
                                 onClick={() => handleOpenFragmentDialog(groupHeaderProps?.group?.data, tooltipId)}>
-                                Add Fragment at Extension Point
+                                {t('ADD_FRAGMENT_AT_EXTENSION_POINT')}
                             </button>
                         </div>
                     )}
@@ -401,6 +403,7 @@ export const Tree = (): ReactElement => {
     };
     const groupRenderProps: IGroupRenderProps = {
         showEmptyGroups: true,
+        isAllGroupsCollapsed: false,
         onRenderHeader
     };
 
