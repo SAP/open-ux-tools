@@ -12,7 +12,7 @@ import { UIIcon } from '../UIIcon';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
-import { isDropdownEmpty } from './utils';
+import { isDropdownEmpty, getCalloutCollisionTransformationProps } from './utils';
 import { CalloutCollisionTransform } from '../UICallout';
 
 import './UIDropdown.scss';
@@ -232,27 +232,6 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
     }
 
     /**
-     * Method returns additional callout props for callout collision transformation if feature is enabled.
-     * Callout collision transformation checks if dropdown menu overlaps with dialog action/submit buttons
-     *  and if overlap happens, then additional offset is applied to make action buttons visible.
-     *
-     * @returns True if callout collision transformation is enabled.
-     */
-    private getCalloutCollisionTransformationProps(): ICalloutProps | undefined {
-        const { multiSelect, calloutCollisionTransformation } = this.props;
-        if (multiSelect && calloutCollisionTransformation) {
-            return {
-                preventDismissOnEvent: this.calloutCollisionTransform.preventDismissOnEvent,
-                layerProps: {
-                    onLayerDidMount: this.calloutCollisionTransform.applyTransformation,
-                    onLayerWillUnmount: this.calloutCollisionTransform.resetTransformation
-                }
-            };
-        }
-        return undefined;
-    }
-
-    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
@@ -290,7 +269,11 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                     popupProps: {
                         ref: this.menuDomRef
                     },
-                    ...this.getCalloutCollisionTransformationProps()
+                    ...getCalloutCollisionTransformationProps(
+                        this.calloutCollisionTransform,
+                        this.props.multiSelect,
+                        this.props.calloutCollisionTransformation
+                    )
                 }}
                 onRenderCaretDown={this.onRenderCaretDown}
                 onClick={this.onClick}
