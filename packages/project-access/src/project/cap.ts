@@ -1,12 +1,21 @@
 import { spawn } from 'child_process';
 import { dirname, join, normalize, relative, sep } from 'path';
 import { FileName } from '../constants';
-import type { CapCustomPaths, CapProjectType, CdsEnvironment, csn, Package } from '../types';
+import type {
+    CapCustomPaths,
+    CapProjectType,
+    CdsEnvironment,
+    csn,
+    LinkedModel,
+    Package,
+    ServiceDefinitions
+} from '../types';
 import { fileExists, readFile, readJSON } from '../file';
 import { loadModuleFromProject } from './module-loader';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
+    linked: (model: csn) => LinkedModel;
     load: (paths: string | string[]) => Promise<csn>;
     compile: {
         to: {
@@ -14,11 +23,18 @@ interface CdsFacade {
             edmx: (model: csn, options?: { service?: string; version?: 'v2' | 'v4' }) => Promise<string>;
         };
     };
+    resolve: ResolveWithCache;
+}
+
+interface ResolveWithCache {
+    (files: string | string[], options?: { skipModelCache: boolean }): string[];
+    cache: Record<string, { cached: Record<string, string[]>; paths: string[] }>;
 }
 
 interface ServiceInfo {
     name: string;
     urlPath: string;
+    runtime?: string;
 }
 
 /**
@@ -114,7 +130,8 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
         services = services.map((value) => {
             return {
                 name: value.name,
-                urlPath: uniformUrl(value.urlPath)
+                urlPath: uniformUrl(value.urlPath),
+                runtime: value.runtime
             };
         });
     }
@@ -122,6 +139,127 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
         model,
         services
     };
+}
+
+/**
+ * Returns a list of cds file paths (layers). By default return list of all, but you can also restrict it to one envRoot.
+ *
+ * @param projectRoot - root of the project, where the package.json is
+ * @param [ignoreErrors] - optionally, default is false; if set to true the thrown error will be checked for CDS file paths in model and returned
+ * @param [envRoot] - optionally, the root folder or CDS file to get the layer files
+ * @returns - array of strings containing cds file paths
+ */
+export async function getCdsFiles(
+    projectRoot: string,
+    ignoreErrors = false,
+    envRoot?: string | string[]
+): Promise<string[]> {
+    let cdsFiles: string[] = [];
+    try {
+        let csn;
+        envRoot ??= await getCdsRoots(projectRoot);
+        try {
+            const cds = await loadCdsModuleFromProject(projectRoot);
+            csn = await cds.load(envRoot);
+            cdsFiles = [...(csn['$sources'] ?? [])];
+        } catch (e) {
+            if (ignoreErrors && e.model?.sources && typeof e.model.sources === 'object') {
+                cdsFiles.push(...extractCdsFilesFromMessage(e.model.sources));
+            } else {
+                throw e;
+            }
+        }
+    } catch (error) {
+        throw Error(
+            `Error while retrieving the list of cds files for project ${projectRoot}, envRoot ${envRoot}. Error was: ${error}`
+        );
+    }
+    return cdsFiles;
+}
+
+/**
+ * Returns a list of filepaths to CDS files in root folders. Same what is done if you execute cds.resolve('*') on command line in a project.
+ *
+ * @param projectRoot - root of the project, where the package.json is
+ * @param [clearCache] - optionally, clear the cache, default false
+ * @returns - array of root paths
+ */
+export async function getCdsRoots(projectRoot: string, clearCache = false): Promise<string[]> {
+    const roots = [];
+    const capCustomPaths = await getCapCustomPaths(projectRoot);
+    const cdsEnvRoots = [capCustomPaths.db, capCustomPaths.srv, capCustomPaths.app, 'schema', 'services'];
+    // clear cache is enforced to also resolve newly created cds file at design time
+    const cds = await loadCdsModuleFromProject(projectRoot);
+    if (clearCache) {
+        cds.resolve.cache = {};
+    }
+    for (const cdsEnvRoot of cdsEnvRoots) {
+        const resolvedRoots =
+            cds.resolve(join(projectRoot, cdsEnvRoot), {
+                skipModelCache: true
+            }) || [];
+        for (const resolvedRoot of resolvedRoots) {
+            roots.push(resolvedRoot);
+        }
+    }
+    return roots;
+}
+
+/**
+ * Return a list of services in a CAP project.
+ *
+ * @param projectRoot - root of the CAP project, where the package.json is
+ * @param ignoreErrors - in case loading the cds model throws an error, try to use the model from the exception object
+ * @returns - array of service definitions
+ */
+export async function getCdsServices(projectRoot: string, ignoreErrors = true): Promise<ServiceDefinitions[]> {
+    let cdsServices: ServiceDefinitions[] = [];
+    try {
+        const cds = await loadCdsModuleFromProject(projectRoot);
+        const roots: string[] = await getCdsRoots(projectRoot);
+        let model;
+        try {
+            model = await cds.load(roots);
+        } catch (e) {
+            if (ignoreErrors && e.model) {
+                model = e.model;
+            } else {
+                throw e;
+            }
+        }
+        const linked = cds.linked(model);
+        if (Array.isArray(linked.services)) {
+            cdsServices = linked.services;
+        } else {
+            Object.keys(linked.services).forEach((service) => {
+                cdsServices.push(linked.services[service] as ServiceDefinitions);
+            });
+        }
+    } catch (error) {
+        throw Error(`Error while resolving cds roots for '${projectRoot}'. ${error}`);
+    }
+    return cdsServices;
+}
+
+/**
+ * When an error occurs while trying to read cds files, the error object contains the source file
+ * information. This function extracts this file paths.
+ *
+ * @param sources - map containing the file name
+ * @returns - array of strings containing cds file paths
+ */
+function extractCdsFilesFromMessage(sources: Record<string, { filename?: string }>): string[] {
+    const cdsFiles: string[] = [];
+    for (const source in sources) {
+        let filename = sources[source].filename;
+        if (typeof filename === 'string' && !filename.startsWith(sep)) {
+            filename = join(sep, filename);
+        }
+        if (filename) {
+            cdsFiles.push(filename);
+        }
+    }
+    return cdsFiles;
 }
 
 /**

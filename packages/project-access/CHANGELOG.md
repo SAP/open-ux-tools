@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.15.0
+
+### Minor Changes
+
+-   b458bf43: Adding functions getCdsFiles(), getCdsRoots(), getCdsServices()
+
 ## 1.14.0
 
 ### Minor Changes
