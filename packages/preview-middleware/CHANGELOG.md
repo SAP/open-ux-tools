@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.10.2
+
+### Patch Changes
+
+-   e2b264c2: Make Control Property Editor aware which application (scenario) its running in the iframe
+
+## 0.10.1
+
+### Patch Changes
+
+-   ca61803e: Fixed controller extension/fragment name longer than 64 chars error not showing up
+
 ## 0.10.0
 
 ### Minor Changes

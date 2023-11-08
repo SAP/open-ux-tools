@@ -26,107 +26,114 @@
     {
       "path": "packages/adp-tooling"
     },
-    {
-      "path": "packages/app-config-writer"
-    },
-    {
-      "path": "packages/axios-extension"
-    },
-    {
-      "path": "packages/backend-proxy-middleware"
-    },
-    {
-      "path": "packages/btp-utils"
-    },
-    {
-      "path": "packages/cap-config-writer"
-    },
-    {
-      "path": "packages/control-property-editor-common"
-    },
-    {
-      "path": "packages/control-property-editor"
-    },
-    {
-      "path": "packages/create"
-    },
-    {
-      "path": "packages/deploy-tooling"
-    },
-    {
-      "path": "packages/environment-check"
-    },
-    {
-      "path": "packages/eslint-plugin-fiori-tools"
-    },
-    {
-      "path": "packages/fe-fpm-writer"
-    },
-    {
-      "path": "packages/fiori-elements-writer"
-    },
-    {
-      "path": "packages/fiori-freestyle-writer"
-    },
-    {
-      "path": "packages/logger"
-    },
-    {
-      "path": "packages/mockserver-config-writer"
-    },
-    {
-      "path": "packages/odata-service-writer"
-    },
-    {
-      "path": "packages/preview-middleware-client"
-    },
-    {
-      "path": "packages/preview-middleware"
-    },
-    {
-      "path": "packages/project-access"
-    },
-    {
-      "path": "packages/project-input-validator"
-    },
-    {
-      "path": "packages/store"
-    },
-    {
-      "path": "packages/system-access"
-    },
-    {
-      "path": "packages/telemetry"
-    },
-    {
-      "path": "packages/ui-components"
-    },
-    {
-      "path": "packages/ui5-application-writer"
-    },
-    {
-      "path": "packages/ui5-config"
-    },
-    {
-      "path": "packages/ui5-info"
-    },
-    {
-      "path": "packages/ui5-library-writer"
-    },
-    {
-      "path": "packages/ui5-proxy-middleware"
-    },
-    {
-      "path": "packages/ui5-test-writer"
-    },
-    {
-      "path": "packages/yaml"
-    },
-    {
-      "path": "examples/odata-cli"
-    },
-    {
-      "path": "examples/simple-generator"
-    }
-  ]
+    "references": [
+        {
+            "path": "packages/adp-tooling"
+        },
+        {
+            "path": "packages/app-config-writer"
+        },
+        {
+            "path": "packages/axios-extension"
+        },
+        {
+            "path": "packages/backend-proxy-middleware"
+        },
+        {
+            "path": "packages/btp-utils"
+        },
+        {
+            "path": "packages/cap-config-writer"
+        },
+        {
+            "path": "packages/control-property-editor-common"
+        },
+        {
+            "path": "packages/control-property-editor"
+        },
+        {
+            "path": "packages/create"
+        },
+        {
+            "path": "packages/deploy-tooling"
+        },
+        {
+            "path": "packages/environment-check"
+        },
+        {
+            "path": "packages/eslint-plugin-fiori-tools"
+        },
+        {
+            "path": "packages/fe-fpm-writer"
+        },
+        {
+            "path": "packages/fiori-elements-writer"
+        },
+        {
+            "path": "packages/fiori-freestyle-writer"
+        },
+        {
+            "path": "packages/logger"
+        },
+        {
+            "path": "packages/mockserver-config-writer"
+        },
+        {
+            "path": "packages/odata-service-writer"
+        },
+        {
+            "path": "packages/preview-middleware-client"
+        },
+        {
+            "path": "packages/preview-middleware"
+        },
+        {
+            "path": "packages/project-access"
+        },
+        {
+            "path": "packages/project-input-validator"
+        },
+        {
+            "path": "packages/store"
+        },
+        {
+            "path": "packages/system-access"
+        },
+        {
+            "path": "packages/ui-components"
+        },
+        {
+            "path": "packages/ui5-application-writer"
+        },
+        {
+            "path": "packages/ui5-config"
+        },
+        {
+            "path": "packages/ui5-info"
+        },
+        {
+            "path": "packages/ui5-library-inquirer"
+        },
+        {
+            "path": "packages/ui5-library-writer"
+        },
+        {
+            "path": "packages/ui5-proxy-middleware"
+        },
+        {
+            "path": "packages/ui5-test-writer"
+        },
+        {
+            "path": "packages/yaml"
+        },
+        {
+            "path": "examples/odata-cli"
+        },
+        {
+            "path": "examples/simple-generator"
+        },
+        {
+          "path": "packages/telemetry"
+        },
+    ]
 }
