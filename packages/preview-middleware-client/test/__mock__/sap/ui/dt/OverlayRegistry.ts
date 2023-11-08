@@ -1,10 +1,11 @@
-// add required functionality for testing here
+export const mockOverlay = {
+    getDesignTimeMetadata: jest.fn(),
+    isSelectable: jest.fn(),
+    setSelected: jest.fn(),
+    getDomRef: jest.fn(),
+    getElementInstance: jest.fn()
+};
+
 export default {
-    getOverlay: () => {
-        return {
-            getDesignTimeMetadata: () => {
-                return jest.fn();
-            }
-        };
-    }
+    getOverlay: jest.fn().mockReturnValue(mockOverlay)
 };

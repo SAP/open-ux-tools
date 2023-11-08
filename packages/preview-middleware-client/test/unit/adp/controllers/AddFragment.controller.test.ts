@@ -1,5 +1,5 @@
 import type Dialog from 'sap/m/Dialog';
-import type Event from 'sap/ui/base/Event';
+import Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
@@ -9,6 +9,8 @@ import { fetchMock, sapCoreMock } from 'mock/window';
 
 import ControlUtils from '../../../../src/adp/control-utils';
 import AddFragment from '../../../../src/adp/controllers/AddFragment.controller';
+import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import { ValueState } from 'mock/sap/ui/core/library';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -62,11 +64,23 @@ describe('AddFragment', () => {
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring
             );
+
+            const openSpy = jest.fn();
             addFragment.byId = jest.fn().mockReturnValue({
-                open: jest.fn()
+                open: openSpy,
+                close: jest.fn(),
+                setEscapeHandler: jest.fn()
             });
 
+            addFragment.getView = jest.fn().mockReturnValue({ destroy: jest.fn(), setModel: jest.fn() });
+
             await addFragment.onInit();
+
+            const escapeHandlerCb = (addFragment.dialog.setEscapeHandler as jest.Mock).mock.calls[0][0];
+
+            escapeHandlerCb({ resolve: jest.fn() });
+
+            expect(openSpy).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -102,7 +116,7 @@ describe('AddFragment', () => {
         });
     });
 
-    describe('closeDialog', () => {
+    describe('handleDialogClose', () => {
         test('should close dialog', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
@@ -118,7 +132,7 @@ describe('AddFragment', () => {
 
             addFragment.getView = jest.fn().mockReturnValue({ destroy: jest.fn() });
 
-            addFragment.closeDialog();
+            addFragment.handleDialogClose();
 
             expect(closeSpy).toHaveBeenCalledTimes(1);
         });
@@ -171,12 +185,11 @@ describe('AddFragment', () => {
                 {} as unknown as RuntimeAuthoring
             );
 
-            const valueStateSpy = jest.fn();
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     getValue: jest.fn().mockReturnValue('Delete'),
-                    setValueState: valueStateSpy,
-                    setValueStateText: jest.fn()
+                    setValueState: valueStateSpy
                 })
             };
 
@@ -188,7 +201,7 @@ describe('AddFragment', () => {
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy).toHaveBeenCalledWith('Error');
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
 
         test('sets error when the fragment name is empty', () => {
@@ -198,12 +211,11 @@ describe('AddFragment', () => {
                 {} as unknown as RuntimeAuthoring
             );
 
-            const valueStateSpy = jest.fn();
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     getValue: jest.fn().mockReturnValue(''),
-                    setValueState: valueStateSpy,
-                    setValueStateText: jest.fn()
+                    setValueState: valueStateSpy
                 })
             };
 
@@ -215,7 +227,7 @@ describe('AddFragment', () => {
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy).toHaveBeenCalledWith('None');
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.None);
         });
 
         test('sets error when the fragment name is has special characters', () => {
@@ -225,12 +237,11 @@ describe('AddFragment', () => {
                 {} as unknown as RuntimeAuthoring
             );
 
-            const valueStateSpy = jest.fn();
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     getValue: jest.fn().mockReturnValue('Share 2$5!'),
-                    setValueState: valueStateSpy,
-                    setValueStateText: jest.fn()
+                    setValueState: valueStateSpy
                 })
             };
 
@@ -242,8 +253,34 @@ describe('AddFragment', () => {
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy).toHaveBeenCalledWith('Error');
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
+
+        test('sets error when the fragment name exceeds 64 characters', () => {
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
+
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    getValue: jest.fn().mockReturnValue('thisisverylongnamethisisverylongnamethisisverylongnamethisisveryl'),
+                    setValueState: valueStateSpy
+                })
+            };
+
+            addFragment.model = testModel;
+            
+            addFragment.dialog = {
+                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+            } as unknown as Dialog;
+
+            addFragment.onFragmentNameInputChange(event as unknown as Event);
+
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
+        })
 
         test('sets create button to true when the fragment name is valid', () => {
             const addFragment = new AddFragment(
@@ -252,12 +289,11 @@ describe('AddFragment', () => {
                 {} as unknown as RuntimeAuthoring
             );
 
-            const valueStateSpy = jest.fn();
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     getValue: jest.fn().mockReturnValue('Share'),
-                    setValueState: valueStateSpy,
-                    setValueStateText: jest.fn()
+                    setValueState: valueStateSpy
                 })
             };
 
@@ -269,7 +305,7 @@ describe('AddFragment', () => {
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
-            expect(valueStateSpy).toHaveBeenCalledWith('None');
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Success);
         });
     });
 
@@ -283,14 +319,13 @@ describe('AddFragment', () => {
 
         test('creates new fragment and a change', async () => {
             const executeSpy = jest.fn();
+            rtaMock.getCommandStack.mockReturnValue({
+                pushAndExecute: executeSpy
+            });
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                {
-                    getCommandStack: jest.fn().mockReturnValue({
-                        pushAndExecute: executeSpy
-                    })
-                } as unknown as RuntimeAuthoring
+                rtaMock
             );
 
             const event = {
@@ -350,34 +385,6 @@ describe('AddFragment', () => {
                 await addFragment.onCreateBtnPress(event as unknown as Event);
             } catch (e) {
                 expect(e.message).toBe(errorMsg);
-            }
-        });
-
-        test('throws error when retrieving manifest descriptor', async () => {
-            const addFragment = new AddFragment(
-                'adp.extension.controllers.AddFragment',
-                {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
-            );
-
-            const event = {
-                getSource: jest.fn().mockReturnValue({
-                    setEnabled: jest.fn()
-                })
-            };
-
-            addFragment.model = testModel;
-
-            fetchMock.mockResolvedValue({
-                json: jest.fn().mockReturnValue(undefined),
-                text: jest.fn().mockReturnValue('XML Fragment was created!'),
-                ok: true
-            });
-
-            try {
-                await addFragment.onCreateBtnPress(event as unknown as Event);
-            } catch (e) {
-                expect(e.message).toBe('Could not retrieve manifest');
             }
         });
     });

@@ -1,5 +1,29 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+## 0.23.9
+
+### Patch Changes
+
+-   d880c217: Correction for `stashed` property of header sections in manifest template: Property type is changed from string to boolean
+
+## 0.23.8
+
+### Patch Changes
+
+-   c11f6c02: Correction for `templateEdit` property in manifest which led to parsing errors: Missing comma is added right after `templateEdit` value if it exists
+
+## 0.23.7
+
+### Patch Changes
+
+-   7a2229ff: Fix. Avoid overwrite of existing extension fragment file while creating new filter field.
+
 ## 0.23.6
 
 ### Patch Changes

@@ -1,9 +1,9 @@
 import type { ReaderCollection } from '@ui5/fs';
 import type { TemplateConfig } from '../../../src/base/flp';
-import { FlpSandbox as FlpSandboxUnderTest } from '../../../src';
+import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
 import type { FlpConfig } from '../../../src/types';
 import type { MiddlewareUtils } from '@ui5/server';
-import type { Logger } from '@sap-ux/logger';
+import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -11,6 +11,15 @@ import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
 import express from 'express';
 import { tmpdir } from 'os';
+import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import * as adpTooling from '@sap-ux/adp-tooling';
+
+jest.mock('@sap-ux/adp-tooling', () => {
+    return {
+        __esModule: true,
+        ...jest.requireActual('@sap-ux/adp-tooling')
+    };
+});
 
 class FlpSandbox extends FlpSandboxUnderTest {
     public templateConfig: TemplateConfig;
@@ -161,6 +170,10 @@ describe('FlpSandbox', () => {
                                 path: '/with/plugin.html',
                                 developerMode: true,
                                 pluginScript: 'open/ux/tools/plugin'
+                            },
+                            {
+                                path: '/my/editorWithConfig.html',
+                                generator: 'test-generator'
                             }
                         ]
                     }
@@ -209,8 +222,7 @@ describe('FlpSandbox', () => {
         });
 
         test('WorkspaceConnector.js', async () => {
-            const response = await server.get('/resources/preview/WorkspaceConnector.js').expect(200);
-            expect(response.text).toMatchSnapshot();
+            await server.get('/preview/client/flp/WorkspaceConnector.js').expect(200);
         });
 
         test('GET /preview/api/changes', async () => {
@@ -247,5 +259,79 @@ describe('FlpSandbox', () => {
                 .send({ hello: 'world' })
                 .expect(400);
         });
+
+        test('editor with config', async () => {
+            const response = await server.get('/test/flp.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+    });
+});
+
+describe('initAdp', () => {
+    const url = 'http://sap.example';
+    const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+        return {
+            init: () => {
+                return 'CUSTOMER_BASE';
+            },
+            descriptor: {
+                manifest: {},
+                name: 'descriptorName',
+                url
+            },
+            resources: [],
+            proxy: jest.fn(),
+            addApis: jest.fn()
+        } as unknown as adpTooling.AdpPreview;
+    });
+    const mockAdpProject = {
+        byPath: () => {
+            return {
+                getString: () =>
+                    Promise.resolve(
+                        readFileSync(join(__dirname, `../../fixtures/adp/webapp/manifest.appdescr_variant`), 'utf-8')
+                    )
+            };
+        },
+        byGlob: (_glob: string) => {
+            return [];
+        }
+    } as unknown as ReaderCollection;
+    const mockNonAdpProject = {
+        byPath: () => {
+            return {
+                getString: () =>
+                    Promise.resolve(
+                        readFileSync(
+                            join(__dirname, `../../fixtures/simple-app/webapp/manifest.appdescr_variant`),
+                            'utf-8'
+                        )
+                    )
+            };
+        },
+        byGlob: (_glob: string) => {
+            return [];
+        }
+    } as unknown as ReaderCollection;
+    const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as ToolsLogger;
+
+    test('initAdp: throw an error if no adp project', async () => {
+        const flp = new FlpSandbox({}, mockNonAdpProject, {} as MiddlewareUtils, logger);
+        try {
+            await initAdp(mockNonAdpProject, {} as AdpPreviewConfig, flp, {} as MiddlewareUtils, logger);
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
+    });
+
+    test('initAdp', async () => {
+        const config = { adp: { target: { url } } };
+        const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, {} as MiddlewareUtils, logger);
+        const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+        await initAdp(mockAdpProject, config.adp, flp, {} as MiddlewareUtils, logger);
+        expect(adpToolingMock).toBeCalled();
+        expect(flpInitMock).toBeCalled();
     });
 });

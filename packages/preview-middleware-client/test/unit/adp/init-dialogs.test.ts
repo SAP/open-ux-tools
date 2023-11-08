@@ -18,15 +18,17 @@ describe('Dialogs', () => {
                 }
             });
             initDialogs(rtaMock);
-            expect(addMenuItemSpy.mock.calls.length).toBe(1);
+            expect(addMenuItemSpy).toHaveBeenCalledTimes(2);
         });
 
         test('addMenuItem handler function', async () => {
             Controller.create.mockResolvedValue({ overlays: {}, rta: {} });
 
             await handler({} as unknown as UI5Element, rtaMock, DialogNames.ADD_FRAGMENT);
+            await handler({} as unknown as UI5Element, rtaMock, DialogNames.CONTROLLER_EXTENSION);
+            await handler({} as unknown as UI5Element, rtaMock, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT);
 
-            expect(XMLView.create.mock.calls.length).toBe(1);
+            expect(XMLView.create).toHaveBeenCalledTimes(3);
         });
     });
 });

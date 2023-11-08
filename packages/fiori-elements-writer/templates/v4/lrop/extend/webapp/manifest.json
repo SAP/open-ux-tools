@@ -25,8 +25,9 @@
                     "id": "<%- entityConfig.mainEntityName %>List",
                     "name": "sap.fe.templates.ListReport",
                     "options": {
-                        "settings": {
-                            "entitySet": "<%- entityConfig.mainEntityName %>",
+                        "settings": {<% if (entityConfig.contextPath) { %>
+                            "contextPath": "<%- entityConfig.contextPath %>"<% } else { %>
+                            "entitySet": "<%- entityConfig.mainEntityName %>"<% } %>,
                             "variantManagement": "Page",
                             <% if (type === 'worklist') { %>
                             "hideFilterBar": true,<% } %>

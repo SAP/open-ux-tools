@@ -3687,8 +3687,9 @@ archive.zip
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -13982,7 +13983,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"name\\": \\"sap.fe.templates.ListReport\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"variantManagement\\": \\"Page\\",
               \\"navigation\\": {
                 \\"Travel\\": {
@@ -14019,7 +14020,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"contextPath\\": \\"/Booking\\"
+              \\"contextPath\\": \\"/Travel/_Booking\\"
             }
           }
         }
@@ -36014,8 +36015,9 @@ archive.zip
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -39495,8 +39497,9 @@ archive.zip
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -42976,8 +42979,9 @@ archive.zip
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/types\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/types\\"
         ]
     },
     \\"include\\": [

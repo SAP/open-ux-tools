@@ -183,16 +183,15 @@ export class AbapServiceProvider extends ServiceProvider {
     /**
      * Create or get an existing instance of design time adaptation service.
      *
+     * @param alias - optional alias path on which the LREP service is exposed
      * @returns an instance of the design time adaptation service.
      */
-    public getLayeredRepository(): LayeredRepositoryService {
-        if (!this.services[LayeredRepositoryService.PATH]) {
-            this.services[LayeredRepositoryService.PATH] = this.createService<LayeredRepositoryService>(
-                LayeredRepositoryService.PATH,
-                LayeredRepositoryService
-            );
+    public getLayeredRepository(alias?: string): LayeredRepositoryService {
+        const path = alias ?? LayeredRepositoryService.PATH;
+        if (!this.services[path]) {
+            this.services[path] = this.createService<LayeredRepositoryService>(path, LayeredRepositoryService);
         }
-        return this.services[LayeredRepositoryService.PATH] as LayeredRepositoryService;
+        return this.services[path] as LayeredRepositoryService;
     }
 
     /**

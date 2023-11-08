@@ -5,19 +5,9 @@ import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
 
 /**
- * Required configuration for the BSP hosting an app.
+ * Required configuration a transportable object.
  */
-export interface BspConfig {
-    /**
-     * Name of the BSP, additionally, the last part of the exposed service path
-     */
-    name: string;
-
-    /**
-     * Optional description of the ABAP development object representing the BSP
-     */
-    description?: string;
-
+export interface TransportConfig {
     /**
      * Optional package for the ABAP development object
      */
@@ -27,6 +17,21 @@ export interface BspConfig {
      * Optional transport request to record the changes
      */
     transport?: string;
+}
+
+/**
+ * Required configuration for the BSP hosting an app.
+ */
+export interface BspConfig extends TransportConfig {
+    /**
+     * Name of the BSP, additionally, the last part of the exposed service path
+     */
+    name: string;
+
+    /**
+     * Optional description of the ABAP development object representing the BSP
+     */
+    description?: string;
 }
 
 /**
@@ -101,6 +106,7 @@ function encodeXmlValue(xmlValue: string): string {
 export class Ui5AbapRepositoryService extends ODataService {
     public static readonly PATH = '/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV';
     private readonly publicUrl: string;
+    private readonly isDest: boolean;
 
     /**
      * Extension of the base constructor to set preferred response format if not provided by caller.
@@ -114,6 +120,7 @@ export class Ui5AbapRepositoryService extends ODataService {
         config.headers['Accept'] = config.headers['Accept'] ?? 'application/json,application/xml,text/plain,*/*';
         super(config);
         this.publicUrl = config.publicUrl || this.defaults.baseURL;
+        this.isDest = /\.dest\//.test(this.defaults.baseURL);
     }
 
     /**
@@ -126,6 +133,31 @@ export class Ui5AbapRepositoryService extends ODataService {
         try {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
             return response.odata();
+        } catch (error) {
+            this.log.debug(`Retrieving application ${app}, ${error}`);
+            if (isAxiosError(error) && error.response?.status === 404) {
+                return undefined;
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Get the application files as zip archive. This will only work on ABAP systems 2308 or newer.
+     *
+     * @param app application id (BSP application name)
+     * @returns undefined if no app is found or downloading files is not supported, otherwise return the application files as a buffer.
+     */
+    public async downloadFiles(app: string): Promise<Buffer> {
+        try {
+            const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`, {
+                params: {
+                    CodePage: 'UTF8',
+                    DownloadFiles: 'RUNTIME'
+                }
+            });
+            const data = response.odata();
+            return data.ZipArchive ? Buffer.from(data.ZipArchive) : undefined;
         } catch (error) {
             this.log.debug(`Retrieving application ${app}, ${error}`);
             if (isAxiosError(error) && error.response?.status === 404) {
@@ -164,7 +196,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                     msg: response.headers['sap-message'],
                     log: this.log,
                     host: frontendUrl,
-                    isDest: /\.dest\//.test(config.baseURL)
+                    isDest: this.isDest
                 });
             }
             if (!testMode) {
@@ -180,7 +212,8 @@ export class Ui5AbapRepositoryService extends ODataService {
                     {
                         error: this.getErrorMessageFromString(response?.data),
                         log: this.log,
-                        host: frontendUrl
+                        host: frontendUrl,
+                        isDest: this.isDest
                     },
                     false
                 );
@@ -203,12 +236,18 @@ export class Ui5AbapRepositoryService extends ODataService {
     public async undeploy({ bsp, testMode = false }: UndeployConfig): Promise<AxiosResponse | undefined> {
         const config = this.createConfig(bsp.transport, testMode);
         const host = this.getAbapFrontendUrl();
+
         const info: AppInfo = await this.getInfo(bsp.name);
         try {
             if (info) {
                 const response = await this.deleteRepoRequest(bsp.name, config);
                 if (response?.headers?.['sap-message']) {
-                    prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host });
+                    prettyPrintMessage({
+                        msg: response.headers['sap-message'],
+                        log: this.log,
+                        host,
+                        isDest: this.isDest
+                    });
                 }
                 return response;
             } else {
@@ -406,7 +445,7 @@ export class Ui5AbapRepositoryService extends ODataService {
         if (isAxiosError(error) && error.response?.data) {
             const errorMessage = this.getErrorMessageFromString(error.response?.data);
             if (errorMessage) {
-                prettyPrintError({ error: errorMessage, host, log: this.log });
+                prettyPrintError({ error: errorMessage, host, log: this.log, isDest: this.isDest });
             } else {
                 this.log.error(error.response.data.toString());
             }

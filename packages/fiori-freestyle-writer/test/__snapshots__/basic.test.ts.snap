@@ -153,7 +153,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -806,8 +806,9 @@ archive.zip
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -1402,7 +1403,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sapui5/ts-types-esm\\": \\"~1.108.1\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
     \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
@@ -1445,8 +1446,9 @@ archive.zip
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -2072,8 +2074,9 @@ archive.zip
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/types\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/types\\"
         ]
     },
     \\"include\\": [
@@ -2803,7 +2806,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -3580,7 +3583,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -4358,7 +4361,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -4917,7 +4920,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }

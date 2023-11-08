@@ -3,12 +3,23 @@ import { render } from 'ejs';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, relative } from 'path';
-import type { App, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
+import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
-import type { Logger } from '@sap-ux/logger';
+import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+
+const DEVELOPER_MODE_CONFIG = new Map([
+    // Run application in design time mode
+    // Adds bindingString to BindingInfo objects. Required to create and read PropertyBinding changes
+    ['xx-designMode', 'true'],
+    // In design mode, the controller code will not be executed by default, which is not desired in our case, so we suppress the deactivation
+    ['xx-suppressDeactivationOfControllerCode', 'true'],
+    // Make sure that XML preprocessing results are correctly invalidated
+    ['xx-viewCache', 'false']
+]);
 
 /**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
@@ -47,6 +58,17 @@ const PREVIEW_URL = {
     api: '/preview/api'
 };
 
+export interface CustomConnector {
+    applyConnector: string;
+    writeConnector: string;
+    custom: boolean;
+}
+
+export interface FlexConnector {
+    connector: string;
+    layers: string[];
+}
+
 /**
  * Internal structure used to fill the sandbox.html template
  */
@@ -65,11 +87,8 @@ export interface TemplateConfig {
     ui5: {
         libs: string;
         theme: string;
-        flex: {
-            applyConnector: string;
-            writeConnector: string;
-            custom: boolean;
-        }[];
+        flex: (CustomConnector | FlexConnector)[];
+        bootstrapOptions: string;
         resources: Record<string, string>;
     };
     flex?: {
@@ -141,7 +160,8 @@ export class FlpSandbox {
                 resources: {
                     ...resources,
                     [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
-                }
+                },
+                bootstrapOptions: ''
             },
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
@@ -163,36 +183,68 @@ export class FlpSandbox {
     }
 
     /**
+     * Generates the FLP sandbox for an editor.
+     *
+     * @param rta runtime authoring configuration
+     * @param editor editor configuration
+     * @returns FLP sandbox html
+     */
+    private generateSandboxForEditor(rta: RtaConfig, editor: Editor): string {
+        const defaultGenerator = editor.developerMode
+            ? '@sap-ux/control-property-editor'
+            : '@sap-ux/preview-middleware';
+        const config = { ...this.templateConfig };
+        /* sap.ui.rta needs to be added to the list of preload libs for variants management and adaptation projects */
+        if (!config.ui5.libs.includes('sap.ui.rta')) {
+            const libs = config.ui5.libs.split(',');
+            libs.push('sap.ui.rta');
+            config.ui5.libs = libs.join(',');
+        }
+        config.flex = {
+            layer: rta.layer,
+            ...rta.options,
+            generator: editor.generator ?? defaultGenerator,
+            developerMode: editor.developerMode === true,
+            pluginScript: editor.pluginScript
+        };
+        if (editor.developerMode === true) {
+            config.ui5.bootstrapOptions = serializeUi5Configuration(DEVELOPER_MODE_CONFIG);
+        }
+        const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
+        return render(template, config);
+    }
+
+    /**
      * Add additional routes for configured editors.
      *
      * @param rta runtime authoring configuration
      */
     private addEditorRoutes(rta: RtaConfig) {
+        const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
         for (const editor of rta.editors) {
             let previewUrl = editor.path;
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
-                this.router.get(editor.path, (async (_req: Request, res: Response) => {
+                this.router.get(editor.path, (_req: Request, res: Response) => {
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
                     const html = render(template, {
-                        previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`
+                        previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`,
+                        telemetry: rta.options?.telemetry ?? false
                     });
                     res.status(200).contentType('html').send(html);
-                }) as RequestHandler);
+                });
+                let path = dirname(editor.path);
+                if (!path.endsWith('/')) {
+                    path = `${path}/`;
+                }
+                this.router.use(`${path}editor`, serveStatic(cpe));
             }
-            this.router.get(previewUrl, (async (_req: Request, res: Response) => {
-                const config = { ...this.templateConfig };
-                config.flex = {
-                    layer: rta.layer,
-                    ...rta.options,
-                    developerMode: editor.developerMode === true,
-                    pluginScript: editor.pluginScript
-                };
-                const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-                const html = render(template, config);
+
+            this.router.get(previewUrl, (_req: Request, res: Response) => {
+                const html = this.generateSandboxForEditor(rta, editor);
                 res.status(200).contentType('html').send(html);
-            }) as RequestHandler);
+            });
         }
     }
 
@@ -253,12 +305,7 @@ export class FlpSandbox {
      * @returns template configuration for flex.
      */
     private createFlexHandler(): TemplateConfig['ui5']['flex'] {
-        const workspaceConnectorPath = '/preview/WorkspaceConnector';
-        this.router.get(`/resources${workspaceConnectorPath}.js`, (_req: Request, res: Response) => {
-            res.status(200)
-                .contentType('text/javascript')
-                .send(readFileSync(join(__dirname, '../../templates/flp/workspaceConnector.js'), 'utf-8'));
-        });
+        const workspaceConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
         const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
@@ -304,6 +351,10 @@ export class FlpSandbox {
                 applyConnector: workspaceConnectorPath,
                 writeConnector: workspaceConnectorPath,
                 custom: true
+            },
+            {
+                connector: 'LocalStorageConnector',
+                layers: ['CUSTOMER', 'USER']
             }
         ];
     }
@@ -328,5 +379,70 @@ export class FlpSandbox {
             applicationType: 'URL',
             url: app.target
         };
+    }
+}
+
+/**
+ * Creates an attribute string that can be added to an HTML element.
+ *
+ * @param attributes map with attributes and their values
+ * @param indent indentation thats inserted before each attribute
+ * @param prefix value that should be added at the start of to all attribute names
+ * @returns attribute string
+ */
+function serializeDataAttributes(attributes: Map<string, string>, indent = '', prefix = 'data'): string {
+    return [...attributes.entries()]
+        .map(([name, value]) => {
+            return `${indent}${prefix}-${name}="${value}"`;
+        })
+        .join('\n');
+}
+
+/**
+ * Creates an attribute string that can be added to bootstrap script in a HTML file.
+ *
+ * @param config ui5 configuration options
+ * @returns attribute string
+ */
+function serializeUi5Configuration(config: Map<string, string>): string {
+    return '\n' + serializeDataAttributes(config, '        ', 'data-sap-ui');
+}
+
+/**
+ * Initialize the preview for an adaptation project.
+ *
+ * @param rootProject reference to the project
+ * @param config configuration from the ui5.yaml
+ * @param flp FlpSandbox instance
+ * @param util middleware utilities provided by the UI5 CLI
+ * @param logger logger instance
+ */
+export async function initAdp(
+    rootProject: ReaderCollection,
+    config: AdpPreviewConfig,
+    flp: FlpSandbox,
+    util: MiddlewareUtils,
+    logger: ToolsLogger
+) {
+    const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
+    if (appVariant) {
+        const adp = new AdpPreview(config, rootProject, util, logger);
+        const variant = JSON.parse(await appVariant.getString());
+        const layer = await adp.init(variant);
+        if (flp.rta) {
+            flp.rta.layer = layer;
+            flp.rta.options = {
+                projectId: variant.id,
+                scenario: 'ADAPTATION_PROJECT'
+            };
+            for (const editor of flp.rta.editors) {
+                editor.pluginScript ??= 'open/ux/preview/client/adp/init';
+            }
+        }
+        await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
+        flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
+        adp.addApis(flp.router);
+    } else {
+        throw new Error('ADP configured but no manifest.appdescr_variant found.');
     }
 }

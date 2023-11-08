@@ -1,0 +1,81 @@
+.container {
+    padding: 10px;
+}
+
+.header {
+    height: 46px;
+    padding: 13px 10px 13px 10px;
+    border-bottom: 1px solid var(--vscode-contrastBorder, var(--vscode-editorIndentGuide-background));
+}
+
+.savedChanges {
+    color: var(--vscode-terminal-ansiGreen);
+    font-size: 11px;
+    line-height: 15px;
+}
+
+.unsavedChanges {
+    color: var(--vscode-foreground);
+    font-size: 11px;
+    line-height: 15px;
+}
+
+.title {
+    color: var(--vscode-foreground);
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 16px;
+}
+
+.savedChangeRow {
+    width: 100%;
+}
+
+.bold,
+.propertyName {
+    color: var(--vscode-foreground);
+    font-weight: bold;
+    font-size: 13px;
+    line-height: 18px;
+}
+
+.propertyName {
+    grid-column-start: 1;
+}
+
+.value {
+    color: var(--vscode-foreground);
+    font-size: 13px;
+    line-height: 18px;
+}
+
+.infoIcon {
+    padding: 3px;
+}
+
+.description {
+    color: var(--vscode-foreground);
+    font-size: 11px;
+    line-height: 15px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 125px 1fr 22px;
+    grid-template-rows: repeat(auto-fill, 22px);
+    min-height: 82px;
+    row-gap: 8px;
+    column-gap: 10px;
+    justify-items: start;
+}
+.grid span {
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.propertyWithNoActions {
+    grid-column-start: 2;
+    grid-column-end: span 2;
+}

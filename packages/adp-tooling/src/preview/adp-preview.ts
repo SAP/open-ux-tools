@@ -1,5 +1,5 @@
 import express from 'express';
-import { ZipFile } from 'yazl';
+import ZipFile from 'adm-zip';
 import type { ReaderCollection } from '@ui5/fs';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
@@ -15,27 +15,6 @@ import type { AdpPreviewConfig, DescriptorVariant } from '../types';
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller'
-}
-
-/**
- * Create a buffer based on the given zip file object.
- *
- * @param zip object representing a zip file
- * @returns a buffer
- */
-async function createBuffer(zip: ZipFile): Promise<Buffer> {
-    await new Promise<void>((resolve) => {
-        zip.end({ forceZip64Format: false }, () => {
-            resolve();
-        });
-    });
-
-    const chunks: Buffer[] = [];
-    for await (const chunk of zip.outputStream) {
-        chunks.push(chunk as Buffer);
-    }
-
-    return Buffer.concat(chunks);
 }
 
 /**
@@ -116,12 +95,12 @@ export class AdpPreview {
         const zip = new ZipFile();
         const files = await this.project.byGlob('**/*.*');
         for (const file of files) {
-            zip.addBuffer(await file.getBuffer(), file.getPath().substring(1));
+            zip.addFile(file.getPath().substring(1), await file.getBuffer());
         }
-        const buffer = await createBuffer(zip);
+        const buffer = zip.toBuffer();
 
-        // validate namespace & layer combination and fetch csrf token
-        await lrep.isExistingVariant(descriptorVariant.namespace, descriptorVariant.layer);
+        // fetch a merged descriptor from the backend
+        await lrep.getCsrfToken();
         this.mergedDescriptor = (await lrep.mergeAppDescriptorVariant(buffer))[descriptorVariant.id];
 
         return descriptorVariant.layer;
@@ -156,10 +135,14 @@ export class AdpPreview {
      * @param router router that is to be enhanced with the API
      */
     addApis(router: Router): void {
-        /**
-         * FRAGMENT Routes
-         */
         router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
         router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment as RequestHandler);
+
+        router.get(ApiRoutes.CONTROLLER, this.routesHandler.handleReadAllControllers as RequestHandler);
+        router.post(
+            ApiRoutes.CONTROLLER,
+            express.json(),
+            this.routesHandler.handleWriteControllerExt as RequestHandler
+        );
     }
 }

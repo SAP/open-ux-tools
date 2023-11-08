@@ -1,5 +1,107 @@
 # @sap-ux/adp-tooling
 
+## 0.5.3
+
+### Patch Changes
+
+-   Updated dependencies [fa4537b2]
+    -   @sap-ux/axios-extension@1.7.1
+    -   @sap-ux/system-access@0.3.3
+
+## 0.5.2
+
+### Patch Changes
+
+-   aa2ff95b: Replaced yazl with adm-zip
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/axios-extension@1.7.0
+    -   @sap-ux/system-access@0.3.2
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [3cfaba52]
+    -   @sap-ux/axios-extension@1.6.1
+    -   @sap-ux/system-access@0.3.1
+
+## 0.5.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/axios-extension@1.6.0
+    -   @sap-ux/system-access@0.3.0
+    -   @sap-ux/ui5-config@0.20.0
+    -   @sap-ux/logger@0.4.0
+
+## 0.4.5
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.2.11
+
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/axios-extension@1.5.1
+    -   @sap-ux/system-access@0.2.10
+    -   @sap-ux/ui5-config@0.19.5
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [d7492b53]
+    -   @sap-ux/axios-extension@1.5.0
+    -   @sap-ux/system-access@0.2.9
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-config@0.19.4
+    -   @sap-ux/axios-extension@1.4.8
+    -   @sap-ux/system-access@0.2.8
+
+## 0.4.1
+
+### Patch Changes
+
+-   5747ca18: Fix: build and editor script for generated projects
+
+## 0.4.0
+
+### Minor Changes
+
+-   b023f4cb: Enhancing the preview-middleware with new functionality such as Controller Extension (creating "codeExt" change).
+
+## 0.3.4
+
+### Patch Changes
+
+-   9d0140fa: Make express peer dependency
+
+## 0.3.3
+
+### Patch Changes
+
+-   4f2d9ed8: Bump packages to release the dep fix
+
+## 0.3.2
+
+### Patch Changes
+
+-   b3baa9a1: Fixes/removes the express dependency
+
 ## 0.3.1
 
 ### Patch Changes

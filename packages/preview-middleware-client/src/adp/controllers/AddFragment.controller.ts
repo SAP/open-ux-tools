@@ -1,18 +1,14 @@
 /** sap.m */
-import Input from 'sap/m/Input';
 import Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import type ComboBox from 'sap/m/ComboBox';
 import MessageToast from 'sap/m/MessageToast';
 
 /** sap.ui.core */
-import { ValueState } from 'sap/ui/core/library';
 import type UI5Element from 'sap/ui/core/Element';
-import Controller from 'sap/ui/core/mvc/Controller';
 
 /** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
-import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
 /** sap.ui.model */
@@ -27,7 +23,8 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
-import { ManifestAppdescr, getFragments, getManifestAppdescr, writeFragment } from '../api-handler';
+import { getFragments, writeFragment } from '../api-handler';
+import BaseDialog from './BaseDialog.controller';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -38,36 +35,12 @@ interface CreateFragmentProps {
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default class AddFragment extends Controller {
-    /**
-     * Runtime control managed object
-     */
-    public runtimeControl: ManagedObject;
-    /**
-     * JSON Model that has the data
-     */
-    public model: JSONModel;
-    /**
-     * Dialog instance
-     */
-    public dialog: Dialog;
-    /**
-     * Runtime Authoring
-     */
-    private rta: RuntimeAuthoring;
-    /**
-     * Control Overlays
-     */
-    private overlays: UI5Element;
-    /**
-     * RTA Command Executor
-     */
-    private commandExecutor: CommandExecutor;
-
+export default class AddFragment extends BaseDialog {
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
+        this.model = new JSONModel();
         this.commandExecutor = new CommandExecutor(this.rta);
     }
 
@@ -75,9 +48,9 @@ export default class AddFragment extends Controller {
      * Initializes controller, fills model with data and opens the dialog
      */
     async onInit() {
-        this.model = new JSONModel();
-
         this.dialog = this.byId('addNewFragmentDialog') as unknown as Dialog;
+
+        this.setEscapeHandler();
 
         await this.buildDialogData();
 
@@ -131,46 +104,6 @@ export default class AddFragment extends Controller {
     }
 
     /**
-     * Handles fragment name input change
-     *
-     * @param event Event
-     */
-    onFragmentNameInputChange(event: Event) {
-        const source = event.getSource<Input>();
-
-        const fragmentName: string = source.getValue().trim();
-        const fragmentList: { fragmentName: string }[] = this.model.getProperty('/fragmentList');
-
-        if (fragmentName.length <= 0) {
-            this.dialog.getBeginButton().setEnabled(false);
-            source.setValueState(ValueState.None);
-            this.model.setProperty('/newFragmentName', null);
-        } else {
-            const fileExists = fragmentList.find((f: { fragmentName: string }) => {
-                return f.fragmentName === `${fragmentName}.fragment.xml`;
-            });
-
-            const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(fragmentName);
-
-            if (fileExists) {
-                source.setValueState(ValueState.Error);
-                source.setValueStateText(
-                    'Enter a different name. The fragment name that you entered already exists in your project.'
-                );
-                this.dialog.getBeginButton().setEnabled(false);
-            } else if (!isValidName) {
-                source.setValueState(ValueState.Error);
-                source.setValueStateText('A Fragment Name cannot contain white spaces or special characters.');
-                this.dialog.getBeginButton().setEnabled(false);
-            } else {
-                this.dialog.getBeginButton().setEnabled(true);
-                source.setValueState(ValueState.None);
-                this.model.setProperty('/newFragmentName', fragmentName);
-            }
-        }
-    }
-
-    /**
      * Handles create button press
      *
      * @param event Event
@@ -191,21 +124,6 @@ export default class AddFragment extends Controller {
         await this.createNewFragment(fragmentData);
 
         this.handleDialogClose();
-    }
-
-    /**
-     * Handles the closing of the dialog
-     */
-    closeDialog() {
-        this.handleDialogClose();
-    }
-
-    /**
-     * Handles the dialog closing and destruction of it
-     */
-    handleDialogClose() {
-        this.dialog.close();
-        this.getView()?.destroy();
     }
 
     /**
@@ -272,6 +190,7 @@ export default class AddFragment extends Controller {
 
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
+            MessageToast.show(e.message);
             throw new Error(e.message);
         }
 
@@ -332,30 +251,8 @@ export default class AddFragment extends Controller {
      */
     private async createFragmentChange(fragmentData: CreateFragmentProps) {
         const { fragmentName, index, targetAggregation } = fragmentData;
-        let manifest: ManifestAppdescr;
-        try {
-            manifest = await getManifestAppdescr();
 
-            if (!manifest) {
-                // Highly unlikely since adaptation projects are required to have manifest.appdescr_variant
-                throw new Error('Could not retrieve manifest');
-            }
-        } catch (e) {
-            MessageToast.show(e.message);
-            throw new Error(e.message);
-        }
-
-        const { id, reference, namespace, layer } = manifest;
-
-        const flexSettings = {
-            baseId: reference,
-            developerMode: true,
-            layer: layer,
-            namespace: namespace,
-            projectId: id,
-            rootNamespace: namespace.split('/').slice(0, 2).join('/'),
-            scenario: undefined
-        };
+        const flexSettings = this.rta.getFlexSettings();
 
         const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
         const designMetadata = overlay.getDesignTimeMetadata();

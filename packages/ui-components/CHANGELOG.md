@@ -1,5 +1,59 @@
 # @sap-ux/ui-components
 
+## 1.12.1
+
+### Patch Changes
+
+-   9896d6f4: add `footer` icon
+
+## 1.12.0
+
+### Minor Changes
+
+-   22a21267: UISplitButton update state on props change
+
+## 1.11.21
+
+### Patch Changes
+
+-   95f951f9: styling changes for UIActionCallout
+
+## 1.11.20
+
+### Patch Changes
+
+-   767e1c36: UIDialog, UICallout, UIContextualMenu, dropdown menus - apply border radius. 4px for UIDialog and UICallout. 2px for contextual and dropdown menus
+
+## 1.11.19
+
+### Patch Changes
+
+-   a6de5157: Fixed SonarQube issue: "setState" should use a callback when referencing the previous state
+
+## 1.11.18
+
+### Patch Changes
+
+-   80b95469: fix(ui-components): fix focus state for the split button
+
+## 1.11.17
+
+### Patch Changes
+
+-   38d70e31: UIList. Fix - ListProps interface is extended from fluent-ui IGroupedListProps
+
+## 1.11.16
+
+### Patch Changes
+
+-   2039c789: UIFlexibleTable. Fix - impossible to scroll with touch when user touches disabled row.
+
+## 1.11.15
+
+### Patch Changes
+
+-   a1c0d41f: UITextField. Fix - apply font family using vscode variable to UITextField input.
+
 ## 1.11.14
 
 ### Patch Changes

@@ -52,7 +52,7 @@
                 <Button 
                     id="closeDialogBtn" 
                     text="Cancel"
-                    press="closeDialog"
+                    press="handleDialogClose"
                     type="Reject" />
             </endButton>
         </Dialog>
