@@ -355,7 +355,6 @@ export const Tree = (): ReactElement => {
         return (
             <div
                 {...refProps}
-                key={tooltipId}
                 aria-hidden
                 className={`${selectNode} tree-row ${focusEditable}`}
                 onClick={(): void => onSelectHeader(groupHeaderProps?.group)}>
