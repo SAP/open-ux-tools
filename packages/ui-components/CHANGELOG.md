@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.12.2
+
+### Patch Changes
+
+-   37f4e176: Parameterise UI Action Aallout border colour
+
 ## 1.12.1
 
 ### Patch Changes
