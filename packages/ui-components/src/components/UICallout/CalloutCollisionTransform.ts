@@ -1,8 +1,9 @@
 // Default properties which applies for dialog scenario with footer buttons
-const defaultProps: CalloutCollisionTransformProps = {
+const defaultProps = {
     target: '.ms-Dialog-actions',
     container: '.ms-Dialog-main',
-    absolute: true
+    absolute: true,
+    minPagePadding: 10
 };
 
 export interface CalloutCollisionTransformProps {
@@ -119,11 +120,19 @@ export class CalloutCollisionTransform {
         }
         const { container, target, callout, source } = elements;
         if (callout) {
-            const height = callout.rect.height + TRANSFORMATION_OFFSET;
-            const top = source.rect.bottom || 0;
-            const diff = top + height - target.rect.top;
-            if (diff < 0) {
+            const maxHeight = window.innerHeight - defaultProps.minPagePadding;
+            const height = callout.rect.height;
+            const top = source.rect.bottom;
+            // Calculate if action is overlaps
+            let diff = top + height - target.rect.top;
+            let bottomPosition = top + callout.rect.height;
+            if (diff < 0 || bottomPosition >= maxHeight) {
                 return;
+            }
+            // Apply additional offset to make target more visible
+            bottomPosition += target.rect.height;
+            if (bottomPosition <= maxHeight) {
+                diff += TRANSFORMATION_OFFSET;
             }
             // Apply absolute position to fix position and avoid recentering
             if (this.props.absolute) {
@@ -155,7 +164,7 @@ export class CalloutCollisionTransform {
         }
         const { container, target } = elements;
         for (const styleName in this.originalStyle) {
-            if (this.originalStyle[styleName]) {
+            if (typeof this.originalStyle[styleName] === 'string') {
                 container.dom.style[styleName] = this.originalStyle[styleName] ?? '';
             }
         }
