@@ -13,6 +13,7 @@ interface TestCase {
     container: DOMRect;
     callout: DOMRect;
     boundHeight: number;
+    noActions?: boolean;
     result: {
         containerStyles?: {
             transform: string;
@@ -102,20 +103,20 @@ describe('CalloutCollisionTransform', () => {
         );
     };
 
-    const Dialog = () => {
+    const Dialog = (props: { hideButtons?: boolean }) => {
         return (
             <UIDialog
                 isOpenAnimated={true}
                 hidden={false}
                 acceptButtonText={'Accept'}
                 cancelButtonText={'Cancel'}
-                onCancel={jest.fn()}>
+                onCancel={props.hideButtons ? undefined : jest.fn()}>
                 <TestComponent id="test1" />
             </UIDialog>
         );
     };
 
-    const bboxMaps: { [key: string]: DOMRect } = {};
+    let bboxMaps: { [key: string]: DOMRect } = {};
     const addBBox = (className: string, value: DOMRect): void => {
         bboxMaps[className] = value;
     };
@@ -192,12 +193,22 @@ describe('CalloutCollisionTransform', () => {
                 containerStyles: undefined,
                 placeholder: undefined
             }
+        },
+        {
+            ...applyTransformationCase,
+            name: 'No action buttons',
+            noActions: true,
+            result: {
+                containerStyles: undefined,
+                placeholder: undefined
+            }
         }
     ];
 
     const simulateTransformationAtempt = async (testCase: TestCase): Promise<void> => {
-        const { source, target, container, callout, boundHeight } = testCase;
+        const { source, target, container, callout, boundHeight, noActions } = testCase;
         // Prepare sizes
+        bboxMaps = {};
         addBBox(classNames.container, container);
         addBBox(classNames.target, target);
         addBBox(classNames.source, source);
@@ -205,7 +216,7 @@ describe('CalloutCollisionTransform', () => {
         window.innerHeight = boundHeight;
         mockSizes();
         // Render controls
-        render(<Dialog />);
+        render(<Dialog hideButtons={noActions} />);
         const opener = screen.getByTitle('Opener test1');
         opener.click();
         // Async appeareance
