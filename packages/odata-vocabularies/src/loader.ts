@@ -154,6 +154,24 @@ function parseAllowedValues(raw: UnboxContent<CSDLAnnotations>): AllowedValues[]
 
 /**
  *
+ * @param key string
+ * @returns boolean
+ */
+const isValidKey = (key: string) => {
+    const maxLength = 512;
+    if (key.startsWith('$') && key.length <= maxLength) {
+        return true;
+    }
+
+    if (key.indexOf('@') >= 0 && key.length <= maxLength) {
+        return true;
+    }
+
+    return false;
+};
+
+/**
+ *
  * @param raw CSDL Object
  * @returns Constraints
  */
@@ -226,7 +244,7 @@ export function parseEnumTypeDefinition(name: string, raw: EnumTypeBase): EnumTy
 
         // scan for enum values
         enumType.values = Object.keys(raw)
-            .filter((key) => !key.match(/(?:^\$\w{0,512}|\w*@\w{0,512})/g))
+            .filter((key) => !isValidKey(key))
             .map((key) => {
                 const value = parseInt(raw[key], 10);
                 const enumValue: EnumValue = {
@@ -264,7 +282,7 @@ function parseComplexType(name: string, raw: CSDLComplexType): ComplexType {
 
     // collect properties
     Object.keys(raw)
-        .filter((key) => !key.match(/(?:^\$\w{0,512}|\w*@\w{0,512})/g))
+        .filter((key) => !isValidKey(key))
         .forEach((key) => {
             const propRaw = raw[key];
             const property: ComplexTypeProperty = {
