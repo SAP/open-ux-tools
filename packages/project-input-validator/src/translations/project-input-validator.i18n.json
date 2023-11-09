@@ -1,6 +1,6 @@
 {
     "deploy": {
-        "a": "Deployment Description should not exceed 60 characters",
+        "abapAppDescLength": "Deployment Description should not exceed 60 characters",
         "abapTransportNumRequired": "Provide a transport request for your application",
         "abapPackageWarn": "Provide a package",
         "abapAppNameRequired": "Application name required",

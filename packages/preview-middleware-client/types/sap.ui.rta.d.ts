@@ -1,10 +1,21 @@
 declare module 'sap/ui/rta/command/BaseCommand' {
     import type Element from 'sap/ui/core/Element';
     import type ManagedObject from 'sap/ui/base/ManagedObject';
+    import type Component from 'sap/ui/core/Component';
+
+    type Selector = {
+        id: string;
+        controlType: string;
+        appComponent: Component;
+    };
 
     interface BaseCommand extends ManagedObject {
         execute(): Promise<void>;
         getElement(): Element;
+        getName(): string;
+        getSelector(): Selector;
+        getChangeType(): string;
+        getCommands(): BaseCommand[];
     }
 
     export default BaseCommand;
@@ -98,6 +109,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
     import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
     import type { Layer } from 'sap/ui/fl';
+    import type { Scenario } from 'sap/ui/fl/Scenario';
 
     type Manifest = {
         [key: string]: unknown;
@@ -135,7 +147,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         /**
          * Key representing the current scenario
          */
-        scenario?: Scenario;
+        scenario: Scenario;
         /**
          * Generator of the change. Will be saved in the change.
          * This value is ignored by UI5 version prior to 1.107

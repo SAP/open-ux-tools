@@ -15,12 +15,13 @@ export interface Control {
     properties: ControlProperty[];
 }
 export type PropertyValue = string | boolean | number;
-
+export type PropertyChangeType = 'propertyChange' | 'propertyBindingChange';
 export interface PropertyChange<T extends PropertyValue = PropertyValue> {
     controlId: string;
-    controlName?: string;
+    controlName: string;
     propertyName: string;
     value: T;
+    changeType: PropertyChangeType;
 }
 export interface PropertyChanged<T extends PropertyValue = PropertyValue> {
     controlId: string;
@@ -41,6 +42,16 @@ export const STRING_VALUE_TYPE = 'string';
 export const INPUT_EDITOR_TYPE = 'input';
 export const DROPDOWN_EDITOR_TYPE = 'dropdown';
 export const CHECKBOX_EDITOR_TYPE = 'checkbox';
+
+export const scenario = {
+    AppVariant: 'APP_VARIANT',
+    VersionedAppVariant: 'VERSIONED_APP_VARIANT',
+    AdaptationProject: 'ADAPTATION_PROJECT',
+    FioriElementsFromScratch: 'FE_FROM_SCRATCH',
+    UiAdaptation: 'UI_ADAPTATION'
+} as const;
+
+export type Scenario = (typeof scenario)[keyof typeof scenario];
 
 interface ControlPropertyBase<T, V, E> {
     type: T;
@@ -111,6 +122,16 @@ export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> 
     isActive: boolean;
 }
 
+export interface PendingOtherChange {
+    type: 'pending';
+    isActive: boolean;
+    changeType: string;
+    controlId: string;
+    controlName: string;
+}
+
+export type PendingChange = PendingPropertyChange | PendingOtherChange;
+
 export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
     type: 'saved';
     kind: 'valid';
@@ -122,13 +143,14 @@ export interface UnknownSavedChange {
     type: 'saved';
     kind: 'unknown';
     fileName: string;
+    controlId?: string;
     timestamp?: number;
 }
 export type ValidChange = PendingPropertyChange | SavedPropertyChange;
 export type Change = ValidChange | UnknownSavedChange;
 
 export interface ChangeStackModified {
-    pending: PendingPropertyChange[];
+    pending: PendingChange[];
     saved: SavedPropertyChange[];
 }
 
@@ -193,6 +215,7 @@ export const EXTERNAL_ACTION_PREFIX = '[ext]';
 const createExternalAction = createActionFactory(EXTERNAL_ACTION_PREFIX);
 
 export const iconsLoaded = createExternalAction<IconDetails[]>('icons-loaded');
+export const scenarioLoaded = createExternalAction<Scenario>('scenario-loaded');
 export const controlSelected = createExternalAction<Control>('control-selected');
 export const selectControl = createExternalAction<string>('select-control');
 export const addExtensionPoint = createExternalAction<OutlineNode>('add-extension-point');

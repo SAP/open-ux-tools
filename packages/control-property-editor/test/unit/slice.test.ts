@@ -1,9 +1,14 @@
 import {
     changeStackModified,
+    iconsLoaded,
     propertyChanged,
-    propertyChangeFailed
+    propertyChangeFailed,
+    scenario,
+    scenarioLoaded
 } from '@sap-ux-private/control-property-editor-common';
-import reducer, { FilterName, filterNodes, changeProperty } from '../../src/slice';
+
+import reducer, { FilterName, filterNodes, changeProperty, changeDeviceType } from '../../src/slice';
+import { DeviceType } from '../../src/devices';
 
 describe('main redux slice', () => {
     describe('property changed', () => {
@@ -136,6 +141,24 @@ describe('main redux slice', () => {
                     type: 'string'
                 }
             });
+        });
+
+        test('changeDeviceType', () => {
+            expect(
+                reducer({ deviceType: DeviceType.Desktop } as any, changeDeviceType(DeviceType.Desktop))
+            ).toStrictEqual({
+                deviceType: DeviceType.Desktop
+            });
+        });
+
+        test('iconsLoaded', () => {
+            expect(reducer({ icons: [] } as any, iconsLoaded([]))).toStrictEqual({ icons: [] });
+        });
+
+        test('scenarioLoaded', () => {
+            expect(
+                reducer({ scenario: scenario.AdaptationProject } as any, scenarioLoaded(scenario.AdaptationProject))
+            ).toStrictEqual({ scenario: scenario.AdaptationProject });
         });
 
         test('non existing property', () => {
