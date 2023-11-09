@@ -204,21 +204,21 @@ export default class RoutesHandler {
                     controllerPath = getPath(sourcePath, fileName);
                     controllerPathFromRoot = getPath(projectName, fileName);
                     controllerExists = true;
-
-                    if (!fs.existsSync(controllerPath)) {
-                        const errorMsg = `Controller extension file was not found at ${controllerPath}`;
-                        this.logger.debug(errorMsg);
-                        throw new Error(errorMsg);
-                    }
-
                     break;
                 }
             }
 
+            if (controllerExists && !fs.existsSync(controllerPath)) {
+                const errorMsg = `Controller extension file was not found at ${controllerPath}`;
+                this.logger.debug(errorMsg);
+                res.status(HttpStatusCodes.NOT_FOUND).send({ message: errorMsg });
+                return;
+            }
+
             this.sendFilesResponse(res, {
                 controllerExists,
-                controllerPath,
-                controllerPathFromRoot
+                controllerPathFromRoot,
+                pathToOpen: controllerExists ? path.join('file', controllerPath) : ''
             });
             this.logger.debug(
                 controllerExists

@@ -26,7 +26,7 @@ export interface FragmentsResponse {
 
 export interface CodeExtResponse {
     controllerExists: boolean;
-    controllerPath: string;
+    pathToOpen: string;
     controllerPathFromRoot: string;
 }
 

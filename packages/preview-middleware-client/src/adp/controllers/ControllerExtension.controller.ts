@@ -114,18 +114,14 @@ export default class ControllerExtension extends BaseDialog {
             return;
         }
 
-       if(controllerName.length > 64) {
-            updateDialogState(
-                ValueState.Error,
-                'A controller file name cannot contain more than 64 characters.'
-            );
+        if (controllerName.length > 64) {
+            updateDialogState(ValueState.Error, 'A controller file name cannot contain more than 64 characters.');
             return;
         }
-        
+
         updateDialogState(ValueState.Success);
         this.model.setProperty('/newControllerName', controllerName);
     }
-
 
     /**
      * Handles create button press
@@ -144,8 +140,8 @@ export default class ControllerExtension extends BaseDialog {
 
             await this.createNewController(controllerName, viewId);
         } else {
-            const controllerPath = this.model.getProperty('/controllerPath');
-            window.open(`vscode://file/${controllerPath}`);
+            const pathToOpen = this.model.getProperty('/pathToOpen');
+            window.open(`vscode://${pathToOpen}`);
         }
 
         this.handleDialogClose();
@@ -160,12 +156,12 @@ export default class ControllerExtension extends BaseDialog {
 
         const { controllerName, viewId } = this.getControllerInfo(overlayControl);
 
-        const { controllerExists, controllerPath, controllerPathFromRoot } = await this.getExistingController(
+        const { controllerExists, pathToOpen, controllerPathFromRoot } = await this.getExistingController(
             controllerName
         );
 
         if (controllerExists) {
-            this.updateModelForExistingController(controllerExists, controllerPath, controllerPathFromRoot);
+            this.updateModelForExistingController(controllerExists, pathToOpen, controllerPathFromRoot);
         } else {
             this.updateModelForNewController(viewId);
 
@@ -191,16 +187,16 @@ export default class ControllerExtension extends BaseDialog {
      * Updates the model properties for an existing controller.
      *
      * @param controllerExists Whether the controller exists
-     * @param controllerPath The controller path
+     * @param pathToOpen Path to be opened
      * @param controllerPathFromRoot The controller path from the project root
      */
     private updateModelForExistingController(
         controllerExists: boolean,
-        controllerPath: string,
+        pathToOpen: string,
         controllerPathFromRoot: string
     ): void {
         this.model.setProperty('/controllerExists', controllerExists);
-        this.model.setProperty('/controllerPath', controllerPath);
+        this.model.setProperty('/pathToOpen', pathToOpen);
         this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
 
         const form = this.byId('controllerExtensionDialog_Form') as SimpleForm;

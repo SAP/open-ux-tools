@@ -25,6 +25,11 @@ interface CodeExtResponse {
     controllerPathFromRoot: string;
 }
 
+jest.mock('os', () => ({
+    ...jest.requireActual('os'),
+    platform: jest.fn().mockImplementation(() => 'win32')
+}));
+
 jest.mock('@sap-ux/store', () => {
     return {
         ...jest.requireActual('@sap-ux/store'),
@@ -410,7 +415,7 @@ describe('AdaptationProject', () => {
                     getString: () => changeFileStr
                 }
             ]);
-            await server.get('/adp/api/code_ext/sap.suite.ui.generic.template.ListReport.view.ListReport').expect(500);
+            await server.get('/adp/api/code_ext/sap.suite.ui.generic.template.ListReport.view.ListReport').expect(404);
         });
 
         test('GET /adp/api/code_ext/:controllerName - throws error', async () => {
