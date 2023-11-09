@@ -40,7 +40,7 @@ import {
     TERM_KIND
 } from './types';
 
-const PROPERTY_PATTERN = /^([A-Za-z0-9_]){1,128}$/;
+const PROPERTY_PATTERN = /^(\w){1,128}$/;
 
 const SUPPORTED_VOCABULARY_NAMESPACES: Set<VocabularyNamespace> = new Set([
     'Org.OData.Aggregation.V1',
@@ -178,12 +178,12 @@ const isValidKey = (key: string) => {
 function getConstraints(raw: UnboxContent<CSDLAnnotations>): Constraints {
     const constraints: Constraints = {};
     const allowedValues: AllowedValues[] = parseAllowedValues(raw);
-    if (allowedValues && allowedValues.length) {
+    if (allowedValues?.length) {
         constraints.allowedValues = allowedValues;
     }
 
     const allowedTerms = raw['@Org.OData.Validation.V1.AllowedTerms'];
-    if (allowedTerms && allowedTerms.length) {
+    if (allowedTerms?.length) {
         constraints.allowedTerms = allowedTerms.map(getFullyQualifiedAllowedTermName);
     }
 
@@ -303,7 +303,7 @@ function parseComplexType(name: string, raw: CSDLComplexType): ComplexType {
             // constraints
             const constraints = getConstraints(propRaw);
             const derivedTypeConstraints = propRaw['@Org.OData.Validation.V1.DerivedTypeConstraint'];
-            if (derivedTypeConstraints && derivedTypeConstraints.length) {
+            if (derivedTypeConstraints?.length) {
                 constraints.derivedTypeConstraints = derivedTypeConstraints;
             }
             if (Object.keys(constraints).length) {
@@ -498,7 +498,7 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
                                         });
                                     }
                                 }
-                                derivedTypesPerType.set(baseType, derivedTypesPerType.get(baseType) || new Map());
+                                derivedTypesPerType.set(baseType, derivedTypesPerType.get(baseType) ?? new Map());
                                 derivedTypesPerType.get(baseType)?.set(fqName, !!vocabularyObject.isAbstract);
                             }
                         }

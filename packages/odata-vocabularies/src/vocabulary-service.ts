@@ -9,7 +9,9 @@ import type {
     VocabularyType,
     EnumValue,
     CdsVocabulary,
-    VocabulariesInformation
+    VocabulariesInformation,
+    TypeDefinition,
+    EnumType
 } from './types/vocabulary-service';
 import { TermApplicability, CDS_VOCABULARY_NAMESPACE, CDS_VOCABULARY_ALIAS } from './types/vocabulary-service';
 import { loadVocabulariesInformation } from './loader';
@@ -46,7 +48,7 @@ export class VocabularyService {
      */
     private resolveName(fullyQualifiedName: FullyQualifiedName): { namespace: Namespace; name: SimpleIdentifier } {
         const parts = (fullyQualifiedName || '').trim().split('.');
-        const name = parts.pop() || '';
+        const name = parts.pop() ?? '';
         const namespace = parts.join('.');
         return { namespace, name };
     }
@@ -67,7 +69,7 @@ export class VocabularyService {
                 isOfType = complyingType === type;
             } else {
                 const complyingTypeDef = this.getType(complyingType);
-                if (complyingTypeDef && complyingTypeDef.underlyingType) {
+                if (complyingTypeDef?.underlyingType) {
                     isOfType = complyingTypeDef.underlyingType === type;
                 }
             }
@@ -273,7 +275,7 @@ export class VocabularyService {
      */
     getVocabularyNamespace(name: QualifiedName): Namespace | undefined {
         const resolvedTermNamespace = this.resolveName(name).namespace;
-        const vocabulary = this.getVocabulary(name) || this.getVocabulary(resolvedTermNamespace);
+        const vocabulary = this.getVocabulary(name) ?? this.getVocabulary(resolvedTermNamespace);
         return vocabulary?.namespace;
     }
 
@@ -284,8 +286,8 @@ export class VocabularyService {
      * @returns - vocabulary information
      */
     getVocabulary(nameQualifier: NameQualifier): Vocabulary | null {
-        const namespace = this.namespaceByDefaultAlias.get(nameQualifier) || (nameQualifier as VocabularyNamespace);
-        return this.supportedVocabularies.get(namespace) || null;
+        const namespace = this.namespaceByDefaultAlias.get(nameQualifier) ?? (nameQualifier as VocabularyNamespace);
+        return this.supportedVocabularies.get(namespace) ?? null;
     }
 
     /**
@@ -312,7 +314,7 @@ export class VocabularyService {
             const term = this.dictionary.get(termName);
             if (term?.kind !== 'Term') {
                 return false;
-            } else if (term.constraints && term.constraints.requiresType && targetType) {
+            } else if (term.constraints?.requiresType && targetType) {
                 return this.isOfType(term.constraints.requiresType, targetType);
             } else {
                 return true;
@@ -349,7 +351,7 @@ export class VocabularyService {
             }
             if (!applicable) {
                 return TermApplicability.TermNotApplicable;
-            } else if (targetType && term.constraints && term.constraints.requiresType) {
+            } else if (targetType && term.constraints?.requiresType) {
                 const requiredType = term.constraints.requiresType;
                 return this.isOfType(requiredType, targetType)
                     ? TermApplicability.Applicable
@@ -371,9 +373,6 @@ export class VocabularyService {
      * @returns - mark down string.
      */
     getDocumentation(name: FullyQualifiedName, propertyName?: SimpleIdentifier): MarkdownString[] {
-        // let element: VocabularyObject | ComplexTypeProperty | EnumValue | undefined;
-        // let elementType: VocabularyObject | undefined;
-        // const enumTypeDocumentation = [];
         const values: MarkdownString[] = [];
         const { element, elementType, enumTypeDocumentation } = this.resolveDocumentationElement(name, propertyName);
         if (!element) {
@@ -385,61 +384,33 @@ export class VocabularyService {
         }`;
         const languageDependentDesc = this.getTerm('Org.OData.Core.V1.IsLanguageDependent')?.description ?? '';
 
-        if (element.experimental) {
-            const experimental = element.kind === 'Member' ? `**Enum Value Experimental:**` : `**Experimental:**`;
-            values.push(`${experimental} ${experimentalDescription} \n`);
-        }
-        if (element.deprecated) {
-            const deprecated = element.kind === 'Member' ? `**Enum Value Deprecated:**` : `**Deprecated:**`;
-            values.push(`${deprecated} ${element.deprecatedDescription} \n`);
-        }
-        if (element?.kind !== 'Property') {
-            const kind = element.kind === 'Member' ? `**Enum Value Kind:**` : `**Kind:**`;
-            values.push(`${kind} ${element.kind} \n`);
-        }
-        if (element.description) {
-            const description = element.kind === 'Member' ? `**Enum Value Description:**` : `**Description:**`;
-            values.push(`${description} ${element.description} \n`);
-        }
-        if (element.longDescription) {
-            const longDescription =
-                element.kind === 'Member' ? `**Enum Value Long Description:**` : `**Long Description:**`;
-            values.push(`${longDescription} ${element.longDescription} \n`);
-        }
+        values.push(...this.checkExperimentalElement(element, experimentalDescription));
+        values.push(...this.checkDeprecatedElement(element));
+        values.push(...this.getElementKindIsProperty(element));
+        values.push(...this.getElementDescription(element));
+        values.push(...this.getElementLongDescription(element));
+
         if (element.kind === TERM_KIND && element.baseTerm) {
             values.push(`**Base Term:** ${element.baseTerm} \n`);
         }
-        if (element.kind === TERM_KIND && element.appliesTo && element.appliesTo.length > 0) {
-            values.push(`**Applies To:** ${element.appliesTo.join('  ')} \n`);
-        }
+        values.push(...this.getElementAppliesToValue(element));
 
-        if (element.kind !== 'Member' && elementType?.kind !== 'Term') {
-            values.push(this.getFormattedTypeText(element, elementType));
-            if (element.kind === 'Property' && element.constraints?.derivedTypeConstraints) {
-                values.push(`**Derived type(s):** ${element.constraints.derivedTypeConstraints.join(', ')} \n`);
-            }
-        }
+        values.push(...this.getElementKindIsMemberAndTerm(element, elementType));
 
-        if (elementType && elementType.description) {
+        if (elementType?.description) {
             values.push(`**Type Description:** ${elementType.description} \n`);
         }
 
-        if (elementType && elementType.longDescription) {
+        if (elementType?.longDescription) {
             values.push(`**Type Long Description:** ${elementType.longDescription} \n`);
         }
 
-        if (
-            (element.kind === 'Term' || element.kind === 'Property') &&
-            element.constraints &&
-            element.constraints.requiresType
-        ) {
-            values.push(`**Require Type:** ${element.constraints.requiresType} \n`);
-        }
+        values.push(...this.getElementRequireTypeValue(element));
 
-        if (elementType && elementType.experimental) {
+        if (elementType?.experimental) {
             values.push(`**Type Experimental:** ${experimentalDescription} \n`);
         }
-        if (elementType && elementType.deprecated) {
+        if (elementType?.deprecated) {
             values.push(`**Type Deprecated:** ${elementType.deprecatedDescription} \n`);
         }
 
@@ -447,17 +418,9 @@ export class VocabularyService {
             values.push(`**BaseType:** ${element.baseType} \n`);
         }
 
-        if (
-            (element.kind === TERM_KIND || element.kind === 'Property') &&
-            element.constraints &&
-            element.constraints.isLanguageDependent
-        ) {
-            values.push(`**IsLanguageDependent:** ${languageDependentDesc} \n`);
-        }
+        values.push(...this.getElementIsLanguageDependent(element, languageDependentDesc));
 
-        if ((element.kind === TERM_KIND || element.kind === 'Property') && element.defaultValue) {
-            values.push(`**DefaultValue:** ${element.defaultValue} \n`);
-        }
+        values.push(...this.getElementDefaultValue(element));
 
         if (element.kind !== 'Member' && element.kind !== 'EnumType') {
             values.push(this.getFormattedNullableText(element));
@@ -467,6 +430,177 @@ export class VocabularyService {
             values.unshift(...enumTypeDocumentation);
         }
 
+        return values;
+    }
+
+    /**
+     *
+     * @param element  - element and element type
+     * @param experimentalDescription - description
+     * @returns - values
+     */
+    checkExperimentalElement(
+        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue,
+        experimentalDescription: string
+    ): MarkdownString[] {
+        const values: MarkdownString[] = [];
+
+        if (element.experimental) {
+            const experimental = element.kind === 'Member' ? `**Enum Value Experimental:**` : `**Experimental:**`;
+            values.push(`${experimental} ${experimentalDescription} \n`);
+        }
+
+        return values;
+    }
+
+    /**
+     *
+     * @param element  - element and element type
+     * @returns - values
+     */
+    checkDeprecatedElement(
+        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
+    ): MarkdownString[] {
+        const values: MarkdownString[] = [];
+
+        if (element.deprecated) {
+            const deprecated = element.kind === 'Member' ? `**Enum Value Deprecated:**` : `**Deprecated:**`;
+            values.push(`${deprecated} ${element.deprecatedDescription} \n`);
+        }
+
+        return values;
+    }
+
+    /**
+     *
+     * @param element  - element and element type
+     * @returns - values
+     */
+    getElementKindIsProperty(
+        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
+    ): MarkdownString[] {
+        const values: MarkdownString[] = [];
+
+        if (element?.kind !== 'Property') {
+            const kind = element.kind === 'Member' ? `**Enum Value Kind:**` : `**Kind:**`;
+            values.push(`${kind} ${element.kind} \n`);
+        }
+
+        return values;
+    }
+
+    /**
+     *
+     * @param element  - element and element type
+     * @param elementType - element type
+     * @returns - values
+     */
+    getElementKindIsMemberAndTerm(
+        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue,
+        elementType: VocabularyObject | undefined
+    ): MarkdownString[] {
+        const values: MarkdownString[] = [];
+        if (element.kind !== 'Member' && elementType?.kind !== 'Term') {
+            values.push(this.getFormattedTypeText(element, elementType));
+            if (element.kind === 'Property' && element.constraints?.derivedTypeConstraints) {
+                values.push(`**Derived type(s):** ${element.constraints.derivedTypeConstraints.join(', ')} \n`);
+            }
+        }
+        return values;
+    }
+
+    /**
+     *
+     * @param element  - element and element type
+     * @param languageDependentDesc - string
+     * @returns - values
+     */
+    getElementIsLanguageDependent(
+        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue,
+        languageDependentDesc: string
+    ): MarkdownString[] {
+        const values: MarkdownString[] = [];
+        if ((element.kind === TERM_KIND || element.kind === 'Property') && element.constraints?.isLanguageDependent) {
+            values.push(`**IsLanguageDependent:** ${languageDependentDesc} \n`);
+        }
+        return values;
+    }
+
+    /**
+     *
+     * @param element  - element and element type
+     * @returns - values
+     */
+    getElementDefaultValue(
+        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
+    ): MarkdownString[] {
+        const values: MarkdownString[] = [];
+        if ((element.kind === TERM_KIND || element.kind === 'Property') && element.defaultValue) {
+            values.push(`**DefaultValue:** ${element.defaultValue} \n`);
+        }
+        return values;
+    }
+
+    /**
+     *
+     * @param element  - element and element type
+     * @returns - values
+     */
+    getElementAppliesToValue(
+        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
+    ): MarkdownString[] {
+        const values: MarkdownString[] = [];
+        if (element.kind === TERM_KIND && element.appliesTo && element.appliesTo?.length > 0) {
+            values.push(`**Applies To:** ${element.appliesTo.join('  ')} \n`);
+        }
+        return values;
+    }
+
+    /**
+     *
+     * @param element  - element and element type
+     * @returns - values
+     */
+    getElementRequireTypeValue(
+        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
+    ): MarkdownString[] {
+        const values: MarkdownString[] = [];
+        if ((element.kind === 'Term' || element.kind === 'Property') && element.constraints?.requiresType) {
+            values.push(`**Require Type:** ${element.constraints.requiresType} \n`);
+        }
+        return values;
+    }
+
+    /**
+     *
+     * @param element  - element and element type
+     * @returns - values
+     */
+    getElementDescription(
+        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
+    ): MarkdownString[] {
+        const values: MarkdownString[] = [];
+        if (element.description) {
+            const description = element.kind === 'Member' ? `**Enum Value Description:**` : `**Description:**`;
+            values.push(`${description} ${element.description} \n`);
+        }
+        return values;
+    }
+
+    /**
+     *
+     * @param element  - element and element type
+     * @returns - values
+     */
+    getElementLongDescription(
+        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
+    ): MarkdownString[] {
+        const values: MarkdownString[] = [];
+        if (element.longDescription) {
+            const longDescription =
+                element.kind === 'Member' ? `**Enum Value Long Description:**` : `**Long Description:**`;
+            values.push(`${longDescription} ${element.longDescription} \n`);
+        }
         return values;
     }
 
@@ -532,9 +666,9 @@ export class VocabularyService {
         let sResultText = '';
         if (element.kind === TERM_KIND || element.kind === 'Property') {
             const type = element.isCollection && element.type ? `Collection(${element.type}) \n` : element.type;
-            if (elementType && elementType.experimental) {
+            if (elementType?.experimental) {
                 sResultText = `**Type:** ${type}(**experimental**) \n`;
-            } else if (elementType && elementType.deprecated) {
+            } else if (elementType?.deprecated) {
                 sResultText = `**Type:** ${type}(**deprecated**) \n`;
             } else {
                 sResultText = `**Type:** ${type} \n`;
