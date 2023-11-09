@@ -90,7 +90,7 @@ const getContent = (controlType: ControlTypes, enabled: boolean) => {
     return content;
 };
 
-export const multiSelectInDialog = () => {
+export const collisionTransformInDialog = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [enabled, setEnabled] = useState(true);
     const [selectedType, setSelectedType] = useState<string>(ControlTypes.ComboBox);
