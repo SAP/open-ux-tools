@@ -202,6 +202,7 @@ export const changeProperty = createExternalAction<PropertyChange>('change-prope
 export const propertyChanged = createExternalAction<PropertyChanged>('property-changed');
 export const propertyChangeFailed = createExternalAction<PropertyChangeFailed>('change-property-failed');
 export const changeStackModified = createExternalAction<ChangeStackModified>('change-stack-modified');
+export const showMessage = createExternalAction<string>('show-dialog-message');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -213,4 +214,5 @@ export type ExternalAction =
     | ReturnType<typeof selectControl>
     | ReturnType<typeof addExtensionPoint>
     | ReturnType<typeof propertyChangeFailed>
-    | ReturnType<typeof changeStackModified>;
+    | ReturnType<typeof changeStackModified>
+    | ReturnType<typeof showMessage>;

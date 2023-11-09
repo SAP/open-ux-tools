@@ -41,6 +41,7 @@ export default function App(appProps: AppProps): ReactElement {
     const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => hideWarningDialog !== true);
 
     const [isInitialized, setIsInitialized] = useState(false);
+    const [showDialogMessage, setShowDialogMessage] = useState(false);
 
     const previewWidth = useSelector<RootState, string>(
         (state) => `${DEVICE_WIDTH_MAP.get(state.deviceType) ?? DEFAULT_DEVICE_WIDTH}px`
@@ -48,6 +49,7 @@ export default function App(appProps: AppProps): ReactElement {
     const previewScale = useSelector<RootState, number>((state) => state.scale);
     const fitPreview = useSelector<RootState, boolean>((state) => state.fitPreview ?? false);
     const windowSize = useWindowSize();
+    const dialogMessage = useSelector<RootState, string | undefined>((state) => state.showDialogMessage);
 
     const containerRef = useCallback(
         (node) => {
@@ -84,6 +86,12 @@ export default function App(appProps: AppProps): ReactElement {
         setWarningDialogVisibility(false);
     }
 
+    useEffect(() => {
+        if (dialogMessage) {
+            setShowDialogMessage(true);
+        }
+    }, [dialogMessage]);
+
     return (
         <div className="app">
             <section className="app-panel app-panel-left">
@@ -91,21 +99,31 @@ export default function App(appProps: AppProps): ReactElement {
             </section>
             <section ref={containerRef} className="app-content">
                 <div className="app-canvas">
-                    <iframe
-                        className="app-preview"
-                        id="preview"
-                        style={{
-                            width: previewWidth,
-                            transform: `scale(${previewScale})`
-                        }}
-                        src={previewUrl}
-                        title={t('APPLICATION_PREVIEW_TITLE')}
-                    />
+                    {!dialogMessage && (
+                        <iframe
+                            className="app-preview"
+                            id="preview"
+                            style={{
+                                width: previewWidth,
+                                transform: `scale(${previewScale})`
+                            }}
+                            src={previewUrl}
+                            title={t('APPLICATION_PREVIEW_TITLE')}
+                        />
+                    )}
                 </div>
             </section>
             <section className="app-panel app-panel-right">
                 <PropertiesPanel />
             </section>
+            <UIDialog
+                hidden={!showDialogMessage}
+                dialogContentProps={{
+                    title: 'Warning',
+                    subText: 'Sub title'
+                }}>
+                <div>{dialogMessage}</div>
+            </UIDialog>
 
             <UIDialog
                 hidden={!isWarningDialogVisible}

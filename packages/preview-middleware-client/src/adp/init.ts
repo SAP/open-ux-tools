@@ -3,11 +3,13 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import init from '../cpe/init';
 import { initDialogs } from './init-dialogs';
-import { ExternalAction, startPostMessageCommunication } from '@sap-ux-private/control-property-editor-common';
+import { ExternalAction, showMessage, startPostMessageCommunication } from '@sap-ux-private/control-property-editor-common';
 import { ActionHandler } from '../cpe/types';
 import ExtensionPointService from './extension-point';
+import VersionInfo from 'sap/ui/VersionInfo';
+import { getUI5VersionValidationMessage } from '../cpe/ui5-version-utils'
 
-export default function (rta: RuntimeAuthoring) {
+export default async function (rta: RuntimeAuthoring) {
     const extPointService = new ExtensionPointService(rta);
     const actionHandlers: ActionHandler[] = [];
     /**
@@ -18,7 +20,7 @@ export default function (rta: RuntimeAuthoring) {
         actionHandlers.push(handler);
     }
 
-    startPostMessageCommunication<ExternalAction>(window.parent, async function onAction(action) {
+    const { sendAction } = startPostMessageCommunication<ExternalAction>(window.parent, async function onAction(action) {
         for (const handler of actionHandlers) {
             try {
                 await handler(action);
@@ -27,6 +29,16 @@ export default function (rta: RuntimeAuthoring) {
             }
         }
     });
+
+    debugger;
+    const ui5Version = (await VersionInfo.load()) as { version: string };
+    const ui5VersionValidationMessage = getUI5VersionValidationMessage(ui5Version.version);
+
+    if(ui5VersionValidationMessage) {
+        sendAction(showMessage(ui5VersionValidationMessage));
+    }
+
+    
     // initialize fragment content menu entry
     initDialogs(rta);
     // initialize extension point service
@@ -35,3 +47,5 @@ export default function (rta: RuntimeAuthoring) {
     init(rta);
     log.debug('ADP init executed.');
 }
+
+

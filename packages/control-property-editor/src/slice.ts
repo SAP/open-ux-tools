@@ -15,7 +15,8 @@ import {
     iconsLoaded,
     outlineChanged,
     propertyChanged,
-    propertyChangeFailed
+    propertyChangeFailed,
+    showMessage
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -32,6 +33,7 @@ interface SliceState {
     filterQuery: FilterOptions[];
     icons: IconDetails[];
     changes: ChangesSlice;
+    showDialogMessage: string | undefined;
 }
 
 export interface ChangesSlice {
@@ -96,7 +98,8 @@ export const initialState = {
         controls: {},
         pending: [],
         saved: []
-    }
+    },
+    showDialogMessage: undefined
 };
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
@@ -210,6 +213,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     control.properties[propertyName] = property;
                     state.changes.controls[key] = control;
                 }
+            })
+            .addMatcher(showMessage.match, (state, action: ReturnType<typeof showMessage>): void => {
+                state.showDialogMessage = action.payload;
             })
 });
 

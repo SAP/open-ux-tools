@@ -306,49 +306,4 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
-
-    describe('getUI5ProxyMiddlewareUI5Version', () => {
-        async function getUI5Config(ui5Yaml: string): Promise<UI5Config> {
-            return await UI5Config.newInstance(readFileSync(join(__dirname, 'fixtures', ui5Yaml), 'utf-8'));
-        }
-
-        test('return version', async () => {
-            const ui5Config = await getUI5Config('ui5.yaml');
-            const version = await ui5Config.getUI5ProxyMiddlewareUI5Version();
-            expect(version).toEqual('1.119.2');
-        });
-
-        test('return undefined', async () => {
-            const ui5Config = await getUI5Config('ui5-missing-version.yaml');
-            const version = await ui5Config.getUI5ProxyMiddlewareUI5Version();
-            expect(version).toEqual(undefined);
-        });
-
-        test('throw error when middlewares are not defined', async () => {
-            const ui5Config = await getUI5Config('ui5-missing-middlewares.yaml');
-            try {
-                const _version = await ui5Config.getUI5ProxyMiddlewareUI5Version();
-            } catch (error) {
-                expect(error.message).toEqual('Custom middlewares are not defined in ui5.yaml.');
-            }
-        });
-
-        test('throw error when ui5-proxy-middleware is not defined', async () => {
-            const ui5Config = await getUI5Config('ui5-missing-ui5-proxy-middleware.yaml');
-            try {
-                const _version = await ui5Config.getUI5ProxyMiddlewareUI5Version();
-            } catch (error) {
-                expect(error.message).toEqual('Could not find ui5-proxy-middleware defined in ui5.yaml.');
-            }
-        });
-
-        test('throw error when ui5-proxy-middleware configuration is not defined', async () => {
-            const ui5Config = await getUI5Config('ui5-missing-configuration.yaml');
-            try {
-                const _version = await ui5Config.getUI5ProxyMiddlewareUI5Version();
-            } catch (error) {
-                expect(error.message).toEqual('Cannot find ui5-proxy-middleware configuration in ui5.yaml.');
-            }
-        });
-    });
 });

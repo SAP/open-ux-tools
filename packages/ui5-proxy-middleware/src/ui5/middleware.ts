@@ -12,6 +12,7 @@ import {
 } from '../base';
 import dotenv from 'dotenv';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
+import { isUI5VersionRemoved } from '@sap-ux/ui5-info';
 import type { Manifest } from '@sap-ux/project-access';
 import type { MiddlewareParameters } from '@ui5/server';
 import type { ReaderCollection } from '@ui5/fs';
@@ -84,6 +85,10 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
     } catch (error) {
         logger.warn('Retrieving UI5 version failed, using latest version instead.');
         logger.debug(error);
+    }
+
+    if (await isUI5VersionRemoved(ui5Version)) {
+        throw new Error('Unsupported UI5 Version.');
     }
 
     const envUI5Url = process.env.FIORI_TOOLS_UI5_URI;
