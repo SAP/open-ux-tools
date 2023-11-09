@@ -7,7 +7,6 @@ const defaultProps = {
 };
 
 export interface CalloutCollisionTransformProps {
-    // Parent selectors
     container: string;
     target: string;
     absolute?: boolean;
@@ -71,6 +70,7 @@ export class CalloutCollisionTransform {
      */
     private createPlaceholder(size: number): HTMLElement {
         const element = document.createElement('div');
+        element.classList.add('ts-Callout-transformation');
         element.style.height = `${size}px`;
         return element;
     }
@@ -126,7 +126,7 @@ export class CalloutCollisionTransform {
             // Calculate if action is overlaps
             let diff = top + height - target.rect.top;
             let bottomPosition = top + callout.rect.height;
-            if (diff < 0 || bottomPosition >= maxHeight) {
+            if (diff <= 0 || bottomPosition >= maxHeight) {
                 return;
             }
             // Apply additional offset to make target more visible
@@ -182,13 +182,13 @@ export class CalloutCollisionTransform {
      * @param event Triggered event to check.
      * @returns Returns true if callout should not be closed.
      */
-    public preventDismissOnEvent = (
+    public preventDismissOnEvent(
         event: Event | React.FocusEvent<Element> | React.KeyboardEvent<Element> | React.MouseEvent<Element, MouseEvent>
-    ): boolean => {
+    ): boolean {
         const elements = this.getElements();
         if (event.type === 'focus' && elements?.target.dom.contains(event.target as HTMLElement)) {
             return true;
         }
         return false;
-    };
+    }
 }

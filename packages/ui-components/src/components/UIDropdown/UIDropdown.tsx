@@ -3,8 +3,7 @@ import type {
     IDropdownProps,
     IDropdownStyles,
     ICalloutContentStyleProps,
-    ICalloutContentStyles,
-    ICalloutProps
+    ICalloutContentStyles
 } from '@fluentui/react';
 import { Dropdown, DropdownMenuItemType, IDropdownOption, ResponsiveMode } from '@fluentui/react';
 

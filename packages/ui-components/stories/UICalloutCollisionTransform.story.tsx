@@ -17,7 +17,7 @@ import { data } from '../test/__mock__/select-data';
 
 initIcons();
 
-export default { title: 'Dialogs/CalloutCollisionTransform' };
+export default { title: 'Dialogs' };
 
 enum ControlTypes {
     ComboBox = 'ComboBox',
@@ -48,15 +48,11 @@ const CustomCallout = (props: { id: string }) => {
             <UICallout
                 target={`#${id}`}
                 hidden={!isOpen}
-                isBeakVisible={true}
-                beakWidth={5}
-                directionalHint={4}
+                isBeakVisible={false}
                 onDismiss={() => {
                     setIsOpen(!isOpen);
                     calloutCollisionTransform.current.resetTransformation();
                 }}
-                calloutWidth={300}
-                calloutMinWidth={300}
                 preventDismissOnEvent={calloutCollisionTransform.current.preventDismissOnEvent}
                 onPositioned={calloutCollisionTransform.current.applyTransformation}
                 popupProps={{
