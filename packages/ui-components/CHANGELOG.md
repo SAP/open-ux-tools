@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.12.3
+
+### Patch Changes
+
+-   c53c31e3: Update Icons.tsx
+
 ## 1.12.2
 
 ### Patch Changes
