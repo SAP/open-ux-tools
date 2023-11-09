@@ -226,7 +226,7 @@ export function parseEnumTypeDefinition(name: string, raw: EnumTypeBase): EnumTy
 
         // scan for enum values
         enumType.values = Object.keys(raw)
-            .filter((key) => !key.match(/(^\$\w{0,512}|\w*@\w{0,512})/g))
+            .filter((key) => !key.match(/(?:^\$\w{0,512}|\w*@\w{0,512})/g))
             .map((key) => {
                 const value = parseInt(raw[key], 10);
                 const enumValue: EnumValue = {
@@ -264,7 +264,7 @@ function parseComplexType(name: string, raw: CSDLComplexType): ComplexType {
 
     // collect properties
     Object.keys(raw)
-        .filter((key) => !key.match(/(^\$\w{0,512}|\w*@\w{0,512})/g))
+        .filter((key) => !key.match(/(?:^\$\w{0,512}|\w*@\w{0,512})/g))
         .forEach((key) => {
             const propRaw = raw[key];
             const property: ComplexTypeProperty = {
