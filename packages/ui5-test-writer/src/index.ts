@@ -31,7 +31,7 @@ function readManifest(fs: Editor, basePath: string): Manifest {
  * Retrieves the application type of the main datasource (FreeStyle, FE V2 or FE V4).
  *
  * @param manifest - the app descriptor of the app
- * @returns the application type. An exception is thrown if it can't be found or if it's not supported
+ * @returns {{ applicationType: string, hideFilterBar: boolean }} An object containing the application type and hideFilterBar flag. An exception is thrown if it can't be found or if it's not supported
  */
 function getAppTypeAndHideFilterBarFromManifest(manifest: Manifest): {
     applicationType: string;
