@@ -140,8 +140,8 @@ export default class ControllerExtension extends BaseDialog {
 
             await this.createNewController(controllerName, viewId);
         } else {
-            const pathToOpen = this.model.getProperty('/pathToOpen');
-            window.open(`vscode://${pathToOpen}`);
+            const controllerPath = this.model.getProperty('/controllerPath');
+            window.open(`vscode://file${controllerPath}`);
         }
 
         this.handleDialogClose();
@@ -156,12 +156,12 @@ export default class ControllerExtension extends BaseDialog {
 
         const { controllerName, viewId } = this.getControllerInfo(overlayControl);
 
-        const { controllerExists, pathToOpen, controllerPathFromRoot } = await this.getExistingController(
+        const { controllerExists, controllerPath, controllerPathFromRoot } = await this.getExistingController(
             controllerName
         );
 
         if (controllerExists) {
-            this.updateModelForExistingController(controllerExists, pathToOpen, controllerPathFromRoot);
+            this.updateModelForExistingController(controllerExists, controllerPath, controllerPathFromRoot);
         } else {
             this.updateModelForNewController(viewId);
 
@@ -187,16 +187,16 @@ export default class ControllerExtension extends BaseDialog {
      * Updates the model properties for an existing controller.
      *
      * @param controllerExists Whether the controller exists
-     * @param pathToOpen Path to be opened
+     * @param controllerPath The controller path
      * @param controllerPathFromRoot The controller path from the project root
      */
     private updateModelForExistingController(
         controllerExists: boolean,
-        pathToOpen: string,
+        controllerPath: string,
         controllerPathFromRoot: string
     ): void {
         this.model.setProperty('/controllerExists', controllerExists);
-        this.model.setProperty('/pathToOpen', pathToOpen);
+        this.model.setProperty('/controllerPath', controllerPath);
         this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
 
         const form = this.byId('controllerExtensionDialog_Form') as SimpleForm;
