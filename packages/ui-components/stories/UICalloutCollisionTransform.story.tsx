@@ -17,7 +17,7 @@ import { data } from '../test/__mock__/select-data';
 
 initIcons();
 
-export default { title: 'Dialogs' };
+export default { title: 'Dialogs/Dialogs' };
 
 enum ControlTypes {
     ComboBox = 'ComboBox',
