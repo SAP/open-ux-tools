@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.7.2
+
+### Patch Changes
+
+-   e2b264c2: Make Control Property Editor aware which application (scenario) its running in the iframe
+
 ## 0.7.1
 
 ### Patch Changes
