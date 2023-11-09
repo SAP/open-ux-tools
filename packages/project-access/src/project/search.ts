@@ -252,7 +252,7 @@ async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResul
             // All UI5 apps have at least sap.app: { id: <ID>, type: "application" } in manifest.json
             pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
             const manifest = pathMap[manifestPath] as Manifest;
-            if (!manifest['sap.app'] || !manifest['sap.app'].id || manifest['sap.app'].type !== 'application') {
+            if (!manifest['sap.app']?.id || manifest['sap.app'].type !== 'application') {
                 continue;
             }
             const roots = await findRootsForPath(manifestPath);
