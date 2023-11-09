@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.7.2
+
+### Patch Changes
+
+-   db918804: App name with namespace (e.g. /NS/APPNAME) needs to be URI encoded in the UI% ABAP repository delete service request URL.
+
+## 1.7.1
+
+### Patch Changes
+
+-   fa4537b2: cleanup how baseURL is used to deteremine if the service is created with a destination
+
 ## 1.7.0
 
 ### Minor Changes

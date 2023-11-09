@@ -6,7 +6,8 @@ import {
     startPostMessageCommunication,
     changeProperty as externalChangeProperty,
     selectControl,
-    deletePropertyChanges
+    deletePropertyChanges,
+    addExtensionPoint
 } from '@sap-ux-private/control-property-editor-common';
 
 import type { Action } from './actions';
@@ -44,6 +45,10 @@ export const communicationMiddleware: Middleware<Dispatch<Action>> = (store: Mid
                 }
                 case deletePropertyChanges.type:
                 case selectControl.type: {
+                    sendAction(action);
+                    break;
+                }
+                case addExtensionPoint.type: {
                     sendAction(action);
                     break;
                 }

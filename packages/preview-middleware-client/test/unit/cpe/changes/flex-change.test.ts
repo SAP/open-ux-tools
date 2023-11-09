@@ -38,7 +38,8 @@ describe('flexChange', () => {
             controlId: 'testId',
             propertyName: 'blocked',
             value: false,
-            controlName: 'controlName'
+            controlName: 'controlName',
+            changeType: 'propertyChange'
         };
 
 
@@ -60,7 +61,8 @@ describe('flexChange', () => {
             controlId: 'testId',
             propertyName: 'text',
             value: 'apply',
-            controlName: 'controlName'
+            controlName: 'controlName',
+            changeType: 'propertyChange'
         };
 
         // act
@@ -81,7 +83,8 @@ describe('flexChange', () => {
             controlId: 'testId',
             propertyName: 'enabled',
             value: '{testModel>enabled}',
-            controlName: 'controlName'
+            controlName: 'controlName',
+            changeType: 'propertyBindingChange'
         };
 
         // act
@@ -102,7 +105,8 @@ describe('flexChange', () => {
             controlId: 'testId',
             propertyName: 'enabled',
             value: 'false',
-            controlName: 'controlName'
+            controlName: 'controlName',
+            changeType: 'propertyChange'
         };
 
         // act

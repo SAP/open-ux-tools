@@ -1,5 +1,41 @@
 # @sap-ux/ui-components
 
+## 1.12.3
+
+### Patch Changes
+
+-   c53c31e3: Update Icons.tsx
+
+## 1.12.2
+
+### Patch Changes
+
+-   37f4e176: Parameterise UI Action Aallout border colour
+
+## 1.12.1
+
+### Patch Changes
+
+-   9896d6f4: add `footer` icon
+
+## 1.12.0
+
+### Minor Changes
+
+-   22a21267: UISplitButton update state on props change
+
+## 1.11.21
+
+### Patch Changes
+
+-   95f951f9: styling changes for UIActionCallout
+
+## 1.11.20
+
+### Patch Changes
+
+-   767e1c36: UIDialog, UICallout, UIContextualMenu, dropdown menus - apply border radius. 4px for UIDialog and UICallout. 2px for contextual and dropdown menus
+
 ## 1.11.19
 
 ### Patch Changes

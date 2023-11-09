@@ -25,18 +25,22 @@ describe('<UICallout />', () => {
 
     it('Should render a UITooltip component', () => {
         expect(wrapper.find('.ms-Callout').length).toEqual(1);
+        const style = getCalloutStyles();
+        expect(style.root?.['borderRadius']).toEqual(4);
+        expect(style.beakCurtain?.['borderRadius']).toEqual(4);
+        expect(style.calloutMain?.['borderRadius']).toEqual(4);
     });
 
     it('Property "contentPadding"', () => {
         // Default - None
         let style = getCalloutStyles();
-        expect(style.calloutMain['padding']).toEqual(undefined);
+        expect(style.calloutMain?.['padding']).toEqual(undefined);
         // Standard
         wrapper.setProps({
             contentPadding: UICalloutContentPadding.Standard
         });
         style = getCalloutStyles();
-        expect(style.calloutMain['padding']).toEqual(8);
+        expect(style.calloutMain?.['padding']).toEqual(8);
     });
 
     it('Overwrite styles', () => {
@@ -62,10 +66,10 @@ describe('<UICallout />', () => {
             styles: expectStyles
         });
         const style = getCalloutStyles();
-        expect(style.root[property]).toEqual(expectStyles.root[property]);
-        expect(style.beak[property]).toEqual(expectStyles.beak[property]);
-        expect(style.beakCurtain[property]).toEqual(expectStyles.beakCurtain[property]);
-        expect(style.calloutMain[property]).toEqual(expectStyles.calloutMain[property]);
-        expect(style.container[property]).toEqual(expectStyles.container[property]);
+        expect(style.root?.[property]).toEqual(expectStyles.root[property]);
+        expect(style.beak?.[property]).toEqual(expectStyles.beak[property]);
+        expect(style.beakCurtain?.[property]).toEqual(expectStyles.beakCurtain[property]);
+        expect(style.calloutMain?.[property]).toEqual(expectStyles.calloutMain[property]);
+        expect(style.container?.[property]).toEqual(expectStyles.container[property]);
     });
 });

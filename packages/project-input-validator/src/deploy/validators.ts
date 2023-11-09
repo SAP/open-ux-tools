@@ -1,8 +1,8 @@
-import { t } from './i18n';
+import { t } from '../i18n';
 import { EOL } from 'os';
 
 /**
- * Validator Fiori app name is compatbiel with Fiori project requirements.
+ * Validator Fiori app name is compatble with Fiori project requirements.
  *
  * @param name Fiori app name
  * @param prefix Prefix required by backend system
@@ -13,20 +13,20 @@ export function validateAppName(name: string, prefix?: string): boolean | string
 
     const length = name ? name.trim().length : 0;
     if (!length) {
-        return t('AbapAppNameRequired');
+        return t('deploy.abapAppNameRequired');
     }
 
     if (name.split('/').length > 3) {
-        errorMessages.push(t('AbapInvalidNamespace'));
+        errorMessages.push(t('deploy.abapInvalidNamespace'));
     } else if (/^\/.*\/\w*$/g.test(name)) {
         const splitNames = name.split('/');
         let accumulatedMsg = '';
         if (splitNames[1].length > 10) {
-            const errMsg = t('AbapInvalidNamespaceLength', { length: splitNames[1].length });
+            const errMsg = t('deploy.abapInvalidNamespaceLength', { length: splitNames[1].length });
             accumulatedMsg += `${errMsg}, `;
         }
         if (splitNames[2].length > 15) {
-            const errMsg = t('AbapInvalidAppNameLength', { length: splitNames[2].length });
+            const errMsg = t('deploy.abapInvalidAppNameLength', { length: splitNames[2].length });
             accumulatedMsg += `${errMsg}, `;
         }
         if (accumulatedMsg) {
@@ -34,14 +34,14 @@ export function validateAppName(name: string, prefix?: string): boolean | string
             errorMessages.push(accumulatedMsg);
         }
     } else if (length > 15) {
-        errorMessages.push(t('AbapInvalidAppNameLength', { length }));
+        errorMessages.push(t('deploy.abapInvalidAppNameLength', { length }));
     }
 
     if (prefix && !name.toUpperCase().startsWith(prefix.toUpperCase())) {
-        errorMessages.push(t('AbapInvalidAppName', { prefix }));
+        errorMessages.push(t('deploy.abapInvalidAppName', { prefix }));
     }
     if (!/^[A-Za-z0-9_/]*$/.test(name)) {
-        errorMessages.push(t('CharactersForbiddenInAppName'));
+        errorMessages.push(t('deploy.charactersForbiddenInAppName'));
     }
 
     return processErrorMessages(errorMessages);
@@ -59,7 +59,8 @@ function processErrorMessages(errorMessages: string[]): boolean | string {
     } else if (errorMessages.length === 1) {
         return errorMessages[0];
     } else {
-        return `${t('InvalidAppNameMultipleReason')}${EOL}${errorMessages.join(EOL)}${EOL}`;
+        const indentErrorMessageRows = errorMessages.map((errorMessage) => `${' '.repeat(8)}${errorMessage}`).join(EOL);
+        return `${t('deploy.invalidAppNameMultipleReason')}${EOL}${indentErrorMessageRows}${EOL}`;
     }
 }
 
@@ -71,27 +72,9 @@ function processErrorMessages(errorMessages: string[]): boolean | string {
  */
 export function validateAppDescription(description: string): boolean | string {
     if (description.length > 60) {
-        return t('AbapAppDescLength');
+        return t('deploy.abapAppDescLength');
     } else {
         return true;
-    }
-}
-
-/**
- * Client number is either empty or 3 digit string.
- *
- * @param client ABAP system client number
- * @returns true or error message
- */
-export function validateClient(client: string): boolean | string {
-    const formattedInput = client?.trim() || '';
-
-    const isValid = formattedInput === '' || /^\d{3}$/.test(formattedInput);
-
-    if (isValid) {
-        return true;
-    } else {
-        return t('InvalidClient', { client });
     }
 }
 
@@ -106,7 +89,7 @@ export function validateTransportRequestNumber(transportRequest: string, package
     const regex = /^[$LlTt]/;
 
     if (!regex.test(packageName) && !transportRequest?.trim()) {
-        return t('AbapTransportNumRequired');
+        return t('deploy.abapTransportNumRequired');
     } else {
         return true;
     }
@@ -120,23 +103,8 @@ export function validateTransportRequestNumber(transportRequest: string, package
  */
 export function validatePackage(input: string): boolean | string {
     if (!input?.trim()) {
-        return t('AbapPackageWarn');
+        return t('deploy.abapPackageWarn');
     } else {
         return true;
-    }
-}
-
-/**
- * Validate url input is valid url format.
- *
- * @param input Backend ABAP system url
- * @returns true or error message
- */
-export function validateUrl(input: string): boolean | string {
-    try {
-        const url = new URL(input);
-        return !!url.protocol && !!url.host;
-    } catch {
-        return t('InvalidUrl', { input });
     }
 }

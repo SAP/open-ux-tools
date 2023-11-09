@@ -1,5 +1,19 @@
 # @sap-ux/project-input-validator
 
+## 0.2.1
+
+### Patch Changes
+
+-   d0e46a5c: - Fixed test folder path in README
+    -   Corrected a typo in i18n key
+    -   Added indentation for displaying multiple app name validation issues
+
+## 0.2.0
+
+### Minor Changes
+
+-   d31cfeff: Adds UI5 library prompt validators and tests
+
 ## 0.1.2
 
 ### Patch Changes
