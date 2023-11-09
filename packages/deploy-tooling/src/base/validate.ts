@@ -84,6 +84,7 @@ export async function validateBeforeDeploy(
 
     // output is passed by reference and status updated during the internal pipeline below.
     await validateInputTextFormat(input, output, provider, logger);
+    convertInputsForAdtValidations(input, output);
     await validatePackageWithAdt(input, output, provider, logger);
     await validateTransportRequestWithAdt(input, output, provider, logger);
 
@@ -120,6 +121,30 @@ export function formatSummary(summary: SummaryRecord[]): string {
         }, '');
 
     return summaryStr;
+}
+
+/**
+ *
+ * @param input
+ * @param output
+ */
+function convertInputsForAdtValidations(input: ValidationInputs, output: ValidationOutput): void {
+    const upperCasePackageName = input.package.toUpperCase();
+    const upperCaseTransport = input.transport.toUpperCase();
+    if (upperCasePackageName !== input.package) {
+        input.package = upperCasePackageName;
+        output.summary.push({
+            message: `Package name contains lower case letter(s). ${input.package} is used for ADT validation.`,
+            status: SummaryStatus.Unknown
+        });
+    }
+    if (upperCaseTransport !== input.transport) {
+        input.transport = upperCaseTransport;
+        output.summary.push({
+            message: `Transport request number contains lower case letter(s). ${input.transport} is used for ADT validation.`,
+            status: SummaryStatus.Unknown
+        });
+    }
 }
 
 /**
@@ -261,10 +286,7 @@ async function validatePackageWithAdt(
     }
 
     // ADT expects input package
-    let inputPackage = input.package;
-    if (inputPackage.toUpperCase() === '$TMP') {
-        inputPackage = '$TMP';
-    }
+    const inputPackage = input.package;
 
     try {
         const adtService = await provider.getAdtService<ListPackageService>(ListPackageService);
