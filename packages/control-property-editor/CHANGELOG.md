@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.1
+
+### Patch Changes
+
+-   e2b264c2: Make Control Property Editor aware which application (scenario) its running in the iframe
+
 ## 0.4.0
 
 ### Minor Changes
