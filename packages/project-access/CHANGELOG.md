@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.15.1
+
+### Patch Changes
+
+-   e4821c0f: SonarCloud code smells
+
 ## 1.15.0
 
 ### Minor Changes
