@@ -2,7 +2,8 @@ import type { ExternalAction } from '@sap-ux-private/control-property-editor-com
 import {
     startPostMessageCommunication,
     iconsLoaded,
-    enableTelemetry
+    enableTelemetry,
+    scenarioLoaded
 } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
@@ -52,6 +53,8 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
             },
             logger
         );
+
+        sendAction(scenarioLoaded(flexSettings.scenario));
 
         for (const service of services) {
             service.init(sendAction, subscribe);

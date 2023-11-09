@@ -69,7 +69,7 @@ describe('main', () => {
         attachSelectionChange,
         getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
         attachUndoRedoStackModified: jest.fn(),
-        getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR' }),
+        getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR', scenario: common.scenario.UiAdaptation }),
         getRootControlInstance: jest.fn().mockReturnValue({
             getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })
         })
@@ -118,10 +118,14 @@ describe('main', () => {
         // assert
         expect(applyChangeSpy).toBeCalledWith({ rta: rta }, payload);
         expect(sendActionMock).toHaveBeenNthCalledWith(1, {
+            type: '[ext] scenario-loaded',
+            payload: 'UI_ADAPTATION'
+        });
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] icons-loaded',
             payload: mockIconResult
         });
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] change-stack-modified',
             payload: { saved: [], pending: [] }
         });
