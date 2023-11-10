@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.3.1
+
+### Patch Changes
+
+-   deabc5bd: fix template issues for worklist OPA test
+
 ## 0.3.0
 
 ### Minor Changes

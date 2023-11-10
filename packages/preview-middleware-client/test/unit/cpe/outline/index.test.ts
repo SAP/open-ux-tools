@@ -49,25 +49,6 @@ describe('index', () => {
             }
         ]);
         await initOutline(rtaMock, mockSendAction);
-        expect(mockAttachEvent).toMatchInlineSnapshot(`
-            [MockFunction] {
-              "calls": Array [
-                Array [
-                  "update",
-                  [Function],
-                ],
-              ],
-              "results": Array [
-                Object {
-                  "type": "return",
-                  "value": undefined,
-                },
-              ],
-            }
-        `);
-        const syncOutline = mockAttachEvent.mock.calls[0][1];
-        syncOutline.call();
-        await jest.advanceTimersByTimeAsync(4000);
         expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
         expect(mockSendAction).toMatchInlineSnapshot(`
             [MockFunction] {
@@ -101,9 +82,6 @@ describe('index', () => {
     test('initOutline - exception', async () => {
         transformNodesSpy.mockRejectedValue('error');
         await initOutline(rtaMock, mockSendAction);
-        const syncOutline = mockAttachEvent.mock.calls[0][1];
-        syncOutline.call();
-        await jest.advanceTimersByTimeAsync(4000);
         // transformNodesSpy called but rejected.
         expect(transformNodesSpy).toHaveBeenCalled();
         expect(mockSendAction).not.toHaveBeenCalled();
@@ -124,9 +102,6 @@ describe('index', () => {
         transformNodesSpy.mockRejectedValue('error');
        
         await initOutline(rtaMock, mockSendAction);
-        const syncOutline = mockAttachEvent.mock.calls[0][1];
-        syncOutline.call();
-        await jest.advanceTimersByTimeAsync(4000);
         expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
     });
 });
