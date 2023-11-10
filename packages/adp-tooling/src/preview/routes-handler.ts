@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-import * as os from 'os';
 import * as path from 'path';
 import { renderFile } from 'ejs';
 import sanitize from 'sanitize-filename';
@@ -194,7 +193,10 @@ export default class RoutesHandler {
             const projectName = project.getName();
 
             const getPath = (projectPath: string, fileName: string) =>
-                path.normalize(path.join(projectPath, FolderNames.Changes, FolderNames.Coding, fileName));
+                path
+                    .join(projectPath, FolderNames.Changes, FolderNames.Coding, fileName)
+                    .split(path.sep)
+                    .join(path.posix.sep);
 
             for (const file of codeExtFiles) {
                 const fileStr = await file.getString();
@@ -218,7 +220,7 @@ export default class RoutesHandler {
 
             this.sendFilesResponse(res, {
                 controllerExists,
-                controllerPath: os.platform() === 'win32' ? `/${controllerPath}` : controllerPath,
+                controllerPath,
                 controllerPathFromRoot
             });
             this.logger.debug(
