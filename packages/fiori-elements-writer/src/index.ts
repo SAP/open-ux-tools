@@ -166,7 +166,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             {
                 htmlTarget: feApp.appOptions?.generateIndex
                     ? 'index.html'
-                    : join('test', `flpSandbox.html?sap-ui-xx-viewCache=false#${feApp.app.flpAppId}`)
+                    : `test/flpSandbox.html?sap-ui-xx-viewCache=false#${feApp.app.flpAppId}`
             },
             fs
         );

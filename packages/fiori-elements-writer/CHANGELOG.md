@@ -1,5 +1,15 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.17.1
+
+### Patch Changes
+
+-   deabc5bd: fix template issues for worklist OPA test
+-   Updated dependencies [deabc5bd]
+-   Updated dependencies [deabc5bd]
+    -   @sap-ux/ui5-test-writer@0.3.1
+    -   @sap-ux/fe-fpm-writer@0.24.1
+
 ## 0.17.0
 
 ### Minor Changes
