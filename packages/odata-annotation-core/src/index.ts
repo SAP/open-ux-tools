@@ -31,7 +31,7 @@ export {
     getElementAttributeValue,
     getSingleTextNode,
     isElementWithName
-} from './annotationFile';
+} from './annotation-file';
 
 export * from './utils';
 
