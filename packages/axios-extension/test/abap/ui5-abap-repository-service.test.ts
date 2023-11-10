@@ -18,6 +18,7 @@ jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
     const validApp = 'VALID_APP';
+    const validAppNs = '/NS/VALID_APP';
     const notExistingApp = 'NOT_EXISTING_APP';
     const restrictedApp = 'RESTRICTED_APP';
     const validAppInfo: AppInfo = {
@@ -290,9 +291,27 @@ describe('Ui5AbapRepositoryService', () => {
 
         test('successful removal', async () => {
             nock(server)
-                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`)
+                .delete(
+                    `${Ui5AbapRepositoryService.PATH}/Repositories('${encodeURIComponent(validApp)}')?${updateParams}`
+                )
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
+            expect(response?.status).toBe(200);
+        });
+
+        test('successful removal - app name with namespace', async () => {
+            nock(server)
+                .get((url) =>
+                    url.startsWith(`${Ui5AbapRepositoryService.PATH}/Repositories('${encodeURIComponent(validAppNs)}')`)
+                )
+                .reply(200, { d: validAppInfo })
+                .persist();
+            nock(server)
+                .delete((url) =>
+                    url.startsWith(`${Ui5AbapRepositoryService.PATH}/Repositories('${encodeURIComponent(validAppNs)}')`)
+                )
+                .reply(200);
+            const response = await service.undeploy({ bsp: { name: validAppNs } });
             expect(response?.status).toBe(200);
         });
 
