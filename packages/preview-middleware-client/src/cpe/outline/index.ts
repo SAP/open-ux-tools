@@ -25,5 +25,6 @@ export async function initOutline(rta: RuntimeAuthoring, sendAction: (action: Ex
             Log.error('Outline sync failed!', error);
         }
     }
+    await syncOutline();
     outline.attachEvent('update', syncOutline);
 }
