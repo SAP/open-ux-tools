@@ -1056,7 +1056,7 @@ export function initIcons(): void {
                     <path
                         fillRule="evenodd"
                         clipRule="evenodd"
-                        d="M0 16H16V0H0V16ZM1 3.999H15V1H1V3.999ZM1 15H15V4.998H1V15Z"
+                        d="M0 15C0 15.5523 0.447715 16 1 16H15C15.5523 16 16 15.5523 16 15V1C16 0.447715 15.5523 0 15 0H1C0.447715 0 0 0.447715 0 1V15ZM1 3.999H15V1H1V3.999ZM1 15H15V4.998H1V15Z"
                         fill={COLORS.default}
                     />
                 </svg>
@@ -1229,7 +1229,7 @@ export function initIcons(): void {
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                     <path
                         fill={COLORS.default}
-                        d="M1,16 C0.44771525,16 0,15.5522847 0,15 L0,1 C0,0.44771525 0.44771525,0 1,0 L14,0 C14.5522847,0 15,0.44771525 15,1 L15,15 C15,15.5522847 14.5522847,16 14,16 L1,16 Z M7,5 L1,5 L1,15 L7,15 L7,5 Z M8,15 L14,15 L14,11 L8,11 L8,15 Z M1,1 L1,4 L7,4 L7,1 L1,1 Z M8,10 L14,10 L14,1 L8,1 L8,10 Z"
+                        d="M15 0C15.5523 0 16 0.447715 16 1V15C16 15.5523 15.5523 16 15 16H1C0.447715 16 0 15.5523 0 15V1C0 0.447715 0.447715 0 1 0H15ZM8 15H15L15 11H8V15ZM8 10H15L15 1H8V10ZM7 1H1V4H7V1ZM7 5H1V15H7V5Z"
                     />
                 </svg>
             ),
