@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.12.4
+
+### Patch Changes
+
+-   f2b5e735: update `header` and `layout` icons
+
 ## 1.12.3
 
 ### Patch Changes

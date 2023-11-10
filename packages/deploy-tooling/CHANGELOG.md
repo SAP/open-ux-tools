@@ -1,5 +1,16 @@
 # @sap-ux/deploy-tooling
 
+## 0.11.6
+
+### Patch Changes
+
+-   58d48e13: Capitalize $tmp before performing any validations. ADT queries rejects package name that is not in capital letter.
+    The previous fix only caplitalize for list package query. But ADT query for valid transport requests also require
+    caplized capital letters to detect $TMP is local package.
+-   Updated dependencies [db918804]
+    -   @sap-ux/axios-extension@1.7.2
+    -   @sap-ux/system-access@0.3.4
+
 ## 0.11.5
 
 ### Patch Changes
