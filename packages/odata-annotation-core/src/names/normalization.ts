@@ -181,7 +181,7 @@ function resolveCollectionAndFunctionNames(
  * @returns fully qualified type name
  */
 function convertValueTypeToString(valueType: ValueType): FullyQualifiedTypeName {
-    return valueType && valueType.asCollection ? 'Collection(' + valueType.name + ')' : valueType.name || '';
+    return valueType?.asCollection ? 'Collection(' + valueType.name + ')' : valueType?.name || '';
 }
 
 /**

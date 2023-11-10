@@ -303,15 +303,15 @@ export function createTarget(path: string): Target {
  */
 export function createNamespace(
     namespace: string,
-    alias?: string | undefined,
+    alias?: string,
     ranges?: {
-        range?: Range | undefined;
-        nameRange?: Range | undefined;
-        aliasRange?: Range | undefined;
-        contentRange?: Range | undefined;
+        range?: Range;
+        nameRange?: Range;
+        aliasRange?: Range;
+        contentRange?: Range;
     }
 ): Namespace {
-    const { aliasRange, contentRange, nameRange, range } = ranges || {};
+    const { aliasRange, contentRange, nameRange, range } = ranges ?? {};
     return {
         type: 'namespace',
         name: namespace,
@@ -338,16 +338,16 @@ export function createNamespace(
  */
 export function createReference(
     name: string,
-    alias?: string | undefined,
-    uri?: string | undefined,
+    alias?: string,
+    uri?: string,
     ranges?: {
-        range?: Range | undefined;
-        nameRange?: Range | undefined;
-        aliasRange?: Range | undefined;
-        uriRange?: Range | undefined;
+        range?: Range;
+        nameRange?: Range;
+        aliasRange?: Range;
+        uriRange?: Range;
     }
 ): Reference {
-    const { aliasRange, uriRange, nameRange, range } = ranges || {};
+    const { aliasRange, uriRange, nameRange, range } = ranges ?? {};
     return {
         type: 'reference',
         name,

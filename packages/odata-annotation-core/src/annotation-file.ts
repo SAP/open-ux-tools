@@ -17,7 +17,7 @@ export const elementsWithName = (name: ElementName, element: Element): Element[]
     elements((content: Element) => content.name === name, element);
 
 export const getElementAttribute = (element: Element, name: AttributeName): Attribute | undefined =>
-    element.attributes && element.attributes[name];
+    element?.attributes[name];
 
 export const getElementAttributeValue = (element: Element, name: AttributeName): string => {
     const attributeNode = getElementAttribute(element, name);
@@ -42,7 +42,7 @@ export function isElementWithName(node: AnyNode | undefined, name: string): node
  * @returns boolean check result
  */
 function isEmptyText(text: string): boolean {
-    return (text || '').replace(/[\n\t\s]/g, '').length === 0;
+    return (text || '').replace(/[\s]/g, '').length === 0;
 }
 
 /**

@@ -203,7 +203,7 @@ export type ExtendedDiagnostic =
     | ODataPathSeparatorDiagnostic
     | InvalidPrimitiveType;
 
-export type RuleType =
+type RuleTypes =
     | typeof NO_UNDEFINED_NAMESPACE_TYPE
     | typeof NO_UNUSED_NAMESPACE_TYPE
     | typeof NAME_CASE_ISSUE_PATH_VALUE
@@ -229,8 +229,9 @@ export type RuleType =
     | typeof INCOMPLETE_PATH_WITH_COMPATIBLE_TYPES
     | typeof COMMON_CASE_ISSUE
     | typeof ODATA_PATH_SEPARATOR_RULE
-    | typeof INVALID_PRIMITIVE_TYPE
-    | string;
+    | typeof INVALID_PRIMITIVE_TYPE;
+
+export type RuleType = RuleTypes | string;
 
 export interface CompilerMessage {
     hasSyntaxErrors: boolean;
