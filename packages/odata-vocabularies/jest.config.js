@@ -8,6 +8,6 @@ config.testRegex = 'test/.*\\.test\\.ts$';
 config.modulePathIgnorePatterns.push('<rootDir>/test/test-output');
 config.modulePathIgnorePatterns.push('<rootDir>/templates');
 config.testPathIgnorePatterns = ['<rootDir>/node_modules/', '<rootDir>/dist/'];
+config.collectCoverageFrom.push('!src/**/index.ts', '!src/tools/update.ts'); // ignoring index and update vocabulary file, index has only export statements and update is used to update the vocabularies (utility for updating not a deliverable code)
 config.reporters.push('summary');
-config.collectCoverageFrom.push('!**/index.ts', '!**/tools/update.ts'); // ignoring index and update vocabulary file, index has only export statements and update is used to update the vocabularies (utility for updating not a deliverable code)
 module.exports = config;
