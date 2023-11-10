@@ -1,5 +1,5 @@
 import type { IMetadataService, MetadataElement, ODataVersionType } from '@sap-ux/odata-annotation-core-types';
-import { MetadataService } from '../../src/types';
+import { MetadataService } from '../../src';
 import { getAliasInformation, getPathBaseMetadataElement, getSegmentWithoutAlias } from '../../src';
 import type { Namespace, Reference } from '@sap-ux/odata-annotation-core-types';
 

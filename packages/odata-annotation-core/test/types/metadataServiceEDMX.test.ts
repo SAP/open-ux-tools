@@ -1,5 +1,5 @@
 import type { MetadataElement, ODataVersionType } from '@sap-ux/odata-annotation-core-types';
-import { MetadataService } from '../../src/types';
+import { MetadataService } from '../../src';
 
 function createTestService() {
     const ODataVersion: ODataVersionType = '2.0';
@@ -143,7 +143,7 @@ describe('MetadataService for XML', () => {
         // Prepare
         const callbackParameters: { element: MetadataElement }[] = [];
         const localMetadataService = createTestService();
-        localMetadataService.visitMetadataElements(function(element: MetadataElement) {
+        localMetadataService.visitMetadataElements((element: MetadataElement) => {
             callbackParameters.push({ element });
         });
         // Expect
