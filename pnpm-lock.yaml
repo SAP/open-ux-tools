@@ -1459,8 +1459,8 @@ importers:
         version: 2.0.1(inquirer@8.2.6)
     devDependencies:
       '@types/inquirer':
-        specifier: 8.2.7
-        version: 8.2.7
+        specifier: 8.2.6
+        version: 8.2.6
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -8029,11 +8029,18 @@ packages:
   /@types/inquirer-autocomplete-prompt@2.0.1:
     resolution: {integrity: sha512-y/IFCMwNnxliCUxc7q1fwYUDkekP0Q+niL1YR9dvD1jKnIq8irirfsPCRXKN1jem82fNGT/91IPOufQTEi8STQ==}
     dependencies:
-      '@types/inquirer': 8.2.7
+      '@types/inquirer': 8.2.6
     dev: true
 
   /@types/inquirer@8.2.1:
     resolution: {integrity: sha512-wKW3SKIUMmltbykg4I5JzCVzUhkuD9trD6efAmYgN2MrSntY0SMRQzEnD3mkyJ/rv9NLbTC7g3hKKE86YwEDLw==}
+    dependencies:
+      '@types/through': 0.0.30
+      rxjs: 7.8.1
+    dev: true
+
+  /@types/inquirer@8.2.6:
+    resolution: {integrity: sha512-3uT88kxg8lNzY8ay2ZjP44DKcRaTGztqeIvN2zHvhzIBH/uAPaL75aBtdNRKbA7xXoMbBt5kX0M00VKAnfOYlA==}
     dependencies:
       '@types/through': 0.0.30
       rxjs: 7.8.1

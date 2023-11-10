@@ -50,7 +50,7 @@ describe('getPrompts', () => {
         expect(projectQuestions.length).toEqual(5);
 
         const prompts = projectQuestions.reduce(
-            (prompts, prompt) => Object.assign(prompts, { [prompt.name || 'unknown_prompt']: prompt }),
+            (prompts, prompt) => Object.assign(prompts, { [prompt.name ?? 'unknown_prompt']: prompt }),
             {}
         ) as any;
 
@@ -130,7 +130,7 @@ describe('getPrompts', () => {
         expect(projectQuestions.length).toEqual(5);
 
         const prompts = projectQuestions.reduce(
-            (prompts, prompt) => Object.assign(prompts, { [prompt.name || 'unknown_prompt']: prompt }),
+            (prompts, prompt) => Object.assign(prompts, { [prompt.name ?? 'unknown_prompt']: prompt }),
             {}
         ) as any;
 

@@ -1,7 +1,7 @@
 import { getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import inquirer, { type Question } from 'inquirer';
 import { getQuestions } from './prompts';
-import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
+import type { InquirerAdaptor, UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
 import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**
@@ -28,15 +28,18 @@ async function getPrompts(promptOptions?: UI5LibraryPromptOptions): Promise<Ques
  * Prompt for ui5 library generation inputs.
  *
  * @param promptOptions - options that can control some of the prompt behaviour. See {@link UI5LibraryPromptOptions} for details
+ * @param adaptor - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
  * @returns the prompt answers
  */
-async function prompt(promptOptions?: UI5LibraryPromptOptions): Promise<UI5LibraryAnswers> {
+async function prompt(promptOptions?: UI5LibraryPromptOptions, adaptor?: InquirerAdaptor): Promise<UI5LibraryAnswers> {
     const ui5LibPrompts = await exports.getPrompts(promptOptions);
+    const pm = adaptor ? adaptor.promptModule : inquirer;
 
     if (promptOptions?.useAutocomplete) {
-        inquirer.registerPrompt('autocomplete', autocomplete);
+        pm.registerPrompt('autocomplete', autocomplete);
     }
-    return inquirer.prompt(ui5LibPrompts);
+
+    return adaptor ? adaptor.prompt(ui5LibPrompts) : inquirer.prompt(ui5LibPrompts);
 }
 
 export { getPrompts, prompt, type UI5LibraryPromptOptions, type UI5LibraryAnswers };

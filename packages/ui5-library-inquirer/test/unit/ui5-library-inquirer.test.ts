@@ -1,11 +1,11 @@
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { getPrompts, prompt } from '../../src/index';
-import type { UI5LibraryAnswers } from '../../src/types';
+import type { InquirerAdaptor, UI5LibraryAnswers } from '../../src/types';
 import * as ui5LibInqApi from '../../src/index';
 import * as ui5Info from '@sap-ux/ui5-info';
 import * as prompting from '../../src/prompts/prompts';
 import type { Answers, ListQuestion } from 'inquirer';
-import inquirer from 'inquirer';
+import inquirer, { createPromptModule } from 'inquirer';
 
 /**
  * Tests the exported ui5-library-inquirer APIs
@@ -101,9 +101,9 @@ describe('API test', () => {
         const registerPromptSpy = jest.spyOn(inquirer, 'registerPrompt').mockReturnValue();
         const inquirerPromptSpy = jest.spyOn(inquirer, 'prompt').mockResolvedValue(Object.assign({}, answers));
 
-        const prompts = await prompt();
+        const promptAnswers = await prompt();
         // No options provided
-        expect(prompts).toMatchInlineSnapshot(`
+        expect(promptAnswers).toMatchInlineSnapshot(`
             {
               "enableTypescript": true,
               "libraryName": "testName",
@@ -141,9 +141,9 @@ describe('API test', () => {
             targetFolder: '/some/target/folder2',
             useAutocomplete: true
         };
-        const prompts = await prompt(promptOptions);
+        const promptAnswers = await prompt(promptOptions);
         // No options provided
-        expect(prompts).toMatchInlineSnapshot(`
+        expect(promptAnswers).toMatchInlineSnapshot(`
             {
               "enableTypescript": true,
               "libraryName": "testName",
@@ -155,5 +155,53 @@ describe('API test', () => {
         expect(getPromptsSpy).toHaveBeenCalledWith(promptOptions);
         expect(registerPromptSpy).toHaveBeenCalledWith('autocomplete', expect.any(Function));
         expect(inquirerPromptSpy).toHaveBeenCalledWith(questions);
+    });
+
+    it('prompt, with adaptor', async () => {
+        const questions = [
+            {
+                name: 'testPrompt',
+                message: 'Test Prompt'
+            }
+        ];
+        const answers: Answers = {
+            enableTypescript: true,
+            libraryName: 'testName',
+            namespace: 'testNS',
+            targetFolder: 'some/test/folder',
+            ui5Version: '1.2.4'
+        };
+
+        const getPromptsSpy = jest.spyOn(ui5LibInqApi, 'getPrompts').mockResolvedValue(questions);
+        const inquirerRegisterPromptSpy = jest.spyOn(inquirer, 'registerPrompt').mockReturnValue();
+        const inquirerPromptSpy = jest.spyOn(inquirer, 'prompt');
+        const mockPromptsModule = createPromptModule();
+        const adaptorRegisterPromptSpy = jest.spyOn(mockPromptsModule, 'registerPrompt');
+        const mockAdaptor: InquirerAdaptor = {
+            prompt: jest.fn().mockResolvedValue(Object.assign({}, answers)),
+            promptModule: mockPromptsModule
+        };
+
+        const promptOptions = {
+            includeSeparators: true,
+            targetFolder: '/some/target/folder2',
+            useAutocomplete: true
+        };
+        const promptAnswers = await prompt(promptOptions, mockAdaptor);
+        // No options provided
+        expect(promptAnswers).toMatchInlineSnapshot(`
+            {
+              "enableTypescript": true,
+              "libraryName": "testName",
+              "namespace": "testNS",
+              "targetFolder": "some/test/folder",
+              "ui5Version": "1.2.4",
+            }
+        `);
+        expect(getPromptsSpy).toHaveBeenCalledWith(promptOptions);
+        expect(inquirerRegisterPromptSpy).not.toHaveBeenCalledWith();
+        expect(inquirerPromptSpy).not.toHaveBeenCalledWith();
+        expect(mockAdaptor.prompt).toHaveBeenCalledWith([{ 'message': 'Test Prompt', 'name': 'testPrompt' }]);
+        expect(adaptorRegisterPromptSpy).toHaveBeenCalledWith('autocomplete', expect.any(Function));
     });
 });
