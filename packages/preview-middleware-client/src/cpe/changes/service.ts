@@ -154,7 +154,7 @@ export class ChangeService {
      *
      * @returns Saved changes
      */
-    private async fetchSavedChanges() {
+    private async fetchSavedChanges(): Promise<void> {
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
         const savedChanges = await savedChangesResponse.json();
         const changes = (
@@ -204,7 +204,6 @@ export class ChangeService {
                 .filter((change) => !!change) as SavedPropertyChange[]
         ).sort((a, b) => b.timestamp - a.timestamp);
         this.savedChanges = changes;
-        return changes;
     }
 
     /**
