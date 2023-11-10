@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.1
+
+### Patch Changes
+
+-   deabc5bd: Remove hardcode string in XML view templates
+
 ## 0.24.0
 
 ### Minor Changes
