@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.12.5
+
+### Patch Changes
+
+-   ade42a17: add `bookbookmark` icon
+
 ## 1.12.4
 
 ### Patch Changes

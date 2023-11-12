@@ -69,26 +69,32 @@ const getModel = (editable = true, visible = true, toggleParent = false, toggleC
     ];
     return model;
 };
+
 const filterInitOptions: FilterOptions[] = [
     { name: FilterName.focusEditable, value: false },
     { name: FilterName.focusCommonlyUsed, value: false },
     { name: FilterName.query, value: '' }
 ];
+
 describe('OutlinePanel', () => {
     beforeAll(() => {
+        // Note: The tree is already expanded because we are passing isAllGroupsCollapsed: false
         mockResizeObserver();
         initI18n();
         initIcons();
         registerAppIcons();
     });
+
     test('initial load', () => {
         const { container } = render(<OutlinePanel />);
         // check search box
         const search = screen.getByRole('searchbox');
         expect(search).toBeInTheDocument();
+
         // check funnel
         const funnelIcon = container.querySelector('[data-icon-name="funnel"]') as Element;
         expect(funnelIcon).toBeInTheDocument();
+
         // check no tree is rendered
         const noCtrFoundText = screen.getByText('No control found');
         expect(noCtrFoundText).toHaveTextContent('No control found');
@@ -97,6 +103,7 @@ describe('OutlinePanel', () => {
         const noSearchMatchedIcon = screen.getByTestId('Control-Property-Editor-No-Search-Matched-Icon');
         expect(noSearchMatchedIcon).toBeInTheDocument();
     });
+
     test('tree', () => {
         const model = getModel(true, false);
         const initialState: State = {
@@ -113,18 +120,14 @@ describe('OutlinePanel', () => {
             },
             icons: []
         };
-        const { container } = render(<OutlinePanel />, { initialState });
+        render(<OutlinePanel />, { initialState });
         // check one
         const one = screen.getAllByText(/one/i)[0];
         expect(one).toBeInTheDocument();
         // check two
         const two = screen.getByText(/two/i);
         expect(two).toBeInTheDocument();
-        // click on arrow right of one
-        // Note: react testing lib does not expand it
-        const arrowRight = container.querySelector('[data-icon-name="Chevron"]') as Element;
-        expect(arrowRight).toBeInTheDocument();
-        fireEvent.click(arrowRight);
+
         // check first child of one
         const firstChildOfOne = screen.getByText(/first child of one/i);
         expect(firstChildOfOne).toBeInTheDocument();
@@ -132,6 +135,7 @@ describe('OutlinePanel', () => {
         const secondChildOfOne = screen.getByText(/second child of one/i);
         expect(secondChildOfOne).toBeInTheDocument();
     });
+
     test('query tree', () => {
         const model = getModel(true, false);
         const initialState: State = {
@@ -152,11 +156,14 @@ describe('OutlinePanel', () => {
         const search = screen.getByRole('searchbox');
         // trigger search with query
         fireEvent.change(search, { target: { value: 'second' } });
+
         // check query value
         expect((search as any).value).toEqual('second');
+
         // first child of one is filtered
         const firstChildOfOne = screen.queryByText(/first child of one/i);
         expect(firstChildOfOne).toBeNull();
+
         // second child of one matches query
         const secondChildOfOne = screen.getByText(/second child of one/i);
         expect(secondChildOfOne).toBeInTheDocument();
@@ -197,14 +204,18 @@ describe('OutlinePanel', () => {
         };
         const { container } = render(<OutlinePanel />, { initialState });
         let focusEditableRow = container.querySelector('.focusEditable');
+
         // class 'focusEditable' is not set
         expect(focusEditableRow).toBeNull();
         const funnelIcon = container.querySelector('[data-icon-name="funnel"]') as Element;
+
         // open callout
         fireEvent.click(funnelIcon);
         const focusEditable = screen.getByText(/focus editable/i);
+
         // click on focus editable checkbox
         fireEvent.click(focusEditable);
+
         // class 'focusEditable' is set
         focusEditableRow = container.querySelector('.focusEditable');
         expect(focusEditableRow).toBeInTheDocument();
@@ -253,16 +264,20 @@ describe('OutlinePanel', () => {
         };
         const { container } = render(<OutlinePanel />, { initialState });
         const funnelIcon = container.querySelector('[data-icon-name="funnel"]') as Element;
+
         // open callout
         fireEvent.click(funnelIcon);
         const focusCommonlyUsed = screen.getByText(/Show only commonly used/i);
+
         // click on show hidden checkbox
         fireEvent.click(focusCommonlyUsed);
+
         // node 'one' and 'two' is filter out
         const one = screen.queryByText(/one/i);
         expect(one).toBeNull();
         const two = screen.queryByText(/two/i);
         expect(two).toBeNull();
+
         // node 'SmartTable' exists in tree
         const SmartTable = screen.getByText(/SmartTable/i);
         expect(SmartTable).toBeInTheDocument();
@@ -367,14 +382,15 @@ describe('OutlinePanel', () => {
         store.dispatch(action);
         const model = getModel(true, false);
         store.dispatch(outlineChanged(model));
-        const arrowRight = container.querySelector('[data-icon-name="Chevron"]') as Element;
-        // expand first node
-        fireEvent.click(arrowRight);
+
         // select node
         screen.getByText(/second child of one/i).click();
         store.dispatch(controlSelected({ id: '01-02', type: '', properties: [], name: 'testing1' }));
+
         // collapse first node
+        const arrowRight = container.querySelector('[data-icon-name="Chevron"]') as Element;
         fireEvent.click(arrowRight);
+
         // select outer node
         screen.getByText(/two/i).click();
         store.dispatch(controlSelected({ id: '02', type: '', properties: [], name: 'testing2' }));
@@ -382,7 +398,7 @@ describe('OutlinePanel', () => {
     });
 
     test('updateSelectionFromPreview', () => {
-        const { store, container } = render(<OutlinePanel />);
+        const { store } = render(<OutlinePanel />);
         // clear default applied filters
         const action = filterNodes([
             { name: FilterName.focusEditable, value: true },
@@ -391,9 +407,6 @@ describe('OutlinePanel', () => {
         store.dispatch(action);
         const model = getModel(true, false);
         store.dispatch(outlineChanged(model));
-        const arrowRight = container.querySelector('[data-icon-name="Chevron"]') as Element;
-        // expand first node
-        fireEvent.click(arrowRight);
 
         // select child node
         screen.getByText(/second child of one/i).click();
@@ -439,9 +452,10 @@ describe('OutlinePanel', () => {
             icons: []
         };
         const { container } = render(<OutlinePanel />, { initialState });
+
         const arrowRight = container.querySelector('[data-icon-name="Chevron"]') as Element;
         expect(arrowRight).toBeInTheDocument();
-        fireEvent.click(arrowRight);
+
         const indicator = container.querySelectorAll('svg circle');
         expect(indicator).toHaveLength(2);
     });
