@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.10.5
+
+### Patch Changes
+
+-   dc2f9345: Outline tree for Fiori applications is not collapsed correctly
+
 ## 0.10.4
 
 ### Patch Changes
