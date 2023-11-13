@@ -426,7 +426,7 @@ describe('SelectionService', () => {
             })
         );
 
-        expect(fetchMock).toHaveBeenLastCalledWith('/preview/api/changes', {
+        expect(fetchMock).toHaveBeenNthCalledWith(2, '/preview/api/changes', {
             body: '{"fileName":"id_1640106755570_203_propertyChange"}',
             headers: { 'Content-Type': 'application/json' },
             method: 'DELETE'
