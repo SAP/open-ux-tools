@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.8.0
+
+### Minor Changes
+
+-   793f846b: Open existing controller from project files instead of creating a new one
+
+## 0.7.4
+
+### Patch Changes
+
+-   061a6544: CPE UI is not updated when changes are saved or deleted
+
 ## 0.7.3
 
 ### Patch Changes

@@ -86,6 +86,7 @@ function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): 
  */
 export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
+    private sendAction: (action: ExternalAction) => void;
     /**
      *
      * @param options ui5 adaptation options.
@@ -95,11 +96,13 @@ export class ChangeService {
     constructor(private readonly options: UI5AdaptationOptions, private readonly selectionService: SelectionService) {}
 
     /**
+     * Initializes change service.
      *
      * @param sendAction action sender function
      * @param subscribe subscriber function
      */
     public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
+        this.sendAction = sendAction;
         subscribe(async (action): Promise<void> => {
             if (changeProperty.match(action)) {
                 try {
@@ -127,6 +130,30 @@ export class ChangeService {
             }
         });
 
+        await this.fetchSavedChanges();
+        this.updateStack();
+
+        this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
+    }
+
+    /**
+     * Send update to the editor with modified stack.
+     *
+     * @param pendingChanges Changes that are waiting to be saved
+     */
+    private updateStack(pendingChanges: PendingChange[] = []) {
+        this.sendAction(
+            changeStackModified({
+                saved: this.savedChanges,
+                pending: pendingChanges
+            })
+        );
+    }
+
+    /**
+     * Fetches saved changes from the workspace and sorts them.
+     */
+    private async fetchSavedChanges(): Promise<void> {
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
         const savedChanges = await savedChangesResponse.json();
         const changes = (
@@ -176,13 +203,6 @@ export class ChangeService {
                 .filter((change) => !!change) as SavedPropertyChange[]
         ).sort((a, b) => b.timestamp - a.timestamp);
         this.savedChanges = changes;
-        sendAction(
-            changeStackModified({
-                saved: changes,
-                pending: []
-            })
-        );
-        this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler(sendAction));
     }
 
     /**
@@ -209,16 +229,19 @@ export class ChangeService {
             );
 
         await Promise.all(filesToDelete).catch((error) => Log.error(error));
+
+        await this.fetchSavedChanges();
+        this.updateStack();
     }
 
     /**
      * Handler for undo/redo stack change.
      *
      * @param sendAction send action method
-     * @returns (event: sap.ui.base.Event) => void
+     * @returns (event: sap.ui.base.Event) => Promise<void>
      */
-    private createOnStackChangeHandler(sendAction: (action: ExternalAction) => void): (event: Event) => void {
-        return (): void => {
+    private createOnStackChangeHandler(): (event: Event) => Promise<void> {
+        return async (): Promise<void> => {
             const stack = this.options.rta.getCommandStack();
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
@@ -240,12 +263,12 @@ export class ChangeService {
             });
 
             activeChanges = activeChanges.filter((change): boolean => !!change);
-            sendAction(
-                changeStackModified({
-                    saved: this.savedChanges,
-                    pending: activeChanges
-                })
-            );
+
+            if (Array.isArray(allCommands) && allCommands.length === 0) {
+                await this.fetchSavedChanges();
+            }
+
+            this.updateStack(activeChanges);
         };
     }
 
