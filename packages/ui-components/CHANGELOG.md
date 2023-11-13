@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.13.0
+
+### Minor Changes
+
+-   c7d5b85c: UIDropdown, UIComboBox - new property "calloutCollisionTransformation" to improve interaction between multi-select dropdown and dialog action buttons(transformation makes dialog action buttons if its overlapped by dropdown menu)
+
 ## 1.12.5
 
 ### Patch Changes

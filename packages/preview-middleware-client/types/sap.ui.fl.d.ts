@@ -1,3 +1,4 @@
+
 declare module 'sap/ui/fl' {
     export type Layer = 'USER' | 'PUBLIC' | 'CUSTOMER' | 'CUSTOMER_BASE' | 'PARTNER' | 'VENDOR' | 'BASE';
 }
@@ -36,12 +37,14 @@ declare module 'sap/ui/fl/Scenario' {
         UiAdaptation: 'UI_ADAPTATION'
     } as const;
 
-    export type Scenario = typeof scenario[keyof typeof scenario];
+    export type Scenario = (typeof scenario)[keyof typeof scenario];
     export default scenario;
 }
 
 declare module 'sap/ui/fl/Utils' {
     import type ManagedObject from 'sap/ui/base/ManagedObject';
+    import type Controller from 'sap/ui/core/mvc/Controller';
+
 
     interface Utils {
         checkControlId(control: ManagedObject): boolean;
@@ -50,6 +53,7 @@ declare module 'sap/ui/fl/Utils' {
 
     interface ControlView {
         getId(): string;
+        getController(): Controller
     }
 
     const Utils: Utils;

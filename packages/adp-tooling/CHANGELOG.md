@@ -1,5 +1,19 @@
 # @sap-ux/adp-tooling
 
+## 0.6.0
+
+### Minor Changes
+
+-   793f846b: Open existing controller from project files instead of creating a new one
+
+## 0.5.5
+
+### Patch Changes
+
+-   Updated dependencies [286883cb]
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/system-access@0.3.5
+
 ## 0.5.4
 
 ### Patch Changes

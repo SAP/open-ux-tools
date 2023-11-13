@@ -57,6 +57,51 @@ export interface Content {
     texts?: object;
 }
 
+interface CommonChangeProperties {
+    changeType: string;
+    reference: string;
+    namespace: string;
+    projectId: string;
+    moduleName: string;
+    support: {
+        generator: string;
+        sapui5Version: string;
+        command?: string;
+    };
+    originalLanguage: string;
+    layer: string;
+    fileType: string;
+    fileName: string;
+    texts: Record<string, unknown>;
+}
+
+export interface AddXMLChange extends CommonChangeProperties {
+    changeType: 'addXML';
+    creation: string;
+    packageName: string;
+    content: {
+        targetAggregation: string;
+        index: number;
+        fragmentPath: string;
+    };
+    selector: {
+        id: string;
+        idIsLocal: boolean;
+    };
+    dependentSelector: Record<string, unknown>;
+    jsOnly: boolean;
+}
+
+export interface CodeExtChange extends CommonChangeProperties {
+    changeType: 'codeExt';
+    content: {
+        codeRef: string;
+    };
+    selector: {
+        controllerName: string;
+    };
+}
+
 export const enum FolderNames {
     Changes = 'changes',
     Fragments = 'fragments',
