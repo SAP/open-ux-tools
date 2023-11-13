@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.10.7
+
+### Patch Changes
+
+-   061a6544: CPE UI is not updated when changes are saved or deleted
+
 ## 0.10.6
 
 ### Patch Changes
