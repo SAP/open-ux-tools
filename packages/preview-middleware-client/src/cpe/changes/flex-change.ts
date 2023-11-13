@@ -7,11 +7,11 @@ import { validateBindingModel } from './validator';
 /**
  * Function to check a give value is a binding expression.
  *
- * @param change changed property of a control
+ * @param value value to be checked.
  * @returns boolean
  */
-function isBindingExpression(change: PropertyChange): boolean {
-    return typeof change.value === 'string' && change.value.includes('{') && change.value.includes('}');
+function isBindingExpression(value: string): boolean {
+    return value.includes('{') && value.includes('}') && value.indexOf('{') < value.indexOf('}');
 }
 
 /**
@@ -26,9 +26,9 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
         return;
     }
 
-    const isBindingString = isBindingExpression(change);
+    const isBindingString = typeof change.value === 'string' && isBindingExpression(change.value);
     const modifiedControlModifiedProperties = modifiedControl.getMetadata().getAllProperties()[change.propertyName];
-    const isBindingModel = isBindingExpression(change) && modifiedControlModifiedProperties?.type === 'string';
+    const isBindingModel = isBindingString && modifiedControlModifiedProperties?.type === 'string';
     const flexSettings = rta.getFlexSettings();
     const changeType = isBindingString ? 'BindProperty' : 'Property';
 
