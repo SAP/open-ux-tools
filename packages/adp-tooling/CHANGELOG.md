@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.6.0
+
+### Minor Changes
+
+-   793f846b: Open existing controller from project files instead of creating a new one
+
 ## 0.5.5
 
 ### Patch Changes

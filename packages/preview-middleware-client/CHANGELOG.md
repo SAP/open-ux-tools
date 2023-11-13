@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.8.0
+
+### Minor Changes
+
+-   793f846b: Open existing controller from project files instead of creating a new one
+
 ## 0.7.4
 
 ### Patch Changes
