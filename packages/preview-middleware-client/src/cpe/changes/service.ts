@@ -96,6 +96,7 @@ export class ChangeService {
     constructor(private readonly options: UI5AdaptationOptions, private readonly selectionService: SelectionService) {}
 
     /**
+     * Initializes change service.
      *
      * @param sendAction action sender function
      * @param subscribe subscriber function
@@ -150,9 +151,7 @@ export class ChangeService {
     }
 
     /**
-     * Fetches saved changes from the workspace.
-     *
-     * @returns Saved changes
+     * Fetches saved changes from the workspace and sorts them.
      */
     private async fetchSavedChanges(): Promise<void> {
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
