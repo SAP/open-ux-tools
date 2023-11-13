@@ -322,32 +322,37 @@ export function uglify(
     if (typeof object !== 'object') {
         return object;
     }
+
     if (namespaceAliasMapping === undefined) {
         namespaceAliasMapping = getNamespaceAliasMapping(object);
     }
 
-    for (let key in object) {
-        const propertyValue = object[key];
-        if (key === '$Type' || key === '$BaseTerm' || key === '$BaseType' || key === '@type') {
-            object[key] = convertValue(propertyValue, namespaceAliasMapping);
-        } else if (key.indexOf('@') >= 0) {
-            const newKey = convertKey(key, namespaceAliasMapping);
-            object = renameKey(object, key, newKey);
-            key = newKey;
-
-            if (
-                !key.endsWith('@Org.OData.Core.V1.Description') &&
-                !key.endsWith('@Org.OData.Core.V1.LongDescription')
-            ) {
+    for (const originalKey in object) {
+        if (object.hasOwnProperty(originalKey)) {
+            const propertyValue = object[originalKey];
+            let key = originalKey;
+            if (key === '$Type' || key === '$BaseTerm' || key === '$BaseType' || key === '@type') {
                 object[key] = convertValue(propertyValue, namespaceAliasMapping);
+            } else if (key.indexOf('@') >= 0) {
+                const newKey = convertKey(key, namespaceAliasMapping);
+                object = renameKey(object, key, newKey);
+                key = newKey;
+
+                if (
+                    !key.endsWith('@Org.OData.Core.V1.Description') &&
+                    !key.endsWith('@Org.OData.Core.V1.LongDescription')
+                ) {
+                    object[key] = convertValue(propertyValue, namespaceAliasMapping);
+                }
             }
-        }
 
-        if (key === '$Annotations') {
-            object[key] = uglifyAnnotations(propertyValue, namespaceAliasMapping);
-        }
+            if (key === '$Annotations') {
+                object[key] = uglifyAnnotations(propertyValue, namespaceAliasMapping);
+            }
 
-        object[key] = uglify(object[key], namespaceAliasMapping);
+            object[key] = uglify(object[key], namespaceAliasMapping);
+        }
     }
+
     return object;
 }
