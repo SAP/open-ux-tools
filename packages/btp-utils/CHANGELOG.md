@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.12.1
+
+### Patch Changes
+
+-   286883cb: fix(deps): update dependency axios to v1.6.0 [security]
+
 ## 0.12.0
 
 ### Minor Changes
