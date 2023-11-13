@@ -1,5 +1,12 @@
 # @sap-ux/create
 
+## 0.5.8
+
+### Patch Changes
+
+-   Updated dependencies [793f846b]
+    -   @sap-ux/adp-tooling@0.6.0
+
 ## 0.5.7
 
 ### Patch Changes
