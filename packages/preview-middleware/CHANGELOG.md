@@ -1,5 +1,16 @@
 # @sap-ux/preview-middleware
 
+## 0.11.0
+
+### Minor Changes
+
+-   793f846b: Open existing controller from project files instead of creating a new one
+
+### Patch Changes
+
+-   Updated dependencies [793f846b]
+    -   @sap-ux/adp-tooling@0.6.0
+
 ## 0.10.7
 
 ### Patch Changes
