@@ -137,7 +137,7 @@ export enum EdmType {
     Guid = 'Edm.Guid',
     Int16 = 'Edm.Int16',
     Int32 = 'Edm.Int32',
-    Int64 = 'Edm.Int32',
+    Int64 = 'Edm.Int64',
     SByte = 'Edm.SByte',
     Single = 'Edm.Single',
     Stream = 'Edm.Stream',

@@ -8,9 +8,18 @@
  * Typescript types should represent at minimum those features of a vocabulary object that are used in
  * annotation-modeler core or annotation modeler APIs
  */
-import type { FullyQualifiedName, FullyQualifiedTypeName, Namespace, SimpleIdentifier, TargetKind } from './base-types';
-
-import type { COMPLEX_TYPE_KIND, ENUM_TYPE_KIND, TERM_KIND, TYPE_DEFINITION_KIND, PROPERTY_KIND } from './base-types';
+import type {
+    FullyQualifiedName,
+    FullyQualifiedTypeName,
+    Namespace,
+    SimpleIdentifier,
+    TargetKind,
+    COMPLEX_TYPE_KIND,
+    ENUM_TYPE_KIND,
+    TERM_KIND,
+    TYPE_DEFINITION_KIND,
+    PROPERTY_KIND
+} from './base-types';
 
 import type { VocabularyNamespace } from '../resources';
 

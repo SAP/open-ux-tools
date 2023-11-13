@@ -28,6 +28,8 @@ import type {
 } from './types';
 import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND } from './types';
 
+type ElementType = TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue;
+
 /**
  * Vocabulary service class
  *
@@ -439,10 +441,7 @@ export class VocabularyService {
      * @param experimentalDescription - description
      * @returns - values
      */
-    checkExperimentalElement(
-        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue,
-        experimentalDescription: string
-    ): MarkdownString[] {
+    checkExperimentalElement(element: ElementType, experimentalDescription: string): MarkdownString[] {
         const values: MarkdownString[] = [];
 
         if (element.experimental) {
@@ -458,9 +457,7 @@ export class VocabularyService {
      * @param element  - element and element type
      * @returns - values
      */
-    checkDeprecatedElement(
-        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
-    ): MarkdownString[] {
+    checkDeprecatedElement(element: ElementType): MarkdownString[] {
         const values: MarkdownString[] = [];
 
         if (element.deprecated) {
@@ -476,9 +473,7 @@ export class VocabularyService {
      * @param element  - element and element type
      * @returns - values
      */
-    getElementKindIsProperty(
-        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
-    ): MarkdownString[] {
+    getElementKindIsProperty(element: ElementType): MarkdownString[] {
         const values: MarkdownString[] = [];
 
         if (element?.kind !== 'Property') {
@@ -495,10 +490,7 @@ export class VocabularyService {
      * @param elementType - element type
      * @returns - values
      */
-    getElementKindIsMemberAndTerm(
-        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue,
-        elementType: VocabularyObject | undefined
-    ): MarkdownString[] {
+    getElementKindIsMemberAndTerm(element: ElementType, elementType: VocabularyObject | undefined): MarkdownString[] {
         const values: MarkdownString[] = [];
         if (element.kind !== 'Member' && elementType?.kind !== 'Term') {
             values.push(this.getFormattedTypeText(element, elementType));
@@ -515,10 +507,7 @@ export class VocabularyService {
      * @param languageDependentDesc - string
      * @returns - values
      */
-    getElementIsLanguageDependent(
-        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue,
-        languageDependentDesc: string
-    ): MarkdownString[] {
+    getElementIsLanguageDependent(element: ElementType, languageDependentDesc: string): MarkdownString[] {
         const values: MarkdownString[] = [];
         if ((element.kind === TERM_KIND || element.kind === 'Property') && element.constraints?.isLanguageDependent) {
             values.push(`**IsLanguageDependent:** ${languageDependentDesc} \n`);
@@ -531,9 +520,7 @@ export class VocabularyService {
      * @param element  - element and element type
      * @returns - values
      */
-    getElementDefaultValue(
-        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
-    ): MarkdownString[] {
+    getElementDefaultValue(element: ElementType): MarkdownString[] {
         const values: MarkdownString[] = [];
         if ((element.kind === TERM_KIND || element.kind === 'Property') && element.defaultValue) {
             values.push(`**DefaultValue:** ${element.defaultValue} \n`);
@@ -546,9 +533,7 @@ export class VocabularyService {
      * @param element  - element and element type
      * @returns - values
      */
-    getElementAppliesToValue(
-        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
-    ): MarkdownString[] {
+    getElementAppliesToValue(element: ElementType): MarkdownString[] {
         const values: MarkdownString[] = [];
         if (element.kind === TERM_KIND && element.appliesTo && element.appliesTo?.length > 0) {
             values.push(`**Applies To:** ${element.appliesTo.join('  ')} \n`);
@@ -561,9 +546,7 @@ export class VocabularyService {
      * @param element  - element and element type
      * @returns - values
      */
-    getElementRequireTypeValue(
-        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
-    ): MarkdownString[] {
+    getElementRequireTypeValue(element: ElementType): MarkdownString[] {
         const values: MarkdownString[] = [];
         if ((element.kind === 'Term' || element.kind === 'Property') && element.constraints?.requiresType) {
             values.push(`**Require Type:** ${element.constraints.requiresType} \n`);
@@ -576,9 +559,7 @@ export class VocabularyService {
      * @param element  - element and element type
      * @returns - values
      */
-    getElementDescription(
-        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
-    ): MarkdownString[] {
+    getElementDescription(element: ElementType): MarkdownString[] {
         const values: MarkdownString[] = [];
         if (element.description) {
             const description = element.kind === 'Member' ? `**Enum Value Description:**` : `**Description:**`;
@@ -592,9 +573,7 @@ export class VocabularyService {
      * @param element  - element and element type
      * @returns - values
      */
-    getElementLongDescription(
-        element: TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue
-    ): MarkdownString[] {
+    getElementLongDescription(element: ElementType): MarkdownString[] {
         const values: MarkdownString[] = [];
         if (element.longDescription) {
             const longDescription =
@@ -699,8 +678,6 @@ export class VocabularyService {
             sResultText = `**Nullable:** true \n`;
         } else if (!isNullable) {
             sResultText = `**Nullable:** false \n`;
-        } else {
-            sResultText = '';
         }
 
         return sResultText;
