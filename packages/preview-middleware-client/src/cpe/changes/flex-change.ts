@@ -2,7 +2,7 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import type { PropertyChange } from '@sap-ux-private/control-property-editor-common';
 import type { UI5AdaptationOptions } from '../types';
-import { vaildateBindingModel } from './validator';
+import { validateBindingModel } from './validator';
 
 /**
  * Function to check a give value is a binding expression.
@@ -33,7 +33,7 @@ export async function applyChange(options: UI5AdaptationOptions, change: Propert
     const changeType = isBindingString ? 'BindProperty' : 'Property';
 
     if (isBindingModel) {
-        vaildateBindingModel(change.value as string);
+        validateBindingModel(change.value as string);
     }
 
     const property = isBindingString ? 'newBinding' : 'newValue';

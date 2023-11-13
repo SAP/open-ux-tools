@@ -5,9 +5,12 @@ import ResourceBundle from 'sap/base/i18n/ResourceBundle';
  *
  * @param value value to be checked.
  */
-export function vaildateBindingModel(value: string): void {
-    const bindingValue = value.replace(/{|}/gi, '');
-    const bindingParts = bindingValue.trim().split('>').filter(el => el);
+export function validateBindingModel(value: string): void {
+    const bindingValue = value.replace(/[{}]/gi, '');
+    const bindingParts = bindingValue
+        .trim()
+        .split('>')
+        .filter((el) => el != '');
 
     if (!bindingParts.length) {
         throw new SyntaxError('Invalid binding string.');
