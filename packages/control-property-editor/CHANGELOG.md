@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.2
+
+### Patch Changes
+
+-   dc2f9345: Outline tree for Fiori applications is not collapsed correctly
+
 ## 0.4.1
 
 ### Patch Changes

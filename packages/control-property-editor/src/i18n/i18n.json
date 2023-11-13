@@ -1,5 +1,6 @@
 {
   "APPLICATION_PREVIEW_TITLE": "Application Preview",
+  "ADD_FRAGMENT_AT_EXTENSION_POINT": "Add Fragment at Extension Point",
   "PROPERTIES": "PROPERTIES",
   "COPIED_TO_CLIPBOARD_TOAST_MESSAGE": "✓ Copied to clipboard: {{value}}",
   "CONTROL_ID_LABEL": "CONTROL ID",
