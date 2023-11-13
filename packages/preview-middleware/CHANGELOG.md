@@ -1,5 +1,29 @@
 # @sap-ux/preview-middleware
 
+## 0.10.6
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.5.5
+
+## 0.10.5
+
+### Patch Changes
+
+-   dc2f9345: Outline tree for Fiori applications is not collapsed correctly
+
+## 0.10.4
+
+### Patch Changes
+
+-   be8e3fb3: fix outline initialisation for the case when application is loaded, but outline is empty
+
+## 0.10.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.5.4
+
 ## 0.10.2
 
 ### Patch Changes

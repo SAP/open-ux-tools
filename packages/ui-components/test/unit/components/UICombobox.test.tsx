@@ -714,4 +714,45 @@ describe('<UIComboBox />', () => {
         expect(callArgs[0].key).toEqual('LV');
         expect(callArgs[1]).toEqual(35);
     });
+
+    describe('Test "calloutCollisionTransformation" property', () => {
+        const testCases = [
+            {
+                multiSelect: true,
+                enabled: true,
+                expected: true
+            },
+            {
+                multiSelect: false,
+                enabled: true,
+                expected: false
+            },
+            {
+                multiSelect: true,
+                enabled: false,
+                expected: false
+            }
+        ];
+        for (const testCase of testCases) {
+            const { multiSelect, enabled, expected } = testCase;
+            it(`calloutCollisionTransformation=${enabled}, multiSelect=${multiSelect}`, () => {
+                wrapper.setProps({
+                    multiSelect: testCase.multiSelect,
+                    calloutCollisionTransformation: testCase.enabled
+                });
+                const dropdown = wrapper.find(ComboBox);
+                expect(dropdown.length).toEqual(1);
+                const calloutProps = dropdown.prop('calloutProps');
+                if (expected) {
+                    expect(calloutProps?.preventDismissOnEvent).toBeDefined();
+                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
+                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+                } else {
+                    expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
+                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
+                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeUndefined();
+                }
+            });
+        }
+    });
 });

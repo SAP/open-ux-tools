@@ -21,6 +21,7 @@ export type FEV4OPAConfig = {
     pages: FEV4OPAPageConfig[];
     opaJourneyFileName: string;
     htmlTarget: string;
+    hideFilterBar: boolean;
 };
 
 export type FEV4ManifestTarget = {
@@ -31,6 +32,7 @@ export type FEV4ManifestTarget = {
         settings?: {
             entitySet?: string;
             contextPath?: string;
+            hideFilterBar?: boolean;
             navigation?: {
                 [id: string]: {
                     detail?: {

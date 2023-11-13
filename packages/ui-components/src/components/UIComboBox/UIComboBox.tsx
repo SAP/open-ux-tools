@@ -17,7 +17,8 @@ import { UiIcons } from '../Icons';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
-import { isDropdownEmpty } from '../UIDropdown';
+import { isDropdownEmpty, getCalloutCollisionTransformationProps } from '../UIDropdown';
+import { CalloutCollisionTransform } from '../UICallout';
 
 export {
     IComboBoxOption as UIComboBoxOption,
@@ -38,6 +39,7 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     isLoading?: boolean;
     isForceEnabled?: boolean;
     readOnly?: boolean;
+    calloutCollisionTransformation?: boolean;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -75,10 +77,13 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     static defaultProps = { openMenuOnClick: true };
     // Reference to fluent ui combobox
     private comboBox = React.createRef<ComboBoxRef>();
+    private comboboxDomRef = React.createRef<HTMLDivElement>();
+    private menuDomRef = React.createRef<HTMLDivElement>();
     private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
     private query = '';
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
+    private calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
 
     /**
      * Initializes component properties.
@@ -579,6 +584,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             <div ref={this.props.wrapperRef} className={this.getClassNames(messageInfo)}>
                 <ComboBox
                     componentRef={this.comboBox}
+                    ref={this.comboboxDomRef}
                     disabled={disabled}
                     iconButtonProps={{
                         iconProps: {
@@ -587,6 +593,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                     }}
                     calloutProps={{
                         calloutMaxHeight: 200,
+                        popupProps: {
+                            ref: this.menuDomRef
+                        },
                         className: 'ts-Callout ts-Callout-Dropdown',
                         styles: {
                             ...(this.props.useComboBoxAsMenuMinWidth && {
@@ -595,7 +604,12 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                                     display: this.state.isListHidden ? 'none' : undefined
                                 }
                             })
-                        }
+                        },
+                        ...getCalloutCollisionTransformationProps(
+                            this.calloutCollisionTransform,
+                            this.props.multiSelect,
+                            this.props.calloutCollisionTransformation
+                        )
                     }}
                     styles={{
                         label: {

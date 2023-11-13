@@ -1,5 +1,19 @@
 # @sap-ux/axios-extension
 
+## 1.7.3
+
+### Patch Changes
+
+-   286883cb: fix(deps): update dependency axios to v1.6.0 [security]
+-   Updated dependencies [286883cb]
+    -   @sap-ux/btp-utils@0.12.1
+
+## 1.7.2
+
+### Patch Changes
+
+-   db918804: App name with namespace (e.g. /NS/APPNAME) needs to be URI encoded in the UI% ABAP repository delete service request URL.
+
 ## 1.7.1
 
 ### Patch Changes
