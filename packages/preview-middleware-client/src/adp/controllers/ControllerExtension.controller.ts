@@ -229,7 +229,7 @@ export default class ControllerExtension extends BaseDialog {
             const data = await getExistingController(controllerName);
             return data;
         } catch (e) {
-            MessageToast.show(e.message);
+            MessageToast.show(e.message, { duration: 5000 });
             throw new Error(e.message);
         }
     }
@@ -242,7 +242,7 @@ export default class ControllerExtension extends BaseDialog {
             const { controllers } = await readControllers<ControllersResponse>();
             this.model.setProperty('/controllersList', controllers);
         } catch (e) {
-            MessageToast.show(e.message);
+            MessageToast.show(e.message, { duration: 5000 });
             throw new Error(e.message);
         }
     }
