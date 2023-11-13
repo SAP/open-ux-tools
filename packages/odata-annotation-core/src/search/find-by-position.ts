@@ -371,7 +371,7 @@ export function getPositionData(annotationFile: AnnotationFile, positionPointer:
                 // special segment indicating exact position inside a string
                 const offset = parseInt(segment.substring(1), 10);
 
-                startString = currentContext.substring(0, offset-1);
+                startString = currentContext.substring(0, offset);
                 remainingString = currentContext.substring(offset);
             } else if (typeof currentContext === 'object') {
                 // special segment indicating "white space" position inside element
