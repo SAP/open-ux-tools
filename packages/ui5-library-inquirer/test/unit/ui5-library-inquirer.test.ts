@@ -1,6 +1,6 @@
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { getPrompts, prompt } from '../../src/index';
-import type { InquirerAdaptor, UI5LibraryAnswers } from '../../src/types';
+import type { InquirerAdapter, UI5LibraryAnswers } from '../../src/types';
 import * as ui5LibInqApi from '../../src/index';
 import * as ui5Info from '@sap-ux/ui5-info';
 import * as prompting from '../../src/prompts/prompts';
@@ -157,7 +157,7 @@ describe('API test', () => {
         expect(inquirerPromptSpy).toHaveBeenCalledWith(questions);
     });
 
-    it('prompt, with adaptor', async () => {
+    it('prompt, with adapter', async () => {
         const questions = [
             {
                 name: 'testPrompt',
@@ -176,8 +176,8 @@ describe('API test', () => {
         const inquirerRegisterPromptSpy = jest.spyOn(inquirer, 'registerPrompt').mockReturnValue();
         const inquirerPromptSpy = jest.spyOn(inquirer, 'prompt');
         const mockPromptsModule = createPromptModule();
-        const adaptorRegisterPromptSpy = jest.spyOn(mockPromptsModule, 'registerPrompt');
-        const mockAdaptor: InquirerAdaptor = {
+        const adapterRegisterPromptSpy = jest.spyOn(mockPromptsModule, 'registerPrompt');
+        const mockAdapter: InquirerAdapter = {
             prompt: jest.fn().mockResolvedValue(Object.assign({}, answers)),
             promptModule: mockPromptsModule
         };
@@ -187,7 +187,7 @@ describe('API test', () => {
             targetFolder: '/some/target/folder2',
             useAutocomplete: true
         };
-        const promptAnswers = await prompt(promptOptions, mockAdaptor);
+        const promptAnswers = await prompt(promptOptions, mockAdapter);
         // No options provided
         expect(promptAnswers).toMatchInlineSnapshot(`
             {
@@ -201,7 +201,7 @@ describe('API test', () => {
         expect(getPromptsSpy).toHaveBeenCalledWith(promptOptions);
         expect(inquirerRegisterPromptSpy).not.toHaveBeenCalledWith();
         expect(inquirerPromptSpy).not.toHaveBeenCalledWith();
-        expect(mockAdaptor.prompt).toHaveBeenCalledWith([{ 'message': 'Test Prompt', 'name': 'testPrompt' }]);
-        expect(adaptorRegisterPromptSpy).toHaveBeenCalledWith('autocomplete', expect.any(Function));
+        expect(mockAdapter.prompt).toHaveBeenCalledWith([{ 'message': 'Test Prompt', 'name': 'testPrompt' }]);
+        expect(adapterRegisterPromptSpy).toHaveBeenCalledWith('autocomplete', expect.any(Function));
     });
 });

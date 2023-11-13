@@ -51,7 +51,7 @@ export default class UI5LibraryGenerator extends Generator {
 }
 ```
 
-Example with Yeoman generator passing options with adaptor, e.g. @sap-devx/yeoman-ui integration :
+Example with Yeoman generator passing options with adapter, e.g. @sap-devx/yeoman-ui integration :
 
 ```javascript
 import Generator from 'yeoman-generator';

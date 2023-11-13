@@ -35,7 +35,7 @@ export interface UI5VersionChoice extends ListChoiceOptions {
     value: string; // UI5 semantic version
 }
 
-export interface InquirerAdaptor {
+export interface InquirerAdapter {
     prompt: PromptFunction;
     promptModule: PromptModule;
 }
