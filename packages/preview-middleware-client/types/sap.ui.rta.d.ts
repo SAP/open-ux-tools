@@ -158,7 +158,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     interface RuntimeAuthoring {
         attachSelectionChange(handler: (event: SelectionChangeEvent) => void): void;
         attachModeChanged: (handler: (event: Event) => void) => void;
-        attachUndoRedoStackModified: (handler: (event: Event) => void) => void;
+        attachUndoRedoStackModified: (handler: (event: Event) => Promise<void>) => void;
         getCommandStack: () => Stack;
         getFlexSettings: () => FlexSettings;
         getService: <T>(name: 'outline' | 'controllerExtension' | string) => Promise<T>;
