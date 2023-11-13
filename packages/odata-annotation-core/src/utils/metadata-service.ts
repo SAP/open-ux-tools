@@ -1,7 +1,6 @@
-import type { TargetKind, Location } from '@sap-ux/odata-annotation-core-types';
-import { Edm } from '@sap-ux/odata-annotation-core-types';
-
 import type {
+    TargetKind,
+    Location,
     MetadataElement,
     MetadataMap,
     Path,
@@ -10,6 +9,7 @@ import type {
     MetadataElementVisitor,
     IMetadataService
 } from '@sap-ux/odata-annotation-core-types';
+import { Edm } from '@sap-ux/odata-annotation-core-types';
 
 // Mapping of action/function names to all their overloads
 type ActionNameMap = Map<Path, Set<Path>>;
@@ -190,9 +190,9 @@ export class MetadataService implements IMetadataService {
      * @param options
      */
     constructor(options?: MetadataServiceOptions) {
-        this.ODataVersion = options?.ODataVersion || '';
+        this.ODataVersion = options?.ODataVersion ?? '';
         this.isCds = options?.isCds !== undefined ? options.isCds : this.ODataVersion === '';
-        this.uriMap = options?.uriMap || new Map();
+        this.uriMap = options?.uriMap ?? new Map();
     }
 
     /**
@@ -316,7 +316,7 @@ export class MetadataService implements IMetadataService {
         }
         const targetKinds: TargetKind[] = [];
         if (this.isCds) {
-            targetKinds.push(...(targetKindsMapCds.get(element.kind) || []));
+            targetKinds.push(...(targetKindsMapCds.get(element.kind) ?? []));
             if (element.kind === 'element' && element.structuredType && element.isEntityType) {
                 // CDS elements pointing to an entity type can be annotated like a EDMX navigation property
                 targetKinds.unshift(Edm.NavigationProperty);
@@ -353,7 +353,7 @@ export class MetadataService implements IMetadataService {
                         location.uri = item;
                     }
                 } else {
-                    location.uri = this.uriMap.get(location.uri) || location.uri;
+                    location.uri = this.uriMap.get(location.uri) ?? location.uri;
                 }
             });
         }

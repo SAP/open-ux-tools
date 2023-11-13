@@ -369,10 +369,10 @@ export function getPositionData(annotationFile: AnnotationFile, positionPointer:
         if (segment.startsWith('$')) {
             if (typeof currentContext === 'string') {
                 // special segment indicating exact position inside a string
-                const offset = parseInt(segment.substr(1), 10);
+                const offset = parseInt(segment.substring(1), 10);
 
-                startString = currentContext.substr(0, offset);
-                remainingString = currentContext.substr(offset);
+                startString = currentContext.substring(0, offset-1);
+                remainingString = currentContext.substring(offset);
             } else if (typeof currentContext === 'object') {
                 // special segment indicating "white space" position inside element
                 path += convertSegment(segment, true);

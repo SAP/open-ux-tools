@@ -46,7 +46,7 @@ export function getPathBaseMetadataElement(
             }
         }
     }
-    return pathBaseMetadataElement || mostSpecificMetadataElement;
+    return pathBaseMetadataElement ?? mostSpecificMetadataElement;
 }
 
 /**

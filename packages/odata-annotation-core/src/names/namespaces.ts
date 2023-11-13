@@ -33,7 +33,7 @@ export function getAliasInformation(
             const forMetadata = metadataNamespaces.has(namespace.name);
             if (namespace.type === 'namespace') {
                 currentFileNamespace = namespace.name;
-                currentFileAlias = namespace.alias || '';
+                currentFileAlias = namespace.alias ?? '';
                 if (forMetadata) {
                     Object.assign(aliasMapMetadata, aliasEntry);
                 }
