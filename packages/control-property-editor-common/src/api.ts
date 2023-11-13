@@ -43,6 +43,16 @@ export const INPUT_EDITOR_TYPE = 'input';
 export const DROPDOWN_EDITOR_TYPE = 'dropdown';
 export const CHECKBOX_EDITOR_TYPE = 'checkbox';
 
+export const scenario = {
+    AppVariant: 'APP_VARIANT',
+    VersionedAppVariant: 'VERSIONED_APP_VARIANT',
+    AdaptationProject: 'ADAPTATION_PROJECT',
+    FioriElementsFromScratch: 'FE_FROM_SCRATCH',
+    UiAdaptation: 'UI_ADAPTATION'
+} as const;
+
+export type Scenario = (typeof scenario)[keyof typeof scenario];
+
 interface ControlPropertyBase<T, V, E> {
     type: T;
     editor: E;
@@ -205,6 +215,7 @@ export const EXTERNAL_ACTION_PREFIX = '[ext]';
 const createExternalAction = createActionFactory(EXTERNAL_ACTION_PREFIX);
 
 export const iconsLoaded = createExternalAction<IconDetails[]>('icons-loaded');
+export const scenarioLoaded = createExternalAction<Scenario>('scenario-loaded');
 export const controlSelected = createExternalAction<Control>('control-selected');
 export const selectControl = createExternalAction<string>('select-control');
 export const addExtensionPoint = createExternalAction<OutlineNode>('add-extension-point');

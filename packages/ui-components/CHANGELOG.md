@@ -1,5 +1,35 @@
 # @sap-ux/ui-components
 
+## 1.13.0
+
+### Minor Changes
+
+-   c7d5b85c: UIDropdown, UIComboBox - new property "calloutCollisionTransformation" to improve interaction between multi-select dropdown and dialog action buttons(transformation makes dialog action buttons if its overlapped by dropdown menu)
+
+## 1.12.5
+
+### Patch Changes
+
+-   ade42a17: add `bookbookmark` icon
+
+## 1.12.4
+
+### Patch Changes
+
+-   f2b5e735: update `header` and `layout` icons
+
+## 1.12.3
+
+### Patch Changes
+
+-   c53c31e3: Update Icons.tsx
+
+## 1.12.2
+
+### Patch Changes
+
+-   37f4e176: Parameterise UI Action Aallout border colour
+
 ## 1.12.1
 
 ### Patch Changes

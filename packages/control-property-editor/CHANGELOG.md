@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.4.2
+
+### Patch Changes
+
+-   dc2f9345: Outline tree for Fiori applications is not collapsed correctly
+
+## 0.4.1
+
+### Patch Changes
+
+-   e2b264c2: Make Control Property Editor aware which application (scenario) its running in the iframe
+
 ## 0.4.0
 
 ### Minor Changes
