@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`resolveName Resolved Name Collection(Edm.String) without aliasMapNamespace 1`] = `
+Object {
+  "name": "Collection(Edm.String)",
+  "qName": "Collection(Edm.String)",
+}
+`;
+
+exports[`resolveName Resolved Name Collection(SAP.TestType) with aliasMapNamespace 1`] = `
+Object {
+  "name": "Collection(SAP.TestType)",
+  "qName": "Collection(SEPMRA_PROD_MAN.TestType)",
+}
+`;
+
+exports[`resolveName Resolved Name SAP.FunctionName(Collection(Edm.String)) 1`] = `
+Object {
+  "alias": "SAP",
+  "name": "FunctionName(Collection(Edm.String))",
+  "namespace": "SEPMRA_PROD_MAN",
+  "qName": "SEPMRA_PROD_MAN.FunctionName(Collection(Edm.String))",
+}
+`;
+
+exports[`resolveName Resolved Name SAP.FunctionName(Collection(SAP.FunctionParam)) 1`] = `
+Object {
+  "alias": "SAP",
+  "name": "FunctionName(Collection(SAP.FunctionParam))",
+  "namespace": "SEPMRA_PROD_MAN",
+  "qName": "SEPMRA_PROD_MAN.FunctionName(Collection(SEPMRA_PROD_MAN.FunctionParam))",
+}
+`;
+
+exports[`resolveName Resolved Name SAP.FunctionName(SAP.FunctionParam1,SAP.FunctionParam2) 1`] = `
+Object {
+  "alias": "SAP",
+  "name": "FunctionName(SAP.FunctionParam1,SAP.FunctionParam2)",
+  "namespace": "SEPMRA_PROD_MAN",
+  "qName": "SEPMRA_PROD_MAN.FunctionName(SEPMRA_PROD_MAN.FunctionParam1,SEPMRA_PROD_MAN.FunctionParam2)",
+}
+`;
+
+exports[`resolveName Resolved Name with Alias 1`] = `
+Object {
+  "alias": "UI",
+  "name": "LineItem",
+  "namespace": "com.sap.vocabularies.UI.v1",
+  "qName": "com.sap.vocabularies.UI.v1.LineItem",
+}
+`;
+
+exports[`resolveName Resolved Name with namespace 1`] = `
+Object {
+  "name": "LineItem",
+  "namespace": "com.sap.vocabularies.UI.v1",
+  "qName": "com.sap.vocabularies.UI.v1.LineItem",
+}
+`;
+
+exports[`resolveName Resolved Name with namespace without aliasMap 1`] = `
+Object {
+  "name": "LineItem",
+  "namespace": "com.sap.vocabularies.UI.v1",
+  "qName": "com.sap.vocabularies.UI.v1.LineItem",
+}
+`;
