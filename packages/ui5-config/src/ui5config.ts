@@ -99,6 +99,41 @@ export class UI5Config {
     }
 
     /**
+     * Add a custom configuration to the yaml.
+     *
+     * @param key key/name of the custom property
+     * @param value the properties value
+     */
+    public addCustomConfiguration(key: string, value: object | string) {
+        try {
+            const configNode = this.document.getMap({ path: 'customConfiguration' });
+            configNode.setIn([key], value);
+        } catch (_error) {
+            this.document.setIn({
+                path: 'customConfiguration',
+                value: {
+                    [key]: value
+                }
+            });
+        }
+    }
+
+    /**
+     * Get a custom configuration from the yaml.
+     *
+     * @param key key/name of the custom property
+     * @returns the value of the property or undefined
+     */
+    public getCustomConfiguration(key: string): object | string | undefined {
+        try {
+            const node = this.document.getMap({ path: 'customConfiguration' }).get(key) as YAMLMap | undefined;
+            return node?.toJSON?.() ?? node?.toString();
+        } catch (_error) {
+            return undefined;
+        }
+    }
+
+    /**
      * Adds a UI5 Framework entry to the yaml file.
      *
      * @param {string} ui5Framework - whether to user SAPUI5 or OpenUI5

@@ -74,6 +74,24 @@ describe('UI5Config', () => {
         });
     });
 
+    describe('add/getCustomConfiguration', () => {
+        const testConfig = {
+            url: 'https://test.example',
+            client: '123'
+        };
+        test('First configuration in a document', () => {
+            ui5Config.addCustomConfiguration('target', testConfig);
+            expect(ui5Config.getCustomConfiguration('target')).toEqual(testConfig);
+        });
+        test('Add multiple configurations', () => {
+            const anotherConfig = '~config';
+            ui5Config.addCustomConfiguration('target', testConfig);
+            ui5Config.addCustomConfiguration('another', anotherConfig);
+            expect(ui5Config.getCustomConfiguration('target')).toEqual(testConfig);
+            expect(ui5Config.getCustomConfiguration('another')).toBe(anotherConfig);
+        });
+    });
+
     describe('addUI5Framework', () => {
         test('Minimal set of inputs', () => {
             ui5Config.addUI5Framework('SAPUI5', '1.64.0', []);
