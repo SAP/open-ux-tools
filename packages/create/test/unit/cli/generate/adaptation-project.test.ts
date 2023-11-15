@@ -16,6 +16,7 @@ describe('generate adaptation-project', () => {
     let loggerMock: ToolsLogger;
     let fsMock: Editor;
     let spawnSpy: jest.SpyInstance;
+    const promptSpy = jest.spyOn(prompts, 'prompt');
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
@@ -39,7 +40,6 @@ describe('generate adaptation-project', () => {
     });
 
     test('<appRoot> --url', async () => {
-        const promptSpy = jest.spyOn(prompts, 'prompt');
         // Test execution
         const command = new Command('generate');
         addGenerateAdaptationProjectCommand(command);
@@ -72,6 +72,7 @@ describe('generate adaptation-project', () => {
         );
 
         // Result check
+        expect(promptSpy).not.toBeCalled();
         expect(fsMock.commit).toBeCalled();
         expect(spawnSpy).toBeCalledWith(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['install'], {
             cwd: appRoot,

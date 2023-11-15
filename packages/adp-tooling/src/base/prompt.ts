@@ -5,20 +5,23 @@ export const enum flexLayer {
     CUSTOMER_BASE = 'CUSTOMER_BASE',
     VENDOR = 'VENDOR'
 }
+
+export type PromptDefaults = {
+    id?: string;
+    reference?: string;
+    url?: string;
+    ft?: boolean;
+    package?: string;
+    transport?: string;
+};
+
 /**
  * Prompt the user for the required properties for an adaptation project.
  *
  * @param defaults optional default values for the prompts
- * @param defaults.id initial id to be used for the new adaptation id prompt
- * @param defaults.reference initial id used for the original application id prompt
- * @param defaults.url initial url used for the target url prompt
  * @returns a configuration for the adp writer
  */
-export async function promptGeneratorInput({
-    id,
-    reference,
-    url
-}: { id?: string; reference?: string; url?: string } = {}): Promise<AdpWriterConfig> {
+export async function promptGeneratorInput(defaults: PromptDefaults = {}): Promise<AdpWriterConfig> {
     const app = await prompts([
         {
             type: 'select',
@@ -39,7 +42,7 @@ export async function promptGeneratorInput({
                     return 'New adaptation id:';
                 }
             },
-            initial: id,
+            initial: defaults.id,
             format: (input, values) => {
                 if (values.layer === flexLayer.CUSTOMER_BASE && !input.startsWith('customer.')) {
                     return `customer.${input}`;
@@ -53,7 +56,7 @@ export async function promptGeneratorInput({
             type: 'text',
             name: 'reference',
             message: 'Original application id:',
-            initial: reference,
+            initial: defaults.reference,
             validate: (input) => input?.length > 0
         },
         {
@@ -67,9 +70,33 @@ export async function promptGeneratorInput({
             type: 'text',
             name: 'url',
             message: 'Target system url:',
-            initial: url,
+            initial: defaults.url,
             validate: (input) => input?.length > 0
         }
     ]);
-    return { app, target };
+    const deploy = await prompts([
+        {
+            type: 'text',
+            name: 'package',
+            message: 'Deployment package:',
+            initial: defaults.package ?? '$TMP',
+            validate: (input) => input?.length > 0
+        },
+        {
+            type: 'text',
+            name: 'transport',
+            message: 'Transport request (optional):',
+            initial: defaults.transport
+        }
+    ]);
+    const options = await prompts([
+        {
+            type: 'confirm',
+            name: 'fioriTools',
+            message: 'Enable Fiori tools?',
+            initial: defaults.ft !== false,
+            validate: (input) => input?.length > 0
+        }
+    ]);
+    return { app, target, options, deploy };
 }

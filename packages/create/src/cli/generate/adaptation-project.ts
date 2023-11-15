@@ -1,6 +1,6 @@
 import type { Command } from 'commander';
 import { getLogger, traceChanges } from '../../tracing';
-import type { AdpWriterConfig } from '@sap-ux/adp-tooling';
+import type { AdpWriterConfig, PromptDefaults } from '@sap-ux/adp-tooling';
 import { promptGeneratorInput, generate } from '@sap-ux/adp-tooling';
 import { runNpmInstallCommand } from '../../common';
 import { join } from 'path';
@@ -17,6 +17,9 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
         .option('--id [id]', 'id of the adaptation project')
         .option('--reference [reference]', 'id of the original application')
         .option('--url [url]', 'url pointing to the target system containing the original app')
+        .option('--ft', 'enable the Fiori tools for the generated project')
+        .option('--package', 'ABAP package to be used for deployments')
+        .option('--transport', 'ABAP transport to be used for deployments')
         .action(async (path, options) => {
             await generateAdaptationProject(path, { ...options }, !!options.simulate, !!options.skipInstall);
         });
@@ -30,12 +33,13 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
  * @param defaults.id id of the new adaptation project
  * @param defaults.reference id of the referenced original app
  * @param defaults.url url of the target system
+ * @param defaults.ft if true then use Fiori tools configurations
  * @param simulate if set to true, then no files will be written to the filesystem
  * @param skipInstall if set to true then `npm i` is not executed in the new project
  */
 async function generateAdaptationProject(
     basePath: string,
-    defaults: { id?: string; reference?: string; url?: string },
+    defaults: PromptDefaults,
     simulate: boolean,
     skipInstall: boolean
 ): Promise<void> {
@@ -52,6 +56,13 @@ async function generateAdaptationProject(
                 },
                 target: {
                     url: defaults.url
+                },
+                deploy: {
+                    package: defaults.package ? defaults.package.toUpperCase() : '$TMP',
+                    transport: defaults.transport
+                },
+                options: {
+                    fioriTools: defaults.ft
                 }
             };
         } else {
