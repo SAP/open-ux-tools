@@ -84,6 +84,9 @@ export class AdpPreview {
                 username: process.env.FIORI_TOOLS_USER,
                 password: process.env.FIORI_TOOLS_PASSWORD
             };
+        } else if (config.auth && !process.env.FIORI_TOOLS_USER && !process.env.FIORI_TOOLS_PASSWORD) {
+            process.env.FIORI_TOOLS_USER = config.auth.username;
+            process.env.FIORI_TOOLS_PASSWORD = config.auth.password;
         }
     }
 

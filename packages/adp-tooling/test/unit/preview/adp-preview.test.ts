@@ -8,6 +8,8 @@ import type { SuperTest, Test } from 'supertest';
 import { readFileSync, existsSync, writeFileSync } from 'fs';
 
 import { AdpPreview } from '../../../src/preview/adp-preview';
+import type { AdpPreviewConfig } from '../../../src/types';
+import * as systemAccess from '@sap-ux/system-access';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -38,6 +40,13 @@ jest.mock('@sap-ux/store', () => {
                 read: jest.fn().mockReturnValue({ username: '~user', password: '~pass' })
             })
         )
+    };
+});
+
+jest.mock('@sap-ux/system-access', () => {
+    return {
+        __esModule: true,
+        ...jest.requireActual('@sap-ux/system-access')
     };
 });
 
@@ -140,7 +149,7 @@ describe('AdaptationProject', () => {
             });
         });
 
-        test('error on property access before init', async () => {
+        test('error on property access before init', () => {
             const adp = new AdpPreview(
                 {
                     target: {
@@ -154,6 +163,58 @@ describe('AdaptationProject', () => {
 
             expect(() => adp.descriptor).toThrowError();
             expect(() => adp.resources).toThrowError();
+        });
+
+        test('provide credentials via yaml', async () => {
+            const createAbapServiceProviderSpy = jest.spyOn(systemAccess, 'createAbapServiceProvider');
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    },
+                    auth: {
+                        username: '~user',
+                        password: '~pass'
+                    }
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+            expect(process.env.FIORI_TOOLS_USER).toEqual('~user');
+            expect(process.env.FIORI_TOOLS_PASSWORD).toEqual('~pass');
+            delete process.env.FIORI_TOOLS_USER;
+            delete process.env.FIORI_TOOLS_PASSWORD;
+            await adp.init(JSON.parse(descriptorVariant));
+            expect(createAbapServiceProviderSpy).toBeCalledWith(
+                expect.any(Object),
+                expect.objectContaining({ 'auth': { 'password': '~pass', 'username': '~user' } }),
+                true,
+                expect.any(Object)
+            );
+        });
+
+        test('provide credentials via .env', async () => {
+            const createAbapServiceProviderSpy = jest.spyOn(systemAccess, 'createAbapServiceProvider');
+            const config = {
+                target: {
+                    url: backend
+                }
+            } as AdpPreviewConfig;
+            process.env.FIORI_TOOLS_USER = '~user';
+            process.env.FIORI_TOOLS_PASSWORD = '~pass';
+            const adp = new AdpPreview(config, mockProject as unknown as ReaderCollection, middlewareUtil, logger);
+            expect(config.auth?.username).toEqual('~user');
+            expect(config.auth?.password).toEqual('~pass');
+            delete process.env.FIORI_TOOLS_USER;
+            delete process.env.FIORI_TOOLS_PASSWORD;
+            await adp.init(JSON.parse(descriptorVariant));
+            expect(createAbapServiceProviderSpy).toBeCalledWith(
+                expect.any(Object),
+                expect.objectContaining({ 'auth': { 'password': '~pass', 'username': '~user' } }),
+                true,
+                expect.any(Object)
+            );
         });
     });
     describe('proxy', () => {
