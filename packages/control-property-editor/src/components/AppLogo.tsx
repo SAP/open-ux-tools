@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { scenario as Scenario } from '@sap-ux-private/control-property-editor-common';
 
 import styles from './AppLogo.module.scss';
-import { RootState } from 'src/store';
+import type { RootState } from 'src/store';
 
 /**
  * React element for app logo.
