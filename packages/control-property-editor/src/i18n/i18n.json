@@ -18,6 +18,7 @@
   "NO_CONTROL_FOUND": "No control found",
   "MODIFY_SEARCH_INPUT": "Modify the search input",
   "APP_TITLE": "Control Property Editor",
+  "APP_TITLE_ADP": "SAPUI5 Visual Editor",
   "DEVICE_TYPE_DESKTOP": "Desktop",
   "DEVICE_TYPE_TABLET": "Tablet",
   "DEVICE_TYPE_PHONE": "Phone",

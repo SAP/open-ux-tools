@@ -1,9 +1,12 @@
-import type { ReactElement } from 'react';
 import React from 'react';
 import { Text } from '@fluentui/react';
+import type { ReactElement } from 'react';
+import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { scenario as Scenario } from '@sap-ux-private/control-property-editor-common';
 
 import styles from './AppLogo.module.scss';
+import { RootState } from 'src/store';
 
 /**
  * React element for app logo.
@@ -12,10 +15,13 @@ import styles from './AppLogo.module.scss';
  */
 export function AppLogo(): ReactElement {
     const { t } = useTranslation();
+    const scenario = useSelector((state: RootState) => state.scenario);
+    const appTitle = scenario === Scenario.AdaptationProject ? t('APP_TITLE_ADP') : t('APP_TITLE');
+
     return (
         <>
             <AppIcon />
-            <Text className={styles.flexEditorText}>{t('APP_TITLE')}</Text>
+            <Text className={styles.flexEditorText}>{appTitle}</Text>
         </>
     );
 }
