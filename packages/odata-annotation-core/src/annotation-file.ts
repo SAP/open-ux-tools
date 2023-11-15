@@ -17,7 +17,7 @@ export const elementsWithName = (name: ElementName, element: Element): Element[]
     elements((content: Element) => content.name === name, element);
 
 export const getElementAttribute = (element: Element, name: AttributeName): Attribute | undefined =>
-    element?.attributes[name];
+    element?.attributes?.[name];
 
 export const getElementAttributeValue = (element: Element, name: AttributeName): string => {
     const attributeNode = getElementAttribute(element, name);
