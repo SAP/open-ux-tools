@@ -221,6 +221,8 @@ export class FlpSandbox {
      */
     private addEditorRoutes(rta: RtaConfig) {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
+        const editorName =
+            rta.options?.scenario === 'ADAPTATION_PROJECT' ? 'SAPUI5 Visual Editor' : 'Control Property Editor';
         for (const editor of rta.editors) {
             let previewUrl = editor.path;
             if (editor.developerMode) {
@@ -230,7 +232,8 @@ export class FlpSandbox {
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
                     const html = render(template, {
                         previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`,
-                        telemetry: rta.options?.telemetry ?? false
+                        telemetry: rta.options?.telemetry ?? false,
+                        editorName
                     });
                     res.status(200).contentType('html').send(html);
                 });
