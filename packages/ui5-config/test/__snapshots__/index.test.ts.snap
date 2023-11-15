@@ -107,6 +107,45 @@ exports[`UI5Config addAbapDeployTask local settings 1`] = `
 "
 `;
 
+exports[`UI5Config addAbapDeployTask minimal adp settings 1`] = `
+"builder:
+  resources:
+    - excludes:
+        - /test/**
+        - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://localhost:8080
+          client: '012'
+        app:
+          package: $TMP
+"
+`;
+
+exports[`UI5Config addAbapDeployTask use open source task 1`] = `
+"builder:
+  resources:
+    - excludes:
+        - /test/**
+        - /localService/**
+  customTasks:
+    - name: abap-deploy-task
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://localhost:8080
+          client: '012'
+        app:
+          name: ~name
+          description: ~description
+          package: ~package
+          transport: ~transport
+"
+`;
+
 exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out backend first and then call add backend 1`] = `
 "server:
   customMiddleware:

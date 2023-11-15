@@ -1,5 +1,5 @@
 import type {
-    AbapApp,
+    BspApp,
     AbapTarget,
     Configuration,
     CustomItem,
@@ -9,7 +9,8 @@ import type {
     FioriToolsProxyConfigBackend,
     FioriToolsProxyConfigUI5,
     Resources,
-    Ui5Document
+    Ui5Document,
+    Adp
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -288,10 +289,11 @@ export class UI5Config {
      *
      * @param target system that this app is to be deployed to
      * @param app application configuration for the deployment to ABAP
+     * @param fioriTools if true use the middleware included in the @sap/ux-ui5-tooling module
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addAbapDeployTask(target: AbapTarget, app: AbapApp): UI5Config {
+    public addAbapDeployTask(target: AbapTarget, app: BspApp | Adp, fioriTools = true): UI5Config {
         this.document.appendTo({
             path: 'builder.resources',
             value: {
@@ -301,7 +303,7 @@ export class UI5Config {
         this.document.appendTo({
             path: 'builder.customTasks',
             value: {
-                name: 'deploy-to-abap',
+                name: fioriTools ? 'deploy-to-abap' : 'abap-deploy-task',
                 afterTask: 'generateCachebusterInfo',
                 configuration: { target, app }
             }

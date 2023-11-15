@@ -1,4 +1,4 @@
-import type { AbapApp, UI5ProxyConfig } from '../src';
+import type { BspApp, UI5ProxyConfig } from '../src';
 import { UI5Config } from '../src';
 
 describe('UI5Config', () => {
@@ -299,7 +299,7 @@ describe('UI5Config', () => {
     });
 
     describe('addAbapDeployTask', () => {
-        const app: AbapApp = {
+        const app: BspApp = {
             name: '~name',
             description: '~description',
             'package': '~package',
@@ -308,6 +308,21 @@ describe('UI5Config', () => {
 
         test('local settings', () => {
             ui5Config.addAbapDeployTask({ url, client }, app);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('minimal adp settings', () => {
+            ui5Config.addAbapDeployTask(
+                { url, client },
+                {
+                    package: '$TMP'
+                }
+            );
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('use open source task', () => {
+            ui5Config.addAbapDeployTask({ url, client }, app, false);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
