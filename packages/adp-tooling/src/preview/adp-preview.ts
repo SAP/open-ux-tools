@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import ZipFile from 'adm-zip';
 import type { ReaderCollection } from '@ui5/fs';
@@ -75,7 +76,15 @@ export class AdpPreview {
         private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
     ) {
+        dotenv.config();
         this.routesHandler = new RoutesHandler(project, util, logger);
+
+        if (!config.auth && process.env.FIORI_TOOLS_USER && process.env.FIORI_TOOLS_PASSWORD) {
+            config.auth = {
+                username: process.env.FIORI_TOOLS_USER,
+                password: process.env.FIORI_TOOLS_PASSWORD
+            };
+        }
     }
 
     /**
@@ -87,7 +96,7 @@ export class AdpPreview {
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
         const provider = await createAbapServiceProvider(
             this.config.target,
-            { ignoreCertErrors: this.config.ignoreCertErrors },
+            { ignoreCertErrors: this.config.ignoreCertErrors, auth: this.config.auth },
             true,
             this.logger
         );

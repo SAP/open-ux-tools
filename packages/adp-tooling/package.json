@@ -39,12 +39,13 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "sanitize-filename": "1.6.3",
+        "adm-zip": "0.5.10",
+        "dotenv": "16.3.1",
         "ejs": "3.1.9",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2",
-        "adm-zip": "0.5.10"
+        "sanitize-filename": "1.6.3"
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",

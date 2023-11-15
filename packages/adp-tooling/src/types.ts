@@ -21,6 +21,10 @@ export interface AdpPreviewConfig {
      * If set to true then certification validation errors are ignored.
      */
     ignoreCertErrors?: boolean;
+    auth: {
+        username: string;
+        password: string;
+    };
 }
 
 export interface AdpWriterConfig {
