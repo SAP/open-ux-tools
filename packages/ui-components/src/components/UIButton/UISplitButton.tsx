@@ -48,6 +48,22 @@ export class UISplitButton extends React.Component<UISplitButtonProps, UISplitBu
         this.onClick = this.onClick.bind(this);
     }
 
+    /**
+     * Gets derived state from properties.
+     *
+     * @param {UISplitButtonProps} newProps
+     * @param {UISplitButtonState} prevState
+     * @returns {UISplitButtonState}
+     */
+    static getDerivedStateFromProps(newProps: UISplitButtonProps, prevState: UISplitButtonState): UISplitButtonState {
+        return {
+            menu: {
+                items: newProps.menuItems,
+                onItemClick: prevState.menu.onItemClick
+            }
+        };
+    }
+
     public onClick = (): void => {
         this.props.callback(this.props.button.key);
     };

@@ -83,6 +83,11 @@ export default abstract class BaseDialog extends Controller {
             return;
         }
 
+        if(fragmentName.length > 64) {
+            updateDialogState(ValueState.Error, 'A fragment file name cannot contain more than 64 characters.');
+            return;
+        }
+
         updateDialogState(ValueState.Success);
         this.model.setProperty('/newFragmentName', fragmentName);
     }

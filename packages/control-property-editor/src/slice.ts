@@ -7,7 +7,8 @@ import type {
     OutlineNode,
     PendingPropertyChange,
     PropertyChange,
-    SavedPropertyChange
+    SavedPropertyChange,
+    Scenario
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeStackModified,
@@ -16,7 +17,9 @@ import {
     outlineChanged,
     propertyChanged,
     propertyChangeFailed,
-    showMessage
+    showMessage,
+    scenario,
+    scenarioLoaded
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -31,6 +34,7 @@ interface SliceState {
     selectedControl: Control | undefined;
     outline: OutlineNode[];
     filterQuery: FilterOptions[];
+    scenario: Scenario;
     icons: IconDetails[];
     changes: ChangesSlice;
     showDialogMessage: string | undefined;
@@ -93,6 +97,7 @@ export const initialState = {
     selectedControl: undefined,
     outline: [],
     filterQuery: filterInitOptions,
+    scenario: scenario.UiAdaptation,
     icons: [],
     changes: {
         controls: {},
@@ -127,6 +132,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             )
             .addMatcher(iconsLoaded.match, (state, action: ReturnType<typeof iconsLoaded>): void => {
                 state.icons = action.payload;
+            })
+            .addMatcher(scenarioLoaded.match, (state, action: ReturnType<typeof scenarioLoaded>): void => {
+                state.scenario = action.payload;
             })
             .addMatcher(changeProperty.match, (state, action: ReturnType<typeof changeProperty>): void => {
                 if (state.selectedControl?.id === action.payload.controlId) {

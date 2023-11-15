@@ -1,5 +1,6 @@
 {
   "APPLICATION_PREVIEW_TITLE": "Application Preview",
+  "ADD_FRAGMENT_AT_EXTENSION_POINT": "Add Fragment at Extension Point",
   "PROPERTIES": "PROPERTIES",
   "COPIED_TO_CLIPBOARD_TOAST_MESSAGE": "✓ Copied to clipboard: {{value}}",
   "CONTROL_ID_LABEL": "CONTROL ID",
@@ -64,5 +65,6 @@
   "CONFIRM_CHANGE_SUMMARY_DELETE_SUBTEXT": "Are you sure you want to delete the change for this property? This action cannot be undone.",
   "NO_CONTROL_CHANGES_FOUND": "No Control Changes Found",
   "CHANGE": "Change",
-  "FILE": "File: "
+  "FILE": "File: ",
+  "CONTROL": "Selector Id: "
 }

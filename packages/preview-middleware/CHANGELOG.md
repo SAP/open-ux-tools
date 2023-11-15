@@ -1,5 +1,70 @@
 # @sap-ux/preview-middleware
 
+## 0.11.1
+
+### Patch Changes
+
+-   18c9d967: Add validation for property changes for i18n models
+
+## 0.11.0
+
+### Minor Changes
+
+-   793f846b: Open existing controller from project files instead of creating a new one
+
+### Patch Changes
+
+-   Updated dependencies [793f846b]
+    -   @sap-ux/adp-tooling@0.6.0
+
+## 0.10.7
+
+### Patch Changes
+
+-   061a6544: CPE UI is not updated when changes are saved or deleted
+
+## 0.10.6
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.5.5
+
+## 0.10.5
+
+### Patch Changes
+
+-   dc2f9345: Outline tree for Fiori applications is not collapsed correctly
+
+## 0.10.4
+
+### Patch Changes
+
+-   be8e3fb3: fix outline initialisation for the case when application is loaded, but outline is empty
+
+## 0.10.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.5.4
+
+## 0.10.2
+
+### Patch Changes
+
+-   e2b264c2: Make Control Property Editor aware which application (scenario) its running in the iframe
+
+## 0.10.1
+
+### Patch Changes
+
+-   ca61803e: Fixed controller extension/fragment name longer than 64 chars error not showing up
+
+## 0.10.0
+
+### Minor Changes
+
+-   6d2d2255: support all kind of changes from command stack
+
 ## 0.9.0
 
 ### Minor Changes

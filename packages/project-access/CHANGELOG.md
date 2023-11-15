@@ -1,5 +1,23 @@
 # @sap-ux/project-access
 
+## 1.15.2
+
+### Patch Changes
+
+-   d7d52155: Find project root of adp by searching for package.json
+
+## 1.15.1
+
+### Patch Changes
+
+-   e4821c0f: SonarCloud code smells
+
+## 1.15.0
+
+### Minor Changes
+
+-   b458bf43: Adding functions getCdsFiles(), getCdsRoots(), getCdsServices()
+
 ## 1.14.0
 
 ### Minor Changes
