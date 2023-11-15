@@ -16,6 +16,7 @@ It hosts a local Fiori launchpad based on your configuration as well as offers a
 | `flp.theme`             | `string` | `undefined`      | Optional flag for setting the UI5 Theme. |
 | `adp.target`           |           |                  | Required configuration for adaptation projects defining the connected backend                                                       |
 | `adp.ignoreCertErrors` | `boolean` | `false`          | Optional setting to ignore certification validation errors when working with e.g. development systems with self signed certificates |
+| `adp.auth` | `object` | `undefined`          | Optional setting for providing credentials for basic authentication |
 | `rta`                  |           |                  | Optional configuration allowing to add mount points for runtime adaptation                                                          |
 | `rta.layer`            | `string`  | `(calculated)`   | Optional property for defining the runtime adaptation layer for changes (default is `CUSTOMER_BASE` or read from the project for adaptation projects) |
 | `rta.editors`          | `array`   | `undefined`      | Optional list of mount points for editing                                                                                           |
@@ -38,6 +39,12 @@ Array of additional application configurations:
 | `destination` | `string` mandatory (if no url) | Required if the backend system is available as destination in SAP Business Application Studio.                                                  |
 | `client`      | `string` optional              | sap-client parameter                                                                                                                            |
 | `scp`         | `boolean` optional             | If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP                                            |
+
+### `adp.auth`
+| Option        | Type                           | Description                                                                                                                                     |
+| ------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `username`         | `string` mandatory    | Username to use for basic authentication |
+| `password` | `string` mandatory | Password to use for basic authentication                                                  |
 
 ### `rta.editors`
 | Option          | Type               | Description                                                                                    |
