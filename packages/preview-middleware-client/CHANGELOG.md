@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.8.1
+
+### Patch Changes
+
+-   18c9d967: Add validation for property changes for i18n models
+
 ## 0.8.0
 
 ### Minor Changes
