@@ -8,7 +8,7 @@ import { rimraf } from 'rimraf';
 describe('ADP writer', () => {
     const fs = create(createStorage());
     const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(__dirname, '../../fixtures/test');
+    const outputDir = join(__dirname, '../../fixtures/test-output');
 
     beforeAll(async () => {
         await rimraf(outputDir);

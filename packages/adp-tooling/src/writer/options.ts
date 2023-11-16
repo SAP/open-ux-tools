@@ -34,7 +34,7 @@ export function hasDeployConfig(config: AdpWriterConfig): config is AdpWriterCon
  * @param config full project configuration
  */
 export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConfigWithDeploy) {
-    ui5Config.addAbapDeployTask(config.target, config.deploy, config.options?.fioriTools);
+    ui5Config.addAbapDeployTask(config.target, config.deploy, config.options?.fioriTools === true);
 }
 
 /**

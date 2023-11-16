@@ -31,7 +31,7 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
 }
 
 /**
- * Writes the adp-project template to the memfs editor instance.
+ * Writes the adp-project template to the mem-fs-editor instance.
  *
  * @param basePath - the base path
  * @param config - the writer configuration
@@ -59,7 +59,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     // ui5-deploy.yaml
     if (hasDeployConfig(fullConfig)) {
         const ui5DeployConfig = await UI5Config.newInstance(baseUi5ConfigContent);
-        enhanceUI5DeployYaml(ui5Config, fullConfig);
+        enhanceUI5DeployYaml(ui5DeployConfig, fullConfig);
         fs.write(join(basePath, 'ui5-deploy.yaml'), ui5DeployConfig.toString());
     }
 
