@@ -64,10 +64,12 @@ function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unkn
                     path: ['/resources', '/test-resources'],
                     url: 'https://ui5.sap.com'
                 },
-                backend: {
-                    ...config.target,
-                    path: '/sap'
-                }
+                backend: [
+                    {
+                        ...config.target,
+                        path: '/sap'
+                    }
+                ]
             }
         }
     ];
@@ -92,7 +94,7 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
                 rta: {
                     editors: [
                         {
-                            path: '/local/adaptation-editor.html',
+                            path: '/test/adaptation-editor.html',
                             developerMode: true
                         }
                     ]
@@ -107,12 +109,10 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
             name: 'backend-proxy-middleware',
             afterMiddleware: 'preview-middleware',
             configuration: {
-                backend: [
-                    {
-                        ...config.target,
-                        path: '/sap'
-                    }
-                ],
+                backend: {
+                    ...config.target,
+                    path: '/sap'
+                },
                 options: {
                     secure: true
                 }

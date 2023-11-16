@@ -24,7 +24,7 @@ Object {
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
         \\"start\\": \\"<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/flp.html#app-preview\\",
-        \\"start-editor\\": \\"<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /local/adaptation-editor.html\\"<%if (locals.deploy) {%>,
+        \\"start-editor\\": \\"<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/adaptation-editor.html\\"<%if (locals.deploy) {%>,
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"undeploy --config ui5-deploy.yaml --lrep 'apps/<%= app.reference %>/appVariants/<%= app.id %>/'\\"<%}%>
     }
@@ -53,7 +53,7 @@ Object {
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
-        \\"start-editor\\": \\"ui5 serve --open /local/adaptation-editor.html\\"
+        \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\"
     }
 }
 ",
@@ -81,7 +81,7 @@ Object {
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
-        \\"start-editor\\": \\"ui5 serve --open /local/adaptation-editor.html\\",
+        \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"undeploy --config ui5-deploy.yaml --lrep 'apps/the.original.app/appVariants/my.test.app/'\\"
     }
@@ -139,7 +139,7 @@ Object {
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
         \\"start\\": \\"<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/flp.html#app-preview\\",
-        \\"start-editor\\": \\"<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /local/adaptation-editor.html\\"<%if (locals.deploy) {%>,
+        \\"start-editor\\": \\"<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/adaptation-editor.html\\"<%if (locals.deploy) {%>,
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"undeploy --config ui5-deploy.yaml --lrep 'apps/<%= app.reference %>/appVariants/<%= app.id %>/'\\"<%}%>
     }
@@ -177,7 +177,7 @@ type: application
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
-        \\"start-editor\\": \\"ui5 serve --open /local/adaptation-editor.html\\",
+        \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"undeploy --config ui5-deploy.yaml --lrep 'apps/the.original.app/appVariants/my.test.app/'\\"
     }
@@ -226,7 +226,7 @@ server:
           ignoreCertErrors: false
         rta:
           editors:
-            - path: /local/adaptation-editor.html
+            - path: /test/adaptation-editor.html
               developerMode: true
     - name: ui5-proxy-middleware
       afterMiddleware: preview-middleware
@@ -234,8 +234,8 @@ server:
       afterMiddleware: preview-middleware
       configuration:
         backend:
-          - url: http://sap.example
-            path: /sap
+          url: http://sap.example
+          path: /sap
         options:
           secure: true
 ",
@@ -263,7 +263,7 @@ server:
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
-        \\"start-editor\\": \\"ui5 serve --open /local/adaptation-editor.html\\"
+        \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\"
     }
 }
 ",
@@ -287,7 +287,7 @@ server:
           ignoreCertErrors: false
         rta:
           editors:
-            - path: /local/adaptation-editor.html
+            - path: /test/adaptation-editor.html
               developerMode: true
     - name: ui5-proxy-middleware
       afterMiddleware: preview-middleware
@@ -295,8 +295,8 @@ server:
       afterMiddleware: preview-middleware
       configuration:
         backend:
-          - url: http://sap.example
-            path: /sap
+          url: http://sap.example
+          path: /sap
         options:
           secure: true
 ",
@@ -321,7 +321,7 @@ server:
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
-        \\"start-editor\\": \\"fiori run --open /local/adaptation-editor.html\\",
+        \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
         \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"undeploy --config ui5-deploy.yaml --lrep 'apps/the.original.app/appVariants/my.test.app/'\\"
     }
@@ -378,8 +378,8 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          url: http://sap.example
-          path: /sap
+          - url: http://sap.example
+            path: /sap
 ",
     "state": "modified",
   },
@@ -418,7 +418,7 @@ dist/
     \\"scripts\\": {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
         \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
-        \\"start-editor\\": \\"ui5 serve --open /local/adaptation-editor.html\\"
+        \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\"
     }
 }
 ",
@@ -442,7 +442,7 @@ server:
           ignoreCertErrors: false
         rta:
           editors:
-            - path: /local/adaptation-editor.html
+            - path: /test/adaptation-editor.html
               developerMode: true
     - name: ui5-proxy-middleware
       afterMiddleware: preview-middleware
@@ -450,8 +450,8 @@ server:
       afterMiddleware: preview-middleware
       configuration:
         backend:
-          - url: http://sap.example
-            path: /sap
+          url: http://sap.example
+          path: /sap
         options:
           secure: true
 ",
