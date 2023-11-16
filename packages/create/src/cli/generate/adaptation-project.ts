@@ -18,8 +18,8 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
         .option('--reference [reference]', 'id of the original application')
         .option('--url [url]', 'url pointing to the target system containing the original app')
         .option('--ft', 'enable the Fiori tools for the generated project')
-        .option('--package', 'ABAP package to be used for deployments')
-        .option('--transport', 'ABAP transport to be used for deployments')
+        .option('--package [package]', 'ABAP package to be used for deployments')
+        .option('--transport [transport]', 'ABAP transport to be used for deployments')
         .action(async (path, options) => {
             await generateAdaptationProject(path, { ...options }, !!options.simulate, !!options.skipInstall);
         });
