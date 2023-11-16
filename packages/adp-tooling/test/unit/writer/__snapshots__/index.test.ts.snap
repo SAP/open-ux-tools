@@ -25,7 +25,7 @@ Object {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
         \\"start\\": \\"<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/adaptation-editor.html\\"<%if (locals.deploy) {%>,
-        \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
+        \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task <%= locals.options?.fioriTools ? 'deploy-to-abap' : 'abap-deploy-task' %> generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"undeploy --config ui5-deploy.yaml --lrep 'apps/<%= app.reference %>/appVariants/<%= app.id %>/'\\"<%}%>
     }
 }
@@ -140,7 +140,7 @@ Object {
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
         \\"start\\": \\"<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/adaptation-editor.html\\"<%if (locals.deploy) {%>,
-        \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
+        \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task <%= locals.options?.fioriTools ? 'deploy-to-abap' : 'abap-deploy-task' %> generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"undeploy --config ui5-deploy.yaml --lrep 'apps/<%= app.reference %>/appVariants/<%= app.id %>/'\\"<%}%>
     }
 }
@@ -322,7 +322,7 @@ server:
         \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
+        \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task deploy-to-abap generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"undeploy --config ui5-deploy.yaml --lrep 'apps/the.original.app/appVariants/my.test.app/'\\"
     }
 }
