@@ -55,7 +55,10 @@ describe('ADP writer', () => {
                 fs
             );
             expect(
-                fs.dump(projectDir, (file) => ['package.json', 'ui5-deploy.yaml'].includes(file.basename))
+                fs.dump(
+                    projectDir,
+                    (file) => file.dirname === projectDir && ['package.json', 'ui5-deploy.yaml'].includes(file.basename)
+                )
             ).toMatchSnapshot();
         });
 
@@ -75,7 +78,12 @@ describe('ADP writer', () => {
                 fs
             );
             expect(
-                fs.dump(projectDir, (file) => ['package.json', 'ui5.yaml', 'ui5-deploy.yaml'].includes(file.basename))
+                fs.dump(
+                    projectDir,
+                    (file) =>
+                        file.dirname === projectDir &&
+                        ['package.json', 'ui5.yaml', 'ui5-deploy.yaml'].includes(file.basename)
+                )
             ).toMatchSnapshot();
         });
     });
