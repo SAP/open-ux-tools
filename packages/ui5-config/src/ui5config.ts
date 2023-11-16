@@ -295,10 +295,12 @@ export class UI5Config {
      */
     public addAbapDeployTask(target: AbapTarget, app: BspApp | Adp, fioriTools = true) {
         this.document.appendTo({
-            path: 'builder.resources',
-            value: {
-                excludes: ['/test/**', '/localService/**']
-            }
+            path: 'builder.resources.excludes',
+            value: '/test/**'
+        });
+        this.document.appendTo({
+            path: 'builder.resources.excludes',
+            value: '/localService/**'
         });
         this.document.appendTo({
             path: 'builder.customTasks',
