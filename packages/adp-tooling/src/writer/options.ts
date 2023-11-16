@@ -92,7 +92,7 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
                 rta: {
                     editors: [
                         {
-                            path: '/local/editor.html',
+                            path: '/local/adaptation-editor.html',
                             developerMode: true
                         }
                     ]
