@@ -44,7 +44,7 @@ describe('generate/adaptation-project', () => {
         // Test execution
         const command = new Command('generate');
         addGenerateAdaptationProjectCommand(command);
-        await command.parseAsync(getArgv('--id', id, '--reference', reference, '--url', url));
+        await command.parseAsync(getArgv('--id', id, '--reference', reference, '--url', `${url}?sap-client=123`));
 
         const expectedAppRoot = join(process.cwd(), id);
         // Flow check
@@ -56,7 +56,7 @@ describe('generate/adaptation-project', () => {
             expectedAppRoot,
             expect.objectContaining({
                 app: { id, reference, layer },
-                target: { url }
+                target: { url, client: '123' }
             } as Partial<adp.AdpWriterConfig>)
         );
     });
