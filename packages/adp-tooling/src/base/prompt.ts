@@ -72,6 +72,12 @@ export async function promptGeneratorInput(defaults: PromptDefaults = {}): Promi
             message: 'Target system url:',
             initial: defaults.url,
             validate: (input) => input?.length > 0
+        },
+        {
+            type: 'text',
+            name: 'client',
+            message: 'Client (optional):',
+            validate: (input) => (input ? input.length < 4 : true)
         }
     ]);
     const deploy = await prompts([
