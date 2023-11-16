@@ -57,7 +57,7 @@ async function generateAdaptationProject(
                 },
                 deploy: {
                     package: defaults.package ? defaults.package.toUpperCase() : '$TMP',
-                    transport: defaults.transport
+                    transport: defaults.transport ? defaults.transport.toUpperCase() : undefined
                 },
                 options: {
                     fioriTools: defaults.ft
