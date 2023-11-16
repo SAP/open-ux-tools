@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { AdpWriterConfig } from '../types';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { enhanceUI5Yaml, enhanceUI5DeployYaml } from './options';
+import { enhanceUI5Yaml, enhanceUI5DeployYaml, hasDeployConfig } from './options';
 
 /**
  * Set default values for optional properties.
@@ -57,7 +57,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     enhanceUI5Yaml(ui5Config, fullConfig);
     fs.write(ui5ConfigPath, ui5Config.toString());
     // ui5-deploy.yaml
-    if (fullConfig.deploy) {
+    if (hasDeployConfig(fullConfig)) {
         const ui5DeployConfig = await UI5Config.newInstance(baseUi5ConfigContent);
         enhanceUI5DeployYaml(ui5Config, fullConfig);
         fs.write(join(basePath, 'ui5-deploy.yaml'), ui5DeployConfig.toString());

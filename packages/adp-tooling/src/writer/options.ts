@@ -13,15 +13,27 @@ export function enhanceUI5Yaml(ui5Config: UI5Config, config: AdpWriterConfig) {
 }
 
 /**
+ * Writer configuration with deploy configuration.
+ */
+type AdpWriterConfigWithDeploy = AdpWriterConfig & { deploy: NonNullable<AdpWriterConfig['deploy']> };
+
+/**
+ * Checks if a writer config has a deploy configuration.
+ *
+ * @param config a writer configuration
+ * @returns typecasted config if it contains a deploy config
+ */
+export function hasDeployConfig(config: AdpWriterConfig): config is AdpWriterConfigWithDeploy {
+    return !!config.deploy;
+}
+
+/**
  * Generate the configuration for the tasks required for the ui5-deploy.yaml.
  *
  * @param ui5Config configuration representing the ui5.yaml
  * @param config full project configuration
  */
-export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConfig) {
-    if (!config.deploy) {
-        throw new Error('Invalid config error.');
-    }
+export function enhanceUI5DeployYaml(ui5Config: UI5Config, config: AdpWriterConfigWithDeploy) {
     ui5Config.addAbapDeployTask(config.target, config.deploy, config.options?.fioriTools);
 }
 
