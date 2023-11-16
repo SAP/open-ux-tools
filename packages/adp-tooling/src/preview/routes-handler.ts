@@ -215,7 +215,7 @@ export default class RoutesHandler {
             }
 
             if (controllerExists && !fs.existsSync(controllerPath)) {
-                const errorMsg = `Please delete change file at "${changeFilePath}" and try again to create controller extension`;
+                const errorMsg = `Please delete the change file at "${changeFilePath}" and retry creating the controller extension.`;
                 this.logger.debug(errorMsg);
                 res.status(HttpStatusCodes.NOT_FOUND).send({ message: errorMsg });
                 return;
