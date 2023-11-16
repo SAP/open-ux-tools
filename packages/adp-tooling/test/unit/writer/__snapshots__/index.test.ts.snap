@@ -15,7 +15,7 @@ Object {
     ],
     \\"dependencies\\": {},
     \\"devDependencies\\": {
-        <%if (locals.options?.fioriTools) {%>\\"@sap/ux-ui5-tooling\\": \\"^1.1.14\\"<%} else {%>\\"@sap-ux/backend-proxy-middleware\\": \\"^0.7.5\\",
+        <%if (locals.options?.fioriTools) {%>\\"@sap/ux-ui5-tooling\\": \\"^1.11.4\\"<%} else {%>\\"@sap-ux/backend-proxy-middleware\\": \\"^0.7.5\\",
         \\"@sap-ux/preview-middleware\\": \\"^0.11.1\\",
         \\"@sap-ux/ui5-proxy-middleware\\": \\"^1.3.0\\",
         \\"@sap-ux/deploy-tooling\\": \\"^0.11.7\\"<%}%>,
@@ -98,9 +98,9 @@ metadata:
 type: application
 builder:
   resources:
-    - excludes:
-        - /test/**
-        - /localService/**
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: abap-deploy-task
       afterTask: generateCachebusterInfo
@@ -130,7 +130,7 @@ Object {
     ],
     \\"dependencies\\": {},
     \\"devDependencies\\": {
-        <%if (locals.options?.fioriTools) {%>\\"@sap/ux-ui5-tooling\\": \\"^1.1.14\\"<%} else {%>\\"@sap-ux/backend-proxy-middleware\\": \\"^0.7.5\\",
+        <%if (locals.options?.fioriTools) {%>\\"@sap/ux-ui5-tooling\\": \\"^1.11.4\\"<%} else {%>\\"@sap-ux/backend-proxy-middleware\\": \\"^0.7.5\\",
         \\"@sap-ux/preview-middleware\\": \\"^0.11.1\\",
         \\"@sap-ux/ui5-proxy-middleware\\": \\"^1.3.0\\",
         \\"@sap-ux/deploy-tooling\\": \\"^0.11.7\\"<%}%>,
@@ -194,9 +194,9 @@ metadata:
 type: application
 builder:
   resources:
-    - excludes:
-        - /test/**
-        - /localService/**
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: abap-deploy-task
       afterTask: generateCachebusterInfo
@@ -315,7 +315,7 @@ server:
     ],
     \\"dependencies\\": {},
     \\"devDependencies\\": {
-        \\"@sap/ux-ui5-tooling\\": \\"^1.1.14\\",
+        \\"@sap/ux-ui5-tooling\\": \\"^1.11.4\\",
         \\"@ui5/cli\\": \\"^3.6.0\\"
     },
     \\"scripts\\": {
@@ -338,9 +338,9 @@ metadata:
 type: application
 builder:
   resources:
-    - excludes:
-        - /test/**
-        - /localService/**
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: deploy-to-abap
       afterTask: generateCachebusterInfo

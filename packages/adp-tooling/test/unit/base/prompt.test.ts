@@ -56,7 +56,7 @@ describe('base/prompts', () => {
                     url: defaults.url
                 },
                 deploy: {
-                    'package': defaults.package,
+                    package: defaults.package,
                     transport: defaults.transport
                 },
                 options: {
