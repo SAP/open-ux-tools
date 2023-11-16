@@ -79,7 +79,7 @@ function getFioriToolsMiddlwares(config: AdpWriterConfig): CustomMiddleware<unkn
  * @param config full project configuration
  * @returns list of required middlewares.
  */
-function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<unknown | undefined>[] {
+function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<object | undefined>[] {
     return [
         {
             name: 'preview-middleware',

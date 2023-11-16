@@ -290,10 +290,10 @@ export class UI5Config {
      * @param target system that this app is to be deployed to
      * @param app application configuration for the deployment to ABAP
      * @param fioriTools if true use the middleware included in the @sap/ux-ui5-tooling module
-     * @returns {UI5Config} the UI5Config instance
+     * @returns this UI5Config instance
      * @memberof UI5Config
      */
-    public addAbapDeployTask(target: AbapTarget, app: BspApp | Adp, fioriTools = true): UI5Config {
+    public addAbapDeployTask(target: AbapTarget, app: BspApp | Adp, fioriTools = true) {
         this.document.appendTo({
             path: 'builder.resources',
             value: {
