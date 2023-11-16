@@ -39,6 +39,7 @@ describe('base/prompts', () => {
                 defaults.reference,
                 'My Title',
                 defaults.url,
+                undefined,
                 defaults.package,
                 defaults.transport,
                 false

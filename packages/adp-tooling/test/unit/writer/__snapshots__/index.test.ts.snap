@@ -96,6 +96,19 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+builder:
+  resources:
+    - excludes:
+        - /test/**
+        - /localService/**
+  customTasks:
+    - name: abap-deploy-task
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://sap.example
+        app:
+          package: $TMP
 ",
     "state": "modified",
   },
@@ -179,6 +192,19 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+builder:
+  resources:
+    - excludes:
+        - /test/**
+        - /localService/**
+  customTasks:
+    - name: abap-deploy-task
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://sap.example
+        app:
+          package: $TMP
 ",
     "state": "modified",
   },
@@ -310,6 +336,19 @@ specVersion: \\"3.0\\"
 metadata:
   name: my.test.app
 type: application
+builder:
+  resources:
+    - excludes:
+        - /test/**
+        - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://sap.example
+        app:
+          package: $TMP
 ",
     "state": "modified",
   },
