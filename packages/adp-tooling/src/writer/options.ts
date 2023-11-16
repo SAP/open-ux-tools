@@ -107,10 +107,12 @@ function getOpenSourceMiddlewares(config: AdpWriterConfig): CustomMiddleware<obj
             name: 'backend-proxy-middleware',
             afterMiddleware: 'preview-middleware',
             configuration: {
-                backend: {
-                    ...config.target,
-                    path: '/sap'
-                },
+                backend: [
+                    {
+                        ...config.target,
+                        path: '/sap'
+                    }
+                ],
                 options: {
                     secure: true
                 }

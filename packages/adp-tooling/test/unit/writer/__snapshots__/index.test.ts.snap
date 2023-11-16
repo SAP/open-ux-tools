@@ -234,8 +234,8 @@ server:
       afterMiddleware: preview-middleware
       configuration:
         backend:
-          url: http://sap.example
-          path: /sap
+          - url: http://sap.example
+            path: /sap
         options:
           secure: true
 ",
@@ -295,8 +295,8 @@ server:
       afterMiddleware: preview-middleware
       configuration:
         backend:
-          url: http://sap.example
-          path: /sap
+          - url: http://sap.example
+            path: /sap
         options:
           secure: true
 ",
@@ -450,8 +450,8 @@ server:
       afterMiddleware: preview-middleware
       configuration:
         backend:
-          url: http://sap.example
-          path: /sap
+          - url: http://sap.example
+            path: /sap
         options:
           secure: true
 ",
