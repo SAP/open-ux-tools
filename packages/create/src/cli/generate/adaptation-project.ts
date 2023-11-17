@@ -1,4 +1,5 @@
 import type { Command } from 'commander';
+import chalk from 'chalk';
 import { getLogger, traceChanges } from '../../tracing';
 import type { AdpWriterConfig, PromptDefaults } from '@sap-ux/adp-tooling';
 import { promptGeneratorInput, generate } from '@sap-ux/adp-tooling';
@@ -21,6 +22,14 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
         .option('--package [package]', 'ABAP package to be used for deployments')
         .option('--transport [transport]', 'ABAP transport to be used for deployments')
         .action(async (path, options) => {
+            console.log(
+                `\nThe generation of adaptation projects outside of SAP Business Application Studio is currently ${chalk.bold(
+                    'experimental'
+                )}.`
+            );
+            console.log(
+                'Please report any issues or feedback at https://github.com/SAP/open-ux-tools/issues/new/choose.\n'
+            );
             await generateAdaptationProject(path, { ...options }, !!options.simulate, !!options.skipInstall);
         });
 }
