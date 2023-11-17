@@ -1,6 +1,6 @@
 import type { Client } from './client';
-import * as telemetryPackageJSON from '../../../package.json';
 import { ToolsSuiteTelemetryClient } from '../../tooling-telemetry';
+import { TelemetrySettings } from '../config-state';
 
 class ClientFactory {
     private static clientMap = new Map<string, Client>();
@@ -18,9 +18,9 @@ class ClientFactory {
         }
 
         client = new clientConstructor(
-            telemetryPackageJSON.azureInstrumentationKey,
-            telemetryPackageJSON.name,
-            telemetryPackageJSON.version
+            TelemetrySettings.azureInstrumentationKey,
+            TelemetrySettings.telemetryLibName,
+            TelemetrySettings.telemetryLibVersion
         );
 
         ClientFactory.clientMap.set(clientConstructor.name, client);

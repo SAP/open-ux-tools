@@ -6,6 +6,7 @@ import os from 'os';
 import path from 'path';
 import fs from 'fs';
 import { getCommonProperties } from './data-processor';
+import { TelemetrySettings } from '../base/config-state';
 
 const deprecatedSettingPaths: Record<string, string> = {
     win32: '\\AppData\\Roaming\\Code\\User\\settings.json',
@@ -35,35 +36,7 @@ const definePath = (paths: Record<string, string>): string | null => {
     return path.join(homedir, settingsPath);
 };
 
-export const setEnableTelemetry = async (enableTelemetry: boolean): Promise<void> => {
-    try {
-        const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
-            entityName: 'telemetrySetting'
-        });
-        const setting = new TelemetrySetting({ enableTelemetry });
-        await storeService.write(setting);
-        telemetrySettings.telemetryEnabled = enableTelemetry;
-    } catch (e) {
-        console.error(`Telemetry settings could not be written. Error : ${e.message}`);
-    }
 
-    const commonProperties = await getCommonProperties();
-
-    reportEnableTelemetryOnOff(enableTelemetry, commonProperties as Record<string, string>);
-};
-
-export const getTelemetrySetting = async (): Promise<TelemetrySetting | undefined> => {
-    let setting: TelemetrySetting | undefined;
-    try {
-        const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
-            entityName: 'telemetrySetting'
-        });
-        setting = await storeService.read(new TelemetrySettingKey());
-    } catch {
-        // ignore if settings could not be read, return undefined
-    }
-    return setting;
-};
 
 const readEnableTelemetryFromSetting = async (): Promise<void> => {
     const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
@@ -102,24 +75,17 @@ const readEnableTelemetryFromSetting = async (): Promise<void> => {
             }
         }
     } else {
-        TelemetrySystem.telemetryEnabled = setting.enableTelemetry;
+        TelemetrySettings.telemetryEnabled = setting.enableTelemetry;
     }
 
     getFilesystemWatcherFor(Entity.TelemetrySetting, async () => {
         const watchedSetting = await storeService.read(new TelemetrySettingKey());
-        TelemetrySystem.telemetryEnabled = watchedSetting.enableTelemetry;
+        if (watchedSetting) {
+            TelemetrySettings.telemetryEnabled = watchedSetting.enableTelemetry;
+        }
     });
 };
 
-const initToolsSuiteTelemetrySettings = async (): Promise<void> => {
-    TelemetrySystem.telemetryEnabled = true;
-    await readEnableTelemetryFromSetting();
-};
-
-const initWithInputManifest = async (options: ToolsSuiteTelemetryInitSettings): Promise<void> => {
-    TelemetrySystem.manifest = options.modulePackageJson as unknown as manifest | VSCodeManifest;
-    await initToolsSuiteTelemetrySettings();
-};
 
 /**
  * Telemetry API function to init settings.
@@ -127,8 +93,49 @@ const initWithInputManifest = async (options: ToolsSuiteTelemetryInitSettings): 
  */
 export const initTelemetrySettings = async (options: ToolsSuiteTelemetryInitSettings): Promise<void> => {
     try {
-        await initWithInputManifest(options);
+        TelemetrySettings.telemetryLibName = options.modulePackageJson.name;
+        TelemetrySettings.telemetryLibName = options.modulePackageJson.name;
+        await readEnableTelemetryFromSetting();
     } catch (err) {
         reportRuntimeError(err);
     }
+};
+
+/**
+ * Toggle on/off enable telemetry setting. This will update telemetry settings file
+ * and the runtime setting.
+ * 
+ * @param enableTelemetry 
+ */
+export async function setEnableTelemetry(enableTelemetry: boolean): Promise<void> {
+    try {
+        const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
+            entityName: 'telemetrySetting'
+        });
+        const setting = new TelemetrySetting({ enableTelemetry });
+        await storeService.write(setting);
+        TelemetrySettings.telemetryEnabled = enableTelemetry;
+    } catch (e) {
+        console.error(`Telemetry settings could not be written. Error : ${e.message}`);
+    }
+
+    const commonProperties = await getCommonProperties();
+    reportEnableTelemetryOnOff(enableTelemetry, commonProperties as Record<string, string>);
+};
+
+/**
+ * 
+ * @returns 
+ */
+export async function getTelemetrySetting(): Promise<TelemetrySetting | undefined> {
+    let setting: TelemetrySetting | undefined;
+    try {
+        const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
+            entityName: 'telemetrySetting'
+        });
+        setting = await storeService.read(new TelemetrySettingKey());
+    } catch {
+        // ignore if settings could not be read, return undefined
+    }
+    return setting;
 };
