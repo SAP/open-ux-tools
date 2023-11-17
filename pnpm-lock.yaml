@@ -1215,10 +1215,16 @@ importers:
         version: link:../btp-utils
       '@sap-ux/project-access':
         specifier: 1.14.0
-        version: link:../project-access
+        version: 1.14.0
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@sap-ux/ui5-config':
+        specifier: 0.20.0
+        version: link:../ui5-config
+      '@sap/ux-specification':
+        specifier: 1.108.18
+        version: 1.108.18
       applicationinsights:
         specifier: 2.9.0
         version: 2.9.0
@@ -7026,6 +7032,51 @@ packages:
       rollup: 3.29.1
     dev: true
 
+  /@sap-ux/fe-fpm-writer@0.24.0:
+    resolution: {integrity: sha512-ki2ZazdT8DfuPUgN8P8c+R8SqjT28JDSrYOPAA9EqKR1n24MyjerKq+49mRJ8fjR6iGciMG7UqbNkj6Sy/KCoA==}
+    engines: {node: '>=18.x', pnpm: '>=6.26.1 < 7.0.0 || >=7.1.0'}
+    dependencies:
+      '@xmldom/xmldom': 0.8.10
+      ejs: 3.1.9
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
+      semver: 7.5.4
+      xml-formatter: 2.6.1
+      xpath: 0.0.33
+    dev: false
+
+  /@sap-ux/project-access@1.14.0:
+    resolution: {integrity: sha512-b6wVMtRegLWdoJW+ry+7nps29YcKE24od4nxiB1Xm554pEcpT0Qx2qYN3ze7C7ukb+TsamXk3FXu2ooKU73YTw==}
+    engines: {node: '>=18.x', pnpm: '>=6.26.1 < 7.0.0 || >=7.1.0'}
+    dependencies:
+      '@sap-ux/ui5-config': 0.20.0
+      findit2: 2.2.3
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
+    dev: false
+
+  /@sap-ux/ui5-config@0.20.0:
+    resolution: {integrity: sha512-lScRNCo1eBoNfN4u5r3LcG/88S7vasq/6TwWmbFmEtGHepagy1jgRcvZYdx8P8+SGu6xUnC9QGt+hRF0yiX5jQ==}
+    engines: {node: '>=18.x', pnpm: '>=6.26.1 < 7.0.0 || >=7.1.0'}
+    dependencies:
+      '@sap-ux/yaml': 0.14.0
+      lodash: 4.17.21
+      semver: 7.5.4
+    dev: false
+
+  /@sap-ux/vocabularies-types@0.10.0:
+    resolution: {integrity: sha512-uTQ2tJJes9qGGAn8e/Npvy0grIul3mAVHzjxsj10U3lF+RZsoFawsdYGxvb6sJYkhY+YEsQzL8GTL6tyYpMv8g==}
+    engines: {node: '>=18.0.0 < 19.0.0 || >=20.0.0 < 21.0.0', pnpm: '>=8'}
+    dev: false
+
+  /@sap-ux/yaml@0.14.0:
+    resolution: {integrity: sha512-q5T0iwm9HaXMGz2cDwLGM+dRzUYhKSMvY5Uumhoxn7+4K43vsj/mD/CVXpoaic8qnau1LxU5mwT2GqBc1M92eQ==}
+    engines: {node: '>=18.x', pnpm: '>=6.26.1 < 7.0.0 || >=7.1.0'}
+    dependencies:
+      lodash: 4.17.21
+      yaml: 2.2.2
+    dev: false
+
   /@sap/bas-sdk@3.1.0:
     resolution: {integrity: sha512-zmChDaGXFnkAcYaXvIjEsJ5z2jmW22Pc19xTSTswpl3YlhZTLM2WzEEW//sBhV9/zoKOx2UQfODBp+EM1YghZA==}
     dependencies:
@@ -7047,6 +7098,14 @@ packages:
       lodash: 4.17.21
       properties-reader: 2.2.0
       url: 0.11.0
+    dev: false
+
+  /@sap/ux-specification@1.108.18:
+    resolution: {integrity: sha512-S+Qf54NKbCiMgZqRBPm6m/2OzvAQHPHKjlkpugUklHFk7jAmLCvJyb5gLvcqt4QIWcdVpFer+Xtw1szQO6K+Zw==}
+    engines: {node: '>= 18.0.0 < 19.0.0 || >= 20.0.0 < 21.0.0 || >= 22.0.0', yarn: '>=1.22.19 < 2'}
+    dependencies:
+      '@sap-ux/fe-fpm-writer': 0.24.0
+      '@sap-ux/vocabularies-types': 0.10.0
     dev: false
 
   /@sapui5/types@1.120.0:
