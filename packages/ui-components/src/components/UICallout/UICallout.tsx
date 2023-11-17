@@ -6,11 +6,13 @@ import type {
     IStyleFunctionOrObject,
     ICalloutContentStyleProps
 } from '@fluentui/react';
-import { Callout } from '@fluentui/react';
+import { Callout, getDocument } from '@fluentui/react';
+import { isHTMLElement, redirectFocusToSibling } from '../../utilities';
 
 export interface UICalloutProps extends ICalloutProps {
     calloutMinWidth?: number;
     contentPadding?: UICalloutContentPadding;
+    focusTargetSiblingOnTab?: Boolean;
 }
 
 export const CALLOUT_STYLES = {
@@ -95,6 +97,28 @@ export class UICallout extends React.Component<UICalloutProps, {}> {
      */
     public constructor(props: UICalloutProps) {
         super(props);
+        this.onKeyDown = this.onKeyDown.bind(this);
+    }
+
+    private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+        const { onKeyDown, focusTargetSiblingOnTab, target } = this.props;
+        if (event.key === 'Tab' && focusTargetSiblingOnTab && target) {
+            let targetRef: HTMLElement | null = null;
+            if (typeof target === 'string') {
+                const currentDoc: Document = getDocument()!;
+                targetRef = currentDoc ? currentDoc.querySelector(target) : null;
+            } else if ('getBoundingClientRect' in target && isHTMLElement(target)) {
+                targetRef = target;
+            }
+            if (targetRef) {
+                redirectFocusToSibling(targetRef, !event.shiftKey);
+                // Stop event bubbling to avoid default browser behavior
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        }
+        // Call other subscrib
+        onKeyDown?.(event);
     }
 
     /**
@@ -102,7 +126,7 @@ export class UICallout extends React.Component<UICalloutProps, {}> {
      */
     render(): JSX.Element {
         return (
-            <Callout {...this.props} styles={getCalloutStyle(this.props)}>
+            <Callout {...this.props} onKeyDown={this.onKeyDown} styles={getCalloutStyle(this.props)}>
                 {this.props.children}
             </Callout>
         );
