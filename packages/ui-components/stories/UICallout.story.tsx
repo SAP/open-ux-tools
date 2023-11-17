@@ -70,7 +70,7 @@ const CalloutWithItems = (props: { id: string }): JSX.Element => {
                     calloutWidth={300}
                     calloutMinWidth={300}
                     contentPadding={UICalloutContentPadding.Standard}
-                    focusTargetSiblingOnTab={true}>
+                    focusTargetSiblingOnTabPress={true}>
                     <div>
                         <UIFocusZone>
                             <UIDefaultButton onClick={toggleCallout}>Option 1</UIDefaultButton>

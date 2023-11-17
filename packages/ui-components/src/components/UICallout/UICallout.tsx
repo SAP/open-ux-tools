@@ -12,7 +12,7 @@ import { isHTMLElement, redirectFocusToSibling } from '../../utilities';
 export interface UICalloutProps extends ICalloutProps {
     calloutMinWidth?: number;
     contentPadding?: UICalloutContentPadding;
-    focusTargetSiblingOnTab?: Boolean;
+    focusTargetSiblingOnTabPress?: boolean;
 }
 
 export const CALLOUT_STYLES = {
@@ -100,9 +100,15 @@ export class UICallout extends React.Component<UICalloutProps, {}> {
         this.onKeyDown = this.onKeyDown.bind(this);
     }
 
+    /**
+     * Method handles keydown event.
+     * If "focusTargetSiblingOnTabPress" property is set and 'Tab' key is pressed, then method tries to focus next/previous sibling based on target.
+     *
+     * @param event Keydown event
+     */
     private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
-        const { onKeyDown, focusTargetSiblingOnTab, target } = this.props;
-        if (event.key === 'Tab' && focusTargetSiblingOnTab && target) {
+        const { onKeyDown, focusTargetSiblingOnTabPress, target } = this.props;
+        if (focusTargetSiblingOnTabPress && event.key === 'Tab' && target) {
             let targetRef: HTMLElement | null = null;
             if (typeof target === 'string') {
                 const currentDoc: Document = getDocument()!;
@@ -111,13 +117,14 @@ export class UICallout extends React.Component<UICalloutProps, {}> {
                 targetRef = target;
             }
             if (targetRef) {
-                redirectFocusToSibling(targetRef, !event.shiftKey);
-                // Stop event bubbling to avoid default browser behavior
-                event.stopPropagation();
-                event.preventDefault();
+                if (redirectFocusToSibling(targetRef, !event.shiftKey)) {
+                    // Stop event bubbling to avoid default browser behavior
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
             }
         }
-        // Call other subscrib
+        // Call external subscriber
         onKeyDown?.(event);
     }
 

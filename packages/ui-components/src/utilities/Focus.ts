@@ -18,14 +18,21 @@ export { getPreviousElement };
  *
  * @param source Source/current element.
  * @param next `true` if should focus next or `false` if should focus previous.
+ * @returns True if element found and focused.
  */
-export function redirectFocusToSibling(source: HTMLElement, next: boolean): void {
+export function redirectFocusToSibling(source: HTMLElement, next: boolean): boolean {
     const document = getDocument();
     if (document) {
+        let element: HTMLElement | null = null;
         if (next) {
-            getNextElement(document.body, source, false, false, true, true)?.focus();
+            element = getNextElement(document.body, source, false, false, true, true);
         } else {
-            getPreviousElement(document.body, source, false, false, true, true)?.focus();
+            element = getPreviousElement(document.body, source, false, false, true, true);
+        }
+        if (element) {
+            element.focus();
+            return true;
         }
     }
+    return false;
 }
