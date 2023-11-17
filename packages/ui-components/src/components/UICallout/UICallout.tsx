@@ -110,10 +110,10 @@ export class UICallout extends React.Component<UICalloutProps, {}> {
     private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
         const { onKeyDown, focusTargetSiblingOnTabPress, target } = this.props;
         if (focusTargetSiblingOnTabPress && event.key === 'Tab' && target) {
-            let targetRef: HTMLElement | null = null;
+            let targetRef: HTMLElement | null | undefined = null;
             if (typeof target === 'string') {
-                const currentDoc: Document = getDocument()!;
-                targetRef = currentDoc ? currentDoc.querySelector(target) : null;
+                const currentDoc = getDocument();
+                targetRef = currentDoc?.querySelector(target);
             } else if ('getBoundingClientRect' in target && isHTMLElement(target)) {
                 targetRef = target;
             }
