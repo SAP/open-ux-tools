@@ -102,7 +102,8 @@ export class UICallout extends React.Component<UICalloutProps, {}> {
 
     /**
      * Method handles keydown event.
-     * If "focusTargetSiblingOnTabPress" property is set and 'Tab' key is pressed, then method tries to focus next/previous sibling based on target.
+     * If "focusTargetSiblingOnTabPress" property is set and 'Tab' key is pressed,
+     *  then method tries to focus next/previous sibling based on target.
      *
      * @param event Keydown event
      */
