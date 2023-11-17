@@ -91,6 +91,14 @@ export function generate(basePath: string, data: CustomPage, fs?: Editor): Edito
     if (!fs.exists(viewPath)) {
         fs.copyTpl(join(root, 'ext/View.xml'), viewPath, config);
     }
+    // i18n.properties
+    const i18nPath = join(basePath, 'webapp', 'i18n', 'i18n.properties');
+    const i18TemplatePath = join(root, 'i18n', 'i18n.properties');
+    if (fs.exists(i18nPath)) {
+        fs.append(i18nPath, render(fs.read(i18TemplatePath), config, {}));
+    } else {
+        fs.copyTpl(i18TemplatePath, i18nPath, config);
+    }
 
     const ext = data.typescript ? 'ts' : 'js';
     const controllerPath = join(config.path, `${config.name}.controller.${ext}`);
