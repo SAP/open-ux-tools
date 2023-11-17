@@ -42,8 +42,6 @@ describe('CustomPage', () => {
         2
     );
 
-    const i18nExpectedAfterSave = `#XTIT: Custom view title\ntitle=CustomPage`;
-
     beforeEach(() => {
         fs = create(createStorage());
         fs.delete(testDir);
@@ -255,7 +253,7 @@ describe('CustomPage', () => {
             expect(result).toEqual(expectedAfterSave);
 
             const updatedI18nProperties = fs.read(join(target, 'webapp/i18n/i18n.properties'));
-            expect(updatedI18nProperties).toEqual(i18nExpectedAfterSave);
+            expect(updatedI18nProperties).toMatchSnapshot();
 
             // Generate another page and check if new tab sizing recalculated correctly without passing tab size info
             generateCustomPage(

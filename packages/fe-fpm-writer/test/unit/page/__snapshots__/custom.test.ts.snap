@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`CustomPage Test property custom "tabSizing" 1 tab 1`] = `
+"#XTIT: Custom view title
+title=CustomPage"
+`;
+
+exports[`CustomPage Test property custom "tabSizing" 2 tabs 1`] = `
+"#XTIT: Custom view title
+title=CustomPage"
+`;
+
+exports[`CustomPage Test property custom "tabSizing" 6 spaces 1`] = `
+"#XTIT: Custom view title
+title=CustomPage"
+`;
+
 exports[`CustomPage generateCustomPage: different navigations inbound navigation defined as array (for FCL) 1`] = `
 Object {
   "config": Object {
