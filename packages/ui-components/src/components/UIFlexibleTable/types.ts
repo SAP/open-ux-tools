@@ -114,7 +114,7 @@ export interface UIFlexibleTableProps<T> {
     reverseBackground?: boolean;
     noDataText?: string | React.ReactElement;
     // Disable drag using touch events
-    disableTouchDrag?: boolean;
+    isTouchDragDisabled?: boolean;
 }
 
 export interface NodeDragAndDropSortingParams {

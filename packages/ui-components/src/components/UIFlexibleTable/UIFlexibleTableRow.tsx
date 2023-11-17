@@ -208,10 +208,10 @@ function isRowDisabled(value: unknown): boolean {
  *
  * @param isDragDisabled Is row disabled for drag.
  * @param isDragged True if row is currently dragging.
- * @param disableTouchDrag Is drag disabled by touch events.
+ * @param isTouchDragDisabled Is drag disabled by touch events.
  * @returns {string} CSS styles for row item element.
  */
-function getRowStyles(isDragDisabled: boolean, isDragged: boolean, disableTouchDrag: boolean): CSSProperties {
+function getRowStyles(isDragDisabled: boolean, isDragged: boolean, isTouchDragDisabled: boolean): CSSProperties {
     const style: CSSProperties = {
         pointerEvents: 'all',
         cursor: isDragged ? 'grabbing' : 'inherit'
@@ -219,7 +219,7 @@ function getRowStyles(isDragDisabled: boolean, isDragged: boolean, disableTouchD
     if (isDragDisabled) {
         style.cursor = 'default';
     }
-    if (isDragDisabled || disableTouchDrag) {
+    if (isDragDisabled || isTouchDragDisabled) {
         style.touchAction = 'auto';
     }
     return style;
@@ -287,7 +287,7 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
 
     const style: CSSProperties = {
         ...params.props.style,
-        ...getRowStyles(isDragDisabled, isDragged, !!tableProps.disableTouchDrag)
+        ...getRowStyles(isDragDisabled, isDragged, !!tableProps.isTouchDragDisabled)
     };
 
     if (tableProps.isContentLoading) {
@@ -297,7 +297,7 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
     let onTouchStart: ((event: React.TouchEvent) => void) | undefined;
     let onTouchEnd: ((event: React.TouchEvent) => void) | undefined;
     // Disable drag using touch events
-    if (tableProps.disableTouchDrag) {
+    if (!isDragDisabled && tableProps.isTouchDragDisabled) {
         onTouchStart = (event: React.TouchEvent) => {
             event.nativeEvent.stopImmediatePropagation();
         };
