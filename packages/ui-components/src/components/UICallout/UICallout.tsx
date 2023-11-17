@@ -7,7 +7,7 @@ import type {
     ICalloutContentStyleProps
 } from '@fluentui/react';
 import { Callout, getDocument } from '@fluentui/react';
-import { isHTMLElement, redirectFocusToSibling } from '../../utilities';
+import { isHTMLElement, focusToSibling } from '../../utilities';
 
 export interface UICalloutProps extends ICalloutProps {
     calloutMinWidth?: number;
@@ -117,12 +117,10 @@ export class UICallout extends React.Component<UICalloutProps, {}> {
             } else if ('getBoundingClientRect' in target && isHTMLElement(target)) {
                 targetRef = target;
             }
-            if (targetRef) {
-                if (redirectFocusToSibling(targetRef, !event.shiftKey)) {
-                    // Stop event bubbling to avoid default browser behavior
-                    event.stopPropagation();
-                    event.preventDefault();
-                }
+            if (targetRef && focusToSibling(targetRef, !event.shiftKey)) {
+                // Stop event bubbling to avoid default browser behavior
+                event.stopPropagation();
+                event.preventDefault();
             }
         }
         // Call external subscriber
