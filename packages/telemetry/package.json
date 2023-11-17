@@ -30,10 +30,12 @@
         "@sap-ux/store": "workspace:*",
         "@sap-ux/project-access": "1.14.0",
         "@sap-ux/btp-utils": "0.12.0",
+        "@sap/ux-specification": "1.108.18",
         "applicationinsights": "2.9.0",
         "axios": "1.6.0",
         "performance-now": "2.1.0",
-        "yaml": "2.3.3"
+        "yaml": "2.3.3",
+        "@sap-ux/ui5-config": "0.20.0"
     },
     "devDependencies": {
         "jest-extended": "3.2.4",

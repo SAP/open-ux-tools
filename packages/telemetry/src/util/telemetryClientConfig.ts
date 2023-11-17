@@ -2,7 +2,7 @@ import type * as appInsights from 'applicationinsights';
 
 export function configAzureTelemetryClient(client: appInsights.TelemetryClient) {
     client.channel.setUseDiskRetryCaching(true);
-    // disabling GDPR sensitive data collection.
+    // disable GDPR private data that are collected by Azure AppInsight client.
     client.addTelemetryProcessor((envelope: appInsights.Contracts.Envelope) => {
         envelope.tags['ai.location.ip'] = '0.0.0.0';
         envelope.tags['ai.cloud.roleInstance'] = 'masked';

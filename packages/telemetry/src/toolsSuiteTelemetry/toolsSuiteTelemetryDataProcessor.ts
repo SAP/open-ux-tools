@@ -1,17 +1,9 @@
-/**
- * A callback function to be called by generic telemetry API. It takes the init settings options
- * passed to initTelemetrySettings API call, as well as properties and measurements passed to
- * ClientFactory.getTelemetryClient().report() as input. The output is specific properties and
- * measurements that are common th the tools suite telemetry events. These common
- * properties and measurements are then attached to every telemetry event.
- * @returns
- */
-
 import { isAppStudio } from '@sap-ux/btp-utils';
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'yaml';
+
 /**
  * Import with Tree shaking behaviour '@sap/ux-project-access/dist/project/utils'
  * performance optimization to remove unreachable code automatically from esbuild.
@@ -23,10 +15,9 @@ import yaml from 'yaml';
  * */
 import {
     findProjectRoot,
-    getProjectType,
     getAppProgrammingLanguage,
-    getAppType,
-    readFile, fileExists, readJSON
+    getProjectType,
+    getAppType
 } from '@sap-ux/project-access';
 import { isCapJavaProject, isCapNodeJsProject } from '@sap/ux-cds/dist/utils/capProject';
 import { ProjectType } from '@sapux/project-spec';
@@ -35,6 +26,7 @@ import { ODataSource, DeployTarget, CommonProperties, ToolsId } from './types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { spawn } from 'child_process';
 import os from 'os';
+import { CustomTask } from '@sap-ux/ui5-config';
 
 /**
  * @param initSettings Pass to initTelemetrySettings() api
@@ -76,6 +68,9 @@ export async function getCommonProperties(): Promise<CommonFioriProjectPropertie
 async function getSbasDevspace(): Promise<string> {
     if (isAppStudio()) {
         try {
+            if (!process.env.H2O_URL || !process.env.WORKSPACE_ID) {
+                return '';
+            }
             const h20Url = process.env.H2O_URL;
             const workspaceId = process.env.WORKSPACE_ID.replace('workspaces-', '');
             const url = `${h20Url}/ws-manager/api/v1/workspace/${workspaceId}`;
@@ -108,14 +103,14 @@ async function getAppProperties(appPath: string): Promise<Record<string, string>
     const sourceTemplate = await getManifestSourceTemplate(appPath);
     const appProgrammingLanguage = await getAppProgrammingLanguage(appPath);
     const applicationType = await getAppType(appPath, appPath);
-    const output = {};
+    const output: Record<string, string> = {};
     output[CommonProperties.TemplateType] = templateType;
     output[CommonProperties.DeployTargetType] = deployTarget;
     output[CommonProperties.ODataSourceType] = odataSource;
-    output[CommonProperties.AppToolsId] = sourceTemplate.toolsId;
+    output[CommonProperties.AppToolsId] = sourceTemplate.toolsId ?? '';
     output[CommonProperties.AppProgrammingLanguage] = appProgrammingLanguage;
-    output[CommonProperties.TemplateId] = sourceTemplate.id;
-    output[CommonProperties.TemplateVersion] = sourceTemplate.version;
+    output[CommonProperties.TemplateId] = sourceTemplate.id ?? '';
+    output[CommonProperties.TemplateVersion] = sourceTemplate.version ?? '';
     output[CommonProperties.ApplicationType] = applicationType;
 
     return output;
@@ -160,7 +155,7 @@ async function getODataSource(appPath: string): Promise<string> {
         // First attempt: Loop up a folder that contain a pacakge.json that has sapux property as project root
         // If appPath has package.json that contains sapux, it is EDMX project type and we derive odata source
         // is ABAP.
-        let projectRoot;
+        let projectRoot: string | undefined;
         try {
             projectRoot = await findProjectRoot(appPath);
         } catch {
@@ -207,6 +202,7 @@ async function getODataSource(appPath: string): Promise<string> {
     } catch (e) {
         return ODataSource.UNKNOWN;
     }
+    return ODataSource.UNKNOWN;
 }
 
 /**
@@ -219,17 +215,16 @@ async function getDeployTarget(appPath: string): Promise<string> {
     const deployConfigPath = path.join(appPath, 'ui5-deploy.yaml');
 
     try {
-        if (await fileExists(deployConfigPath)) {
-            const deployConfigContent = await readFile(deployConfigPath);
-            const deployConfig = yaml.parse(deployConfigContent);
-            const customTasks = deployConfig?.builder?.customTasks;
+        await fs.promises.access(deployConfigPath);
+        const deployConfigContent = await fs.promises.readFile(deployConfigPath, 'utf-8');
+        const deployConfig = yaml.parse(deployConfigContent);
+        const customTasks = deployConfig?.builder?.customTasks;
 
-            if (customTasks) {
-                const isAbapDeployTarget = customTasks.some((task) => task.name === 'deploy-to-abap');
-                deployTarget = isAbapDeployTarget ? DeployTarget.ABAP : DeployTarget.CF;
-            } else {
-                deployTarget = DeployTarget.UNKNOWN_DEPLOY_CONFIG;
-            }
+        if (customTasks) {
+            const isAbapDeployTarget = customTasks.some((task: CustomTask<unknown>) => task.name === 'deploy-to-abap');
+            deployTarget = isAbapDeployTarget ? DeployTarget.ABAP : DeployTarget.CF;
+        } else {
+            deployTarget = DeployTarget.UNKNOWN_DEPLOY_CONFIG;
         }
     } catch (error) {
         console.log(`[Telemetry]: ${error.message}`);
@@ -252,11 +247,12 @@ function getInternalVsExternal(): InternalFeature {
  * @returns sourceTemplate section of data from manifest.json
  */
 async function getManifestSourceTemplate(appPath: string): Promise<SourceTemplate> {
-    let sourceTemplate: SourceTemplate;
+    let sourceTemplate: SourceTemplate = {};
     try {
         const manifestPath = path.join(appPath, 'webapp', 'manifest.json');
         if (fs.existsSync(manifestPath)) {
-            const manifest = await readJSON(manifestPath);
+            const manifestStr = await fs.promises.readFile(manifestPath, 'utf-8');
+            const manifest = JSON.parse(manifestStr);
             sourceTemplate = manifest['sap.app']?.sourceTemplate;
         }
     } catch (err) {
