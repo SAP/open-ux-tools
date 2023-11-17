@@ -1,6 +1,6 @@
 import type { ToolsSuiteTelemetryInitSettings } from './types';
 import { reportRuntimeError, reportEnableTelemetryOnOff } from '../base/utils/reporting';
-import { getService, Entity, TelemetrySetting, TelemetrySettingKey, getFilesystemWatcherFor } from '@sap-ux/store';
+import { getService, Entity, TelemetrySetting, TelemetrySettingKey, getFilesystemWatcherFor, Service } from '@sap-ux/store';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import os from 'os';
 import path from 'path';
@@ -36,12 +36,8 @@ const definePath = (paths: Record<string, string>): string | null => {
     return path.join(homedir, settingsPath);
 };
 
+async function readEnableTelemetryFromStore(storeService: Service<TelemetrySetting, TelemetrySettingKey>): Promise<void> {
 
-
-const readEnableTelemetryFromSetting = async (): Promise<void> => {
-    const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
-        entityName: 'telemetrySetting'
-    });
     let setting: TelemetrySetting | undefined;
     try {
         setting = await storeService.read(new TelemetrySettingKey());
@@ -77,15 +73,17 @@ const readEnableTelemetryFromSetting = async (): Promise<void> => {
     } else {
         TelemetrySettings.telemetryEnabled = setting.enableTelemetry;
     }
+};
 
+
+function watchTelemetrySettingStore(storeService: Service<TelemetrySetting, TelemetrySettingKey>) {
     getFilesystemWatcherFor(Entity.TelemetrySetting, async () => {
         const watchedSetting = await storeService.read(new TelemetrySettingKey());
         if (watchedSetting) {
             TelemetrySettings.telemetryEnabled = watchedSetting.enableTelemetry;
         }
     });
-};
-
+}
 
 /**
  * Telemetry API function to init settings.
@@ -95,7 +93,13 @@ export const initTelemetrySettings = async (options: ToolsSuiteTelemetryInitSett
     try {
         TelemetrySettings.telemetryLibName = options.modulePackageJson.name;
         TelemetrySettings.telemetryLibName = options.modulePackageJson.name;
-        await readEnableTelemetryFromSetting();
+
+        const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
+            entityName: 'telemetrySetting'
+        });
+
+        await readEnableTelemetryFromStore(storeService);
+        watchTelemetrySettingStore(storeService);
     } catch (err) {
         reportRuntimeError(err);
     }
