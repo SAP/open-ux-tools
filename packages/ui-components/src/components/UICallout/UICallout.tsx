@@ -100,6 +100,10 @@ export class UICallout extends React.Component<UICalloutProps, {}> {
         this.onKeyDown = this.onKeyDown.bind(this);
     }
 
+    /**
+     *
+     * @param event
+     */
     private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
         const { onKeyDown, focusTargetSiblingOnTab, target } = this.props;
         if (event.key === 'Tab' && focusTargetSiblingOnTab && target) {
