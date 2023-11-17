@@ -1,8 +1,8 @@
 jest.disableAutomock();
 
-import { PerformanceMeasurementAPI } from '../../src/performance/api';
-import type { Measurement as IMeasurement, PerformanceMeasurement } from '../../src/performance/types';
-import { EntryType } from '../../src/performance/types';
+import { PerformanceMeasurementAPI } from '../../src/base/performance/api';
+import type { Measurement as IMeasurement, PerformanceMeasurement } from '../../src/base/performance/types';
+import { EntryType } from '../../src/base/performance/types';
 
 describe('Performance measurement API tests', () => {
     const performance = PerformanceMeasurementAPI;

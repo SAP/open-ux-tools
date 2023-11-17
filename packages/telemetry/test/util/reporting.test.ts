@@ -1,4 +1,4 @@
-import { reportRuntimeError, reportEnableTelemetryOnOff } from '../../src/util/reporting';
+import { reportRuntimeError, reportEnableTelemetryOnOff } from '../../src/base/utils/reporting';
 import { EventName } from '../../src';
 import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
 

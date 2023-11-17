@@ -1,6 +1,6 @@
 import * as interceptors from './index';
 
-export enum interceptorTypes {
+export enum InterceptorTypes {
     /**
      * Simple notification interceptor, reports certain event
      * occurance and requires no data to be captured or measured.
@@ -19,13 +19,13 @@ export enum interceptorTypes {
 }
 
 const interceptorTypesMapping = new Map();
-interceptorTypesMapping.set(interceptorTypes.NOTIFICATION, interceptors.notify);
-interceptorTypesMapping.set(interceptorTypes.DURATION, interceptors.duration);
-interceptorTypesMapping.set(interceptorTypes.CAPTURE_PARAM, interceptors.captureParam);
+interceptorTypesMapping.set(InterceptorTypes.NOTIFICATION, interceptors.notify);
+interceptorTypesMapping.set(InterceptorTypes.DURATION, interceptors.duration);
+interceptorTypesMapping.set(InterceptorTypes.CAPTURE_PARAM, interceptors.captureParam);
 
 const asyncInterceptorTypesMapping = new Map();
-asyncInterceptorTypesMapping.set(interceptorTypes.NOTIFICATION, interceptors.notifyAsync);
-asyncInterceptorTypesMapping.set(interceptorTypes.DURATION, interceptors.durationAsync);
-asyncInterceptorTypesMapping.set(interceptorTypes.CAPTURE_PARAM, interceptors.captureParamAsync);
+asyncInterceptorTypesMapping.set(InterceptorTypes.NOTIFICATION, interceptors.notifyAsync);
+asyncInterceptorTypesMapping.set(InterceptorTypes.DURATION, interceptors.durationAsync);
+asyncInterceptorTypesMapping.set(InterceptorTypes.CAPTURE_PARAM, interceptors.captureParamAsync);
 
 export { interceptorTypesMapping, asyncInterceptorTypesMapping };

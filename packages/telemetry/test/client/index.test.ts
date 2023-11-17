@@ -1,5 +1,5 @@
-import { ClientFactory } from '../../src/client';
-import type { Client } from '../../src/client/client';
+import { ClientFactory } from '../../src/base/client';
+import type { Client } from '../../src/base/client/client';
 import * as telemetryPackageJSON from '../../package.json';
 import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
 

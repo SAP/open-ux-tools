@@ -1,6 +1,6 @@
 import { TelemetrySystem } from '../../src';
-import type { manifest } from '../../src/system/types';
-import { getTelemetrySetting, initTelemetrySettings } from '../../src/toolsSuiteTelemetry';
+import type { manifest } from '../../src/base/types/types';
+import { getTelemetrySetting, initTelemetrySettings } from '../../src/tooling-telemetry';
 import * as uxCommonUtils from '@sap/ux-common-utils';
 import * as storeMock from '@sap-ux/store';
 

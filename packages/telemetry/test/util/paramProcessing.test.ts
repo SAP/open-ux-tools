@@ -1,6 +1,6 @@
 jest.disableAutomock();
 
-import type { dimensions, measurements } from '../../src/util/paramProcessing';
+import type { dimensions, measurements } from '../../src/base/utils/param-processing';
 import {
     getParamsData,
     ParamRecordConfigField,
@@ -8,7 +8,7 @@ import {
     getValue,
     paramsProcessing,
     wrongPathErr
-} from '../../src/util/paramProcessing';
+} from '../../src/base/utils/param-processing';
 
 describe('Parameter processing Tests', () => {
     const mockParams = [

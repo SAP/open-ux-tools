@@ -1,29 +1,26 @@
-/* Common  */
-export { ClientFactory } from './client/index';
-export { Client } from './client/client';
-export { ClientType } from './client/model/ClientType';
-export { ApplicationInsightClient } from './client/appInsightClient';
+/* Types and classes  */
+export { ClientFactory } from './base/client/index';
+export { Client } from './base/client/client';
+export { ApplicationInsightClient } from './base/client/azure-appinsight-client';
+export { EventHeader } from './base/types/event-header';
+export { EventName } from './base/types/event-name';
+export { SampleRate } from './base/types/sample-rate';
 
-/* Low Level API */
-export { TelemetrySystem } from './system/system';
-export { EventHeader } from './client/model/EventHeader';
-export { EventName } from './client/model/EventName';
-export { SampleRate } from './client/model/SampleRate';
-export { interceptorTypes } from './interceptor/config';
-export { PerformanceMeasurementAPI } from './performance/api';
-export { ParamRecordConfig, ParamRecordConfigField } from './util/paramProcessing';
-
-/* Decorator */
-export { logTelemetry, logTelemetryAsync } from './decorator';
+/* API for most common use cases */
 export {
     initTelemetrySettings,
-    ToolsSuiteTelemetryClient,
-    TelemetryHelperProperties,
     setEnableTelemetry,
     getTelemetrySetting,
+    ToolsSuiteTelemetryClient,
+    TelemetryHelperProperties,
     TelemetryEvent,
     TelemetryMeasurements,
     TelemetryProperties,
     ToolsId
-} from './toolsSuiteTelemetry';
-export const TelemetrySettings = {}; // mock export ot avoid CI arrs. Remove when Guided Help extension TelemetrySettings import removed.
+} from './tooling-telemetry';
+
+/* Decorator and measurements utils */
+export { InterceptorTypes } from './base/interceptor/config';
+export { PerformanceMeasurementAPI } from './base/performance/api';
+export { ParamRecordConfig, ParamRecordConfigField } from './base/utils/param-processing';
+export { logTelemetry, logTelemetryAsync } from './base/decorator';

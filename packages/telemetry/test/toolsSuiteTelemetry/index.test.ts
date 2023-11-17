@@ -1,4 +1,4 @@
-import { processToolsSuiteTelemetry } from '../../src/toolsSuiteTelemetry';
+import { processToolsSuiteTelemetry } from '../../src/tooling-telemetry';
 import type { AxiosResponse } from 'axios';
 import * as memfs from 'memfs';
 import fs from 'fs';

@@ -1,14 +1,14 @@
-import { ApplicationInsightClient } from '../client/appInsightClient';
-import type { SampleRate } from '../client/model/SampleRate';
-import type { EventName } from '../client/model/EventName';
+import { ApplicationInsightClient } from '../base/client/azure-appinsight-client';
+import type { SampleRate } from '../base/types/sample-rate';
+import type { EventName } from '../base/types/event-name';
 import type {
     TelemetryHelperProperties,
     TelemetryEvent,
     CommonTelemetryProperties,
     TelemetryProperties
 } from './types';
-import { processToolsSuiteTelemetry } from '../toolsSuiteTelemetry';
-import { localDatetimeToUTC } from '../util/date';
+import { processToolsSuiteTelemetry } from '.';
+import { localDatetimeToUTC } from '../base/utils/date';
 
 class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
     /**
@@ -22,8 +22,9 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
     }
 
     /**
-     * @deprecated
      * Send a telemetry event to Azure Application Insights
+     * 
+     * @deprecated Use reportEvent instead.
      * @param eventName Categorize the type of the event within the scope of an extension.
      * @param properties A set of string properties to be reported
      * @param measurements  A set of numeric measurements to be reported
@@ -93,7 +94,7 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
     /**
      * Send a telemetry event to Azure Application Insights. This API makes sure the telemetry event
      * is flushed to Azure backend before executing the next statement. Since this API blocks
-     * normal execution flow, please use this API cautiously. See `report()` method for non-blocking
+     * normal execution flow, please use this API cautiously. See `reportEvent()` method for non-blocking
      * usage.
      * @param event Telemetry Event
      * @param sampleRate Sampling the event to be sent

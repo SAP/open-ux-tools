@@ -1,5 +1,5 @@
-import type { SampleRate } from './model/SampleRate';
-import type { EventName } from './model/EventName';
+import type { SampleRate } from '../types/sample-rate';
+import type { EventName } from '../types/event-name';
 
 abstract class Client {
     abstract report(

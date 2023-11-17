@@ -1,5 +1,5 @@
 import type { AppType } from '@sapux/project-spec';
-import type { manifest } from '../system/types';
+import type { ProjectInfo } from '../base/types';
 
 export type TelemetryHelperProperties = {
     appPath: string;
@@ -14,7 +14,7 @@ export type TelemetryHelperProperties = {
  *
  */
 export type ToolsSuiteTelemetryInitSettings = {
-    modulePackageJson: manifest;
+    modulePackageJson: ProjectInfo;
 };
 
 export enum ToolsId {

@@ -1,4 +1,4 @@
-import { localDatetimeToUTC } from '../../src/util/date';
+import { localDatetimeToUTC } from '../../src/base/utils/date';
 
 localDatetimeToUTC();
 

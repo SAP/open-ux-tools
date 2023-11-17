@@ -1,7 +1,7 @@
-import { EventName } from '../client/model/EventName';
+import { EventName } from '../types/event-name';
 import * as appInsights from 'applicationinsights';
-import * as telemetryPackageJSON from '../../package.json';
-import { configAzureTelemetryClient } from './telemetryClientConfig';
+import * as telemetryPackageJSON from '../../../package.json';
+import { configAzureTelemetryClient } from './azure-client-config';
 
 const parseErrorStack = (errorStack: string): string[] => {
     const regexps = [/sap-ux.+/gi, /[a-zA-Z-]+\/ide-extension\/.+/gi, /(\/telemetry\/.+)/gi];

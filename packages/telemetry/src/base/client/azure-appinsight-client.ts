@@ -1,10 +1,10 @@
 import { Client } from './client';
 import * as appInsights from 'applicationinsights';
-import { EventHeader } from './model/EventHeader';
-import { SampleRate } from './model/SampleRate';
-import type { EventName } from './model/EventName';
-import { TelemetrySystem } from '../system/system';
-import { configAzureTelemetryClient } from '../util/telemetryClientConfig';
+import { EventHeader } from '../types/event-header';
+import { SampleRate } from '../types/sample-rate';
+import type { EventName } from '../types/event-name';
+import { configAzureTelemetryClient } from '../utils/azure-client-config';
+import { TelemetrySettings } from '../config-state';
 
 class ApplicationInsightClient extends Client {
     private clients: Map<SampleRate, appInsights.TelemetryClient>;
@@ -52,7 +52,7 @@ class ApplicationInsightClient extends Client {
         sampleRate: SampleRate | undefined,
         ignoreSettings: boolean = false
     ): Promise<void> {
-        if (!ignoreSettings || TelemetrySystem.telemetryEnabled) {
+        if (!ignoreSettings || TelemetrySettings.telemetryEnabled) {
             const { client, event } = this.prepareClientAndEvent(eventName, properties, measurements, sampleRate);
             return this.trackEventBlocking(client, event);
         }
@@ -78,7 +78,7 @@ class ApplicationInsightClient extends Client {
         telemetryHelperProperties?: { [key: string]: string },
         ignoreSettings?: boolean
     ): Promise<void> {
-        if ((ignoreSettings !== undefined && !ignoreSettings) || !TelemetrySystem.telemetryEnabled) {
+        if ((ignoreSettings !== undefined && !ignoreSettings) || !TelemetrySettings.telemetryEnabled) {
             return;
         }
         const { client, event } = this.prepareClientAndEvent(eventName, properties, measurements, sampleRate);

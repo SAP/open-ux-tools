@@ -1,6 +1,6 @@
-import { ClientFactory } from '../../src/client';
-import { TelemetrySystem } from '../../src/system/system';
-import { EventName } from '../../src/client/model/EventName';
+import { ClientFactory } from '../../src/base/client';
+import { TelemetrySystem } from '../../src/base/types/system';
+import { EventName } from '../../src/base/types/event-name';
 import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
 
 const spyTrackEvent = jest.fn();

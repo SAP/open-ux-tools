@@ -1,22 +1,13 @@
 import type { ToolsSuiteTelemetryInitSettings } from './types';
-import { reportRuntimeError, reportEnableTelemetryOnOff } from '../util/reporting';
-import { debug } from '../util/cloudDebugger';
-import { TelemetrySystem } from '../../src/system/system';
-import type { manifest, VSCodeManifest } from '../system/types';
+import { reportRuntimeError, reportEnableTelemetryOnOff } from '../base/utils/reporting';
 import { getService, Entity, TelemetrySetting, TelemetrySettingKey, getFilesystemWatcherFor } from '@sap-ux/store';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
-import { getCommonProperties } from './toolsSuiteTelemetryDataProcessor';
+import { getCommonProperties } from './data-processor';
 
-const isExtensionModule = (packageJson: manifest) => {
-    return (
-        packageJson['contributes'] || packageJson['activationEvents'] || packageJson.name.match(/sap-ux-.*-extension/g)
-    );
-};
-
-const settingPaths: Record<string, string> = {
+const deprecatedSettingPaths: Record<string, string> = {
     win32: '\\AppData\\Roaming\\Code\\User\\settings.json',
     darwin: '/Library/Application Support/Code/User/settings.json',
     linux: '/.config/Code/User/settings.json',
@@ -51,7 +42,7 @@ export const setEnableTelemetry = async (enableTelemetry: boolean): Promise<void
         });
         const setting = new TelemetrySetting({ enableTelemetry });
         await storeService.write(setting);
-        TelemetrySystem.telemetryEnabled = enableTelemetry;
+        telemetrySettings.telemetryEnabled = enableTelemetry;
     } catch (e) {
         console.error(`Telemetry settings could not be written. Error : ${e.message}`);
     }
@@ -88,7 +79,7 @@ const readEnableTelemetryFromSetting = async (): Promise<void> => {
     if (!setting) {
         // If no telemetry setting found in .fioritools folder,
         // check telemetry setting in vscode settings for extensions
-        const deprecatedSettingPath = definePath(settingPaths);
+        const deprecatedSettingPath = definePath(deprecatedSettingPaths);
         if (!deprecatedSettingPath) {
             // If no vscode setting found, default central telemetry setting to true
             setEnableTelemetry(true);
@@ -114,26 +105,18 @@ const readEnableTelemetryFromSetting = async (): Promise<void> => {
         TelemetrySystem.telemetryEnabled = setting.enableTelemetry;
     }
 
-    if (TelemetrySystem.WORKSTREAM === 'extension') {
-        getFilesystemWatcherFor(Entity.TelemetrySetting, async () => {
-            const watchedSetting = await storeService.read(new TelemetrySettingKey());
-            TelemetrySystem.telemetryEnabled = watchedSetting.enableTelemetry;
-        });
-    }
+    getFilesystemWatcherFor(Entity.TelemetrySetting, async () => {
+        const watchedSetting = await storeService.read(new TelemetrySettingKey());
+        TelemetrySystem.telemetryEnabled = watchedSetting.enableTelemetry;
+    });
 };
 
 const initToolsSuiteTelemetrySettings = async (): Promise<void> => {
-    debug('start initTelemetrySettings');
-    if (!TelemetrySystem.WORKSTREAM) {
-        throw new Error('Workstream is undefined');
-    }
-    debug(`workstream: ${TelemetrySystem.WORKSTREAM}`);
     TelemetrySystem.telemetryEnabled = true;
     await readEnableTelemetryFromSetting();
 };
 
 const initWithInputManifest = async (options: ToolsSuiteTelemetryInitSettings): Promise<void> => {
-    TelemetrySystem.WORKSTREAM = isExtensionModule(options.modulePackageJson) ? 'extension' : 'core';
     TelemetrySystem.manifest = options.modulePackageJson as unknown as manifest | VSCodeManifest;
     await initToolsSuiteTelemetrySettings();
 };

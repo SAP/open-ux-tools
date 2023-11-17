@@ -1,6 +1,6 @@
-import { logTelemetry, logTelemetryAsync } from '../../src/decorator';
+import { logTelemetry, logTelemetryAsync } from '../../src/base/decorator';
 import { EventName, interceptorTypes, SampleRate, ParamRecordConfig } from '../../src';
-import { ClientFactory } from '../../src/client';
+import { ClientFactory } from '../../src/base/client';
 import { promisify } from 'util';
 
 describe('Decorator Tests', () => {

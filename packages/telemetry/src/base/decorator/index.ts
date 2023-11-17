@@ -1,6 +1,6 @@
 import { interceptorTypesMapping, asyncInterceptorTypesMapping } from '../interceptor/config';
-import type { SampleRate } from '../client/model/SampleRate';
-import type { ParamRecordConfig } from '../util/paramProcessing';
+import type { SampleRate } from '../types/sample-rate';
+import type { ParamRecordConfig } from '../utils/param-processing';
 
 const decorCommon = (
     isAsync: boolean,
