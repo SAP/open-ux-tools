@@ -504,7 +504,7 @@ export const InlineFlexTable = (): JSX.Element => {
                         onRenderPrimaryTableActions={onRenderPrimatyTableActions}
                         onRenderSecondaryTableActions={onRenderSecondaryTableActions}
                         noDataText={'No data'}
-                        disableTouchDrag={isDisabledTouchDrag}
+                        isTouchDragDisabled={isDisabledTouchDrag}
                     />
                 </div>
             </div>
@@ -824,7 +824,7 @@ export const WrappingTable = (): JSX.Element => {
                         reverseBackground={isReverseBackground}
                         onRenderPrimaryTableActions={onRenderPrimatyTableActions}
                         onRenderSecondaryTableActions={onRenderSecondaryTableActions}
-                        disableTouchDrag={isDisabledTouchDrag}
+                        isTouchDragDisabled={isDisabledTouchDrag}
                     />
                 </div>
             </div>
