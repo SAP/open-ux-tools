@@ -91,8 +91,8 @@ function watchTelemetrySettingStore(storeService: Service<TelemetrySetting, Tele
  */
 export const initTelemetrySettings = async (options: ToolsSuiteTelemetryInitSettings): Promise<void> => {
     try {
-        TelemetrySettings.telemetryLibName = options.modulePackageJson.name;
-        TelemetrySettings.telemetryLibName = options.modulePackageJson.name;
+        TelemetrySettings.consumerModuleName = options.modulePackageJson.name;
+        TelemetrySettings.consumerModuleVersion = options.modulePackageJson.version;
 
         const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
             entityName: 'telemetrySetting'
