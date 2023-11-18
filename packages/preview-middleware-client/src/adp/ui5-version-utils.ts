@@ -1,12 +1,11 @@
 
 /**
- * Checks if the given version is lower than the required minimal version
- * @param version
- * @param minVersion
+ * Checks if the given version is lower than the required minimal version.
+ * @param version to check
+ * @param minVersion to check
  *
  * @returns boolean
  */
-
 export function isLowerThanMinimalUi5Version(version: string, minVersion: string): boolean {
     if (version !== undefined && version !== '') {
         const minVersionParsed = parseUI5Version(minVersion);
@@ -23,6 +22,12 @@ export function isLowerThanMinimalUi5Version(version: string, minVersion: string
     return false;
 }
 
+
+/**
+ * Get UI5 version validation message based on conditions.
+ * @param ui5Version to validate
+ * @returns string with validation message or undefined if non condition is met.
+ */
 export function getUI5VersionValidationMessage(ui5Version: string): string | undefined {
     if (isLowerThanMinimalUi5Version(ui5Version, '1.91.0')) {
         return `The current SAPUI5 version set for this Adaptation project is ${ui5Version}. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71`;
@@ -40,7 +45,7 @@ export function getUI5VersionValidationMessage(ui5Version: string): string | und
  * @returns The major and the minor version, e.g. 1.86
  */
 function parseUI5Version(version: string): { major: number; minor: number } {
-    const versionParts = version ? version.replace(/snapshot-untested|snapshot-|snapshot/, '').split('.') : [];
+    const versionParts = version.replace(/snapshot-untested|snapshot-|snapshot/, '').split('.');
     const major = parseInt(versionParts[0], 10);
     const minor = parseInt(versionParts[1], 10);
 

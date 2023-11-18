@@ -4,7 +4,7 @@ import snapshotResponse from './testdata/snapshot-response.json';
 import officialResponse from './testdata/official-response.json';
 import overviewResponse from './testdata/overview-response.json';
 
-import { getUI5Versions } from '../src/ui5-info';
+import { getUI5Versions, isUI5VersionRemoved } from '../src/ui5-info';
 import * as commands from '../src/commands';
 import { ToolsLogger } from '@sap-ux/logger';
 import { ui5VersionRequestInfo } from '../src/constants';
@@ -287,5 +287,56 @@ describe('getUI5Versions: npm listed versions', () => {
         expect(commandRunSpy).toHaveBeenCalledTimes(1);
         expect(retrievedUI5Versions[0]).toEqual({ version: '1.90.1' });
         expect(retrievedUI5Versions.length).toEqual(1);
+    });
+});
+
+describe('isUI5VersionRemoved', () => {
+    const mockLogger: any = {
+        error: jest.fn(),
+        warn: jest.fn(),
+        info: jest.fn()
+    };
+    const warnMessage =
+        'Unable to check if the 1.107.1 is available on the SAPUI5 SDK. Proceeding with loading the preview with this version.';
+
+    test('test return value for different use cases', async () => {
+        // returns false for latest
+        expect(await isUI5VersionRemoved('latest')).toBeFalsy();
+        // returns false for snapshot
+        expect(await isUI5VersionRemoved('snaphot')).toBeFalsy();
+        // returns false for snapshot-untested
+        expect(await isUI5VersionRemoved('snapshot-untested')).toBeFalsy();
+        // returns false for snapshot-1.98
+        expect(await isUI5VersionRemoved('snapshot-1.98')).toBeFalsy();
+        // returns false for ''
+        expect(await isUI5VersionRemoved('')).toBeFalsy();
+        // returns false for 1.104.1
+        jest.spyOn(axios, 'head').mockResolvedValueOnce({
+            status: 200
+        });
+        expect(await isUI5VersionRemoved('1.104.1')).toBeFalsy();
+        // returns true if version is removed
+        jest.spyOn(axios, 'head').mockRejectedValueOnce({ response: { status: 404 } });
+        expect(await isUI5VersionRemoved('1.71.13', mockLogger)).toBeTruthy();
+        expect(mockLogger.warn).not.toBeCalled();
+        // returns false if error object is null
+        jest.spyOn(axios, 'head').mockRejectedValueOnce(null);
+        expect(await isUI5VersionRemoved('1.107.1', mockLogger)).toBeFalsy();
+        expect(mockLogger.warn).toBeCalledTimes(1);
+        expect(mockLogger.warn).nthCalledWith(1, warnMessage);
+        // returns false if error object is undefined
+        jest.spyOn(axios, 'head').mockRejectedValueOnce(undefined);
+        expect(await isUI5VersionRemoved('1.107.1', mockLogger)).toBeFalsy();
+        expect(mockLogger.warn).toBeCalledTimes(2);
+        expect(mockLogger.warn).nthCalledWith(2, warnMessage);
+        // returns false if error object doesn't contain a response
+        jest.spyOn(axios, 'head').mockRejectedValueOnce({});
+        expect(await isUI5VersionRemoved('1.107.1', mockLogger)).toBeFalsy();
+        expect(mockLogger.warn).toBeCalledTimes(3);
+        expect(mockLogger.warn).nthCalledWith(3, warnMessage);
+        //returns false, and logger is not called
+        jest.spyOn(axios, 'head').mockRejectedValueOnce({});
+        expect(await isUI5VersionRemoved('1.107.1')).toBeFalsy();
+        expect(mockLogger.warn).toBeCalledTimes(3);
     });
 });

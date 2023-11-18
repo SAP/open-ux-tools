@@ -119,11 +119,9 @@ export default function App(appProps: AppProps): ReactElement {
             <UIDialog
                 hidden={!showDialogMessage}
                 dialogContentProps={{
-                    title: 'Warning',
-                    subText: 'Sub title'
-                }}>
-                <div>{dialogMessage}</div>
-            </UIDialog>
+                    title: t('TOOL_DISCLAIMER_TITLE'),
+                    subText: dialogMessage
+                }}></UIDialog>
 
             <UIDialog
                 hidden={!isWarningDialogVisible}
