@@ -1,7 +1,5 @@
-import { join } from 'path';
 import type { AbapApp, UI5ProxyConfig } from '../src';
 import { UI5Config } from '../src';
-import { readFileSync } from 'fs';
 
 describe('UI5Config', () => {
     // values for testing
