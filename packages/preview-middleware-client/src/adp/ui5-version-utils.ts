@@ -7,7 +7,7 @@
  * @returns boolean
  */
 export function isLowerThanMinimalUi5Version(version: string, minVersion: string): boolean {
-    if (version !== undefined && version !== '') {
+    if (version !== undefined && version !== '' && minVersion !== undefined && minVersion !== '') {
         const minVersionParsed = parseUI5Version(minVersion);
         const ui5VersionParsed = parseUI5Version(version);
         if (
@@ -29,7 +29,7 @@ export function isLowerThanMinimalUi5Version(version: string, minVersion: string
  * @returns string with validation message or undefined if non condition is met.
  */
 export function getUI5VersionValidationMessage(ui5Version: string): string | undefined {
-    if (isLowerThanMinimalUi5Version(ui5Version, '1.91.0')) {
+    if (isLowerThanMinimalUi5Version(ui5Version, '1.71')) {
         return `The current SAPUI5 version set for this Adaptation project is ${ui5Version}. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71`;
     }
 

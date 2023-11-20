@@ -88,7 +88,9 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
     }
 
     if (await isUI5VersionRemoved(ui5Version)) {
-        throw new Error('Unsupported UI5 Version.');
+        throw new Error(
+            `You are trying to load the application preview with the non existing version ${ui5Version} of SAPUI5. Please check and correct the version.`
+        );
     }
 
     const envUI5Url = process.env.FIORI_TOOLS_UI5_URI;

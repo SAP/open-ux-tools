@@ -4,6 +4,8 @@ describe('isLowerThanMinimalUi5Version', () => {
     it('test return value for different use cases', () => {
         //returns false when version is empty
         expect(isLowerThanMinimalUi5Version('', '1.71')).toBeFalsy();
+        //returns false when minVersion is empty
+        expect(isLowerThanMinimalUi5Version('1.71', '')).toBeFalsy();
         //returns false for snapshot
         expect(isLowerThanMinimalUi5Version('snapshot', '1.71')).toBeFalsy();
         //returns false for snapshot-untested

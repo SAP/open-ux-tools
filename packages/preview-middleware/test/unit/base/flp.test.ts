@@ -349,25 +349,4 @@ describe('initAdp', () => {
         expect(adpToolingMock).toBeCalled();
         expect(flpInitMock).toBeCalled();
     });
-
-    test('initAdp: throw error if ui5 version defined in ui5-proxy-middleware is less than 1.71', async () => {
-        const config = { adp: { target: { url } } };
-        const flp = new FlpSandbox(
-            { adp: { target: { url } } },
-            mockAdpProject,
-            middlewareUtils as MiddlewareUtils,
-            logger
-        );
-
-        const getUI5ProxyMiddlewareUI5VersionSpy = jest.spyOn(UI5Config.prototype, 'getUI5ProxyMiddlewareUI5Version');
-        getUI5ProxyMiddlewareUI5VersionSpy.mockReturnValueOnce('1.70');
-
-        try {
-            await initAdp(mockAdpProject, config.adp, flp, middlewareUtils as MiddlewareUtils, logger);
-        } catch (error) {
-            expect(error.message).toEqual(
-                `The current SAPUI5 version set for this Adaptation project is 1.70. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71`
-            );
-        }
-    });
 });
