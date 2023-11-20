@@ -11,6 +11,9 @@ import ControlUtils from '../../../../src/adp/control-utils';
 import AddFragment from '../../../../src/adp/controllers/AddFragment.controller';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
+import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
+import Popover from 'sap/m/Popover';
+import ManagedObject from 'sap/ui/base/ManagedObject';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -59,6 +62,14 @@ describe('AddFragment', () => {
             };
             sapCoreMock.byId.mockReturnValue(overlayControl);
 
+            OverlayRegistry.getOverlay = jest.fn().mockReturnValue({
+                getDesignTimeMetadata: jest.fn().mockReturnValue({
+                    getData: jest.fn().mockReturnValue({
+                        aggregations: { specialIndexHandling: 'true' }
+                    })
+                })
+            });
+
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 overlays as unknown as UI5Element,
@@ -71,6 +82,8 @@ describe('AddFragment', () => {
                 close: jest.fn(),
                 setEscapeHandler: jest.fn()
             });
+
+            addFragment.createId = jest.fn().mockReturnValue('sampleId');
 
             addFragment.getView = jest.fn().mockReturnValue({ destroy: jest.fn(), setModel: jest.fn() });
 
@@ -105,6 +118,14 @@ describe('AddFragment', () => {
 
             ControlUtils.getControlAggregationByName = jest.fn().mockReturnValue({ 0: {} });
 
+            OverlayRegistry.getOverlay = jest.fn().mockReturnValue({
+                getDesignTimeMetadata: jest.fn().mockReturnValue({
+                    getData: jest.fn().mockReturnValue({
+                        aggregations: { specialIndexHandling: 'true' }
+                    })
+                })
+            });
+
             const setPropertySpy = jest.fn();
             addFragment.model = {
                 setProperty: setPropertySpy
@@ -112,7 +133,7 @@ describe('AddFragment', () => {
 
             addFragment.onAggregationChanged(event as unknown as Event);
 
-            expect(setPropertySpy).toHaveBeenCalledTimes(4);
+            expect(setPropertySpy).toHaveBeenCalledTimes(7);
         });
     });
 
@@ -167,6 +188,49 @@ describe('AddFragment', () => {
             expect(setPropertySpy).toHaveBeenCalledWith('/selectedIndex', '0');
         });
     });
+
+    describe('onSpecialIndexIconPress', () =>{
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        test('on icon clicked', () =>{
+
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring,
+            );
+
+            addFragment['runtimeControl'] = {
+                getMetadata: jest.fn().mockReturnValue({
+                    getName: jest.fn().mockReturnValue('Toolbar')
+                })
+            } as unknown as ManagedObject;
+
+            const oEvent = {
+                getSource: jest.fn().mockReturnValue({})
+            };
+
+            const icon = oEvent.getSource();
+            
+
+            const setPropertySpy = jest.fn();
+            const openBySpy = jest.fn();
+
+            addFragment['popover'] = {
+                getContent: jest.fn().mockReturnValue([{setProperty: setPropertySpy}]),
+                openBy: openBySpy
+            } as unknown as Popover;
+
+            addFragment.onSpecialIndexIconPress(oEvent as unknown as Event)
+
+            expect(setPropertySpy).toHaveBeenCalledWith('text', 'Index is defined by special logic of Toolbar and can\'t be set here');
+            expect(openBySpy).toHaveBeenCalledWith(icon);
+
+        })
+    })
 
     describe('onFragmentNameInputChange', () => {
         const testModel = {
