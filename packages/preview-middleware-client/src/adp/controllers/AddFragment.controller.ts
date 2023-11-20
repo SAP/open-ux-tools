@@ -39,7 +39,7 @@ interface CreateFragmentProps {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog {
-    private popover: Popover | undefined;
+    private popover: Popover;
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
         super(name);
         this.rta = rta;
@@ -81,8 +81,8 @@ export default class AddFragment extends BaseDialog {
         const icon = oEvent.getSource() as Icon;
         const controlType = this.runtimeControl.getMetadata().getName();
 
-        this.popover!.getContent()[0].setProperty('text', `Index is defined by special logic of ${controlType} and can't be set here`);
-        this.popover!.openBy(icon);
+        this.popover.getContent()[0].setProperty('text', `Index is defined by special logic of ${controlType} and can't be set here`);
+        this.popover.openBy(icon);
     }
 
     /**
