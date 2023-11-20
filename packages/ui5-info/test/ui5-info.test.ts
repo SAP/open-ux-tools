@@ -4,7 +4,7 @@ import snapshotResponse from './testdata/snapshot-response.json';
 import officialResponse from './testdata/official-response.json';
 import overviewResponse from './testdata/overview-response.json';
 
-import { getUI5Versions, isUI5VersionRemoved } from '../src/ui5-info';
+import { getUI5Versions } from '../src/ui5-info';
 import * as commands from '../src/commands';
 import { ToolsLogger } from '@sap-ux/logger';
 import { ui5VersionRequestInfo } from '../src/constants';
