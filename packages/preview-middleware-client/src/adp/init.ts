@@ -7,7 +7,7 @@ import { ExternalAction, showMessage, startPostMessageCommunication } from '@sap
 import { ActionHandler } from '../cpe/types';
 import ExtensionPointService from './extension-point';
 import VersionInfo from 'sap/ui/VersionInfo';
-import { getUI5VersionValidationMessage } from './ui5-version-utils'
+import { getUI5VersionValidationMessage } from './ui5-version-utils';
 
 export default async function (rta: RuntimeAuthoring) {
     const extPointService = new ExtensionPointService(rta);
