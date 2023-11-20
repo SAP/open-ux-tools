@@ -35,7 +35,6 @@
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "@sap-ux/ui5-info": "workspace:*",
         "dotenv": "16.3.1",
         "http-proxy-middleware": "2.0.6",
         "https-proxy-agent": "5.0.1",

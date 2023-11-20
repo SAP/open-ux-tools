@@ -357,35 +357,3 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
         return ui5Version;
     });
 }
-
-/**
- * Checks for a given UI5 version, if the version was removed from ui5.sap.com or not.
- *
- * @param ui5Version the UI5 version to check
- * @param logger - logger
- * @returns boolean if UI5 version is removed
- */
-export async function isUI5VersionRemoved(
-    ui5Version: string,
-    logger: ToolsLogger = new ToolsLogger()
-): Promise<boolean> {
-    const requestUrl = `${ui5VersionRequestInfo.OfficialUrl}/${ui5Version}/resources/sap-ui-core.js`;
-    if (ui5Version && !isNaN(parseFloat(ui5Version))) {
-        try {
-            const response = await axios.head(requestUrl, {
-                responseType: 'json'
-            });
-            return response.status === 404;
-        } catch (error) {
-            if (error?.response?.status) {
-                return error.response.status === 404;
-            } else {
-                logger.warn(
-                    `Unable to check if the ${ui5Version} is available on the SAPUI5 SDK. Proceeding with loading the preview with this version.`
-                );
-                return false;
-            }
-        }
-    }
-    return false;
-}

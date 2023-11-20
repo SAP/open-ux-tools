@@ -18,9 +18,6 @@
     },
     {
       "path": "../ui5-config"
-    },
-    {
-      "path": "../ui5-info"
     }
   ]
 }

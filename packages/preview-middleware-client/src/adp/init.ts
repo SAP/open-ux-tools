@@ -34,7 +34,7 @@ export default async function (rta: RuntimeAuthoring) {
     const ui5VersionValidationMessage = getUI5VersionValidationMessage(ui5Version.version);
 
     if(ui5VersionValidationMessage) {
-        sendAction(showMessage('The current SAPUI5 version set for this Adaptation project is 1.70. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71'));
+        sendAction(showMessage(ui5VersionValidationMessage));
     }
 
     
