@@ -13,7 +13,6 @@ import express from 'express';
 import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
-import { UI5Config } from '@sap-ux/ui5-config';
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
