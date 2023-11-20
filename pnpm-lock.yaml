@@ -706,8 +706,8 @@ importers:
         version: 0.3.0
     devDependencies:
       '@types/archiver':
-        specifier: 5.3.2
-        version: 5.3.2
+        specifier: 5.3.4
+        version: 5.3.4
       '@types/minimist':
         specifier: 1.2.2
         version: 1.2.2
@@ -7855,8 +7855,8 @@ packages:
       '@types/node': 18.11.9
     dev: true
 
-  /@types/archiver@5.3.2:
-    resolution: {integrity: sha512-IctHreBuWE5dvBDz/0WeKtyVKVRs4h75IblxOACL92wU66v+HGAfEYAOyXkOFphvRJMhuXdI9huDXpX0FC6lCw==}
+  /@types/archiver@5.3.4:
+    resolution: {integrity: sha512-Lj7fLBIMwYFgViVVZHEdExZC3lVYsl+QL0VmdNdIzGZH544jHveYWij6qdnBgJQDnR7pMKliN9z2cPZFEbhyPw==}
     dependencies:
       '@types/readdir-glob': 1.1.1
     dev: true
