@@ -65,7 +65,7 @@ describe('AddFragment', () => {
             OverlayRegistry.getOverlay = jest.fn().mockReturnValue({
                 getDesignTimeMetadata: jest.fn().mockReturnValue({
                     getData: jest.fn().mockReturnValue({
-                        aggregations: { specialIndexHandling: 'true' }
+                        aggregations: {}
                     })
                 })
             });
@@ -111,7 +111,7 @@ describe('AddFragment', () => {
 
             const event = {
                 getSource: jest.fn().mockReturnValue({
-                    getSelectedItem: jest.fn().mockReturnValue({ getText: jest.fn().mockReturnValue('some-text') }),
+                    getSelectedItem: jest.fn().mockReturnValue({ getText: jest.fn().mockReturnValue('someText') }),
                     getSelectedKey: jest.fn().mockReturnValue('0')
                 })
             };
@@ -121,7 +121,7 @@ describe('AddFragment', () => {
             OverlayRegistry.getOverlay = jest.fn().mockReturnValue({
                 getDesignTimeMetadata: jest.fn().mockReturnValue({
                     getData: jest.fn().mockReturnValue({
-                        aggregations: { specialIndexHandling: 'true' }
+                        aggregations: { someText:{ specialIndexHandling: 'true' } }
                     })
                 })
             });
@@ -133,7 +133,7 @@ describe('AddFragment', () => {
 
             addFragment.onAggregationChanged(event as unknown as Event);
 
-            expect(setPropertySpy).toHaveBeenCalledTimes(7);
+            expect(setPropertySpy).toHaveBeenCalledTimes(6);
         });
     });
 
