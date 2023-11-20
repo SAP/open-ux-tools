@@ -157,7 +157,7 @@ Object {
   "js/webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.myCustomPage.MyCustomPage\\">
-    <Page id=\\"MyCustomPage\\" title=\\"{i18n>title}\\">
+    <Page id=\\"MyCustomPage\\" title=\\"{i18n>MyCustomPageTitle}\\">
         <content></content>
     </Page>
 </mvc:View>",
@@ -778,7 +778,7 @@ export default class MyCustomPage extends Controller {
   "ts/webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.myCustomPage.MyCustomPage\\">
-    <Page id=\\"MyCustomPage\\" title=\\"{i18n>title}\\">
+    <Page id=\\"MyCustomPage\\" title=\\"{i18n>MyCustomPageTitle}\\">
         <content></content>
     </Page>
 </mvc:View>",
