@@ -72,6 +72,9 @@
       "path": "packages/logger"
     },
     {
+      "path": "packages/metadata"
+    },
+    {
       "path": "packages/mockserver-config-writer"
     },
     {

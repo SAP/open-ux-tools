@@ -297,7 +297,7 @@ export class MetadataService implements IMetadataService {
      * Get Action or Function overloads by their top level name.
      *
      * @param topLevelName
-     * @returns
+     * @returns string or undefined
      */
     private getActionFunctionOverloads(topLevelName: string): Set<string> | undefined {
         return this.actionNames.get(topLevelName);

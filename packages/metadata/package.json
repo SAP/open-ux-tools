@@ -1,0 +1,57 @@
+{
+  "name": "@sap-ux/metadata",
+  "version": "0.1.0",
+  "description": "Metadata Service",
+  "main": "dist/index.js",
+  "author": "SAP SE",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "yarn run clean && tsc --build ./tsconfig.build.json",
+    "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
+    "clean": "rimraf ./reports",
+    "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
+    "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:summary": "eslint . --ext .ts,.tsx -f summary",
+    "lint:fix": "eslint --fix",
+    "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
+    "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
+    "madge": "madge --warning --circular --extensions ts ./",
+    "pre-commit": "lint-staged --quiet",
+    "test": "jest  --maxWorkers=1 --ci --forceExit --detectOpenHandles",
+    "updateVocabularies": "yarn build && node ./bin/UpdateVocabularies.js",
+    "watch": "tsc  --build ./ -watch"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "jestSonar": {
+    "reportPath": "reports/test/unit",
+    "reportFile": "test-report.xml"
+  },
+  "devDependencies": {
+    "@sap-ux/odata-annotation-core-types": "0.1.1",
+    "jsdoc": "4.0.0",
+    "madge": "4.0.2",
+    "typescript": "5.2.2"
+  },
+  "eslint-formatter-multiple": {
+    "formatters": [
+      {
+        "name": "stylish",
+        "output": "console"
+      },
+      {
+        "name": "json",
+        "output": "file",
+        "path": "reports/lint/eslint.json"
+      },
+      {
+        "name": "checkstyle",
+        "output": "file",
+        "path": "reports/lint/eslint.checkstyle.xml"
+      }
+    ]
+  }
+}
