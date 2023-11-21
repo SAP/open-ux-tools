@@ -60,7 +60,8 @@ interface AppIconProps {
 /**
  * React functional component for app icon.
  *
- * @param {AppIconProps}
+ * @param root0
+ * @param root0.isAdp
  * @returns ReactElement
  */
 const AppIcon: React.FC<AppIconProps> = ({ isAdp }): ReactElement => {
