@@ -72,6 +72,9 @@
 # Module: control-property-editor-common
 /packages/control-property-editor-common/ @SAP/ux-tools-control-property-editor
 
+# Module: odata-vocabularies
+/packages/odata-vocabularies @SAP/ux-tools-annotations
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin
