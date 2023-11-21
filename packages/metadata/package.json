@@ -4,7 +4,7 @@
   "description": "Metadata Service",
   "main": "dist/index.js",
   "author": "SAP SE",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "private": false,
   "scripts": {
     "build": "yarn run clean && tsc --build ./tsconfig.build.json",

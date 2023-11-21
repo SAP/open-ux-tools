@@ -17,5 +17,11 @@ Pnpm
 1. Import the needed functions in your modules
 
     ```typescript
-    import { * } from '@sap/ux-metadata';
-    ```
+    import { MetadataService  } from '@sap/ux-metadata';
+    
+    const metadata = new MetadataService({ ODataVersion: '4.0' });
+    metadata.import((v4metadata as any).metadata, 'testDummy/metadataV4.xml');
+    const pathBase = metadata.getMetadataElement('IncidentService.Incidents');
+```
+
+For usage examples see unit tests in `metadata/test`.

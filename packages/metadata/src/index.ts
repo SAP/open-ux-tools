@@ -1,2 +1,2 @@
 export * from './types';
-export * from './metadataService';
+export * from './metadata-service';
