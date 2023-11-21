@@ -140,6 +140,8 @@ describe('CustomPage', () => {
             fs.write(viewPath, 'viewContent');
             const controllerPath = join(target, `webapp/${folder}/CustomPage.controller.js`);
             fs.write(controllerPath, 'controllerContent');
+            const i18nPropertiesPath = join(target, 'webapp/i18n/i18n.properties');
+            fs.write(i18nPropertiesPath, '');
             //sut
             generateCustomPage(target, { ...minimalInput, folder }, fs);
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
@@ -147,6 +149,7 @@ describe('CustomPage', () => {
             expect(fs.read(controllerPath)).toEqual('controllerContent');
             expect(fs.exists(viewPath)).toBe(true);
             expect(fs.read(viewPath)).toEqual('viewContent');
+            expect(fs.read(i18nPropertiesPath)).toEqual('');
         });
     });
 
