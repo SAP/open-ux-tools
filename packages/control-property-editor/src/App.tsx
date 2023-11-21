@@ -3,12 +3,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
+import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
 import { PropertiesPanel, LeftPanel } from './panels';
 import { useLocalStorage } from './use-local-storage';
 import type { RootState } from './store';
 import { useAppDispatch } from './store';
-import { changePreviewScale } from './slice';
+import { changePreviewScale, setProjectScenario } from './slice';
 import { useWindowSize } from './use-window-size';
 import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices';
 
@@ -48,6 +49,18 @@ export default function App(appProps: AppProps): ReactElement {
     const previewScale = useSelector<RootState, number>((state) => state.scale);
     const fitPreview = useSelector<RootState, boolean>((state) => state.fitPreview ?? false);
     const windowSize = useWindowSize();
+
+    useEffect(() => {
+        const urlWithoutHash = previewUrl.split('#')[0];
+        const queryStr = urlWithoutHash.split('?')[1];
+
+        const urlParams = new URLSearchParams(queryStr);
+        const scenario = urlParams.get('sap-ui-scenario') as Scenario;
+
+        if (scenario) {
+            dispatch(setProjectScenario(scenario));
+        }
+    }, [previewUrl, dispatch]);
 
     const containerRef = useCallback(
         (node) => {
