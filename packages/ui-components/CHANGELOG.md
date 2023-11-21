@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.13.1
+
+### Patch Changes
+
+-   cbae7aba: fix: UICallout. New property "focusTargetSiblingOnTabPress", which allows to focus next/previous element relative to target when Tab key is pressed using keyboard
+
 ## 1.13.0
 
 ### Minor Changes
