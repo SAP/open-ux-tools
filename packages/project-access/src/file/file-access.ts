@@ -50,3 +50,37 @@ export async function fileExists(path: string, memFs?: Editor): Promise<boolean>
         return false;
     }
 }
+
+/**
+ * Delete a File asynchronously.
+ *
+ * @param {string} path to file
+ * @param {Editor} memFs optional mem-fs-editor instance
+ * @returns {*}  {Promise<void>}
+ */
+export async function deleteFile(path: string, memFs?: Editor): Promise<void> {
+    if (memFs) {
+        return memFs?.delete(path);
+    } else {
+        return await fs.unlink(path);
+    }
+}
+
+/**
+ * If content === null or undefined, then the file will be deleted,otherwise it will be created or updated.
+ *
+ * @param path root directory for the file updates
+ * @param content path+content tuples representing the files
+ * @param {Editor} memFs optional mem-fs-editor instance
+ * @returns Promise<void>
+ */
+export async function updateFile(path: string, content: string, memFs?: Editor): Promise<void> {
+    if (content === null || content === undefined) {
+        return deleteFile(path);
+    } else if (memFs) {
+        memFs?.write(path, content);
+        return Promise.resolve();
+    } else {
+        return fs.writeFile(path, content, { encoding: 'utf8' });
+    }
+}
