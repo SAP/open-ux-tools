@@ -221,8 +221,10 @@ export class FlpSandbox {
      */
     private addEditorRoutes(rta: RtaConfig) {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
-        const editorName =
-            rta.options?.scenario === 'ADAPTATION_PROJECT' ? 'SAPUI5 Visual Editor' : 'Control Property Editor';
+        const scenario = rta.options?.scenario;
+        const isAdp = scenario === 'ADAPTATION_PROJECT';
+        const editorName = isAdp ? 'SAPUI5 Visual Editor' : 'Control Property Editor';
+        const appIcon = isAdp ? './editor/adp-logo.svg' : './editor/favicon.ico';
         for (const editor of rta.editors) {
             let previewUrl = editor.path;
             if (editor.developerMode) {
@@ -231,9 +233,10 @@ export class FlpSandbox {
                 this.router.get(editor.path, (_req: Request, res: Response) => {
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
                     const html = render(template, {
-                        previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`,
+                        previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-scenario=${scenario}#${this.config.intent.object}-${this.config.intent.action}`,
                         telemetry: rta.options?.telemetry ?? false,
-                        editorName
+                        editorName,
+                        appIcon
                     });
                     res.status(200).contentType('html').send(html);
                 });
