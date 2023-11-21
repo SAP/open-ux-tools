@@ -1,4 +1,4 @@
-import { MetadataService } from '../src/metadataService';
+import { MetadataService } from '../src';
 import type { MetadataElement, ODataVersionType } from '../src/types';
 
 function createTestService() {
