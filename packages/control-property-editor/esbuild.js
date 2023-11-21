@@ -21,7 +21,7 @@ esbuildOptions.plugins = esbuildOptions.plugins.concat(
     [NodeModulesPolyfills.NodeModulesPolyfillPlugin()],
     copy({
         assets: {
-            from: ['./src/favicon.ico'],
+            from: ['./src/favicon.ico', './src/adp-logo.svg'],
             to: ['./']
         }
     })
