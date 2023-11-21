@@ -4,7 +4,7 @@ import { ManifestSection } from '../types';
 import { join } from 'path';
 import os from 'os';
 import type { Model } from '@ui5/manifest/types/manifest';
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 
 type I18nFileTraverseCallback = (line: string, index: number, key?: string, value?: string) => void;
 
