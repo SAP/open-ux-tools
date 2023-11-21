@@ -332,6 +332,13 @@ export async function getCapEnvironment(capProjectPath: string): Promise<CdsEnvi
 }
 
 /**
+ * To fix issues when switching different cds versions dynamically, we need to set global.cds, see end of function loadCdsModuleFromProject()
+ */
+declare const global: {
+    cds: CdsFacade;
+};
+
+/**
  * Load CAP CDS module. First attempt loads @sap/cds for a project based on its root.
  * Second attempt loads @sap/cds from global installed @sap/cds-dk.
  * Throws error if module could not be loaded.
@@ -362,7 +369,12 @@ async function loadCdsModuleFromProject(capProjectPath: string): Promise<CdsFaca
             `Could not load cds module. Attempt to load module @sap/cds from project threw error '${loadProjectError}', attempt to load module @sap/cds from @sap/cds-dk threw error '${loadError}'`
         );
     }
-    return 'default' in module ? module.default : module;
+    const cds = 'default' in module ? module.default : module;
+    // Fix when switching cds versions dynamically
+    if (global) {
+        global.cds = cds;
+    }
+    return cds;
 }
 
 /**
