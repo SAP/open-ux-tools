@@ -34,11 +34,13 @@
                                 <core:Item key="{key}" text="{value}" />
                             </ComboBox>
                             <core:Icon
+                                useIconTooltip="false"
                                 visible="{/specialIndexHandlingIcon}" 
                                 src="sap-icon://message-information" 
-                                press="onSpecialIndexIconPress"
-                                class= "sapUiTinyMarginBegin"
-                                />
+                                class= "sapUiTinyMarginBegin" 
+                                tooltip="{/iconTooltip}"
+                                >
+                            </core:Icon>
                         </HBox>
                         <Label text="Fragment Name" />
                         <Input 
