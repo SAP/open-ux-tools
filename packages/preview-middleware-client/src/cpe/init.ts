@@ -54,8 +54,6 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
             logger
         );
 
-        sendAction(scenarioLoaded(flexSettings.scenario));
-
         for (const service of services) {
             service.init(sendAction, subscribe);
         }
