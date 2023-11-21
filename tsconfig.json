@@ -84,6 +84,9 @@
       "path": "packages/odata-service-writer"
     },
     {
+      "path": "packages/playwright"
+    },
+    {
       "path": "packages/preview-middleware-client"
     },
     {
