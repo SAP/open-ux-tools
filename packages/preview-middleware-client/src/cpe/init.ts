@@ -2,8 +2,7 @@ import type { ExternalAction } from '@sap-ux-private/control-property-editor-com
 import {
     startPostMessageCommunication,
     iconsLoaded,
-    enableTelemetry,
-    scenarioLoaded
+    enableTelemetry
 } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
