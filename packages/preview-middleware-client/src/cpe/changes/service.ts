@@ -16,7 +16,7 @@ import type { SelectionService } from '../selection';
 
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
 import type Event from 'sap/ui/base/Event';
-import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 
 interface ChangeContent {
@@ -247,15 +247,21 @@ export class ChangeService {
             const executedCommands = stack.getAllExecutedCommands();
             const inactiveCommandCount = allCommands.length - executedCommands.length;
             let activeChanges: PendingChange[] = [];
-            allCommands.forEach((command: BaseCommand, i): void => {
+            allCommands.forEach((command: FlexCommand, i): void => {
                 try {
                     if (typeof command.getCommands === 'function') {
                         const subCommands = command.getCommands();
                         subCommands.forEach((command) => {
-                            activeChanges.push(this.prepareChangeType(command, inactiveCommandCount, i));
+                            const pendingChange = this.prepareChangeType(command, inactiveCommandCount, i);
+                            if (pendingChange) {
+                                activeChanges.push(pendingChange);
+                            }
                         });
                     } else {
-                        activeChanges.push(this.prepareChangeType(command, inactiveCommandCount, i));
+                        const pendingChange = this.prepareChangeType(command, inactiveCommandCount, i);
+                        if (pendingChange) {
+                            activeChanges.push(pendingChange);
+                        }
                     }
                 } catch (error) {
                     Log.error('CPE: Change creation Failed', error);
@@ -272,11 +278,20 @@ export class ChangeService {
         };
     }
 
-    private prepareChangeType(command: BaseCommand, inactiveCommandCount: number, index: number): PendingChange {
+    private prepareChangeType(
+        command: FlexCommand,
+        inactiveCommandCount: number,
+        index: number
+    ): PendingChange | undefined {
         let result: PendingChange;
         let value = '';
-        const selector = command.getSelector();
-        const changeType = command.getChangeType();
+        const selectorId = this.getCommandSelectorId(command);
+        const changeType = this.getCommandChangeType(command);
+
+        if (!selectorId || !changeType) {
+            return undefined;
+        }
+
         switch (changeType) {
             case 'propertyChange':
                 value = command.getProperty('newValue');
@@ -289,7 +304,7 @@ export class ChangeService {
             result = {
                 type: 'pending',
                 changeType,
-                controlId: selector.id,
+                controlId: selectorId,
                 propertyName: command.getProperty('propertyName'),
                 isActive: index >= inactiveCommandCount,
                 value,
@@ -298,7 +313,7 @@ export class ChangeService {
         } else {
             result = {
                 type: 'pending',
-                controlId: selector.id,
+                controlId: selectorId,
                 changeType,
                 isActive: index >= inactiveCommandCount,
                 controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
@@ -306,5 +321,45 @@ export class ChangeService {
         }
 
         return result;
+    }
+
+    private getCommandChangeType(command: FlexCommand): string | undefined {
+        try {
+            const changeType = command.getChangeType();
+
+            return changeType;
+        } catch (error) {
+            return this.getCommandChangeTypeFromGetPreparedChange(command);
+        }
+    }
+
+    private getCommandChangeTypeFromGetPreparedChange(command: FlexCommand): string | undefined {
+        try {
+            const changeType = command.getPreparedChange().getDefinition().changeType;
+
+            return changeType;
+        } catch (error) {
+            return undefined;
+        }
+    }
+
+    private getCommandSelectorId(command: FlexCommand): string | undefined {
+        try {
+            const selectorId = command.getSelector().id;
+
+            return selectorId;
+        } catch (error) {
+            return this.getSelectorIdFromCommandElement(command);
+        }
+    }
+
+    private getSelectorIdFromCommandElement(command: FlexCommand): string | undefined {
+        try {
+            const selectorId = command.getElement().getProperty('persistencyKey');
+
+            return selectorId;
+        } catch (error) {
+            return undefined;
+        }
     }
 }
