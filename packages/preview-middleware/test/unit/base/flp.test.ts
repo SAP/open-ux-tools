@@ -158,6 +158,9 @@ describe('FlpSandbox', () => {
                     },
                     rta: {
                         layer: 'CUSTOMER_BASE',
+                        options: {
+                            scenario: 'UI_ADAPTATION'
+                        },
                         editors: [
                             {
                                 path: '/my/rta.html'
