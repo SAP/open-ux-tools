@@ -53,6 +53,10 @@ const CPEIcon = () => (
     </svg>
 );
 
+interface AppIconProps {
+    isAdp: boolean;
+}
+
 /**
  * React element for app logo.
  *
@@ -74,10 +78,8 @@ export function AppLogo(): ReactElement {
 
 /**
  * React element for app icon.
- *
- * @returns ReactElement
  */
-function AppIcon({ isAdp }: { isAdp: boolean }): ReactElement {
+const AppIcon: React.FC<AppIconProps> = ({ isAdp }) => {
     return (
         <span data-testid="Control-Property-Editor-Icon">
             {!isAdp ? (
@@ -87,4 +89,4 @@ function AppIcon({ isAdp }: { isAdp: boolean }): ReactElement {
             )}
         </span>
     );
-}
+};
