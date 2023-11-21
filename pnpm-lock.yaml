@@ -1115,8 +1115,8 @@ importers:
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
       '@sapui5/types':
-        specifier: 1.120.0
-        version: 1.120.0
+        specifier: 1.120.1
+        version: 1.120.1
       '@ui5/cli':
         specifier: 3.6.0
         version: 3.6.0
@@ -6917,8 +6917,8 @@ packages:
       url: 0.11.0
     dev: false
 
-  /@sapui5/types@1.120.0:
-    resolution: {integrity: sha512-LsZHfRb7YIc8LBymsgtetUq2IuaMemBIIxHtOoStAPwgUYvpFroW/smrXHVV5pgP9S6iJKOOjCQoDKKXIBhAGw==}
+  /@sapui5/types@1.120.1:
+    resolution: {integrity: sha512-9IsokJ/J4PJl7t59ZW26Bp8FQzCFB+V0hK3jV3abPD8f/gMiaWIDUMHvbLw+6zAtDYNQ9yVAmoo15hpFaxC2Gw==}
     dependencies:
       '@types/jquery': 3.5.13
       '@types/offscreencanvas': 2019.6.4
