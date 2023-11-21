@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.15.2
+
+### Patch Changes
+
+-   d7d52155: Find project root of adp by searching for package.json
+
 ## 1.15.1
 
 ### Patch Changes
