@@ -357,6 +357,32 @@ describe('Test getCapEnvironment()', () => {
         expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
     });
 
+    test('Updating global.cds to fix issue with version switch', async () => {
+        // Mock setup
+        type GlobalCds = { cds?: object };
+        delete (global as GlobalCds)?.cds;
+        const cdsV1 = {
+            version: 1,
+            env: {
+                for: jest.fn()
+            }
+        };
+        const cdsV2 = {
+            version: 2,
+            env: {
+                for: jest.fn()
+            }
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject')
+            .mockResolvedValueOnce(cdsV1)
+            .mockResolvedValueOnce(cdsV2);
+
+        await getCapEnvironment('PROJECT');
+        expect((global as GlobalCds).cds).toBe(cdsV1);
+        await getCapEnvironment('PROJECT');
+        expect((global as GlobalCds).cds).toBe(cdsV2);
+    });
+
     test('failed to load cds from any location', async () => {
         // Mock setup
         childProcessMock.spawn.mockReturnValueOnce(getChildProcessMock('WRONG'));
