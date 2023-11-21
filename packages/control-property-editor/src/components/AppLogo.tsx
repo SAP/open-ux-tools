@@ -58,6 +58,24 @@ interface AppIconProps {
 }
 
 /**
+ * React functional component for app icon.
+ *
+ * @param {AppIconProps}
+ * @returns ReactElement
+ */
+const AppIcon: React.FC<AppIconProps> = ({ isAdp }): ReactElement => {
+    return (
+        <span data-testid="Control-Property-Editor-Icon">
+            {!isAdp ? (
+                <CPEIcon />
+            ) : (
+                <img className={styles.appLogo} src="./editor/adp-logo.svg" alt="SAPUI5 Visual Editor" />
+            )}
+        </span>
+    );
+};
+
+/**
  * React element for app logo.
  *
  * @returns ReactElement
@@ -75,18 +93,3 @@ export function AppLogo(): ReactElement {
         </>
     );
 }
-
-/**
- * React element for app icon.
- */
-const AppIcon: React.FC<AppIconProps> = ({ isAdp }) => {
-    return (
-        <span data-testid="Control-Property-Editor-Icon">
-            {!isAdp ? (
-                <CPEIcon />
-            ) : (
-                <img className={styles.appLogo} src="./editor/adp-logo.svg" alt="SAPUI5 Visual Editor" />
-            )}
-        </span>
-    );
-};
