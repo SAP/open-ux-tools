@@ -1,5 +1,16 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.17.2
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+    -   @sap-ux/odata-service-writer@0.15.1
+    -   @sap-ux/ui5-application-writer@0.26.1
+    -   @sap-ux/fe-fpm-writer@0.24.1
+    -   @sap-ux/ui5-test-writer@0.3.1
+
 ## 0.17.1
 
 ### Patch Changes
