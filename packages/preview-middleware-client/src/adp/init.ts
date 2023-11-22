@@ -31,10 +31,10 @@ export default async function (rta: RuntimeAuthoring) {
     });
     
     const ui5Version = (await VersionInfo.load()) as { version: string };
-    const ui5VersionValidationMessage = getUI5VersionValidationMessage(ui5Version.version);
+    const ui5VersionValidationMsg = getUI5VersionValidationMessage(ui5Version.version);
 
-    if(ui5VersionValidationMessage) {
-        sendAction(showMessage(ui5VersionValidationMessage));
+    if(ui5VersionValidationMsg) {
+        sendAction(showMessage(ui5VersionValidationMsg));
     }
 
     

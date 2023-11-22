@@ -1,4 +1,3 @@
-
 /**
  * Checks if the given version is lower than the required minimal version.
  * @param version to check
@@ -12,16 +11,20 @@ export function isLowerThanMinimalUi5Version(version: string, minVersion: string
         const ui5VersionParsed = parseUI5Version(version);
         if (
             !isNaN(ui5VersionParsed.major) &&
-            ui5VersionParsed.major <= minVersionParsed.major &&
             !isNaN(ui5VersionParsed.minor) &&
-            ui5VersionParsed.minor < minVersionParsed.minor
+            !isNaN(minVersionParsed.major) &&
+            !isNaN(minVersionParsed.minor)
         ) {
-            return true;
+            if (ui5VersionParsed.major < minVersionParsed.major) {
+                return true;
+            }
+            if (ui5VersionParsed.major === minVersionParsed.major && ui5VersionParsed.minor < minVersionParsed.minor) {
+                return true;
+            }
         }
     }
     return false;
 }
-
 
 /**
  * Get UI5 version validation message based on conditions.

@@ -37,7 +37,7 @@ interface SliceState {
     scenario: Scenario;
     icons: IconDetails[];
     changes: ChangesSlice;
-    showDialogMessage: string | undefined;
+    dialogMessage: string | undefined;
 }
 
 export interface ChangesSlice {
@@ -104,7 +104,7 @@ export const initialState = {
         pending: [],
         saved: []
     },
-    showDialogMessage: undefined
+    dialogMessage: undefined
 };
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
@@ -223,7 +223,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 }
             })
             .addMatcher(showMessage.match, (state, action: ReturnType<typeof showMessage>): void => {
-                state.showDialogMessage = action.payload;
+                state.dialogMessage = action.payload;
             })
 });
 

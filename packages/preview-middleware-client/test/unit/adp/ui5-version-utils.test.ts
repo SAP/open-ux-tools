@@ -12,8 +12,10 @@ describe('isLowerThanMinimalUi5Version', () => {
         expect(isLowerThanMinimalUi5Version('snapshot-untested', '1.71')).toBeFalsy();
         //returns false for snapshot-{ higher}
         expect(isLowerThanMinimalUi5Version('snapshot-1.72', '1.71')).toBeFalsy();
-        //returns true for lower versions
+        //returns true for lower minor versions
         expect(isLowerThanMinimalUi5Version('1.70', '1.71')).toBeTruthy();
+        //returns true for lower major versions
+        expect(isLowerThanMinimalUi5Version('1.70', '2.71')).toBeTruthy();
     });
 });
 

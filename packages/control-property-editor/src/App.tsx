@@ -41,7 +41,7 @@ export default function App(appProps: AppProps): ReactElement {
     const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => hideWarningDialog !== true);
 
     const [isInitialized, setIsInitialized] = useState(false);
-    const [showDialogMessage, setShowDialogMessage] = useState(false);
+    const [shouldShowDialogMessage, setShouldShowDialogMessage] = useState(false);
 
     const previewWidth = useSelector<RootState, string>(
         (state) => `${DEVICE_WIDTH_MAP.get(state.deviceType) ?? DEFAULT_DEVICE_WIDTH}px`
@@ -49,7 +49,7 @@ export default function App(appProps: AppProps): ReactElement {
     const previewScale = useSelector<RootState, number>((state) => state.scale);
     const fitPreview = useSelector<RootState, boolean>((state) => state.fitPreview ?? false);
     const windowSize = useWindowSize();
-    const dialogMessage = useSelector<RootState, string | undefined>((state) => state.showDialogMessage);
+    const dialogMessage = useSelector<RootState, string | undefined>((state) => state.dialogMessage);
 
     const containerRef = useCallback(
         (node) => {
@@ -88,7 +88,7 @@ export default function App(appProps: AppProps): ReactElement {
 
     useEffect(() => {
         if (dialogMessage) {
-            setShowDialogMessage(true);
+            setShouldShowDialogMessage(true);
         }
     }, [dialogMessage]);
 
@@ -99,7 +99,7 @@ export default function App(appProps: AppProps): ReactElement {
             </section>
             <section ref={containerRef} className="app-content">
                 <div className="app-canvas">
-                    {!dialogMessage && (
+                    {!shouldShowDialogMessage && (
                         <iframe
                             className="app-preview"
                             id="preview"
@@ -117,12 +117,12 @@ export default function App(appProps: AppProps): ReactElement {
                 <PropertiesPanel />
             </section>
             <UIDialog
-                hidden={!showDialogMessage}
+                hidden={!shouldShowDialogMessage}
                 dialogContentProps={{
                     title: t('TOOL_DISCLAIMER_TITLE'),
                     subText: dialogMessage
-                }}></UIDialog>
-
+                }}
+            />
             <UIDialog
                 hidden={!isWarningDialogVisible}
                 closeButtonAriaLabel={t('CLOSE')}
