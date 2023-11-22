@@ -6,7 +6,7 @@
  * @returns boolean
  */
 export function isLowerThanMinimalUi5Version(version: string, minVersion: string): boolean {
-    if (version !== undefined && version !== '' && minVersion !== undefined && minVersion !== '') {
+    if (version && minVersion) {
         const minVersionParsed = parseUI5Version(minVersion);
         const ui5VersionParsed = parseUI5Version(version);
         if (
