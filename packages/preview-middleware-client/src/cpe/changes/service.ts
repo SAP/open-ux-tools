@@ -324,7 +324,7 @@ export class ChangeService {
     }
 
     /**
-     * Retry operations method.
+     * Retry operations.
      *
      * @param operations to be executed
      * @returns first successfull operation result or undefined
@@ -344,8 +344,8 @@ export class ChangeService {
     /**
      * Get command change type.
      *
-     * @param command to be executed
-     * @returns command change type or undefined.
+     * @param command to be executed for creating change
+     * @returns command change type or undefined
      */
     private getCommandChangeType(command: FlexCommand): string | undefined {
         return this.retryOperations([
@@ -355,10 +355,10 @@ export class ChangeService {
     }
 
     /**
-     * Get command selector id type.
+     * Get command selector id.
      *
-     * @param command to be executed
-     * @returns command selector id or undefined.
+     * @param command to be executed for creating change
+     * @returns command selector id or undefined
      */
     private getCommandSelectorId(command: FlexCommand): string | undefined {
         return this.retryOperations([
