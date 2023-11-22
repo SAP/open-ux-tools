@@ -87,6 +87,9 @@
       "path": "packages/odata-service-writer"
     },
     {
+      "path": "packages/odata-vocabularies"
+    },
+    {
       "path": "packages/preview-middleware-client"
     },
     {
