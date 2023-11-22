@@ -1,9 +1,11 @@
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { FileName } from '../constants';
-import { fileExists, findFilesByExtension } from '../file';
-import type { AppProgrammingLanguage } from '../types';
+import { fileExists, findFilesByExtension, readJSON } from '../file';
+import type { Package, AppProgrammingLanguage, AppType, ProjectType } from '../types';
+import { getCapProjectType } from './cap';
 import { getWebappPath } from './ui5-config';
+import { findFioriArtifacts } from './search';
 
 /**
  * Get the used programming language of an application.
@@ -31,4 +33,59 @@ export async function getAppProgrammingLanguage(appRoot: string, memFs?: Editor)
         // could not detect app language
     }
     return appLanguage;
+}
+
+/**
+ * Get the type of application or Fiori artifact.
+ *
+ * @param appRoot - path to application root
+ * @returns - type of application, e.g. SAP Fiori elements, SAPUI5 freestyle, SAPUI5 Extension, ... see AppType.
+ */
+export async function getAppType(appRoot: string): Promise<AppType | undefined> {
+    let appType: AppType | undefined;
+    try {
+        const artifacts = await findFioriArtifacts({
+            wsFolders: [appRoot],
+            artifacts: ['adaptations', 'applications', 'extensions', 'libraries']
+        });
+
+        if (artifacts.applications?.length === 1) {
+            const app = artifacts.applications[0];
+            const packageJson = await readJSON<Package>(join(app.projectRoot, FileName.Package));
+            if (app.projectRoot === app.appRoot) {
+                appType = packageJson.sapux ? 'SAP Fiori elements' : 'SAPUI5 freestyle';
+            } else {
+                appType =
+                    Array.isArray(packageJson.sapux) &&
+                    packageJson.sapux.find(
+                        (relAppPath) => join(app.projectRoot, ...relAppPath.split(/[/\\]/)) === appRoot
+                    )
+                        ? 'SAP Fiori elements'
+                        : 'SAPUI5 freestyle';
+            }
+        } else if (artifacts.adaptations?.length === 1) {
+            appType = 'Fiori Adaptation';
+        } else if (artifacts.extensions?.length === 1) {
+            appType = 'SAPUI5 Extension';
+        } else if (artifacts.libraries?.length === 1) {
+            appType = 'Fiori Reuse';
+        }
+    } catch {
+        // If error occurs we can't determine the type and return undefined
+    }
+    return appType;
+}
+
+/**
+ * Returns the project type for a given Fiori project.
+ *
+ * @param projectRoot - root path of the project
+ * @returns - project type like Edmx, CAPJava, CAPNodejs
+ */
+export async function getProjectType(projectRoot: string): Promise<ProjectType> {
+    const capType = await getCapProjectType(projectRoot);
+    if (capType === undefined) {
+        return 'EDMXBackend';
+    }
+    return capType;
 }
