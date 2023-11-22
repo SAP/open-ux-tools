@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.17.3
+
+### Patch Changes
+
+-   3c5fa042: fpm localize custom xml view
+-   Updated dependencies [3c5fa042]
+    -   @sap-ux/fe-fpm-writer@0.24.2
+
 ## 0.17.2
 
 ### Patch Changes
