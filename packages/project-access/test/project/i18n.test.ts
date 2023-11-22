@@ -6,7 +6,7 @@ import { create } from 'mem-fs-editor';
 
 describe('getI18nPaths', () => {
     const manifestFolder = 'root';
-    const defaultI18nAppPath = 'root/i18n/i18n.properties';
+    const defaultI18nAppPath = join('root/i18n/i18n.properties');
     const getExpectedPath = (relativeI18nPath: string, folder: string = manifestFolder) => {
         return join(folder, relativeI18nPath);
     };
@@ -23,7 +23,7 @@ describe('getI18nPaths', () => {
         };
     };
     test('sap.ui5/i18n - string', async () => {
-        const i18nPath = 'dummy/i18n.properties';
+        const i18nPath = join('dummy/i18n.properties');
         const manifestTemp = getUI5I18n(i18nPath);
         const result = getI18nPaths(manifestFolder, manifestTemp as Manifest);
         expect(result['sap.ui5']).toEqual(getExpectedPath(i18nPath));
@@ -37,7 +37,7 @@ describe('getI18nPaths', () => {
         };
     };
     test('sap.app/i18n - string', async () => {
-        const i18nPath = 'dummy/i18n.properties';
+        const i18nPath = join('dummy/i18n.properties');
         const manifestTemp = getSapAppI18n(i18nPath);
         const result = getI18nPaths(manifestFolder, manifestTemp as Manifest);
         expect(result['sap.app']).toEqual(getExpectedPath(i18nPath));
@@ -64,7 +64,7 @@ describe('getI18nPaths', () => {
         };
     };
     test('sap.ui5/i18n/settings/bundleUrl - settings object', async () => {
-        const i18nPath = 'dummy/i18n.properties';
+        const i18nPath = join('dummy/i18n.properties');
         const manifestTemp = getUI5I18nWithSettings(i18nPath);
         const result = getI18nPaths(manifestFolder, manifestTemp as Manifest);
         expect(result['sap.ui5']).toEqual(getExpectedPath(i18nPath));
@@ -98,10 +98,10 @@ describe('getI18nPaths', () => {
     });
 
     test('All variants in one manifest(sap.ui5/i18n, sap.ui5/i18n/settings/bundleUrl, sap.app/i18n)', async () => {
-        const i18nPath = 'dummy/i18n.properties';
+        const i18nPath = join('dummy/i18n.properties');
         const manifestTemp = getUI5I18n(i18nPath);
 
-        const i18nPathForApp = 'app/i18n.properties';
+        const i18nPathForApp = join('app/i18n.properties');
         const manifestAppI18n = getSapAppI18n(i18nPathForApp) as any;
         manifestTemp['sap.app'] = manifestAppI18n['sap.app'];
 
@@ -115,8 +115,8 @@ describe('getI18nPaths', () => {
     });
 
     test('Second combination - sap.ui5/i18n/settings/bundleUrl and sap.app/i18n', async () => {
-        const i18nPath = 'dummy/i18n.properties';
-        const i18nPathApp = 'app/i18n.properties';
+        const i18nPath = join('dummy/i18n.properties');
+        const i18nPathApp = join('app/i18n.properties');
         const manifestTemp = getUI5I18nWithSettings(i18nPath);
 
         const manifestAppI18n = getSapAppI18n(i18nPathApp);
@@ -128,7 +128,7 @@ describe('getI18nPaths', () => {
     });
 
     test('sap.ui5/i18n/settings/bundleName', () => {
-        const i18nPath = 'dummy/app';
+        const i18nPath = join('dummy/app');
         const manifest = {
             'sap.app': {
                 id: 'app.with.name.space'
