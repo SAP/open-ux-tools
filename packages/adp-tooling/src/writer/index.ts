@@ -2,8 +2,9 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { AdpPreviewConfig, AdpWriterConfig } from '../types';
+import type { AdpWriterConfig } from '../types';
 import { UI5Config } from '@sap-ux/ui5-config';
+import { enhanceUI5Yaml, enhanceUI5DeployYaml, hasDeployConfig } from './options';
 
 /**
  * Set default values for optional properties.
@@ -15,7 +16,9 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
     const configWithDefaults: AdpWriterConfig = {
         app: { ...config.app },
         target: { ...config.target },
-        ui5: { ...config.ui5 }
+        ui5: { ...config.ui5 },
+        deploy: config.deploy ? { ...config.deploy } : undefined,
+        options: { ...config.options }
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
     configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
@@ -28,7 +31,7 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
 }
 
 /**
- * Writes the adp-project template to the memfs editor instance.
+ * Writes the adp-project template to the mem-fs-editor instance.
  *
  * @param basePath - the base path
  * @param config - the writer configuration
@@ -49,51 +52,16 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
 
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
-    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-    ui5Config.addCustomMiddleware([
-        {
-            name: 'preview-middleware',
-            afterMiddleware: 'compression',
-            configuration: {
-                adp: {
-                    target: fullConfig.target,
-                    ignoreCertErrors: false
-                } as AdpPreviewConfig,
-                rta: {
-                    editors: [
-                        {
-                            path: '/local/editor.html',
-                            developerMode: true
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            name: 'ui5-proxy-middleware',
-            afterMiddleware: 'preview-middleware',
-            configuration: {
-                ui5: {
-                    path: ['/resources', '/test-resources'],
-                    url: 'https://ui5.sap.com'
-                }
-            }
-        },
-        {
-            name: 'backend-proxy-middleware',
-            afterMiddleware: 'preview-middleware',
-            configuration: {
-                backend: {
-                    ...fullConfig.target,
-                    path: '/sap'
-                },
-                options: {
-                    secure: true
-                }
-            }
-        }
-    ]);
+    const baseUi5ConfigContent = fs.read(ui5ConfigPath);
+    const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
+    enhanceUI5Yaml(ui5Config, fullConfig);
     fs.write(ui5ConfigPath, ui5Config.toString());
+    // ui5-deploy.yaml
+    if (hasDeployConfig(fullConfig)) {
+        const ui5DeployConfig = await UI5Config.newInstance(baseUi5ConfigContent);
+        enhanceUI5DeployYaml(ui5DeployConfig, fullConfig);
+        fs.write(join(basePath, 'ui5-deploy.yaml'), ui5DeployConfig.toString());
+    }
 
     return fs;
 }

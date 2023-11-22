@@ -1,5 +1,6 @@
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
+import type { Adp } from '@sap-ux/ui5-config';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -37,6 +38,16 @@ export interface AdpWriterConfig {
     package?: {
         name?: string;
         description?: string;
+    };
+    /**
+     * Optional: configuration for deployment to ABAP
+     */
+    deploy?: Adp;
+    options?: {
+        /**
+         * Optional: if set to true then the generated project will be recognized by the SAP Fiori tools
+         */
+        fioriTools?: boolean;
     };
 }
 
