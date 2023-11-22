@@ -38,9 +38,7 @@
                                 visible="{/specialIndexHandlingIcon}" 
                                 src="sap-icon://message-information" 
                                 class= "sapUiTinyMarginBegin" 
-                                tooltip="{/iconTooltip}"
-                                >
-                            </core:Icon>
+                                tooltip="{/iconTooltip}" />
                         </HBox>
                         <Label text="Fragment Name" />
                         <Input 

@@ -25,7 +25,6 @@ import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
 import { getFragments, writeFragment } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
-import Popover from 'sap/m/Popover';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -37,7 +36,6 @@ interface CreateFragmentProps {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog {
-    private popover: Popover;
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
         super(name);
         this.rta = rta;
@@ -66,9 +64,9 @@ export default class AddFragment extends BaseDialog {
         const aggregations = overlay.getDesignTimeMetadata().getData().aggregations;
 
         if(specialIndexAggregation in aggregations && 'specialIndexHandling' in aggregations[specialIndexAggregation]) {
+            const controlType = this.runtimeControl.getMetadata().getName();
             this.model.setProperty('/indexHandlingFlag', false);
             this.model.setProperty('/specialIndexHandlingIcon', true);
-            const controlType = this.runtimeControl.getMetadata().getName();
             this.model.setProperty('/iconTooltip', `Index is defined by special logic of ${controlType} and can't be set here`);
             
         } else {

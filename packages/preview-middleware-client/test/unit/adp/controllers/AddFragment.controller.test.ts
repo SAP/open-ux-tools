@@ -12,7 +12,7 @@ import AddFragment from '../../../../src/adp/controllers/AddFragment.controller'
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
-import ManagedObject from 'sap/ui/base/ManagedObject';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
 
 describe('AddFragment', () => {
     beforeAll(() => {
