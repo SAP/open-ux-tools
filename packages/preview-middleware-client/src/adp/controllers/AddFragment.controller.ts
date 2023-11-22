@@ -59,6 +59,11 @@ export default class AddFragment extends BaseDialog {
         this.dialog.open();
     }
 
+    /**
+    * Handles the index field whenever a specific aggregation is chosen
+    * 
+    * @param specialIndexAggregation string | number
+    */
     private specialIndexHandling(specialIndexAggregation: string | number): void {
         const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
         const aggregations = overlay.getDesignTimeMetadata().getData().aggregations;
