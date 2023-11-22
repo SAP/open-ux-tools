@@ -323,43 +323,47 @@ export class ChangeService {
         return result;
     }
 
+    /**
+     * Retry operations method.
+     *
+     * @param operations to be executed
+     * @returns first successfull operation result or undefined
+     */
+    private retryOperations<T>(operations: Array<() => T>): T | undefined {
+        for (const operation of operations) {
+            try {
+                return operation();
+            } catch (error) {
+                Log.error(`Retry operation failed: ${error?.message}`);
+                continue;
+            }
+        }
+        return undefined;
+    }
+
+    /**
+     * Get command change type.
+     *
+     * @param command to be executed
+     * @returns command change type or undefined.
+     */
     private getCommandChangeType(command: FlexCommand): string | undefined {
-        try {
-            const changeType = command.getChangeType();
-
-            return changeType;
-        } catch (error) {
-            return this.getCommandChangeTypeFromGetPreparedChange(command);
-        }
+        return this.retryOperations([
+            () => command.getChangeType(),
+            () => command.getPreparedChange().getDefinition().changeType
+        ]);
     }
 
-    private getCommandChangeTypeFromGetPreparedChange(command: FlexCommand): string | undefined {
-        try {
-            const changeType = command.getPreparedChange().getDefinition().changeType;
-
-            return changeType;
-        } catch (error) {
-            return undefined;
-        }
-    }
-
+    /**
+     * Get command selector id type.
+     *
+     * @param command to be executed
+     * @returns command selector id or undefined.
+     */
     private getCommandSelectorId(command: FlexCommand): string | undefined {
-        try {
-            const selectorId = command.getSelector().id;
-
-            return selectorId;
-        } catch (error) {
-            return this.getSelectorIdFromCommandElement(command);
-        }
-    }
-
-    private getSelectorIdFromCommandElement(command: FlexCommand): string | undefined {
-        try {
-            const selectorId = command.getElement().getProperty('persistencyKey');
-
-            return selectorId;
-        } catch (error) {
-            return undefined;
-        }
+        return this.retryOperations([
+            () => command.getSelector().id,
+            () => command.getElement().getProperty('persistencyKey')
+        ]);
     }
 }
