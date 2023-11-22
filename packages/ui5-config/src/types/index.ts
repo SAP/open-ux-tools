@@ -1,24 +1,35 @@
 export * from './ui5yaml';
 export * from './middlewares';
 
-export interface AbapApp {
+export interface BspApp {
     name: string;
-    description: string;
     package: string;
-    transport: string;
+    description?: string;
+    transport?: string;
+}
+export interface Adp {
+    package: string;
+    description?: string;
+    transport?: string;
 }
 
-export interface AbapTarget {
-    [key: string]: string | boolean | undefined;
-    url?: string;
+export interface UrlAbapTarget {
+    url: string;
     client?: string;
-    destination?: string;
     scp?: boolean;
 }
 
+export interface DestinationAbapTarget {
+    destination: string;
+}
+
+export type AbapTarget =
+    | (UrlAbapTarget & Partial<DestinationAbapTarget>)
+    | (DestinationAbapTarget & Partial<UrlAbapTarget>);
+
 export interface AbapDeployConfig {
     target: AbapTarget;
-    app: AbapApp;
+    app: BspApp | Adp;
     ignoreCertError?: boolean;
 }
 

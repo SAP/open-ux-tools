@@ -1,5 +1,5 @@
 import type {
-    AbapApp,
+    BspApp,
     AbapTarget,
     Configuration,
     CustomItem,
@@ -9,7 +9,8 @@ import type {
     FioriToolsProxyConfigBackend,
     FioriToolsProxyConfigUI5,
     Resources,
-    Ui5Document
+    Ui5Document,
+    Adp
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -96,6 +97,41 @@ export class UI5Config {
     public setType(value: Ui5Document['type']): UI5Config {
         this.document.setIn({ path: 'type', value });
         return this;
+    }
+
+    /**
+     * Add a custom configuration to the yaml.
+     *
+     * @param key key/name of the custom property
+     * @param value the properties value
+     */
+    public addCustomConfiguration(key: string, value: object | string) {
+        try {
+            const configNode = this.document.getMap({ path: 'customConfiguration' });
+            configNode.setIn([key], value);
+        } catch (_error) {
+            this.document.setIn({
+                path: 'customConfiguration',
+                value: {
+                    [key]: value
+                }
+            });
+        }
+    }
+
+    /**
+     * Get a custom configuration from the yaml.
+     *
+     * @param key key/name of the custom property
+     * @returns the value of the property or undefined
+     */
+    public getCustomConfiguration(key: string): object | string | undefined {
+        try {
+            const node = this.document.getMap({ path: 'customConfiguration' }).get(key) as YAMLMap | undefined;
+            return node?.toJSON?.() ?? node?.toString();
+        } catch (_error) {
+            return undefined;
+        }
     }
 
     /**
@@ -253,20 +289,23 @@ export class UI5Config {
      *
      * @param target system that this app is to be deployed to
      * @param app application configuration for the deployment to ABAP
-     * @returns {UI5Config} the UI5Config instance
+     * @param fioriTools if true use the middleware included in the @sap/ux-ui5-tooling module
+     * @returns this UI5Config instance
      * @memberof UI5Config
      */
-    public addAbapDeployTask(target: AbapTarget, app: AbapApp): UI5Config {
+    public addAbapDeployTask(target: AbapTarget, app: BspApp | Adp, fioriTools = true) {
         this.document.appendTo({
-            path: 'builder.resources',
-            value: {
-                excludes: ['/test/**', '/localService/**']
-            }
+            path: 'builder.resources.excludes',
+            value: '/test/**'
+        });
+        this.document.appendTo({
+            path: 'builder.resources.excludes',
+            value: '/localService/**'
         });
         this.document.appendTo({
             path: 'builder.customTasks',
             value: {
-                name: 'deploy-to-abap',
+                name: fioriTools ? 'deploy-to-abap' : 'abap-deploy-task',
                 afterTask: 'generateCachebusterInfo',
                 configuration: { target, app }
             }
