@@ -90,8 +90,18 @@ export function generate(basePath: string, data: CustomPage, fs?: Editor): Edito
     const viewPath = join(config.path, `${config.name}.view.xml`);
     if (!fs.exists(viewPath)) {
         fs.copyTpl(join(root, 'ext/View.xml'), viewPath, config);
+        // i18n.properties
+        const manifest = fs.readJSON(manifestPath) as Manifest;
+        const defaultI18nPath = 'i18n/i18n.properties';
+        const customI18nPath = manifest?.['sap.ui5']?.models?.i18n?.uri;
+        const i18nPath = join(basePath, 'webapp', customI18nPath ?? defaultI18nPath);
+        const i18TemplatePath = join(root, 'i18n', 'i18n.properties');
+        if (fs.exists(i18nPath)) {
+            fs.append(i18nPath, render(fs.read(i18TemplatePath), config, {}));
+        } else {
+            fs.copyTpl(i18TemplatePath, i18nPath, config);
+        }
     }
-
     const ext = data.typescript ? 'ts' : 'js';
     const controllerPath = join(config.path, `${config.name}.controller.${ext}`);
     if (!fs.exists(controllerPath)) {

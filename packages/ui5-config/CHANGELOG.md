@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.21.0
+
+### Minor Changes
+
+-   3f977f21: Enhanced functionality to support adding customer properties
+
 ## 0.20.0
 
 ### Minor Changes
