@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { render } from '../utils';
 import { initI18n } from '../../../src/i18n';
@@ -14,6 +14,16 @@ beforeAll(() => {
     initIcons();
 });
 
+const triggerKeyDown = (key: string, code: number) => {
+    const element = document.activeElement as HTMLElement;
+    fireEvent.keyDown(element, {
+        key,
+        code: key,
+        keyCode: code,
+        charCode: code,
+        which: code
+    });
+};
 test('renders theme selector callout', () => {
     render(<ThemeSelectorCallout />);
     screen.getByRole('button').click();
@@ -40,29 +50,34 @@ test('change theme to light', () => {
     expect(localStorage.getItem('theme')).toStrictEqual('light');
 });
 
-test.only('change theme to light and navigate via keyboard for dark to have focus', async () => {
+test('change theme to light and navigate via keyboard for dark to have focus', async () => {
     localStorage.setItem('theme', 'light');
-    const rect = {
-        top: 0,
-        height: 10,
-        width: 10,
-        left: 0
-    } as DOMRect;
+    // Use 'isVisible' property to make virtual nodes visible - 'isVisible' is used by fluent for testing purposes
+    Object.defineProperty(HTMLElement.prototype, 'isVisible', {
+        configurable: true,
+        get: function (this: HTMLElement) {
+            return true;
+        }
+    });
     render(<ThemeSelectorCallout />);
+    // Open callout
     const button = screen.getByRole('button');
     button.click();
-    jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => rect);
-    const callout = screen.getByTestId('theme-selector-callout');
-    callout.focus();
+    // Wait for callout open
+    jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+        cb(1);
+        return 1;
+    });
     await new Promise((resolve) => setTimeout(resolve, 1));
-    callout.dispatchEvent(
-        new KeyboardEvent('keydown', {
-            key: 'ArrowRight',
-            code: 'ArrowRight',
-            charCode: 39,
-            which: 39
-        })
-    );
+    // Check if default/selected child is focused
+    const lightButton = screen.getByTitle('Light');
+    expect(document.activeElement).toEqual(lightButton);
+    // Use arrow left to focus previous
+    triggerKeyDown('ArrowRight', 39);
     const darkButton = screen.getByTitle('Dark');
-    expect(document.activeElement).toBe(darkButton);
+    expect(document.activeElement).toEqual(darkButton);
+    // select focused theme
+    expect(localStorage.getItem('theme')).toStrictEqual('light');
+    triggerKeyDown('Enter', 13);
+    expect(localStorage.getItem('theme')).toStrictEqual('dark');
 });
