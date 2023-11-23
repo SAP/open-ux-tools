@@ -87,6 +87,9 @@
       "path": "packages/playwright"
     },
     {
+      "path": "packages/playwright"
+    },
+    {
       "path": "packages/preview-middleware-client"
     },
     {
