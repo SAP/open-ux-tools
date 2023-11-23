@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.13.3
+
+### Patch Changes
+
+-   3473d4b0: UIFlexibleTable. New property "isTouchDragDisabled" which allows to disable drag/reordering of table rows where drag is initalized by touch events
+
 ## 1.13.2
 
 ### Patch Changes
