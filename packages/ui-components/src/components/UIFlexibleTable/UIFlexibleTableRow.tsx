@@ -208,15 +208,18 @@ function isRowDisabled(value: unknown): boolean {
  *
  * @param isDragDisabled Is row disabled for drag.
  * @param isDragged True if row is currently dragging.
+ * @param isTouchDragDisabled Is drag disabled by touch events.
  * @returns {string} CSS styles for row item element.
  */
-function getRowStyles(isDragDisabled: boolean, isDragged: boolean): CSSProperties {
+function getRowStyles(isDragDisabled: boolean, isDragged: boolean, isTouchDragDisabled: boolean): CSSProperties {
     const style: CSSProperties = {
         pointerEvents: 'all',
         cursor: isDragged ? 'grabbing' : 'inherit'
     };
     if (isDragDisabled) {
         style.cursor = 'default';
+    }
+    if (isDragDisabled || isTouchDragDisabled) {
         style.touchAction = 'auto';
     }
     return style;
@@ -284,12 +287,23 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
 
     const style: CSSProperties = {
         ...params.props.style,
-        ...getRowStyles(isDragDisabled, isDragged)
+        ...getRowStyles(isDragDisabled, isDragged, !!tableProps.isTouchDragDisabled)
     };
 
     if (tableProps.isContentLoading) {
         style.pointerEvents = 'none';
         style.cursor = 'none';
+    }
+    let onTouchStart: ((event: React.TouchEvent) => void) | undefined;
+    let onTouchEnd: ((event: React.TouchEvent) => void) | undefined;
+    // Disable drag using touch events
+    if (!isDragDisabled && tableProps.isTouchDragDisabled) {
+        onTouchStart = (event: React.TouchEvent) => {
+            event.nativeEvent.stopImmediatePropagation();
+        };
+        onTouchEnd = (event: React.TouchEvent) => {
+            event.nativeEvent.stopImmediatePropagation();
+        };
     }
     return (
         <li
@@ -298,7 +312,9 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
             data-movable-handle
             key={`row-${rowIndex}`}
             id={`row-${rowIndex}`}
-            style={style}>
+            style={style}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}>
             <div className={rowWrapperClassNames} ref={rowRef}>
                 {showRowTitle && renderRowTitle(tableProps, row, rowIndex, rowActions)}
                 <div className="flexible-table-content-table-row-wrapper-cells">{rowCells}</div>

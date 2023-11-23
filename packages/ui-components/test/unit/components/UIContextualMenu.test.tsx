@@ -42,6 +42,20 @@ describe('<UIDropdown />', () => {
         expect(wrapper.find(ContextualMenu).prop('className')).toEqual('ts-ContextualMenu dummy');
     });
 
+    for (const testMaxWidth of [350, undefined]) {
+        it('Styles', () => {
+            wrapper.setProps({
+                maxWidth: testMaxWidth
+            });
+            const calloutProps = wrapper.find(ContextualMenu).prop('calloutProps');
+            expect(calloutProps?.styles).toEqual({
+                root: {
+                    maxWidth: testMaxWidth
+                }
+            });
+        });
+    }
+
     it('Test item with icon', () => {
         wrapper.setProps({
             items: [
