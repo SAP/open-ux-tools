@@ -113,6 +113,7 @@ const prepare = async (ui5Version: string) => {
 const check = async (param: { page: Page }) => {
     const { page } = param;
     await page.goto(`${getUrl()}/my/custom/path/preview.html#app-preview`);
+    await page.getByRole('button', { name: 'Go', exact: true }).click();
     await expect(page.getByText('ProductForEdit_0', { exact: true })).toBeVisible();
 };
 
