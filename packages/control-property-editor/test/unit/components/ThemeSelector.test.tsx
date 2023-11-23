@@ -55,9 +55,7 @@ test('change theme to light and navigate via keyboard for dark to have focus', a
     // Use 'isVisible' property to make virtual nodes visible - 'isVisible' is used by fluent for testing purposes
     Object.defineProperty(HTMLElement.prototype, 'isVisible', {
         configurable: true,
-        get: function (this: HTMLElement) {
-            return true;
-        }
+        get: () => true
     });
     render(<ThemeSelectorCallout />);
     // Open callout
