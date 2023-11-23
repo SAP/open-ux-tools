@@ -1,4 +1,4 @@
-import type { AbapApp, UI5ProxyConfig } from '../src';
+import type { BspApp, UI5ProxyConfig } from '../src';
 import { UI5Config } from '../src';
 
 describe('UI5Config', () => {
@@ -71,6 +71,24 @@ describe('UI5Config', () => {
             ui5Config.setType('application');
             ui5Config.setType('library');
             expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
+    describe('add/getCustomConfiguration', () => {
+        const testConfig = {
+            url: 'https://test.example',
+            client: '123'
+        };
+        test('First configuration in a document', () => {
+            ui5Config.addCustomConfiguration('target', testConfig);
+            expect(ui5Config.getCustomConfiguration('target')).toEqual(testConfig);
+        });
+        test('Add multiple configurations', () => {
+            const anotherConfig = '~config';
+            ui5Config.addCustomConfiguration('target', testConfig);
+            ui5Config.addCustomConfiguration('another', anotherConfig);
+            expect(ui5Config.getCustomConfiguration('target')).toEqual(testConfig);
+            expect(ui5Config.getCustomConfiguration('another')).toBe(anotherConfig);
         });
     });
 
@@ -281,7 +299,7 @@ describe('UI5Config', () => {
     });
 
     describe('addAbapDeployTask', () => {
-        const app: AbapApp = {
+        const app: BspApp = {
             name: '~name',
             description: '~description',
             'package': '~package',
@@ -290,6 +308,21 @@ describe('UI5Config', () => {
 
         test('local settings', () => {
             ui5Config.addAbapDeployTask({ url, client }, app);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('minimal adp settings', () => {
+            ui5Config.addAbapDeployTask(
+                { url, client },
+                {
+                    package: '$TMP'
+                }
+            );
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('use open source task', () => {
+            ui5Config.addAbapDeployTask({ url, client }, app, false);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 

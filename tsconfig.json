@@ -84,10 +84,13 @@
       "path": "packages/odata-service-writer"
     },
     {
-      "path": "packages/playwright"
+      "path": "packages/odata-vocabularies"
     },
     {
       "path": "packages/preview-middleware-client"
+    },
+    {
+        "path": "packages/playwright"
     },
     {
       "path": "packages/preview-middleware"

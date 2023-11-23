@@ -6,11 +6,13 @@ import type {
     IStyleFunctionOrObject,
     ICalloutContentStyleProps
 } from '@fluentui/react';
-import { Callout } from '@fluentui/react';
+import { Callout, getDocument } from '@fluentui/react';
+import { isHTMLElement, focusToSibling } from '../../utilities';
 
 export interface UICalloutProps extends ICalloutProps {
     calloutMinWidth?: number;
     contentPadding?: UICalloutContentPadding;
+    focusTargetSiblingOnTabPress?: boolean;
 }
 
 export const CALLOUT_STYLES = {
@@ -95,6 +97,34 @@ export class UICallout extends React.Component<UICalloutProps, {}> {
      */
     public constructor(props: UICalloutProps) {
         super(props);
+        this.onKeyDown = this.onKeyDown.bind(this);
+    }
+
+    /**
+     * Method handles keydown event.
+     * If "focusTargetSiblingOnTabPress" property is set and 'Tab' key is pressed,
+     *  then method tries to focus next/previous sibling based on target.
+     *
+     * @param event Keydown event
+     */
+    private onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+        const { onKeyDown, focusTargetSiblingOnTabPress, target } = this.props;
+        if (focusTargetSiblingOnTabPress && event.key === 'Tab' && target) {
+            let targetRef: HTMLElement | null | undefined = null;
+            if (typeof target === 'string') {
+                const currentDoc = getDocument();
+                targetRef = currentDoc?.querySelector(target);
+            } else if ('getBoundingClientRect' in target && isHTMLElement(target)) {
+                targetRef = target;
+            }
+            if (targetRef && focusToSibling(targetRef, !event.shiftKey)) {
+                // Stop event bubbling to avoid default browser behavior
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        }
+        // Call external subscriber
+        onKeyDown?.(event);
     }
 
     /**
@@ -102,7 +132,7 @@ export class UICallout extends React.Component<UICalloutProps, {}> {
      */
     render(): JSX.Element {
         return (
-            <Callout {...this.props} styles={getCalloutStyle(this.props)}>
+            <Callout {...this.props} onKeyDown={this.onKeyDown} styles={getCalloutStyle(this.props)}>
                 {this.props.children}
             </Callout>
         );
