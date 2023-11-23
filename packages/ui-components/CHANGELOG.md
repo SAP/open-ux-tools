@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.13.2
+
+### Patch Changes
+
+-   f1221f2b: fix: UIContextualMenu. Border bottom is cut for UIContextualMenu in some zoom levels
+
 ## 1.13.1
 
 ### Patch Changes
