@@ -18,6 +18,7 @@ module.exports = {
     modulePathIgnorePatterns: [
         '<rootDir>/dist',
         '<rootDir>/coverage',
+        '<rootDir>/templates',
         '<rootDir>/test/test-input',
         '<rootDir>/test/test-output'
     ],
