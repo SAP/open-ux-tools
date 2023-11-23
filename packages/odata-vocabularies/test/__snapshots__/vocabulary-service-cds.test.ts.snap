@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getVocabularies(CDS) contains CDS 1`] = `
+Object {
+  "defaultAlias": "CDS",
+  "defaultUri": "",
+  "namespace": "com.sap.vocabularies.CDS.v1",
+}
+`;
+
+exports[`getVocabulary(CDS) CDS 1`] = `
+Object {
+  "defaultAlias": "CDS",
+  "defaultUri": "",
+  "namespace": "com.sap.vocabularies.CDS.v1",
+}
+`;
+
+exports[`getVocabulary(CDS) cdsVocabulary information 1`] = `
+Object {
+  "alias": "CDS",
+  "groupNames": Set {
+    "assert",
+    "cds",
+    "odata",
+    "fiori",
+  },
+  "nameMap": Map {
+    "assert.integrity" => "CDS.AssertIntegrity",
+    "assert.format" => "CDS.AssertFormat",
+    "assert.notNull" => "CDS.AssertNotNull",
+    "title" => "CDS.Title",
+    "description" => "CDS.Description",
+    "readonly" => "CDS.Readonly",
+    "mandatory" => "CDS.Mandatory",
+    "insertonly" => "CDS.Insertonly",
+    "cds.persistence.exists" => "CDS.CdsPersistenceExists",
+    "cds.odata.valuelist" => "CDS.CdsOdataValuelist",
+    "odata.draft.enabled" => "CDS.OdataDraftEnabled",
+    "fiori.draft.enabled" => "CDS.FioriDraftEnabled",
+  },
+  "namespace": "com.sap.vocabularies.CDS.v1",
+  "reverseNameMap": Map {
+    "CDS.AssertIntegrity" => "assert.integrity",
+    "CDS.AssertFormat" => "assert.format",
+    "CDS.AssertNotNull" => "assert.notNull",
+    "CDS.Title" => "title",
+    "CDS.Description" => "description",
+    "CDS.Readonly" => "readonly",
+    "CDS.Mandatory" => "mandatory",
+    "CDS.Insertonly" => "insertonly",
+    "CDS.CdsPersistenceExists" => "cds.persistence.exists",
+    "CDS.CdsOdataValuelist" => "cds.odata.valuelist",
+    "CDS.OdataDraftEnabled" => "odata.draft.enabled",
+    "CDS.FioriDraftEnabled" => "fiori.draft.enabled",
+  },
+  "singletonNames": Set {
+    "title",
+    "description",
+    "readonly",
+    "mandatory",
+    "insertonly",
+  },
+}
+`;
+
+exports[`getVocabulary(CDS) getVocabulary(com.sap.vocabularies.CDS.v1) 1`] = `
+Object {
+  "defaultAlias": "CDS",
+  "defaultUri": "",
+  "namespace": "com.sap.vocabularies.CDS.v1",
+}
+`;

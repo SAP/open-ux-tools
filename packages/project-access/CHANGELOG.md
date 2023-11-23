@@ -1,5 +1,24 @@
 # @sap-ux/project-access
 
+## 1.15.5
+
+### Patch Changes
+
+-   f11f9b2c: fix(deps): update dependency @ui5/manifest to v1.61.0
+
+## 1.15.4
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+
+## 1.15.3
+
+### Patch Changes
+
+-   a82759be: Fix for "TypeError: Cannot read properties of undefined (reading 'odata-v4')" which can occur when dynamically loading different @sap/cds verrsions
+
 ## 1.15.2
 
 ### Patch Changes
