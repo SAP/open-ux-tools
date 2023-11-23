@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 0.7.0
+
+### Minor Changes
+
+-   3f977f21: Added generation of deployment configuration
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/system-access@0.3.5
+
 ## 0.6.0
 
 ### Minor Changes

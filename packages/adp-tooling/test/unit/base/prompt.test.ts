@@ -6,7 +6,9 @@ describe('base/prompts', () => {
         const defaults = {
             id: 'my.id',
             reference: 'the.original.app',
-            url: 'http://sap.example'
+            url: 'http://sap.example',
+            package: 'TESTPACKAGE',
+            transport: 'TESTTRANSPORT'
         };
 
         test('defaults provided', async () => {
@@ -15,18 +17,33 @@ describe('base/prompts', () => {
             expect(config).toEqual({
                 app: {
                     id: defaults.id,
-                    layer: undefined,
-                    reference: defaults.reference,
-                    title: undefined
+                    reference: defaults.reference
                 },
                 target: {
                     url: defaults.url
+                },
+                deploy: {
+                    package: defaults.package,
+                    transport: defaults.transport
+                },
+                options: {
+                    fioriTools: true
                 }
             });
         });
 
         test('prompt everything', async () => {
-            prompts.inject([flexLayer.VENDOR, defaults.id, defaults.reference, 'My Title', defaults.url]);
+            prompts.inject([
+                flexLayer.VENDOR,
+                defaults.id,
+                defaults.reference,
+                'My Title',
+                defaults.url,
+                undefined,
+                defaults.package,
+                defaults.transport,
+                false
+            ]);
             const config = await promptGeneratorInput();
             expect(config).toEqual({
                 app: {
@@ -37,6 +54,13 @@ describe('base/prompts', () => {
                 },
                 target: {
                     url: defaults.url
+                },
+                deploy: {
+                    package: defaults.package,
+                    transport: defaults.transport
+                },
+                options: {
+                    fioriTools: false
                 }
             });
         });
