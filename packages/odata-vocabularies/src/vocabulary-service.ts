@@ -41,6 +41,7 @@ export class VocabularyService {
     private readonly supportedVocabularies: Map<VocabularyNamespace, Vocabulary>;
     private readonly namespaceByDefaultAlias: Map<SimpleIdentifier, VocabularyNamespace>;
     private readonly derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>;
+    private readonly upperCaseNameMap: Map<string, string | Map<string, string>>;
     readonly cdsVocabulary: CdsVocabulary;
 
     /**
@@ -98,6 +99,7 @@ export class VocabularyService {
         this.supportedVocabularies = vocabularyInformation.supportedVocabularies;
         this.namespaceByDefaultAlias = vocabularyInformation.namespaceByDefaultAlias;
         this.derivedTypesPerType = vocabularyInformation.derivedTypesPerType;
+        this.upperCaseNameMap = vocabularyInformation.upperCaseNameMap;
         // TODO this should be filled by information coming from the CDS vocabulary file
         this.cdsVocabulary = {
             namespace: CDS_VOCABULARY_NAMESPACE,
