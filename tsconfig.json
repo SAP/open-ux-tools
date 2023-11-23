@@ -87,10 +87,10 @@
       "path": "packages/odata-vocabularies"
     },
     {
-      "path": "packages/preview-middleware-client"
+      "path": "packages/playwright"
     },
     {
-        "path": "packages/playwright"
+      "path": "packages/preview-middleware-client"
     },
     {
       "path": "packages/preview-middleware"

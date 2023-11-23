@@ -6,6 +6,7 @@ import type { PlaywrightTestConfig } from '@sap-ux-private/playwright';
  */
 import 'dotenv/config';
 
+const timeout = 5 * 60000 + 30000;
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -35,6 +36,7 @@ const config: PlaywrightTestConfig = {
         }
     ],
     /* 5 min for npm i + 30000 ms default timeout */
-    timeout: 5 * 60000 + 30000
+    timeout,
+    expect: { timeout }
 };
 export default defineConfig(config);

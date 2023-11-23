@@ -4,7 +4,8 @@ import {
     teardownServer,
     copyProject,
     getDestinationProjectRoot,
-    getPort
+    getPort,
+    expect
 } from '@sap-ux-private/playwright';
 import type { Page } from '@sap-ux-private/playwright';
 import { writeFile } from 'fs/promises';
@@ -105,15 +106,14 @@ const prepare = async (ui5Version: string) => {
         host: 'localhost',
         protocol: 'http',
         usedPortAction: 'error',
-        debug: true
+        debug: false
     });
 };
 
 const check = async (param: { page: Page }) => {
     const { page } = param;
     await page.goto(`${getUrl()}/my/custom/path/preview.html#app-preview`);
-    await page.getByRole('button', { name: 'Go', exact: true }).click();
-    page.getByText('ProductForEdit_0', { exact: true });
+    await expect(page.getByText('ProductForEdit_0', { exact: true })).toBeVisible();
 };
 
 test.afterEach(async () => {

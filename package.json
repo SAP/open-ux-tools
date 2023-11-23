@@ -41,6 +41,7 @@
         "lint": "nx run-many --target=lint --all",
         "lint:fix": "nx run-many --target=lint:fix --all",
         "test": "nx run-many --target=test --all",
+        "test:integration": "nx run-many --target=test:integration --all",
         "link": "pnpm recursive run link",
         "unlink": "pnpm recursive run unlink",
         "prepare": "husky install",
