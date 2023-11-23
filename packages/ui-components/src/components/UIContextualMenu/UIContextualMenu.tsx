@@ -74,10 +74,6 @@ export function getUIContextualMenuItemStyles(): Partial<IContextualMenuItemStyl
 export function getUIcontextualMenuCalloutStyles(maxWidth?: number): Partial<ICalloutContentStyles> {
     return {
         root: {
-            // workaround. resolves callout root element borders being cut or invisible
-            // issue appears in webkit based environments with double as devicePixelRatio value
-            animationFillMode: 'none',
-            transform: 'rotate(0.0001deg)',
             maxWidth: maxWidth
         }
     };

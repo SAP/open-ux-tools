@@ -252,6 +252,7 @@ export const InlineFlexTable = (): JSX.Element => {
     const [isLockVertically, setIsLockVertically] = useState(false);
     const [isReverseBackground, setIsReverseBackground] = useState(false);
     const [isRowReorderingDisabled, setIsRowReorderingDisabled] = useState(false);
+    const [isDisabledTouchDrag, setIsDisabledTouchDrag] = useState(true);
 
     // Prevent cell editor click propagation
     const cellRefs = useRef<{ [key: string]: React.RefObject<HTMLDivElement> }>({});
@@ -420,6 +421,7 @@ export const InlineFlexTable = (): JSX.Element => {
                 {option('Is fixed max width', isFixedMaxWidth, setIsFixedMaxWidth)}
                 {option('Lock vertically', isLockVertically, setIsLockVertically)}
                 {option('Reverse background', isReverseBackground, setIsReverseBackground)}
+                {option('Disable drag using touch', isDisabledTouchDrag, setIsDisabledTouchDrag)}
             </div>
             <hr></hr>
             <div>
@@ -502,6 +504,7 @@ export const InlineFlexTable = (): JSX.Element => {
                         onRenderPrimaryTableActions={onRenderPrimatyTableActions}
                         onRenderSecondaryTableActions={onRenderSecondaryTableActions}
                         noDataText={'No data'}
+                        isTouchDragDisabled={isDisabledTouchDrag}
                     />
                 </div>
             </div>
@@ -569,6 +572,7 @@ export const WrappingTable = (): JSX.Element => {
     const [isLockVertically, setIsLockVertically] = useState(false);
     const [isReverseBackground, setIsReverseBackground] = useState(false);
     const [isRowReorderingDisabled, setIsRowReorderingDisabled] = useState(false);
+    const [isDisabledTouchDrag, setIsDisabledTouchDrag] = useState(true);
 
     // Prevent cell editor click propagation
     const cellRefs = useRef<{ [key: string]: React.RefObject<HTMLDivElement> }>({});
@@ -748,6 +752,7 @@ export const WrappingTable = (): JSX.Element => {
                 {option('Column highlight', showHighlight, setShowHighlight)}
                 {option('Lock vertically', isLockVertically, setIsLockVertically)}
                 {option('Reverse background', isReverseBackground, setIsReverseBackground)}
+                {option('Disable drag using touch', isDisabledTouchDrag, setIsDisabledTouchDrag)}
             </div>
             <hr></hr>
             <div>
@@ -819,6 +824,7 @@ export const WrappingTable = (): JSX.Element => {
                         reverseBackground={isReverseBackground}
                         onRenderPrimaryTableActions={onRenderPrimatyTableActions}
                         onRenderSecondaryTableActions={onRenderSecondaryTableActions}
+                        isTouchDragDisabled={isDisabledTouchDrag}
                     />
                 </div>
             </div>
