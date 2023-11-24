@@ -1,5 +1,11 @@
 # @sap-ux/odata-vocabularies
 
+## 0.1.3
+
+### Patch Changes
+
+-   fd883c14: fix: enable uppercaseNameMap property in vocabulary service
+
 ## 0.1.2
 
 ### Patch Changes

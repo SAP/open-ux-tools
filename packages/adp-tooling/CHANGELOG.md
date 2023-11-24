@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.7.1
+
+### Patch Changes
+
+-   de818954: Enhance the error message for the user when he tries to create a new controller extension
+
 ## 0.7.0
 
 ### Minor Changes
