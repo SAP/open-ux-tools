@@ -86,8 +86,8 @@ export const removeProjectContent = async (root: string): Promise<void> => {
         }
         return false;
     });
-    for (let i = 0; i < fileOrFolder.length; i++) {
-        await remove(fileOrFolder[i]);
+    for (const item of fileOrFolder) {
+        await remove(item);
     }
 };
 
@@ -105,8 +105,8 @@ export const removeNodeModules = async (root: string): Promise<void> => {
         }
         return false;
     });
-    for (let i = 0; i < fileOrFolder.length; i++) {
-        await remove(fileOrFolder[i]);
+    for (const item of fileOrFolder) {
+        await remove(item);
     }
 };
 
