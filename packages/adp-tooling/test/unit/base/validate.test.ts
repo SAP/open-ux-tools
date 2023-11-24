@@ -21,7 +21,7 @@ describe('base/validate', () => {
         try {
             await UI5Validator.validateUi5Yaml('sample-path');
         } catch (error) {
-            expect(error.message).toEqual(Error('Missing environment in the ui5 yaml file'));
+            expect(error.message).toEqual('Missing required custom middleware or custom configuration in ui5.yaml');
         }
     });
 });
