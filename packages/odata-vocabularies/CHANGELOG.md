@@ -1,5 +1,11 @@
 # @sap-ux/odata-vocabularies
 
+## 0.1.4
+
+### Patch Changes
+
+-   89a1bf27: fix: change access type of uppercaseNameMap prop
+
 ## 0.1.3
 
 ### Patch Changes
