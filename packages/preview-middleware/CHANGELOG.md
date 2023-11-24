@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.11.4
+
+### Patch Changes
+
+-   02609800: Fix for comp/control variant changes not updating in pending changes tab
+
 ## 0.11.3
 
 ### Patch Changes
