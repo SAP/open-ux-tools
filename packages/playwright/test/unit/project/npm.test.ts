@@ -31,7 +31,7 @@ describe('install', () => {
         await install(des);
         expect(spawnSyncMocked.mock.calls).toHaveLength(2);
         expect(spawnSyncMocked.mock.calls[0][0]).toStrictEqual('npm');
-        expect(spawnSyncMocked.mock.calls[0][1]).toStrictEqual(['install', '--ignore-engines']);
+        expect(spawnSyncMocked.mock.calls[0][1]).toStrictEqual(['install', '--ignore-engines', '--force']);
         expect(spawnSyncMocked.mock.calls[1][0]).toStrictEqual('npm');
         expect(spawnSyncMocked.mock.calls[1][1]).toStrictEqual(['list', '--depth=0']);
     });

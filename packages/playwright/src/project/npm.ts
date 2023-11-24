@@ -25,7 +25,7 @@ const skipNpmInstallation = async (root: string): Promise<boolean> => {
 };
 
 /**
- * Install project dependencies through `npm install --ignore-engines` command.
+ * Install project dependencies through `npm install --ignore-engines --force` command.
  *
  * @param root project root
  */
@@ -36,7 +36,7 @@ export const install = async (root: string): Promise<void> => {
             logger.info(
                 `Installing packages. Max time allocated is 5 min. Alternatively you can manually run 'npm install' or 'yarn install' in: ${root}`
             );
-            const npm = spawnSync(`npm`, ['install', '--ignore-engines'], {
+            const npm = spawnSync(`npm`, ['install', '--ignore-engines', '--force'], {
                 cwd: root,
                 env: process.env,
                 stdio: ['pipe', 'pipe', 'pipe'],
