@@ -382,7 +382,8 @@ describe('AdaptationProject', () => {
                 '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js"}}';
             mockProject.byGlob.mockResolvedValueOnce([
                 {
-                    getString: () => changeFileStr
+                    getString: () => changeFileStr,
+                    getName: () => 'id_124_codeExt.change'
                 }
             ]);
             const response = await server
@@ -412,7 +413,8 @@ describe('AdaptationProject', () => {
                 '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js"}}';
             mockProject.byGlob.mockResolvedValueOnce([
                 {
-                    getString: () => changeFileStr
+                    getString: () => changeFileStr,
+                    getName: () => 'id_124_codeExt.change'
                 }
             ]);
             await server.get('/adp/api/code_ext/sap.suite.ui.generic.template.ListReport.view.ListReport').expect(404);
