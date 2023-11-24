@@ -41,7 +41,7 @@ export class VocabularyService {
     private readonly supportedVocabularies: Map<VocabularyNamespace, Vocabulary>;
     private readonly namespaceByDefaultAlias: Map<SimpleIdentifier, VocabularyNamespace>;
     private readonly derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>;
-    private readonly upperCaseNameMap: Map<string, string | Map<string, string>>;
+    public readonly upperCaseNameMap: Map<string, string | Map<string, string>>;
     readonly cdsVocabulary: CdsVocabulary;
 
     /**
