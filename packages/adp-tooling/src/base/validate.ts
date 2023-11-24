@@ -39,7 +39,7 @@ export default class UI5Validator {
         for (const property of properties) {
             const value = target[property];
             if (value === null || value === undefined) {
-                throw new Error(`Missing ${property} in the ui5 yaml file`);
+                throw new Error(`Missing ${property} in the ui5.yaml file`);
             }
         }
     }
