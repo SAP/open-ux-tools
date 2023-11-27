@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.13.3
+
+### Patch Changes
+
+-   3473d4b0: UIFlexibleTable. New property "isTouchDragDisabled" which allows to disable drag/reordering of table rows where drag is initalized by touch events
+
+## 1.13.2
+
+### Patch Changes
+
+-   f1221f2b: fix: UIContextualMenu. Border bottom is cut for UIContextualMenu in some zoom levels
+
+## 1.13.1
+
+### Patch Changes
+
+-   cbae7aba: fix: UICallout. New property "focusTargetSiblingOnTabPress", which allows to focus next/previous element relative to target when Tab key is pressed using keyboard
+
 ## 1.13.0
 
 ### Minor Changes
