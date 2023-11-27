@@ -185,19 +185,20 @@ export default class RoutesHandler {
             const controllerName = sanitize(params.controllerName);
             const codeExtFiles = await this.readAllFilesByGlob('/**/changes/*_codeExt.change');
 
+            let controllerPathFromRoot = '';
             let controllerExists = false;
             let controllerPath = '';
-            let controllerPathFromRoot = '';
+            let changeFilePath = '';
 
             const project = this.util.getProject();
             const sourcePath = project.getSourcePath();
             const projectName = project.getName();
 
-            const getPath = (projectPath: string, fileName: string) =>
-                path
-                    .join(projectPath, FolderNames.Changes, FolderNames.Coding, fileName)
-                    .split(path.sep)
-                    .join(path.posix.sep);
+            const getPath = (
+                projectPath: string,
+                fileName: string,
+                folder: FolderNames.Coding | string = FolderNames.Coding
+            ) => path.join(projectPath, FolderNames.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
 
             for (const file of codeExtFiles) {
                 const fileStr = await file.getString();
@@ -207,13 +208,14 @@ export default class RoutesHandler {
                     const fileName = change.content.codeRef.replace('coding/', '');
                     controllerPath = getPath(sourcePath, fileName);
                     controllerPathFromRoot = getPath(projectName, fileName);
+                    changeFilePath = getPath(projectName, file.getName(), '');
                     controllerExists = true;
                     break;
                 }
             }
 
             if (controllerExists && !fs.existsSync(controllerPath)) {
-                const errorMsg = `Controller extension file was not found at ${controllerPath}`;
+                const errorMsg = `Please delete the change file at "${changeFilePath}" and retry creating the controller extension.`;
                 this.logger.debug(errorMsg);
                 res.status(HttpStatusCodes.NOT_FOUND).send({ message: errorMsg });
                 return;
