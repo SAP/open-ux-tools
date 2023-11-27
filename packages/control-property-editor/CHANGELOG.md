@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.3
+
+### Patch Changes
+
+-   b7b3a0c3: keyboard support for theme selector callout
+
 ## 0.4.2
 
 ### Patch Changes

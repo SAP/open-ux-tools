@@ -15,10 +15,11 @@ export interface UICalloutProps extends ICalloutProps {
     focusTargetSiblingOnTabPress?: boolean;
 }
 
+import '../../styles/_shadows.scss';
+
 export const CALLOUT_STYLES = {
     background: 'var(--vscode-editorSuggestWidget-background)',
-    boxShadow:
-        '0 2px 6px rgb(0 0 0 / 20%), 0 0 0 1px var(--vscode-contrastBorder, var(--vscode-editorSuggestWidget-border))',
+    boxShadow: 'var(--ui-box-shadow-small)',
     text: 'var(--vscode-editorSuggestWidget-foreground)',
     font: 'var(--vscode-font-family)',
     borderRadius: 4
