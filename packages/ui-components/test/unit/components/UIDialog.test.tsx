@@ -284,7 +284,7 @@ describe('<UIDialog />', () => {
                   "backgroundColor": "var(--vscode-editorWidget-background)",
                   "border": "1px solid var(--vscode-editorWidget-border)",
                   "borderRadius": 4,
-                  "boxShadow": "0px 4px 10px rgba(0, 0, 0, 0.3)",
+                  "boxShadow": "var(--ui-box-shadow-medium)",
                   "minHeight": 100,
                   "overflow": "hidden",
                 }
@@ -351,7 +351,7 @@ describe('<UIDialog />', () => {
                   "backgroundColor": "var(--vscode-editorWidget-background)",
                   "border": "1px solid var(--vscode-editorWidget-border)",
                   "borderRadius": 4,
-                  "boxShadow": "0px 4px 10px rgba(0, 0, 0, 0.3)",
+                  "boxShadow": "var(--ui-box-shadow-medium)",
                   "minHeight": 100,
                 }
             `);

@@ -1,5 +1,13 @@
 # @sap-ux/ui-components
 
+## 1.13.4
+
+### Patch Changes
+
+-   e47492f0: Reusable css variables and classes for common box shadows.
+    Variables - `--ui-box-shadow-small`, `--ui-box-shadow-medium`, `--ui-box-shadow-large`.
+    Classes - `ui-box-shadow-small `, `ui-box-shadow-medium`, `ui-box-shadow-large`.
+
 ## 1.13.3
 
 ### Patch Changes
