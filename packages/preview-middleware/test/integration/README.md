@@ -1,4 +1,4 @@
 # Integration tests
 
 ## Preview
-Folder for all integration tests of the preview
+Folder for all integration tests of the preview.
