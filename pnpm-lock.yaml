@@ -1086,6 +1086,9 @@ importers:
       portfinder:
         specifier: 1.0.32
         version: 1.0.32
+      promisify-child-process:
+        specifier: 4.1.2
+        version: 4.1.2
 
   packages/preview-middleware:
     dependencies:
@@ -17391,6 +17394,11 @@ packages:
     dependencies:
       err-code: 2.0.3
       retry: 0.12.0
+
+  /promisify-child-process@4.1.2:
+    resolution: {integrity: sha512-APnkIgmaHNJpkAn7k+CrJSi9WMuff5ctYFbD0CO2XIPkM8yO7d/ShouU2clywbpHV/DUsyc4bpJCsNgddNtx4g==}
+    engines: {node: '>=8'}
+    dev: false
 
   /prompts@2.4.2:
     resolution: {integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==}

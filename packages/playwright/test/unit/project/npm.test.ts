@@ -2,9 +2,9 @@ import { join } from 'path';
 import { copyProject, getDestinationProjectRoot } from '../../../src';
 import type { CopyOptions } from '../../../src';
 import { install } from '../../../src/project/npm';
-import * as childProcess from 'child_process';
+import * as childProcess from 'promisify-child-process';
 
-jest.mock('child_process');
+jest.mock('promisify-child-process');
 const childProcessMock = jest.mocked(childProcess, { shallow: true });
 
 const projectRoot = join(__dirname, '..', '..', 'fixtures', 'simple-app');
@@ -27,7 +27,7 @@ describe('install', () => {
         jest.clearAllMocks();
     });
     test('successful', async () => {
-        const spawnSyncMocked = jest.spyOn(childProcessMock, 'spawnSync').mockReturnValue('success');
+        const spawnSyncMocked = jest.spyOn(childProcessMock, 'spawn').mockResolvedValue('success');
         await install(des);
         expect(spawnSyncMocked.mock.calls).toHaveLength(2);
         expect(spawnSyncMocked.mock.calls[0][0]).toStrictEqual('npm');
@@ -37,8 +37,8 @@ describe('install', () => {
     });
     test('fails', async () => {
         const spawnSyncMocked = jest
-            .spyOn(childProcessMock, 'spawnSync')
-            .mockReturnValue({ status: 1, stderr: { toString: () => 'error' } });
+            .spyOn(childProcessMock, 'spawn')
+            .mockReturnValue({ code: 1, stderr: { toString: () => 'error' } });
         await expect(install(des)).rejects.toThrow('error');
         expect(spawnSyncMocked.mock.calls).toHaveLength(1);
     });
