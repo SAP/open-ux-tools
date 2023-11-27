@@ -1,0 +1,36 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "composite": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "preserveConstEnums": false
+  },
+  "references": [
+    {
+      "path": "../odata-annotation-core"
+    },
+    {
+      "path": "../odata-annotation-core-types"
+    },
+    {
+      "path": "../odata-vocabularies"
+    }
+  ]
+}

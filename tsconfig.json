@@ -129,6 +129,9 @@
       "path": "packages/ui5-test-writer"
     },
     {
+      "path": "packages/xml-odata-annotation-converter"
+    },
+    {
       "path": "packages/yaml"
     },
     {
