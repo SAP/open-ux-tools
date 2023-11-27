@@ -975,13 +975,13 @@ importers:
 
   packages/odata-annotation-core:
     dependencies:
-      '@sap-ux/metadata':
-        specifier: workspace:*
-        version: link:../metadata
       '@sap-ux/odata-annotation-core-types':
         specifier: workspace:*
         version: link:../odata-annotation-core-types
     devDependencies:
+      '@sap-ux/metadata':
+        specifier: workspace:*
+        version: link:../metadata
       npm-run-all:
         specifier: 4.1.5
         version: 4.1.5
