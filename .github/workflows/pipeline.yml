@@ -63,8 +63,8 @@ jobs:
               with:
                 name: playwright-reports-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
                 path: |
-                  **/playwright-report
-                  !**/node_modules
+                  packages/*/playwright-report
+                  !packages/*/node_modules
                 retention-days: 15
             - name: Run SonarCloud scan
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'

@@ -1,6 +1,6 @@
 import { ToolsLogger } from '@sap-ux/logger';
-import { spawnSync } from 'child_process';
 import { nodeModulesUpToDate, storePackageJsonHash } from './project';
+import { spawn } from 'promisify-child-process';
 
 const logger = new ToolsLogger();
 
@@ -30,40 +30,33 @@ const skipNpmInstallation = async (root: string): Promise<boolean> => {
  * @param root project root
  */
 export const install = async (root: string): Promise<void> => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const skipInstallation = await skipNpmInstallation(root);
-            if (!skipInstallation) {
-                logger.info(
-                    `Installing packages. Max time allocated is 5 min. Alternatively you can manually run 'npm install' or 'yarn install' in: ${root}`
-                );
-                const npm = spawnSync(`npm`, ['install', '--ignore-engines', '--force'], {
-                    cwd: root,
-                    shell: true,
-                    stdio: ['pipe', 'pipe', 'pipe'],
-                    timeout: 5 * 60000 // 5 min
-                });
-                if (npm.status && npm.status !== 0) {
-                    const errorText = npm.stderr?.toString();
-                    throw new Error(errorText);
-                }
-                logger.info(`npm spawnSync.status: ${npm.status?.toString()}`);
-                logger.info(`npm spawnSync.stderr: ${npm.stderr?.toString()}`);
-                logger.info(`npm spawnSync.stdout: ${npm.stdout?.toString()}`);
-                const versions = spawnSync(`npm`, ['list', '--depth=0'], {
-                    cwd: root,
-                    shell: true,
-                    stdio: ['pipe', 'pipe', 'pipe'],
-                    timeout: 5 * 60000 // 5 min
-                });
-                logger.info(`npm list spawnSync.stdout: ${versions.stdout?.toString()}`);
-                logger.info(`Installation finished in ${root}`);
-                await storePackageJsonHash(root);
-                resolve();
-            }
-        } catch (error) {
-            logger.info(`Could not install package in  ${root}`);
-            reject(error);
-        }
+    const skipInstallation = await skipNpmInstallation(root);
+    if (skipInstallation) {
+        return;
+    }
+    logger.info(
+        `Installing packages. Max time allocated is 5 min. Alternatively you can manually run 'npm install' or 'yarn install' in: ${root}`
+    );
+    const { stdout, stderr, code } = await spawn(`npm`, ['install', '--ignore-engines', '--force'], {
+        cwd: root,
+        shell: true,
+        stdio: ['pipe', 'pipe', 'pipe'],
+        encoding: 'utf8',
+        timeout: 5 * 60000 // 5 min
     });
+    if (code && code !== 0) {
+        throw new Error(stderr?.toString());
+    }
+    logger.info(`npm spawn.stderr: ${stderr?.toString()}`);
+    logger.info(`npm spawn.stdout: ${stdout?.toString()}`);
+    const versions = await spawn(`npm`, ['list', '--depth=0'], {
+        cwd: root,
+        shell: true,
+        stdio: ['pipe', 'pipe', 'pipe'],
+        encoding: 'utf8',
+        timeout: 5 * 60000 // 5 min
+    });
+    logger.info(`npm list spawn.stdout: ${versions.stdout?.toString()}`);
+    logger.info(`Installation finished in ${root}`);
+    await storePackageJsonHash(root);
 };
