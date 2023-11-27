@@ -1,6 +1,6 @@
-# Metadata
+# OData Entity Model
 
-Package containing metadata service
+Package containing metadata service, which allows to look up elements from entity data model of an OData service.
 
 ## Installation
 Npm
@@ -17,7 +17,7 @@ Pnpm
 1. Import the needed functions in your modules
 
     ```typescript
-    import { MetadataService  } from '@sap/ux-metadata';
+    import { MetadataService  } from '@sap-ux/odata-entity-model';
     const metadataFileUri = 'testFileUri';
     const metadataElements: MetadataElement[] = [
         {

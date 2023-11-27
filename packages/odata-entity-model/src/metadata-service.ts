@@ -46,10 +46,10 @@ function getActionName(name: Path): Path {
 /**
  * Builds a lookup for metadata elements based on provided data.
  *
- * @param {MetadataMap} metadata - The map to store metadata elements, keyed by their paths.
- * @param {ActionNameMap} actionNames - The map to store action names and associated overload paths.
- * @param {Set<string>} namespaces - The set to store unique namespaces encountered during the process.
- * @param {MetadataElement[]} metadataElements - The array of metadata elements to process and build the lookup.
+ * @param metadata - The map to store metadata elements, keyed by their paths.
+ * @param actionNames - The map to store action names and associated overload paths.
+ * @param namespaces - The set to store unique namespaces encountered during the process.
+ * @param metadataElements - The array of metadata elements to process and build the lookup.
  */
 function buildMetadataElementLookup(
     metadata: MetadataMap,
