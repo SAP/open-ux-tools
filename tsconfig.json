@@ -72,9 +72,6 @@
       "path": "packages/logger"
     },
     {
-      "path": "packages/metadata"
-    },
-    {
       "path": "packages/mockserver-config-writer"
     },
     {
@@ -82,6 +79,9 @@
     },
     {
       "path": "packages/odata-annotation-core"
+    },
+    {
+      "path": "packages/odata-entity-model"
     },
     {
       "path": "packages/odata-service-writer"

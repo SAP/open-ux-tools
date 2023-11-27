@@ -1,5 +1,5 @@
 {
-  "name": "@sap-ux/metadata",
+  "name": "@sap-ux/odata-entity-model",
   "version": "0.1.0",
   "description": "Metadata Service",
   "main": "dist/index.js",

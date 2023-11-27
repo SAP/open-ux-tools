@@ -4,13 +4,13 @@ Package containing metadata service
 
 ## Installation
 Npm
-`npm install --save @sap-ux/metadata`
+`npm install --save @sap-ux/odata-entity-model`
 
 Yarn
-`yarn add @sap-ux/metadata`
+`yarn add @sap-ux/odata-entity-model`
 
 Pnpm
-`pnpm add @sap-ux/metadata`
+`pnpm add @sap-ux/odata-entity-model`
 
 ## Usage
 
