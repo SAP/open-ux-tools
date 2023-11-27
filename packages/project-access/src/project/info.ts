@@ -2,7 +2,7 @@ import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { FileName } from '../constants';
 import { fileExists, findFilesByExtension, readJSON } from '../file';
-import type { Package, AppProgrammingLanguage, AppType, ProjectType } from '../types';
+import type { Package, AppProgrammingLanguage, AppType, ProjectType, AllAppResults } from '../types';
 import { getCapProjectType } from './cap';
 import { getWebappPath } from './ui5-config';
 import { findFioriArtifacts } from './search';
@@ -48,31 +48,50 @@ export async function getAppType(appRoot: string): Promise<AppType | undefined> 
             wsFolders: [appRoot],
             artifacts: ['adaptations', 'applications', 'extensions', 'libraries']
         });
-
-        if (artifacts.applications?.length === 1) {
-            const app = artifacts.applications[0];
-            const packageJson = await readJSON<Package>(join(app.projectRoot, FileName.Package));
-            if (app.projectRoot === app.appRoot) {
-                appType = packageJson.sapux ? 'SAP Fiori elements' : 'SAPUI5 freestyle';
-            } else {
-                appType =
-                    Array.isArray(packageJson.sapux) &&
-                    packageJson.sapux.find(
-                        (relAppPath) => join(app.projectRoot, ...relAppPath.split(/[/\\]/)) === appRoot
-                    )
-                        ? 'SAP Fiori elements'
-                        : 'SAPUI5 freestyle';
+        if (
+            (artifacts.applications?.length ?? 0) +
+                (artifacts.adaptations?.length ?? 0) +
+                (artifacts.extensions?.length ?? 0) +
+                (artifacts.libraries?.length ?? 0) ===
+            1
+        ) {
+            if (artifacts.applications?.length === 1) {
+                appType = await getApplicationType(artifacts.applications[0]);
+            } else if (artifacts.adaptations?.length === 1) {
+                appType = 'Fiori Adaptation';
+            } else if (artifacts.extensions?.length === 1) {
+                appType = 'SAPUI5 Extension';
+            } else if (artifacts.libraries?.length === 1) {
+                appType = 'Fiori Reuse';
             }
-        } else if (artifacts.adaptations?.length === 1) {
-            appType = 'Fiori Adaptation';
-        } else if (artifacts.extensions?.length === 1) {
-            appType = 'SAPUI5 Extension';
-        } else if (artifacts.libraries?.length === 1) {
-            appType = 'Fiori Reuse';
         }
     } catch {
         // If error occurs we can't determine the type and return undefined
     }
+    return appType;
+}
+
+/**
+ * Get the application type from search results.
+ *
+ * @param application - application from findFioriArtifacts() results
+ * @returns - type of application: 'SAP Fiori elements' or 'SAPUI5 freestyle'
+ */
+async function getApplicationType(application: AllAppResults): Promise<'SAP Fiori elements' | 'SAPUI5 freestyle'> {
+    let appType: 'SAP Fiori elements' | 'SAPUI5 freestyle';
+    const packageJson = await readJSON<Package>(join(application.projectRoot, FileName.Package));
+    if (application.projectRoot === application.appRoot) {
+        appType = packageJson.sapux ? 'SAP Fiori elements' : 'SAPUI5 freestyle';
+    } else {
+        appType =
+            Array.isArray(packageJson.sapux) &&
+            packageJson.sapux.find(
+                (relAppPath) => join(application.projectRoot, ...relAppPath.split(/[/\\]/)) === application.appRoot
+            )
+                ? 'SAP Fiori elements'
+                : 'SAPUI5 freestyle';
+    }
+
     return appType;
 }
 
