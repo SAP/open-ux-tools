@@ -18,10 +18,33 @@ Pnpm
 
     ```typescript
     import { MetadataService  } from '@sap/ux-metadata';
-    
+    const metadataFileUri = 'testFileUri';
+    const metadataElements: MetadataElement[] = [
+        {
+            isAnnotatable: true,
+            kind: 'EntityType',
+            name: 'com.sap.gateway.default.iwbep.tea_busi.v0001.Department',
+            path: 'com.sap.gateway.default.iwbep.tea_busi.v0001.Department',
+            isCollectionValued: false,
+            isComplexType: false,
+            isEntityType: true,
+            content: [
+                {
+                    content: [],
+                    isAnnotatable: true,
+                    kind: 'Property',
+                    name: 'Sector',
+                    path: 'com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Sector',
+                    isCollectionValued: false,
+                    isComplexType: false,
+                    isEntityType: false,
+                    edmPrimitiveType: 'Edm.String'
+                }
+            ]
+        }];
     const metadata = new MetadataService({ ODataVersion: '4.0' });
-    metadata.import((v4metadata as any).metadata, 'testDummy/metadataV4.xml');
-    const pathBase = metadata.getMetadataElement('IncidentService.Incidents');
+    metadata.import(metadataElements, metadataFileUri);
+    const pathBase = metadata.getMetadataElement('com.sap.gateway.default.iwbep.tea_busi.v0001.Department');
 ```
 
 For usage examples see unit tests in `metadata/test`.

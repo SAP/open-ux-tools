@@ -75,6 +75,9 @@
 # Module: odata-vocabularies
 /packages/odata-vocabularies @SAP/ux-tools-annotations
 
+# Module: metadata
+/packages/metadata/ @SAP/ux-tools-annotations
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin

@@ -44,11 +44,12 @@ function getActionName(name: Path): Path {
 }
 
 /**
+ * Builds a lookup for metadata elements based on provided data.
  *
- * @param metadata metadata element map
- * @param actionNames string map
- * @param namespaces set of namespace
- * @param metadataElements metadata elements
+ * @param {MetadataMap} metadata - The map to store metadata elements, keyed by their paths.
+ * @param {ActionNameMap} actionNames - The map to store action names and associated overload paths.
+ * @param {Set<string>} namespaces - The set to store unique namespaces encountered during the process.
+ * @param {MetadataElement[]} metadataElements - The array of metadata elements to process and build the lookup.
  */
 function buildMetadataElementLookup(
     metadata: MetadataMap,
@@ -198,7 +199,7 @@ export class MetadataService implements IMetadataService {
     /**
      * Set map of uris from relative to absolute.
      *
-     * @param uriMap uri map
+     * @param uriMap A map where keys are relative URIs and values are their corresponding absolute URIs.
      */
     setUriMap(uriMap: Map<string, string>): void {
         this.uriMap = uriMap;
@@ -227,9 +228,10 @@ export class MetadataService implements IMetadataService {
     }
 
     /**
-     * Traverses all metadata elements and calls visitor function for each element.
+     * Traverses all metadata elements and calls the specified visitor function for each element.
      *
-     * @param visitElement metadata element
+     * @param {MetadataElementVisitor} visitElement - A function that will be called for each metadata element during traversal.
+     * The function should accept a single argument, which is the metadata element being visited.
      */
     visitMetadataElements(visitElement: MetadataElementVisitor): void {
         for (const [, element] of this.metadata.entries()) {
@@ -249,7 +251,7 @@ export class MetadataService implements IMetadataService {
     /**
      * Returns all metadata root elements.
      *
-     * @returns map of metadata element
+     * @returns a map containing metadata root elements, where the keys are the paths and the values are the corresponding metadata elements.
      */
     getRootMetadataElements(): Map<Path, MetadataElement> {
         const map: Map<Path, MetadataElement> = new Map();
@@ -296,8 +298,8 @@ export class MetadataService implements IMetadataService {
     /**
      * Get Action or Function overloads by their top level name.
      *
-     * @param topLevelName string
-     * @returns string or undefined
+     * @param topLevelName First segment represents action function name.
+     * @returns if first segment represents action function name (without signature).
      */
     private getActionFunctionOverloads(topLevelName: string): Set<string> | undefined {
         return this.actionNames.get(topLevelName);
