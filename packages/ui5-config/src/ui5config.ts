@@ -410,6 +410,7 @@ export class UI5Config {
         }
         return this;
     }
+
     /**
      * Returns a string representation of the config.
      *

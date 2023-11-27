@@ -9,12 +9,7 @@ export function isLowerThanMinimalUi5Version(version: string, minVersion: string
     if (version && minVersion) {
         const minVersionParsed = parseUI5Version(minVersion);
         const ui5VersionParsed = parseUI5Version(version);
-        if (
-            !isNaN(ui5VersionParsed.major) &&
-            !isNaN(ui5VersionParsed.minor) &&
-            !isNaN(minVersionParsed.major) &&
-            !isNaN(minVersionParsed.minor)
-        ) {
+        if (!isNaN(ui5VersionParsed.major) && !isNaN(ui5VersionParsed.minor)) {
             if (ui5VersionParsed.major < minVersionParsed.major) {
                 return true;
             }

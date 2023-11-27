@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
+import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
 import { PropertiesPanel, LeftPanel } from './panels';
 import { useLocalStorage } from './use-local-storage';
@@ -27,6 +28,12 @@ export interface AppProps {
  */
 export default function App(appProps: AppProps): ReactElement {
     const { previewUrl } = appProps;
+    const urlWithoutHash = previewUrl.split('#')[0];
+    const queryStr = urlWithoutHash.split('?')[1];
+    const urlParams = new URLSearchParams(queryStr);
+    const scenario = urlParams.get('sap-ui-scenario') as Scenario;
+    const isAdpProject = scenario === 'ADAPTATION_PROJECT';
+
     useEffect(() => {
         const sheet = window.document.styleSheets[0];
         sheet.insertRule(
@@ -41,7 +48,7 @@ export default function App(appProps: AppProps): ReactElement {
     const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => hideWarningDialog !== true);
 
     const [isInitialized, setIsInitialized] = useState(false);
-    const [shouldShowDialogMessage, setShouldShowDialogMessage] = useState(false);
+    const [shouldShowDialogMessageForAdpProjects, setShouldShowDialogMessageForAdpProjects] = useState(false);
 
     const previewWidth = useSelector<RootState, string>(
         (state) => `${DEVICE_WIDTH_MAP.get(state.deviceType) ?? DEFAULT_DEVICE_WIDTH}px`
@@ -87,8 +94,8 @@ export default function App(appProps: AppProps): ReactElement {
     }
 
     useEffect(() => {
-        if (dialogMessage) {
-            setShouldShowDialogMessage(true);
+        if (dialogMessage && isAdpProject) {
+            setShouldShowDialogMessageForAdpProjects(true);
         }
     }, [dialogMessage]);
 
@@ -99,7 +106,7 @@ export default function App(appProps: AppProps): ReactElement {
             </section>
             <section ref={containerRef} className="app-content">
                 <div className="app-canvas">
-                    {!shouldShowDialogMessage && (
+                    {!shouldShowDialogMessageForAdpProjects && (
                         <iframe
                             className="app-preview"
                             id="preview"
@@ -116,13 +123,15 @@ export default function App(appProps: AppProps): ReactElement {
             <section className="app-panel app-panel-right">
                 <PropertiesPanel />
             </section>
-            <UIDialog
-                hidden={!shouldShowDialogMessage}
-                dialogContentProps={{
-                    title: t('TOOL_DISCLAIMER_TITLE'),
-                    subText: dialogMessage
-                }}
-            />
+            {isAdpProject && (
+                <UIDialog
+                    hidden={!shouldShowDialogMessageForAdpProjects}
+                    dialogContentProps={{
+                        title: t('TOOL_DISCLAIMER_TITLE'),
+                        subText: dialogMessage
+                    }}
+                />
+            )}
             <UIDialog
                 hidden={!isWarningDialogVisible}
                 closeButtonAriaLabel={t('CLOSE')}
