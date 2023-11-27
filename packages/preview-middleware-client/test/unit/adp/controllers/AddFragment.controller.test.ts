@@ -136,9 +136,18 @@ describe('AddFragment', () => {
                 setProperty: setPropertySpy
             } as unknown as JSONModel;
 
+            const updatedIndexArray = [{key: 0, value: 0}, {key: 1, value: 1}, {key: 2, value: 2}]
+
             addFragment.onAggregationChanged(event as unknown as Event);
 
             expect(setPropertySpy).toHaveBeenCalledTimes(7);
+            expect(setPropertySpy).toHaveBeenCalledWith('/selectedAggregation/key', '0');
+            expect(setPropertySpy).toHaveBeenCalledWith('/selectedAggregation/value', 'someText');
+            expect(setPropertySpy).toHaveBeenCalledWith('/indexHandlingFlag', false);
+            expect(setPropertySpy).toHaveBeenCalledWith('/specialIndexHandlingIcon', true);
+            expect(setPropertySpy).toHaveBeenCalledWith('/iconTooltip', 'Index is defined by special logic of Toolbar and can\'t be set here');
+            expect(setPropertySpy).toHaveBeenCalledWith('/index', updatedIndexArray);
+            expect(setPropertySpy).toHaveBeenCalledWith('/selectedIndex', 2);
         });
     });
 
