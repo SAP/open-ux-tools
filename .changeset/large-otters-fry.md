@@ -4,4 +4,4 @@
 "@sap-ux/types": patch
 ---
 
-feat: move metadata module
+feat: move odata-entity-model module

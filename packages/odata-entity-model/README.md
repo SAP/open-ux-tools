@@ -47,4 +47,4 @@ Pnpm
     const pathBase = metadata.getMetadataElement('com.sap.gateway.default.iwbep.tea_busi.v0001.Department');
 ```
 
-For usage examples see unit tests in `metadata/test`.
+For usage examples see unit tests in `odata-entity-model/test`.
