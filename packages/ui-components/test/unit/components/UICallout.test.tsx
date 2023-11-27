@@ -31,6 +31,7 @@ describe('<UICallout />', () => {
         expect(style.root?.['borderRadius']).toEqual(4);
         expect(style.beakCurtain?.['borderRadius']).toEqual(4);
         expect(style.calloutMain?.['borderRadius']).toEqual(4);
+        expect(style.root?.['boxShadow']).toEqual('var(--ui-box-shadow-small)');
     });
 
     it('Property "contentPadding"', () => {
