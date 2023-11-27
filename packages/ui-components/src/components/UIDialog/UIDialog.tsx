@@ -4,6 +4,8 @@ import { Dialog as BaseDialog, DialogFooter } from '@fluentui/react';
 import { UIDefaultButton } from '../UIButton';
 import { deepMerge } from '../../utilities/DeepMerge';
 
+import '../../styles/_shadows.scss';
+
 interface ComponentProps {
     // Accept and cancel buttons options
     acceptButtonText?: string;
@@ -30,7 +32,7 @@ export const DIALOG_MAX_HEIGHT_OFFSET = 32;
 
 export const DIALOG_STYLES = {
     background: 'var(--vscode-editorWidget-background)',
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)',
+    boxShadow: 'var(--ui-box-shadow-medium)',
     borderColor: 'var(--vscode-editorWidget-border)',
     borderRadius: 4,
     vPadding: 20,
