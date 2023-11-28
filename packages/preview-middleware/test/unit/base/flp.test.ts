@@ -330,7 +330,6 @@ describe('initAdp', () => {
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
-
         await initAdp(mockAdpProject, config.adp, flp, {} as MiddlewareUtils, logger);
         expect(adpToolingMock).toBeCalled();
         expect(flpInitMock).toBeCalled();
