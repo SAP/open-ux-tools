@@ -17,13 +17,14 @@ import {
     findProjectRoot,
     getAppProgrammingLanguage,
     getProjectType,
-    getAppType
-} from '@sap-ux/project-access';
-import { isCapJavaProject, isCapNodeJsProject } from '@sap/ux-cds/dist/utils/capProject';
-import { ProjectType } from '@sapux/project-spec';
+    getAppType,
+} from '@sap-ux/project-access/dist/project';
+import type {
+    ProjectType
+} from '@sap-ux/project-access/dist/types';
 import type { CommonFioriProjectProperties, InternalFeature, SourceTemplate } from './types';
 import { ODataSource, DeployTarget, CommonProperties, ToolsId } from './types';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+// import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { spawn } from 'child_process';
 import os from 'os';
 import { CustomTask } from '@sap-ux/ui5-config';
@@ -53,7 +54,7 @@ export async function getCommonProperties(): Promise<CommonFioriProjectPropertie
     commonProperties[CommonProperties.DevSpace] = await getSbasDevspace();
     commonProperties[CommonProperties.AppStudio] = isAppStudio();
     commonProperties[CommonProperties.AppStudioBackwardCompatible] = commonProperties[CommonProperties.AppStudio];
-    commonProperties[CommonProperties.InternlVsExternal] = getInternalVsExternal();
+    // commonProperties[CommonProperties.InternlVsExternal] = getInternalVsExternal();
     commonProperties[CommonProperties.InternlVsExternalBackwardCompatible] =
         commonProperties[CommonProperties.InternlVsExternal];
 
@@ -190,19 +191,22 @@ async function getODataSource(appPath: string): Promise<string> {
             return ODataSource.CAPJava;
         }
         const projectType = await getProjectType(projectRoot);
-        if (projectType === ProjectType.Cap) {
-            if (await isCapJavaProject(projectRoot)) {
-                return ODataSource.CAPJava;
-            } else if (await isCapNodeJsProject(projectRoot)) {
-                return ODataSource.CAPNode;
-            }
-        } else if (projectType === ProjectType.Edmx) {
-            return ODataSource.ABAP;
-        }
+        return getProjectTypeForTelemetry(projectType);
     } catch (e) {
         return ODataSource.UNKNOWN;
     }
-    return ODataSource.UNKNOWN;
+}
+
+function getProjectTypeForTelemetry(projectType: ProjectType) {
+    if (projectType === "EDMXBackend") {
+        return ODataSource.ABAP;
+    } else if (projectType === "CAPNodejs") {
+        return ODataSource.CAPNode;
+    } else if (projectType === "CAPJava") {
+        return ODataSource.CAPJava;
+    } else {
+        return ODataSource.UNKNOWN;
+    }
 }
 
 /**
@@ -237,9 +241,9 @@ async function getDeployTarget(appPath: string): Promise<string> {
  * Convert init setting property internalFeaturesEnabled to string value.
  * @returns String value 'internal' | 'external' to be backward compatible with existing telemetry data format.
  */
-function getInternalVsExternal(): InternalFeature {
-    return isInternalFeaturesSettingEnabled() ? 'internal' : 'external';
-}
+// function getInternalVsExternal(): InternalFeature {
+//     return isInternalFeaturesSettingEnabled() ? 'internal' : 'external';
+// }
 
 /**
  * Read the manifest.json for the app and locate the tools id

@@ -105,6 +105,9 @@
       "path": "packages/system-access"
     },
     {
+      "path": "packages/telemetry"
+    },
+    {
       "path": "packages/ui-components"
     },
     {
@@ -136,9 +139,6 @@
     },
     {
       "path": "examples/simple-generator"
-    },
-    {
-      "path": "packages/telemetry"
     }
   ]
 }
