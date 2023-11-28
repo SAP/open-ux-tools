@@ -17,7 +17,7 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
     loadEnvConfig();
     const logLevel = (options.configuration?.log as LogLevel) ?? LogLevel.Info;
     const logger = new ToolsLogger({
-        transports: [new UI5ToolingTransport({ moduleName: `${NAME} ${options.projectName}` })],
+        transports: [new UI5ToolingTransport({ moduleName: `${NAME} ${options.projectName ?? ''}` })],
         logLevel: (options.configuration?.log as LogLevel) ?? LogLevel.Info
     });
 
