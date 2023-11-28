@@ -28,10 +28,7 @@ export interface AppProps {
  */
 export default function App(appProps: AppProps): ReactElement {
     const { previewUrl } = appProps;
-    const urlWithoutHash = previewUrl.split('#')[0];
-    const queryStr = urlWithoutHash.split('?')[1];
-    const urlParams = new URLSearchParams(queryStr);
-    const scenario = urlParams.get('sap-ui-scenario') as Scenario;
+    const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
     const isAdpProject = scenario === 'ADAPTATION_PROJECT';
 
     useEffect(() => {

@@ -48,13 +48,7 @@ async function getRouter(fixture?: string, configuration: Partial<MiddlewareConf
                 }
             }
         },
-        middlewareUtil: {
-            getProject: () => {
-                return {
-                    getRootPath: () => `${__dirname}../../../fixtures/${fixture}`
-                };
-            }
-        }
+        middlewareUtil: {}
     });
 }
 

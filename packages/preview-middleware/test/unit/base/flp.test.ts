@@ -158,9 +158,6 @@ describe('FlpSandbox', () => {
                     },
                     rta: {
                         layer: 'CUSTOMER_BASE',
-                        options: {
-                            scenario: 'UI_ADAPTATION'
-                        },
                         editors: [
                             {
                                 path: '/my/rta.html'
@@ -318,14 +315,6 @@ describe('initAdp', () => {
     } as unknown as ReaderCollection;
     const logger = { debug: jest.fn(), warn: jest.fn(), error: jest.fn(), info: jest.fn() } as unknown as ToolsLogger;
 
-    const middlewareUtils = {
-        getProject: () => {
-            return {
-                getRootPath: () => `${__dirname}../../../fixtures/adp`
-            };
-        }
-    };
-
     test('initAdp: throw an error if no adp project', async () => {
         const flp = new FlpSandbox({}, mockNonAdpProject, {} as MiddlewareUtils, logger);
         try {
@@ -337,17 +326,12 @@ describe('initAdp', () => {
 
     test('initAdp', async () => {
         const config = { adp: { target: { url } } };
-        const flp = new FlpSandbox(
-            { adp: { target: { url } } },
-            mockAdpProject,
-            middlewareUtils as MiddlewareUtils,
-            logger
-        );
+        const flp = new FlpSandbox({ adp: { target: { url } } }, mockAdpProject, {} as MiddlewareUtils, logger);
         const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
             jest.fn();
         });
 
-        await initAdp(mockAdpProject, config.adp, flp, middlewareUtils as MiddlewareUtils, logger);
+        await initAdp(mockAdpProject, config.adp, flp, {} as MiddlewareUtils, logger);
         expect(adpToolingMock).toBeCalled();
         expect(flpInitMock).toBeCalled();
     });

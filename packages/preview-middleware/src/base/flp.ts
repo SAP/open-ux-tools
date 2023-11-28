@@ -221,7 +221,6 @@ export class FlpSandbox {
      */
     private addEditorRoutes(rta: RtaConfig) {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
-        const scenario = rta.options?.scenario ?? 'UI_ADAPTATION';
         for (const editor of rta.editors) {
             let previewUrl = editor.path;
             if (editor.developerMode) {
@@ -229,9 +228,8 @@ export class FlpSandbox {
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
                 this.router.get(editor.path, (_req: Request, res: Response) => {
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
-                    const previewUrlTemplate = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-scenario=${scenario}#${this.config.intent.object}-${this.config.intent.action}`;
                     const html = render(template, {
-                        previewUrl: previewUrlTemplate,
+                        previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`,
                         telemetry: rta.options?.telemetry ?? false
                     });
                     res.status(200).contentType('html').send(html);
