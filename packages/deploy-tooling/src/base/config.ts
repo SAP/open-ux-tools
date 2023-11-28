@@ -2,6 +2,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { AbapTarget, AbapDeployConfig } from '../types';
 import { isUrlTarget } from '@sap-ux/system-access';
 import type { BspConfig } from '@sap-ux/axios-extension';
+import { getAppDescriptorVariant } from './archive';
 
 /**
  * Clones the given config and removes secrets so that it can be printed to a log file.
@@ -96,4 +97,19 @@ export function validateConfig(config: AbapDeployConfig | undefined): AbapDeploy
     }
 
     return config;
+}
+
+/**
+ * Append Adaptation project settings if present.
+ *
+ * @param config
+ * @param archive
+ */
+export function appendAdaptationConfig(config: AbapDeployConfig | undefined, archive: Buffer): void {
+    if (archive && config && !isBspConfig(config.app)) {
+        const descriptor = getAppDescriptorVariant(archive);
+        if (descriptor) {
+            config.adaptation = { namespace: descriptor.namespace, layer: descriptor.layer };
+        }
+    }
 }

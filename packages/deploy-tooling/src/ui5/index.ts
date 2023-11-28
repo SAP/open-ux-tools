@@ -2,7 +2,7 @@ import type { TaskParameters } from '@ui5/builder';
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../types';
 import { NAME } from '../types';
-import { deploy, replaceEnvVariables, validateConfig } from '../base';
+import { appendAdaptationConfig, deploy, replaceEnvVariables, validateConfig } from '../base';
 import { createUi5Archive } from './archive';
 import { config as loadEnvConfig } from 'dotenv';
 
@@ -34,6 +34,8 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
         options.projectNamespace ?? options.projectName,
         config.exclude
     );
+
+    appendAdaptationConfig(config, archive);
     await deploy(archive, config, logger);
 }
 

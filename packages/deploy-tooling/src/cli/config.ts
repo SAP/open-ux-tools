@@ -4,6 +4,8 @@ import { readFileSync } from 'fs';
 import { dirname, isAbsolute, join } from 'path';
 import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types';
 import { NAME } from '../types';
+import chalk from 'chalk';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 /**
  * Tries to read the version of the modules package.json but in case of an error, it returns the manually maintained version matching major.minor of the module.
@@ -191,4 +193,62 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     }
 
     return config;
+}
+
+/**
+ * Display application properties during confirmation prompt.
+ *
+ * @param config
+ * @param isUnDeployCmd, false by default
+ */
+export function showAppInfo(config: AbapDeployConfig, isUnDeployCmd = false): void {
+    const displayList = [];
+    const deployStr = isUnDeployCmd ? 'undeploy' : 'deploy';
+
+    if (config.lrep || config.adaptation?.namespace) {
+        displayList.unshift(`${chalk.blue('Repository Entry')}: ${config.lrep ?? config.adaptation?.namespace ?? ''}`);
+    } else {
+        displayList.unshift(`${chalk.blue('Application Name')}: ${config.app.name}`);
+    }
+
+    if (isAppStudio()) {
+        displayList.push(`${chalk.blue('Destination')}: ${config.target.destination ?? ''}`);
+    } else {
+        displayList.push(`${chalk.blue('Target')}: ${config.target.url ?? ''}`);
+    }
+    if (config.target.service) {
+        displayList.push(`${chalk.blue('SAPUI5 OData Service Path')}: ${config.target.service}`);
+    }
+
+    console.log();
+    console.log(
+        chalk.blue.bold.underline(
+            `${
+                config.test
+                    ? 'Confirmation is required to ' + deployStr + ' the app in test mode:'
+                    : 'Confirmation is required to ' + deployStr + ' the app:'
+            }`
+        )
+    );
+
+    if (!config.strictSsl) {
+        console.log(
+            chalk.yellow(
+                `You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding, refer to https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html.`
+            )
+        );
+    }
+
+    displayList.push(`${chalk.blue('Transport Request')}: ${config.app.transport ?? ''}`);
+
+    if (!isUnDeployCmd) {
+        displayList.push(`${chalk.blue('Package')}: ${config.app.package ?? ''}`);
+        displayList.push(`${chalk.blue('Client')}: ${config.target.client ?? ''}`);
+        displayList.push(`${chalk.blue('Cloud')}: ${config.target.scp ?? 'false'}`);
+    }
+
+    console.log('');
+    // console.log spacing is important to ensure tabbing of each line when displayed
+    displayList.filter((ele) => ele !== undefined).forEach((ele: string) => console.log(`    ${ele}`));
+    console.log('');
 }

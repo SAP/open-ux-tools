@@ -11,7 +11,6 @@ import type { AbapDeployConfig } from '../types';
 import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './config';
 import { promptConfirmation } from './prompt';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
-import { getAppDescriptorVariant } from './archive';
 import { validateBeforeDeploy, formatSummary } from './validate';
 
 /**
@@ -241,16 +240,15 @@ async function tryDeployToLrep(
     archive: Buffer
 ) {
     logger.debug('No BSP name provided, checking if it is an adaptation project');
-    const descriptor = getAppDescriptorVariant(archive);
-    if (descriptor) {
+    if (config.adaptation) {
         if (config.test) {
             throw new Error('Deployment in test mode not supported for deployments to the layered repository.');
         } else {
             logger.debug('Deploying an adaptation project to LREP');
             const service = getDeployService(provider.getLayeredRepository.bind(provider), config, logger);
             await service.deploy(archive, {
-                namespace: descriptor.namespace,
-                layer: descriptor.layer,
+                namespace: config.adaptation.namespace,
+                layer: config.adaptation.layer,
                 package: config.app.package,
                 transport: config.app.transport
             });
@@ -280,7 +278,7 @@ async function tryDeploy(
             // Reset as we don't want other flows kicking it off again!
             config.createTransport = false;
         }
-        // check if deployment of BSP is requested
+        // Check if deployment of BSP is requested
         if (isBspConfig(config.app)) {
             if (config.test === true) {
                 const validateOutput = await validateBeforeDeploy(config, provider, logger);
@@ -368,6 +366,6 @@ async function tryUndeploy(provider: AbapServiceProvider, config: AbapDeployConf
  */
 export async function undeploy(config: AbapDeployConfig, logger: Logger): Promise<void> {
     const provider = await createProvider(config, logger);
-    logger.info(`Starting to undeploy ${config.test === true ? ' in test mode' : ''}.`);
+    logger.info(`Starting to undeploy${config.test === true ? ' in test mode' : ''}.`);
     await tryUndeploy(provider, config, logger);
 }

@@ -1,11 +1,21 @@
 import { Option, Command } from 'commander';
 import { ToolsLogger, ConsoleTransport, LogLevel } from '@sap-ux/logger';
-import { deploy, getConfigForLogging, replaceEnvVariables, undeploy, validateConfig } from '../base';
+import {
+    appendAdaptationConfig,
+    deploy,
+    getConfigForLogging,
+    isBspConfig,
+    promptConfirmation,
+    replaceEnvVariables,
+    undeploy,
+    validateConfig
+} from '../base';
 import type { CliOptions, AbapDeployConfig } from '../types';
 import { NAME } from '../types';
 import { getArchive } from './archive';
-import { getDeploymentConfig, getVersion, mergeConfig } from './config';
+import { getDeploymentConfig, getVersion, mergeConfig, showAppInfo } from './config';
 import { config as loadEnvConfig } from 'dotenv';
+import { getAppDescriptorVariant } from '../base/archive';
 
 /**
  * Create an instance of a command runner for deployment.
@@ -149,7 +159,16 @@ export async function runDeploy(): Promise<void> {
     try {
         const { logger, options, config } = await prepareRun(cmd);
         const archive = await getArchive(logger, options);
-        await deploy(archive, config, logger);
+        appendAdaptationConfig(config, archive);
+        if (
+            config.yes ||
+            (await promptConfirmation(
+                `${config.test ? 'Start deployment in test mode (Y/n)?' : 'Start deployment (Y/n)?'}`,
+                () => showAppInfo(config)
+            ))
+        ) {
+            await deploy(archive, config, logger);
+        }
     } catch (error) {
         cmd.error((error as Error).message);
     }
@@ -162,7 +181,15 @@ export async function runUndeploy(): Promise<void> {
     const cmd = createCommand('undeploy');
     try {
         const { logger, config } = await prepareRun(cmd);
-        await undeploy(config, logger);
+        if (
+            config.yes ||
+            (await promptConfirmation(
+                `${config.test ? 'Start undeployment in test mode (Y/n)?' : 'Start undeployment (Y/n)?'}`,
+                () => showAppInfo(config, true)
+            ))
+        ) {
+            await undeploy(config, logger);
+        }
     } catch (error) {
         cmd.error((error as Error).message);
     }
