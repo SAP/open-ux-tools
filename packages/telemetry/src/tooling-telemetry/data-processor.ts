@@ -19,9 +19,7 @@ import {
     getProjectType,
     getAppType,
 } from '@sap-ux/project-access/dist/project';
-import type {
-    ProjectType
-} from '@sap-ux/project-access/dist/types';
+import type { ProjectType } from '@sap-ux/project-access/dist/types';
 import type { CommonFioriProjectProperties, InternalFeature, SourceTemplate } from './types';
 import { ODataSource, DeployTarget, CommonProperties, ToolsId } from './types';
 // import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
@@ -103,7 +101,7 @@ async function getAppProperties(appPath: string): Promise<Record<string, string>
     const odataSource = await getODataSource(appPath);
     const sourceTemplate = await getManifestSourceTemplate(appPath);
     const appProgrammingLanguage = await getAppProgrammingLanguage(appPath);
-    const applicationType = await getAppType(appPath, appPath);
+    const applicationType = await getAppType(appPath);
     const output: Record<string, string> = {};
     output[CommonProperties.TemplateType] = templateType;
     output[CommonProperties.DeployTargetType] = deployTarget;
@@ -112,7 +110,7 @@ async function getAppProperties(appPath: string): Promise<Record<string, string>
     output[CommonProperties.AppProgrammingLanguage] = appProgrammingLanguage;
     output[CommonProperties.TemplateId] = sourceTemplate.id ?? '';
     output[CommonProperties.TemplateVersion] = sourceTemplate.version ?? '';
-    output[CommonProperties.ApplicationType] = applicationType;
+    output[CommonProperties.ApplicationType] = applicationType ?? '';
 
     return output;
 }

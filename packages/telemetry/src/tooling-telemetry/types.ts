@@ -1,5 +1,5 @@
-import type { AppType } from '@sapux/project-spec';
 import type { ProjectInfo } from '../base/types';
+import type { AppType } from '@sap-ux/project-access/dist/types';
 
 export type TelemetryHelperProperties = {
     appPath: string;
