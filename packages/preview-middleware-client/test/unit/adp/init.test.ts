@@ -15,7 +15,7 @@ describe('adp', () => {
     rtaMock.getFlexSettings.mockReturnValue({
         telemetry: false,
         scenario: 'ADAPTATION_PROJECT'
-    })
+    });
 
     const executeSpy = jest.fn();
     rtaMock.getService = jest.fn().mockResolvedValue({ execute: executeSpy });
@@ -86,11 +86,17 @@ describe('adp', () => {
         jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
             return { dispose: jest.fn(), sendAction: sendActionMock };
         });
+
         VersionInfo.load.mockResolvedValue({ version: '1.70.0' });
 
         await init(rtaMock);
 
         expect(sendActionMock).toHaveBeenNthCalledWith(1, {
+            type: '[ext] scenario-loaded',
+            payload: 'ADAPTATION_PROJECT'
+        });
+
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] show-dialog-message',
             payload:
                 'The current SAPUI5 version set for this Adaptation project is 1.70.0. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71'
