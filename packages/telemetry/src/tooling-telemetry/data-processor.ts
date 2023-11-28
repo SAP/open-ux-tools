@@ -14,11 +14,12 @@ import yaml from 'yaml';
  * Further, size of generated .vsix will be increased by esbuild
  * */
 import {
-    findProjectRoot,
     getAppProgrammingLanguage,
     getProjectType,
     getAppType,
-} from '@sap-ux/project-access/dist/project';
+} from '@sap-ux/project-access/dist/project/info';
+import { findProjectRoot } from '@sap-ux/project-access/dist/project/search';
+import { isCapJavaProject } from '@sap-ux/project-access/dist/project/cap';
 import type { ProjectType } from '@sap-ux/project-access/dist/types';
 import type { CommonFioriProjectProperties, InternalFeature, SourceTemplate } from './types';
 import { ODataSource, DeployTarget, CommonProperties, ToolsId } from './types';
