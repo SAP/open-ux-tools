@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.16.0
+
+### Minor Changes
+
+-   f7382bd1: Add getAppType() and getProjectType()
+
 ## 1.15.5
 
 ### Patch Changes
