@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
 
+import type { Scenario } from '@sap-ux-private/control-property-editor-common';
+
 import { PropertiesPanel, LeftPanel } from './panels';
 import { useLocalStorage } from './use-local-storage';
 import type { RootState } from './store';
@@ -37,6 +39,7 @@ export default function App(appProps: AppProps): ReactElement {
     }, []);
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
+    const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
     const [hideWarningDialog, setHideWarningDialog] = useLocalStorage('hide-warning-dialog', false);
     const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => hideWarningDialog !== true);
 
@@ -107,30 +110,34 @@ export default function App(appProps: AppProps): ReactElement {
                 <PropertiesPanel />
             </section>
 
-            <UIDialog
-                hidden={!isWarningDialogVisible}
-                closeButtonAriaLabel={t('CLOSE')}
-                dialogContentProps={{
-                    title: t('TOOL_DISCLAIMER_TITLE'),
-                    subText: t('TOOL_DISCLAIMER_TEXT')
-                }}
-                acceptButtonText={t('OK')}
-                onAccept={closeWarningDialog}>
-                <UILink href="https://ui5.sap.com/#/topic/03265b0408e2432c9571d6b3feb6b1fd">
-                    {t('FE_DOCUMENTATION_LINK_TEXT')}
-                </UILink>
-                <UIToggle
-                    className="space space-toggle"
-                    label={t('DONT_SHOW_WARNING_ON_START')}
-                    inlineLabel
-                    inlineLabelLeft
-                    labelFlexGrow
-                    checked={hideWarningDialog}
-                    onChange={(_event, checked = false): void => {
-                        setHideWarningDialog(checked);
+            {scenario === 'FE_FROM_SCRATCH' ? (
+                <UIDialog
+                    hidden={!isWarningDialogVisible}
+                    closeButtonAriaLabel={t('CLOSE')}
+                    dialogContentProps={{
+                        title: t('TOOL_DISCLAIMER_TITLE'),
+                        subText: t('TOOL_DISCLAIMER_TEXT')
                     }}
-                />
-            </UIDialog>
+                    acceptButtonText={t('OK')}
+                    onAccept={closeWarningDialog}>
+                    <UILink href="https://ui5.sap.com/#/topic/03265b0408e2432c9571d6b3feb6b1fd">
+                        {t('FE_DOCUMENTATION_LINK_TEXT')}
+                    </UILink>
+                    <UIToggle
+                        className="space space-toggle"
+                        label={t('DONT_SHOW_WARNING_ON_START')}
+                        inlineLabel
+                        inlineLabelLeft
+                        labelFlexGrow
+                        checked={hideWarningDialog}
+                        onChange={(_event, checked = false): void => {
+                            setHideWarningDialog(checked);
+                        }}
+                    />
+                </UIDialog>
+            ) : (
+                <></>
+            )}
         </div>
     );
 }
