@@ -1,8 +1,8 @@
 import { ClientFactory } from '../../src/base/client';
-import { TelemetrySystem } from '../../src/base/types/system';
 import { EventName } from '../../src/base/types/event-name';
 import { SampleRate } from '../../src/base/types/sample-rate';
 import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
+import { TelemetrySettings } from '../../src/base/config-state';
 
 const spyTrackEvent = jest.fn();
 
@@ -30,10 +30,10 @@ jest.mock('applicationinsights', () => {
 
 describe('ClientFactory Send Report Tests', () => {
     beforeEach(() => {
-        TelemetrySystem.telemetryEnabled = true;
+        TelemetrySettings.telemetryEnabled = true;
     });
     afterEach(() => {
-        TelemetrySystem.telemetryEnabled = true;
+        TelemetrySettings.telemetryEnabled = true;
     });
 
     test('Test function getTelemetryClient()', async () => {

@@ -1,5 +1,5 @@
 import { ClientFactory } from '../../src/base/client';
-import { TelemetrySystem } from '../../src/base/types/system';
+import { TelemetrySettings } from '../../src/base/config-state';
 import { EventName } from '../../src/base/types/event-name';
 import { SampleRate } from '../../src/base/types/sample-rate';
 import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
@@ -30,11 +30,10 @@ jest.mock('applicationinsights', () => {
 
 describe('ClientFactory Send Report Tests', () => {
     beforeEach(() => {
-        TelemetrySystem.telemetryEnabled = false;
-        TelemetrySystem.WORKSTREAM = 'extension';
+        TelemetrySettings.telemetryEnabled = false;
     });
     afterEach(() => {
-        TelemetrySystem.telemetryEnabled = undefined;
+        TelemetrySettings.telemetryEnabled = true;
     });
 
     test('Test function getTelemetryClient()', () => {

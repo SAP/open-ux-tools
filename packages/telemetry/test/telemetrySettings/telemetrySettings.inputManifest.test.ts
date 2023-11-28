@@ -1,7 +1,7 @@
-import { TelemetrySystem } from '../../src';
-import type { manifest } from '../../src/base/types/types';
+import { TelemetrySettings } from '../../src/base/config-state';
+import type { ProjectInfo } from '../../src/base/types/';
 import { getTelemetrySetting, initTelemetrySettings } from '../../src/tooling-telemetry';
-import * as uxCommonUtils from '@sap/ux-common-utils';
+import * as btpUtils from '@sap-ux/btp-utils';
 import * as storeMock from '@sap-ux/store';
 
 jest.mock('../../src/util/reporting', () => {
@@ -16,7 +16,7 @@ jest.mock('../../src/util/reporting', () => {
 const packageJSon = {
     name: 'testProject',
     version: '0.0.1'
-} as manifest;
+} as ProjectInfo;
 
 const mockSettingFileContent = {
     'sap.ux.annotation.lsp.enableTelemetry': true,
@@ -35,12 +35,12 @@ jest.mock('fs', () => ({
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('fs') as object),
     promises: {
-        readFile: (...args) => readFileMock(...args)
+        readFile: (...args: []) => readFileMock(...args)
     },
-    mkdirSync: (...args) => mkdirSyncMock(...args),
-    writeFileSync: (...args) => writeFileSyncMock(...args),
-    readFileSync: (...args) => readFileSyncMock(...args),
-    existsSync: (...args) => existsSyncMock(...args)
+    mkdirSync: (...args: []) => mkdirSyncMock(...args),
+    writeFileSync: (...args: []) => writeFileSyncMock(...args),
+    readFileSync: (...args: []) => readFileSyncMock(...args),
+    existsSync: (...args: []) => existsSyncMock(...args)
 }));
 
 const telemetrySettingFileContent = JSON.stringify({
@@ -51,7 +51,7 @@ const telemetrySettingFileContent = JSON.stringify({
     }
 });
 
-const isAppStudioMock = jest.spyOn(uxCommonUtils, 'isAppStudio');
+const isAppStudioMock = jest.spyOn(btpUtils, 'isAppStudio');
 
 describe('toolsSuiteTelemetrySettings', () => {
     afterEach(() => {
@@ -65,8 +65,6 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileSyncMock.mockReset();
         isAppStudioMock.mockReset();
         existsSyncMock.mockReset();
-        TelemetrySystem.WORKSTREAM = undefined;
-        TelemetrySystem.manifest = undefined;
         mockSettingFileContent['sap.ux.help.enableTelemetry'] = false;
     });
 
@@ -86,10 +84,9 @@ describe('toolsSuiteTelemetrySettings', () => {
         });
         expect(readFileMock).toBeCalledTimes(0);
         expect(writeFileSyncMock).toBeCalledTimes(0);
-        expect(TelemetrySystem.WORKSTREAM).toBe('core');
-        expect(TelemetrySystem.manifest.name).toBe('testProject');
-        expect(TelemetrySystem.manifest.version).toBe('0.0.1');
-        expect(TelemetrySystem.telemetryEnabled).toBe(true);
+        expect(TelemetrySettings.consumerModuleName).toBe('testProject');
+        expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
+        expect(TelemetrySettings.telemetryEnabled).toBe(true);
     });
 
     /**
@@ -111,9 +108,8 @@ describe('toolsSuiteTelemetrySettings', () => {
             expect.stringContaining(`"enableTelemetry": false`)
         );
         expect(readFileSyncMock).toBeCalledTimes(2);
-        expect(TelemetrySystem.WORKSTREAM).toBe('core');
-        expect(TelemetrySystem.manifest.name).toBe('testProject');
-        expect(TelemetrySystem.manifest.version).toBe('0.0.1');
+        expect(TelemetrySettings.consumerModuleName).toBe('testProject');
+        expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
     });
 
     /**
@@ -136,9 +132,8 @@ describe('toolsSuiteTelemetrySettings', () => {
             expect.stringContaining(`"enableTelemetry": true`)
         );
         expect(readFileSyncMock).toBeCalledTimes(2);
-        expect(TelemetrySystem.WORKSTREAM).toBe('core');
-        expect(TelemetrySystem.manifest.name).toBe('testProject');
-        expect(TelemetrySystem.manifest.version).toBe('0.0.1');
+        expect(TelemetrySettings.consumerModuleName).toBe('testProject');
+        expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
     });
 
     /**
@@ -159,16 +154,15 @@ describe('toolsSuiteTelemetrySettings', () => {
             expect.stringContaining(`"enableTelemetry": true`)
         );
         expect(readFileSyncMock).toBeCalledTimes(2);
-        expect(TelemetrySystem.WORKSTREAM).toBe('core');
-        expect(TelemetrySystem.manifest.name).toBe('testProject');
-        expect(TelemetrySystem.manifest.version).toBe('0.0.1');
+        expect(TelemetrySettings.consumerModuleName).toBe('testProject');
+        expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
     });
 
     /**
      * No central telemetry setting found in SBAS environment
      */
     it('Read module package.json from option - no central telemetry setting case 4', async () => {
-        jest.spyOn(uxCommonUtils, 'isAppStudio').mockReturnValue(true);
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
         mockSettingFileContent['sap.ux.help.enableTelemetry'] = true;
         readFileMock.mockReturnValue(new Promise((resolve) => resolve(JSON.stringify(mockSettingFileContent))));
         existsSyncMock.mockImplementation(() => false);
@@ -185,9 +179,8 @@ describe('toolsSuiteTelemetrySettings', () => {
             expect.stringContaining(`"enableTelemetry": true`)
         );
         expect(readFileSyncMock).toBeCalledTimes(2);
-        expect(TelemetrySystem.WORKSTREAM).toBe('core');
-        expect(TelemetrySystem.manifest.name).toBe('testProject');
-        expect(TelemetrySystem.manifest.version).toBe('0.0.1');
+        expect(TelemetrySettings.consumerModuleName).toBe('testProject');
+        expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
     });
 
     /**
@@ -213,9 +206,8 @@ describe('toolsSuiteTelemetrySettings', () => {
             expect.stringContaining(`"enableTelemetry": true`)
         );
         expect(readFileSyncMock).toBeCalledTimes(2);
-        expect(TelemetrySystem.WORKSTREAM).toBe('core');
-        expect(TelemetrySystem.manifest.name).toBe('testProject');
-        expect(TelemetrySystem.manifest.version).toBe('0.0.1');
+        expect(TelemetrySettings.consumerModuleName).toBe('testProject');
+        expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
 
         Object.defineProperty(process, 'platform', {
             value: originalPlatform
@@ -240,7 +232,7 @@ describe('Tests for getTelemetrySetting()', () => {
         const setting = await getTelemetrySetting();
 
         // Check results
-        expect(setting.enableTelemetry).toBe(true);
+        expect(setting?.enableTelemetry).toBe(true);
     });
 
     it('Telemetry setting should be disabled', async () => {
@@ -255,7 +247,7 @@ describe('Tests for getTelemetrySetting()', () => {
         const setting = await getTelemetrySetting();
 
         // Check results
-        expect(setting.enableTelemetry).toBe(false);
+        expect(setting?.enableTelemetry).toBe(false);
     });
 
     it('Telemetry setting should be undefined', async () => {

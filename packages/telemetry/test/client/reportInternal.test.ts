@@ -1,5 +1,5 @@
 import { ClientFactory } from '../../src/base/client';
-import { TelemetrySystem } from '../../src/base/types/system';
+import { TelemetrySettings } from '../../src/base/config-state';
 import { EventName } from '../../src/base/types/event-name';
 import { SampleRate } from '../../src/base/types/sample-rate';
 
@@ -21,7 +21,7 @@ jest.mock('applicationinsights', () => {
             this.addTelemetryProcessor = (fn: any) => {
                 fn({ tags: {} });
             };
-            this.trackEvent = (...args) => spyTrackEvent(...args);
+            this.trackEvent = (...args: []) => spyTrackEvent(...args);
         }
     }
     return { TelemetryClient };
@@ -29,11 +29,10 @@ jest.mock('applicationinsights', () => {
 
 describe('ClientFactory Send Report Internal Extension', () => {
     beforeEach(() => {
-        TelemetrySystem.telemetryEnabled = true;
-        TelemetrySystem.WORKSTREAM = 'extension';
+        TelemetrySettings.telemetryEnabled = true;
     });
     afterEach(() => {
-        TelemetrySystem.telemetryEnabled = undefined;
+        TelemetrySettings.telemetryEnabled = true;
     });
 
     test('Test function getTelemetryClient()', async () => {

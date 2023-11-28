@@ -1,7 +1,8 @@
 import { logTelemetry, logTelemetryAsync } from '../../src/base/decorator';
-import { EventName, interceptorTypes, SampleRate, ParamRecordConfig } from '../../src';
+import { EventName, InterceptorTypes, SampleRate, ParamRecordConfig } from '../../src';
 import { ClientFactory } from '../../src/base/client';
 import { promisify } from 'util';
+import { TelemetrySettings } from '../../src/base/config-state';
 
 describe('Decorator Tests', () => {
     const timeOut = promisify(setTimeout);
@@ -17,10 +18,13 @@ describe('Decorator Tests', () => {
                 report: reportSpy
             } as any;
         });
+
+        TelemetrySettings.azureInstrumentationKey == 'AzureTestKey';
     });
 
     afterEach(() => {
         spy.mockClear();
+        TelemetrySettings.azureInstrumentationKey = '';
     });
 
     describe('Test CAPTURE_PARAM', () => {
@@ -31,7 +35,7 @@ describe('Decorator Tests', () => {
         test('Test CAPTURE_PARAM Sync', () => {
             const interceptFn: Function = logTelemetry(
                 EventName.Test,
-                interceptorTypes.CAPTURE_PARAM,
+                InterceptorTypes.CAPTURE_PARAM,
                 SampleRate.NoSampling,
                 paramConfig
             );
@@ -58,7 +62,7 @@ describe('Decorator Tests', () => {
         test('Test CAPTURE_PARAM Async', async () => {
             const interceptFn: Function = logTelemetryAsync(
                 EventName.Test,
-                interceptorTypes.CAPTURE_PARAM,
+                InterceptorTypes.CAPTURE_PARAM,
                 SampleRate.NoSampling,
                 paramConfig
             );
@@ -88,7 +92,7 @@ describe('Decorator Tests', () => {
         test('Test DURATION Sync', () => {
             const interceptFn: Function = logTelemetry(
                 EventName.Test,
-                interceptorTypes.DURATION,
+                InterceptorTypes.DURATION,
                 SampleRate.NoSampling,
                 []
             );
@@ -115,7 +119,7 @@ describe('Decorator Tests', () => {
         test('Test DURATION Async', async () => {
             const interceptFn: Function = logTelemetryAsync(
                 EventName.Test,
-                interceptorTypes.DURATION,
+                InterceptorTypes.DURATION,
                 SampleRate.NoSampling,
                 []
             );
@@ -145,7 +149,7 @@ describe('Decorator Tests', () => {
         test('Test NOTIFICATION Sync', () => {
             const interceptFn: Function = logTelemetry(
                 EventName.Test,
-                interceptorTypes.NOTIFICATION,
+                InterceptorTypes.NOTIFICATION,
                 SampleRate.NoSampling,
                 []
             );
@@ -167,7 +171,7 @@ describe('Decorator Tests', () => {
         test('Test NOTIFICATION Async', async () => {
             const interceptFn: Function = logTelemetryAsync(
                 EventName.Test,
-                interceptorTypes.NOTIFICATION,
+                InterceptorTypes.NOTIFICATION,
                 SampleRate.NoSampling,
                 []
             );

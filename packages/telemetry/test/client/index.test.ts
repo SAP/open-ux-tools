@@ -1,7 +1,7 @@
 import { ClientFactory } from '../../src/base/client';
 import type { Client } from '../../src/base/client/client';
-import * as telemetryPackageJSON from '../../package.json';
 import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
+import { TelemetrySettings } from '../../src/base/config-state';
 
 const spyTrackEvent: jest.Mock = jest.fn();
 
@@ -36,9 +36,9 @@ describe('ClientFactory Tests', () => {
         const extensionVersion = telemetryClient.getExtensionVersion();
         // Triggered from test instead of real extension, so not possible to init client with extension info.
         // Fall back to use telemetry module package info.
-        expect(appKey).toEqual(telemetryPackageJSON.azureInstrumentationKey);
-        expect(extensionName).toEqual(telemetryPackageJSON.name);
-        expect(extensionVersion).toEqual(telemetryPackageJSON.version);
+        expect(appKey).toEqual(TelemetrySettings.azureInstrumentationKey);
+        expect(extensionName).toEqual(TelemetrySettings.consumerModuleName);
+        expect(extensionVersion).toEqual(TelemetrySettings.consumerModuleVersion);
 
         // Singleton
         const telemetryClient2: Client = ClientFactory.getTelemetryClient();

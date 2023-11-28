@@ -13,10 +13,10 @@ jest.mock('fs', () => {
 });
 
 const isAppStudioMock = jest.fn();
-jest.mock('@sap/ux-common-utils', () => {
+jest.mock('@sap-ux/btp-utils', () => {
     return {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        ...(jest.requireActual('@sap/ux-common-utils') as {}),
+        ...(jest.requireActual('@sap-ux/btp-utils') as {}),
         isAppStudio: (): boolean => isAppStudioMock()
     };
 });

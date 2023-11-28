@@ -1,5 +1,5 @@
 import { ClientFactory } from '../../src/base/client';
-import { TelemetrySystem } from '../../src/base/types/system';
+import { TelemetrySettings } from '../../src/base/config-state';
 import { EventName } from '../../src/base/types/event-name';
 import { SampleRate } from '../../src/base/types/sample-rate';
 import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
@@ -38,10 +38,10 @@ jest.mock('applicationinsights', () => {
 
 describe('ClientFactory Send Report Blocking Tests', () => {
     beforeEach(() => {
-        TelemetrySystem.telemetryEnabled = true;
+        TelemetrySettings.telemetryEnabled = true;
     });
     afterEach(() => {
-        TelemetrySystem.telemetryEnabled = false;
+        TelemetrySettings.telemetryEnabled = false;
     });
 
     it('reportEvent - success', async () => {

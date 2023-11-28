@@ -31,8 +31,8 @@ class ClientFactory {
 
         client = new clientConstructor(
             TelemetrySettings.azureInstrumentationKey,
-            TelemetrySettings.telemetryLibName,
-            TelemetrySettings.telemetryLibVersion
+            TelemetrySettings.consumerModuleName,
+            TelemetrySettings.consumerModuleVersion
         );
 
         ClientFactory.clientMap.set(clientConstructor.name, client);
