@@ -10,6 +10,7 @@ export const TelemetrySettings = {
     telemetryLibName: '',
     // Version in telemetry/pacakge.json
     telemetryLibVersion: '',
+
     // Name of module that uses telemetry library
     consumerModuleName: '',
     // Version of module that uses telemetry library

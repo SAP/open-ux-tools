@@ -1,8 +1,14 @@
+import { TelemetrySettings } from '../../src/base/config-state';
+// Simulate CI/CD job that init the values based on build mode (dev/prod) and project info in telemetry/package.json.
+TelemetrySettings.azureInstrumentationKey = 'AzureInstrumentationKey';
+TelemetrySettings.telemetryLibName = '@sap-ux/telemetry';
+TelemetrySettings.telemetryLibVersion = '0.0.1';
+
 import { logTelemetry, logTelemetryAsync } from '../../src/base/decorator';
 import { EventName, InterceptorTypes, SampleRate, ParamRecordConfig } from '../../src';
 import { ClientFactory } from '../../src/base/client';
 import { promisify } from 'util';
-import { TelemetrySettings } from '../../src/base/config-state';
+
 
 describe('Decorator Tests', () => {
     const timeOut = promisify(setTimeout);
@@ -18,13 +24,16 @@ describe('Decorator Tests', () => {
                 report: reportSpy
             } as any;
         });
-
-        TelemetrySettings.azureInstrumentationKey == 'AzureTestKey';
     });
 
     afterEach(() => {
         spy.mockClear();
+    });
+
+    afterAll(() => {
         TelemetrySettings.azureInstrumentationKey = '';
+        TelemetrySettings.telemetryLibName = '';
+        TelemetrySettings.telemetryLibVersion = '';
     });
 
     describe('Test CAPTURE_PARAM', () => {
