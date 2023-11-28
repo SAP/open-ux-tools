@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.4
+
+### Patch Changes
+
+-   a280785d: Fix for showing redundant warning dialog in CPE for adaptation projects
+
 ## 0.4.3
 
 ### Patch Changes

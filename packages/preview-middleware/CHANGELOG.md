@@ -1,5 +1,23 @@
 # @sap-ux/preview-middleware
 
+## 0.11.7
+
+### Patch Changes
+
+-   237e69d1: Fix for missing delete icon for new comp/control variant views
+
+## 0.11.6
+
+### Patch Changes
+
+-   a280785d: Fix for showing redundant warning dialog in CPE for adaptation projects
+
+## 0.11.5
+
+### Patch Changes
+
+-   b5eb0792: Index field is disabled when aggregation with specialIndexHandling is chosen
+
 ## 0.11.4
 
 ### Patch Changes

@@ -118,7 +118,7 @@ describe('ui5/middleware', () => {
             adp: { target: { url } },
             rta: {
                 layer: 'CUSTOMER_BASE',
-                editors: [{ path: '/adp/editor.html' }]
+                editors: [{ path: '/adp/editor.html', developerMode: true }]
             }
         });
         await server.get('/test/flp.html').expect(200);
