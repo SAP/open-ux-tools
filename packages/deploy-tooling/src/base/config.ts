@@ -102,8 +102,8 @@ export function validateConfig(config: AbapDeployConfig | undefined): AbapDeploy
 /**
  * Append Adaptation project settings if present.
  *
- * @param config
- * @param archive
+ * @param config - the config read from file/cli
+ * @param archive - buffer representing a zip file
  */
 export function appendAdaptationConfig(config: AbapDeployConfig | undefined, archive: Buffer): void {
     if (archive && config && !isBspConfig(config.app)) {

@@ -1,5 +1,5 @@
 import AdmZip from 'adm-zip';
-import { AdaptationConfig } from '@sap-ux/axios-extension';
+import type { AdaptationConfig } from '@sap-ux/axios-extension';
 
 /**
  * Check whether a given zip files contains an adaptation project and if yes returns the contained manifest.appdesc_variant.

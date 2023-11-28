@@ -183,7 +183,7 @@ export async function runUndeploy(): Promise<void> {
             config.yes ||
             (await promptConfirmation(
                 `${config.test ? 'Start undeployment in test mode (Y/n)?' : 'Start undeployment (Y/n)?'}`,
-                () => showAppInfo(config, true)
+                () => showAppInfo(config, false)
             ))
         ) {
             await undeploy(config, logger);
