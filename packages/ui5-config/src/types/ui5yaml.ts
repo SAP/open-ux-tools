@@ -27,10 +27,6 @@ export interface PreviewMiddlewareConfiguration {
     };
 }
 
-export interface Ui5ProxyMiddlewareConfiguration {
-    version: string;
-}
-
 export interface CustomMiddleware<C = unknown> extends CustomItem<C> {
     beforeMiddleware?: string;
     afterMiddleware?: string;

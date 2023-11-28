@@ -1,6 +1,5 @@
 import type {
     AdpCustomConfiguration,
-    Ui5ProxyMiddlewareConfiguration,
     PreviewMiddlewareConfiguration,
     CustomMiddleware
 } from '@sap-ux/ui5-config/src/types';
@@ -23,10 +22,8 @@ export default class UI5Validator {
             ? (adpCustomConfigurationObject as AdpCustomConfiguration)
             : undefined;
         const previewMiddleware = ui5yaml.findCustomMiddleware<PreviewMiddlewareConfiguration>('preview-middleware');
-        const ui5ProxyMiddleware =
-            ui5yaml.findCustomMiddleware<Ui5ProxyMiddlewareConfiguration>('ui5-proxy-middleware');
 
-        this.checkMiddlewareProperties(adpCustomConfiguration, previewMiddleware, ui5ProxyMiddleware);
+        this.checkMiddlewareProperties(adpCustomConfiguration, previewMiddleware);
     }
 
     /**
@@ -53,10 +50,9 @@ export default class UI5Validator {
      */
     private static checkMiddlewareProperties(
         customConfiguration: AdpCustomConfiguration | undefined,
-        previewMiddleware: CustomMiddleware<PreviewMiddlewareConfiguration> | undefined,
-        ui5Middleware: CustomMiddleware<Ui5ProxyMiddlewareConfiguration> | undefined
+        previewMiddleware: CustomMiddleware<PreviewMiddlewareConfiguration> | undefined
     ): void {
-        if (!customConfiguration || !previewMiddleware || !ui5Middleware) {
+        if (!customConfiguration || !previewMiddleware) {
             throw new Error('Missing required custom middleware or custom configuration in ui5.yaml');
         }
         this.assertProperties(['environment'], customConfiguration);
@@ -64,7 +60,5 @@ export default class UI5Validator {
         this.assertProperties(['adp'], previewMiddleware.configuration);
         this.assertProperties(['target'], previewMiddleware.configuration.adp);
         this.assertProperties(['url', 'client'], previewMiddleware.configuration.adp.target);
-        this.assertProperties(['configuration'], ui5Middleware);
-        this.assertProperties(['version'], ui5Middleware.configuration);
     }
 }
