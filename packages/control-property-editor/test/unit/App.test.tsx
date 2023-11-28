@@ -6,7 +6,7 @@ import { render, mockDomEventListener } from './utils';
 import { initI18n } from '../../src/i18n';
 
 import App from '../../src/App';
-import { controlSelected } from '@sap-ux-private/control-property-editor-common';
+import { controlSelected, scenarioLoaded } from '@sap-ux-private/control-property-editor-common';
 import { mockResizeObserver } from '../utils/utils';
 import { InputType } from '../../src/panels/properties/types';
 import { registerAppIcons } from '../../src/icons';
@@ -163,8 +163,17 @@ test('renders properties', () => {
     expect(notFoundException).toBeTruthy();
 });
 
-test('renders warning dialog', async () => {
+test('does not render warning dialog', async () => {
     render(<App previewUrl="" />);
+    const dialogContent = screen.queryByText(
+        /The Control Property Editor enables you to change control properties and behavior directly. These changes may not have the desired effect with Fiori elements applications. Please consult documentation to learn which changes are supported./i
+    );
+    expect(dialogContent).not.toBeInTheDocument();
+});
+
+test('renders warning dialog for "FE_FROM_SCRATCH" scenario', async () => {
+    const { store } = render(<App previewUrl="" />, { initialState });
+    store.dispatch(scenarioLoaded('FE_FROM_SCRATCH'));
     const dialogContent = screen.getByText(
         /The Control Property Editor enables you to change control properties and behavior directly. These changes may not have the desired effect with Fiori elements applications. Please consult documentation to learn which changes are supported./i
     );
