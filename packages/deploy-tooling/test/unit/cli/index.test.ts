@@ -31,7 +31,6 @@ describe('cli', () => {
     });
 
     describe('runDeploy', () => {
-        const logSpy = jest.spyOn(global.console, 'log');
         const writeFileSyncSpy = jest.spyOn(fs, 'writeFileSync');
         const cliArchiveSpy = jest.spyOn(cliArchive, 'getArchive');
         // Command for deploying with a configuration file, assumes 'dist' is the target archive folder if no archive-folder or archive-path is specified;

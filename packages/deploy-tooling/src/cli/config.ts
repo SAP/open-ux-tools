@@ -198,16 +198,17 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
 /**
  * Display application properties during confirmation prompt.
  *
- * @param config
- * @param isUnDeployCmd, false by default
+ * @param config - config to be displayed
+ * @param isDeployCmd - show different fields depending on task being executed
  */
-export function showAppInfo(config: AbapDeployConfig, isUnDeployCmd = false): void {
+export function showAppInfo(config: AbapDeployConfig, isDeployCmd = true): void {
     const displayList = [];
-    const deployStr = isUnDeployCmd ? 'undeploy' : 'deploy';
+    const deployStr = isDeployCmd ? 'deploy' : 'undeploy';
 
     const _getDisplayValue = (field: boolean | string | undefined, defaultValue?: boolean | string) =>
         field ?? defaultValue ?? '';
 
+    // Ensure this is the first item in the list
     if (config.lrep || config.adaptation?.namespace) {
         displayList.unshift(
             `${chalk.blue('Repository Entry')}: ${_getDisplayValue(
@@ -248,7 +249,7 @@ export function showAppInfo(config: AbapDeployConfig, isUnDeployCmd = false): vo
 
     displayList.push(`${chalk.blue('Transport Request')}: ${_getDisplayValue(config.app.transport)}`);
 
-    if (!isUnDeployCmd) {
+    if (isDeployCmd) {
         displayList.push(`${chalk.blue('Package')}: ${_getDisplayValue(config.app.package)}`);
         displayList.push(`${chalk.blue('Client')}: ${_getDisplayValue(config.target.client)}`);
         displayList.push(`${chalk.blue('Cloud')}: ${_getDisplayValue(config.target.scp, false)}`);
