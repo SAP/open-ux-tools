@@ -477,9 +477,6 @@ importers:
       '@types/source-map-support':
         specifier: 0.5.0
         version: 0.5.0
-      '@types/testing-library__jest-dom':
-        specifier: 5.14.9
-        version: 5.14.9
       '@ui5/fs':
         specifier: 3.0.4
         version: 3.0.4
