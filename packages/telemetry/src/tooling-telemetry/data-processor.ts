@@ -132,10 +132,10 @@ async function getTemplateType(appPath: string): Promise<string> {
             for (const line of lines) {
                 // Check if the line matches the pattern |**Template Used**<br>{{TemplateType}}|
                 const match = line.match(/\|\*\*Template Used\*\*<br>.*\|/g);
-                if (match && match.length > 0) {
+                if (match && match.length >= 2) {
                     // Extract {{TemplateType}} from the matching pattern
                     // templateType = line.match(/[^|**Template Used**<br>].*[^|]/g)[0];
-                    templateType = line.replace('|**Template Used**<br>', '').replace('|', '').trim();
+                    templateType = match[1].trim();
                     break;
                 }
             }
