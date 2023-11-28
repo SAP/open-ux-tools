@@ -1,14 +1,14 @@
-# @sap/ux-xml-odata-annotation-converter 
+# @sap-ux/xml-odata-annotation-converter 
 
 ## Installation
 Npm
-`npm install --save @sap/ux-xml-odata-annotation-converter`
+`npm install --save @sap-ux/xml-odata-annotation-converter`
 
 Yarn
-`yarn add @sap/ux-xml-odata-annotation-converter `
+`yarn add @sap-ux/xml-odata-annotation-converter `
 
 Pnpm
-`pnpm add @sap/ux-xml-odata-annotation-converter `
+`pnpm add @sap-ux/xml-odata-annotation-converter `
 
 ## Usage
 
@@ -19,7 +19,7 @@ import { readFile } from 'fs/promises';
 import { buildAst } from '@xml-tools/ast';
 import { parse } from '@xml-tools/parser';
 
-import { convertDocument } from '@sap/ux-xml-odata-annotation-converter';
+import { convertDocument } from '@sap-ux/xml-odata-annotation-converter';
 
 // read annotation file
 const text = await readFile('annotations.xml', 'utf8');
@@ -39,7 +39,7 @@ import { readFile } from 'fs/promises';
 import { buildAst } from '@xml-tools/ast';
 import { parse } from '@xml-tools/parser';
 
-import { convertMetadataDocument } from '@sap/ux-xml-odata-annotation-converter';
+import { convertMetadataDocument } from '@sap-ux/xml-odata-annotation-converter';
 
 // read annotation file
 const text = await readFile('metadata.xml', 'utf8');

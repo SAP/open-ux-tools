@@ -1,11 +1,11 @@
-import type { PrintContext } from '../../src/printer/csdlToXml';
+import type { PrintContext } from '../../src/printer/csdl-to-xml';
 import {
     printCsdlNodeToXmlString,
     escapeAttribute,
     unescapeText,
     unescapeAttribute,
     escapeText
-} from '../../src/printer/csdlToXml';
+} from '../../src/printer/csdl-to-xml';
 import type { Element, TextNode } from '@sap-ux/odata-annotation-core';
 import { ELEMENT_TYPE, ATTRIBUTE_TYPE, TEXT_TYPE, printOptions } from '@sap-ux/odata-annotation-core';
 

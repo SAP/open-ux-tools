@@ -18,8 +18,8 @@ import {
     indent
 } from '@sap-ux/odata-annotation-core';
 
-import type { NamespaceAliasMap } from './csdlToXml';
-import { printCsdlNodeToXmlString } from './csdlToXml';
+import type { NamespaceAliasMap } from './csdl-to-xml';
+import { printCsdlNodeToXmlString } from './csdl-to-xml';
 import type { Vocabulary, Namespace as VocabularyNamespace } from '@sap-ux/odata-vocabularies';
 import { EDMX_V4_NAMESPACE, EDM_V4_NAMESPACE } from './namespaces';
 

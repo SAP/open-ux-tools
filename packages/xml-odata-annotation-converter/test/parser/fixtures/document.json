@@ -1,9 +1,9 @@
 {
-  "type": "annotation-file",
-  "uri": "file://document.xml",
-  "range": "[(1,0)..(5,12)]",
-  "contentRange": "[(4,77)..(5,0)]",
-  "references": [],
-  "targets": [],
-  "metadata": []
+    "type": "annotation-file",
+    "uri": "file://document.xml",
+    "range": "[(1,0)..(5,12)]",
+    "contentRange": "[(4,77)..(5,0)]",
+    "references": [],
+    "targets": [],
+    "metadata": []
 }

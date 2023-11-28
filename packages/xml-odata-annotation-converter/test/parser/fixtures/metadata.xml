@@ -72,16 +72,6 @@
                     sap:content-version="1"
                 />
             </EntityContainer>
-            <atom:link
-                rel="self"
-                href="http://ims.saplabs.com:50017/sap/opu/odata/sap/Z2SEPMRA_C_PD_PRODUCT_CDS/$metadata"
-                xmlns:atom="http://www.w3.org/2005/Atom"
-            />
-            <atom:link
-                rel="latest-version"
-                href="http://ims.saplabs.com:50017/sap/opu/odata/sap/Z2SEPMRA_C_PD_PRODUCT_CDS/$metadata"
-                xmlns:atom="http://www.w3.org/2005/Atom"
-            />
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>

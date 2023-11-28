@@ -4,7 +4,7 @@ export {
     serializeElement,
     serializeReference,
     serializeTarget
-} from './serializerEdmx';
+} from './serializer-edmx';
 export * from './namespaces';
-export { printCsdlNodeToXmlString, PrintContext, escapeAttribute } from './csdlToXml';
-export { insert, insertWithOptions } from './documentModifier';
+export { printCsdlNodeToXmlString, PrintContext, escapeAttribute } from './csdl-to-xml';
+export { insert, insertWithOptions } from './document-modifier';

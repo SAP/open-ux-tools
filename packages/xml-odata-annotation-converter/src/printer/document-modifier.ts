@@ -1,8 +1,8 @@
 import type { XMLElement } from '@xml-tools/ast';
 import type { Element, FormatterOptions } from '@sap-ux/odata-annotation-core';
 import { EDMX_NAMESPACE_ALIAS, EDM_NAMESPACE_ALIAS, TextEdit, Position } from '@sap-ux/odata-annotation-core';
-import type { PrintContext, NamespaceAliasMap } from './csdlToXml';
-import { printCsdlNodeToXmlString } from './csdlToXml';
+import type { PrintContext, NamespaceAliasMap } from './csdl-to-xml';
+import { printCsdlNodeToXmlString } from './csdl-to-xml';
 import type { doc } from 'prettier';
 import { EDMX_V4_NAMESPACE, EDM_V4_NAMESPACE } from './namespaces';
 
