@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.11.7
+
+### Patch Changes
+
+-   237e69d1: Fix for missing delete icon for new comp/control variant views
+
 ## 0.11.6
 
 ### Patch Changes
