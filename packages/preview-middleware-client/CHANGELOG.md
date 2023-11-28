@@ -1,5 +1,41 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.8.3
+
+### Patch Changes
+
+-   b5eb0792: Index field is disabled when aggregation with specialIndexHandling is chosen
+
+## 0.8.2
+
+### Patch Changes
+
+-   02609800: Fix for comp/control variant changes not updating in pending changes tab
+
+## 0.8.1
+
+### Patch Changes
+
+-   18c9d967: Add validation for property changes for i18n models
+
+## 0.8.0
+
+### Minor Changes
+
+-   793f846b: Open existing controller from project files instead of creating a new one
+
+## 0.7.4
+
+### Patch Changes
+
+-   061a6544: CPE UI is not updated when changes are saved or deleted
+
+## 0.7.3
+
+### Patch Changes
+
+-   be8e3fb3: fix outline initialisation for the case when application is loaded, but outline is empty
+
 ## 0.7.2
 
 ### Patch Changes

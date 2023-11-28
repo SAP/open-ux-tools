@@ -17,6 +17,14 @@ describe('SelectionService', () => {
         fetchMock.mockClear();
     });
 
+    function createCompositeCommand(subCommands: any): {
+        getCommands: () => any;
+    } {
+        return {
+            getCommands: jest.fn().mockReturnValue(subCommands)
+        };
+    }
+
     test('read workspace changes', async () => {
         fetchMock.mockResolvedValue({
             json: () =>
@@ -196,7 +204,8 @@ describe('SelectionService', () => {
                 getElement: jest.fn().mockReturnValue({
                     getMetadata: jest
                         .fn()
-                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') })
+                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
+                    getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
                 }),
                 getSelector: jest.fn().mockReturnValue({
                     id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
@@ -222,14 +231,8 @@ describe('SelectionService', () => {
                 ])
             )
         ];
-        function createCompositeCommand(): {
-            getCommands: () => any;
-        } {
-            return {
-                getCommands: jest.fn().mockReturnValue(subCommands)
-            };
-        }
-        const compositeCommand = [createCompositeCommand()];
+
+        const compositeCommand = [createCompositeCommand(subCommands)];
 
         rtaMock.getCommandStack.mockReturnValue({
             getCommands: jest.fn().mockReturnValue(compositeCommand),
@@ -266,6 +269,101 @@ describe('SelectionService', () => {
                         type: 'pending'
                     }
                 ]
+            }
+        });
+    });
+
+    test('composite command - comp/control changes', async () => {
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        function createCommand(): {
+            getElement: () => any;
+            getPreparedChange: () => any;
+        } {
+            return {
+                getElement: jest.fn().mockReturnValue({
+                    getMetadata: jest
+                        .fn()
+                        .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
+                    getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
+                }),
+                getPreparedChange: jest.fn().mockReturnValue({
+                    getDefinition: jest.fn().mockReturnValue({
+                        changeType: 'page'
+                    })
+                })
+            };
+        }
+        const subCommands = [createCommand(), createCommand()];
+        const compositeCommand = [createCompositeCommand(subCommands)];
+
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(compositeCommand),
+            getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
+        });
+        const service = new ChangeService(
+            { rta: rtaMock } as any,
+            {
+                applyControlPropertyChange: jest.fn()
+            } as any
+        );
+
+        await service.init(sendActionMock, subscribeMock);
+
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+        expect(sendActionMock).toHaveBeenCalledTimes(2);
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] change-stack-modified',
+            payload: {
+                saved: [],
+                pending: [
+                    {
+                        changeType: 'page',
+                        controlId: '_ST_SmartVariantManagement',
+                        isActive: true,
+                        controlName: 'SimpleForm',
+                        type: 'pending'
+                    },
+                    {
+                        changeType: 'page',
+                        controlId: '_ST_SmartVariantManagement',
+                        isActive: true,
+                        controlName: 'SimpleForm',
+                        type: 'pending'
+                    }
+                ]
+            }
+        });
+    });
+
+    test('composite command - unknown commands', async () => {
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
+        function createCommand(): {} {
+            return {};
+        }
+        const subCommands = [createCommand(), createCommand()];
+
+        const compositeCommand = [createCompositeCommand(subCommands)];
+
+        rtaMock.getCommandStack.mockReturnValue({
+            getCommands: jest.fn().mockReturnValue(compositeCommand),
+            getAllExecutedCommands: jest.fn().mockReturnValue(compositeCommand)
+        });
+        const service = new ChangeService(
+            { rta: rtaMock } as any,
+            {
+                applyControlPropertyChange: jest.fn()
+            } as any
+        );
+
+        await service.init(sendActionMock, subscribeMock);
+
+        await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
+        expect(sendActionMock).toHaveBeenCalledTimes(2);
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+            type: '[ext] change-stack-modified',
+            payload: {
+                saved: [],
+                pending: []
             }
         });
     });
@@ -426,7 +524,7 @@ describe('SelectionService', () => {
             })
         );
 
-        expect(fetchMock).toHaveBeenLastCalledWith('/preview/api/changes', {
+        expect(fetchMock).toHaveBeenNthCalledWith(2, '/preview/api/changes', {
             body: '{"fileName":"id_1640106755570_203_propertyChange"}',
             headers: { 'Content-Type': 'application/json' },
             method: 'DELETE'

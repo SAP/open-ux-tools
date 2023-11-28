@@ -1,5 +1,49 @@
 # @sap-ux/ui-components
 
+## 1.13.4
+
+### Patch Changes
+
+-   e47492f0: Reusable css variables and classes for common box shadows.
+    Variables - `--ui-box-shadow-small`, `--ui-box-shadow-medium`, `--ui-box-shadow-large`.
+    Classes - `ui-box-shadow-small `, `ui-box-shadow-medium`, `ui-box-shadow-large`.
+
+## 1.13.3
+
+### Patch Changes
+
+-   3473d4b0: UIFlexibleTable. New property "isTouchDragDisabled" which allows to disable drag/reordering of table rows where drag is initalized by touch events
+
+## 1.13.2
+
+### Patch Changes
+
+-   f1221f2b: fix: UIContextualMenu. Border bottom is cut for UIContextualMenu in some zoom levels
+
+## 1.13.1
+
+### Patch Changes
+
+-   cbae7aba: fix: UICallout. New property "focusTargetSiblingOnTabPress", which allows to focus next/previous element relative to target when Tab key is pressed using keyboard
+
+## 1.13.0
+
+### Minor Changes
+
+-   c7d5b85c: UIDropdown, UIComboBox - new property "calloutCollisionTransformation" to improve interaction between multi-select dropdown and dialog action buttons(transformation makes dialog action buttons if its overlapped by dropdown menu)
+
+## 1.12.5
+
+### Patch Changes
+
+-   ade42a17: add `bookbookmark` icon
+
+## 1.12.4
+
+### Patch Changes
+
+-   f2b5e735: update `header` and `layout` icons
+
 ## 1.12.3
 
 ### Patch Changes

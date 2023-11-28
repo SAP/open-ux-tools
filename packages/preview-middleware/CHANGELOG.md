@@ -1,5 +1,84 @@
 # @sap-ux/preview-middleware
 
+## 0.11.7
+
+### Patch Changes
+
+-   237e69d1: Fix for missing delete icon for new comp/control variant views
+
+## 0.11.6
+
+### Patch Changes
+
+-   a280785d: Fix for showing redundant warning dialog in CPE for adaptation projects
+
+## 0.11.5
+
+### Patch Changes
+
+-   b5eb0792: Index field is disabled when aggregation with specialIndexHandling is chosen
+
+## 0.11.4
+
+### Patch Changes
+
+-   02609800: Fix for comp/control variant changes not updating in pending changes tab
+
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [de818954]
+    -   @sap-ux/adp-tooling@0.7.1
+
+## 0.11.2
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/adp-tooling@0.7.0
+
+## 0.11.1
+
+### Patch Changes
+
+-   18c9d967: Add validation for property changes for i18n models
+
+## 0.11.0
+
+### Minor Changes
+
+-   793f846b: Open existing controller from project files instead of creating a new one
+
+### Patch Changes
+
+-   Updated dependencies [793f846b]
+    -   @sap-ux/adp-tooling@0.6.0
+
+## 0.10.7
+
+### Patch Changes
+
+-   061a6544: CPE UI is not updated when changes are saved or deleted
+
+## 0.10.6
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.5.5
+
+## 0.10.5
+
+### Patch Changes
+
+-   dc2f9345: Outline tree for Fiori applications is not collapsed correctly
+
+## 0.10.4
+
+### Patch Changes
+
+-   be8e3fb3: fix outline initialisation for the case when application is loaded, but outline is empty
+
 ## 0.10.3
 
 ### Patch Changes

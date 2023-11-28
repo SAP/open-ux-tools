@@ -1,5 +1,47 @@
 # @sap-ux/generator-simple-fe
 
+## 0.3.10
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.7.3
+-   @sap-ux/system-access@0.3.5
+-   @sap-ux/fiori-elements-writer@0.17.4
+-   @sap-ux/fiori-freestyle-writer@0.21.2
+
+## 0.3.9
+
+### Patch Changes
+
+-   Updated dependencies [3c5fa042]
+    -   @sap-ux/fiori-elements-writer@0.17.3
+
+## 0.3.8
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.17.2
+-   @sap-ux/fiori-freestyle-writer@0.21.1
+-   @sap-ux/axios-extension@1.7.3
+-   @sap-ux/system-access@0.3.5
+
+## 0.3.7
+
+### Patch Changes
+
+-   286883cb: fix(deps): update dependency axios to v1.6.0 [security]
+-   Updated dependencies [286883cb]
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/btp-utils@0.12.1
+    -   @sap-ux/system-access@0.3.5
+
+## 0.3.6
+
+### Patch Changes
+
+-   Updated dependencies [deabc5bd]
+    -   @sap-ux/fiori-elements-writer@0.17.1
+
 ## 0.3.5
 
 ### Patch Changes

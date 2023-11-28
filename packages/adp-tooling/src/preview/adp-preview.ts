@@ -14,7 +14,8 @@ import type { AdpPreviewConfig, DescriptorVariant } from '../types';
 
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
-    CONTROLLER = '/adp/api/controller'
+    CONTROLLER = '/adp/api/controller',
+    CODE_EXT = '/adp/api/code_ext/:controllerName'
 }
 
 /**
@@ -144,5 +145,7 @@ export class AdpPreview {
             express.json(),
             this.routesHandler.handleWriteControllerExt as RequestHandler
         );
+
+        router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
     }
 }
