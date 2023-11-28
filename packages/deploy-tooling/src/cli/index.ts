@@ -4,7 +4,6 @@ import {
     appendAdaptationConfig,
     deploy,
     getConfigForLogging,
-    isBspConfig,
     promptConfirmation,
     replaceEnvVariables,
     undeploy,
@@ -15,7 +14,6 @@ import { NAME } from '../types';
 import { getArchive } from './archive';
 import { getDeploymentConfig, getVersion, mergeConfig, showAppInfo } from './config';
 import { config as loadEnvConfig } from 'dotenv';
-import { getAppDescriptorVariant } from '../base/archive';
 
 /**
  * Create an instance of a command runner for deployment.

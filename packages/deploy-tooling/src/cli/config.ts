@@ -205,19 +205,26 @@ export function showAppInfo(config: AbapDeployConfig, isUnDeployCmd = false): vo
     const displayList = [];
     const deployStr = isUnDeployCmd ? 'undeploy' : 'deploy';
 
+    const _getDisplayValue = (field: boolean | string | undefined, defaultValue?: boolean | string) =>
+        field ?? defaultValue ?? '';
+
     if (config.lrep || config.adaptation?.namespace) {
-        displayList.unshift(`${chalk.blue('Repository Entry')}: ${config.lrep ?? config.adaptation?.namespace ?? ''}`);
+        displayList.unshift(
+            `${chalk.blue('Repository Entry')}: ${_getDisplayValue(
+                config.lrep ?? config.adaptation?.namespace?.toString() ?? ''
+            )}`
+        );
     } else {
-        displayList.unshift(`${chalk.blue('Application Name')}: ${config.app.name}`);
+        displayList.unshift(`${chalk.blue('Application Name')}: ${_getDisplayValue(config.app.name)}`);
     }
 
     if (isAppStudio()) {
-        displayList.push(`${chalk.blue('Destination')}: ${config.target.destination ?? ''}`);
+        displayList.push(`${chalk.blue('Destination')}: ${_getDisplayValue(config.target.destination)}`);
     } else {
-        displayList.push(`${chalk.blue('Target')}: ${config.target.url ?? ''}`);
+        displayList.push(`${chalk.blue('Target')}: ${_getDisplayValue(config.target.url)}`);
     }
     if (config.target.service) {
-        displayList.push(`${chalk.blue('SAPUI5 OData Service Path')}: ${config.target.service}`);
+        displayList.push(`${chalk.blue('SAPUI5 OData Service Path')}: ${_getDisplayValue(config.target.service)}`);
     }
 
     console.log();
@@ -239,12 +246,12 @@ export function showAppInfo(config: AbapDeployConfig, isUnDeployCmd = false): vo
         );
     }
 
-    displayList.push(`${chalk.blue('Transport Request')}: ${config.app.transport ?? ''}`);
+    displayList.push(`${chalk.blue('Transport Request')}: ${_getDisplayValue(config.app.transport)}`);
 
     if (!isUnDeployCmd) {
-        displayList.push(`${chalk.blue('Package')}: ${config.app.package ?? ''}`);
-        displayList.push(`${chalk.blue('Client')}: ${config.target.client ?? ''}`);
-        displayList.push(`${chalk.blue('Cloud')}: ${config.target.scp ?? 'false'}`);
+        displayList.push(`${chalk.blue('Package')}: ${_getDisplayValue(config.app.package)}`);
+        displayList.push(`${chalk.blue('Client')}: ${_getDisplayValue(config.target.client)}`);
+        displayList.push(`${chalk.blue('Cloud')}: ${_getDisplayValue(config.target.scp, false)}`);
     }
 
     console.log('');
