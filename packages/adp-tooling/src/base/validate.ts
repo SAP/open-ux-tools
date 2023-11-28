@@ -46,7 +46,6 @@ export default class UI5Validator {
      *
      * @param customConfiguration AdpCustomConfiguration
      * @param previewMiddleware CustomMiddleware
-     * @param ui5Middleware CustomMiddleware
      */
     private static checkMiddlewareProperties(
         customConfiguration: AdpCustomConfiguration | undefined,
