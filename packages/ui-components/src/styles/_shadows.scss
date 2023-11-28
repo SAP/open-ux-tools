@@ -1,0 +1,19 @@
+@import './variables';
+
+:root {
+    --ui-box-shadow-small: #{$box-shadow-small};
+    --ui-box-shadow-medium: #{$box-shadow-medium};
+    --ui-box-shadow-large: #{$box-shadow-large};
+}
+
+.ui-box-shadow-small {
+    box-shadow: var(--ui-box-shadow-small);
+}
+
+.ui-box-shadow-medium {
+    box-shadow: var(--ui-box-shadow-medium);
+}
+
+.ui-box-shadow-large {
+    box-shadow: var(--ui-box-shadow-large);
+}
