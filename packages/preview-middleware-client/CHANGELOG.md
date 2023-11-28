@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.8.3
+
+### Patch Changes
+
+-   b5eb0792: Index field is disabled when aggregation with specialIndexHandling is chosen
+
 ## 0.8.2
 
 ### Patch Changes
