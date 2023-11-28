@@ -23,14 +23,23 @@
                             <core:Item key="{key}" text="{value}" />
                         </ComboBox>
                         <Label text="Index" />
-                        <ComboBox
-                            selectedKey='{/selectedIndex}'
-                            items="{
-                                path: '/index',
-                                sorter: { path: 'text' }
-                            }">
-                            <core:Item key="{key}" text="{value}" />
-                        </ComboBox>
+                        <HBox alignItems="Center">
+                            <ComboBox
+                                enabled="{/indexHandlingFlag}"
+                                selectedKey='{/selectedIndex}'
+                                items="{
+                                    path: '/index',
+                                    sorter: { path: 'text' }
+                                }">
+                                <core:Item key="{key}" text="{value}" />
+                            </ComboBox>
+                            <core:Icon
+                                useIconTooltip="false"
+                                visible="{/specialIndexHandlingIcon}" 
+                                src="sap-icon://message-information" 
+                                class= "sapUiTinyMarginBegin" 
+                                tooltip="{/iconTooltip}" />
+                        </HBox>
                         <Label text="Fragment Name" />
                         <Input 
                             description=".fragment.xml" 
