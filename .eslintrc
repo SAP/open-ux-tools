@@ -103,7 +103,11 @@
                 "jsdoc/require-returns-description": "off",
                 "jsdoc/require-param-description": "off",
                 "max-nested-callbacks": ["warn", 5],
-                "sonarjs/cognitive-complexity": "off"
+                "sonarjs/cognitive-complexity": "off",
+                "jsdoc/require-param": "off",
+                "jsdoc/require-returns": "off",
+                "jsdoc/match-description": "off"
+
             }
         }
     ],
