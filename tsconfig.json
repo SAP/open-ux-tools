@@ -84,7 +84,7 @@
       "path": "packages/odata-service-writer"
     },
     {
-      "path": "packages/playwright"
+      "path": "packages/odata-vocabularies"
     },
     {
       "path": "packages/playwright"
