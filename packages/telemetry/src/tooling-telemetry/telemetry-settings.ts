@@ -22,6 +22,10 @@ const deprecatedExtensionPropKeys = [
     'sap.ux.serviceModeler.enableTelemetry'
 ];
 
+export const ToolingTelemetrySettings = {
+    internalFeature: false
+}
+
 const definePath = (paths: Record<string, string>): string | null => {
     const platform = process.platform;
     let settingsPath = paths[platform];
@@ -93,7 +97,7 @@ export const initTelemetrySettings = async (options: ToolsSuiteTelemetryInitSett
     try {
         TelemetrySettings.consumerModuleName = options.modulePackageJson.name;
         TelemetrySettings.consumerModuleVersion = options.modulePackageJson.version;
-
+        ToolingTelemetrySettings.internalFeature = options.internalFeature ?? false;
         const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
             entityName: 'telemetrySetting'
         });

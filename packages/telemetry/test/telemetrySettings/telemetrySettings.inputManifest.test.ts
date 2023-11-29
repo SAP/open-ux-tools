@@ -90,7 +90,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         });
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson
+            modulePackageJson: packageJson,
+            internalFeature: false
         });
         expect(readFileMock).toBeCalledTimes(0);
         expect(writeFileSyncMock).toBeCalledTimes(0);
@@ -108,7 +109,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValue(new Promise((resolve) => resolve(JSON.stringify(mockSettingFileContent))));
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson
+            modulePackageJson: packageJson,
+            internalFeature: false
         });
         expect(readFileMock).toBeCalledTimes(1);
         expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
@@ -132,7 +134,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValue(new Promise((resolve) => resolve(JSON.stringify(mockSettingFileContent))));
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson
+            modulePackageJson: packageJson,
+            internalFeature: false
         });
         expect(readFileMock).toBeCalledTimes(1);
         expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
@@ -154,7 +157,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValue(new Promise((resolve, reject) => reject(new Error('MockError: No file found'))));
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson
+            modulePackageJson: packageJson,
+            internalFeature: false
         });
         expect(readFileMock).toBeCalledTimes(1);
         expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
@@ -178,7 +182,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         existsSyncMock.mockImplementation(() => false);
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson
+            modulePackageJson: packageJson,
+            internalFeature: false
         });
         expect(readFileMock).toBeCalledTimes(1);
         expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
@@ -207,7 +212,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         existsSyncMock.mockImplementation(() => false);
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson
+            modulePackageJson: packageJson,
+            internalFeature: false
         });
         expect(readFileMock).toBeCalledTimes(0);
         expect(writeFileSyncMock).toBeCalledTimes(1);

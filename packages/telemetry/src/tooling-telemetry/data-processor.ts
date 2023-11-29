@@ -23,10 +23,10 @@ import { isCapJavaProject } from '@sap-ux/project-access/dist/project/cap';
 import type { ProjectType } from '@sap-ux/project-access/dist/types';
 import type { CommonFioriProjectProperties, InternalFeature, SourceTemplate } from './types';
 import { ODataSource, DeployTarget, CommonProperties, ToolsId } from './types';
-// import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { spawn } from 'child_process';
 import os from 'os';
 import { CustomTask } from '@sap-ux/ui5-config';
+import { ToolingTelemetrySettings } from './telemetry-settings';
 
 /**
  * @param initSettings Pass to initTelemetrySettings() api
@@ -53,7 +53,7 @@ export async function getCommonProperties(): Promise<CommonFioriProjectPropertie
     commonProperties[CommonProperties.DevSpace] = await getSbasDevspace();
     commonProperties[CommonProperties.AppStudio] = isAppStudio();
     commonProperties[CommonProperties.AppStudioBackwardCompatible] = commonProperties[CommonProperties.AppStudio];
-    // commonProperties[CommonProperties.InternlVsExternal] = getInternalVsExternal();
+    commonProperties[CommonProperties.InternlVsExternal] = getInternalVsExternal();
     commonProperties[CommonProperties.InternlVsExternalBackwardCompatible] =
         commonProperties[CommonProperties.InternlVsExternal];
 
@@ -240,9 +240,9 @@ async function getDeployTarget(appPath: string): Promise<string> {
  * Convert init setting property internalFeaturesEnabled to string value.
  * @returns String value 'internal' | 'external' to be backward compatible with existing telemetry data format.
  */
-// function getInternalVsExternal(): InternalFeature {
-//     return isInternalFeaturesSettingEnabled() ? 'internal' : 'external';
-// }
+function getInternalVsExternal(): InternalFeature {
+    return ToolingTelemetrySettings.internalFeature ? 'internal' : 'external';
+}
 
 /**
  * Read the manifest.json for the app and locate the tools id

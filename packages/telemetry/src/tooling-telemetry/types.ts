@@ -15,6 +15,7 @@ export type TelemetryHelperProperties = {
  */
 export type ToolsSuiteTelemetryInitSettings = {
     modulePackageJson: ProjectInfo;
+    internalFeature: boolean;
 };
 
 export enum ToolsId {

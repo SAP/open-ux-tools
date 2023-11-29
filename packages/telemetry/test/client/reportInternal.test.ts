@@ -1,5 +1,9 @@
-import { ClientFactory } from '../../src/base/client';
 import { TelemetrySettings } from '../../src/base/config-state';
+TelemetrySettings.azureInstrumentationKey = 'AzureInstrumentationKey';
+TelemetrySettings.telemetryLibName = '@sap-ux/telemetry';
+TelemetrySettings.telemetryLibVersion = '0.0.1';
+
+import { ClientFactory } from '../../src/base/client';
 import { EventName } from '../../src/base/types/event-name';
 import { SampleRate } from '../../src/base/types/sample-rate';
 
@@ -28,13 +32,6 @@ jest.mock('applicationinsights', () => {
 });
 
 describe('ClientFactory Send Report Internal Extension', () => {
-    beforeEach(() => {
-        TelemetrySettings.telemetryEnabled = true;
-    });
-    afterEach(() => {
-        TelemetrySettings.telemetryEnabled = true;
-    });
-
     test('Test function getTelemetryClient()', async () => {
         const previousSetting = process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
         try {
