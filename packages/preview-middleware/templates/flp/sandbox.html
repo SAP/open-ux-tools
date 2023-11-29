@@ -59,7 +59,7 @@
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flex) %>'<% } if (locals.locateReuseLibsScript) { %>
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>>
     </script><% if (locals.flex && flex?.scenario === 'ADAPTATION_PROJECT') { %>
-        <!-- Temporary fix until RTA provide api for enable/disable buttons in main RTA navigation menu in UIADAPTATION Mode -->
+        <!-- Temporary fix until RTA provides api for enable/disable buttons in main RTA navigation menu -->
     <style>
         #__fiori0_fragment--sapUiRta_exit, #__fiori0_fragment--sapUiRta_feedback, #__fiori0_fragment--sapUiRta_actionsToolbar-overflowButton {
         display:none;
