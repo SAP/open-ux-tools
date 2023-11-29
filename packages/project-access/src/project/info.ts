@@ -50,9 +50,9 @@ export async function getAppType(appRoot: string): Promise<AppType | undefined> 
         });
         if (
             (artifacts.applications?.length ?? 0) +
-            (artifacts.adaptations?.length ?? 0) +
-            (artifacts.extensions?.length ?? 0) +
-            (artifacts.libraries?.length ?? 0) ===
+                (artifacts.adaptations?.length ?? 0) +
+                (artifacts.extensions?.length ?? 0) +
+                (artifacts.libraries?.length ?? 0) ===
             1
         ) {
             if (artifacts.applications?.length === 1) {
@@ -85,9 +85,9 @@ async function getApplicationType(application: AllAppResults): Promise<'SAP Fior
     } else {
         appType =
             Array.isArray(packageJson.sapux) &&
-                packageJson.sapux.find(
-                    (relAppPath) => join(application.projectRoot, ...relAppPath.split(/[/\\]/)) === application.appRoot
-                )
+            packageJson.sapux.find(
+                (relAppPath) => join(application.projectRoot, ...relAppPath.split(/[/\\]/)) === application.appRoot
+            )
                 ? 'SAP Fiori elements'
                 : 'SAPUI5 freestyle';
     }
