@@ -1,10 +1,22 @@
 import { TelemetrySettings } from '../../src/base/config-state';
+TelemetrySettings.azureInstrumentationKey = 'AzureInstrumentationKey';
+TelemetrySettings.telemetryLibName = '@sap-ux/telemetry';
+TelemetrySettings.telemetryLibVersion = '0.0.1';
+
 import type { ProjectInfo } from '../../src/base/types/';
 import { getTelemetrySetting, initTelemetrySettings } from '../../src/tooling-telemetry';
-import * as btpUtils from '@sap-ux/btp-utils';
 import * as storeMock from '@sap-ux/store';
 
-jest.mock('../../src/util/reporting', () => {
+const isAppStudioMock = jest.fn();
+jest.mock('@sap-ux/btp-utils', () => {
+    return {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        ...(jest.requireActual('@sap-ux/btp-utils') as {}),
+        isAppStudio: (): boolean => isAppStudioMock()
+    };
+});
+
+jest.mock('../../src/base/utils/reporting', () => {
     return {
         reportRuntimeError: (error: Error) => {
             throw error;
@@ -13,7 +25,7 @@ jest.mock('../../src/util/reporting', () => {
     };
 });
 
-const packageJSon = {
+const packageJson = {
     name: 'testProject',
     version: '0.0.1'
 } as ProjectInfo;
@@ -51,8 +63,6 @@ const telemetrySettingFileContent = JSON.stringify({
     }
 });
 
-const isAppStudioMock = jest.spyOn(btpUtils, 'isAppStudio');
-
 describe('toolsSuiteTelemetrySettings', () => {
     afterEach(() => {
         delete process.env['TOOLSUITE_INTERNAL'];
@@ -80,7 +90,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         });
 
         await initTelemetrySettings({
-            modulePackageJson: packageJSon
+            modulePackageJson: packageJson
         });
         expect(readFileMock).toBeCalledTimes(0);
         expect(writeFileSyncMock).toBeCalledTimes(0);
@@ -98,7 +108,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValue(new Promise((resolve) => resolve(JSON.stringify(mockSettingFileContent))));
 
         await initTelemetrySettings({
-            modulePackageJson: packageJSon
+            modulePackageJson: packageJson
         });
         expect(readFileMock).toBeCalledTimes(1);
         expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
@@ -122,7 +132,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValue(new Promise((resolve) => resolve(JSON.stringify(mockSettingFileContent))));
 
         await initTelemetrySettings({
-            modulePackageJson: packageJSon
+            modulePackageJson: packageJson
         });
         expect(readFileMock).toBeCalledTimes(1);
         expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
@@ -144,7 +154,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValue(new Promise((resolve, reject) => reject(new Error('MockError: No file found'))));
 
         await initTelemetrySettings({
-            modulePackageJson: packageJSon
+            modulePackageJson: packageJson
         });
         expect(readFileMock).toBeCalledTimes(1);
         expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
@@ -162,13 +172,13 @@ describe('toolsSuiteTelemetrySettings', () => {
      * No central telemetry setting found in SBAS environment
      */
     it('Read module package.json from option - no central telemetry setting case 4', async () => {
-        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        isAppStudioMock.mockReturnValue(true);
         mockSettingFileContent['sap.ux.help.enableTelemetry'] = true;
         readFileMock.mockReturnValue(new Promise((resolve) => resolve(JSON.stringify(mockSettingFileContent))));
         existsSyncMock.mockImplementation(() => false);
 
         await initTelemetrySettings({
-            modulePackageJson: packageJSon
+            modulePackageJson: packageJson
         });
         expect(readFileMock).toBeCalledTimes(1);
         expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
@@ -197,7 +207,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         existsSyncMock.mockImplementation(() => false);
 
         await initTelemetrySettings({
-            modulePackageJson: packageJSon
+            modulePackageJson: packageJson
         });
         expect(readFileMock).toBeCalledTimes(0);
         expect(writeFileSyncMock).toBeCalledTimes(1);

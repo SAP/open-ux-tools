@@ -1,3 +1,8 @@
+import { TelemetrySettings } from '../../src/base/config-state';
+TelemetrySettings.azureInstrumentationKey = 'AzureInstrumentationKey';
+TelemetrySettings.telemetryLibName = '@sap-ux/telemetry';
+TelemetrySettings.telemetryLibVersion = '0.0.1';
+
 import { processToolsSuiteTelemetry } from '../../src/tooling-telemetry';
 import type { AxiosResponse } from 'axios';
 import * as memfs from 'memfs';
