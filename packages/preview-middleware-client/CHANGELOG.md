@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.8.5
+
+### Patch Changes
+
+-   5077d95f: Hide feedback and close buttons for adp projects
+
 ## 0.8.4
 
 ### Patch Changes
