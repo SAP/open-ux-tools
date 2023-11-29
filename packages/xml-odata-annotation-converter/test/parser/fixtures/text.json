@@ -54,7 +54,7 @@
                     "content": [
                         {
                             "type": "text",
-                            "text": "\r\n                    ",
+                            "text": "\n                    ",
                             "range": "[(9,38)..(10,20)]"
                         },
                         {
@@ -75,7 +75,7 @@
                             "content": [
                                 {
                                     "type": "text",
-                                    "text": "\r\n                        ",
+                                    "text": "\n                        ",
                                     "range": "[(10,52)..(11,24)]"
                                 },
                                 {
@@ -131,14 +131,14 @@
                                 },
                                 {
                                     "type": "text",
-                                    "text": "\r\n                    ",
+                                    "text": "\n                    ",
                                     "range": "[(14,26)..(15,20)]"
                                 }
                             ]
                         },
                         {
                             "type": "text",
-                            "text": "\r\n                ",
+                            "text": "\n                ",
                             "range": "[(15,29)..(16,16)]"
                         }
                     ]
@@ -161,7 +161,7 @@
                     "content": [
                         {
                             "type": "text",
-                            "text": "\r\n                    ",
+                            "text": "\n                    ",
                             "range": "[(17,56)..(18,20)]"
                         },
                         {
@@ -174,7 +174,7 @@
                             "content": [
                                 {
                                     "type": "text",
-                                    "text": "\r\n                        ",
+                                    "text": "\n                        ",
                                     "range": "[(18,32)..(19,24)]"
                                 },
                                 {
@@ -195,7 +195,7 @@
                                     "content": [
                                         {
                                             "type": "text",
-                                            "text": "Text 1\r\n                            ",
+                                            "text": "Text 1\n                            ",
                                             "range": "[(19,57)..(20,28)]"
                                         },
                                         {
@@ -223,7 +223,7 @@
                                         },
                                         {
                                             "type": "text",
-                                            "text": "\r\n                            Text 2\r\n                            ",
+                                            "text": "\n                            Text 2\n                            ",
                                             "range": "[(20,107)..(22,28)]"
                                         },
                                         {
@@ -251,21 +251,21 @@
                                         },
                                         {
                                             "type": "text",
-                                            "text": "    Text3\r\n    Text4\r\n                        ",
+                                            "text": "    Text3\n    Text4\n                        ",
                                             "range": "[(22,99)..(24,24)]"
                                         }
                                     ]
                                 },
                                 {
                                     "type": "text",
-                                    "text": "\r\n                    ",
+                                    "text": "\n                    ",
                                     "range": "[(24,33)..(25,20)]"
                                 }
                             ]
                         },
                         {
                             "type": "text",
-                            "text": "\r\n                ",
+                            "text": "\n                ",
                             "range": "[(25,33)..(26,16)]"
                         }
                     ]
@@ -288,7 +288,7 @@
                     "content": [
                         {
                             "type": "text",
-                            "text": "\r\n                    ",
+                            "text": "\n                    ",
                             "range": "[(28,54)..(29,20)]"
                         },
                         {
@@ -301,7 +301,7 @@
                             "content": [
                                 {
                                     "type": "text",
-                                    "text": "\r\n                        ",
+                                    "text": "\n                        ",
                                     "range": "[(29,32)..(30,24)]"
                                 },
                                 {
@@ -322,7 +322,7 @@
                                     "content": [
                                         {
                                             "type": "text",
-                                            "text": "\r\n                            ",
+                                            "text": "\n                            ",
                                             "range": "[(30,57)..(31,28)]"
                                         },
                                         {
@@ -350,7 +350,7 @@
                                         },
                                         {
                                             "type": "text",
-                                            "text": "\r\n                            ",
+                                            "text": "\n                            ",
                                             "range": "[(31,105)..(32,28)]"
                                         },
                                         {
@@ -378,7 +378,7 @@
                                         },
                                         {
                                             "type": "text",
-                                            "text": "\r\n                            ",
+                                            "text": "\n                            ",
                                             "range": "[(32,99)..(33,28)]"
                                         },
                                         {
@@ -398,21 +398,21 @@
                                         },
                                         {
                                             "type": "text",
-                                            "text": "\r\n                        ",
+                                            "text": "\n                        ",
                                             "range": "[(33,42)..(34,24)]"
                                         }
                                     ]
                                 },
                                 {
                                     "type": "text",
-                                    "text": "\r\n                    ",
+                                    "text": "\n                    ",
                                     "range": "[(34,33)..(35,20)]"
                                 }
                             ]
                         },
                         {
                             "type": "text",
-                            "text": "\r\n                ",
+                            "text": "\n                ",
                             "range": "[(35,33)..(36,16)]"
                         }
                     ]

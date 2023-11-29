@@ -5,6 +5,7 @@ import { URL } from 'url';
 import { buildAst } from '@xml-tools/ast';
 import { parse } from '@xml-tools/parser';
 import prettier from 'prettier';
+import os from 'os';
 const { format, resolveConfig } = prettier;
 
 import { convertDocument, convertMetadataDocument } from '../dist/parser/index.js';
@@ -21,7 +22,7 @@ async function update() {
     const updates = fixtures.map(async (fixture) => {
         const sourcePath = join(FIXTURE_ROOT, fixture);
         const text = await readFile(sourcePath, 'utf8');
-        const { cst, tokenVector } = parse(text);
+        const { cst, tokenVector } = parse(text.replace(new RegExp(os.EOL, 'g'), '\n'));
         const ast = buildAst(cst, tokenVector);
         const name = fixture.replace(FIXTURE_ROOT, '').replace('.xml', '');
         const uri = `file://${name}.xml`;
