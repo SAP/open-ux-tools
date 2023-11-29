@@ -1,12 +1,8 @@
-import { TelemetrySettings } from '../../src/base/config-state';
-TelemetrySettings.azureInstrumentationKey = 'AzureInstrumentationKey';
-TelemetrySettings.telemetryLibName = '@sap-ux/telemetry';
-TelemetrySettings.telemetryLibVersion = '0.0.1';
-
-import { processToolsSuiteTelemetry } from '../../src/tooling-telemetry';
 import type { AxiosResponse } from 'axios';
 import * as memfs from 'memfs';
 import fs from 'fs';
+import { processToolsSuiteTelemetry } from '../../src/tooling-telemetry';
+import { ToolingTelemetrySettings } from '../../src/tooling-telemetry/config-state';
 
 jest.mock('fs', () => {
     const fs1 = jest.requireActual('fs');
@@ -38,10 +34,12 @@ jest.mock('axios', () => {
 describe('Tools Suite Telemetry Tests', () => {
     beforeEach(() => {
         memfs.vol.reset();
+        ToolingTelemetrySettings.internalFeature = false;
     });
 
     afterEach(() => {
         delete process.env['TOOLSUITE_INTERNAL'];
+        ToolingTelemetrySettings.internalFeature = false;
     });
 
     it('No additional properties, Not SBAS', async () => {
@@ -119,7 +117,7 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.nodeVersion': expect.any(String)
         });
 
-        process.env.TOOLSUITE_INTERNAL = 'true';
+        ToolingTelemetrySettings.internalFeature = true;
         commonProperties = await processToolsSuiteTelemetry(undefined);
         expect(commonProperties).toEqual({
             appstudio: true,
@@ -130,7 +128,7 @@ describe('Tools Suite Telemetry Tests', () => {
             'cmn.nodeVersion': expect.any(String)
         });
 
-        process.env.TOOLSUITE_INTERNAL = 'false';
+        ToolingTelemetrySettings.internalFeature = false;
         commonProperties = await processToolsSuiteTelemetry(undefined);
         expect(commonProperties).toEqual({
             appstudio: true,
@@ -147,11 +145,11 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['./project1/README.md']: fs.readFileSync(
-                    './test/toolsSuiteTelemetry/testproject/README_LROPv4.md',
+                    './test/toolsSuiteTelemetry/test-project/README_LROPv4.md',
                     'utf-8'
                 ),
                 ['./project1/package.json']: fs.readFileSync(
-                    './test/toolsSuiteTelemetry/testproject/package.json',
+                    './test/toolsSuiteTelemetry/test-project/package.json',
                     'utf-8'
                 )
             },
@@ -184,11 +182,11 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['./project1/README.md']: fs.readFileSync(
-                    './test/toolsSuiteTelemetry/testproject/README_Form.md',
+                    './test/toolsSuiteTelemetry/test-project/README_Form.md',
                     'utf-8'
                 ),
                 ['./project1/package.json']: fs.readFileSync(
-                    './test/toolsSuiteTelemetry/testproject/package.json',
+                    './test/toolsSuiteTelemetry/test-project/package.json',
                     'utf-8'
                 )
             },
@@ -221,23 +219,23 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['./project1/ui5-deploy.yaml']: fs.readFileSync(
-                    './test/toolsSuiteTelemetry/testproject/ui5-deploy.cf.yaml',
+                    './test/toolsSuiteTelemetry/test-project/ui5-deploy.cf.yaml',
                     'utf-8'
                 ),
                 ['./project1/package.json']: fs.readFileSync(
-                    './test/toolsSuiteTelemetry/testproject/package.json',
+                    './test/toolsSuiteTelemetry/test-project/package.json',
                     'utf-8'
                 ),
                 ['./project1/webapp/manifest.json']: fs.readFileSync(
-                    './test/toolsSuiteTelemetry/testproject/webapp/manifest.json',
+                    './test/toolsSuiteTelemetry/test-project/webapp/manifest.json',
                     'utf-8'
                 ),
                 ['./project1/webapp/Component.ts']: fs.readFileSync(
-                    './test/toolsSuiteTelemetry/testproject/webapp/Component.ts',
+                    './test/toolsSuiteTelemetry/test-project/webapp/Component.ts',
                     'utf-8'
                 ),
                 ['./project1/tsconfig.json']: fs.readFileSync(
-                    './test/toolsSuiteTelemetry/testproject/tsconfig.json',
+                    './test/toolsSuiteTelemetry/test-project/tsconfig.json',
                     'utf-8'
                 )
             },
@@ -270,15 +268,15 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['./project1/package.json']: fs.readFileSync(
-                    './test/toolsSuiteTelemetry/testAbapProject/package.json',
+                    './test/toolsSuiteTelemetry/test-abap-project/package.json',
                     'utf-8'
                 ),
                 ['./project1/webapp/Component.js']: fs.readFileSync(
-                    './test/toolsSuiteTelemetry/testAbapProject/webapp/Component.js',
+                    './test/toolsSuiteTelemetry/test-abap-project/webapp/Component.js',
                     'utf-8'
                 ),
                 ['./project1/ui5-deploy.yaml']: fs.readFileSync(
-                    './test/toolsSuiteTelemetry/testproject/ui5-deploy.abap.yaml',
+                    './test/toolsSuiteTelemetry/test-project/ui5-deploy.abap.yaml',
                     'utf-8'
                 )
             },

@@ -26,7 +26,7 @@ import { ODataSource, DeployTarget, CommonProperties, ToolsId } from './types';
 import { spawn } from 'child_process';
 import os from 'os';
 import { CustomTask } from '@sap-ux/ui5-config';
-import { ToolingTelemetrySettings } from './telemetry-settings';
+import { ToolingTelemetrySettings } from './config-state';
 
 /**
  * @param initSettings Pass to initTelemetrySettings() api
@@ -131,10 +131,9 @@ async function getTemplateType(appPath: string): Promise<string> {
             const lines = readmeContent.split(/\r?\n/);
             for (const line of lines) {
                 // Check if the line matches the pattern |**Template Used**<br>{{TemplateType}}|
-                const match = line.match(/\|\*\*Template Used\*\*<br>.*\|/g);
+                const match = line.match(/\|\*\*Template Used\*\*<br>(.*?)\|/);
                 if (match && match.length >= 2) {
                     // Extract {{TemplateType}} from the matching pattern
-                    // templateType = line.match(/[^|**Template Used**<br>].*[^|]/g)[0];
                     templateType = match[1].trim();
                     break;
                 }

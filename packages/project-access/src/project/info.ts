@@ -65,7 +65,8 @@ export async function getAppType(appRoot: string): Promise<AppType | undefined> 
                 appType = 'Fiori Reuse';
             }
         }
-    } catch {
+    } catch (e) {
+        console.log(e);
         // If error occurs we can't determine the type and return undefined
     }
     return appType;

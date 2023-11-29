@@ -7,6 +7,7 @@ import path from 'path';
 import fs from 'fs';
 import { getCommonProperties } from './data-processor';
 import { TelemetrySettings } from '../base/config-state';
+import { ToolingTelemetrySettings } from './config-state';
 
 const deprecatedSettingPaths: Record<string, string> = {
     win32: '\\AppData\\Roaming\\Code\\User\\settings.json',
@@ -22,9 +23,6 @@ const deprecatedExtensionPropKeys = [
     'sap.ux.serviceModeler.enableTelemetry'
 ];
 
-export const ToolingTelemetrySettings = {
-    internalFeature: false
-}
 
 const definePath = (paths: Record<string, string>): string | null => {
     const platform = process.platform;
@@ -40,7 +38,7 @@ const definePath = (paths: Record<string, string>): string | null => {
     return path.join(homedir, settingsPath);
 };
 
-async function readEnableTelemetryFromStore(storeService: Service<TelemetrySetting, TelemetrySettingKey>): Promise<void> {
+async function readEnableTelemetry(storeService: Service<TelemetrySetting, TelemetrySettingKey>): Promise<void> {
 
     let setting: TelemetrySetting | undefined;
     try {
@@ -55,7 +53,7 @@ async function readEnableTelemetryFromStore(storeService: Service<TelemetrySetti
         const deprecatedSettingPath = definePath(deprecatedSettingPaths);
         if (!deprecatedSettingPath) {
             // If no vscode setting found, default central telemetry setting to true
-            setEnableTelemetry(true);
+            await setEnableTelemetry(true);
         } else {
             // If deprecated vscode setting exists, set central telemetry setting to false if any of vscode setting was false
             let content: string;
@@ -68,10 +66,11 @@ async function readEnableTelemetryFromStore(storeService: Service<TelemetrySetti
                 const deprecatedEnableTelemetrySetting = propValues.reduce(
                     (prevValue, currentValue) => prevValue && currentValue
                 );
-                setEnableTelemetry(deprecatedEnableTelemetrySetting);
+
+                await setEnableTelemetry(deprecatedEnableTelemetrySetting);
             } catch {
                 // ignore read failure and content is undefined
-                setEnableTelemetry(true);
+                await setEnableTelemetry(true);
             }
         }
     } else {
@@ -85,6 +84,7 @@ function watchTelemetrySettingStore(storeService: Service<TelemetrySetting, Tele
         const watchedSetting = await storeService.read(new TelemetrySettingKey());
         if (watchedSetting) {
             TelemetrySettings.telemetryEnabled = watchedSetting.enableTelemetry;
+            console.log('Some interference!!!', watchedSetting, TelemetrySettings.telemetryEnabled);
         }
     });
 }
@@ -102,7 +102,7 @@ export const initTelemetrySettings = async (options: ToolsSuiteTelemetryInitSett
             entityName: 'telemetrySetting'
         });
 
-        await readEnableTelemetryFromStore(storeService);
+        await readEnableTelemetry(storeService);
         watchTelemetrySettingStore(storeService);
     } catch (err) {
         reportRuntimeError(err);
