@@ -255,7 +255,6 @@ function getTypeForNavigationProperty(context: Context, element: XMLElement): st
     if (role?.type) {
         return role.multiplicity === '*' ? `Collection(${role.type})` : role.type;
     }
-    return;
 }
 
 /**
@@ -280,7 +279,7 @@ function createMetadataElementNodeForType(
         isAnnotatable: true,
         kind: element.name,
         name: getMetadataElementName(context, element, forAction),
-        isCollectionValued: type?.startsWith('Collection(') || element.name === Edm.EntitySet,
+        isCollectionValued: !!type?.startsWith('Collection(') || element.name === Edm.EntitySet,
         isComplexType: element.name === Edm.ComplexType,
         isEntityType: ENTITY_TYPE_NAMES.has(element.name ?? '')
     };
@@ -377,7 +376,7 @@ function getPrimitiveTypeName(typeName: string, baseTypeName: string, elementNam
 }
 
 /**
- * Adjusts medatata element properties and returns V2 function import md nodes (in case of FunctionImport element) or empty array
+ * Adjusts medatata element properties and returns V2 function import md nodes (in case of FunctionImport element) or empty array.
  * @param context context
  * @param element element
  * @param type type
@@ -431,7 +430,6 @@ function adjustMetadataElement(
         });
         return functionImportV2Nodes;
     }
-    return;
 }
 
 function handleStructuredTypeElement(

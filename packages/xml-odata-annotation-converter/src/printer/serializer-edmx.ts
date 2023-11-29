@@ -98,16 +98,14 @@ export function getNewAnnotationFile(
     Object.keys(aliasInfo.aliasMap).forEach((nsOrAlias) => {
         if (aliasInfo.aliasMap[nsOrAlias] === nsOrAlias) {
             collectReferences(references, vocabularies, aliasInfo, nsOrAlias, metadataUri);
-        } else {
+        } else if (nsOrAlias !== aliasInfo.currentFileAlias) {
             // alias
-            if (nsOrAlias !== aliasInfo.currentFileAlias) {
-                if (!references.has(aliasInfo.aliasMap[nsOrAlias])) {
-                    references.set(aliasInfo.aliasMap[nsOrAlias], { alias: '', uri: '' });
-                }
-                const aliasMap = references.get(aliasInfo.aliasMap[nsOrAlias]);
-                if (aliasMap) {
-                    aliasMap.alias = nsOrAlias;
-                }
+            if (!references.has(aliasInfo.aliasMap[nsOrAlias])) {
+                references.set(aliasInfo.aliasMap[nsOrAlias], { alias: '', uri: '' });
+            }
+            const aliasMap = references.get(aliasInfo.aliasMap[nsOrAlias]);
+            if (aliasMap) {
+                aliasMap.alias = nsOrAlias;
             }
         }
     });
