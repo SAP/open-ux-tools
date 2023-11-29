@@ -121,35 +121,55 @@ function createNamespace(schema: XMLElement | undefined): Namespace | undefined 
 function convertReferences(element: XMLElement): Reference[] {
     const referenceElements = getElementsWithName('Reference', element);
     const references: Reference[] = [];
+
     for (const referenceElement of referenceElements) {
         const uri = getElementAttributeByName('Uri', referenceElement)?.value ?? undefined;
+        const refRange = transformRange(referenceElement.position);
         for (const namespaceElement of getElementsWithName('Include', referenceElement)) {
-            const namespace = getElementAttributeByName('Namespace', namespaceElement);
-            const alias = getElementAttributeByName('Alias', namespaceElement);
-            if (!namespace?.value) {
-                continue;
+            const reference = createReference(namespaceElement, refRange, uri);
+            if (reference) {
+                references.push(reference);
             }
-            const reference: Reference = {
-                type: 'reference',
-                name: namespace.value,
-                nameRange: transformRange(namespace.syntax.value),
-                range: transformRange(referenceElement.position),
-                uri
-            };
-            if (reference.nameRange) {
-                adjustRange(reference.nameRange, 1, -1);
-            }
-            if (alias) {
-                reference.alias = alias.value ?? '';
-                reference.aliasRange = transformRange(alias.syntax.value);
-                if (reference.aliasRange) {
-                    adjustRange(reference.aliasRange, 1, -1);
-                }
-            }
-            references.push(reference);
         }
     }
     return references;
+}
+
+/**
+ * Creates referece
+ * @param namespaceElement namespace XML element
+ * @param range reference element range
+ * @param uri reference uri
+ * @returns reference object or undefined if namespace is not provided in the corresponding attribute
+ */
+function createReference(
+    namespaceElement: XMLElement,
+    range: Range | undefined,
+    uri: string | undefined
+): Reference | undefined {
+    const namespace = getElementAttributeByName('Namespace', namespaceElement);
+    const alias = getElementAttributeByName('Alias', namespaceElement);
+    if (!namespace?.value) {
+        return;
+    }
+    const reference: Reference = {
+        type: 'reference',
+        name: namespace.value,
+        nameRange: transformRange(namespace.syntax.value),
+        range,
+        uri
+    };
+    if (reference.nameRange) {
+        adjustRange(reference.nameRange, 1, -1);
+    }
+    if (alias) {
+        reference.alias = alias.value ?? '';
+        reference.aliasRange = transformRange(alias.syntax.value);
+        if (reference.aliasRange) {
+            adjustRange(reference.aliasRange, 1, -1);
+        }
+    }
+    return reference;
 }
 
 /**
