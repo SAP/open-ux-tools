@@ -6,9 +6,7 @@ import { ToolingTelemetrySettings } from '../../src/tooling-telemetry/config-sta
 
 jest.mock('fs', () => {
     const fs1 = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const vol = require('memfs').vol;
     return new Union().use(fs1).use(vol as unknown as typeof fs);
 });
@@ -16,7 +14,6 @@ jest.mock('fs', () => {
 const isAppStudioMock = jest.fn();
 jest.mock('@sap-ux/btp-utils', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         ...(jest.requireActual('@sap-ux/btp-utils') as {}),
         isAppStudio: (): boolean => isAppStudioMock()
     };
@@ -25,7 +22,6 @@ jest.mock('@sap-ux/btp-utils', () => {
 const axiosGetMock = jest.fn();
 jest.mock('axios', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         ...(jest.requireActual('axios') as {}),
         get: (): AxiosResponse => axiosGetMock()
     };
@@ -34,12 +30,6 @@ jest.mock('axios', () => {
 describe('Tools Suite Telemetry Tests', () => {
     beforeEach(() => {
         memfs.vol.reset();
-        ToolingTelemetrySettings.internalFeature = false;
-    });
-
-    afterEach(() => {
-        delete process.env['TOOLSUITE_INTERNAL'];
-        ToolingTelemetrySettings.internalFeature = false;
     });
 
     it('No additional properties, Not SBAS', async () => {
@@ -144,11 +134,11 @@ describe('Tools Suite Telemetry Tests', () => {
     it('telemetryHelperProperties - tsTemplate - LROP', async () => {
         memfs.vol.fromNestedJSON(
             {
-                ['./project1/README.md']: fs.readFileSync(
+                ['/project1/README.md']: fs.readFileSync(
                     './test/tools-suite-telemetry/test-project/README_LROPv4.md',
                     'utf-8'
                 ),
-                ['./project1/package.json']: fs.readFileSync(
+                ['/project1/package.json']: fs.readFileSync(
                     './test/tools-suite-telemetry/test-project/package.json',
                     'utf-8'
                 )

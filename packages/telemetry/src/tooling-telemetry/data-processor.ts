@@ -228,8 +228,8 @@ async function getDeployTarget(appPath: string): Promise<string> {
         } else {
             deployTarget = DeployTarget.UNKNOWN_DEPLOY_CONFIG;
         }
-    } catch (error) {
-        console.log(`[Telemetry]: ${error.message}`);
+    } catch {
+        // cannot determine deploy target, use default DeployTarget.NO_DEPLOY_CONFIG
     }
 
     return deployTarget;
