@@ -76,40 +76,41 @@ export function convertDocument(uri: string, ast: XMLDocument): AnnotationFile {
 }
 
 function createNamespace(schema: XMLElement | undefined): Namespace | undefined {
-    if (schema) {
-        const namespace = getElementAttributeByName('Namespace', schema);
-        const alias = getElementAttributeByName('Alias', schema);
-        if (namespace && namespace.value) {
-            const currentNamespace: Namespace = {
-                type: 'namespace',
-                name: namespace.value,
-                range: transformElementRange(schema.position, schema),
-                nameRange: transformRange(namespace.syntax.value)
-            };
-            const contentRange =
-                schema.syntax.openBody && schema.syntax.closeName
-                    ? getGapRangeBetween(schema.syntax.openBody, schema.syntax.closeName)
-                    : undefined;
+    if (!schema) {
+        return;
+    }
+    const namespace = getElementAttributeByName('Namespace', schema);
+    const alias = getElementAttributeByName('Alias', schema);
+    if (!namespace?.value) {
+        return;
+    }
+    const currentNamespace: Namespace = {
+        type: 'namespace',
+        name: namespace.value,
+        range: transformElementRange(schema.position, schema),
+        nameRange: transformRange(namespace.syntax.value)
+    };
+    const contentRange =
+        schema.syntax.openBody && schema.syntax.closeName
+            ? getGapRangeBetween(schema.syntax.openBody, schema.syntax.closeName)
+            : undefined;
 
-            if (contentRange) {
-                currentNamespace.contentRange = contentRange;
-            }
+    if (contentRange) {
+        currentNamespace.contentRange = contentRange;
+    }
 
-            if (currentNamespace.nameRange) {
-                adjustRange(currentNamespace.nameRange, 1, -1);
-            }
+    if (currentNamespace.nameRange) {
+        adjustRange(currentNamespace.nameRange, 1, -1);
+    }
 
-            if (alias) {
-                currentNamespace.alias = alias.value ?? '';
-                currentNamespace.aliasRange = transformRange(alias.syntax.value);
-                if (currentNamespace.aliasRange) {
-                    adjustRange(currentNamespace.aliasRange, 1, -1);
-                }
-            }
-            return currentNamespace;
+    if (alias) {
+        currentNamespace.alias = alias.value ?? '';
+        currentNamespace.aliasRange = transformRange(alias.syntax.value);
+        if (currentNamespace.aliasRange) {
+            adjustRange(currentNamespace.aliasRange, 1, -1);
         }
     }
-    return undefined;
+    return currentNamespace;
 }
 
 /**
@@ -125,26 +126,27 @@ function convertReferences(element: XMLElement): Reference[] {
         for (const namespaceElement of getElementsWithName('Include', referenceElement)) {
             const namespace = getElementAttributeByName('Namespace', namespaceElement);
             const alias = getElementAttributeByName('Alias', namespaceElement);
-            if (namespace && namespace.value) {
-                const reference: Reference = {
-                    type: 'reference',
-                    name: namespace.value,
-                    nameRange: transformRange(namespace.syntax.value),
-                    range: transformRange(referenceElement.position),
-                    uri
-                };
-                if (reference.nameRange) {
-                    adjustRange(reference.nameRange, 1, -1);
-                }
-                if (alias) {
-                    reference.alias = alias.value ?? '';
-                    reference.aliasRange = transformRange(alias.syntax.value);
-                    if (reference.aliasRange) {
-                        adjustRange(reference.aliasRange, 1, -1);
-                    }
-                }
-                references.push(reference);
+            if (!namespace?.value) {
+                continue;
             }
+            const reference: Reference = {
+                type: 'reference',
+                name: namespace.value,
+                nameRange: transformRange(namespace.syntax.value),
+                range: transformRange(referenceElement.position),
+                uri
+            };
+            if (reference.nameRange) {
+                adjustRange(reference.nameRange, 1, -1);
+            }
+            if (alias) {
+                reference.alias = alias.value ?? '';
+                reference.aliasRange = transformRange(alias.syntax.value);
+                if (reference.aliasRange) {
+                    adjustRange(reference.aliasRange, 1, -1);
+                }
+            }
+            references.push(reference);
         }
     }
     return references;

@@ -78,6 +78,9 @@
 # Module: xml-odata-annotation-converter
 /packages/xml-odata-annotation-converter/ @SAP/ux-tools-annotations
 
+# Module: odata-entity-model
+/packages/odata-entity-model/ @SAP/ux-tools-annotations
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin
