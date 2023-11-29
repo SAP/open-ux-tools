@@ -42,24 +42,24 @@ jobs:
               run: pnpm run build
             - name: Run unit tests
               run: pnpm run test
-            - name: Check for changes
-              uses: dorny/paths-filter@v2
-              id: check_changes
-              with:
-                filters: |
-                  src:
-                    - 'packages/preview-middleware/**'
-              # To include changes for other packages, simply add this  - 'packages/<package-name>/**'
+            # - name: Check for changes
+            #   uses: dorny/paths-filter@v2
+            #   id: check_changes
+            #   with:
+            #     filters: |
+            #       src:
+            #         - 'packages/preview-middleware/**'
+            #   # To include changes for other packages, simply add this  - 'packages/<package-name>/**'
             - name: Install playwright browsers
-              if: always() && steps.check_changes.outputs.src == 'true'
+              # if: always() && steps.check_changes.outputs.src == 'true'
               run: npx playwright install --with-deps
             - name: Run integration tests
-              # Run only if preview-middleware was changed
-              if: always() && steps.check_changes.outputs.src == 'true'
+              # # Run only if preview-middleware was changed
+              # if: always() && steps.check_changes.outputs.src == 'true'
               run: pnpm run test:integration
             - name: Upload playwright reports
               uses: actions/upload-artifact@v3
-              if: always() && steps.check_changes.outputs.src == 'true'
+              # if: always() && steps.check_changes.outputs.src == 'true'
               with:
                 name: playwright-reports-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
                 path: |
