@@ -13,7 +13,7 @@
                         <Label text="Control Type" />
                         <Text text="{/selectedControlName}" />
                         <Label text="Target Aggregation" />
-                        <ComboBox
+                        <Select
                             change="onAggregationChanged"
                             selectedKey="{/selectedAggregation/key}"
                             items="{
@@ -21,10 +21,10 @@
                                 sorter: { path: 'text' }
                             }">
                             <core:Item key="{key}" text="{value}" />
-                        </ComboBox>
+                        </Select>
                         <Label text="Index" />
                         <HBox alignItems="Center">
-                            <ComboBox
+                            <Select
                                 enabled="{/indexHandlingFlag}"
                                 selectedKey='{/selectedIndex}'
                                 items="{
@@ -32,7 +32,7 @@
                                     sorter: { path: 'text' }
                                 }">
                                 <core:Item key="{key}" text="{value}" />
-                            </ComboBox>
+                            </Select>
                             <core:Icon
                                 useIconTooltip="false"
                                 visible="{/specialIndexHandlingIcon}" 
