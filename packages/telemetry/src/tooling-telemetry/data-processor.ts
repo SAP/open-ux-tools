@@ -97,12 +97,17 @@ async function getAppProperties(appPath: string): Promise<Record<string, string>
     if (!appPath) {
         return {};
     }
+
     const templateType = await getTemplateType(appPath);
     const deployTarget = await getDeployTarget(appPath);
-    const odataSource = await getODataSource(appPath);
+    const applicationType = await getAppType(appPath);
+    let odataSource = await getODataSource(appPath);
+    // Correct logic in getAppType() implementation, if it's reuse lib type, odata source should be unknown
+    if (applicationType === 'Fiori Reuse') {
+        odataSource = ODataSource.UNKNOWN;
+    } 
     const sourceTemplate = await getManifestSourceTemplate(appPath);
     const appProgrammingLanguage = await getAppProgrammingLanguage(appPath);
-    const applicationType = await getAppType(appPath);
     const output: Record<string, string> = {};
     output[CommonProperties.TemplateType] = templateType;
     output[CommonProperties.DeployTargetType] = deployTarget;

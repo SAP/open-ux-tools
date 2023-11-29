@@ -310,20 +310,28 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['./project1/srv/src/main/resources/application.yaml']: fs.readFileSync(
-                    './test/tools-suite-telemetry/cap-java-1/srv/src/main/resources/application.yaml',
+                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/srv/src/main/resources/application.yaml',
                     'utf-8'
                 ),
                 ['./project1/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/cap-java-1/package.json',
+                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/package.json',
                     'utf-8'
-                )
+                ),
+                ['./project1/app/freestyle/package.json']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/app/freestyle/package.json',
+                    'utf-8'
+                ),
+                ['./project1/app/freestyle/webapp/manifest.json']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/app/freestyle/webapp/manifest.json',
+                    'utf-8'
+                ),
             },
             '/'
         );
 
         isAppStudioMock.mockReturnValue(false);
         const commonProperties = await processToolsSuiteTelemetry({
-            appPath: '/project1/app/test-app'
+            appPath: '/project1/app/freestyle'
         });
         expect(commonProperties).toEqual({
             appstudio: false,
@@ -343,143 +351,176 @@ describe('Tools Suite Telemetry Tests', () => {
         });
     });
 
-    // it('telemetryHelperProperties - tsDeployTarget - CAPJava - No package.json at project root', async () => {
-    //     memfs.vol.fromNestedJSON(
-    //         {
-    //             ['./project1/srv/src/main/resources/application.yaml']: fs.readFileSync(
-    //                 './test/tools-suite-telemetry/cap-java-1/srv/src/main/resources/application.yaml',
-    //                 'utf-8'
-    //             )
-    //         },
-    //         '/'
-    //     );
+    it('telemetryHelperProperties - tsDeployTarget - CAPJava - No package.json at project root', async () => {
+        memfs.vol.fromNestedJSON(
+            {
+                ['./project1/srv/src/main/resources/application.yaml']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/srv/src/main/resources/application.yaml',
+                    'utf-8'
+                ),
+                ['./project1/app/freestyle/package.json']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/app/freestyle/package.json',
+                    'utf-8'
+                ),
+                ['./project1/app/freestyle/webapp/manifest.json']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/app/freestyle/webapp/manifest.json',
+                    'utf-8'
+                ),
+            },
+            '/'
+        );
 
-    //     isAppStudioMock.mockReturnValue(false);
-    //     const commonProperties = await processToolsSuiteTelemetry({
-    //         appPath: '/project1/app/test-app'
-    //     });
-    //     expect(commonProperties).toEqual({
-    //         appstudio: false,
-    //         'cmn.appstudio': false,
-    //         'cmn.template': '',
-    //         'cmn.toolsId': 'NO_TOOLS_ID',
-    //         'cmn.deployTarget': 'NO_DEPLOY_CONFIG',
-    //         'cmn.odataSource': 'CAPJava',
-    //         'cmn.devspace': '',
-    //         'cmn.internalFeatures': 'external',
-    //         internalVsExternal: 'external',
-    //         'cmn.nodeVersion': expect.any(String),
-    //         'cmn.templateId': '',
-    //         'cmn.templateVersion': '',
-    //         'cmn.appLanguage': '',
-    //         'cmn.applicationType': 'SAPUI5 freestyle'
-    //     });
-    // });
+        isAppStudioMock.mockReturnValue(false);
+        const commonProperties = await processToolsSuiteTelemetry({
+            appPath: '/project1/app/freestyle'
+        });
+        expect(commonProperties).toEqual({
+            appstudio: false,
+            'cmn.appstudio': false,
+            'cmn.template': '',
+            'cmn.toolsId': 'NO_TOOLS_ID',
+            'cmn.deployTarget': 'NO_DEPLOY_CONFIG',
+            'cmn.odataSource': 'CAPJava',
+            'cmn.devspace': '',
+            'cmn.internalFeatures': 'external',
+            internalVsExternal: 'external',
+            'cmn.nodeVersion': expect.any(String),
+            'cmn.templateId': '',
+            'cmn.templateVersion': '',
+            'cmn.appLanguage': '',
+            'cmn.applicationType': 'SAPUI5 freestyle'
+        });
+    });
 
-    // it('telemetryHelperProperties - tsDeployTarget - CAPNode', async () => {
-    //     memfs.vol.fromNestedJSON(
-    //         {
-    //             ['./project1/package.json']: fs.readFileSync(
-    //                 './test/tools-suite-telemetry/cap-nodejs-1/package.json',
-    //                 'utf-8'
-    //             ),
-    //             ['./project1/app/test-app/package.json']: fs.readFileSync(
-    //                 './test/tools-suite-telemetry/cap-nodejs-1/app/test-app/package.json',
-    //                 'utf-8'
-    //             ),
-    //             ['./project1/app/test-app/webapp/manifest.json']: fs.readFileSync(
-    //                 './test/tools-suite-telemetry/cap-nodejs-1/app/test-app/webapp/manifest.json',
-    //                 'utf-8'
-    //             )
-    //         },
-    //         '/'
-    //     );
+    it('telemetryHelperProperties - tsDeployTarget - CAPNode', async () => {
+        memfs.vol.fromNestedJSON(
+            {
+                ['/project1/package.json']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/cap-node-freestyle/package.json',
+                    'utf-8'
+                ),
+                ['/project1/srv/keep']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/cap-node-freestyle/srv/keep',
+                    'utf-8'
+                ),
+                ['/project1/app/freestyle/package.json']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/cap-node-freestyle/app/freestyle/package.json',
+                    'utf-8'
+                ),
+                ['/project1/app/freestyle/webapp/manifest.json']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/cap-node-freestyle/app/freestyle/webapp/manifest.json',
+                    'utf-8'
+                )
+            },
+            '/'
+        );
 
-    //     isAppStudioMock.mockReturnValue(false);
-    //     const commonProperties = await processToolsSuiteTelemetry({
-    //         appPath: '/project1/app/test-app'
-    //     });
-    //     expect(commonProperties).toEqual({
-    //         appstudio: false,
-    //         'cmn.appstudio': false,
-    //         'cmn.template': '',
-    //         'cmn.toolsId': '5437d5df-446c-4d9e-82ec-addd717c6043',
-    //         'cmn.deployTarget': 'NO_DEPLOY_CONFIG',
-    //         'cmn.odataSource': 'CAPNode',
-    //         'cmn.devspace': '',
-    //         'cmn.internalFeatures': 'external',
-    //         internalVsExternal: 'external',
-    //         'cmn.nodeVersion': expect.any(String),
-    //         'cmn.templateId': '@sap/generator-fiori:basic',
-    //         'cmn.templateVersion': '1.7.1',
-    //         'cmn.appLanguage': '',
-    //         'cmn.applicationType': 'SAPUI5 freestyle'
-    //     });
-    // });
-    // it('common telemetry property: reuse library', async () => {
-    //     memfs.vol.fromNestedJSON(
-    //         {
-    //             ['./project1/ui5.yaml']: fs.readFileSync('./test/tools-suite-telemetry/reuse-lib/ui5.yaml', 'utf-8'),
-    //             ['./project1/ui5-deploy.yaml']: fs.readFileSync(
-    //                 './test/tools-suite-telemetry/reuse-lib/ui5-deploy.yaml',
-    //                 'utf-8'
-    //             )
-    //         },
-    //         '/'
-    //     );
+        isAppStudioMock.mockReturnValue(false);
+        const commonProperties = await processToolsSuiteTelemetry({
+            appPath: '/project1/app/freestyle'
+        });
+        expect(commonProperties).toEqual({
+            appstudio: false,
+            'cmn.appstudio': false,
+            'cmn.template': '',
+            'cmn.toolsId': '5437d5df-446c-4d9e-82ec-addd717c6043',
+            'cmn.deployTarget': 'NO_DEPLOY_CONFIG',
+            'cmn.odataSource': 'CAPNode',
+            'cmn.devspace': '',
+            'cmn.internalFeatures': 'external',
+            internalVsExternal: 'external',
+            'cmn.nodeVersion': expect.any(String),
+            'cmn.templateId': '@sap/generator-fiori:basic',
+            'cmn.templateVersion': '1.7.1',
+            'cmn.appLanguage': '',
+            'cmn.applicationType': 'SAPUI5 freestyle'
+        });
+    });
 
-    //     isAppStudioMock.mockReturnValue(false);
-    //     const commonProperties = await processToolsSuiteTelemetry({
-    //         appPath: '/project1'
-    //     });
-    //     expect(commonProperties).toEqual({
-    //         appstudio: false,
-    //         'cmn.appstudio': false,
-    //         'cmn.template': '',
-    //         'cmn.toolsId': 'NO_TOOLS_ID',
-    //         'cmn.deployTarget': 'UNKNOWN_DEPLOY_CONFIG',
-    //         'cmn.odataSource': 'UNKNOWN',
-    //         'cmn.devspace': '',
-    //         'cmn.internalFeatures': 'external',
-    //         internalVsExternal: 'external',
-    //         'cmn.nodeVersion': expect.any(String),
-    //         'cmn.templateId': '',
-    //         'cmn.templateVersion': '',
-    //         'cmn.appLanguage': '',
-    //         'cmn.applicationType': 'Fiori Reuse'
-    //     });
-    // });
+    it('common telemetry property: reuse library', async () => {
+        memfs.vol.fromNestedJSON(
+            {
+                ['./project1/ui5.yaml']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/valid-library/ui5.yaml', 
+                    'utf-8'
+                ),
+                ['./project1/src/manifest.json']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/valid-library/src/manifest.json', 
+                    'utf-8'
+                ),
+                ['./project1/ui5-deploy.yaml']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/valid-library/ui5-deploy.yaml',
+                    'utf-8'
+                ),
+                ['./project1/package.json']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/valid-library/package.json',
+                    'utf-8'
+                ),
+            },
+            '/'
+        );
 
-    // it('common telemetry property: adaptation project', async () => {
-    //     memfs.vol.fromNestedJSON(
-    //         {
-    //             ['./project1/.adp/config.json']: fs.readFileSync(
-    //                 './test/tools-suite-telemetry/adaptation-project/config.json',
-    //                 'utf-8'
-    //             )
-    //         },
-    //         '/'
-    //     );
+        isAppStudioMock.mockReturnValue(false);
+        const commonProperties = await processToolsSuiteTelemetry({
+            appPath: '/project1'
+        });
+        expect(commonProperties).toEqual({
+            appstudio: false,
+            'cmn.appstudio': false,
+            'cmn.template': '',
+            'cmn.toolsId': 'NO_TOOLS_ID',
+            'cmn.deployTarget': 'UNKNOWN_DEPLOY_CONFIG',
+            'cmn.odataSource': 'UNKNOWN',
+            'cmn.devspace': '',
+            'cmn.internalFeatures': 'external',
+            internalVsExternal: 'external',
+            'cmn.nodeVersion': expect.any(String),
+            'cmn.templateId': '',
+            'cmn.templateVersion': '',
+            'cmn.appLanguage': '',
+            'cmn.applicationType': 'Fiori Reuse'
+        });
+    });
 
-    //     isAppStudioMock.mockReturnValue(false);
-    //     const commonProperties = await processToolsSuiteTelemetry({
-    //         appPath: '/project1'
-    //     });
-    //     expect(commonProperties).toEqual({
-    //         appstudio: false,
-    //         'cmn.appstudio': false,
-    //         'cmn.template': '',
-    //         'cmn.toolsId': 'NO_TOOLS_ID',
-    //         'cmn.deployTarget': 'NO_DEPLOY_CONFIG',
-    //         'cmn.odataSource': 'UNKNOWN',
-    //         'cmn.devspace': '',
-    //         'cmn.internalFeatures': 'external',
-    //         internalVsExternal: 'external',
-    //         'cmn.nodeVersion': expect.any(String),
-    //         'cmn.templateId': '',
-    //         'cmn.templateVersion': '',
-    //         'cmn.appLanguage': '',
-    //         'cmn.applicationType': 'Fiori Adaptation'
-    //     });
-    // });
+    it('common telemetry property: adaptation project', async () => {
+        memfs.vol.fromNestedJSON(
+            {
+                ['/project1/.adp/config.json']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/valid-adaptation/.adp/config.json',
+                    'utf-8'
+                ),
+                ['/project1/webapp/manifest.appdescr_variant']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/valid-adaptation/webapp/manifest.appdescr_variant',
+                    'utf-8'
+                ),
+                ['/project1/package.json']: fs.readFileSync(
+                    './test/tools-suite-telemetry/test-projects/valid-adaptation/package.json',
+                    'utf-8'
+                )
+            },
+            '/'
+        );
+
+        isAppStudioMock.mockReturnValue(false);
+        const commonProperties = await processToolsSuiteTelemetry({
+            appPath: '/project1'
+        });
+
+        expect(commonProperties).toEqual({
+            appstudio: false,
+            'cmn.appstudio': false,
+            'cmn.template': '',
+            'cmn.toolsId': 'NO_TOOLS_ID',
+            'cmn.deployTarget': 'NO_DEPLOY_CONFIG',
+            'cmn.odataSource': 'ABAP', // New project-access implementation assume ABAP data source if its not CAP
+            'cmn.devspace': '',
+            'cmn.internalFeatures': 'external',
+            internalVsExternal: 'external',
+            'cmn.nodeVersion': expect.any(String),
+            'cmn.templateId': '',
+            'cmn.templateVersion': '',
+            'cmn.appLanguage': '',
+            'cmn.applicationType': 'Fiori Adaptation'
+        });
+    });
 });
