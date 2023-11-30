@@ -1,4 +1,4 @@
-import { buildAst } from '@xml-tools/ast';
+import { buildAst, XMLDocument } from '@xml-tools/ast';
 import type { DocumentCstNode } from '@xml-tools/parser';
 import { parse } from '@xml-tools/parser';
 
@@ -78,6 +78,24 @@ describe('parse', () => {
                     uri: '/sap/opu/odata/sap/SEPMRA_PROD_MAN/$metadata'
                 }
             ]);
+        });
+
+        test(`schema with alias`, () => {
+            const result = parseXml(`<?xml version="1.0" encoding="utf-8"?>
+            <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+                <edmx:DataServices>
+                    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="test1.SEPMRA_PROD_MAN" Alias="test"></Schema>
+                </edmx:DataServices>
+            </edmx:Edmx> `);
+            expect(result?.namespace).toStrictEqual({
+                'alias': 'test',
+                'aliasRange': Range.create(3, 117, 3, 121),
+                'contentRange': Range.create(3, 123, 3, 123),
+                'name': 'test1.SEPMRA_PROD_MAN',
+                'nameRange': Range.create(3, 87, 3, 108),
+                'range': Range.create(3, 20, 3, 132),
+                'type': 'namespace'
+            });
         });
     });
 
@@ -184,5 +202,21 @@ describe('parse', () => {
                 }
             ]);
         });
+    });
+});
+
+describe('edge case', () => {
+    test('empty document', () => {
+        const result = convertDocument('test', {} as unknown as XMLDocument);
+        expect(result).toMatchInlineSnapshot(`
+            Object {
+              "contentRange": undefined,
+              "range": undefined,
+              "references": Array [],
+              "targets": Array [],
+              "type": "annotation-file",
+              "uri": "test",
+            }
+        `);
     });
 });
