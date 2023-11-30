@@ -2,13 +2,13 @@
     "type": "annotation-file",
     "uri": "file://multiple-schemas.xml",
     "range": "[(1,0)..(39,12)]",
-    "contentRange": "[(1,79)..(39,0)]",
+    "contentRange": "[(1,80)..(39,0)]",
     "namespace": {
         "type": "namespace",
         "name": "NorthwindModel",
         "range": "[(6,8)..(25,17)]",
         "nameRange": "[(6,27)..(6,41)]",
-        "contentRange": "[(6,91)..(25,8)]"
+        "contentRange": "[(6,92)..(25,8)]"
     },
     "references": [
         {

@@ -8,7 +8,7 @@ import { convertMetadataDocument } from '../../src/parser';
 
 function parseV4(text: string): MetadataElement[] {
     const markup = `<?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<edmx:Edmx Version="4.0" xmlns:edmx="https://docs.oasis-open.org/odata/ns/edmx" xmlns="https://docs.oasis-open.org/odata/ns/edm">
     <edmx:Reference Uri="../../../../default/iwbep/tea_busi_product/0001/$metadata">
         <edmx:Include Namespace="com.sap.gateway.default.iwbep.tea_busi_product.v0001" Alias="TEA_BUSI_PRODUCT" />
     </edmx:Reference>
@@ -51,9 +51,9 @@ function parseV4(text: string): MetadataElement[] {
 function parseWithMarkup(text: string): MetadataElement[] {
     const markup = `<?xml version="1.0" encoding="utf-8"?>
   <edmx:Edmx Version="4.0"
-          xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+          xmlns:edmx="https://docs.oasis-open.org/odata/ns/edmx">
       <edmx:DataServices>
-          <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Z2SEPMRA_C_PD_PRODUCT_CDS">${text}</Schema>
+          <Schema xmlns="https://docs.oasis-open.org/odata/ns/edm" Namespace="Z2SEPMRA_C_PD_PRODUCT_CDS">${text}</Schema>
       </edmx:DataServices>
   </edmx:Edmx>
   `;
@@ -75,9 +75,9 @@ describe('parse', () => {
         test('schema alias', () => {
             const markup = `<?xml version="1.0" encoding="utf-8"?>
         <edmx:Edmx Version="4.0"
-                xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+                xmlns:edmx="https://docs.oasis-open.org/odata/ns/edmx">
             <edmx:DataServices>
-                <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Z2SEPMRA_C_PD_PRODUCT_CDS" Alias="SAP">
+                <Schema xmlns="https://docs.oasis-open.org/odata/ns/edm" Namespace="Z2SEPMRA_C_PD_PRODUCT_CDS" Alias="SAP">
                 <EntityContainer Name="Container" />
                 </Schema>
             </edmx:DataServices>

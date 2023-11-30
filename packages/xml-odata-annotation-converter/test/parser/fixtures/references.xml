@@ -5,7 +5,7 @@
     xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
     <edmx:Reference
         Uri="http://sample.reference.com/$value"
-        xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        xmlns:edmx="https://docs.oasis-open.org/odata/ns/edmx">
         <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common" />
     </edmx:Reference>
 </edmx:Edmx>
