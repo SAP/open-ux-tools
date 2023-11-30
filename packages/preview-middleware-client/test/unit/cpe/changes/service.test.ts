@@ -375,6 +375,7 @@ describe('SelectionService', () => {
             getElement: () => any;
             getSelector: () => any;
             getChangeType: () => string;
+            getParent: () => any;
         } {
             const cache = new Map(properties);
             return {
@@ -385,11 +386,17 @@ describe('SelectionService', () => {
                     getMetadata: jest.fn().mockReturnValue({ getName: jest.fn().mockReturnValue('sap.m.Button') })
                 }),
                 getSelector: jest.fn().mockReturnValue({
-                    id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                    id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                    name: 'ExtensionPoint1'
                 }),
                 getChangeType: (): any => {
                     return cache.get('changeType');
-                }
+                },
+                getParent: jest.fn().mockReturnValue({
+                    getElement: jest.fn().mockReturnValue({
+                        getId: 'ExtensionPoint1'
+                    })
+                })
             };
         }
         const commands = [
@@ -407,6 +414,12 @@ describe('SelectionService', () => {
                     ['changeType', 'propertyBindingChange'],
                     ['propertyName', 'text'],
                     ['newBinding', '{i18n>DELETE}']
+                ])
+            ),
+            createCommand(
+                new Map<string, any>([
+                    ['selector', { id: 'control2' }],
+                    ['changeType', 'addXMLAtExtensionPoint']
                 ])
             )
         ];
@@ -447,6 +460,13 @@ describe('SelectionService', () => {
                         controlName: 'Button',
                         type: 'pending',
                         value: '{i18n>DELETE}'
+                    },
+                    {
+                        changeType: 'addXMLAtExtensionPoint',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        controlName: 'ExtensionPoint1',
+                        isActive: true,
+                        type: 'pending'
                     }
                 ]
             }
