@@ -239,25 +239,25 @@ function getTypeForNavigationProperty(context: Context, element: XMLElement): st
         element
     );
     if (!relationship) {
-        return;
+        return undefined;
     }
     const associationName = relationship.split('.').pop();
     if (!associationName) {
-        return;
+        return undefined;
     }
     const association = context.associationMap[associationName];
     if (!association) {
-        return;
+        return undefined;
     }
     const toRole = attributeValueToFullyQualifiedName('ToRole', context.aliasMap, context.namespace, element);
     if (!toRole) {
-        return;
+        return undefined;
     }
     const role = association[toRole];
     if (role?.type) {
         return role.multiplicity === '*' ? `Collection(${role.type})` : role.type;
     }
-    return;
+    return undefined;
 }
 
 /**
@@ -415,7 +415,7 @@ function adjustMetadataElement(
     }
 
     if (!type) {
-        return;
+        return undefined;
     }
     const typeName = getTypeName(type);
     const baseTypeName = context.typeMap[typeName] || typeName;
@@ -443,7 +443,7 @@ function adjustMetadataElement(
         });
         return functionImportV2Nodes;
     }
-    return;
+    return undefined;
 }
 
 /**

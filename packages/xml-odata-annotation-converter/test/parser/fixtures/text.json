@@ -2,13 +2,13 @@
     "type": "annotation-file",
     "uri": "file://text.xml",
     "range": "[(1,0)..(41,12)]",
-    "contentRange": "[(1,80)..(41,0)]",
+    "contentRange": "[(1,79)..(41,0)]",
     "namespace": {
         "type": "namespace",
         "name": "test1.SEPMRA_PROD_MAN",
         "range": "[(6,8)..(38,17)]",
-        "nameRange": "[(6,76)..(6,97)]",
-        "contentRange": "[(6,99)..(38,8)]"
+        "nameRange": "[(6,75)..(6,96)]",
+        "contentRange": "[(6,98)..(38,8)]"
     },
     "references": [
         {

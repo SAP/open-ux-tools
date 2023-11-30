@@ -10,12 +10,12 @@ import { convertDocument } from '../../src/parser';
 function parseWithMarkup(text: string): AnnotationFile | undefined {
     const markup = `<?xml version="1.0" encoding="utf-8"?>
     <edmx:Edmx Version="4.0"
-            xmlns:edmx="https://docs.oasis-open.org/odata/ns/edmx">
+            xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
         <edmx:Reference Uri="/sap/opu/odata/sap/SEPMRA_PROD_MAN/$metadata">
             <edmx:Include Alias="SEPMRA_PROD_MAN_ALIAS" Namespace="SEPMRA_PROD_MAN"/>
         </edmx:Reference>
         <edmx:DataServices>
-            <Schema xmlns="https://docs.oasis-open.org/odata/ns/edm" Namespace="test1.SEPMRA_PROD_MAN">${text}</Schema>
+            <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="test1.SEPMRA_PROD_MAN">${text}</Schema>
         </edmx:DataServices>
     </edmx:Edmx>
     `;
@@ -34,7 +34,7 @@ describe('parse', () => {
     describe('references', () => {
         test(`with namespace`, () => {
             const result = parseXml(`<?xml version="1.0" encoding="utf-8"?>
-            <edmx:Edmx Version="4.0" xmlns:edmx="https://docs.oasis-open.org/odata/ns/edmx">
+            <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
                 <edmx:Reference Uri="/sap/opu/odata/sap/SEPMRA_PROD_MAN/$metadata">
                     <edmx:Include Namespace= />
                 </edmx:Reference>
@@ -44,7 +44,7 @@ describe('parse', () => {
 
         test(`with namespace value`, () => {
             const result = parseXml(`<?xml version="1.0" encoding="utf-8"?>
-            <edmx:Edmx Version="4.0" xmlns:edmx="https://docs.oasis-open.org/odata/ns/edmx">
+            <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
                 <edmx:Reference Uri="/sap/opu/odata/sap/SEPMRA_PROD_MAN/$metadata">
                     <edmx:Include Namespace="SEPMRA_PROD_MAN"/>
                 </edmx:Reference>
@@ -62,7 +62,7 @@ describe('parse', () => {
 
         test(`with alias`, () => {
             const result = parseXml(`<?xml version="1.0" encoding="utf-8"?>
-            <edmx:Edmx Version="4.0" xmlns:edmx="https://docs.oasis-open.org/odata/ns/edmx">
+            <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
                 <edmx:Reference Uri="/sap/opu/odata/sap/SEPMRA_PROD_MAN/$metadata">
                     <edmx:Include Namespace="SEPMRA_PROD_MAN" Alias="SAP_self" />
                 </edmx:Reference>
@@ -114,15 +114,15 @@ describe('parse', () => {
                 attributes: {
                     Type: {
                         name: 'Type',
-                        nameRange: Range.create(7, 174, 7, 178),
+                        nameRange: Range.create(7, 173, 7, 177),
                         type: 'attribute',
                         value: 'CommonSideEffectsType',
-                        valueRange: Range.create(7, 180, 7, 201)
+                        valueRange: Range.create(7, 179, 7, 200)
                     }
                 },
                 content: [],
-                nameRange: Range.create(7, 167, 7, 173),
-                range: Range.create(7, 166, 7, 204),
+                nameRange: Range.create(7, 166, 7, 172),
+                range: Range.create(7, 165, 7, 203),
                 type: 'element'
             });
         });
@@ -163,12 +163,12 @@ describe('parse', () => {
         });
         test(`not closed element`, () => {
             const result = parseXml(`<?xml version="1.0" encoding="utf-8"?>
-            <edmx:Edmx Version="4.0" xmlns:edmx="https://docs.oasis-open.org/odata/ns/edmx">
+            <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
                 <edmx:Reference Uri="/sap/opu/odata/sap/STTA_PROD_MAN/$metadata">
                   <edmx:Include Namespace="Z2SEPMRA_C_PD_PRODUCT_CDS"/>
                 </edmx:Reference>
                 <edmx:DataServices>
-                    <Schema xmlns="https://docs.oasis-open.org/odata/ns/edm" Namespace="manualTest">
+                    <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="manualTest">
                         <Annotations Target="Z2SEPMRA_C_PDproducttype">
                     </Schema>
                 </edmx:DataServices>

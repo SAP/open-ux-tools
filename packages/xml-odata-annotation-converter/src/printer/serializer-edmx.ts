@@ -118,9 +118,9 @@ export function serializeTarget(target: Target, parentStartPostition = 0): strin
 /**
  * Creates new annotation file object.
  *
- * @param aliasInfo alias information
- * @param metadataUri metadata uri
- * @param vocabularies vocabularies map
+ * @param aliasInfo
+ * @param metadataUri
+ * @param vocabularies
  * @returns annotation file object
  */
 export function getNewAnnotationFile(

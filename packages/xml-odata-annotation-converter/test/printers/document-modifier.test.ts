@@ -9,7 +9,7 @@ declare const expect: jest.Expect;
 describe('XML document modifier', () => {
     describe('insert', () => {
         test('element -> root', () => {
-            const text = `<edmx:Edmx xmlns:edmx="https://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+            const text = `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
     <edmx:DataServices>
             
     <edmx:DataServices>
@@ -35,11 +35,11 @@ describe('XML document modifier', () => {
                     <edmx:Reference></edmx:Reference>",
                   "range": Object {
                     "end": Object {
-                      "character": 80,
+                      "character": 79,
                       "line": 0,
                     },
                     "start": Object {
-                      "character": 80,
+                      "character": 79,
                       "line": 0,
                     },
                   },
@@ -47,7 +47,7 @@ describe('XML document modifier', () => {
             `);
         });
         test('element with children -> root', () => {
-            const text = `<edmx:Edmx xmlns:edmx="https://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+            const text = `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
     <edmx:DataServices>
             
     <edmx:DataServices>
@@ -94,11 +94,11 @@ describe('XML document modifier', () => {
                     </edmx:Reference>",
                   "range": Object {
                     "end": Object {
-                      "character": 80,
+                      "character": 79,
                       "line": 0,
                     },
                     "start": Object {
-                      "character": 80,
+                      "character": 79,
                       "line": 0,
                     },
                   },

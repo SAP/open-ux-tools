@@ -9,17 +9,11 @@
     "node_modules"
   ],
   "compilerOptions": {
-    "declaration": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "composite": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
     "noImplicitAny": false,
     "noImplicitReturns": true,
-    "esModuleInterop": true,
     "preserveConstEnums": false
   },
   "references": [
