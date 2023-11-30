@@ -3,9 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
-
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
-
 import { PropertiesPanel, LeftPanel } from './panels';
 import { useLocalStorage } from './use-local-storage';
 import type { RootState } from './store';
@@ -29,6 +27,9 @@ export interface AppProps {
  */
 export default function App(appProps: AppProps): ReactElement {
     const { previewUrl } = appProps;
+    const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
+    const isAdpProject = scenario === 'ADAPTATION_PROJECT';
+
     useEffect(() => {
         const sheet = window.document.styleSheets[0];
         sheet.insertRule(
@@ -39,11 +40,11 @@ export default function App(appProps: AppProps): ReactElement {
     }, []);
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
-    const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
     const [hideWarningDialog, setHideWarningDialog] = useLocalStorage('hide-warning-dialog', false);
     const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => hideWarningDialog !== true);
 
     const [isInitialized, setIsInitialized] = useState(false);
+    const [shouldShowDialogMessageForAdpProjects, setShouldShowDialogMessageForAdpProjects] = useState(false);
 
     const previewWidth = useSelector<RootState, string>(
         (state) => `${DEVICE_WIDTH_MAP.get(state.deviceType) ?? DEFAULT_DEVICE_WIDTH}px`
@@ -51,6 +52,7 @@ export default function App(appProps: AppProps): ReactElement {
     const previewScale = useSelector<RootState, number>((state) => state.scale);
     const fitPreview = useSelector<RootState, boolean>((state) => state.fitPreview ?? false);
     const windowSize = useWindowSize();
+    const dialogMessage = useSelector<RootState, string | undefined>((state) => state.dialogMessage);
 
     const containerRef = useCallback(
         (node) => {
@@ -87,6 +89,12 @@ export default function App(appProps: AppProps): ReactElement {
         setWarningDialogVisibility(false);
     }
 
+    useEffect(() => {
+        if (dialogMessage && isAdpProject) {
+            setShouldShowDialogMessageForAdpProjects(true);
+        }
+    }, [dialogMessage]);
+
     return (
         <div className="app">
             <section className="app-panel app-panel-left">
@@ -94,22 +102,32 @@ export default function App(appProps: AppProps): ReactElement {
             </section>
             <section ref={containerRef} className="app-content">
                 <div className="app-canvas">
-                    <iframe
-                        className="app-preview"
-                        id="preview"
-                        style={{
-                            width: previewWidth,
-                            transform: `scale(${previewScale})`
-                        }}
-                        src={previewUrl}
-                        title={t('APPLICATION_PREVIEW_TITLE')}
-                    />
+                    {!shouldShowDialogMessageForAdpProjects && (
+                        <iframe
+                            className="app-preview"
+                            id="preview"
+                            style={{
+                                width: previewWidth,
+                                transform: `scale(${previewScale})`
+                            }}
+                            src={previewUrl}
+                            title={t('APPLICATION_PREVIEW_TITLE')}
+                        />
+                    )}
                 </div>
             </section>
             <section className="app-panel app-panel-right">
                 <PropertiesPanel />
             </section>
-
+            {isAdpProject && (
+                <UIDialog
+                    hidden={!shouldShowDialogMessageForAdpProjects}
+                    dialogContentProps={{
+                        title: t('TOOL_DISCLAIMER_TITLE'),
+                        subText: dialogMessage
+                    }}
+                />
+            )}
             {scenario === 'FE_FROM_SCRATCH' ? (
                 <UIDialog
                     hidden={!isWarningDialogVisible}

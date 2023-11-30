@@ -1,5 +1,24 @@
 # @sap-ux/preview-middleware
 
+## 0.11.10
+
+### Patch Changes
+
+-   Updated dependencies [5a1eb6ed]
+    -   @sap-ux/adp-tooling@0.7.2
+
+## 0.11.9
+
+### Patch Changes
+
+-   5077d95f: Hide feedback and close buttons for adp projects
+
+## 0.11.8
+
+### Patch Changes
+
+-   b4081d0a: Show warning message for adaptation project if ui5 version is less than 1.71
+
 ## 0.11.7
 
 ### Patch Changes
