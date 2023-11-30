@@ -88,11 +88,14 @@ async function readEnableTelemetry(storeService: Service<TelemetrySetting, Telem
  * @param storeService Store service that is used for read/write telemetry settings
  */
 function watchTelemetrySettingStore(storeService: Service<TelemetrySetting, TelemetrySettingKey>) {
-    getFilesystemWatcherFor(Entity.TelemetrySetting, async () => {
-        const watchedSetting = await storeService.read(new TelemetrySettingKey());
-        if (watchedSetting) {
-            TelemetrySettings.telemetryEnabled = watchedSetting.enableTelemetry;
-        }
+    getFilesystemWatcherFor(Entity.TelemetrySetting, () => {
+        storeService
+            .read(new TelemetrySettingKey())
+            .then((watchedSetting) => {
+                if (watchedSetting) {
+                    TelemetrySettings.telemetryEnabled = watchedSetting.enableTelemetry;
+                }
+            });
     });
 }
 
