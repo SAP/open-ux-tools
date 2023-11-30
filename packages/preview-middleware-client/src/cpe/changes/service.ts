@@ -316,7 +316,7 @@ export class ChangeService {
                 controlId: selectorId,
                 changeType,
                 isActive: index >= inactiveCommandCount,
-                controlName: command.getSelector().name || ''
+                controlName: command.getSelector().name ?? ''
             };
         } else {
             result = {
