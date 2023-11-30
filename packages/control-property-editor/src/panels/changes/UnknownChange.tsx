@@ -42,6 +42,7 @@ export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElem
     const parts = fileName.split('_');
     const changeName = parts[parts.length - 1];
     const name = convertCamelCaseToPascalCase(changeName);
+    const date = timestamp ? getFormattedDateAndTime(timestamp) : null;
     return (
         <>
             <Stack className={styles.item}>
@@ -102,7 +103,9 @@ export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElem
                     onCancel={onCancelDelete}
                     dialogContentProps={{
                         title: t('CONFIRM_DELETE_TITLE'),
-                        subText: t('CONFIRM_CHANGE_SUMMARY_DELETE_SUBTEXT')
+                        subText: `Are you sure you want to delete this ${name} change?${
+                            timestamp ? `\nCreated at: ${date}.` : ''
+                        }\nThis action cannot be undone.`
                     }}
                 />
             )}
