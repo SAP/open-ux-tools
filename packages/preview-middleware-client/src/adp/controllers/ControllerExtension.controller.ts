@@ -80,7 +80,7 @@ export default class ControllerExtension extends BaseDialog {
         const input = event.getSource<Input>();
         const beginBtn = this.dialog.getBeginButton();
 
-        const controllerName: string = input.getValue().trim();
+        const controllerName: string = input.getValue();
         const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList');
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
