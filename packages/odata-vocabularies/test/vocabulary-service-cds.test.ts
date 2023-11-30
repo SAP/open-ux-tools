@@ -112,4 +112,18 @@ describe('getVocabulary(CDS)', () => {
         // Expect
         expect(term).toEqual(expectedTerm);
     });
+
+    it('getVocabulary(com.sap.cap.vocabularies.ObjectModel)', () => {
+        // Expect
+        expect(vocabularyService.getVocabulary('com.sap.cds.vocabularies.ObjectModel')).toMatchSnapshot();
+    });
+
+    it('CDS annotation duplicate alias Aggregation.default', () => {
+        const term = vocabularyService.getTerm('Org.OData.Aggregation.V1.default');
+
+        // Expect
+        expect(term?.description).toMatchInlineSnapshot(
+            `"(CDS annotation) Defines the default aggregation of a property"`
+        );
+    });
 });
