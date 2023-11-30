@@ -30,15 +30,35 @@ export interface IndentInfo {
 export const line: Line = { type: 'line', hard: false };
 export const hardline: Line = { type: 'line', hard: true };
 
+/**
+ * Creates Concat.
+ *
+ * @param parts
+ * @returns concat object
+ */
 export function concat(parts: Document[]): Concat {
     return { type: 'concat', parts };
 }
 
+/**
+ * Creates Indent.
+ *
+ * @param content
+ * @returns indent object
+ */
 export function indent(content: Document): Indent {
     return { type: 'indent', content };
 }
 
 const TRAILING_WHITESPACE_PATTERN = /\n[\t ]*$/;
+
+/**
+ * Serializes given document to string.
+ *
+ * @param document document object.
+ * @param options serialization options
+ * @returns stringified document
+ */
 export function printDocumentToString(document: Document, options: Options): string {
     const commands: [IndentInfo, Document][] = [[{ length: 0, value: '', level: 0 }, document]];
     const fragments: string[] = [];
@@ -57,6 +77,13 @@ export function printDocumentToString(document: Document, options: Options): str
     return fragments.join('');
 }
 
+/**
+ * Inserts given doc into fragments considering spacing.
+ *
+ * @param fragments fragments array
+ * @param indent current indent data
+ * @param doc new fragment
+ */
 function processStringDoc(fragments: string[], indent: IndentInfo, doc: string): void {
     // trim trailing whitespace of previous line
     if (doc) {
@@ -76,6 +103,15 @@ function processStringDoc(fragments: string[], indent: IndentInfo, doc: string):
 const newLine = '\n';
 const whitespace = ' ';
 
+/**
+ * Processes Concat, Indent and Line elements.
+ *
+ * @param fragments
+ * @param commands
+ * @param options
+ * @param indent
+ * @param doc
+ */
 function processComplexDoc(
     fragments: string[],
     commands: [IndentInfo, Document][],
@@ -113,9 +149,25 @@ function processComplexDoc(
     }
 }
 
+/**
+ * Adds single indent.
+ *
+ * @param indent
+ * @param options
+ * @returns indent information
+ */
 function addIndent(indent: IndentInfo, options: Options): IndentInfo {
     return generateIndent(indent, 1, options);
 }
+
+/**
+ * Generates indent by given level index.
+ *
+ * @param indent indent information
+ * @param change adjustment level
+ * @param options
+ * @returns indentation information
+ */
 function generateIndent(indent: IndentInfo, change: number, options: Options): IndentInfo {
     const level = indent.level + change;
     let value = '';

@@ -11,8 +11,10 @@ export function getAllFixtures(root: string): string[] {
 }
 
 /**
+ * Parses position string.
  *
- * @param value (line,character)
+ * @param value position string in format (line,character)
+ * @returns position object
  */
 const expandPosition = (value: string): Position =>
     Position.create.apply(
@@ -22,9 +24,12 @@ const expandPosition = (value: string): Position =>
             .split(',')
             .map((text) => parseInt(text, 10)) as [number, number]
     );
+
 /**
+ * Parses range string.
  *
  * @param value [(line,character)..(line..character)]
+ * @returns range object
  */
 const expandRange = (value: string): Range =>
     Range.create.apply(0, value.slice(1, -1).split('..').map(expandPosition) as any);

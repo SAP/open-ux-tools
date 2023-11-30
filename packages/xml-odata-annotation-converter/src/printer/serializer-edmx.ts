@@ -27,6 +27,13 @@ const namespaces: NamespaceAliasMap = {
     Edmx: 'edmx'
 };
 
+/**
+ * Serializes reference.
+ *
+ * @param data namespace data (must not be undefined)
+ * @param parentStartPosition
+ * @returns string
+ */
 export function serializeReference(data: NoUndefinedNamespaceData, parentStartPosition = -1): string {
     const includeSnippet = createElementNode({
         name: Edmx.Include,
@@ -58,15 +65,35 @@ export function serializeReference(data: NoUndefinedNamespaceData, parentStartPo
     );
 }
 
+/**
+ * Serializes attribute.
+ *
+ * @param attribute
+ * @returns string
+ */
 export function serializeAttribute(attribute: Attribute): string {
     return attribute.name + '="' + attribute.value + '"';
 }
 
+/**
+ * Serializes element.
+ *
+ * @param element
+ * @param parentElementStartPosition
+ * @returns string
+ */
 export function serializeElement(element: Element, parentElementStartPosition = -1): string {
     const indentLevel = getIndentLevel(parentElementStartPosition, printOptions.tabWidth) + 1;
     return '\n' + printCsdlNodeToXmlString(element, printOptions, { cursorIndentLevel: indentLevel });
 }
 
+/**
+ * Serializes target.
+ *
+ * @param target
+ * @param parentStartPostition
+ * @returns string
+ */
 export function serializeTarget(target: Target, parentStartPostition = 0): string {
     const indentLevel = getIndentLevel(parentStartPostition, printOptions.tabWidth) + 1;
     const terms = printCsdlNodeToXmlString(target.terms, printOptions, {
@@ -88,6 +115,14 @@ export function serializeTarget(target: Target, parentStartPostition = 0): strin
     );
 }
 
+/**
+ * Creates new annotation file object.
+ *
+ * @param aliasInfo alias information
+ * @param metadataUri metadata uri
+ * @param vocabularies vocabularies map
+ * @returns annotation file object
+ */
 export function getNewAnnotationFile(
     aliasInfo: AliasInformation,
     metadataUri: string,
@@ -172,9 +207,10 @@ export function getNewAnnotationFile(
 }
 
 /**
- * get last position
+ * Returns last position data in given content.
  *
  * @param fileContent
+ * @returns last position data
  */
 function getLastPosition(fileContent: FileContent): { lastLine: number; lastCharacter: number } {
     const contentLines = fileContent.split('\n');
@@ -183,6 +219,15 @@ function getLastPosition(fileContent: FileContent): { lastLine: number; lastChar
     return { lastLine, lastCharacter };
 }
 
+/**
+ * Collects references.
+ *
+ * @param references references map
+ * @param vocabularies vocabularies map
+ * @param aliasInfo alias information
+ * @param nsOrAlias namespace or alias
+ * @param metadataUri md uri
+ */
 function collectReferences(
     references: Map<string, { alias: string; uri: string }>,
     vocabularies: Map<VocabularyNamespace, Vocabulary>,

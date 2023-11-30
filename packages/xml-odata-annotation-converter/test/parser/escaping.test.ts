@@ -6,4 +6,3 @@ describe('removeEscapeSequences', () => {
         expect(result).toMatchInlineSnapshot(`"--->'><&\\"<---"`);
     });
 });
-

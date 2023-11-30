@@ -75,6 +75,12 @@ export function convertDocument(uri: string, ast: XMLDocument): AnnotationFile {
     };
 }
 
+/**
+ * Creates namespace object.
+ *
+ * @param schema schema XML element
+ * @returns Namespace object
+ */
 function createNamespace(schema: XMLElement | undefined): Namespace | undefined {
     if (!schema) {
         return;
@@ -114,6 +120,7 @@ function createNamespace(schema: XMLElement | undefined): Namespace | undefined 
 }
 
 /**
+ * Creates reference object from XML element.
  *
  * @param element EDMX XML Element
  * @returns references contained in the XML element
@@ -136,7 +143,8 @@ function convertReferences(element: XMLElement): Reference[] {
 }
 
 /**
- * Creates referece
+ * Creates referece.
+ *
  * @param namespaceElement namespace XML element
  * @param range reference element range
  * @param uri reference uri
@@ -173,6 +181,7 @@ function createReference(
 }
 
 /**
+ * Converts schema.
  *
  * @param schema Schema XML Element
  * @returns targets contained in the XML element
@@ -214,6 +223,7 @@ function convertSchema(schema: XMLElement): Target[] {
 }
 
 /**
+ * Returns namespace details.
  *
  * @param element XML element
  * @returns element default namespace if it exists
@@ -232,6 +242,7 @@ function getNamespace(element: XMLElement): NamespaceDetails | undefined {
 }
 
 /**
+ * Converts element.
  *
  * @param element XMLElement
  * @returns generic annotation file Element
@@ -286,6 +297,12 @@ function convertElement(element: XMLElement): Element {
     });
 }
 
+/**
+ * Returns element name range.
+ *
+ * @param element XML element
+ * @returns range
+ */
 function getElementNameRange(element: XMLElement): Range | undefined {
     if (element.syntax.openName) {
         return transformRange(element.syntax.openName);
@@ -317,6 +334,7 @@ function getElementNameRange(element: XMLElement): Range | undefined {
 }
 
 /**
+ * Converts text node.
  *
  * @param textNode XML text node
  * @returns annotation file TextNode
@@ -326,6 +344,12 @@ function convertTextNode(textNode: XMLTextContent): TextNode {
     return createTextNode(textNode.text ?? '', range);
 }
 
+/**
+ * Merges content nodes.
+ *
+ * @param sortedContentNodes
+ * @returns merged nodes data
+ */
 function mergeContentNodes(sortedContentNodes: (XMLTextContent | XMLElement)[]): {
     textNodes: XMLTextContent[];
     nodes: ElementChild[];

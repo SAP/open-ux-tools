@@ -39,7 +39,7 @@ export const escapeText = (input: string): string => {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/([<&])/g, function (str, item) {
+    return input.replace(/([<&])/g, (str, item) => {
         return { '<': '&lt;', '&': '&amp;' }[item];
     });
 };
@@ -48,7 +48,7 @@ export const unescapeText = (input: string) => {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/(&lt;|&amp;)/g, function (str, item) {
+    return input.replace(/(&lt;|&amp;)/g, (str, item) => {
         return { '&lt;': '<', '&amp;': '&' }[item];
     });
 };
@@ -57,7 +57,7 @@ export const escapeAttribute = (input: string): string => {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/([<&"])/g, function (str, item) {
+    return input.replace(/([<&"])/g, (str, item) => {
         return { '<': '&lt;', '&': '&amp;', '"': '&quot;' }[item];
     });
 };
@@ -66,7 +66,7 @@ export const unescapeAttribute = (input: string) => {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/(&lt;|&amp;|&quot;)/g, function (str, item) {
+    return input.replace(/(&lt;|&amp;|&quot;)/g, (str, item) => {
         return { '&lt;': '<', '&amp;': '&', '&quot;': '"' }[item];
     });
 };

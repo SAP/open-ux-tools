@@ -90,6 +90,7 @@ export function convertMetadataDocument(uri: string, document: XMLDocument): Met
 
 /**
  * Collects metadata element definitions from given schema.
+ *
  * @param schema schema element
  * @param aliasMap alias map
  * @param uri Uri of the document
@@ -225,6 +226,7 @@ function createMetadataNode(context: Context, element: XMLElement): MetadataElem
 
 /**
  * Calculates type for navigation property based on association information.
+ *
  * @param context context
  * @param element nav property XML element
  * @returns type or undefined
@@ -255,6 +257,7 @@ function getTypeForNavigationProperty(context: Context, element: XMLElement): st
     if (role?.type) {
         return role.multiplicity === '*' ? `Collection(${role.type})` : role.type;
     }
+    return;
 }
 
 /**
@@ -336,6 +339,7 @@ function createMetadataElementNodeForType(
 
 /**
  * Creates metadata element name.
+ *
  * @param context context
  * @param element XML element
  * @param forAction boolen flag indicating processing of action element
@@ -359,6 +363,14 @@ function getMetadataElementName(context: Context, element: XMLElement, forAction
     return metadataElementName;
 }
 
+/**
+ * Returns primitive type name based on current type and element name.
+ *
+ * @param typeName type name
+ * @param baseTypeName base type name
+ * @param elementName element name
+ * @returns primitive type name
+ */
 function getPrimitiveTypeName(typeName: string, baseTypeName: string, elementName: string | null): string {
     let edmPrimitiveType = '';
     if (typeName.startsWith('Edm.')) {
@@ -377,6 +389,7 @@ function getPrimitiveTypeName(typeName: string, baseTypeName: string, elementNam
 
 /**
  * Adjusts medatata element properties and returns V2 function import md nodes (in case of FunctionImport element) or empty array.
+ *
  * @param context context
  * @param element element
  * @param type type
@@ -430,8 +443,16 @@ function adjustMetadataElement(
         });
         return functionImportV2Nodes;
     }
+    return;
 }
 
+/**
+ *
+ * @param element
+ * @param typeName
+ * @param baseTypeName
+ * @param metadataElementProperties
+ */
 function handleStructuredTypeElement(
     element: XMLElement,
     typeName: string,
@@ -490,6 +511,7 @@ function getReturnTypeProperties(
 }
 
 /**
+ * Returns overload name.
  *
  * @param context Conversion context
  * @param element Source XML element
@@ -511,6 +533,7 @@ function getOverloadName(context: Context, element: XMLElement): string {
 }
 
 /**
+ * Return names of child key elements.
  *
  * @param element Source XML element
  * @returns an array of PropertyRef names
@@ -537,6 +560,15 @@ interface NamespaceMap {
     [aliasOrNamespace: string]: string;
 }
 
+/**
+ * Parses and converts attribute value to fully qualified name.
+ *
+ * @param attributeName
+ * @param namespaceMap
+ * @param currentNamespace
+ * @param element
+ * @returns fully qualified name or undefined
+ */
 function attributeValueToFullyQualifiedName(
     attributeName: string,
     namespaceMap: NamespaceMap,
@@ -552,6 +584,12 @@ function attributeValueToFullyQualifiedName(
     return fullyQualifiedName ?? attributeValue;
 }
 
+/**
+ * Creates namespace map from given container XML element.
+ *
+ * @param element container XML element
+ * @returns namespace map
+ */
 function getNamespaceMap(element: XMLElement): NamespaceMap {
     const references = getElementsWithName('Reference', element);
     const dataServices = getElementsWithName('DataServices', element);
@@ -576,6 +614,14 @@ function getNamespaceMap(element: XMLElement): NamespaceMap {
     return aliasMap;
 }
 
+/**
+ * Creates association data object from given association ends XML elements.
+ *
+ * @param ends XML elements representing association ends
+ * @param aliasMap alias map
+ * @param currentNamespace namespace
+ * @returns association data object
+ */
 function createAssociation(ends: XMLElement[], aliasMap: NamespaceMap, currentNamespace: string): AssociationData {
     const association: AssociationData = {};
     for (const end of ends) {
