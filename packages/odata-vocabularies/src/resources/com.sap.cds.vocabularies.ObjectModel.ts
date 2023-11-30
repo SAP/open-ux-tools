@@ -1,4 +1,3 @@
-
 export default {
     'com.sap.cds.vocabularies.ObjectModel': {
         '$Alias': 'ObjectModel',

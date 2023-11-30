@@ -384,9 +384,9 @@ function parseSchemaElements(identifier: string, element: SchemaElement): Vocabu
     return undefined;
 }
 /**
- * find out if namespace is cds namespace
+ *
  * @param namespace
- * @returns
+ * @returns boolean value
  */
 function isCdsNamespace(namespace: string): boolean {
     return namespace.startsWith('com.sap.cds.vocabularies');
