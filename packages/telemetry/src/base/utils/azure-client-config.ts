@@ -3,7 +3,7 @@ import type { TelemetryClient as AzureTelemetryClient, Contracts } from 'applica
 /**
  * Enable local caching of telemetry data when offline.
  * Disable GDPR private data that are collected by Azure AppInsight client.
- * 
+ *
  * @param client Azure App Insights telemetry client instance
  */
 export function configAzureTelemetryClient(client: AzureTelemetryClient) {

@@ -1,7 +1,7 @@
 import { ClientFactory } from '../../src/base/client';
 import { EventName } from '../../src/base/types/event-name';
 import { SampleRate } from '../../src/base/types/sample-rate';
-import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
+import type { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
 import { TelemetrySettings } from '../../src/base/config-state';
 
 const spyTrackEvent = jest.fn();

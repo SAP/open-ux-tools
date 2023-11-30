@@ -12,12 +12,8 @@ import yaml from 'yaml';
  * Note: Without Tree shaking import '@sap/ux-project-access'
  * packages consuming telemetry need to add dependencies manually (for ex: sap/cds)
  * Further, size of generated .vsix will be increased by esbuild
- * */
-import {
-    getAppProgrammingLanguage,
-    getProjectType,
-    getAppType,
-} from '@sap-ux/project-access/dist/project/info';
+ */
+import { getAppProgrammingLanguage, getProjectType, getAppType } from '@sap-ux/project-access/dist/project/info';
 import { findProjectRoot } from '@sap-ux/project-access/dist/project/search';
 import { isCapJavaProject } from '@sap-ux/project-access/dist/project/cap';
 import type { ProjectType } from '@sap-ux/project-access/dist/types';
@@ -25,15 +21,14 @@ import type { CommonFioriProjectProperties, InternalFeature, SourceTemplate } fr
 import { ODataSource, DeployTarget, CommonProperties, ToolsId } from './types';
 import { spawn } from 'child_process';
 import os from 'os';
-import { CustomTask } from '@sap-ux/ui5-config';
+import type { CustomTask } from '@sap-ux/ui5-config';
 import { ToolingTelemetrySettings } from './config-state';
 
 /**
- * @param initSettings Pass to initTelemetrySettings() api
- *  - internalFeaturesEnabled
+ * Collect commone properties that needs to be added to telemetry event.
+ *
  * @param telemetryHelperProperties Pass to report ApplicationInsightClient.report()
- *  - appPath
- * @returns
+ * @returns Common Fiori project properties
  */
 export async function processToolsSuiteTelemetry(
     telemetryHelperProperties: Record<string, string> | undefined
@@ -48,6 +43,11 @@ export async function processToolsSuiteTelemetry(
     return { ...commonProperties, ...appProperties };
 }
 
+/**
+ * Get common properties that related to Fiori project runtime environment.
+ *
+ * @returns Common properties
+ */
 export async function getCommonProperties(): Promise<CommonFioriProjectProperties> {
     const commonProperties = {} as CommonFioriProjectProperties;
     commonProperties[CommonProperties.DevSpace] = await getSbasDevspace();
@@ -63,6 +63,7 @@ export async function getCommonProperties(): Promise<CommonFioriProjectPropertie
 
 /**
  * Obtain dev space type from SBAS rest api.
+ *
  * @returns SBAS Dev Space Name. Empty string is returned if unable to fetch workspace type or the environment is not SBAS
  */
 async function getSbasDevspace(): Promise<string> {
@@ -89,8 +90,9 @@ async function getSbasDevspace(): Promise<string> {
 }
 
 /**
- * Feature to be implemented in next US #16043
- * @param appPath
+ * Get common properties from a give Fiori project path.
+ *
+ * @param appPath Fiori project path.
  * @returns Properties to be append to properties in telemetry event
  */
 async function getAppProperties(appPath: string): Promise<Record<string, string>> {
@@ -105,7 +107,7 @@ async function getAppProperties(appPath: string): Promise<Record<string, string>
     // Correct logic in getAppType() implementation, if it's reuse lib type, odata source should be unknown
     if (applicationType === 'Fiori Reuse') {
         odataSource = ODataSource.UNKNOWN;
-    } 
+    }
     const sourceTemplate = await getManifestSourceTemplate(appPath);
     const appProgrammingLanguage = await getAppProgrammingLanguage(appPath);
     const output: Record<string, string> = {};
@@ -124,6 +126,7 @@ async function getAppProperties(appPath: string): Promise<Record<string, string>
 /**
  * Read template type from README.md of an Fiori app. This will be improved once we have the floor
  * plan information added to e.g. manifest.json of generated app.
+ *
  * @param appPath Root folder path of Fiori app
  * @returns Template type used in the Fiori app
  */
@@ -151,6 +154,7 @@ async function getTemplateType(appPath: string): Promise<string> {
 
 /**
  * Find OData Source type of a given app folder path.
+ *
  * @param appPath Root folder path of Fiori app
  * @returns Project Type ABAP | CAPJava | CAPNode | UNKNOWN
  */
@@ -200,12 +204,18 @@ async function getODataSource(appPath: string): Promise<string> {
     }
 }
 
-function getProjectTypeForTelemetry(projectType: ProjectType) {
-    if (projectType === "EDMXBackend") {
+/**
+ * Map ProjectType to values used for telemetry reporting.
+ *
+ * @param projectType ProjectType
+ * @returns Odata source type
+ */
+function getProjectTypeForTelemetry(projectType: ProjectType): ODataSource {
+    if (projectType === 'EDMXBackend') {
         return ODataSource.ABAP;
-    } else if (projectType === "CAPNodejs") {
+    } else if (projectType === 'CAPNodejs') {
         return ODataSource.CAPNode;
-    } else if (projectType === "CAPJava") {
+    } else if (projectType === 'CAPJava') {
         return ODataSource.CAPJava;
     } else {
         return ODataSource.UNKNOWN;
@@ -213,7 +223,8 @@ function getProjectTypeForTelemetry(projectType: ProjectType) {
 }
 
 /**
- * Read ui5-deploy.yaml to decide if it is CF or ABAP deploy target
+ * Read ui5-deploy.yaml to decide if it is CF or ABAP deploy target.
+ *
  * @param appPath  appPath Root folder path of Fiori app
  * @returns CF | ABAP | NO_DEPLOY_CONFIG | UNKNOWN_DEPLOY_CONFIG
  */
@@ -242,6 +253,7 @@ async function getDeployTarget(appPath: string): Promise<string> {
 
 /**
  * Convert init setting property internalFeaturesEnabled to string value.
+ *
  * @returns String value 'internal' | 'external' to be backward compatible with existing telemetry data format.
  */
 function getInternalVsExternal(): InternalFeature {
@@ -249,7 +261,8 @@ function getInternalVsExternal(): InternalFeature {
 }
 
 /**
- * Read the manifest.json for the app and locate the tools id
+ * Read the manifest.json for the app and locate the tools id.
+ *
  * @param appPath appPath Root folder path of Fiori app
  * @returns sourceTemplate section of data from manifest.json
  */
@@ -262,8 +275,8 @@ async function getManifestSourceTemplate(appPath: string): Promise<SourceTemplat
             const manifest = JSON.parse(manifestStr);
             sourceTemplate = manifest['sap.app']?.sourceTemplate;
         }
-    } catch (err) {
-        console.log(`[Telemetry]: ${err.message}`);
+    } catch {
+        // Failed to read manifest.json
     }
     sourceTemplate = sourceTemplate ?? {};
     sourceTemplate.id = sourceTemplate.id ?? '';
@@ -273,6 +286,11 @@ async function getManifestSourceTemplate(appPath: string): Promise<SourceTemplat
     return sourceTemplate;
 }
 
+/**
+ * Get node.js runtime version.
+ *
+ * @returns Node.js version
+ */
 async function getProcessVersions(): Promise<NodeJS.ProcessVersions> {
     try {
         const output = await spawnCommand('node', ['-p', 'JSON.stringify(process.versions)']);
@@ -282,6 +300,13 @@ async function getProcessVersions(): Promise<NodeJS.ProcessVersions> {
     }
 }
 
+/**
+ * Spawn a command to find out node.js version used for the runtime.
+ *
+ * @param command command name
+ * @param commandArgs command arguments
+ * @returns Node.js version
+ */
 export function spawnCommand(command: string, commandArgs: string[]): Promise<string> {
     const spawnOptions = /^win/.test(process.platform)
         ? { windowsVerbatimArguments: true, shell: true, cwd: os.homedir() }

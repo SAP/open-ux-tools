@@ -12,10 +12,10 @@ export const notify = (
     evtName: EventName,
     sampleRate: SampleRate
 ): Function => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (...args: any[]): Function => {
+    return (...args: []): Function => {
         const result = originalFn.apply(target, args);
         const appinsightClient: Client = ClientFactory.getTelemetryClient();
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         appinsightClient.report(evtName, {}, {}, sampleRate);
         return result;
     };
@@ -27,10 +27,10 @@ export const notifyAsync = (
     evtName: EventName,
     sampleRate: SampleRate
 ): Function => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return async (...args: any[]): Promise<Function> => {
+    return async (...args: []): Promise<Function> => {
         const result = await originalFn.apply(target, args);
         const appinsightClient: Client = ClientFactory.getTelemetryClient();
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         appinsightClient.report(evtName, {}, {}, sampleRate);
         return result;
     };
@@ -50,6 +50,7 @@ export const duration = (
         performance.measure(markName);
         const duration = performance.getMeasurementDuration(markName);
         const appinsightClient: Client = ClientFactory.getTelemetryClient();
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         appinsightClient.report(evtName, {}, { ms: duration }, sampleRate);
         return result;
     };
@@ -69,6 +70,7 @@ export const durationAsync = (
         performance.measure(markName);
         const duration = performance.getMeasurementDuration(markName);
         const appinsightClient: Client = ClientFactory.getTelemetryClient();
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         appinsightClient.report(evtName, {}, { ms: duration }, sampleRate);
         return result;
     };
@@ -86,6 +88,7 @@ export const captureParam = (
         const result = originalFn.apply(target, args);
         const [customDimensions, customMeasurements] = getParamsData(args, instructions);
         const appinsightClient: Client = ClientFactory.getTelemetryClient();
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         appinsightClient.report(evtName, customDimensions, customMeasurements, sampleRate);
         return result;
     };
@@ -103,6 +106,7 @@ export const captureParamAsync = (
         const result = await originalFn.apply(target, args);
         const [customDimensions, customMeasurements] = getParamsData(args, instructions);
         const appinsightClient: Client = ClientFactory.getTelemetryClient();
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         appinsightClient.report(evtName, customDimensions, customMeasurements, sampleRate);
         return result;
     };

@@ -6,6 +6,9 @@ import type { EventName } from '../types/event-name';
 import { configAzureTelemetryClient } from '../utils/azure-client-config';
 import { TelemetrySettings } from '../config-state';
 
+/**
+ *
+ */
 class ApplicationInsightClient extends Client {
     private clients: Map<SampleRate, appInsights.TelemetryClient>;
 
@@ -38,12 +41,13 @@ class ApplicationInsightClient extends Client {
      * is flushed to Azure backend before executing the next statement. Since this API blocks
      * normal execution flow, please use this API cautiously. See `report()` method for non-blocking
      * usage.
+     *
      * @param eventName Categorize the type of the event within the scope of an extension.
      * @param properties A set of string properties to be reported
      * @param measurements  A set of numeric measurements to be reported
      * @param sampleRate Sampling the event to be sent
-     * @param telemetryHelperProperties Properties that are passed to specific TelemetryClient for generating specific properties (E.g. ToolsSuiteTelemetryClient)
      * @param ignoreSettings Ignore telemetryEnabled settings and skip submitting telemetry data
+     * @returns Promise<void>
      */
     public reportBlocking(
         eventName: EventName,
@@ -63,6 +67,7 @@ class ApplicationInsightClient extends Client {
      * Send a telemetry event to Azure Application Insights. The telemetry event sending is still non-blocking
      * in this API. To make sure telemetry event is sent to Azure backend before next statement, please see
      * `reportBlocking()`.
+     *
      * @param eventName Categorize the type of the event within the scope of an extension.
      * @param properties A set of string properties to be reported
      * @param measurements  A set of numeric measurements to be reported
@@ -85,6 +90,15 @@ class ApplicationInsightClient extends Client {
         this.trackEvent(client, event);
     }
 
+    /**
+     * Provide specification of telemetry event to be sent.
+     *
+     * @param eventName Categorize the type of the event within the scope of an extension.
+     * @param properties A set of string properties to be reported
+     * @param measurements A set of numeric measurements to be reported
+     * @param sampleRate  Sampling the event to be sent
+     * @returns TelemetryClient instance and telemetry event
+     */
     private prepareClientAndEvent(
         eventName: EventName,
         properties: { [key: string]: string | boolean },
@@ -92,7 +106,7 @@ class ApplicationInsightClient extends Client {
         sampleRate: SampleRate | undefined
     ): { client: appInsights.TelemetryClient; event: appInsights.Contracts.EventTelemetry } {
         const processedSampleRate: SampleRate = sampleRate ? sampleRate : SampleRate.NoSampling;
-        const client = this.clients.get(processedSampleRate) as appInsights.TelemetryClient ;
+        const client = this.clients.get(processedSampleRate) as appInsights.TelemetryClient;
 
         const eventHeader: EventHeader = new EventHeader(this.extensionName, eventName);
         const event: appInsights.Contracts.EventTelemetry = {
@@ -107,18 +121,35 @@ class ApplicationInsightClient extends Client {
         };
     }
 
+    /**
+     * Send telemetry event in blocking style. It blocks
+     * the subsequent statements until telemetry event has been sent.
+     *
+     * @param client TelemetryClient instance
+     * @param event Telemetry event
+     * @returns Promise<void>
+     */
     private async trackEventBlocking(
         client: appInsights.TelemetryClient,
         event: appInsights.Contracts.EventTelemetry
     ): Promise<void> {
         return new Promise((resolve) => {
-            client.trackEvent(event);
-            client.flush({
-                callback: () => resolve()
-            });
+            if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true') {
+                client.trackEvent(event);
+                client.flush({
+                    callback: () => resolve()
+                });
+            }
         });
     }
 
+    /**
+     * Send teleemtry event in non-blocking fashion.
+     *
+     * @param client Telemetry client instance
+     * @param event Telemetry event
+     * @returns Send telemetry succeeded or not
+     */
     private trackEvent(client: appInsights.TelemetryClient, event: appInsights.Contracts.EventTelemetry): boolean {
         if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true') {
             client.trackEvent(event);
@@ -127,6 +158,12 @@ class ApplicationInsightClient extends Client {
         return false;
     }
 
+    /**
+     * Create telemetry client instance based on sample rate.
+     *
+     * @param sampleRate Sampling telemetry event
+     * @returns Telemetry client instance
+     */
     private createTelemetryClient(sampleRate: SampleRate): appInsights.TelemetryClient {
         let sampleRateNumer: number;
 

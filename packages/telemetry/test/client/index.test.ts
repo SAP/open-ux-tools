@@ -1,6 +1,6 @@
 import { ClientFactory } from '../../src/base/client';
 import type { Client } from '../../src/base/client/client';
-import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
+import type { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
 import { TelemetrySettings } from '../../src/base/config-state';
 
 const spyTrackEvent: jest.Mock = jest.fn();

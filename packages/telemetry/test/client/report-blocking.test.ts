@@ -2,8 +2,8 @@ import { ClientFactory } from '../../src/base/client';
 import { TelemetrySettings } from '../../src/base/config-state';
 import { EventName } from '../../src/base/types/event-name';
 import { SampleRate } from '../../src/base/types/sample-rate';
-import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
-import FlushOptions from 'applicationinsights/out/Library/FlushOptions';
+import type { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
+import type FlushOptions from 'applicationinsights/out/Library/FlushOptions';
 
 const trackEventMock = jest.fn();
 const flushMock = jest.fn();
@@ -29,7 +29,9 @@ jest.mock('applicationinsights', () => {
             this.trackEvent = (event: EventTelemetry) => trackEventMock(event);
             this.flush = (options: FlushOptions | undefined) => {
                 flushMock(options);
-                options && options.callback && options.callback('testCallbackValue');
+                if (options && options.callback) {
+                    options.callback('testCallbackValue');
+                }
             };
         }
     }

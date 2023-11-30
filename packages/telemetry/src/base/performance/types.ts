@@ -18,6 +18,9 @@ interface Measurement extends Mark {
 
 type EntriesArray = (Mark | Measurement)[];
 
+/**
+ *
+ */
 abstract class PerformanceMeasurement {
     static initTiming: number;
     static enteries: EntriesArray;

@@ -238,5 +238,9 @@ describe('toolsSuiteTelemetrySettings', () => {
         expect(TelemetrySettings.telemetryEnabled).toBe(true);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
+
+        Object.defineProperty(process, 'platform', {
+            value: originalPlatform
+        });
     });
 });

@@ -1,12 +1,11 @@
 import { reportRuntimeError, reportEnableTelemetryOnOff } from '../../src/base/utils/reporting';
 import { EventName } from '../../src';
-import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
+import type { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
 
 const spyTrackEvent = jest.fn();
 
 jest.mock('applicationinsights', () => {
     class TelemetryClient {
-
         public config: any;
         public channel: any;
         public addTelemetryProcessor: any;

@@ -18,11 +18,13 @@ const decorCommon = (
 };
 
 /**
+ * Decorator used to log a telemetry event.
  *
  * @param evtName - Event names to filter data on backend, use EventNames predefined in Telemetry.EventName enumeration
  * @param interceptorType - Interceptor type to apply to decorated function, use interceptorTypes predefined in Telemetry.interceptorTypes enumeration
  * @param sampleRate - Sample rate for recorded data, use predefined sample rates in Telemetry.SampleRate enumeration
  * @param paramsCapturingInstructions - Optional param, Should be passed when interceptor of type CAPTURE_PARAM being used. As single instance or array of instances (when multiple params should be captured or some additional sumbission data should be predefined). Allows predefine property name, value or specify paths to value to be captured (if it's element of array or nested in object)
+ * @returns function
  */
 export const logTelemetry = (
     evtName: string,
@@ -36,11 +38,13 @@ export const logTelemetry = (
 };
 
 /**
+ * Decorator to log telemetry asynchronously.
  *
  * @param evtName - Event names to filter data on backend, use EventNames predefined in Telemetry.EventName enumeration
  * @param interceptorType - Interceptor type to apply to decorated function, use interceptorTypes predefined in Telemetry.interceptorTypes enumeration
  * @param sampleRate - Sample rate for recorded data, use predefined sample rates in Telemetry.SampleRate enumeration
  * @param paramsCapturingInstructions - Optional param, Should be passed when interceptor of type CAPTURE_PARAM being used. As single instance or array of instances (when multiple params should be captured or some additional sumbission data should be predefined). Allows predefine property name, value or specify paths to value to be captured (if it's element of array or nested in object)
+ * @returns function
  */
 export const logTelemetryAsync = (
     evtName: string,

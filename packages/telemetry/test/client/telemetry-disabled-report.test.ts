@@ -2,7 +2,7 @@ import { ClientFactory } from '../../src/base/client';
 import { TelemetrySettings } from '../../src/base/config-state';
 import { EventName } from '../../src/base/types/event-name';
 import { SampleRate } from '../../src/base/types/sample-rate';
-import { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
+import type { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
 
 const spyTrackEvent: jest.Mock = jest.fn();
 
@@ -36,13 +36,13 @@ describe('ClientFactory Send Report Tests', () => {
         TelemetrySettings.telemetryEnabled = true;
     });
 
-    test('Test function getTelemetryClient()', () => {
+    test('Test function getTelemetryClient()', async () => {
         const telemetryClient = ClientFactory.getTelemetryClient();
 
         const spy = jest.spyOn<any, any>(telemetryClient, 'trackEvent').mockImplementation((): void => {
             return;
         });
-        telemetryClient.report(EventName.Test, {}, {}, SampleRate.NoSampling);
+        await telemetryClient.report(EventName.Test, {}, {}, SampleRate.NoSampling);
         expect((telemetryClient as any).trackEvent).toBeCalledTimes(0);
         spy.mockClear();
     });

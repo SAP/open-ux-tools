@@ -1,12 +1,14 @@
 import type { AxiosResponse } from 'axios';
 import * as memfs from 'memfs';
-import fs from 'fs';
 import { processToolsSuiteTelemetry } from '../../src/tooling-telemetry';
 import { ToolingTelemetrySettings } from '../../src/tooling-telemetry/config-state';
+import fs from 'fs';
 
 jest.mock('fs', () => {
     const fs1 = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const vol = require('memfs').vol;
     return new Union().use(fs1).use(vol as unknown as typeof fs);
 });
@@ -279,7 +281,7 @@ describe('Tools Suite Telemetry Tests', () => {
                 ['/project1/webapp/manifest.json']: fs.readFileSync(
                     './test/tools-suite-telemetry/test-projects/fiori_elements/webapp/manifest.json',
                     'utf-8'
-                ),
+                )
             },
             '/'
         );
@@ -324,7 +326,7 @@ describe('Tools Suite Telemetry Tests', () => {
                 ['./project1/app/freestyle/webapp/manifest.json']: fs.readFileSync(
                     './test/tools-suite-telemetry/test-projects/cap-java-freestyle/app/freestyle/webapp/manifest.json',
                     'utf-8'
-                ),
+                )
             },
             '/'
         );
@@ -365,7 +367,7 @@ describe('Tools Suite Telemetry Tests', () => {
                 ['./project1/app/freestyle/webapp/manifest.json']: fs.readFileSync(
                     './test/tools-suite-telemetry/test-projects/cap-java-freestyle/app/freestyle/webapp/manifest.json',
                     'utf-8'
-                ),
+                )
             },
             '/'
         );
@@ -441,11 +443,11 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['./project1/ui5.yaml']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/valid-library/ui5.yaml', 
+                    './test/tools-suite-telemetry/test-projects/valid-library/ui5.yaml',
                     'utf-8'
                 ),
                 ['./project1/src/manifest.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/valid-library/src/manifest.json', 
+                    './test/tools-suite-telemetry/test-projects/valid-library/src/manifest.json',
                     'utf-8'
                 ),
                 ['./project1/ui5-deploy.yaml']: fs.readFileSync(
@@ -455,7 +457,7 @@ describe('Tools Suite Telemetry Tests', () => {
                 ['./project1/package.json']: fs.readFileSync(
                     './test/tools-suite-telemetry/test-projects/valid-library/package.json',
                     'utf-8'
-                ),
+                )
             },
             '/'
         );

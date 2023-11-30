@@ -15,4 +15,4 @@ export const TelemetrySettings = {
     consumerModuleName: '',
     // Version of module that uses telemetry library
     consumerModuleVersion: ''
-}
+};

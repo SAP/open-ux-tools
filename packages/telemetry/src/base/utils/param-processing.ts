@@ -3,13 +3,24 @@ type instruction = ParamRecordConfigField | string | undefined;
 export type dimensions = { [key: string]: string };
 export type measurements = { [key: string]: number };
 
+/**
+ * ParamRecordConfigField
+ */
 export class ParamRecordConfigField {
     path: string;
+
+    /**
+     *
+     * @param path input path
+     */
     constructor(path: string) {
         this.path = path;
     }
 }
 
+/**
+ *
+ */
 export class ParamRecordConfig {
     key: string | undefined;
     value: instruction;
@@ -19,12 +30,10 @@ export class ParamRecordConfig {
      * @param key - string or undefined;
      * When string set as key of new field;
      * When undefined key of new field set to - 'data';
-     *
-     * @param value - instance of ParamReParamRecordConfigFieldcordConfig, string or undefined;
+     * @param value - instance of ParamRecordConfigField, string or undefined;
      * When instance of ParamRecordConfigField data gets extracted from specified path of parameter under index specified in @param paramIndex;
      * When string set as value of new field;
      * When undefined - new fields value being set as parameter under index of @param paramIndex;
-     *
      * @param paramIndex - optional, number or undefined;
      * When number - speicifes index of parameter to capture or extract data from;
      * Set to undefined when want to use strin passed as @param value as new fields value;

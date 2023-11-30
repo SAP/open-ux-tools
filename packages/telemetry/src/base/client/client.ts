@@ -1,6 +1,9 @@
 import type { SampleRate } from '../types/sample-rate';
 import type { EventName } from '../types/event-name';
 
+/**
+ *
+ */
 abstract class Client {
     abstract report(
         event: EventName,
@@ -15,14 +18,23 @@ abstract class Client {
     protected extensionName = '';
     protected extensionVersion = '';
 
+    /**
+     * @returns Target Azure application insights resource Id
+     */
     public getApplicationKey(): string {
         return this.applicationKey;
     }
 
+    /**
+     * @returns Consumer module version
+     */
     public getExtensionVersion(): string {
         return this.extensionVersion;
     }
 
+    /**
+     * @returns Consumer module name
+     */
     public getExtensionName(): string {
         return this.extensionName;
     }

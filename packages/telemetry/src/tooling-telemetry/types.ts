@@ -5,7 +5,6 @@ export type TelemetryHelperProperties = {
     appPath: string;
 };
 
-
 /**
  * Type exposed via telemetry API. The following paramters can be provided by developer who
  * calls telemetry API.

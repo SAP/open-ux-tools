@@ -1,6 +1,7 @@
 import type { ToolsSuiteTelemetryInitSettings } from './types';
 import { reportRuntimeError, reportEnableTelemetryOnOff } from '../base/utils/reporting';
-import { getService, Entity, TelemetrySetting, TelemetrySettingKey, getFilesystemWatcherFor, Service } from '@sap-ux/store';
+import type { Service } from '@sap-ux/store';
+import { getService, Entity, TelemetrySetting, TelemetrySettingKey, getFilesystemWatcherFor } from '@sap-ux/store';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import os from 'os';
 import path from 'path';
@@ -23,7 +24,6 @@ const deprecatedExtensionPropKeys = [
     'sap.ux.serviceModeler.enableTelemetry'
 ];
 
-
 const definePath = (paths: Record<string, string>): string | null => {
     const platform = process.platform;
     let settingsPath = paths[platform];
@@ -31,15 +31,19 @@ const definePath = (paths: Record<string, string>): string | null => {
         settingsPath = paths.theia;
     }
     if (!settingsPath) {
-        console.error('no path for current OS is provided - ', platform);
+        // no path for unknown platform settings path
         return null;
     }
     const homedir = os.homedir();
     return path.join(homedir, settingsPath);
 };
 
+/**
+ * Read telemetry settings from file store.
+ *
+ * @param storeService Store service that is used for read/write telemetry settings
+ */
 async function readEnableTelemetry(storeService: Service<TelemetrySetting, TelemetrySettingKey>): Promise<void> {
-
     let setting: TelemetrySetting | undefined;
     try {
         setting = await storeService.read(new TelemetrySettingKey());
@@ -76,22 +80,26 @@ async function readEnableTelemetry(storeService: Service<TelemetrySetting, Telem
     } else {
         TelemetrySettings.telemetryEnabled = setting.enableTelemetry;
     }
-};
+}
 
-
+/**
+ * Watch changes to telemetry setting in the store and update runtime settings accordingly.
+ *
+ * @param storeService Store service that is used for read/write telemetry settings
+ */
 function watchTelemetrySettingStore(storeService: Service<TelemetrySetting, TelemetrySettingKey>) {
     getFilesystemWatcherFor(Entity.TelemetrySetting, async () => {
         const watchedSetting = await storeService.read(new TelemetrySettingKey());
         if (watchedSetting) {
             TelemetrySettings.telemetryEnabled = watchedSetting.enableTelemetry;
-            console.log('Some interference!!!', watchedSetting, TelemetrySettings.telemetryEnabled);
         }
     });
 }
 
 /**
  * Telemetry API function to init settings.
- * @param options
+ *
+ * @param options Settings pass from the consumer module.
  */
 export const initTelemetrySettings = async (options: ToolsSuiteTelemetryInitSettings): Promise<void> => {
     try {
@@ -112,8 +120,8 @@ export const initTelemetrySettings = async (options: ToolsSuiteTelemetryInitSett
 /**
  * Toggle on/off enable telemetry setting. This will update telemetry settings file
  * and the runtime setting.
- * 
- * @param enableTelemetry 
+ *
+ * @param enableTelemetry Telemetry is enabled or not
  */
 export async function setEnableTelemetry(enableTelemetry: boolean): Promise<void> {
     try {
@@ -123,17 +131,18 @@ export async function setEnableTelemetry(enableTelemetry: boolean): Promise<void
         const setting = new TelemetrySetting({ enableTelemetry });
         await storeService.write(setting);
         TelemetrySettings.telemetryEnabled = enableTelemetry;
-    } catch (e) {
-        console.error(`Telemetry settings could not be written. Error : ${e.message}`);
+    } catch {
+        // Telemetry settings could not be written
     }
 
     const commonProperties = await getCommonProperties();
     reportEnableTelemetryOnOff(enableTelemetry, commonProperties as Record<string, string>);
-};
+}
 
 /**
- * 
- * @returns 
+ * Get telemetry settings.
+ *
+ * @returns Telemetry settings of context module that consumes telemetry library
  */
 export async function getTelemetrySetting(): Promise<TelemetrySetting | undefined> {
     let setting: TelemetrySetting | undefined;
@@ -146,4 +155,4 @@ export async function getTelemetrySetting(): Promise<TelemetrySetting | undefine
         // ignore if settings could not be read, return undefined
     }
     return setting;
-};
+}

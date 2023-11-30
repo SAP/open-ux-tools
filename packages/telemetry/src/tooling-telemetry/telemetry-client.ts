@@ -10,6 +10,9 @@ import type {
 import { processToolsSuiteTelemetry } from '.';
 import { localDatetimeToUTC } from '../base/utils/date';
 
+/**
+ *
+ */
 class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
     /**
      *
@@ -22,8 +25,8 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
     }
 
     /**
-     * Send a telemetry event to Azure Application Insights
-     * 
+     * Send a telemetry event to Azure Application Insights.
+     *
      * @deprecated Use reportEvent instead.
      * @param eventName Categorize the type of the event within the scope of an extension.
      * @param properties A set of string properties to be reported
@@ -31,6 +34,7 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
      * @param sampleRate Sampling the event to be sent
      * @param telemetryHelperProperties Properties that are passed to the processCommonPropertiesHelper function to assit generate project specific telemetry data
      * @param ignoreSettings Ignore telemetryEnabled settings and skip submitting telemetry data
+     * @returns Promise<void>
      */
     public async report(
         eventName: EventName,
@@ -63,12 +67,13 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
     }
 
     /**
-     * Send a telemetry event to Azure Application Insights
+     * Send a telemetry event to Azure Application Insights.
+     *
      * @param event Telemetry Event
      * @param sampleRate Sampling the event to be sent
      * @param telemetryHelperProperties Properties that are passed to the processCommonPropertiesHelper function to assit generate project specific telemetry data
      * @param ignoreSettings Ignore telemetryEnabled settings and skip submitting telemetry data
-     *
+     * @returns Promise<void>
      */
     public async reportEvent(
         event: TelemetryEvent,
@@ -96,11 +101,12 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
      * is flushed to Azure backend before executing the next statement. Since this API blocks
      * normal execution flow, please use this API cautiously. See `reportEvent()` method for non-blocking
      * usage.
+     *
      * @param event Telemetry Event
      * @param sampleRate Sampling the event to be sent
      * @param telemetryHelperProperties Properties that are passed to the processCommonPropertiesHelper function to assit generate project specific telemetry data
      * @param ignoreSettings Ignore telemetryEnabled settings and skip submitting telemetry data
-     *
+     * @returns Promise<void>
      */
     public async reportEventBlocking(
         event: TelemetryEvent,
@@ -122,6 +128,13 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
         );
     }
 
+    /**
+     * Add common properties to properties and measurements of consumer's telemetry event.
+     *
+     * @param event telemetry event
+     * @param telemetryHelperProperties Additional properties that can be undefined
+     * @returns Telemetry properties and measurements
+     */
     private async collectToolsSuiteTelemetry(
         event: TelemetryEvent,
         telemetryHelperProperties?: TelemetryHelperProperties

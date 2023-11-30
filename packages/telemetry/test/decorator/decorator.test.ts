@@ -4,7 +4,6 @@ import { EventName, InterceptorTypes, SampleRate, ParamRecordConfig } from '../.
 import { ClientFactory } from '../../src/base/client';
 import { promisify } from 'util';
 
-
 describe('Decorator Tests', () => {
     const timeOut = promisify(setTimeout);
     const mockInput = 'MockTitle';
