@@ -310,21 +310,16 @@ export class ChangeService {
                 value,
                 controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
             };
-        } else if (changeType === 'addXMLAtExtensionPoint') {
-            result = {
-                type: 'pending',
-                controlId: selectorId,
-                changeType,
-                isActive: index >= inactiveCommandCount,
-                controlName: command.getSelector().name ?? ''
-            };
         } else {
             result = {
                 type: 'pending',
                 controlId: selectorId,
                 changeType,
                 isActive: index >= inactiveCommandCount,
-                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
+                controlName:
+                    changeType === 'addXMLAtExtensionPoint'
+                        ? command.getSelector().name ?? ''
+                        : command.getElement().getMetadata().getName().split('.').pop() ?? ''
             };
         }
 
