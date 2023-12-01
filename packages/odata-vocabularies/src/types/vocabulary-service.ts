@@ -67,7 +67,7 @@ export interface Constraints {
     allowedValues?: AllowedValues[]; // valid values (Property or Term)
     openPropertyTypeConstraints?: FullyQualifiedTypeName[]; // used in UI vocabulary
     allowedTerms?: FullyQualifiedTypeName[]; // restrict terms allowed for annotation path (Property or Term)
-    // ApplicableTerms?  Names of specific terms that are applicable and may be applied in the current context
+    applicableTerms?: FullyQualifiedTypeName[]; //Names of specific terms that are applicable and may be applied in the current context;
     // MaxItems, MinItems: no usage in supported vocabularies
     derivedTypeConstraints?: FullyQualifiedTypeName[]; // listed sub types (and their subtypes) (Property only!)
     // ------ core vocabulary--------
@@ -164,6 +164,7 @@ interface ComplexTypeBase extends PrimitiveType {
     isAbstract?: boolean; // source: $Abstract; indicates that it is abstract and cannot have instances
     isOpenType?: boolean; // source $OpenType; indicates that it is open and allows clients to add properties dynamically
     properties: Map<string, ComplexTypeProperty>;
+    constraints?: Constraints;
 }
 
 /**
@@ -171,6 +172,7 @@ interface ComplexTypeBase extends PrimitiveType {
  */
 export interface ComplexType extends ComplexTypeBase {
     baseType?: FullyQualifiedName; // source $BaseType: can inherit from another complex type by specifying it as its base type
+    constraints?: Constraints;
 }
 
 /**

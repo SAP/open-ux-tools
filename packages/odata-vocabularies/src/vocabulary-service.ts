@@ -295,15 +295,16 @@ export class VocabularyService {
     }
 
     /**
-     *  Returns all terms which are applicable for a given context.
+     * Returns all terms which are applicable for a given context.
      *
      * The context is defined by the following parameters.
      *
      * @param targetKinds - Target kinds, see symbolic values in http://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_Applicability
      * @param targetType  - Type name of the annotated element.
+     * @param applicableTermsOnly  - Filter terms to specific terms that are applicable in the current context.
      * @returns - all terms which are applicable for a given context.
      */
-    getTermsForTargetKinds(targetKinds: TargetKind[], targetType: FullyQualifiedTypeName): FullyQualifiedName[] {
+    getTermsForTargetKinds(targetKinds: TargetKind[], targetType: FullyQualifiedTypeName, applicableTermsOnly = false): FullyQualifiedName[] {
         const uniqueTerms = new Set<string>();
 
         for (const targetKind of ['', ...targetKinds]) {
@@ -314,6 +315,20 @@ export class VocabularyService {
         }
 
         const terms = [...uniqueTerms.keys()];
+        let targetTypeDef = this.dictionary.get(targetType);
+        if (applicableTermsOnly) {
+            if (targetTypeDef && targetTypeDef.kind === COMPLEX_TYPE_KIND && targetTypeDef.baseType) {
+                targetTypeDef = this.dictionary.get(targetTypeDef.baseType);
+            }
+
+            if(targetTypeDef && (targetTypeDef.kind === COMPLEX_TYPE_KIND || targetTypeDef.kind === TYPE_DEFINITION_KIND)) {
+                const constraints = targetTypeDef.constraints;
+                if(constraints?.applicableTerms) {
+                    return constraints.applicableTerms;
+                }
+            }
+        }
+
         return terms.filter((termName) => {
             const term = this.dictionary.get(termName);
             if (term?.kind !== 'Term') {

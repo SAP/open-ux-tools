@@ -187,6 +187,11 @@ function getConstraints(raw: UnboxContent<CSDLAnnotations>): Constraints {
         constraints.allowedTerms = allowedTerms.map(getFullyQualifiedAllowedTermName);
     }
 
+    const applicableTerms = raw['@Org.OData.Validation.V1.ApplicableTerms'];
+    if (applicableTerms?.length) {
+        constraints.applicableTerms = applicableTerms.map(getFullyQualifiedAllowedTermName);
+    }
+
     const isLanguageDependent = raw['@Org.OData.Core.V1.IsLanguageDependent'];
     if (isLanguageDependent !== undefined) {
         constraints.isLanguageDependent = !!isLanguageDependent;
@@ -280,6 +285,7 @@ function parseComplexType(name: string, raw: CSDLComplexType): ComplexType {
         complexType.isOpenType = !!raw.$OpenType;
     }
 
+    complexType.constraints = getConstraints(raw);
     // collect properties
     Object.keys(raw)
         .filter((key) => !isValidKey(key))
@@ -388,11 +394,11 @@ function parseSchemaElements(identifier: string, element: SchemaElement): Vocabu
  */
 export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesInformation => {
     // try to use cache
-    if (includeCds && vocabulariesInformationStaticCds) {
-        return vocabulariesInformationStaticCds;
-    } else if (!includeCds && vocabulariesInformationStatic) {
-        return vocabulariesInformationStatic;
-    }
+    // if (includeCds && vocabulariesInformationStaticCds) {
+    //     return vocabulariesInformationStaticCds;
+    // } else if (!includeCds && vocabulariesInformationStatic) {
+    //     return vocabulariesInformationStatic;
+    // }
 
     const dictionary: Map<EdmNameType.FullyQualifiedName, VocabularyObject> = new Map();
     const byTarget: Map<TargetKindValue | '', Set<EdmNameType.FullyQualifiedName>> = new Map();
