@@ -288,7 +288,7 @@ describe('ControllerExtension', () => {
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.None);
         });
 
-        test('sets error when the controller name is has special characters', () => {
+        test('sets error when the controller name has special characters', () => {
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 {} as unknown as UI5Element,
@@ -313,6 +313,32 @@ describe('ControllerExtension', () => {
 
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
+
+        test('sets error when the controller name contains a whitespace at the end', () => {
+            const controllerExt = new ControllerExtension(
+            'adp.extension.controllers.ControllerExtension',
+            {} as unknown as UI5Element,
+            {} as unknown as RuntimeAuthoring
+            );
+            
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    getValue: jest.fn().mockReturnValue('samplename '),
+                    setValueState: valueStateSpy,
+                })
+            };
+
+            controllerExt.model = testModel;
+            
+            controllerExt.dialog = {
+                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+            } as unknown as Dialog;
+
+            controllerExt.onControllerNameInputChange(event as unknown as Event)
+            
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error)
+        })
 
         test('sets error when the controller name exceeds 64 characters', () => {
             const controllerExt = new ControllerExtension(
