@@ -38,7 +38,6 @@ export function UIQuickNavigation(props: QuickNavigationProps): ReactElement {
         (event: KeyboardEvent) => {
             let activated = enabled;
             if (!enabled && isQuickNavigationEnabled(event)) {
-                document.querySelector('.test')?.classList.remove('test');
                 setEnabled(true);
                 activated = true;
             }
@@ -81,7 +80,6 @@ export function UIQuickNavigation(props: QuickNavigationProps): ReactElement {
             //console.log('onKeyUp');
             if (enabled && !isQuickNavigationEnabled(event)) {
                 setEnabled(false);
-                document.querySelector('.test')?.classList.remove('test');
             }
         },
         [enabled]
