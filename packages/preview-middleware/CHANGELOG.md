@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.11.12
+
+### Patch Changes
+
+-   ff457bef: Controller Extension and Fragment name now show error if there is a whitespace after their name
+
 ## 0.11.11
 
 ### Patch Changes
