@@ -448,6 +448,19 @@ describe('parse', () => {
             expect(result).toMatchSnapshot();
         });
 
+        test(`Action and Function Import V2`, () => {
+          const result = parseV4(`
+          <EntityContainer Name="TestService">
+            <FunctionImport Name="SEPMRA_C_PD_ProductActivation" ReturnType="SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType" EntitySet="SEPMRA_C_PD_Product" m:HttpMethod="POST" sap:action-for="SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType" sap:applicable-path="Activation_ac">
+              <Parameter Name="Product" Type="Edm.String" Mode="In" MaxLength="10"/>
+              <Parameter Name="DraftUUID" Type="Edm.Guid" Mode="In"/>
+              <Parameter Name="IsActiveEntity" Type="Edm.Boolean" Mode="In"/>
+            </FunctionImport>
+          </EntityContainer>
+        `);
+          expect(result).toMatchSnapshot();
+      });
+
         test('navigation property', () => {
             const result = parseWithMarkup(
                 `<EntityType Name="I_CurrencyType" sap:label="Currency" sap:content-version="1">

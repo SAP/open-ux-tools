@@ -350,6 +350,178 @@ Array [
 ]
 `;
 
+exports[`parse metadata Action and Function Import V2 1`] = `
+Array [
+  Object {
+    "content": Array [
+      Object {
+        "content": Array [
+          Object {
+            "content": Array [],
+            "isAnnotatable": true,
+            "isCollectionValued": false,
+            "isComplexType": false,
+            "isEntityType": false,
+            "kind": "ReturnType",
+            "location": Object {
+              "range": Object {
+                "end": Object {
+                  "character": 117,
+                  "line": 35,
+                },
+                "start": Object {
+                  "character": 65,
+                  "line": 35,
+                },
+              },
+              "uri": "file://metadata.xml",
+            },
+            "name": "$ReturnType",
+            "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/SEPMRA_C_PD_ProductActivation/$ReturnType",
+          },
+          Object {
+            "content": Array [],
+            "isAnnotatable": false,
+            "isCollectionValued": false,
+            "isComplexType": false,
+            "isEntityType": true,
+            "kind": "Parameter",
+            "location": Object {
+              "range": Object {
+                "end": Object {
+                  "character": 226,
+                  "line": 35,
+                },
+                "start": Object {
+                  "character": 170,
+                  "line": 35,
+                },
+              },
+              "uri": "file://metadata.xml",
+            },
+            "name": "_it",
+            "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/SEPMRA_C_PD_ProductActivation/_it",
+            "structuredType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType",
+          },
+          Object {
+            "content": Array [],
+            "edmPrimitiveType": "Edm.String",
+            "isAnnotatable": true,
+            "isCollectionValued": false,
+            "isComplexType": false,
+            "isEntityType": false,
+            "kind": "Parameter",
+            "location": Object {
+              "range": Object {
+                "end": Object {
+                  "character": 84,
+                  "line": 36,
+                },
+                "start": Object {
+                  "character": 14,
+                  "line": 36,
+                },
+              },
+              "uri": "file://metadata.xml",
+            },
+            "name": "Product",
+            "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/SEPMRA_C_PD_ProductActivation/Product",
+          },
+          Object {
+            "content": Array [],
+            "edmPrimitiveType": "Edm.Guid",
+            "isAnnotatable": true,
+            "isCollectionValued": false,
+            "isComplexType": false,
+            "isEntityType": false,
+            "kind": "Parameter",
+            "location": Object {
+              "range": Object {
+                "end": Object {
+                  "character": 69,
+                  "line": 37,
+                },
+                "start": Object {
+                  "character": 14,
+                  "line": 37,
+                },
+              },
+              "uri": "file://metadata.xml",
+            },
+            "name": "DraftUUID",
+            "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/SEPMRA_C_PD_ProductActivation/DraftUUID",
+          },
+          Object {
+            "content": Array [],
+            "edmPrimitiveType": "Edm.Boolean",
+            "isAnnotatable": true,
+            "isCollectionValued": false,
+            "isComplexType": false,
+            "isEntityType": false,
+            "kind": "Parameter",
+            "location": Object {
+              "range": Object {
+                "end": Object {
+                  "character": 77,
+                  "line": 38,
+                },
+                "start": Object {
+                  "character": 14,
+                  "line": 38,
+                },
+              },
+              "uri": "file://metadata.xml",
+            },
+            "name": "IsActiveEntity",
+            "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/SEPMRA_C_PD_ProductActivation/IsActiveEntity",
+          },
+        ],
+        "isAnnotatable": true,
+        "isCollectionValued": false,
+        "isComplexType": false,
+        "isEntityType": false,
+        "kind": "FunctionImport",
+        "location": Object {
+          "range": Object {
+            "end": Object {
+              "character": 29,
+              "line": 39,
+            },
+            "start": Object {
+              "character": 12,
+              "line": 35,
+            },
+          },
+          "uri": "file://metadata.xml",
+        },
+        "name": "SEPMRA_C_PD_ProductActivation",
+        "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/SEPMRA_C_PD_ProductActivation",
+      },
+    ],
+    "isAnnotatable": true,
+    "isCollectionValued": false,
+    "isComplexType": false,
+    "isEntityType": false,
+    "kind": "EntityContainer",
+    "location": Object {
+      "range": Object {
+        "end": Object {
+          "character": 28,
+          "line": 40,
+        },
+        "start": Object {
+          "character": 10,
+          "line": 34,
+        },
+      },
+      "uri": "file://metadata.xml",
+    },
+    "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService",
+    "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService",
+  },
+]
+`;
+
 exports[`parse metadata Function 1`] = `
 Array [
   Object {
