@@ -370,7 +370,10 @@ describe('SelectionService', () => {
 
     test('undo/redo stack changed', async () => {
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
-        function createCommand(properties: Map<string, any>): {
+        function createCommand(
+            properties: Map<string, any>,
+            toggle = false
+        ): {
             getProperty: (name: string) => any;
             getElement: () => any;
             getSelector: () => any;
@@ -386,7 +389,7 @@ describe('SelectionService', () => {
                     getMetadata: jest.fn().mockReturnValue({ getName: jest.fn().mockReturnValue('sap.m.Button') })
                 }),
                 getSelector: jest.fn().mockReturnValue({
-                    id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                    id: !toggle ? 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button' : undefined,
                     name: 'ExtensionPoint1'
                 }),
                 getChangeType: (): any => {
@@ -394,7 +397,7 @@ describe('SelectionService', () => {
                 },
                 getParent: jest.fn().mockReturnValue({
                     getElement: jest.fn().mockReturnValue({
-                        getId: 'ExtensionPoint1'
+                        getId: () => 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
                     })
                 })
             };
@@ -420,7 +423,8 @@ describe('SelectionService', () => {
                 new Map<string, any>([
                     ['selector', { id: 'control2' }],
                     ['changeType', 'addXMLAtExtensionPoint']
-                ])
+                ]),
+                true
             )
         ];
         rtaMock.getCommandStack.mockReturnValue({
