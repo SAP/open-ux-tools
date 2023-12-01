@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.8.6
+
+### Patch Changes
+
+-   76c751be: Save button for ui5 versions lower than 1.110 is shown
+
 ## 0.8.5
 
 ### Patch Changes
