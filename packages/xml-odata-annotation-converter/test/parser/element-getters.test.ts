@@ -6,7 +6,7 @@ describe('edge cases', () => {
         const result = getElementsWithName('test', {
             type: 'XMLElement',
             name: 'Annotation',
-            subElements: []
+            subElements: null
         } as unknown as XMLElement);
         expect(result.length).toBe(0);
     });
