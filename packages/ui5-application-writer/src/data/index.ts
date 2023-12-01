@@ -31,6 +31,8 @@ export function mergeWithDefaults(ui5App: Ui5App): {
         ui5App.package.devDependencies['@sap/ux-specification'] = getSpecTagVersion(ui5App.ui5.version);
     }
 
+    ui5App.appOptions.addProxyMiddleware = ui5App.appOptions.addProxyMiddleware ?? true;
+
     return ui5App as {
         app: App;
         appOptions: Partial<AppOptions>;

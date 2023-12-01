@@ -94,5 +94,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
         feApp.appOptions.sapux = true;
     }
 
+    feApp.appOptions.addProxyMiddleware = feApp.appOptions.addProxyMiddleware ?? true;
+
     return feApp;
 }

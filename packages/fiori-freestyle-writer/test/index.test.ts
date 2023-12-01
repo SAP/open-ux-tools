@@ -91,6 +91,9 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
                             unitOfMeasureProperty: 'QuantityPerUnit'
                         }
                     }
+                },
+                appOptions: {
+                    addProxyMiddleware: false
                 }
             } as FreestyleApp<any>
         }

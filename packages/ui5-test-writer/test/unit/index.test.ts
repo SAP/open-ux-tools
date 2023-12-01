@@ -235,5 +235,15 @@ describe('ui5-test-writer', () => {
                 'Validation error: Cannot determine application type from the manifest, or unsupported type'
             );
         });
+
+        it('Providing the framework url and ui5 vrtsion', async () => {
+            const projectDir = prepareTestFiles('FullScreenLROP');
+            fs = await generateOPAFiles(
+                projectDir,
+                { frameworkUrl: 'https://sapui5.hana.ondemand.com', ui5Version: '1.120.1' },
+                fs
+            );
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
     });
 });

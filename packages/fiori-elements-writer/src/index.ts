@@ -67,7 +67,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     // This is done after `generateUi5Project` since defaults are set if values are not provided
     validateApp(feApp);
 
-    await addOdataService(basePath, feApp.service, fs);
+    await addOdataService(basePath, feApp.service, fs, { addProxyMiddleWare: feApp.appOptions.addProxyMiddleware });
 
     const coercedUI5Version = semVer.coerce(feApp.ui5?.version)!;
     const templateOptions: TemplateOptions = {
@@ -166,7 +166,9 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             {
                 htmlTarget: feApp.appOptions?.generateIndex
                     ? 'index.html'
-                    : `test/flpSandbox.html?sap-ui-xx-viewCache=false#${feApp.app.flpAppId}`
+                    : `test/flpSandbox.html?sap-ui-xx-viewCache=false#${feApp.app.flpAppId}`,
+                frameworkUrl: feApp.appOptions.addProxyMiddleware ? '' : feApp.ui5?.frameworkUrl,
+                ui5Version: feApp.appOptions.addProxyMiddleware ? '' : feApp.ui5?.version
             },
             fs
         );

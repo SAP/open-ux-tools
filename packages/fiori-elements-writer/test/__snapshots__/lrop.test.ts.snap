@@ -14416,13 +14416,6 @@ server:
         port: 35729
         path: webapp
         delay: 300
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /sap
-            url: http://example.feop.v4
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -14445,18 +14438,6 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-        backend:
-          - path: /sap
-            url: http://example.feop.v4
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -14485,18 +14466,6 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-        backend:
-          - path: /sap
-            url: http://example.feop.v4
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -17806,7 +17775,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"https://ui5.sap.com/1.92.0/resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"lrop_v4_addtests\\": \\"../../\\"
@@ -17816,10 +17785,10 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"https://ui5.sap.com/1.92.0/resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <script src=\\"https://ui5.sap.com/1.92.0/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"https://ui5.sap.com/1.92.0/resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 

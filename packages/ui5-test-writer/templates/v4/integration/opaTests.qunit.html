@@ -2,10 +2,10 @@
 <html>
 <head>
     <title>Integration tests</title>
-    <meta charset="utf-8">
+    <meta charset="utf-8"><% var resourcePath = frameworkUrl ? frameworkUrl + (ui5Version ? "/" + ui5Version : "") : ""; %>
 
     <script id="sap-ui-bootstrap"
-            src="/resources/sap-ui-core.js"
+            src="<%= resourcePath %>/resources/sap-ui-core.js"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 "<%- appID %>": "../../"
@@ -15,10 +15,10 @@
             data-sap-ui-async="true">
     </script>
 
-    <link rel="stylesheet" type="text/css" href="/resources/sap/ui/thirdparty/qunit-2.css">
+    <link rel="stylesheet" type="text/css" href="<%= resourcePath %>/resources/sap/ui/thirdparty/qunit-2.css">
 
-    <script src="/resources/sap/ui/thirdparty/qunit-2.js"></script>
-    <script src="/resources/sap/ui/qunit/qunit-junit.js"></script>
+    <script src="<%= resourcePath %>/resources/sap/ui/thirdparty/qunit-2.js"></script>
+    <script src="<%= resourcePath %>/resources/sap/ui/qunit/qunit-junit.js"></script>
 
     <script src="opaTests.qunit.js"></script>
 

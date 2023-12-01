@@ -44,7 +44,7 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
         setBasicTemplateDefaults(ffApp.template.settings as BasicAppSettings);
     }
     // All fiori-freestyle apps should use load reuse libs, unless explicitly overridden
-    ffApp.appOptions = Object.assign({ loadReuseLibs: true }, ffApp.appOptions);
+    ffApp.appOptions = Object.assign({ loadReuseLibs: true, addProxyMiddleware: true }, ffApp.appOptions);
 }
 
 // Specific escaping is required for FLP texts in flpSandbox.html template file

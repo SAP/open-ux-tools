@@ -123,12 +123,14 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
  * @param opaConfig.htmlTarget - the name of the html file that will be used in the OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
+ * @param opaConfig.frameworkUrl - if specified it will be added to opaTests.qunit.html e.g src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
+ * @param opaConfig.ui5Version - if specified it will be added to opaTests.qunit.html e.g src="https://sapui5.hana.ondemand.com/1.120.1/resources/sap-ui-core.js"
  * @param hideFilterBar - whether the filter bar should be hidden in the generated tests
  * @returns OPA test configuration object
  */
 function createConfig(
     manifest: Manifest,
-    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
+    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string; frameworkUrl?: string; ui5Version?: string },
     hideFilterBar: boolean
 ): FEV4OPAConfig {
     // General application info
@@ -140,7 +142,9 @@ function createConfig(
         pages: [],
         opaJourneyFileName: opaConfig.scriptName ?? 'FirstJourney',
         htmlTarget: opaConfig.htmlTarget ?? 'index.html',
-        hideFilterBar
+        hideFilterBar,
+        frameworkUrl: opaConfig.frameworkUrl,
+        ui5Version: opaConfig.ui5Version
     };
 
     // Identify startup targets from the routes
@@ -260,12 +264,14 @@ function writePageObject(
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
  * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
+ * @param opaConfig.frameworkUrl - if specified it will be added to opaTests.qunit.html e.g src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
+ * @param opaConfig.ui5Version - if specified it will be added to opaTests.qunit.html e.g src="https://sapui5.hana.ondemand.com/1.120.1/resources/sap-ui-core.js"
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
 export function generateOPAFiles(
     basePath: string,
-    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
+    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string; frameworkUrl?: string; ui5Version?: string },
     fs?: Editor
 ): Editor {
     const editor = fs || create(createStorage());

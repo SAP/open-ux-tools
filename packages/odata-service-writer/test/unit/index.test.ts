@@ -314,4 +314,42 @@ describe('generate', () => {
             `);
         });
     });
+
+    describe('options', () => {
+        let fs: Editor;
+        beforeEach(async () => {
+            const ui5Yaml = await UI5Config.newInstance(
+                '# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json\n\nspecVersion: "2.5"'
+            );
+            // generate required files
+            fs = create(createStorage());
+            fs.write(join(testDir, 'ui5.yaml'), ui5Yaml.toString());
+            fs.write(join(testDir, 'ui5-local.yaml'), '');
+            fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
+            fs.write(
+                join(testDir, 'webapp', 'manifest.json'),
+                JSON.stringify({
+                    'sap.app': {
+                        id: 'testappid'
+                    }
+                })
+            );
+        });
+        it('should not add proxy middleware', async () => {
+            const config = {
+                ...commonConfig,
+                version: OdataVersion.v2
+            };
+            await generate(testDir, config as OdataService, fs, { addProxyMiddleWare: false });
+
+            // verify updated manifest.json
+            const ui5Yaml = fs.read(join(testDir, 'ui5.yaml')) as any;
+            expect(ui5Yaml).toMatchInlineSnapshot(`
+                "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+                specVersion: \\"2.5\\"
+                "
+            `);
+        });
+    });
 });

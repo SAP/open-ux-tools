@@ -83,12 +83,16 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // Add service to the project if provided
     if (ffApp.service) {
-        await addOdataService(basePath, ffApp.service, fs);
+        await addOdataService(basePath, ffApp.service, fs, {
+            addProxyMiddleWare: ffApp.appOptions?.addProxyMiddleware
+        });
     } else {
         // Add placeholder middleware so allow adding service later
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-        ui5LocalConfig.addFioriToolsProxydMiddleware({});
+        if (ffApp.appOptions?.addProxyMiddleware) {
+            ui5LocalConfig.addFioriToolsProxydMiddleware({});
+        }
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 

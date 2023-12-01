@@ -22,6 +22,8 @@ export type FEV4OPAConfig = {
     opaJourneyFileName: string;
     htmlTarget: string;
     hideFilterBar: boolean;
+    frameworkUrl?: string;
+    ui5Version?: string;
 };
 
 export type FEV4ManifestTarget = {

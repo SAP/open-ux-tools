@@ -79,6 +79,11 @@ export interface AppOptions {
      * Excludes the index.html from the template and does not add the `start-noflp` script in package.json
      */
     generateIndex?: boolean;
+
+    /**
+     * Adds the proxy middleware config to yaml files.
+     */
+    addProxyMiddleware: boolean;
 }
 
 export interface Ui5App {

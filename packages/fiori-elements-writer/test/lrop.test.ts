@@ -83,7 +83,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     appOptions: {
                         ...feBaseConfig('lrop_v4_addtests').appOptions,
                         generateIndex: true,
-                        addTests: true
+                        addTests: true,
+                        addProxyMiddleware: false
                     }
                 }),
                 service: v4Service

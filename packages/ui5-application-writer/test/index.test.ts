@@ -65,6 +65,32 @@ describe('UI5 templates', () => {
               "version": "1.2.3-test",
             }
         `);
+
+        // Test that proxy middleware is not added
+        ui5AppConfig.appOptions = {
+            ...ui5AppConfig.appOptions,
+            addProxyMiddleware: false
+        };
+
+        projectDir = join(outputDir, 'testapp-withoutproxymiddleware');
+        await generate(projectDir, ui5AppConfig, fs);
+        expect(fs.read(join(projectDir, 'ui5.yaml'))).toMatchInlineSnapshot(`
+            "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+            specVersion: \\"3.1\\"
+            metadata:
+              name: testAppId
+            type: application
+            server:
+              customMiddleware:
+                - name: fiori-tools-appreload
+                  afterMiddleware: compression
+                  configuration:
+                    port: 35729
+                    path: webapp
+                    delay: 300
+            "
+        `);
     });
 
     // Test to ensure the appid does not contain any characters that result in malfored docs

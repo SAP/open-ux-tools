@@ -59,16 +59,26 @@ export async function findProjectFiles(
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
  * @param {Editor} [fs] - the memfs editor instance
+ * @param options - options for adding specific configs.
+ * @param options.addProxyMiddleWare - option for adding proxy middleware to the config. Defaults to true
  * @throws {Error} - if required UI5 project files are not found
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-async function generate(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
+async function generate(
+    basePath: string,
+    service: OdataService,
+    fs?: Editor,
+    options?: { addProxyMiddleWare?: boolean }
+): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
     const paths = await findProjectFiles(basePath, fs);
     ensureExists(basePath, ['webapp/manifest.json'], fs);
     enhanceData(service);
+
+    options = options ?? {};
+    const { addProxyMiddleWare = true } = options;
 
     // merge content into existing files
     const templateRoot = join(__dirname, '../templates');
@@ -83,7 +93,9 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     if (paths.ui5Yaml) {
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
         try {
-            ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+            if (addProxyMiddleWare) {
+                ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+            }
         } catch (error: any) {
             if (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) {
                 ui5Config.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
@@ -98,7 +110,9 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
         if (fs.exists(ui5LocalConfigPath)) {
             ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-            ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
+            if (addProxyMiddleWare) {
+                ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
+            }
         }
     }
 
