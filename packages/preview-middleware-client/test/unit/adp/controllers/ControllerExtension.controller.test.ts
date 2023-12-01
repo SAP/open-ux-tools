@@ -1,15 +1,16 @@
 import type Dialog from 'sap/m/Dialog';
+import Utils from 'mock/sap/ui/fl/Utils';
 import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
 import type JSONModel from 'sap/ui/model/json/JSONModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
+import { ValueState } from 'mock/sap/ui/core/library';
 import { fetchMock, openMock, sapCoreMock } from 'mock/window';
 
-import ControllerExtension from '../../../../src/adp/controllers/ControllerExtension.controller';
+import * as apiHandler from '../../../../src/adp/api-handler';
 
-import Utils from 'mock/sap/ui/fl/Utils';
-import { ValueState } from 'mock/sap/ui/core/library';
+import ControllerExtension from '../../../../src/adp/controllers/ControllerExtension.controller';
 
 describe('ControllerExtension', () => {
     beforeAll(() => {
@@ -315,29 +316,31 @@ describe('ControllerExtension', () => {
 
         test('sets error when the controller name exceeds 64 characters', () => {
             const controllerExt = new ControllerExtension(
-            'adp.extension.controllers.ControllerExtension',
-            {} as unknown as UI5Element,
-            {} as unknown as RuntimeAuthoring
+                'adp.extension.controllers.ControllerExtension',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
             );
-            
+
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
             const event = {
                 getSource: jest.fn().mockReturnValue({
-                    getValue: jest.fn().mockReturnValue('thisisverylongnamethisisverylongnamethisisverylongnamethisisveryl'),
-                    setValueState: valueStateSpy,
+                    getValue: jest
+                        .fn()
+                        .mockReturnValue('thisisverylongnamethisisverylongnamethisisverylongnamethisisveryl'),
+                    setValueState: valueStateSpy
                 })
             };
 
             controllerExt.model = testModel;
-            
+
             controllerExt.dialog = {
                 getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
             } as unknown as Dialog;
 
-            controllerExt.onControllerNameInputChange(event as unknown as Event)
-            
-            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error)
-        })
+            controllerExt.onControllerNameInputChange(event as unknown as Event);
+
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
+        });
 
         test('sets create button to true when the controller name is valid', () => {
             const controllerExt = new ControllerExtension(
@@ -367,7 +370,21 @@ describe('ControllerExtension', () => {
     });
 
     describe('onCreateBtnPress', () => {
-        afterEach(() => {
+        beforeAll(() => {
+            jest.clearAllMocks();
+
+            jest.spyOn(global, 'Date').mockImplementation(
+                () =>
+                    ({
+                        toISOString: () => '2020-01-01T00:00:00.000Z'
+                    } as unknown as Date)
+            );
+            jest.spyOn(apiHandler, 'writeChange').mockImplementation(async (data) => {
+                return Promise.resolve(data);
+            });
+        });
+
+        afterAll(() => {
             jest.restoreAllMocks();
         });
 
@@ -407,6 +424,10 @@ describe('ControllerExtension', () => {
             await controllerExt.onCreateBtnPress(event as unknown as Event);
 
             expect(addSpy).toHaveBeenCalledTimes(1);
+            expect(apiHandler.writeChange).toHaveBeenCalledWith({
+                creation: '2020-01-01T00:00:00.000Z',
+                fileName: 'something.change'
+            });
         });
 
         test('opens link to existing controller', async () => {
