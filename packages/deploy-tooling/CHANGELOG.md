@@ -1,5 +1,43 @@
 # @sap-ux/deploy-tooling
 
+## 0.11.8
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/system-access@0.3.5
+
+## 0.11.7
+
+### Patch Changes
+
+-   286883cb: fix(deps): update dependency axios to v1.6.0 [security]
+-   Updated dependencies [286883cb]
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/btp-utils@0.12.1
+    -   @sap-ux/system-access@0.3.5
+
+## 0.11.6
+
+### Patch Changes
+
+-   58d48e13: Capitalize $tmp before performing any validations. ADT queries rejects package name that is not in capital letter.
+    The previous fix only caplitalize for list package query. But ADT query for valid transport requests also require
+    caplized capital letters to detect $TMP is local package.
+-   Updated dependencies [db918804]
+    -   @sap-ux/axios-extension@1.7.2
+    -   @sap-ux/system-access@0.3.4
+
+## 0.11.5
+
+### Patch Changes
+
+-   d0e46a5c: Do not validate url if destination is present
+-   Updated dependencies [d0e46a5c]
+    -   @sap-ux/project-input-validator@0.2.1
+
 ## 0.11.4
 
 ### Patch Changes

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, sep } from 'path';
 import * as childProcess from 'child_process';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
@@ -6,6 +6,9 @@ import { FileName } from '../../src/constants';
 import {
     getCapCustomPaths,
     getCapEnvironment,
+    getCdsFiles,
+    getCdsRoots,
+    getCdsServices,
     isCapNodeJsProject,
     isCapJavaProject,
     getCapModelAndServices,
@@ -97,6 +100,11 @@ describe('Test getCapModelAndServices()', () => {
                         {
                             'name': 'Backslash',
                             'urlPath': '\\odata\\service\\with\\backslash/'
+                        },
+                        {
+                            'name': 'withRuntime',
+                            'urlPath': 'url',
+                            'runtime': 'Node.js'
                         }
                     ])
                 }
@@ -118,6 +126,11 @@ describe('Test getCapModelAndServices()', () => {
                 {
                     'name': 'Backslash',
                     'urlPath': 'odata/service/with/backslash/'
+                },
+                {
+                    'name': 'withRuntime',
+                    'urlPath': 'url',
+                    'runtime': 'Node.js'
                 }
             ]
         });
@@ -312,7 +325,7 @@ describe('Test getCapCustomPaths()', () => {
     });
 });
 
-describe('Test getCapEnvironment', () => {
+describe('Test getCapEnvironment()', () => {
     afterEach(() => {
         jest.restoreAllMocks();
     });
@@ -342,6 +355,32 @@ describe('Test getCapEnvironment', () => {
         });
         await getCapEnvironment('PROJECT_ROOT');
         expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
+    });
+
+    test('Updating global.cds to fix issue with version switch', async () => {
+        // Mock setup
+        type GlobalCds = { cds?: object };
+        delete (global as GlobalCds)?.cds;
+        const cdsV1 = {
+            version: 1,
+            env: {
+                for: jest.fn()
+            }
+        };
+        const cdsV2 = {
+            version: 2,
+            env: {
+                for: jest.fn()
+            }
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject')
+            .mockResolvedValueOnce(cdsV1)
+            .mockResolvedValueOnce(cdsV2);
+
+        await getCapEnvironment('PROJECT');
+        expect((global as GlobalCds).cds).toBe(cdsV1);
+        await getCapEnvironment('PROJECT');
+        expect((global as GlobalCds).cds).toBe(cdsV2);
     });
 
     test('failed to load cds from any location', async () => {
@@ -470,3 +509,258 @@ describe('toReferenceUri', () => {
         expect(refUri).toBe('../../srv/admin');
     });
 });
+
+describe('Test getCdsFiles()', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    test('Get CDS files from project', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockResolvedValue({ '$sources': ['file1', 'file2'] }),
+            resolve: jest.fn().mockImplementation((path) => [path])
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution
+        const cdsFiles = await getCdsFiles('');
+
+        // Check results
+        expect(cdsFiles).toEqual(['file1', 'file2']);
+        expect(cdsMock.load).toBeCalledWith([join('db/'), join('srv/'), join('app/'), 'schema', 'services']);
+    });
+
+    test('Get CDS files from project, but no $sources', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockResolvedValue({}),
+            resolve: jest.fn()
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution
+        const cdsFiles = await getCdsFiles('');
+
+        // Check results
+        expect(cdsFiles).toEqual([]);
+    });
+
+    test('Get CDS files from project with envRoot and ignoreErrors false', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => {
+                throw Error('CDS_LOAD_ERROR');
+            })
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution and result check
+        try {
+            await getCdsFiles('', false, 'envroot');
+            fail('Call to getCdsFiles() should have thrown error but did not.');
+        } catch (error) {
+            expect(error.message).toContain('CDS_LOAD_ERROR');
+        }
+    });
+
+    test('Get CDS files from project with envRoot and ignoreErrors true, but no model data in exception', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => {
+                throw Error();
+            })
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution and result check
+        try {
+            await getCdsFiles('', true, 'envroot');
+            fail('Call to getCdsFiles() should have thrown error but did not.');
+        } catch (error) {
+            expect(error.message).toContain('envroot');
+        }
+    });
+
+    test('Get CDS files from project with envRoot and ignoreErrors true and partial model data in exception', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => {
+                const error = new Error() as Error & { model: { sources: { [s: string]: { filename: string } | {} } } };
+                error.model = {
+                    sources: { 'source1': { filename: 'file1' }, 'source2': {} }
+                };
+                throw error;
+            })
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution
+        const cdsFiles = await getCdsFiles('', true, 'envroot');
+
+        // Check results
+        expect(cdsFiles).toEqual([`${sep}file1`]);
+        expect(cdsMock.load).toBeCalledWith('envroot');
+    });
+
+    test('Get CDS files from project with envRoot and ignoreErrors true and model data in exception', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => {
+                const error = new Error() as Error & { model: { sources: { [s: string]: { filename: string } } } };
+                error.model = { sources: { 'source1': { filename: 'file1' }, 'source2': { filename: `${sep}file2` } } };
+                throw error;
+            })
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution
+        const cdsFiles = await getCdsFiles('', true, 'envroot');
+
+        // Check results
+        expect(cdsFiles).toEqual([`${sep}file1`, `${sep}file2`]);
+        expect(cdsMock.load).toBeCalledWith('envroot');
+    });
+});
+
+describe('Test getCdsRoots()', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    test('Get cds roots', async () => {
+        // Mock setup
+        const cdsMock = {
+            env: {
+                'for': jest.fn().mockImplementation(() => ({
+                    folders: { app: 'MY_APP', db: 'MY_DB', srv: 'MY_SRV' }
+                }))
+            },
+            resolve: jest.fn().mockImplementation((path) => [path])
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution
+        const cdsRoots = await getCdsRoots(join('/my/project/root'));
+
+        // Check results
+        expect(cdsRoots).toEqual([
+            join('/my/project/root/MY_DB'),
+            join('/my/project/root/MY_SRV'),
+            join('/my/project/root/MY_APP'),
+            join('/my/project/root/schema'),
+            join('/my/project/root/services')
+        ]);
+        expect(cdsMock.resolve).toHaveBeenCalledTimes(5);
+        expect(cdsMock.resolve).toHaveBeenLastCalledWith(join('/my/project/root/services'), { 'skipModelCache': true });
+    });
+
+    test('Get cds roots with clearing cache', async () => {
+        // Mock setup
+        const cdsMock = {
+            resolve: Object.assign(
+                jest
+                    .fn()
+                    .mockImplementationOnce(() => undefined)
+                    .mockImplementation((path) => [path]),
+                { cache: undefined }
+            )
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution
+        const cdsRoots = await getCdsRoots(join('/any/project'), true);
+
+        // Check results
+        expect(cdsRoots).toEqual([
+            join('/any/project/srv/'),
+            join('/any/project/app/'),
+            join('/any/project/schema'),
+            join('/any/project/services')
+        ]);
+        expect(cdsMock.resolve.cache).toEqual({});
+    });
+});
+
+describe('Test getCdsServices()', () => {
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    test('Get services, cds replies with array', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockResolvedValue({
+                services: [
+                    { kind: 'service', '@path': '/service1' },
+                    { kind: 'service', '@path': '/service2' }
+                ]
+            }),
+            linked: jest.fn().mockImplementation((l) => l),
+            resolve: jest.fn().mockImplementation((path) => [path])
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution
+        const services = await getCdsServices('any/root');
+
+        // Check results
+        expect(services).toEqual([
+            { kind: 'service', '@path': '/service1' },
+            { kind: 'service', '@path': '/service2' }
+        ]);
+    });
+
+    test('Get services, cds throws error with service as object, ignoreErrors is true', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => {
+                const error = new Error() as Error & {
+                    model: { services: { [service: string]: { kind: string; '@path': string } } };
+                };
+                error.model = {
+                    services: {
+                        service1: { kind: 'service', '@path': '/service1' },
+                        service2: { kind: 'service', '@path': '/service2' }
+                    }
+                };
+                throw error;
+            }),
+            linked: jest.fn().mockImplementation((l) => l),
+            resolve: jest.fn().mockImplementation((path) => [path])
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution
+        const services = await getCdsServices('any/root');
+
+        // Check results
+        expect(services).toEqual([
+            { kind: 'service', '@path': '/service1' },
+            { kind: 'service', '@path': '/service2' }
+        ]);
+    });
+
+    test('Get services, cds throws error with service as object, ignoreErrors is false', async () => {
+        // Mock setup
+        const cdsMock = {
+            load: jest.fn().mockImplementation(() => {
+                throw new Error('CDS_LOAD_ERROR');
+            }),
+            resolve: jest.fn().mockImplementation((path) => [path])
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockResolvedValue(cdsMock);
+
+        // Test execution and result check
+        try {
+            await getCdsServices('any/root', false);
+            fail('Call to getCdsServices() should have thrown an error but did not');
+        } catch (error) {
+            expect(error.toString()).toContain('CDS_LOAD_ERROR');
+        }
+    });
+});
+
+function fail(message: string) {
+    expect(message).toBeFalsy();
+}

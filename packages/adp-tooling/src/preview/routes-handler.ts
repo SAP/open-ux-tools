@@ -1,13 +1,15 @@
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
+import { renderFile } from 'ejs';
 import sanitize from 'sanitize-filename';
-import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
+import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
 import { FolderNames, TemplateFileName, HttpStatusCodes } from '../types';
-import { renderFile } from 'ejs';
+import type { CodeExtChange } from '../types';
 
 interface WriteFragmentBody {
     fragmentName: string;
@@ -165,6 +167,70 @@ export default class RoutesHandler {
                 message: `${fileNames.length} controllers found in the project workspace.`
             });
             this.logger.debug(`Read controllers ${JSON.stringify(fileNames)}`);
+        } catch (e) {
+            this.handleErrorMessage(res, next, e);
+        }
+    };
+
+    /**
+     * Handler for retrieving existing controller extension data from the workspace.
+     *
+     * @param req Request
+     * @param res Response
+     * @param next Next Function
+     */
+    public handleGetControllerExtensionData = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const params = req.params as { controllerName: string };
+            const controllerName = sanitize(params.controllerName);
+            const codeExtFiles = await this.readAllFilesByGlob('/**/changes/*_codeExt.change');
+
+            let controllerPathFromRoot = '';
+            let controllerExists = false;
+            let controllerPath = '';
+            let changeFilePath = '';
+
+            const project = this.util.getProject();
+            const sourcePath = project.getSourcePath();
+            const projectName = project.getName();
+
+            const getPath = (
+                projectPath: string,
+                fileName: string,
+                folder: FolderNames.Coding | string = FolderNames.Coding
+            ) => path.join(projectPath, FolderNames.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
+
+            for (const file of codeExtFiles) {
+                const fileStr = await file.getString();
+                const change = JSON.parse(fileStr) as CodeExtChange;
+
+                if (change.selector.controllerName === controllerName) {
+                    const fileName = change.content.codeRef.replace('coding/', '');
+                    controllerPath = getPath(sourcePath, fileName);
+                    controllerPathFromRoot = getPath(projectName, fileName);
+                    changeFilePath = getPath(projectName, file.getName(), '');
+                    controllerExists = true;
+                    break;
+                }
+            }
+
+            if (controllerExists && !fs.existsSync(controllerPath)) {
+                const errorMsg = `Please delete the change file at "${changeFilePath}" and retry creating the controller extension.`;
+                this.logger.debug(errorMsg);
+                res.status(HttpStatusCodes.NOT_FOUND).send({ message: errorMsg });
+                return;
+            }
+
+            this.sendFilesResponse(res, {
+                controllerExists,
+                controllerPath: os.platform() === 'win32' ? `/${controllerPath}` : controllerPath,
+                controllerPathFromRoot
+            });
+            this.logger.debug(
+                controllerExists
+                    ? `Controller exists at '${controllerPath}'`
+                    : `Controller with controllerName '${controllerName}' does not exist`
+            );
         } catch (e) {
             this.handleErrorMessage(res, next, e);
         }

@@ -2,11 +2,7 @@
     margin-top: 12px;
     max-height: 51px;
     cursor: pointer;
-    border-color: var(--vscode-errorForeground);
-    border-style: solid;
-    border-width: thin;
     box-sizing: revert;
-    box-shadow: 0 4px 8px 0 var(--vscode-widget-shadow);
     background-color: var(--vscode-editor-background);
 
     &:hover {
@@ -20,8 +16,6 @@
     }
     .ms-Callout-beak {
         left: 12px !important;
-        height: 25px;
-        width: 25px;
         box-shadow: none;
     }
 }

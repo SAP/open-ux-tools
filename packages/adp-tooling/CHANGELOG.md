@@ -1,5 +1,52 @@
 # @sap-ux/adp-tooling
 
+## 0.7.2
+
+### Patch Changes
+
+-   5a1eb6ed: Correctly escape quote for windows support
+
+## 0.7.1
+
+### Patch Changes
+
+-   de818954: Enhance the error message for the user when he tries to create a new controller extension
+
+## 0.7.0
+
+### Minor Changes
+
+-   3f977f21: Added generation of deployment configuration
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/system-access@0.3.5
+
+## 0.6.0
+
+### Minor Changes
+
+-   793f846b: Open existing controller from project files instead of creating a new one
+
+## 0.5.5
+
+### Patch Changes
+
+-   Updated dependencies [286883cb]
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/system-access@0.3.5
+
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [db918804]
+    -   @sap-ux/axios-extension@1.7.2
+    -   @sap-ux/system-access@0.3.4
+
 ## 0.5.3
 
 ### Patch Changes

@@ -11,7 +11,7 @@ import type { Package } from '../types';
  * @returns - true: has dependency; false: no dependency
  */
 export const hasDependency = (packageJson: Package, dependency: string): boolean =>
-    !!(packageJson.dependencies?.[dependency] || packageJson.devDependencies?.[dependency]);
+    !!(packageJson.dependencies?.[dependency] ?? packageJson.devDependencies?.[dependency]);
 
 /**
  * Returns path to folder that hosts 'node_modules' used by project.

@@ -26,8 +26,21 @@
     height: 20px;
     margin: 10px 0 10px 10px;
     border-radius: 1px;
+    position: relative;
+    outline: none;
 }
-
+.ms-Fabric--isFocusVisible {
+    .theme-child:focus::after {
+        content: "";
+        position: absolute;
+        border: 1px solid transparent;
+        outline-style: solid;
+        outline-width: 1px;
+        z-index: 1;
+        outline-color: var(--vscode-focusBorder);
+        inset: -3px;
+    }
+}
 .selected {
     border-radius: 1px;
     background-color: var(--vscode-progressBar-background);

@@ -52,7 +52,7 @@ export default abstract class BaseDialog extends Controller {
         const input = event.getSource<Input>();
         const beginBtn = this.dialog.getBeginButton();
 
-        const fragmentName: string = input.getValue().trim();
+        const fragmentName: string = input.getValue();
         const fragmentList: { fragmentName: string }[] = this.model.getProperty('/fragmentList');
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
@@ -80,6 +80,11 @@ export default abstract class BaseDialog extends Controller {
 
         if (!isValidName) {
             updateDialogState(ValueState.Error, 'The fragment name cannot contain white spaces or special characters.');
+            return;
+        }
+
+        if(fragmentName.length > 64) {
+            updateDialogState(ValueState.Error, 'A fragment file name cannot contain more than 64 characters.');
             return;
         }
 

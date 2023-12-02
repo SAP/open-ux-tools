@@ -1,0 +1,12 @@
+<Annotations Target="IncidentService.Incidents/category">
+</Annotations>
+<Annotations Target="IncidentService.Incidents/priority">
+   <Annotation Term="UI.CriticalityLabels">
+        <Collection>
+            <Record Type="UI.CriticalityLabelType">
+                <PropertyValue Property="Criticality" EnumMember="UI.CriticalityType/Critical" />
+                <PropertyValue Property="Label" Path="P|roduct/@UI.CriticalityLabels/0/Label" />
+            </Record>
+        </Collection>
+    </Annotation>
+</Annotations>

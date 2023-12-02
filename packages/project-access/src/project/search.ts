@@ -252,7 +252,7 @@ async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResul
             // All UI5 apps have at least sap.app: { id: <ID>, type: "application" } in manifest.json
             pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
             const manifest = pathMap[manifestPath] as Manifest;
-            if (!manifest['sap.app'] || !manifest['sap.app'].id || manifest['sap.app'].type !== 'application') {
+            if (!manifest['sap.app']?.id || manifest['sap.app'].type !== 'application') {
                 continue;
             }
             const roots = await findRootsForPath(manifestPath);
@@ -276,9 +276,10 @@ async function filterAdaptations(pathMap: FileMapAndCache): Promise<AdaptationRe
     const results: AdaptationResults[] = [];
     const manifestAppDescrVars = Object.keys(pathMap).filter((path) => path.endsWith(FileName.ManifestAppDescrVar));
     for (const manifestAppDescrVar of manifestAppDescrVars) {
-        const adpPath = await findFileUp('.adp', dirname(manifestAppDescrVar));
-        if (adpPath && (await fileExists(join(adpPath, FileName.AdaptationConfig)))) {
-            results.push({ appRoot: dirname(adpPath), manifestAppdescrVariantPath: manifestAppDescrVar });
+        const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestAppDescrVar));
+        const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
+        if (projectRoot && (await fileExists(join(projectRoot, 'webapp', FileName.ManifestAppDescrVar)))) {
+            results.push({ appRoot: projectRoot, manifestAppdescrVariantPath: manifestAppDescrVar });
         }
     }
     return results;

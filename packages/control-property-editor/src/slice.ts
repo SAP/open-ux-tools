@@ -7,7 +7,8 @@ import type {
     OutlineNode,
     PendingPropertyChange,
     PropertyChange,
-    SavedPropertyChange
+    SavedPropertyChange,
+    Scenario
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeStackModified,
@@ -15,7 +16,10 @@ import {
     iconsLoaded,
     outlineChanged,
     propertyChanged,
-    propertyChangeFailed
+    propertyChangeFailed,
+    showMessage,
+    scenario,
+    scenarioLoaded
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -30,8 +34,10 @@ interface SliceState {
     selectedControl: Control | undefined;
     outline: OutlineNode[];
     filterQuery: FilterOptions[];
+    scenario: Scenario;
     icons: IconDetails[];
     changes: ChangesSlice;
+    dialogMessage: string | undefined;
 }
 
 export interface ChangesSlice {
@@ -91,12 +97,14 @@ export const initialState = {
     selectedControl: undefined,
     outline: [],
     filterQuery: filterInitOptions,
+    scenario: scenario.UiAdaptation,
     icons: [],
     changes: {
         controls: {},
         pending: [],
         saved: []
-    }
+    },
+    dialogMessage: undefined
 };
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
@@ -124,6 +132,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             )
             .addMatcher(iconsLoaded.match, (state, action: ReturnType<typeof iconsLoaded>): void => {
                 state.icons = action.payload;
+            })
+            .addMatcher(scenarioLoaded.match, (state, action: ReturnType<typeof scenarioLoaded>): void => {
+                state.scenario = action.payload;
             })
             .addMatcher(changeProperty.match, (state, action: ReturnType<typeof changeProperty>): void => {
                 if (state.selectedControl?.id === action.payload.controlId) {
@@ -210,6 +221,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     control.properties[propertyName] = property;
                     state.changes.controls[key] = control;
                 }
+            })
+            .addMatcher(showMessage.match, (state, action: ReturnType<typeof showMessage>): void => {
+                state.dialogMessage = action.payload;
             })
 });
 

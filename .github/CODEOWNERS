@@ -30,6 +30,12 @@
 # Module: odata-service-writer
 /packages/odata-service-writer/ @SAP/ux-tools-odata-service-writer
 
+# Module: odata-annotation-core
+/packages/odata-annotation-core/ @SAP/ux-tools-annotations
+
+# Module: odata-annotation-core-types
+/packages/odata-annotation-core-types/ @SAP/ux-tools-annotations
+
 # Module: ui-components
 /packages/ui-components/ @SAP/ux-tools-ui-components
 
@@ -65,6 +71,12 @@
 
 # Module: control-property-editor-common
 /packages/control-property-editor-common/ @SAP/ux-tools-control-property-editor
+
+# Module: odata-vocabularies
+/packages/odata-vocabularies @SAP/ux-tools-annotations
+
+# Module: odata-entity-model
+/packages/odata-entity-model/ @SAP/ux-tools-annotations
 
 # Admin
 /.github/ @SAP/ux-tools-admin
