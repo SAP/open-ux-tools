@@ -1,19 +1,22 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": [
-        "src"
-    ],
-    "exclude": [
-        "sample"
-    ],
-    "compilerOptions": {
-        "outDir": "dist",
-        "rootDir": "src",
-        "moduleResolution": "Node16"
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "sample"
+  ],
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "moduleResolution": "Node16"
+  },
+  "references": [
+    {
+      "path": "../../packages/fe-fpm-writer"
     },
-    "references": [
-        {
-            "path": "../../packages/fe-fpm-writer"
-        }
-    ]
+    {
+      "path": "../../packages/project-access"
+    }
+  ]
 }

@@ -14,9 +14,16 @@
                 "message": "Enter an ID for the chart building block",
                 "validation": "An ID is required to generate the chart building block"
             },
+            "aggregation": "Aggregation Path",
+            "entity": "Entity Type",
+            "viewOrFragmentFile": {
+                "message": "View or Fragment file name",
+                "validation": "An View or Fragment is required to generate the chart building block"
+            },
             "contextPath": "Enter the context path used in the page",
             "metaPath": "Enter the relative path of the property in the meta model",
             "filterBar": "Enter the ID of the filter bar building block associated with the chart",
+            "bindingContextType": "Binding Context Path Type",
             "personalization": {
                 "message": "Select chart personalization",
                 "choices": {
@@ -26,23 +33,30 @@
                 }
             },
             "selectionMode": {
-                "message": "Select chart selection mode",
+                "message": "Select Binding Context Path Type",
                 "choices": {
                     "single": "Single",
                     "multiple": "Multiple"
                 }
             },
-            "selectionChange": "Enter a function to be called when the selection has changed"
+            "selectionChange": "Enter a function to be called when the selection has changed",
+            "chartQualifier": "Chart Qualifier",
         },
         "filterBar": {
             "id": {
                 "message": "Enter an ID for the filter bar building block",
                 "validation": "An ID is required to generate the filter bar building block"
             },
-            "contextPath": "Enter the context path used in the page",
+            "viewOrFragmentFile": {
+                "message": "View or Fragment file name",
+                "validation": "An View or Fragment is required to generate the filterbar building block"
+            },
+            "entity": "Entity Type",
             "metaPath": "Enter the relative path of the property in the meta model",
             "filterChanged": "Enter a function to be called when the filter value has changed",
-            "search": "Enter a function to be called when the go button is pressed"
+            "search": "Enter a function to be called when the go button is pressed",
+            "selectionFieldQualifier": "Selection Fields Qualifier",
+            "aggregation": "Aggregation Path"
         }
     }
 }

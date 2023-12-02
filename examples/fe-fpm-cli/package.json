@@ -23,7 +23,8 @@
     "devDependencies": {
         "@types/inquirer": "9.0.3",
         "@types/mem-fs": "1.1.2",
-        "@types/mem-fs-editor": "7.0.1"
+        "@types/mem-fs-editor": "7.0.1",
+        "@types/vinyl": "2.0.7"
     },
     "files": [
         "dist",

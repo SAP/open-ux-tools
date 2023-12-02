@@ -10,7 +10,7 @@ import { getChartBuildingBlockPrompts } from '@sap-ux/fe-fpm-writer';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join, relative } from 'path';
 import { promises as fsPromises } from 'fs';
 import { promisify } from 'util';
 // import inquirer from 'inquirer';
@@ -35,9 +35,11 @@ async function initialize(): Promise<Editor> {
     const manifestContent = (
         await fsPromises.readFile(join(sampleAppPath, manifestFilePath), 'utf-8')
     ).toLocaleString();
-    fs.write(join(testAppPath, manifestFilePath), manifestContent);
-    const xmlViewContent = (await fsPromises.readFile(join(sampleAppPath, xmlViewFilePath), 'utf-8')).toLocaleString();
-    fs.write(join(testAppPath, xmlViewFilePath), xmlViewContent);
+    // fs.write(join(testAppPath, manifestFilePath), manifestContent);
+    // const xmlViewContent = (await fsPromises.readFile(join(sampleAppPath, xmlViewFilePath), 'utf-8')).toLocaleString();
+    // fs.write(join(testAppPath, xmlViewFilePath), xmlViewContent);
+    fs.copy([join(sampleAppPath) /* ,join(sampleAppPath,'annotation') */], join(testAppPath));
+
     await promisify(fs.commit).call(fs);
     return fs;
 }
@@ -50,15 +52,19 @@ async function initialize(): Promise<Editor> {
  */
 export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor> {
     const inquirer = await getInquirer();
+    const basePath = testAppPath;
 
     const answers: FilterBarPromptsAnswer = (await inquirer.prompt(
-        await getFilterBarBuildingBlockPrompts()
+        await getFilterBarBuildingBlockPrompts(basePath, fs)
     )) as FilterBarPromptsAnswer;
+    const { aggregationPath, viewOrFragmentFile, selectionFieldQualifier } = answers;
+
+    answers.metaPath = selectionFieldQualifier
     fs = generateBuildingBlock<FilterBarPromptsAnswer>(
-        testAppPath,
+        basePath,
         {
-            aggregationPath: `/mvc:View/*[local-name()='Page']/*[local-name()='content']`,
-            viewOrFragmentPath: xmlViewFilePath,
+            aggregationPath,
+            viewOrFragmentPath: relative(basePath,viewOrFragmentFile),
             buildingBlockData: {
                 ...answers,
                 buildingBlockType: BuildingBlockType.FilterBar
@@ -77,15 +83,33 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
  */
 export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
     const inquirer = await getInquirer();
+    const basePath = testAppPath;
 
     const answers: ChartPromptsAnswer = (await inquirer.prompt(
-        await getChartBuildingBlockPrompts(testAppPath, fs)
+        await getChartBuildingBlockPrompts(basePath, fs)
     )) as ChartPromptsAnswer;
+
+    const { aggregationPath, viewOrFragmentFile, entity, chartQualifier, bindingContextType } = answers;
+
+    const entityPath = entity.lastIndexOf('.') >= 0 ? entity?.substring?.(entity.lastIndexOf('.') + 1) : entity;
+    let navigationProperty = chartQualifier.substring(0, chartQualifier.indexOf('@'));
+    const _chartQualifier = chartQualifier.substring(chartQualifier.indexOf('@'));
+
+    if (bindingContextType === 'relative') {
+        answers.metaPath = navigationProperty ? `${navigationProperty}${_chartQualifier}` : _chartQualifier;
+    } else {
+        if (navigationProperty) {
+            navigationProperty = `/${navigationProperty}`;
+        }
+        answers.contextPath = entityPath ? `/${entityPath}${navigationProperty}` : '';
+        answers.metaPath = _chartQualifier;
+    }
+
     fs = generateBuildingBlock<ChartPromptsAnswer>(
-        testAppPath,
+        basePath,
         {
-            aggregationPath: `/mvc:View/*[local-name()='Page']/*[local-name()='content']`,
-            viewOrFragmentPath: xmlViewFilePath,
+            aggregationPath,
+            viewOrFragmentPath: relative(basePath, viewOrFragmentFile),
             buildingBlockData: {
                 ...answers,
                 buildingBlockType: BuildingBlockType.Chart
@@ -97,9 +121,9 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
 }
 
 (async () => {
+   try {
     let fs = await initialize();
     const inquirer = await getInquirer();
-    // const inquirer = require('inquirer');
     const answers: BuildingBlockTypePromptsAnswer = await inquirer.prompt(await getBuildingBlockTypePrompts());
 
     switch (answers.buildingBlockType) {
@@ -113,6 +137,9 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
             break;
     }
     await promisify(fs.commit).call(fs);
+   } catch (error) {
+    console.error(error.message)
+   }
 })();
 
 async function getInquirer() {

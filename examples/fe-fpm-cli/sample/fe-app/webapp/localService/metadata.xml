@@ -1,0 +1,2093 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+xmlns:sap="http://www.sap.com/Protocols/SAPData">
+<edmx:Reference
+Uri="https://odata.example:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value"
+xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+<edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+</edmx:Reference>
+<edmx:Reference
+Uri="https://odata.example:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL')/$value"
+xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+<edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Capabilities"/>
+</edmx:Reference>
+<edmx:Reference
+Uri="https://odata.example:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL')/$value"
+xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+<edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
+</edmx:Reference>
+<edmx:Reference
+Uri="https://odata.example:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='LOCAL')/$value"
+xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+<edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="Aggregation"/>
+</edmx:Reference>
+<edmx:Reference
+Uri="https://odata.example:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='LOCAL')/$value"
+xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+<edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData"/>
+</edmx:Reference>
+<edmx:Reference
+Uri="https://odata.example:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='LOCAL')/$value"
+xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+<edmx:Include Namespace="Org.OData.Validation.V1" Alias="Validation"/>
+</edmx:Reference>
+<edmx:Reference
+Uri="https://odata.example:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='LOCAL')/$value"
+xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+<edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics"/>
+</edmx:Reference>
+<edmx:Reference
+Uri="https://odata.example:443/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='LOCAL')/$value"
+xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+<edmx:Include Namespace="Org.OData.Measures.V1" Alias="Measures"/>
+</edmx:Reference>
+<edmx:DataServices m:DataServiceVersion="2.0">
+    <Schema Namespace="C_CUSTOMER_OP_SRV" xml:lang="en" sap:schema-version="1"
+    xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+    <EntityType Name="C_CustomerBankDetailsOPType" sap:content-version="1">
+        <Key>
+            <PropertyRef Name="Customer"/>
+            <PropertyRef Name="BankCountry"/>
+            <PropertyRef Name="Bank"/>
+            <PropertyRef Name="BankAccount"/>
+        </Key>
+        <Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10"
+        sap:display-format="UpperCase" sap:label="Customer" sap:quickinfo="Customer Number"
+        sap:value-list="standard"/>
+        <Property Name="BankCountry" Type="Edm.String" Nullable="false" MaxLength="3"
+        sap:display-format="UpperCase" sap:text="to_CountryText/Country_Text" sap:label="Bank Country"
+        sap:quickinfo="Bank Country Key" sap:value-list="standard"/>
+        <Property Name="Bank" Type="Edm.String" Nullable="false" MaxLength="15" sap:display-format="UpperCase"
+        sap:label="Bank Key" sap:quickinfo="Bank Keys"/>
+        <Property Name="BankAccount" Type="Edm.String" Nullable="false" MaxLength="18"
+        sap:display-format="UpperCase" sap:label="Bank Account" sap:quickinfo="Bank account number"/>
+        <Property Name="BankAccountHolderName" Type="Edm.String" MaxLength="60" sap:label="Account holder"
+        sap:quickinfo="Account Holder Name"/>
+        <Property Name="CityName" Type="Edm.String" MaxLength="35" sap:label="City"/>
+        <Property Name="BankName" Type="Edm.String" MaxLength="60" sap:label="Bank Name"/>
+        <Property Name="SWIFTCode" Type="Edm.String" MaxLength="11" sap:display-format="UpperCase"
+        sap:label="SWIFT Code" sap:quickinfo="SWIFT/BIC for International Payments"/>
+        <Property Name="AuthorizationGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+        sap:label="Authorization" sap:quickinfo="Authorization Group"/>
+        <NavigationProperty Name="to_CountryText"
+        Relationship="C_CUSTOMER_OP_SRV.assoc_365C57024C75EBA4E07C4B655FCE18C2"
+        FromRole="FromRole_assoc_365C57024C75EBA4E07C4B655FCE18C2"
+        ToRole="ToRole_assoc_365C57024C75EBA4E07C4B655FCE18C2"/>
+    </EntityType>
+    <EntityType Name="C_CustomerCompanyCodeOPType" sap:label="Customer Company Code Fact Sheet"
+    sap:content-version="1">
+    <Key>
+        <PropertyRef Name="Customer"/>
+        <PropertyRef Name="CompanyCode"/>
+    </Key>
+    <Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10"
+    sap:display-format="UpperCase" sap:label="Customer" sap:quickinfo="Customer Number"
+    sap:value-list="standard"/>
+    <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4"
+    sap:display-format="UpperCase" sap:text="to_CompanyCodeValueHelp/CompanyCodeName"
+    sap:label="Company Code" sap:value-list="standard"/>
+    <Property Name="AuthorizationGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:label="Authorization" sap:quickinfo="Authorization Group"/>
+    <Property Name="AccountingClerk" Type="Edm.String" MaxLength="2" sap:display-format="UpperCase"
+    sap:text="to_AccountingClerkValueHelp/AccountingClerkName" sap:label="Clerk Abbrev."
+    sap:quickinfo="Accounting Clerk Abbreviation" sap:value-list="standard"/>
+    <Property Name="ReconciliationAccount" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase"
+    sap:text="to_RecnclnAcctValueHelp/ReconciliationAccount_Text" sap:label="Reconciliation Acct"
+    sap:quickinfo="Reconciliation Account in General Ledger" sap:value-list="standard"/>
+    <Property Name="PaymentBlockingReason" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase"
+    sap:text="to_PaymentBlockValueHelp/PaymentBlockingReason_Text" sap:label="Blocked"
+    sap:quickinfo="Block Key for Payment" sap:value-list="standard"/>
+    <Property Name="LastDunnedOn" Type="Edm.DateTime" Precision="0" sap:display-format="Date"
+    sap:label="Last Dunned" sap:quickinfo="Date of Last Dunning Notice"/>
+    <Property Name="DunningProcedure" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:label="Dunning Procedure"/>
+    <Property Name="DunningLevel" Type="Edm.String" MaxLength="1" sap:display-format="NonNegative"
+    sap:label="Dunning Level"/>
+    <Property Name="DunningBlock" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase"
+    sap:label="Dunning Block"/>
+    <Property Name="DunningRecipient" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase"
+    sap:label="Dunning Recipient" sap:quickinfo="Account Number of the Dunning Recipient"/>
+    <Property Name="LegDunningProcedureOn" Type="Edm.DateTime" Precision="0" sap:display-format="Date"
+    sap:label="Legal Dunn.Proc.From" sap:quickinfo="Date of the Legal Dunning Proceedings"/>
+    <Property Name="IsBusinessPurposeCompleted" Type="Edm.String" MaxLength="1"
+    sap:display-format="UpperCase" sap:label="PurposeComplete Flag"
+    sap:quickinfo="Business Purpose Completed Flag"/>
+    <Property Name="CustomerName" Type="Edm.String" MaxLength="80" sap:label="Name of Customer"/>
+    <NavigationProperty Name="to_AccountingClerkValueHelp"
+    Relationship="C_CUSTOMER_OP_SRV.assoc_D01657D028E11F5CCB1207DFE2C13937"
+    FromRole="FromRole_assoc_D01657D028E11F5CCB1207DFE2C13937"
+    ToRole="ToRole_assoc_D01657D028E11F5CCB1207DFE2C13937"/>
+    <NavigationProperty Name="to_CompanyCodeValueHelp"
+    Relationship="C_CUSTOMER_OP_SRV.assoc_06ECC119F299310AD8900BD1FA9C2442"
+    FromRole="FromRole_assoc_06ECC119F299310AD8900BD1FA9C2442"
+    ToRole="ToRole_assoc_06ECC119F299310AD8900BD1FA9C2442"/>
+    <NavigationProperty Name="to_CustomerDunning"
+    Relationship="C_CUSTOMER_OP_SRV.assoc_E5C06F4D68D1CCDF7822BF9FB66B6E96"
+    FromRole="FromRole_assoc_E5C06F4D68D1CCDF7822BF9FB66B6E96"
+    ToRole="ToRole_assoc_E5C06F4D68D1CCDF7822BF9FB66B6E96"/>
+    <NavigationProperty Name="to_PaymentBlockValueHelp"
+    Relationship="C_CUSTOMER_OP_SRV.assoc_552EE62853471C79627CD965C157F8CD"
+    FromRole="FromRole_assoc_552EE62853471C79627CD965C157F8CD"
+    ToRole="ToRole_assoc_552EE62853471C79627CD965C157F8CD"/>
+    <NavigationProperty Name="to_RecnclnAcctValueHelp"
+    Relationship="C_CUSTOMER_OP_SRV.assoc_DBCAA1172D056CFE1886B4C954E455B5"
+    FromRole="FromRole_assoc_DBCAA1172D056CFE1886B4C954E455B5"
+    ToRole="ToRole_assoc_DBCAA1172D056CFE1886B4C954E455B5"/>
+</EntityType>
+<EntityType Name="C_CustomerOPType" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="Customer"/>
+    </Key>
+    <Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10"
+    sap:display-format="UpperCase" sap:text="CustomerName" sap:label="Customer"
+    sap:quickinfo="Customer Number"/>
+    <Property Name="CustomerName" Type="Edm.String" MaxLength="80" sap:label="Name of Customer"/>
+    <Property Name="CustomerAccountGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:label="Account Group" sap:quickinfo="Customer Account Group"/>
+    <Property Name="AuthorizationGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:label="Authorization" sap:quickinfo="Authorization Group"/>
+    <Property Name="CityName" Type="Edm.String" MaxLength="40" sap:label="City"/>
+    <Property Name="FormattedAddress" Type="Edm.String" MaxLength="334" sap:label="Address"
+    sap:quickinfo="Address Details"/>
+    <Property Name="Industry" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:label="Industry" sap:quickinfo="Industry key"/>
+    <Property Name="InternationalLocationNumber1" Type="Edm.String" MaxLength="7"
+    sap:display-format="NonNegative" sap:label="Int. location no. 1"
+    sap:quickinfo="International location number  (part 1)"/>
+    <Property Name="TaxNumber1" Type="Edm.String" MaxLength="16" sap:display-format="UpperCase"
+    sap:label="Tax Number" sap:quickinfo="Tax Number 1"/>
+    <Property Name="InternationalPhoneNumber" Type="Edm.String" MaxLength="30"
+    sap:display-format="UpperCase" sap:label="Telephone Number"
+    sap:quickinfo="Complete Number: Dialling Code+Number+Extension"/>
+    <Property Name="InternationalMobilePhoneNumber" Type="Edm.String" MaxLength="30"
+    sap:display-format="UpperCase" sap:label="Mobile"
+    sap:quickinfo="Complete Number: Dialling Code+Number+Extension"/>
+    <Property Name="InternationalFaxNumber" Type="Edm.String" MaxLength="30" sap:display-format="UpperCase"
+    sap:label="Fax Number" sap:quickinfo="Complete Number: Dialling Code+Number+Extension"/>
+    <Property Name="EmailAddress" Type="Edm.String" MaxLength="241" sap:label="Email"
+    sap:quickinfo="E-Mail Address"/>
+    <Property Name="OrderIsBlockedForCustomer" Type="Edm.String" MaxLength="2"
+    sap:display-format="UpperCase" sap:text="OrderIsBlockedForCustomer_Text"
+    sap:label="Order Block" sap:quickinfo="Central Order Block for Customer"/>
+    <Property Name="OrderIsBlockedForCustomer_Text" Type="Edm.String" MaxLength="20" sap:label="Description"
+    sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+    <Property Name="BillingIsBlockedForCustomer" Type="Edm.String" MaxLength="2"
+    sap:display-format="UpperCase"
+    sap:text="to_BillingBlockReasonValueHelp/BillingBlockReason_Text" sap:label="Billing Block"
+    sap:quickinfo="Central Billing Block for Customer" sap:value-list="fixed-values"/>
+    <Property Name="DeliveryIsBlocked" Type="Edm.String" MaxLength="2" sap:display-format="UpperCase"
+    sap:text="to_DelivBlkRsnValueHelp/DeliveryBlockReason_Text" sap:label="Delivery block"
+    sap:quickinfo="Central delivery block for the customer" sap:value-list="fixed-values"/>
+    <Property Name="PostingIsBlocked" Type="Edm.Boolean" sap:display-format="UpperCase"
+    sap:label="Posting Block" sap:quickinfo="Central Posting Block"/>
+    <Property Name="IsBusinessPurposeCompleted" Type="Edm.String" MaxLength="1"
+    sap:display-format="UpperCase" sap:label="PurposeComplete Flag"
+    sap:quickinfo="Business Purpose Completed Flag"/>
+    <Property Name="URLFieldLength" Type="Edm.Int16" sap:label="URI length"
+    sap:quickinfo="URI field length"/>
+    <Property Name="WebsiteURL" Type="Edm.String" MaxLength="2048" sap:label="URI"
+    sap:quickinfo="Universal Resource Identifier (URI)"/>
+    <NavigationProperty Name="to_BillingBlockReasonValueHelp"
+    Relationship="C_CUSTOMER_OP_SRV.assoc_9CA095E9A89D9775B44DA8211D73BE8C"
+    FromRole="FromRole_assoc_9CA095E9A89D9775B44DA8211D73BE8C"
+    ToRole="ToRole_assoc_9CA095E9A89D9775B44DA8211D73BE8C"/>
+    <NavigationProperty Name="to_CustomerBankDetails"
+    Relationship="C_CUSTOMER_OP_SRV.assoc_04C558FEF06F0B22046DFCFF3E3D84F9"
+    FromRole="FromRole_assoc_04C558FEF06F0B22046DFCFF3E3D84F9"
+    ToRole="ToRole_assoc_04C558FEF06F0B22046DFCFF3E3D84F9"/>
+    <NavigationProperty Name="to_CustomerCompanyCode"
+    Relationship="C_CUSTOMER_OP_SRV.assoc_745BEAEE3BCBA087ED9743AB340C9AE1"
+    FromRole="FromRole_assoc_745BEAEE3BCBA087ED9743AB340C9AE1"
+    ToRole="ToRole_assoc_745BEAEE3BCBA087ED9743AB340C9AE1"/>
+    <NavigationProperty Name="to_CustomerContact"
+    Relationship="C_CUSTOMER_OP_SRV.assoc_98BF29B332B854ECC02676F518988A5E"
+    FromRole="FromRole_assoc_98BF29B332B854ECC02676F518988A5E"
+    ToRole="ToRole_assoc_98BF29B332B854ECC02676F518988A5E"/>
+    <NavigationProperty Name="to_CustomerSalesArea"
+    Relationship="C_CUSTOMER_OP_SRV.assoc_56A4520D0991929F2A64E2F31BADC452"
+    FromRole="FromRole_assoc_56A4520D0991929F2A64E2F31BADC452"
+    ToRole="ToRole_assoc_56A4520D0991929F2A64E2F31BADC452"/>
+    <NavigationProperty Name="to_DelivBlkRsnValueHelp"
+    Relationship="C_CUSTOMER_OP_SRV.assoc_FC332A02E4A354DCA09BD03F7F46FE00"
+    FromRole="FromRole_assoc_FC332A02E4A354DCA09BD03F7F46FE00"
+    ToRole="ToRole_assoc_FC332A02E4A354DCA09BD03F7F46FE00"/>
+    <NavigationProperty Name="to_OrderIsBlockedForCustomer"
+    Relationship="C_CUSTOMER_OP_SRV.assoc_FBB66F478F1125C4A67026E66DC00F53"
+    FromRole="FromRole_assoc_FBB66F478F1125C4A67026E66DC00F53"
+    ToRole="ToRole_assoc_FBB66F478F1125C4A67026E66DC00F53"/>
+</EntityType>
+<EntityType Name="C_CustomerSalesAreaOPType" sap:label="Consumption Factsheet - Sales view Facet"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="Customer"/>
+    <PropertyRef Name="SalesOrganization"/>
+    <PropertyRef Name="DistributionChannel"/>
+    <PropertyRef Name="Division"/>
+</Key>
+<Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10"
+sap:display-format="UpperCase" sap:label="Customer" sap:quickinfo="Customer Number"
+sap:value-list="standard"/>
+<Property Name="SalesOrganization" Type="Edm.String" Nullable="false" MaxLength="4"
+sap:display-format="UpperCase" sap:text="to_SalesOrganizationValueHelp/SalesOrganization_Text"
+sap:label="Sales Organization" sap:value-list="standard"/>
+<Property Name="DistributionChannel" Type="Edm.String" Nullable="false" MaxLength="2"
+sap:display-format="UpperCase" sap:text="to_DistrChnlValueHelp/DistributionChannel_Text"
+sap:label="Distribution Channel" sap:value-list="standard"/>
+<Property Name="Division" Type="Edm.String" Nullable="false" MaxLength="2"
+sap:display-format="UpperCase" sap:text="to_DivisionValueHelp/Division_Text"
+sap:label="Division" sap:value-list="standard"/>
+<Property Name="CustomerABCClassification" Type="Edm.String" MaxLength="2"
+sap:display-format="UpperCase" sap:label="ABC classification"
+sap:quickinfo="Customer classification (ABC analysis)"/>
+<Property Name="AuthorizationGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+sap:label="Authorization Group"/>
+<Property Name="SalesOffice" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+sap:text="to_SalesOfficeValueHelp/SalesOffice_Text" sap:label="Sales Office"
+sap:value-list="standard"/>
+<Property Name="SalesGroup" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase"
+sap:text="to_SalesGroupValueHelp/SalesGroup_Text" sap:label="Sales Group"
+sap:value-list="standard"/>
+<Property Name="OrderIsBlockedForCustomer" Type="Edm.String" MaxLength="2"
+sap:display-format="UpperCase" sap:label="Ord.blk:sls ar."
+sap:quickinfo="Customer order block (sales area)"/>
+<Property Name="DeliveryIsBlockedForCustomer" Type="Edm.String" MaxLength="2"
+sap:display-format="UpperCase" sap:text="to_DelivBlkRsnValueHelp/DeliveryBlockReason_Text"
+sap:label="Delivery Block" sap:quickinfo="Customer delivery block (sales area)"
+sap:value-list="fixed-values"/>
+<Property Name="BillingIsBlockedForCustomer" Type="Edm.String" MaxLength="2"
+sap:display-format="UpperCase"
+sap:text="to_BillingBlockReasonValueHelp/BillingBlockReason_Text" sap:label="Billing Block"
+sap:quickinfo="Billing block for customer (sales and distribution)"
+sap:value-list="fixed-values"/>
+<Property Name="CustomerGroup" Type="Edm.String" MaxLength="2" sap:display-format="UpperCase"
+sap:text="to_CustomerGroupValueHelp/CustomerGroup_Text" sap:label="Customer Group"
+sap:value-list="standard"/>
+<Property Name="IsBusinessPurposeCompleted" Type="Edm.String" MaxLength="1"
+sap:display-format="UpperCase" sap:label="PurposeComplete Flag"
+sap:quickinfo="Business Purpose Completed Flag"/>
+<NavigationProperty Name="to_BillingBlockReasonValueHelp"
+Relationship="C_CUSTOMER_OP_SRV.assoc_91E43BAAC37B80B6B13054CF1E230AF3"
+FromRole="FromRole_assoc_91E43BAAC37B80B6B13054CF1E230AF3"
+ToRole="ToRole_assoc_91E43BAAC37B80B6B13054CF1E230AF3"/>
+<NavigationProperty Name="to_CustomerGroupValueHelp"
+Relationship="C_CUSTOMER_OP_SRV.assoc_E437293EB34F79F90846064729B6196E"
+FromRole="FromRole_assoc_E437293EB34F79F90846064729B6196E"
+ToRole="ToRole_assoc_E437293EB34F79F90846064729B6196E"/>
+<NavigationProperty Name="to_DelivBlkRsnValueHelp"
+Relationship="C_CUSTOMER_OP_SRV.assoc_56D43500536E212FFBCCBC98461A8EA4"
+FromRole="FromRole_assoc_56D43500536E212FFBCCBC98461A8EA4"
+ToRole="ToRole_assoc_56D43500536E212FFBCCBC98461A8EA4"/>
+<NavigationProperty Name="to_DistrChnlValueHelp"
+Relationship="C_CUSTOMER_OP_SRV.assoc_87AED9397EAAEE736474E34FCCBC1176"
+FromRole="FromRole_assoc_87AED9397EAAEE736474E34FCCBC1176"
+ToRole="ToRole_assoc_87AED9397EAAEE736474E34FCCBC1176"/>
+<NavigationProperty Name="to_DivisionValueHelp"
+Relationship="C_CUSTOMER_OP_SRV.assoc_39972A3268160FD9A439E30E61C7EDB6"
+FromRole="FromRole_assoc_39972A3268160FD9A439E30E61C7EDB6"
+ToRole="ToRole_assoc_39972A3268160FD9A439E30E61C7EDB6"/>
+<NavigationProperty Name="to_SalesGroupValueHelp"
+Relationship="C_CUSTOMER_OP_SRV.assoc_FAAC28BC9D7A80E0A00E0E3ACC3D2653"
+FromRole="FromRole_assoc_FAAC28BC9D7A80E0A00E0E3ACC3D2653"
+ToRole="ToRole_assoc_FAAC28BC9D7A80E0A00E0E3ACC3D2653"/>
+<NavigationProperty Name="to_SalesOfficeValueHelp"
+Relationship="C_CUSTOMER_OP_SRV.assoc_9B6A688DB41F0F3C42250EC61B90E217"
+FromRole="FromRole_assoc_9B6A688DB41F0F3C42250EC61B90E217"
+ToRole="ToRole_assoc_9B6A688DB41F0F3C42250EC61B90E217"/>
+<NavigationProperty Name="to_SalesOrganizationValueHelp"
+Relationship="C_CUSTOMER_OP_SRV.assoc_D2204D69B01708BFD6B2609F7E353AB8"
+FromRole="FromRole_assoc_D2204D69B01708BFD6B2609F7E353AB8"
+ToRole="ToRole_assoc_D2204D69B01708BFD6B2609F7E353AB8"/>
+</EntityType>
+<EntityType Name="C_CustrecnclnacctvhtempType" sap:label="Value Help for Customer Reconciliation Account"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="ReconciliationAccount"/>
+    <PropertyRef Name="CompanyCode"/>
+</Key>
+<Property Name="ReconciliationAccount" Type="Edm.String" Nullable="false" MaxLength="10"
+sap:display-format="UpperCase" sap:text="ReconciliationAccount_Text" sap:label="G/L Account"
+sap:quickinfo="G/L Account Number"/>
+<Property Name="ReconciliationAccount_Text" Type="Edm.String" MaxLength="50" sap:label="Description"
+sap:quickinfo="G/L Account Long Text" sap:creatable="false" sap:updatable="false"/>
+<Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4"
+sap:display-format="UpperCase" sap:label="Company Code" sap:value-list="standard"/>
+<Property Name="ChartOfAccounts" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+sap:label="Chart of Accounts" sap:value-list="standard"/>
+</EntityType>
+<EntityType Name="C_OrderIsBlockedTextVHTempType" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="OrderIsBlockedForCustomer"/>
+        <PropertyRef Name="Language"/>
+    </Key>
+    <Property Name="OrderIsBlockedForCustomer" Type="Edm.String" Nullable="false" MaxLength="2"
+    sap:display-format="UpperCase" sap:label="Order Block"
+    sap:quickinfo="Indicator for Order Block"/>
+    <Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:label="Language Key"/>
+    <Property Name="OrderDescription" Type="Edm.String" MaxLength="20" sap:label="Description"/>
+</EntityType>
+<EntityType Name="I_AccountingClerkType" sap:label="Accounting Clerk" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="CompanyCode"/>
+        <PropertyRef Name="AccountingClerk"/>
+    </Key>
+    <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4"
+    sap:display-format="UpperCase" sap:label="Company Code" sap:value-list="standard"/>
+    <Property Name="AccountingClerk" Type="Edm.String" Nullable="false" MaxLength="2"
+    sap:display-format="UpperCase" sap:text="AccountingClerkName" sap:label="Accounting Clerk"/>
+    <Property Name="AccountingClerkName" Type="Edm.String" MaxLength="30" sap:label="Acctg Clerk Name"
+    sap:quickinfo="Name of Accounting Clerk"/>
+    <Property Name="UserID" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase"
+    sap:label="User ID"/>
+</EntityType>
+<EntityType Name="I_AccountingClerkStdVHType" sap:label="Accounting Clerk" sap:value-list="true"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="CompanyCode"/>
+    <PropertyRef Name="AccountingClerk"/>
+</Key>
+<Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4"
+sap:display-format="UpperCase" sap:label="Company Code"/>
+<Property Name="AccountingClerk" Type="Edm.String" Nullable="false" MaxLength="2"
+sap:display-format="UpperCase" sap:text="AccountingClerkName" sap:label="Accounting Clerk"/>
+<Property Name="AccountingClerkName" Type="Edm.String" MaxLength="30" sap:label="Acctg Clerk Name"
+sap:quickinfo="Name of Accounting Clerk"/>
+</EntityType>
+<EntityType Name="I_BillingBlockReasonType" sap:label="Value Help for Billing Block Reason"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="BillingBlockReason"/>
+</Key>
+<Property Name="BillingBlockReason" Type="Edm.String" Nullable="false" MaxLength="2"
+sap:display-format="UpperCase" sap:text="BillingBlockReason_Text" sap:label="Billing Block"/>
+<Property Name="BillingBlockReason_Text" Type="Edm.String" MaxLength="20"
+sap:label="Billing Block Desc." sap:quickinfo="Billing Block Description"
+sap:creatable="false" sap:updatable="false"/>
+</EntityType>
+<EntityType Name="I_BusinessPartnerVHType" sap:label="Business Partner Value Help" sap:value-list="true"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="BusinessPartner"/>
+</Key>
+<Property Name="BusinessPartner" Type="Edm.String" Nullable="false" MaxLength="10"
+sap:display-format="UpperCase" sap:label="Business Partner"
+sap:quickinfo="Business Partner Number"/>
+<Property Name="FormOfAddress" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+sap:label="Title" sap:quickinfo="Form-of-Address Key"/>
+<Property Name="FormOfAddressName" Type="Edm.String" MaxLength="30" sap:label="Title"
+sap:quickinfo="Title text"/>
+<Property Name="FirstName" Type="Edm.String" MaxLength="40" sap:label="First Name"
+sap:quickinfo="First Name of Business Partner (Person)"/>
+<Property Name="LastName" Type="Edm.String" MaxLength="40" sap:label="Last Name"
+sap:quickinfo="Last Name of Business Partner (Person)"/>
+<Property Name="BirthDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date"
+sap:label="Date of Birth" sap:quickinfo="Date of Birth of Business Partner"/>
+<Property Name="BusinessPartnerCategory" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase"
+sap:label="Business Partner Category"/>
+<Property Name="BusinessPartnerIDByExtSystem" Type="Edm.String" MaxLength="20"
+sap:display-format="UpperCase" sap:label="External BP Number"
+sap:quickinfo="Business Partner Number in External System"/>
+<Property Name="BusinessPartnerName" Type="Edm.String" MaxLength="81"
+sap:label="Business Partner Name"/>
+<Property Name="AuthorizationGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+sap:label="Authorization Group"/>
+<Property Name="IsBusinessPurposeCompleted" Type="Edm.String" MaxLength="1"
+sap:display-format="UpperCase" sap:label="Purpose Completed"
+sap:quickinfo="Business Purpose Completed Flag"/>
+</EntityType>
+<EntityType Name="I_ChartOfAccountsStdVHType" sap:label="Chart Of Accounts" sap:value-list="true"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="ChartOfAccounts"/>
+</Key>
+<Property Name="ChartOfAccounts" Type="Edm.String" Nullable="false" MaxLength="4"
+sap:display-format="UpperCase" sap:text="ChartOfAccounts_Text" sap:label="Chart of Accounts"/>
+<Property Name="ChartOfAccounts_Text" Type="Edm.String" MaxLength="50" sap:label="Description"
+sap:quickinfo="Chart of Accounts Description" sap:creatable="false" sap:updatable="false"/>
+</EntityType>
+<EntityType Name="I_CompanyCodeType" sap:label="Company Code" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="CompanyCode"/>
+    </Key>
+    <Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4"
+    sap:display-format="UpperCase" sap:text="CompanyCodeName" sap:label="Company Code"/>
+    <Property Name="CompanyCodeName" Type="Edm.String" MaxLength="25" sap:label="Company Name"
+    sap:quickinfo="Name of Company Code or Company"/>
+    <Property Name="CityName" Type="Edm.String" MaxLength="25" sap:label="City"/>
+    <Property Name="Country" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase"
+    sap:label="Country Key"/>
+    <Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Currency"
+    sap:quickinfo="Currency Key" sap:semantics="currency-code"/>
+    <Property Name="Language" Type="Edm.String" MaxLength="2" sap:label="Language Key"/>
+    <Property Name="ChartOfAccounts" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:label="Chart of Accounts"/>
+    <Property Name="FiscalYearVariant" Type="Edm.String" MaxLength="2" sap:display-format="UpperCase"
+    sap:label="Fiscal Year Variant"/>
+    <Property Name="Company" Type="Edm.String" MaxLength="6" sap:display-format="UpperCase"
+    sap:label="Company"/>
+    <Property Name="CreditControlArea" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:text="CreditControlArea_Text" sap:label="Credit Control Area" sap:value-list="standard"/>
+    <Property Name="CreditControlArea_Text" Type="Edm.String" MaxLength="35" sap:label="Description"
+    sap:quickinfo="Description of the credit control area" sap:creatable="false"
+    sap:updatable="false"/>
+    <Property Name="CountryChartOfAccounts" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:label="Country Chart/Accts"
+    sap:quickinfo="Chart of Accounts According to Country Legislation"/>
+    <Property Name="FinancialManagementArea" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:label="FM Area" sap:quickinfo="Financial Management Area"/>
+    <Property Name="AddressID" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase"
+    sap:label="Address"/>
+    <Property Name="TaxableEntity" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:label="Taxes on Sals/Purch." sap:quickinfo="Sales/Purchases Tax Group"/>
+    <Property Name="VATRegistration" Type="Edm.String" MaxLength="20" sap:display-format="UpperCase"
+    sap:label="VAT Registration No." sap:quickinfo="VAT Registration Number"/>
+    <Property Name="ExtendedWhldgTaxIsActive" Type="Edm.Boolean" sap:display-format="UpperCase"
+    sap:label="Extended WTax Active" sap:quickinfo="Indicator: Extended Withholding Tax Active"/>
+    <Property Name="ControllingArea" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:text="ControllingArea_Text" sap:label="Controlling Area" sap:value-list="standard"/>
+    <Property Name="ControllingArea_Text" Type="Edm.String" MaxLength="25" sap:label="Controlling Area Name"
+    sap:creatable="false" sap:updatable="false"/>
+    <Property Name="FieldStatusVariant" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:label="Field Status Variant"/>
+    <Property Name="NonTaxableTransactionTaxCode" Type="Edm.String" MaxLength="2"
+    sap:display-format="UpperCase" sap:label="Output Tax Code"
+    sap:quickinfo="Output Tax Code for Non-Taxable Transactions"/>
+    <Property Name="DocDateIsUsedForTaxDetn" Type="Edm.Boolean" sap:display-format="UpperCase"
+    sap:label="Tax Determ.with Doc.Date"
+    sap:quickinfo="Indicator: Document Date As the Basis for Tax Determination"/>
+    <Property Name="TaxRptgDateIsActive" Type="Edm.Boolean" sap:display-format="UpperCase"
+    sap:label="Tax Date" sap:quickinfo="Tax Reporting Date Active in Documents"/>
+    <Property Name="CashDiscountBaseAmtIsNetAmt" Type="Edm.Boolean" sap:display-format="UpperCase"
+    sap:label="Net Discount Base"
+    sap:quickinfo="Indicator: Discount base amount is the net value"/>
+</EntityType>
+<EntityType Name="I_CompanyCodeStdVHType" sap:label="Company Code" sap:value-list="true"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="CompanyCode"/>
+</Key>
+<Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4"
+sap:display-format="UpperCase" sap:text="CompanyCodeName" sap:label="Company Code"/>
+<Property Name="CompanyCodeName" Type="Edm.String" MaxLength="25" sap:label="Company Name"
+sap:quickinfo="Name of Company Code or Company"/>
+</EntityType>
+<EntityType Name="I_ContactPersonDepartmentTType" sap:label="Department of Contact Person Textview"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="ContactPersonDepartment"/>
+    <PropertyRef Name="Language"/>
+</Key>
+<Property Name="ContactPersonDepartment" Type="Edm.String" Nullable="false" MaxLength="4"
+sap:display-format="UpperCase" sap:label="Department"/>
+<Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:label="Language Key"/>
+<Property Name="ContactPersonDepartmentName" Type="Edm.String" MaxLength="20" sap:label="Description"/>
+</EntityType>
+<EntityType Name="I_ContactPersonFunctionTType" sap:label="Function of Contact Person Textview"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="ContactPersonFunction"/>
+    <PropertyRef Name="Language"/>
+</Key>
+<Property Name="ContactPersonFunction" Type="Edm.String" Nullable="false" MaxLength="4"
+sap:display-format="UpperCase" sap:label="Function" sap:quickinfo="Function of partner"/>
+<Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:label="Language Key"/>
+<Property Name="ContactPersonFunctionName" Type="Edm.String" MaxLength="30" sap:label="Description"/>
+</EntityType>
+<EntityType Name="I_ControllingAreaStdVHType" sap:label="Controlling Area" sap:value-list="true"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="ControllingArea"/>
+</Key>
+<Property Name="ControllingArea" Type="Edm.String" Nullable="false" MaxLength="4"
+sap:display-format="UpperCase" sap:text="ControllingAreaName" sap:label="Controlling Area"/>
+<Property Name="ControllingAreaName" Type="Edm.String" MaxLength="25"
+sap:label="Controlling Area Name"/>
+</EntityType>
+<EntityType Name="I_CountryType" sap:label="Country" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="Country"/>
+    </Key>
+    <Property Name="Country" Type="Edm.String" Nullable="false" MaxLength="3" sap:display-format="UpperCase"
+    sap:text="Country_Text" sap:label="Country Key"/>
+    <Property Name="Country_Text" Type="Edm.String" MaxLength="50" sap:label="Country Name"
+    sap:quickinfo="Country Name (Max. 50 Characters)" sap:creatable="false"
+    sap:updatable="false"/>
+    <Property Name="CountryThreeLetterISOCode" Type="Edm.String" MaxLength="3"
+    sap:display-format="UpperCase" sap:label="ISO Code 3 Char"
+    sap:quickinfo="ISO country code 3 char"/>
+    <Property Name="CountryThreeDigitISOCode" Type="Edm.String" MaxLength="3"
+    sap:display-format="NonNegative" sap:label="ISO Code Num. 3"
+    sap:quickinfo="ISO Country Code Numeric 3-Characters"/>
+    <Property Name="CountryCurrency" Type="Edm.String" MaxLength="5" sap:label="Country Currency"
+    sap:semantics="currency-code"/>
+    <Property Name="IndexBasedCurrency" Type="Edm.String" MaxLength="5" sap:label="Index-Based Currency"
+    sap:quickinfo="Currency Key of the Index-Based Currency" sap:semantics="currency-code"/>
+    <Property Name="HardCurrency" Type="Edm.String" MaxLength="5" sap:label="Hard Currency"
+    sap:quickinfo="Currency Key of the Hard Currency" sap:semantics="currency-code"/>
+    <Property Name="TaxCalculationProcedure" Type="Edm.String" MaxLength="6" sap:display-format="UpperCase"
+    sap:label="Procedure"
+    sap:quickinfo="Procedure (Pricing, Output Control, Acct. Det., Costing,...)"/>
+    <Property Name="CountryAlternativeCode" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase"
+    sap:label="Altern.Country Key" sap:quickinfo="Alternative Country Key"/>
+</EntityType>
+<EntityType Name="I_CreditControlAreaStdVHType" sap:label="Credit Control Area" sap:value-list="true"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="CreditControlArea"/>
+</Key>
+<Property Name="CreditControlArea" Type="Edm.String" Nullable="false" MaxLength="4"
+sap:display-format="UpperCase" sap:text="CreditControlArea_Text"
+sap:label="Credit Control Area"/>
+<Property Name="CreditControlArea_Text" Type="Edm.String" MaxLength="35" sap:label="Description"
+sap:quickinfo="Description of the credit control area" sap:creatable="false"
+sap:updatable="false"/>
+</EntityType>
+<EntityType Name="I_CustomerContactOPType" sap:label="View for Contacts for Customer Object Page"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="Customer"/>
+    <PropertyRef Name="RelationshipNumber"/>
+    <PropertyRef Name="BusinessPartnerCompany"/>
+    <PropertyRef Name="BusinessPartnerPerson"/>
+</Key>
+<Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10"
+sap:display-format="UpperCase" sap:text="FullName" sap:label="Customer"
+sap:quickinfo="Customer Number" sap:creatable="false" sap:updatable="false"/>
+<Property Name="RelationshipNumber" Type="Edm.String" Nullable="false" MaxLength="12"
+sap:display-format="UpperCase" sap:label="BP Relationship No."
+sap:quickinfo="BP Relationship Number"/>
+<Property Name="BusinessPartnerCompany" Type="Edm.String" Nullable="false" MaxLength="10"
+sap:display-format="UpperCase" sap:label="Business Partner"
+sap:quickinfo="Business Partner Number" sap:value-list="standard"/>
+<Property Name="BusinessPartnerPerson" Type="Edm.String" Nullable="false" MaxLength="10"
+sap:display-format="UpperCase" sap:label="Business Partner"
+sap:quickinfo="Business Partner Number" sap:value-list="standard"/>
+<Property Name="PartnerUUID" Type="Edm.Guid" sap:label="BP GUID" sap:quickinfo="Business Partner GUID"/>
+<Property Name="ContactPersonFunction" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+sap:label="Function" sap:quickinfo="Function of partner" sap:value-list="standard"/>
+<Property Name="ContactPersonDepartment" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+sap:label="Department" sap:value-list="standard"/>
+<Property Name="FirstName" Type="Edm.String" MaxLength="40" sap:label="First Name"
+sap:quickinfo="First Name of Business Partner (Person)"/>
+<Property Name="LastName" Type="Edm.String" MaxLength="40" sap:label="Last Name"
+sap:quickinfo="Last Name of Business Partner (Person)"/>
+<Property Name="FullName" Type="Edm.String" MaxLength="81"/>
+<Property Name="ContactPersonFunctionName" Type="Edm.String" MaxLength="30" sap:label="Description"/>
+<Property Name="ContactPersonDepartmentName" Type="Edm.String" MaxLength="20" sap:label="Description"/>
+<Property Name="PhoneNumber" Type="Edm.String" MaxLength="30" sap:display-format="UpperCase"
+sap:label="Telephone" sap:quickinfo="Telephone no.: dialling code+number"/>
+<Property Name="EmailAddress" Type="Edm.String" MaxLength="241" sap:label="Email Address"
+sap:semantics="email"/>
+<Property Name="MobilePhoneNumber" Type="Edm.String" MaxLength="30" sap:display-format="UpperCase"
+sap:label="Telephone" sap:quickinfo="Telephone no.: dialling code+number"
+sap:semantics="tel"/>
+<NavigationProperty Name="to_CntctPersnDeptValueHelp"
+Relationship="C_CUSTOMER_OP_SRV.assoc_C2836302CC767FCC179A604FBACAF7BB"
+FromRole="FromRole_assoc_C2836302CC767FCC179A604FBACAF7BB"
+ToRole="ToRole_assoc_C2836302CC767FCC179A604FBACAF7BB"/>
+<NavigationProperty Name="to_CntctPersnFuncValueHelp"
+Relationship="C_CUSTOMER_OP_SRV.assoc_85F8831660C2ACD0685A64EFC6D6A4C4"
+FromRole="FromRole_assoc_85F8831660C2ACD0685A64EFC6D6A4C4"
+ToRole="ToRole_assoc_85F8831660C2ACD0685A64EFC6D6A4C4"/>
+<NavigationProperty Name="to_CustomerToBusinessPartner"
+Relationship="C_CUSTOMER_OP_SRV.assoc_F0A165620A15B1D7BAE4F71658303CF0"
+FromRole="FromRole_assoc_F0A165620A15B1D7BAE4F71658303CF0"
+ToRole="ToRole_assoc_F0A165620A15B1D7BAE4F71658303CF0"/>
+</EntityType>
+<EntityType Name="I_CustomerDunningType" sap:label="View For Customer Company Code Dunning Fields"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="CompanyCode"/>
+    <PropertyRef Name="Customer"/>
+    <PropertyRef Name="DunningArea"/>
+</Key>
+<Property Name="CompanyCode" Type="Edm.String" Nullable="false" MaxLength="4"
+sap:display-format="UpperCase" sap:label="Company Code"/>
+<Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10"
+sap:display-format="UpperCase" sap:label="Customer" sap:quickinfo="Customer Number"/>
+<Property Name="DunningArea" Type="Edm.String" Nullable="false" MaxLength="2"
+sap:display-format="UpperCase" sap:label="Dunning Area"/>
+<Property Name="LastDunnedOn" Type="Edm.DateTime" Precision="0" sap:display-format="Date"
+sap:label="Last Dunned" sap:quickinfo="Date of Last Dunning Notice"/>
+<Property Name="DunningProcedure" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+sap:label="Dunning Procedure"/>
+<Property Name="DunningLevel" Type="Edm.String" MaxLength="1" sap:display-format="NonNegative"
+sap:label="Dunning Level"/>
+<Property Name="DunningBlock" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase"
+sap:label="Dunning Block"/>
+<Property Name="DunningRecipient" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase"
+sap:label="Dunning Recipient" sap:quickinfo="Account Number of the Dunning Recipient"/>
+<Property Name="LegDunningProcedureOn" Type="Edm.DateTime" Precision="0" sap:display-format="Date"
+sap:label="Legal Dunn.Proc.From" sap:quickinfo="Date of the Legal Dunning Proceedings"/>
+<Property Name="DunningClerk" Type="Edm.String" MaxLength="2" sap:display-format="UpperCase"
+sap:label="Dunning Clerk"/>
+</EntityType>
+<EntityType Name="I_CustomerGroupType" sap:label="Customer Group" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="CustomerGroup"/>
+    </Key>
+    <Property Name="CustomerGroup" Type="Edm.String" Nullable="false" MaxLength="2"
+    sap:display-format="UpperCase" sap:text="CustomerGroup_Text" sap:label="Customer Group"/>
+    <Property Name="CustomerGroup_Text" Type="Edm.String" MaxLength="20" sap:label="Description"
+    sap:creatable="false" sap:updatable="false"/>
+</EntityType>
+<EntityType Name="I_Customer_to_BusinessPartnerType" sap:label="Customer to BusinessPartner Relationship"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="BusinessPartnerUUID"/>
+</Key>
+<Property Name="BusinessPartnerUUID" Type="Edm.Guid" Nullable="false" sap:label="BP GUID"
+sap:quickinfo="Business Partner GUID"/>
+<Property Name="Customer" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase"
+sap:label="Customer" sap:quickinfo="Customer Number"/>
+<Property Name="AuthorizationGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+sap:label="Authorization Group"/>
+</EntityType>
+<EntityType Name="I_Customer_VHType" sap:label="Value Help for Customer" sap:value-list="true"
+sap:content-version="1">
+<Key>
+    <PropertyRef Name="Customer"/>
+</Key>
+<Property Name="Customer" Type="Edm.String" Nullable="false" MaxLength="10"
+sap:display-format="UpperCase" sap:text="CustomerName" sap:label="Customer"
+sap:quickinfo="Customer Number"/>
+<Property Name="OrganizationBPName1" Type="Edm.String" MaxLength="35" sap:label="Name 1"/>
+<Property Name="OrganizationBPName2" Type="Edm.String" MaxLength="35" sap:label="Name 2"/>
+<Property Name="Country" Type="Edm.String" MaxLength="3" sap:display-format="UpperCase"
+sap:label="Country" sap:quickinfo="Country Key"/>
+<Property Name="CityName" Type="Edm.String" MaxLength="35" sap:label="City"/>
+<Property Name="StreetName" Type="Edm.String" MaxLength="35" sap:label="Street"
+sap:quickinfo="House number and street"/>
+<Property Name="CustomerName" Type="Edm.String" MaxLength="80" sap:label="Customer Name"
+sap:quickinfo="Name of Customer"/>
+<Property Name="CustomerAccountGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+sap:label="Account Group" sap:quickinfo="Customer Account Group"/>
+<Property Name="AuthorizationGroup" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+sap:label="Authorization" sap:quickinfo="Authorization Group"/>
+<Property Name="IsBusinessPurposeCompleted" Type="Edm.String" MaxLength="1"
+sap:display-format="UpperCase" sap:label="Purpose Complete Flag"
+sap:quickinfo="Business Purpose Completed Flag"/>
+</EntityType>
+<EntityType Name="I_DeliveryBlockReasonType" sap:label="Delivery Block Reason" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="DeliveryBlockReason"/>
+    </Key>
+    <Property Name="DeliveryBlockReason" Type="Edm.String" Nullable="false" MaxLength="2"
+    sap:display-format="UpperCase" sap:text="DeliveryBlockReason_Text" sap:label="Delivery Block"
+    sap:quickinfo="Default Delivery Block"/>
+    <Property Name="DeliveryBlockReason_Text" Type="Edm.String" MaxLength="20"
+    sap:label="Delivery Block Desc." sap:quickinfo="Description" sap:creatable="false"
+    sap:updatable="false"/>
+    <Property Name="DeliveryDueListBlock" Type="Edm.Boolean" sap:display-format="UpperCase"
+    sap:label="Delv. Due List Block" sap:quickinfo="Delivery Due List Block"/>
+</EntityType>
+<EntityType Name="I_DistributionChannelType" sap:label="Distribution Channel" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="DistributionChannel"/>
+    </Key>
+    <Property Name="DistributionChannel" Type="Edm.String" Nullable="false" MaxLength="2"
+    sap:display-format="UpperCase" sap:text="DistributionChannel_Text"
+    sap:label="Distribution Channel"/>
+    <Property Name="DistributionChannel_Text" Type="Edm.String" MaxLength="20"
+    sap:label="Distribution Channel Description" sap:creatable="false" sap:updatable="false"/>
+</EntityType>
+<EntityType Name="I_DivisionType" sap:label="Division" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="Division"/>
+    </Key>
+    <Property Name="Division" Type="Edm.String" Nullable="false" MaxLength="2"
+    sap:display-format="UpperCase" sap:text="Division_Text" sap:label="Division"/>
+    <Property Name="Division_Text" Type="Edm.String" MaxLength="20" sap:label="Division Description"
+    sap:creatable="false" sap:updatable="false"/>
+</EntityType>
+<EntityType Name="I_PaymentBlockingReasonType" sap:label="Payment Blocking Reason" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="PaymentBlockingReason"/>
+    </Key>
+    <Property Name="PaymentBlockingReason" Type="Edm.String" Nullable="false" MaxLength="1"
+    sap:display-format="UpperCase" sap:text="PaymentBlockingReason_Text"
+    sap:label="Item Payment Block" sap:quickinfo="Payment Block on Item"/>
+    <Property Name="PaymentBlockingReason_Text" Type="Edm.String" MaxLength="20" sap:label="Description"
+    sap:quickinfo="Explanation of the Reason for Payment Block" sap:creatable="false"
+    sap:updatable="false"/>
+</EntityType>
+<EntityType Name="I_SalesGroupType" sap:label="Sales Group" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="SalesGroup"/>
+    </Key>
+    <Property Name="SalesGroup" Type="Edm.String" Nullable="false" MaxLength="3"
+    sap:display-format="UpperCase" sap:text="SalesGroup_Text" sap:label="Sales Group"/>
+    <Property Name="SalesGroup_Text" Type="Edm.String" MaxLength="20" sap:label="Sales Group Description"
+    sap:creatable="false" sap:updatable="false"/>
+</EntityType>
+<EntityType Name="I_SalesOfficeType" sap:label="Sales Office" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="SalesOffice"/>
+    </Key>
+    <Property Name="SalesOffice" Type="Edm.String" Nullable="false" MaxLength="4"
+    sap:display-format="UpperCase" sap:text="SalesOffice_Text" sap:label="Sales Office"/>
+    <Property Name="SalesOffice_Text" Type="Edm.String" MaxLength="20" sap:label="Sales Office Description"
+    sap:creatable="false" sap:updatable="false"/>
+</EntityType>
+<EntityType Name="I_SalesOrganizationType" sap:label="Sales Organization" sap:content-version="1">
+    <Key>
+        <PropertyRef Name="SalesOrganization"/>
+    </Key>
+    <Property Name="SalesOrganization" Type="Edm.String" Nullable="false" MaxLength="4"
+    sap:display-format="UpperCase" sap:text="SalesOrganization_Text"
+    sap:label="Sales Organization"/>
+    <Property Name="SalesOrganization_Text" Type="Edm.String" MaxLength="20"
+    sap:label="Sales Organization Description" sap:creatable="false" sap:updatable="false"/>
+    <Property Name="SalesOrganizationCurrency" Type="Edm.String" MaxLength="5"
+    sap:label="Statistics Currency" sap:quickinfo="Statistics currency"
+    sap:semantics="currency-code"/>
+    <Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:display-format="UpperCase"
+    sap:label="Company Code" sap:quickinfo="Company code of the sales organization"
+    sap:value-list="standard"/>
+    <Property Name="IntercompanyBillingCustomer" Type="Edm.String" MaxLength="10"
+    sap:display-format="UpperCase" sap:label="Cust.Inter-Co.Bill."
+    sap:quickinfo="Customer number for intercompany billing" sap:value-list="standard"/>
+    <Property Name="AddressID" Type="Edm.String" MaxLength="10" sap:display-format="UpperCase"
+    sap:label="Address"/>
+</EntityType>
+<Association Name="assoc_91E43BAAC37B80B6B13054CF1E230AF3" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType" Multiplicity="1"
+    Role="FromRole_assoc_91E43BAAC37B80B6B13054CF1E230AF3"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_BillingBlockReasonType" Multiplicity="0..1"
+    Role="ToRole_assoc_91E43BAAC37B80B6B13054CF1E230AF3"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_91E43BAAC37B80B6B13054CF1E230AF3">
+            <PropertyRef Name="BillingBlockReason"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_91E43BAAC37B80B6B13054CF1E230AF3">
+            <PropertyRef Name="BillingIsBlockedForCustomer"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_E437293EB34F79F90846064729B6196E" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType" Multiplicity="1"
+    Role="FromRole_assoc_E437293EB34F79F90846064729B6196E"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_CustomerGroupType" Multiplicity="0..1"
+    Role="ToRole_assoc_E437293EB34F79F90846064729B6196E"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_E437293EB34F79F90846064729B6196E">
+            <PropertyRef Name="CustomerGroup"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_E437293EB34F79F90846064729B6196E">
+            <PropertyRef Name="CustomerGroup"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_56D43500536E212FFBCCBC98461A8EA4" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType" Multiplicity="1"
+    Role="FromRole_assoc_56D43500536E212FFBCCBC98461A8EA4"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_DeliveryBlockReasonType" Multiplicity="0..1"
+    Role="ToRole_assoc_56D43500536E212FFBCCBC98461A8EA4"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_56D43500536E212FFBCCBC98461A8EA4">
+            <PropertyRef Name="DeliveryBlockReason"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_56D43500536E212FFBCCBC98461A8EA4">
+            <PropertyRef Name="DeliveryIsBlockedForCustomer"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_87AED9397EAAEE736474E34FCCBC1176" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType" Multiplicity="1"
+    Role="FromRole_assoc_87AED9397EAAEE736474E34FCCBC1176"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_DistributionChannelType" Multiplicity="0..1"
+    Role="ToRole_assoc_87AED9397EAAEE736474E34FCCBC1176"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_87AED9397EAAEE736474E34FCCBC1176">
+            <PropertyRef Name="DistributionChannel"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_87AED9397EAAEE736474E34FCCBC1176">
+            <PropertyRef Name="DistributionChannel"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_39972A3268160FD9A439E30E61C7EDB6" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType" Multiplicity="1"
+    Role="FromRole_assoc_39972A3268160FD9A439E30E61C7EDB6"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_DivisionType" Multiplicity="0..1"
+    Role="ToRole_assoc_39972A3268160FD9A439E30E61C7EDB6"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_39972A3268160FD9A439E30E61C7EDB6">
+            <PropertyRef Name="Division"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_39972A3268160FD9A439E30E61C7EDB6">
+            <PropertyRef Name="Division"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_FAAC28BC9D7A80E0A00E0E3ACC3D2653" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType" Multiplicity="1"
+    Role="FromRole_assoc_FAAC28BC9D7A80E0A00E0E3ACC3D2653"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_SalesGroupType" Multiplicity="0..1"
+    Role="ToRole_assoc_FAAC28BC9D7A80E0A00E0E3ACC3D2653"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_FAAC28BC9D7A80E0A00E0E3ACC3D2653">
+            <PropertyRef Name="SalesGroup"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_FAAC28BC9D7A80E0A00E0E3ACC3D2653">
+            <PropertyRef Name="SalesGroup"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_9B6A688DB41F0F3C42250EC61B90E217" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType" Multiplicity="1"
+    Role="FromRole_assoc_9B6A688DB41F0F3C42250EC61B90E217"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_SalesOfficeType" Multiplicity="0..1"
+    Role="ToRole_assoc_9B6A688DB41F0F3C42250EC61B90E217"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_9B6A688DB41F0F3C42250EC61B90E217">
+            <PropertyRef Name="SalesOffice"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_9B6A688DB41F0F3C42250EC61B90E217">
+            <PropertyRef Name="SalesOffice"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_D2204D69B01708BFD6B2609F7E353AB8" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType" Multiplicity="1"
+    Role="FromRole_assoc_D2204D69B01708BFD6B2609F7E353AB8"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_SalesOrganizationType" Multiplicity="0..1"
+    Role="ToRole_assoc_D2204D69B01708BFD6B2609F7E353AB8"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_D2204D69B01708BFD6B2609F7E353AB8">
+            <PropertyRef Name="SalesOrganization"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_D2204D69B01708BFD6B2609F7E353AB8">
+            <PropertyRef Name="SalesOrganization"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_365C57024C75EBA4E07C4B655FCE18C2" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerBankDetailsOPType" Multiplicity="1"
+    Role="FromRole_assoc_365C57024C75EBA4E07C4B655FCE18C2"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_CountryType" Multiplicity="0..1"
+    Role="ToRole_assoc_365C57024C75EBA4E07C4B655FCE18C2"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_365C57024C75EBA4E07C4B655FCE18C2">
+            <PropertyRef Name="Country"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_365C57024C75EBA4E07C4B655FCE18C2">
+            <PropertyRef Name="BankCountry"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_D01657D028E11F5CCB1207DFE2C13937" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType" Multiplicity="1"
+    Role="FromRole_assoc_D01657D028E11F5CCB1207DFE2C13937"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_AccountingClerkType" Multiplicity="0..1"
+    Role="ToRole_assoc_D01657D028E11F5CCB1207DFE2C13937"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_D01657D028E11F5CCB1207DFE2C13937">
+            <PropertyRef Name="CompanyCode"/>
+            <PropertyRef Name="AccountingClerk"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_D01657D028E11F5CCB1207DFE2C13937">
+            <PropertyRef Name="CompanyCode"/>
+            <PropertyRef Name="AccountingClerk"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_06ECC119F299310AD8900BD1FA9C2442" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType" Multiplicity="1"
+    Role="FromRole_assoc_06ECC119F299310AD8900BD1FA9C2442"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_CompanyCodeType" Multiplicity="0..1"
+    Role="ToRole_assoc_06ECC119F299310AD8900BD1FA9C2442"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_06ECC119F299310AD8900BD1FA9C2442">
+            <PropertyRef Name="CompanyCode"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_06ECC119F299310AD8900BD1FA9C2442">
+            <PropertyRef Name="CompanyCode"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_E5C06F4D68D1CCDF7822BF9FB66B6E96" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType" Multiplicity="1"
+    Role="FromRole_assoc_E5C06F4D68D1CCDF7822BF9FB66B6E96"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_CustomerDunningType" Multiplicity="0..1"
+    Role="ToRole_assoc_E5C06F4D68D1CCDF7822BF9FB66B6E96"/>
+</Association>
+<Association Name="assoc_552EE62853471C79627CD965C157F8CD" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType" Multiplicity="1"
+    Role="FromRole_assoc_552EE62853471C79627CD965C157F8CD"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_PaymentBlockingReasonType" Multiplicity="0..1"
+    Role="ToRole_assoc_552EE62853471C79627CD965C157F8CD"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_552EE62853471C79627CD965C157F8CD">
+            <PropertyRef Name="PaymentBlockingReason"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_552EE62853471C79627CD965C157F8CD">
+            <PropertyRef Name="PaymentBlockingReason"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_DBCAA1172D056CFE1886B4C954E455B5" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType" Multiplicity="1"
+    Role="FromRole_assoc_DBCAA1172D056CFE1886B4C954E455B5"/>
+    <End Type="C_CUSTOMER_OP_SRV.C_CustrecnclnacctvhtempType" Multiplicity="0..1"
+    Role="ToRole_assoc_DBCAA1172D056CFE1886B4C954E455B5"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_DBCAA1172D056CFE1886B4C954E455B5">
+            <PropertyRef Name="CompanyCode"/>
+            <PropertyRef Name="ReconciliationAccount"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_DBCAA1172D056CFE1886B4C954E455B5">
+            <PropertyRef Name="CompanyCode"/>
+            <PropertyRef Name="ReconciliationAccount"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_C2836302CC767FCC179A604FBACAF7BB" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.I_CustomerContactOPType" Multiplicity="1"
+    Role="FromRole_assoc_C2836302CC767FCC179A604FBACAF7BB"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_ContactPersonDepartmentTType" Multiplicity="0..1"
+    Role="ToRole_assoc_C2836302CC767FCC179A604FBACAF7BB"/>
+</Association>
+<Association Name="assoc_85F8831660C2ACD0685A64EFC6D6A4C4" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.I_CustomerContactOPType" Multiplicity="1"
+    Role="FromRole_assoc_85F8831660C2ACD0685A64EFC6D6A4C4"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_ContactPersonFunctionTType" Multiplicity="0..1"
+    Role="ToRole_assoc_85F8831660C2ACD0685A64EFC6D6A4C4"/>
+</Association>
+<Association Name="assoc_F0A165620A15B1D7BAE4F71658303CF0" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.I_CustomerContactOPType" Multiplicity="1"
+    Role="FromRole_assoc_F0A165620A15B1D7BAE4F71658303CF0"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_Customer_to_BusinessPartnerType" Multiplicity="0..1"
+    Role="ToRole_assoc_F0A165620A15B1D7BAE4F71658303CF0"/>
+</Association>
+<Association Name="assoc_9CA095E9A89D9775B44DA8211D73BE8C" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerOPType" Multiplicity="1"
+    Role="FromRole_assoc_9CA095E9A89D9775B44DA8211D73BE8C"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_BillingBlockReasonType" Multiplicity="0..1"
+    Role="ToRole_assoc_9CA095E9A89D9775B44DA8211D73BE8C"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_9CA095E9A89D9775B44DA8211D73BE8C">
+            <PropertyRef Name="BillingBlockReason"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_9CA095E9A89D9775B44DA8211D73BE8C">
+            <PropertyRef Name="BillingIsBlockedForCustomer"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_04C558FEF06F0B22046DFCFF3E3D84F9" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerOPType" Multiplicity="1"
+    Role="FromRole_assoc_04C558FEF06F0B22046DFCFF3E3D84F9"/>
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerBankDetailsOPType" Multiplicity="*"
+    Role="ToRole_assoc_04C558FEF06F0B22046DFCFF3E3D84F9"/>
+</Association>
+<Association Name="assoc_745BEAEE3BCBA087ED9743AB340C9AE1" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerOPType" Multiplicity="1"
+    Role="FromRole_assoc_745BEAEE3BCBA087ED9743AB340C9AE1"/>
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType" Multiplicity="*"
+    Role="ToRole_assoc_745BEAEE3BCBA087ED9743AB340C9AE1"/>
+</Association>
+<Association Name="assoc_98BF29B332B854ECC02676F518988A5E" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerOPType" Multiplicity="1"
+    Role="FromRole_assoc_98BF29B332B854ECC02676F518988A5E"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_CustomerContactOPType" Multiplicity="*"
+    Role="ToRole_assoc_98BF29B332B854ECC02676F518988A5E"/>
+</Association>
+<Association Name="assoc_56A4520D0991929F2A64E2F31BADC452" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerOPType" Multiplicity="1"
+    Role="FromRole_assoc_56A4520D0991929F2A64E2F31BADC452"/>
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType" Multiplicity="*"
+    Role="ToRole_assoc_56A4520D0991929F2A64E2F31BADC452"/>
+</Association>
+<Association Name="assoc_FC332A02E4A354DCA09BD03F7F46FE00" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerOPType" Multiplicity="1"
+    Role="FromRole_assoc_FC332A02E4A354DCA09BD03F7F46FE00"/>
+    <End Type="C_CUSTOMER_OP_SRV.I_DeliveryBlockReasonType" Multiplicity="0..1"
+    Role="ToRole_assoc_FC332A02E4A354DCA09BD03F7F46FE00"/>
+    <ReferentialConstraint>
+        <Principal Role="ToRole_assoc_FC332A02E4A354DCA09BD03F7F46FE00">
+            <PropertyRef Name="DeliveryBlockReason"/>
+        </Principal>
+        <Dependent Role="FromRole_assoc_FC332A02E4A354DCA09BD03F7F46FE00">
+            <PropertyRef Name="DeliveryIsBlocked"/>
+        </Dependent>
+    </ReferentialConstraint>
+</Association>
+<Association Name="assoc_FBB66F478F1125C4A67026E66DC00F53" sap:content-version="1">
+    <End Type="C_CUSTOMER_OP_SRV.C_CustomerOPType" Multiplicity="1"
+    Role="FromRole_assoc_FBB66F478F1125C4A67026E66DC00F53"/>
+    <End Type="C_CUSTOMER_OP_SRV.C_OrderIsBlockedTextVHTempType" Multiplicity="*"
+    Role="ToRole_assoc_FBB66F478F1125C4A67026E66DC00F53"/>
+</Association>
+<EntityContainer Name="C_CUSTOMER_OP_SRV_Entities" m:IsDefaultEntityContainer="true"
+sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
+<EntitySet Name="C_CustomerBankDetailsOP" EntityType="C_CUSTOMER_OP_SRV.C_CustomerBankDetailsOPType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="C_CustomerCompanyCodeOP" EntityType="C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="C_CustomerOP" EntityType="C_CUSTOMER_OP_SRV.C_CustomerOPType" sap:creatable="false"
+sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+<EntitySet Name="C_CustomerSalesAreaOP" EntityType="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="C_Custrecnclnacctvhtemp" EntityType="C_CUSTOMER_OP_SRV.C_CustrecnclnacctvhtempType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<EntitySet Name="C_OrderIsBlockedTextVHTemp"
+EntityType="C_CUSTOMER_OP_SRV.C_OrderIsBlockedTextVHTempType" sap:creatable="false"
+sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="I_AccountingClerk" EntityType="C_CUSTOMER_OP_SRV.I_AccountingClerkType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<EntitySet Name="I_AccountingClerkStdVH" EntityType="C_CUSTOMER_OP_SRV.I_AccountingClerkStdVHType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<EntitySet Name="I_BillingBlockReason" EntityType="C_CUSTOMER_OP_SRV.I_BillingBlockReasonType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<EntitySet Name="I_BusinessPartnerVH" EntityType="C_CUSTOMER_OP_SRV.I_BusinessPartnerVHType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<EntitySet Name="I_ChartOfAccountsStdVH" EntityType="C_CUSTOMER_OP_SRV.I_ChartOfAccountsStdVHType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<EntitySet Name="I_CompanyCode" EntityType="C_CUSTOMER_OP_SRV.I_CompanyCodeType" sap:creatable="false"
+sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+<EntitySet Name="I_CompanyCodeStdVH" EntityType="C_CUSTOMER_OP_SRV.I_CompanyCodeStdVHType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<EntitySet Name="I_ContactPersonDepartmentT"
+EntityType="C_CUSTOMER_OP_SRV.I_ContactPersonDepartmentTType" sap:creatable="false"
+sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+<EntitySet Name="I_ContactPersonFunctionT" EntityType="C_CUSTOMER_OP_SRV.I_ContactPersonFunctionTType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<EntitySet Name="I_ControllingAreaStdVH" EntityType="C_CUSTOMER_OP_SRV.I_ControllingAreaStdVHType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<EntitySet Name="I_Country" EntityType="C_CUSTOMER_OP_SRV.I_CountryType" sap:creatable="false"
+sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+<EntitySet Name="I_CreditControlAreaStdVH" EntityType="C_CUSTOMER_OP_SRV.I_CreditControlAreaStdVHType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="I_CustomerContactOP" EntityType="C_CUSTOMER_OP_SRV.I_CustomerContactOPType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="I_CustomerDunning" EntityType="C_CUSTOMER_OP_SRV.I_CustomerDunningType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="I_CustomerGroup" EntityType="C_CUSTOMER_OP_SRV.I_CustomerGroupType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<EntitySet Name="I_Customer_to_BusinessPartner"
+EntityType="C_CUSTOMER_OP_SRV.I_Customer_to_BusinessPartnerType" sap:creatable="false"
+sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="I_Customer_VH" EntityType="C_CUSTOMER_OP_SRV.I_Customer_VHType" sap:creatable="false"
+sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+<EntitySet Name="I_DeliveryBlockReason" EntityType="C_CUSTOMER_OP_SRV.I_DeliveryBlockReasonType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<EntitySet Name="I_DistributionChannel" EntityType="C_CUSTOMER_OP_SRV.I_DistributionChannelType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<EntitySet Name="I_Division" EntityType="C_CUSTOMER_OP_SRV.I_DivisionType" sap:creatable="false"
+sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/>
+<EntitySet Name="I_PaymentBlockingReason" EntityType="C_CUSTOMER_OP_SRV.I_PaymentBlockingReasonType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="I_SalesGroup" EntityType="C_CUSTOMER_OP_SRV.I_SalesGroupType" sap:creatable="false"
+sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="I_SalesOffice" EntityType="C_CUSTOMER_OP_SRV.I_SalesOfficeType" sap:creatable="false"
+sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+<EntitySet Name="I_SalesOrganization" EntityType="C_CUSTOMER_OP_SRV.I_SalesOrganizationType"
+sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:searchable="true"
+sap:content-version="1"/>
+<AssociationSet Name="assoc_F0A165620A15B1D7BAE4F71658303CF0"
+Association="C_CUSTOMER_OP_SRV.assoc_F0A165620A15B1D7BAE4F71658303CF0"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="I_CustomerContactOP" Role="FromRole_assoc_F0A165620A15B1D7BAE4F71658303CF0"/>
+<End EntitySet="I_Customer_to_BusinessPartner"
+Role="ToRole_assoc_F0A165620A15B1D7BAE4F71658303CF0"/>
+</AssociationSet>
+<AssociationSet Name="assoc_04C558FEF06F0B22046DFCFF3E3D84F9"
+Association="C_CUSTOMER_OP_SRV.assoc_04C558FEF06F0B22046DFCFF3E3D84F9"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerOP" Role="FromRole_assoc_04C558FEF06F0B22046DFCFF3E3D84F9"/>
+<End EntitySet="C_CustomerBankDetailsOP" Role="ToRole_assoc_04C558FEF06F0B22046DFCFF3E3D84F9"/>
+</AssociationSet>
+<AssociationSet Name="assoc_91E43BAAC37B80B6B13054CF1E230AF3"
+Association="C_CUSTOMER_OP_SRV.assoc_91E43BAAC37B80B6B13054CF1E230AF3"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerSalesAreaOP" Role="FromRole_assoc_91E43BAAC37B80B6B13054CF1E230AF3"/>
+<End EntitySet="I_BillingBlockReason" Role="ToRole_assoc_91E43BAAC37B80B6B13054CF1E230AF3"/>
+</AssociationSet>
+<AssociationSet Name="assoc_87AED9397EAAEE736474E34FCCBC1176"
+Association="C_CUSTOMER_OP_SRV.assoc_87AED9397EAAEE736474E34FCCBC1176"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerSalesAreaOP" Role="FromRole_assoc_87AED9397EAAEE736474E34FCCBC1176"/>
+<End EntitySet="I_DistributionChannel" Role="ToRole_assoc_87AED9397EAAEE736474E34FCCBC1176"/>
+</AssociationSet>
+<AssociationSet Name="assoc_FBB66F478F1125C4A67026E66DC00F53"
+Association="C_CUSTOMER_OP_SRV.assoc_FBB66F478F1125C4A67026E66DC00F53"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerOP" Role="FromRole_assoc_FBB66F478F1125C4A67026E66DC00F53"/>
+<End EntitySet="C_OrderIsBlockedTextVHTemp" Role="ToRole_assoc_FBB66F478F1125C4A67026E66DC00F53"/>
+</AssociationSet>
+<AssociationSet Name="assoc_745BEAEE3BCBA087ED9743AB340C9AE1"
+Association="C_CUSTOMER_OP_SRV.assoc_745BEAEE3BCBA087ED9743AB340C9AE1"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerOP" Role="FromRole_assoc_745BEAEE3BCBA087ED9743AB340C9AE1"/>
+<End EntitySet="C_CustomerCompanyCodeOP" Role="ToRole_assoc_745BEAEE3BCBA087ED9743AB340C9AE1"/>
+</AssociationSet>
+<AssociationSet Name="assoc_06ECC119F299310AD8900BD1FA9C2442"
+Association="C_CUSTOMER_OP_SRV.assoc_06ECC119F299310AD8900BD1FA9C2442"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerCompanyCodeOP" Role="FromRole_assoc_06ECC119F299310AD8900BD1FA9C2442"/>
+<End EntitySet="I_CompanyCode" Role="ToRole_assoc_06ECC119F299310AD8900BD1FA9C2442"/>
+</AssociationSet>
+<AssociationSet Name="assoc_56D43500536E212FFBCCBC98461A8EA4"
+Association="C_CUSTOMER_OP_SRV.assoc_56D43500536E212FFBCCBC98461A8EA4"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerSalesAreaOP" Role="FromRole_assoc_56D43500536E212FFBCCBC98461A8EA4"/>
+<End EntitySet="I_DeliveryBlockReason" Role="ToRole_assoc_56D43500536E212FFBCCBC98461A8EA4"/>
+</AssociationSet>
+<AssociationSet Name="assoc_85F8831660C2ACD0685A64EFC6D6A4C4"
+Association="C_CUSTOMER_OP_SRV.assoc_85F8831660C2ACD0685A64EFC6D6A4C4"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="I_CustomerContactOP" Role="FromRole_assoc_85F8831660C2ACD0685A64EFC6D6A4C4"/>
+<End EntitySet="I_ContactPersonFunctionT" Role="ToRole_assoc_85F8831660C2ACD0685A64EFC6D6A4C4"/>
+</AssociationSet>
+<AssociationSet Name="assoc_C2836302CC767FCC179A604FBACAF7BB"
+Association="C_CUSTOMER_OP_SRV.assoc_C2836302CC767FCC179A604FBACAF7BB"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="I_CustomerContactOP" Role="FromRole_assoc_C2836302CC767FCC179A604FBACAF7BB"/>
+<End EntitySet="I_ContactPersonDepartmentT" Role="ToRole_assoc_C2836302CC767FCC179A604FBACAF7BB"/>
+</AssociationSet>
+<AssociationSet Name="assoc_365C57024C75EBA4E07C4B655FCE18C2"
+Association="C_CUSTOMER_OP_SRV.assoc_365C57024C75EBA4E07C4B655FCE18C2"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerBankDetailsOP" Role="FromRole_assoc_365C57024C75EBA4E07C4B655FCE18C2"/>
+<End EntitySet="I_Country" Role="ToRole_assoc_365C57024C75EBA4E07C4B655FCE18C2"/>
+</AssociationSet>
+<AssociationSet Name="assoc_FAAC28BC9D7A80E0A00E0E3ACC3D2653"
+Association="C_CUSTOMER_OP_SRV.assoc_FAAC28BC9D7A80E0A00E0E3ACC3D2653"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerSalesAreaOP" Role="FromRole_assoc_FAAC28BC9D7A80E0A00E0E3ACC3D2653"/>
+<End EntitySet="I_SalesGroup" Role="ToRole_assoc_FAAC28BC9D7A80E0A00E0E3ACC3D2653"/>
+</AssociationSet>
+<AssociationSet Name="assoc_DBCAA1172D056CFE1886B4C954E455B5"
+Association="C_CUSTOMER_OP_SRV.assoc_DBCAA1172D056CFE1886B4C954E455B5"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerCompanyCodeOP" Role="FromRole_assoc_DBCAA1172D056CFE1886B4C954E455B5"/>
+<End EntitySet="C_Custrecnclnacctvhtemp" Role="ToRole_assoc_DBCAA1172D056CFE1886B4C954E455B5"/>
+</AssociationSet>
+<AssociationSet Name="assoc_FC332A02E4A354DCA09BD03F7F46FE00"
+Association="C_CUSTOMER_OP_SRV.assoc_FC332A02E4A354DCA09BD03F7F46FE00"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerOP" Role="FromRole_assoc_FC332A02E4A354DCA09BD03F7F46FE00"/>
+<End EntitySet="I_DeliveryBlockReason" Role="ToRole_assoc_FC332A02E4A354DCA09BD03F7F46FE00"/>
+</AssociationSet>
+<AssociationSet Name="assoc_552EE62853471C79627CD965C157F8CD"
+Association="C_CUSTOMER_OP_SRV.assoc_552EE62853471C79627CD965C157F8CD"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerCompanyCodeOP" Role="FromRole_assoc_552EE62853471C79627CD965C157F8CD"/>
+<End EntitySet="I_PaymentBlockingReason" Role="ToRole_assoc_552EE62853471C79627CD965C157F8CD"/>
+</AssociationSet>
+<AssociationSet Name="assoc_D01657D028E11F5CCB1207DFE2C13937"
+Association="C_CUSTOMER_OP_SRV.assoc_D01657D028E11F5CCB1207DFE2C13937"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerCompanyCodeOP" Role="FromRole_assoc_D01657D028E11F5CCB1207DFE2C13937"/>
+<End EntitySet="I_AccountingClerk" Role="ToRole_assoc_D01657D028E11F5CCB1207DFE2C13937"/>
+</AssociationSet>
+<AssociationSet Name="assoc_D2204D69B01708BFD6B2609F7E353AB8"
+Association="C_CUSTOMER_OP_SRV.assoc_D2204D69B01708BFD6B2609F7E353AB8"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerSalesAreaOP" Role="FromRole_assoc_D2204D69B01708BFD6B2609F7E353AB8"/>
+<End EntitySet="I_SalesOrganization" Role="ToRole_assoc_D2204D69B01708BFD6B2609F7E353AB8"/>
+</AssociationSet>
+<AssociationSet Name="assoc_9CA095E9A89D9775B44DA8211D73BE8C"
+Association="C_CUSTOMER_OP_SRV.assoc_9CA095E9A89D9775B44DA8211D73BE8C"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerOP" Role="FromRole_assoc_9CA095E9A89D9775B44DA8211D73BE8C"/>
+<End EntitySet="I_BillingBlockReason" Role="ToRole_assoc_9CA095E9A89D9775B44DA8211D73BE8C"/>
+</AssociationSet>
+<AssociationSet Name="assoc_E437293EB34F79F90846064729B6196E"
+Association="C_CUSTOMER_OP_SRV.assoc_E437293EB34F79F90846064729B6196E"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerSalesAreaOP" Role="FromRole_assoc_E437293EB34F79F90846064729B6196E"/>
+<End EntitySet="I_CustomerGroup" Role="ToRole_assoc_E437293EB34F79F90846064729B6196E"/>
+</AssociationSet>
+<AssociationSet Name="assoc_98BF29B332B854ECC02676F518988A5E"
+Association="C_CUSTOMER_OP_SRV.assoc_98BF29B332B854ECC02676F518988A5E"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerOP" Role="FromRole_assoc_98BF29B332B854ECC02676F518988A5E"/>
+<End EntitySet="I_CustomerContactOP" Role="ToRole_assoc_98BF29B332B854ECC02676F518988A5E"/>
+</AssociationSet>
+<AssociationSet Name="assoc_9B6A688DB41F0F3C42250EC61B90E217"
+Association="C_CUSTOMER_OP_SRV.assoc_9B6A688DB41F0F3C42250EC61B90E217"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerSalesAreaOP" Role="FromRole_assoc_9B6A688DB41F0F3C42250EC61B90E217"/>
+<End EntitySet="I_SalesOffice" Role="ToRole_assoc_9B6A688DB41F0F3C42250EC61B90E217"/>
+</AssociationSet>
+<AssociationSet Name="assoc_39972A3268160FD9A439E30E61C7EDB6"
+Association="C_CUSTOMER_OP_SRV.assoc_39972A3268160FD9A439E30E61C7EDB6"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerSalesAreaOP" Role="FromRole_assoc_39972A3268160FD9A439E30E61C7EDB6"/>
+<End EntitySet="I_Division" Role="ToRole_assoc_39972A3268160FD9A439E30E61C7EDB6"/>
+</AssociationSet>
+<AssociationSet Name="assoc_56A4520D0991929F2A64E2F31BADC452"
+Association="C_CUSTOMER_OP_SRV.assoc_56A4520D0991929F2A64E2F31BADC452"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerOP" Role="FromRole_assoc_56A4520D0991929F2A64E2F31BADC452"/>
+<End EntitySet="C_CustomerSalesAreaOP" Role="ToRole_assoc_56A4520D0991929F2A64E2F31BADC452"/>
+</AssociationSet>
+<AssociationSet Name="assoc_E5C06F4D68D1CCDF7822BF9FB66B6E96"
+Association="C_CUSTOMER_OP_SRV.assoc_E5C06F4D68D1CCDF7822BF9FB66B6E96"
+sap:creatable="false" sap:updatable="false" sap:deletable="false"
+sap:content-version="1">
+<End EntitySet="C_CustomerCompanyCodeOP" Role="FromRole_assoc_E5C06F4D68D1CCDF7822BF9FB66B6E96"/>
+<End EntitySet="I_CustomerDunning" Role="ToRole_assoc_E5C06F4D68D1CCDF7822BF9FB66B6E96"/>
+</AssociationSet>
+</EntityContainer>
+<!--  -->
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerBankDetailsOPType/Customer"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Value Help for Customer"/>
+        <PropertyValue Property="CollectionPath" String="I_Customer_VH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="Customer"/>
+                    <PropertyValue Property="ValueListProperty" String="Customer"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName1"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName2"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="Country"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CityName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="StreetName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CustomerName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CustomerAccountGroup"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="AuthorizationGroup"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="IsBusinessPurposeCompleted"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerBankDetailsOPType/BankCountry"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Country"/>
+        <PropertyValue Property="CollectionPath" String="I_Country"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="BankCountry"/>
+                    <PropertyValue Property="ValueListProperty" String="Country"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="Country_Text"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CountryThreeLetterISOCode"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CountryThreeDigitISOCode"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CountryCurrency"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="IndexBasedCurrency"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="HardCurrency"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="TaxCalculationProcedure"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CountryAlternativeCode"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType/Customer"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Value Help for Customer"/>
+        <PropertyValue Property="CollectionPath" String="I_Customer_VH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="Customer"/>
+                    <PropertyValue Property="ValueListProperty" String="Customer"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName1"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName2"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="Country"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CityName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="StreetName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CustomerName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CustomerAccountGroup"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="AuthorizationGroup"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="IsBusinessPurposeCompleted"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType/CompanyCode"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Company Code"/>
+        <PropertyValue Property="CollectionPath" String="I_CompanyCodeStdVH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="CompanyCode"/>
+                    <PropertyValue Property="ValueListProperty" String="CompanyCode"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CompanyCodeName"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType/AccountingClerk"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Accounting Clerk"/>
+        <PropertyValue Property="CollectionPath" String="I_AccountingClerkStdVH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="CompanyCode"/>
+                    <PropertyValue Property="ValueListProperty" String="CompanyCode"/>
+                </Record>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="AccountingClerk"/>
+                    <PropertyValue Property="ValueListProperty" String="AccountingClerk"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="AccountingClerkName"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType/ReconciliationAccount"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Value Help for Customer Reconciliation Account"/>
+        <PropertyValue Property="CollectionPath" String="C_Custrecnclnacctvhtemp"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="ReconciliationAccount"/>
+                    <PropertyValue Property="ValueListProperty" String="ReconciliationAccount"/>
+                </Record>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="CompanyCode"/>
+                    <PropertyValue Property="ValueListProperty" String="CompanyCode"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="ReconciliationAccount_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType/PaymentBlockingReason"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Payment Blocking Reason"/>
+        <PropertyValue Property="CollectionPath" String="I_PaymentBlockingReason"/>
+        <PropertyValue Property="SearchSupported" Bool="false"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="PaymentBlockingReason"/>
+                    <PropertyValue Property="ValueListProperty" String="PaymentBlockingReason"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="PaymentBlockingReason_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerOPType/BillingIsBlockedForCustomer"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Value Help for Billing Block Reason"/>
+        <PropertyValue Property="CollectionPath" String="I_BillingBlockReason"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty"
+                    PropertyPath="BillingIsBlockedForCustomer"/>
+                    <PropertyValue Property="ValueListProperty" String="BillingBlockReason"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="BillingBlockReason_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerOPType/DeliveryIsBlocked"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Delivery Block Reason"/>
+        <PropertyValue Property="CollectionPath" String="I_DeliveryBlockReason"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="DeliveryIsBlocked"/>
+                    <PropertyValue Property="ValueListProperty" String="DeliveryBlockReason"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="DeliveryBlockReason"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="DeliveryBlockReason_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType/Customer"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Value Help for Customer"/>
+        <PropertyValue Property="CollectionPath" String="I_Customer_VH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="Customer"/>
+                    <PropertyValue Property="ValueListProperty" String="Customer"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName1"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName2"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="Country"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CityName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="StreetName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CustomerName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CustomerAccountGroup"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="AuthorizationGroup"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="IsBusinessPurposeCompleted"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType/SalesOrganization"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Sales Organization"/>
+        <PropertyValue Property="CollectionPath" String="I_SalesOrganization"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="SalesOrganization"/>
+                    <PropertyValue Property="ValueListProperty" String="SalesOrganization"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="SalesOrganization_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType/DistributionChannel"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Distribution Channel"/>
+        <PropertyValue Property="CollectionPath" String="I_DistributionChannel"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="DistributionChannel"/>
+                    <PropertyValue Property="ValueListProperty" String="DistributionChannel"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="DistributionChannel_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType/Division"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Division"/>
+        <PropertyValue Property="CollectionPath" String="I_Division"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="Division"/>
+                    <PropertyValue Property="ValueListProperty" String="Division"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="Division_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType/SalesOffice"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Sales Office"/>
+        <PropertyValue Property="CollectionPath" String="I_SalesOffice"/>
+        <PropertyValue Property="SearchSupported" Bool="false"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="SalesOffice"/>
+                    <PropertyValue Property="ValueListProperty" String="SalesOffice"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="SalesOffice_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType/SalesGroup"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Sales Group"/>
+        <PropertyValue Property="CollectionPath" String="I_SalesGroup"/>
+        <PropertyValue Property="SearchSupported" Bool="false"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="SalesGroup"/>
+                    <PropertyValue Property="ValueListProperty" String="SalesGroup"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="SalesGroup_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType/DeliveryIsBlockedForCustomer"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Delivery Block Reason"/>
+        <PropertyValue Property="CollectionPath" String="I_DeliveryBlockReason"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty"
+                    PropertyPath="DeliveryIsBlockedForCustomer"/>
+                    <PropertyValue Property="ValueListProperty" String="DeliveryBlockReason"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="DeliveryBlockReason"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="DeliveryBlockReason_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType/BillingIsBlockedForCustomer"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Value Help for Billing Block Reason"/>
+        <PropertyValue Property="CollectionPath" String="I_BillingBlockReason"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty"
+                    PropertyPath="BillingIsBlockedForCustomer"/>
+                    <PropertyValue Property="ValueListProperty" String="BillingBlockReason"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="BillingBlockReason_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType/CustomerGroup"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Customer Group"/>
+        <PropertyValue Property="CollectionPath" String="I_CustomerGroup"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="CustomerGroup"/>
+                    <PropertyValue Property="ValueListProperty" String="CustomerGroup"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CustomerGroup_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustrecnclnacctvhtempType/CompanyCode"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Company Code"/>
+        <PropertyValue Property="CollectionPath" String="I_CompanyCodeStdVH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="CompanyCode"/>
+                    <PropertyValue Property="ValueListProperty" String="CompanyCode"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CompanyCodeName"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CustrecnclnacctvhtempType/ChartOfAccounts"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Chart Of Accounts"/>
+        <PropertyValue Property="CollectionPath" String="I_ChartOfAccountsStdVH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="ChartOfAccounts"/>
+                    <PropertyValue Property="ValueListProperty" String="ChartOfAccounts"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="ChartOfAccounts_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.I_AccountingClerkType/CompanyCode"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Company Code"/>
+        <PropertyValue Property="CollectionPath" String="I_CompanyCodeStdVH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="CompanyCode"/>
+                    <PropertyValue Property="ValueListProperty" String="CompanyCode"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CompanyCodeName"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.I_CompanyCodeType/CreditControlArea"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Credit Control Area"/>
+        <PropertyValue Property="CollectionPath" String="I_CreditControlAreaStdVH"/>
+        <PropertyValue Property="SearchSupported" Bool="false"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="CreditControlArea"/>
+                    <PropertyValue Property="ValueListProperty" String="CreditControlArea"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CreditControlArea_Text"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.I_CompanyCodeType/ControllingArea"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Controlling Area"/>
+        <PropertyValue Property="CollectionPath" String="I_ControllingAreaStdVH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="ControllingArea"/>
+                    <PropertyValue Property="ValueListProperty" String="ControllingArea"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="ControllingAreaName"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.I_CustomerContactOPType/BusinessPartnerCompany"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Business Partner Value Help"/>
+        <PropertyValue Property="CollectionPath" String="I_BusinessPartnerVH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="BusinessPartnerCompany"/>
+                    <PropertyValue Property="ValueListProperty" String="BusinessPartner"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="FormOfAddress"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="FormOfAddressName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="FirstName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="LastName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="BirthDate"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="BusinessPartnerCategory"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="BusinessPartnerIDByExtSystem"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="BusinessPartnerName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="AuthorizationGroup"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="IsBusinessPurposeCompleted"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.I_CustomerContactOPType/BusinessPartnerPerson"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Business Partner Value Help"/>
+        <PropertyValue Property="CollectionPath" String="I_BusinessPartnerVH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="BusinessPartnerPerson"/>
+                    <PropertyValue Property="ValueListProperty" String="BusinessPartner"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="FormOfAddress"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="FormOfAddressName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="FirstName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="LastName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="BirthDate"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="BusinessPartnerCategory"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="BusinessPartnerIDByExtSystem"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="BusinessPartnerName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="AuthorizationGroup"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="IsBusinessPurposeCompleted"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.I_CustomerContactOPType/ContactPersonFunction"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Function of Contact Person Textview"/>
+        <PropertyValue Property="CollectionPath" String="I_ContactPersonFunctionT"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="ContactPersonFunction"/>
+                    <PropertyValue Property="ValueListProperty" String="ContactPersonFunction"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="ContactPersonFunctionName"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.I_CustomerContactOPType/ContactPersonDepartment"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Department of Contact Person Textview"/>
+        <PropertyValue Property="CollectionPath" String="I_ContactPersonDepartmentT"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="ContactPersonDepartment"/>
+                    <PropertyValue Property="ValueListProperty" String="ContactPersonDepartment"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="ContactPersonDepartmentName"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.I_SalesOrganizationType/CompanyCode"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Company Code"/>
+        <PropertyValue Property="CollectionPath" String="I_CompanyCodeStdVH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty" PropertyPath="CompanyCode"/>
+                    <PropertyValue Property="ValueListProperty" String="CompanyCode"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CompanyCodeName"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+<Annotations Target="C_CUSTOMER_OP_SRV.I_SalesOrganizationType/IntercompanyBillingCustomer"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ValueList">
+    <Record>
+        <PropertyValue Property="Label" String="Value Help for Customer"/>
+        <PropertyValue Property="CollectionPath" String="I_Customer_VH"/>
+        <PropertyValue Property="SearchSupported" Bool="true"/>
+        <PropertyValue Property="Parameters">
+            <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                    <PropertyValue Property="LocalDataProperty"
+                    PropertyPath="IntercompanyBillingCustomer"/>
+                    <PropertyValue Property="ValueListProperty" String="Customer"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName1"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="OrganizationBPName2"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="Country"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CityName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="StreetName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CustomerName"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="CustomerAccountGroup"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="AuthorizationGroup"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                    <PropertyValue Property="ValueListProperty" String="IsBusinessPurposeCompleted"/>
+                </Record>
+            </Collection>
+        </PropertyValue>
+    </Record>
+</Annotation>
+</Annotations>
+
+
+<Annotations Target="C_CUSTOMER_OP_SRV.C_CUSTOMER_OP_SRV_Entities"
+xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<Annotation Term="Common.ApplyMultiUnitBehaviorForSortingAndFiltering" Bool="true"/>
+<Annotation Term="Aggregation.ApplySupported">
+    <Record>
+        <PropertyValue Property="Transformations">
+            <Collection>
+                <String>aggregate</String>
+                <String>groupby</String>
+                <String>filter</String>
+            </Collection>
+        </PropertyValue>
+        <PropertyValue Property="Rollup" EnumMember="None"/>
+    </Record>
+</Annotation>
+</Annotations>
+<atom:link rel="self" href="https://odata.example:443/sap/opu/odata/sap/C_CUSTOMER_OP_SRV/$metadata"
+xmlns:atom="http://www.w3.org/2005/Atom"/>
+<atom:link rel="latest-version"
+href="https://odata.example:443/sap/opu/odata/sap/C_CUSTOMER_OP_SRV/$metadata"
+xmlns:atom="http://www.w3.org/2005/Atom"/>
+</Schema>
+</edmx:DataServices>
+</edmx:Edmx>
