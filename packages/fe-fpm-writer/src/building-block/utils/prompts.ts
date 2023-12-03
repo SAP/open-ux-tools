@@ -52,9 +52,8 @@ export const getXPathStringsForXmlFile = (xmlFilePath: string, fs: Editor): Reco
 };
 
 /**
- * Convert the Object to Choices
  *
- * @param obj
+ * @param {Record<string, string> | any[]} obj - object to be converted to choices
  * @returns the list of choices
  */
 export function getChoices(obj: Record<string, string> | any[]) {
@@ -67,7 +66,7 @@ export function getChoices(obj: Record<string, string> | any[]) {
 /**
  * Returns the message property if the error is an instance of `Error` else a string representation of the error.
  *
- * @param error {Error | unknown} - the error instance
+ * @param {Error | unknown} error  - the error instance
  * @returns {string} the error message
  */
 export function getErrorMessage(error: Error | unknown): string {

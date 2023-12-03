@@ -1,11 +1,10 @@
 /* eslint-disable jsdoc/require-returns */
-import { join } from 'path';
+import type { AnnotationTerm, AnyAnnotation, EntityType } from '@sap-ux/vocabularies-types';
+import type { EntityTypeAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
+import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type File from 'vinyl';
 import { getConvertedAnnotations } from './avt';
 import type ProjectProvider from './project';
-import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { AnnotationTerm, AnyAnnotation, EntityType } from '@sap-ux/vocabularies-types';
-import type { EntityTypeAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
 
 /**
  *
@@ -23,7 +22,6 @@ function getMergedMetadata(projectProvider: ProjectProvider) {
 /**
  *
  * @param projectProvider
- * @param root
  */
 export async function getEntityTypes(projectProvider: ProjectProvider) {
     const metadata = getMergedMetadata(projectProvider);
@@ -38,10 +36,10 @@ export function getAnnotationTermAlias(annotationTerm: UIAnnotationTerms) {
     const [, , , vocabularyName, , annotationTermName] = annotationTerm.split('.');
     return [vocabularyName, annotationTermName] as [keyof EntityTypeAnnotations, string];
 }
+
 /**
  *
  * @param projectProvider
- * @param root
  * @param targetName
  * @param annotationTerm
  * @param targetType
@@ -85,11 +83,7 @@ export function getAnnotationsForTerm(
 /**
  *
  * @param projectProvider
- * @param serviceName
- * @param appName
  * @param entity
- * @param parametersInfo
- * @param guideStepParameters
  * @param annotationTerm
  * @param useNamespace
  */
@@ -120,13 +114,9 @@ export async function getAnnotationPathQualifiers(
 
 /**
  *
- * @param parameterInfo
- * @param guideStepParameters
+ * @param entityType
  * @param annotationTerms
  * @param result
- * @param entityType
- * @param annotationTerm
- * @param usenamespace
  * @param useNamespace
  */
 function getAnnotationPathQualifiersForEntityType(
@@ -155,13 +145,10 @@ function getAnnotationPathQualifiersForEntityType(
 
 /**
  *
- * @param parameterInfo
- * @param guideStepParameters
- * @param annotationTerms
- * @param result
  * @param entityType
  * @param navigationPropertyName
- * @param isNavigationPropertyEntityType
+ * @param annotationTerms
+ * @param result
  * @param useNamespace
  */
 function addAnnotationPathQualifierToResult(

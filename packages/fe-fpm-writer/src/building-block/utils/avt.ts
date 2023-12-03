@@ -5,7 +5,8 @@ import type File from 'vinyl';
 
 /**
  *
- * @param files
+ * @param {File[]} files - service and annotation files
+ * @returns {ConvertedMetadata} - Converted metadata
  */
 export function getConvertedAnnotations(files: File[]): ConvertedMetadata {
     const mergedAnnotations = merge(...files.map((file) => parse(file.contents?.toString('utf-8') || '')));
