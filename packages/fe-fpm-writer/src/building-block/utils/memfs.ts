@@ -10,7 +10,7 @@ import { join } from 'path';
 async function collectPaths(root: string): Promise<string[]> {
     const fileOrFolder = await promises.readdir(root);
     const children = await Promise.all(
-        fileOrFolder.flatMap(async function (relativePath: string) {
+        fileOrFolder.flatMap(async (relativePath: string) => {
             const path = join(root, relativePath);
             const stats = await promises.stat(path);
             if (stats.isDirectory()) {

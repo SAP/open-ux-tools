@@ -11,17 +11,12 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join, relative } from 'path';
-import { promises as fsPromises } from 'fs';
 import { promisify } from 'util';
-// import inquirer from 'inquirer';
-
-// const prompt = async (...args: unknown[]) =>
-//   ((await import('inquirer')).default.prompt(args));
 
 const sampleAppPath = join(__dirname, '../sample/fe-app');
 const testAppPath = join(__dirname, '../test-output/fe-app', `${Date.now()}`);
-const xmlViewFilePath = 'webapp/ext/main/Main.view.xml';
-const manifestFilePath = 'webapp/manifest.json';
+// const xmlViewFilePath = 'webapp/ext/main/Main.view.xml';
+// const manifestFilePath = 'webapp/manifest.json';
 
 /**
  * Initializes the memfs and copies over the sample Fiori elements application.
@@ -32,13 +27,15 @@ async function initialize(): Promise<Editor> {
     const fs = create(createStorage());
 
     // Copy manifest and view xml files to memfs
-    const manifestContent = (
-        await fsPromises.readFile(join(sampleAppPath, manifestFilePath), 'utf-8')
-    ).toLocaleString();
+    // const manifestContent = (
+    //     await fsPromises.readFile(join(sampleAppPath, manifestFilePath), 'utf-8')
+    // ).toLocaleString();
     // fs.write(join(testAppPath, manifestFilePath), manifestContent);
     // const xmlViewContent = (await fsPromises.readFile(join(sampleAppPath, xmlViewFilePath), 'utf-8')).toLocaleString();
     // fs.write(join(testAppPath, xmlViewFilePath), xmlViewContent);
-    fs.copy([join(sampleAppPath) /* ,join(sampleAppPath,'annotation') */], join(testAppPath));
+    // fs.copy([join(sampleAppPath) /* ,join(sampleAppPath,'annotation') */], join(testAppPath));
+
+    fs.copy([join(sampleAppPath)], join(testAppPath));
 
     await promisify(fs.commit).call(fs);
     return fs;
@@ -59,12 +56,12 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
     )) as FilterBarPromptsAnswer;
     const { aggregationPath, viewOrFragmentFile, selectionFieldQualifier } = answers;
 
-    answers.metaPath = selectionFieldQualifier
+    answers.metaPath = selectionFieldQualifier;
     fs = generateBuildingBlock<FilterBarPromptsAnswer>(
         basePath,
         {
             aggregationPath,
-            viewOrFragmentPath: relative(basePath,viewOrFragmentFile),
+            viewOrFragmentPath: relative(basePath, viewOrFragmentFile),
             buildingBlockData: {
                 ...answers,
                 buildingBlockType: BuildingBlockType.FilterBar
@@ -120,28 +117,32 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
     return fs;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 (async () => {
-   try {
-    let fs = await initialize();
-    const inquirer = await getInquirer();
-    const answers: BuildingBlockTypePromptsAnswer = await inquirer.prompt(await getBuildingBlockTypePrompts());
+    try {
+        let fs = await initialize();
+        const inquirer = await getInquirer();
+        const answers: BuildingBlockTypePromptsAnswer = await inquirer.prompt(await getBuildingBlockTypePrompts());
 
-    switch (answers.buildingBlockType) {
-        case BuildingBlockType.Chart:
-            fs = await generateChartBuildingBlock(fs);
-            break;
-        case BuildingBlockType.FilterBar:
-            fs = await generateFilterBarBuildingBlock(fs);
-            break;
-        default:
-            break;
+        switch (answers.buildingBlockType) {
+            case BuildingBlockType.Chart:
+                fs = await generateChartBuildingBlock(fs);
+                break;
+            case BuildingBlockType.FilterBar:
+                fs = await generateFilterBarBuildingBlock(fs);
+                break;
+            default:
+                break;
+        }
+        await promisify(fs.commit).call(fs);
+    } catch (error) {
+        console.error(error.message);
     }
-    await promisify(fs.commit).call(fs);
-   } catch (error) {
-    console.error(error.message)
-   }
 })();
 
+/**
+ * @returns Dynamically imported Inquirer
+ */
 async function getInquirer() {
     return (await import('inquirer')).default;
 }
