@@ -139,7 +139,10 @@ export enum UiIcons {
     Undo = 'Undo',
     Ui5 = 'Ui5',
     Validate = 'Validate',
-    ValidateBig = 'ValidateBig',
+    ValidateError = 'ValidateError',
+    ValidateInfo = 'ValidateInfo',
+    ValidateSuccess = 'ValidateSuccess',
+    ValidateWarning = 'ValidateWarning',
     ValueHelp = 'ValueHelp',
     VerticalGrip = 'VerticalGrip',
     ViewMockup = 'ViewMockup',
@@ -1827,7 +1830,59 @@ export function initIcons(): void {
                     />
                 </svg>
             ),
-            [UiIcons.ValidateBig]: (
+            [UiIcons.ValidateError]: (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M10 4.5C10 4.22386 10.2239 4 10.5 4H13.5C13.7761 4 14 4.22386 14 4.5C14 4.77614 13.7761 5 13.5 5H10.5C10.2239 5 10 4.77614 10 4.5Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M1.5 2C0.671573 2 0 2.67157 0 3.5V16.5C0 17.3284 0.671573 18 1.5 18H9.25204C9.16819 17.6742 9.10435 17.3404 9.06189 17H1.5C1.22386 17 1 16.7761 1 16.5V7H15V8.25204C15.3258 8.16819 15.6596 8.10435 16 8.06189V3.5C16 2.67157 15.3284 2 14.5 2H1.5ZM15 6V3.5C15 3.22386 14.7761 3 14.5 3H1.5C1.22386 3 1 3.22386 1 3.5V6H15Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M4 9C3.44772 9 3 9.38376 3 9.85714V14.1429C3 14.6162 3.44772 15 4 15H7C7.55228 15 8 14.6162 8 14.1429V9.85714C8 9.38376 7.55228 9 7 9H4ZM7 9.85714H4V14.1429H7V9.85714Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M17.0005 9C13.1405 9 10.0005 12.141 10.0005 16.001C10.0005 19.861 13.1405 23.002 17.0005 23.002C20.8605 23.002 24.0015 19.861 24.0015 16.001C24.0015 12.141 20.8605 9 17.0005 9ZM13.6464 13.3536L16.2929 16L13.6464 18.6465L14.3535 19.3536L17 16.7071L19.6464 19.3536L20.3535 18.6465L17.7071 16L20.3535 13.3536L19.6464 12.6465L17 15.2929L14.3535 12.6465L13.6464 13.3536Z"
+                        fill={COLORS.error}
+                    />
+                </svg>
+            ),
+            [UiIcons.ValidateInfo]: (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M10 4.5C10 4.22386 10.2239 4 10.5 4H13.5C13.7761 4 14 4.22386 14 4.5C14 4.77614 13.7761 5 13.5 5H10.5C10.2239 5 10 4.77614 10 4.5Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M1.5 2C0.671573 2 0 2.67157 0 3.5V16.5C0 17.3284 0.671573 18 1.5 18H9.25204C9.16819 17.6742 9.10435 17.3404 9.06189 17H1.5C1.22386 17 1 16.7761 1 16.5V7H15V8.25204C15.3258 8.16819 15.6596 8.10435 16 8.06189V3.5C16 2.67157 15.3284 2 14.5 2H1.5ZM15 6V3.5C15 3.22386 14.7761 3 14.5 3H1.5C1.22386 3 1 3.22386 1 3.5V6H15Z" fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M4 9C3.44772 9 3 9.38376 3 9.85714V14.1429C3 14.6162 3.44772 15 4 15H7C7.55228 15 8 14.6162 8 14.1429V9.85714C8 9.38376 7.55228 9 7 9H4ZM7 9.85714H4V14.1429H7V9.85714Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M10.0005 16.001C10.0005 12.141 13.1405 9 17.0005 9C20.8605 9 24.0015 12.141 24.0015 16.001C24.0015 19.861 20.8605 23.002 17.0005 23.002C13.1405 23.002 10.0005 19.861 10.0005 16.001ZM16.5 13V12H17.5V13H16.5ZM17.5 14V20H16.5V14H17.5Z"
+                        fill={COLORS.info}
+                    />
+                </svg>
+
+            ),
+            [UiIcons.ValidateSuccess]: (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M10 4.5C10 4.22386 10.2239 4 10.5 4H13.5C13.7761 4 14 4.22386 14 4.5C14 4.77614 13.7761 5 13.5 5H10.5C10.2239 5 10 4.77614 10 4.5Z"
@@ -1850,6 +1905,32 @@ export function initIcons(): void {
                         clipRule="evenodd"
                         d="M16.3799 17.751L13.7179 15.009L12.9999 15.706L16.0559 18.853C16.1509 18.949 16.2799 19.004 16.4149 19.004C16.4219 19.004 16.4299 19.004 16.4379 19.003C16.5809 18.997 16.7129 18.93 16.8039 18.818L20.9979 13.625L20.2209 12.996L16.3799 17.751ZM17.0005 9C13.1405 9 10.0005 12.141 10.0005 16.001C10.0005 19.861 13.1405 23.002 17.0005 23.002C20.8605 23.002 24.0015 19.861 24.0015 16.001C24.0015 12.141 20.8605 9 17.0005 9Z"
                         fill={COLORS.success}
+                    />
+                </svg>
+            ),
+            [UiIcons.ValidateWarning]: (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M10 4.5C10 4.22386 10.2239 4 10.5 4H13.5C13.7761 4 14 4.22386 14 4.5C14 4.77614 13.7761 5 13.5 5H10.5C10.2239 5 10 4.77614 10 4.5Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M0 3.5C0 2.67157 0.671573 2 1.5 2H14.5C15.3284 2 16 2.67157 16 3.5V8.11826C15.6535 8.11826 15.3071 8.20633 15 8.38247V7H1V16.5C1 16.7761 1.22386 17 1.5 17H9.88892L9.33336 18H1.5C0.671573 18 0 17.3284 0 16.5V3.5ZM15 3.5V6H1V3.5C1 3.22386 1.22386 3 1.5 3H14.5C14.7761 3 15 3.22386 15 3.5Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M3 9.85714C3 9.38376 3.44772 9 4 9H7C7.55228 9 8 9.38376 8 9.85714V14.1429C8 14.6162 7.55228 15 7 15H4C3.44772 15 3 14.6162 3 14.1429V9.85714ZM4 9.85714H7V14.1429H4V9.85714Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M15.1176 9.65441C15.4941 8.94853 16.5059 8.94853 16.8823 9.65441L23.2157 21.5294C23.5709 22.1955 23.0883 23 22.3333 23H9.66666C8.91174 23 8.42905 22.1955 8.78431 21.5294L15.1176 9.65441ZM15.5 19V13H16.5V19H15.5ZM15.5 20V21H16.5V20H15.5Z"
+                        fill={COLORS.warning}
                     />
                 </svg>
             ),
