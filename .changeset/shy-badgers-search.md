@@ -1,8 +1,8 @@
 ---
-'@sap-ux/ui-components': minor
+'@sap-ux/ui-components': patch
 ---
 
--   rename `ValidateBig` to `ValidateSuccess`
+-   add `ValidateSuccess` icon
 -   add `ValidateInfo` icon
 -   add `ValidateError` icon
 -   add `ValidateWarning` icon
