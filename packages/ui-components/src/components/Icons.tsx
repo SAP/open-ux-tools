@@ -1865,7 +1865,8 @@ export function initIcons(): void {
                     <path
                         fillRule="evenodd"
                         clipRule="evenodd"
-                        d="M1.5 2C0.671573 2 0 2.67157 0 3.5V16.5C0 17.3284 0.671573 18 1.5 18H9.25204C9.16819 17.6742 9.10435 17.3404 9.06189 17H1.5C1.22386 17 1 16.7761 1 16.5V7H15V8.25204C15.3258 8.16819 15.6596 8.10435 16 8.06189V3.5C16 2.67157 15.3284 2 14.5 2H1.5ZM15 6V3.5C15 3.22386 14.7761 3 14.5 3H1.5C1.22386 3 1 3.22386 1 3.5V6H15Z" fill={COLORS.default}
+                        d="M1.5 2C0.671573 2 0 2.67157 0 3.5V16.5C0 17.3284 0.671573 18 1.5 18H9.25204C9.16819 17.6742 9.10435 17.3404 9.06189 17H1.5C1.22386 17 1 16.7761 1 16.5V7H15V8.25204C15.3258 8.16819 15.6596 8.10435 16 8.06189V3.5C16 2.67157 15.3284 2 14.5 2H1.5ZM15 6V3.5C15 3.22386 14.7761 3 14.5 3H1.5C1.22386 3 1 3.22386 1 3.5V6H15Z"
+                        fill={COLORS.default}
                     />
                     <path
                         fillRule="evenodd"
@@ -1880,7 +1881,6 @@ export function initIcons(): void {
                         fill={COLORS.info}
                     />
                 </svg>
-
             ),
             [UiIcons.ValidateSuccess]: (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
