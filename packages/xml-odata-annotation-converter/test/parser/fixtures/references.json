@@ -1,0 +1,19 @@
+{
+    "type": "annotation-file",
+    "uri": "file://references.xml",
+    "range": "[(1,0)..(10,12)]",
+    "contentRange": "[(4,77)..(10,0)]",
+    "references": [
+        {
+            "type": "reference",
+            "name": "com.sap.vocabularies.Common.v1",
+            "nameRange": "[(8,33)..(8,63)]",
+            "range": "[(5,4)..(9,21)]",
+            "uri": "http://sample.reference.com/$value",
+            "alias": "Common",
+            "aliasRange": "[(8,72)..(8,78)]"
+        }
+    ],
+    "targets": [],
+    "metadata": []
+}
