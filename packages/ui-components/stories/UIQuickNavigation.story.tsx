@@ -35,10 +35,12 @@ const Content = (props: { title: string }) => {
     );
 };
 
-export const Inline = () => {
+const QuickNavigation = (props: { inline: boolean }) => {
+    const { inline } = props;
     return (
         <div style={{ margin: 10 }}>
-            <UIQuickNavigation>
+            <div>{`Inline = ${inline}`}</div>
+            <UIQuickNavigation inline={inline}>
                 <div {...setQuickNavigationKey('A')}>
                     <Content title="Group 1" />
                 </div>
@@ -56,6 +58,10 @@ export const Inline = () => {
     );
 };
 
+export const Inline = () => {
+    return <QuickNavigation inline={true} />;
+};
+
 export const External = () => {
-    return <div>ToDo</div>;
+    return <QuickNavigation inline={false} />;
 };

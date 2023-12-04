@@ -1,5 +1,5 @@
 
-.quick-navigation {
+.quick-navigation--inline {
     
     [data-quick-navigation-key] {
         position: relative;
@@ -18,5 +18,22 @@
             text-align: center;
             line-height: 20px;
         }
+    }
+}
+
+.quick-navigation-external {
+    & > div {
+        font-family: var(--vscode-font-family);
+        color: var(--vscode-activityBarBadge-foreground);
+        font-size: 16px;
+        position: absolute;
+        // top: -15px;
+        // left: -15px;
+        background: var(--vscode-activityBarBadge-background);
+        padding: 5px;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        line-height: 20px;
     }
 }
