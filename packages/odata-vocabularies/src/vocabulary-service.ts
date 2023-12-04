@@ -452,7 +452,7 @@ export class VocabularyService {
             element.constraints &&
             element.constraints.applicableTerms
         ) {
-            values.push(`**Applicable Terms:**\n ${element.constraints?.applicableTerms.join('\n')} \n`);
+            values.push(`**Applicable Terms:**  \n ${element.constraints?.applicableTerms.join('  \n')} \n`);
         }
 
         return values;
