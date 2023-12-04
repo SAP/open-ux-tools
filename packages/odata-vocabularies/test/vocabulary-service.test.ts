@@ -416,6 +416,24 @@ describe('getComplexTypeProperty()', () => {
             }
         `);
     });
+
+    it('UI.DataFieldWithUrl/URL (with Applicable Terms)', () => {
+        // Expect
+        expect(vocabularyService.getComplexTypeProperty(namespace + '.DataFieldWithUrl', 'Url')).toMatchInlineSnapshot(`
+            Object {
+              "constraints": Object {
+                "applicableTerms": Array [
+                  "com.sap.vocabularies.HTML5.v1.LinkTarget",
+                ],
+              },
+              "description": "Target of the hyperlink",
+              "isCollection": false,
+              "kind": "Property",
+              "name": "Url",
+              "type": "Edm.String",
+            }
+        `);
+    });
 });
 
 describe('getDocumentation()', () => {
