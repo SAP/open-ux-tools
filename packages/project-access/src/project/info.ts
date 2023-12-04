@@ -79,10 +79,12 @@ export async function getAppType(appRoot: string): Promise<AppType | undefined> 
  */
 async function getApplicationType(application: AllAppResults): Promise<'SAP Fiori elements' | 'SAPUI5 freestyle'> {
     let appType: 'SAP Fiori elements' | 'SAPUI5 freestyle';
-    const packageJson = await readJSON<Package>(join(application.projectRoot, FileName.Package));
+    const rootPackageJsonPath = join(application.projectRoot, FileName.Package);
+    const packageJson = (await fileExists(rootPackageJsonPath)) ? await readJSON<Package>(rootPackageJsonPath) : null;
+
     if (application.projectRoot === application.appRoot) {
-        appType = packageJson.sapux ? 'SAP Fiori elements' : 'SAPUI5 freestyle';
-    } else {
+        appType = packageJson?.sapux ? 'SAP Fiori elements' : 'SAPUI5 freestyle';
+    } else if (packageJson) {
         appType =
             Array.isArray(packageJson.sapux) &&
             packageJson.sapux.find(
@@ -90,6 +92,8 @@ async function getApplicationType(application: AllAppResults): Promise<'SAP Fior
             )
                 ? 'SAP Fiori elements'
                 : 'SAPUI5 freestyle';
+    } else {
+        appType = 'SAPUI5 freestyle';
     }
 
     return appType;
