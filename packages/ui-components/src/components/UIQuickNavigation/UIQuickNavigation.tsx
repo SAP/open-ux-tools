@@ -110,8 +110,8 @@ export function UIQuickNavigation(props: QuickNavigationProps): ReactElement {
     );
 
     const onKeyUp = useCallback(
-        (event: KeyboardEvent) => {
-            if (enabled && !isQuickNavigationEnabled(event)) {
+        (event: KeyboardEvent | FocusEvent) => {
+            if (enabled && (!('keyCode' in event) || !isQuickNavigationEnabled(event))) {
                 setEnabled(false);
             }
         },
@@ -121,6 +121,7 @@ export function UIQuickNavigation(props: QuickNavigationProps): ReactElement {
     useEffect(() => {
         document.body.addEventListener('keydown', onKeyDown);
         document.body.addEventListener('keyup', onKeyUp);
+        window.addEventListener('blur', onKeyUp);
         return () => {
             document.body.removeEventListener('keydown', onKeyDown);
             document.body.removeEventListener('keyup', onKeyUp);
