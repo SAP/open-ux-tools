@@ -26,7 +26,7 @@ import type {
     NameQualifier,
     QualifiedName
 } from './types';
-import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND } from './types';
+import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND, PROPERTY_KIND } from './types';
 
 type ElementType = TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue;
 
@@ -304,7 +304,7 @@ export class VocabularyService {
      * @param applicableTermsOnly  - Filter terms to specific terms that are applicable in the current context.
      * @returns - all terms which are applicable for a given context.
      */
-    getTermsForTargetKinds(targetKinds: TargetKind[], targetType: FullyQualifiedTypeName, applicableTermsOnly = false): FullyQualifiedName[] {
+    getTermsForTargetKinds(targetKinds: TargetKind[], targetType: FullyQualifiedTypeName): FullyQualifiedName[] {
         const uniqueTerms = new Set<string>();
 
         for (const targetKind of ['', ...targetKinds]) {
@@ -316,17 +316,15 @@ export class VocabularyService {
 
         const terms = [...uniqueTerms.keys()];
         let targetTypeDef = this.dictionary.get(targetType);
-        if (applicableTermsOnly) {
-            if (targetTypeDef && targetTypeDef.kind === COMPLEX_TYPE_KIND && targetTypeDef.baseType) {
-                targetTypeDef = this.dictionary.get(targetTypeDef.baseType);
-            }
-
-            if(targetTypeDef && (targetTypeDef.kind === COMPLEX_TYPE_KIND || targetTypeDef.kind === TYPE_DEFINITION_KIND)) {
-                const constraints = targetTypeDef.constraints;
-                if(constraints?.applicableTerms) {
-                    return constraints.applicableTerms;
-                }
-            }
+        if (targetTypeDef && targetTypeDef.kind === COMPLEX_TYPE_KIND && targetTypeDef.baseType) {
+            targetTypeDef = this.dictionary.get(targetTypeDef.baseType);
+        }
+        if (
+            targetTypeDef &&
+            (targetTypeDef.kind === COMPLEX_TYPE_KIND || targetTypeDef.kind === TYPE_DEFINITION_KIND) &&
+            targetTypeDef.constraints?.applicableTerms
+        ) {
+            return targetTypeDef.constraints.applicableTerms;
         }
 
         return terms.filter((termName) => {
@@ -447,6 +445,14 @@ export class VocabularyService {
 
         if (enumTypeDocumentation.length > 0) {
             values.unshift(...enumTypeDocumentation);
+        }
+
+        if (
+            (element.kind === COMPLEX_TYPE_KIND || element.kind === PROPERTY_KIND) &&
+            element.constraints &&
+            element.constraints.applicableTerms
+        ) {
+            values.push(`**Applicable Terms:**\n ${element.constraints?.applicableTerms.join('\n')} \n`);
         }
 
         return values;
@@ -601,6 +607,22 @@ export class VocabularyService {
     }
 
     /**
+     * Get base type vocabulary object recursively
+     * @param element - vocabulary object
+     * @returns - vocabulary object
+     */
+    getBaseTypeVocabObject(element: VocabularyObject): VocabularyObject | undefined {
+        let baseTypeVocab;
+        if (element.kind === 'ComplexType' && element.baseType) {
+            baseTypeVocab = this.dictionary.get(element.baseType);
+            if (baseTypeVocab && baseTypeVocab.kind === 'ComplexType' && baseTypeVocab?.baseType) {
+                baseTypeVocab = this.getBaseTypeVocabObject(baseTypeVocab);
+            }
+        }
+        return baseTypeVocab;
+    }
+
+    /**
      *
      * @param name         - Fully qualified name of the element.
      * @param propertyName - Name of a property of the element.
@@ -617,7 +639,13 @@ export class VocabularyService {
         let element: VocabularyObject | ComplexTypeProperty | EnumValue | undefined;
         let elementType: VocabularyObject | undefined;
         const enumTypeDocumentation = [];
-        element = this.getTerm(name) ?? this.getType(name);
+        element = this.getTerm(name) ?? this.getType(name); // TODO: propogate base type constraints
+        if (element && element.kind === 'ComplexType' && element?.baseType) {
+            const baseTypeVocab = this.getBaseTypeVocabObject(element);
+            if (baseTypeVocab && baseTypeVocab.kind === 'ComplexType' && baseTypeVocab.constraints) {
+                element.constraints = baseTypeVocab.constraints;
+            }
+        }
         if (element) {
             if (element.kind === 'Term') {
                 elementType = this.getElementType(element);
