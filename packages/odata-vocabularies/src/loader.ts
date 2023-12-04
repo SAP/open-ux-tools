@@ -394,11 +394,11 @@ function parseSchemaElements(identifier: string, element: SchemaElement): Vocabu
  */
 export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesInformation => {
     // try to use cache
-    // if (includeCds && vocabulariesInformationStaticCds) {
-    //     return vocabulariesInformationStaticCds;
-    // } else if (!includeCds && vocabulariesInformationStatic) {
-    //     return vocabulariesInformationStatic;
-    // }
+    if (includeCds && vocabulariesInformationStaticCds) {
+        return vocabulariesInformationStaticCds;
+    } else if (!includeCds && vocabulariesInformationStatic) {
+        return vocabulariesInformationStatic;
+    }
 
     const dictionary: Map<EdmNameType.FullyQualifiedName, VocabularyObject> = new Map();
     const byTarget: Map<TargetKindValue | '', Set<EdmNameType.FullyQualifiedName>> = new Map();
