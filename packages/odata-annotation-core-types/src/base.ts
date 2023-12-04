@@ -1,4 +1,8 @@
+import { EDM_NAMESPACE_ALIAS } from './annotation-file';
+import { EDMX_NAMESPACE_ALIAS } from './annotation-file';
 import type { Alias, NamespaceString } from './specification';
+
+export type NamespaceAlias = typeof EDMX_NAMESPACE_ALIAS | typeof EDM_NAMESPACE_ALIAS;
 
 /**
  * String types used for documentation purposes
@@ -62,3 +66,43 @@ export const ASSOCIATION_SET_KIND = 'AssociationSet'; // V2 only
 
 // miscellaneous
 export const COLLECTION_KIND = 'Collection';
+
+/**
+ * target kinds - available values for AppliesTo
+ */
+export type TargetKindValue =
+    | 'Action'
+    | 'ActionImport'
+    | 'Annotation'
+    | 'Apply' // Application of a client-side function in an annotation
+    | 'Cast' // Type Cast annotation expression
+    | 'Collection' // Entity Set or collection-valued Property or Navigation Property
+    | 'ComplexType'
+    | 'EntityContainer'
+    | 'EntitySet'
+    | 'EntityType'
+    | 'EnumType'
+    | 'Function'
+    | 'FunctionImport'
+    | 'If' // Conditional annotation expression
+    | 'Include' // Reference to an Included Schema
+    | 'IsOf' // Type Check annotation expression
+    | 'LabeledElement' // Labeled Element expression
+    | 'Member' // Enumeration Member
+    | 'NavigationProperty'
+    | 'Null'
+    | 'OnDelete' // On-Delete Action of a navigation property
+    | 'Parameter' // Action of Function Parameter
+    | 'Property' // Property of a structured type
+    | 'PropertyValue' // Property value of a Record annotation expression
+    | 'Record' // Record annotation expression
+    | 'Reference' // Reference to another CSDL document
+    | 'ReferentialConstraint' //Referential Constraint of a navigation property
+    | 'ReturnType' // Return Type of an Action or Function
+    | 'Schema'
+    | 'Singleton'
+    | 'Term'
+    | 'TypeDefinition'
+    | 'UrlRef'; // UrlRef annotation expression
+
+export const cacheKeyAnyTermName = 'Impl.AnyTerm';
