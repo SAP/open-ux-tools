@@ -69,14 +69,6 @@ kind: extension
 type: server-middleware
 middleware:
   path: ../../../dist/ui5/middleware.js
----
-specVersion: "3.0"
-metadata:
-  name: backend-proxy-middleware
-kind: extension
-type: server-middleware
-middleware:
-  path: ../../../../../backend-proxy-middleware/dist/middleware.js
 `;
 };
 const timeout = 50 * 1000;

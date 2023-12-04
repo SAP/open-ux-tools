@@ -51,7 +51,7 @@ jobs:
                     C:\Users\runneradmin\AppData\Local\ms-playwright
                   ${{ runner.os != 'Windows' }}:
                     ~/.cache/ms-playwright
-                key: playwright-browsers-${{ matrix.os }}-${{ matrix.node-version }}
+                key: playwright-browsers-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
             - name: Install playwright browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install --with-deps
