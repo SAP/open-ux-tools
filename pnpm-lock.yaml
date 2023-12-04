@@ -1055,6 +1055,10 @@ importers:
         version: 4.17.21
 
   packages/odata-vocabularies:
+    dependencies:
+      '@sap-ux/odata-annotation-core-types':
+        specifier: workspace:*
+        version: link:../odata-annotation-core-types
     devDependencies:
       axios:
         specifier: 1.6.0
