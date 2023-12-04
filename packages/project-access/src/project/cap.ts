@@ -56,7 +56,7 @@ export function isCapNodeJsProject(packageJson: Package): boolean {
  */
 export async function isCapJavaProject(projectRoot: string, capCustomPaths?: CapCustomPaths): Promise<boolean> {
     const srv = capCustomPaths?.srv ?? (await getCapCustomPaths(projectRoot)).srv;
-    return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', 'application.yaml'));
+    return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', FileName.CapJavaApplicationYaml));
 }
 
 /**
