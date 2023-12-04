@@ -174,6 +174,19 @@
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
             "cwd": "${workspaceFolder}/packages/ui-components"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "xml-odata-annotation-converter: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/xml-odata-annotation-converter"
         }
     ]
 }
