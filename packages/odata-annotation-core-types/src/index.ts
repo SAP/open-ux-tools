@@ -13,7 +13,8 @@ export {
     ODataVersionType,
     MetadataServiceOptions,
     MetadataElementVisitor,
-    MetadataElement
+    MetadataElement,
+    MetadataElementProperties
 } from './types';
 
 export { Constraints, Facets } from './types/vocabularies';

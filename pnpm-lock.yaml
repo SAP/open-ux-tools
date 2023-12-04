@@ -1669,6 +1669,34 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
 
+  packages/xml-odata-annotation-converter:
+    dependencies:
+      '@sap-ux/odata-annotation-core':
+        specifier: workspace:*
+        version: link:../odata-annotation-core
+    devDependencies:
+      '@sap-ux/odata-annotation-core-types':
+        specifier: workspace:*
+        version: link:../odata-annotation-core-types
+      '@sap-ux/odata-vocabularies':
+        specifier: workspace:*
+        version: link:../odata-vocabularies
+      '@xml-tools/ast':
+        specifier: 5.0.5
+        version: 5.0.5
+      '@xml-tools/parser':
+        specifier: 1.0.11
+        version: 1.0.11
+      chevrotain:
+        specifier: 7.1.1
+        version: 7.1.1
+      npm-run-all:
+        specifier: 4.1.5
+        version: 4.1.5
+      typescript:
+        specifier: 4.9.5
+        version: 4.9.5
+
   packages/yaml:
     dependencies:
       lodash:
@@ -9137,6 +9165,26 @@ packages:
       '@xtuc/long': 4.2.2
     dev: true
 
+  /@xml-tools/ast@5.0.5:
+    resolution: {integrity: sha512-avvzTOvGplCx9JSKdsTe3vK+ACvsHy2HxVfkcfIqPzu+kF5CT4rw5aUVzs0tJF4cnDyMRVkSyVxR07X0Px8gPA==}
+    dependencies:
+      '@xml-tools/common': 0.1.6
+      '@xml-tools/parser': 1.0.11
+      lodash: 4.17.21
+    dev: true
+
+  /@xml-tools/common@0.1.6:
+    resolution: {integrity: sha512-7aVZeEYccs1KI/Asd6KKnrB4dTAWXTkjRMjG40ApGEUp5NpfQIvWLEBvMv85Koj2lbSpagcAERwDy9qMsfWGdA==}
+    dependencies:
+      lodash: 4.17.21
+    dev: true
+
+  /@xml-tools/parser@1.0.11:
+    resolution: {integrity: sha512-aKqQ077XnR+oQtHJlrAflaZaL7qZsulWc/i/ZEooar5JiWj1eLt0+Wg28cpa+XLney107wXqneC+oG1IZvxkTA==}
+    dependencies:
+      chevrotain: 7.1.1
+    dev: true
+
   /@xmldom/xmldom@0.8.10:
     resolution: {integrity: sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==}
     engines: {node: '>=10.0.0'}
@@ -10397,6 +10445,12 @@ packages:
       htmlparser2: 8.0.1
       parse5: 7.1.2
       parse5-htmlparser2-tree-adapter: 7.0.0
+    dev: true
+
+  /chevrotain@7.1.1:
+    resolution: {integrity: sha512-wy3mC1x4ye+O+QkEinVJkPf5u2vsrDIYW9G7ZuwFl6v/Yu0LwUuT2POsb+NUWApebyxfkQq6+yDfRExbnI5rcw==}
+    dependencies:
+      regexp-to-ast: 0.5.0
     dev: true
 
   /chokidar@3.5.3:
@@ -17859,6 +17913,10 @@ packages:
     resolution: {integrity: sha512-hfMp2BoF0qOk3uc5V20ALGDS2ddjQaLrdl7xrGXvAIow7qeWRM2VA2HuCHkUKk9slq3VwEwLNK3DFBqDfPGYtg==}
     dependencies:
       '@babel/runtime': 7.23.2
+    dev: true
+
+  /regexp-to-ast@0.5.0:
+    resolution: {integrity: sha512-tlbJqcMHnPKI9zSrystikWKwHkBqu2a/Sgw01h3zFjvYrMxEDYHzzoMZnUrbIfpTFEsoRnnviOXNCzFiSc54Qw==}
     dev: true
 
   /regexp.prototype.flags@1.5.0:
