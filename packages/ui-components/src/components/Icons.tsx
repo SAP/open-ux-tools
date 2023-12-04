@@ -142,7 +142,6 @@ export enum UiIcons {
     ValidateBig = 'ValidateBig',
     ValidateError = 'ValidateError',
     ValidateInfo = 'ValidateInfo',
-    ValidateSuccess = 'ValidateBig',
     ValidateWarning = 'ValidateWarning',
     ValueHelp = 'ValueHelp',
     VerticalGrip = 'VerticalGrip',
