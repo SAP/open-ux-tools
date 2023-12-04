@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-returns */
-import type { AnnotationTerm, AnyAnnotation, EntityType } from '@sap-ux/vocabularies-types';
+import type { EntityType } from '@sap-ux/vocabularies-types';
 import type { EntityTypeAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type File from 'vinyl';
@@ -35,49 +35,6 @@ export async function getEntityTypes(projectProvider: ProjectProvider) {
 export function getAnnotationTermAlias(annotationTerm: UIAnnotationTerms) {
     const [, , , vocabularyName, , annotationTermName] = annotationTerm.split('.');
     return [vocabularyName, annotationTermName] as [keyof EntityTypeAnnotations, string];
-}
-
-/**
- *
- * @param projectProvider
- * @param targetName
- * @param annotationTerm
- * @param targetType
- * @param qualifier
- */
-export function getAnnotationsForTerm(
-    projectProvider: ProjectProvider,
-    targetName: string,
-    annotationTerm: UIAnnotationTerms,
-    targetType = 'EnityType',
-    qualifier?: string
-) {
-    let result: AnnotationTerm<AnyAnnotation> | null = null;
-    try {
-        const mergedMetadata = getMergedMetadata(projectProvider);
-        let target;
-        if (targetType === 'EntityType') {
-            target = mergedMetadata.entityTypes.by_fullyQualifiedName(targetName);
-        } else if (targetType === 'Property') {
-            const [entityTypeTarget] = targetName.split('/');
-            const entityType = mergedMetadata.entityTypes.by_fullyQualifiedName(entityTypeTarget);
-            target = entityType?.entityProperties.by_fullyQualifiedName(targetName);
-        } else {
-            target = mergedMetadata.actions.by_fullyQualifiedName(targetName);
-        }
-        if (target) {
-            const [vocabularyName, annotationTermName] = getAnnotationTermAlias(annotationTerm);
-            target.annotations = target.annotations ?? {};
-            (target.annotations as any)[vocabularyName] = target.annotations[vocabularyName] ?? {};
-            result = Object.entries(target.annotations[vocabularyName] || {}).find(([key]) =>
-                qualifier ? key === `${annotationTermName}#${qualifier}` : key === annotationTermName
-            )?.[1] as AnnotationTerm<AnyAnnotation>;
-        }
-    } catch (error) {
-        //
-    } finally {
-        return Promise.resolve(result);
-    }
 }
 
 /**
