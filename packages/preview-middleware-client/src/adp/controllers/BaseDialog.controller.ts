@@ -52,7 +52,7 @@ export default abstract class BaseDialog extends Controller {
         const input = event.getSource<Input>();
         const beginBtn = this.dialog.getBeginButton();
 
-        const fragmentName: string = input.getValue().trim();
+        const fragmentName: string = input.getValue();
         const fragmentList: { fragmentName: string }[] = this.model.getProperty('/fragmentList');
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
