@@ -295,6 +295,23 @@ export class VocabularyService {
     }
 
     /**
+     * Returns applicable terms constraint value for the current type or (if not defined) constraint of most specific parent base type.
+     *
+     * @param typeDefinition type definition vocabulary object
+     * @returns constraint (array of term names) or undefined
+     */
+    getApplicableTermsConstraint(typeDefinition: TypeDefinition | ComplexType): FullyQualifiedName[] | undefined {
+        let result = typeDefinition.constraints?.applicableTerms;
+        let currentObject: VocabularyObject | undefined = typeDefinition;
+        while (!result && currentObject?.kind === COMPLEX_TYPE_KIND && currentObject.baseType) {
+            currentObject = this.dictionary.get(currentObject.baseType);
+            result = (currentObject as ComplexType)?.constraints?.applicableTerms;
+        }
+
+        return result;
+    }
+
+    /**
      * Returns all terms which are applicable for a given context.
      *
      * The context is defined by the following parameters.
@@ -315,16 +332,12 @@ export class VocabularyService {
         }
 
         const terms = [...uniqueTerms.keys()];
-        let targetTypeDef = this.dictionary.get(targetType);
-        if (targetTypeDef && targetTypeDef.kind === COMPLEX_TYPE_KIND && targetTypeDef.baseType) {
-            targetTypeDef = this.dictionary.get(targetTypeDef.baseType);
-        }
-        if (
-            targetTypeDef &&
-            (targetTypeDef.kind === COMPLEX_TYPE_KIND || targetTypeDef.kind === TYPE_DEFINITION_KIND) &&
-            targetTypeDef.constraints?.applicableTerms
-        ) {
-            return targetTypeDef.constraints.applicableTerms;
+        const targetTypeDef = this.dictionary.get(targetType);
+        if (targetTypeDef?.kind === COMPLEX_TYPE_KIND || targetTypeDef?.kind === TYPE_DEFINITION_KIND) {
+            const applicableTerms = this.getApplicableTermsConstraint(targetTypeDef);
+            if (applicableTerms) {
+                return applicableTerms;
+            }
         }
 
         return terms.filter((termName) => {
