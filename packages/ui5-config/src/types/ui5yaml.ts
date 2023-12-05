@@ -7,26 +7,6 @@ export interface AdpCustomConfiguration {
     environment: string;
 }
 
-export interface PreviewMiddlewareConfiguration {
-    adp: {
-        ignoreCertErrors: boolean;
-        target: {
-            url: string;
-            client: string;
-        };
-        flp: {
-            path: string;
-        };
-        rta: {
-            editors: {
-                path: string;
-                developerMode: boolean;
-            };
-        };
-        debug: boolean;
-    };
-}
-
 export interface CustomMiddleware<C = unknown> extends CustomItem<C> {
     beforeMiddleware?: string;
     afterMiddleware?: string;

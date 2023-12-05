@@ -1,7 +1,8 @@
 import type {
     AdpCustomConfiguration,
-    PreviewMiddlewareConfiguration,
-    CustomMiddleware
+    FioriToolsProxyConfig,
+    CustomMiddleware,
+    FioriToolsPreviewConfig
 } from '@sap-ux/ui5-config/src/types';
 import { readUi5Yaml } from '@sap-ux/project-access';
 
@@ -21,9 +22,10 @@ export default class UI5Validator {
         const adpCustomConfiguration = adpCustomConfigurationObject
             ? (adpCustomConfigurationObject as AdpCustomConfiguration)
             : undefined;
-        const previewMiddleware = ui5yaml.findCustomMiddleware<PreviewMiddlewareConfiguration>('preview-middleware');
+        const fioriPreview = ui5yaml.findCustomMiddleware<FioriToolsPreviewConfig>('fiori-tools-preview');
+        const fioriProxy = ui5yaml.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
 
-        this.checkMiddlewareProperties(adpCustomConfiguration, previewMiddleware);
+        this.checkMiddlewareProperties(adpCustomConfiguration, fioriPreview, fioriProxy);
     }
 
     /**
@@ -45,19 +47,25 @@ export default class UI5Validator {
      * Checks if middleware has all the necessary properties an adaptation project needs.
      *
      * @param customConfiguration AdpCustomConfiguration
-     * @param previewMiddleware CustomMiddleware
+     * @param fioriPreview CustomMiddleware
+     * @param fioriProxy CustomMiddleware
      */
     private static checkMiddlewareProperties(
         customConfiguration: AdpCustomConfiguration | undefined,
-        previewMiddleware: CustomMiddleware<PreviewMiddlewareConfiguration> | undefined
+        fioriPreview: CustomMiddleware<FioriToolsPreviewConfig> | undefined,
+        fioriProxy: CustomMiddleware<FioriToolsProxyConfig> | undefined
     ): void {
-        if (!customConfiguration || !previewMiddleware) {
+        if (!customConfiguration || !fioriPreview || !fioriProxy) {
             throw new Error('Missing required custom middleware or custom configuration in ui5.yaml');
         }
         this.assertProperties(['environment'], customConfiguration);
-        this.assertProperties(['configuration'], previewMiddleware);
-        this.assertProperties(['adp'], previewMiddleware.configuration);
-        this.assertProperties(['target'], previewMiddleware.configuration.adp);
-        this.assertProperties(['url', 'client'], previewMiddleware.configuration.adp.target);
+        this.assertProperties(['configuration'], fioriPreview);
+        this.assertProperties(['adp'], fioriPreview.configuration);
+        this.assertProperties(['target'], fioriPreview.configuration.adp);
+        this.assertProperties(['url', 'client'], fioriPreview.configuration.adp.target);
+        this.assertProperties(['configuration'], fioriProxy);
+        this.assertProperties(['ui5'], fioriProxy.configuration);
+        this.assertProperties(['backend'], fioriProxy.configuration);
+        this.assertProperties(['version', 'path', 'url'], fioriProxy.configuration.ui5!);
     }
 }

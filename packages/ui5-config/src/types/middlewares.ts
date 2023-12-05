@@ -61,3 +61,13 @@ export interface FioriToolsServeStaticPath {
 export interface FioriToolsServeStaticConfig {
     paths: FioriToolsServeStaticPath[];
 }
+
+export interface FioriToolsPreviewConfig {
+    adp: {
+        target: {
+            url: string;
+            client: string;
+            ignoreCertErrors: boolean;
+        };
+    };
+}

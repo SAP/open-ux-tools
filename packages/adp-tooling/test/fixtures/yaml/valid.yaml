@@ -10,33 +10,25 @@ customConfiguration:
     environment: ABAP
 server:
   customMiddleware:
-    - name: preview-middleware
+    - name: fiori-tools-preview
       afterMiddleware: compression
       configuration:
         adp:
-          ignoreCertErrors: true
           target:
             url: url-text
             client: '010'
-        flp:
-          path: flp-path
-        rta:
-          editors: 
-          - path: editor-path
-            developerMode: true
-        debug: true
-    - name: ui5-proxy-middleware
+          ignoreCertErrors: false
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
       configuration:
-        version: 1.120.1
-      afterMiddleware: preview-middleware
-    - name: backend-proxy-middleware
-      afterMiddleware: preview-middleware
-      configuration:
-        backend:
-          path: /sap
-          url: url-text
-          client: '010'
-          autoRewrite: true
-        options:
-          secure: false
-          xfwd: true
+        ignoreCertErrors: false
+        ui5:
+          version: 1.119.2
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          backend:
+            - url: url-text
+            client: '010'
+            path: /sap   
