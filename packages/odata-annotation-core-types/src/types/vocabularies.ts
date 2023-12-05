@@ -9,7 +9,7 @@
  * annotation-modeler core or annotation modeler APIs
  */
 
-import { FullyQualifiedName, FullyQualifiedTypeName } from '../specification';
+import type { FullyQualifiedName, FullyQualifiedTypeName } from '../specification';
 
 /**
  * Facets provide further details on types definitions, terms or properties
