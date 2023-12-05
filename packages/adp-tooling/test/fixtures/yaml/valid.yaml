@@ -7,7 +7,7 @@ resources:
     propertiesFileSourceEncoding: UTF-8
 customConfiguration:
   adp:
-    environment: ABAP
+    safeMode: false
 server:
   customMiddleware:
     - name: fiori-tools-preview

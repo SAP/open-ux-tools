@@ -3,10 +3,6 @@ export interface CustomItem<C> {
     configuration: C;
 }
 
-export interface AdpCustomConfiguration {
-    environment: string;
-}
-
 export interface CustomMiddleware<C = unknown> extends CustomItem<C> {
     beforeMiddleware?: string;
     afterMiddleware?: string;

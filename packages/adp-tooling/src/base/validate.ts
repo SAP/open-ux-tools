@@ -1,9 +1,4 @@
-import type {
-    AdpCustomConfiguration,
-    FioriToolsProxyConfig,
-    CustomMiddleware,
-    FioriToolsPreviewConfig
-} from '@sap-ux/ui5-config/src/types';
+import type { FioriToolsProxyConfig, CustomMiddleware, FioriToolsPreviewConfig } from '@sap-ux/ui5-config/src/types';
 import { readUi5Yaml } from '@sap-ux/project-access';
 
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
@@ -18,14 +13,10 @@ export default class UI5Validator {
      */
     static async validateUi5Yaml(projectPath: string) {
         const ui5yaml = await readUi5Yaml(projectPath, 'ui5.yaml');
-        const adpCustomConfigurationObject = ui5yaml.getCustomConfiguration('adp');
-        const adpCustomConfiguration = adpCustomConfigurationObject
-            ? (adpCustomConfigurationObject as AdpCustomConfiguration)
-            : undefined;
         const fioriPreview = ui5yaml.findCustomMiddleware<FioriToolsPreviewConfig>('fiori-tools-preview');
         const fioriProxy = ui5yaml.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
 
-        this.checkMiddlewareProperties(adpCustomConfiguration, fioriPreview, fioriProxy);
+        this.checkMiddlewareProperties(fioriPreview, fioriProxy);
     }
 
     /**
@@ -46,19 +37,16 @@ export default class UI5Validator {
     /**
      * Checks if middleware has all the necessary properties an adaptation project needs.
      *
-     * @param customConfiguration AdpCustomConfiguration
      * @param fioriPreview CustomMiddleware
      * @param fioriProxy CustomMiddleware
      */
     private static checkMiddlewareProperties(
-        customConfiguration: AdpCustomConfiguration | undefined,
         fioriPreview: CustomMiddleware<FioriToolsPreviewConfig> | undefined,
         fioriProxy: CustomMiddleware<FioriToolsProxyConfig> | undefined
     ): void {
-        if (!customConfiguration || !fioriPreview || !fioriProxy) {
+        if (!fioriPreview || !fioriProxy) {
             throw new Error('Missing required custom middleware or custom configuration in ui5.yaml');
         }
-        this.assertProperties(['environment'], customConfiguration);
         this.assertProperties(['configuration'], fioriPreview);
         this.assertProperties(['adp'], fioriPreview.configuration);
         this.assertProperties(['target'], fioriPreview.configuration.adp);
