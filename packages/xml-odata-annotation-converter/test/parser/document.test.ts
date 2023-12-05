@@ -1,4 +1,5 @@
-import { buildAst, XMLDocument } from '@xml-tools/ast';
+import { buildAst } from '@xml-tools/ast';
+import type { XMLDocument } from '@xml-tools/ast';
 import type { DocumentCstNode } from '@xml-tools/parser';
 import { parse } from '@xml-tools/parser';
 
