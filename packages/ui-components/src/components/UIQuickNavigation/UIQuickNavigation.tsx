@@ -2,11 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { getUIFirstFocusable, isHTMLElement, setUIFocusVisibility } from '../../utilities';
 
 import './UIQuickNavigation.scss';
-import { isQuickNavigationEnabled, resolveKeyCode } from './keyBindingsResolver';
 import { getDocument } from '@fluentui/react';
 
 export const QUICK_NAVIGATION_ATTRIBUTE = 'data-quick-navigation-key';
-export const QUICK_NAVIGATION_CLASSES = {
+const QUICK_NAVIGATION_CLASSES = {
     internal: 'quick-navigation--internal',
     external: 'quick-navigation--external'
 };
@@ -89,6 +88,30 @@ function toggleExternalVisibility(enabled: boolean, offset = EXTERNAL_HELPER_OFF
     }
 }
 
+/**
+ * Method checks if quick navigation should be enabled for passed keyboard event.
+ * Quick navigation is enabled when user hold 'ctrl + alt' or 'meta + alt'.
+ *
+ * @param event Keyboard event.
+ * @returns True if quick navigation should be enabled for passed keyboard event.
+ */
+export const isQuickNavigationEnabled = (event: KeyboardEvent): boolean => {
+    if ((event.ctrlKey || event.metaKey) && event.altKey) {
+        return true;
+    }
+    return false;
+};
+
+/**
+ * Method resolves passed keyboard code by removing 'Digit' and 'Key' keywords.
+ *
+ * @param code Code from keyboard event.
+ * @returns Resolved char or digit.
+ */
+function resolveKeyCode(code: string): string | undefined {
+    return code.replace('Digit', '').replace('Key', '').toUpperCase();
+}
+
 export const UIQuickNavigation: React.FC<QuickNavigationProps> = (props: QuickNavigationProps) => {
     const { className, children, inline, offset } = props;
     const [enabled, setEnabled] = useState(false);
@@ -133,9 +156,9 @@ export const UIQuickNavigation: React.FC<QuickNavigationProps> = (props: QuickNa
                     event.stopImmediatePropagation();
                     event.stopPropagation();
                     event.preventDefault();
-                    // Disable/deactivate UI with quick navigation
-                    setEnabled(false);
                 }
+                // Disable/deactivate UI with quick navigation
+                setEnabled(false);
             }
         },
         [enabled]
@@ -163,6 +186,7 @@ export const UIQuickNavigation: React.FC<QuickNavigationProps> = (props: QuickNa
         document.body.addEventListener('keyup', onRelease);
         window.addEventListener('blur', onRelease);
         return () => {
+            toggleExternalVisibility(false);
             document.body.removeEventListener('keydown', onKeyDown);
             document.body.removeEventListener('keyup', onRelease);
             window.removeEventListener('blur', onRelease);
@@ -173,6 +197,6 @@ export const UIQuickNavigation: React.FC<QuickNavigationProps> = (props: QuickNa
 };
 
 UIQuickNavigation.defaultProps = {
-    inline: true,
+    inline: false,
     offset: EXTERNAL_HELPER_OFFSET
 };
