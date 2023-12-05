@@ -21,9 +21,12 @@ const cwd = join(__dirname, '..', '..', 'fixtures', 'simple-app');
 const testCwd = getDestinationProjectRoot(cwd);
 
 /**
- * This content will overwrite existing `ui5.yaml` file content
+ * This content will overwrite existing `ui5.yaml` file content.
+ *
+ * @param ui5Version UI5 version
+ * @returns YAML content
  */
-const getYamlContent = (ui5Version: string) => {
+const getYamlContent = (ui5Version: string): string => {
     return `
 specVersion: '1.0'
 metadata:
