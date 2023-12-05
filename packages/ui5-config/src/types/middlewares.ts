@@ -67,6 +67,7 @@ export interface FioriToolsPreviewConfig {
         target: {
             url: string;
             client: string;
+            destination: string;
             ignoreCertErrors: boolean;
         };
     };

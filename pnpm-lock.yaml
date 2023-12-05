@@ -150,6 +150,9 @@ importers:
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger

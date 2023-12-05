@@ -1,5 +1,6 @@
 import type { FioriToolsProxyConfig, CustomMiddleware, FioriToolsPreviewConfig } from '@sap-ux/ui5-config/src/types';
 import { readUi5Yaml } from '@sap-ux/project-access';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
 /**
@@ -50,10 +51,14 @@ export default class UI5Validator {
         this.assertProperties(['configuration'], fioriPreview);
         this.assertProperties(['adp'], fioriPreview.configuration);
         this.assertProperties(['target'], fioriPreview.configuration.adp);
-        this.assertProperties(['url', 'client'], fioriPreview.configuration.adp.target);
         this.assertProperties(['configuration'], fioriProxy);
         this.assertProperties(['ui5'], fioriProxy.configuration);
         this.assertProperties(['backend'], fioriProxy.configuration);
         this.assertProperties(['version', 'path', 'url'], fioriProxy.configuration.ui5!);
+        if (isAppStudio()) {
+            this.assertProperties(['destination'], fioriPreview.configuration.adp.target);
+        } else {
+            this.assertProperties(['url', 'client'], fioriPreview.configuration.adp.target);
+        }
     }
 }
