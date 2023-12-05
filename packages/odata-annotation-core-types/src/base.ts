@@ -1,5 +1,4 @@
-import type { EDM_NAMESPACE_ALIAS } from './annotation-file';
-import type { EDMX_NAMESPACE_ALIAS } from './annotation-file';
+import type { EDM_NAMESPACE_ALIAS, EDMX_NAMESPACE_ALIAS } from './annotation-file';
 import type { Alias, NamespaceString } from './specification';
 
 export type NamespaceAlias = typeof EDMX_NAMESPACE_ALIAS | typeof EDM_NAMESPACE_ALIAS;
