@@ -43,10 +43,6 @@ const QuickNavigationTest = (props: { inline?: boolean; groups: string[] }) => {
 
 describe('UIQuickNavigation', () => {
     initIcons();
-
-    // let resetTransformationSpy: jest.SpyInstance;
-    // let preventDismissOnEventSpy: jest.SpyInstance;
-
     const classNames = {
         internal: 'quick-navigation--internal',
         external: 'quick-navigation--external'
@@ -91,10 +87,10 @@ describe('UIQuickNavigation', () => {
         expect(externalContainers.length).toEqual(1);
         const helpers = externalContainers[0]?.childNodes as NodeListOf<HTMLElement>;
         expect(helpers.length).toEqual(4);
-        expect(helpers[0]?.innerText).toEqual('A');
-        expect(helpers[1]?.innerText).toEqual('B');
-        expect(helpers[2]?.innerText).toEqual('C');
-        expect(helpers[3]?.innerText).toEqual('3');
+        expect(helpers[0]?.textContent).toEqual('A');
+        expect(helpers[1]?.textContent).toEqual('B');
+        expect(helpers[2]?.textContent).toEqual('C');
+        expect(helpers[3]?.textContent).toEqual('3');
     });
 
     it('Render with inline', () => {

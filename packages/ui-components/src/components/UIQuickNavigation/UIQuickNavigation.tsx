@@ -79,7 +79,7 @@ function toggleExternalVisibility(enabled: boolean, offset = EXTERNAL_HELPER_OFF
         navigationTargets.forEach((target) => {
             const rect = target.getBoundingClientRect();
             const helper = doc.createElement('div');
-            helper.innerText = target.getAttribute(QUICK_NAVIGATION_ATTRIBUTE) ?? '';
+            helper.textContent = target.getAttribute(QUICK_NAVIGATION_ATTRIBUTE);
             helper.style.top = `${rect.top - offset.y}px`;
             helper.style.left = `${rect.left - offset.x}px`;
             externalContainer.appendChild(helper);
