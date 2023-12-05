@@ -28,7 +28,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          backend:
-            - url: url-text
-              client: '010'
-              path: /sap   
+        backend:
+          - url: url-text
+            client: '010'
+            path: /sap   
