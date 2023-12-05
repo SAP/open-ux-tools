@@ -54,6 +54,25 @@ describe('CustomSection', () => {
             fs.delete(testDir);
             fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
         });
+        test('with fragmentName', () => {
+            const testCustomSection: CustomSection = {
+                ...customSection,
+                fragmentName: 'NewCustomSectionFragment'
+            };
+            const expectedSectionFragmentPath = join(
+                testDir,
+                `webapp/${testCustomSection.folder}/${testCustomSection.fragmentName}.fragment.xml`
+            );
+            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
+            expect(settings.content).toMatchSnapshot();
+
+            expect(fs.read(expectedSectionFragmentPath)).toMatchSnapshot();
+            expect(fs.read(expectedSectionFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+        });
         test('with handler, all properties', () => {
             const testCustomSection: CustomSection = {
                 ...customSection,

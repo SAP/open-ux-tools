@@ -14,6 +14,10 @@ export interface TabInfo {
  */
 export interface CustomElement extends WriterConfig {
     /**
+     * Name of the custom element fragment.
+     */
+    fragmentName?: string;
+    /**
      * Name of the custom element that is to be added to the application.
      */
     name: string;

@@ -8,7 +8,11 @@
                             "content": {
                                 "body": {
                                     "sections": {
-                                        "<%- name %>": {
+                                        <% if (typeof fragmentName !== 'undefined') { %>
+                                            "<%- fragmentName %>": {
+                                        <% } else { %>
+                                            "<%- name %>": {
+                                        <% } %>
                                             "template": "<%- ns %>.<%- name %>",
                                             <%if (typeof position !== 'undefined') {%>"position": {
                                                 <% if (position.placement) { %> 
