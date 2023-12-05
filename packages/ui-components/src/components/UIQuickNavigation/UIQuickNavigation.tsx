@@ -6,7 +6,10 @@ import { isQuickNavigationEnabled, resolveKeyCode } from './keyBindingsResolver'
 import { getDocument } from '@fluentui/react';
 
 export const QUICK_NAVIGATION_ATTRIBUTE = 'data-quick-navigation-key';
-export const QUICK_NAVIGATION_EXTERNAL_CLASS = 'quick-navigation-external';
+export const QUICK_NAVIGATION_CLASSES = {
+    internal: 'quick-navigation--internal',
+    external: 'quick-navigation--external'
+};
 const EXTERNAL_HELPER_OFFSET: QuickNavigationOffset = {
     x: 15,
     y: 15
@@ -43,15 +46,11 @@ export interface QuickNavigationProps {
  * @returns CSS classnames based on current quick navigation state.
  */
 function getClassName(className?: string, enabled?: boolean, inline?: boolean): string {
-    let result = className ?? '';
-    if (enabled) {
-        // ToDo -remove???
-        result += ' quick-navigation';
-    }
+    const result = [className];
     if (enabled && inline) {
-        result += ' quick-navigation--inline';
+        result.push(QUICK_NAVIGATION_CLASSES.internal);
     }
-    return result;
+    return result.join(' ');
 }
 
 /**
@@ -67,25 +66,26 @@ function toggleExternalVisibility(enabled: boolean, offset = EXTERNAL_HELPER_OFF
     }
     const holder = doc.body;
     // Cleanup container
-    const existingContainer = doc.querySelector(`.${QUICK_NAVIGATION_EXTERNAL_CLASS}`);
+    const existingContainer = doc.querySelector(`.${QUICK_NAVIGATION_CLASSES.external}`);
     if (existingContainer) {
         holder.removeChild(existingContainer);
     }
     // Show helpers if quick navigation is active
     if (enabled) {
-        const container = doc.createElement('div');
-        container.classList.add(QUICK_NAVIGATION_EXTERNAL_CLASS);
-        const navigationContainers = doc.querySelectorAll(`[${QUICK_NAVIGATION_ATTRIBUTE}]`);
-        for (let i = 0; i < navigationContainers.length; i++) {
-            const source = navigationContainers[i];
-            const rect = source.getBoundingClientRect();
+        // Create external container
+        const externalContainer = doc.createElement('div');
+        externalContainer.classList.add(QUICK_NAVIGATION_CLASSES.external);
+        const navigationTargets = doc.querySelectorAll(`[${QUICK_NAVIGATION_ATTRIBUTE}]`);
+        // Create external DOM element to each navigation target
+        navigationTargets.forEach((target) => {
+            const rect = target.getBoundingClientRect();
             const helper = doc.createElement('div');
-            helper.innerText = source.getAttribute(QUICK_NAVIGATION_ATTRIBUTE) ?? '';
+            helper.innerText = target.getAttribute(QUICK_NAVIGATION_ATTRIBUTE) ?? '';
             helper.style.top = `${rect.top - offset.y}px`;
             helper.style.left = `${rect.left - offset.x}px`;
-            container.appendChild(helper);
-        }
-        holder.appendChild(container);
+            externalContainer.appendChild(helper);
+        });
+        holder.appendChild(externalContainer);
     }
 }
 

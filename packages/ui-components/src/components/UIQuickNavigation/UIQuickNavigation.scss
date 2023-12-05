@@ -1,7 +1,7 @@
 
-.quick-navigation--inline {
-    
-    [data-quick-navigation-key] {
+.quick-navigation {
+    // Approach where we render helpers internally inside target containers
+    &--inline [data-quick-navigation-key] {
         position: relative;
         &:before {
             content: attr(data-quick-navigation-key);
@@ -19,16 +19,12 @@
             line-height: 20px;
         }
     }
-}
-
-.quick-navigation-external {
-    & > div {
+    // Approach where we render helpers externally outside target containers
+    &--external > div {
         font-family: var(--vscode-font-family);
         color: var(--vscode-activityBarBadge-foreground);
         font-size: 16px;
         position: absolute;
-        // top: -15px;
-        // left: -15px;
         background: var(--vscode-activityBarBadge-background);
         padding: 5px;
         width: 20px;
