@@ -1,5 +1,17 @@
 # @sap-ux/project-access
 
+## 1.16.1
+
+### Patch Changes
+
+-   20a4dbfc: Fix for classification of freestyle apps in CAP Java projects
+
+## 1.16.0
+
+### Minor Changes
+
+-   f7382bd1: Add getAppType() and getProjectType()
+
 ## 1.15.5
 
 ### Patch Changes

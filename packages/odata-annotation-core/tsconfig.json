@@ -25,6 +25,9 @@
   "references": [
     {
       "path": "../odata-annotation-core-types"
+    },
+    {
+      "path": "../odata-entity-model"
     }
   ]
 }
