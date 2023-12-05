@@ -30,5 +30,5 @@ server:
           url: https://ui5.sap.com
           backend:
             - url: url-text
-            client: '010'
-            path: /sap   
+              client: '010'
+              path: /sap   

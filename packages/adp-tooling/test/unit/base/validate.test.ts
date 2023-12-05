@@ -15,7 +15,7 @@ describe('base/validate', () => {
         await UI5Validator.validateUi5Yaml('sample-path');
     });
 
-    test('invalidvalid validateUi5Yaml', async () => {
+    test('invalid validateUi5Yaml', async () => {
         const invalidUi5 = readFileSync(join(__dirname, '../../fixtures/yaml', 'invalid.yaml'), 'utf-8');
         jest.spyOn(projectAccessMock, 'readUi5Yaml').mockResolvedValueOnce(UI5Config.newInstance(invalidUi5));
         try {
