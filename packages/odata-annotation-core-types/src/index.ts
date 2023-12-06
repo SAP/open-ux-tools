@@ -13,7 +13,8 @@ export {
     ODataVersionType,
     MetadataServiceOptions,
     MetadataElementVisitor,
-    MetadataElement
+    MetadataElement,
+    MetadataElementProperties
 } from './types';
 
 export { Location, Range, Position, Diagnostic, DiagnosticSeverity, TextEdit, WorkspaceEdit } from './language-server';
