@@ -27,7 +27,8 @@ import type {
     ComplexTypeProperty,
     Vocabulary,
     AllowedValues,
-    VocabulariesInformation
+    VocabulariesInformation,
+    FullyQualifiedName
 } from './types';
 import {
     ENUM_VALUE_KIND,
@@ -518,6 +519,7 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
             }
         }
     }
+    propagateConstraints(dictionary, derivedTypesPerType);
     const vocabulariesInformation: VocabulariesInformation = {
         dictionary,
         byTarget,
@@ -534,6 +536,39 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
     }
     return vocabulariesInformation;
 };
+
+function propagateConstraints(
+    dictionary: Map<FullyQualifiedName, VocabularyObject>,
+    derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>
+): void {
+    [...derivedTypesPerType.keys()].forEach((typeName) => {
+        propagateConstraintsForType(typeName, dictionary, derivedTypesPerType);
+    });
+}
+
+function propagateConstraintsForType(
+    typeName: FullyQualifiedName,
+    dictionary: Map<FullyQualifiedName, VocabularyObject>,
+    derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>
+): void {
+    const mergeConstraints = (constraints: Constraints, derivationMap: Map<FullyQualifiedName, boolean>) => {
+        [...derivationMap.keys()].forEach((derivedTypeName) => {
+            const derivedType = dictionary.get(derivedTypeName);
+            if (derivedType?.kind === COMPLEX_TYPE_KIND) {
+                derivedType.constraints = { ...constraints, ...(derivedType.constraints ?? {}) };
+            }
+            if (derivedTypesPerType.has(derivedTypeName)) {
+                propagateConstraintsForType(derivedTypeName, dictionary, derivedTypesPerType);
+            }
+        });
+    };
+
+    const typeDef = dictionary.get(typeName);
+    const derivationMap = derivedTypesPerType.get(typeName);
+    if (typeDef?.kind === COMPLEX_TYPE_KIND && Object.keys(typeDef.constraints ?? {}).length && derivationMap) {
+        mergeConstraints(typeDef.constraints as Constraints, derivationMap);
+    }
+}
 
 /**
  *
