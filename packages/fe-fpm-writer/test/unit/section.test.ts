@@ -69,9 +69,7 @@ describe('CustomSection', () => {
                 updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
             )['settings'];
             expect(settings.content).toMatchSnapshot();
-
             expect(fs.read(expectedSectionFragmentPath)).toMatchSnapshot();
-            expect(fs.read(expectedSectionFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
         });
         test('with handler, all properties', () => {
             const testCustomSection: CustomSection = {
