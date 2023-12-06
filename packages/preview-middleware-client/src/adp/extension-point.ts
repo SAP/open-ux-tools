@@ -35,6 +35,7 @@ export interface ExtensionPointData {
 
 export default class ExtensionPointService {
     private readonly actionId = 'CTX_ADDXML_AT_EXTENSIONPOINT';
+    private selectedExtensionPointName: string;
 
     /**
      * @param rta Runtime Authoring
@@ -51,11 +52,12 @@ export default class ExtensionPointService {
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (addExtensionPoint.match(action)) {
                 try {
-                    const { controlId } = action.payload;
+                    const { controlId, name } = action.payload;
 
                     const service = await this.rta.getService<ActionService>('action');
 
                     service.execute(controlId, this.actionId);
+                    this.selectedExtensionPointName = name;
                 } catch (e) {
                     throw new Error(`Failed to execute service with actionId: ${this.actionId}`);
                 }
@@ -94,7 +96,7 @@ export default class ExtensionPointService {
         let deffered = createDeferred<DeferredExtPointData>();
 
         await handler(overlay, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {
-            name: info.name,
+            name: this.selectedExtensionPointName || info.name,
             deffered
         } as ExtensionPointData);
 
