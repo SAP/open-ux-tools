@@ -15,8 +15,8 @@ describe('base/validate', () => {
         await UI5Validator.validateUi5Yaml('sample-path');
     });
 
-    test('invalid validateUi5Yaml', async () => {
-        const invalidUi5 = readFileSync(join(__dirname, '../../fixtures/yaml', 'invalid.yaml'), 'utf-8');
+    test('validateUi5Yaml missing middleware', async () => {
+        const invalidUi5 = readFileSync(join(__dirname, '../../fixtures/yaml', 'missing-middleware.yaml'), 'utf-8');
         jest.spyOn(projectAccessMock, 'readUi5Yaml').mockResolvedValueOnce(UI5Config.newInstance(invalidUi5));
         try {
             await UI5Validator.validateUi5Yaml('sample-path');
@@ -24,4 +24,15 @@ describe('base/validate', () => {
             expect(error.message).toEqual('Missing required custom middleware or custom configuration in ui5.yaml');
         }
     });
+
+    test('validateUi5Yaml missing property', async () => {
+        const invalidUi5 = readFileSync(join(__dirname, '../../fixtures/yaml', 'missing-property.yaml'), 'utf-8');
+        jest.spyOn(projectAccessMock, 'readUi5Yaml').mockResolvedValueOnce(UI5Config.newInstance(invalidUi5));
+        try {
+            await UI5Validator.validateUi5Yaml('sample-path');
+        } catch (error) {
+            expect(error.message).toEqual('Missing configuration in the ui5.yaml file');
+        }
+    });
+
 });
