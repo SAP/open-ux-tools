@@ -677,6 +677,14 @@ Object {
 }
 `;
 
+exports[`CustomSection generateCustomSection with fragmentName 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<VBox>
+		<Text text=\\"NewCustomSection\\" />
+	</VBox>
+</core:FragmentDefinition>"
+`;
+
 exports[`CustomSection generateCustomSection with handler, all properties 1`] = `
 Object {
   "body": Object {
