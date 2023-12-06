@@ -664,12 +664,12 @@ Object {
         "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
         "title": "Custom Title",
       },
-      "NewCustomSectionFragment": Object {
+      "NewCustomSection": Object {
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSectionFragment",
         "title": "New Custom Section",
       },
     },

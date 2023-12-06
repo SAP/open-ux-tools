@@ -57,11 +57,11 @@ describe('CustomSection', () => {
         test('with fragmentName', () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
-                fragmentName: 'NewCustomSectionFragment'
+                fragmentFile: 'NewCustomSectionFragment'
             };
             const expectedSectionFragmentPath = join(
                 testDir,
-                `webapp/${testCustomSection.folder}/${testCustomSection.fragmentName}.fragment.xml`
+                `webapp/${testCustomSection.folder}/${testCustomSection.fragmentFile}.fragment.xml`
             );
             generateCustomSection(testDir, { ...testCustomSection }, fs);
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;

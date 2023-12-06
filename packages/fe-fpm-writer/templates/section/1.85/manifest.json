@@ -8,11 +8,7 @@
                             "content": {
                                 "body": {
                                     "sections": {
-                                        <% if (typeof fragmentName !== 'undefined') { %>
-                                            "<%- fragmentName %>": {
-                                        <% } else { %>
-                                            "<%- name %>": {
-                                        <% } %>
+                                        "<%- name %>": {
                                             "name": "<%- ns %>.<%- name %>",
                                             "type": "XMLFragment",
                                             <%if (typeof position !== 'undefined') {%>"position": {
