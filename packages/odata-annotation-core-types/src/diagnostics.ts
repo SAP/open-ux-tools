@@ -58,6 +58,7 @@ export const ATTRIBUTE_NOT_ALLOWED_HERE = 'attribute-not-allowed-here';
 export const MISSING_REQUIRED_ATTRIBUTE = 'missing-required-attribute';
 export const MISSING_REQUIRED_VALUE_FOR_ATTRIBUTE = 'missing-required-value-for-attribute';
 export const TERM_NOT_APPLICABLE = 'term-not-applicable';
+export const NOT_IN_APPLICABLE_TERMS_CONSTRAINT = 'not_in_applicable_constraint_term';
 export const RECORD_COLLECTION_PATH_NOT_ALLOWED = 'record-collection-path-not-allowed';
 export const ODATA_FUNCTION_WRONG_RETURN_TYPE = 'odata-function-wrong-return-type';
 export const IGNORE_DUPLICATE = 'ignore-duplicate';
@@ -229,7 +230,8 @@ type RuleTypes =
     | typeof INCOMPLETE_PATH_WITH_COMPATIBLE_TYPES
     | typeof COMMON_CASE_ISSUE
     | typeof ODATA_PATH_SEPARATOR_RULE
-    | typeof INVALID_PRIMITIVE_TYPE;
+    | typeof INVALID_PRIMITIVE_TYPE
+    | typeof NOT_IN_APPLICABLE_TERMS_CONSTRAINT;
 
 export type RuleType = RuleTypes | string;
 

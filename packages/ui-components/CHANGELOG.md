@@ -1,5 +1,13 @@
 # @sap-ux/ui-components
 
+## 1.13.5
+
+### Patch Changes
+
+-   4f792c88: - add `ValidateInfo` icon
+    -   add `ValidateError` icon
+    -   add `ValidateWarning` icon
+
 ## 1.13.4
 
 ### Patch Changes

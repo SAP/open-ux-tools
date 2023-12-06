@@ -188,11 +188,6 @@ function getConstraints(raw: UnboxContent<CSDLAnnotations>): Constraints {
         constraints.allowedTerms = allowedTerms.map(getFullyQualifiedAllowedTermName);
     }
 
-    const applicableTerms = raw['@Org.OData.Validation.V1.ApplicableTerms'];
-    if (applicableTerms?.length) {
-        constraints.applicableTerms = applicableTerms.map(getFullyQualifiedAllowedTermName);
-    }
-
     const isLanguageDependent = raw['@Org.OData.Core.V1.IsLanguageDependent'];
     if (isLanguageDependent !== undefined) {
         constraints.isLanguageDependent = !!isLanguageDependent;
@@ -206,6 +201,11 @@ function getConstraints(raw: UnboxContent<CSDLAnnotations>): Constraints {
     if (openPropertyTypeConstraints) {
         constraints.openPropertyTypeConstraints = openPropertyTypeConstraints;
     }
+    const applicableTerms = raw['@Org.OData.Validation.V1.ApplicableTerms'];
+    if (applicableTerms?.length) {
+        constraints.applicableTerms = applicableTerms;
+    }
+
     return constraints;
 }
 
