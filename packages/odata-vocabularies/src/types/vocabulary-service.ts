@@ -67,7 +67,7 @@ export interface Constraints {
     allowedValues?: AllowedValues[]; // valid values (Property or Term)
     openPropertyTypeConstraints?: FullyQualifiedTypeName[]; // used in UI vocabulary
     allowedTerms?: FullyQualifiedTypeName[]; // restrict terms allowed for annotation path (Property or Term)
-    applicableTerms?: FullyQualifiedTypeName[]; //Names of specific terms that are applicable and may be applied in the current context;
+    applicableTerms?: FullyQualifiedTypeName[]; //Names of specific terms that are applicable and may be applied in the current context
     // MaxItems, MinItems: no usage in supported vocabularies
     derivedTypeConstraints?: FullyQualifiedTypeName[]; // listed sub types (and their subtypes) (Property only!)
     // ------ core vocabulary--------

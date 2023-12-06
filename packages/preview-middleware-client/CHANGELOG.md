@@ -1,5 +1,23 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.8.8
+
+### Patch Changes
+
+-   733cec7b: No Datetime is shown for Code Ext changes in saved changes panel
+
+## 0.8.7
+
+### Patch Changes
+
+-   ff457bef: Controller Extension and Fragment name now show error if there is a whitespace after their name
+
+## 0.8.6
+
+### Patch Changes
+
+-   76c751be: Save button for ui5 versions lower than 1.110 is shown
+
 ## 0.8.5
 
 ### Patch Changes

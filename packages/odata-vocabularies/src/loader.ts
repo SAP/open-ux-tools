@@ -205,6 +205,11 @@ function getConstraints(raw: UnboxContent<CSDLAnnotations>): Constraints {
     if (openPropertyTypeConstraints) {
         constraints.openPropertyTypeConstraints = openPropertyTypeConstraints;
     }
+    const applicableTerms = raw['@Org.OData.Validation.V1.ApplicableTerms'];
+    if (applicableTerms?.length) {
+        constraints.applicableTerms = applicableTerms;
+    }
+
     return constraints;
 }
 
