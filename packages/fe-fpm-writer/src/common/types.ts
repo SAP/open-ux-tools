@@ -175,3 +175,10 @@ export interface WriterConfig {
      */
     tabInfo?: TabInfo;
 }
+
+export interface CustomFragment {
+    /**
+     * Name of the custom element fragment.
+     */
+    fragmentFile?: string;
+ }

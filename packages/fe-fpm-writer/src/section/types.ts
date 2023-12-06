@@ -1,11 +1,4 @@
-import type { CustomElement, InternalCustomElement, Position, EventHandler } from '../common/types';
-
-interface CustomFragment {
-    /**
-     * Name of the custom element fragment.
-     */
-    fragmentFile?: string;
- }
+import type { CustomElement, InternalCustomElement, Position, EventHandler, CustomFragment } from '../common/types';
 
 export interface CustomSection extends CustomElement, EventHandler, CustomFragment {
     /**
