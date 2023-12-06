@@ -34,5 +34,4 @@ describe('base/validate', () => {
             expect(error.message).toEqual('Missing configuration in the ui5.yaml file');
         }
     });
-
 });
