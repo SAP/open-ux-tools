@@ -370,10 +370,7 @@ export class VocabularyService {
     ): TermApplicability {
         const term = this.getTerm(termName);
         const namespace = this.getVocabularyNamespace(termName);
-        const applicableTerms = this.getTermsForTargetKinds(targetKinds, targetType);
-        if (!applicableTerms.includes(termName)) {
-            return TermApplicability.NotInapplicableTermConstraint;
-        } else if (!term && !this.supportedVocabularies.has(namespace as VocabularyNamespace)) {
+        if (!term && !this.supportedVocabularies.has(namespace as VocabularyNamespace)) {
             return TermApplicability.UnSupportedVocabulary;
         } else if (!term) {
             return TermApplicability.UnknownTerm;
