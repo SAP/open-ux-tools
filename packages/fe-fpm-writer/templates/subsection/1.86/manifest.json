@@ -11,7 +11,7 @@
                                         "<%- parentSection %>": {
                                             "subSections": {
                                                 "<%- name %>": {
-                                                    "template": "<%- ns %>.<%- name %>",
+                                                    "template": <% if (typeof fragmentFile !== 'undefined') { %> "<%- ns %>.<%- fragmentFile %>" <% } else { %> "<%- ns %>.<%- name %>" <% } %>,
                                                     <%if (typeof position !== 'undefined') {%>"position": {
                                                         <% if (position.placement) { %> 
                                                             "placement": "<%- position.placement %>"<% if (position.anchor) { %>,<% } %>

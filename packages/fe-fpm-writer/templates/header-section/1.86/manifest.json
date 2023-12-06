@@ -9,7 +9,7 @@
                                 "header": {
                                     "facets": {
                                         "<%- name %>": {
-                                            "template": "<%- ns %>.<%- name %>",
+                                            "template": <% if (typeof fragmentFile !== 'undefined') { %> "<%- ns %>.<%- fragmentFile %>" <% } else { %> "<%- ns %>.<%- name %>" <% } %>,
                                             <% if (typeof edit !== 'undefined') { %> 
                                                 "templateEdit": "<%- edit.ns %>.<%- edit.name %>",
                                             <% } %>
