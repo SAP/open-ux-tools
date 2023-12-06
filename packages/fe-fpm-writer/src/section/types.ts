@@ -5,7 +5,7 @@ interface CustomFragment {
      * Name of the custom element fragment.
      */
     fragmentFile?: string;
- }
+}
 
 export interface CustomSection extends CustomElement, EventHandler, CustomFragment {
     /**
