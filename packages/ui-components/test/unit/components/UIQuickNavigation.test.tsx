@@ -44,7 +44,7 @@ const QuickNavigationTest = (props: { inline?: boolean; groups: string[] }) => {
 describe('UIQuickNavigation', () => {
     initIcons();
     const classNames = {
-        internal: 'quick-navigation--internal',
+        internal: 'quick-navigation--inline',
         external: 'quick-navigation--external'
     };
 

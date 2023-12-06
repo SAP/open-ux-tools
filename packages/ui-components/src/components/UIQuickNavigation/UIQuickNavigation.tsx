@@ -6,7 +6,7 @@ import { getDocument } from '@fluentui/react';
 
 export const QUICK_NAVIGATION_ATTRIBUTE = 'data-quick-navigation-key';
 const QUICK_NAVIGATION_CLASSES = {
-    internal: 'quick-navigation--internal',
+    inline: 'quick-navigation--inline',
     external: 'quick-navigation--external'
 };
 const EXTERNAL_HELPER_OFFSET: QuickNavigationOffset = {
@@ -47,7 +47,7 @@ export interface QuickNavigationProps {
 function getClassName(className?: string, enabled?: boolean, inline?: boolean): string {
     const result = [className];
     if (enabled && inline) {
-        result.push(QUICK_NAVIGATION_CLASSES.internal);
+        result.push(QUICK_NAVIGATION_CLASSES.inline);
     }
     return result.join(' ');
 }
