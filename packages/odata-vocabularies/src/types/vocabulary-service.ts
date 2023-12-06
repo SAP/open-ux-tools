@@ -230,7 +230,8 @@ export enum TermApplicability {
     TypeNotApplicable,
     UnknownTerm,
     UnknownVocabulary,
-    UnSupportedVocabulary
+    UnSupportedVocabulary,
+    NotInapplicableTermConstraint
 }
 
 /**
