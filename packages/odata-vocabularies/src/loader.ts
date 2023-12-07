@@ -407,13 +407,16 @@ const addToUpperCaseNameMap = (
             upperCaseNameMap.set(upperCaseName, Object.assign(currentEntry, { $Self: name }));
         }
     } else {
-        const upperCasePropName = propertyName.toUpperCase();
+        let newEntry: Map<string, string> = new Map();
         if (!currentEntry) {
-            upperCaseNameMap.set(upperCaseName, new Map([['$Self', name]]));
+            newEntry.set('$Self', name);
         } else if (typeof currentEntry === 'string') {
-            upperCaseNameMap.set(upperCaseName, new Map([['$Self', currentEntry]]));
+            newEntry.set('$Self', currentEntry);
+        } else {
+            newEntry = currentEntry;
         }
-        (upperCaseNameMap.get(upperCaseName) as Map<string, string>).set(upperCasePropName, propertyName);
+        newEntry.set(propertyName.toUpperCase(), propertyName);
+        upperCaseNameMap.set(upperCaseName, newEntry);
     }
 };
 
