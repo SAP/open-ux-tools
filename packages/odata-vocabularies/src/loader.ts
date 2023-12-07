@@ -537,6 +537,11 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
     return vocabulariesInformation;
 };
 
+/**
+ *
+ * @param dictionary
+ * @param derivedTypesPerType
+ */
 function propagateConstraints(
     dictionary: Map<FullyQualifiedName, VocabularyObject>,
     derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>
@@ -546,6 +551,12 @@ function propagateConstraints(
     });
 }
 
+/**
+ *
+ * @param typeName
+ * @param dictionary
+ * @param derivedTypesPerType
+ */
 function propagateConstraintsForType(
     typeName: FullyQualifiedName,
     dictionary: Map<FullyQualifiedName, VocabularyObject>,
