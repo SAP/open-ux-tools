@@ -318,7 +318,6 @@ export class VocabularyService {
      *
      * @param targetKinds - Target kinds, see symbolic values in http://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_Applicability
      * @param targetType  - Type name of the annotated element.
-     * @param applicableTermsOnly  - Filter terms to specific terms that are applicable in the current context.
      * @returns - all terms which are applicable for a given context.
      */
     getTermsForTargetKinds(targetKinds: TargetKind[], targetType: FullyQualifiedTypeName): FullyQualifiedName[] {
