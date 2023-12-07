@@ -620,23 +620,6 @@ export class VocabularyService {
     }
 
     /**
-     * Get base type vocabulary object recursively
-     *
-     * @param element - vocabulary object
-     * @returns - vocabulary object
-     */
-    getBaseTypeVocabObject(element: VocabularyObject): VocabularyObject | undefined {
-        let baseTypeVocab;
-        if (element.kind === 'ComplexType' && element.baseType) {
-            baseTypeVocab = this.dictionary.get(element.baseType);
-            if (baseTypeVocab && baseTypeVocab.kind === 'ComplexType' && baseTypeVocab?.baseType) {
-                baseTypeVocab = this.getBaseTypeVocabObject(baseTypeVocab);
-            }
-        }
-        return baseTypeVocab;
-    }
-
-    /**
      *
      * @param name         - Fully qualified name of the element.
      * @param propertyName - Name of a property of the element.
@@ -653,13 +636,7 @@ export class VocabularyService {
         let element: VocabularyObject | ComplexTypeProperty | EnumValue | undefined;
         let elementType: VocabularyObject | undefined;
         const enumTypeDocumentation = [];
-        element = this.getTerm(name) ?? this.getType(name); // TODO: propogate base type constraints
-        if (element && element.kind === 'ComplexType' && element?.baseType) {
-            const baseTypeVocab = this.getBaseTypeVocabObject(element);
-            if (baseTypeVocab && baseTypeVocab.kind === 'ComplexType' && baseTypeVocab.constraints) {
-                element.constraints = baseTypeVocab.constraints;
-            }
-        }
+        element = this.getTerm(name) ?? this.getType(name);
         if (element) {
             if (element.kind === 'Term') {
                 elementType = this.getElementType(element);
