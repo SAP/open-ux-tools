@@ -1,6 +1,6 @@
 import { loadVocabulariesInformation } from './../src/loader';
 import type { Term } from '../src/types/vocabulary-service';
-import { ENTITY_TYPE_KIND } from '../src/types/base-types';
+import { ENTITY_TYPE_KIND } from '@sap-ux/odata-annotation-core-types';
 
 declare const expect: jest.Expect;
 

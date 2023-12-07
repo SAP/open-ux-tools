@@ -265,7 +265,7 @@ describe('AddFragment', () => {
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.None);
         });
 
-        test('sets error when the fragment name is has special characters', () => {
+        test('sets error when the fragment name has special characters', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
@@ -290,6 +290,32 @@ describe('AddFragment', () => {
 
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
+
+        test('sets error when the fragment name contains a whitespace at the end', () => {
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
+
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    getValue: jest.fn().mockReturnValue('samplename '),
+                    setValueState: valueStateSpy
+                })
+            };
+
+            addFragment.model = testModel;
+            
+            addFragment.dialog = {
+                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+            } as unknown as Dialog;
+
+            addFragment.onFragmentNameInputChange(event as unknown as Event);
+
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
+        })
 
         test('sets error when the fragment name exceeds 64 characters', () => {
             const addFragment = new AddFragment(
