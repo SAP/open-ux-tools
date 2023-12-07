@@ -20,9 +20,8 @@ type DeferredExtPointData = {
     extensionPointName: string | undefined;
 };
 
-export interface ExtensionPointData {
+export interface ExtensionPointInfo {
     name: string;
-    deffered: Deferred<DeferredExtPointData>;
     index?: number;
     view?: View;
     createdControls?: [];
@@ -31,6 +30,12 @@ export interface ExtensionPointData {
     aggregationName?: string;
     defaultContent?: string[];
     targetControl?: UI5Element;
+}
+
+export interface ExtensionPointData {
+    name: string;
+    deferred: Deferred<DeferredExtPointData>;
+    info: ExtensionPointInfo[];
 }
 
 export default class ExtensionPointService {
@@ -77,7 +82,7 @@ export default class ExtensionPointService {
         const plugin = new AddXMLAtExtensionPoint({
             commandFactory,
             fragmentHandler: async (overlay: UI5Element, info: ExtensionPointData[]) =>
-                await this.fragmentHandler(overlay, info[0])
+                await this.fragmentHandler(overlay, info)
         });
 
         const defaultPlugins = this.rta.getDefaultPlugins();
@@ -90,16 +95,19 @@ export default class ExtensionPointService {
      *
      * @param overlay UI5 Element overlay
      * @param info Extension point data from the plugin
-     * @returns Deffered extension point data that is provided to the plugin
+     * @returns Deferred extension point data that is provided to the plugin
      */
-    public async fragmentHandler(overlay: UI5Element, info: ExtensionPointData): Promise<DeferredExtPointData> {
-        let deffered = createDeferred<DeferredExtPointData>();
+    public async fragmentHandler(overlay: UI5Element, info: ExtensionPointData[]): Promise<DeferredExtPointData> {
+        let deferred = createDeferred<DeferredExtPointData>();
+        const name = this.selectedExtensionPointName;
 
         await handler(overlay, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {
-            name: this.selectedExtensionPointName || info.name,
-            deffered
+            name,
+            info,
+            deferred
         } as ExtensionPointData);
 
-        return deffered.promise;
+        this.selectedExtensionPointName = '';
+        return deferred.promise;
     }
 }
