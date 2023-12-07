@@ -1,7 +1,7 @@
 {
   "name": "@sap-ux/xml-odata-annotation-converter",
   "description": "Converter for OData annotations in XML format.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "SAPSE",
   "author": "SAP SE",
   "license": "Apache-2.0",
@@ -14,7 +14,7 @@
     "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
     "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
     "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint --fix",
+    "lint:fix": "eslint . --ext .ts --fix",
     "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
     "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
     "lint:summary": "eslint . --ext .ts,.tsx -f summary",

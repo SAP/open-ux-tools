@@ -90,6 +90,9 @@
       "path": "packages/odata-vocabularies"
     },
     {
+      "path": "packages/playwright"
+    },
+    {
       "path": "packages/preview-middleware-client"
     },
     {
