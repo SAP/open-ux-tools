@@ -2,7 +2,7 @@ import Controller from 'mock/sap/ui/core/mvc/Controller';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import type UI5Element from 'sap/ui/core/Element';
 
-import ExtensionPointService, { ExtensionPointInfo, type ExtensionPointData } from '../../../src/adp/extension-point';
+import ExtensionPointService, { type ExtensionPointData } from '../../../src/adp/extension-point';
 import * as utils from '../../../src/adp/utils';
 
 describe('ExtensionPointService', () => {
