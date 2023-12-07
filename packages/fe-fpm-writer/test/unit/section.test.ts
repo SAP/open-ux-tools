@@ -54,7 +54,7 @@ describe('CustomSection', () => {
             fs.delete(testDir);
             fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
         });
-        test('with fragmentName', () => {
+        test('with fragmentFile', () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 fragmentFile: 'NewCustomSectionFragment'

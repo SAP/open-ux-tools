@@ -69,7 +69,24 @@ describe('CustomAction', () => {
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
+        test('version 1.86, with fragmentFile', () => {
+            const testCustomColumn: CustomTableColumn = {
+                ...customColumn,
+                fragmentFile: 'NewCustomColumnFragment'
+            };
+            const expectedSectionFragmentPath = join(
+                testDir,
+                `webapp/${customColumn.folder}/${testCustomColumn.fragmentFile}.fragment.xml`
+            );
+            generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.86' }, fs);
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
+            expect(settings.controlConfiguration).toMatchSnapshot();
 
+            expect(fs.read(expectedSectionFragmentPath)).toMatchSnapshot();
+        });
         test('version 1.86, with new handler, all properties', () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,

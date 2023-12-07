@@ -652,7 +652,7 @@ Object {
 }
 `;
 
-exports[`CustomSection generateCustomSection with fragmentName 1`] = `
+exports[`CustomSection generateCustomSection with fragmentFile 1`] = `
 Object {
   "body": Object {
     "sections": Object {
@@ -677,7 +677,7 @@ Object {
 }
 `;
 
-exports[`CustomSection generateCustomSection with fragmentName 2`] = `
+exports[`CustomSection generateCustomSection with fragmentFile 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<VBox>
 		<Text text=\\"NewCustomSection\\" />
