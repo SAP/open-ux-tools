@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.11.14
+
+### Patch Changes
+
+-   338fe503: Add integration test
+
 ## 0.11.13
 
 ### Patch Changes

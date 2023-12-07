@@ -1,5 +1,5 @@
 import { transformElementRange } from '../../src/parser/range';
-import { SourcePosition, XMLElement } from '@xml-tools/ast';
+import type { SourcePosition, XMLElement } from '@xml-tools/ast';
 
 describe('edge cases', () => {
     test('guessedAttributeRange handling', () => {

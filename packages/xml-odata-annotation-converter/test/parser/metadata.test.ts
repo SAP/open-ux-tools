@@ -449,7 +449,7 @@ describe('parse', () => {
         });
 
         test(`Action and Function Import V2`, () => {
-          const result = parseV4(`
+            const result = parseV4(`
           <EntityContainer Name="TestService">
             <FunctionImport Name="SEPMRA_C_PD_ProductActivation" ReturnType="SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType" EntitySet="SEPMRA_C_PD_Product" m:HttpMethod="POST" sap:action-for="SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType" sap:applicable-path="Activation_ac">
               <Parameter Name="Product" Type="Edm.String" Mode="In" MaxLength="10"/>
@@ -458,8 +458,8 @@ describe('parse', () => {
             </FunctionImport>
           </EntityContainer>
         `);
-          expect(result).toMatchSnapshot();
-      });
+            expect(result).toMatchSnapshot();
+        });
 
         test('navigation property', () => {
             const result = parseWithMarkup(
