@@ -295,23 +295,6 @@ export class VocabularyService {
     }
 
     /**
-     * Returns applicable terms constraint value for the current type or (if not defined) constraint of most specific parent base type.
-     *
-     * @param typeDefinition type definition vocabulary object
-     * @returns constraint (array of term names) or undefined
-     */
-    getApplicableTermsConstraint(typeDefinition: TypeDefinition | ComplexType): FullyQualifiedName[] | undefined {
-        let result = typeDefinition.constraints?.applicableTerms;
-        let currentObject: VocabularyObject | undefined = typeDefinition;
-        while (!result && currentObject?.kind === COMPLEX_TYPE_KIND && currentObject.baseType) {
-            currentObject = this.dictionary.get(currentObject.baseType);
-            result = (currentObject as ComplexType)?.constraints?.applicableTerms;
-        }
-
-        return result;
-    }
-
-    /**
      * Returns all terms which are applicable for a given context.
      *
      * The context is defined by the following parameters.
@@ -333,7 +316,7 @@ export class VocabularyService {
         const terms = [...uniqueTerms.keys()];
         const targetTypeDef = this.dictionary.get(targetType);
         if (targetTypeDef?.kind === COMPLEX_TYPE_KIND || targetTypeDef?.kind === TYPE_DEFINITION_KIND) {
-            const applicableTerms = this.getApplicableTermsConstraint(targetTypeDef);
+            const applicableTerms = targetTypeDef.constraints?.applicableTerms;
             if (applicableTerms) {
                 return applicableTerms;
             }
@@ -461,10 +444,9 @@ export class VocabularyService {
 
         if (
             (element.kind === COMPLEX_TYPE_KIND || element.kind === PROPERTY_KIND) &&
-            element.constraints &&
-            element.constraints.applicableTerms
+            element.constraints?.applicableTerms
         ) {
-            values.push(`**Applicable Terms:**  \n ${element.constraints?.applicableTerms.join('  \n')} \n`);
+            values.push(`**Applicable Terms:**  \n ${element.constraints.applicableTerms.join(' \n')} \n`);
         }
 
         return values;

@@ -172,7 +172,6 @@ interface ComplexTypeBase extends PrimitiveType {
  */
 export interface ComplexType extends ComplexTypeBase {
     baseType?: FullyQualifiedName; // source $BaseType: can inherit from another complex type by specifying it as its base type
-    constraints?: Constraints;
 }
 
 /**

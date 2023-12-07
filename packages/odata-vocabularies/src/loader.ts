@@ -286,7 +286,10 @@ function parseComplexType(name: string, raw: CSDLComplexType): ComplexType {
         complexType.isOpenType = !!raw.$OpenType;
     }
 
-    complexType.constraints = getConstraints(raw);
+    const constraints = getConstraints(raw);
+    if (Object.keys(constraints).length) {
+        complexType.constraints = constraints;
+    }
     // collect properties
     Object.keys(raw)
         .filter((key) => !isValidKey(key))
@@ -538,9 +541,10 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
 };
 
 /**
+ * Propagates constraints from base types to derived types.
  *
- * @param dictionary
- * @param derivedTypesPerType
+ * @param dictionary dictionary map
+ * @param derivedTypesPerType map with types derivation information
  */
 function propagateConstraints(
     dictionary: Map<FullyQualifiedName, VocabularyObject>,
@@ -552,10 +556,11 @@ function propagateConstraints(
 }
 
 /**
+ * Recursively propagates constraints of the given base type to its derived types based on derived types map.
  *
- * @param typeName
- * @param dictionary
- * @param derivedTypesPerType
+ * @param typeName base type name
+ * @param dictionary dictionary map
+ * @param derivedTypesPerType map with types derivation information
  */
 function propagateConstraintsForType(
     typeName: FullyQualifiedName,
@@ -566,6 +571,7 @@ function propagateConstraintsForType(
         [...derivationMap.keys()].forEach((derivedTypeName) => {
             const derivedType = dictionary.get(derivedTypeName);
             if (derivedType?.kind === COMPLEX_TYPE_KIND) {
+                // merge base type constraints into the current type constraints
                 derivedType.constraints = { ...constraints, ...(derivedType.constraints ?? {}) };
             }
             if (derivedTypesPerType.has(derivedTypeName)) {
