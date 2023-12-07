@@ -5,7 +5,8 @@ import type {
     NoUndefinedNamespaceData,
     Position,
     AliasInformation,
-    FileContent
+    FileContent,
+    NamespaceString
 } from '@sap-ux/odata-annotation-core';
 import {
     createElementNode,
@@ -20,7 +21,7 @@ import {
 
 import type { NamespaceAliasMap } from './csdl-to-xml';
 import { printCsdlNodeToXmlString } from './csdl-to-xml';
-import type { Vocabulary, Namespace as VocabularyNamespace } from '@sap-ux/odata-vocabularies';
+import type { Vocabulary } from '@sap-ux/odata-vocabularies';
 import { EDMX_V4_NAMESPACE, EDM_V4_NAMESPACE } from './namespaces';
 
 const namespaces: NamespaceAliasMap = {
@@ -126,7 +127,7 @@ export function serializeTarget(target: Target, parentStartPostition = 0): strin
 export function getNewAnnotationFile(
     aliasInfo: AliasInformation,
     metadataUri: string,
-    vocabularies: Map<VocabularyNamespace, Vocabulary>
+    vocabularies: Map<NamespaceString, Vocabulary>
 ): { fileContent: FileContent; position: Position } {
     // build map with all edmx references
     const references: Map<string, { alias: string; uri: string }> = new Map();
@@ -230,7 +231,7 @@ function getLastPosition(fileContent: FileContent): { lastLine: number; lastChar
  */
 function collectReferences(
     references: Map<string, { alias: string; uri: string }>,
-    vocabularies: Map<VocabularyNamespace, Vocabulary>,
+    vocabularies: Map<NamespaceString, Vocabulary>,
     aliasInfo: AliasInformation,
     nsOrAlias: string,
     metadataUri: string

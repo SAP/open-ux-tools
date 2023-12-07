@@ -81,7 +81,10 @@ export const enum Edm {
     UrlRef = 'UrlRef'
 }
 
-export const enum EdmType {
+/**
+ * primitive types
+ */
+export enum EdmType {
     // http://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/cs01/odata-csdl-xml-v4.01-cs01.html#sec_PrimitiveTypes
     // Geography*, Geometry* omitted
     Binary = 'Edm.Binary',
@@ -106,6 +109,9 @@ export const enum EdmType {
     ComplexType = 'Edm.ComplexType',
     EntityType = 'Edm.EntityType',
     Untyped = 'Edm.Untyped',
+    // not in OData Specification! introduced to represent all collection typed entries in cache
+    EntityTypeCollection = 'Edm.EntityTypeCollection',
+    NonEntityTypeCollection = 'Edm.NonEntityTypeCollection',
     // http://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/cs01/odata-csdl-xml-v4.01-cs01.html#sec_BuiltInTypesfordefiningVocabularyTer
     AnnotationPath = 'Edm.AnnotationPath',
     AnyPropertyPath = 'Edm.AnyPropertyPath', // abstract type, not really supported as tag

@@ -30,6 +30,9 @@
     "updateVocabularies": "ts-node --cwdMode tools/run-update.ts",
     "watch": "tsc --build ./ -watch"
   },
+  "dependencies": {
+    "@sap-ux/odata-annotation-core-types": "workspace:*"
+  },
   "devDependencies": {
     "axios": "1.6.0",
     "npm-run-all": "4.1.5",
