@@ -189,6 +189,7 @@ describe('generate', () => {
             // verify updated manifest.json
             const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+            expect(manifest['sap.app'].dataSources.mainService.settings.localUri).toBeUndefined();
             // verify that the destination is added to the ui5.yaml
             expect(fs.read(join(testDir, 'ui5.yaml'))).toContain(`destination: ${config.destination.name}`);
             // verify that client is set

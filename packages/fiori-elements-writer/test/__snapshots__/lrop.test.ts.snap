@@ -18171,6 +18171,635 @@ sap.registerComponentDependencyPaths(manifestUri)
 }
 `;
 
+exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_no_metadata 1`] = `
+Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"felrop1\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"A Fiori application.\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.92\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop1-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop1-tile\\\\\\"\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/integration/opaTests.qunit.html\\\\\\"\\"
+  },
+  \\"sapux\\": true
+}
+",
+    "state": "modified",
+  },
+  "ui5-local.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: felrop1
+type: application
+framework:
+  name: SAPUI5
+  version: 1.86.3
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: sap.ushell
+    - name: sap.fe.templates
+    - name: themelib_sap_belize
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://example.feop.v4
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: felrop1
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: http://example.feop.v4
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+",
+    "state": "modified",
+  },
+  "webapp/Component.js": Object {
+    "contents": "sap.ui.define(
+    [\\"sap/fe/core/AppComponent\\"],
+    function (Component) {
+        \\"use strict\\";
+
+        return Component.extend(\\"felrop1.Component\\", {
+            metadata: {
+                manifest: \\"json\\"
+            }
+        });
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for felrop1
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=App \\"Title\\" \\\\\\"
+
+#YDES: Application description
+appDescription=A Fiori application.",
+    "state": "modified",
+  },
+  "webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html lang=\\"en\\">
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>App &#34;Title&#34; \\\\&#34;</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-resourceroots='{
+            \\"felrop1\\": \\"./\\"
+        }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"felrop1\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"felrop1\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.37.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"felrop1\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"0.0.1\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-fe-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"annotation\\"
+          ],
+          \\"odataVersion\\": \\"4.0\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"flexEnabled\\": true,
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"libs\\": {
+        \\"sap.m\\": {},
+        \\"sap.ui.core\\": {},
+        \\"sap.ushell\\": {},
+        \\"sap.fe.templates\\": {}
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"bundleName\\": \\"felrop1.i18n.i18n\\"
+        }
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"synchronizationMode\\": \\"None\\",
+          \\"operationMode\\": \\"Server\\",
+          \\"autoExpandSelect\\": true,
+          \\"earlyRequests\\": true
+        }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    \\"resources\\": {
+      \\"css\\": []
+    },
+    \\"routing\\": {
+      \\"config\\": {},
+      \\"routes\\": [
+        {
+          \\"pattern\\": \\":?query:\\",
+          \\"name\\": \\"TravelList\\",
+          \\"target\\": \\"TravelList\\"
+        },
+        {
+          \\"pattern\\": \\"Travel({key}):?query:\\",
+          \\"name\\": \\"TravelObjectPage\\",
+          \\"target\\": \\"TravelObjectPage\\"
+        },
+        {
+          \\"pattern\\": \\"Travel({key})/_Booking({key2}):?query:\\",
+          \\"name\\": \\"BookingObjectPage\\",
+          \\"target\\": \\"BookingObjectPage\\"
+        }
+      ],
+      \\"targets\\": {
+        \\"TravelList\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"TravelList\\",
+          \\"name\\": \\"sap.fe.templates.ListReport\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Travel\\",
+              \\"variantManagement\\": \\"Page\\",
+              \\"navigation\\": {
+                \\"Travel\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"TravelObjectPage\\"
+                  }
+                }
+              }
+            }
+          }
+        },
+        \\"TravelObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"TravelObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"editableHeaderContent\\": false,
+              \\"entitySet\\": \\"Travel\\",
+              \\"navigation\\": {
+                \\"_Booking\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"BookingObjectPage\\"
+                  }
+                }
+              }
+            }
+          }
+        },
+        \\"BookingObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"BookingObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"editableHeaderContent\\": false,
+              \\"entitySet\\": \\"Booking\\"
+            }
+          }
+        }
+      }
+    }
+  },
+  \\"sap.fiori\\": {
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/flpSandbox.html": Object {
+    "contents": "<!DOCTYPE HTML>
+<html lang=\\"en\\">
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>{{appTitle}}</title>
+
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
+
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
+
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            bootstrapPlugins: {
+                \\"RuntimeAuthoringPlugin\\": {
+                    component: \\"sap.ushell.plugins.rta\\",
+                    config: {
+                        validateAppVersion: false
+                    }
+                }
+            },
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
+                }
+            },
+            applications: {
+                \\"felrop1-tile\\": {
+                    title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
+                    description: \\"A Fiori application.\\",
+                    additionalInformation: \\"SAPUI5.Component=felrop1\\",
+                    applicationType: \\"URL\\",
+                    url: \\"../\\"
+                }
+            }
+        };
+    </script>
+
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-resourceroots='{\\"felrop1\\": \\"../\\"}'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
+    </script>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+        });
+    </script>
+</head>
+
+<!-- UI Content -->
+
+<body class=\\"sapUiBody\\" id=\\"content\\">
+</body>
+
+</html>
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheTravelList.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                
+                When.onTheTravelList.onFilterBar().iExecuteSearch();
+                
+                Then.onTheTravelList.onTable().iCheckRows();
+
+                When.onTheTravelList.onTable().iPressRow(0);
+                Then.onTheTravelObjectPage.iSeeThisPage();
+
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"felrop1\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'felrop1/test/integration/FirstJourney',
+		'felrop1/test/integration/pages/TravelList',
+		'felrop1/test/integration/pages/TravelObjectPage',
+		'felrop1/test/integration/pages/BookingObjectPage'
+    ],
+    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop1-tile in web folder
+            launchUrl: sap.ui.require.toUrl('felrop1') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop1-tile'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheTravelList: TravelList,
+					onTheTravelObjectPage: TravelObjectPage,
+					onTheBookingObjectPage: BookingObjectPage
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/BookingObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'felrop1',
+            componentId: 'BookingObjectPage',
+            entitySet: 'Booking'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/TravelList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'felrop1',
+            componentId: 'TravelList',
+            entitySet: 'Travel'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/TravelObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'felrop1',
+            componentId: 'TravelObjectPage',
+            entitySet: 'Travel'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`Fiori Elements template: lropTemplates Generate files for template: lrop_v4_no_ui5_version 1`] = `
 Object {
   ".gitignore": Object {

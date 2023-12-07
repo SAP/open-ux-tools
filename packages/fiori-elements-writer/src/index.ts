@@ -141,9 +141,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     extendManifestJson(fs, basePath, rootTemplatesPath, feApp);
 
     const packageJson: Package = JSON.parse(fs.read(packagePath));
-    // Add tests only if v4, for now, and we have metadata (and therefore a mock server config)
-    const addTest =
-        !!feApp.appOptions.addTests && feApp.service?.version === OdataVersion.v4 && !!feApp.service?.metadata;
+    // Add tests only if v4
+    const addTest = !!feApp.appOptions.addTests && feApp.service?.version === OdataVersion.v4 && !!feApp.service?.path;
 
     packageJson.scripts = Object.assign(packageJson.scripts || {}, {
         ...getPackageJsonTasks({

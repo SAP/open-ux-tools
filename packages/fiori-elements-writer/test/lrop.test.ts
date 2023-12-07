@@ -45,6 +45,21 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
+            name: 'lrop_v4_no_metadata',
+            config: {
+                ...Object.assign(feBaseConfig('felrop1'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    }
+                }),
+                service: { ...v4Service, metadata: undefined },
+                appOptions: {
+                    addTests: true
+                }
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
             name: 'lrop_v4_1.94',
             config: {
                 ...Object.assign(feBaseConfig('felrop194'), {
