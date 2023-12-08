@@ -584,9 +584,9 @@ describe('getDocumentation()', () => {
               "**Nullable:** false 
             ",
               "**Applicable Terms:**  
-             com.sap.vocabularies.UI.v1.Hidden 
-            com.sap.vocabularies.UI.v1.Importance 
-            com.sap.vocabularies.UI.v1.PartOfPreview 
+             com.sap.vocabularies.UI.v1.Hidden  
+            com.sap.vocabularies.UI.v1.Importance  
+            com.sap.vocabularies.UI.v1.PartOfPreview  
             com.sap.vocabularies.HTML5.v1.CssDefaults 
             ",
             ]
