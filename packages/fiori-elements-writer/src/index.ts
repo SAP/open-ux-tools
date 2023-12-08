@@ -142,7 +142,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     const packageJson: Package = JSON.parse(fs.read(packagePath));
     // Add tests only if v4
-    const addTest = !!feApp.appOptions.addTests && feApp.service?.version === OdataVersion.v4 && !!feApp.service?.path;
+    const addTest = !!feApp.appOptions.addTests && feApp.service?.version === OdataVersion.v4;
 
     packageJson.scripts = Object.assign(packageJson.scripts || {}, {
         ...getPackageJsonTasks({
