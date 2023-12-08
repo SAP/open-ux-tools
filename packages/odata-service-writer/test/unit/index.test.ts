@@ -175,7 +175,7 @@ describe('generate', () => {
 
         it('Valid OData V4 cds service', async () => {
             const config = {
-                ...commonConfig,
+                path: 'path/to/service',
                 version: OdataVersion.v4,
                 name: 'myCDSService',
                 type: ServiceType.CDS
