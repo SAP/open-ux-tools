@@ -9,7 +9,7 @@
   "bugs": {
     "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-vocabularies"
   },
-  "version": "0.1.5",
+  "version": "0.1.6",
   "license": "Apache-2.0",
   "author": "@SAP/ux-tools-team",
   "main": "dist/index.js",
@@ -22,13 +22,16 @@
     "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:summary": "eslint . --ext .ts,.tsx -f summary",
-    "lint:fix": "eslint --fix",
+    "lint:fix": "eslint . --ext .ts --fix",
     "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
     "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
     "pre-commit": "lint-staged --quiet",
     "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
     "updateVocabularies": "ts-node --cwdMode tools/run-update.ts",
     "watch": "tsc --build ./ -watch"
+  },
+  "dependencies": {
+    "@sap-ux/odata-annotation-core-types": "workspace:*"
   },
   "devDependencies": {
     "axios": "1.6.0",

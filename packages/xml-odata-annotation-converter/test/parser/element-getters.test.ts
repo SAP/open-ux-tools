@@ -1,5 +1,5 @@
 import { getElementsWithName } from '../../src/parser/element-getters';
-import { XMLElement } from '@xml-tools/ast';
+import type { XMLElement } from '@xml-tools/ast';
 
 describe('edge cases', () => {
     test('getElementsWithName when no subelements', () => {
