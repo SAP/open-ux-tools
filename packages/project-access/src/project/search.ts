@@ -340,7 +340,7 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
 }
 
 /**
- * Generates manifest.json from provided .library file
+ * Generates manifest.json from provided .library file.
  *
  * @param paths paths to .library file
  * @returns library result containing virtually generate manifest.json, project path and empty manifestPath
@@ -349,7 +349,7 @@ async function getVirtualManifest(paths: string[]): Promise<LibraryResults[]> {
     const FileSystem = await import('@ui5/fs/adapters/FileSystem');
     const ResourceFactory = await import('@ui5/fs/resourceFactory');
 
-    let virtualLibraries = [];
+    const virtualLibraries = [];
     for (const libraryPath of paths) {
         const projectName = 'library';
         const virBasePath = `/resources/${projectName}/`;
@@ -369,11 +369,8 @@ async function getVirtualManifest(paths: string[]): Promise<LibraryResults[]> {
             });
             const files = await workspace.byGlob('**/manifest.json');
             for (const file of files) {
-                const projectRoot = dirname((await findFileUp(FileName.Package, dirname(libraryPath))) || libraryPath);
+                const projectRoot = dirname((await findFileUp(FileName.Package, dirname(libraryPath))) ?? libraryPath);
                 const manifest: Manifest = JSON.parse(await file.getString());
-                // might not make sense to get manifestPath, since only virtual
-                const virtualManifestPath = (file.getPath() as string).split(virBasePath)[1];
-                const manifestPath = join(libraryPath, virtualManifestPath);
                 virtualLibraries.push({ manifest, projectRoot, manifestPath: '' });
             }
         } catch (error) {
