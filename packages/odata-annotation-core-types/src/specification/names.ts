@@ -16,6 +16,14 @@ export type Alias = SimpleIdentifier;
  */
 export type NamespaceString = string;
 /**
+ * Is a name part <Namespace|Alias>
+ */
+export type NameQualifier = SimpleIdentifier | string;
+/**
+ * Is a name represented in <Alias>.<Name> format
+ */
+export type AliasQualifiedName = string;
+/**
  * Is a name represented in <Namespace|Alias>.<Name> format
  */
 export type QualifiedName = string;

@@ -1,4 +1,4 @@
-import { ENTITY_TYPE_KIND, PROPERTY_KIND, COLLECTION_KIND, ENTITY_SET_KIND } from '../src/types/base-types';
+import { ENTITY_TYPE_KIND, PROPERTY_KIND, COLLECTION_KIND, ENTITY_SET_KIND } from '@sap-ux/odata-annotation-core-types';
 import { TermApplicability } from '../src/types/vocabulary-service';
 import { VocabularyService } from '../src/vocabulary-service';
 declare const expect: jest.Expect;
