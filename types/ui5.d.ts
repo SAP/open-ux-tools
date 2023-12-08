@@ -55,6 +55,38 @@ declare module '@ui5/fs' {
     export class AbstractReader {}
 }
 
+declare module '@ui5/fs/adapters/FileSystem' {
+    /**
+     * https://sap.github.io/ui5-tooling/stable/api/@ui5_fs_adapters_FileSystem.html
+     */
+    export default class FileSystem {
+        constructor({ virBasePath: string, fsBasePath: string });
+        /**
+         * @param {string} virBasePath Virtual base path. Must be absolute, POSIX-style, and must end with a slash
+         * @param {string} fsBasePath File System base path. Must be absolute and must use platform-specific path segment separators
+         */
+        constructor({ virBasePath, fsBasePath }: { virBasePath: string; fsBasePath: string });
+    }
+}
+
+declare module '@ui5/fs/resourceFactory' {
+    /**
+     * https://sap.github.io/ui5-tooling/stable/api/module-@ui5_fs_resourceFactory.html
+     *
+     * Creates a Workspace
+     * A workspace is a DuplexCollection which reads from the project sources. It is used during the build process
+     * to write modified files into a separate writer, this is usually a Memory adapter. If a file already exists it is
+     * fetched from the memory to work on it in further build steps.
+     *
+     * @param {@ui5/fs/AbstractReader} reader Single reader or collection of readers
+     * @param {@ui5/fs/AbstractReaderWriter} [writer] A ReaderWriter instance which is only used for writing files. If not supplied, a Memory adapter will be created.
+     * @param {string} [name="workspace"] Name of the collection
+     * @param {string} [virBasePath="/"] Virtual base path
+     * @returns {@ui5/fs/DuplexCollection} DuplexCollection which wraps the provided resource locators
+     */
+    export function createWorkspace({ reader, writer, virBasePath, name }: object): any;
+}
+
 declare module '@ui5/builder' {
     /**
      * https://sap.github.io/ui5-tooling/stable/api/@ui5_project_build_helpers_TaskUtil.html
@@ -97,6 +129,21 @@ declare module '@ui5/builder' {
             configuration?: C;
         };
     }
+}
+
+declare module '@ui5/builder/tasks/generateLibraryManifest' {
+    /**
+     * https://sap.github.io/ui5-tooling/stable/api/module-@ui5_builder_tasks_generateLibraryManifest.html
+     *
+     * Task for creating a library manifest.json from its .library file.
+     *
+     * @param {@ui5/fs/DuplexCollection} workspace DuplexCollection to read and write files
+     * @param {@ui5/project/build/helpers/TaskUtil|object} taskUtil TaskUtil
+     * @param {object} options Options
+     * @param {string} options.projectName Project name
+     * @returns {Promise<undefined>} Promise resolving with undefined once data has been written
+     */
+    export default function _default({ workspace, taskUtil, options: { projectName } }: object): Promise<undefined>;
 }
 
 declare module '@ui5/server' {
