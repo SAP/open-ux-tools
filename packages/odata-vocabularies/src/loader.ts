@@ -23,8 +23,7 @@ import type {
     ComplexTypeProperty,
     Vocabulary,
     AllowedValues,
-    VocabulariesInformation,
-    FullyQualifiedName
+    VocabulariesInformation
 } from './types';
 import { ENUM_VALUE_KIND, CDS_VOCABULARY_ALIAS, CDS_VOCABULARY_NAMESPACE } from './types';
 import type {

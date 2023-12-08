@@ -456,7 +456,8 @@ export class VocabularyService {
             (element.kind === COMPLEX_TYPE_KIND || element.kind === PROPERTY_KIND) &&
             element.constraints?.applicableTerms
         ) {
-            values.push(`**Applicable Terms:**  \n ${element.constraints.applicableTerms.join(' \n')} \n`);
+            // In Markdown you need to append \n\n for opening a new paragraph, and two spaces + '\n` for new line
+            values.push(`**Applicable Terms:**  \n ${element.constraints.applicableTerms.join('  \n')} \n`);
         }
 
         return values;
