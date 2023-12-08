@@ -370,11 +370,15 @@ describe('SelectionService', () => {
 
     test('undo/redo stack changed', async () => {
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
-        function createCommand(properties: Map<string, any>): {
+        function createCommand(
+            properties: Map<string, any>,
+            toggle = false
+        ): {
             getProperty: (name: string) => any;
             getElement: () => any;
             getSelector: () => any;
             getChangeType: () => string;
+            getParent: () => any;
         } {
             const cache = new Map(properties);
             return {
@@ -385,11 +389,17 @@ describe('SelectionService', () => {
                     getMetadata: jest.fn().mockReturnValue({ getName: jest.fn().mockReturnValue('sap.m.Button') })
                 }),
                 getSelector: jest.fn().mockReturnValue({
-                    id: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                    id: !toggle ? 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button' : undefined,
+                    name: 'ExtensionPoint1'
                 }),
                 getChangeType: (): any => {
                     return cache.get('changeType');
-                }
+                },
+                getParent: jest.fn().mockReturnValue({
+                    getElement: jest.fn().mockReturnValue({
+                        getId: () => 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                    })
+                })
             };
         }
         const commands = [
@@ -408,6 +418,13 @@ describe('SelectionService', () => {
                     ['propertyName', 'text'],
                     ['newBinding', '{i18n>DELETE}']
                 ])
+            ),
+            createCommand(
+                new Map<string, any>([
+                    ['selector', { id: 'control2' }],
+                    ['changeType', 'addXMLAtExtensionPoint']
+                ]),
+                true
             )
         ];
         rtaMock.getCommandStack.mockReturnValue({
@@ -447,6 +464,13 @@ describe('SelectionService', () => {
                         controlName: 'Button',
                         type: 'pending',
                         value: '{i18n>DELETE}'
+                    },
+                    {
+                        changeType: 'addXMLAtExtensionPoint',
+                        controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        controlName: 'ExtensionPoint1',
+                        isActive: true,
+                        type: 'pending'
                     }
                 ]
             }
