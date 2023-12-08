@@ -8,7 +8,7 @@ import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
-import { OdataService, OdataVersion } from './types';
+import { OdataService, OdataVersion, ServiceType } from './types';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -103,7 +103,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     }
 
     // Add mockserver entries
-    if (service.metadata) {
+    if (service.metadata && service.type === ServiceType.EDMX) {
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         if (paths.ui5Yaml && ui5Config) {
             const ui5MockConfig = await UI5Config.newInstance(ui5Config.toString());
@@ -152,4 +152,4 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     return fs;
 }
 
-export { generate, OdataVersion, OdataService };
+export { generate, OdataVersion, OdataService, ServiceType };

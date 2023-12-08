@@ -1,4 +1,4 @@
-import type { OdataService } from '../types';
+import { ServiceType, type OdataService } from '../types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
 
 /**
@@ -46,6 +46,15 @@ function setDefaultAnnotationsName(service: OdataService): void {
 }
 
 /**
+ * Sets the default service type to edmx if it is not defined.
+ *
+ * @param {OdataService} service - The service object.
+ */
+function setDefaultServiceType(service: OdataService): void {
+    service.type = service.type ?? ServiceType.EDMX;
+}
+
+/**
  * Enhances the provided OData service object with path, name and model information.
  * Directly modifies the passed object reference.
  *
@@ -56,6 +65,7 @@ export function enhanceData(service: OdataService): void {
     setDefaultServiceName(service);
     setDefaultServiceModel(service);
     setDefaultAnnotationsName(service);
+    setDefaultServiceType(service);
 
     // enhance preview settings with service configuration
     service.previewSettings = service.previewSettings || {};

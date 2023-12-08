@@ -103,8 +103,7 @@ export interface FioriElementsApp<T> extends Ui5App {
     app: FioriApp;
     appOptions: Partial<AppOptions> & {
         /**
-         * Generate OPA based tests, if applicable to the specified template and is OData V4.
-         * The tests may not work if service metadata is not provided.
+         * Generate OPA based tests, if applicable to the specified template.
          * This will eventually move up to {@link Ui5App.appOptions}
          */
         addTests?: boolean;
