@@ -9,7 +9,7 @@
   "bugs": {
     "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-vocabularies"
   },
-  "version": "0.1.5",
+  "version": "0.1.6",
   "license": "Apache-2.0",
   "author": "@SAP/ux-tools-team",
   "main": "dist/index.js",
@@ -29,6 +29,9 @@
     "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
     "updateVocabularies": "ts-node --cwdMode tools/run-update.ts",
     "watch": "tsc --build ./ -watch"
+  },
+  "dependencies": {
+    "@sap-ux/odata-annotation-core-types": "workspace:*"
   },
   "devDependencies": {
     "axios": "1.6.0",
