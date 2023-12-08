@@ -9,7 +9,7 @@
                                 "body": {
                                     "sections": {
                                         "<%- name %>": {
-                                            "template": <% if (typeof fragmentFile !== 'undefined') { %> "<%- ns %>.<%- fragmentFile %>" <% } else { %> "<%- ns %>.<%- name %>" <% } %>,
+                                            "template": "<%- ns %>.<%- typeof fragmentFile !== 'undefined' ? fragmentFile : name  %>",
                                             <%if (typeof position !== 'undefined') {%>"position": {
                                                 <% if (position.placement) { %> 
                                                     "placement": "<%- position.placement %>"<% if (position.anchor) { %>,<% } %>
