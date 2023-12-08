@@ -24,5 +24,5 @@ export {
     readCapServiceMetadataEdmx,
     readUi5Yaml
 } from './project';
-export { getFilePaths } from './file';
+export { getFilePaths, findFileUp } from './file';
 export * from './types';
