@@ -298,23 +298,6 @@ export class VocabularyService {
     }
 
     /**
-     * Get applicable terms defined in vocabulary for type.
-     *
-     * @param typeName value type name
-     * @returns fully qualified name
-     */
-    getApplicableTermsByType(typeName: FullyQualifiedTypeName): FullyQualifiedName[] | undefined {
-        const type = this.dictionary.get(typeName);
-        if (type?.kind === COMPLEX_TYPE_KIND || type?.kind === TYPE_DEFINITION_KIND) {
-            const applicableTerms = type.constraints?.applicableTerms;
-            if (applicableTerms) {
-                return applicableTerms;
-            }
-        }
-        return undefined;
-    }
-
-    /**
      * Returns all terms which are applicable for a given context.
      *
      * The context is defined by the following parameters.
