@@ -2,6 +2,7 @@ export const FileName = {
     AdaptationConfig: 'config.json',
     CapJavaApplicationYaml: 'application.yaml',
     ExtConfigJson: '.extconfig.json',
+    Library: '.library',
     Manifest: 'manifest.json',
     ManifestAppDescrVar: 'manifest.appdescr_variant',
     MtaYaml: 'mta.yaml',

@@ -15,6 +15,7 @@ import { fileExists, findBy, findFileUp, readJSON } from '../file';
 import { hasDependency } from './dependencies';
 import { getCapProjectType } from './cap';
 import { getWebappPath } from './ui5-config';
+import { default as generateLibraryManifest } from '@ui5/builder/tasks/generateLibraryManifest';
 
 /**
  * Map artifact to file that is specific to the artifact type. Some artifacts can
@@ -22,11 +23,11 @@ import { getWebappPath } from './ui5-config';
  * Further filtering for specific artifact types happens in the filter{Artifact}
  * functions.
  */
-const filterFileMap: Record<FioriArtifactTypes, string> = {
-    applications: FileName.Manifest,
-    adaptations: FileName.ManifestAppDescrVar,
-    extensions: FileName.ExtConfigJson,
-    libraries: FileName.Manifest
+const filterFileMap: Record<FioriArtifactTypes, string[]> = {
+    applications: [FileName.Manifest],
+    adaptations: [FileName.ManifestAppDescrVar],
+    extensions: [FileName.ExtConfigJson],
+    libraries: [FileName.Library, FileName.Manifest]
 };
 
 /**
@@ -339,6 +340,50 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
 }
 
 /**
+ * Generates manifest.json from provided .library file
+ *
+ * @param paths paths to .library file
+ * @returns library result containing virtually generate manifest.json, project path and empty manifestPath
+ */
+async function getVirtualManifest(paths: string[]): Promise<LibraryResults[]> {
+    const FileSystem = await import('@ui5/fs/adapters/FileSystem');
+    const ResourceFactory = await import('@ui5/fs/resourceFactory');
+
+    let virtualLibraries = [];
+    for (const libraryPath of paths) {
+        const projectName = 'library';
+        const virBasePath = `/resources/${projectName}/`;
+        const fs = new FileSystem.default({
+            virBasePath,
+            fsBasePath: libraryPath
+        });
+        const workspace = await ResourceFactory.createWorkspace({ reader: fs, name: 'library', virBasePath });
+        try {
+            const getProject = () => {
+                return { getVersion: () => '1.0.0' };
+            };
+            await generateLibraryManifest({
+                workspace,
+                taskUtil: { getProject },
+                options: { projectName }
+            });
+            const files = await workspace.byGlob('**/manifest.json');
+            for (const file of files) {
+                const projectRoot = dirname((await findFileUp(FileName.Package, dirname(libraryPath))) || libraryPath);
+                const manifest: Manifest = JSON.parse(await file.getString());
+                // might not make sense to get manifestPath, since only virtual
+                const virtualManifestPath = (file.getPath() as string).split(virBasePath)[1];
+                const manifestPath = join(libraryPath, virtualManifestPath);
+                virtualLibraries.push({ manifest, projectRoot, manifestPath: '' });
+            }
+        } catch (error) {
+            return error;
+        }
+    }
+    return virtualLibraries;
+}
+
+/**
  * Filter extensions projects from a list of files.
  *
  * @param pathMap - path to files
@@ -346,6 +391,13 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
  */
 async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults[]> {
     const results: LibraryResults[] = [];
+    const dotLibraryPaths = Object.keys(pathMap)
+        .filter((path) => basename(path) === FileName.Library)
+        .map((path) => dirname(path));
+    if (dotLibraryPaths) {
+        const libraries: LibraryResults[] = await getVirtualManifest(dotLibraryPaths);
+        libraries.forEach((library) => results.push(library));
+    }
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
         try {
@@ -375,7 +427,7 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
     const uniqueFilterFiles = new Set<string>();
     for (const artifact of artifacts) {
         if (filterFileMap[artifact]) {
-            uniqueFilterFiles.add(filterFileMap[artifact]);
+            filterFileMap[artifact].forEach((artifactFile) => uniqueFilterFiles.add(artifactFile));
         }
     }
     return Array.from(uniqueFilterFiles);
