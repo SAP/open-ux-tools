@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.11.15
+
+### Patch Changes
+
+-   a44e9007: Invalid target aggregation and index are accepted in Add Fragment dialog
+
 ## 0.11.14
 
 ### Patch Changes
