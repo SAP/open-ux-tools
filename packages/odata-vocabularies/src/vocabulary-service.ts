@@ -298,9 +298,10 @@ export class VocabularyService {
     }
 
     /**
-     * Get applicable terms defined in vocabulary for type
-     * @param typeName
-     * @returns
+     * Get applicable terms defined in vocabulary for type.
+     *
+     * @param typeName value type name
+     * @returns fully qualified name
      */
     getApplicableTermsByType(typeName: FullyQualifiedTypeName): FullyQualifiedName[] | undefined {
         const type = this.dictionary.get(typeName);
@@ -310,6 +311,7 @@ export class VocabularyService {
                 return applicableTerms;
             }
         }
+        return undefined;
     }
 
     /**
@@ -385,6 +387,43 @@ export class VocabularyService {
     }
 
     /**
+     * Supplementary function which returns part of documentation describing vocabulary object type.
+     *
+     * @param element element object
+     * @param elementType element type object
+     * @param experimentalDescription experimental type description
+     * @returns array of markdown lines
+     */
+    private getElementTypeDescription(
+        element: VocabularyObject | ComplexTypeProperty | EnumValue,
+        elementType: VocabularyObject | undefined,
+        experimentalDescription: string
+    ): MarkdownString[] {
+        const values: MarkdownString[] = [];
+        if (elementType?.description) {
+            values.push(`**Type Description:** ${elementType.description} \n`);
+        }
+
+        if (elementType?.longDescription) {
+            values.push(`**Type Long Description:** ${elementType.longDescription} \n`);
+        }
+
+        values.push(...this.getElementRequireTypeValue(element));
+
+        if (elementType?.experimental) {
+            values.push(`**Type Experimental:** ${experimentalDescription} \n`);
+        }
+        if (elementType?.deprecated) {
+            values.push(`**Type Deprecated:** ${elementType.deprecatedDescription} \n`);
+        }
+
+        if (element.kind === COMPLEX_TYPE_KIND && element.baseType) {
+            values.push(`**BaseType:** ${element.baseType} \n`);
+        }
+        return values;
+    }
+
+    /**
      * Returns the documentation for an vocabulary element.
      *
      * The result is an array of Markdown strings.
@@ -419,26 +458,7 @@ export class VocabularyService {
 
         values.push(...this.getElementKindIsMemberAndTerm(element, elementType));
 
-        if (elementType?.description) {
-            values.push(`**Type Description:** ${elementType.description} \n`);
-        }
-
-        if (elementType?.longDescription) {
-            values.push(`**Type Long Description:** ${elementType.longDescription} \n`);
-        }
-
-        values.push(...this.getElementRequireTypeValue(element));
-
-        if (elementType?.experimental) {
-            values.push(`**Type Experimental:** ${experimentalDescription} \n`);
-        }
-        if (elementType?.deprecated) {
-            values.push(`**Type Deprecated:** ${elementType.deprecatedDescription} \n`);
-        }
-
-        if (element.kind === COMPLEX_TYPE_KIND && element.baseType) {
-            values.push(`**BaseType:** ${element.baseType} \n`);
-        }
+        values.push(...this.getElementTypeDescription(element, elementType, experimentalDescription));
 
         values.push(...this.getElementIsLanguageDependent(element, languageDependentDesc));
 
@@ -453,7 +473,7 @@ export class VocabularyService {
         }
 
         if (
-            (element.kind === COMPLEX_TYPE_KIND || element.kind === PROPERTY_KIND) &&
+            (element.kind === COMPLEX_TYPE_KIND || element.kind === PROPERTY_KIND || element.kind === TERM_KIND) &&
             element.constraints?.applicableTerms
         ) {
             // In Markdown you need to append \n\n for opening a new paragraph, and two spaces + '\n` for new line
