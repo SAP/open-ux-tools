@@ -18,15 +18,15 @@ import { loadVocabulariesInformation } from './loader';
 import type { VocabularyNamespace, VocabularyAlias } from './resources';
 import { NAMESPACE_TO_ALIAS } from './resources';
 import type {
-    Namespace,
     TargetKind,
     FullyQualifiedName,
     SimpleIdentifier,
     FullyQualifiedTypeName,
     NameQualifier,
-    QualifiedName
-} from './types';
-import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND, PROPERTY_KIND } from './types';
+    QualifiedName,
+    NamespaceString
+} from '@sap-ux/odata-annotation-core-types';
+import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND, PROPERTY_KIND } from '@sap-ux/odata-annotation-core-types';
 
 type ElementType = TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue;
 
@@ -49,7 +49,10 @@ export class VocabularyService {
      * @param fullyQualifiedName Fully qualified name
      * @returns Namespace and simple identifier
      */
-    private resolveName(fullyQualifiedName: FullyQualifiedName): { namespace: Namespace; name: SimpleIdentifier } {
+    private resolveName(fullyQualifiedName: FullyQualifiedName): {
+        namespace: NamespaceString;
+        name: SimpleIdentifier;
+    } {
         const parts = (fullyQualifiedName || '').trim().split('.');
         const name = parts.pop() ?? '';
         const namespace = parts.join('.');
@@ -267,7 +270,7 @@ export class VocabularyService {
      *
      * @returns - map of vocabularies
      */
-    getVocabularies(): Map<Namespace, Vocabulary> {
+    getVocabularies(): Map<NamespaceString, Vocabulary> {
         return this.supportedVocabularies;
     }
 
@@ -277,7 +280,7 @@ export class VocabularyService {
      * @param name - Qualified name, i.e. <Namespace|Alias>.<Name>
      * @returns - namespace for a qualified name
      */
-    getVocabularyNamespace(name: QualifiedName): Namespace | undefined {
+    getVocabularyNamespace(name: QualifiedName): NamespaceString | undefined {
         const resolvedTermNamespace = this.resolveName(name).namespace;
         const vocabulary = this.getVocabulary(name) ?? this.getVocabulary(resolvedTermNamespace);
         return vocabulary?.namespace;
@@ -292,6 +295,21 @@ export class VocabularyService {
     getVocabulary(nameQualifier: NameQualifier): Vocabulary | null {
         const namespace = this.namespaceByDefaultAlias.get(nameQualifier) ?? (nameQualifier as VocabularyNamespace);
         return this.supportedVocabularies.get(namespace) ?? null;
+    }
+
+    /**
+     * Get applicable terms defined in vocabulary for type
+     * @param typeName
+     * @returns
+     */
+    getApplicableTermsByType(typeName: FullyQualifiedTypeName): FullyQualifiedName[] | undefined {
+        const type = this.dictionary.get(typeName);
+        if (type?.kind === COMPLEX_TYPE_KIND || type?.kind === TYPE_DEFINITION_KIND) {
+            const applicableTerms = type.constraints?.applicableTerms;
+            if (applicableTerms) {
+                return applicableTerms;
+            }
+        }
     }
 
     /**
@@ -438,7 +456,8 @@ export class VocabularyService {
             (element.kind === COMPLEX_TYPE_KIND || element.kind === PROPERTY_KIND) &&
             element.constraints?.applicableTerms
         ) {
-            values.push(`**Applicable Terms:**  \n ${element.constraints.applicableTerms.join(' \n')} \n`);
+            // In Markdown you need to append \n\n for opening a new paragraph, and two spaces + '\n` for new line
+            values.push(`**Applicable Terms:**  \n ${element.constraints.applicableTerms.join('  \n')} \n`);
         }
 
         return values;

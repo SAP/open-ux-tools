@@ -17,4 +17,6 @@ export {
     MetadataElementProperties
 } from './types';
 
+export { Constraints, Facets } from './types/vocabularies';
+
 export { Location, Range, Position, Diagnostic, DiagnosticSeverity, TextEdit, WorkspaceEdit } from './language-server';

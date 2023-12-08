@@ -10,16 +10,18 @@
  */
 import type {
     FullyQualifiedName,
-    FullyQualifiedTypeName,
-    Namespace,
     SimpleIdentifier,
     TargetKind,
     COMPLEX_TYPE_KIND,
     ENUM_TYPE_KIND,
     TERM_KIND,
     TYPE_DEFINITION_KIND,
-    PROPERTY_KIND
-} from './base-types';
+    PROPERTY_KIND,
+    NamespaceString,
+    TargetKindValue,
+    Facets,
+    Constraints
+} from '@sap-ux/odata-annotation-core-types';
 
 import type { VocabularyNamespace } from '../resources';
 
@@ -27,7 +29,7 @@ import type { VocabularyNamespace } from '../resources';
  * OData vocabulary
  */
 export interface Vocabulary {
-    namespace: Namespace;
+    namespace: NamespaceString;
     defaultAlias: SimpleIdentifier;
     defaultUri: string; // to be used e.g. for creating edmx Reference tags
 }
@@ -39,50 +41,6 @@ export interface CdsVocabulary {
     reverseNameMap: Map<string, string>; // e.g. CDS.CdsPersistenceExists -> @cds.persistence.exists
     groupNames: Set<string>; // first segments of CDS annotations containing multiple segments e.g. cds for @cds.persistence.exists
     singletonNames: Set<string>; // cds annotations consisting of single segment only e.g. title for @title
-}
-
-/**
- * Facets provide further details on types definitions, terms or properties
- * http://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#_Toc26368805
- */
-export interface Facets {
-    isNullable?: boolean; // source: $Nullable; whether the property can have the value null
-    // $MaxLength; maximum length of a binary, stream or string value; no usage in supported vocabularies
-    precision?: number; // source: $Precision, for a decimal value: the maximum number of significant decimal digits..
-    // ..for a temporal value (e.g. time of dat): the number of decimal places allowed in the seconds
-    // $Scale; maximum number of digits allowed to the right.. ; no usage in supported vocabularies
-    // $SRID: no usage in supported vocabularies
-    // $Unicode; applicable to string values; no usage in supported vocabularies
-}
-
-/**
- * Constraints can be provided via Annotations on terms or properties
- * (commented out terms have been considered but discarded)
- */
-export interface Constraints {
-    // ------ validation vocabulary--------
-    // pattern: string; // regular expression applied to string value (Property or Term) - only in Core.LocalDateTime
-    // minimum: number; // minimum value (Property or Term) - only used in DataModificationExceptionType.responseCode
-    // maximum: number; // maximum value (Property or Term) - only used in DataModificationExceptionType.responseCode
-    allowedValues?: AllowedValues[]; // valid values (Property or Term)
-    openPropertyTypeConstraints?: FullyQualifiedTypeName[]; // used in UI vocabulary
-    allowedTerms?: FullyQualifiedTypeName[]; // restrict terms allowed for annotation path (Property or Term)
-    applicableTerms?: FullyQualifiedTypeName[]; //Names of specific terms that are applicable and may be applied in the current context
-    // MaxItems, MinItems: no usage in supported vocabularies
-    derivedTypeConstraints?: FullyQualifiedTypeName[]; // listed sub types (and their subtypes) (Property only!)
-    // ------ core vocabulary--------
-    // isURL? Can we check this ?
-    isLanguageDependent?: boolean; // string value is language dependent (Property or Term)
-    // term can only be applied to elements of this type/subType (Term)
-    // applies to says it's only used for terms, but properties use it too, e.g. RecursiveHierarchyType.IsLeafProperty
-    requiresType?: FullyQualifiedName;
-    // ------common vocabulary------------
-    // IsUpperCase: no usage in supported vocabularies
-    // MinOccurs: no usage in supported vocabularies
-    // MaxOccurs: no usage in supported vocabularies
-    // ------ communication vocabulary----
-    // isEmailAddress: boolean;  no usage in supported vocabularies
-    // isPhoneNumber: boolean;  no usage in supported vocabularies
 }
 
 export interface AllowedValues {
@@ -181,44 +139,6 @@ export interface ComplexType extends ComplexTypeBase {
 export interface ExpandedComplexType extends ComplexTypeBase {
     baseTypes: FullyQualifiedName[]; // list of resolved base types
 }
-
-/**
- * target kinds - available values for AppliesTo
- */
-export type TargetKindValue =
-    | 'Action'
-    | 'ActionImport'
-    | 'Annotation'
-    | 'Apply' // Application of a client-side function in an annotation
-    | 'Cast' // Type Cast annotation expression
-    | 'Collection' // Entity Set or collection-valued Property or Navigation Property
-    | 'ComplexType'
-    | 'EntityContainer'
-    | 'EntitySet'
-    | 'EntityType'
-    | 'EnumType'
-    | 'Function'
-    | 'FunctionImport'
-    | 'If' // Conditional annotation expression
-    | 'Include' // Reference to an Included Schema
-    | 'IsOf' // Type Check annotation expression
-    | 'LabeledElement' // Labeled Element expression
-    | 'Member' // Enumeration Member
-    | 'NavigationProperty'
-    | 'Null'
-    | 'OnDelete' // On-Delete Action of a navigation property
-    | 'Parameter' // Action of Function Parameter
-    | 'Property' // Property of a structured type
-    | 'PropertyValue' // Property value of a Record annotation expression
-    | 'Record' // Record annotation expression
-    | 'Reference' // Reference to another CSDL document
-    | 'ReferentialConstraint' //Referential Constraint of a navigation property
-    | 'ReturnType' // Return Type of an Action or Function
-    | 'Schema'
-    | 'Singleton'
-    | 'Term'
-    | 'TypeDefinition'
-    | 'UrlRef'; // UrlRef annotation expression
 
 /**
  * possible results for checking applicability of term
