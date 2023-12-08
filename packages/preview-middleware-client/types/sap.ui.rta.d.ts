@@ -5,9 +5,14 @@ declare module 'sap/ui/rta/command/BaseCommand' {
 
     type Selector = {
         id: string;
+        name?: string;
         controlType: string;
         appComponent: Component;
     };
+
+    interface ParentElement {
+        getElement(): Element;
+    }
 
     interface BaseCommand extends ManagedObject {
         execute(): Promise<void>;
@@ -16,6 +21,7 @@ declare module 'sap/ui/rta/command/BaseCommand' {
         getSelector(): Selector;
         getChangeType(): string;
         getCommands(): BaseCommand[];
+        getParent(): ParentElement;
     }
 
     export default BaseCommand;
