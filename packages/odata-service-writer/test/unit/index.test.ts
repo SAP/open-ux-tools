@@ -9,7 +9,6 @@ import cloneDeep from 'lodash/cloneDeep';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { tmpdir } from 'os';
 import { t } from '../../src/i18n';
-import { ServiceType } from '../../src/types';
 
 const testDir = tmpdir();
 const commonConfig = {
@@ -173,23 +172,6 @@ describe('generate', () => {
             expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('client: ');
         });
 
-        it('Valid OData V4 cds service', async () => {
-            const config = {
-                path: 'path/to/service',
-                version: OdataVersion.v4,
-                name: 'myCDSService',
-                type: ServiceType.CDS
-            };
-            await generate(testDir, config as OdataService, fs);
-
-            // verify updated manifest.json
-            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-            expect(manifest['sap.app'].dataSources[config.name].uri).toBe(config.path);
-            expect(manifest['sap.app'].dataSources[config.name].settings.localUri).toBeUndefined();
-            // verify there is no local copy of metadata
-            expect(fs.exists(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBeFalsy();
-        });
-
         it('Valid OData service with destination and no optional parameters', async () => {
             const config = {
                 url: commonConfig.url,
@@ -293,7 +275,6 @@ describe('generate', () => {
                     "path": "/V2",
                     "url": "https://services.odata.org",
                   },
-                  "type": "edmx",
                   "url": "https://services.odata.org",
                   "version": "2",
                 }
@@ -310,7 +291,6 @@ describe('generate', () => {
                     "path": "/V2",
                     "url": "https://services.odata.org",
                   },
-                  "type": "edmx",
                   "url": "https://services.odata.org",
                   "version": "2",
                 }
@@ -328,7 +308,6 @@ describe('generate', () => {
                     "path": "/",
                     "url": "https://services.odata.org",
                   },
-                  "type": "edmx",
                   "url": "https://services.odata.org",
                   "version": "2",
                 }

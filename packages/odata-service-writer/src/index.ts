@@ -103,7 +103,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     }
 
     // Add mockserver entries
-    if (service.metadata && service.type === ServiceType.EDMX) {
+    if (service.metadata) {
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         if (paths.ui5Yaml && ui5Config) {
             const ui5MockConfig = await UI5Config.newInstance(ui5Config.toString());
