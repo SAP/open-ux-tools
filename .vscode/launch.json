@@ -132,6 +132,16 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "project-access: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/project-access"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "ui5-library-writer: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
