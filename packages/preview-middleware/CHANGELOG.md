@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.11.16
+
+### Patch Changes
+
+-   a714d53d: No unsaved change shown when adding fragment to Extension Point
+
 ## 0.11.15
 
 ### Patch Changes
