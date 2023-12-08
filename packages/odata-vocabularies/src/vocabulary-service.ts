@@ -314,14 +314,6 @@ export class VocabularyService {
         }
 
         const terms = [...uniqueTerms.keys()];
-        const targetTypeDef = this.dictionary.get(targetType);
-        if (targetTypeDef?.kind === COMPLEX_TYPE_KIND || targetTypeDef?.kind === TYPE_DEFINITION_KIND) {
-            const applicableTerms = targetTypeDef.constraints?.applicableTerms;
-            if (applicableTerms) {
-                return applicableTerms;
-            }
-        }
-
         return terms.filter((termName) => {
             const term = this.dictionary.get(termName);
             if (term?.kind !== 'Term') {
