@@ -2,4 +2,4 @@
 '@sap-ux/fe-fpm-writer': patch
 ---
 
-Added `fragmentName` property for custom elements type to use it as key if defined in manifest templates
+Added `fragmentFile` property in order to allow to use fragment name different from custom extension key 
