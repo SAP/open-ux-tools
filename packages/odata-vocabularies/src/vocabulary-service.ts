@@ -295,6 +295,21 @@ export class VocabularyService {
     }
 
     /**
+     * Get applicable terms defined in vocabulary for type
+     * @param typeName 
+     * @returns 
+     */
+    getApplicableTermsByType(typeName: FullyQualifiedTypeName): FullyQualifiedName[] | undefined {
+        const type = this.dictionary.get(typeName);
+        if (type?.kind === COMPLEX_TYPE_KIND || type?.kind === TYPE_DEFINITION_KIND) {
+            const applicableTerms = type.constraints?.applicableTerms;
+            if (applicableTerms) {
+                return applicableTerms;
+            }
+        }
+    }
+
+    /**
      * Returns all terms which are applicable for a given context.
      *
      * The context is defined by the following parameters.
@@ -314,14 +329,6 @@ export class VocabularyService {
         }
 
         const terms = [...uniqueTerms.keys()];
-        const targetTypeDef = this.dictionary.get(targetType);
-        if (targetTypeDef?.kind === COMPLEX_TYPE_KIND || targetTypeDef?.kind === TYPE_DEFINITION_KIND) {
-            const applicableTerms = targetTypeDef.constraints?.applicableTerms;
-            if (applicableTerms) {
-                return applicableTerms;
-            }
-        }
-
         return terms.filter((termName) => {
             const term = this.dictionary.get(termName);
             if (term?.kind !== 'Term') {
