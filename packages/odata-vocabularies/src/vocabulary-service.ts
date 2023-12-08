@@ -25,7 +25,7 @@ import type {
     NameQualifier,
     QualifiedName,
     NamespaceString
-} from './types';
+} from '@sap-ux/odata-annotation-core-types';
 import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND, PROPERTY_KIND } from '@sap-ux/odata-annotation-core-types';
 
 type ElementType = TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue;
@@ -299,8 +299,8 @@ export class VocabularyService {
 
     /**
      * Get applicable terms defined in vocabulary for type
-     * @param typeName 
-     * @returns 
+     * @param typeName
+     * @returns
      */
     getApplicableTermsByType(typeName: FullyQualifiedTypeName): FullyQualifiedName[] | undefined {
         const type = this.dictionary.get(typeName);
