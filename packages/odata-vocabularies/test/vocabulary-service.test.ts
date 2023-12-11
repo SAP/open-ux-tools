@@ -8,6 +8,22 @@ const vocabularyService = new VocabularyService();
 const namespace = 'com.sap.vocabularies.UI.v1';
 const term = 'com.sap.vocabularies.UI.v1.LineItem';
 const targetKind = ENTITY_TYPE_KIND;
+const aliasInfo: AliasInformation = {
+    aliasMap: {
+        'SAPUI': 'com.sap.vocabularies.UI.v1',
+        'com.sap.vocabularies.UI.v1': 'com.sap.vocabularies.UI.v1',
+        'com.sap.vocabularies.HTML5.v1': 'com.sap.vocabularies.HTML5.v1'
+    },
+    aliasMapMetadata: {},
+    aliasMapVocabulary: {},
+    currentFileAlias: '',
+    currentFileNamespace: 'local',
+    reverseAliasMap: {
+        'com.sap.vocabularies.Common.v1': 'Common',
+        'com.sap.vocabularies.HTML5.v1': 'HTML5',
+        'com.sap.vocabularies.UI.v1': 'SAPUI'
+    }
+};
 
 it('getVocabularies() contains UI but not CDS', () => {
     const vocabularies = vocabularyService.getVocabularies();
@@ -30,22 +46,6 @@ it('replace Fully Qualified Name With Alias', () => {
         'com.sap.vocabularies.UI.v1.PartOfPreview',
         'com.sap.vocabularies.HTML5.v1.CssDefaults'
     ];
-    const aliasInfo: AliasInformation = {
-        aliasMap: {
-            'SAPUI': 'com.sap.vocabularies.UI.v1',
-            'com.sap.vocabularies.UI.v1': 'com.sap.vocabularies.UI.v1',
-            'com.sap.vocabularies.HTML5.v1': 'com.sap.vocabularies.HTML5.v1'
-        },
-        aliasMapMetadata: {},
-        aliasMapVocabulary: {},
-        currentFileAlias: '',
-        currentFileNamespace: 'local',
-        reverseAliasMap: {
-            'com.sap.vocabularies.Common.v1': 'Common',
-            'com.sap.vocabularies.HTML5.v1': 'HTML5',
-            'com.sap.vocabularies.UI.v1': 'SAPUI'
-        }
-    };
     const qNameWithAlias = vocabularyService.replaceFQNameWithAlias(fqNames, aliasInfo);
     // Expect
     expect(qNameWithAlias).toMatchInlineSnapshot(`
@@ -605,8 +605,9 @@ describe('getDocumentation()', () => {
 
     it('Complex Type', () => {
         // Expect
-        expect(vocabularyService.getDocumentation('com.sap.vocabularies.UI.v1.DataFieldForAction'))
-            .toMatchInlineSnapshot(`
+        expect(
+            vocabularyService.getDocumentation('com.sap.vocabularies.UI.v1.DataFieldForAction', undefined, aliasInfo)
+        ).toMatchInlineSnapshot(`
             Array [
               "**Kind:** ComplexType 
             ",
@@ -615,15 +616,15 @@ describe('getDocumentation()', () => {
               "**Long Description:** The action is NOT tied to a data value (in contrast to [DataFieldWithAction](#DataFieldWithAction)). 
             ",
               "",
-              "**BaseType:** com.sap.vocabularies.UI.v1.DataFieldForActionAbstract 
+              "**BaseType:** SAPUI.DataFieldForActionAbstract 
             ",
               "**Nullable:** false 
             ",
               "**Applicable Terms:**  
-             com.sap.vocabularies.UI.v1.Hidden  
-            com.sap.vocabularies.UI.v1.Importance  
-            com.sap.vocabularies.UI.v1.PartOfPreview  
-            com.sap.vocabularies.HTML5.v1.CssDefaults 
+             SAPUI.Hidden  
+            SAPUI.Importance  
+            SAPUI.PartOfPreview  
+            HTML5.CssDefaults 
             ",
             ]
         `);
