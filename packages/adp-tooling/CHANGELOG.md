@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.7.2
+
+### Patch Changes
+
+-   5a1eb6ed: Correctly escape quote for windows support
+
 ## 0.7.1
 
 ### Patch Changes
