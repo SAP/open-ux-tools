@@ -1,6 +1,6 @@
 import { join } from 'path';
-import { getFilePaths } from '../../src';
-import { findFiles, findFilesByExtension, findFileUp } from '../../src/file';
+import { findFileUp, getFilePaths } from '../../src';
+import { findFiles, findFilesByExtension } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
