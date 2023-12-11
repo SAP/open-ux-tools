@@ -1,0 +1,212 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Prompts generateChartBuildingBlock 1`] = `
+Array [
+  Object {
+    "choices": [Function],
+    "message": "View or Fragment file name",
+    "name": "viewOrFragmentFile",
+    "type": "list",
+    "validate": [Function],
+  },
+  Object {
+    "message": "Enter an ID for the filter bar building block",
+    "name": "id",
+    "type": "input",
+    "validate": [Function],
+  },
+  Object {
+    "choices": [Function],
+    "message": "prompts.filterBar.message",
+    "name": "aggregationPath",
+    "type": "list",
+  },
+  Object {
+    "choices": [Function],
+    "message": "Entity Type",
+    "name": "entity",
+    "type": "list",
+  },
+  Object {
+    "choices": [Function],
+    "message": "Select the Selection Fields Qualifier",
+    "name": "selectionFieldQualifier",
+    "type": "list",
+  },
+  Object {
+    "message": "Enter a function to be called when the filter value has changed",
+    "name": "filterChanged",
+    "type": "input",
+  },
+  Object {
+    "message": "Enter a function to be called when the go button is pressed",
+    "name": "search",
+    "type": "input",
+  },
+]
+`;
+
+exports[`Prompts generateChartBuildingBlock 2`] = `
+Array [
+  Object {
+    "choices": [Function],
+    "message": "View or Fragment file name",
+    "name": "viewOrFragmentFile",
+    "type": "list",
+    "validate": [Function],
+  },
+  Object {
+    "message": "Enter an ID for the filter bar building block",
+    "name": "id",
+    "type": "input",
+    "validate": [Function],
+  },
+  Object {
+    "choices": [Function],
+    "message": "prompts.filterBar.message",
+    "name": "aggregationPath",
+    "type": "list",
+  },
+  Object {
+    "choices": [Function],
+    "message": "Entity Type",
+    "name": "entity",
+    "type": "list",
+  },
+  Object {
+    "choices": [Function],
+    "message": "Select the Selection Fields Qualifier",
+    "name": "selectionFieldQualifier",
+    "type": "list",
+  },
+  Object {
+    "message": "Enter a function to be called when the filter value has changed",
+    "name": "filterChanged",
+    "type": "input",
+  },
+  Object {
+    "message": "Enter a function to be called when the go button is pressed",
+    "name": "search",
+    "type": "input",
+  },
+]
+`;
+
+exports[`Prompts getBuildingBlockTypePrompts 1`] = `
+Array [
+  Object {
+    "choices": Array [
+      Object {
+        "name": "Chart",
+        "value": "chart",
+      },
+      Object {
+        "name": "Filter Bar",
+        "value": "filter-bar",
+      },
+      Object {
+        "name": "Table",
+        "value": "table",
+      },
+    ],
+    "message": "Select a building block",
+    "name": "buildingBlockType",
+    "type": "list",
+  },
+]
+`;
+
+exports[`Prompts getChartBuildingBlockPrompts 1`] = `
+Array [
+  Object {
+    "choices": [Function],
+    "message": "Select a View or Fragment file name",
+    "name": "viewOrFragmentFile",
+    "type": "list",
+    "validate": [Function],
+  },
+  Object {
+    "message": "Enter an ID for the chart building block",
+    "name": "id",
+    "type": "input",
+    "validate": [Function],
+  },
+  Object {
+    "choices": Array [
+      Object {
+        "name": "Relative",
+        "value": "relative",
+      },
+      Object {
+        "name": "Absolute",
+        "value": "absolute",
+      },
+    ],
+    "message": "Select a Binding Context Path Type",
+    "name": "bindingContextType",
+    "type": "list",
+  },
+  Object {
+    "message": "Enter the ID of the filter bar building block associated with the chart",
+    "name": "filterBar",
+    "type": "input",
+  },
+  Object {
+    "choices": Array [
+      Object {
+        "name": "Type",
+        "value": "Type",
+      },
+      Object {
+        "name": "Item",
+        "value": "Item",
+      },
+      Object {
+        "name": "Sort",
+        "value": "Sort",
+      },
+    ],
+    "message": "Select chart personalization",
+    "name": "personalization",
+    "type": "checkbox",
+  },
+  Object {
+    "choices": Array [
+      Object {
+        "name": "Single",
+        "value": "Single",
+      },
+      Object {
+        "name": "Multiple",
+        "value": "Multiple",
+      },
+    ],
+    "message": "Select Binding Context Path Type",
+    "name": "selectionMode",
+    "type": "list",
+  },
+  Object {
+    "message": "Enter a function to be called when the selection has changed",
+    "name": "selectionChange",
+    "type": "input",
+  },
+  Object {
+    "choices": [Function],
+    "message": "Select the Aggregation Path",
+    "name": "aggregationPath",
+    "type": "list",
+  },
+  Object {
+    "choices": [Function],
+    "message": "Select the Entity Type",
+    "name": "entity",
+    "type": "list",
+  },
+  Object {
+    "choices": [Function],
+    "message": "Select the Chart Qualifier",
+    "name": "chartQualifier",
+    "type": "list",
+  },
+]
+`;

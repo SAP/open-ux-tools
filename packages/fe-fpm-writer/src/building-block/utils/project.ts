@@ -38,8 +38,6 @@ class ProjectProvider {
 
     /**
      * Fetches the Service and Annotation Files from `mainService`
-     *
-     *
      */
     getXmlFiles() {
         const manifest = this.getManifestFile();

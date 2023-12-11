@@ -1,0 +1,198 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`utils -  annotation service -  getAnnotationPathQualifiers - existing annotations 1`] = `
+Object {
+  "@UI.Chart": "@UI.Chart",
+  "@UI.LineItem": "@UI.LineItem",
+  "@UI.SelectionFields": "@UI.SelectionFields",
+  "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType": "to_CustomerBankDetails/@UI.Chart#C_CustomerBankDetailsOPType",
+}
+`;
+
+exports[`utils -  prompts entityPrompt 1`] = `
+Object {
+  "choices": [Function],
+  "message": "entity",
+  "name": "entity",
+  "type": "list",
+}
+`;
+
+exports[`utils -  prompts entityPrompt 2`] = `
+Array [
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.C_CustomerBankDetailsOPType",
+    "value": "C_CUSTOMER_OP_SRV.C_CustomerBankDetailsOPType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType",
+    "value": "C_CUSTOMER_OP_SRV.C_CustomerCompanyCodeOPType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.C_CustomerOPType",
+    "value": "C_CUSTOMER_OP_SRV.C_CustomerOPType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType",
+    "value": "C_CUSTOMER_OP_SRV.C_CustomerSalesAreaOPType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.C_CustrecnclnacctvhtempType",
+    "value": "C_CUSTOMER_OP_SRV.C_CustrecnclnacctvhtempType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.C_OrderIsBlockedTextVHTempType",
+    "value": "C_CUSTOMER_OP_SRV.C_OrderIsBlockedTextVHTempType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_AccountingClerkType",
+    "value": "C_CUSTOMER_OP_SRV.I_AccountingClerkType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_AccountingClerkStdVHType",
+    "value": "C_CUSTOMER_OP_SRV.I_AccountingClerkStdVHType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_BillingBlockReasonType",
+    "value": "C_CUSTOMER_OP_SRV.I_BillingBlockReasonType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_BusinessPartnerVHType",
+    "value": "C_CUSTOMER_OP_SRV.I_BusinessPartnerVHType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_ChartOfAccountsStdVHType",
+    "value": "C_CUSTOMER_OP_SRV.I_ChartOfAccountsStdVHType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_CompanyCodeType",
+    "value": "C_CUSTOMER_OP_SRV.I_CompanyCodeType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_CompanyCodeStdVHType",
+    "value": "C_CUSTOMER_OP_SRV.I_CompanyCodeStdVHType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_ContactPersonDepartmentTType",
+    "value": "C_CUSTOMER_OP_SRV.I_ContactPersonDepartmentTType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_ContactPersonFunctionTType",
+    "value": "C_CUSTOMER_OP_SRV.I_ContactPersonFunctionTType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_ControllingAreaStdVHType",
+    "value": "C_CUSTOMER_OP_SRV.I_ControllingAreaStdVHType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_CountryType",
+    "value": "C_CUSTOMER_OP_SRV.I_CountryType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_CreditControlAreaStdVHType",
+    "value": "C_CUSTOMER_OP_SRV.I_CreditControlAreaStdVHType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_CustomerContactOPType",
+    "value": "C_CUSTOMER_OP_SRV.I_CustomerContactOPType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_CustomerDunningType",
+    "value": "C_CUSTOMER_OP_SRV.I_CustomerDunningType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_CustomerGroupType",
+    "value": "C_CUSTOMER_OP_SRV.I_CustomerGroupType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_Customer_to_BusinessPartnerType",
+    "value": "C_CUSTOMER_OP_SRV.I_Customer_to_BusinessPartnerType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_Customer_VHType",
+    "value": "C_CUSTOMER_OP_SRV.I_Customer_VHType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_DeliveryBlockReasonType",
+    "value": "C_CUSTOMER_OP_SRV.I_DeliveryBlockReasonType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_DistributionChannelType",
+    "value": "C_CUSTOMER_OP_SRV.I_DistributionChannelType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_DivisionType",
+    "value": "C_CUSTOMER_OP_SRV.I_DivisionType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_PaymentBlockingReasonType",
+    "value": "C_CUSTOMER_OP_SRV.I_PaymentBlockingReasonType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_SalesGroupType",
+    "value": "C_CUSTOMER_OP_SRV.I_SalesGroupType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_SalesOfficeType",
+    "value": "C_CUSTOMER_OP_SRV.I_SalesOfficeType",
+  },
+  Object {
+    "name": "C_CUSTOMER_OP_SRV.I_SalesOrganizationType",
+    "value": "C_CUSTOMER_OP_SRV.I_SalesOrganizationType",
+  },
+]
+`;
+
+exports[`utils -  prompts getAggregationPathPrompt 1`] = `
+Object {
+  "choices": [Function],
+  "message": "AggregationPathMessage",
+  "name": "aggregationPath",
+  "type": "list",
+}
+`;
+
+exports[`utils -  prompts getAggregationPathPrompt 2`] = `
+Array [
+  Object {
+    "name": "/mvc:View",
+    "value": "/mvc:View",
+  },
+  Object {
+    "name": "/mvc:View/Page",
+    "value": "/mvc:View/*[local-name()='Page']",
+  },
+  Object {
+    "name": "/mvc:View/Page/content",
+    "value": "/mvc:View/*[local-name()='Page']/*[local-name()='content']",
+  },
+]
+`;
+
+exports[`utils -  prompts getAnnotationPathQualifierPrompt 1`] = `
+Object {
+  "choices": [Function],
+  "message": "testMessage",
+  "name": "testAnnotationPath",
+  "type": "list",
+}
+`;
+
+exports[`utils -  prompts getAnnotationPathQualifierPrompt 2`] = `
+Array [
+  Object {
+    "name": "@UI.LineItem",
+    "value": "@com.sap.vocabularies.UI.v1.LineItem",
+  },
+]
+`;
+
+exports[`utils -  prompts getViewOrFragmentFilePrompt 1`] = `
+Object {
+  "choices": [Function],
+  "message": "testMessage",
+  "name": "viewOrFragmentFile",
+  "type": "list",
+  "validate": [Function],
+}
+`;

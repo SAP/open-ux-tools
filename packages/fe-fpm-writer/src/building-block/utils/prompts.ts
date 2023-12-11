@@ -208,6 +208,6 @@ export function getChoices(obj: Record<string, string> | any[]) {
  * @param {Error | unknown} error  - the error instance
  * @returns {string} the error message
  */
-export function getErrorMessage(error: Error | unknown): string {
+function getErrorMessage(error: Error | unknown): string {
     return error instanceof Error ? error.message : String(error);
 }
