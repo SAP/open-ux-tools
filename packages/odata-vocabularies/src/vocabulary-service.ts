@@ -16,7 +16,7 @@ import type {
 import { TermApplicability, CDS_VOCABULARY_NAMESPACE, CDS_VOCABULARY_ALIAS } from './types/vocabulary-service';
 import { loadVocabulariesInformation } from './loader';
 import type { VocabularyNamespace, VocabularyAlias } from './resources';
-import { NAMESPACE_TO_ALIAS } from './resources';
+import vocabularies, { NAMESPACE_TO_ALIAS } from './resources';
 import type {
     TargetKind,
     FullyQualifiedName,
@@ -268,8 +268,15 @@ export class VocabularyService {
      * @returns - namespace for a qualified name
      */
     getVocabularyNamespace(name: QualifiedName): NamespaceString | undefined {
-        const resolvedTermNamespace = resolveName(name).namespace as string;
-        const vocabulary = this.getVocabulary(name) ?? this.getVocabulary(resolvedTermNamespace);
+        let vocabulary = this.getVocabulary(name);
+        if (vocabulary) {
+            return vocabulary.namespace;
+        }
+
+        const resolvedTermNamespace = resolveName(name).namespace;
+        if (resolvedTermNamespace) {
+            vocabulary = this.getVocabulary(resolvedTermNamespace);
+        }
         return vocabulary?.namespace;
     }
 
@@ -459,29 +466,15 @@ export class VocabularyService {
         ) {
             let applicableTerms = element.constraints.applicableTerms;
             if (aliasInfo) {
-                applicableTerms = this.replaceFQNameWithAlias(applicableTerms, aliasInfo);
+                applicableTerms = applicableTerms.map((fullyQualifiedName) =>
+                    toAliasQualifiedName(fullyQualifiedName, aliasInfo)
+                );
             }
             // In Markdown you need to append \n\n for opening a new paragraph, and two spaces + '\n` for new line
-            values.push(`**Applicable Terms:**  \n ${applicableTerms.join('  \n')} \n`);
+            values.push(`**Applicable Terms:**  \n${applicableTerms.join('  \n')} \n`);
         }
 
         return values;
-    }
-
-    /**
-     * Replace fully qualified Name With Alias.
-     *
-     * @param fqNames - fully qualified name
-     * @param aliasInfo - alias information
-     * @returns - qualified name with alias
-     */
-    replaceFQNameWithAlias(fqNames: FullyQualifiedName[], aliasInfo: AliasInformation): QualifiedName[] {
-        const qNameWithAlias: QualifiedName[] = [];
-        fqNames.forEach((fqName) => {
-            const qName = toAliasQualifiedName(fqName, aliasInfo);
-            qNameWithAlias.push(qName);
-        });
-        return qNameWithAlias;
     }
 
     /**

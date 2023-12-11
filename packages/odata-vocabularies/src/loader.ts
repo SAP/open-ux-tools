@@ -652,9 +652,9 @@ function propagateConstraints(
     dictionary: Map<FullyQualifiedName, VocabularyObject>,
     derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>
 ): void {
-    [...derivedTypesPerType.keys()].forEach((typeName) => {
+    for (const typeName of derivedTypesPerType.keys()) {
         propagateConstraintsForType(typeName, dictionary, derivedTypesPerType);
-    });
+    }
 }
 
 /**
@@ -670,7 +670,7 @@ function propagateConstraintsForType(
     derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>
 ): void {
     const mergeConstraints = (constraints: Constraints, derivationMap: Map<FullyQualifiedName, boolean>) => {
-        [...derivationMap.keys()].forEach((derivedTypeName) => {
+        for (const derivedTypeName of derivationMap.keys()) {
             const derivedType = dictionary.get(derivedTypeName);
             if (derivedType?.kind === COMPLEX_TYPE_KIND) {
                 // merge base type constraints into the current type constraints
@@ -679,13 +679,18 @@ function propagateConstraintsForType(
             if (derivedTypesPerType.has(derivedTypeName)) {
                 propagateConstraintsForType(derivedTypeName, dictionary, derivedTypesPerType);
             }
-        });
+        }
     };
 
     const typeDef = dictionary.get(typeName);
     const derivationMap = derivedTypesPerType.get(typeName);
-    if (typeDef?.kind === COMPLEX_TYPE_KIND && Object.keys(typeDef.constraints ?? {}).length && derivationMap) {
-        mergeConstraints(typeDef.constraints as Constraints, derivationMap);
+    if (
+        typeDef?.kind === COMPLEX_TYPE_KIND &&
+        typeDef.constraints &&
+        Object.keys(typeDef.constraints).length &&
+        derivationMap
+    ) {
+        mergeConstraints(typeDef.constraints, derivationMap);
     }
 }
 

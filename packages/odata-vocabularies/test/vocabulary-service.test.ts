@@ -1,5 +1,5 @@
 import { ENTITY_TYPE_KIND, PROPERTY_KIND, COLLECTION_KIND, ENTITY_SET_KIND } from '@sap-ux/odata-annotation-core-types';
-import type { FullyQualifiedName, AliasInformation } from '@sap-ux/odata-annotation-core-types';
+import type { AliasInformation } from '@sap-ux/odata-annotation-core-types';
 import { TermApplicability } from '../src/types/vocabulary-service';
 import { VocabularyService } from '../src/vocabulary-service';
 declare const expect: jest.Expect;
@@ -37,25 +37,6 @@ it('getVocabularies() contains UI but not CDS', () => {
         }
     `);
     expect(vocabularies.get('com.sap.vocabularies.CDS.v1')).toBeFalsy();
-});
-
-it('replace Fully Qualified Name With Alias', () => {
-    const fqNames: FullyQualifiedName[] = [
-        'com.sap.vocabularies.UI.v1.Hidden',
-        'com.sap.vocabularies.UI.v1.Importance',
-        'com.sap.vocabularies.UI.v1.PartOfPreview',
-        'com.sap.vocabularies.HTML5.v1.CssDefaults'
-    ];
-    const qNameWithAlias = vocabularyService.replaceFQNameWithAlias(fqNames, aliasInfo);
-    // Expect
-    expect(qNameWithAlias).toMatchInlineSnapshot(`
-        Array [
-          "SAPUI.Hidden",
-          "SAPUI.Importance",
-          "SAPUI.PartOfPreview",
-          "HTML5.CssDefaults",
-        ]
-    `);
 });
 
 describe('getVocabularyNamespace()', () => {
@@ -621,7 +602,7 @@ describe('getDocumentation()', () => {
               "**Nullable:** false 
             ",
               "**Applicable Terms:**  
-             SAPUI.Hidden  
+            SAPUI.Hidden  
             SAPUI.Importance  
             SAPUI.PartOfPreview  
             HTML5.CssDefaults 

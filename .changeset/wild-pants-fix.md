@@ -1,6 +1,6 @@
 ---
-'@sap-ux/odata-annotation-core-types': patch
-'@sap-ux/odata-vocabularies': patch
+'@sap-ux/odata-annotation-core-types': minor
+'@sap-ux/odata-vocabularies': minor
 ---
 
 support applicable terms constraint
