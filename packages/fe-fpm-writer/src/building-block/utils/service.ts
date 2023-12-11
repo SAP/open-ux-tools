@@ -119,15 +119,16 @@ function addAnnotationPathQualifierToResult(
         const [namespaceAlias, annotationTerm] = getAnnotationTermAlias(uiAnnotationTerm);
         const namespace = uiAnnotationTerm.substring(0, uiAnnotationTerm.lastIndexOf('.'));
         const annotations = entityType.annotations[namespaceAlias];
-        if (annotations) {
-            Object.entries(annotations).forEach(([key, value]) => {
-                if (key.startsWith(annotationTerm)) {
-                    const qualifier = value.qualifier ? '#' + value.qualifier : '';
-                    const navPropertyPath = `${navigationPropertyName ? navigationPropertyName + '/' : ''}`;
-                    result[`${navPropertyPath}@${namespaceAlias}.${annotationTerm}` + qualifier] =
-                        `${navPropertyPath}@${useNamespace ? namespace : namespaceAlias}.${annotationTerm}` + qualifier;
-                }
-            });
+        if (!annotations) {
+            return;
         }
+        Object.entries(annotations).forEach(([key, value]) => {
+            if (key.startsWith(annotationTerm)) {
+                const qualifier = value.qualifier ? '#' + value.qualifier : '';
+                const navPropertyPath = `${navigationPropertyName ? navigationPropertyName + '/' : ''}`;
+                result[`${navPropertyPath}@${namespaceAlias}.${annotationTerm}` + qualifier] =
+                    `${navPropertyPath}@${useNamespace ? namespace : namespaceAlias}.${annotationTerm}` + qualifier;
+            }
+        });
     });
 }

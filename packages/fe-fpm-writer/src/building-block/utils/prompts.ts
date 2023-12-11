@@ -1,7 +1,7 @@
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { DOMParser } from '@xmldom/xmldom';
-import type { ListQuestion } from 'inquirer';
+import type { InputQuestion, ListQuestion } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
 import { relative } from 'path';
 import type ProjectProvider from './project';
@@ -210,4 +210,52 @@ export function getChoices(obj: Record<string, string> | any[]) {
  */
 function getErrorMessage(error: Error): string {
     return error instanceof Error ? error.message : String(error);
+}
+
+/**
+ * Returns a Prompt for entering filter bar ID.
+ *
+ * @param message
+ * @returns a Input Prompt
+ */
+export function getFilterBarIdPrompt(message: string): InputQuestion {
+    return {
+        type: 'input',
+        name: 'filterBar',
+        message
+    } as InputQuestion;
+}
+
+/**
+ * Returns the Binding Context Type Prompt.
+ *
+ * @param message
+ * @returns a List Prompt
+ */
+export function getBindingContextTypePrompt(message: string): ListQuestion {
+    return {
+        type: 'list',
+        name: 'bindingContextType',
+        message,
+        choices: [
+            { name: 'Relative', value: 'relative' },
+            { name: 'Absolute', value: 'absolute' }
+        ]
+    } as ListQuestion;
+}
+
+/**
+ * Returns a Prompt for entering a Building block ID.
+ *
+ * @param message
+ * @param validationErrorMessage
+ * @returns a Input Prompt
+ */
+export function getBuildingBlockIdPrompt(message: string, validationErrorMessage: string): InputQuestion {
+    return {
+        type: 'input',
+        name: 'id',
+        message,
+        validate: (value: any) => (value ? true : validationErrorMessage)
+    } as InputQuestion;
 }

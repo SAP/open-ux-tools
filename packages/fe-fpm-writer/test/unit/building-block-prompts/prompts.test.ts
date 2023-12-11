@@ -1,7 +1,8 @@
 import {
     getBuildingBlockTypePrompts,
     getChartBuildingBlockPrompts,
-    getFilterBarBuildingBlockPrompts
+    getFilterBarBuildingBlockPrompts,
+    getTableBuildingBlockPrompts
 } from '../../../src';
 import ProjectProvider from '../../../src/building-block/utils/project';
 
@@ -20,13 +21,13 @@ describe('Prompts', () => {
         expect(questionnair).toMatchSnapshot();
     });
 
-    test('generateChartBuildingBlock', async () => {
+    test('getFilterBarBuildingBlockPrompts', async () => {
         const questionnair = await getFilterBarBuildingBlockPrompts('', fs);
         expect(questionnair).toMatchSnapshot();
     });
 
-    test('generateChartBuildingBlock', async () => {
-        const questionnair = await getFilterBarBuildingBlockPrompts('', fs);
+    test('getTableBuildingBlockPrompts', async () => {
+        const questionnair = await getTableBuildingBlockPrompts('', fs);
         expect(questionnair).toMatchSnapshot();
     });
 });

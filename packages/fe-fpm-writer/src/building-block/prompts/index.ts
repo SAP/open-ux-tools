@@ -9,8 +9,11 @@ import ProjectProvider from '../utils/project';
 import {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
+    getBindingContextTypePrompt,
     getBooleanPrompt,
+    getBuildingBlockIdPrompt,
     getEntityPrompt,
+    getFilterBarIdPrompt,
     getViewOrFragmentFilePrompt
 } from '../utils/prompts';
 
@@ -68,27 +71,10 @@ export async function getChartBuildingBlockPrompts(
     const projectProvider = await ProjectProvider.createProject(basePath, fs);
     return [
         getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate')),
-        {
-            type: 'input',
-            name: 'id',
-            message: t('id.message'),
-            validate: (value: any) => (value ? true : t('id.validation'))
-        } as InputQuestion,
-        {
-            type: 'list',
-            name: 'bindingContextType',
-            message: t('bindingContextType'),
-            choices: [
-                { name: 'Relative', value: 'relative' },
-                { name: 'Absolute', value: 'absolute' }
-            ]
-        } as ListQuestion,
+        getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
+        getBindingContextTypePrompt(t('bindingContextType')),
 
-        {
-            type: 'input',
-            name: 'filterBar',
-            message: t('filterBar')
-        } as InputQuestion,
+        getFilterBarIdPrompt(t('filterBar')),
         {
             type: 'checkbox',
             name: 'personalization',
@@ -151,34 +137,15 @@ export async function getTableBuildingBlockPrompts(
     const projectProvider = await ProjectProvider.createProject(basePath, fs);
     return [
         getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate')),
-        {
-            type: 'input',
-            name: 'id',
-            message: t('id.message'),
-            validate: (value: any) => (value ? true : t('id.validation'))
-        } as InputQuestion,
-        {
-            type: 'list',
-            name: 'bindingContextType',
-            message: t('bindingContextType'),
-            choices: [
-                { name: 'Relative', value: 'relative' },
-                { name: 'Absolute', value: 'absolute' }
-            ]
-        } as ListQuestion,
-
+        getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
+        getBindingContextTypePrompt(t('bindingContextType')),
         getEntityPrompt(t('entity'), projectProvider),
 
         getAnnotationPathQualifierPrompt('lineItemQualifier', t('lineItemQualifier'), projectProvider, [
             UIAnnotationTerms.LineItem
         ]),
         getAggregationPathPrompt(t('aggregation'), fs),
-        {
-            type: 'input',
-            name: 'filterBar',
-            message: t('filterBar')
-        } as InputQuestion,
-
+        getFilterBarIdPrompt(t('filterBar')),
         {
             type: 'list',
             name: 'type',
@@ -259,16 +226,9 @@ export async function getFilterBarBuildingBlockPrompts(
 
     return [
         getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate')),
-
-        {
-            type: 'input',
-            name: 'id',
-            message: t('id.message'),
-            validate: (value: any) => (value ? true : t('id.validation'))
-        },
+        getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
         getAggregationPathPrompt(t('message'), fs),
         getEntityPrompt(t('entity'), projectProvider),
-
         getAnnotationPathQualifierPrompt('selectionFieldQualifier', t('selectionFieldQualifier'), projectProvider, [
             UIAnnotationTerms.SelectionFields
         ]),
