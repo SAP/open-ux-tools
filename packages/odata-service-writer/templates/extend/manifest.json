@@ -8,8 +8,8 @@
                     "annotations": [<%if (locals.annotations && annotations.technicalName) {%>
                         "<%- annotations.name %>"<% if (locals.localAnnotationsName) {%>,<%}%><% } %><% if (locals.localAnnotationsName) { %>
                         "<%- localAnnotationsName %>"<% } %>
-                    ],
-                    "localUri": "localService/metadata.xml"<%if (version === '4') {%>,
+                    ]<% if (locals.metadata) { %>,
+                    "localUri": "localService/metadata.xml" <% } %><%if (version === '4') {%>,
                     "odataVersion": "4.0"<% } %><%if (version === '2') {%>,
                     "odataVersion": "2.0"<% } %>
                 }
