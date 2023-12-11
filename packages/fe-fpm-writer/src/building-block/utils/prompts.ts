@@ -205,9 +205,9 @@ export function getChoices(obj: Record<string, string> | any[]) {
 /**
  * Returns the message property if the error is an instance of `Error` else a string representation of the error.
  *
- * @param {Error | unknown} error  - the error instance
+ * @param {Error} error  - the error instance
  * @returns {string} the error message
  */
-function getErrorMessage(error: Error | unknown): string {
+function getErrorMessage(error: Error): string {
     return error instanceof Error ? error.message : String(error);
 }

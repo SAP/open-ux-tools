@@ -121,7 +121,7 @@ function addAnnotationPathQualifierToResult(
         const annotations = entityType.annotations[namespaceAlias];
         if (annotations) {
             Object.entries(annotations).forEach(([key, value]) => {
-                if (key && key.indexOf(annotationTerm) === 0) {
+                if (key.startsWith(annotationTerm)) {
                     const qualifier = value.qualifier ? '#' + value.qualifier : '';
                     const navPropertyPath = `${navigationPropertyName ? navigationPropertyName + '/' : ''}`;
                     result[`${navPropertyPath}@${namespaceAlias}.${annotationTerm}` + qualifier] =

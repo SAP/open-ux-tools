@@ -4,7 +4,6 @@ import { getStoreForProject } from './memfs';
 import type { Manifest } from '@sap-ux/project-access';
 import { join } from 'path';
 import type File from 'vinyl';
-// import { findFiles } from '@sap-ux/project-access/src/file';
 import { type Editor } from 'mem-fs-editor';
 
 /**
