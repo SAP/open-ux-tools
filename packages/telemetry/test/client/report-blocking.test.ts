@@ -29,7 +29,7 @@ jest.mock('applicationinsights', () => {
             this.trackEvent = (event: EventTelemetry) => trackEventMock(event);
             this.flush = (options: FlushOptions | undefined) => {
                 flushMock(options);
-                if (options && options.callback) {
+                if (options?.callback) {
                     options.callback('testCallbackValue');
                 }
             };

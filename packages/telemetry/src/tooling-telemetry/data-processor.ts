@@ -79,8 +79,8 @@ async function getSbasDevspace(): Promise<string> {
             const response = await axios.get(url);
             if (response.data) {
                 const workspaceConfig = response.data;
-                const devspace = workspaceConfig?.config?.annotations?.pack;
-                return devspace ? devspace : '';
+                // devspace stored in this path
+                return workspaceConfig?.config?.annotations?.pack;
             }
         } catch (error) {
             // handling error
@@ -139,7 +139,8 @@ async function getTemplateType(appPath: string): Promise<string> {
             const lines = readmeContent.split(/\r?\n/);
             for (const line of lines) {
                 // Check if the line matches the pattern |**Template Used**<br>{{TemplateType}}|
-                const match = line.match(/\|\*\*Template Used\*\*<br>(.*?)\|/);
+                const regex = /\|\*\*Template Used\*\*<br>(.*?)\|/;
+                const match = regex.exec(line);
                 if (match && match.length >= 2) {
                     // Extract {{TemplateType}} from the matching pattern
                     templateType = match[1].trim();
@@ -308,7 +309,7 @@ async function getProcessVersions(): Promise<NodeJS.ProcessVersions> {
  * @returns Node.js version
  */
 export function spawnCommand(command: string, commandArgs: string[]): Promise<string> {
-    const spawnOptions = /^win/.test(process.platform)
+    const spawnOptions = process.platform.startsWith('win')
         ? { windowsVerbatimArguments: true, shell: true, cwd: os.homedir() }
         : { cwd: os.homedir() };
 

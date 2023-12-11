@@ -95,6 +95,9 @@ function watchTelemetrySettingStore(storeService: Service<TelemetrySetting, Tele
                 if (watchedSetting) {
                     TelemetrySettings.telemetryEnabled = watchedSetting.enableTelemetry;
                 }
+            })
+            .catch(() => {
+                // Failed to read file changes, nothing can be done here.
             });
     });
 }

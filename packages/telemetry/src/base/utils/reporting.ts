@@ -4,17 +4,18 @@ import { configAzureTelemetryClient } from './azure-client-config';
 import { TelemetrySettings } from '../config-state';
 
 const parseErrorStack = (errorStack: string): string[] => {
-    const regexps = [/sap-ux.+/gi, /[a-zA-Z-]+\/ide-extension\/.+/gi, /(\/telemetry\/.+)/gi];
+    const regexps = [/sap-ux.+/gi, /[a-zA-Z\-]+\/ide-extension\/.+/gi, /(\/telemetry\/.+)/gi];
     const parsedStack: string[] = [];
 
-    const filtered = errorStack.split('\n').filter((line: string) => !!line.match(/^\s*at .*(\S+:\d+|\(native\))/m));
+    const filtered = errorStack.split('\n').filter((line: string) => !!/^\s*at .*(\S+:\d+|\(native\))/m.exec(line));
     if (!filtered.length) {
         return parsedStack;
     }
 
     filtered.forEach((line: string) => {
         let sanitizedLine = line.replace(/^\s+/, '');
-        const location = line.match(/ (\((.+):(\d+):(\d+)\)$)/);
+        const lineRegexp = / (\((.+):(\d+):(\d+)\)$)/;
+        const location = lineRegexp.exec(line);
         if (!location) {
             return;
         }
@@ -22,7 +23,7 @@ const parseErrorStack = (errorStack: string): string[] => {
         let filepath = null;
         const normalizedFilepath = location[2].replace(/\\/g, '/');
         for (const regexp of regexps) {
-            const match = normalizedFilepath.match(regexp);
+            const match = regexp.exec(normalizedFilepath);
             if (match) {
                 filepath = match[0];
                 break;

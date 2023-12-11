@@ -367,10 +367,6 @@ describe('Tools Suite Telemetry Tests', () => {
                 ['./project1/app/freestyle/webapp/manifest.json']: fs.readFileSync(
                     './test/tools-suite-telemetry/test-projects/cap-java-freestyle/app/freestyle/webapp/manifest.json',
                     'utf-8'
-                ),
-                ['./project1/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/package.json',
-                    'utf-8'
                 )
             },
             '/'

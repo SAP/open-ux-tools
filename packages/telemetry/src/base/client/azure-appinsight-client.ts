@@ -32,8 +32,6 @@ class ApplicationInsightClient extends Client {
         this.clients.set(SampleRate.OnePercent, clientOnePercent);
         this.clients.set(SampleRate.TenPercent, clientTenPercent);
         this.clients.set(SampleRate.NoSampling, clientNoSampling);
-
-        return this;
     }
 
     /**
@@ -103,10 +101,9 @@ class ApplicationInsightClient extends Client {
         eventName: EventName,
         properties: { [key: string]: string | boolean },
         measurements: { [key: string]: number },
-        sampleRate: SampleRate | undefined
+        sampleRate = SampleRate.NoSampling
     ): { client: appInsights.TelemetryClient; event: appInsights.Contracts.EventTelemetry } {
-        const processedSampleRate: SampleRate = sampleRate ? sampleRate : SampleRate.NoSampling;
-        const client = this.clients.get(processedSampleRate) as appInsights.TelemetryClient;
+        const client = this.clients.get(sampleRate) as appInsights.TelemetryClient;
 
         const eventHeader: EventHeader = new EventHeader(this.extensionName, eventName);
         const event: appInsights.Contracts.EventTelemetry = {
