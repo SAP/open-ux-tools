@@ -31,7 +31,8 @@
     "watch": "tsc --build ./ -watch"
   },
   "dependencies": {
-    "@sap-ux/odata-annotation-core-types": "workspace:*"
+    "@sap-ux/odata-annotation-core-types": "workspace:*",
+    "@sap-ux/odata-annotation-core": "workspace:*"
   },
   "devDependencies": {
     "axios": "1.6.0",

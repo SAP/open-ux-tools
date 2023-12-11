@@ -24,9 +24,11 @@ import type {
     FullyQualifiedTypeName,
     NameQualifier,
     QualifiedName,
-    NamespaceString
+    NamespaceString,
+    AliasInformation
 } from '@sap-ux/odata-annotation-core-types';
 import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND, PROPERTY_KIND } from '@sap-ux/odata-annotation-core-types';
+import { resolveName, toAliasQualifiedName } from '@sap-ux/odata-annotation-core';
 
 type ElementType = TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue;
 
@@ -43,21 +45,6 @@ export class VocabularyService {
     private readonly derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>;
     public readonly upperCaseNameMap: Map<string, string | Map<string, string>>;
     readonly cdsVocabulary: CdsVocabulary;
-
-    /**
-     *
-     * @param fullyQualifiedName Fully qualified name
-     * @returns Namespace and simple identifier
-     */
-    private resolveName(fullyQualifiedName: FullyQualifiedName): {
-        namespace: NamespaceString;
-        name: SimpleIdentifier;
-    } {
-        const parts = (fullyQualifiedName || '').trim().split('.');
-        const name = parts.pop() ?? '';
-        const namespace = parts.join('.');
-        return { namespace, name };
-    }
 
     /**
      *
@@ -114,7 +101,7 @@ export class VocabularyService {
         };
         if (includeCds) {
             this.dictionary.forEach((item) => {
-                const resolvedName = this.resolveName(item.name);
+                const resolvedName = resolveName(item.name);
                 if (resolvedName.namespace === CDS_VOCABULARY_NAMESPACE) {
                     const name =
                         (item.kind === 'Term' && item.cdsName) ||
@@ -281,7 +268,7 @@ export class VocabularyService {
      * @returns - namespace for a qualified name
      */
     getVocabularyNamespace(name: QualifiedName): NamespaceString | undefined {
-        const resolvedTermNamespace = this.resolveName(name).namespace;
+        const resolvedTermNamespace = resolveName(name).namespace as string;
         const vocabulary = this.getVocabulary(name) ?? this.getVocabulary(resolvedTermNamespace);
         return vocabulary?.namespace;
     }
@@ -375,12 +362,14 @@ export class VocabularyService {
      * @param element element object
      * @param elementType element type object
      * @param experimentalDescription experimental type description
+     * @param aliasInfo - alias information
      * @returns array of markdown lines
      */
     private getElementTypeDescription(
         element: VocabularyObject | ComplexTypeProperty | EnumValue,
         elementType: VocabularyObject | undefined,
-        experimentalDescription: string
+        experimentalDescription: string,
+        aliasInfo?: AliasInformation
     ): MarkdownString[] {
         const values: MarkdownString[] = [];
         if (elementType?.description) {
@@ -401,7 +390,11 @@ export class VocabularyService {
         }
 
         if (element.kind === COMPLEX_TYPE_KIND && element.baseType) {
-            values.push(`**BaseType:** ${element.baseType} \n`);
+            let type = element.baseType;
+            if (aliasInfo) {
+                type = toAliasQualifiedName(element.baseType, aliasInfo);
+            }
+            values.push(`**BaseType:** ${type} \n`);
         }
         return values;
     }
@@ -414,9 +407,14 @@ export class VocabularyService {
      * @param name           - Fully qualified name of the element.
      * @param [propertyName] - Name of a property of the element (in case fName is a complex type and you want to get
      *                         the documentation of the property instead of the properties element)
+     * @param aliasInfo      - Alias information
      * @returns - mark down string.
      */
-    getDocumentation(name: FullyQualifiedName, propertyName?: SimpleIdentifier): MarkdownString[] {
+    getDocumentation(
+        name: FullyQualifiedName,
+        propertyName?: SimpleIdentifier,
+        aliasInfo?: AliasInformation
+    ): MarkdownString[] {
         const values: MarkdownString[] = [];
         const { element, elementType, enumTypeDocumentation } = this.resolveDocumentationElement(name, propertyName);
         if (!element) {
@@ -439,9 +437,9 @@ export class VocabularyService {
         }
         values.push(...this.getElementAppliesToValue(element));
 
-        values.push(...this.getElementKindIsMemberAndTerm(element, elementType));
+        values.push(...this.getElementKindIsMemberAndTerm(element, elementType, aliasInfo));
 
-        values.push(...this.getElementTypeDescription(element, elementType, experimentalDescription));
+        values.push(...this.getElementTypeDescription(element, elementType, experimentalDescription, aliasInfo));
 
         values.push(...this.getElementIsLanguageDependent(element, languageDependentDesc));
 
@@ -459,11 +457,31 @@ export class VocabularyService {
             (element.kind === COMPLEX_TYPE_KIND || element.kind === PROPERTY_KIND || element.kind === TERM_KIND) &&
             element.constraints?.applicableTerms
         ) {
+            let applicableTerms = element.constraints.applicableTerms;
+            if (aliasInfo) {
+                applicableTerms = this.replaceFQNameWithAlias(applicableTerms, aliasInfo);
+            }
             // In Markdown you need to append \n\n for opening a new paragraph, and two spaces + '\n` for new line
-            values.push(`**Applicable Terms:**  \n ${element.constraints.applicableTerms.join('  \n')} \n`);
+            values.push(`**Applicable Terms:**  \n ${applicableTerms.join('  \n')} \n`);
         }
 
         return values;
+    }
+
+    /**
+     * Replace fully qualified Name With Alias.
+     *
+     * @param fqNames - fully qualified name
+     * @param aliasInfo - alias information
+     * @returns - qualified name with alias
+     */
+    replaceFQNameWithAlias(fqNames: FullyQualifiedName[], aliasInfo: AliasInformation): QualifiedName[] {
+        const qNameWithAlias: QualifiedName[] = [];
+        fqNames.forEach((fqName) => {
+            const qName = toAliasQualifiedName(fqName, aliasInfo);
+            qNameWithAlias.push(qName);
+        });
+        return qNameWithAlias;
     }
 
     /**
@@ -519,12 +537,17 @@ export class VocabularyService {
      *
      * @param element  - element and element type
      * @param elementType - element type
+     * @param aliasInfo - alias information
      * @returns - values
      */
-    getElementKindIsMemberAndTerm(element: ElementType, elementType: VocabularyObject | undefined): MarkdownString[] {
+    getElementKindIsMemberAndTerm(
+        element: ElementType,
+        elementType: VocabularyObject | undefined,
+        aliasInfo?: AliasInformation
+    ): MarkdownString[] {
         const values: MarkdownString[] = [];
         if (element.kind !== 'Member' && elementType?.kind !== 'Term') {
-            values.push(this.getFormattedTypeText(element, elementType));
+            values.push(this.getFormattedTypeText(element, elementType, aliasInfo));
             if (element.kind === 'Property' && element.constraints?.derivedTypeConstraints) {
                 values.push(`**Derived type(s):** ${element.constraints.derivedTypeConstraints.join(', ')} \n`);
             }
@@ -667,15 +690,20 @@ export class VocabularyService {
      *
      * @param element Vocabulary object
      * @param elementType Vocabulary type object
+     * @param aliasInfo - alias information
      * @returns - element type
      */
     private getFormattedTypeText(
         element: VocabularyObject | ComplexTypeProperty,
-        elementType?: VocabularyType
+        elementType?: VocabularyType,
+        aliasInfo?: AliasInformation
     ): string {
         let sResultText = '';
         if (element.kind === TERM_KIND || element.kind === 'Property') {
-            const type = element.isCollection && element.type ? `Collection(${element.type}) \n` : element.type;
+            let type = element.isCollection && element.type ? `Collection(${element.type}) \n` : element.type;
+            if (aliasInfo) {
+                type = toAliasQualifiedName(type, aliasInfo);
+            }
             if (elementType?.experimental) {
                 sResultText = `**Type:** ${type}(**experimental**) \n`;
             } else if (elementType?.deprecated) {
