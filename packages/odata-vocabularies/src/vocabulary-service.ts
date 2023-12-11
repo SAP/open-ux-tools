@@ -16,7 +16,7 @@ import type {
 import { TermApplicability, CDS_VOCABULARY_NAMESPACE, CDS_VOCABULARY_ALIAS } from './types/vocabulary-service';
 import { loadVocabulariesInformation } from './loader';
 import type { VocabularyNamespace, VocabularyAlias } from './resources';
-import vocabularies, { NAMESPACE_TO_ALIAS } from './resources';
+import { NAMESPACE_TO_ALIAS } from './resources';
 import type {
     TargetKind,
     FullyQualifiedName,
