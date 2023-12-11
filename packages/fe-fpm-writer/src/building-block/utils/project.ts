@@ -47,7 +47,7 @@ class ProjectProvider {
             throw new Error("Couldn't find the mainService");
         }
         const metadataFileUri = mainService.settings?.localUri ?? '';
-        this.metadataFile = this.getFileByName(metadataFileUri).path;
+        this.metadataFile = this.getFileByName(join(metadataFileUri)).path;
         mainService.settings?.annotations?.forEach((dataSourceKey) => {
             const uri = dataSources?.[dataSourceKey].settings?.localUri;
             if (uri) {
