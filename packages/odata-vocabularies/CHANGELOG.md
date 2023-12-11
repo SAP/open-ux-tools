@@ -1,5 +1,36 @@
 # @sap-ux/odata-vocabularies
 
+## 0.1.6
+
+### Patch Changes
+
+-   Updated dependencies [807e2857]
+    -   @sap-ux/odata-annotation-core-types@0.1.3
+
+## 0.1.5
+
+### Patch Changes
+
+-   1df7493f: fix: enable and fill applicableterms
+
+## 0.1.4
+
+### Patch Changes
+
+-   89a1bf27: fix: change access type of uppercaseNameMap prop
+
+## 0.1.3
+
+### Patch Changes
+
+-   fd883c14: fix: enable uppercaseNameMap property in vocabulary service
+
+## 0.1.2
+
+### Patch Changes
+
+-   860a43a6: fix: update tesconfig to generate correct files order in dist
+
 ## 0.1.1
 
 ### Patch Changes

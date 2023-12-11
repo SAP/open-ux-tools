@@ -1,5 +1,33 @@
 # @sap-ux/ui-components
 
+## 1.13.5
+
+### Patch Changes
+
+-   4f792c88: - add `ValidateInfo` icon
+    -   add `ValidateError` icon
+    -   add `ValidateWarning` icon
+
+## 1.13.4
+
+### Patch Changes
+
+-   e47492f0: Reusable css variables and classes for common box shadows.
+    Variables - `--ui-box-shadow-small`, `--ui-box-shadow-medium`, `--ui-box-shadow-large`.
+    Classes - `ui-box-shadow-small `, `ui-box-shadow-medium`, `ui-box-shadow-large`.
+
+## 1.13.3
+
+### Patch Changes
+
+-   3473d4b0: UIFlexibleTable. New property "isTouchDragDisabled" which allows to disable drag/reordering of table rows where drag is initalized by touch events
+
+## 1.13.2
+
+### Patch Changes
+
+-   f1221f2b: fix: UIContextualMenu. Border bottom is cut for UIContextualMenu in some zoom levels
+
 ## 1.13.1
 
 ### Patch Changes

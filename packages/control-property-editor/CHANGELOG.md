@@ -1,5 +1,23 @@
 # @sap-ux/control-property-editor
 
+## 0.4.5
+
+### Patch Changes
+
+-   b4081d0a: Show warning message for adaptation project if ui5 version is less than 1.71
+
+## 0.4.4
+
+### Patch Changes
+
+-   a280785d: Fix for showing redundant warning dialog in CPE for adaptation projects
+
+## 0.4.3
+
+### Patch Changes
+
+-   b7b3a0c3: keyboard support for theme selector callout
+
 ## 0.4.2
 
 ### Patch Changes

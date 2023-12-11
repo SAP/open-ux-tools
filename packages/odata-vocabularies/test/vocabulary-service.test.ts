@@ -1,4 +1,4 @@
-import { ENTITY_TYPE_KIND, PROPERTY_KIND, COLLECTION_KIND, ENTITY_SET_KIND } from '../src/types/base-types';
+import { ENTITY_TYPE_KIND, PROPERTY_KIND, COLLECTION_KIND, ENTITY_SET_KIND } from '@sap-ux/odata-annotation-core-types';
 import { TermApplicability } from '../src/types/vocabulary-service';
 import { VocabularyService } from '../src/vocabulary-service';
 declare const expect: jest.Expect;
@@ -413,6 +413,24 @@ describe('getComplexTypeProperty()', () => {
                         as the one being visualized according to the \`UI.Chart\` annotation, the annotation path MUST be silently ignored.",
               "name": "DynamicMeasures",
               "type": "Edm.AnnotationPath",
+            }
+        `);
+    });
+
+    it('UI.DataFieldWithUrl/URL (with Applicable Terms)', () => {
+        // Expect
+        expect(vocabularyService.getComplexTypeProperty(namespace + '.DataFieldWithUrl', 'Url')).toMatchInlineSnapshot(`
+            Object {
+              "constraints": Object {
+                "applicableTerms": Array [
+                  "com.sap.vocabularies.HTML5.v1.LinkTarget",
+                ],
+              },
+              "description": "Target of the hyperlink",
+              "isCollection": false,
+              "kind": "Property",
+              "name": "Url",
+              "type": "Edm.String",
             }
         `);
     });

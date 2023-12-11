@@ -18,15 +18,15 @@ import { loadVocabulariesInformation } from './loader';
 import type { VocabularyNamespace, VocabularyAlias } from './resources';
 import { NAMESPACE_TO_ALIAS } from './resources';
 import type {
-    Namespace,
     TargetKind,
     FullyQualifiedName,
     SimpleIdentifier,
     FullyQualifiedTypeName,
     NameQualifier,
-    QualifiedName
-} from './types';
-import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND } from './types';
+    QualifiedName,
+    NamespaceString
+} from '@sap-ux/odata-annotation-core-types';
+import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND } from '@sap-ux/odata-annotation-core-types';
 
 type ElementType = TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue;
 
@@ -41,6 +41,7 @@ export class VocabularyService {
     private readonly supportedVocabularies: Map<VocabularyNamespace, Vocabulary>;
     private readonly namespaceByDefaultAlias: Map<SimpleIdentifier, VocabularyNamespace>;
     private readonly derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>;
+    public readonly upperCaseNameMap: Map<string, string | Map<string, string>>;
     readonly cdsVocabulary: CdsVocabulary;
 
     /**
@@ -48,7 +49,10 @@ export class VocabularyService {
      * @param fullyQualifiedName Fully qualified name
      * @returns Namespace and simple identifier
      */
-    private resolveName(fullyQualifiedName: FullyQualifiedName): { namespace: Namespace; name: SimpleIdentifier } {
+    private resolveName(fullyQualifiedName: FullyQualifiedName): {
+        namespace: NamespaceString;
+        name: SimpleIdentifier;
+    } {
         const parts = (fullyQualifiedName || '').trim().split('.');
         const name = parts.pop() ?? '';
         const namespace = parts.join('.');
@@ -98,6 +102,7 @@ export class VocabularyService {
         this.supportedVocabularies = vocabularyInformation.supportedVocabularies;
         this.namespaceByDefaultAlias = vocabularyInformation.namespaceByDefaultAlias;
         this.derivedTypesPerType = vocabularyInformation.derivedTypesPerType;
+        this.upperCaseNameMap = vocabularyInformation.upperCaseNameMap;
         // TODO this should be filled by information coming from the CDS vocabulary file
         this.cdsVocabulary = {
             namespace: CDS_VOCABULARY_NAMESPACE,
@@ -265,7 +270,7 @@ export class VocabularyService {
      *
      * @returns - map of vocabularies
      */
-    getVocabularies(): Map<Namespace, Vocabulary> {
+    getVocabularies(): Map<NamespaceString, Vocabulary> {
         return this.supportedVocabularies;
     }
 
@@ -275,7 +280,7 @@ export class VocabularyService {
      * @param name - Qualified name, i.e. <Namespace|Alias>.<Name>
      * @returns - namespace for a qualified name
      */
-    getVocabularyNamespace(name: QualifiedName): Namespace | undefined {
+    getVocabularyNamespace(name: QualifiedName): NamespaceString | undefined {
         const resolvedTermNamespace = this.resolveName(name).namespace;
         const vocabulary = this.getVocabulary(name) ?? this.getVocabulary(resolvedTermNamespace);
         return vocabulary?.namespace;

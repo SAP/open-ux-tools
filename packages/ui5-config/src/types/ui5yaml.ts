@@ -3,13 +3,13 @@ export interface CustomItem<C> {
     configuration: C;
 }
 
-export interface CustomMiddleware<C> extends CustomItem<C> {
+export interface CustomMiddleware<C = unknown> extends CustomItem<C> {
     beforeMiddleware?: string;
     afterMiddleware?: string;
     mountPath?: string;
 }
 
-export interface CustomTask<C> extends CustomItem<C> {
+export interface CustomTask<C = unknown> extends CustomItem<C> {
     beforeTask?: string;
     afterTask?: string;
 }
