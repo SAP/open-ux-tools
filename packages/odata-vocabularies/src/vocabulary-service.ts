@@ -16,7 +16,7 @@ import type {
 import { TermApplicability, CDS_VOCABULARY_NAMESPACE, CDS_VOCABULARY_ALIAS } from './types/vocabulary-service';
 import { loadVocabulariesInformation } from './loader';
 import type { VocabularyNamespace, VocabularyAlias } from './resources';
-import vocabularies, { NAMESPACE_TO_ALIAS } from './resources';
+import { NAMESPACE_TO_ALIAS } from './resources';
 import type {
     TargetKind,
     FullyQualifiedName,
@@ -28,7 +28,6 @@ import type {
     AliasInformation
 } from '@sap-ux/odata-annotation-core-types';
 import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND, PROPERTY_KIND } from '@sap-ux/odata-annotation-core-types';
-
 type ElementType = TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue;
 
 /**
@@ -71,7 +70,7 @@ export class VocabularyService {
     private toAliasQualifiedName(qualifiedName: QualifiedName, aliasInfo: AliasInformation): string {
         const resolvedName = this.resolveName(qualifiedName);
         const alias = resolvedName.namespace ? aliasInfo.reverseAliasMap[resolvedName.namespace] : undefined;
-        let aliasQualifiedName = alias ? `${alias}.${resolvedName.name}` : qualifiedName;
+        const aliasQualifiedName = alias ? `${alias}.${resolvedName.name}` : qualifiedName;
         return aliasQualifiedName;
     }
 
