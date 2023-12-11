@@ -1059,9 +1059,6 @@ importers:
 
   packages/odata-vocabularies:
     dependencies:
-      '@sap-ux/odata-annotation-core':
-        specifier: workspace:*
-        version: link:../odata-annotation-core
       '@sap-ux/odata-annotation-core-types':
         specifier: workspace:*
         version: link:../odata-annotation-core-types
