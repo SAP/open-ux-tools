@@ -4,8 +4,7 @@
     "exclude": ["sample"],
     "compilerOptions": {
         "outDir": "dist",
-        "rootDir": "src",
-        "moduleResolution": "Node16"
+        "rootDir": "src"
     },
     "references": [
         {

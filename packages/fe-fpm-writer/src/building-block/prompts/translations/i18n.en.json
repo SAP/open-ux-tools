@@ -5,7 +5,8 @@
                 "message": "Select a building block",
                 "choices": {
                     "chart": "Chart",
-                    "filterBar": "Filter Bar"
+                    "filterBar": "Filter Bar",
+                    "table": "Table"
                 }
             }
         },
@@ -14,16 +15,16 @@
                 "message": "Enter an ID for the chart building block",
                 "validation": "An ID is required to generate the chart building block"
             },
-            "aggregation": "Aggregation Path",
-            "entity": "Entity Type",
+            "aggregation": "Select the Aggregation Path",
+            "entity": "Select the Entity Type",
             "viewOrFragmentFile": {
-                "message": "View or Fragment file name",
-                "validation": "An View or Fragment is required to generate the chart building block"
+                "message": "Select a View or Fragment file name",
+                "validation": "A View or Fragment is required to generate the chart building block"
             },
             "contextPath": "Enter the context path used in the page",
             "metaPath": "Enter the relative path of the property in the meta model",
             "filterBar": "Enter the ID of the filter bar building block associated with the chart",
-            "bindingContextType": "Binding Context Path Type",
+            "bindingContextType": "Select a Binding Context Path Type",
             "personalization": {
                 "message": "Select chart personalization",
                 "choices": {
@@ -40,7 +41,7 @@
                 }
             },
             "selectionChange": "Enter a function to be called when the selection has changed",
-            "chartQualifier": "Chart Qualifier",
+            "chartQualifier": "Select the Chart Qualifier"
         },
         "filterBar": {
             "id": {
@@ -49,14 +50,58 @@
             },
             "viewOrFragmentFile": {
                 "message": "View or Fragment file name",
-                "validation": "An View or Fragment is required to generate the filterbar building block"
+                "validation": "A View or Fragment is required to generate the filterbar building block"
             },
             "entity": "Entity Type",
             "metaPath": "Enter the relative path of the property in the meta model",
             "filterChanged": "Enter a function to be called when the filter value has changed",
             "search": "Enter a function to be called when the go button is pressed",
-            "selectionFieldQualifier": "Selection Fields Qualifier",
-            "aggregation": "Aggregation Path"
+            "selectionFieldQualifier": "Select the Selection Fields Qualifier",
+            "aggregation": "Select the Aggregation Path"
+        },
+        "table": {
+            "viewOrFragmentFile": {
+                "message": "Select a View or Fragment file name",
+                "validation": "A View or Fragment is required to generate the table building block"
+            },
+            "id": {
+                "message": "Enter an ID for the table building block",
+                "validation": "An ID is required to generate the filter bar building block"
+            },
+            "bindingContextType": "Select the Binding Context Path Type",
+            "entity": "Entity Type",
+            "lineItemQualifier": "Select the Line Item Qualifier",
+            "aggregation": "Select the Aggregation Path",
+            "filterBar": "Enter the ID of the filter bar building block associated with the table",
+            "tableType": {
+                "message": "Table Type"
+            },
+            "selectionMode": {
+                "message": "Select a Selection Mode",
+                "choices": {
+                    "multiple": "Multiple",
+                    "single": "Single",
+                    "auto": "Auto",
+                    "none": "None"
+                }
+            },
+            "displayHeader": "Display Header",
+            "tableHeaderText": "Enter a Table Header Text",
+            "personalization": {
+                "message": "Table Personalization",
+                "choices": {
+                    "Sort": "Sort",
+                    "Column": "Column",
+                    "Filter": "Filter"
+                }
+            },
+            "tableVariantManagement": "Select a Table Variant Management",
+            "readOnlyMode": "Enable Read Only Mode",
+            "autoColumnWidth": "Enable Auto Column Width",
+            "dataExport": "Enable Data Export",
+            "fullScreenMode": "Enable Full Screen Mode",
+            "pasteFromClipboard": "Enable Paste From Clipboard",
+            "tableSearchableToggle": "Table Searchable Toggle"
         }
     }
 }

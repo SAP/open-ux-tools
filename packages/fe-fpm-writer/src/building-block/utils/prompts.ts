@@ -1,5 +1,144 @@
+import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
+import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { DOMParser } from '@xmldom/xmldom';
+import type { ListQuestion } from 'inquirer';
 import type { Editor } from 'mem-fs-editor';
+import { relative } from 'path';
+import type ProjectProvider from './project';
+import { getAnnotationPathQualifiers, getEntityTypes } from './service';
+
+/**
+ * Returns a Prompt to choose a boolean value.
+ *
+ * @param name
+ * @param message
+ * @returns a boolean prompt
+ */
+export function getBooleanPrompt(name: string, message: string): ListQuestion {
+    return {
+        type: 'list',
+        name,
+        message,
+        choices: [
+            { name: 'False', value: false },
+            { name: 'True', value: true }
+        ]
+    } as ListQuestion;
+}
+
+/**
+ * Returns the prompt for choosing the existing annotation term.
+ *
+ * @param name
+ * @param message
+ * @param projectProvider
+ * @param annotationTerm
+ * @returns prompt for choosing the annotation term
+ */
+export function getAnnotationPathQualifierPrompt(
+    name: string,
+    message: string,
+    projectProvider: ProjectProvider,
+    annotationTerm: UIAnnotationTerms[]
+): ListQuestion {
+    return {
+        type: 'list',
+        name,
+        message,
+        choices: async (answers) => {
+            const { entity } = answers;
+            const choices = getChoices(
+                await getAnnotationPathQualifiers(projectProvider, entity, annotationTerm, true)
+            );
+            if (!choices.length) {
+                throw new Error(
+                    `Couldn't find any existing annotations for term ${annotationTerm.join(
+                        ','
+                    )}. Please add ${annotationTerm.join(',')} annotation/s`
+                );
+            }
+            return choices;
+        }
+    } as ListQuestion;
+}
+/**
+ * Returns the prompt for choosing a View or a Fragment file.
+ *
+ * @param fs
+ * @param basePath
+ * @param message
+ * @param validationErrorMessage
+ * @returns a prompt
+ */
+export function getViewOrFragmentFilePrompt(
+    fs: Editor,
+    basePath: string,
+    message: string,
+    validationErrorMessage: string
+): ListQuestion {
+    return {
+        type: 'list',
+        name: 'viewOrFragmentFile',
+        message,
+        choices: async () => {
+            const files = await findFilesByExtension(
+                '.xml',
+                basePath,
+                ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
+                fs
+            );
+            return files.map((file) => ({
+                name: relative(basePath, file),
+                value: file
+            }));
+        },
+        validate: (value: string) => (value ? true : validationErrorMessage)
+    } as ListQuestion;
+}
+
+/**
+ * Returns a Prompt for choosing an entity.
+ *
+ * @param message
+ * @param projectProvider
+ * @returns entity question
+ */
+export function getEntityPrompt(message: string, projectProvider: ProjectProvider): ListQuestion {
+    return {
+        type: 'list',
+        name: 'entity',
+        message,
+        choices: async () => {
+            const choices = getChoices((await getEntityTypes(projectProvider)).map((e) => e.fullyQualifiedName));
+            if (!choices.length) {
+                throw new Error('Failed while fetching the entities');
+            }
+            return choices;
+        }
+    } as ListQuestion;
+}
+/**
+ * Return a Prompt for choosing the aggregation path.
+ *
+ * @param message
+ * @param fs
+ * @returns
+ */
+export function getAggregationPathPrompt(message: string, fs: Editor): ListQuestion {
+    return {
+        type: 'list',
+        name: 'aggregationPath',
+        message,
+        choices: (answers: any) => {
+            const { viewOrFragmentFile } = answers;
+            const choices = getChoices(getXPathStringsForXmlFile(viewOrFragmentFile, fs));
+            if (!choices.length) {
+                throw new Error('Failed while fetching the aggregation path.');
+            }
+            return choices;
+        }
+    } as ListQuestion;
+}
 
 /**
  * Converts the provided xpath string from `/mvc:View/Page/content` to
@@ -23,7 +162,7 @@ export const augmentXpathWithLocalNames = (path: string): string => {
  * @param fs
  * @returns {Record<string, string>} the list of xpath strings
  */
-export const getXPathStringsForXmlFile = (xmlFilePath: string, fs: Editor): Record<string, string> => {
+export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Record<string, string> {
     const result: Record<string, string> = {};
     try {
         const xmlContent = fs.read(xmlFilePath);
@@ -49,7 +188,7 @@ export const getXPathStringsForXmlFile = (xmlFilePath: string, fs: Editor): Reco
         throw new Error(`An error occurred while parsing the view or fragment xml. Details: ${getErrorMessage(error)}`);
     }
     return result;
-};
+}
 
 /**
  *

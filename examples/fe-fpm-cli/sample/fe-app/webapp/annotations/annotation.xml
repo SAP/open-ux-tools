@@ -15,6 +15,12 @@
         <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local">
             <Annotations Target="C_CUSTOMER_OP_SRV.C_CustomerOPType">
 
+               
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <PropertyPath>Dummy</PropertyPath>
+                    </Collection>
+                </Annotation>
                 <Annotation Term="UI.SelectionFields">
                     <Collection>
                         <PropertyPath>Dummy</PropertyPath>

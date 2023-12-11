@@ -28,7 +28,8 @@ export {
     FilterBarPromptsAnswer,
     getBuildingBlockTypePrompts,
     getChartBuildingBlockPrompts,
-    getFilterBarBuildingBlockPrompts
+    getFilterBarBuildingBlockPrompts,
+    getTableBuildingBlockPrompts
 } from './building-block/prompts';
 
 export { ControllerExtension, ControllerExtensionPageType } from './controller-extension/types';

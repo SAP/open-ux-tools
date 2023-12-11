@@ -1,14 +1,18 @@
-import type { Editor } from 'mem-fs-editor';
-import { translate, i18nNamespaces, initI18n } from '../../i18n';
-import type { Chart, FilterBar } from '../types';
-import { BuildingBlockType } from '../types';
-import type { Answers, CheckboxQuestion, InputQuestion, ListQuestion, Question } from 'inquirer';
-import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
-import { relative } from 'path';
-import { getChoices, getXPathStringsForXmlFile } from '../utils/prompts';
-import { getAnnotationPathQualifiers, getEntityTypes } from '../utils/service';
-import ProjectProvider from '../utils/project';
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
+import type { TFunction } from 'i18next';
+import type { Answers, CheckboxQuestion, InputQuestion, ListQuestion, Question } from 'inquirer';
+import type { Editor } from 'mem-fs-editor';
+import { i18nNamespaces, initI18n, translate } from '../../i18n';
+import type { Chart, FilterBar, Table } from '../types';
+import { BuildingBlockType } from '../types';
+import ProjectProvider from '../utils/project';
+import {
+    getAggregationPathPrompt,
+    getAnnotationPathQualifierPrompt,
+    getBooleanPrompt,
+    getEntityPrompt,
+    getViewOrFragmentFilePrompt
+} from '../utils/prompts';
 
 export interface BuildingBlockTypePromptsAnswer extends Answers {
     buildingBlockType: BuildingBlockType;
@@ -29,7 +33,8 @@ export async function getBuildingBlockTypePrompts(): Promise<Question<BuildingBl
             message: t('buildingBlockType.message'),
             choices: [
                 { name: t('buildingBlockType.choices.chart'), value: BuildingBlockType.Chart },
-                { name: t('buildingBlockType.choices.filterBar'), value: BuildingBlockType.FilterBar }
+                { name: t('buildingBlockType.choices.filterBar'), value: BuildingBlockType.FilterBar },
+                { name: t('buildingBlockType.choices.table'), value: BuildingBlockType.Table }
             ]
         } as ListQuestion
     ];
@@ -59,27 +64,10 @@ export async function getChartBuildingBlockPrompts(
     fs: Editor
 ): Promise<Question<ChartPromptsAnswer>[]> {
     await initI18n();
-    const t = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
+    const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
     const projectProvider = await ProjectProvider.createProject(basePath, fs);
     return [
-        {
-            type: 'list',
-            name: 'viewOrFragmentFile',
-            message: t('viewOrFragmentFile.message'),
-            choices: async () => {
-                const files = await findFilesByExtension(
-                    '.xml',
-                    basePath,
-                    ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
-                    fs
-                );
-                return files.map((file) => ({
-                    name: relative(basePath, file),
-                    value: file
-                }));
-            },
-            validate: (value: string) => (value ? true : t('viewOrFragmentFile.validation'))
-        } as ListQuestion,
+        getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate')),
         {
             type: 'input',
             name: 'id',
@@ -125,46 +113,126 @@ export async function getChartBuildingBlockPrompts(
             name: 'selectionChange',
             message: t('selectionChange')
         } as InputQuestion,
+        getAggregationPathPrompt(t('aggregation'), fs),
+        getEntityPrompt(t('entity'), projectProvider),
+        getAnnotationPathQualifierPrompt('chartQualifier', t('chartQualifier'), projectProvider, [
+            UIAnnotationTerms.Chart
+        ])
+    ];
+}
+
+export interface TablePromptsAnswer extends Table, Answers {
+    viewOrFragmentFile: string;
+    aggregationPath: string;
+    id: string;
+    entity: string;
+    filterBar: string;
+    selectionChange: string;
+    bindingContextType: 'relative' | 'absolute';
+    lineItemQualifier: string;
+    type: 'ResponsiveTable' | 'GridTable';
+    displayHeader: boolean;
+    tableHeaderText: string;
+}
+
+/**
+ * Returns a list of prompts required to generate a table building block.
+ *
+ * @param {string} basePath the base path
+ * @param {Editor} fs the memfs editor instance
+ * @returns {Promise<PromptObject<keyof ChartPromptsAnswer>[]>}
+ */
+export async function getTableBuildingBlockPrompts(
+    basePath: string,
+    fs: Editor
+): Promise<Question<TablePromptsAnswer>[]> {
+    await initI18n();
+    const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.table.');
+    const projectProvider = await ProjectProvider.createProject(basePath, fs);
+    return [
+        getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate')),
+        {
+            type: 'input',
+            name: 'id',
+            message: t('id.message'),
+            validate: (value: any) => (value ? true : t('id.validation'))
+        } as InputQuestion,
         {
             type: 'list',
-            name: 'aggregationPath',
-            message: t('aggregation'),
-            choices: (answers: any) => {
-                const { viewOrFragmentFile } = answers;
-                const choices = getChoices(getXPathStringsForXmlFile(viewOrFragmentFile, fs));
-                if (!choices) {
-                    throw new Error('Failed while fetching the aggregation path.');
-                }
-                return choices;
-            }
+            name: 'bindingContextType',
+            message: t('bindingContextType'),
+            choices: [
+                { name: 'Relative', value: 'relative' },
+                { name: 'Absolute', value: 'absolute' }
+            ]
+        } as ListQuestion,
+
+        getEntityPrompt(t('entity'), projectProvider),
+
+        getAnnotationPathQualifierPrompt('lineItemQualifier', t('lineItemQualifier'), projectProvider, [
+            UIAnnotationTerms.LineItem
+        ]),
+        getAggregationPathPrompt(t('aggregation'), fs),
+        {
+            type: 'input',
+            name: 'filterBar',
+            message: t('filterBar')
+        } as InputQuestion,
+
+        {
+            type: 'list',
+            name: 'type',
+            message: t('tableType.message'),
+            choices: [
+                // ResponsiveTable | GridTable
+                { name: 'Responsive Table', value: 'ResponsiveTable' },
+                { name: 'Grid Table', value: 'GridTable' }
+            ]
         } as ListQuestion,
         {
             type: 'list',
-            name: 'entity',
-            message: t('entity'),
-            choices: async () => {
-                const choices = getChoices((await getEntityTypes(projectProvider)).map((e) => e.fullyQualifiedName));
-                if (!choices) {
-                    throw new Error('Failed while fetching the entities');
-                }
-                return choices;
-            }
+            name: 'selectionMode',
+            message: t('selectionMode.message'),
+            choices: [
+                // None, Single, Multi or Auto
+                { name: t('selectionMode.choices.single'), value: 'Single' },
+                { name: t('selectionMode.choices.multiple'), value: 'Multi' },
+                { name: t('selectionMode.choices.auto'), value: 'Auto' },
+                { name: t('selectionMode.choices.none'), value: 'None' }
+            ]
         } as ListQuestion,
+        getBooleanPrompt('displayHeader', t('displayHeader')),
+        {
+            type: 'input',
+            name: 'header',
+            message: t('tableHeaderText')
+        } as InputQuestion,
+        {
+            type: 'checkbox',
+            name: 'personalization',
+            message: t('personalization.message'),
+            choices: [
+                { name: t('personalization.choices.Sort'), value: 'Sort' },
+                { name: t('personalization.choices.Column'), value: 'Column' },
+                { name: t('personalization.choices.Filter'), value: 'Filter' }
+            ]
+        } as CheckboxQuestion,
         {
             type: 'list',
-            name: 'chartQualifier',
-            message: t('chartQualifier'),
-            choices: async (answers) => {
-                const { entity } = answers;
-                const choices = getChoices(
-                    await getAnnotationPathQualifiers(projectProvider, entity, [UIAnnotationTerms.Chart], true)
-                );
-                if (!choices) {
-                    throw new Error("Couldn't find any UI.Chart annoatations");
-                }
-                return choices;
-            }
-        } as ListQuestion
+            name: 'variantManagement',
+            message: t('tableVariantManagement'),
+            choices: [
+                { name: 'Page', value: 'Page' },
+                { name: 'Control', value: 'Control' },
+                { name: 'None', value: 'None' }
+            ]
+        } as ListQuestion,
+        getBooleanPrompt('readOnly', t('readOnlyMode')),
+        getBooleanPrompt('enableAutoColumnWidth', t('autoColumnWidth')),
+        getBooleanPrompt('enableExport', t('dataExport')),
+        getBooleanPrompt('enableFullScreen', t('fullScreenMode')),
+        getBooleanPrompt('enablePaste', t('pasteFromClipboard')),
+        getBooleanPrompt('isSearchable', t('tableSearchableToggle'))
     ];
 }
 
@@ -190,24 +258,7 @@ export async function getFilterBarBuildingBlockPrompts(
     const projectProvider = await ProjectProvider.createProject(basePath, fs);
 
     return [
-        {
-            type: 'list',
-            name: 'viewOrFragmentFile',
-            message: t('viewOrFragmentFile.message'),
-            choices: async () => {
-                const files = await findFilesByExtension(
-                    '.xml',
-                    basePath,
-                    ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
-                    fs
-                );
-                return files.map((file) => ({
-                    name: relative(basePath, file),
-                    value: file
-                }));
-            },
-            validate: (value: string) => (value ? true : t('viewOrFragmentFile.validation'))
-        } as ListQuestion,
+        getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate')),
 
         {
             type: 'input',
@@ -215,51 +266,12 @@ export async function getFilterBarBuildingBlockPrompts(
             message: t('id.message'),
             validate: (value: any) => (value ? true : t('id.validation'))
         },
-        {
-            type: 'list',
-            name: 'aggregationPath',
-            message: t('aggregation'),
-            choices: (answers: any) => {
-                const { viewOrFragmentFile } = answers;
-                const choices = getChoices(getXPathStringsForXmlFile(viewOrFragmentFile, fs));
-                if (!choices) {
-                    throw new Error('Failed while fetching the aggregation path.');
-                }
-                return choices;
-            }
-        } as ListQuestion,
-        {
-            type: 'list',
-            name: 'entity',
-            message: t('entity'),
-            choices: async () => {
-                const choices = getChoices((await getEntityTypes(projectProvider)).map((e) => e.fullyQualifiedName));
-                if (!choices) {
-                    throw new Error('Failed while fetching the entities');
-                }
-                return choices;
-            }
-        } as ListQuestion,
-        {
-            type: 'list',
-            name: 'selectionFieldQualifier',
-            message: t('selectionFieldQualifier'),
-            choices: async (answers) => {
-                const { entity } = answers;
-                const choices = getChoices(
-                    await getAnnotationPathQualifiers(
-                        projectProvider,
-                        entity,
-                        [UIAnnotationTerms.SelectionFields],
-                        true
-                    )
-                );
-                if (!choices.length) {
-                    throw new Error("Couldn't find the SelectionField annotation");
-                }
-                return choices;
-            }
-        } as ListQuestion,
+        getAggregationPathPrompt(t('message'), fs),
+        getEntityPrompt(t('entity'), projectProvider),
+
+        getAnnotationPathQualifierPrompt('selectionFieldQualifier', t('selectionFieldQualifier'), projectProvider, [
+            UIAnnotationTerms.SelectionFields
+        ]),
         {
             type: 'input',
             name: 'filterChanged',
