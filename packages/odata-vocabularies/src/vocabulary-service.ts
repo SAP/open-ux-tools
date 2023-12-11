@@ -28,7 +28,6 @@ import type {
     AliasInformation
 } from '@sap-ux/odata-annotation-core-types';
 import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND, PROPERTY_KIND } from '@sap-ux/odata-annotation-core-types';
-import { resolveName, toAliasQualifiedName } from '@sap-ux/odata-annotation-core';
 
 type ElementType = TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue;
 
@@ -45,6 +44,36 @@ export class VocabularyService {
     private readonly derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>;
     public readonly upperCaseNameMap: Map<string, string | Map<string, string>>;
     readonly cdsVocabulary: CdsVocabulary;
+
+    /**
+     *
+     * @param fullyQualifiedName Fully qualified name
+     * @returns Namespace and simple identifier
+     */
+    private resolveName(fullyQualifiedName: FullyQualifiedName): {
+        namespace: NamespaceString;
+        name: SimpleIdentifier;
+    } {
+        const parts = (fullyQualifiedName || '').trim().split('.');
+        const name = parts.pop() ?? '';
+        const namespace = parts.join('.');
+        return { namespace, name };
+    }
+
+    /**
+     * Get alias qualified name.
+     * If no matching alias is found, then uses the parameter itself.
+     *
+     * @param qualifiedName Identifier in <Namespace|Alias>.<Name>  format
+     * @param aliasInfo alias information
+     * @returns qualified name.
+     */
+    private toAliasQualifiedName(qualifiedName: QualifiedName, aliasInfo: AliasInformation): string {
+        const resolvedName = this.resolveName(qualifiedName);
+        const alias = resolvedName.namespace ? aliasInfo.reverseAliasMap[resolvedName.namespace] : undefined;
+        let aliasQualifiedName = alias ? `${alias}.${resolvedName.name}` : qualifiedName;
+        return aliasQualifiedName;
+    }
 
     /**
      *
@@ -101,7 +130,7 @@ export class VocabularyService {
         };
         if (includeCds) {
             this.dictionary.forEach((item) => {
-                const resolvedName = resolveName(item.name);
+                const resolvedName = this.resolveName(item.name);
                 if (resolvedName.namespace === CDS_VOCABULARY_NAMESPACE) {
                     const name =
                         (item.kind === 'Term' && item.cdsName) ||
@@ -273,7 +302,7 @@ export class VocabularyService {
             return vocabulary.namespace;
         }
 
-        const resolvedTermNamespace = resolveName(name).namespace;
+        const resolvedTermNamespace = this.resolveName(name).namespace;
         if (resolvedTermNamespace) {
             vocabulary = this.getVocabulary(resolvedTermNamespace);
         }
@@ -399,7 +428,7 @@ export class VocabularyService {
         if (element.kind === COMPLEX_TYPE_KIND && element.baseType) {
             let type = element.baseType;
             if (aliasInfo) {
-                type = toAliasQualifiedName(element.baseType, aliasInfo);
+                type = this.toAliasQualifiedName(element.baseType, aliasInfo);
             }
             values.push(`**BaseType:** ${type} \n`);
         }
@@ -467,7 +496,7 @@ export class VocabularyService {
             let applicableTerms = element.constraints.applicableTerms;
             if (aliasInfo) {
                 applicableTerms = applicableTerms.map((fullyQualifiedName) =>
-                    toAliasQualifiedName(fullyQualifiedName, aliasInfo)
+                    this.toAliasQualifiedName(fullyQualifiedName, aliasInfo)
                 );
             }
             // In Markdown you need to append \n\n for opening a new paragraph, and two spaces + '\n` for new line
@@ -695,7 +724,7 @@ export class VocabularyService {
         if (element.kind === TERM_KIND || element.kind === 'Property') {
             let type = element.isCollection && element.type ? `Collection(${element.type}) \n` : element.type;
             if (aliasInfo) {
-                type = toAliasQualifiedName(type, aliasInfo);
+                type = this.toAliasQualifiedName(type, aliasInfo);
             }
             if (elementType?.experimental) {
                 sResultText = `**Type:** ${type}(**experimental**) \n`;

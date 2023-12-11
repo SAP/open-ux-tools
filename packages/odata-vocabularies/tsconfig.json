@@ -20,9 +20,6 @@
   ],
   "references": [
     {
-      "path": "../odata-annotation-core"
-    },
-    {
       "path": "../odata-annotation-core-types"
     }
   ]
