@@ -37,7 +37,7 @@ export default {
             'NOP': 0,
             'NOP@Org.OData.Core.V1.Description': 'aggregation (analytical engine) NOP (TODO)',
             'FORMULA': 0,
-            'FORMULA@Org.OData.Core.V1.Description': 'aggregation (analytical engine) FORMULA (TODO)',
+            'FORMULA@Org.OData.Core.V1.Description': 'aggregation (analytical engine) FORMULA (TODO)'
         }
     }
 };
