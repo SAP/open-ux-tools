@@ -6,7 +6,7 @@ import { render, mockDomEventListener } from './utils';
 import { initI18n } from '../../src/i18n';
 
 import App from '../../src/App';
-import { controlSelected, scenarioLoaded } from '@sap-ux-private/control-property-editor-common';
+import { controlSelected } from '@sap-ux-private/control-property-editor-common';
 import { mockResizeObserver } from '../utils/utils';
 import { InputType } from '../../src/panels/properties/types';
 import { registerAppIcons } from '../../src/icons';

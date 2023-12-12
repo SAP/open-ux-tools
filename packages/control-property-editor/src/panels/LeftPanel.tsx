@@ -2,7 +2,6 @@ import type { ReactElement } from 'react';
 import React from 'react';
 
 import { UISectionLayout, UISections, UISplitterLayoutType, UISplitterType } from '@sap-ux/ui-components';
-import { AppLogo, Toolbar } from '../components';
 
 import { ChangesPanel } from './changes';
 import { OutlinePanel } from './outline';
