@@ -563,69 +563,6 @@ const getVocabularyLoader =
     (namespace: VocabularyNamespace): void => {
         const { supportedVocabularies } = maps;
 
-        /**
-        const isCdsNs = isCdsNamespace(namespace);
-        if (!includeCds && (namespace === CDS_VOCABULARY_NAMESPACE || isCdsNs)) {
-            continue;
-        }
-        const alias = NAMESPACE_TO_ALIAS.get(namespace);
-        if (alias) {
-            const document: CSDL = VOCABULARIES[namespace];
-            if (document) {
-                const namespaceForAlias = ALIAS_TO_NAMESPACE.get(alias) || namespace;
-                const vocabulary = document[namespace];
-                if (namespaceForAlias === namespace) {
-                    supportedVocabularies.set(namespace, {
-                        namespace: namespace,
-                        defaultAlias: alias,
-                        defaultUri: getVocabularyUri(vocabulary)
-                    });
-                }
-                const properties = Object.keys(vocabulary);
-                for (const identifier of properties.filter((property) => PROPERTY_PATTERN.test(property))) {
-                    const fqName = namespaceForAlias + '.' + identifier;
-                    const element = vocabulary[identifier];
-                    const vocabularyObject = parseSchemaElements(fqName, element);
-                    if (vocabularyObject) {
-                        dictionary.set(fqName, vocabularyObject);
-                        addToUpperCaseNameMap(fqName);
-                        if (vocabularyObject.kind === TERM_KIND) {
-                            for (const targetKind of vocabularyObject.appliesTo ?? ['']) {
-                                byTarget.set(targetKind, byTarget.get(targetKind) ?? new Set());
-                                byTarget.get(targetKind)?.add(fqName);
-                            }
-                        } else if (vocabularyObject.kind === COMPLEX_TYPE_KIND) {
-                            vocabularyObject.properties.forEach((property) => {
-                                addToUpperCaseNameMap(fqName, property.name);
-                            });
-                            const baseType = vocabularyObject.baseType;
-                            if (baseType) {
-                                const baseName = baseType.split('.').pop() ?? '';
-                                const baseElement = vocabulary[baseName];
-                                if (baseElement) {
-                                    const vocabularyBaseObject = parseSchemaElements(baseType, baseElement);
-                                    // add property of baseType to fqName
-                                    if (vocabularyBaseObject?.kind === COMPLEX_TYPE_KIND) {
-                                        vocabularyBaseObject.properties.forEach((property) => {
-                                            addToUpperCaseNameMap(fqName, property.name);
-                                        });
-                                    }
-                                }
-                                derivedTypesPerType.set(baseType, derivedTypesPerType.get(baseType) ?? new Map());
-                                derivedTypesPerType.get(baseType)?.set(fqName, !!vocabularyObject.isAbstract);
-                            }
-                        }
-                        if (vocabularyObject.kind === ENUM_TYPE_KIND) {
-                            vocabularyObject.values.forEach((value) => {
-                                addToUpperCaseNameMap(fqName, value.name);
-                            });
-                        }
-                    }
-                }
-            }
-        }
-*/
-
         const isCdsNs = isCdsNamespace(namespace);
         if (!includeCds && (namespace === CDS_VOCABULARY_NAMESPACE || isCdsNs)) {
             return;
