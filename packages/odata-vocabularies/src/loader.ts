@@ -571,7 +571,7 @@ const getVocabularyLoader =
         if (!alias) {
             return;
         }
-        const document: CSDL = VOCABULARIES[alias];
+        const document: CSDL = VOCABULARIES[namespace];
         if (!document) {
             return;
         }
