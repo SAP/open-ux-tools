@@ -24,10 +24,10 @@ import type {
     FullyQualifiedTypeName,
     NameQualifier,
     QualifiedName,
-    NamespaceString
+    NamespaceString,
+    AliasInformation
 } from '@sap-ux/odata-annotation-core-types';
-import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND } from '@sap-ux/odata-annotation-core-types';
-
+import { TERM_KIND, COMPLEX_TYPE_KIND, TYPE_DEFINITION_KIND, PROPERTY_KIND } from '@sap-ux/odata-annotation-core-types';
 type ElementType = TypeDefinition | EnumType | ComplexType | Term | ComplexTypeProperty | EnumValue;
 
 /**
@@ -57,6 +57,21 @@ export class VocabularyService {
         const name = parts.pop() ?? '';
         const namespace = parts.join('.');
         return { namespace, name };
+    }
+
+    /**
+     * Get alias qualified name.
+     * If no matching alias is found, then uses the parameter itself.
+     *
+     * @param qualifiedName Identifier in <Namespace|Alias>.<Name>  format
+     * @param aliasInfo alias information
+     * @returns qualified name.
+     */
+    private toAliasQualifiedName(qualifiedName: QualifiedName, aliasInfo: AliasInformation): string {
+        const resolvedName = this.resolveName(qualifiedName);
+        const alias = resolvedName.namespace ? aliasInfo.reverseAliasMap[resolvedName.namespace] : undefined;
+        const aliasQualifiedName = alias ? `${alias}.${resolvedName.name}` : qualifiedName;
+        return aliasQualifiedName;
     }
 
     /**
@@ -281,8 +296,15 @@ export class VocabularyService {
      * @returns - namespace for a qualified name
      */
     getVocabularyNamespace(name: QualifiedName): NamespaceString | undefined {
+        let vocabulary = this.getVocabulary(name);
+        if (vocabulary) {
+            return vocabulary.namespace;
+        }
+
         const resolvedTermNamespace = this.resolveName(name).namespace;
-        const vocabulary = this.getVocabulary(name) ?? this.getVocabulary(resolvedTermNamespace);
+        if (resolvedTermNamespace) {
+            vocabulary = this.getVocabulary(resolvedTermNamespace);
+        }
         return vocabulary?.namespace;
     }
 
@@ -298,7 +320,7 @@ export class VocabularyService {
     }
 
     /**
-     *  Returns all terms which are applicable for a given context.
+     * Returns all terms which are applicable for a given context.
      *
      * The context is defined by the following parameters.
      *
@@ -370,6 +392,49 @@ export class VocabularyService {
     }
 
     /**
+     * Supplementary function which returns part of documentation describing vocabulary object type.
+     *
+     * @param element element object
+     * @param elementType element type object
+     * @param experimentalDescription experimental type description
+     * @param aliasInfo - alias information
+     * @returns array of markdown lines
+     */
+    private getElementTypeDescription(
+        element: VocabularyObject | ComplexTypeProperty | EnumValue,
+        elementType: VocabularyObject | undefined,
+        experimentalDescription: string,
+        aliasInfo?: AliasInformation
+    ): MarkdownString[] {
+        const values: MarkdownString[] = [];
+        if (elementType?.description) {
+            values.push(`**Type Description:** ${elementType.description} \n`);
+        }
+
+        if (elementType?.longDescription) {
+            values.push(`**Type Long Description:** ${elementType.longDescription} \n`);
+        }
+
+        values.push(...this.getElementRequireTypeValue(element));
+
+        if (elementType?.experimental) {
+            values.push(`**Type Experimental:** ${experimentalDescription} \n`);
+        }
+        if (elementType?.deprecated) {
+            values.push(`**Type Deprecated:** ${elementType.deprecatedDescription} \n`);
+        }
+
+        if (element.kind === COMPLEX_TYPE_KIND && element.baseType) {
+            let type = element.baseType;
+            if (aliasInfo) {
+                type = this.toAliasQualifiedName(element.baseType, aliasInfo);
+            }
+            values.push(`**BaseType:** ${type} \n`);
+        }
+        return values;
+    }
+
+    /**
      * Returns the documentation for an vocabulary element.
      *
      * The result is an array of Markdown strings.
@@ -377,9 +442,14 @@ export class VocabularyService {
      * @param name           - Fully qualified name of the element.
      * @param [propertyName] - Name of a property of the element (in case fName is a complex type and you want to get
      *                         the documentation of the property instead of the properties element)
+     * @param aliasInfo      - Alias information
      * @returns - mark down string.
      */
-    getDocumentation(name: FullyQualifiedName, propertyName?: SimpleIdentifier): MarkdownString[] {
+    getDocumentation(
+        name: FullyQualifiedName,
+        propertyName?: SimpleIdentifier,
+        aliasInfo?: AliasInformation
+    ): MarkdownString[] {
         const values: MarkdownString[] = [];
         const { element, elementType, enumTypeDocumentation } = this.resolveDocumentationElement(name, propertyName);
         if (!element) {
@@ -402,28 +472,9 @@ export class VocabularyService {
         }
         values.push(...this.getElementAppliesToValue(element));
 
-        values.push(...this.getElementKindIsMemberAndTerm(element, elementType));
+        values.push(...this.getElementKindIsMemberAndTerm(element, elementType, aliasInfo));
 
-        if (elementType?.description) {
-            values.push(`**Type Description:** ${elementType.description} \n`);
-        }
-
-        if (elementType?.longDescription) {
-            values.push(`**Type Long Description:** ${elementType.longDescription} \n`);
-        }
-
-        values.push(...this.getElementRequireTypeValue(element));
-
-        if (elementType?.experimental) {
-            values.push(`**Type Experimental:** ${experimentalDescription} \n`);
-        }
-        if (elementType?.deprecated) {
-            values.push(`**Type Deprecated:** ${elementType.deprecatedDescription} \n`);
-        }
-
-        if (element.kind === COMPLEX_TYPE_KIND && element.baseType) {
-            values.push(`**BaseType:** ${element.baseType} \n`);
-        }
+        values.push(...this.getElementTypeDescription(element, elementType, experimentalDescription, aliasInfo));
 
         values.push(...this.getElementIsLanguageDependent(element, languageDependentDesc));
 
@@ -435,6 +486,20 @@ export class VocabularyService {
 
         if (enumTypeDocumentation.length > 0) {
             values.unshift(...enumTypeDocumentation);
+        }
+
+        if (
+            (element.kind === COMPLEX_TYPE_KIND || element.kind === PROPERTY_KIND || element.kind === TERM_KIND) &&
+            element.constraints?.applicableTerms
+        ) {
+            let applicableTerms = element.constraints.applicableTerms;
+            if (aliasInfo) {
+                applicableTerms = applicableTerms.map((fullyQualifiedName) =>
+                    this.toAliasQualifiedName(fullyQualifiedName, aliasInfo)
+                );
+            }
+            // In Markdown you need to append \n\n for opening a new paragraph, and two spaces + '\n` for new line
+            values.push(`**Applicable Terms:**  \n${applicableTerms.join('  \n')} \n`);
         }
 
         return values;
@@ -493,12 +558,17 @@ export class VocabularyService {
      *
      * @param element  - element and element type
      * @param elementType - element type
+     * @param aliasInfo - alias information
      * @returns - values
      */
-    getElementKindIsMemberAndTerm(element: ElementType, elementType: VocabularyObject | undefined): MarkdownString[] {
+    getElementKindIsMemberAndTerm(
+        element: ElementType,
+        elementType: VocabularyObject | undefined,
+        aliasInfo?: AliasInformation
+    ): MarkdownString[] {
         const values: MarkdownString[] = [];
         if (element.kind !== 'Member' && elementType?.kind !== 'Term') {
-            values.push(this.getFormattedTypeText(element, elementType));
+            values.push(this.getFormattedTypeText(element, elementType, aliasInfo));
             if (element.kind === 'Property' && element.constraints?.derivedTypeConstraints) {
                 values.push(`**Derived type(s):** ${element.constraints.derivedTypeConstraints.join(', ')} \n`);
             }
@@ -641,15 +711,20 @@ export class VocabularyService {
      *
      * @param element Vocabulary object
      * @param elementType Vocabulary type object
+     * @param aliasInfo - alias information
      * @returns - element type
      */
     private getFormattedTypeText(
         element: VocabularyObject | ComplexTypeProperty,
-        elementType?: VocabularyType
+        elementType?: VocabularyType,
+        aliasInfo?: AliasInformation
     ): string {
         let sResultText = '';
         if (element.kind === TERM_KIND || element.kind === 'Property') {
-            const type = element.isCollection && element.type ? `Collection(${element.type}) \n` : element.type;
+            let type = element.isCollection && element.type ? `Collection(${element.type}) \n` : element.type;
+            if (aliasInfo) {
+                type = this.toAliasQualifiedName(type, aliasInfo);
+            }
             if (elementType?.experimental) {
                 sResultText = `**Type:** ${type}(**experimental**) \n`;
             } else if (elementType?.deprecated) {
