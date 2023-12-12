@@ -388,14 +388,15 @@ async function getVirtualManifest(paths: string[]): Promise<LibraryResults[]> {
  */
 async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults[]> {
     const results: LibraryResults[] = [];
+    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     const dotLibraryPaths = Object.keys(pathMap)
         .filter((path) => basename(path) === FileName.Library)
-        .map((path) => dirname(path));
+        .map((path) => dirname(path))
+        .filter((path) => !manifestPaths.map((manifestPath) => dirname(manifestPath)).includes(path));
     if (dotLibraryPaths) {
         const libraries: LibraryResults[] = await getVirtualManifest(dotLibraryPaths);
         libraries.forEach((library) => results.push(library));
     }
-    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
         try {
             pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
