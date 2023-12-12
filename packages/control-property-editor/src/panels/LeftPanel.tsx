@@ -15,32 +15,30 @@ import './LeftPanel.scss';
  */
 export function LeftPanel(): ReactElement {
     return (
-        <>
-            <UISections
-                vertical={true}
-                splitter={true}
+        <UISections
+            vertical={true}
+            splitter={true}
+            height="100%"
+            splitterType={UISplitterType.Resize}
+            splitterLayoutType={UISplitterLayoutType.Compact}
+            minSectionSize={[300, 190]}
+            sizes={[60, 40]}
+            sizesAsPercents={true}
+            animation={true}>
+            <UISections.Section
+                scrollable={true}
+                layout={UISectionLayout.Standard}
+                className="editor__outline"
+                height="100%">
+                <OutlinePanel />
+            </UISections.Section>
+            <UISections.Section
+                layout={UISectionLayout.Standard}
+                className="editor__outline"
                 height="100%"
-                splitterType={UISplitterType.Resize}
-                splitterLayoutType={UISplitterLayoutType.Compact}
-                minSectionSize={[300, 190]}
-                sizes={[60, 40]}
-                sizesAsPercents={true}
-                animation={true}>
-                <UISections.Section
-                    scrollable={true}
-                    layout={UISectionLayout.Standard}
-                    className="editor__outline"
-                    height="100%">
-                    <OutlinePanel />
-                </UISections.Section>
-                <UISections.Section
-                    layout={UISectionLayout.Standard}
-                    className="editor__outline"
-                    height="100%"
-                    cleanPadding={true}>
-                    <ChangesPanel />
-                </UISections.Section>
-            </UISections>
-        </>
+                cleanPadding={true}>
+                <ChangesPanel />
+            </UISections.Section>
+        </UISections>
     );
 }
