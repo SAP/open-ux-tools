@@ -172,7 +172,7 @@ test('does not render warning dialog', async () => {
 });
 
 test('renders warning dialog for "FE_FROM_SCRATCH" scenario', async () => {
-    render(<App previewUrl="" scenario='FE_FROM_SCRATCH' />, { initialState });
+    render(<App previewUrl="" scenario="FE_FROM_SCRATCH" />, { initialState });
     const dialogContent = screen.getByText(
         /The Control Property Editor enables you to change control properties and behavior directly. These changes may not have the desired effect with Fiori elements applications. Please consult documentation to learn which changes are supported./i
     );

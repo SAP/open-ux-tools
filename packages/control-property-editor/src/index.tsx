@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
 import { initIcons } from '@sap-ux/ui-components';
-import { Scenario, enableTelemetry } from '@sap-ux-private/control-property-editor-common';
+import type { Scenario } from '@sap-ux-private/control-property-editor-common';
+import { enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 import { initI18n } from './i18n';
 
 import './index.css';
