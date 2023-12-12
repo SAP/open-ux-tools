@@ -288,6 +288,10 @@ function parseComplexType(name: string, raw: CSDLComplexType): ComplexType {
         complexType.isOpenType = !!raw.$OpenType;
     }
 
+    const constraints = getConstraints(raw);
+    if (Object.keys(constraints).length) {
+        complexType.constraints = constraints;
+    }
     // collect properties
     Object.keys(raw)
         .filter((key) => !isValidKey(key))
@@ -640,6 +644,7 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
     for (const namespace of SUPPORTED_VOCABULARY_NAMESPACES) {
         vocabularyLoader(namespace);
     }
+    propagateConstraints(dictionary, derivedTypesPerType);
 
     const vocabulariesInformation: VocabulariesInformation = {
         dictionary,
@@ -654,6 +659,58 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
     vocabulariesInformationStatic.set(cacheKey, vocabulariesInformation);
     return vocabulariesInformation;
 };
+
+/**
+ * Propagates constraints from base types to derived types.
+ *
+ * @param dictionary dictionary map
+ * @param derivedTypesPerType map with types derivation information
+ */
+function propagateConstraints(
+    dictionary: Map<FullyQualifiedName, VocabularyObject>,
+    derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>
+): void {
+    for (const typeName of derivedTypesPerType.keys()) {
+        propagateConstraintsForType(typeName, dictionary, derivedTypesPerType);
+    }
+}
+
+/**
+ * Recursively propagates constraints of the given base type to its derived types based on derived types map.
+ *
+ * @param typeName base type name
+ * @param dictionary dictionary map
+ * @param derivedTypesPerType map with types derivation information
+ */
+function propagateConstraintsForType(
+    typeName: FullyQualifiedName,
+    dictionary: Map<FullyQualifiedName, VocabularyObject>,
+    derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>
+): void {
+    const mergeConstraints = (constraints: Constraints, derivationMap: Map<FullyQualifiedName, boolean>) => {
+        for (const derivedTypeName of derivationMap.keys()) {
+            const derivedType = dictionary.get(derivedTypeName);
+            if (derivedType?.kind === COMPLEX_TYPE_KIND) {
+                // merge base type constraints into the current type constraints
+                derivedType.constraints = { ...constraints, ...(derivedType.constraints ?? {}) };
+            }
+            if (derivedTypesPerType.has(derivedTypeName)) {
+                propagateConstraintsForType(derivedTypeName, dictionary, derivedTypesPerType);
+            }
+        }
+    };
+
+    const typeDef = dictionary.get(typeName);
+    const derivationMap = derivedTypesPerType.get(typeName);
+    if (
+        typeDef?.kind === COMPLEX_TYPE_KIND &&
+        typeDef.constraints &&
+        Object.keys(typeDef.constraints).length &&
+        derivationMap
+    ) {
+        mergeConstraints(typeDef.constraints, derivationMap);
+    }
+}
 
 /**
  *

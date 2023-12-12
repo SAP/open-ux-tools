@@ -8,7 +8,7 @@ import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
-import { OdataService, OdataVersion } from './types';
+import { OdataService, OdataVersion, ServiceType } from './types';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -152,4 +152,4 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     return fs;
 }
 
-export { generate, OdataVersion, OdataService };
+export { generate, OdataVersion, OdataService, ServiceType };
