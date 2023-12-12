@@ -5,53 +5,37 @@ export default {
         'modelingPattern': {
             '$Kind': 'Term',
             '$AppliesTo': ['EntityType'],
-            '@Org.OData.Core.V1.Description': '(CDS annotation) Defines the modeling pattern (TODO)',
-            '@Org.OData.Validation.V1.AllowedValues': [
-                {
-                    'Value': 'ANALYTICAL_CUBE',
-                    '@Org.OData.Core.V1.Description': 'TODO description for ANALYTICAL_CUBE'
-                },
-                {
-                    'Value': 'ANALYTICAL_DIMENSION',
-                    '@Org.OData.Core.V1.Description': 'TODO description for ANALYTICAL_DIMENSION'
-                },
-                {
-                    'Value': 'ANALYTICAL_FACT',
-                    '@Org.OData.Core.V1.Description': 'TODO description for ANALYTICAL_FACT'
-                },
-                {
-                    'Value': 'ANALYTICAL_PARENT_CHILD_HIERARCHY_NODE',
-                    '@Org.OData.Core.V1.Description': 'TODO description for ANALYTICAL_PARENT_CHILD_HIERARCHY_NODE'
-                },
-                {
-                    'Value': 'ANALYTICAL_KPI',
-                    '@Org.OData.Core.V1.Description': 'TODO description for ANALYTICAL_KPI'
-                }
-            ]
+            '$Type': 'ObjectModel.ModelingPatternType',
+            '@Org.OData.Core.V1.Description': '(CDS annotation) Defines the modeling pattern (TODO)'
+        },
+        'ModelingPatternType': {
+            '$Kind': 'EnumType',
+            'ANALYTICAL_DIMENSION': 0,
+            'ANALYTICAL_DIMENSION@Org.OData.Core.V1.Description': 'Description for ANALYTICAL_DIMENSION (TODO)',
+            'ANALYTICAL_FACT': 1,
+            'ANALYTICAL_FACT@Org.OData.Core.V1.Description': 'Description for ANALYTICAL_FACT (TODO)',
+            'ANALYTICAL_CUBE': 2,
+            'ANALYTICAL_CUBE@Org.OData.Core.V1.Description': 'Description for ANALYTICAL_CUBE (TODO)',
+            'LANGUAGE_DEPENDENT_TEXT': 3,
+            'LANGUAGE_DEPENDENT_TEXT@Org.OData.Core.V1.Description': 'Description for LANGUAGE_DEPENDENT_TEXT (TODO)'
         },
         'supportedCapabilities': {
             '$Kind': 'Term',
             '$AppliesTo': ['EntityType'],
+            '$Type': 'ObjectModel.SupportedCapabilitiesType',
             '$Collection': true,
-            '@Org.OData.Core.V1.Description': '(CDS annotation) Defines the supported capabilities (TODO)',
-            '@Org.OData.Validation.V1.AllowedValues': [
-                {
-                    'Value': 'ANALYTICAL_DIMENSION',
-                    '@Org.OData.Core.V1.Description': 'TODO description for ANALYTICAL_DIMENSION'
-                },
-                {
-                    'Value': 'ANALYTICAL_PROVIDER',
-                    '@Org.OData.Core.V1.Description': 'TODO description for ANALYTICAL_PROVIDER'
-                },
-                {
-                    'Value': 'ANALYTICAL_PARENT_CHILD_HIERARCHY_NODE',
-                    '@Org.OData.Core.V1.Description': 'TODO description for ANALYTICAL_PARENT_CHILD_HIERARCHY_NODE'
-                },
-                {
-                    'Value': 'ANALYTICAL_KPI',
-                    '@Org.OData.Core.V1.Description': 'TODO description for ANALYTICAL_KPI'
-                }
-            ]
+            '@Org.OData.Core.V1.Description': '(CDS annotation) Defines the supported capabilities (TODO)'
+        },
+        'SupportedCapabilitiesType': {
+            '$Kind': 'EnumType',
+            'ANALYTICAL_DIMENSION': 0,
+            'ANALYTICAL_DIMENSION@Org.OData.Core.V1.Description': 'Description for ANALYTICAL_DIMENSION (TODO)',
+            'ANALYTICAL_PROVIDER': 1,
+            'ANALYTICAL_PROVIDER@Org.OData.Core.V1.Description': 'Description for ANALYTICAL_PROVIDER (TODO)',
+            'DATA_STRUCTURE': 2,
+            'DATA_STRUCTURE@Org.OData.Core.V1.Description': 'Description for DATA_STRUCTURE (TODO)',
+            'LANGUAGE_DEPENDENT_TEXT': 3,
+            'LANGUAGE_DEPENDENT_TEXT@Org.OData.Core.V1.Description': 'Description for LANGUAGE_DEPENDENT_TEXT (TODO)'
         },
         'foreignKey': {
             '$Kind': 'Term',
