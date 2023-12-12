@@ -72,7 +72,10 @@ import { copyPosition, copyRange } from './range';
 import { hasItems, isDefined, hasNaNOrUndefined } from '../utils';
 
 /**
- * Extract qualifier part from term and adapt range and value for term
+ * Extracts qualifier part from term and adapt range and value for term.
+ *
+ * @param term term node
+ * @returns qualifier node
  */
 const createQualifier = (term: Path): Qualifier => {
     const segment = term.segments.find((item) => item.value.includes('#'));
@@ -737,7 +740,7 @@ class CstToAstVisitor extends Visitor {
                 ];
             }
         }
-        return (segment.children.Identifier || []).map((token) => ({
+        return (segment.children.Identifier ?? []).map((token) => ({
             token,
             delimiter: Delimiter.none
         }));

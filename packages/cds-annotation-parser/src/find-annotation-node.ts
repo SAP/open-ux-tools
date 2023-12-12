@@ -68,6 +68,7 @@ class PositionVisitor {
 
     /**
      * Visits all nodes (including children) in which range the provided position is.
+     *
      * @param node Node to be visited
      * @param options Visitor options
      * @param segment Name of the segment which should be added to path if the position is in the nodes range
@@ -95,11 +96,7 @@ class PositionVisitor {
         scalarProperties: string[],
         collectionProperties: string[]
     ): void {
-        this[nodeType] = function (
-            node: AnnotationNode,
-            options: PositionVisitorOptions,
-            segment = ''
-        ): VisitorReturnValue {
+        this[nodeType] = (node: AnnotationNode, options: PositionVisitorOptions, segment = ''): VisitorReturnValue => {
             for (const propertyName of scalarProperties) {
                 const children = this.visit(node[propertyName], options, propertyName);
                 if (children.length) {
@@ -127,6 +124,7 @@ export const findAnnotationNode = (assignment: AnnotationNode | undefined, optio
 
 /**
  * Traverses the nodes using path and returns last matching node.
+ *
  * @param root Node from which to start the traversal.
  * @param path Path used to traverse.
  * @returns Node matching path
@@ -143,6 +141,7 @@ export const getNode = (root: AnnotationNode, path: string): AnnotationNode => {
 
 /**
  * Converts path to an array of nodes matching each segment of the path.
+ *
  * @param root Node from which to start the traversal.
  * @param path Path used to traverse.
  * @returns Array containing all the matched nodes.

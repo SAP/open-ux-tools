@@ -194,10 +194,30 @@ const UpToKeyword = createToken({
 // cap documentation refers to db operators - HANA DB operators https://help.sap.com/docs/SAP_HANA_PLATFORM/4fe29514fd584807ac9f2a04f6754767/20a380977519101494ceddd944e87527.html
 // for each operator token: maintain operator metadata (operatorMap, operatorImageMap in /transformer/expressions.ts)
 export const OPERATOR = 'Operator';
+const words = (...values: string[]) => values.map((value) => '\\b' + value + '\\b');
+console.log(words('a', 'b'));
+
+const regEx = new RegExp(
+    [
+        '=',
+        '!=',
+        '<>',
+        '>=?',
+        '<=?',
+        '\\?',
+        ':',
+        '\\|\\|',
+        '\\+',
+        '-',
+        '\\*',
+        '\\/',
+        ...words('IS NULL', 'IS NOT NULL', 'NOT LIKE', 'LIKE', 'NOT BETWEEN', 'BETWEEN', 'NOT', 'AND', 'OR')
+    ].join('|'),
+    'i'
+);
 const Operator = createToken({
     name: OPERATOR,
-    pattern:
-        /=|!=|<>|>=?|<=?|\?|:|\|\||\+|-|\*|\/|\bIS NULL\b|\bIS NOT NULL\b|\bNOT LIKE\b|\bLIKE\b|\bNOT BETWEEN\b|\bBETWEEN\b|\bNOT\b|\bAND\b|\bOR\b/i
+    pattern: regEx
 });
 
 export const tokenMap = {

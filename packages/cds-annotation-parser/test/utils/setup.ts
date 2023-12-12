@@ -39,6 +39,11 @@ export const getAst = async (testCasePath: string): Promise<Annotation | Annotat
 const isCstNode = (node: CstNode | IToken): node is CstNode => {
     return (node as CstNode).children !== undefined;
 };
+
+function deleteObjProp<T>(obj: T, propName: keyof T) {
+    delete obj[propName];
+}
+
 const reduceLocationInfo = (location?: CstNodeLocation): void => {
     if (location) {
         if (hasNaNOrUndefined(location.startOffset)) {
@@ -48,11 +53,11 @@ const reduceLocationInfo = (location?: CstNodeLocation): void => {
         if (hasNaNOrUndefined(location.endOffset)) {
             location.endOffset = -1;
         }
-        //@ts-ignore
-        delete location.startLine;
-        delete location.endLine;
-        delete location.startColumn;
-        delete location.endColumn;
+
+        deleteObjProp(location, 'startLine');
+        deleteObjProp(location, 'endLine');
+        deleteObjProp(location, 'startColumn');
+        deleteObjProp(location, 'endColumn');
     }
 };
 
@@ -66,14 +71,12 @@ const reduceTokenInfo = (token: IToken): void => {
     }
     /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
     (token as any).tokenTypeName = token.tokenType.name;
-    delete token.startLine;
-    delete token.endLine;
-    delete token.startColumn;
-    delete token.endColumn;
-    //@ts-ignore
-    delete token.tokenTypeIdx;
-    //@ts-ignore
-    delete token.tokenType;
+    deleteObjProp(token, 'startLine');
+    deleteObjProp(token, 'endLine');
+    deleteObjProp(token, 'startColumn');
+    deleteObjProp(token, 'endColumn');
+    deleteObjProp(token, 'tokenTypeIdx');
+    deleteObjProp(token, 'tokenType');
 };
 export const transformCstForAssertion = (node: CstNode | IToken): void => {
     if (isCstNode(node)) {
@@ -94,7 +97,7 @@ export const transformCstForAssertion = (node: CstNode | IToken): void => {
 
 export const getAllNormalizeFolderPath = (base = getBase(), allFolderPath: string[] = []): string[] => {
     const fileOrFolder = readdirSync(base);
-    fileOrFolder.forEach(function (item: string) {
+    fileOrFolder.forEach((item: string) => {
         const itemPath = join(base, item);
         if (statSync(itemPath).isDirectory()) {
             allFolderPath = getAllNormalizeFolderPath(itemPath, allFolderPath);
