@@ -22,22 +22,22 @@ export default {
             'countdistinct': 4,
             'countdistinct@Org.OData.Core.V1.Description': 'aggregation (odata query)  countdistinct (TODO)',
             // from ABAP: consumed in Analytical Engine
-            'NONE': 0,
+            'NONE': 5,
             'NONE@Org.OData.Core.V1.Description': 'aggregation (analytical engine) NONE (TODO)',
-            'SUM': 0,
+            'SUM': 6,
             'SUM@Org.OData.Core.V1.Description': 'aggregation (analytical engine) SUM (TODO)',
-            'MIN': 0,
+            'MIN': 7,
             'MIN@Org.OData.Core.V1.Description': 'aggregation (analytical engine) MIN (TODO)',
-            'MAX': 0,
+            'MAX': 8,
             'MAX@Org.OData.Core.V1.Description': 'aggregation (analytical engine) MAX (TODO)',
-            'AVG': 0,
+            'AVG': 9,
             'AVG@Org.OData.Core.V1.Description': 'aggregation (analytical engine) AVG (TODO)',
-            'COUNT_DISTINCT': 0,
+            'COUNT_DISTINCT': 10,
             'COUNT_DISTINCT@Org.OData.Core.V1.Description': 'aggregation (analytical engine) COUNT_DISTINCT (TODO)',
-            'NOP': 0,
+            'NOP': 11,
             'NOP@Org.OData.Core.V1.Description': 'aggregation (analytical engine) NOP (TODO)',
-            'FORMULA': 0,
-            'FORMULA@Org.OData.Core.V1.Description': 'aggregation (analytical engine) FORMULA (TODO)',
+            'FORMULA': 12,
+            'FORMULA@Org.OData.Core.V1.Description': 'aggregation (analytical engine) FORMULA (TODO)'
         }
     }
 };
