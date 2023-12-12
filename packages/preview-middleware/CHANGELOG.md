@@ -1,5 +1,41 @@
 # @sap-ux/preview-middleware
 
+## 0.11.16
+
+### Patch Changes
+
+-   a714d53d: No unsaved change shown when adding fragment to Extension Point
+
+## 0.11.15
+
+### Patch Changes
+
+-   a44e9007: Invalid target aggregation and index are accepted in Add Fragment dialog
+
+## 0.11.14
+
+### Patch Changes
+
+-   338fe503: Add integration test
+
+## 0.11.13
+
+### Patch Changes
+
+-   733cec7b: No Datetime is shown for Code Ext changes in saved changes panel
+
+## 0.11.12
+
+### Patch Changes
+
+-   ff457bef: Controller Extension and Fragment name now show error if there is a whitespace after their name
+
+## 0.11.11
+
+### Patch Changes
+
+-   76c751be: Save button for ui5 versions lower than 1.110 is shown
+
 ## 0.11.10
 
 ### Patch Changes
