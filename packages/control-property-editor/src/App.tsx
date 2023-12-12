@@ -8,7 +8,7 @@ import { PropertiesPanel, LeftPanel } from './panels';
 import { useLocalStorage } from './use-local-storage';
 import type { RootState } from './store';
 import { useAppDispatch } from './store';
-import { changePreviewScale } from './slice';
+import { changePreviewScale, setProjectScenario } from './slice';
 import { useWindowSize } from './use-window-size';
 import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices';
 
@@ -17,6 +17,7 @@ import './Workarounds.scss';
 
 export interface AppProps {
     previewUrl: string;
+    scenario: Scenario;
 }
 
 /**
@@ -26,8 +27,11 @@ export interface AppProps {
  * @returns ReactElement
  */
 export default function App(appProps: AppProps): ReactElement {
-    const { previewUrl } = appProps;
-    const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
+    const { previewUrl, scenario } = appProps;
+
+    const { t } = useTranslation();
+    const dispatch = useAppDispatch();
+
     const isAdpProject = scenario === 'ADAPTATION_PROJECT';
 
     useEffect(() => {
@@ -38,8 +42,13 @@ export default function App(appProps: AppProps): ReactElement {
             sheet.cssRules.length
         );
     }, []);
-    const { t } = useTranslation();
-    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        if (scenario) {
+            dispatch(setProjectScenario(scenario));
+        }
+    }, [scenario, dispatch]);
+
     const [hideWarningDialog, setHideWarningDialog] = useLocalStorage('hide-warning-dialog', false);
     const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => hideWarningDialog !== true);
 

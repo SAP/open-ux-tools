@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
 import { initIcons } from '@sap-ux/ui-components';
-import { enableTelemetry } from '@sap-ux-private/control-property-editor-common';
+import { Scenario, enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 import { initI18n } from './i18n';
 
 import './index.css';
@@ -17,6 +17,7 @@ export interface StartOptions {
     previewUrl: string;
     rootElementId: string;
     telemetry?: boolean;
+    scenario: Scenario;
 }
 
 /**
@@ -25,7 +26,7 @@ export interface StartOptions {
  * @param options StartOptions
  */
 export function start(options: StartOptions): void {
-    const { previewUrl, rootElementId, telemetry = false } = options;
+    const { previewUrl, rootElementId, telemetry = false, scenario } = options;
     if (telemetry) {
         enableTelemetry();
     }
@@ -39,7 +40,7 @@ export function start(options: StartOptions): void {
     ReactDOM.render(
         <React.StrictMode>
             <Provider store={store}>
-                <App previewUrl={previewUrl} />
+                <App previewUrl={previewUrl} scenario={scenario} />
             </Provider>
         </React.StrictMode>,
         document.getElementById(rootElementId)
