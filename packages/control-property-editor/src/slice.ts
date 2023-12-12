@@ -1,4 +1,4 @@
-import type { SliceCaseReducers } from '@reduxjs/toolkit';
+import type { PayloadAction, SliceCaseReducers } from '@reduxjs/toolkit';
 import { createSlice, createAction } from '@reduxjs/toolkit';
 
 import type {
@@ -109,7 +109,11 @@ export const initialState = {
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
     initialState,
-    reducers: {},
+    reducers: {
+        setProjectScenario: (state, action: PayloadAction<Scenario>) => {
+            state.scenario = action.payload;
+        }
+    },
     extraReducers: (builder) =>
         builder
             .addMatcher(outlineChanged.match, (state, action: ReturnType<typeof outlineChanged>): void => {
@@ -226,5 +230,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.dialogMessage = action.payload;
             })
 });
+
+export const { setProjectScenario } = slice.actions;
 
 export default slice.reducer;
