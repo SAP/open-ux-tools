@@ -1,5 +1,11 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.2.0
+
+### Minor Changes
+
+-   5b256cea: support applicable terms constraint
+
 ## 0.1.3
 
 ### Patch Changes
