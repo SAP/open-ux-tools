@@ -1,0 +1,60 @@
+{
+  "type": "annotation-group",
+  "name": {
+    "type": "identifier",
+    "value": "UI",
+    "range": "[(0,0)..(0,2)]",
+    "quoted": false
+  },
+  "items": {
+    "type": "annotation-group-items",
+    "items": [
+      {
+        "type": "annotation",
+        "term": {
+          "type": "path",
+          "value": "Hidden",
+          "segments": [
+            {
+              "type": "identifier",
+              "value": "Hidden",
+              "range": "[(0,8)..(0,14)]",
+              "quoted": true
+            }
+          ],
+          "separators": [],
+          "range": "[(0,6)..(0,15)]"
+        },
+        "range": "[(0,6)..(0,22)]",
+        "colon": {
+          "type": "token",
+          "value": ":",
+          "range": "[(0,15)..(0,16)]"
+        },
+        "value": {
+          "type": "boolean",
+          "value": false,
+          "range": "[(0,17)..(0,22)]"
+        }
+      }
+    ],
+    "range": "[(0,4)..(0,23)]",
+    "commas": [],
+    "openToken": {
+      "type": "token",
+      "value": "{",
+      "range": "[(0,4)..(0,5)]"
+    },
+    "closeToken": {
+      "type": "token",
+      "value": "}",
+      "range": "[(0,22)..(0,23)]"
+    }
+  },
+  "range": "[(0,0)..(0,23)]",
+  "colon": {
+    "type": "token",
+    "value": ":",
+    "range": "[(0,2)..(0,3)]"
+  }
+}

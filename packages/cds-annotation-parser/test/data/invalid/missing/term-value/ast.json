@@ -1,0 +1,32 @@
+{
+  "type": "annotation",
+  "term": {
+    "segments": [],
+    "separators": [],
+    "type": "path",
+    "value": "",
+    "range": "[(1,3)..(1,4)]"
+  },
+  "range": "[(1,3)..(1,4)]",
+  "colon": {
+    "type": "token",
+    "range": "[(1,4)..(1,5)]",
+    "value": ":"
+  },
+  "value": {
+    "type": "collection",
+    "items": [],
+    "range": "[(1,6)..(1,9)]",
+    "commas": [],
+    "openToken": {
+      "type": "token",
+      "value": "[",
+      "range": "[(1,6)..(1,7)]"
+    },
+    "closeToken": {
+      "type": "token",
+      "value": "]",
+      "range": "[(1,8)..(1,9)]"
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "type": "annotation",
+  "term": {
+    "type": "path",
+    "value": "test",
+    "segments": [
+      {
+        "type": "identifier",
+        "value": "test",
+        "range": "[(0,0)..(0,4)]",
+        "quoted": false
+      }
+    ],
+    "separators": [],
+    "range": "[(0,0)..(0,4)]"
+  },
+  "range": "[(0,0)..(0,19)]",
+  "colon": {
+    "type": "token",
+    "range": "[(0,4)..(0,5)]",
+    "value": ":"
+  },
+  "value": {
+    "type": "correct-expression",
+    "operatorName": "not",
+    "operators": [
+      {
+        "type": "operator",
+        "value": "not",
+        "range": "[(0,8)..(0,11)]"
+      }
+    ],
+    "operands": [
+      {
+        "type": "correct-expression",
+        "operatorName": "or",
+        "operators": [
+          {
+            "type": "operator",
+            "value": "OR",
+            "range": "[(0,14)..(0,16)]"
+          }
+        ],
+        "operands": [
+          {
+            "type": "path",
+            "value": "a",
+            "segments": [
+              {
+                "type": "identifier",
+                "value": "a",
+                "range": "[(0,12)..(0,13)]",
+                "quoted": false
+              }
+            ],
+            "separators": [],
+            "range": "[(0,12)..(0,13)]"
+          },
+          {
+            "type": "path",
+            "value": "b",
+            "segments": [
+              {
+                "type": "identifier",
+                "value": "b",
+                "range": "[(0,17)..(0,18)]",
+                "quoted": false
+              }
+            ],
+            "separators": [],
+            "range": "[(0,17)..(0,18)]"
+          }
+        ],
+        "range": "[(0,11)..(0,19)]",
+        "openToken": {
+          "type": "token",
+          "value": "(",
+          "range": "[(0,11)..(0,12)]"
+        },
+        "closeToken": {
+          "type": "token",
+          "value": ")",
+          "range": "[(0,18)..(0,19)]"
+        }
+      }
+    ],
+    "range": "[(0,6)..(0,19)]",
+    "openToken": {
+      "type": "token",
+      "value": "(",
+      "range": "[(0,6)..(0,7)]"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "Colon": [
+            {
+              "image": ":",
+              "startOffset": 1,
+              "endOffset": 1,
+              "tokenTypeName": "Colon"
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "collection": [
+                  {
+                    "name": "collection",
+                    "children": {
+                      "LBracket": [
+                        {
+                          "image": "[",
+                          "startOffset": 3,
+                          "endOffset": 3,
+                          "tokenTypeName": "LBracket"
+                        }
+                      ],
+                      "RBracket": [
+                        {
+                          "image": "]",
+                          "startOffset": 5,
+                          "endOffset": 5,
+                          "tokenTypeName": "RBracket"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 3,
+                      "endOffset": 5
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 3,
+                "endOffset": 5
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": -1,
+          "endOffset": 5
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": -1,
+    "endOffset": 5
+  }
+}

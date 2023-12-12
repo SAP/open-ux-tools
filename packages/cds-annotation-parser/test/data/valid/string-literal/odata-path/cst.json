@@ -1,0 +1,104 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "image": "a",
+                          "startOffset": 0,
+                          "endOffset": 0,
+                          "tokenTypeName": "Identifier"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 0
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 0
+              }
+            }
+          ],
+          "Colon": [
+            {
+              "image": ":",
+              "startOffset": 1,
+              "endOffset": 1,
+              "tokenTypeName": "Colon"
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "string": [
+                  {
+                    "name": "string",
+                    "children": {
+                      "SingleQuote": [
+                        {
+                          "image": "'",
+                          "startOffset": 3,
+                          "endOffset": 3,
+                          "tokenTypeName": "SingleQuote"
+                        }
+                      ],
+                      "String": [
+                        {
+                          "image": "aaa/bbb/cc@xyz.fff#abc",
+                          "startOffset": 4,
+                          "endOffset": 25,
+                          "tokenTypeName": "String"
+                        }
+                      ],
+                      "StringExit": [
+                        {
+                          "image": "'",
+                          "startOffset": 26,
+                          "endOffset": 26,
+                          "tokenTypeName": "StringExit"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 3,
+                      "endOffset": 26
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 3,
+                "endOffset": 26
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 26
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 26
+  }
+}

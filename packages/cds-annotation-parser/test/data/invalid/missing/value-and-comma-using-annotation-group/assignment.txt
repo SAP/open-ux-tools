@@ -1,0 +1,4 @@
+UI: {
+    LineItem :
+    TextArrangement : #TextFirst
+    // due to parsing issues '}' is missing

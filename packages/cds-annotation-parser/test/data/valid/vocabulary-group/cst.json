@@ -1,0 +1,164 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "image": "UI",
+                          "startOffset": 0,
+                          "endOffset": 1,
+                          "tokenTypeName": "Identifier"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 1
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 1
+              }
+            }
+          ],
+          "Colon": [
+            {
+              "image": ":",
+              "startOffset": 2,
+              "endOffset": 2,
+              "tokenTypeName": "Colon"
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "struct": [
+                  {
+                    "name": "struct",
+                    "children": {
+                      "LCurly": [
+                        {
+                          "image": "{",
+                          "startOffset": 4,
+                          "endOffset": 4,
+                          "tokenTypeName": "LCurly"
+                        }
+                      ],
+                      "assignment": [
+                        {
+                          "name": "assignment",
+                          "children": {
+                            "path": [
+                              {
+                                "name": "path",
+                                "children": {
+                                  "pathSegment": [
+                                    {
+                                      "name": "pathSegment",
+                                      "children": {
+                                        "Identifier": [
+                                          {
+                                            "image": "Hidden",
+                                            "startOffset": 6,
+                                            "endOffset": 11,
+                                            "tokenTypeName": "Identifier"
+                                          }
+                                        ]
+                                      },
+                                      "location": {
+                                        "startOffset": 6,
+                                        "endOffset": 11
+                                      }
+                                    }
+                                  ]
+                                },
+                                "location": {
+                                  "startOffset": 6,
+                                  "endOffset": 11
+                                }
+                              }
+                            ],
+                            "Colon": [
+                              {
+                                "image": ":",
+                                "startOffset": 12,
+                                "endOffset": 12,
+                                "tokenTypeName": "Colon"
+                              }
+                            ],
+                            "value": [
+                              {
+                                "name": "value",
+                                "children": {
+                                  "True": [
+                                    {
+                                      "image": "true",
+                                      "startOffset": 14,
+                                      "endOffset": 17,
+                                      "tokenTypeName": "True"
+                                    }
+                                  ]
+                                },
+                                "location": {
+                                  "startOffset": 14,
+                                  "endOffset": 17
+                                }
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 6,
+                            "endOffset": 17
+                          }
+                        }
+                      ],
+                      "RCurly": [
+                        {
+                          "image": "}",
+                          "startOffset": 18,
+                          "endOffset": 18,
+                          "tokenTypeName": "RCurly"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 4,
+                      "endOffset": 18
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 4,
+                "endOffset": 18
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 18
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 18
+  }
+}

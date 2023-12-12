@@ -1,0 +1,178 @@
+{
+  "type": "annotation",
+  "term": {
+    "type": "path",
+    "value": "test",
+    "segments": [
+      {
+        "type": "identifier",
+        "value": "test",
+        "range": "[(0,0)..(0,4)]",
+        "quoted": false
+      }
+    ],
+    "separators": [],
+    "range": "[(0,0)..(0,4)]"
+  },
+  "range": "[(0,0)..(0,29)]",
+  "colon": {
+    "type": "token",
+    "range": "[(0,4)..(0,5)]",
+    "value": ":"
+  },
+  "value": {
+    "type": "correct-expression",
+    "operatorName": "ternary",
+    "operators": [
+      {
+        "type": "operator",
+        "value": "?",
+        "range": "[(0,13)..(0,14)]"
+      },
+      {
+        "type": "operator",
+        "value": ":",
+        "range": "[(0,21)..(0,22)]"
+      }
+    ],
+    "operands": [
+      {
+        "type": "correct-expression",
+        "operatorName": "greater-then",
+        "operators": [
+          {
+            "type": "operator",
+            "value": ">",
+            "range": "[(0,9)..(0,10)]"
+          }
+        ],
+        "operands": [
+          {
+            "type": "path",
+            "value": "a",
+            "segments": [
+              {
+                "type": "identifier",
+                "value": "a",
+                "range": "[(0,7)..(0,8)]",
+                "quoted": false
+              }
+            ],
+            "separators": [],
+            "range": "[(0,7)..(0,8)]"
+          },
+          {
+            "type": "path",
+            "value": "b",
+            "segments": [
+              {
+                "type": "identifier",
+                "value": "b",
+                "range": "[(0,11)..(0,12)]",
+                "quoted": false
+              }
+            ],
+            "separators": [],
+            "range": "[(0,11)..(0,12)]"
+          }
+        ],
+        "range": "[(0,7)..(0,12)]"
+      },
+      {
+        "type": "correct-expression",
+        "operatorName": "minus",
+        "operators": [
+          {
+            "type": "operator",
+            "value": "-",
+            "range": "[(0,17)..(0,18)]"
+          }
+        ],
+        "operands": [
+          {
+            "type": "path",
+            "value": "a",
+            "segments": [
+              {
+                "type": "identifier",
+                "value": "a",
+                "range": "[(0,15)..(0,16)]",
+                "quoted": false
+              }
+            ],
+            "separators": [],
+            "range": "[(0,15)..(0,16)]"
+          },
+          {
+            "type": "path",
+            "value": "b",
+            "segments": [
+              {
+                "type": "identifier",
+                "value": "b",
+                "range": "[(0,19)..(0,20)]",
+                "quoted": false
+              }
+            ],
+            "separators": [],
+            "range": "[(0,19)..(0,20)]"
+          }
+        ],
+        "range": "[(0,15)..(0,20)]"
+      },
+      {
+        "type": "correct-expression",
+        "operatorName": "minus",
+        "operators": [
+          {
+            "type": "operator",
+            "value": "-",
+            "range": "[(0,25)..(0,26)]"
+          }
+        ],
+        "operands": [
+          {
+            "type": "path",
+            "value": "b",
+            "segments": [
+              {
+                "type": "identifier",
+                "value": "b",
+                "range": "[(0,23)..(0,24)]",
+                "quoted": false
+              }
+            ],
+            "separators": [],
+            "range": "[(0,23)..(0,24)]"
+          },
+          {
+            "type": "path",
+            "value": "a",
+            "segments": [
+              {
+                "type": "identifier",
+                "value": "a",
+                "range": "[(0,27)..(0,28)]",
+                "quoted": false
+              }
+            ],
+            "separators": [],
+            "range": "[(0,27)..(0,28)]"
+          }
+        ],
+        "range": "[(0,23)..(0,28)]"
+      }
+    ],
+    "range": "[(0,6)..(0,29)]",
+    "openToken": {
+      "type": "token",
+      "value": "(",
+      "range": "[(0,6)..(0,7)]"
+    },
+    "closeToken": {
+      "type": "token",
+      "value": ")",
+      "range": "[(0,28)..(0,29)]"
+    }
+  }
+}

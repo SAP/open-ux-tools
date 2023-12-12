@@ -1,0 +1,31 @@
+{
+  "type": "annotation",
+  "term": {
+    "type": "path",
+    "value": "abcd.fgh",
+    "segments": [
+      {
+        "type": "identifier",
+        "value": "abcd",
+        "range": "[(0,2)..(0,6)]",
+        "quoted": true
+      },
+      {
+        "type": "identifier",
+        "value": "fgh",
+        "range": "[(0,7)..(0,10)]",
+        "quoted": true
+      }
+    ],
+    "separators": [
+      {
+        "type": "separator",
+        "value": ".",
+        "range": "[(0,6)..(0,7)]",
+        "escaped": true
+      }
+    ],
+    "range": "[(0,0)..(0,11)]"
+  },
+  "range": "[(0,0)..(0,11)]"
+}

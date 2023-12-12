@@ -1,0 +1,162 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "image": "UI",
+                          "startOffset": 0,
+                          "endOffset": 1,
+                          "tokenTypeName": "Identifier"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 1
+                    }
+                  },
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "delimitedIdentifier": [
+                        {
+                          "name": "delimitedIdentifier",
+                          "children": {
+                            "IdentifierStart": [
+                              {
+                                "image": "![",
+                                "startOffset": 3,
+                                "endOffset": 4,
+                                "tokenTypeName": "IdentifierStart"
+                              }
+                            ],
+                            "DelimitedIdentifier": [
+                              {
+                                "image": "HeaderInfo#def",
+                                "startOffset": 5,
+                                "endOffset": 18,
+                                "tokenTypeName": "DelimitedIdentifier"
+                              },
+                              {
+                                "image": "Description",
+                                "startOffset": 20,
+                                "endOffset": 30,
+                                "tokenTypeName": "DelimitedIdentifier"
+                              }
+                            ],
+                            "PathSegmentSeparator": [
+                              {
+                                "image": ".",
+                                "startOffset": 19,
+                                "endOffset": 19,
+                                "tokenTypeName": "PathSegmentSeparator"
+                              }
+                            ],
+                            "DelimitedIdentifierExit": [
+                              {
+                                "image": "]",
+                                "startOffset": 31,
+                                "endOffset": 31,
+                                "tokenTypeName": "DelimitedIdentifierExit"
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 3,
+                            "endOffset": 31
+                          }
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 3,
+                      "endOffset": 31
+                    }
+                  }
+                ],
+                "PathSegmentSeparator": [
+                  {
+                    "image": ".",
+                    "startOffset": 2,
+                    "endOffset": 2,
+                    "tokenTypeName": "PathSegmentSeparator"
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 31
+              }
+            }
+          ],
+          "Colon": [
+            {
+              "image": ":",
+              "startOffset": 32,
+              "endOffset": 32,
+              "tokenTypeName": "Colon"
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "struct": [
+                  {
+                    "name": "struct",
+                    "children": {
+                      "LCurly": [
+                        {
+                          "image": "{",
+                          "startOffset": 34,
+                          "endOffset": 34,
+                          "tokenTypeName": "LCurly"
+                        }
+                      ],
+                      "RCurly": [
+                        {
+                          "image": "}",
+                          "startOffset": 35,
+                          "endOffset": 35,
+                          "tokenTypeName": "RCurly"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 34,
+                      "endOffset": 35
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 34,
+                "endOffset": 35
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 35
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 35
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "image": "a",
+                          "startOffset": 0,
+                          "endOffset": 0,
+                          "tokenTypeName": "Identifier"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 0
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 0
+              }
+            }
+          ],
+          "Colon": [
+            {
+              "image": ":",
+              "startOffset": 1,
+              "endOffset": 1,
+              "tokenTypeName": "Colon"
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "collection": [
+                  {
+                    "name": "collection",
+                    "children": {
+                      "LBracket": [
+                        {
+                          "image": "[",
+                          "startOffset": 3,
+                          "endOffset": 3,
+                          "tokenTypeName": "LBracket"
+                        }
+                      ],
+                      "collectionValue": [
+                        {
+                          "name": "collectionValue",
+                          "children": {
+                            "extendCollectionValue": [
+                              {
+                                "name": "extendCollectionValue",
+                                "children": {
+                                  "SpreadOperator": [
+                                    {
+                                      "image": "...",
+                                      "startOffset": 4,
+                                      "endOffset": 6,
+                                      "tokenTypeName": "SpreadOperator"
+                                    }
+                                  ]
+                                },
+                                "location": {
+                                  "startOffset": 4,
+                                  "endOffset": 6
+                                }
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 4,
+                            "endOffset": 6
+                          }
+                        }
+                      ],
+                      "RBracket": [
+                        {
+                          "image": "]",
+                          "startOffset": 7,
+                          "endOffset": 7,
+                          "tokenTypeName": "RBracket"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 3,
+                      "endOffset": 7
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 3,
+                "endOffset": 7
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 7
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 7
+  }
+}

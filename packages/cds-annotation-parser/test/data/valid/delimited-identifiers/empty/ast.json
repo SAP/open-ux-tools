@@ -1,0 +1,25 @@
+{
+  "type": "annotation",
+  "term": {
+    "type": "path",
+    "value": "",
+    "segments": [
+      {
+        "type": "identifier",
+        "value": "",
+        "range": "[(0,2)..(0,2)]",
+        "quoted": true
+      }
+    ],
+    "separators": [
+      {
+        "type": "separator",
+        "value": "",
+        "range": "[(0,2)..(0,2)]",
+        "escaped": true
+      }
+    ],
+    "range": "[(0,0)..(0,3)]"
+  },
+  "range": "[(0,0)..(0,3)]"
+}

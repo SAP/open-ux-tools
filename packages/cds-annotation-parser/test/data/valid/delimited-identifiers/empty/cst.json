@@ -1,0 +1,69 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "delimitedIdentifier": [
+                        {
+                          "name": "delimitedIdentifier",
+                          "children": {
+                            "IdentifierStart": [
+                              {
+                                "image": "![",
+                                "startOffset": 0,
+                                "endOffset": 1,
+                                "tokenTypeName": "IdentifierStart"
+                              }
+                            ],
+                            "DelimitedIdentifierExit": [
+                              {
+                                "image": "]",
+                                "startOffset": 2,
+                                "endOffset": 2,
+                                "tokenTypeName": "DelimitedIdentifierExit"
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 0,
+                            "endOffset": 2
+                          }
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 2
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 2
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 2
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 2
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "type": "annotation",
+  "term": {
+    "type": "path",
+    "value": "test",
+    "segments": [
+      {
+        "type": "identifier",
+        "value": "test",
+        "range": "[(0,0)..(0,4)]",
+        "quoted": false
+      }
+    ],
+    "separators": [],
+    "range": "[(0,0)..(0,4)]"
+  },
+  "range": "[(0,0)..(0,23)]",
+  "colon": {
+    "type": "token",
+    "range": "[(0,4)..(0,5)]",
+    "value": ":"
+  },
+  "value": {
+    "operators": [
+      {
+        "type": "operator",
+        "value": "BETWEEN",
+        "range": "[(0,7)..(0,14)]"
+      },
+      {
+        "type": "operator",
+        "value": "AND",
+        "range": "[(0,17)..(0,20)]"
+      }
+    ],
+    "operands": [
+      {
+        "type": "path",
+        "value": "a",
+        "segments": [
+          {
+            "type": "identifier",
+            "value": "a",
+            "range": "[(0,15)..(0,16)]",
+            "quoted": false
+          }
+        ],
+        "separators": [],
+        "range": "[(0,15)..(0,16)]"
+      },
+      {
+        "type": "path",
+        "value": "b",
+        "segments": [
+          {
+            "type": "identifier",
+            "value": "b",
+            "range": "[(0,21)..(0,22)]",
+            "quoted": false
+          }
+        ],
+        "separators": [],
+        "range": "[(0,21)..(0,22)]"
+      }
+    ],
+    "openToken": {
+      "type": "token",
+      "value": "(",
+      "range": "[(0,6)..(0,7)]"
+    },
+    "closeToken": {
+      "type": "token",
+      "value": ")",
+      "range": "[(0,22)..(0,23)]"
+    },
+    "range": "[(0,6)..(0,23)]",
+    "type": "unsupported-operator-expression",
+    "unsupportedOperator": {
+      "type": "operator",
+      "value": "BETWEEN",
+      "range": "[(0,7)..(0,14)]"
+    }
+  }
+}

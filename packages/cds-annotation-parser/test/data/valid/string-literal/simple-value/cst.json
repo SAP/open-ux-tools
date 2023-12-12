@@ -1,0 +1,129 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "image": "UI",
+                          "startOffset": 0,
+                          "endOffset": 1,
+                          "tokenTypeName": "Identifier"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 1
+                    }
+                  },
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "image": "Hidden",
+                          "startOffset": 3,
+                          "endOffset": 8,
+                          "tokenTypeName": "Identifier"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 3,
+                      "endOffset": 8
+                    }
+                  }
+                ],
+                "PathSegmentSeparator": [
+                  {
+                    "image": ".",
+                    "startOffset": 2,
+                    "endOffset": 2,
+                    "tokenTypeName": "PathSegmentSeparator"
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 8
+              }
+            }
+          ],
+          "Colon": [
+            {
+              "image": ":",
+              "startOffset": 9,
+              "endOffset": 9,
+              "tokenTypeName": "Colon"
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "string": [
+                  {
+                    "name": "string",
+                    "children": {
+                      "SingleQuote": [
+                        {
+                          "image": "'",
+                          "startOffset": 11,
+                          "endOffset": 11,
+                          "tokenTypeName": "SingleQuote"
+                        }
+                      ],
+                      "String": [
+                        {
+                          "image": "abc",
+                          "startOffset": 12,
+                          "endOffset": 14,
+                          "tokenTypeName": "String"
+                        }
+                      ],
+                      "StringExit": [
+                        {
+                          "image": "'",
+                          "startOffset": 15,
+                          "endOffset": 15,
+                          "tokenTypeName": "StringExit"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 11,
+                      "endOffset": 15
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 11,
+                "endOffset": 15
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 15
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 15
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "type": "annotation",
+  "term": {
+    "type": "path",
+    "value": "HeaderInfo#abc.Description",
+    "segments": [
+      {
+        "type": "identifier",
+        "value": "HeaderInfo",
+        "range": "[(0,2)..(0,12)]",
+        "quoted": true
+      },
+      {
+        "type": "identifier",
+        "value": "Description",
+        "range": "[(0,17)..(0,28)]",
+        "quoted": true
+      }
+    ],
+    "separators": [
+      {
+        "type": "separator",
+        "value": ".",
+        "range": "[(0,16)..(0,17)]",
+        "escaped": true
+      }
+    ],
+    "range": "[(0,0)..(0,29)]"
+  },
+  "range": "[(0,0)..(0,33)]",
+  "colon": {
+    "type": "token",
+    "range": "[(0,29)..(0,30)]",
+    "value": ":"
+  },
+  "qualifier": {
+    "type": "qualifier",
+    "value": "abc",
+    "range": "[(0,13)..(0,16)]"
+  },
+  "value": {
+    "type": "record",
+    "properties": [],
+    "range": "[(0,31)..(0,33)]",
+    "commas": [],
+    "openToken": {
+      "type": "token",
+      "value": "{",
+      "range": "[(0,31)..(0,32)]"
+    },
+    "closeToken": {
+      "type": "token",
+      "value": "}",
+      "range": "[(0,32)..(0,33)]"
+    }
+  }
+}

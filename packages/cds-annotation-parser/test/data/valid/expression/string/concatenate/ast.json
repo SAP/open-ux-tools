@@ -1,0 +1,76 @@
+{
+  "type": "annotation",
+  "term": {
+    "type": "path",
+    "value": "test",
+    "segments": [
+      {
+        "type": "identifier",
+        "value": "test",
+        "range": "[(0,0)..(0,4)]",
+        "quoted": false
+      }
+    ],
+    "separators": [],
+    "range": "[(0,0)..(0,4)]"
+  },
+  "range": "[(0,0)..(0,26)]",
+  "colon": {
+    "type": "token",
+    "range": "[(0,4)..(0,5)]",
+    "value": ":"
+  },
+  "value": {
+    "type": "correct-expression",
+    "operatorName": "concat",
+    "operators": [
+      {
+        "type": "operator",
+        "value": "||",
+        "range": "[(0,9)..(0,11)]"
+      }
+    ],
+    "operands": [
+      {
+        "type": "path",
+        "value": "a",
+        "segments": [
+          {
+            "type": "identifier",
+            "value": "a",
+            "range": "[(0,7)..(0,8)]",
+            "quoted": false
+          }
+        ],
+        "separators": [],
+        "range": "[(0,7)..(0,8)]"
+      },
+      {
+        "type": "string",
+        "value": "some string",
+        "range": "[(0,12)..(0,25)]",
+        "openToken": {
+          "type": "token",
+          "value": "'",
+          "range": "[(0,12)..(0,13)]"
+        },
+        "closeToken": {
+          "type": "token",
+          "value": "'",
+          "range": "[(0,24)..(0,25)]"
+        }
+      }
+    ],
+    "range": "[(0,6)..(0,26)]",
+    "openToken": {
+      "type": "token",
+      "value": "(",
+      "range": "[(0,6)..(0,7)]"
+    },
+    "closeToken": {
+      "type": "token",
+      "value": ")",
+      "range": "[(0,25)..(0,26)]"
+    }
+  }
+}

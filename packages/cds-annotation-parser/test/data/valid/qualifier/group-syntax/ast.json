@@ -1,0 +1,76 @@
+{
+  "type": "annotation-group",
+  "name": {
+    "type": "identifier",
+    "value": "UI",
+    "range": "[(0,0)..(0,2)]",
+    "quoted": false
+  },
+  "items": {
+    "type": "annotation-group-items",
+    "items": [
+      {
+        "type": "annotation",
+        "term": {
+          "type": "path",
+          "value": "LineItem",
+          "segments": [
+            {
+              "type": "identifier",
+              "value": "LineItem",
+              "range": "[(0,6)..(0,14)]",
+              "quoted": false
+            }
+          ],
+          "separators": [],
+          "range": "[(0,6)..(0,14)]"
+        },
+        "range": "[(0,6)..(0,22)]",
+        "colon": {
+          "type": "token",
+          "value": ":",
+          "range": "[(0,18)..(0,19)]"
+        },
+        "qualifier": {
+          "type": "qualifier",
+          "value": "abc",
+          "range": "[(0,15)..(0,18)]"
+        },
+        "value": {
+          "type": "collection",
+          "items": [],
+          "range": "[(0,20)..(0,22)]",
+          "commas": [],
+          "openToken": {
+            "type": "token",
+            "value": "[",
+            "range": "[(0,20)..(0,21)]"
+          },
+          "closeToken": {
+            "type": "token",
+            "value": "]",
+            "range": "[(0,21)..(0,22)]"
+          }
+        }
+      }
+    ],
+    "range": "[(0,4)..(0,23)]",
+    "commas": [],
+    "openToken": {
+      "type": "token",
+      "value": "{",
+      "range": "[(0,4)..(0,5)]"
+    },
+    "closeToken": {
+      "type": "token",
+      "value": "}",
+      "range": "[(0,22)..(0,23)]"
+    }
+  },
+  "range": "[(0,0)..(0,23)]",
+  "colon": {
+    "type": "token",
+    "value": ":",
+    "range": "[(0,2)..(0,3)]"
+  }
+}

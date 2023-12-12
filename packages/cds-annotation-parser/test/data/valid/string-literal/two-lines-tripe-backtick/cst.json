@@ -1,0 +1,104 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "image": "a",
+                          "startOffset": 0,
+                          "endOffset": 0,
+                          "tokenTypeName": "Identifier"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 0
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 0
+              }
+            }
+          ],
+          "Colon": [
+            {
+              "image": ":",
+              "startOffset": 2,
+              "endOffset": 2,
+              "tokenTypeName": "Colon"
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "multiLineStringStripIndent": [
+                  {
+                    "name": "multiLineStringStripIndent",
+                    "children": {
+                      "TripleBacktick": [
+                        {
+                          "image": "```",
+                          "startOffset": 4,
+                          "endOffset": 6,
+                          "tokenTypeName": "TripleBacktick"
+                        }
+                      ],
+                      "MultiLineString": [
+                        {
+                          "image": "a\\nb",
+                          "startOffset": 7,
+                          "endOffset": 10,
+                          "tokenTypeName": "MultiLineString"
+                        }
+                      ],
+                      "MultiLineStringStripIndentExit": [
+                        {
+                          "image": "```",
+                          "startOffset": 11,
+                          "endOffset": 13,
+                          "tokenTypeName": "MultiLineStringStripIndentExit"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 4,
+                      "endOffset": 13
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 4,
+                "endOffset": 13
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 13
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 13
+  }
+}

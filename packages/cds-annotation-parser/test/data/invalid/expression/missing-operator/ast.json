@@ -1,0 +1,83 @@
+{
+  "type": "annotation",
+  "term": {
+    "type": "path",
+    "value": "test",
+    "segments": [
+      {
+        "type": "identifier",
+        "value": "test",
+        "range": "[(0,0)..(0,4)]",
+        "quoted": false
+      }
+    ],
+    "separators": [],
+    "range": "[(0,0)..(0,4)]"
+  },
+  "range": "[(0,0)..(0,18)]",
+  "colon": {
+    "type": "token",
+    "range": "[(0,4)..(0,5)]",
+    "value": ":"
+  },
+  "value": {
+    "operators": [],
+    "operands": [
+      {
+        "type": "path",
+        "value": "a",
+        "segments": [
+          {
+            "type": "identifier",
+            "value": "a",
+            "range": "[(0,8)..(0,9)]",
+            "quoted": false
+          }
+        ],
+        "separators": [],
+        "range": "[(0,8)..(0,9)]"
+      },
+      {
+        "type": "path",
+        "value": "nope",
+        "segments": [
+          {
+            "type": "identifier",
+            "value": "nope",
+            "range": "[(0,10)..(0,14)]",
+            "quoted": false
+          }
+        ],
+        "separators": [],
+        "range": "[(0,10)..(0,14)]"
+      },
+      {
+        "type": "path",
+        "value": "b",
+        "segments": [
+          {
+            "type": "identifier",
+            "value": "b",
+            "range": "[(0,15)..(0,16)]",
+            "quoted": false
+          }
+        ],
+        "separators": [],
+        "range": "[(0,15)..(0,16)]"
+      }
+    ],
+    "openToken": {
+      "type": "token",
+      "value": "(",
+      "range": "[(0,6)..(0,7)]"
+    },
+    "closeToken": {
+      "type": "token",
+      "value": ")",
+      "range": "[(0,17)..(0,18)]"
+    },
+    "range": "[(0,6)..(0,18)]",
+    "type": "incorrect-expression",
+    "message": "Error: no root operator found"
+  }
+}
