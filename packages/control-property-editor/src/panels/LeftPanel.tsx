@@ -17,7 +17,6 @@ import './LeftPanel.scss';
 export function LeftPanel(): ReactElement {
     return (
         <>
-            <Toolbar left={<AppLogo />} />
             <UISections
                 vertical={true}
                 splitter={true}
