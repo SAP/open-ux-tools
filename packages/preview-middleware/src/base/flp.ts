@@ -110,6 +110,9 @@ export interface TemplateConfig {
             additionalInformation: string;
             applicationType: 'URL';
             url: string;
+            applicationDependencies?: {
+                manifest: boolean;
+            };
         }
     >;
     ui5: {
@@ -409,7 +412,10 @@ export class FlpSandbox {
             description: manifest['sap.app'].description ?? '',
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
-            url: app.target
+            url: app.target,
+            applicationDependencies: {
+                manifest: true
+            }
         };
     }
 
