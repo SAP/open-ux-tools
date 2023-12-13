@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.11.17
+
+### Patch Changes
+
+-   9e7cbe8e: Disable manually inserting values in dropdowns
+
 ## 0.11.16
 
 ### Patch Changes
