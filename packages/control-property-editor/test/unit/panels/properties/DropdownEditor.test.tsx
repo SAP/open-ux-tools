@@ -36,14 +36,14 @@ describe('DropdownEditor', () => {
         const dropDownEditor = screen.getByTestId(testId);
         const dropDownEditorInput = dropDownEditor.querySelector('input');
         jest.spyOn(window, 'setTimeout').mockImplementation((cb: any) => {
-            cb(undefined, undefined, 'test');
+            cb(undefined, undefined, 'option2');
         });
         if (dropDownEditorInput) {
             fireEvent.focus(dropDownEditorInput);
-            fireEvent.input(dropDownEditorInput, { target: { value: 'test' } });
+            fireEvent.input(dropDownEditorInput, { target: { value: 'option2' } });
             fireEvent.blur(dropDownEditorInput);
         }
-        expect(dispatch).toBeCalledTimes(2);
+        expect(dispatch).toBeCalledTimes(1);
     });
     test('valueChanged function', () => {
         const result = valueChanged('testControlId', 'testPropertyName', 'newValue', 'Button');
