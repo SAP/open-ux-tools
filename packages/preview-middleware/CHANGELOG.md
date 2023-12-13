@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.11.18
+
+### Patch Changes
+
+-   b7f73026: FIX: appdescr changes that require client-side merging are not applied
+
 ## 0.11.17
 
 ### Patch Changes
