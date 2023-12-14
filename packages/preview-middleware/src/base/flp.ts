@@ -436,7 +436,7 @@ export class FlpSandbox {
                 })
                 .join(',');
         } else {
-            return '';
+            return 'sap.m,sap.ui.core,sap.ushell';
         }
     }
 }
