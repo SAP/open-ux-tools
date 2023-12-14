@@ -5,7 +5,7 @@ export default {
         'default': {
             '$Kind': 'Term',
             '$AppliesTo': ['Property'],
-            '$Type': 'Aggregation.AggregationDefaultType',
+            '$Type': 'Org.OData.Aggregation.V1.AggregationDefaultType',
             '@Org.OData.Core.V1.Description': '(CDS annotation) Defines the default aggregation of a property'
         },
         'AggregationDefaultType': {

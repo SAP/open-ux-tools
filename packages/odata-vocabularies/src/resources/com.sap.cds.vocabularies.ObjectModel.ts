@@ -5,7 +5,7 @@ export default {
         'modelingPattern': {
             '$Kind': 'Term',
             '$AppliesTo': ['EntityType'],
-            '$Type': 'ObjectModel.ModelingPatternType',
+            '$Type': 'com.sap.cds.vocabularies.ObjectModel.ModelingPatternType',
             '@Org.OData.Core.V1.Description': '(CDS annotation) Defines the modeling pattern (TODO)'
         },
         'ModelingPatternType': {
@@ -22,7 +22,7 @@ export default {
         'supportedCapabilities': {
             '$Kind': 'Term',
             '$AppliesTo': ['EntityType'],
-            '$Type': 'ObjectModel.SupportedCapabilitiesType',
+            '$Type': 'com.sap.cds.vocabularies.ObjectModel.SupportedCapabilitiesType',
             '$Collection': true,
             '@Org.OData.Core.V1.Description': '(CDS annotation) Defines the supported capabilities (TODO)'
         },

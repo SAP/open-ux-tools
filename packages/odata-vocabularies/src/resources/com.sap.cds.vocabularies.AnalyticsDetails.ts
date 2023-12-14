@@ -5,7 +5,7 @@ export default {
         'measureType': {
             '$Kind': 'Term',
             '$AppliesTo': ['Property'],
-            '$Type': 'AnalyticsDetails.MeasureTypeEnumeration',
+            '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.MeasureTypeEnumeration',
             '@Org.OData.Core.V1.Description': '(CDS annotation) Defines the measure type (TODO)'
         },
         'MeasureTypeEnumeration': {
@@ -29,7 +29,7 @@ export default {
             '@Org.OData.Core.V1.Description': 'Type of exception aggregation step (TODO)',
             '@Org.OData.Core.V1.LongDescription': '(Long Description) Type of exception aggregation step (TODO)',
             'exceptionAggregationBehavior': {
-                '$Type': 'AnalyticsDetails.ExceptionAggregationBehaviorType',
+                '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.ExceptionAggregationBehaviorType',
                 '@Org.OData.Core.V1.Description': 'Description exception aggregation behavior (TODO)'
             },
 
@@ -73,7 +73,7 @@ export default {
             '@Org.OData.Core.V1.Description': 'Type of variable (TODO)',
             '@Org.OData.Core.V1.LongDescription': '(Long Description) Type of variable (TODO)',
             'usageType': {
-                '$Type': 'AnalyticsDetails.VariableUsageTypeEnumeration',
+                '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.VariableUsageTypeEnumeration',
                 '@Org.OData.Core.V1.Description': 'Description variable usageType (TODO)'
             },
             'referenceElement': {
@@ -108,7 +108,7 @@ export default {
             },
             'selectionType': {
                 '$Nullable': true,
-                '$Type': 'AnalyticsDetails.VariableSelectionTypeEnumeration',
+                '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.VariableSelectionTypeEnumeration',
                 '@Org.OData.Core.V1.Description': 'Description variable selectionType (TODO)'
             },
             'multipleSelections': {
@@ -176,11 +176,11 @@ export default {
             '$Kind': 'ComplexType',
             '@Org.OData.Core.V1.Description': 'Type of range (TODO)',
             'sign': {
-                '$Type': 'AnalyticsDetails.RangeSignType',
+                '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.RangeSignType',
                 '@Org.OData.Core.V1.Description': 'Description range sign (TODO)'
             },
             'option': {
-                '$Type': 'AnalyticsDetails.RangeOptionType',
+                '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.RangeOptionType',
                 '@Org.OData.Core.V1.Description': 'Description range option (TODO)'
             },
 
@@ -225,7 +225,7 @@ export default {
             '$Kind': 'ComplexType',
             '@Org.OData.Core.V1.Description': 'Type of hierarchy binding (TODO)',
             'type': {
-                '$Type': 'AnalyticsDetails.HierarchyBindingTypeEnumeration',
+                '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.HierarchyBindingTypeEnumeration',
                 '@Org.OData.Core.V1.Description': 'Description hierarchy binding type type (TODO)'
             },
             'value': {
