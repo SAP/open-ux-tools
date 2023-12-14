@@ -12,7 +12,7 @@ import type {
 } from '../types';
 import { fileExists, readFile, readJSON } from '../file';
 import { loadModuleFromProject } from './module-loader';
-import { Logger, ToolsLogger } from '@sap-ux/logger';
+import { Logger } from '@sap-ux/logger';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
