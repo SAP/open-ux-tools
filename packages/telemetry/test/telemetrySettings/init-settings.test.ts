@@ -63,7 +63,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         );
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson,
+            resourceId: '',
+            consumerModule: packageJson,
             internalFeature: false
         });
 
@@ -81,7 +82,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         );
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson,
+            resourceId: '',
+            consumerModule: packageJson,
             internalFeature: false
         });
 
@@ -106,7 +108,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson,
+            resourceId: '',
+            consumerModule: packageJson,
             internalFeature: false
         });
 
@@ -131,7 +134,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson,
+            resourceId: '',
+            consumerModule: packageJson,
             internalFeature: false
         });
 
@@ -155,7 +159,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockRejectedValueOnce(new Error('MockError: No file found'));
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson,
+            resourceId: '',
+            consumerModule: packageJson,
             internalFeature: false
         });
         expect(readFileMock).toBeCalledTimes(1);
@@ -179,7 +184,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson,
+            resourceId: '',
+            consumerModule: packageJson,
             internalFeature: false
         });
         expect(readFileMock).toBeCalledTimes(1);
@@ -202,7 +208,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson,
+            resourceId: '',
+            consumerModule: packageJson,
             internalFeature: false
         });
         expect(readFileMock).toBeCalledTimes(1);
@@ -231,7 +238,8 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
-            modulePackageJson: packageJson,
+            resourceId: '',
+            consumerModule: packageJson,
             internalFeature: false
         });
         expect(readFileMock).toBeCalledTimes(0);

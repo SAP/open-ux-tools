@@ -46,12 +46,12 @@ const parseErrorStack = (errorStack: string): string[] => {
 
 let reportingTelemetryClient: appInsights.TelemetryClient;
 
-if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY?.trim() !== 'true') {
-    reportingTelemetryClient = new appInsights.TelemetryClient(TelemetrySettings.azureInstrumentationKey);
-    configAzureTelemetryClient(reportingTelemetryClient);
-}
-
 export const reportRuntimeError = (error: Error): void => {
+    if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY?.trim() !== 'true') {
+        reportingTelemetryClient = new appInsights.TelemetryClient(TelemetrySettings.azureInstrumentationKey);
+        configAzureTelemetryClient(reportingTelemetryClient);
+    }
+
     const properties: { [key: string]: string } = { message: error.message };
     if (error.stack) {
         const parsedStack = parseErrorStack(error.stack);

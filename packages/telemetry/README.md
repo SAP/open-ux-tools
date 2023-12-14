@@ -14,5 +14,14 @@ Yarn
 Pnpm
 `pnpm add @sap-ux/telemetry`
 
-## Usage
+## Example Usage
 
+See code in example folder for basic usage. To run example:
+
+```shell
+# At project root folder of @sap-ux/telemetry
+cd package/telemetry
+# Create a file with name .env
+# Add this line in .env file OpenUxTools_ResourceId=<your_azure_instrument_key>
+pnpm example
+```

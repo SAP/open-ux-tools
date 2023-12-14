@@ -109,8 +109,9 @@ function watchTelemetrySettingStore(storeService: Service<TelemetrySetting, Tele
  */
 export const initTelemetrySettings = async (options: ToolsSuiteTelemetryInitSettings): Promise<void> => {
     try {
-        TelemetrySettings.consumerModuleName = options.modulePackageJson.name;
-        TelemetrySettings.consumerModuleVersion = options.modulePackageJson.version;
+        TelemetrySettings.azureInstrumentationKey = options.resourceId;
+        TelemetrySettings.consumerModuleName = options.consumerModule.name;
+        TelemetrySettings.consumerModuleVersion = options.consumerModule.version;
         ToolingTelemetrySettings.internalFeature = options.internalFeature ?? false;
         const storeService = await getService<TelemetrySetting, TelemetrySettingKey>({
             entityName: 'telemetrySetting'

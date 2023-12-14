@@ -77,7 +77,7 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
      */
     public async reportEvent(
         event: TelemetryEvent,
-        sampleRate: SampleRate | undefined,
+        sampleRate?: SampleRate,
         telemetryHelperProperties?: TelemetryHelperProperties,
         ignoreSettings?: boolean
     ): Promise<void> {
@@ -110,7 +110,7 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
      */
     public async reportEventBlocking(
         event: TelemetryEvent,
-        sampleRate: SampleRate | undefined,
+        sampleRate?: SampleRate,
         telemetryHelperProperties?: TelemetryHelperProperties,
         ignoreSettings?: boolean
     ): Promise<void> {

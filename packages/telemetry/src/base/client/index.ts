@@ -31,7 +31,6 @@ class ClientFactory {
         if (client) {
             return client;
         }
-
         const ClientConstructor = clientConstructor;
         client = new ClientConstructor(
             TelemetrySettings.azureInstrumentationKey,
