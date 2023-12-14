@@ -1,0 +1,33 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "incremental": true,
+    "outDir": "dist",
+    "rootDir": "./src",
+    "lib": [
+      "ES2021",
+      "ESNext.BigInt"
+    ],
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "preserveConstEnums": false
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json",
+    "../odata-annotation-core-types/src/types/metadata.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
+  "references": [
+    {
+      "path": "../odata-annotation-core-types"
+    },
+    {
+      "path": "../odata-entity-model"
+    }
+  ]
+}

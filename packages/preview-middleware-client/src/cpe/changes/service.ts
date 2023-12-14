@@ -1,7 +1,7 @@
 import type {
     ExternalAction,
+    PendingChange,
     SavedPropertyChange,
-    PendingPropertyChange,
     UnknownSavedChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
@@ -16,7 +16,7 @@ import type { SelectionService } from '../selection';
 
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
 import type Event from 'sap/ui/base/Event';
-import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 
 interface ChangeContent {
@@ -39,6 +39,7 @@ interface Change {
     selector: ChangeSelector;
     content: ChangeContent;
     creation: string;
+    changeType: string;
 }
 
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
@@ -85,23 +86,23 @@ function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): 
  */
 export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
+    private sendAction: (action: ExternalAction) => void;
     /**
      *
      * @param options ui5 adaptation options.
      * @param ui5 facade for ui5 framework methods.
      * @param selectionService selection service instance.
      */
-    constructor(
-        private readonly options: UI5AdaptationOptions,
-        private readonly selectionService: SelectionService
-    ) {}
+    constructor(private readonly options: UI5AdaptationOptions, private readonly selectionService: SelectionService) {}
 
     /**
+     * Initializes change service.
      *
      * @param sendAction action sender function
      * @param subscribe subscriber function
      */
     public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
+        this.sendAction = sendAction;
         subscribe(async (action): Promise<void> => {
             if (changeProperty.match(action)) {
                 try {
@@ -129,6 +130,30 @@ export class ChangeService {
             }
         });
 
+        await this.fetchSavedChanges();
+        this.updateStack();
+
+        this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
+    }
+
+    /**
+     * Send update to the editor with modified stack.
+     *
+     * @param pendingChanges Changes that are waiting to be saved
+     */
+    private updateStack(pendingChanges: PendingChange[] = []) {
+        this.sendAction(
+            changeStackModified({
+                saved: this.savedChanges,
+                pending: pendingChanges
+            })
+        );
+    }
+
+    /**
+     * Fetches saved changes from the workspace and sorts them.
+     */
+    private async fetchSavedChanges(): Promise<void> {
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
         const savedChanges = await savedChangesResponse.json();
         const changes = (
@@ -144,6 +169,9 @@ export class ChangeService {
                         ) {
                             throw new Error('Invalid change, missing new value in the change file');
                         }
+                        if (change.changeType !== 'propertyChange' && change.changeType !== 'propertyBindingChange') {
+                            throw new Error('Unknown Change Type');
+                        }
                         return {
                             type: 'saved',
                             kind: 'valid',
@@ -152,7 +180,8 @@ export class ChangeService {
                             propertyName: change.content.property,
                             value: change.content.newValue ?? change.content.newBinding,
                             timestamp: new Date(change.creation).getTime(),
-                            controlName: change.selector.type.split('.').pop()
+                            controlName: change.selector.type ? (change.selector.type.split('.').pop() as string) : '',
+                            changeType: change.changeType
                         };
                     } catch (error) {
                         // Gracefully handle change files with invalid content
@@ -160,7 +189,8 @@ export class ChangeService {
                             const unknownChange: UnknownSavedChange = {
                                 type: 'saved',
                                 kind: 'unknown',
-                                fileName: change.fileName
+                                fileName: change.fileName,
+                                controlId: change.selector?.id // some changes may not have selector
                             };
                             if (change.creation) {
                                 unknownChange.timestamp = new Date(change.creation).getTime();
@@ -173,13 +203,6 @@ export class ChangeService {
                 .filter((change) => !!change) as SavedPropertyChange[]
         ).sort((a, b) => b.timestamp - a.timestamp);
         this.savedChanges = changes;
-        sendAction(
-            changeStackModified({
-                saved: changes,
-                pending: []
-            })
-        );
-        this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler(sendAction));
     }
 
     /**
@@ -206,58 +229,150 @@ export class ChangeService {
             );
 
         await Promise.all(filesToDelete).catch((error) => Log.error(error));
+
+        await this.fetchSavedChanges();
+        this.updateStack();
     }
 
     /**
      * Handler for undo/redo stack change.
      *
      * @param sendAction send action method
-     * @returns (event: sap.ui.base.Event) => void
+     * @returns (event: sap.ui.base.Event) => Promise<void>
      */
-    private createOnStackChangeHandler(sendAction: (action: ExternalAction) => void): (event: Event) => void {
-        return (): void => {
+    private createOnStackChangeHandler(): (event: Event) => Promise<void> {
+        return async (): Promise<void> => {
             const stack = this.options.rta.getCommandStack();
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
             const inactiveCommandCount = allCommands.length - executedCommands.length;
-
-            const activeChanges = allCommands
-                .map((command: BaseCommand, i): PendingPropertyChange | undefined => {
-                    let result: PendingPropertyChange | undefined;
-                    try {
-                        const selector = command.getProperty('selector');
-                        const changeType = command.getProperty('changeType');
-                        let value = '';
-                        switch (changeType) {
-                            case 'propertyChange':
-                                value = command.getProperty('newValue');
-                                break;
-                            case 'propertyBindingChange':
-                                value = command.getProperty('newBinding');
-                                break;
-                            default:
-                                throw new Error(`Invalid changeType ${changeType}`);
+            let activeChanges: PendingChange[] = [];
+            allCommands.forEach((command: FlexCommand, i): void => {
+                try {
+                    if (typeof command.getCommands === 'function') {
+                        const subCommands = command.getCommands();
+                        subCommands.forEach((command) => {
+                            const pendingChange = this.prepareChangeType(command, inactiveCommandCount, i);
+                            if (pendingChange) {
+                                activeChanges.push(pendingChange);
+                            }
+                        });
+                    } else {
+                        const pendingChange = this.prepareChangeType(command, inactiveCommandCount, i);
+                        if (pendingChange) {
+                            activeChanges.push(pendingChange);
                         }
-                        result = {
-                            type: 'pending',
-                            controlId: selector.id,
-                            propertyName: command.getProperty('propertyName'),
-                            isActive: i >= inactiveCommandCount,
-                            value,
-                            controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
-                        };
-                    } catch (error) {
-                        Log.error('Failed: ', error);
                     }
-                    return result;
-                })
-                .filter((change): boolean => !!change) as PendingPropertyChange[];
-            sendAction(
-                changeStackModified({
-                    saved: this.savedChanges,
-                    pending: activeChanges
-                })
-            );
+                } catch (error) {
+                    Log.error('CPE: Change creation Failed', error);
+                }
+            });
+
+            activeChanges = activeChanges.filter((change): boolean => !!change);
+
+            if (Array.isArray(allCommands) && allCommands.length === 0) {
+                await this.fetchSavedChanges();
+            }
+
+            this.updateStack(activeChanges);
         };
+    }
+
+    private prepareChangeType(
+        command: FlexCommand,
+        inactiveCommandCount: number,
+        index: number
+    ): PendingChange | undefined {
+        let result: PendingChange;
+        let value = '';
+        const selectorId = this.getCommandSelectorId(command);
+        const changeType = this.getCommandChangeType(command);
+
+        if (!selectorId || !changeType) {
+            return undefined;
+        }
+
+        switch (changeType) {
+            case 'propertyChange':
+                value = command.getProperty('newValue');
+                break;
+            case 'propertyBindingChange':
+                value = command.getProperty('newBinding');
+                break;
+        }
+        if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
+            result = {
+                type: 'pending',
+                changeType,
+                controlId: selectorId,
+                propertyName: command.getProperty('propertyName'),
+                isActive: index >= inactiveCommandCount,
+                value,
+                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
+            };
+        } else {
+            result = {
+                type: 'pending',
+                controlId: selectorId,
+                changeType,
+                isActive: index >= inactiveCommandCount,
+                controlName:
+                    changeType === 'addXMLAtExtensionPoint'
+                        ? command.getSelector().name ?? ''
+                        : command.getElement().getMetadata().getName().split('.').pop() ?? ''
+            };
+        }
+
+        return result;
+    }
+
+    /**
+     * Retry operations.
+     *
+     * @param operations to be executed
+     * @returns first successfull operation result or undefined
+     */
+    private retryOperations<T>(operations: Array<() => T>): T | undefined {
+        for (const operation of operations) {
+            try {
+                const result = operation();
+                if (!result) {
+                    continue;
+                }
+                return result;
+            } catch (error) {
+                Log.error(`Retry operation failed: ${error?.message}`);
+                continue;
+            }
+        }
+        return undefined;
+    }
+
+    /**
+     * Get command change type.
+     *
+     * @param command to be executed for creating change
+     * @returns command change type or undefined
+     */
+    private getCommandChangeType(command: FlexCommand): string | undefined {
+        return this.retryOperations([
+            () => command.getChangeType(),
+            () => command.getPreparedChange().getDefinition().changeType
+        ]);
+    }
+
+    /**
+     * Get command selector id.
+     *
+     * @param command to be executed for creating change
+     * @returns command selector id or undefined
+     */
+    private getCommandSelectorId(command: FlexCommand): string | undefined {
+        return this.retryOperations([
+            () => command.getSelector().id,
+            () => command.getElement().getProperty('persistencyKey'),
+            () => command.getElement().getId(),
+            () => command.getParent()?.getElement().getId()
+        ]);
     }
 }

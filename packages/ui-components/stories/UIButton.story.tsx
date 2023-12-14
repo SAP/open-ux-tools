@@ -51,28 +51,33 @@ export const defaultUsage = (): JSX.Element => {
         }
     }));
 
-    const menuItemsWithSeparators: UIContextualMenuItem[] = [
-        getMenuItem('option1', 'option 1'),
-        getMenuItem('option2', 'option 2'),
-        {
-            key: '',
-            itemType: UIContextualMenuItemType.Divider
-        },
-        getMenuItem('option3', 'option 3'),
-        getMenuItem('option4', 'option 4'),
-        getMenuItem('option5', 'option 5'),
-        {
-            key: '',
-            itemType: UIContextualMenuItemType.Header,
-            text: 'Dummy header'
-        },
-        getMenuItem('option6', 'option 6'),
-        getMenuItem('option7', 'option 7'),
-        getMenuItem('option8', 'option 8'),
-        getMenuItem('option10', 'option 10'),
-        getMenuItem('option11', 'option 11'),
-        getMenuItem('option12', 'option 12')
-    ];
+    const getMenuItemsWithSeparators = (): UIContextualMenuItem[] => {
+        return [
+            getMenuItem('option1', 'option 1'),
+            getMenuItem('rename', 'Simulate rename'),
+            {
+                key: '',
+                itemType: UIContextualMenuItemType.Divider
+            },
+            getMenuItem('option3', 'option 3'),
+            getMenuItem('option4', 'option 4'),
+            getMenuItem('option5', 'option 5'),
+            {
+                key: '',
+                itemType: UIContextualMenuItemType.Header,
+                text: 'Dummy header'
+            },
+            getMenuItem('option6', 'option 6'),
+            getMenuItem('option7', 'option 7'),
+            getMenuItem('option8', 'option 8'),
+            getMenuItem('option10', 'option 10'),
+            getMenuItem('option11', 'option 11'),
+            getMenuItem('option12', 'option 12')
+        ];
+    };
+    const [menuItemsWithSeparators, setMenuItemsWithSeparators] = useState<UIContextualMenuItem[]>(
+        getMenuItemsWithSeparators()
+    );
 
     return (
         <Stack tokens={stackTokens}>
@@ -121,7 +126,17 @@ export const defaultUsage = (): JSX.Element => {
                     />
                     <UISplitButton
                         id="test3"
-                        callback={onCallback.bind(this)}
+                        callback={(key?: string) => {
+                            if (key === 'rename') {
+                                const newItems = getMenuItemsWithSeparators();
+                                const item = newItems.find((item) => item.key === 'rename');
+                                if (item) {
+                                    item.text = 'Renamed';
+                                }
+                                setMenuItemsWithSeparators(newItems);
+                            }
+                            onCallback(key);
+                        }}
                         menuItems={menuItemsWithSeparators}
                         button={buttonItem}
                     />

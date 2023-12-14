@@ -1,10 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`FlpSandbox init add default libs if no libs in manifest.json 1`] = `"sap.m,sap.ui.core,sap.ushell"`;
+
 exports[`FlpSandbox init additional apps 1`] = `
 Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
       "applicationType": "URL",
       "description": "",
       "title": "my.id",
@@ -12,6 +17,9 @@ Object {
     },
     "myObject-action": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.other",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Other App",
@@ -19,6 +27,9 @@ Object {
     },
     "testfev2app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Simple App",
@@ -35,8 +46,15 @@ Object {
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
     ],
-    "libs": "",
+    "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
       "my.id": "..",
       "open.ux.preview.client": "/preview/client",
@@ -53,6 +71,9 @@ Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
       "applicationType": "URL",
       "description": "",
       "title": "my.id",
@@ -69,8 +90,15 @@ Object {
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
     ],
-    "libs": "",
+    "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
       "my.id": "..",
       "open.ux.preview.client": "/preview/client",
@@ -85,6 +113,9 @@ Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Simple App",
@@ -101,6 +132,13 @@ Object {
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
       },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
     "resources": Object {
@@ -112,11 +150,16 @@ Object {
 }
 `;
 
+exports[`FlpSandbox init reuse libs not part of data-sap-ui-libs 1`] = `"sap.ui.core,sap.m"`;
+
 exports[`FlpSandbox init ui5Theme 1`] = `
 Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Simple App",
@@ -132,6 +175,13 @@ Object {
         "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
         "custom": true,
         "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
       },
     ],
     "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
@@ -185,7 +235,7 @@ exports[`FlpSandbox router editor with config 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
@@ -200,7 +250,7 @@ exports[`FlpSandbox router editor with config 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -257,7 +307,7 @@ exports[`FlpSandbox router rta 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
@@ -272,7 +322,7 @@ exports[`FlpSandbox router rta 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -355,7 +405,7 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
@@ -370,7 +420,7 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -428,7 +478,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
@@ -443,7 +493,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -501,7 +551,7 @@ exports[`FlpSandbox router test/flp.html 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
@@ -516,7 +566,7 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true}]'
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"

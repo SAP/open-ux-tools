@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux-private/preview-middleware-client",
-    "version": "0.4.2",
+    "version": "0.8.10",
     "description": "Client-side coding hosted by the preview middleware",
     "repository": {
         "type": "git",
@@ -23,11 +23,11 @@
     ],
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
-        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+        "node": ">=18.x"
     },
     "dependencies": {},
     "devDependencies": {
-        "@sapui5/types": "1.117.1",
+        "@sapui5/types": "1.120.1",
         "ui5-tooling-modules": "3.0.5",
         "@sap-ux-private/control-property-editor-common": "workspace:*",
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",

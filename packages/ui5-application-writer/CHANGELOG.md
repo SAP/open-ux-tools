@@ -1,5 +1,47 @@
 # @sap-ux/ui5-application-writer
 
+## 0.26.2
+
+### Patch Changes
+
+-   f11f9b2c: fix(deps): update dependency @ui5/manifest to v1.61.0
+
+## 0.26.1
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+
+## 0.26.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+
+## 0.25.10
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
+## 0.25.9
+
+### Patch Changes
+
+-   4087bffb: Allow more flexible @types type loading for TypeScript generate projects
+
+## 0.25.8
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+
 ## 0.25.7
 
 ### Patch Changes

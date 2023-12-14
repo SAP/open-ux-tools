@@ -1,5 +1,275 @@
 # @sap-ux/preview-middleware
 
+## 0.11.19
+
+### Patch Changes
+
+-   e224bc43: Exclude reuse libraries from being added to the data-sap-ui-libs
+
+## 0.11.18
+
+### Patch Changes
+
+-   b7f73026: FIX: appdescr changes that require client-side merging are not applied
+
+## 0.11.17
+
+### Patch Changes
+
+-   9e7cbe8e: Disable manually inserting values in dropdowns
+
+## 0.11.16
+
+### Patch Changes
+
+-   a714d53d: No unsaved change shown when adding fragment to Extension Point
+
+## 0.11.15
+
+### Patch Changes
+
+-   a44e9007: Invalid target aggregation and index are accepted in Add Fragment dialog
+
+## 0.11.14
+
+### Patch Changes
+
+-   338fe503: Add integration test
+
+## 0.11.13
+
+### Patch Changes
+
+-   733cec7b: No Datetime is shown for Code Ext changes in saved changes panel
+
+## 0.11.12
+
+### Patch Changes
+
+-   ff457bef: Controller Extension and Fragment name now show error if there is a whitespace after their name
+
+## 0.11.11
+
+### Patch Changes
+
+-   76c751be: Save button for ui5 versions lower than 1.110 is shown
+
+## 0.11.10
+
+### Patch Changes
+
+-   Updated dependencies [5a1eb6ed]
+    -   @sap-ux/adp-tooling@0.7.2
+
+## 0.11.9
+
+### Patch Changes
+
+-   5077d95f: Hide feedback and close buttons for adp projects
+
+## 0.11.8
+
+### Patch Changes
+
+-   b4081d0a: Show warning message for adaptation project if ui5 version is less than 1.71
+
+## 0.11.7
+
+### Patch Changes
+
+-   237e69d1: Fix for missing delete icon for new comp/control variant views
+
+## 0.11.6
+
+### Patch Changes
+
+-   a280785d: Fix for showing redundant warning dialog in CPE for adaptation projects
+
+## 0.11.5
+
+### Patch Changes
+
+-   b5eb0792: Index field is disabled when aggregation with specialIndexHandling is chosen
+
+## 0.11.4
+
+### Patch Changes
+
+-   02609800: Fix for comp/control variant changes not updating in pending changes tab
+
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [de818954]
+    -   @sap-ux/adp-tooling@0.7.1
+
+## 0.11.2
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/adp-tooling@0.7.0
+
+## 0.11.1
+
+### Patch Changes
+
+-   18c9d967: Add validation for property changes for i18n models
+
+## 0.11.0
+
+### Minor Changes
+
+-   793f846b: Open existing controller from project files instead of creating a new one
+
+### Patch Changes
+
+-   Updated dependencies [793f846b]
+    -   @sap-ux/adp-tooling@0.6.0
+
+## 0.10.7
+
+### Patch Changes
+
+-   061a6544: CPE UI is not updated when changes are saved or deleted
+
+## 0.10.6
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.5.5
+
+## 0.10.5
+
+### Patch Changes
+
+-   dc2f9345: Outline tree for Fiori applications is not collapsed correctly
+
+## 0.10.4
+
+### Patch Changes
+
+-   be8e3fb3: fix outline initialisation for the case when application is loaded, but outline is empty
+
+## 0.10.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.5.4
+
+## 0.10.2
+
+### Patch Changes
+
+-   e2b264c2: Make Control Property Editor aware which application (scenario) its running in the iframe
+
+## 0.10.1
+
+### Patch Changes
+
+-   ca61803e: Fixed controller extension/fragment name longer than 64 chars error not showing up
+
+## 0.10.0
+
+### Minor Changes
+
+-   6d2d2255: support all kind of changes from command stack
+
+## 0.9.0
+
+### Minor Changes
+
+-   318e040e: Enables creation of XML fragments for Extension Points from the outline tree (when right-clicking on extension point) or from the application (when clicking on control).
+
+## 0.8.7
+
+### Patch Changes
+
+-   8d16d0b3: Exports FlpConfig and RtaConfig types for usage in @sap/ux-ui5-tooling
+
+## 0.8.6
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.5.3
+
+## 0.8.5
+
+### Patch Changes
+
+-   942f7752: Fixes the configuration of the LocalStorageConnector to avoid conflicts with the WorkspaceConnector
+
+## 0.8.4
+
+### Patch Changes
+
+-   96b115d8: Exports the initAdp function so that can be use in @sap/ux-ui5-tooling
+
+## 0.8.3
+
+### Patch Changes
+
+-   5f90873d: The features for all adaptation projects which are loaded from "WorkspaceConnector" in "preview-middleware-client" are with "isVariantAdaptationEnabled=true".
+
+## 0.8.2
+
+### Patch Changes
+
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/adp-tooling@0.5.2
+
+## 0.8.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.5.1
+
+## 0.8.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/adp-tooling@0.5.0
+    -   @sap-ux/logger@0.4.0
+
+## 0.7.14
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.4.5
+
+## 0.7.13
+
+### Patch Changes
+
+-   b6e925f8: Adds local persistence of personalizations across local preview sessions
+
+## 0.7.12
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/adp-tooling@0.4.4
+
+## 0.7.11
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.4.3
+
+## 0.7.10
+
+### Patch Changes
+
+-   aef0ccf3: Add bindingString prop for getBindingInfo expression to support maintenance version
+
 ## 0.7.9
 
 ### Patch Changes

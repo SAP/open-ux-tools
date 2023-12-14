@@ -114,6 +114,11 @@ declare module '@ui5/server' {
              * Get the full path of the source (webapp in case of an app) folder.
              */
             getSourcePath(): string;
+
+            /**
+             * Get the name of the project.
+             */
+            getName(): string;
         };
     }
 

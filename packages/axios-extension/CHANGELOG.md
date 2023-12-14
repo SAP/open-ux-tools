@@ -1,5 +1,64 @@
 # @sap-ux/axios-extension
 
+## 1.7.3
+
+### Patch Changes
+
+-   286883cb: fix(deps): update dependency axios to v1.6.0 [security]
+-   Updated dependencies [286883cb]
+    -   @sap-ux/btp-utils@0.12.1
+
+## 1.7.2
+
+### Patch Changes
+
+-   db918804: App name with namespace (e.g. /NS/APPNAME) needs to be URI encoded in the UI% ABAP repository delete service request URL.
+
+## 1.7.1
+
+### Patch Changes
+
+-   fa4537b2: cleanup how baseURL is used to deteremine if the service is created with a destination
+
+## 1.7.0
+
+### Minor Changes
+
+-   aa2ff95b: Enhanced LREP and UI5_ABAP_REPO services to support deployment of adaptation projects
+
+## 1.6.1
+
+### Patch Changes
+
+-   3cfaba52: Apply additional logging if the endpoint is a destination
+
+## 1.6.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/btp-utils@0.12.0
+    -   @sap-ux/logger@0.4.0
+
+## 1.5.1
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+
+## 1.5.0
+
+### Minor Changes
+
+-   d7492b53: Instead of returning empty array, `TransportChecksService.getTransportRequests()` now throws a specific error if input package is a local package. Consumer can check if
+    the error message string equals `TransportChecksService.LocalPackageError`. This fix is to correctly identify
+    local package because non-local package that is not associated with any transport request can also return emtpy array.
+
 ## 1.4.8
 
 ### Patch Changes

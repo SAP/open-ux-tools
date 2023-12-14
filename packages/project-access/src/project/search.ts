@@ -198,27 +198,41 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
             };
         }
         // Project must be CAP, find project root
-        try {
-            const { root } = parse(appRoot);
-            let projectRoot = dirname(appRoot);
-            while (projectRoot !== root) {
-                if (await getCapProjectType(projectRoot)) {
-                    // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
-                    // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
-                    if (join(projectRoot, 'app') !== appRoot) {
-                        return {
-                            appRoot,
-                            projectRoot
-                        };
-                    }
-                }
-                projectRoot = dirname(projectRoot);
-            }
-        } catch {
-            // No project root can be found at parent folder.
+        const projectRoot = await findCapProjectRoot(appRoot);
+        if (projectRoot) {
+            return {
+                appRoot,
+                projectRoot
+            };
         }
     } catch {
         // Finding root should not throw error. Return null instead.
+    }
+    return null;
+}
+
+/**
+ * Find CAP project root path.
+ *
+ * @param path - path inside CAP project
+ * @returns - CAP project root path
+ */
+async function findCapProjectRoot(path: string): Promise<string | null> {
+    try {
+        const { root } = parse(path);
+        let projectRoot = dirname(path);
+        while (projectRoot !== root) {
+            if (await getCapProjectType(projectRoot)) {
+                // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
+                // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
+                if (join(projectRoot, 'app') !== path) {
+                    return projectRoot;
+                }
+            }
+            projectRoot = dirname(projectRoot);
+        }
+    } catch {
+        // No project root can be found at parent folder.
     }
     return null;
 }
@@ -252,7 +266,7 @@ async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResul
             // All UI5 apps have at least sap.app: { id: <ID>, type: "application" } in manifest.json
             pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
             const manifest = pathMap[manifestPath] as Manifest;
-            if (!manifest['sap.app'] || !manifest['sap.app'].id || manifest['sap.app'].type !== 'application') {
+            if (!manifest['sap.app']?.id || manifest['sap.app'].type !== 'application') {
                 continue;
             }
             const roots = await findRootsForPath(manifestPath);
@@ -276,9 +290,10 @@ async function filterAdaptations(pathMap: FileMapAndCache): Promise<AdaptationRe
     const results: AdaptationResults[] = [];
     const manifestAppDescrVars = Object.keys(pathMap).filter((path) => path.endsWith(FileName.ManifestAppDescrVar));
     for (const manifestAppDescrVar of manifestAppDescrVars) {
-        const adpPath = await findFileUp('.adp', dirname(manifestAppDescrVar));
-        if (adpPath && (await fileExists(join(adpPath, FileName.AdaptationConfig)))) {
-            results.push({ appRoot: dirname(adpPath), manifestAppdescrVariantPath: manifestAppDescrVar });
+        const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestAppDescrVar));
+        const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
+        if (projectRoot && (await fileExists(join(projectRoot, 'webapp', FileName.ManifestAppDescrVar)))) {
+            results.push({ appRoot: projectRoot, manifestAppdescrVariantPath: manifestAppDescrVar });
         }
     }
     return results;
@@ -419,8 +434,8 @@ export async function findCapProjects(options: {
     readonly wsFolders: WorkspaceFolder[] | string[];
 }): Promise<string[]> {
     const result = new Set<string>();
-    const excludeFolders = ['node_modules', 'dist', 'src', 'webapp', 'MDKModule', 'gen'];
-    const fileNames = [FileName.Pom, FileName.Package];
+    const excludeFolders = ['node_modules', 'dist', 'webapp', 'MDKModule', 'gen'];
+    const fileNames = [FileName.Pom, FileName.Package, FileName.CapJavaApplicationYaml];
     const wsRoots = wsFoldersToRootPaths(options.wsFolders);
     for (const root of wsRoots) {
         const filesToCheck = await findBy({
@@ -428,7 +443,26 @@ export async function findCapProjects(options: {
             root,
             excludeFolders
         });
-        const foldersToCheck = Array.from(new Set(filesToCheck.map((file) => dirname(file)))); //only directories without duplicates
+        const appYamlsToCheck = Array.from(
+            new Set(
+                filesToCheck
+                    .filter((file) => basename(file) === FileName.CapJavaApplicationYaml)
+                    .map((file) => dirname(file))
+            )
+        );
+        const foldersToCheck = Array.from(
+            new Set(
+                filesToCheck
+                    .filter((file) => basename(file) !== FileName.CapJavaApplicationYaml)
+                    .map((file) => dirname(file))
+            )
+        );
+        for (const appYamlToCheck of appYamlsToCheck) {
+            const capRoot = await findCapProjectRoot(appYamlToCheck);
+            if (capRoot) {
+                result.add(capRoot);
+            }
+        }
         for (const folderToCheck of foldersToCheck) {
             if ((await getCapProjectType(folderToCheck)) !== undefined) {
                 result.add(folderToCheck);

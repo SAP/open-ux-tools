@@ -1,5 +1,155 @@
 # @sap-ux/environment-check
 
+## 0.16.14
+
+### Patch Changes
+
+-   Updated dependencies [20a4dbfc]
+    -   @sap-ux/project-access@1.16.1
+    -   @sap-ux/axios-extension@1.7.3
+
+## 0.16.13
+
+### Patch Changes
+
+-   Updated dependencies [f7382bd1]
+    -   @sap-ux/project-access@1.16.0
+    -   @sap-ux/axios-extension@1.7.3
+
+## 0.16.12
+
+### Patch Changes
+
+-   Updated dependencies [f11f9b2c]
+    -   @sap-ux/project-access@1.15.5
+    -   @sap-ux/axios-extension@1.7.3
+
+## 0.16.11
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+    -   @sap-ux/project-access@1.15.4
+    -   @sap-ux/axios-extension@1.7.3
+
+## 0.16.10
+
+### Patch Changes
+
+-   Updated dependencies [a82759be]
+    -   @sap-ux/project-access@1.15.3
+    -   @sap-ux/axios-extension@1.7.3
+
+## 0.16.9
+
+### Patch Changes
+
+-   Updated dependencies [d7d52155]
+    -   @sap-ux/project-access@1.15.2
+    -   @sap-ux/axios-extension@1.7.3
+
+## 0.16.8
+
+### Patch Changes
+
+-   286883cb: fix(deps): update dependency axios to v1.6.0 [security]
+-   Updated dependencies [286883cb]
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/btp-utils@0.12.1
+
+## 0.16.7
+
+### Patch Changes
+
+-   Updated dependencies [db918804]
+    -   @sap-ux/axios-extension@1.7.2
+
+## 0.16.6
+
+### Patch Changes
+
+-   Updated dependencies [e4821c0f]
+    -   @sap-ux/project-access@1.15.1
+    -   @sap-ux/axios-extension@1.7.1
+
+## 0.16.5
+
+### Patch Changes
+
+-   Updated dependencies [b458bf43]
+    -   @sap-ux/project-access@1.15.0
+    -   @sap-ux/axios-extension@1.7.1
+
+## 0.16.4
+
+### Patch Changes
+
+-   Updated dependencies [fa4537b2]
+    -   @sap-ux/axios-extension@1.7.1
+
+## 0.16.3
+
+### Patch Changes
+
+-   89113caa: stabilise unit tests
+
+## 0.16.2
+
+### Patch Changes
+
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/axios-extension@1.7.0
+
+## 0.16.1
+
+### Patch Changes
+
+-   Updated dependencies [3cfaba52]
+    -   @sap-ux/axios-extension@1.6.1
+
+## 0.16.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/axios-extension@1.6.0
+    -   @sap-ux/project-access@1.14.0
+    -   @sap-ux/ui5-config@0.20.0
+    -   @sap-ux/btp-utils@0.12.0
+    -   @sap-ux/logger@0.4.0
+    -   @sap-ux/store@0.4.0
+
+## 0.15.68
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/store@0.3.16
+
+## 0.15.67
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/store@0.3.15
+    -   @sap-ux/axios-extension@1.5.1
+    -   @sap-ux/ui5-config@0.19.5
+    -   @sap-ux/project-access@1.13.8
+
+## 0.15.66
+
+### Patch Changes
+
+-   Updated dependencies [d7492b53]
+    -   @sap-ux/axios-extension@1.5.0
+
 ## 0.15.65
 
 ### Patch Changes

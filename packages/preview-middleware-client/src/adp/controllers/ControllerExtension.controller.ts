@@ -20,15 +20,29 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 /** sap.ui.fl */
 import Utils from 'sap/ui/fl/Utils';
 
+/** sap.ui.layout */
+import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
+
 /** sap.ui.dt */
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
-import type { ControllersResponse } from '../api-handler';
-import { getManifestAppdescr, readControllers, writeChange, writeController } from '../api-handler';
+import type { CodeExtResponse, ControllersResponse } from '../api-handler';
+import {
+    getExistingController,
+    getManifestAppdescr,
+    readControllers,
+    writeChange,
+    writeController
+} from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 
 interface ControllerExtensionService {
-    add: (codeRef: string, viewId: string) => Promise<unknown>;
+    add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
+}
+
+interface ControllerInfo {
+    controllerName: string;
+    viewId: string;
 }
 
 /**
@@ -48,6 +62,8 @@ export default class ControllerExtension extends BaseDialog {
     async onInit() {
         this.dialog = this.byId('controllerExtensionDialog') as unknown as Dialog;
 
+        this.setEscapeHandler();
+
         await this.buildDialogData();
 
         this.getView()?.setModel(this.model);
@@ -61,38 +77,50 @@ export default class ControllerExtension extends BaseDialog {
      * @param event Event
      */
     onControllerNameInputChange(event: Event) {
-        const source = event.getSource<Input>();
+        const input = event.getSource<Input>();
+        const beginBtn = this.dialog.getBeginButton();
 
-        const controllerName: string = source.getValue().trim();
+        const controllerName: string = input.getValue();
         const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList');
 
+        const updateDialogState = (valueState: ValueState, valueStateText = '') => {
+            input.setValueState(valueState).setValueStateText(valueStateText);
+            beginBtn.setEnabled(valueState === ValueState.Success);
+        };
+
         if (controllerName.length <= 0) {
-            this.dialog.getBeginButton().setEnabled(false);
-            source.setValueState(ValueState.None);
+            updateDialogState(ValueState.None);
             this.model.setProperty('/newControllerName', null);
-        } else {
-            const fileExists = controllerList.find((f: { controllerName: string }) => {
-                return f.controllerName === `${controllerName}.js`;
-            });
-
-            const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(controllerName);
-
-            if (fileExists) {
-                source.setValueState(ValueState.Error);
-                source.setValueStateText(
-                    'Enter a different name. The controller name that you entered already exists in your project.'
-                );
-                this.dialog.getBeginButton().setEnabled(false);
-            } else if (!isValidName) {
-                source.setValueState(ValueState.Error);
-                source.setValueStateText('The controller name cannot contain white spaces or special characters.');
-                this.dialog.getBeginButton().setEnabled(false);
-            } else {
-                this.dialog.getBeginButton().setEnabled(true);
-                source.setValueState(ValueState.None);
-                this.model.setProperty('/newControllerName', controllerName);
-            }
+            return;
         }
+
+        const fileExists = controllerList.some((f) => f.controllerName === `${controllerName}.js`);
+
+        if (fileExists) {
+            updateDialogState(
+                ValueState.Error,
+                'Enter a different name. The controller name that you entered already exists in your project.'
+            );
+            return;
+        }
+
+        const isValidName = /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(controllerName);
+
+        if (!isValidName) {
+            updateDialogState(
+                ValueState.Error,
+                'The controller name cannot contain white spaces or special characters.'
+            );
+            return;
+        }
+
+        if (controllerName.length > 64) {
+            updateDialogState(ValueState.Error, 'A controller file name cannot contain more than 64 characters.');
+            return;
+        }
+
+        updateDialogState(ValueState.Success);
+        this.model.setProperty('/newControllerName', controllerName);
     }
 
     /**
@@ -102,28 +130,108 @@ export default class ControllerExtension extends BaseDialog {
      */
     async onCreateBtnPress(event: Event) {
         const source = event.getSource<Button>();
-        source.setEnabled(false);
+        const controllerExists = this.model.getProperty('/controllerExists');
 
-        const controllerName = this.model.getProperty('/newControllerName');
-        const viewId = this.model.getProperty('/viewId');
+        if (!controllerExists) {
+            source.setEnabled(false);
 
-        await this.createNewController(controllerName, viewId);
+            const controllerName = this.model.getProperty('/newControllerName');
+            const viewId = this.model.getProperty('/viewId');
+
+            await this.createNewController(controllerName, viewId);
+        } else {
+            const controllerPath = this.model.getProperty('/controllerPath');
+            window.open(`vscode://file${controllerPath}`);
+        }
 
         this.handleDialogClose();
     }
 
     /**
-     * Builds data that is used in the dialog
+     * Builds data that is used in the dialog.
      */
     async buildDialogData(): Promise<void> {
         const selectorId = this.overlays.getId();
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
+
+        const { controllerName, viewId } = this.getControllerInfo(overlayControl);
+
+        const { controllerExists, controllerPath, controllerPathFromRoot } = await this.getExistingController(
+            controllerName
+        );
+
+        if (controllerExists) {
+            this.updateModelForExistingController(controllerExists, controllerPath, controllerPathFromRoot);
+        } else {
+            this.updateModelForNewController(viewId);
+
+            await this.getControllers();
+        }
+    }
+
+    /**
+     * Gets controller name and view ID for the given overlay control.
+     *
+     * @param overlayControl The overlay control.
+     * @returns The controller name and view ID.
+     */
+    private getControllerInfo(overlayControl: ElementOverlay): ControllerInfo {
         const control = overlayControl.getElement();
-        const viewId = Utils.getViewForControl(control).getId();
+        const view = Utils.getViewForControl(control);
+        const controllerName = view.getController().getMetadata().getName();
+        const viewId = view.getId();
+        return { controllerName, viewId };
+    }
 
+    /**
+     * Updates the model properties for an existing controller.
+     *
+     * @param controllerExists Whether the controller exists
+     * @param controllerPath The controller path
+     * @param controllerPathFromRoot The controller path from the project root
+     */
+    private updateModelForExistingController(
+        controllerExists: boolean,
+        controllerPath: string,
+        controllerPathFromRoot: string
+    ): void {
+        this.model.setProperty('/controllerExists', controllerExists);
+        this.model.setProperty('/controllerPath', controllerPath);
+        this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
+
+        const form = this.byId('controllerExtensionDialog_Form') as SimpleForm;
+        form.setVisible(false);
+
+        const messageForm = this.byId('controllerExtensionDialog_Form--existingController') as SimpleForm;
+        messageForm.setVisible(true);
+
+        this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
+        this.dialog.getEndButton().setText('Close');
+    }
+
+    /**
+     * Updates the model property for a new controller.
+     *
+     * @param viewId The view ID
+     */
+    private updateModelForNewController(viewId: string): void {
         this.model.setProperty('/viewId', viewId);
+    }
 
-        await this.getControllers();
+    /**
+     * Retrieves existing controller data if found in the project's workspace.
+     *
+     * @param controllerName Controller name that exists in the view
+     * @returns Returnsexisting controller data
+     */
+    private async getExistingController(controllerName: string): Promise<CodeExtResponse> {
+        try {
+            const data = await getExistingController(controllerName);
+            return data;
+        } catch (e) {
+            MessageToast.show(e.message, { duration: 5000 });
+            throw new Error(e.message);
+        }
     }
 
     /**
@@ -134,7 +242,7 @@ export default class ControllerExtension extends BaseDialog {
             const { controllers } = await readControllers<ControllersResponse>();
             this.model.setProperty('/controllersList', controllers);
         } catch (e) {
-            MessageToast.show(e.message);
+            MessageToast.show(e.message, { duration: 5000 });
             throw new Error(e.message);
         }
     }
@@ -158,6 +266,7 @@ export default class ControllerExtension extends BaseDialog {
             const service = await this.rta.getService<ControllerExtensionService>('controllerExtension');
 
             const change = await service.add(controllerRef.codeRef, controllerRef.viewId);
+            change.creation = new Date().toISOString();
 
             await writeChange(change);
             MessageToast.show(`Controller extension with name '${controllerName}' was created.`);

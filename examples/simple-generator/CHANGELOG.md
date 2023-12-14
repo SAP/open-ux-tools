@@ -1,5 +1,153 @@
 # @sap-ux/generator-simple-fe
 
+## 0.3.12
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.18.1
+
+## 0.3.11
+
+### Patch Changes
+
+-   Updated dependencies [446f290c]
+    -   @sap-ux/fiori-elements-writer@0.18.0
+    -   @sap-ux/fiori-freestyle-writer@0.21.3
+
+## 0.3.10
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.7.3
+-   @sap-ux/system-access@0.3.5
+-   @sap-ux/fiori-elements-writer@0.17.4
+-   @sap-ux/fiori-freestyle-writer@0.21.2
+
+## 0.3.9
+
+### Patch Changes
+
+-   Updated dependencies [3c5fa042]
+    -   @sap-ux/fiori-elements-writer@0.17.3
+
+## 0.3.8
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.17.2
+-   @sap-ux/fiori-freestyle-writer@0.21.1
+-   @sap-ux/axios-extension@1.7.3
+-   @sap-ux/system-access@0.3.5
+
+## 0.3.7
+
+### Patch Changes
+
+-   286883cb: fix(deps): update dependency axios to v1.6.0 [security]
+-   Updated dependencies [286883cb]
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/btp-utils@0.12.1
+    -   @sap-ux/system-access@0.3.5
+
+## 0.3.6
+
+### Patch Changes
+
+-   Updated dependencies [deabc5bd]
+    -   @sap-ux/fiori-elements-writer@0.17.1
+
+## 0.3.5
+
+### Patch Changes
+
+-   Updated dependencies [db918804]
+    -   @sap-ux/axios-extension@1.7.2
+    -   @sap-ux/system-access@0.3.4
+
+## 0.3.4
+
+### Patch Changes
+
+-   Updated dependencies [5654d5cc]
+    -   @sap-ux/fiori-elements-writer@0.17.0
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [fa4537b2]
+    -   @sap-ux/axios-extension@1.7.1
+    -   @sap-ux/system-access@0.3.3
+
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/axios-extension@1.7.0
+    -   @sap-ux/system-access@0.3.2
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [3cfaba52]
+    -   @sap-ux/axios-extension@1.6.1
+    -   @sap-ux/system-access@0.3.1
+
+## 0.3.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/fiori-freestyle-writer@0.21.0
+    -   @sap-ux/fiori-elements-writer@0.16.0
+    -   @sap-ux/axios-extension@1.6.0
+    -   @sap-ux/system-access@0.3.0
+    -   @sap-ux/btp-utils@0.12.0
+    -   @sap-ux/logger@0.4.0
+
+## 0.2.171
+
+### Patch Changes
+
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/fiori-elements-writer@0.15.7
+    -   @sap-ux/fiori-freestyle-writer@0.20.14
+    -   @sap-ux/system-access@0.2.11
+
+## 0.2.170
+
+### Patch Changes
+
+-   Updated dependencies [4087bffb]
+    -   @sap-ux/fiori-freestyle-writer@0.20.13
+    -   @sap-ux/fiori-elements-writer@0.15.6
+
+## 0.2.169
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/axios-extension@1.5.1
+    -   @sap-ux/system-access@0.2.10
+    -   @sap-ux/fiori-elements-writer@0.15.5
+    -   @sap-ux/fiori-freestyle-writer@0.20.12
+
+## 0.2.168
+
+### Patch Changes
+
+-   Updated dependencies [d7492b53]
+    -   @sap-ux/axios-extension@1.5.0
+    -   @sap-ux/system-access@0.2.9
+
 ## 0.2.167
 
 ### Patch Changes

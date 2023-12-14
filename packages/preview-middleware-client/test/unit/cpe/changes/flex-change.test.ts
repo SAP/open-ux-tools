@@ -7,7 +7,18 @@ import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
 describe('flexChange', () => {
     // prepare
-    const control = { name: 'sap.m.Button' };
+    const control = {
+        name: 'sap.m.Button',
+        getMetadata: function () {
+            return {
+                getAllProperties: function () {
+                    return {
+                        type: 'number'
+                    };
+                }
+            };
+        }
+    };
     const pushAndExecuteMock = jest.fn();
     rtaMock.getCommandStack.mockReturnValue({
         pushAndExecute: pushAndExecuteMock
@@ -24,7 +35,7 @@ describe('flexChange', () => {
     };
     const mockCommand = {
         command: 'testCommand'
-    }
+    };
     CommandFactory.getCommandFor.mockReturnValue(mockCommand);
 
     beforeEach(() => {
@@ -38,19 +49,25 @@ describe('flexChange', () => {
             controlId: 'testId',
             propertyName: 'blocked',
             value: false,
-            controlName: 'controlName'
+            controlName: 'controlName',
+            changeType: 'propertyChange'
         };
-
 
         // act
         await applyChange(testOptions, change);
 
         // assert
-        expect(CommandFactory.getCommandFor).toBeCalledWith(control, 'Property', {
-            generator: flexSettings.generator,
-            propertyName: change.propertyName,
-            newValue: change.value
-        }, null, flexSettings);
+        expect(CommandFactory.getCommandFor).toBeCalledWith(
+            control,
+            'Property',
+            {
+                generator: flexSettings.generator,
+                propertyName: change.propertyName,
+                newValue: change.value
+            },
+            null,
+            flexSettings
+        );
         expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
     });
 
@@ -60,18 +77,25 @@ describe('flexChange', () => {
             controlId: 'testId',
             propertyName: 'text',
             value: 'apply',
-            controlName: 'controlName'
+            controlName: 'controlName',
+            changeType: 'propertyChange'
         };
 
         // act
         await applyChange(testOptions, change);
 
         // assert
-        expect(CommandFactory.getCommandFor).toBeCalledWith(control, 'Property', {
-            generator: flexSettings.generator,
-            propertyName: change.propertyName,
-            newValue: change.value
-        }, null, flexSettings);
+        expect(CommandFactory.getCommandFor).toBeCalledWith(
+            control,
+            'Property',
+            {
+                generator: flexSettings.generator,
+                propertyName: change.propertyName,
+                newValue: change.value
+            },
+            null,
+            flexSettings
+        );
         expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
     });
 
@@ -81,18 +105,25 @@ describe('flexChange', () => {
             controlId: 'testId',
             propertyName: 'enabled',
             value: '{testModel>enabled}',
-            controlName: 'controlName'
+            controlName: 'controlName',
+            changeType: 'propertyBindingChange'
         };
 
         // act
         await applyChange(testOptions, change);
 
         // assert
-        expect(CommandFactory.getCommandFor).toBeCalledWith(control, 'BindProperty', {
-            generator: flexSettings.generator,
-            propertyName: change.propertyName,
-            newBinding: change.value
-        }, null, flexSettings);
+        expect(CommandFactory.getCommandFor).toBeCalledWith(
+            control,
+            'BindProperty',
+            {
+                generator: flexSettings.generator,
+                propertyName: change.propertyName,
+                newBinding: change.value
+            },
+            null,
+            flexSettings
+        );
         expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
     });
 
@@ -102,7 +133,8 @@ describe('flexChange', () => {
             controlId: 'testId',
             propertyName: 'enabled',
             value: 'false',
-            controlName: 'controlName'
+            controlName: 'controlName',
+            changeType: 'propertyChange'
         };
 
         // act

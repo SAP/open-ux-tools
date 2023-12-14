@@ -1,0 +1,30 @@
+specVersion: "3.0"
+metadata:
+  name: adp.example
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        adp:
+          ignoreCertErrors: true
+          target:
+            url: https://sap.example
+            destination: SAP
+            client: "010"
+        rta:
+          editors: 
+          - path: local/editor.html
+            developerMode: true
+        debug: true
+    - name: ui5-proxy-middleware
+      afterMiddleware: preview-middleware
+    - name: backend-proxy-middleware
+      afterMiddleware: preview-middleware
+      configuration:
+        backend:
+          path: /sap
+          url: https://sap.example
+          destination: SAP
+          client: "010"

@@ -5,10 +5,11 @@ import { readFileSync } from 'fs';
 import { dirname, join, relative } from 'path';
 import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
-import type { Logger } from '@sap-ux/logger';
+import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -19,6 +20,34 @@ const DEVELOPER_MODE_CONFIG = new Map([
     // Make sure that XML preprocessing results are correctly invalidated
     ['xx-viewCache', 'false']
 ]);
+
+/**
+ * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
+ */
+const UI5_LIBS = [
+    'sap.apf',
+    'sap.base',
+    'sap.chart',
+    'sap.collaboration',
+    'sap.f',
+    'sap.fe',
+    'sap.fileviewer',
+    'sap.gantt',
+    'sap.landvisz',
+    'sap.m',
+    'sap.ndc',
+    'sap.ovp',
+    'sap.rules',
+    'sap.suite',
+    'sap.tnt',
+    'sap.ui',
+    'sap.uiext',
+    'sap.ushell',
+    'sap.uxap',
+    'sap.viz',
+    'sap.webanalytics',
+    'sap.zen'
+];
 
 /**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
@@ -57,6 +86,17 @@ const PREVIEW_URL = {
     api: '/preview/api'
 };
 
+export interface CustomConnector {
+    applyConnector: string;
+    writeConnector: string;
+    custom: boolean;
+}
+
+export interface FlexConnector {
+    connector: string;
+    layers: string[];
+}
+
 /**
  * Internal structure used to fill the sandbox.html template
  */
@@ -70,16 +110,15 @@ export interface TemplateConfig {
             additionalInformation: string;
             applicationType: 'URL';
             url: string;
+            applicationDependencies?: {
+                manifest: boolean;
+            };
         }
     >;
     ui5: {
         libs: string;
         theme: string;
-        flex: {
-            applyConnector: string;
-            writeConnector: string;
-            custom: boolean;
-        }[];
+        flex: (CustomConnector | FlexConnector)[];
         bootstrapOptions: string;
         resources: Record<string, string>;
     };
@@ -146,7 +185,7 @@ export class FlpSandbox {
             basePath: relative(dirname(this.config.path), '/') ?? '.',
             apps: {},
             ui5: {
-                libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
+                libs: this.getUI5Libs(manifest),
                 theme: ui5Theme,
                 flex,
                 resources: {
@@ -219,9 +258,13 @@ export class FlpSandbox {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
                 this.router.get(editor.path, (_req: Request, res: Response) => {
+                    let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`;
+                    if (rta.options?.scenario === 'ADAPTATION_PROJECT') {
+                        templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
+                    }
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
                     const html = render(template, {
-                        previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`,
+                        previewUrl: templatePreviewUrl,
                         telemetry: rta.options?.telemetry ?? false
                     });
                     res.status(200).contentType('html').send(html);
@@ -343,6 +386,10 @@ export class FlpSandbox {
                 applyConnector: workspaceConnectorPath,
                 writeConnector: workspaceConnectorPath,
                 custom: true
+            },
+            {
+                connector: 'LocalStorageConnector',
+                layers: ['CUSTOMER', 'USER']
             }
         ];
     }
@@ -365,8 +412,32 @@ export class FlpSandbox {
             description: manifest['sap.app'].description ?? '',
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
-            url: app.target
+            url: app.target,
+            applicationDependencies: {
+                manifest: true
+            }
         };
+    }
+
+    /**
+     * Gets the UI5 libs dependencies from manifest.json.
+     *
+     * @param manifest application manifest
+     * @returns UI5 libs that should preloaded
+     */
+    private getUI5Libs(manifest: Manifest): string {
+        if (manifest['sap.ui5']?.dependencies?.libs) {
+            const libNames = Object.keys(manifest['sap.ui5'].dependencies.libs);
+            return libNames
+                .filter((key) => {
+                    return UI5_LIBS.some((substring) => {
+                        return key === substring || key.startsWith(substring + '.');
+                    });
+                })
+                .join(',');
+        } else {
+            return 'sap.m,sap.ui.core,sap.ushell';
+        }
     }
 }
 
@@ -394,4 +465,43 @@ function serializeDataAttributes(attributes: Map<string, string>, indent = '', p
  */
 function serializeUi5Configuration(config: Map<string, string>): string {
     return '\n' + serializeDataAttributes(config, '        ', 'data-sap-ui');
+}
+
+/**
+ * Initialize the preview for an adaptation project.
+ *
+ * @param rootProject reference to the project
+ * @param config configuration from the ui5.yaml
+ * @param flp FlpSandbox instance
+ * @param util middleware utilities provided by the UI5 CLI
+ * @param logger logger instance
+ */
+export async function initAdp(
+    rootProject: ReaderCollection,
+    config: AdpPreviewConfig,
+    flp: FlpSandbox,
+    util: MiddlewareUtils,
+    logger: ToolsLogger
+) {
+    const appVariant = await rootProject.byPath('/manifest.appdescr_variant');
+    if (appVariant) {
+        const adp = new AdpPreview(config, rootProject, util, logger);
+        const variant = JSON.parse(await appVariant.getString());
+        const layer = await adp.init(variant);
+        if (flp.rta) {
+            flp.rta.layer = layer;
+            flp.rta.options = {
+                projectId: variant.id,
+                scenario: 'ADAPTATION_PROJECT'
+            };
+            for (const editor of flp.rta.editors) {
+                editor.pluginScript ??= 'open/ux/preview/client/adp/init';
+            }
+        }
+        await flp.init(adp.descriptor.manifest, adp.descriptor.name, adp.resources);
+        flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
+        adp.addApis(flp.router);
+    } else {
+        throw new Error('ADP configured but no manifest.appdescr_variant found.');
+    }
 }

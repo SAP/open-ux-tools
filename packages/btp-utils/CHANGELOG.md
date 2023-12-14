@@ -1,5 +1,17 @@
 # @sap-ux/btp-utils
 
+## 0.12.1
+
+### Patch Changes
+
+-   286883cb: fix(deps): update dependency axios to v1.6.0 [security]
+
+## 0.12.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
 ## 0.11.9
 
 ### Patch Changes

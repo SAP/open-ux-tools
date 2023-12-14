@@ -1,5 +1,149 @@
 # @sap-ux/app-config-writer
 
+## 0.3.13
+
+### Patch Changes
+
+-   Updated dependencies [20a4dbfc]
+    -   @sap-ux/project-access@1.16.1
+    -   @sap-ux/axios-extension@1.7.3
+
+## 0.3.12
+
+### Patch Changes
+
+-   Updated dependencies [f7382bd1]
+    -   @sap-ux/project-access@1.16.0
+    -   @sap-ux/axios-extension@1.7.3
+
+## 0.3.11
+
+### Patch Changes
+
+-   Updated dependencies [f11f9b2c]
+    -   @sap-ux/project-access@1.15.5
+    -   @sap-ux/axios-extension@1.7.3
+
+## 0.3.10
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+    -   @sap-ux/project-access@1.15.4
+    -   @sap-ux/axios-extension@1.7.3
+
+## 0.3.9
+
+### Patch Changes
+
+-   Updated dependencies [a82759be]
+    -   @sap-ux/project-access@1.15.3
+    -   @sap-ux/axios-extension@1.7.3
+
+## 0.3.8
+
+### Patch Changes
+
+-   Updated dependencies [d7d52155]
+    -   @sap-ux/project-access@1.15.2
+    -   @sap-ux/axios-extension@1.7.3
+
+## 0.3.7
+
+### Patch Changes
+
+-   286883cb: fix(deps): update dependency axios to v1.6.0 [security]
+-   Updated dependencies [286883cb]
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/btp-utils@0.12.1
+
+## 0.3.6
+
+### Patch Changes
+
+-   Updated dependencies [db918804]
+    -   @sap-ux/axios-extension@1.7.2
+
+## 0.3.5
+
+### Patch Changes
+
+-   Updated dependencies [e4821c0f]
+    -   @sap-ux/project-access@1.15.1
+    -   @sap-ux/axios-extension@1.7.1
+
+## 0.3.4
+
+### Patch Changes
+
+-   Updated dependencies [b458bf43]
+    -   @sap-ux/project-access@1.15.0
+    -   @sap-ux/axios-extension@1.7.1
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [fa4537b2]
+    -   @sap-ux/axios-extension@1.7.1
+
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/axios-extension@1.7.0
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [3cfaba52]
+    -   @sap-ux/axios-extension@1.6.1
+
+## 0.3.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/axios-extension@1.6.0
+    -   @sap-ux/project-access@1.14.0
+    -   @sap-ux/ui5-config@0.20.0
+    -   @sap-ux/btp-utils@0.12.0
+    -   @sap-ux/logger@0.4.0
+    -   @sap-ux/store@0.4.0
+
+## 0.2.3
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/store@0.3.16
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/store@0.3.15
+    -   @sap-ux/axios-extension@1.5.1
+    -   @sap-ux/ui5-config@0.19.5
+    -   @sap-ux/project-access@1.13.8
+
+## 0.2.1
+
+### Patch Changes
+
+-   Updated dependencies [d7492b53]
+    -   @sap-ux/axios-extension@1.5.0
+
 ## 0.2.0
 
 ### Minor Changes

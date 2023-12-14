@@ -1,5 +1,71 @@
 # @sap-ux/project-access
 
+## 1.16.1
+
+### Patch Changes
+
+-   20a4dbfc: Fix for classification of freestyle apps in CAP Java projects
+
+## 1.16.0
+
+### Minor Changes
+
+-   f7382bd1: Add getAppType() and getProjectType()
+
+## 1.15.5
+
+### Patch Changes
+
+-   f11f9b2c: fix(deps): update dependency @ui5/manifest to v1.61.0
+
+## 1.15.4
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+
+## 1.15.3
+
+### Patch Changes
+
+-   a82759be: Fix for "TypeError: Cannot read properties of undefined (reading 'odata-v4')" which can occur when dynamically loading different @sap/cds verrsions
+
+## 1.15.2
+
+### Patch Changes
+
+-   d7d52155: Find project root of adp by searching for package.json
+
+## 1.15.1
+
+### Patch Changes
+
+-   e4821c0f: SonarCloud code smells
+
+## 1.15.0
+
+### Minor Changes
+
+-   b458bf43: Adding functions getCdsFiles(), getCdsRoots(), getCdsServices()
+
+## 1.14.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+
+## 1.13.8
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+
 ## 1.13.7
 
 ### Patch Changes

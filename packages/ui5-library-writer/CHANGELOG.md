@@ -1,5 +1,107 @@
 # @sap-ux/ui5-library-writer
 
+## 0.3.8
+
+### Patch Changes
+
+-   Updated dependencies [20a4dbfc]
+    -   @sap-ux/project-access@1.16.1
+    -   @sap-ux/ui5-application-writer@0.26.2
+
+## 0.3.7
+
+### Patch Changes
+
+-   Updated dependencies [f7382bd1]
+    -   @sap-ux/project-access@1.16.0
+    -   @sap-ux/ui5-application-writer@0.26.2
+
+## 0.3.6
+
+### Patch Changes
+
+-   Updated dependencies [f11f9b2c]
+    -   @sap-ux/project-access@1.15.5
+    -   @sap-ux/ui5-application-writer@0.26.2
+
+## 0.3.5
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+    -   @sap-ux/project-access@1.15.4
+    -   @sap-ux/ui5-application-writer@0.26.1
+
+## 0.3.4
+
+### Patch Changes
+
+-   Updated dependencies [a82759be]
+    -   @sap-ux/project-access@1.15.3
+    -   @sap-ux/ui5-application-writer@0.26.0
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [d7d52155]
+    -   @sap-ux/project-access@1.15.2
+    -   @sap-ux/ui5-application-writer@0.26.0
+
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [e4821c0f]
+    -   @sap-ux/project-access@1.15.1
+    -   @sap-ux/ui5-application-writer@0.26.0
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [b458bf43]
+    -   @sap-ux/project-access@1.15.0
+    -   @sap-ux/ui5-application-writer@0.26.0
+
+## 0.3.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-application-writer@0.26.0
+    -   @sap-ux/project-access@1.14.0
+    -   @sap-ux/ui5-config@0.20.0
+
+## 0.2.13
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/ui5-application-writer@0.25.10
+
+## 0.2.12
+
+### Patch Changes
+
+-   4087bffb: Allow more flexible @types type loading for TypeScript generate projects
+-   Updated dependencies [4087bffb]
+    -   @sap-ux/ui5-application-writer@0.25.9
+
+## 0.2.11
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+-   @sap-ux/project-access@1.13.8
+-   @sap-ux/ui5-application-writer@0.25.8
+
 ## 0.2.10
 
 ### Patch Changes
