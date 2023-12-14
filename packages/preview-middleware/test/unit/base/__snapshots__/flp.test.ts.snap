@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`FlpSandbox init add default libs if no libs in manifest.json 1`] = `"sap.m,sap.ui.core,sap.ushell"`;
+
 exports[`FlpSandbox init additional apps 1`] = `
 Object {
   "apps": Object {
@@ -52,7 +54,7 @@ Object {
         ],
       },
     ],
-    "libs": "",
+    "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
       "my.id": "..",
       "open.ux.preview.client": "/preview/client",
@@ -96,7 +98,7 @@ Object {
         ],
       },
     ],
-    "libs": "",
+    "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
       "my.id": "..",
       "open.ux.preview.client": "/preview/client",
@@ -147,6 +149,8 @@ Object {
   },
 }
 `;
+
+exports[`FlpSandbox init reuse libs not part of data-sap-ui-libs 1`] = `"sap.ui.core,sap.m"`;
 
 exports[`FlpSandbox init ui5Theme 1`] = `
 Object {
