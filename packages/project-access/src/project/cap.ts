@@ -12,6 +12,7 @@ import type {
 } from '../types';
 import { fileExists, readFile, readJSON } from '../file';
 import { loadModuleFromProject } from './module-loader';
+import { Logger, ToolsLogger } from '@sap-ux/logger';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
@@ -24,6 +25,9 @@ interface CdsFacade {
         };
     };
     resolve: ResolveWithCache;
+    root: string; // cds.root
+    version: string; // cds.version
+    home: string; // cds.home
 }
 
 interface ResolveWithCache {
@@ -113,19 +117,34 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
 /**
  * Return the CAP model and all services.
  *
- * @param projectRoot - CAP project root where package.json resides
+ * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additonal info
  * @returns {*}  {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
  */
-export async function getCapModelAndServices(projectRoot: string): Promise<{ model: csn; services: ServiceInfo[] }> {
-    const cds = await loadCdsModuleFromProject(projectRoot);
-    const capProjectPaths = await getCapCustomPaths(projectRoot);
+export async function getCapModelAndServices(projectRoot: string | { projectRoot: string, logger?: Logger } 
+): Promise<{ model: csn; services: ServiceInfo[] }> {
+    let _projectRoot;
+    let _logger;
+    if (typeof projectRoot === 'object') {
+        _projectRoot = projectRoot.projectRoot;
+        _logger = projectRoot.logger;
+    } else {
+        _projectRoot = projectRoot;
+    }
+
+    const cds = await loadCdsModuleFromProject(_projectRoot);
+
+    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.home': ${cds.home}`);
+    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.version': ${cds.version}`);
+    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.root': ${cds.root}`);
+
+    const capProjectPaths = await getCapCustomPaths(_projectRoot);
     const modelPaths = [
-        join(projectRoot, capProjectPaths.app),
-        join(projectRoot, capProjectPaths.srv),
-        join(projectRoot, capProjectPaths.db)
+        join(_projectRoot, capProjectPaths.app),
+        join(_projectRoot, capProjectPaths.srv),
+        join(_projectRoot, capProjectPaths.db)
     ];
     const model = await cds.load(modelPaths);
-    let services = cds.compile.to.serviceinfo(model, { root: projectRoot }) ?? [];
+    let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
     if (services.map) {
         services = services.map((value) => {
             return {
@@ -374,6 +393,8 @@ async function loadCdsModuleFromProject(capProjectPath: string): Promise<CdsFaca
     if (global) {
         global.cds = cds;
     }
+    // Ensure we use a known root path, otherwise `cwd` is used which varies between invocations.
+    cds.root = capProjectPath;
     return cds;
 }
 

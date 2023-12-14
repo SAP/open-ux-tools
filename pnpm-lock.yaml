@@ -1190,6 +1190,9 @@ importers:
 
   packages/project-access:
     dependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config

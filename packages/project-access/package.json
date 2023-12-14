@@ -34,6 +34,7 @@
     },
     "dependencies": {
         "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
         "findit2": "2.2.3",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0"
