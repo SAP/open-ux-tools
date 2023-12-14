@@ -1,5 +1,23 @@
 # @sap-ux/preview-middleware
 
+## 0.11.19
+
+### Patch Changes
+
+-   e224bc43: Exclude reuse libraries from being added to the data-sap-ui-libs
+
+## 0.11.18
+
+### Patch Changes
+
+-   b7f73026: FIX: appdescr changes that require client-side merging are not applied
+
+## 0.11.17
+
+### Patch Changes
+
+-   9e7cbe8e: Disable manually inserting values in dropdowns
+
 ## 0.11.16
 
 ### Patch Changes
