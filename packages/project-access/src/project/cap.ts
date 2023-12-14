@@ -12,7 +12,7 @@ import type {
 } from '../types';
 import { fileExists, readFile, readJSON } from '../file';
 import { loadModuleFromProject } from './module-loader';
-import { Logger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
@@ -120,7 +120,8 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
  * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additonal info
  * @returns {*}  {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
  */
-export async function getCapModelAndServices(projectRoot: string | { projectRoot: string, logger?: Logger } 
+export async function getCapModelAndServices(
+    projectRoot: string | { projectRoot: string; logger?: Logger }
 ): Promise<{ model: csn; services: ServiceInfo[] }> {
     let _projectRoot;
     let _logger;
