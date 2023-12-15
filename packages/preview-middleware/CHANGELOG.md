@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.11.20
+
+### Patch Changes
+
+-   132ce16d: Do not block app loading if registering of reuse libs fails
+
+## 0.11.19
+
+### Patch Changes
+
+-   e224bc43: Exclude reuse libraries from being added to the data-sap-ui-libs
+
 ## 0.11.18
 
 ### Patch Changes
