@@ -115,12 +115,13 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
 }
 
 /**
- * Return the CAP model and all services.
+ * Return the CAP model and all services. The cds.root will be set to the provided project root path.
  *
  * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additonal info
  * @returns {*}  {Promise<{ model: csn; services: ServiceInfo[] }>} - CAP Model and Services
  */
-export async function getCapModelAndServices(projectRoot: string | { projectRoot: string, logger?: Logger } 
+export async function getCapModelAndServices(
+    projectRoot: string | { projectRoot: string; logger?: Logger }
 ): Promise<{ model: csn; services: ServiceInfo[] }> {
     let _projectRoot;
     let _logger;
