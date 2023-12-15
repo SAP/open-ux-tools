@@ -18,7 +18,7 @@ import {
 import { toReferenceUri } from '../../src/project/cap';
 import * as file from '../../src/file';
 import os from 'os';
-import { Logger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 
 jest.mock('child_process');
 const childProcessMock = jest.mocked(childProcess, { shallow: true });
@@ -196,15 +196,18 @@ describe('Test getCapModelAndServices()', () => {
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
 
         const mockLogger: Logger = {
-            info: jest.fn().mockImplementation(() => {})
+            info: jest.fn().mockImplementation(() => null)
         } as unknown as Logger;
         const loggerSpy = jest.spyOn(mockLogger, 'info');
         // Test execution with object param
-        const capMS = await getCapModelAndServices({ projectRoot: '/some/test/path', logger: mockLogger});
-        expect(loggerSpy).toHaveBeenNthCalledWith(1, expect.stringContaining('\'cds.home\': /cds/home/path'));
-        expect(loggerSpy).toHaveBeenNthCalledWith(2, expect.stringContaining('\'cds.version\': 7.4.2'));
-        expect(loggerSpy).toHaveBeenNthCalledWith(3, expect.stringContaining('\'cds.root\': /some/test/path'));
+        const projectRoot = '/some/test/path';
+        const capMS = await getCapModelAndServices({ projectRoot, logger: mockLogger });
 
+        expect(capMS.services).toEqual([]);
+        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: projectRoot });
+        expect(loggerSpy).toHaveBeenNthCalledWith(1, expect.stringContaining("'cds.home': /cds/home/path"));
+        expect(loggerSpy).toHaveBeenNthCalledWith(2, expect.stringContaining("'cds.version': 7.4.2"));
+        expect(loggerSpy).toHaveBeenNthCalledWith(3, expect.stringContaining("'cds.root': /some/test/path"));
     });
 });
 
