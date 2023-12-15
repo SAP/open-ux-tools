@@ -91,6 +91,12 @@ class PositionVisitor {
         return [];
     }
 
+    /**
+     *
+     * @param nodeType
+     * @param scalarProperties
+     * @param collectionProperties
+     */
     private createNodeHandler(
         nodeType: AnnotationNodeType,
         scalarProperties: string[],
@@ -147,6 +153,13 @@ export const getNode = (root: AnnotationNode, path: string): AnnotationNode => {
  * @returns Array containing all the matched nodes.
  */
 
+/**
+ * Returns list of ast nodes according to the given path.
+ *
+ * @param root root node
+ * @param path path to some nested node
+ * @returns array of nodes - route to the target node
+ */
 export function getAstNodes(root: AnnotationNode, path: string): AnnotationNode[] {
     const segments = path.split('/');
     let node = root;

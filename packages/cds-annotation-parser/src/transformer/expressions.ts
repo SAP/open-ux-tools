@@ -234,6 +234,9 @@ export const operatorMap: { [name: string]: OperatorDefinition } = {
     }
 };
 
+/**
+ * @returns Edm operators map
+ */
 export function getEdmOperatorMap(): Map<string, string[]> {
     // find cds expression operator name for edm operator name/ odata function name
     const operatorImageLookup: Map<string, string[]> = new Map();
@@ -253,7 +256,7 @@ export function getEdmOperatorMap(): Map<string, string[]> {
             if (!result.has(edmName)) {
                 result.set(edmName, []);
             }
-            result.get(edmName)?.push(...(operatorImageLookup.get(name) || []));
+            result.get(edmName)?.push(...(operatorImageLookup.get(name) ?? []));
         }
     }
     return result;
@@ -265,6 +268,12 @@ type ProtoExpression = {
     range: Range;
 };
 
+/**
+ *  Builds expression.
+ *
+ * @param protoExpression expression prototype
+ * @returns correct expression ast node
+ */
 export function buildExpression(protoExpression: ProtoExpression): CorrectExpression {
     const { operators, name } = getRootOperator(protoExpression);
     const operands = getOperands(name, operators, protoExpression);
@@ -278,6 +287,12 @@ export function buildExpression(protoExpression: ProtoExpression): CorrectExpres
     return CorrectExpression;
 }
 
+/**
+ *  Checks if nodes are correctly sorted based on their ranges.
+ *
+ * @param nodes array with nodes to check
+ * @returns true if nodes ranges are correctly ordered
+ */
 function assertSequence(nodes: Node[]): boolean {
     if (nodes.length < 2) {
         return true;
@@ -295,6 +310,12 @@ function assertSequence(nodes: Node[]): boolean {
     return result;
 }
 
+/**
+ * Searches for root operator in given expression prototype. Throws exceptions on errors.
+ *
+ * @param protoExpression expression
+ * @returns found operators data
+ */
 function getRootOperator(protoExpression: ProtoExpression): { name: string; operators: Operator[] } {
     // operator with lowest precedence is root operator (remaining operators are used in sub expressions as operands)
     let rootOperatorName = '';
@@ -335,7 +356,14 @@ function getRootOperator(protoExpression: ProtoExpression): { name: string; oper
     return { name: rootOperatorName, operators: rootOperators };
 }
 
-function getOperatorName(operator: Operator, protoExpression: ProtoExpression) {
+/**
+ * Searches operator name for the given operator based on expression data.
+ *
+ * @param operator
+ * @param protoExpression
+ * @returns operator name string
+ */
+function getOperatorName(operator: Operator, protoExpression: ProtoExpression): string {
     const operatorNames = operatorImageMap[operator.value.toUpperCase()];
     const { range, operators, operands } = protoExpression;
     let operatorName = '';
@@ -359,6 +387,14 @@ function getOperatorName(operator: Operator, protoExpression: ProtoExpression) {
     return operatorName;
 }
 
+/**
+ * Extract operands from given expression.
+ *
+ * @param rootOperatorName name of the root operator
+ * @param rootOperators list with root operators (the first one is used only)
+ * @param protoExpression expression object
+ * @returns array with annotation values
+ */
 function getOperands(
     rootOperatorName: string,
     rootOperators: Operator[],
@@ -415,6 +451,13 @@ function getOperands(
     return operands as AnnotationValue[];
 }
 
+/**
+ * Builds expression operand.
+ *
+ * @param protoExpression expression node
+ * @param range range for searching existing operand in the given expression
+ * @returns found operand in the expression or new nested expression or undefined if no content in the given range
+ */
 function buildOperand(protoExpression: ProtoExpression, range: Range): AnnotationValue | CorrectExpression | undefined {
     const operators = filterNodes(protoExpression.operators, range) as Operator[];
     const operands = filterNodes(protoExpression.operands, range) as AnnotationValue[];
@@ -429,12 +472,26 @@ function buildOperand(protoExpression: ProtoExpression, range: Range): Annotatio
     return buildExpression({ operators, operands, range: subRange });
 }
 
+/**
+ * Filter given nodes based on their ranges and returns only those which are within the given range.
+ *
+ * @param nodes node to filter
+ * @param range range to check nodes inclusion
+ * @returns filtered nodes array
+ */
 function filterNodes(nodes: Node[], range: Range): Node[] {
     return (nodes || []).filter(
         (node) =>
             node.range && isBefore(range.start, node.range.start, true) && isBefore(node.range.end, range.end, true)
     );
 }
+
+/**
+ * Creates a range covering all given nodes.
+ *
+ * @param nodes nodes to be included in the result range
+ * @returns range or undefined if nodes array is empty
+ */
 function nodesRange(nodes: Node[]): Range | undefined {
     let start: Position | undefined;
     let end: Position | undefined;
@@ -455,6 +512,12 @@ function nodesRange(nodes: Node[]): Range | undefined {
     }
 }
 
+/**
+ * Rebuilds number signes in the given exprssion.
+ *
+ * @param protoExpression expression to process
+ * @returns updated expression
+ */
 export function rebuildNumberSigns(protoExpression: ProtoExpression): ProtoExpression {
     const { operators, operands, range } = { ...protoExpression };
     // revert '-' operators to number signs if they are followed by an unsigned number and not preceded by an operand
@@ -486,6 +549,12 @@ export function rebuildNumberSigns(protoExpression: ProtoExpression): ProtoExpre
     return { operators, operands, range };
 }
 
+/**
+ * Sorts expression operators and operands based on their ranges.
+ *
+ * @param protoExpression expression node
+ * @returns sorted expression operators and operands
+ */
 function getSortedNodes(protoExpression: ProtoExpression): (Operator | AnnotationValue)[] {
     return [...protoExpression.operators, ...protoExpression.operands]
         .filter((node) => !!node.range)
@@ -494,6 +563,14 @@ function getSortedNodes(protoExpression: ProtoExpression): (Operator | Annotatio
         );
 }
 
+/**
+ * Checks if rebuild of number sign is needed.
+ *
+ * @param currentNode current operator or operand
+ * @param nextNode next operator or operand
+ * @param previousNode previous operator or operand
+ * @returns boolean result
+ */
 function doRebuildNumberSign(
     currentNode: Operator | AnnotationValue,
     nextNode: Operator | AnnotationValue,
@@ -522,6 +599,13 @@ function doRebuildNumberSign(
     return !previousNode || previousNode.type === OPERATOR_TYPE;
 }
 
+/**
+ * Checks if the given position is in the given expression white space.
+ *
+ * @param expression expression node
+ * @param position position to check
+ * @returns true if position is not occupied by some operand or operator, i.e. is in white space
+ */
 export function positionIsInExpressionWhiteSpace(expression: Expression, position: Position): boolean {
     if (!positionContained(expression.range, position)) {
         return false;
@@ -530,6 +614,12 @@ export function positionIsInExpressionWhiteSpace(expression: Expression, positio
     return !subNodes.some((entry) => positionContained(entry.range, position));
 }
 
+/**
+ * Recursively checks if expression contains some incorrect nested expressions.
+ *
+ * @param expression expression node to check
+ * @returns true if incorrect expression found
+ */
 export function containsIncorrectExpressions(expression: Expression): boolean {
     if (expression.type === INCORRECT_EXPRESSION_TYPE) {
         return true;

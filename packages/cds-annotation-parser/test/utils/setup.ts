@@ -101,13 +101,11 @@ export const getAllNormalizeFolderPath = (base = getBase(), allFolderPath: strin
         const itemPath = join(base, item);
         if (statSync(itemPath).isDirectory()) {
             allFolderPath = getAllNormalizeFolderPath(itemPath, allFolderPath);
-        } else {
-            if (itemPath.endsWith('.txt')) {
-                const dirPath = dirname(itemPath);
-                const relativeLike = dirPath.split(getBase())[1];
-                const normalizedPath = relativeLike.replace(platform() === 'win32' ? /\\/g : /\//g, '/');
-                allFolderPath.push(normalizedPath);
-            }
+        } else if (itemPath.endsWith('.txt')) {
+            const dirPath = dirname(itemPath);
+            const relativeLike = dirPath.split(getBase())[1];
+            const normalizedPath = relativeLike.replace(platform() === 'win32' ? /\\/g : /\//g, '/');
+            allFolderPath.push(normalizedPath);
         }
     });
 

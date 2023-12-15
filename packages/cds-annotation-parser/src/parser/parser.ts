@@ -247,6 +247,9 @@ export type ExpressionChildren = {
 
 const LINE_BREAK_PATTERN = /\r\n|\r|\n/g;
 
+/**
+ *
+ */
 export class AnnotationParser extends CstParser {
     deletionRecoveryEnabled = true;
     /**
@@ -286,6 +289,12 @@ export class AnnotationParser extends CstParser {
         GATE: gate
     });
 
+    /**
+     * Chaecks if recovery could be done for the given expected token type.
+     *
+     * @param expectedTokType expected token type
+     * @returns boolean result
+     */
     canRecoverWithSingleTokenDeletion(expectedTokType: TokenType): boolean {
         if (this.deletionRecoveryEnabled === false) {
             return false;
@@ -294,6 +303,11 @@ export class AnnotationParser extends CstParser {
         return super['canRecoverWithSingleTokenDeletion'](expectedTokType);
     }
 
+    /**
+     *
+     * @param endToken
+     * @param repetitionRule
+     */
     CUSTOM_MANY(endToken: TokenType, repetitionRule: (idxInCallingRule?: number, ...args: any[]) => CstNode): void {
         this.MANY(() => {
             // workaround for https://github.com/SAP/chevrotain/issues/1200 once it is fixed we can use empty alternative
@@ -318,6 +332,10 @@ export class AnnotationParser extends CstParser {
         });
     }
 
+    /**
+     *
+     * @param previousToken
+     */
     private adjustAssignmentRange(previousToken: IToken): void {
         // adjust location since value is missing
         const node: AssignmentCstNode = this['CST_STACK'][this['CST_STACK'].length - 1];
@@ -586,6 +604,10 @@ export class AnnotationParser extends CstParser {
         this.CONSUME(tokenMap.RParen);
     });
 
+    /**
+     *
+     * @param error
+     */
     private recoverFromMissingKey(error: MismatchedTokenException): void {
         // insert empty value till the end of document.
         const previousToken: IToken = error.previousToken;
