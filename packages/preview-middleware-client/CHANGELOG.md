@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.8.11
+
+### Patch Changes
+
+-   132ce16d: Do not block app loading if registering of reuse libs fails
+
 ## 0.8.10
 
 ### Patch Changes
