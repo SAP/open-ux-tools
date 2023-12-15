@@ -1,5 +1,12 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.21.3
+
+### Patch Changes
+
+-   Updated dependencies [446f290c]
+    -   @sap-ux/odata-service-writer@0.16.0
+
 ## 0.21.2
 
 ### Patch Changes

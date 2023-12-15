@@ -134,7 +134,11 @@ export async function registerComponentDependencyPaths(appUrls: string[]): Promi
             url = url + '&sap-client=' + sapClient;
         }
         const response = await fetch(url);
-        registerModules(await response.json());
+        try {
+            registerModules(await response.json());
+        } catch (error) {
+            Log.error(`Registering of reuse libs failed. Error:${error}`);
+        }
     }
 }
 
@@ -187,7 +191,7 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
     if (flex) {
         sap.ushell.Container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
-            lifecycleService.attachAppLoaded(event => {
+            lifecycleService.attachAppLoaded((event) => {
                 const view = event.getParameter('componentInstance');
                 const libs = ['sap/ui/rta/api/startAdaptation'];
                 const flexSettings = JSON.parse(flex);
@@ -197,7 +201,7 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
                 }
                 sap.ui.require(libs, function (startAdaptation: StartAdaptation, pluginScript?: RTAPlugin) {
                     const options = {
-                        rootControl:view,
+                        rootControl: view,
                         validateAppVersion: false,
                         flexSettings
                     };

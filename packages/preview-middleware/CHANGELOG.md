@@ -1,5 +1,41 @@
 # @sap-ux/preview-middleware
 
+## 0.11.20
+
+### Patch Changes
+
+-   132ce16d: Do not block app loading if registering of reuse libs fails
+
+## 0.11.19
+
+### Patch Changes
+
+-   e224bc43: Exclude reuse libraries from being added to the data-sap-ui-libs
+
+## 0.11.18
+
+### Patch Changes
+
+-   b7f73026: FIX: appdescr changes that require client-side merging are not applied
+
+## 0.11.17
+
+### Patch Changes
+
+-   9e7cbe8e: Disable manually inserting values in dropdowns
+
+## 0.11.16
+
+### Patch Changes
+
+-   a714d53d: No unsaved change shown when adding fragment to Extension Point
+
+## 0.11.15
+
+### Patch Changes
+
+-   a44e9007: Invalid target aggregation and index are accepted in Add Fragment dialog
+
 ## 0.11.14
 
 ### Patch Changes
