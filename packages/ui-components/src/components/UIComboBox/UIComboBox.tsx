@@ -160,6 +160,24 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
+     * Method prevents cursor from jumping to the end of input
+     *
+     * @param {React.FormEvent<IComboBox>} event Combobox event object
+     */
+    private setCaretPosition(event: React.FormEvent<IComboBox>) {
+        if (event.target) {
+            const input = event.target as HTMLInputElement;
+            const selectionEnd = input.selectionEnd;
+            if (selectionEnd !== input.value.length) {
+                window.requestAnimationFrame(() => {
+                    input.selectionStart = selectionEnd;
+                    input.selectionEnd = selectionEnd;
+                });
+            }
+        }
+    }
+
+    /**
      * Method filters options and hides unmatched options.
      *
      * @param {React.FormEvent<IComboBox>} event Combobox event object
@@ -167,6 +185,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private onInput(event: React.FormEvent<IComboBox>): void {
         this.isListHidden = false;
         if (event.target) {
+            this.setCaretPosition(event);
             const input = event.target as HTMLInputElement;
             this.query = input.value.trimStart().toLowerCase();
             // Filter options
@@ -180,7 +199,8 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     /**
      * Method opens menu when user clicks on Combobox (input or button).
      */
-    private onClick(): void {
+    private onClick(event: React.FormEvent<IComboBox>): void {
+        this.setCaretPosition(event);
         const baseCombobox = this.comboBox.current;
         const isOpen = baseCombobox && baseCombobox.state.isOpen;
         const isDisabled = this.props.disabled;
