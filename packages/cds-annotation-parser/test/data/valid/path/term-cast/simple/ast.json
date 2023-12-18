@@ -1,37 +1,37 @@
 {
-  "type": "annotation",
-  "term": {
-    "type": "path",
-    "value": "a",
-    "segments": [
-      {
-        "type": "identifier",
-        "value": "a",
-        "range": "[(0,0)..(0,1)]",
-        "quoted": false
-      }
-    ],
-    "separators": [],
-    "range": "[(0,0)..(0,1)]"
-  },
-  "range": "[(0,0)..(0,5)]",
   "colon": {
-    "type": "token",
     "range": "[(0,1)..(0,2)]",
+    "type": "token",
     "value": ":"
   },
-  "value": {
-    "type": "path",
-    "value": "@E",
+  "range": "[(0,0)..(0,5)]",
+  "term": {
+    "range": "[(0,0)..(0,1)]",
     "segments": [
       {
+        "quoted": false,
+        "range": "[(0,0)..(0,1)]",
         "type": "identifier",
-        "value": "@E",
-        "range": "[(0,3)..(0,5)]",
-        "quoted": false
+        "value": "a"
       }
     ],
     "separators": [],
-    "range": "[(0,3)..(0,5)]"
+    "type": "path",
+    "value": "a"
+  },
+  "type": "annotation",
+  "value": {
+    "range": "[(0,3)..(0,5)]",
+    "segments": [
+      {
+        "quoted": false,
+        "range": "[(0,3)..(0,5)]",
+        "type": "identifier",
+        "value": "@E"
+      }
+    ],
+    "separators": [],
+    "type": "path",
+    "value": "@E"
   }
 }

@@ -1,76 +1,76 @@
 {
-  "type": "annotation",
+  "colon": {
+    "range": "[(0,4)..(0,5)]",
+    "type": "token",
+    "value": ":"
+  },
+  "range": "[(0,0)..(0,23)]",
   "term": {
-    "type": "path",
-    "value": "test",
+    "range": "[(0,0)..(0,4)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "test",
+        "quoted": false,
         "range": "[(0,0)..(0,4)]",
-        "quoted": false
+        "type": "identifier",
+        "value": "test"
       }
     ],
     "separators": [],
-    "range": "[(0,0)..(0,4)]"
+    "type": "path",
+    "value": "test"
   },
-  "range": "[(0,0)..(0,23)]",
-  "colon": {
-    "type": "token",
-    "range": "[(0,4)..(0,5)]",
-    "value": ":"
-  },
+  "type": "annotation",
   "value": {
-    "type": "correct-expression",
-    "operatorName": "not-like",
-    "operators": [
-      {
-        "type": "operator",
-        "value": "not like",
-        "range": "[(0,9)..(0,17)]"
-      }
-    ],
+    "closeToken": {
+      "range": "[(0,22)..(0,23)]",
+      "type": "token",
+      "value": ")"
+    },
+    "openToken": {
+      "range": "[(0,6)..(0,7)]",
+      "type": "token",
+      "value": "("
+    },
     "operands": [
       {
-        "type": "path",
-        "value": "a",
+        "range": "[(0,7)..(0,8)]",
         "segments": [
           {
-            "type": "identifier",
-            "value": "a",
+            "quoted": false,
             "range": "[(0,7)..(0,8)]",
-            "quoted": false
+            "type": "identifier",
+            "value": "a"
           }
         ],
         "separators": [],
-        "range": "[(0,7)..(0,8)]"
+        "type": "path",
+        "value": "a"
       },
       {
-        "type": "string",
-        "value": "_*",
-        "range": "[(0,18)..(0,22)]",
-        "openToken": {
-          "type": "token",
-          "value": "'",
-          "range": "[(0,18)..(0,19)]"
-        },
         "closeToken": {
+          "range": "[(0,21)..(0,22)]",
           "type": "token",
-          "value": "'",
-          "range": "[(0,21)..(0,22)]"
-        }
+          "value": "'"
+        },
+        "openToken": {
+          "range": "[(0,18)..(0,19)]",
+          "type": "token",
+          "value": "'"
+        },
+        "range": "[(0,18)..(0,22)]",
+        "type": "string",
+        "value": "_*"
+      }
+    ],
+    "operatorName": "not-like",
+    "operators": [
+      {
+        "range": "[(0,9)..(0,17)]",
+        "type": "operator",
+        "value": "not like"
       }
     ],
     "range": "[(0,6)..(0,23)]",
-    "openToken": {
-      "type": "token",
-      "value": "(",
-      "range": "[(0,6)..(0,7)]"
-    },
-    "closeToken": {
-      "type": "token",
-      "value": ")",
-      "range": "[(0,22)..(0,23)]"
-    }
+    "type": "correct-expression"
   }
 }

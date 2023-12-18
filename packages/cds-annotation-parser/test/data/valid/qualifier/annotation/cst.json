@@ -1,137 +1,137 @@
 {
-  "name": "declaration",
   "children": {
     "assignment": [
       {
-        "name": "assignment",
         "children": {
-          "path": [
+          "Colon": [
             {
-              "name": "path",
-              "children": {
-                "pathSegment": [
-                  {
-                    "name": "pathSegment",
-                    "children": {
-                      "Identifier": [
-                        {
-                          "image": "UI",
-                          "startOffset": 0,
-                          "endOffset": 1,
-                          "tokenTypeName": "Identifier"
-                        }
-                      ]
-                    },
-                    "location": {
-                      "startOffset": 0,
-                      "endOffset": 1
-                    }
-                  },
-                  {
-                    "name": "pathSegment",
-                    "children": {
-                      "Identifier": [
-                        {
-                          "image": "LineItem",
-                          "startOffset": 3,
-                          "endOffset": 10,
-                          "tokenTypeName": "Identifier"
-                        }
-                      ]
-                    },
-                    "location": {
-                      "startOffset": 3,
-                      "endOffset": 10
-                    }
-                  }
-                ],
-                "PathSegmentSeparator": [
-                  {
-                    "image": ".",
-                    "startOffset": 2,
-                    "endOffset": 2,
-                    "tokenTypeName": "PathSegmentSeparator"
-                  }
-                ]
-              },
-              "location": {
-                "startOffset": 0,
-                "endOffset": 10
-              }
-            }
-          ],
-          "NumberSign": [
-            {
-              "image": "#",
-              "startOffset": 11,
-              "endOffset": 11,
-              "tokenTypeName": "NumberSign"
+              "endOffset": 15,
+              "image": ":",
+              "startOffset": 15,
+              "tokenTypeName": "Colon"
             }
           ],
           "Identifier": [
             {
+              "endOffset": 14,
               "image": "abc",
               "startOffset": 12,
-              "endOffset": 14,
               "tokenTypeName": "Identifier"
             }
           ],
-          "Colon": [
+          "NumberSign": [
             {
-              "image": ":",
-              "startOffset": 15,
-              "endOffset": 15,
-              "tokenTypeName": "Colon"
+              "endOffset": 11,
+              "image": "#",
+              "startOffset": 11,
+              "tokenTypeName": "NumberSign"
+            }
+          ],
+          "path": [
+            {
+              "children": {
+                "PathSegmentSeparator": [
+                  {
+                    "endOffset": 2,
+                    "image": ".",
+                    "startOffset": 2,
+                    "tokenTypeName": "PathSegmentSeparator"
+                  }
+                ],
+                "pathSegment": [
+                  {
+                    "children": {
+                      "Identifier": [
+                        {
+                          "endOffset": 1,
+                          "image": "UI",
+                          "startOffset": 0,
+                          "tokenTypeName": "Identifier"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "endOffset": 1,
+                      "startOffset": 0
+                    },
+                    "name": "pathSegment"
+                  },
+                  {
+                    "children": {
+                      "Identifier": [
+                        {
+                          "endOffset": 10,
+                          "image": "LineItem",
+                          "startOffset": 3,
+                          "tokenTypeName": "Identifier"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "endOffset": 10,
+                      "startOffset": 3
+                    },
+                    "name": "pathSegment"
+                  }
+                ]
+              },
+              "location": {
+                "endOffset": 10,
+                "startOffset": 0
+              },
+              "name": "path"
             }
           ],
           "value": [
             {
-              "name": "value",
               "children": {
                 "collection": [
                   {
-                    "name": "collection",
                     "children": {
                       "LBracket": [
                         {
+                          "endOffset": 17,
                           "image": "[",
                           "startOffset": 17,
-                          "endOffset": 17,
                           "tokenTypeName": "LBracket"
                         }
                       ],
                       "RBracket": [
                         {
+                          "endOffset": 18,
                           "image": "]",
                           "startOffset": 18,
-                          "endOffset": 18,
                           "tokenTypeName": "RBracket"
                         }
                       ]
                     },
                     "location": {
-                      "startOffset": 17,
-                      "endOffset": 18
-                    }
+                      "endOffset": 18,
+                      "startOffset": 17
+                    },
+                    "name": "collection"
                   }
                 ]
               },
               "location": {
-                "startOffset": 17,
-                "endOffset": 18
-              }
+                "endOffset": 18,
+                "startOffset": 17
+              },
+              "name": "value"
             }
           ]
         },
         "location": {
-          "startOffset": 0,
-          "endOffset": 18
-        }
+          "endOffset": 18,
+          "startOffset": 0
+        },
+        "name": "assignment"
       }
     ]
   },
   "location": {
-    "startOffset": 0,
-    "endOffset": 18
-  }
+    "endOffset": 18,
+    "startOffset": 0
+  },
+  "name": "declaration"
 }

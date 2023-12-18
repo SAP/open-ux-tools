@@ -17,6 +17,14 @@ const compactAst = (key, value) => {
         }
         return compactRange(value);
     }
+    if (typeof value === 'object' && !Array.isArray(value)) {
+        const sortedKeys = Object.keys(value).sort();
+        const newValue = {};
+        for (const key of sortedKeys) {
+            newValue[key] = value[key];
+        }
+        return newValue;
+    }
     return value;
 };
 

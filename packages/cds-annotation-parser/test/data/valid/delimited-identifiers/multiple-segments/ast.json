@@ -1,31 +1,31 @@
 {
-  "type": "annotation",
+  "range": "[(0,0)..(0,11)]",
   "term": {
-    "type": "path",
-    "value": "abcd.fgh",
+    "range": "[(0,0)..(0,11)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "abcd",
+        "quoted": true,
         "range": "[(0,2)..(0,6)]",
-        "quoted": true
+        "type": "identifier",
+        "value": "abcd"
       },
       {
-        "type": "identifier",
-        "value": "fgh",
+        "quoted": true,
         "range": "[(0,7)..(0,10)]",
-        "quoted": true
+        "type": "identifier",
+        "value": "fgh"
       }
     ],
     "separators": [
       {
-        "type": "separator",
-        "value": ".",
+        "escaped": true,
         "range": "[(0,6)..(0,7)]",
-        "escaped": true
+        "type": "separator",
+        "value": "."
       }
     ],
-    "range": "[(0,0)..(0,11)]"
+    "type": "path",
+    "value": "abcd.fgh"
   },
-  "range": "[(0,0)..(0,11)]"
+  "type": "annotation"
 }

@@ -270,14 +270,8 @@ export const nodeRange = (node: AnnotationNode, includeDelimiters: boolean): Ran
         case UNSUPPORTED_OPERATOR_EXPRESSION_TYPE:
         case CORRECT_EXPRESSION_TYPE: {
             // if delimiter tokens exist adjust range accordingly
-            const start =
-                node.openToken && node.openToken.range
-                    ? copyRange(node.openToken.range).end
-                    : copyRange(node.range).start;
-            const end =
-                node.closeToken && node.closeToken.range
-                    ? copyRange(node.closeToken.range).start
-                    : copyRange(node.range).end;
+            const start = node.openToken?.range ? copyRange(node.openToken.range).end : copyRange(node.range).start;
+            const end = node.closeToken?.range ? copyRange(node.closeToken.range).start : copyRange(node.range).end;
             return Range.create(start, end);
         }
     }

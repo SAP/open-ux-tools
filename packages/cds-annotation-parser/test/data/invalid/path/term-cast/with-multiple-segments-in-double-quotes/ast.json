@@ -1,62 +1,62 @@
 {
-  "type": "annotation",
+  "colon": {
+    "range": "[(0,1)..(0,2)]",
+    "type": "token",
+    "value": ":"
+  },
+  "range": "[(0,0)..(0,19)]",
   "term": {
-    "type": "path",
-    "value": "a",
+    "range": "[(0,0)..(0,1)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "a",
+        "quoted": false,
         "range": "[(0,0)..(0,1)]",
-        "quoted": false
+        "type": "identifier",
+        "value": "a"
       }
     ],
     "separators": [],
-    "range": "[(0,0)..(0,1)]"
-  },
-  "range": "[(0,0)..(0,19)]",
-  "colon": {
-    "type": "token",
-    "range": "[(0,1)..(0,2)]",
-    "value": ":"
-  },
-  "value": {
     "type": "path",
-    "value": "E/@Segment#q/F",
+    "value": "a"
+  },
+  "type": "annotation",
+  "value": {
+    "range": "[(0,3)..(0,19)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "E",
+        "quoted": true,
         "range": "[(0,4)..(0,5)]",
-        "quoted": true
+        "type": "identifier",
+        "value": "E"
       },
       {
-        "type": "identifier",
-        "value": "@Segment#q",
+        "quoted": true,
         "range": "[(0,6)..(0,16)]",
-        "quoted": true
+        "type": "identifier",
+        "value": "@Segment#q"
       },
       {
-        "type": "identifier",
-        "value": "F",
+        "quoted": true,
         "range": "[(0,17)..(0,18)]",
-        "quoted": true
+        "type": "identifier",
+        "value": "F"
       }
     ],
     "separators": [
       {
-        "type": "separator",
-        "value": "/",
+        "escaped": true,
         "range": "[(0,5)..(0,6)]",
-        "escaped": true
+        "type": "separator",
+        "value": "/"
       },
       {
-        "type": "separator",
-        "value": "/",
+        "escaped": true,
         "range": "[(0,16)..(0,17)]",
-        "escaped": true
+        "type": "separator",
+        "value": "/"
       }
     ],
-    "range": "[(0,3)..(0,19)]"
+    "type": "path",
+    "value": "E/@Segment#q/F"
   }
 }

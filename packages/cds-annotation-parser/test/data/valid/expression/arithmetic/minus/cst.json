@@ -1,140 +1,140 @@
 {
-  "name": "declaration",
   "children": {
     "assignment": [
       {
-        "name": "assignment",
         "children": {
+          "Colon": [
+            {
+              "endOffset": 4,
+              "image": ":",
+              "startOffset": 4,
+              "tokenTypeName": "Colon"
+            }
+          ],
           "path": [
             {
-              "name": "path",
               "children": {
                 "pathSegment": [
                   {
-                    "name": "pathSegment",
                     "children": {
                       "Identifier": [
                         {
+                          "endOffset": 3,
                           "image": "test",
                           "startOffset": 0,
-                          "endOffset": 3,
                           "tokenTypeName": "Identifier"
                         }
                       ]
                     },
                     "location": {
-                      "startOffset": 0,
-                      "endOffset": 3
-                    }
+                      "endOffset": 3,
+                      "startOffset": 0
+                    },
+                    "name": "pathSegment"
                   }
                 ]
               },
               "location": {
-                "startOffset": 0,
-                "endOffset": 3
-              }
-            }
-          ],
-          "Colon": [
-            {
-              "image": ":",
-              "startOffset": 4,
-              "endOffset": 4,
-              "tokenTypeName": "Colon"
+                "endOffset": 3,
+                "startOffset": 0
+              },
+              "name": "path"
             }
           ],
           "value": [
             {
-              "name": "value",
               "children": {
                 "expression": [
                   {
-                    "name": "expression",
                     "children": {
                       "LParen": [
                         {
+                          "endOffset": 6,
                           "image": "(",
                           "startOffset": 6,
-                          "endOffset": 6,
                           "tokenTypeName": "LParen"
-                        }
-                      ],
-                      "value": [
-                        {
-                          "name": "value",
-                          "children": {
-                            "Number": [
-                              {
-                                "image": "1",
-                                "startOffset": 7,
-                                "endOffset": 7,
-                                "tokenTypeName": "Number"
-                              }
-                            ]
-                          },
-                          "location": {
-                            "startOffset": 7,
-                            "endOffset": 7
-                          }
-                        },
-                        {
-                          "name": "value",
-                          "children": {
-                            "Number": [
-                              {
-                                "image": "2",
-                                "startOffset": 11,
-                                "endOffset": 11,
-                                "tokenTypeName": "Number"
-                              }
-                            ]
-                          },
-                          "location": {
-                            "startOffset": 11,
-                            "endOffset": 11
-                          }
                         }
                       ],
                       "Operator": [
                         {
+                          "endOffset": 9,
                           "image": "-",
                           "startOffset": 9,
-                          "endOffset": 9,
                           "tokenTypeName": "Operator"
                         }
                       ],
                       "RParen": [
                         {
+                          "endOffset": 12,
                           "image": ")",
                           "startOffset": 12,
-                          "endOffset": 12,
                           "tokenTypeName": "RParen"
+                        }
+                      ],
+                      "value": [
+                        {
+                          "children": {
+                            "Number": [
+                              {
+                                "endOffset": 7,
+                                "image": "1",
+                                "startOffset": 7,
+                                "tokenTypeName": "Number"
+                              }
+                            ]
+                          },
+                          "location": {
+                            "endOffset": 7,
+                            "startOffset": 7
+                          },
+                          "name": "value"
+                        },
+                        {
+                          "children": {
+                            "Number": [
+                              {
+                                "endOffset": 11,
+                                "image": "2",
+                                "startOffset": 11,
+                                "tokenTypeName": "Number"
+                              }
+                            ]
+                          },
+                          "location": {
+                            "endOffset": 11,
+                            "startOffset": 11
+                          },
+                          "name": "value"
                         }
                       ]
                     },
                     "location": {
-                      "startOffset": 6,
-                      "endOffset": 12
-                    }
+                      "endOffset": 12,
+                      "startOffset": 6
+                    },
+                    "name": "expression"
                   }
                 ]
               },
               "location": {
-                "startOffset": 6,
-                "endOffset": 12
-              }
+                "endOffset": 12,
+                "startOffset": 6
+              },
+              "name": "value"
             }
           ]
         },
         "location": {
-          "startOffset": 0,
-          "endOffset": 12
-        }
+          "endOffset": 12,
+          "startOffset": 0
+        },
+        "name": "assignment"
       }
     ]
   },
   "location": {
-    "startOffset": 0,
-    "endOffset": 12
-  }
+    "endOffset": 12,
+    "startOffset": 0
+  },
+  "name": "declaration"
 }

@@ -299,7 +299,6 @@ export class AnnotationParser extends CstParser {
         if (this.deletionRecoveryEnabled === false) {
             return false;
         }
-        // TODO: check why this is not available
         return super['canRecoverWithSingleTokenDeletion'](expectedTokType);
     }
 
@@ -461,7 +460,7 @@ export class AnnotationParser extends CstParser {
 
     [VALUE_TYPE] = this.RULE(VALUE_TYPE, () => {
         this.OR(
-            this.v ||
+            this.v ??
                 (this.v = [
                     this.createOrConsumeEntry(tokenMap.Null),
                     this.createOrConsumeEntry(tokenMap.True),
@@ -485,7 +484,7 @@ export class AnnotationParser extends CstParser {
 
     [COLLECTION_VALUE_TYPE] = this.RULE(COLLECTION_VALUE_TYPE, () => {
         this.OR(
-            this.cv ||
+            this.cv ??
                 (this.cv = [
                     this.createOrConsumeEntry(tokenMap.Null),
                     this.createOrConsumeEntry(tokenMap.True),

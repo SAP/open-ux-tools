@@ -14,7 +14,7 @@ const QuotedIdentifier = createToken({ name: QUOTED_IDENTIFIER_TOKEN_TYPE, patte
 export const QUOTED_IDENTIFIER_EXIT_TOKEN_TYPE = 'QuotedIdentifierExit';
 const QuotedIdentifierExit = createToken({
     name: QUOTED_IDENTIFIER_EXIT_TOKEN_TYPE,
-    pattern: /[\u0022\n\r\u2028\u2029]{1}/,
+    pattern: /[\u0022\n\r\u2028\u2029]/,
 
     pop_mode: true
 });
@@ -28,7 +28,7 @@ const DelimitedIdentifier = createToken({
 export const DELIMITED_IDENTIFIER_EXIT_TOKEN_TYPE = 'DelimitedIdentifierExit';
 const DelimitedIdentifierExit = createToken({
     name: DELIMITED_IDENTIFIER_EXIT_TOKEN_TYPE,
-    pattern: /[\u005d\n\r\u2028\u2029]{1}/,
+    pattern: /[\u005d\n\r\u2028\u2029]/,
 
     pop_mode: true
 });
@@ -58,14 +58,14 @@ const TripleBacktick = createToken({
 });
 
 export const MULTI_LINE_STRING_EXIT_TOKEN_TYPE = 'MultiLineStringExit';
-const MultiLineStringExit = createToken({ name: MULTI_LINE_STRING_EXIT_TOKEN_TYPE, pattern: /[`]{1}/, pop_mode: true });
+const MultiLineStringExit = createToken({ name: MULTI_LINE_STRING_EXIT_TOKEN_TYPE, pattern: /`/, pop_mode: true });
 export const MULTI_LINE_STRING_TOKEN_TYPE = 'MultiLineString';
 const MultiLineString = createToken({ name: MULTI_LINE_STRING_TOKEN_TYPE, pattern: /(([^`]+|'')+)/ });
 
 export const MULTI_LINE_STRING_STRIP_INDENT_EXIT_TOKEN_TYPE = 'MultiLineStringStripIndentExit';
 const MultiLineStringStripIndentExit = createToken({
     name: MULTI_LINE_STRING_STRIP_INDENT_EXIT_TOKEN_TYPE,
-    pattern: /[`]{3}/,
+    pattern: /`{3}/,
     pop_mode: true
 });
 
@@ -73,7 +73,7 @@ export const STRING_TOKEN_TYPE = 'String';
 const StringToken = createToken({ name: STRING_TOKEN_TYPE, pattern: /(([^\n\r']+|'')+)/ });
 export const STRING_EXIT_TOKEN_TYPE = 'StringExit';
 
-const StringExit = createToken({ name: STRING_EXIT_TOKEN_TYPE, pattern: /[\n\r']{1}/, pop_mode: true });
+const StringExit = createToken({ name: STRING_EXIT_TOKEN_TYPE, pattern: /[\n\r']/, pop_mode: true });
 
 export const COMMENT_TOKEN_TYPE = 'Comment';
 const Comment = createToken({
@@ -101,7 +101,7 @@ export const COMMA_TOKEN_TYPE = 'Comma';
 const Comma = createToken({ name: COMMA_TOKEN_TYPE, pattern: ',' });
 
 export const PATH_SEGMENT_SEPARATOR_TOKEN_TYPE = 'PathSegmentSeparator';
-const PathSegmentSeparator = createToken({ name: PATH_SEGMENT_SEPARATOR_TOKEN_TYPE, pattern: /\.|\// });
+const PathSegmentSeparator = createToken({ name: PATH_SEGMENT_SEPARATOR_TOKEN_TYPE, pattern: /[\.\/]/ });
 
 export const SINGLE_QUOTE_TOKEN_TYPE = 'SingleQuote';
 
@@ -147,7 +147,7 @@ const WhiteSpace = createToken({
 });
 
 export const NUMBER_TOKEN_TYPE = 'Number';
-const NumberToken = createToken({ name: NUMBER_TOKEN_TYPE, pattern: /(\+|-)?[0-9]+(\.[0-9]+)?([eE](\+|-)?[0-9]+)?/ });
+const NumberToken = createToken({ name: NUMBER_TOKEN_TYPE, pattern: /([\+-])?\d+(\.\d+)?([eE]([\+-])?\d+)?/ });
 // keywords
 export const NULL_TOKEN_TYPE = 'Null';
 

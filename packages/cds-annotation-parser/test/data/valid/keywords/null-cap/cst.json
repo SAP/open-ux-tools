@@ -1,77 +1,77 @@
 {
-  "name": "declaration",
   "children": {
     "assignment": [
       {
-        "name": "assignment",
         "children": {
+          "Colon": [
+            {
+              "endOffset": 1,
+              "image": ":",
+              "startOffset": 1,
+              "tokenTypeName": "Colon"
+            }
+          ],
           "path": [
             {
-              "name": "path",
               "children": {
                 "pathSegment": [
                   {
-                    "name": "pathSegment",
                     "children": {
                       "Identifier": [
                         {
+                          "endOffset": 0,
                           "image": "a",
                           "startOffset": 0,
-                          "endOffset": 0,
                           "tokenTypeName": "Identifier"
                         }
                       ]
                     },
                     "location": {
-                      "startOffset": 0,
-                      "endOffset": 0
-                    }
+                      "endOffset": 0,
+                      "startOffset": 0
+                    },
+                    "name": "pathSegment"
                   }
                 ]
               },
               "location": {
-                "startOffset": 0,
-                "endOffset": 0
-              }
-            }
-          ],
-          "Colon": [
-            {
-              "image": ":",
-              "startOffset": 1,
-              "endOffset": 1,
-              "tokenTypeName": "Colon"
+                "endOffset": 0,
+                "startOffset": 0
+              },
+              "name": "path"
             }
           ],
           "value": [
             {
-              "name": "value",
               "children": {
                 "Null": [
                   {
+                    "endOffset": 6,
                     "image": "NULL",
                     "startOffset": 3,
-                    "endOffset": 6,
                     "tokenTypeName": "Null"
                   }
                 ]
               },
               "location": {
-                "startOffset": 3,
-                "endOffset": 6
-              }
+                "endOffset": 6,
+                "startOffset": 3
+              },
+              "name": "value"
             }
           ]
         },
         "location": {
-          "startOffset": 0,
-          "endOffset": 6
-        }
+          "endOffset": 6,
+          "startOffset": 0
+        },
+        "name": "assignment"
       }
     ]
   },
   "location": {
-    "startOffset": 0,
-    "endOffset": 6
-  }
+    "endOffset": 6,
+    "startOffset": 0
+  },
+  "name": "declaration"
 }

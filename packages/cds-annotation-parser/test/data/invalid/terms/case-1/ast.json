@@ -1,103 +1,103 @@
 {
-  "type": "annotation-group",
-  "name": {
-    "type": "identifier",
-    "value": "UI",
-    "range": "[(0,0)..(0,2)]",
-    "quoted": false
+  "colon": {
+    "range": "[(0,3)..(0,4)]",
+    "type": "token",
+    "value": ":"
   },
   "items": {
-    "type": "annotation-group-items",
+    "closeToken": {
+      "range": "[(3,0)..(3,1)]",
+      "type": "token",
+      "value": "}"
+    },
+    "commas": [
+      {
+        "range": "[(1,10)..(1,11)]",
+        "type": "token",
+        "value": ","
+      }
+    ],
     "items": [
       {
-        "type": "annotation",
+        "colon": {
+          "range": "[(1,8)..(1,9)]",
+          "type": "token",
+          "value": ":"
+        },
+        "range": "[(1,4)..(1,10)]",
         "term": {
-          "type": "path",
-          "value": "XYZ",
+          "range": "[(1,4)..(1,7)]",
           "segments": [
             {
-              "type": "identifier",
-              "value": "XYZ",
+              "quoted": false,
               "range": "[(1,4)..(1,7)]",
-              "quoted": false
+              "type": "identifier",
+              "value": "XYZ"
             }
           ],
           "separators": [],
-          "range": "[(1,4)..(1,7)]"
+          "type": "path",
+          "value": "XYZ"
         },
-        "range": "[(1,4)..(1,10)]",
-        "colon": {
-          "type": "token",
-          "value": ":",
-          "range": "[(1,8)..(1,9)]"
-        },
+        "type": "annotation",
         "value": {
-          "type": "empty-value",
-          "range": "[(1,9)..(1,10)]"
+          "range": "[(1,9)..(1,10)]",
+          "type": "empty-value"
         }
       },
       {
-        "type": "annotation",
+        "colon": {
+          "range": "[(2,8)..(2,9)]",
+          "type": "token",
+          "value": ":"
+        },
+        "range": "[(2,4)..(2,12)]",
         "term": {
-          "type": "path",
-          "value": "ABC",
+          "range": "[(2,4)..(2,7)]",
           "segments": [
             {
-              "type": "identifier",
-              "value": "ABC",
+              "quoted": false,
               "range": "[(2,4)..(2,7)]",
-              "quoted": false
+              "type": "identifier",
+              "value": "ABC"
             }
           ],
           "separators": [],
-          "range": "[(2,4)..(2,7)]"
+          "type": "path",
+          "value": "ABC"
         },
-        "range": "[(2,4)..(2,12)]",
-        "colon": {
-          "type": "token",
-          "value": ":",
-          "range": "[(2,8)..(2,9)]"
-        },
+        "type": "annotation",
         "value": {
-          "type": "string",
-          "value": "",
-          "range": "[(2,10)..(2,12)]",
-          "openToken": {
-            "type": "token",
-            "value": "'",
-            "range": "[(2,10)..(2,11)]"
-          },
           "closeToken": {
+            "range": "[(2,11)..(2,12)]",
             "type": "token",
-            "value": "'",
-            "range": "[(2,11)..(2,12)]"
-          }
+            "value": "'"
+          },
+          "openToken": {
+            "range": "[(2,10)..(2,11)]",
+            "type": "token",
+            "value": "'"
+          },
+          "range": "[(2,10)..(2,12)]",
+          "type": "string",
+          "value": ""
         }
       }
     ],
-    "range": "[(0,5)..(3,1)]",
-    "commas": [
-      {
-        "type": "token",
-        "value": ",",
-        "range": "[(1,10)..(1,11)]"
-      }
-    ],
     "openToken": {
+      "range": "[(0,5)..(0,6)]",
       "type": "token",
-      "value": "{",
-      "range": "[(0,5)..(0,6)]"
+      "value": "{"
     },
-    "closeToken": {
-      "type": "token",
-      "value": "}",
-      "range": "[(3,0)..(3,1)]"
-    }
+    "range": "[(0,5)..(3,1)]",
+    "type": "annotation-group-items"
+  },
+  "name": {
+    "quoted": false,
+    "range": "[(0,0)..(0,2)]",
+    "type": "identifier",
+    "value": "UI"
   },
   "range": "[(0,0)..(3,1)]",
-  "colon": {
-    "type": "token",
-    "value": ":",
-    "range": "[(0,3)..(0,4)]"
-  }
+  "type": "annotation-group"
 }

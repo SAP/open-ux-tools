@@ -1,0 +1,87 @@
+{
+  "colon": {
+    "range": "[(0,9)..(0,10)]",
+    "type": "token",
+    "value": ":"
+  },
+  "range": "[(0,0)..(2,1)]",
+  "term": {
+    "range": "[(0,0)..(0,8)]",
+    "segments": [
+      {
+        "quoted": false,
+        "range": "[(0,0)..(0,2)]",
+        "type": "identifier",
+        "value": "UI"
+      },
+      {
+        "quoted": false,
+        "range": "[(0,3)..(0,8)]",
+        "type": "identifier",
+        "value": "Chart"
+      }
+    ],
+    "separators": [
+      {
+        "escaped": false,
+        "range": "[(0,2)..(0,3)]",
+        "type": "separator",
+        "value": "."
+      }
+    ],
+    "type": "path",
+    "value": "UI.Chart"
+  },
+  "type": "annotation",
+  "value": {
+    "closeToken": {
+      "range": "[(2,0)..(2,1)]",
+      "type": "token",
+      "value": "}"
+    },
+    "commas": [],
+    "openToken": {
+      "range": "[(0,11)..(0,12)]",
+      "type": "token",
+      "value": "{"
+    },
+    "properties": [
+      {
+        "colon": {
+          "range": "[(1,13)..(1,14)]",
+          "type": "token",
+          "value": ":"
+        },
+        "name": {
+          "range": "[(1,4)..(1,13)]",
+          "segments": [
+            {
+              "quoted": false,
+              "range": "[(1,4)..(1,13)]",
+              "type": "identifier",
+              "value": "ChartType"
+            }
+          ],
+          "separators": [],
+          "type": "path",
+          "value": "ChartType"
+        },
+        "range": "[(1,4)..(1,16)]",
+        "type": "record-property",
+        "value": {
+          "path": {
+            "range": "[(1,16)..(1,16)]",
+            "segments": [],
+            "separators": [],
+            "type": "path",
+            "value": ""
+          },
+          "range": "[(1,15)..(1,16)]",
+          "type": "enum"
+        }
+      }
+    ],
+    "range": "[(0,11)..(2,1)]",
+    "type": "record"
+  }
+}

@@ -1,77 +1,77 @@
 {
-  "name": "declaration",
   "children": {
     "assignment": [
       {
-        "name": "assignment",
         "children": {
+          "Colon": [
+            {
+              "endOffset": 3,
+              "image": ":",
+              "startOffset": 3,
+              "tokenTypeName": "Colon"
+            }
+          ],
           "path": [
             {
-              "name": "path",
               "children": {
                 "pathSegment": [
                   {
-                    "name": "pathSegment",
                     "children": {
                       "Identifier": [
                         {
+                          "endOffset": 2,
                           "image": "aaa",
                           "startOffset": 0,
-                          "endOffset": 2,
                           "tokenTypeName": "Identifier"
                         }
                       ]
                     },
                     "location": {
-                      "startOffset": 0,
-                      "endOffset": 2
-                    }
+                      "endOffset": 2,
+                      "startOffset": 0
+                    },
+                    "name": "pathSegment"
                   }
                 ]
               },
               "location": {
-                "startOffset": 0,
-                "endOffset": 2
-              }
-            }
-          ],
-          "Colon": [
-            {
-              "image": ":",
-              "startOffset": 3,
-              "endOffset": 3,
-              "tokenTypeName": "Colon"
+                "endOffset": 2,
+                "startOffset": 0
+              },
+              "name": "path"
             }
           ],
           "value": [
             {
-              "name": "value",
               "children": {
                 "Number": [
                   {
+                    "endOffset": 7,
                     "image": "123",
                     "startOffset": 5,
-                    "endOffset": 7,
                     "tokenTypeName": "Number"
                   }
                 ]
               },
               "location": {
-                "startOffset": 5,
-                "endOffset": 7
-              }
+                "endOffset": 7,
+                "startOffset": 5
+              },
+              "name": "value"
             }
           ]
         },
         "location": {
-          "startOffset": 0,
-          "endOffset": 7
-        }
+          "endOffset": 7,
+          "startOffset": 0
+        },
+        "name": "assignment"
       }
     ]
   },
   "location": {
-    "startOffset": 0,
-    "endOffset": 7
-  }
+    "endOffset": 7,
+    "startOffset": 0
+  },
+  "name": "declaration"
 }

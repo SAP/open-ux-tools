@@ -1,57 +1,57 @@
 {
-  "type": "annotation",
+  "colon": {
+    "range": "[(0,29)..(0,30)]",
+    "type": "token",
+    "value": ":"
+  },
+  "qualifier": {
+    "range": "[(0,13)..(0,16)]",
+    "type": "qualifier",
+    "value": "abc"
+  },
+  "range": "[(0,0)..(0,33)]",
   "term": {
-    "type": "path",
-    "value": "HeaderInfo#abc.Description",
+    "range": "[(0,0)..(0,29)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "HeaderInfo",
+        "quoted": true,
         "range": "[(0,2)..(0,12)]",
-        "quoted": true
+        "type": "identifier",
+        "value": "HeaderInfo"
       },
       {
-        "type": "identifier",
-        "value": "Description",
+        "quoted": true,
         "range": "[(0,17)..(0,28)]",
-        "quoted": true
+        "type": "identifier",
+        "value": "Description"
       }
     ],
     "separators": [
       {
-        "type": "separator",
-        "value": ".",
+        "escaped": true,
         "range": "[(0,16)..(0,17)]",
-        "escaped": true
+        "type": "separator",
+        "value": "."
       }
     ],
-    "range": "[(0,0)..(0,29)]"
+    "type": "path",
+    "value": "HeaderInfo#abc.Description"
   },
-  "range": "[(0,0)..(0,33)]",
-  "colon": {
-    "type": "token",
-    "range": "[(0,29)..(0,30)]",
-    "value": ":"
-  },
-  "qualifier": {
-    "type": "qualifier",
-    "value": "abc",
-    "range": "[(0,13)..(0,16)]"
-  },
+  "type": "annotation",
   "value": {
-    "type": "record",
-    "properties": [],
-    "range": "[(0,31)..(0,33)]",
+    "closeToken": {
+      "range": "[(0,32)..(0,33)]",
+      "type": "token",
+      "value": "}"
+    },
     "commas": [],
     "openToken": {
+      "range": "[(0,31)..(0,32)]",
       "type": "token",
-      "value": "{",
-      "range": "[(0,31)..(0,32)]"
+      "value": "{"
     },
-    "closeToken": {
-      "type": "token",
-      "value": "}",
-      "range": "[(0,32)..(0,33)]"
-    }
+    "properties": [],
+    "range": "[(0,31)..(0,33)]",
+    "type": "record"
   }
 }

@@ -1,64 +1,64 @@
 {
-  "type": "annotation",
+  "colon": {
+    "range": "[(0,34)..(0,35)]",
+    "type": "token",
+    "value": ":"
+  },
+  "range": "[(0,0)..(0,38)]",
   "term": {
-    "type": "path",
-    "value": "UI.HeaderInfo.Description#wrong",
+    "range": "[(0,0)..(0,34)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "UI",
+        "quoted": false,
         "range": "[(0,0)..(0,2)]",
-        "quoted": false
+        "type": "identifier",
+        "value": "UI"
       },
       {
-        "type": "identifier",
-        "value": "HeaderInfo",
+        "quoted": true,
         "range": "[(0,5)..(0,15)]",
-        "quoted": true
+        "type": "identifier",
+        "value": "HeaderInfo"
       },
       {
-        "type": "identifier",
-        "value": "Description#wrong",
+        "quoted": true,
         "range": "[(0,16)..(0,33)]",
-        "quoted": true
+        "type": "identifier",
+        "value": "Description#wrong"
       }
     ],
     "separators": [
       {
-        "type": "separator",
-        "value": ".",
+        "escaped": false,
         "range": "[(0,2)..(0,3)]",
-        "escaped": false
+        "type": "separator",
+        "value": "."
       },
       {
-        "type": "separator",
-        "value": ".",
+        "escaped": true,
         "range": "[(0,15)..(0,16)]",
-        "escaped": true
+        "type": "separator",
+        "value": "."
       }
     ],
-    "range": "[(0,0)..(0,34)]"
+    "type": "path",
+    "value": "UI.HeaderInfo.Description#wrong"
   },
-  "range": "[(0,0)..(0,38)]",
-  "colon": {
-    "type": "token",
-    "range": "[(0,34)..(0,35)]",
-    "value": ":"
-  },
+  "type": "annotation",
   "value": {
-    "type": "record",
-    "properties": [],
-    "range": "[(0,36)..(0,38)]",
+    "closeToken": {
+      "range": "[(0,37)..(0,38)]",
+      "type": "token",
+      "value": "}"
+    },
     "commas": [],
     "openToken": {
+      "range": "[(0,36)..(0,37)]",
       "type": "token",
-      "value": "{",
-      "range": "[(0,36)..(0,37)]"
+      "value": "{"
     },
-    "closeToken": {
-      "type": "token",
-      "value": "}",
-      "range": "[(0,37)..(0,38)]"
-    }
+    "properties": [],
+    "range": "[(0,36)..(0,38)]",
+    "type": "record"
   }
 }

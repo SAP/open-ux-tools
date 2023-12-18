@@ -1,61 +1,61 @@
 {
-  "type": "annotation",
+  "colon": {
+    "range": "[(0,1)..(0,2)]",
+    "type": "token",
+    "value": ":"
+  },
+  "range": "[(0,0)..(0,9)]",
   "term": {
-    "type": "path",
-    "value": "s",
+    "range": "[(0,0)..(0,1)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "s",
+        "quoted": false,
         "range": "[(0,0)..(0,1)]",
-        "quoted": false
+        "type": "identifier",
+        "value": "s"
       }
     ],
     "separators": [],
-    "range": "[(0,0)..(0,1)]"
+    "type": "path",
+    "value": "s"
   },
-  "range": "[(0,0)..(0,9)]",
-  "colon": {
-    "type": "token",
-    "range": "[(0,1)..(0,2)]",
-    "value": ":"
-  },
+  "type": "annotation",
   "value": {
-    "type": "record",
+    "closeToken": {
+      "range": "[(0,8)..(0,9)]",
+      "type": "token",
+      "value": "}"
+    },
+    "commas": [],
+    "openToken": {
+      "range": "[(0,3)..(0,4)]",
+      "type": "token",
+      "value": "{"
+    },
     "properties": [
       {
-        "type": "record-property",
+        "colon": {
+          "range": "[(0,5)..(0,6)]",
+          "type": "token",
+          "value": ":"
+        },
         "name": {
-          "type": "path",
+          "range": "[(0,4)..(0,5)]",
           "segments": [],
           "separators": [],
-          "value": "",
-          "range": "[(0,4)..(0,5)]"
-        },
-        "value": {
-          "type": "number",
-          "value": 1,
-          "range": "[(0,7)..(0,8)]"
+          "type": "path",
+          "value": ""
         },
         "range": "[(0,4)..(0,8)]",
-        "colon": {
-          "type": "token",
-          "range": "[(0,5)..(0,6)]",
-          "value": ":"
+        "type": "record-property",
+        "value": {
+          "range": "[(0,7)..(0,8)]",
+          "type": "number",
+          "value": 1
         }
       }
     ],
     "range": "[(0,3)..(0,9)]",
-    "commas": [],
-    "openToken": {
-      "type": "token",
-      "value": "{",
-      "range": "[(0,3)..(0,4)]"
-    },
-    "closeToken": {
-      "type": "token",
-      "value": "}",
-      "range": "[(0,8)..(0,9)]"
-    }
+    "type": "record"
   }
 }

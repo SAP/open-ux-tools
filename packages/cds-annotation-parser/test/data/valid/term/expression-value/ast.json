@@ -1,74 +1,74 @@
 {
-  "type": "annotation",
+  "colon": {
+    "range": "[(0,9)..(0,10)]",
+    "type": "token",
+    "value": ":"
+  },
+  "range": "[(0,0)..(0,29)]",
   "term": {
-    "type": "path",
-    "value": "UI.Hidden",
+    "range": "[(0,0)..(0,9)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "UI",
+        "quoted": false,
         "range": "[(0,0)..(0,2)]",
-        "quoted": false
+        "type": "identifier",
+        "value": "UI"
       },
       {
-        "type": "identifier",
-        "value": "Hidden",
+        "quoted": false,
         "range": "[(0,3)..(0,9)]",
-        "quoted": false
+        "type": "identifier",
+        "value": "Hidden"
       }
     ],
     "separators": [
       {
-        "type": "separator",
-        "value": ".",
+        "escaped": false,
         "range": "[(0,2)..(0,3)]",
-        "escaped": false
+        "type": "separator",
+        "value": "."
       }
     ],
-    "range": "[(0,0)..(0,9)]"
+    "type": "path",
+    "value": "UI.Hidden"
   },
-  "range": "[(0,0)..(0,29)]",
-  "colon": {
-    "type": "token",
-    "range": "[(0,9)..(0,10)]",
-    "value": ":"
-  },
+  "type": "annotation",
   "value": {
-    "type": "correct-expression",
-    "operatorName": "not",
-    "operators": [
-      {
-        "type": "operator",
-        "value": "not",
-        "range": "[(0,13)..(0,16)]"
-      }
-    ],
+    "closeToken": {
+      "range": "[(0,28)..(0,29)]",
+      "type": "token",
+      "value": ")"
+    },
+    "openToken": {
+      "range": "[(0,11)..(0,12)]",
+      "type": "token",
+      "value": "("
+    },
     "operands": [
       {
-        "type": "path",
-        "value": "isImportant",
+        "range": "[(0,17)..(0,28)]",
         "segments": [
           {
-            "type": "identifier",
-            "value": "isImportant",
+            "quoted": false,
             "range": "[(0,17)..(0,28)]",
-            "quoted": false
+            "type": "identifier",
+            "value": "isImportant"
           }
         ],
         "separators": [],
-        "range": "[(0,17)..(0,28)]"
+        "type": "path",
+        "value": "isImportant"
+      }
+    ],
+    "operatorName": "not",
+    "operators": [
+      {
+        "range": "[(0,13)..(0,16)]",
+        "type": "operator",
+        "value": "not"
       }
     ],
     "range": "[(0,11)..(0,29)]",
-    "openToken": {
-      "type": "token",
-      "value": "(",
-      "range": "[(0,11)..(0,12)]"
-    },
-    "closeToken": {
-      "type": "token",
-      "value": ")",
-      "range": "[(0,28)..(0,29)]"
-    }
+    "type": "correct-expression"
   }
 }

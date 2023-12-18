@@ -1,28 +1,28 @@
 {
-  "type": "annotation",
+  "colon": {
+    "range": "[(0,1)..(0,2)]",
+    "type": "token",
+    "value": ":"
+  },
+  "range": "[(0,0)..(0,8)]",
   "term": {
-    "type": "path",
-    "value": "a",
+    "range": "[(0,0)..(0,1)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "a",
+        "quoted": false,
         "range": "[(0,0)..(0,1)]",
-        "quoted": false
+        "type": "identifier",
+        "value": "a"
       }
     ],
     "separators": [],
-    "range": "[(0,0)..(0,1)]"
+    "type": "path",
+    "value": "a"
   },
-  "range": "[(0,0)..(0,8)]",
-  "colon": {
-    "type": "token",
-    "range": "[(0,1)..(0,2)]",
-    "value": ":"
-  },
+  "type": "annotation",
   "value": {
+    "range": "[(0,3)..(0,8)]",
     "type": "boolean",
-    "value": false,
-    "range": "[(0,3)..(0,8)]"
+    "value": false
   }
 }

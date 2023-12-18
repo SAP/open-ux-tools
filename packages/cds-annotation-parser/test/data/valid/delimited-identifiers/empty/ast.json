@@ -1,25 +1,25 @@
 {
-  "type": "annotation",
+  "range": "[(0,0)..(0,3)]",
   "term": {
-    "type": "path",
-    "value": "",
+    "range": "[(0,0)..(0,3)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "",
+        "quoted": true,
         "range": "[(0,2)..(0,2)]",
-        "quoted": true
+        "type": "identifier",
+        "value": ""
       }
     ],
     "separators": [
       {
-        "type": "separator",
-        "value": "",
+        "escaped": true,
         "range": "[(0,2)..(0,2)]",
-        "escaped": true
+        "type": "separator",
+        "value": ""
       }
     ],
-    "range": "[(0,0)..(0,3)]"
+    "type": "path",
+    "value": ""
   },
-  "range": "[(0,0)..(0,3)]"
+  "type": "annotation"
 }

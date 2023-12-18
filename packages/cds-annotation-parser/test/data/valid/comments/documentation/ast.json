@@ -1,45 +1,45 @@
 {
-  "type": "annotation",
+  "colon": {
+    "range": "[(1,2)..(1,3)]",
+    "type": "token",
+    "value": ":"
+  },
+  "range": "[(1,0)..(1,9)]",
   "term": {
-    "type": "path",
-    "value": "a",
+    "range": "[(1,0)..(1,1)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "a",
+        "quoted": false,
         "range": "[(1,0)..(1,1)]",
-        "quoted": false
+        "type": "identifier",
+        "value": "a"
       }
     ],
     "separators": [],
-    "range": "[(1,0)..(1,1)]"
+    "type": "path",
+    "value": "a"
   },
-  "range": "[(1,0)..(1,9)]",
-  "colon": {
-    "type": "token",
-    "range": "[(1,2)..(1,3)]",
-    "value": ":"
-  },
+  "type": "annotation",
   "value": {
-    "type": "collection",
+    "closeToken": {
+      "range": "[(1,8)..(1,9)]",
+      "type": "token",
+      "value": "]"
+    },
+    "commas": [],
     "items": [
       {
+        "range": "[(1,6)..(1,7)]",
         "type": "number",
-        "value": 1,
-        "range": "[(1,6)..(1,7)]"
+        "value": 1
       }
     ],
-    "range": "[(1,4)..(1,9)]",
-    "commas": [],
     "openToken": {
+      "range": "[(1,4)..(1,5)]",
       "type": "token",
-      "value": "[",
-      "range": "[(1,4)..(1,5)]"
+      "value": "["
     },
-    "closeToken": {
-      "type": "token",
-      "value": "]",
-      "range": "[(1,8)..(1,9)]"
-    }
+    "range": "[(1,4)..(1,9)]",
+    "type": "collection"
   }
 }

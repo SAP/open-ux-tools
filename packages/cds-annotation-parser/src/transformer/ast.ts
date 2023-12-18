@@ -138,9 +138,6 @@ const findNextToken = (tokens: IToken[], previousTokenEndOffset?: number): IToke
 class CstToAstVisitor extends Visitor {
     tokenVector: IToken[] = [];
     startPosition?: Position;
-    constructor() {
-        super();
-    }
 
     /**
      * Main visitor entry.
@@ -291,7 +288,6 @@ class CstToAstVisitor extends Visitor {
         assignment: AssignmentCstNode,
         location: CstNodeLocation
     ): AnnotationGroup {
-        // TODO: add test for CDS terms e.g @readonly
         const items = (assignment.children.value?.[0].children.struct?.[0].children.assignment ?? []).map(
             (childAssignment, index, childAssignments) => {
                 const annotation = this.visit(childAssignment) as Annotation;
@@ -522,6 +518,156 @@ class CstToAstVisitor extends Visitor {
     }
 
     /**
+     * Value converter subfunction which calls corresponding visitor for child element (if context permits).
+     *
+     * @param context
+     * @returns object with visitor call result and flag indicating that the visitor call took place
+     */
+    private valueNestedVisitor(context: ValueChildren): { result?: AnnotationValue; done: boolean } {
+        if (hasItems(context.enum)) {
+            return { done: true, result: this.visit(context.enum[0]) as Enum };
+        }
+        if (hasItems(context.struct)) {
+            return { done: true, result: this.visit(context.struct[0]) as Record };
+        }
+        if (hasItems(context.collection)) {
+            return { done: true, result: this.visit(context.collection[0]) as Collection };
+        }
+        if (hasItems(context.path)) {
+            return { done: true, result: this.visit(context.path[0]) as Path };
+        }
+        if (hasItems(context.expression)) {
+            return { done: true, result: this.visit(context.expression[0]) as Expression };
+        }
+        return { done: false };
+    }
+
+    /**
+     * Value converter subfunction which converts primitive value (if context permits).
+     *
+     * @param context
+     * @param location
+     * @returns object with result of the conversion and a flag indicating that the conversion took place
+     */
+    private primitiveValueConverter(
+        context: ValueChildren,
+        location: CstNodeLocation
+    ): { result?: AnnotationValue; done: boolean } {
+        if (
+            hasItems(context.string) ||
+            hasItems(context.multiLineStringStripIndent) ||
+            hasItems(context.multiLineString)
+        ) {
+            return { done: true, result: this.stringValue(context) };
+        }
+
+        if (hasItems(context.Number)) {
+            return {
+                done: true,
+                result: {
+                    type: NUMBER_LITERAL_TYPE,
+                    value: this.numberValue(context.Number[0].image),
+                    range: this.locationToRange(location)
+                }
+            };
+        }
+
+        if (hasItems(context.False)) {
+            return {
+                done: true,
+                result: {
+                    type: BOOLEAN_TYPE,
+                    value: false,
+                    range: this.locationToRange(location)
+                }
+            };
+        }
+
+        if (hasItems(context.True)) {
+            return {
+                done: true,
+                result: {
+                    type: BOOLEAN_TYPE,
+                    value: true,
+                    range: this.locationToRange(location)
+                }
+            };
+        }
+
+        if (hasItems(context.Null)) {
+            return {
+                done: true,
+                result: {
+                    type: TOKEN_TYPE,
+                    value: context.Null[0].image.toLowerCase(),
+                    range: this.locationToRange(location)
+                }
+            };
+        }
+
+        if (hasItems(context.Binary)) {
+            return {
+                done: true,
+                result: {
+                    type: QUOTED_LITERAL_TYPE,
+                    value: this.getQuotedLiteralValue(context.Binary[0]),
+                    range: this.locationToRange(location),
+                    kind: 'binary'
+                }
+            };
+        }
+
+        if (hasItems(context.Date)) {
+            return {
+                done: true,
+                result: {
+                    type: QUOTED_LITERAL_TYPE,
+                    value: this.getQuotedLiteralValue(context.Date[0]),
+                    range: this.locationToRange(location),
+                    kind: 'date'
+                }
+            };
+        }
+
+        if (hasItems(context.Time)) {
+            return {
+                done: true,
+                result: {
+                    type: QUOTED_LITERAL_TYPE,
+                    value: this.getQuotedLiteralValue(context.Time[0]),
+                    range: this.locationToRange(location),
+                    kind: 'time'
+                }
+            };
+        }
+
+        if (hasItems(context.Timestamp)) {
+            return {
+                done: true,
+                result: {
+                    type: QUOTED_LITERAL_TYPE,
+                    value: this.getQuotedLiteralValue(context.Timestamp[0]),
+                    range: this.locationToRange(location),
+                    kind: 'timestamp'
+                }
+            };
+        }
+
+        if (!hasNaNOrUndefined(location.endOffset)) {
+            // create empty value
+            return {
+                done: true,
+                result: {
+                    type: EMPTY_VALUE_TYPE,
+                    range: this.locationToRange(location)
+                }
+            };
+        }
+
+        return { done: false };
+    }
+
+    /**
      * Converts value children to value ast node.
      *
      * @param context cst value children
@@ -529,88 +675,16 @@ class CstToAstVisitor extends Visitor {
      * @returns annotation value ast node or undefined if no items found
      */
     value(context: ValueChildren, location: CstNodeLocation): AnnotationValue | undefined {
-        if (hasItems(context.enum)) {
-            return this.visit(context.enum[0]) as Enum;
+        const nested = this.valueNestedVisitor(context);
+        if (nested.done) {
+            return nested.result;
         }
-        if (hasItems(context.struct)) {
-            return this.visit(context.struct[0]) as Record;
+
+        const primitive = this.primitiveValueConverter(context, location);
+        if (primitive.done) {
+            return primitive.result;
         }
-        if (hasItems(context.collection)) {
-            return this.visit(context.collection[0]) as Collection;
-        }
-        if (
-            hasItems(context.string) ||
-            hasItems(context.multiLineStringStripIndent) ||
-            hasItems(context.multiLineString)
-        ) {
-            return this.stringValue(context);
-        }
-        if (hasItems(context.Number)) {
-            return {
-                type: NUMBER_LITERAL_TYPE,
-                value: this.numberValue(context.Number[0].image),
-                range: this.locationToRange(location)
-            };
-        }
-        if (hasItems(context.False)) {
-            return {
-                type: BOOLEAN_TYPE,
-                value: false,
-                range: this.locationToRange(location)
-            };
-        }
-        if (hasItems(context.True)) {
-            return {
-                type: BOOLEAN_TYPE,
-                value: true,
-                range: this.locationToRange(location)
-            };
-        }
-        if (hasItems(context.Null)) {
-            return {
-                type: TOKEN_TYPE,
-                value: context.Null[0].image.toLowerCase(),
-                range: this.locationToRange(location)
-            };
-        }
-        if (hasItems(context.Binary)) {
-            return {
-                type: QUOTED_LITERAL_TYPE,
-                value: this.getQuotedLiteralValue(context.Binary[0]),
-                range: this.locationToRange(location),
-                kind: 'binary'
-            };
-        }
-        if (hasItems(context.Date)) {
-            return {
-                type: QUOTED_LITERAL_TYPE,
-                value: this.getQuotedLiteralValue(context.Date[0]),
-                range: this.locationToRange(location),
-                kind: 'date'
-            };
-        }
-        if (hasItems(context.Time)) {
-            return {
-                type: QUOTED_LITERAL_TYPE,
-                value: this.getQuotedLiteralValue(context.Time[0]),
-                range: this.locationToRange(location),
-                kind: 'time'
-            };
-        }
-        if (hasItems(context.Timestamp)) {
-            return {
-                type: QUOTED_LITERAL_TYPE,
-                value: this.getQuotedLiteralValue(context.Timestamp[0]),
-                range: this.locationToRange(location),
-                kind: 'timestamp'
-            };
-        }
-        if (hasItems(context.path)) {
-            return this.visit(context.path[0]) as Path;
-        }
-        if (hasItems(context.expression)) {
-            return this.visit(context.expression[0]) as Expression;
-        }
+
         if (!hasNaNOrUndefined(location.endOffset)) {
             // create empty value
             return {
@@ -698,7 +772,6 @@ class CstToAstVisitor extends Visitor {
                   };
         return {
             type: ENUM_TYPE,
-            // TODO: create a test for empty enum value 'ChartType: #'
             path,
             range: this.locationToRange(location)
         };
@@ -1131,15 +1204,13 @@ class CstToAstVisitor extends Visitor {
         const assignmentRange = this.locationToRange(assignment.location);
         const name = this.getAssignmentKey(assignment.children, assignmentRange);
         let property: RecordProperty | Annotation;
-        if (name.value.charAt(0) === '@') {
+        if (name.value.startsWith('@')) {
             property = {
                 type: ANNOTATION_TYPE,
                 term: name,
                 value: hasItems(assignment.children.value)
                     ? (this.visit(assignment.children.value[0]) as AnnotationValue)
                     : undefined,
-                // TODO: ensure that test data are serialized consistently and are not order dependent
-                // to maintain order of the properties, later this can be moved up.
                 range: assignmentRange
             };
             if (name.segments.length > 1 && name.segments[1].value.includes('#')) {
@@ -1158,8 +1229,6 @@ class CstToAstVisitor extends Visitor {
             value: hasItems(assignment.children.value)
                 ? (this.visit(assignment.children.value[0]) as AnnotationValue)
                 : undefined,
-            // TODO: ensure that test data are serialized consistently and are not order dependent
-            // to maintain order of the properties, later this can be moved up.
             range: assignmentRange
         };
         return { property, kind: 'property' };
@@ -1189,7 +1258,6 @@ class CstToAstVisitor extends Visitor {
                     kind === 'annotation'
                         ? annotations.push(property as Annotation)
                         : properties.push(property as RecordProperty);
-                    // TODO: check if we can adjust the location in CST for this
                     if (
                         hasItems(assignment.children.Colon) &&
                         (!hasItems(assignment.children.value) ||

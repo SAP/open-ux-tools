@@ -1,69 +1,69 @@
 {
-  "name": "declaration",
   "children": {
     "assignment": [
       {
-        "name": "assignment",
         "children": {
           "path": [
             {
-              "name": "path",
               "children": {
                 "pathSegment": [
                   {
-                    "name": "pathSegment",
                     "children": {
                       "delimitedIdentifier": [
                         {
-                          "name": "delimitedIdentifier",
                           "children": {
-                            "IdentifierStart": [
-                              {
-                                "image": "![",
-                                "startOffset": 0,
-                                "endOffset": 1,
-                                "tokenTypeName": "IdentifierStart"
-                              }
-                            ],
                             "DelimitedIdentifierExit": [
                               {
+                                "endOffset": 2,
                                 "image": "]",
                                 "startOffset": 2,
-                                "endOffset": 2,
                                 "tokenTypeName": "DelimitedIdentifierExit"
+                              }
+                            ],
+                            "IdentifierStart": [
+                              {
+                                "endOffset": 1,
+                                "image": "![",
+                                "startOffset": 0,
+                                "tokenTypeName": "IdentifierStart"
                               }
                             ]
                           },
                           "location": {
-                            "startOffset": 0,
-                            "endOffset": 2
-                          }
+                            "endOffset": 2,
+                            "startOffset": 0
+                          },
+                          "name": "delimitedIdentifier"
                         }
                       ]
                     },
                     "location": {
-                      "startOffset": 0,
-                      "endOffset": 2
-                    }
+                      "endOffset": 2,
+                      "startOffset": 0
+                    },
+                    "name": "pathSegment"
                   }
                 ]
               },
               "location": {
-                "startOffset": 0,
-                "endOffset": 2
-              }
+                "endOffset": 2,
+                "startOffset": 0
+              },
+              "name": "path"
             }
           ]
         },
         "location": {
-          "startOffset": 0,
-          "endOffset": 2
-        }
+          "endOffset": 2,
+          "startOffset": 0
+        },
+        "name": "assignment"
       }
     ]
   },
   "location": {
-    "startOffset": 0,
-    "endOffset": 2
-  }
+    "endOffset": 2,
+    "startOffset": 0
+  },
+  "name": "declaration"
 }

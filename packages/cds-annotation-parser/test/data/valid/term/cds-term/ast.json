@@ -1,0 +1,18 @@
+{
+  "range": "[(0,0)..(0,8)]",
+  "term": {
+    "range": "[(0,0)..(0,8)]",
+    "segments": [
+      {
+        "quoted": false,
+        "range": "[(0,0)..(0,8)]",
+        "type": "identifier",
+        "value": "readonly"
+      }
+    ],
+    "separators": [],
+    "type": "path",
+    "value": "readonly"
+  },
+  "type": "annotation"
+}

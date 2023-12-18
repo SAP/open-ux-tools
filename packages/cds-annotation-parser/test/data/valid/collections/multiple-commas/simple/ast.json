@@ -1,60 +1,60 @@
 {
-  "type": "annotation",
+  "colon": {
+    "range": "[(0,4)..(0,5)]",
+    "type": "token",
+    "value": ":"
+  },
+  "range": "[(0,0)..(0,12)]",
   "term": {
-    "type": "path",
-    "value": "test",
+    "range": "[(0,0)..(0,4)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "test",
+        "quoted": false,
         "range": "[(0,0)..(0,4)]",
-        "quoted": false
+        "type": "identifier",
+        "value": "test"
       }
     ],
     "separators": [],
-    "range": "[(0,0)..(0,4)]"
+    "type": "path",
+    "value": "test"
   },
-  "range": "[(0,0)..(0,12)]",
-  "colon": {
-    "type": "token",
-    "range": "[(0,4)..(0,5)]",
-    "value": ":"
-  },
+  "type": "annotation",
   "value": {
-    "type": "collection",
-    "items": [],
-    "range": "[(0,6)..(0,12)]",
+    "closeToken": {
+      "range": "[(0,11)..(0,12)]",
+      "type": "token",
+      "value": "]"
+    },
     "commas": [
       {
+        "range": "[(0,7)..(0,8)]",
         "type": "token",
-        "value": ",",
-        "range": "[(0,7)..(0,8)]"
+        "value": ","
       },
       {
+        "range": "[(0,8)..(0,9)]",
         "type": "token",
-        "value": ",",
-        "range": "[(0,8)..(0,9)]"
+        "value": ","
       },
       {
+        "range": "[(0,9)..(0,10)]",
         "type": "token",
-        "value": ",",
-        "range": "[(0,9)..(0,10)]"
+        "value": ","
       },
       {
+        "range": "[(0,10)..(0,11)]",
         "type": "token",
-        "value": ",",
-        "range": "[(0,10)..(0,11)]"
+        "value": ","
       }
     ],
+    "items": [],
     "openToken": {
+      "range": "[(0,6)..(0,7)]",
       "type": "token",
-      "value": "[",
-      "range": "[(0,6)..(0,7)]"
+      "value": "["
     },
-    "closeToken": {
-      "type": "token",
-      "value": "]",
-      "range": "[(0,11)..(0,12)]"
-    }
+    "range": "[(0,6)..(0,12)]",
+    "type": "collection"
   }
 }

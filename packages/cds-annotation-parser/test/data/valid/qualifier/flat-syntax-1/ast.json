@@ -1,69 +1,69 @@
 {
-  "type": "annotation",
+  "colon": {
+    "range": "[(0,32)..(0,33)]",
+    "type": "token",
+    "value": ":"
+  },
+  "qualifier": {
+    "range": "[(0,16)..(0,19)]",
+    "type": "qualifier",
+    "value": "abc"
+  },
+  "range": "[(0,0)..(0,36)]",
   "term": {
-    "type": "path",
-    "value": "UI.HeaderInfo#abc.Description",
+    "range": "[(0,0)..(0,32)]",
     "segments": [
       {
-        "type": "identifier",
-        "value": "UI",
+        "quoted": false,
         "range": "[(0,0)..(0,2)]",
-        "quoted": false
+        "type": "identifier",
+        "value": "UI"
       },
       {
-        "type": "identifier",
-        "value": "HeaderInfo",
+        "quoted": true,
         "range": "[(0,5)..(0,15)]",
-        "quoted": true
+        "type": "identifier",
+        "value": "HeaderInfo"
       },
       {
-        "type": "identifier",
-        "value": "Description",
+        "quoted": false,
         "range": "[(0,21)..(0,32)]",
-        "quoted": false
+        "type": "identifier",
+        "value": "Description"
       }
     ],
     "separators": [
       {
-        "type": "separator",
-        "value": ".",
+        "escaped": false,
         "range": "[(0,2)..(0,3)]",
-        "escaped": false
+        "type": "separator",
+        "value": "."
       },
       {
-        "type": "separator",
-        "value": ".",
+        "escaped": false,
         "range": "[(0,20)..(0,21)]",
-        "escaped": false
+        "type": "separator",
+        "value": "."
       }
     ],
-    "range": "[(0,0)..(0,32)]"
+    "type": "path",
+    "value": "UI.HeaderInfo#abc.Description"
   },
-  "range": "[(0,0)..(0,36)]",
-  "colon": {
-    "type": "token",
-    "range": "[(0,32)..(0,33)]",
-    "value": ":"
-  },
-  "qualifier": {
-    "type": "qualifier",
-    "value": "abc",
-    "range": "[(0,16)..(0,19)]"
-  },
+  "type": "annotation",
   "value": {
-    "type": "record",
-    "properties": [],
-    "range": "[(0,34)..(0,36)]",
+    "closeToken": {
+      "range": "[(0,35)..(0,36)]",
+      "type": "token",
+      "value": "}"
+    },
     "commas": [],
     "openToken": {
+      "range": "[(0,34)..(0,35)]",
       "type": "token",
-      "value": "{",
-      "range": "[(0,34)..(0,35)]"
+      "value": "{"
     },
-    "closeToken": {
-      "type": "token",
-      "value": "}",
-      "range": "[(0,35)..(0,36)]"
-    }
+    "properties": [],
+    "range": "[(0,34)..(0,36)]",
+    "type": "record"
   }
 }
