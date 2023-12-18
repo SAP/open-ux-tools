@@ -1,10 +1,10 @@
 import React from 'react';
-import type { InputQuestion } from 'inquirer';
+import type { ListQuestion } from 'inquirer';
 import { UITextInput } from '@sap-ux/ui-components';
 
-export type InputProps = InputQuestion;
+export type SelectProps = ListQuestion;
 
-export const Input = (props: InputProps) => {
+export const Select = (props: SelectProps) => {
     const { name } = props;
     return <UITextInput label={name} />;
 };

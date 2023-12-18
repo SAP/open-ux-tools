@@ -6,18 +6,15 @@ export default { title: 'Basic/Questions' };
 
 const questions: Question[] = [
     {
+        name: 'Dummy1',
         type: 'input'
     },
     {
-        type: 'input'
-    },
-    {
+        name: 'Dummy2',
         type: 'checkbox'
     },
     {
-        type: 'input'
-    },
-    {
+        name: 'Dummy3',
         type: 'list'
     }
 ];
