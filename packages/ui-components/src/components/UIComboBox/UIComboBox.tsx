@@ -160,7 +160,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
-     * Method prevents cursor from jumping to the end of input
+     * Method prevents cursor from jumping to the end of input.
      *
      * @param {React.FormEvent<IComboBox>} event Combobox event object
      */
@@ -198,6 +198,8 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Method opens menu when user clicks on Combobox (input or button).
+     *
+     * @param event
      */
     private onClick(event: React.FormEvent<IComboBox>): void {
         this.setCaretPosition(event);
