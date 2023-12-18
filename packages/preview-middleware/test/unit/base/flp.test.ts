@@ -140,6 +140,35 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
         });
+
+        test('reuse libs not part of data-sap-ui-libs', async () => {
+            const manifest = {
+                'sap.app': { id: 'my.id' },
+                'sap.ui5': {
+                    'dependencies': {
+                        libs: {
+                            'sap.ui.core': {},
+                            'sap.reuse1': {},
+                            'sap.m': {},
+                            'sap.reuse2': {},
+                            'sap.reuse3': {}
+                        }
+                    }
+                }
+            } as unknown as Manifest;
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            await flp.init(manifest);
+            expect(flp.templateConfig.ui5.libs).toMatchSnapshot();
+        });
+
+        test('add default libs if no libs in manifest.json', async () => {
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            await flp.init(manifest);
+            expect(flp.templateConfig.ui5.libs).toMatchSnapshot();
+        });
     });
 
     describe('router', () => {
