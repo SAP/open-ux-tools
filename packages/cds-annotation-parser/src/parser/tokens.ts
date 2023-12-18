@@ -101,7 +101,7 @@ export const COMMA_TOKEN_TYPE = 'Comma';
 const Comma = createToken({ name: COMMA_TOKEN_TYPE, pattern: ',' });
 
 export const PATH_SEGMENT_SEPARATOR_TOKEN_TYPE = 'PathSegmentSeparator';
-const PathSegmentSeparator = createToken({ name: PATH_SEGMENT_SEPARATOR_TOKEN_TYPE, pattern: /[\.\/]/ });
+const PathSegmentSeparator = createToken({ name: PATH_SEGMENT_SEPARATOR_TOKEN_TYPE, pattern: /[./]/ });
 
 export const SINGLE_QUOTE_TOKEN_TYPE = 'SingleQuote';
 
@@ -147,7 +147,7 @@ const WhiteSpace = createToken({
 });
 
 export const NUMBER_TOKEN_TYPE = 'Number';
-const NumberToken = createToken({ name: NUMBER_TOKEN_TYPE, pattern: /([\+-])?\d+(\.\d+)?([eE]([\+-])?\d+)?/ });
+const NumberToken = createToken({ name: NUMBER_TOKEN_TYPE, pattern: /([+-])?\d+(\.\d+)?([eE]([+-])?\d+)?/ });
 // keywords
 export const NULL_TOKEN_TYPE = 'Null';
 
