@@ -1,8 +1,11 @@
 import React from 'react';
 import { Questions } from '../src/components';
 import type { Question } from '../src/components';
+import { initIcons } from '@sap-ux/ui-components';
 
 export default { title: 'Basic/Questions' };
+
+initIcons();
 
 const questions: Question[] = [
     {
@@ -15,7 +18,17 @@ const questions: Question[] = [
     },
     {
         name: 'Dummy3',
-        type: 'list'
+        type: 'list',
+        choices: [
+            {
+                name: 'test1',
+                value: 'test1'
+            },
+            {
+                name: 'test2',
+                value: 'test2'
+            }
+        ]
     }
 ];
 
