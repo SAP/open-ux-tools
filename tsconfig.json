@@ -144,6 +144,9 @@
       "path": "examples/fe-fpm-cli"
     },
     {
+      "path": "examples/fe-fpm-ui"
+    },
+    {
       "path": "examples/odata-cli"
     },
     {
