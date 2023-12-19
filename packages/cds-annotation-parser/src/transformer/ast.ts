@@ -74,8 +74,8 @@ import { hasItems, isDefined, hasNaNOrUndefined } from '../utils';
 /**
  * Extracts qualifier part from term and adapt range and value for term.
  *
- * @param term term node
- * @returns qualifier node
+ * @param term Term node
+ * @returns Qualifier node
  */
 const createQualifier = (term: Path): Qualifier => {
     const segment = term.segments.find((item) => item.value.includes('#'));
@@ -132,9 +132,6 @@ const findNextToken = (tokens: IToken[], previousTokenEndOffset?: number): IToke
     return tokens[prevTokenIdx + 1];
 };
 
-/**
- *
- */
 class CstToAstVisitor extends Visitor {
     tokenVector: IToken[] = [];
     startPosition?: Position;
@@ -143,7 +140,7 @@ class CstToAstVisitor extends Visitor {
      * Main visitor entry.
      *
      * @param cstNode
-     * @returns result of the visitor call for the given cstNode
+     * @returns Result of the visitor call for the given cstNode
      */
     visit(cstNode: CstNode): AnnotationNode {
         return super.visit(cstNode, cstNode.location);
@@ -152,8 +149,8 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts cst node location to range object.
      *
-     * @param location cst node location
-     * @returns range object
+     * @param location CST node location
+     * @returns Range object
      */
     locationToRange(location?: CstNodeLocation): Range | undefined {
         const range = locationToRange(location);
@@ -169,8 +166,8 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts given token to range object.
      *
-     * @param token a token to convert
-     * @returns range object
+     * @param token Token to convert
+     * @returns Range object
      */
     tokenToRange(token: IToken): Range {
         const start = Position.create((token.startLine ?? 0) - 1, (token.startColumn ?? 0) - 1);
@@ -186,10 +183,10 @@ class CstToAstVisitor extends Visitor {
     }
 
     /**
-     * Converts cst token to ast token.
+     * Converts CST token to AST token.
      *
-     * @param token cst token
-     * @returns ast token
+     * @param token CST token
+     * @returns AST token
      */
     createToken(token: IToken): Token {
         return {
@@ -202,18 +199,18 @@ class CstToAstVisitor extends Visitor {
     /**
      * Extracts qouted literal from the given cst token.
      *
-     * @param context cst token
-     * @returns string literal (without quotes)
+     * @param context CST token
+     * @returns String literal (without quotes)
      */
     getQuotedLiteralValue(context: IToken): string {
         return context.image.split("'")[1];
     }
 
     /**
-     * Converts the given cst token to a path.
+     * Converts the given CST token to a path.
      *
-     * @param identifier cst token
-     * @returns path object
+     * @param identifier CST token
+     * @returns Path object
      */
     pathFromIdentifier(identifier: IToken): Path {
         return {
@@ -232,10 +229,10 @@ class CstToAstVisitor extends Visitor {
     }
 
     /**
-     * Converts given cst tokens to ast tokens. Used to convert comma tokens.
+     * Converts given CST tokens to ast tokens. Used to convert comma tokens.
      *
-     * @param parma array of cst tokens
-     * @returns array of ast tokens
+     * @param parma Array of CST tokens
+     * @returns Array of AST tokens
      */
     private getCommaToken(parma: IToken[] = []): Token[] {
         return parma.map((item) => ({
@@ -248,8 +245,8 @@ class CstToAstVisitor extends Visitor {
     /**
      * Extracts qualifier from the given annotation assignment.
      *
-     * @param assignment annotation assignment
-     * @returns qualifier node or undefined if not found
+     * @param assignment Annotation assignment
+     * @returns Qualifier node or undefined if not found
      */
     private getQualifier(assignment: AssignmentChildren): Qualifier | undefined {
         if (!hasItems(assignment.NumberSign)) {
@@ -278,10 +275,10 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts given assignment to top level annotation group ast node.
      *
-     * @param path first segment of the path is used as group name
-     * @param assignment annotation assignment
+     * @param path First segment of the path is used as group name
+     * @param assignment Annotation assignment
      * @param location cst location
-     * @returns annotation group object
+     * @returns Annotation group object
      */
     private toTopLevelAnnotationPathGroup(
         path: Path,
@@ -347,7 +344,7 @@ class CstToAstVisitor extends Visitor {
      * Creates colon token from the given assignment.
      *
      * @param assignment
-     * @returns colon ast token or undefined if not found
+     * @returns Colon ast token or undefined if not found
      */
     private getColon(assignment: AssignmentCstNode): Token | undefined {
         if (assignment.children.Colon?.length) {
@@ -363,9 +360,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts given assignment to top level annotation path or annotation group path node.
      *
-     * @param assignment assignment to convert
-     * @param location cst location
-     * @returns annotation or annotation group path node
+     * @param assignment Assignment to convert
+     * @param location CST location
+     * @returns Annotation or annotation group path node
      */
     private toTopLevelAnnotationPath(assignment: AssignmentCstNode, location: CstNodeLocation): AstResult {
         const path = this.visit(assignment.children.path[0]) as Path;
@@ -404,9 +401,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts given assignment to top level annotation node.
      *
-     * @param assignment assignment to convert
-     * @param location cst location
-     * @returns annotation ast node
+     * @param assignment Assignment to convert
+     * @param location CST location
+     * @returns Annotation ast node
      */
     private toTopLevelAnnotation(assignment: AssignmentCstNode, location: CstNodeLocation): AstResult {
         if (
@@ -458,9 +455,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Creates declaration node.
      *
-     * @param context cst decrataion children
-     * @param location cst location of the given context
-     * @returns declaration ast node or undefined if no items found in the context
+     * @param context CST decrataion children
+     * @param location CST location of the given context
+     * @returns Declaration ast node or undefined if no items found in the context
      */
     declaration(context: DeclarationChildren, location: CstNodeLocation): Assignment | undefined {
         if (hasItems(context.assignment)) {
@@ -472,8 +469,8 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts number string image to number value.
      *
-     * @param image string image of the number
-     * @returns converted number value or the given image itself if conversion couldn't be done
+     * @param image String image of the number
+     * @returns Converted number value or the given image itself if conversion couldn't be done
      */
     private numberValue(image: string): number | string {
         const num = Number.parseFloat(image || '0'); // not Number.parseInt() !
@@ -486,9 +483,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts collection value node.
      *
-     * @param context cst collection children
-     * @param location cst location
-     * @returns collection annotation value node
+     * @param context CST collection children
+     * @param location CST location
+     * @returns Collection annotation value node
      */
     collectionValue(context: CollectionValueChildren, location: CstNodeLocation): AnnotationValue | undefined {
         if (context.extendCollectionValue) {
@@ -500,8 +497,8 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts string value node.
      *
-     * @param context cst value children
-     * @returns string or multiline string literal or undefined if no item found
+     * @param context CST value children
+     * @returns String or multiline string literal or undefined if no item found
      */
     stringValue(context: ValueChildren): StringLiteral | MultiLineStringLiteral | undefined {
         if (hasItems(context.string)) {
@@ -521,7 +518,7 @@ class CstToAstVisitor extends Visitor {
      * Value converter subfunction which calls corresponding visitor for child element (if context permits).
      *
      * @param context
-     * @returns object with visitor call result and flag indicating that the visitor call took place
+     * @returns Object with visitor call result and flag indicating that the visitor call took place
      */
     private valueNestedVisitor(context: ValueChildren): { result?: AnnotationValue; done: boolean } {
         if (hasItems(context.enum)) {
@@ -547,7 +544,7 @@ class CstToAstVisitor extends Visitor {
      *
      * @param context
      * @param location
-     * @returns object with result of the conversion and a flag indicating that the conversion took place
+     * @returns Object with result of the conversion and a flag indicating that the conversion took place
      */
     private primitiveValueConverter(
         context: ValueChildren,
@@ -653,25 +650,14 @@ class CstToAstVisitor extends Visitor {
             };
         }
 
-        if (!hasNaNOrUndefined(location.endOffset)) {
-            // create empty value
-            return {
-                done: true,
-                result: {
-                    type: EMPTY_VALUE_TYPE,
-                    range: this.locationToRange(location)
-                }
-            };
-        }
-
         return { done: false };
     }
 
     /**
      * Converts value children to value ast node.
      *
-     * @param context cst value children
-     * @param location cst location
+     * @param context CST value children
+     * @param location CST location
      * @returns annotation value ast node or undefined if no items found
      */
     value(context: ValueChildren, location: CstNodeLocation): AnnotationValue | undefined {
@@ -699,9 +685,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts expression children to expression ast node.
      *
-     * @param context cst expression children
-     * @param location cst location
-     * @returns expression value ast node
+     * @param context CST expression children
+     * @param location CST location
+     * @returns Expression value ast node
      */
     expression(context: ExpressionChildren, location: CstNodeLocation): Expression {
         /**
@@ -751,9 +737,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts enum children to enum ast node.
      *
-     * @param context cst enum children
-     * @param location cst location
-     * @returns enum value ast node
+     * @param context CST enum children
+     * @param location CST location
+     * @returns Enum value ast node
      */
     enum(context: EnumChildren, location: CstNodeLocation): Enum {
         const range = this.locationToRange(location);
@@ -780,9 +766,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts string children to string ast node.
      *
-     * @param context cst string children
-     * @param location cst location
-     * @returns string literal ast node
+     * @param context CST string children
+     * @param location CST location
+     * @returns String literal ast node
      */
     string(context: StringChildren, location: CstNodeLocation): StringLiteral {
         const range = this.locationToRange(location);
@@ -804,9 +790,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts multi line string children to ast node.
      *
-     * @param context cst multi line string children
-     * @param location cst location
-     * @returns multi line string literal ast node
+     * @param context CST multi line string children
+     * @param location CST location
+     * @returns Multi line string literal ast node
      */
     multiLineString(context: MultiLineStringChildren, location: CstNodeLocation): MultiLineStringLiteral {
         const range = this.locationToRange(location);
@@ -829,9 +815,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts multi line strip indent children to ast node.
      *
-     * @param context cst multi line strip indent children
-     * @param location cst location
-     * @returns multi line string literal ast node
+     * @param context CST multi line strip indent children
+     * @param location CST location
+     * @returns Multi line string literal ast node
      */
     multiLineStringStripIndent(
         context: MultiLineStringStripIndentChildren,
@@ -857,9 +843,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts collection children to ast node.
      *
-     * @param context cst collection children
-     * @param location cst location
-     * @returns collection ast node
+     * @param context CST collection children
+     * @param location CST location
+     * @returns Collection ast node
      */
     collection(context: CollectionChildren, location: CstNodeLocation): Collection {
         const range = this.locationToRange(location);
@@ -886,9 +872,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts cst token to identifier ast node.
      *
-     * @param token cst token
-     * @param delimiter quotation delimiter (none by default)
-     * @returns identifier ast node
+     * @param token CST token
+     * @param delimiter Quotation delimiter (none by default)
+     * @returns Identifier ast node
      */
     private tokenToIdentifier(token: IToken, delimiter: Delimiter = Delimiter.none): Identifier {
         return {
@@ -900,11 +886,11 @@ class CstToAstVisitor extends Visitor {
     }
 
     /**
-     * Converts cst token to separator ast node.
+     * Converts CST token to separator ast node.
      *
-     * @param token cst token
-     * @param delimiter escaped value delimiter (none by default)
-     * @returns separator ast node
+     * @param token CST token
+     * @param delimiter Escaped value delimiter (none by default)
+     * @returns Separator ast node
      */
     private tokenToSeparator(token: IToken, delimiter: Delimiter = Delimiter.none): Separator {
         return {
@@ -918,10 +904,10 @@ class CstToAstVisitor extends Visitor {
     /**
      * Tries to recover identifier from one of given separator tokens (adjusts its range).
      *
-     * @param identifier identifier cst token
-     * @param index index of separator token to recover
-     * @param separatorTokens array with separator tokens
-     * @returns recovered from separator identifier or original identifier
+     * @param identifier Identifier CST token
+     * @param index Index of separator token to recover
+     * @param separatorTokens Array with separator tokens
+     * @returns Recovered from separator identifier or original identifier
      */
     private recoverIdentifiers(identifier: IToken, index: number, separatorTokens: IToken[] = []): IToken {
         const separator: IToken | undefined = separatorTokens[index - 1];
@@ -937,10 +923,10 @@ class CstToAstVisitor extends Visitor {
     }
 
     /**
-     * Converts separator cst token to identifier cst token.
+     * Converts separator CST token to identifier cst token.
      *
-     * @param token separator token
-     * @returns identifier cst token with empty image nd adjusted range
+     * @param token Separator token
+     * @returns Identifier CST token with empty image nd adjusted range
      */
     private identifierFromSeparatorToken(token: IToken): IToken {
         // Adjust range so it is the next character after separator
@@ -961,9 +947,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Creates empty identifier st token.
      *
-     * @param start start cst token
-     * @param end end cst token
-     * @returns empty identifier cst token
+     * @param start Start CST token
+     * @param end End CST token
+     * @returns Empty identifier CST token
      */
     private createEmptyIdentifier(start: IToken, end: IToken): IToken {
         return {
@@ -983,8 +969,8 @@ class CstToAstVisitor extends Visitor {
     /**
      * Extacts identifier tokens and delimiters from the given path segment cst node.
      *
-     * @param segment path segment node
-     * @returns array of objects consisting of identifier token and delimiter
+     * @param segment Path segment node
+     * @returns Array of objects consisting of identifier token and delimiter
      */
     private getIdentifierToken(segment: PathSegmentCstNode): { token: IToken; delimiter: Delimiter }[] {
         if (hasItems(segment.children.NumberSign)) {
@@ -1028,10 +1014,10 @@ class CstToAstVisitor extends Visitor {
     /**
      * Sets new range end for the identifier in the given path segment.
      *
-     * @param segment path segment cst node
-     * @param index index of an element within child grop to take range data from
-     * @param key key of the children group
-     * @returns updated path segment node
+     * @param segment Path segment CST node
+     * @param index Index of an element within child grop to take range data from
+     * @param key Key of the children group
+     * @returns Updated path segment node
      */
     private setNewRangeForIdentifier(segment: PathSegmentCstNode, index: number, key: string): PathSegmentCstNode {
         if (hasItems(segment.children.Identifier)) {
@@ -1045,9 +1031,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Joins segment identifiers by given separators.
      *
-     * @param segments array with identifier tokens
-     * @param separators array with separator tokens
-     * @returns string result
+     * @param segments Array with identifier tokens
+     * @param separators Array with separator tokens
+     * @returns String result
      */
     private joinSegments(segments: Identifier[], separators: Separator[]): string {
         let value = '';
@@ -1065,9 +1051,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts path children to path ast node.
      *
-     * @param context path node children
-     * @param location cst location
-     * @returns path ast node
+     * @param context Path node children
+     * @param location CST location
+     * @returns Path AST node
      */
     path(context: PathChildren, location: CstNodeLocation): Path {
         const segments: Identifier[] = (context.pathSegment ?? [])
@@ -1197,8 +1183,8 @@ class CstToAstVisitor extends Visitor {
     /**
      * Extracts record property or embedded annotation from given record assignment.
      *
-     * @param assignment record assignment
-     * @returns property data
+     * @param assignment Record assignment
+     * @returns Property data
      */
     private getRecordProperty(assignment): { property: RecordProperty | Annotation; kind: 'annotation' | 'property' } {
         const assignmentRange = this.locationToRange(assignment.location);
@@ -1237,9 +1223,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts structure children to ast record node.
      *
-     * @param context cst structure children
-     * @param location cst location
-     * @returns ast record node
+     * @param context CST structure children
+     * @param location CST location
+     * @returns AST record node
      */
     struct(context: StructChildren, location: CstNodeLocation): Record {
         const range = this.locationToRange(location);
@@ -1307,9 +1293,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Converts annotation assignment children to annotation ast node.
      *
-     * @param context cst annotation assignment children
-     * @param location cst location
-     * @returns annotation ast node
+     * @param context CST annotation assignment children
+     * @param location CST location
+     * @returns Annotation AST node
      */
     assignment(context: AssignmentChildren, location: CstNodeLocation): Annotation {
         const range = this.locationToRange(location);
@@ -1346,9 +1332,9 @@ class CstToAstVisitor extends Visitor {
     /**
      * Extracts assignment key.
      *
-     * @param context cst assignment children
-     * @param range cst range
-     * @returns empty path ast node
+     * @param context CST assignment children
+     * @param range CST range
+     * @returns Empty path AST node
      */
     private getAssignmentKey(context: AssignmentChildren, range?: Range): Path {
         if (hasItems(context.path)) {
@@ -1370,8 +1356,8 @@ class CstToAstVisitor extends Visitor {
     /**
      * Recovers annotation or record property node when value is missng - sets up an empty value.
      *
-     * @param colonToken colon cst token
-     * @param ast annotation or property ast node
+     * @param colonToken Colon cst token
+     * @param ast Annotation or property ast node
      */
     private recoverFromMissingValue(colonToken: IToken, ast: Annotation | RecordProperty): void {
         // adjust range

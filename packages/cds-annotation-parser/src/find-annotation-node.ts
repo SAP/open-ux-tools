@@ -125,6 +125,14 @@ class PositionVisitor {
 }
 
 const visitor = new PositionVisitor();
+
+/**
+ * Searches for an AST node in the given AST tree based on provided search options.
+ * 
+ * @param assignment AST root element
+ * @param options Search options (element position, flag whether delimiter characteds should be considered)
+ * @returns Path to the found AST node or empty string
+ */
 export const findAnnotationNode = (assignment: AnnotationNode | undefined, options: PositionVisitorOptions): string =>
     assignment ? visitor.visit(assignment, options).join('/') : '';
 
@@ -148,17 +156,9 @@ export const getNode = (root: AnnotationNode, path: string): AnnotationNode => {
 /**
  * Converts path to an array of nodes matching each segment of the path.
  *
- * @param root Node from which to start the traversal.
- * @param path Path used to traverse.
- * @returns Array containing all the matched nodes.
- */
-
-/**
- * Returns list of ast nodes according to the given path.
- *
- * @param root root node
- * @param path path to some nested node
- * @returns array of nodes - route to the target node
+ * @param root Node from which to start the traversal
+ * @param path Path to a node
+ * @returns Array containing all the matched nodes
  */
 export function getAstNodes(root: AnnotationNode, path: string): AnnotationNode[] {
     const segments = path.split('/');

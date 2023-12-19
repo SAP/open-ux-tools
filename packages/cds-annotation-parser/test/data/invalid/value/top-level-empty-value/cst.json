@@ -5,15 +5,23 @@
         "children": {
           "Colon": [
             {
-              "endOffset": 3,
+              "endOffset": 19,
               "image": ":",
-              "startOffset": 3,
+              "startOffset": 19,
               "tokenTypeName": "Colon"
             }
           ],
           "path": [
             {
               "children": {
+                "PathSegmentSeparator": [
+                  {
+                    "endOffset": 2,
+                    "image": ".",
+                    "startOffset": 2,
+                    "tokenTypeName": "PathSegmentSeparator"
+                  }
+                ],
                 "pathSegment": [
                   {
                     "children": {
@@ -31,11 +39,28 @@
                       "startOffset": 0
                     },
                     "name": "pathSegment"
+                  },
+                  {
+                    "children": {
+                      "Identifier": [
+                        {
+                          "endOffset": 17,
+                          "image": "TextArrangement",
+                          "startOffset": 3,
+                          "tokenTypeName": "Identifier"
+                        }
+                      ]
+                    },
+                    "location": {
+                      "endOffset": 17,
+                      "startOffset": 3
+                    },
+                    "name": "pathSegment"
                   }
                 ]
               },
               "location": {
-                "endOffset": 1,
+                "endOffset": 17,
                 "startOffset": 0
               },
               "name": "path"
@@ -45,8 +70,8 @@
             {
               "children": {},
               "location": {
-                "endOffset": 5,
-                "startOffset": 4
+                "endOffset": 21,
+                "startOffset": 20
               },
               "name": "value",
               "recoveredNode": true
@@ -54,7 +79,7 @@
           ]
         },
         "location": {
-          "endOffset": 5,
+          "endOffset": 21,
           "startOffset": 0
         },
         "name": "assignment"
@@ -62,7 +87,7 @@
     ]
   },
   "location": {
-    "endOffset": 5,
+    "endOffset": 21,
     "startOffset": 0
   },
   "name": "declaration"
