@@ -73,7 +73,6 @@ export async function getChartBuildingBlockPrompts(
         getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate')),
         getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
         getBindingContextTypePrompt(t('bindingContextType')),
-
         getFilterBarIdPrompt(t('filterBar')),
         {
             type: 'checkbox',
@@ -140,7 +139,6 @@ export async function getTableBuildingBlockPrompts(
         getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
         getBindingContextTypePrompt(t('bindingContextType')),
         getEntityPrompt(t('entity'), projectProvider),
-
         getAnnotationPathQualifierPrompt('lineItemQualifier', t('lineItemQualifier'), projectProvider, [
             UIAnnotationTerms.LineItem
         ]),

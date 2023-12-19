@@ -1,23 +1,26 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers, DistinctChoice, ListChoiceMap } from 'inquirer';
+import { create as createStorage } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import ProjectProvider from '../../../src/building-block/utils/project';
 import {
-    getEntityPrompt,
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
-    getViewOrFragmentFilePrompt,
+    getBindingContextTypePrompt,
     getBooleanPrompt,
-    getChoices
+    getBuildingBlockIdPrompt,
+    getChoices,
+    getEntityPrompt,
+    getFilterBarIdPrompt,
+    getViewOrFragmentFilePrompt
 } from '../../../src/building-block/utils/prompts';
 import {
     getAnnotationPathQualifiers,
     getAnnotationTermAlias,
     getEntityTypes
 } from '../../../src/building-block/utils/service';
-import type { Editor } from 'mem-fs-editor';
-import { create } from 'mem-fs-editor';
-import { create as createStorage } from 'mem-fs';
 
 const projectFolder = join(__dirname, '../sample/building-block/webapp-prompts');
 
@@ -66,14 +69,14 @@ describe('utils - ', () => {
 
     describe('prompts', () => {
         test('entityPrompt', async () => {
-            const entityPrompt = getEntityPrompt('entity', projectProvider);
+            let entityPrompt = getEntityPrompt('entity', projectProvider);
             expect(entityPrompt).toMatchSnapshot();
-
             expect(entityPrompt.choices).toBeDefined();
-
             const choices = await (entityPrompt.choices as Choices)();
-
             expect(choices).toMatchSnapshot();
+
+            entityPrompt = getEntityPrompt('entity', { getXmlFiles: () => [] } as unknown as ProjectProvider);
+            await expect(async () => await (entityPrompt.choices as Choices)()).rejects.toThrowError();
         });
 
         test('getChoices', async () => {
@@ -99,19 +102,26 @@ describe('utils - ', () => {
         });
 
         test('getAnnotationPathQualifierPrompt', async () => {
-            const aggregationPathPrompt = getAnnotationPathQualifierPrompt(
+            const annotationPathPrompt = getAnnotationPathQualifierPrompt(
                 'testAnnotationPath',
                 'testMessage',
                 projectProvider,
                 [UIAnnotationTerms.LineItem]
             );
-            expect(aggregationPathPrompt).toMatchSnapshot();
-            const choicesProp = aggregationPathPrompt.choices as Choices;
+            expect(annotationPathPrompt).toMatchSnapshot();
+            const choicesProp = annotationPathPrompt.choices as Choices;
             expect(choicesProp).toBeDefined();
             const choices = await choicesProp({
                 entity: ENTITY_TYPE
             });
             expect(choices).toMatchSnapshot();
+
+            await expect(
+                async () =>
+                    await choicesProp({
+                        entity: 'error'
+                    })
+            ).rejects.toThrowError();
         });
 
         test('getAggregationPathPrompt', async () => {
@@ -119,10 +129,20 @@ describe('utils - ', () => {
             expect(aggregationPathPrompt).toMatchSnapshot();
             const choicesProp = aggregationPathPrompt.choices as Choices;
             expect(choicesProp).toBeDefined();
-            const choices = await choicesProp({
+            let choices = await choicesProp({
                 viewOrFragmentFile: join(projectFolder, 'ext/main/Main.view.xml')
             });
             expect(choices).toMatchSnapshot();
+
+            choices = await choicesProp({
+                viewOrFragmentFile: join(projectFolder, 'ext/main/Main.view.xml')
+            });
+            await expect(
+                async () =>
+                    await choicesProp({
+                        viewOrFragmentFile: join(projectFolder, 'non-existing-file.xml')
+                    })
+            ).rejects.not.toThrow();
         });
         test('getViewOrFragmentFilePrompt', async () => {
             const viewOrFragmentFilePrompt = getViewOrFragmentFilePrompt(
@@ -136,8 +156,33 @@ describe('utils - ', () => {
             expect(choicesProp).toBeDefined();
             const choices = await choicesProp();
             expect(choices.length).toBe(1);
+
+            const validateFn = viewOrFragmentFilePrompt.validate;
+            expect(typeof validateFn).toBe('function');
+            expect(validateFn?.('')).toBe('validationError');
+            expect(validateFn?.('valid')).toBe(true);
         });
 
+        test('getBindingContextType', async () => {
+            const bindingContextPrompt = getBindingContextTypePrompt('bindingContext');
+            expect(bindingContextPrompt).toMatchInlineSnapshot(`
+                Object {
+                  "choices": Array [
+                    Object {
+                      "name": "Relative",
+                      "value": "relative",
+                    },
+                    Object {
+                      "name": "Absolute",
+                      "value": "absolute",
+                    },
+                  ],
+                  "message": "bindingContext",
+                  "name": "bindingContextType",
+                  "type": "list",
+                }
+            `);
+        });
         test('getBooleanPrompt', async () => {
             const booleanPrompt = getBooleanPrompt('name', 'message');
             expect(booleanPrompt).toMatchInlineSnapshot(`
@@ -157,6 +202,32 @@ describe('utils - ', () => {
                   "type": "list",
                 }
             `);
+        });
+        test('getFilterBarIdPrompt', () => {
+            const prompt = getFilterBarIdPrompt('message');
+            expect(prompt).toMatchInlineSnapshot(`
+                Object {
+                  "message": "message",
+                  "name": "filterBar",
+                  "type": "input",
+                }
+            `);
+        });
+
+        test('getBuildingBlockIdPrompt', () => {
+            const prompt = getBuildingBlockIdPrompt('message', 'error');
+            expect(prompt).toMatchInlineSnapshot(`
+                Object {
+                  "message": "message",
+                  "name": "id",
+                  "type": "input",
+                  "validate": [Function],
+                }
+            `);
+
+            const validateFn = prompt.validate;
+            expect(typeof validateFn).toBe('function');
+            expect(validateFn?.('')).toBe('error');
         });
     });
 });
