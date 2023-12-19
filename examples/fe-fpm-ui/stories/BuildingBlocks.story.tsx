@@ -17,7 +17,7 @@ ws.onopen = () => {
     ws.send('Hello from the preview!');
 };
 
-export const defaultUsage = (): JSX.Element => {
+export const table = (): JSX.Element => {
     const [questions, setQuestions] = React.useState<Question[]>([]);
     React.useEffect(() => {
         // Handle messages received from main.js
