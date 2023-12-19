@@ -1,5 +1,16 @@
 # @sap-ux/odata-vocabularies
 
+## 0.2.0
+
+### Minor Changes
+
+-   5b256cea: support applicable terms constraint
+
+### Patch Changes
+
+-   Updated dependencies [5b256cea]
+    -   @sap-ux/odata-annotation-core-types@0.2.0
+
 ## 0.1.6
 
 ### Patch Changes

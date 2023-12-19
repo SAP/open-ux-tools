@@ -122,6 +122,7 @@ interface ComplexTypeBase extends PrimitiveType {
     isAbstract?: boolean; // source: $Abstract; indicates that it is abstract and cannot have instances
     isOpenType?: boolean; // source $OpenType; indicates that it is open and allows clients to add properties dynamically
     properties: Map<string, ComplexTypeProperty>;
+    constraints?: Constraints;
 }
 
 /**
@@ -148,7 +149,8 @@ export enum TermApplicability {
     TypeNotApplicable,
     UnknownTerm,
     UnknownVocabulary,
-    UnSupportedVocabulary
+    UnSupportedVocabulary,
+    NotInApplicableTermsConstraint
 }
 
 /**

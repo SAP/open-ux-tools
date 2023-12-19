@@ -13,11 +13,11 @@ describe('flp/init', () => {
     test('setI18nTitle', () => {
         const title = '~testTitle';
         mockBundle.getText.mockReturnValue(title);
-        
+
         mockBundle.hasText.mockReturnValueOnce(true);
         setI18nTitle();
         expect(document.title).toBe(title);
-        
+
         mockBundle.hasText.mockReturnValueOnce(false);
         setI18nTitle();
         expect(document.title).toBe(title);
@@ -57,6 +57,22 @@ describe('flp/init', () => {
             await registerComponentDependencyPaths(['/']);
             expect(loaderMock).toBeCalledWith({ paths: { 'test/lib/component': '~url' } });
         });
+
+        test('registerComponentDependencyPaths: error case', async () => {
+            const manifest = JSON.parse(JSON.stringify(testManifest)) as typeof testManifest;
+            manifest['sap.ui5'].dependencies.libs['test.lib'] = {};
+            fetchMock.mockResolvedValueOnce({ json: () => manifest });
+            fetchMock.mockResolvedValueOnce({
+                json: () => {
+                    throw new Error('Error');
+                }
+            });
+            try {
+                await registerComponentDependencyPaths(['/']);
+            } catch (error) {
+                expect(error).toEqual('Error');
+            }
+        });
     });
 
     describe('init', () => {
@@ -78,22 +94,29 @@ describe('flp/init', () => {
             await init({ flex: JSON.stringify(flexSettings) });
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
-            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock.calls[0][0] as () => Promise<void>;
-            
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
+
             // testing the nested callbacks
             const mockService = {
                 attachAppLoaded: jest.fn()
-            }
-            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService)          
-            
+            };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+
             await rendererCb();
             expect(mockService.attachAppLoaded).toBeCalled();
             const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
-            
-            loadedCb({ getParameter: () => {}});
-            expect(sapMock.ui.require).toBeCalledWith(['sap/ui/rta/api/startAdaptation', flexSettings.pluginScript], expect.anything());
-        
-            const requireCb = sapMock.ui.require.mock.calls[0][1] as (startAdaptation: StartAdaptation, pluginScript?: RTAPlugin) => void;
+
+            loadedCb({ getParameter: () => {} });
+            expect(sapMock.ui.require).toBeCalledWith(
+                ['sap/ui/rta/api/startAdaptation', flexSettings.pluginScript],
+                expect.anything()
+            );
+
+            const requireCb = sapMock.ui.require.mock.calls[0][1] as (
+                startAdaptation: StartAdaptation,
+                pluginScript?: RTAPlugin
+            ) => void;
             const startAdpMock = jest.fn();
             const plugnScriptMock = jest.fn();
             requireCb(startAdpMock, plugnScriptMock);

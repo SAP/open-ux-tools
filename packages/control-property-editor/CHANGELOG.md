@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.6
+
+### Patch Changes
+
+-   9e7cbe8e: Disable manually inserting values in dropdowns
+
 ## 0.4.5
 
 ### Patch Changes
