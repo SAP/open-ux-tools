@@ -51,7 +51,7 @@ describe('cds annotation parser', () => {
             continue;
         }
         if (only.includes(t)) {
-            test.only(`${t}`, async () => {
+            test.only(`${t}`, async () => {  // NOSONAR
                 await testParser(t, t.startsWith('valid'));
             });
             continue;
