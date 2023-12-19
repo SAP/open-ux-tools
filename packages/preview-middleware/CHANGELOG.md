@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.11.21
+
+### Patch Changes
+
+-   83f25073: The extension points not shown as such in the Outline for ADP
+
 ## 0.11.20
 
 ### Patch Changes
