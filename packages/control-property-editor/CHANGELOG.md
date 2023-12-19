@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.7
+
+### Patch Changes
+
+-   83f25073: The extension points not shown as such in the Outline for ADP
+
 ## 0.4.6
 
 ### Patch Changes
