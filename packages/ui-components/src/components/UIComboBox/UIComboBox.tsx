@@ -19,6 +19,7 @@ import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/Valida
 import { labelGlobalStyle } from '../UILabel';
 import { isDropdownEmpty, getCalloutCollisionTransformationProps } from '../UIDropdown';
 import { CalloutCollisionTransform } from '../UICallout';
+import { isHTMLInputElement } from '../../utilities';
 
 export {
     IComboBoxOption as UIComboBoxOption,
@@ -165,8 +166,8 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * @param {React.FormEvent<IComboBox>} event Combobox event object
      */
     private setCaretPosition(event: React.FormEvent<IComboBox>) {
-        if (event.target) {
-            const input = event.target as HTMLInputElement;
+        if (isHTMLInputElement(event.target)) {
+            const input = event.target;
             const selectionEnd = input.selectionEnd;
             if (selectionEnd !== input.value.length) {
                 window.requestAnimationFrame(() => {
@@ -184,9 +185,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      */
     private onInput(event: React.FormEvent<IComboBox>): void {
         this.isListHidden = false;
-        if (event.target) {
+        if (isHTMLInputElement(event.target)) {
             this.setCaretPosition(event);
-            const input = event.target as HTMLInputElement;
+            const input = event.target;
             this.query = input.value.trimStart().toLowerCase();
             // Filter options
             const baseCombobox = this.comboBox.current;
