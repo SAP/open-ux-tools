@@ -14,7 +14,6 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { findAnnotationNode, getAstNodes, getNode, parse } from '../src';
 
-
 const testParser = async (testCasePath: string, valid = true): Promise<void> => {
     const text = await getAssignment(testCasePath);
     const { cst, lexErrors, parseErrors, tokens } = parseInternal(text);
@@ -68,13 +67,13 @@ describe('cds annotation parser', () => {
 
 test('Test for documented in README public API usage samples', () => {
     const ast = parse(`
-      UI.LineItem #table1 : [
-        {
-          $type: 'UI.DataField',
-          value: some.path,
-          Label: 'Sample column'
-        }  
-      ]';
+  UI.LineItem #table1 : [
+  {
+    $type: 'UI.DataField',
+    value: some.path,
+    Label: 'Sample column'
+  }  
+  ]';
       `);
 
     if (ast !== undefined) {
@@ -82,15 +81,18 @@ test('Test for documented in README public API usage samples', () => {
             position: { line: 5, character: 15 },
             includeDelimiterCharacters: true
         });
-         expect(pathToLabel).toMatchInlineSnapshot(`"/value/items/0/properties/2/value"`);
+        expect(pathToLabel).toMatchInlineSnapshot(`"/value/items/0/properties/2/value"`);
 
         // An array of nodes matching each segment of the path.
         const nodes = getAstNodes(ast, pathToLabel);
         expect(nodes.length).toBe(6);
         expect(
-            nodes.map((n) =>
-                Array.isArray(n) ? '<array of child elements>' : typeof n === 'object' ? `Node of type '${n.type}'` : n
-            )
+            nodes.map((n) => {
+                if (typeof n !== 'object') {
+                    return n;
+                }
+                return Array.isArray(n) ? '<array of child elements>' : `Node of type '${n.type}'`;
+            })
         ).toMatchInlineSnapshot(`
             Array [
               "Node of type 'collection'",
@@ -105,19 +107,19 @@ test('Test for documented in README public API usage samples', () => {
         const termNode = getNode(ast, '/term');
         if (termNode.type === 'path') {
             const value = termNode.value;
-            expect(value).toBe('UI.LineItem')
+            expect(value).toBe('UI.LineItem');
         }
 
         const qualifierNode = getNode(ast, '/value/items/0/properties/1/value');
         if (qualifierNode.type === 'qualifier') {
             const value = qualifierNode.value;
-            expect(value).toBe('table1')
+            expect(value).toBe('table1');
         }
 
         const propertyValueNode = getNode(ast, '/value/items/0/properties/1/value');
         if (propertyValueNode.type === 'path') {
             const value = propertyValueNode.value;
-            expect(value).toBe('some.path')
+            expect(value).toBe('some.path');
         }
     }
 });

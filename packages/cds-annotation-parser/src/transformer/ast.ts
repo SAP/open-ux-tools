@@ -132,6 +132,9 @@ const findNextToken = (tokens: IToken[], previousTokenEndOffset?: number): IToke
     return tokens[prevTokenIdx + 1];
 };
 
+/**
+ *
+ */
 class CstToAstVisitor extends Visitor {
     tokenVector: IToken[] = [];
     startPosition?: Position;

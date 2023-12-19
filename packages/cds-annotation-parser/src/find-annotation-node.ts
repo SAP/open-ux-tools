@@ -128,7 +128,7 @@ const visitor = new PositionVisitor();
 
 /**
  * Searches for an AST node in the given AST tree based on provided search options.
- * 
+ *
  * @param assignment AST root element
  * @param options Search options (element position, flag whether delimiter characteds should be considered)
  * @returns Path to the found AST node or empty string
