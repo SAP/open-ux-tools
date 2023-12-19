@@ -142,7 +142,7 @@ describe('utils - ', () => {
                     await choicesProp({
                         viewOrFragmentFile: join(projectFolder, 'non-existing-file.xml')
                     })
-            ).rejects.not.toThrow();
+            ).rejects.toThrow();
         });
         test('getViewOrFragmentFilePrompt', async () => {
             const viewOrFragmentFilePrompt = getViewOrFragmentFilePrompt(
