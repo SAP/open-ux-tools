@@ -35,9 +35,8 @@
     "dependencies": {
         "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/ui-components": "workspace:*",
-        "react-movable": "2.4.0",
-        "react-select": "5.7.4",
-        "react-virtualized": "9.22.3",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0",
         "sanitize-html": "2.7.3",
         "uuid": "3.4.0"
     },

@@ -8,10 +8,12 @@ export type Question = ListQuestion | InputQuestion | CheckboxQuestion;
 
 export interface QuestionsProps {
     questions: Array<Question>;
+    onChoiceRequest: (name: string) => void;
+    onChange: (answer: unknown, answers: unknown) => void;
 }
 
 export const Questions = (props: QuestionsProps) => {
-    const { questions } = props;
+    const { questions, onChoiceRequest } = props;
     return (
         <div>
             {questions.map((question: Question, index: number) => {
@@ -26,7 +28,16 @@ export const Questions = (props: QuestionsProps) => {
                         break;
                     }
                     case 'list': {
-                        questionInput = <Select {...question} />;
+                        questionInput = (
+                            <Select
+                                {...question}
+                                onChoiceRequest={() => {
+                                    if (question.name) {
+                                        onChoiceRequest(question.name);
+                                    }
+                                }}
+                            />
+                        );
                         break;
                     }
                     default: {
