@@ -39,9 +39,10 @@ module.exports = {
             include: [resolve(__dirname, '../'), resolve(__dirname, '../../../packages/ui-components')]
         });
         config.resolve.extensions.push('.ts', '.tsx');
-        // Create WebSocket connection to comunicate between fpm-writer API and ui
-        await createWebSocketConnection();
-
+        if (config.mode === 'development') {
+            // Create WebSocket connection to comunicate between fpm-writer API and ui
+            await createWebSocketConnection();
+        }
         return config;
     },
     framework: {
