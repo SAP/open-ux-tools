@@ -68,14 +68,28 @@ module.exports = {
 
             // Send a message from main.js to the preview when connected
             let fs = await initialize();
-            const prompts = await fpmWriter.getTableBuildingBlockPrompts(testAppPath, fs)
-            // Post processing
-            const action = { type: 'update', data: prompts };
-            ws.send(JSON.stringify(action));
-
             // Handle messages received from the preview
-            ws.on('message', (message) => {
+            ws.on('message', async (message) => {
                 console.log(`Received message from the preview: ${message}`);
+                const action = JSON.parse(message);
+                if (action.type === 'GET_QUESTIONS') {
+                    if (action.value === 'table') {
+                        const prompts = await fpmWriter.getTableBuildingBlockPrompts(testAppPath, fs);
+                        // Post processing
+                        const action = { type: 'SET_TABLE_QUESTIONS', data: prompts };
+                        ws.send(JSON.stringify(action));
+                    } else if (action.value === 'chart') {
+                        const prompts = await fpmWriter.getChartBuildingBlockPrompts(testAppPath, fs);
+                        // Post processing
+                        const action = { type: 'SET_CHART_QUESTIONS', data: prompts };
+                        ws.send(JSON.stringify(action));
+                    } else if (action.value === 'filterBar') {
+                        const prompts = await fpmWriter.getFilterBarBuildingBlockPrompts(testAppPath, fs);
+                        // Post processing
+                        const action = { type: 'SET_FILTERBAR_QUESTIONS', data: prompts };
+                        ws.send(JSON.stringify(action));
+                    }
+                }
             });
         });
 
