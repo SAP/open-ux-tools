@@ -159,7 +159,7 @@ describe('<UIComboBox />', () => {
             const input = wrapper.find('input');
 
             input.simulate('input', { target: getInputTarget('test') });
-            await new Promise((resolve) => setTimeout(resolve, 1));
+            await new Promise((resolve) => setTimeout(resolve));
             const inputDOM = input.getDOMNode() as HTMLInputElement;
             const selections = inputDOM.selectionEnd;
             expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(1);
@@ -172,7 +172,7 @@ describe('<UIComboBox />', () => {
             inputDOM.selectionEnd = inputDOM.selectionStart = 2;
             input.simulate('input', event);
             inputDOM.selectionEnd = inputDOM.selectionStart = selections;
-            await new Promise((resolve) => setTimeout(resolve, 1));
+            await new Promise((resolve) => setTimeout(resolve));
             expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(2);
             expect((input.getDOMNode() as HTMLInputElement).selectionEnd).toBe(2);
         });
@@ -188,7 +188,7 @@ describe('<UIComboBox />', () => {
             inputDOM.selectionEnd = inputDOM.selectionStart = 2;
             input.simulate('click', event);
             inputDOM.selectionEnd = inputDOM.selectionStart = 5;
-            await new Promise((resolve) => setTimeout(resolve, 1));
+            await new Promise((resolve) => setTimeout(resolve));
             expect((input.getDOMNode() as HTMLInputElement).selectionEnd).toBe(2);
         });
 
