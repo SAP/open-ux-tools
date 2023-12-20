@@ -308,11 +308,7 @@ describe('ChangePanel', () => {
         expect(iconName).toBe('TrashCan');
 
         fireEvent.click(deleteButton);
-        expect(
-            screen.getByText(
-                /Are you sure you want to delete the change for this property\? This action cannot be undone\./i
-            )
-        ).toBeInTheDocument();
+        expect(screen.getByText(/Are you sure you want to delete/i)).toBeInTheDocument();
 
         // first cancel
         const cancelButton = screen.getByRole('button', { name: /^Cancel$/i });

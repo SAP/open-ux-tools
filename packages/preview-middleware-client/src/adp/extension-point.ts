@@ -20,9 +20,8 @@ type DeferredExtPointData = {
     extensionPointName: string | undefined;
 };
 
-export interface ExtensionPointData {
+export interface ExtensionPointInfo {
     name: string;
-    deffered: Deferred<DeferredExtPointData>;
     index?: number;
     view?: View;
     createdControls?: [];
@@ -33,8 +32,15 @@ export interface ExtensionPointData {
     targetControl?: UI5Element;
 }
 
+export interface ExtensionPointData {
+    name: string;
+    deferred: Deferred<DeferredExtPointData>;
+    info: ExtensionPointInfo[];
+}
+
 export default class ExtensionPointService {
     private readonly actionId = 'CTX_ADDXML_AT_EXTENSIONPOINT';
+    private selectedExtensionPointName: string;
 
     /**
      * @param rta Runtime Authoring
@@ -51,11 +57,12 @@ export default class ExtensionPointService {
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (addExtensionPoint.match(action)) {
                 try {
-                    const { controlId } = action.payload;
+                    const { controlId, name } = action.payload;
 
                     const service = await this.rta.getService<ActionService>('action');
 
                     service.execute(controlId, this.actionId);
+                    this.selectedExtensionPointName = name;
                 } catch (e) {
                     throw new Error(`Failed to execute service with actionId: ${this.actionId}`);
                 }
@@ -75,7 +82,7 @@ export default class ExtensionPointService {
         const plugin = new AddXMLAtExtensionPoint({
             commandFactory,
             fragmentHandler: async (overlay: UI5Element, info: ExtensionPointData[]) =>
-                await this.fragmentHandler(overlay, info[0])
+                await this.fragmentHandler(overlay, info)
         });
 
         const defaultPlugins = this.rta.getDefaultPlugins();
@@ -88,16 +95,19 @@ export default class ExtensionPointService {
      *
      * @param overlay UI5 Element overlay
      * @param info Extension point data from the plugin
-     * @returns Deffered extension point data that is provided to the plugin
+     * @returns Deferred extension point data that is provided to the plugin
      */
-    public async fragmentHandler(overlay: UI5Element, info: ExtensionPointData): Promise<DeferredExtPointData> {
-        let deffered = createDeferred<DeferredExtPointData>();
+    public async fragmentHandler(overlay: UI5Element, info: ExtensionPointData[]): Promise<DeferredExtPointData> {
+        let deferred = createDeferred<DeferredExtPointData>();
+        const name = this.selectedExtensionPointName;
 
         await handler(overlay, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {
-            name: info.name,
-            deffered
+            name,
+            info,
+            deferred
         } as ExtensionPointData);
 
-        return deffered.promise;
+        this.selectedExtensionPointName = '';
+        return deferred.promise;
     }
 }

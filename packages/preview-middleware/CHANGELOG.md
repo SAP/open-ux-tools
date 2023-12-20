@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.11.22
+
+### Patch Changes
+
+-   7ce50bbd: "Confirm property change deletion"'s message on delete is only for property changes
+
+## 0.11.21
+
+### Patch Changes
+
+-   83f25073: The extension points not shown as such in the Outline for ADP
+
 ## 0.11.20
 
 ### Patch Changes
