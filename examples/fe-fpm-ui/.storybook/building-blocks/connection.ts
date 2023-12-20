@@ -12,12 +12,12 @@ import WebSocket from 'ws';
 import type { Data } from 'ws';
 import {
     GET_QUESTIONS,
-    type Actions,
     SET_TABLE_QUESTIONS,
     SET_CHART_QUESTIONS,
     SET_FILTERBAR_QUESTIONS,
     SupportedBuildingBlocks
-} from './types';
+} from '../../stories/utils/types';
+import type { Actions } from '../../stories/utils/types';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 const testAppPath = join(__dirname, '../../../fe-fpm-cli/test-output/fe-app', `${Date.now()}`);

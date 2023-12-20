@@ -1,13 +1,13 @@
 import type { Question } from 'inquirer';
 import {
     GET_QUESTIONS,
-    type Actions,
     SET_TABLE_QUESTIONS,
     SET_CHART_QUESTIONS,
     SET_FILTERBAR_QUESTIONS,
     GetQuestions,
     SupportedBuildingBlocks
-} from '../../.storybook/building-blocks/types';
+} from './types';
+import type { Actions } from './types';
 
 let ws: WebSocket | undefined;
 

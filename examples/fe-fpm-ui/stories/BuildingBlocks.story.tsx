@@ -3,7 +3,7 @@ import { Questions } from '../src/components';
 import type { Question } from '../src/components';
 import { initIcons } from '@sap-ux/ui-components';
 import { onMessageAttach, sendMessage, getWebSocket, getQuestions } from './utils/communication';
-import { SupportedBuildingBlocks } from '../.storybook/building-blocks/types';
+import { SupportedBuildingBlocks } from './utils';
 
 export default { title: 'Building Blocks' };
 
