@@ -1,9 +1,17 @@
-import type { Question } from '../../src/components';
+import type { Question } from 'inquirer';
+import {
+    GET_QUESTIONS,
+    type Actions,
+    SET_TABLE_QUESTIONS,
+    SET_CHART_QUESTIONS,
+    SET_FILTERBAR_QUESTIONS,
+    GetQuestions,
+    SupportedBuildingBlocks
+} from '../../.storybook/building-blocks/types';
 
 let ws: WebSocket | undefined;
 
-export type Action = { data: unknown };
-export type LIstener = (action: Action) => void;
+export type LIstener = (action: Actions) => void;
 const listeners: { [key: string]: LIstener[] } = {};
 export function getWebSocket(): WebSocket {
     if (!ws) {
@@ -24,7 +32,7 @@ export function getWebSocket(): WebSocket {
     return ws;
 }
 
-function waitForConnection(callback, interval = 500) {
+function waitForConnection(callback: () => void, interval = 500) {
     if (ws?.readyState === 1) {
         callback();
     } else {
@@ -55,25 +63,26 @@ export function onMessageDetach(type: string, listener: LIstener): void {
 }
 
 const QUESTIONS_TYPE_MAP = new Map([
-    ['table', 'SET_TABLE_QUESTIONS'],
-    ['chart', 'SET_CHART_QUESTIONS'],
-    ['filterBar', 'SET_FILTERBAR_QUESTIONS']
+    [SupportedBuildingBlocks.Table, SET_TABLE_QUESTIONS],
+    [SupportedBuildingBlocks.Chart, SET_CHART_QUESTIONS],
+    [SupportedBuildingBlocks.FilterBar, SET_FILTERBAR_QUESTIONS]
 ]);
 
-export function getQuestions(type: string): Promise<Question[]> {
+export function getQuestions(type: SupportedBuildingBlocks): Promise<Question[]> {
     return new Promise((resolve, error) => {
-        sendMessage({
-            type: 'GET_QUESTIONS',
+        const getAction: GetQuestions = {
+            type: GET_QUESTIONS,
             value: type
-        });
+        };
+        sendMessage(getAction);
         const expectedActionType = QUESTIONS_TYPE_MAP.get(type);
         if (!expectedActionType) {
             return error('Unsupported type');
         }
-        const handleMessage = (action: Action) => {
-            if (Array.isArray(action.data)) {
+        const handleMessage = (action: Actions) => {
+            if ('questions' in action && Array.isArray(action.questions)) {
                 onMessageDetach(expectedActionType, handleMessage);
-                resolve(action.data);
+                resolve(action.questions as Question[]);
             }
         };
         onMessageAttach(expectedActionType, handleMessage);

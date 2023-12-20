@@ -26,6 +26,7 @@ export {
     BuildingBlockTypePromptsAnswer,
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
+    TablePromptsAnswer,
     getBuildingBlockTypePrompts,
     getChartBuildingBlockPrompts,
     getFilterBarBuildingBlockPrompts,
