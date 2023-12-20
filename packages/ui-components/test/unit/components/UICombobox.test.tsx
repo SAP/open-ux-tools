@@ -19,15 +19,17 @@ describe('<UIComboBox />', () => {
     const headerItemSelector = '.ms-ComboBox-header';
     initIcons();
 
+    const getInputTarget = (value = '') => {
+        return { tagName: 'INPUT', value };
+    };
+
     const openDropdown = (): void => {
         wrapper.find('.ms-ComboBox .ms-Button--icon').simulate('click', document.createEvent('Events'));
     };
 
     const triggerSearch = (query: string) => {
         wrapper.find('input').simulate('input', {
-            target: {
-                value: query
-            }
+            target: getInputTarget(query)
         });
     };
 
@@ -150,6 +152,44 @@ describe('<UIComboBox />', () => {
             triggerSearch(query);
             expect(wrapper.find('.ts-Menu-option--highlighted').length).toEqual(1);
             expect(wrapper.find('.ts-Menu-option--highlighted').text()).toEqual(query);
+        });
+
+        it('Test onInput value selection', async () => {
+            const requestAnimationFrameSpy = jest.spyOn(window, 'requestAnimationFrame');
+            const input = wrapper.find('input');
+
+            input.simulate('input', { target: getInputTarget('test') });
+            await new Promise((resolve) => setTimeout(resolve));
+            const inputDOM = input.getDOMNode() as HTMLInputElement;
+            const selections = inputDOM.selectionEnd;
+            expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(1);
+            expect(selections).toBe(4);
+
+            const event = {
+                target: inputDOM
+            } as unknown as React.FormEvent<IComboBox>;
+            inputDOM.value = 'test01';
+            inputDOM.selectionEnd = inputDOM.selectionStart = 2;
+            input.simulate('input', event);
+            inputDOM.selectionEnd = inputDOM.selectionStart = selections;
+            await new Promise((resolve) => setTimeout(resolve));
+            expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(2);
+            expect((input.getDOMNode() as HTMLInputElement).selectionEnd).toBe(2);
+        });
+
+        it('Test onClick value selection', async () => {
+            wrapper.setProps({ selectedKey: 'AU' });
+            const input = wrapper.find('input');
+            const inputDOM = input.getDOMNode() as HTMLInputElement;
+            const event = {
+                target: inputDOM
+            } as unknown as React.FormEvent<IComboBox>;
+
+            inputDOM.selectionEnd = inputDOM.selectionStart = 2;
+            input.simulate('click', event);
+            inputDOM.selectionEnd = inputDOM.selectionStart = 5;
+            await new Promise((resolve) => setTimeout(resolve));
+            expect((input.getDOMNode() as HTMLInputElement).selectionEnd).toBe(2);
         });
 
         it('Test "reserQuery"', () => {
@@ -312,9 +352,7 @@ describe('<UIComboBox />', () => {
                 .find('input')
                 .at(0)
                 .simulate('input', {
-                    target: {
-                        value: query
-                    }
+                    target: getInputTarget(query)
                 });
             expect(wrapper.find('.ts-Menu-option--highlighted').length).toEqual(1);
             expect(wrapper.find('.ts-Menu-option--highlighted').text()).toEqual(query);

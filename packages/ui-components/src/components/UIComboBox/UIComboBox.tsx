@@ -19,6 +19,7 @@ import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/Valida
 import { labelGlobalStyle } from '../UILabel';
 import { isDropdownEmpty, getCalloutCollisionTransformationProps } from '../UIDropdown';
 import { CalloutCollisionTransform } from '../UICallout';
+import { isHTMLInputElement } from '../../utilities';
 
 export {
     IComboBoxOption as UIComboBoxOption,
@@ -160,14 +161,33 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
+     * Method prevents cursor from jumping to the end of input.
+     *
+     * @param {React.FormEvent<IComboBox>} event Combobox event object
+     */
+    private setCaretPosition(event: React.FormEvent<IComboBox>) {
+        if (isHTMLInputElement(event.target)) {
+            const input = event.target;
+            const selectionEnd = input.selectionEnd;
+            if (selectionEnd !== input.value.length) {
+                window.requestAnimationFrame(() => {
+                    input.selectionStart = selectionEnd;
+                    input.selectionEnd = selectionEnd;
+                });
+            }
+        }
+    }
+
+    /**
      * Method filters options and hides unmatched options.
      *
      * @param {React.FormEvent<IComboBox>} event Combobox event object
      */
     private onInput(event: React.FormEvent<IComboBox>): void {
         this.isListHidden = false;
-        if (event.target) {
-            const input = event.target as HTMLInputElement;
+        if (isHTMLInputElement(event.target)) {
+            this.setCaretPosition(event);
+            const input = event.target;
             this.query = input.value.trimStart().toLowerCase();
             // Filter options
             const baseCombobox = this.comboBox.current;
@@ -179,8 +199,11 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Method opens menu when user clicks on Combobox (input or button).
+     *
+     * @param event
      */
-    private onClick(): void {
+    private onClick(event: React.FormEvent<IComboBox>): void {
+        this.setCaretPosition(event);
         const baseCombobox = this.comboBox.current;
         const isOpen = baseCombobox && baseCombobox.state.isOpen;
         const isDisabled = this.props.disabled;
