@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.4.8
+
+### Patch Changes
+
+-   7ce50bbd: "Confirm property change deletion"'s message on delete is only for property changes
+
+## 0.4.7
+
+### Patch Changes
+
+-   83f25073: The extension points not shown as such in the Outline for ADP
+
 ## 0.4.6
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.14.0
+
+### Minor Changes
+
+-   3ec4de4b: Fix: UIComboBox. Prevent caret jump on input value change and on autocomplete value click
+
 ## 1.13.5
 
 ### Patch Changes
