@@ -1,24 +1,30 @@
-const path = require('path');
-const WebSocket = require('ws');
-const fpmWriter = require('@sap-ux/fe-fpm-writer');
-const util = require('util');
-const memFs = require('mem-fs');
-const memFsEditor = require('mem-fs-editor');
+import { join, resolve } from 'path';
+import {
+    getTableBuildingBlockPrompts,
+    getChartBuildingBlockPrompts,
+    getFilterBarBuildingBlockPrompts
+} from '@sap-ux/fe-fpm-writer';
+import { promisify } from 'util';
+import { create as createStorage } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
+import { Server } from 'ws';
+import type { Data } from 'ws';
 
-const sampleAppPath = path.join(__dirname, '../../fe-fpm-cli/sample/fe-app');
-const testAppPath = path.join(__dirname, '../../fe-fpm-cli/test-output/fe-app', `${Date.now()}`);
+const sampleAppPath = join(__dirname, '../../fe-fpm-cli/sample/fe-app');
+const testAppPath = join(__dirname, '../../fe-fpm-cli/test-output/fe-app', `${Date.now()}`);
 
 /**
  * Initializes the memfs and copies over the sample Fiori elements application.
  *
  * @returns {Promise<Editor>} the memfs editor object
  */
-async function initialize() {
-    const fs = memFsEditor.create(memFs.create());
+async function initialize(): Promise<Editor> {
+    const fs = create(createStorage());
 
-    fs.copy([path.join(sampleAppPath)], path.join(testAppPath));
+    fs.copy([join(sampleAppPath)], join(testAppPath));
 
-    await util.promisify(fs.commit).call(fs);
+    await promisify(fs.commit).call(fs);
     return fs;
 }
 
@@ -57,10 +63,10 @@ module.exports = {
                 },
                 'sass-loader'
             ],
-            include: [path.resolve(__dirname, '../'), path.resolve(__dirname, '../../../packages/ui-components')]
+            include: [resolve(__dirname, '../'), resolve(__dirname, '../../../packages/ui-components')]
         });
         config.resolve.extensions.push('.ts', '.tsx');
-        const wss = new WebSocket.Server({ port: 8080 });
+        const wss = new Server({ port: 8080 });
 
         // Listen for WebSocket connections
         wss.on('connection', async (ws) => {
@@ -69,22 +75,25 @@ module.exports = {
             // Send a message from main.js to the preview when connected
             let fs = await initialize();
             // Handle messages received from the preview
-            ws.on('message', async (message) => {
-                console.log(`Received message from the preview: ${message}`);
+            ws.on('message', async (message: Data) => {
+                console.log(`Received message from the preview test: ${message}`);
+                if (typeof message !== 'string') {
+                    return;
+                }
                 const action = JSON.parse(message);
                 if (action.type === 'GET_QUESTIONS') {
                     if (action.value === 'table') {
-                        const prompts = await fpmWriter.getTableBuildingBlockPrompts(testAppPath, fs);
+                        const prompts = await getTableBuildingBlockPrompts(testAppPath, fs);
                         // Post processing
                         const action = { type: 'SET_TABLE_QUESTIONS', data: prompts };
                         ws.send(JSON.stringify(action));
                     } else if (action.value === 'chart') {
-                        const prompts = await fpmWriter.getChartBuildingBlockPrompts(testAppPath, fs);
+                        const prompts = await getChartBuildingBlockPrompts(testAppPath, fs);
                         // Post processing
                         const action = { type: 'SET_CHART_QUESTIONS', data: prompts };
                         ws.send(JSON.stringify(action));
                     } else if (action.value === 'filterBar') {
-                        const prompts = await fpmWriter.getFilterBarBuildingBlockPrompts(testAppPath, fs);
+                        const prompts = await getFilterBarBuildingBlockPrompts(testAppPath, fs);
                         // Post processing
                         const action = { type: 'SET_FILTERBAR_QUESTIONS', data: prompts };
                         ws.send(JSON.stringify(action));

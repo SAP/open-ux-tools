@@ -33,12 +33,8 @@
         "test-u": "jest --ci --forceExit --colors  --silent -u"
     },
     "dependencies": {
-        "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/ui-components": "workspace:*",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
-        "sanitize-html": "2.7.3",
-        "uuid": "3.4.0"
+        "sanitize-html": "2.7.3"
     },
     "peerDependencies": {
         "react": ">=16.14.0",
@@ -50,15 +46,19 @@
         "@babel/preset-env": "7.22.20",
         "@babel/preset-react": "7.22.15",
         "@babel/preset-typescript": "7.22.15",
+        "@sap-ux/fe-fpm-writer": "workspace:*",
         "@storybook/react": "7.4.3",
         "@storybook/react-webpack5": "7.4.3",
         "@testing-library/jest-dom": "5.17.0",
         "@testing-library/react": "12.1.5",
         "@types/inquirer": "8.2.6",
+        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1",
         "@types/react": "16.14.0",
         "@types/react-dom": "16.8.5",
         "@types/sanitize-html": "2.6.2",
         "@types/uuid": "3.4.11",
+        "@types/ws": "7.4.6",
         "babel-jest": "29.5.0",
         "babel-loader": "9.1.3",
         "copyfiles": "2.4.1",
@@ -67,6 +67,8 @@
         "eslint-plugin-storybook": "0.6.13",
         "jest-environment-jsdom": "29.6.4",
         "jest-scss-transform": "1.0.3",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0",
         "npm-run-all": "4.1.5",
         "react": "16.14.0",
         "react-dom": "16.14.0",
@@ -77,6 +79,7 @@
         "storybook-addon-turbo-build": "2.0.1",
         "style-loader": "3.3.3",
         "ts-loader": "9.4.4",
-        "typescript": "4.9.5"
+        "typescript": "4.9.5",
+        "ws": "7.4.6"
     }
 }
