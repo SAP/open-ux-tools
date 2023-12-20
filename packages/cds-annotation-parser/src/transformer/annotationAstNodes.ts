@@ -258,7 +258,7 @@ export const nodeRange = (node: AnnotationNode, includeDelimiters: boolean): Ran
     }
 
     if (includeDelimiters) {
-        return node.range;
+        return copyRange(node.range);
     }
 
     switch (node.type) {
@@ -275,5 +275,5 @@ export const nodeRange = (node: AnnotationNode, includeDelimiters: boolean): Ran
             return Range.create(start, end);
         }
     }
-    return node.range;
+    return copyRange(node.range);
 };
