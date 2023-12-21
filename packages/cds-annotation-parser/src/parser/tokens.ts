@@ -195,7 +195,6 @@ const UpToKeyword = createToken({
 // for each operator token: maintain operator metadata (operatorMap, operatorImageMap in /transformer/expressions.ts)
 export const OPERATOR = 'Operator';
 const words = (...values: string[]) => values.map((value) => '\\b' + value + '\\b');
-console.log(words('a', 'b'));
 
 const regEx = new RegExp(
     [
