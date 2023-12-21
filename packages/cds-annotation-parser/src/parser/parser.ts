@@ -300,10 +300,11 @@ export class AnnotationParser extends CstParser {
         if (this.deletionRecoveryEnabled === false) {
             return false;
         }
-        const parentMethod = (
-            super['canRecoverWithSingleTokenDeletion' as keyof CstParser] as unknown as (arg: TokenType) => boolean
-        ).bind(this);
-        return parentMethod(expectedTokType);
+        // We need to override the default logic for recovery with single token deletion.
+        // Sometimes we need to completely disable it to produce better CST
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return super['canRecoverWithSingleTokenDeletion'](expectedTokType);
     }
 
     /**

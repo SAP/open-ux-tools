@@ -404,171 +404,175 @@ describe('context resolver', () => {
     });
 });
 
-test('getNode', () => {
-    const assignment: any = {
-        a: {
-            d: 4
-        },
-        b: {
-            type: 'node b',
-            e: {
-                type: 'node e',
-                f: {
-                    g: 7
+describe('getNode', () => {
+    test('object node', () => {
+        const assignment: any = {
+            a: {
+                d: 4
+            },
+            b: {
+                type: 'node b',
+                e: {
+                    type: 'node e',
+                    f: {
+                        g: 7
+                    }
                 }
-            }
-        },
-        c: {}
-    };
-    const path = '/b/e';
+            },
+            c: {}
+        };
+        const path = '/b/e';
 
-    const result = getNode(assignment, path);
+        const result = getNode(assignment, path);
 
-    expect(result).toEqual(assignment.b.e);
-});
+        expect(result).toEqual(assignment.b.e);
+    });
 
-test('getNode (array node)', () => {
-    const assignment: any = {
-        a: {
-            d: 4
-        },
-        b: {
-            type: 'node b',
-            e: []
-        },
-        c: {}
-    };
-    const path = '/b/e';
+    test('array node', () => {
+        const assignment: any = {
+            a: {
+                d: 4
+            },
+            b: {
+                type: 'node b',
+                e: []
+            },
+            c: {}
+        };
+        const path = '/b/e';
 
-    const result = getNode(assignment, path);
+        const result = getNode(assignment, path);
 
-    expect(result).toEqual(assignment.b.e);
-});
+        expect(result).toEqual(assignment.b.e);
+    });
 
-test('getNode (scalar node)', () => {
-    const assignment: any = {
-        a: {
-            d: 4
-        },
-        b: {
-            type: 'node b',
-            e: 'test'
-        },
-        c: {}
-    };
-    const path = '/b/e';
+    test('scalar node', () => {
+        const assignment: any = {
+            a: {
+                d: 4
+            },
+            b: {
+                type: 'node b',
+                e: 'test'
+            },
+            c: {}
+        };
+        const path = '/b/e';
 
-    const result = getNode(assignment, path);
+        const result = getNode(assignment, path);
 
-    expect(result).toBeUndefined();
-});
+        expect(result).toBeUndefined();
+    });
 
-test('getNode (node without type in the path)', () => {
-    const assignment: any = {
-        a: {
-            d: 4
-        },
-        b: {
-            e: {
-                type: 'e',
-                f: 1
-            }
-        },
-        c: {}
-    };
-    const path = '/b/e';
-
-    const result = getNode(assignment, path);
-
-    expect(result).toBeUndefined();
-});
-
-test('getNode (path does not exist)', () => {
-    const assignment: any = {
-        a: {
-            d: 4
-        },
-        c: {}
-    };
-    const path = '/b/e';
-
-    const result = getNode(assignment, path);
-
-    expect(result).toBeUndefined();
-});
-
-test('getNodes', () => {
-    const assignment: any = {
-        a: {
-            d: 4
-        },
-        b: {
-            type: 'node b',
-            e: {
-                type: 'node e',
-                f: {
-                    g: 7
+    test('node without type in the path', () => {
+        const assignment: any = {
+            a: {
+                d: 4
+            },
+            b: {
+                e: {
+                    type: 'e',
+                    f: 1
                 }
-            }
-        },
-        c: {}
-    };
-    const path = '/b/e';
+            },
+            c: {}
+        };
+        const path = '/b/e';
 
-    const result = getAstNodes(assignment, path);
+        const result = getNode(assignment, path);
 
-    expect(result).toEqual([assignment.b, assignment.b.e]);
+        expect(result).toBeUndefined();
+    });
+
+    test('path does not exist', () => {
+        const assignment: any = {
+            a: {
+                d: 4
+            },
+            c: {}
+        };
+        const path = '/b/e';
+
+        const result = getNode(assignment, path);
+
+        expect(result).toBeUndefined();
+    });
 });
 
-test('getNodes (array node)', () => {
-    const assignment: any = {
-        a: {
-            d: 4
-        },
-        b: {
-            type: 'node b',
-            e: []
-        },
-        c: {}
-    };
-    const path = '/b/e';
+describe('getNodes', () => {
+    test('object node', () => {
+        const assignment: any = {
+            a: {
+                d: 4
+            },
+            b: {
+                type: 'node b',
+                e: {
+                    type: 'node e',
+                    f: {
+                        g: 7
+                    }
+                }
+            },
+            c: {}
+        };
+        const path = '/b/e';
 
-    const result = getAstNodes(assignment, path);
+        const result = getAstNodes(assignment, path);
 
-    expect(result).toEqual([assignment.b, assignment.b.e]);
-});
+        expect(result).toEqual([assignment.b, assignment.b.e]);
+    });
 
-test('getNodes (scalar node)', () => {
-    const assignment: any = {
-        a: {
-            d: 4
-        },
-        b: {
-            type: 'node b',
-            e: 'test'
-        },
-        c: {}
-    };
-    const path = '/b/e';
+    test('array node', () => {
+        const assignment: any = {
+            a: {
+                d: 4
+            },
+            b: {
+                type: 'node b',
+                e: []
+            },
+            c: {}
+        };
+        const path = '/b/e';
 
-    const result = getAstNodes(assignment, path);
+        const result = getAstNodes(assignment, path);
 
-    expect(result).toBeUndefined();
-});
+        expect(result).toEqual([assignment.b, assignment.b.e]);
+    });
 
-test('getNodes (path does not exist)', () => {
-    const assignment: any = {
-        a: {
-            d: 4
-        },
-        b: {
-            type: 'node b'
-        },
-        c: {}
-    };
-    const path = '/b/e';
+    test('scalar node', () => {
+        const assignment: any = {
+            a: {
+                d: 4
+            },
+            b: {
+                type: 'node b',
+                e: 'test'
+            },
+            c: {}
+        };
+        const path = '/b/e';
 
-    const result = getAstNodes(assignment, path);
+        const result = getAstNodes(assignment, path);
 
-    expect(result).toBeUndefined();
+        expect(result).toBeUndefined();
+    });
+
+    test('path does not exist', () => {
+        const assignment: any = {
+            a: {
+                d: 4
+            },
+            b: {
+                type: 'node b'
+            },
+            c: {}
+        };
+        const path = '/b/e';
+
+        const result = getAstNodes(assignment, path);
+
+        expect(result).toBeUndefined();
+    });
 });

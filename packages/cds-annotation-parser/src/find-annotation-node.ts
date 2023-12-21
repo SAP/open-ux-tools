@@ -85,8 +85,7 @@ class PositionVisitor {
             if (this[node.type as VisitorEntry]) {
                 return this[node.type as VisitorEntry](node, options, segment);
             } else {
-                console.warn(`No visitor function found for type ${node.type}`);
-                return [];
+                throw new Error(`No visitor function found for type ${node.type}`);
             }
         }
         return [];
@@ -96,7 +95,7 @@ class PositionVisitor {
      *
      * @param nodeType Type of an annotation node
      * @param scalarProperties Array with names of scalar properties of an annotation node
-     * @param collectionProperties Array with names of colletion valued properties of an annotation node
+     * @param collectionProperties Array with names of collection valued properties of an annotation node
      */
     private createNodeHandler(
         nodeType: AnnotationNodeType,
@@ -139,7 +138,7 @@ const visitor = new PositionVisitor();
  * Searches for an AST node in the given AST tree based on provided search options.
  *
  * @param assignment AST root element
- * @param options Search options (element position, flag whether delimiter characteds should be considered)
+ * @param options Search options (element position, flag whether delimiter characters should be considered)
  * @returns Path to the found AST node or empty string
  */
 export const findAnnotationNode = (assignment: AnnotationNode | undefined, options: PositionVisitorOptions): string =>

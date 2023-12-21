@@ -21,6 +21,17 @@
                     }
                 ]
             }
+        },
+        {
+            "files": ["src/parser/tokens.ts"],
+            "rules": {
+                "camelcase": [
+                    "warn",
+                    {
+                        "properties": "never"
+                    }
+                ]
+            }
         }
     ]
 }
