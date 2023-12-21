@@ -3,7 +3,7 @@ import { join, dirname } from 'path';
 import { platform } from 'os';
 import type { IToken, CstNode, CstNodeLocation, CstElement } from 'chevrotain';
 import type { DeclarationCstNode } from '../../src/parser/parser';
-import type { Annotation, AnnotationGroup } from '../../src/transformer/annotationAstNodes';
+import type { Annotation, AnnotationGroup } from '../../src/transformer/annotation-ast-nodes';
 import { hasNaNOrUndefined } from '../../src/utils';
 import { deserialize } from './deserialize-ast';
 
@@ -112,7 +112,7 @@ export const getAllNormalizeFolderPath = (base = getBase(), allFolderPath: strin
     return allFolderPath;
 };
 
-export const doesExits = (path) => {
+export const doesExits = (path: string) => {
     return new Promise((resolve) => {
         stat(path, (err) => {
             if (err) {

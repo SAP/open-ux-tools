@@ -100,7 +100,8 @@ export type EXPRESSION_TYPE =
     | typeof INCORRECT_EXPRESSION_TYPE
     | typeof UNSUPPORTED_OPERATOR_EXPRESSION_TYPE
     | typeof CORRECT_EXPRESSION_TYPE;
-export interface Expression extends Node {
+
+export interface ExpressionBase extends Node {
     type: EXPRESSION_TYPE;
     operators: Operator[];
     operands: AnnotationValue[];
@@ -108,12 +109,12 @@ export interface Expression extends Node {
     closeToken?: Token;
 }
 export const UNSUPPORTED_OPERATOR_EXPRESSION_TYPE = 'unsupported-operator-expression';
-export interface UnsupportedOperatorExpression extends Expression {
+export interface UnsupportedOperatorExpression extends ExpressionBase {
     type: typeof UNSUPPORTED_OPERATOR_EXPRESSION_TYPE;
     unsupportedOperator: Operator; // unsupported operator
 }
 export const INCORRECT_EXPRESSION_TYPE = 'incorrect-expression';
-export interface IncorrectExpression extends Expression {
+export interface IncorrectExpression extends ExpressionBase {
     type: typeof INCORRECT_EXPRESSION_TYPE;
     /**
      * message indicating why the expression is incorrect
@@ -125,7 +126,7 @@ export interface IncorrectExpression extends Expression {
 }
 
 export const CORRECT_EXPRESSION_TYPE = 'correct-expression';
-export interface CorrectExpression extends Expression {
+export interface CorrectExpression extends ExpressionBase {
     type: typeof CORRECT_EXPRESSION_TYPE;
     operatorName: string; // operators (and operands) contain main operator/operands (implicit nesting resolved based on precedence)
 }
@@ -229,6 +230,7 @@ export const isContainer = (node: AnnotationNode): node is AnnotationGroupItems 
 
 export type Assignment = Annotation | AnnotationGroup;
 
+export type Expression = CorrectExpression | IncorrectExpression | UnsupportedOperatorExpression;
 export type AnnotationNode =
     | Annotation
     | AnnotationGroup
@@ -239,7 +241,8 @@ export type AnnotationNode =
     | Identifier
     | Separator
     | Token
-    | EmptyValue;
+    | EmptyValue
+    | Expression;
 
 export type NarrowAnnotationNode<T, N = AnnotationNode> = N extends { type: T } ? N : never;
 export type AnnotationNodeType =
@@ -254,7 +257,7 @@ export type AnnotationNodeType =
 
 export const nodeRange = (node: AnnotationNode, includeDelimiters: boolean): Range | undefined => {
     if (!node.range) {
-        return;
+        return undefined;
     }
 
     if (includeDelimiters) {
@@ -274,6 +277,8 @@ export const nodeRange = (node: AnnotationNode, includeDelimiters: boolean): Ran
             const end = node.closeToken?.range ? copyRange(node.closeToken.range).start : copyRange(node.range).end;
             return Range.create(start, end);
         }
+        default:
+            break;
     }
     return copyRange(node.range);
 };

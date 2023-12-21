@@ -23,7 +23,7 @@ import type {
     Operator,
     UnsupportedOperatorExpression,
     IncorrectExpression
-} from './annotationAstNodes';
+} from './annotation-ast-nodes';
 import {
     ANNOTATION_TYPE,
     ANNOTATION_GROUP_TYPE,
@@ -47,7 +47,7 @@ import {
     Delimiter,
     UNSUPPORTED_OPERATOR_EXPRESSION_TYPE,
     INCORRECT_EXPRESSION_TYPE
-} from './annotationAstNodes';
+} from './annotation-ast-nodes';
 import { Visitor } from '../parser/factory';
 import { buildExpression, operatorImageMap, operatorMap, rebuildNumberSigns } from './expressions';
 import type {
@@ -142,7 +142,7 @@ class CstToAstVisitor extends Visitor {
     /**
      * Main visitor entry.
      *
-     * @param cstNode
+     * @param cstNode CST node
      * @returns Result of the visitor call for the given cstNode
      */
     visit(cstNode: CstNode): AnnotationNode {
@@ -253,7 +253,7 @@ class CstToAstVisitor extends Visitor {
      */
     private getQualifier(assignment: AssignmentChildren): Qualifier | undefined {
         if (!hasItems(assignment.NumberSign)) {
-            return;
+            return undefined;
         }
         const range = hasItems(assignment.NumberSign) ? this.tokenToRange(assignment.NumberSign[0]) : undefined;
         if (range) {
@@ -346,7 +346,7 @@ class CstToAstVisitor extends Visitor {
     /**
      * Creates colon token from the given assignment.
      *
-     * @param assignment
+     * @param assignment Assignment CST node
      * @returns Colon ast token or undefined if not found
      */
     private getColon(assignment: AssignmentCstNode): Token | undefined {
@@ -520,7 +520,7 @@ class CstToAstVisitor extends Visitor {
     /**
      * Value converter subfunction which calls corresponding visitor for child element (if context permits).
      *
-     * @param context
+     * @param context Value children CST nodes
      * @returns Object with visitor call result and flag indicating that the visitor call took place
      */
     private valueNestedVisitor(context: ValueChildren): { result?: AnnotationValue; done: boolean } {
@@ -545,8 +545,8 @@ class CstToAstVisitor extends Visitor {
     /**
      * Value converter subfunction which converts primitive value (if context permits).
      *
-     * @param context
-     * @param location
+     * @param context Value children CST nodes
+     * @param location CST node location
      * @returns Object with result of the conversion and a flag indicating that the conversion took place
      */
     private primitiveValueConverter(
@@ -696,9 +696,9 @@ class CstToAstVisitor extends Visitor {
         /**
          * Builds operator.
          *
-         * @param operatorToken
-         * @param range
-         * @returns operator node
+         * @param operatorToken Operator CST token
+         * @param range Token range
+         * @returns Operator node
          */
         function buildOperator(operatorToken: IToken, range: Range): Operator {
             const operator: Operator = { type: OPERATOR_TYPE, value: operatorToken.image, range };
@@ -1022,11 +1022,15 @@ class CstToAstVisitor extends Visitor {
      * @param key Key of the children group
      * @returns Updated path segment node
      */
-    private setNewRangeForIdentifier(segment: PathSegmentCstNode, index: number, key: string): PathSegmentCstNode {
+    private setNewRangeForIdentifier(
+        segment: PathSegmentCstNode,
+        index: number,
+        key: 'Identifier' | 'NumberSign'
+    ): PathSegmentCstNode {
         if (hasItems(segment.children.Identifier)) {
-            segment.children.Identifier[0].endColumn = segment.children[key][index].endColumn;
-            segment.children.Identifier[0].endLine = segment.children[key][index].endLine;
-            segment.children.Identifier[0].endOffset = segment.children[key][index].endOffset;
+            segment.children.Identifier[0].endColumn = segment.children[key]?.[index].endColumn;
+            segment.children.Identifier[0].endLine = segment.children[key]?.[index].endLine;
+            segment.children.Identifier[0].endOffset = segment.children[key]?.[index].endOffset;
         }
         return segment;
     }
@@ -1189,7 +1193,10 @@ class CstToAstVisitor extends Visitor {
      * @param assignment Record assignment
      * @returns Property data
      */
-    private getRecordProperty(assignment): { property: RecordProperty | Annotation; kind: 'annotation' | 'property' } {
+    private getRecordProperty(assignment: AssignmentCstNode): {
+        property: RecordProperty | Annotation;
+        kind: 'annotation' | 'property';
+    } {
         const assignmentRange = this.locationToRange(assignment.location);
         const name = this.getAssignmentKey(assignment.children, assignmentRange);
         let property: RecordProperty | Annotation;
@@ -1244,9 +1251,11 @@ class CstToAstVisitor extends Visitor {
                     assignments
                 ): { properties: RecordProperty[]; annotations: Annotation[] } => {
                     const { property, kind } = this.getRecordProperty(assignment);
-                    kind === 'annotation'
-                        ? annotations.push(property as Annotation)
-                        : properties.push(property as RecordProperty);
+                    if (kind === 'annotation') {
+                        annotations.push(property as Annotation);
+                    } else {
+                        properties.push(property as RecordProperty);
+                    }
                     if (
                         hasItems(assignment.children.Colon) &&
                         (!hasItems(assignment.children.value) ||

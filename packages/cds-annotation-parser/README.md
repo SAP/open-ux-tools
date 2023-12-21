@@ -11,8 +11,7 @@ Pnpm
 `pnpm add @sap-ux/cds-annotation-parser`
 
 ## Usage
-
-Cds annotation file parsing. Abstract syntax tree nodes search examples.
+Examples of how to use CDS annotation parsing and abstract syntax tree (AST) node search functions.
 
 ```Typescript
 import { parse, findAnnotationNode, getAstNodes, getNode } from '@sap-ux/cds-annotation-parser';
@@ -72,4 +71,4 @@ if (ast !== undefined) {
 ```
 
 ## Keywords
-OData annotations
+OData annotations CAP CDS

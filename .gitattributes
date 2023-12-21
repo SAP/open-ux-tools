@@ -6,7 +6,7 @@
 *.ps1 eol=crlf
 *.json-dos eol=crlf
 *.cjs eol=lf
-yarn.lock eol=lf merge=ours
+pnpm-lock.yaml eol=lf merge=ours
 
 # binary files have to be explicitly listed
 *.png -text -delta

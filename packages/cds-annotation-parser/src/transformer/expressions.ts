@@ -8,14 +8,14 @@ import type {
     NumberLiteral,
     Operator,
     CorrectExpression
-} from './annotationAstNodes';
+} from './annotation-ast-nodes';
 import {
     NUMBER_LITERAL_TYPE,
     OPERATOR_TYPE,
     CORRECT_EXPRESSION_TYPE,
     INCORRECT_EXPRESSION_TYPE,
     EXPRESSION_TYPES
-} from './annotationAstNodes';
+} from './annotation-ast-nodes';
 
 export const OPERATOR_NAME_NOT_EQUAL = 'not-equal'; // '!=' or '<>'
 export const OPERATOR_NAME_EQUAL = 'equal'; // '=';
@@ -444,6 +444,8 @@ function getOperands(
             ];
             break;
         }
+        default:
+            break;
     }
     if (operands.some((operand) => !operand)) {
         throw new Error(`missing operand for ${operatorDef.type} '${rootOperatorName}'`);
@@ -506,7 +508,7 @@ function nodesRange(nodes: Node[]): Range | undefined {
         }
     }
     if (!start || !end) {
-        return;
+        return undefined;
     } else {
         return { start, end };
     }

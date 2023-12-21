@@ -1,6 +1,6 @@
 import type { Position } from 'vscode-languageserver-types';
 
-import type { AnnotationNode, AnnotationNodeType } from './transformer/annotationAstNodes';
+import type { AnnotationNode, AnnotationNodeType } from './transformer/annotation-ast-nodes';
 import {
     ANNOTATION_GROUP_TYPE,
     COLLECTION_TYPE,
@@ -48,6 +48,7 @@ export interface PositionVisitorOptions {
 }
 
 type VisitorReturnValue = (string | number)[];
+type VisitorEntry = keyof PositionVisitor;
 
 /**
  * Visitor which visits all the nodes for which the specified position is in range.
@@ -67,12 +68,12 @@ class PositionVisitor {
     }
 
     /**
-     * Visits all nodes (including children) in which range the provided position is.
+     * Visits all nodes (including children) which have the provided position in their ranges.
      *
      * @param node Node to be visited
      * @param options Visitor options
      * @param segment Name of the segment which should be added to path if the position is in the nodes range
-     * @returns
+     * @returns Visitor result value
      */
     visit(node: AnnotationNode, options: PositionVisitorOptions, segment?: string | number): VisitorReturnValue {
         const { position } = options;
@@ -81,8 +82,8 @@ class PositionVisitor {
                 return segment !== undefined ? [segment] : [];
             }
 
-            if (this[node.type]) {
-                return this[node.type](node, options, segment);
+            if (this[node.type as VisitorEntry]) {
+                return this[node.type as VisitorEntry](node, options, segment);
             } else {
                 console.warn(`No visitor function found for type ${node.type}`);
                 return [];
@@ -93,25 +94,33 @@ class PositionVisitor {
 
     /**
      *
-     * @param nodeType
-     * @param scalarProperties
-     * @param collectionProperties
+     * @param nodeType Type of an annotation node
+     * @param scalarProperties Array with names of scalar properties of an annotation node
+     * @param collectionProperties Array with names of colletion valued properties of an annotation node
      */
     private createNodeHandler(
         nodeType: AnnotationNodeType,
         scalarProperties: string[],
         collectionProperties: string[]
     ): void {
-        this[nodeType] = (node: AnnotationNode, options: PositionVisitorOptions, segment = ''): VisitorReturnValue => {
+        this[nodeType as VisitorEntry] = (
+            node: AnnotationNode,
+            options: PositionVisitorOptions,
+            segment = ''
+        ): VisitorReturnValue => {
             for (const propertyName of scalarProperties) {
-                const children = this.visit(node[propertyName], options, propertyName);
+                const children = this.visit(
+                    (node as unknown as { [key: string]: AnnotationNode })[propertyName],
+                    options,
+                    propertyName
+                );
                 if (children.length) {
                     return [segment, ...children];
                 }
             }
             for (const propertyName of collectionProperties) {
                 let i = 0;
-                for (const item of node[propertyName] || []) {
+                for (const item of (node as unknown as { [key: string]: AnnotationNode[] })[propertyName] || []) {
                     const children = this.visit(item, options, i);
                     if (children.length) {
                         return [segment, propertyName, ...children];
@@ -143,12 +152,15 @@ export const findAnnotationNode = (assignment: AnnotationNode | undefined, optio
  * @param path Path used to traverse.
  * @returns Node matching path
  */
-export const getNode = (root: AnnotationNode, path: string): AnnotationNode => {
+export const getNode = (root: AnnotationNode, path: string): AnnotationNode | AnnotationNode[] | undefined => {
     const segments = path.split('/');
-    let node = root;
+    let node: AnnotationNode | AnnotationNode[] | undefined = root;
     for (let i = 1; i < segments.length; i++) {
         const segment = segments[i];
-        node = node[segment];
+        node = (node as unknown as { [key: string]: AnnotationNode | AnnotationNode[] })[segment];
+        if (!Array.isArray(node) && !node?.type) {
+            return undefined;
+        }
     }
     return node;
 };
@@ -160,13 +172,16 @@ export const getNode = (root: AnnotationNode, path: string): AnnotationNode => {
  * @param path Path to a node
  * @returns Array containing all the matched nodes
  */
-export function getAstNodes(root: AnnotationNode, path: string): AnnotationNode[] {
+export function getAstNodes(root: AnnotationNode, path: string): (AnnotationNode | AnnotationNode[])[] | undefined {
     const segments = path.split('/');
-    let node = root;
-    const nodes: AnnotationNode[] = [];
+    let node: AnnotationNode | AnnotationNode[] | undefined = root;
+    const nodes: (AnnotationNode | AnnotationNode[])[] = [];
     for (let i = 1; i < segments.length; i++) {
         const segment = segments[i];
-        node = node[segment];
+        node = (node as unknown as { [key: string]: AnnotationNode | AnnotationNode[] })[segment];
+        if (!Array.isArray(node) && !node?.type) {
+            return undefined;
+        }
         nodes.push(node);
     }
     return nodes;

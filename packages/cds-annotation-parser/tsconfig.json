@@ -7,7 +7,7 @@
       "ES2021"
     ],
     "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noImplicitReturns": true,
     "preserveConstEnums": false,
     "incremental": true

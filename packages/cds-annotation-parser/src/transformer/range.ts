@@ -3,9 +3,9 @@ import { Position, Range } from 'vscode-languageserver-types';
 /**
  * Checks if given positions are equal.
  *
- * @param a
- * @param b
- * @returns true if positions are equal
+ * @param a Position 1
+ * @param b Position 2
+ * @returns True if positions are equal
  */
 export function arePositionsEqual(a: Position, b: Position): boolean {
     return a.line === b.line && a.character === b.character;
@@ -14,9 +14,9 @@ export function arePositionsEqual(a: Position, b: Position): boolean {
 /**
  * Checks if given ranges are equal.
  *
- * @param a
- * @param b
- * @returns true if ranges are equal
+ * @param a Range 1
+ * @param b Range 2
+ * @returns True if ranges are equal
  */
 export function areRangesEqual(a: Range, b: Range): boolean {
     return arePositionsEqual(a.start, b.start) && arePositionsEqual(a.end, b.end);

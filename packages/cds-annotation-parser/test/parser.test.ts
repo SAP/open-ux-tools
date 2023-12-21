@@ -1,4 +1,5 @@
 import { parse as parseInternal } from '../src/parser';
+import type { AnnotationNode } from '../src/transformer';
 import { buildAst } from '../src/transformer';
 import {
     getAssignment,
@@ -87,9 +88,9 @@ test('Test for documented in README public API usage samples', () => {
 
         // An array of nodes matching each segment of the path.
         const nodes = getAstNodes(ast, pathToLabel);
-        expect(nodes.length).toBe(6);
+        expect(nodes?.length).toBe(6);
         expect(
-            nodes.map((n) => {
+            (nodes ?? []).map((n) => {
                 if (typeof n !== 'object') {
                     return n;
                 }
@@ -106,21 +107,31 @@ test('Test for documented in README public API usage samples', () => {
             ]
         `);
 
+        let node: AnnotationNode;
         const termNode = getNode(ast, '/term');
-        if (termNode.type === 'path') {
-            const value = termNode.value;
+        expect(termNode).toBeDefined();
+        expect(Array.isArray(termNode)).toBe(false);
+        node = termNode as AnnotationNode;
+        if (node.type === 'path') {
+            const value = node.value;
             expect(value).toBe('UI.LineItem');
         }
 
         const qualifierNode = getNode(ast, '/value/items/0/properties/1/value');
-        if (qualifierNode.type === 'qualifier') {
-            const value = qualifierNode.value;
+        expect(qualifierNode).toBeDefined();
+        expect(Array.isArray(qualifierNode)).toBe(false);
+        node = qualifierNode as AnnotationNode;
+        if (node.type === 'qualifier') {
+            const value = node.value;
             expect(value).toBe('table1');
         }
 
         const propertyValueNode = getNode(ast, '/value/items/0/properties/1/value');
-        if (propertyValueNode.type === 'path') {
-            const value = propertyValueNode.value;
+        expect(propertyValueNode).toBeDefined();
+        expect(Array.isArray(propertyValueNode)).toBe(false);
+        node = propertyValueNode as AnnotationNode;
+        if (node.type === 'path') {
+            const value = node.value;
             expect(value).toBe('some.path');
         }
     }

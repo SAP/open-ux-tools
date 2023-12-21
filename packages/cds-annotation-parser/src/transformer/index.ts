@@ -54,7 +54,7 @@ export {
     NarrowAnnotationNode,
     nodeRange,
     isContainer
-} from './annotationAstNodes';
+} from './annotation-ast-nodes';
 
 export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './range';
 

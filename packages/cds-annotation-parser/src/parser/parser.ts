@@ -262,6 +262,7 @@ export class AnnotationParser extends CstParser {
      * https://chevrotain.io/docs/guide/performance.html#caching-arrays-of-alternatives
      */
     v?: IOrAlt<void>[];
+    private CST_STACK: AssignmentCstNode[];
 
     text = '';
     constructor() {
@@ -290,7 +291,7 @@ export class AnnotationParser extends CstParser {
     });
 
     /**
-     * Chaecks if recovery could be done for the given expected token type.
+     * Checks if recovery could be done for the given expected token type.
      *
      * @param expectedTokType expected token type
      * @returns boolean result
@@ -299,13 +300,16 @@ export class AnnotationParser extends CstParser {
         if (this.deletionRecoveryEnabled === false) {
             return false;
         }
-        return super['canRecoverWithSingleTokenDeletion'](expectedTokType);
+        const parentMethod = (
+            super['canRecoverWithSingleTokenDeletion' as keyof CstParser] as unknown as (arg: TokenType) => boolean
+        ).bind(this);
+        return parentMethod(expectedTokType);
     }
 
     /**
      *
-     * @param endToken
-     * @param repetitionRule
+     * @param endToken Ending CST token type
+     * @param repetitionRule Repetition rule function
      */
     CUSTOM_MANY(endToken: TokenType, repetitionRule: (idxInCallingRule?: number, ...args: any[]) => CstNode): void {
         this.MANY(() => {
@@ -333,7 +337,7 @@ export class AnnotationParser extends CstParser {
 
     /**
      *
-     * @param previousToken
+     * @param previousToken Previous CST token
      */
     private adjustAssignmentRange(previousToken: IToken): void {
         // adjust location since value is missing
@@ -605,7 +609,7 @@ export class AnnotationParser extends CstParser {
 
     /**
      *
-     * @param error
+     * @param error Mismatched token error object
      */
     private recoverFromMissingKey(error: MismatchedTokenException): void {
         // insert empty value till the end of document.

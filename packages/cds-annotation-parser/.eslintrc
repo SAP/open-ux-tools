@@ -9,5 +9,18 @@
             "off",
             { "selector": "variable",  "format": [ "UPPER_CASE", "snake_case"] }
           ]
-    }
+    },
+    "overrides": [
+        {
+            "files": ["src/parser/parser.ts"],
+            "rules": {
+                "new-cap": [
+                    "warn",
+                    {
+                        "capIsNew": false
+                    }
+                ]
+            }
+        }
+    ]
 }
