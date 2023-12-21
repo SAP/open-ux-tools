@@ -5,9 +5,11 @@ import {
     SET_CHART_QUESTIONS,
     SET_FILTERBAR_QUESTIONS,
     GetQuestions,
-    SupportedBuildingBlocks
+    SupportedBuildingBlocks,
+    GET_CHOICES,
+    SET_CHOICES
 } from './types';
-import type { Actions } from './types';
+import type { Actions, GetChoices } from './types';
 
 let ws: WebSocket | undefined;
 
@@ -86,5 +88,35 @@ export function getQuestions(type: SupportedBuildingBlocks): Promise<Question[]>
             }
         };
         onMessageAttach(expectedActionType, handleMessage);
+    });
+}
+
+export function getChoices(
+    name: string,
+    buildingBlockType: SupportedBuildingBlocks,
+    answers: unknown
+): Promise<{ name: string; choices: unknown[] }> {
+    return new Promise((resolve, error) => {
+        const getAction: GetChoices = {
+            type: GET_CHOICES,
+            answers,
+            buildingBlockType,
+            name
+        };
+        sendMessage(getAction);
+        const expectedActionType = SET_CHOICES;
+        // if (!expectedActionType) {
+        //     return error('Unsupported type');
+        // }
+        const handleMessage = (action: Actions) => {
+            if ('name' in action && 'choices' in action && Array.isArray(action.choices)) {
+                onMessageDetach(expectedActionType, handleMessage);
+                resolve({
+                    name: action.name as any,
+                    choices: action.choices
+                });
+            }
+        };
+        onMessageAttach(SET_CHOICES, handleMessage);
     });
 }

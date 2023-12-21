@@ -26,11 +26,12 @@ export {
     BuildingBlockTypePromptsAnswer,
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
-    TablePromptsAnswer,
     getBuildingBlockTypePrompts,
     getChartBuildingBlockPrompts,
     getFilterBarBuildingBlockPrompts,
-    getTableBuildingBlockPrompts
+    getTableBuildingBlockPrompts,
+    getBuildingBlockChoices,
+    TablePromptsAnswer
 } from './building-block/prompts';
 
 export { ControllerExtension, ControllerExtensionPageType } from './controller-extension/types';

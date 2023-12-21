@@ -1,7 +1,8 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { TFunction } from 'i18next';
 import type { Answers, CheckboxQuestion, InputQuestion, ListQuestion, Question } from 'inquirer';
-import type { Editor } from 'mem-fs-editor';
+import { create, type Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
 import { i18nNamespaces, initI18n, translate } from '../../i18n';
 import type { Chart, FilterBar, Table } from '../types';
 import { BuildingBlockType } from '../types';
@@ -12,13 +13,79 @@ import {
     getBindingContextTypePrompt,
     getBooleanPrompt,
     getBuildingBlockIdPrompt,
+    getChoices,
     getEntityPrompt,
     getFilterBarIdPrompt,
-    getViewOrFragmentFilePrompt
+    getViewOrFragmentFilePrompt,
+    getXPathStringsForXmlFile
 } from '../utils/prompts';
+import { getAnnotationPathQualifiers, getEntityTypes } from '../utils/service';
+import { findFilesByExtension } from '@sap-ux/project-access/src/file';
+import { relative } from 'path';
 
 export interface BuildingBlockTypePromptsAnswer extends Answers {
     buildingBlockType: BuildingBlockType;
+}
+
+/**
+ * Gets building block choices.
+ *
+ * @param {string} buildingBlockType - The building block type
+ * @param {string} fieldName - The field name
+ * @param {unknown} answers - The answers object
+ * @param {string} rootPath - The root path
+ * @returns {Promise<void>}
+ */
+export async function getBuildingBlockChoices<T extends Answers>(
+    buildingBlockType: string, // required?
+    fieldName: string,
+    answers: T,
+    rootPath: string
+) {
+    try {
+        const projectProvider = await ProjectProvider.createProject(rootPath);
+        const fs = create(createStorage());
+        const entity = answers?.entity;
+        const annotationTerms: UIAnnotationTerms[] = [];
+        switch (fieldName) {
+            case 'entity':
+                return getChoices((await getEntityTypes(projectProvider)).map((e) => e.fullyQualifiedName));
+            case 'aggregationPath': {
+                if (!answers.viewOrFragmentFile) {
+                    return [];
+                }
+                return getChoices(getXPathStringsForXmlFile(answers.viewOrFragmentFile, fs));
+            }
+            case 'viewOrFragmentFile': {
+                const files = await findFilesByExtension(
+                    '.xml',
+                    rootPath,
+                    ['.git', 'node_modules', 'dist', 'annotations', 'localService'],
+                    fs
+                );
+                return files.map((file) => ({
+                    name: relative(rootPath, file),
+                    value: file
+                }));
+            }
+            case 'lineItemQualifier':
+                annotationTerms.push(...[UIAnnotationTerms.LineItem]);
+                break;
+            case 'chartQualifier':
+                annotationTerms.push(...[UIAnnotationTerms.Chart]);
+                break;
+            case 'selectionFieldQualifier':
+                annotationTerms.push(...[UIAnnotationTerms.Chart]);
+                break;
+            default:
+                return [];
+        }
+
+        return getChoices(await getAnnotationPathQualifiers(projectProvider, entity, annotationTerms, true));
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
 }
 
 /**
@@ -79,6 +146,7 @@ export async function getChartBuildingBlockPrompts(
             type: 'checkbox',
             name: 'personalization',
             message: t('personalization.message'),
+            selectType: 'static',
             choices: [
                 { name: t('personalization.choices.type'), value: 'Type' },
                 { name: t('personalization.choices.item'), value: 'Item' },
@@ -87,6 +155,7 @@ export async function getChartBuildingBlockPrompts(
         } as CheckboxQuestion,
         {
             type: 'list',
+            selectType: 'static',
             name: 'selectionMode',
             message: t('selectionMode.message'),
             choices: [
@@ -136,10 +205,12 @@ export async function getTableBuildingBlockPrompts(
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.table.');
     const projectProvider = await ProjectProvider.createProject(basePath, fs);
     return [
-        getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate')),
+        getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate'), [
+            'aggregationPath'
+        ]),
         getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
         getBindingContextTypePrompt(t('bindingContextType')),
-        getEntityPrompt(t('entity'), projectProvider),
+        getEntityPrompt(t('entity'), projectProvider, ['lineItemQualifier']),
 
         getAnnotationPathQualifierPrompt('lineItemQualifier', t('lineItemQualifier'), projectProvider, [
             UIAnnotationTerms.LineItem

@@ -4,16 +4,21 @@ import { Input } from '../Input';
 import { Checkbox } from '../Checkbox';
 import { Select } from '../Select';
 
-export type Question = ListQuestion | InputQuestion | CheckboxQuestion;
+export type Question =
+    | (ListQuestion | InputQuestion | CheckboxQuestion) & {
+          selectType: 'static' | 'dynamic';
+          dependantPromptNames?: string[];
+      };
 
 export interface QuestionsProps {
     questions: Array<Question>;
+    answers: Record<string, string | number>;
     onChoiceRequest: (name: string) => void;
-    onChange: (answer: unknown, answers: unknown) => void;
+    onChange: (name: string, answer: string | number | undefined) => void;
 }
 
 export const Questions = (props: QuestionsProps) => {
-    const { questions, onChoiceRequest } = props;
+    const { questions, onChoiceRequest, onChange, answers } = props;
     return (
         <div>
             {questions.map((question: Question, index: number) => {
@@ -30,12 +35,11 @@ export const Questions = (props: QuestionsProps) => {
                     case 'list': {
                         questionInput = (
                             <Select
+                                // change to pass the relevant answer
+                                answers={answers}
                                 {...question}
-                                onChoiceRequest={() => {
-                                    if (question.name) {
-                                        onChoiceRequest(question.name);
-                                    }
-                                }}
+                                onChoiceRequest={onChoiceRequest}
+                                onChange={onChange}
                             />
                         );
                         break;

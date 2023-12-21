@@ -18,6 +18,7 @@ export function getBooleanPrompt(name: string, message: string): ListQuestion {
     return {
         type: 'list',
         name,
+        selectType: 'static',
         message,
         choices: [
             { name: 'False', value: false },
@@ -44,6 +45,7 @@ export function getAnnotationPathQualifierPrompt(
     return {
         type: 'list',
         name,
+        selectType: 'dynamic',
         message,
         choices: async (answers) => {
             const { entity } = answers;
@@ -68,18 +70,22 @@ export function getAnnotationPathQualifierPrompt(
  * @param basePath
  * @param message
  * @param validationErrorMessage
+ * @param dependantPromptNames
  * @returns a prompt
  */
 export function getViewOrFragmentFilePrompt(
     fs: Editor,
     basePath: string,
     message: string,
-    validationErrorMessage: string
+    validationErrorMessage: string,
+    dependantPromptNames = ['aggregationPath'] // dependent prompts
 ): ListQuestion {
     return {
         type: 'list',
+        selectType: 'dynamic',
         name: 'viewOrFragmentFile',
         message,
+        dependantPromptNames,
         choices: async () => {
             const files = await findFilesByExtension(
                 '.xml',
@@ -101,12 +107,19 @@ export function getViewOrFragmentFilePrompt(
  *
  * @param message
  * @param projectProvider
+ * @param dependantPromptNames
  * @returns entity question
  */
-export function getEntityPrompt(message: string, projectProvider: ProjectProvider): ListQuestion {
+export function getEntityPrompt(
+    message: string,
+    projectProvider: ProjectProvider,
+    dependantPromptNames?: string[]
+): ListQuestion {
     return {
         type: 'list',
         name: 'entity',
+        selectType: 'dynamic',
+        dependantPromptNames,
         message,
         choices: async () => {
             const choices = getChoices((await getEntityTypes(projectProvider)).map((e) => e.fullyQualifiedName));
@@ -128,6 +141,7 @@ export function getAggregationPathPrompt(message: string, fs: Editor): ListQuest
     return {
         type: 'list',
         name: 'aggregationPath',
+        selectType: 'dynamic',
         message,
         choices: (answers: any) => {
             const { viewOrFragmentFile } = answers;
@@ -236,6 +250,7 @@ export function getBindingContextTypePrompt(message: string): ListQuestion {
     return {
         type: 'list',
         name: 'bindingContextType',
+        selectType: 'static',
         message,
         choices: [
             { name: 'Relative', value: 'relative' },

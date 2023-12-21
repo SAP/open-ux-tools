@@ -6,11 +6,15 @@ import type { UIComboBoxOption } from '@sap-ux/ui-components';
 // export type SelectProps = ListQuestion;
 
 export interface SelectProps extends ListQuestion {
-    onChoiceRequest: () => void;
+    answers: Record<string, string | number | undefined>;
+    onChoiceRequest: (name: string) => void;
+    selectType: 'static' | 'dynamic';
+    onChange: (name: string, value: string | number | undefined, dependantPromptNames?: string[]) => void;
+    dependantPromptNames?: string[];
 }
 
 export const Select = (props: SelectProps) => {
-    const { name, choices, onChoiceRequest, message } = props;
+    const { name, choices, onChoiceRequest, message, onChange, selectType, answers, dependantPromptNames } = props;
     let options: UIComboBoxOption[] = [];
     if (Array.isArray(choices)) {
         options =
@@ -22,7 +26,7 @@ export const Select = (props: SelectProps) => {
                 };
             }) ?? [];
     } else {
-        onChoiceRequest();
+        onChoiceRequest(name ?? '');
     }
     return (
         <UIComboBox
@@ -32,6 +36,18 @@ export const Select = (props: SelectProps) => {
             allowFreeform={true}
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
+            defaultValue={(name && answers?.[name]) ?? ''}
+            // selectedKey={}
+            onFocus={() => {
+                if (name && selectType === 'dynamic') {
+                    onChoiceRequest(name);
+                }
+            }}
+            onChange={(_, option) => {
+                if (name) {
+                    onChange(name, option?.key, dependantPromptNames);
+                }
+            }}
         />
     );
 };

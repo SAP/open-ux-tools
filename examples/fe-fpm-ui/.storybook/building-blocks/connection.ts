@@ -2,7 +2,8 @@ import { join } from 'path';
 import {
     getTableBuildingBlockPrompts,
     getChartBuildingBlockPrompts,
-    getFilterBarBuildingBlockPrompts
+    getFilterBarBuildingBlockPrompts,
+    getBuildingBlockChoices
 } from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'util';
 import { create as createStorage } from 'mem-fs';
@@ -15,9 +16,11 @@ import {
     SET_TABLE_QUESTIONS,
     SET_CHART_QUESTIONS,
     SET_FILTERBAR_QUESTIONS,
-    SupportedBuildingBlocks
+    SupportedBuildingBlocks,
+    GET_CHOICES,
+    SET_CHOICES
 } from '../../stories/utils/types';
-import type { Actions } from '../../stories/utils/types';
+import type { Actions, SetChoices } from '../../stories/utils/types';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 const testAppPath = join(__dirname, '../../../fe-fpm-cli/test-output/fe-app', `${Date.now()}`);
@@ -54,11 +57,12 @@ export async function createWebSocketConnection(): Promise<void> {
         // Handle messages received from the preview
         ws.on('message', async (message: Data) => {
             console.log(`Received message from the storybook preview: ${message}`);
-            if (typeof message !== 'string') {
-                return;
+            try {
+                const action: Actions = JSON.parse(message.toString());
+                await handleAction(action);
+            } catch (error) {
+                // do nothing
             }
-            const action: Actions = JSON.parse(message);
-            await handleAction(action);
         });
     });
 }
@@ -91,6 +95,18 @@ async function handleAction(action: Actions): Promise<void> {
             if (responseAction) {
                 sendMessage(responseAction);
             }
+            break;
+        }
+        case GET_CHOICES: {
+            const { name, buildingBlockType, answers } = action;
+            const choices = await getBuildingBlockChoices(buildingBlockType, name, answers, sampleAppPath);
+
+            const responseAction: SetChoices = {
+                type: SET_CHOICES,
+                name,
+                choices
+            };
+            sendMessage(responseAction);
             break;
         }
     }
