@@ -23,9 +23,10 @@ export const Questions = (props: QuestionsProps) => {
         <div>
             {questions.map((question: Question, index: number) => {
                 let questionInput: JSX.Element;
+                const value = (question.name && answers?.[question.name]) ?? '';
                 switch (question?.type) {
                     case 'input': {
-                        questionInput = <Input {...question} />;
+                        questionInput = <Input value={value} {...question} />;
                         break;
                     }
                     case 'checkbox': {
@@ -36,7 +37,7 @@ export const Questions = (props: QuestionsProps) => {
                         questionInput = (
                             <Select
                                 // change to pass the relevant answer
-                                answers={answers}
+                                value={value}
                                 {...question}
                                 onChoiceRequest={onChoiceRequest}
                                 onChange={onChange}

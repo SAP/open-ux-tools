@@ -2,11 +2,10 @@ import React from 'react';
 import type { ListQuestion } from 'inquirer';
 import { UIComboBox } from '@sap-ux/ui-components';
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
-
-// export type SelectProps = ListQuestion;
+import { useValue } from '../../utilities';
 
 export interface SelectProps extends ListQuestion {
-    answers: Record<string, string | number | undefined>;
+    value?: string | number;
     onChoiceRequest: (name: string) => void;
     selectType: 'static' | 'dynamic';
     onChange: (name: string, value: string | number | undefined, dependantPromptNames?: string[]) => void;
@@ -14,7 +13,8 @@ export interface SelectProps extends ListQuestion {
 }
 
 export const Select = (props: SelectProps) => {
-    const { name, choices, onChoiceRequest, message, onChange, selectType, answers, dependantPromptNames } = props;
+    const { name, choices, onChoiceRequest, message, onChange, selectType, dependantPromptNames } = props;
+    const [value, setValue] = useValue('', props.value);
     let options: UIComboBoxOption[] = [];
     if (Array.isArray(choices)) {
         options =
@@ -36,14 +36,14 @@ export const Select = (props: SelectProps) => {
             allowFreeform={true}
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
-            defaultValue={(name && answers?.[name]) ?? ''}
-            // selectedKey={}
+            selectedKey={value}
             onFocus={() => {
                 if (name && selectType === 'dynamic') {
                     onChoiceRequest(name);
                 }
             }}
             onChange={(_, option) => {
+                setValue(option?.key ?? '');
                 if (name) {
                     onChange(name, option?.key, dependantPromptNames);
                 }
