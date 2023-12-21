@@ -21,7 +21,7 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 import './SapUiIcon.scss';
 import { IconValueHelp } from './IconValueHelp';
-import type { IconDetails } from '@sap-ux-private/control-property-editor-common';
+import type { IconDetails, Scenario } from '@sap-ux-private/control-property-editor-common';
 import type { RootState } from '../../store';
 
 /**
@@ -38,7 +38,8 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
     } = propertyInputProps;
     const [val, setValue] = useState(value);
     const icons = useSelector<RootState, IconDetails[]>((state) => state.icons);
-
+    const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
+    const isAdpProject = scenario === 'ADAPTATION_PROJECT';
     useEffect(() => {
         setValue(value);
     }, [value]);
@@ -64,7 +65,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
         reportTelemetry({ category: 'Property Change', propertyName: name }).catch((error) => {
             console.error(`Error in reporting telemetry`, error);
         });
-
+        
         if (type === FLOAT_VALUE_TYPE && !isExpression(val)) {
             let newValue: string | number = String(e.target.value);
             if (type === FLOAT_VALUE_TYPE && !isExpression(newValue)) {
@@ -74,6 +75,11 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
             const action = changeProperty({ controlId, propertyName: name, value: newValue, controlName });
             dispatch(action);
             setValue(newValue);
+        } else {
+            if (isAdpProject) {
+                const action = changeProperty({ controlId, propertyName: name, value: val, controlName });
+                dispatch(action);
+            }
         }
     };
 
@@ -108,7 +114,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
                         setCachedValue(controlId, name, inputType, value);
                         const action = changeProperty({ controlId, propertyName: name, value: value, controlName });
                         // starting from ui5 version 1.106, empty string "" is not accepted as change for boolean type properties
-                        if (value || type !== BOOLEAN_VALUE_TYPE) {
+                        if (!isAdpProject && (value || type !== BOOLEAN_VALUE_TYPE)) {
                             // allow empty string "" when we have string type property
                             dispatchWithDelay.current(action);
                         }

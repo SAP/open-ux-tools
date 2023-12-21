@@ -65,6 +65,30 @@ describe('StringEditor', () => {
         fireEvent.change(textBox, { target: { value: 'testName1' } });
         expect((textBox as any).value).toBe('1');
     });
+    test('integer value onBlur for ADP projects', () => {
+        const value = '1234';
+        const props: any = {
+            icons: [],
+            isEnabled: false,
+            isIcon: false,
+            name: 'testProperty',
+            value,
+            type: 'integer'
+        };
+
+        render(<StringEditor property={...props} controlId={controlId} />, {
+            initialState: {
+                scenario: 'ADAPTATION_PROJECT'
+            }
+        });
+
+        const textBox = screen.getByDisplayValue(value);
+        expect(textBox).toBeInTheDocument();
+        expect((textBox as any).value).toBe(value);
+        fireEvent.change(textBox, { target: { value: '12345' } });
+        fireEvent.blur(textBox);
+        expect((textBox as any).value).toBe('12345');
+    });
     test('float value', () => {
         const value = '0.12345';
         const props: any = {
