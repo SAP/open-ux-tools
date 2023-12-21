@@ -65,7 +65,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
         reportTelemetry({ category: 'Property Change', propertyName: name }).catch((error) => {
             console.error(`Error in reporting telemetry`, error);
         });
-        
+
         if (type === FLOAT_VALUE_TYPE && !isExpression(val)) {
             let newValue: string | number = String(e.target.value);
             if (type === FLOAT_VALUE_TYPE && !isExpression(newValue)) {
@@ -75,11 +75,9 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
             const action = changeProperty({ controlId, propertyName: name, value: newValue, controlName });
             dispatch(action);
             setValue(newValue);
-        } else {
-            if (isAdpProject) {
-                const action = changeProperty({ controlId, propertyName: name, value: val, controlName });
-                dispatch(action);
-            }
+        } else if (isAdpProject) {
+            const action = changeProperty({ controlId, propertyName: name, value: val, controlName });
+            dispatch(action);
         }
     };
 
