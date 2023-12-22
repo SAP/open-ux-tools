@@ -18,7 +18,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { getFragments, writeFragment } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
-import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
+import { ExtensionPointData, ExtensionPointInfo } from '../extension';
 
 /**
  * @namespace open.ux.preview.client.adp.controllers

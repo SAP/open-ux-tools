@@ -1,5 +1,6 @@
 import type UI5Element from 'sap/ui/core/Element';
-import { DialogNames, handler, initDialogs } from '../../../src/adp/init-dialogs';
+import { handler, initDialogs } from '../../../src/adp/init-dialogs';
+import { DialogNames } from '../../../src/adp/dialogs';
 import XMLView from 'mock/sap/ui/core/mvc/XMLView';
 import Controller from 'mock/sap/ui/core/mvc/Controller';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';

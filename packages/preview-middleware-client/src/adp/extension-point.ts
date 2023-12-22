@@ -1,4 +1,3 @@
-import type View from 'sap/ui/core/mvc/View';
 import type UI5Element from 'sap/ui/core/Element';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import AddXMLAtExtensionPoint from 'sap/ui/rta/plugin/AddXMLAtExtensionPoint';
@@ -6,37 +5,16 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 
 import { ExternalAction, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
 
-import { Deferred, createDeferred } from './utils';
+import { createDeferred } from './utils';
 
 import { SubscribeFunction } from '../cpe/types';
-import { DialogNames, handler } from './init-dialogs';
+import { DialogNames } from './dialogs';
+import { handler } from './init-dialogs';
+import { ExtensionPointData, DeferredExtPointData } from './extension';
 
 type ActionService = {
     execute: (controlId: string, actionId: string) => void;
 };
-
-type DeferredExtPointData = {
-    fragmentPath: string;
-    extensionPointName: string | undefined;
-};
-
-export interface ExtensionPointInfo {
-    name: string;
-    index?: number;
-    view?: View;
-    createdControls?: [];
-    fragmentId?: string;
-    aggregation?: string[];
-    aggregationName?: string;
-    defaultContent?: string[];
-    targetControl?: UI5Element;
-}
-
-export interface ExtensionPointData {
-    name: string;
-    deferred: Deferred<DeferredExtPointData>;
-    info: ExtensionPointInfo[];
-}
 
 export default class ExtensionPointService {
     private readonly actionId = 'CTX_ADDXML_AT_EXTENSIONPOINT';
