@@ -144,6 +144,8 @@ const visitor = new PositionVisitor();
 export const findAnnotationNode = (assignment: AnnotationNode | undefined, options: PositionVisitorOptions): string =>
     assignment ? visitor.visit(assignment, options).join('/') : '';
 
+export type ChildNode = AnnotationNode | AnnotationNode[];
+
 /**
  * Traverses the nodes using path and returns last matching node.
  *
@@ -151,12 +153,12 @@ export const findAnnotationNode = (assignment: AnnotationNode | undefined, optio
  * @param path Path used to traverse.
  * @returns Node matching path
  */
-export const getNode = (root: AnnotationNode, path: string): AnnotationNode | AnnotationNode[] | undefined => {
+export const getNode = (root: AnnotationNode, path: string): ChildNode | undefined => {
     const segments = path.split('/');
-    let node: AnnotationNode | AnnotationNode[] | undefined = root;
+    let node: ChildNode | undefined = root;
     for (let i = 1; i < segments.length; i++) {
         const segment = segments[i];
-        node = (node as unknown as { [key: string]: AnnotationNode | AnnotationNode[] })[segment];
+        node = (node as unknown as { [key: string]: ChildNode })[segment];
         if (!Array.isArray(node) && !node?.type) {
             return undefined;
         }
@@ -171,13 +173,13 @@ export const getNode = (root: AnnotationNode, path: string): AnnotationNode | An
  * @param path Path to a node
  * @returns Array containing all the matched nodes
  */
-export function getAstNodes(root: AnnotationNode, path: string): (AnnotationNode | AnnotationNode[])[] | undefined {
+export function getAstNodes(root: AnnotationNode, path: string): ChildNode[] | undefined {
     const segments = path.split('/');
-    let node: AnnotationNode | AnnotationNode[] | undefined = root;
-    const nodes: (AnnotationNode | AnnotationNode[])[] = [];
+    let node: ChildNode | undefined = root;
+    const nodes: ChildNode[] = [];
     for (let i = 1; i < segments.length; i++) {
         const segment = segments[i];
-        node = (node as unknown as { [key: string]: AnnotationNode | AnnotationNode[] })[segment];
+        node = (node as unknown as { [key: string]: ChildNode })[segment];
         if (!Array.isArray(node) && !node?.type) {
             return undefined;
         }
