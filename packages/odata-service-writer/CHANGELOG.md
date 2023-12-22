@@ -1,5 +1,18 @@
 # @sap-ux/odata-service-writer
 
+## 0.16.0
+
+### Minor Changes
+
+-   446f290c: adds new service type
+
+## 0.15.1
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+
 ## 0.15.0
 
 ### Minor Changes

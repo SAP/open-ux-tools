@@ -1,5 +1,5 @@
 import { getQuestions } from '../../../src/prompts';
-import * as utiility from '../../../src/prompts/utility';
+import * as utility from '../../../src/prompts/utility';
 import { t } from '../../../src/i18n';
 import { join } from 'path';
 import type { UI5VersionChoice } from '../../../src/types';
@@ -41,8 +41,8 @@ describe('getPrompts', () => {
         }
     ];
 
-    it('getQuestions, no options specfied', () => {
-        const ui5VersGroupedSpy = jest.spyOn(utiility, 'ui5VersionsGrouped').mockReturnValueOnce(ui5VersionsGrouped);
+    it('getQuestions, no options specified', () => {
+        const ui5VersGroupedSpy = jest.spyOn(utility, 'ui5VersionsGrouped').mockReturnValueOnce(ui5VersionsGrouped);
 
         // Not passing any versions as internally called function `ui5VersionsGrouped` is mocked
         const projectQuestions = getQuestions([]);
@@ -50,7 +50,7 @@ describe('getPrompts', () => {
         expect(projectQuestions.length).toEqual(5);
 
         const prompts = projectQuestions.reduce(
-            (prompts, prompt) => Object.assign(prompts, { [prompt.name || 'unknown_prompt']: prompt }),
+            (prompts, prompt) => Object.assign(prompts, { [prompt.name ?? 'unknown_prompt']: prompt }),
             {}
         ) as any;
 
@@ -62,7 +62,7 @@ describe('getPrompts', () => {
             breadcrumb: true,
             mandatory: true
         });
-        // Validtors are fully tested in `@sap-ux/project-input-validators`
+        // Validators are fully tested in `@sap-ux/project-input-validators`
         const validateLibModNameSpy = jest.spyOn(projectInputValidators, 'validateLibModuleName').mockReturnValue(true);
         expect(libNameQ.validate('library1')).toEqual(true);
         expect(validateLibModNameSpy).toHaveBeenCalledWith('library1');
@@ -114,7 +114,7 @@ describe('getPrompts', () => {
     });
 
     it('getQuestions, test options', () => {
-        const ui5VersGroupedSpy = jest.spyOn(utiility, 'ui5VersionsGrouped').mockReturnValueOnce(ui5VersionsGrouped);
+        const ui5VersGroupedSpy = jest.spyOn(utility, 'ui5VersionsGrouped').mockReturnValueOnce(ui5VersionsGrouped);
 
         /**
          * Option: targetFolder
@@ -130,7 +130,7 @@ describe('getPrompts', () => {
         expect(projectQuestions.length).toEqual(5);
 
         const prompts = projectQuestions.reduce(
-            (prompts, prompt) => Object.assign(prompts, { [prompt.name || 'unknown_prompt']: prompt }),
+            (prompts, prompt) => Object.assign(prompts, { [prompt.name ?? 'unknown_prompt']: prompt }),
             {}
         ) as any;
 
@@ -168,7 +168,7 @@ describe('getPrompts', () => {
                 }
             }
         ];
-        const searchChoicesSpy = jest.spyOn(utiility, 'searchChoices').mockReturnValue(filteredUI5Versions);
+        const searchChoicesSpy = jest.spyOn(utility, 'searchChoices').mockReturnValue(filteredUI5Versions);
         expect(ui5VersionQ.source({}, '1.0')).toEqual(filteredUI5Versions);
         expect(searchChoicesSpy).toHaveBeenCalledWith('1.0', ui5VersionsGrouped);
     });

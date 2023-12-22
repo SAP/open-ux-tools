@@ -14,7 +14,7 @@
                                                 "width": "<%- width %>",  
                                             <% } %>
                                             "position": <%- JSON.stringify(position) %>,
-                                            "template": "<%- ns %>.<%- name %>"
+                                            "template": "<%- ns %>.<%- typeof fragmentFile !== 'undefined' ? fragmentFile : name  %>"
                                             <% if (locals.availability) { %> 
                                                 , "availability": "<%- availability %>" 
                                             <% } %>

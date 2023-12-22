@@ -16,7 +16,7 @@ import type { SelectionService } from '../selection';
 
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
 import type Event from 'sap/ui/base/Event';
-import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 
 interface ChangeContent {
@@ -86,6 +86,7 @@ function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): 
  */
 export class ChangeService {
     private savedChanges: SavedPropertyChange[] = [];
+    private sendAction: (action: ExternalAction) => void;
     /**
      *
      * @param options ui5 adaptation options.
@@ -95,11 +96,13 @@ export class ChangeService {
     constructor(private readonly options: UI5AdaptationOptions, private readonly selectionService: SelectionService) {}
 
     /**
+     * Initializes change service.
      *
      * @param sendAction action sender function
      * @param subscribe subscriber function
      */
     public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
+        this.sendAction = sendAction;
         subscribe(async (action): Promise<void> => {
             if (changeProperty.match(action)) {
                 try {
@@ -127,6 +130,30 @@ export class ChangeService {
             }
         });
 
+        await this.fetchSavedChanges();
+        this.updateStack();
+
+        this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
+    }
+
+    /**
+     * Send update to the editor with modified stack.
+     *
+     * @param pendingChanges Changes that are waiting to be saved
+     */
+    private updateStack(pendingChanges: PendingChange[] = []) {
+        this.sendAction(
+            changeStackModified({
+                saved: this.savedChanges,
+                pending: pendingChanges
+            })
+        );
+    }
+
+    /**
+     * Fetches saved changes from the workspace and sorts them.
+     */
+    private async fetchSavedChanges(): Promise<void> {
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
         const savedChanges = await savedChangesResponse.json();
         const changes = (
@@ -176,13 +203,6 @@ export class ChangeService {
                 .filter((change) => !!change) as SavedPropertyChange[]
         ).sort((a, b) => b.timestamp - a.timestamp);
         this.savedChanges = changes;
-        sendAction(
-            changeStackModified({
-                saved: changes,
-                pending: []
-            })
-        );
-        this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler(sendAction));
     }
 
     /**
@@ -209,30 +229,39 @@ export class ChangeService {
             );
 
         await Promise.all(filesToDelete).catch((error) => Log.error(error));
+
+        await this.fetchSavedChanges();
+        this.updateStack();
     }
 
     /**
      * Handler for undo/redo stack change.
      *
      * @param sendAction send action method
-     * @returns (event: sap.ui.base.Event) => void
+     * @returns (event: sap.ui.base.Event) => Promise<void>
      */
-    private createOnStackChangeHandler(sendAction: (action: ExternalAction) => void): (event: Event) => void {
-        return (): void => {
+    private createOnStackChangeHandler(): (event: Event) => Promise<void> {
+        return async (): Promise<void> => {
             const stack = this.options.rta.getCommandStack();
             const allCommands = stack.getCommands();
             const executedCommands = stack.getAllExecutedCommands();
             const inactiveCommandCount = allCommands.length - executedCommands.length;
             let activeChanges: PendingChange[] = [];
-            allCommands.forEach((command: BaseCommand, i): void => {
+            allCommands.forEach((command: FlexCommand, i): void => {
                 try {
                     if (typeof command.getCommands === 'function') {
                         const subCommands = command.getCommands();
                         subCommands.forEach((command) => {
-                            activeChanges.push(this.prepareChangeType(command, inactiveCommandCount, i));
+                            const pendingChange = this.prepareChangeType(command, inactiveCommandCount, i);
+                            if (pendingChange) {
+                                activeChanges.push(pendingChange);
+                            }
                         });
                     } else {
-                        activeChanges.push(this.prepareChangeType(command, inactiveCommandCount, i));
+                        const pendingChange = this.prepareChangeType(command, inactiveCommandCount, i);
+                        if (pendingChange) {
+                            activeChanges.push(pendingChange);
+                        }
                     }
                 } catch (error) {
                     Log.error('CPE: Change creation Failed', error);
@@ -240,20 +269,29 @@ export class ChangeService {
             });
 
             activeChanges = activeChanges.filter((change): boolean => !!change);
-            sendAction(
-                changeStackModified({
-                    saved: this.savedChanges,
-                    pending: activeChanges
-                })
-            );
+
+            if (Array.isArray(allCommands) && allCommands.length === 0) {
+                await this.fetchSavedChanges();
+            }
+
+            this.updateStack(activeChanges);
         };
     }
 
-    private prepareChangeType(command: BaseCommand, inactiveCommandCount: number, index: number): PendingChange {
+    private prepareChangeType(
+        command: FlexCommand,
+        inactiveCommandCount: number,
+        index: number
+    ): PendingChange | undefined {
         let result: PendingChange;
         let value = '';
-        const selector = command.getSelector();
-        const changeType = command.getChangeType();
+        const selectorId = this.getCommandSelectorId(command);
+        const changeType = this.getCommandChangeType(command);
+
+        if (!selectorId || !changeType) {
+            return undefined;
+        }
+
         switch (changeType) {
             case 'propertyChange':
                 value = command.getProperty('newValue');
@@ -266,7 +304,7 @@ export class ChangeService {
             result = {
                 type: 'pending',
                 changeType,
-                controlId: selector.id,
+                controlId: selectorId,
                 propertyName: command.getProperty('propertyName'),
                 isActive: index >= inactiveCommandCount,
                 value,
@@ -275,13 +313,66 @@ export class ChangeService {
         } else {
             result = {
                 type: 'pending',
-                controlId: selector.id,
+                controlId: selectorId,
                 changeType,
                 isActive: index >= inactiveCommandCount,
-                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
+                controlName:
+                    changeType === 'addXMLAtExtensionPoint'
+                        ? command.getSelector().name ?? ''
+                        : command.getElement().getMetadata().getName().split('.').pop() ?? ''
             };
         }
 
         return result;
+    }
+
+    /**
+     * Retry operations.
+     *
+     * @param operations to be executed
+     * @returns first successfull operation result or undefined
+     */
+    private retryOperations<T>(operations: Array<() => T>): T | undefined {
+        for (const operation of operations) {
+            try {
+                const result = operation();
+                if (!result) {
+                    continue;
+                }
+                return result;
+            } catch (error) {
+                Log.error(`Retry operation failed: ${error?.message}`);
+                continue;
+            }
+        }
+        return undefined;
+    }
+
+    /**
+     * Get command change type.
+     *
+     * @param command to be executed for creating change
+     * @returns command change type or undefined
+     */
+    private getCommandChangeType(command: FlexCommand): string | undefined {
+        return this.retryOperations([
+            () => command.getChangeType(),
+            () => command.getPreparedChange().getDefinition().changeType
+        ]);
+    }
+
+    /**
+     * Get command selector id.
+     *
+     * @param command to be executed for creating change
+     * @returns command selector id or undefined
+     */
+    private getCommandSelectorId(command: FlexCommand): string | undefined {
+        return this.retryOperations([
+            () => command.getSelector().id,
+            () => command.getElement().getProperty('persistencyKey'),
+            () => command.getElement().getId(),
+            () => command.getParent()?.getElement().getId()
+        ]);
     }
 }

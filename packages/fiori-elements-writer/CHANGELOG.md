@@ -1,5 +1,62 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.18.1
+
+### Patch Changes
+
+-   Updated dependencies [b84cb0f3]
+    -   @sap-ux/fe-fpm-writer@0.24.3
+
+## 0.18.0
+
+### Minor Changes
+
+-   446f290c: adds new service type
+
+### Patch Changes
+
+-   Updated dependencies [446f290c]
+    -   @sap-ux/odata-service-writer@0.16.0
+
+## 0.17.4
+
+### Patch Changes
+
+-   Updated dependencies [f11f9b2c]
+    -   @sap-ux/ui5-application-writer@0.26.2
+    -   @sap-ux/fe-fpm-writer@0.24.2
+    -   @sap-ux/odata-service-writer@0.15.1
+    -   @sap-ux/ui5-test-writer@0.3.1
+
+## 0.17.3
+
+### Patch Changes
+
+-   3c5fa042: fpm localize custom xml view
+-   Updated dependencies [3c5fa042]
+    -   @sap-ux/fe-fpm-writer@0.24.2
+
+## 0.17.2
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+    -   @sap-ux/odata-service-writer@0.15.1
+    -   @sap-ux/ui5-application-writer@0.26.1
+    -   @sap-ux/fe-fpm-writer@0.24.1
+    -   @sap-ux/ui5-test-writer@0.3.1
+
+## 0.17.1
+
+### Patch Changes
+
+-   deabc5bd: fix template issues for worklist OPA test
+-   Updated dependencies [deabc5bd]
+-   Updated dependencies [deabc5bd]
+    -   @sap-ux/ui5-test-writer@0.3.1
+    -   @sap-ux/fe-fpm-writer@0.24.1
+
 ## 0.17.0
 
 ### Minor Changes

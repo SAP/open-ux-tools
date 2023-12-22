@@ -1,5 +1,6 @@
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
+import type { Adp } from '@sap-ux/ui5-config';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -38,6 +39,16 @@ export interface AdpWriterConfig {
         name?: string;
         description?: string;
     };
+    /**
+     * Optional: configuration for deployment to ABAP
+     */
+    deploy?: Adp;
+    options?: {
+        /**
+         * Optional: if set to true then the generated project will be recognized by the SAP Fiori tools
+         */
+        fioriTools?: boolean;
+    };
 }
 
 export interface ManifestAppdescr {
@@ -55,6 +66,51 @@ export interface Content {
     changeType: string;
     content: object;
     texts?: object;
+}
+
+interface CommonChangeProperties {
+    changeType: string;
+    reference: string;
+    namespace: string;
+    projectId: string;
+    moduleName: string;
+    support: {
+        generator: string;
+        sapui5Version: string;
+        command?: string;
+    };
+    originalLanguage: string;
+    layer: string;
+    fileType: string;
+    fileName: string;
+    texts: Record<string, unknown>;
+}
+
+export interface AddXMLChange extends CommonChangeProperties {
+    changeType: 'addXML';
+    creation: string;
+    packageName: string;
+    content: {
+        targetAggregation: string;
+        index: number;
+        fragmentPath: string;
+    };
+    selector: {
+        id: string;
+        idIsLocal: boolean;
+    };
+    dependentSelector: Record<string, unknown>;
+    jsOnly: boolean;
+}
+
+export interface CodeExtChange extends CommonChangeProperties {
+    changeType: 'codeExt';
+    content: {
+        codeRef: string;
+    };
+    selector: {
+        controllerName: string;
+    };
 }
 
 export const enum FolderNames {

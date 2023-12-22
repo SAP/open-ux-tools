@@ -5,9 +5,14 @@ declare module 'sap/ui/rta/command/BaseCommand' {
 
     type Selector = {
         id: string;
+        name?: string;
         controlType: string;
         appComponent: Component;
     };
+
+    interface ParentElement {
+        getElement(): Element;
+    }
 
     interface BaseCommand extends ManagedObject {
         execute(): Promise<void>;
@@ -16,6 +21,7 @@ declare module 'sap/ui/rta/command/BaseCommand' {
         getSelector(): Selector;
         getChangeType(): string;
         getCommands(): BaseCommand[];
+        getParent(): ParentElement;
     }
 
     export default BaseCommand;
@@ -26,8 +32,8 @@ declare module 'sap/ui/rta/command/Stack' {
 
     interface Stack {
         pushAndExecute(command: BaseCommand): Promise<void>;
-        getCommands(): BaseCommand[];
-        getAllExecutedCommands(): BaseCommand[];
+        getCommands(): FlexCommand[];
+        getAllExecutedCommands(): FlexCommand[];
     }
 
     export default Stack;
@@ -37,8 +43,9 @@ declare module 'sap/ui/rta/command/FlexCommand' {
     import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
     import type Change from 'sap/ui/fl/Change';
 
-    interface FlexCommand extends BaseCommand {
+    interface FlexCommand extends Omit<BaseCommand, 'getCommands'> {
         getPreparedChange(): Change;
+        getCommands(): FlexCommand[];
     }
 
     export default FlexCommand;
@@ -58,7 +65,7 @@ declare module 'sap/ui/rta/plugin/AddXMLAtExtensionPoint' {
 }
 
 declare module 'sap/ui/rta/command/CommandFactory' {
-    import type BaseCommand from 'sap/ui/rta/command/BaseCommand';
+    import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
     import type ManagedObject from 'sap/ui/base/ManagedObject';
     import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
     import type Element from 'sap/ui/core/Element';
@@ -71,7 +78,7 @@ declare module 'sap/ui/rta/command/CommandFactory' {
     export default class CommandFactory {
         constructor(_: Arguments) {}
 
-        static async getCommandFor<T extends BaseCommand = BaseCommand>(
+        static async getCommandFor<T extends FlexCommand = FlexCommand>(
             control: Element | ManagedObject | string,
             commandType: string,
             settings: object,
@@ -158,7 +165,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     interface RuntimeAuthoring {
         attachSelectionChange(handler: (event: SelectionChangeEvent) => void): void;
         attachModeChanged: (handler: (event: Event) => void) => void;
-        attachUndoRedoStackModified: (handler: (event: Event) => void) => void;
+        attachUndoRedoStackModified: (handler: (event: Event) => Promise<void>) => void;
         getCommandStack: () => Stack;
         getFlexSettings: () => FlexSettings;
         getService: <T>(name: 'outline' | 'controllerExtension' | string) => Promise<T>;

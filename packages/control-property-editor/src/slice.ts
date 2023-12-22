@@ -17,6 +17,7 @@ import {
     outlineChanged,
     propertyChanged,
     propertyChangeFailed,
+    showMessage,
     scenario,
     scenarioLoaded
 } from '@sap-ux-private/control-property-editor-common';
@@ -36,6 +37,7 @@ interface SliceState {
     scenario: Scenario;
     icons: IconDetails[];
     changes: ChangesSlice;
+    dialogMessage: string | undefined;
 }
 
 export interface ChangesSlice {
@@ -101,7 +103,8 @@ export const initialState = {
         controls: {},
         pending: [],
         saved: []
-    }
+    },
+    dialogMessage: undefined
 };
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
@@ -218,6 +221,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     control.properties[propertyName] = property;
                     state.changes.controls[key] = control;
                 }
+            })
+            .addMatcher(showMessage.match, (state, action: ReturnType<typeof showMessage>): void => {
+                state.dialogMessage = action.payload;
             })
 });
 

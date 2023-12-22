@@ -50,7 +50,7 @@ export function DropdownEditor(propertyInputProps: PropertyInputProps<StringCont
             selectedKey={value}
             disabled={!isEnabled}
             autoComplete="on"
-            allowFreeform={true}
+            allowFreeform={false}
             text={text}
             errorMessage={errorMessage}
             options={options}
