@@ -1,66 +1,66 @@
 {
+  "name": "declaration",
   "children": {
     "assignment": [
       {
+        "name": "assignment",
         "children": {
           "Colon": [
             {
-              "endOffset": 1,
+              "tokenTypeName": "Colon",
               "image": ":",
               "startOffset": 1,
-              "tokenTypeName": "Colon"
+              "endOffset": 1
             }
           ],
           "value": [
             {
+              "name": "value",
               "children": {
                 "collection": [
                   {
+                    "name": "collection",
                     "children": {
                       "LBracket": [
                         {
-                          "endOffset": 3,
+                          "tokenTypeName": "LBracket",
                           "image": "[",
                           "startOffset": 3,
-                          "tokenTypeName": "LBracket"
+                          "endOffset": 3
                         }
                       ],
                       "RBracket": [
                         {
-                          "endOffset": 5,
+                          "tokenTypeName": "RBracket",
                           "image": "]",
                           "startOffset": 5,
-                          "tokenTypeName": "RBracket"
+                          "endOffset": 5
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 5,
-                      "startOffset": 3
-                    },
-                    "name": "collection"
+                      "startOffset": 3,
+                      "endOffset": 5
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 5,
-                "startOffset": 3
-              },
-              "name": "value"
+                "startOffset": 3,
+                "endOffset": 5
+              }
             }
           ]
         },
         "location": {
-          "endOffset": 5,
-          "startOffset": -1
-        },
-        "name": "assignment"
+          "startOffset": -1,
+          "endOffset": 5
+        }
       }
     ]
   },
   "location": {
-    "endOffset": 5,
-    "startOffset": -1
-  },
-  "name": "declaration"
+    "startOffset": -1,
+    "endOffset": 5
+  }
 }

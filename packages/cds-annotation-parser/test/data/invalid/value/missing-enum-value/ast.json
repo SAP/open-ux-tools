@@ -1,87 +1,87 @@
 {
-  "colon": {
-    "range": "[(0,9)..(0,10)]",
-    "type": "token",
-    "value": ":"
-  },
+  "type": "annotation",
   "range": "[(0,0)..(2,1)]",
   "term": {
+    "type": "path",
     "range": "[(0,0)..(0,8)]",
+    "value": "UI.Chart",
     "segments": [
       {
-        "quoted": false,
-        "range": "[(0,0)..(0,2)]",
         "type": "identifier",
-        "value": "UI"
+        "range": "[(0,0)..(0,2)]",
+        "value": "UI",
+        "quoted": false
       },
       {
-        "quoted": false,
-        "range": "[(0,3)..(0,8)]",
         "type": "identifier",
-        "value": "Chart"
+        "range": "[(0,3)..(0,8)]",
+        "value": "Chart",
+        "quoted": false
       }
     ],
     "separators": [
       {
-        "escaped": false,
-        "range": "[(0,2)..(0,3)]",
         "type": "separator",
-        "value": "."
+        "range": "[(0,2)..(0,3)]",
+        "value": ".",
+        "escaped": false
       }
-    ],
-    "type": "path",
-    "value": "UI.Chart"
+    ]
   },
-  "type": "annotation",
+  "colon": {
+    "type": "token",
+    "range": "[(0,9)..(0,10)]",
+    "value": ":"
+  },
   "value": {
-    "closeToken": {
-      "range": "[(2,0)..(2,1)]",
-      "type": "token",
-      "value": "}"
-    },
-    "commas": [],
-    "openToken": {
-      "range": "[(0,11)..(0,12)]",
-      "type": "token",
-      "value": "{"
-    },
+    "type": "record",
+    "range": "[(0,11)..(2,1)]",
     "properties": [
       {
+        "type": "record-property",
+        "range": "[(1,4)..(1,16)]",
         "colon": {
-          "range": "[(1,13)..(1,14)]",
           "type": "token",
+          "range": "[(1,13)..(1,14)]",
           "value": ":"
         },
         "name": {
+          "type": "path",
           "range": "[(1,4)..(1,13)]",
+          "value": "ChartType",
           "segments": [
             {
-              "quoted": false,
-              "range": "[(1,4)..(1,13)]",
               "type": "identifier",
-              "value": "ChartType"
+              "range": "[(1,4)..(1,13)]",
+              "value": "ChartType",
+              "quoted": false
             }
           ],
-          "separators": [],
-          "type": "path",
-          "value": "ChartType"
+          "separators": []
         },
-        "range": "[(1,4)..(1,16)]",
-        "type": "record-property",
         "value": {
-          "path": {
-            "range": "[(1,16)..(1,16)]",
-            "segments": [],
-            "separators": [],
-            "type": "path",
-            "value": ""
-          },
+          "type": "enum",
           "range": "[(1,15)..(1,16)]",
-          "type": "enum"
+          "path": {
+            "type": "path",
+            "range": "[(1,16)..(1,16)]",
+            "value": "",
+            "segments": [],
+            "separators": []
+          }
         }
       }
     ],
-    "range": "[(0,11)..(2,1)]",
-    "type": "record"
+    "commas": [],
+    "openToken": {
+      "type": "token",
+      "range": "[(0,11)..(0,12)]",
+      "value": "{"
+    },
+    "closeToken": {
+      "type": "token",
+      "range": "[(2,0)..(2,1)]",
+      "value": "}"
+    }
   }
 }

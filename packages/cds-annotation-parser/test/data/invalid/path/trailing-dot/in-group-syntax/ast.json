@@ -1,82 +1,82 @@
 {
+  "type": "annotation-group",
+  "range": "[(0,0)..(2,1)]",
+  "name": {
+    "type": "identifier",
+    "range": "[(0,0)..(0,6)]",
+    "value": "Common",
+    "quoted": false
+  },
   "colon": {
-    "range": "[(0,6)..(0,7)]",
     "type": "token",
+    "range": "[(0,6)..(0,7)]",
     "value": ":"
   },
   "items": {
-    "closeToken": {
-      "range": "[(2,0)..(2,1)]",
+    "type": "annotation-group-items",
+    "range": "[(0,8)..(2,1)]",
+    "openToken": {
       "type": "token",
+      "range": "[(0,8)..(0,9)]",
+      "value": "{"
+    },
+    "closeToken": {
+      "type": "token",
+      "range": "[(2,0)..(2,1)]",
       "value": "}"
     },
-    "commas": [],
     "items": [
       {
-        "colon": {
-          "range": "[(1,9)..(1,10)]",
-          "type": "token",
-          "value": ":"
-        },
+        "type": "annotation",
         "range": "[(1,4)..(1,20)]",
         "term": {
+          "type": "path",
           "range": "[(1,4)..(1,8)]",
+          "value": "Text",
           "segments": [
             {
-              "quoted": false,
-              "range": "[(1,4)..(1,8)]",
               "type": "identifier",
-              "value": "Text"
+              "range": "[(1,4)..(1,8)]",
+              "value": "Text",
+              "quoted": false
             }
           ],
-          "separators": [],
-          "type": "path",
-          "value": "Text"
+          "separators": []
         },
-        "type": "annotation",
+        "colon": {
+          "type": "token",
+          "range": "[(1,9)..(1,10)]",
+          "value": ":"
+        },
         "value": {
+          "type": "path",
           "range": "[(1,11)..(1,20)]",
+          "value": "category.",
           "segments": [
             {
-              "quoted": false,
-              "range": "[(1,11)..(1,19)]",
               "type": "identifier",
-              "value": "category"
+              "range": "[(1,11)..(1,19)]",
+              "value": "category",
+              "quoted": false
             },
             {
-              "quoted": false,
-              "range": "[(1,20)..(1,20)]",
               "type": "identifier",
-              "value": ""
+              "range": "[(1,20)..(1,20)]",
+              "value": "",
+              "quoted": false
             }
           ],
           "separators": [
             {
-              "escaped": false,
-              "range": "[(1,19)..(1,20)]",
               "type": "separator",
-              "value": "."
+              "range": "[(1,19)..(1,20)]",
+              "value": ".",
+              "escaped": false
             }
-          ],
-          "type": "path",
-          "value": "category."
+          ]
         }
       }
     ],
-    "openToken": {
-      "range": "[(0,8)..(0,9)]",
-      "type": "token",
-      "value": "{"
-    },
-    "range": "[(0,8)..(2,1)]",
-    "type": "annotation-group-items"
-  },
-  "name": {
-    "quoted": false,
-    "range": "[(0,0)..(0,6)]",
-    "type": "identifier",
-    "value": "Common"
-  },
-  "range": "[(0,0)..(2,1)]",
-  "type": "annotation-group"
+    "commas": []
+  }
 }

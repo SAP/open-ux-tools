@@ -2,9 +2,63 @@ const { stat, readdirSync, readFileSync, writeFileSync, statSync } = require('fs
 const { join, dirname } = require('path');
 const { parse } = require('../dist/parser');
 const { buildAst } = require('../dist/transformer');
+const {
+    TOKEN_TYPE,
+    EMPTY_VALUE_TYPE,
+    NUMBER_LITERAL_TYPE,
+    ENUM_TYPE,
+    QUOTED_LITERAL_TYPE,
+    BOOLEAN_TYPE,
+    STRING_LITERAL_TYPE,
+    MULTI_LINE_STRING_LITERAL_TYPE,
+    PATH_TYPE,
+    SEPARATOR_TYPE,
+    IDENTIFIER_TYPE,
+    OPERATOR_TYPE,
+    UNSUPPORTED_OPERATOR_EXPRESSION_TYPE,
+    INCORRECT_EXPRESSION_TYPE,
+    CORRECT_EXPRESSION_TYPE,
+    RECORD_PROPERTY_TYPE,
+    RECORD_TYPE,
+    COLLECTION_TYPE,
+    QUALIFIER_TYPE,
+    ANNOTATION_TYPE,
+    ANNOTATION_GROUP_TYPE,
+    ANNOTATION_GROUP_ITEMS_TYPE
+} = require('../dist');
 const compactPosition = (position) => `(${position.line},${position.character})`;
 const compactRange = (range) => `[${compactPosition(range.start)}..${compactPosition(range.end)}]`;
 const rangePropertyPattern = /[a-z]*ranges?/i;
+
+const nodeProperties = ['type', 'range'];
+const valueNodeProperties = [...nodeProperties, 'value'];
+const expressionProperties = ['operators', 'operands', 'openToken', 'closeToken'];
+const delimiterTokens = ['openToken', 'closeToken'];
+
+const NODE_PROPERTIES = {
+    [TOKEN_TYPE]: [...valueNodeProperties],
+    [EMPTY_VALUE_TYPE]: [...nodeProperties],
+    [NUMBER_LITERAL_TYPE]: [...valueNodeProperties],
+    [ENUM_TYPE]: [...nodeProperties, 'path'],
+    [QUOTED_LITERAL_TYPE]: ['type', 'kind', 'range', 'value'],
+    [BOOLEAN_TYPE]: [...valueNodeProperties],
+    [STRING_LITERAL_TYPE]: [...valueNodeProperties, ...delimiterTokens],
+    [MULTI_LINE_STRING_LITERAL_TYPE]: [...nodeProperties, 'stripIndentation', 'value', ...delimiterTokens],
+    [PATH_TYPE]: [...valueNodeProperties, 'segments', 'separators'],
+    [SEPARATOR_TYPE]: [...valueNodeProperties, 'escaped'],
+    [IDENTIFIER_TYPE]: [...valueNodeProperties, 'quoted'],
+    [OPERATOR_TYPE]: [...valueNodeProperties],
+    [UNSUPPORTED_OPERATOR_EXPRESSION_TYPE]: [...nodeProperties, 'unsupportedOperator', ...expressionProperties],
+    [INCORRECT_EXPRESSION_TYPE]: [...nodeProperties, 'message', ...expressionProperties],
+    [CORRECT_EXPRESSION_TYPE]: [...nodeProperties, 'operatorName', ...expressionProperties],
+    [RECORD_PROPERTY_TYPE]: [...nodeProperties, 'colon', 'name', 'value'],
+    [RECORD_TYPE]: [...nodeProperties, 'properties', 'annotations', 'commas', ...delimiterTokens],
+    [COLLECTION_TYPE]: [...nodeProperties, 'items', 'commas', ...delimiterTokens],
+    [QUALIFIER_TYPE]: [...valueNodeProperties],
+    [ANNOTATION_TYPE]: [...nodeProperties, 'term', 'qualifier', 'colon', 'value'],
+    [ANNOTATION_GROUP_TYPE]: [...nodeProperties, 'name', 'colon', 'items'],
+    [ANNOTATION_GROUP_ITEMS_TYPE]: [...nodeProperties, ...delimiterTokens, 'items', 'commas'],
+};
 
 const compactAst = (key, value) => {
     if (value === 0 && 1 / value < 0) {
@@ -18,7 +72,53 @@ const compactAst = (key, value) => {
         return compactRange(value);
     }
     if (typeof value === 'object' && !Array.isArray(value)) {
-        const sortedKeys = Object.keys(value).sort();
+        const orderedProperties = NODE_PROPERTIES[value.type];
+        if (!orderedProperties) {
+            throw new Error(`Missing configuration for node type "${value.type}". ${JSON.stringify(value)}`);
+        }
+        const existingProperties = Object.keys(value);
+        for (const property of existingProperties) {
+            if (!orderedProperties.includes(property)) {
+                throw new Error(`Missing "${property}" in configuration for node type "${value.type}"`);
+            }
+        }
+        const newValue = {};
+        for (const property of orderedProperties) {
+            newValue[property] = value[property];
+        }
+        return newValue;
+    }
+    return value;
+};
+
+const CST_NODE_PROPERTIES = ['name', 'recoveredNode', 'tokenTypeName', 'image', 'startOffset', 'endOffset'];
+
+const compactCst = (key, value) => {
+    if (value === 0 && 1 / value < 0) {
+        // when serializing 0 the sign is removed, we need to avoid this lossy transformation
+        return 'NEGATIVE_ZERO';
+    }
+    if (rangePropertyPattern.test(key) && value) {
+        if (Array.isArray(value)) {
+            return value.map(compactRange);
+        }
+        return compactRange(value);
+    }
+    if (typeof value === 'object' && !Array.isArray(value)) {
+        const sortedKeys = Object.keys(value).sort((a,b) => {
+            const indexA = CST_NODE_PROPERTIES.indexOf(a);
+            const indexB = CST_NODE_PROPERTIES.indexOf(b);
+            if (indexA === -1 && indexB === -1 ) {
+                return a.localeCompare(b);
+            }
+            if (indexA === -1) {
+                return 1;
+            }
+            if (indexB === -1) {
+                return -1
+            }
+            return indexA - indexB;
+        });
         const newValue = {};
         for (const key of sortedKeys) {
             newValue[key] = value[key];
@@ -78,8 +178,8 @@ const reduceTokenInfo = (token) => {
     delete token.tokenType;
 };
 
-const print = (value) => {
-    const text = JSON.stringify(value, compactAst, 2) + '\n';
+const print = (value, transform) => {
+    const text = JSON.stringify(value, transform, 2) + '\n';
     return text;
 };
 const doesExits = (path) => {
@@ -130,13 +230,13 @@ const update = async () => {
             const ast = buildAst(cst, tokens, startPosition);
             if (cstOrAst === 'cst') {
                 transformCstForAssertion(cst);
-                writeFileSync(join(ROOT, 'cst.json'), print(cst));
+                writeFileSync(join(ROOT, 'cst.json'), print(cst, compactCst));
             } else if (cstOrAst === 'ast') {
-                writeFileSync(join(ROOT, 'ast.json'), print(ast));
+                writeFileSync(join(ROOT, 'ast.json'), print(ast, compactAst));
             } else {
                 transformCstForAssertion(cst);
-                writeFileSync(join(ROOT, 'cst.json'), print(cst));
-                writeFileSync(join(ROOT, 'ast.json'), print(ast));
+                writeFileSync(join(ROOT, 'cst.json'), print(cst, compactCst));
+                writeFileSync(join(ROOT, 'ast.json'), print(ast, compactAst));
             }
         } catch (error) {
             let possibleSolution = '';

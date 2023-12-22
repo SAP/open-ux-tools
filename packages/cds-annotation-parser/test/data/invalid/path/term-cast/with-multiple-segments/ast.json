@@ -1,62 +1,62 @@
 {
-  "colon": {
-    "range": "[(0,1)..(0,2)]",
-    "type": "token",
-    "value": ":"
-  },
+  "type": "annotation",
   "range": "[(0,0)..(0,17)]",
   "term": {
+    "type": "path",
     "range": "[(0,0)..(0,1)]",
+    "value": "a",
     "segments": [
       {
-        "quoted": false,
-        "range": "[(0,0)..(0,1)]",
         "type": "identifier",
-        "value": "a"
+        "range": "[(0,0)..(0,1)]",
+        "value": "a",
+        "quoted": false
       }
     ],
-    "separators": [],
-    "type": "path",
-    "value": "a"
+    "separators": []
   },
-  "type": "annotation",
+  "colon": {
+    "type": "token",
+    "range": "[(0,1)..(0,2)]",
+    "value": ":"
+  },
   "value": {
+    "type": "path",
     "range": "[(0,3)..(0,17)]",
+    "value": "E/@Segment#q/F",
     "segments": [
       {
-        "quoted": false,
+        "type": "identifier",
         "range": "[(0,3)..(0,4)]",
-        "type": "identifier",
-        "value": "E"
+        "value": "E",
+        "quoted": false
       },
       {
-        "quoted": false,
+        "type": "identifier",
         "range": "[(0,5)..(0,15)]",
-        "type": "identifier",
-        "value": "@Segment#q"
+        "value": "@Segment#q",
+        "quoted": false
       },
       {
-        "quoted": false,
-        "range": "[(0,16)..(0,17)]",
         "type": "identifier",
-        "value": "F"
+        "range": "[(0,16)..(0,17)]",
+        "value": "F",
+        "quoted": false
       }
     ],
     "separators": [
       {
-        "escaped": false,
-        "range": "[(0,4)..(0,5)]",
         "type": "separator",
-        "value": "/"
+        "range": "[(0,4)..(0,5)]",
+        "value": "/",
+        "escaped": false
       },
       {
-        "escaped": false,
-        "range": "[(0,15)..(0,16)]",
         "type": "separator",
-        "value": "/"
+        "range": "[(0,15)..(0,16)]",
+        "value": "/",
+        "escaped": false
       }
-    ],
-    "type": "path",
-    "value": "E/@Segment#q/F"
+    ]
   }
 }

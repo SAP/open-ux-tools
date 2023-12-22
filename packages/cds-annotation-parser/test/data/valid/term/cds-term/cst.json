@@ -1,50 +1,50 @@
 {
+  "name": "declaration",
   "children": {
     "assignment": [
       {
+        "name": "assignment",
         "children": {
           "path": [
             {
+              "name": "path",
               "children": {
                 "pathSegment": [
                   {
+                    "name": "pathSegment",
                     "children": {
                       "Identifier": [
                         {
-                          "endOffset": 7,
+                          "tokenTypeName": "Identifier",
                           "image": "readonly",
                           "startOffset": 0,
-                          "tokenTypeName": "Identifier"
+                          "endOffset": 7
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 7,
-                      "startOffset": 0
-                    },
-                    "name": "pathSegment"
+                      "startOffset": 0,
+                      "endOffset": 7
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 7,
-                "startOffset": 0
-              },
-              "name": "path"
+                "startOffset": 0,
+                "endOffset": 7
+              }
             }
           ]
         },
         "location": {
-          "endOffset": 7,
-          "startOffset": 0
-        },
-        "name": "assignment"
+          "startOffset": 0,
+          "endOffset": 7
+        }
       }
     ]
   },
   "location": {
-    "endOffset": 7,
-    "startOffset": 0
-  },
-  "name": "declaration"
+    "startOffset": 0,
+    "endOffset": 7
+  }
 }

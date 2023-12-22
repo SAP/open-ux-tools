@@ -1,247 +1,247 @@
 {
+  "name": "declaration",
   "children": {
     "assignment": [
       {
+        "name": "assignment",
         "children": {
           "Colon": [
             {
-              "endOffset": 1,
+              "tokenTypeName": "Colon",
               "image": ":",
               "startOffset": 1,
-              "tokenTypeName": "Colon"
+              "endOffset": 1
             }
           ],
           "path": [
             {
+              "name": "path",
               "children": {
                 "pathSegment": [
                   {
+                    "name": "pathSegment",
                     "children": {
                       "Identifier": [
                         {
-                          "endOffset": 0,
+                          "tokenTypeName": "Identifier",
                           "image": "s",
                           "startOffset": 0,
-                          "tokenTypeName": "Identifier"
+                          "endOffset": 0
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 0,
-                      "startOffset": 0
-                    },
-                    "name": "pathSegment"
+                      "startOffset": 0,
+                      "endOffset": 0
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 0,
-                "startOffset": 0
-              },
-              "name": "path"
+                "startOffset": 0,
+                "endOffset": 0
+              }
             }
           ],
           "value": [
             {
+              "name": "value",
               "children": {
                 "collection": [
                   {
+                    "name": "collection",
                     "children": {
+                      "collectionValue": [
+                        {
+                          "name": "collectionValue",
+                          "children": {
+                            "Number": [
+                              {
+                                "tokenTypeName": "Number",
+                                "image": "1",
+                                "startOffset": 19,
+                                "endOffset": 19
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 19,
+                            "endOffset": 19
+                          }
+                        },
+                        {
+                          "name": "collectionValue",
+                          "children": {
+                            "Number": [
+                              {
+                                "tokenTypeName": "Number",
+                                "image": "2",
+                                "startOffset": 29,
+                                "endOffset": 29
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 29,
+                            "endOffset": 29
+                          }
+                        },
+                        {
+                          "name": "collectionValue",
+                          "children": {
+                            "Number": [
+                              {
+                                "tokenTypeName": "Number",
+                                "image": "3",
+                                "startOffset": 39,
+                                "endOffset": 39
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 39,
+                            "endOffset": 39
+                          }
+                        }
+                      ],
                       "Comma": [
                         {
-                          "endOffset": 10,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 10,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 10
                         },
                         {
-                          "endOffset": 11,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 11,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 11
                         },
                         {
-                          "endOffset": 12,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 12,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 12
                         },
                         {
-                          "endOffset": 13,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 13,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 13
                         },
                         {
-                          "endOffset": 20,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 20,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 20
                         },
                         {
-                          "endOffset": 21,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 21,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 21
                         },
                         {
-                          "endOffset": 22,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 22,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 22
                         },
                         {
-                          "endOffset": 23,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 23,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 23
                         },
                         {
-                          "endOffset": 30,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 30,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 30
                         },
                         {
-                          "endOffset": 31,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 31,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 31
                         },
                         {
-                          "endOffset": 32,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 32,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 32
                         },
                         {
-                          "endOffset": 33,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 33,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 33
                         },
                         {
-                          "endOffset": 40,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 40,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 40
                         },
                         {
-                          "endOffset": 41,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 41,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 41
                         },
                         {
-                          "endOffset": 42,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 42,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 42
                         },
                         {
-                          "endOffset": 43,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 43,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 43
                         }
                       ],
                       "LBracket": [
                         {
-                          "endOffset": 3,
+                          "tokenTypeName": "LBracket",
                           "image": "[",
                           "startOffset": 3,
-                          "tokenTypeName": "LBracket"
+                          "endOffset": 3
                         }
                       ],
                       "RBracket": [
                         {
-                          "endOffset": 45,
+                          "tokenTypeName": "RBracket",
                           "image": "]",
                           "startOffset": 45,
-                          "tokenTypeName": "RBracket"
-                        }
-                      ],
-                      "collectionValue": [
-                        {
-                          "children": {
-                            "Number": [
-                              {
-                                "endOffset": 19,
-                                "image": "1",
-                                "startOffset": 19,
-                                "tokenTypeName": "Number"
-                              }
-                            ]
-                          },
-                          "location": {
-                            "endOffset": 19,
-                            "startOffset": 19
-                          },
-                          "name": "collectionValue"
-                        },
-                        {
-                          "children": {
-                            "Number": [
-                              {
-                                "endOffset": 29,
-                                "image": "2",
-                                "startOffset": 29,
-                                "tokenTypeName": "Number"
-                              }
-                            ]
-                          },
-                          "location": {
-                            "endOffset": 29,
-                            "startOffset": 29
-                          },
-                          "name": "collectionValue"
-                        },
-                        {
-                          "children": {
-                            "Number": [
-                              {
-                                "endOffset": 39,
-                                "image": "3",
-                                "startOffset": 39,
-                                "tokenTypeName": "Number"
-                              }
-                            ]
-                          },
-                          "location": {
-                            "endOffset": 39,
-                            "startOffset": 39
-                          },
-                          "name": "collectionValue"
+                          "endOffset": 45
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 45,
-                      "startOffset": 3
-                    },
-                    "name": "collection"
+                      "startOffset": 3,
+                      "endOffset": 45
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 45,
-                "startOffset": 3
-              },
-              "name": "value"
+                "startOffset": 3,
+                "endOffset": 45
+              }
             }
           ]
         },
         "location": {
-          "endOffset": 45,
-          "startOffset": 0
-        },
-        "name": "assignment"
+          "startOffset": 0,
+          "endOffset": 45
+        }
       }
     ]
   },
   "location": {
-    "endOffset": 45,
-    "startOffset": 0
-  },
-  "name": "declaration"
+    "startOffset": 0,
+    "endOffset": 45
+  }
 }
