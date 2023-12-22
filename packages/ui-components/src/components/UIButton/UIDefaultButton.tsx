@@ -4,6 +4,26 @@ import { DefaultButton } from '@fluentui/react';
 import { UIContextualMenu } from '../UIContextualMenu';
 import { COMMON_INPUT_STYLES } from '../UIInput';
 
+export const BASE_STYLES = {
+    color: 'var(--vscode-button-foreground)',
+    primary: {
+        backgroundColor: 'var(--vscode-button-background)',
+        borderColor: 'var(--vscode-button-border, var(--vscode-contrastBorder, var(--vscode-button-background)))',
+        hoverBackgroundColor: 'var(--vscode-button-hoverBackground)',
+        hoverBorderColor:
+            'var(--vscode-contrastActiveBorder, var(--vscode-button-border, var(--vscode-button-hoverBackground)))'
+    },
+    secondary: {
+        backgroundColor: 'var(--vscode-button-secondaryBackground, #5f6a79)',
+        borderColor:
+            'var(--vscode-button-border, var(--vscode-contrastBorder, var(--vscode-button-secondaryBackground, #5f6a79)))',
+        hoverBackgroundColor: 'var(--vscode-button-secondaryHoverBackground, #4c5561)',
+        hoverBorderColor:
+            'var(--vscode-contrastActiveBorder, var(--vscode-button-border, var(--vscode-button-secondaryHoverBackground, #4c5561)))',
+        color: 'var(--vscode-button-secondaryForeground, #ffffff)'
+    }
+};
+
 /**
  * UIDefaultButton component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/button
@@ -50,14 +70,14 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
                 // So if we use the declare Theia variable `--vscode-secondaryButton-background` it will be white on white!!!
                 // And to finish these stuff of course Theia mess with the highContrast theme as it does not have any of them.
                 // Theia colors are a mess!!!!
-                backgroundColor: 'var(--vscode-button-secondaryBackground, #5f6a79)',
-                borderColor: 'var(--vscode-contrastBorder, var(--vscode-button-secondaryBackground, #5f6a79))',
-                color: 'var(--vscode-button-secondaryForeground, #ffffff)',
+                backgroundColor: BASE_STYLES.secondary.backgroundColor,
+                borderColor: BASE_STYLES.secondary.borderColor,
+                color: BASE_STYLES.secondary.color,
 
                 ...(props.primary && {
-                    backgroundColor: 'var(--vscode-button-background)',
-                    borderColor: 'var(--vscode-contrastBorder, var(--vscode-button-background))',
-                    color: 'var(--vscode-button-foreground)'
+                    backgroundColor: BASE_STYLES.primary.backgroundColor,
+                    borderColor: BASE_STYLES.primary.borderColor,
+                    color: BASE_STYLES.color
                 }),
 
                 selectors: {
@@ -80,34 +100,33 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
             rootDisabled: {
                 opacity: '0.5 !important',
                 // Add to use hard coded value here as Theia doesn't support these values correctly
-                backgroundColor: 'var(--vscode-button-secondaryBackground,#5f6a79)',
-                borderColor: 'var(--vscode-button-secondaryBackground, #5f6a79)',
-                color: 'var(--vscode-button-secondaryForeground, #ffffff)',
+                backgroundColor: BASE_STYLES.secondary.backgroundColor,
+                borderColor: BASE_STYLES.secondary.backgroundColor,
+                color: BASE_STYLES.secondary.color,
                 ...(props.primary && {
                     opacity: '0.5 !important',
-                    color: 'var(--vscode-button-foreground)',
-                    backgroundColor: 'var(--vscode-button-background)',
-                    borderColor: 'var(--vscode-button-background)'
+                    color: BASE_STYLES.color,
+                    backgroundColor: BASE_STYLES.primary.backgroundColor,
+                    borderColor: BASE_STYLES.primary.backgroundColor
                 })
             },
             rootHovered: {
                 // Add to use hard coded value here as Theia doesn't support these values correctly
-                color: 'var(--vscode-button-secondaryForeground, #ffffff)',
-                backgroundColor: 'var(--vscode-button-secondaryHoverBackground, #4c5561)',
-                borderColor:
-                    'var(--vscode-contrastActiveBorder, var(--vscode-button-secondaryHoverBackground, #4c5561))',
+                color: BASE_STYLES.secondary.color,
+                backgroundColor: BASE_STYLES.secondary.hoverBackgroundColor,
+                borderColor: BASE_STYLES.secondary.hoverBorderColor,
                 selectors: {
                     'svg > path, svg > rect': {
-                        fill: 'var(--vscode-button-secondaryForeground, #ffffff)'
+                        fill: BASE_STYLES.secondary.color
                     }
                 },
                 ...(props.primary && {
-                    color: 'var(--vscode-button-foreground)',
-                    backgroundColor: 'var(--vscode-button-hoverBackground)',
-                    borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))',
+                    color: BASE_STYLES.color,
+                    backgroundColor: BASE_STYLES.primary.hoverBackgroundColor,
+                    borderColor: BASE_STYLES.primary.hoverBorderColor,
                     selectors: {
                         'svg > path, svg > rect': {
-                            fill: 'var(--vscode-button-foreground)'
+                            fill: BASE_STYLES.color
                         }
                     }
                 })
@@ -116,17 +135,17 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
                 height: 16,
                 lineHeight: 16,
                 marginLeft: -3,
-                color: 'var(--vscode-button-secondaryForeground)',
+                color: BASE_STYLES.secondary.color,
                 selectors: {
                     'svg > path, svg > rect': {
-                        fill: 'var(--vscode-button-secondaryForeground, #ffffff)'
+                        fill: BASE_STYLES.secondary.color
                     }
                 },
                 ...(props.primary && {
-                    color: 'var(--vscode-button-foreground)',
+                    color: BASE_STYLES.color,
                     selectors: {
                         'svg > path, svg > rect': {
-                            fill: 'var(--vscode-button-foreground)'
+                            fill: BASE_STYLES.color
                         }
                     }
                 })
@@ -134,11 +153,11 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
             menuIcon: {
                 selectors: {
                     'svg > path': {
-                        fill: 'var(--vscode-button-secondaryForeground, #ffffff)'
+                        fill: BASE_STYLES.secondary.color
                     },
                     ...(props.primary && {
                         'svg > path': {
-                            fill: 'var(--vscode-button-foreground)'
+                            fill: BASE_STYLES.color
                         }
                     })
                 }
@@ -161,17 +180,17 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
                 marginTop: 0,
                 marginRight: 0,
                 marginBottom: 0,
-                backgroundColor: 'var(--vscode-button-background)',
-                borderColor: 'var(--vscode-contrastBorder, var(--vscode-button-background))',
-                color: 'var(--vscode-button-foreground)',
+                backgroundColor: BASE_STYLES.primary.backgroundColor,
+                borderColor: BASE_STYLES.primary.borderColor,
+                color: BASE_STYLES.color,
                 selectors: {
                     '&:hover': {
-                        color: 'var(--vscode-button-foreground)',
+                        color: BASE_STYLES.color,
                         backgroundColor: 'var(--vscode-button-hoverBackground)',
                         borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))',
                         selectors: {
                             'svg > path, svg > rect': {
-                                fill: 'var(--vscode-button-foreground)'
+                                fill: BASE_STYLES.color
                             }
                         }
                     }
@@ -181,11 +200,11 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
                 opacity: '0.5 !important',
                 // Add to use hard coded value here as Theia doesn't support these values correctly
                 backgroundColor: 'var(--vscode-button-secondaryBackground,#5f6a79)',
-                borderColor: 'var(--vscode-button-secondaryBackground, #5f6a79)',
-                color: 'var(--vscode-button-secondaryForeground, #ffffff)',
+                borderColor: BASE_STYLES.secondary.backgroundColor,
+                color: BASE_STYLES.secondary.color,
                 ...(props.primary && {
-                    color: 'var(--vscode-button-foreground)',
-                    backgroundColor: 'var(--vscode-button-background)',
+                    color: BASE_STYLES.color,
+                    backgroundColor: BASE_STYLES.primary.backgroundColor,
                     borderColor: 'var(--vscode-button-background)'
                 })
             },
@@ -197,21 +216,21 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
                 }
             },
             splitButtonMenuButtonExpanded: {
-                color: 'var(--vscode-button-foreground)',
+                color: BASE_STYLES.color,
                 backgroundColor: 'var(--vscode-button-hoverBackground)',
                 borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))',
                 selectors: {
                     'svg > path, svg > rect': {
-                        fill: 'var(--vscode-button-foreground)'
+                        fill: BASE_STYLES.color
                     },
 
                     '&:hover': {
-                        color: 'var(--vscode-button-foreground)',
+                        color: BASE_STYLES.color,
                         backgroundColor: 'var(--vscode-button-hoverBackground)',
                         borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))',
                         selectors: {
                             'svg > path, svg > rect': {
-                                fill: 'var(--vscode-button-foreground)'
+                                fill: BASE_STYLES.color
                             }
                         }
                     }
