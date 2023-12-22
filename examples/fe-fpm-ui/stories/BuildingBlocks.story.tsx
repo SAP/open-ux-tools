@@ -61,7 +61,11 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks }): JSX.E
         dispatch({ type: 'questions/update', payload: questions });
     }
 
-    function updateAnswers(name: string, answer: string | number | undefined, dependantPromptNames: string[] = []) {
+    function updateAnswers(
+        name: string,
+        answer: string | number | boolean | undefined,
+        dependantPromptNames: string[] = []
+    ) {
         dispatch({ type: 'answers/update', payload: { name, answer } });
         dependantPromptNames.forEach((name) => {
             // Reset the values of dependant prompts
@@ -81,8 +85,6 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks }): JSX.E
             console.log({ newQuestions });
             updateQuestions(newQuestions as Question[]);
         });
-        // ToDo - choice update
-        // onMessageAttach('CHOICES_UPDATE', SET_CHOICES);
     }, []);
     return (
         <Questions

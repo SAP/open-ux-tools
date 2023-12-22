@@ -14,7 +14,7 @@ export interface QuestionsProps {
     questions: Array<Question>;
     answers: Record<string, string | number>;
     onChoiceRequest: (name: string) => void;
-    onChange: (name: string, answer: string | number | undefined) => void;
+    onChange: (name: string, answer: string | number | boolean | undefined, dependantPromptNames?: string[]) => void;
 }
 
 export const Questions = (props: QuestionsProps) => {
@@ -26,11 +26,11 @@ export const Questions = (props: QuestionsProps) => {
                 const value = (question.name && answers?.[question.name]) ?? '';
                 switch (question?.type) {
                     case 'input': {
-                        questionInput = <Input value={value} {...question} />;
+                        questionInput = <Input value={value} {...question} onChange={onChange} />;
                         break;
                     }
                     case 'checkbox': {
-                        questionInput = <Checkbox {...question} />;
+                        questionInput = <Checkbox {...question} onChange={onChange} />;
                         break;
                     }
                     case 'list': {

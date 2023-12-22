@@ -13,7 +13,7 @@ export interface SelectProps extends ListQuestion {
 }
 
 export const Select = (props: SelectProps) => {
-    const { name, choices, onChoiceRequest, message, onChange, selectType, dependantPromptNames } = props;
+    const { name = '', choices, onChoiceRequest, message, onChange, selectType, dependantPromptNames } = props;
     const [value, setValue] = useValue('', props.value);
     let options: UIComboBoxOption[] = [];
     if (Array.isArray(choices)) {
@@ -26,7 +26,7 @@ export const Select = (props: SelectProps) => {
                 };
             }) ?? [];
     } else {
-        onChoiceRequest(name ?? '');
+        onChoiceRequest(name);
     }
     return (
         <UIComboBox
