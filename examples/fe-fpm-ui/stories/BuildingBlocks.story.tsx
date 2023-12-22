@@ -54,7 +54,7 @@ const initialState: State = {
     answers: {}
 };
 
-const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks }): JSX.Element => {
+const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQuestions?: string[] }): JSX.Element => {
     const [{ questions, answers }, dispatch] = useReducer(reducer, initialState);
 
     function updateQuestions(questions: Question[]) {
@@ -78,10 +78,19 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks }): JSX.E
         dispatch({ type: 'choices/update', payload: { name, choices } });
     }
 
-    const { type } = props;
-    // const [questions, setQuestions] = React.useState<Question[]>([]);
+    const { type, visibleQuestions } = props;
     React.useEffect(() => {
         getQuestions(type).then((newQuestions) => {
+            if (visibleQuestions) {
+                const resolvedQuestions: typeof newQuestions = [];
+                for (const name of visibleQuestions) {
+                    const question = newQuestions.find((question) => question.name === name);
+                    if (question) {
+                        resolvedQuestions.push(question);
+                    }
+                }
+                newQuestions = resolvedQuestions;
+            }
             console.log({ newQuestions });
             updateQuestions(newQuestions as Question[]);
         });
@@ -112,6 +121,19 @@ export const filterBar = (): JSX.Element => {
     return <BuildingBlockQuestions type={SupportedBuildingBlocks.FilterBar} />;
 };
 
-export const custom = (): JSX.Element => {
-    return <div>Exclude questions???</div>;
+export const customChart = (): JSX.Element => {
+    return (
+        <BuildingBlockQuestions
+            type={SupportedBuildingBlocks.Chart}
+            visibleQuestions={[
+                'id',
+                'entity',
+                'chartQualifier',
+                'filterBar',
+                'selectionMode',
+                'selectionChange',
+                'bindingContextType'
+            ]}
+        />
+    );
 };
