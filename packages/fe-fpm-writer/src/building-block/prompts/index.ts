@@ -20,7 +20,7 @@ import {
     getXPathStringsForXmlFile
 } from '../utils/prompts';
 import { getAnnotationPathQualifiers, getEntityTypes } from '../utils/service';
-import { findFilesByExtension } from '@sap-ux/project-access/src/file';
+import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import { relative } from 'path';
 
 export interface BuildingBlockTypePromptsAnswer extends Answers {
@@ -75,7 +75,7 @@ export async function getBuildingBlockChoices<T extends Answers>(
                 annotationTerms.push(...[UIAnnotationTerms.Chart]);
                 break;
             case 'selectionFieldQualifier':
-                annotationTerms.push(...[UIAnnotationTerms.Chart]);
+                annotationTerms.push(...[UIAnnotationTerms.SelectionFields]);
                 break;
             default:
                 return [];
@@ -169,7 +169,7 @@ export async function getChartBuildingBlockPrompts(
             message: t('selectionChange')
         } as InputQuestion,
         getAggregationPathPrompt(t('aggregation'), fs),
-        getEntityPrompt(t('entity'), projectProvider),
+        getEntityPrompt(t('entity'), projectProvider, ['chartQualifier']),
         getAnnotationPathQualifierPrompt('chartQualifier', t('chartQualifier'), projectProvider, [
             UIAnnotationTerms.Chart
         ])
@@ -296,10 +296,12 @@ export async function getFilterBarBuildingBlockPrompts(
     const projectProvider = await ProjectProvider.createProject(basePath, fs);
 
     return [
-        getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate')),
+        getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate'), [
+            'aggregationPath'
+        ]),
         getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
         getAggregationPathPrompt(t('message'), fs),
-        getEntityPrompt(t('entity'), projectProvider),
+        getEntityPrompt(t('entity'), projectProvider, ['selectionFieldQualifier']),
         getAnnotationPathQualifierPrompt('selectionFieldQualifier', t('selectionFieldQualifier'), projectProvider, [
             UIAnnotationTerms.SelectionFields
         ]),

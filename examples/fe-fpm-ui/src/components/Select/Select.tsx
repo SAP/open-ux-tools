@@ -13,7 +13,7 @@ export interface SelectProps extends ListQuestion {
 }
 
 export const Select = (props: SelectProps) => {
-    const { name = '', choices, onChoiceRequest, message, onChange, selectType, dependantPromptNames } = props;
+    const { name = '', choices, onChoiceRequest, message, onChange, dependantPromptNames } = props;
     const [value, setValue] = useValue('', props.value);
     let options: UIComboBoxOption[] = [];
     if (Array.isArray(choices)) {
@@ -37,11 +37,6 @@ export const Select = (props: SelectProps) => {
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
             selectedKey={value}
-            onFocus={() => {
-                if (name && selectType === 'dynamic') {
-                    onChoiceRequest(name);
-                }
-            }}
             onChange={(_, option) => {
                 setValue(option?.key ?? '');
                 if (name) {

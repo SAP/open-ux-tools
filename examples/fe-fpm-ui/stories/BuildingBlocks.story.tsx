@@ -1,84 +1,19 @@
 import { initIcons } from '@sap-ux/ui-components';
-import { Answers } from 'inquirer';
-import React, { useReducer } from 'react';
+import React from 'react';
 import type { Question } from '../src/components';
 import { Questions } from '../src/components';
-import { GET_CHOICES, SupportedBuildingBlocks } from './utils';
-import { getChoices, getQuestions, getWebSocket, sendMessage } from './utils/communication';
+import { SupportedBuildingBlocks } from './utils';
+import { getChoices, getQuestions, getWebSocket } from './utils/communication';
+import { ActionType, useReducedState } from './utils/state';
 
 export default { title: 'Building Blocks' };
 
 initIcons();
 getWebSocket();
 
-interface State {
-    questions: Question[];
-    answers: Answers;
-}
-
-function reducer(state: State, action: { type: string; payload?: any }) {
-    switch (action.type) {
-        case 'questions/update':
-            return {
-                ...state,
-                questions: action.payload
-            };
-        case 'answers/update':
-            return {
-                ...state,
-                answers: {
-                    ...state.answers,
-                    [action.payload.name]: action.payload.answer
-                }
-            };
-        case 'choices/update':
-            return {
-                ...state,
-                questions: state.questions.map((question: Question) => {
-                    if (question.name === action.payload.name) {
-                        return {
-                            ...question,
-                            choices: action.payload.choices
-                        };
-                    }
-                    return question;
-                })
-            };
-
-        default:
-            return state;
-    }
-}
-const initialState: State = {
-    questions: [],
-    answers: {}
-};
-
 const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQuestions?: string[] }): JSX.Element => {
-    const [{ questions, answers }, dispatch] = useReducer(reducer, initialState);
-
-    function updateQuestions(questions: Question[]) {
-        dispatch({ type: 'questions/update', payload: questions });
-    }
-
-    function updateAnswers(
-        name: string,
-        answer: string | number | boolean | undefined,
-        dependantPromptNames: string[] = []
-    ) {
-        dispatch({ type: 'answers/update', payload: { name, answer } });
-        dependantPromptNames.forEach((name) => {
-            // Reset the values of dependant prompts
-            // Fire change
-            updateAnswers(name, '');
-        });
-    }
-
-    function updateChoices(name: string, choices: unknown) {
-        dispatch({ type: 'choices/update', payload: { name, choices } });
-    }
-
     const { type, visibleQuestions } = props;
+    const { answers, questions, updateAnswers, updateChoices, updateQuestions } = useReducedState(type);
     React.useEffect(() => {
         getQuestions(type).then((newQuestions) => {
             if (visibleQuestions) {
@@ -137,3 +72,14 @@ export const customChart = (): JSX.Element => {
         />
     );
 };
+
+function refreshChoices(
+    name: string,
+    type: SupportedBuildingBlocks,
+    updateChoices: (name: string, choices: unknown) => void
+): { type: ActionType; payload?: any } {
+    return {
+        type: ActionType.REFRESH_CHOICES,
+        payload: { name, type, updateChoicesFn: (choices: unknown[]) => updateChoices(name, choices) }
+    };
+}

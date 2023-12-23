@@ -30,7 +30,8 @@
         "storybook": "storybook dev -s static",
         "build:storybook": "storybook build -o ./storybook",
         "test": "jest --ci --forceExit --colors --silent",
-        "test-u": "jest --ci --forceExit --colors  --silent -u"
+        "test-u": "jest --ci --forceExit --colors  --silent -u",
+        "dev": "nodemon --exec 'pnpm storybook -p 60648 --no-open' -w '.storybook/*' -e 'ts'"
     },
     "dependencies": {
         "@sap-ux/ui-components": "workspace:*",
@@ -69,6 +70,7 @@
         "jest-scss-transform": "1.0.3",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
+        "nodemon": "3.0.2",
         "npm-run-all": "4.1.5",
         "react": "16.14.0",
         "react-dom": "16.14.0",
