@@ -33,8 +33,8 @@ function getFilterBarBuildingBlockConfig(
     answers: FilterBarPromptsAnswer,
     basePath: string
 ): BuildingBlockConfig<FilterBarPromptsAnswer> {
-    const { aggregationPath, viewOrFragmentFile, selectionFieldQualifier } = answers;
-    answers.metaPath = selectionFieldQualifier;
+    const { aggregationPath, viewOrFragmentFile, qualifier } = answers;
+    answers.metaPath = qualifier;
     return {
         aggregationPath,
         viewOrFragmentPath: relative(basePath, viewOrFragmentFile),
@@ -49,9 +49,9 @@ function getChartBuildingBlockConfig(
     answers: ChartPromptsAnswer,
     basePath: string
 ): BuildingBlockConfig<ChartPromptsAnswer> {
-    const { aggregationPath, viewOrFragmentFile, entity, chartQualifier, bindingContextType } = answers;
+    const { aggregationPath, viewOrFragmentFile, entity, qualifier, bindingContextType } = answers;
 
-    const { contextPath, metaPath } = getContextAndMetaPaths(entity, chartQualifier, bindingContextType);
+    const { contextPath, metaPath } = getContextAndMetaPaths(entity, qualifier, bindingContextType);
     answers.contextPath = contextPath;
     answers.metaPath = metaPath;
 
@@ -69,9 +69,9 @@ function getTableBuildingBlockConfig(
     answers: TablePromptsAnswer,
     basePath: string
 ): BuildingBlockConfig<TablePromptsAnswer> {
-    const { aggregationPath, viewOrFragmentFile, entity, lineItemQualifier, bindingContextType } = answers;
+    const { aggregationPath, viewOrFragmentFile, entity, qualifier, bindingContextType } = answers;
 
-    const { contextPath, metaPath } = getContextAndMetaPaths(entity, lineItemQualifier, bindingContextType);
+    const { contextPath, metaPath } = getContextAndMetaPaths(entity, qualifier, bindingContextType);
     answers.contextPath = contextPath;
     answers.metaPath = metaPath;
     return {

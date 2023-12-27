@@ -4,11 +4,13 @@ import { Input } from '../Input';
 import { Checkbox } from '../Checkbox';
 import { Select } from '../Select';
 
-export type Question =
-    | (ListQuestion | InputQuestion | CheckboxQuestion) & {
-          selectType: 'static' | 'dynamic';
-          dependantPromptNames?: string[];
-      };
+export interface AdditionalQuestionProperties {
+    selectType: 'static' | 'dynamic';
+    dependantPromptNames?: string[];
+    required?: boolean;
+}
+
+export type Question = (ListQuestion | InputQuestion | CheckboxQuestion) & AdditionalQuestionProperties;
 
 export interface QuestionsProps {
     questions: Array<Question>;

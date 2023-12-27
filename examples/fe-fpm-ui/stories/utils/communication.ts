@@ -1,4 +1,4 @@
-import type { Question } from 'inquirer';
+import type { Question } from '../../src/components';
 import {
     GET_QUESTIONS,
     SET_TABLE_QUESTIONS,

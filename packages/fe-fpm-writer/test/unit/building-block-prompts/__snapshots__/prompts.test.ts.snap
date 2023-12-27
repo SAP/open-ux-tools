@@ -113,7 +113,7 @@ Array [
   Object {
     "choices": [Function],
     "message": "Select the Chart Qualifier",
-    "name": "chartQualifier",
+    "name": "qualifier",
     "type": "list",
   },
 ]
@@ -149,7 +149,7 @@ Array [
   Object {
     "choices": [Function],
     "message": "Select the Selection Fields Qualifier",
-    "name": "selectionFieldQualifier",
+    "name": "qualifier",
     "type": "list",
   },
   Object {
@@ -204,7 +204,7 @@ Array [
   Object {
     "choices": [Function],
     "message": "Select the Line Item Qualifier",
-    "name": "lineItemQualifier",
+    "name": "qualifier",
     "type": "list",
   },
   Object {

@@ -34,10 +34,10 @@ export interface BuildingBlockTypePromptsAnswer extends Answers {
  * @param {string} fieldName - The field name
  * @param {unknown} answers - The answers object
  * @param {string} rootPath - The root path
- * @returns {Promise<void>}
+ * @returns
  */
 export async function getBuildingBlockChoices<T extends Answers>(
-    buildingBlockType: string, // required?
+    buildingBlockType: string,
     fieldName: string,
     answers: T,
     rootPath: string
@@ -68,20 +68,18 @@ export async function getBuildingBlockChoices<T extends Answers>(
                     value: file
                 }));
             }
-            case 'lineItemQualifier':
-                annotationTerms.push(...[UIAnnotationTerms.LineItem]);
-                break;
-            case 'chartQualifier':
-                annotationTerms.push(...[UIAnnotationTerms.Chart]);
-                break;
-            case 'selectionFieldQualifier':
-                annotationTerms.push(...[UIAnnotationTerms.SelectionFields]);
-                break;
+            case 'qualifier':
+                if (buildingBlockType === BuildingBlockType.Table) {
+                    annotationTerms.push(...[UIAnnotationTerms.LineItem]);
+                } else if (buildingBlockType === BuildingBlockType.Chart) {
+                    annotationTerms.push(...[UIAnnotationTerms.Chart]);
+                } else if (buildingBlockType === BuildingBlockType.FilterBar) {
+                    annotationTerms.push(...[UIAnnotationTerms.SelectionFields]);
+                }
+                return getChoices(await getAnnotationPathQualifiers(projectProvider, entity, annotationTerms, true));
             default:
                 return [];
         }
-
-        return getChoices(await getAnnotationPathQualifiers(projectProvider, entity, annotationTerms, true));
     } catch (error) {
         console.error(error);
         return [];
@@ -118,7 +116,7 @@ export interface ChartPromptsAnswer extends Chart, Answers {
     filterBar: string;
     selectionMode: string;
     selectionChange: string;
-    chartQualifier: string;
+    qualifier: string;
     bindingContextType: 'relative' | 'absolute';
 }
 
@@ -169,10 +167,8 @@ export async function getChartBuildingBlockPrompts(
             message: t('selectionChange')
         } as InputQuestion,
         getAggregationPathPrompt(t('aggregation'), fs),
-        getEntityPrompt(t('entity'), projectProvider, ['chartQualifier']),
-        getAnnotationPathQualifierPrompt('chartQualifier', t('chartQualifier'), projectProvider, [
-            UIAnnotationTerms.Chart
-        ])
+        getEntityPrompt(t('entity'), projectProvider, ['qualifier']),
+        getAnnotationPathQualifierPrompt('qualifier', t('qualifier'), projectProvider, [UIAnnotationTerms.Chart])
     ];
 }
 
@@ -184,7 +180,7 @@ export interface TablePromptsAnswer extends Table, Answers {
     filterBar: string;
     selectionChange: string;
     bindingContextType: 'relative' | 'absolute';
-    lineItemQualifier: string;
+    qualifier: string;
     type: 'ResponsiveTable' | 'GridTable';
     displayHeader: boolean;
     tableHeaderText: string;
@@ -210,11 +206,9 @@ export async function getTableBuildingBlockPrompts(
         ]),
         getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
         getBindingContextTypePrompt(t('bindingContextType')),
-        getEntityPrompt(t('entity'), projectProvider, ['lineItemQualifier']),
+        getEntityPrompt(t('entity'), projectProvider, ['qualifier']),
 
-        getAnnotationPathQualifierPrompt('lineItemQualifier', t('lineItemQualifier'), projectProvider, [
-            UIAnnotationTerms.LineItem
-        ]),
+        getAnnotationPathQualifierPrompt('qualifier', t('qualifier'), projectProvider, [UIAnnotationTerms.LineItem]),
         getAggregationPathPrompt(t('aggregation'), fs),
         getFilterBarIdPrompt(t('filterBar')),
         {
@@ -275,7 +269,7 @@ export async function getTableBuildingBlockPrompts(
 }
 
 export interface FilterBarPromptsAnswer extends FilterBar, Answers {
-    selectionFieldQualifier: string;
+    qualifier: string;
     entity: string;
     viewOrFragmentFile: string;
 }
@@ -300,9 +294,9 @@ export async function getFilterBarBuildingBlockPrompts(
             'aggregationPath'
         ]),
         getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
-        getAggregationPathPrompt(t('message'), fs),
-        getEntityPrompt(t('entity'), projectProvider, ['selectionFieldQualifier']),
-        getAnnotationPathQualifierPrompt('selectionFieldQualifier', t('selectionFieldQualifier'), projectProvider, [
+        getAggregationPathPrompt(t('aggregation'), fs),
+        getEntityPrompt(t('entity'), projectProvider, ['qualifier']),
+        getAnnotationPathQualifierPrompt('qualifier', t('qualifier'), projectProvider, [
             UIAnnotationTerms.SelectionFields
         ]),
         {

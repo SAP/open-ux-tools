@@ -10,14 +10,13 @@ export interface SelectProps extends ListQuestion {
     selectType: 'static' | 'dynamic';
     onChange: (name: string, value: string | number | undefined, dependantPromptNames?: string[]) => void;
     dependantPromptNames?: string[];
+    required?: boolean;
 }
 
 export const Select = (props: SelectProps) => {
-    const { name = '', choices, onChoiceRequest, message, onChange, dependantPromptNames } = props;
+    const { name = '', choices, onChoiceRequest, message, onChange, dependantPromptNames, required } = props;
     const [value, setValue] = useValue('', props.value);
     let options: UIComboBoxOption[] = [];
-    // TODO: come up with better logic to handle required vs non-required
-    const isRequired = !!((dependantPromptNames && dependantPromptNames.length > 0) || props.selectType === 'dynamic');
 
     if (Array.isArray(choices)) {
         options =
@@ -39,7 +38,7 @@ export const Select = (props: SelectProps) => {
             allowFreeform={true}
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
-            required={isRequired}
+            required={required}
             selectedKey={value}
             onChange={(_, option) => {
                 setValue(option?.key ?? '');

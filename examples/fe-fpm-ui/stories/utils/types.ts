@@ -26,9 +26,9 @@ export const RESET_ANSWERS = 'RESET_ANSWERS';
  * @enum {string}
  */
 export enum SupportedBuildingBlocks {
-    FilterBar = 'FilterBar',
-    Chart = 'Chart',
-    Table = 'Table'
+    FilterBar = 'filter-bar',
+    Chart = 'chart',
+    Table = 'table'
 }
 
 export interface ApplyAnswers {

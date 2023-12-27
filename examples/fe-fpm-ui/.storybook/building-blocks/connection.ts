@@ -102,7 +102,7 @@ async function handleAction(action: Actions): Promise<void> {
         }
         case GET_CHOICES: {
             const { name, buildingBlockType, answers } = action;
-            const choices = await getBuildingBlockChoices(buildingBlockType, name, answers, testAppPath);
+            const choices = await getBuildingBlockChoices(buildingBlockType as any, name, answers, testAppPath);
 
             const responseAction: SetChoices = {
                 type: SET_CHOICES,

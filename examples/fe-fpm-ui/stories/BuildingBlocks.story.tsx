@@ -1,10 +1,9 @@
 import { UIDefaultButton, initIcons } from '@sap-ux/ui-components';
 import React from 'react';
-import type { Question } from '../src/components';
-import { Questions } from '../src/components';
 import { SupportedBuildingBlocks } from './utils';
 import { applyAnswers, getChoices, getQuestions, getWebSocket } from './utils/communication';
 import { ActionType, useReducedState } from './utils/state';
+import { Questions } from '../src/components';
 
 export default { title: 'Building Blocks' };
 
@@ -37,7 +36,14 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
                 }
                 newQuestions = resolvedQuestions;
             }
-            updateQuestions(newQuestions as Question[]);
+            // initialize the required property - better logic?
+            newQuestions.forEach((question) => {
+                question.required = !!(
+                    (question.dependantPromptNames && question.dependantPromptNames?.length > 0) ||
+                    question.selectType === 'dynamic'
+                );
+            });
+            updateQuestions(newQuestions);
         });
     }, []);
     return (
@@ -61,6 +67,7 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
                 onChange={updateAnswers}
                 answers={answers || {}}
             />
+            {/* Disable the button if there is no answers for the 'required' question */}
             <div className="cta">
                 <UIDefaultButton primary={true} onClick={handleApply}>
                     Apply
@@ -89,7 +96,7 @@ export const customChart = (): JSX.Element => {
             visibleQuestions={[
                 'id',
                 'entity',
-                'chartQualifier',
+                'qualifier',
                 'filterBar',
                 'selectionMode',
                 'selectionChange',
