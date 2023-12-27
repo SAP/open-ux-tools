@@ -1,29 +1,29 @@
 {
-  "colon": {
-    "range": "[(0,2)..(0,3)]",
-    "type": "token",
-    "value": ":"
-  },
+  "type": "annotation",
   "range": "[(0,0)..(0,11)]",
   "term": {
+    "type": "path",
     "range": "[(0,0)..(0,1)]",
+    "value": "a",
     "segments": [
       {
-        "quoted": false,
-        "range": "[(0,0)..(0,1)]",
         "type": "identifier",
-        "value": "a"
+        "range": "[(0,0)..(0,1)]",
+        "value": "a",
+        "quoted": false
       }
     ],
-    "separators": [],
-    "type": "path",
-    "value": "a"
+    "separators": []
   },
-  "type": "annotation",
+  "colon": {
+    "type": "token",
+    "range": "[(0,2)..(0,3)]",
+    "value": ":"
+  },
   "value": {
+    "type": "quoted-literal",
     "kind": "binary",
     "range": "[(0,4)..(0,11)]",
-    "type": "quoted-literal",
     "value": "ABCD"
   }
 }

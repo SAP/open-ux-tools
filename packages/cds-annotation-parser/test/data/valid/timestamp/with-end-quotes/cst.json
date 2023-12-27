@@ -1,77 +1,77 @@
 {
+  "name": "declaration",
   "children": {
     "assignment": [
       {
+        "name": "assignment",
         "children": {
           "Colon": [
             {
-              "endOffset": 2,
+              "tokenTypeName": "Colon",
               "image": ":",
               "startOffset": 2,
-              "tokenTypeName": "Colon"
+              "endOffset": 2
             }
           ],
           "path": [
             {
+              "name": "path",
               "children": {
                 "pathSegment": [
                   {
+                    "name": "pathSegment",
                     "children": {
                       "Identifier": [
                         {
-                          "endOffset": 0,
+                          "tokenTypeName": "Identifier",
                           "image": "a",
                           "startOffset": 0,
-                          "tokenTypeName": "Identifier"
+                          "endOffset": 0
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 0,
-                      "startOffset": 0
-                    },
-                    "name": "pathSegment"
+                      "startOffset": 0,
+                      "endOffset": 0
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 0,
-                "startOffset": 0
-              },
-              "name": "path"
+                "startOffset": 0,
+                "endOffset": 0
+              }
             }
           ],
           "value": [
             {
+              "name": "value",
               "children": {
                 "Timestamp": [
                   {
-                    "endOffset": 30,
+                    "tokenTypeName": "Timestamp",
                     "image": "Timestamp'2020-03-23 23:34'",
                     "startOffset": 4,
-                    "tokenTypeName": "Timestamp"
+                    "endOffset": 30
                   }
                 ]
               },
               "location": {
-                "endOffset": 30,
-                "startOffset": 4
-              },
-              "name": "value"
+                "startOffset": 4,
+                "endOffset": 30
+              }
             }
           ]
         },
         "location": {
-          "endOffset": 30,
-          "startOffset": 0
-        },
-        "name": "assignment"
+          "startOffset": 0,
+          "endOffset": 30
+        }
       }
     ]
   },
   "location": {
-    "endOffset": 30,
-    "startOffset": 0
-  },
-  "name": "declaration"
+    "startOffset": 0,
+    "endOffset": 30
+  }
 }

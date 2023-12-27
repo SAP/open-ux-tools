@@ -1,96 +1,96 @@
 {
+  "name": "declaration",
   "children": {
     "assignment": [
       {
+        "name": "assignment",
         "children": {
           "Colon": [
             {
-              "endOffset": 2,
+              "tokenTypeName": "Colon",
               "image": ":",
               "startOffset": 2,
-              "tokenTypeName": "Colon"
+              "endOffset": 2
             }
           ],
           "path": [
             {
+              "name": "path",
               "children": {
                 "pathSegment": [
                   {
+                    "name": "pathSegment",
                     "children": {
                       "Identifier": [
                         {
-                          "endOffset": 0,
+                          "tokenTypeName": "Identifier",
                           "image": "a",
                           "startOffset": 0,
-                          "tokenTypeName": "Identifier"
+                          "endOffset": 0
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 0,
-                      "startOffset": 0
-                    },
-                    "name": "pathSegment"
+                      "startOffset": 0,
+                      "endOffset": 0
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 0,
-                "startOffset": 0
-              },
-              "name": "path"
+                "startOffset": 0,
+                "endOffset": 0
+              }
             }
           ],
           "value": [
             {
+              "name": "value",
               "children": {
                 "collection": [
                   {
+                    "name": "collection",
                     "children": {
                       "LBracket": [
                         {
-                          "endOffset": 4,
+                          "tokenTypeName": "LBracket",
                           "image": "[",
                           "startOffset": 4,
-                          "tokenTypeName": "LBracket"
+                          "endOffset": 4
                         }
                       ],
                       "RBracket": [
                         {
-                          "endOffset": 21,
+                          "tokenTypeName": "RBracket",
                           "image": "]",
                           "startOffset": 21,
-                          "tokenTypeName": "RBracket"
+                          "endOffset": 21
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 21,
-                      "startOffset": 4
-                    },
-                    "name": "collection"
+                      "startOffset": 4,
+                      "endOffset": 21
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 21,
-                "startOffset": 4
-              },
-              "name": "value"
+                "startOffset": 4,
+                "endOffset": 21
+              }
             }
           ]
         },
         "location": {
-          "endOffset": 21,
-          "startOffset": 0
-        },
-        "name": "assignment"
+          "startOffset": 0,
+          "endOffset": 21
+        }
       }
     ]
   },
   "location": {
-    "endOffset": 21,
-    "startOffset": 0
-  },
-  "name": "declaration"
+    "startOffset": 0,
+    "endOffset": 21
+  }
 }

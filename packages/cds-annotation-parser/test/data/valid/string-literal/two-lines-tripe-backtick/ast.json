@@ -1,39 +1,39 @@
 {
-  "colon": {
-    "range": "[(0,2)..(0,3)]",
-    "type": "token",
-    "value": ":"
-  },
+  "type": "annotation",
   "range": "[(0,0)..(0,14)]",
   "term": {
+    "type": "path",
     "range": "[(0,0)..(0,1)]",
+    "value": "a",
     "segments": [
       {
-        "quoted": false,
-        "range": "[(0,0)..(0,1)]",
         "type": "identifier",
-        "value": "a"
+        "range": "[(0,0)..(0,1)]",
+        "value": "a",
+        "quoted": false
       }
     ],
-    "separators": [],
-    "type": "path",
-    "value": "a"
+    "separators": []
   },
-  "type": "annotation",
+  "colon": {
+    "type": "token",
+    "range": "[(0,2)..(0,3)]",
+    "value": ":"
+  },
   "value": {
-    "closeToken": {
-      "range": "[(0,11)..(0,14)]",
-      "type": "token",
-      "value": "```"
-    },
-    "openToken": {
-      "range": "[(0,4)..(0,7)]",
-      "type": "token",
-      "value": "```"
-    },
+    "type": "multi-line-string",
     "range": "[(0,4)..(0,14)]",
     "stripIndentation": true,
-    "type": "multi-line-string",
-    "value": "a\\nb"
+    "value": "a\\nb",
+    "openToken": {
+      "type": "token",
+      "range": "[(0,4)..(0,7)]",
+      "value": "```"
+    },
+    "closeToken": {
+      "type": "token",
+      "range": "[(0,11)..(0,14)]",
+      "value": "```"
+    }
   }
 }

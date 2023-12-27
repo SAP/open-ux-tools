@@ -1,60 +1,60 @@
 {
-  "colon": {
-    "range": "[(0,4)..(0,5)]",
-    "type": "token",
-    "value": ":"
-  },
+  "type": "annotation",
   "range": "[(0,0)..(0,10)]",
   "term": {
+    "type": "path",
     "range": "[(0,0)..(0,4)]",
+    "value": "test",
     "segments": [
       {
-        "quoted": false,
-        "range": "[(0,0)..(0,4)]",
         "type": "identifier",
-        "value": "test"
+        "range": "[(0,0)..(0,4)]",
+        "value": "test",
+        "quoted": false
       }
     ],
-    "separators": [],
-    "type": "path",
-    "value": "test"
+    "separators": []
   },
-  "type": "annotation",
+  "colon": {
+    "type": "token",
+    "range": "[(0,4)..(0,5)]",
+    "value": ":"
+  },
   "value": {
-    "closeToken": {
-      "range": "[(0,9)..(0,10)]",
-      "type": "token",
-      "value": "]"
-    },
+    "type": "collection",
+    "range": "[(0,6)..(0,10)]",
+    "items": [
+      {
+        "type": "path",
+        "range": "[(0,8)..(0,9)]",
+        "value": "a",
+        "segments": [
+          {
+            "type": "identifier",
+            "range": "[(0,8)..(0,9)]",
+            "value": "a",
+            "quoted": false
+          }
+        ],
+        "separators": []
+      }
+    ],
     "commas": [
       {
-        "range": "[(0,7)..(0,8)]",
         "type": "token",
+        "range": "[(0,7)..(0,8)]",
         "value": ","
       }
     ],
-    "items": [
-      {
-        "range": "[(0,8)..(0,9)]",
-        "segments": [
-          {
-            "quoted": false,
-            "range": "[(0,8)..(0,9)]",
-            "type": "identifier",
-            "value": "a"
-          }
-        ],
-        "separators": [],
-        "type": "path",
-        "value": "a"
-      }
-    ],
     "openToken": {
-      "range": "[(0,6)..(0,7)]",
       "type": "token",
+      "range": "[(0,6)..(0,7)]",
       "value": "["
     },
-    "range": "[(0,6)..(0,10)]",
-    "type": "collection"
+    "closeToken": {
+      "type": "token",
+      "range": "[(0,9)..(0,10)]",
+      "value": "]"
+    }
   }
 }

@@ -1,104 +1,104 @@
 {
+  "name": "declaration",
   "children": {
     "assignment": [
       {
+        "name": "assignment",
         "children": {
           "Colon": [
             {
-              "endOffset": 4,
+              "tokenTypeName": "Colon",
               "image": ":",
               "startOffset": 4,
-              "tokenTypeName": "Colon"
+              "endOffset": 4
             }
           ],
           "path": [
             {
+              "name": "path",
               "children": {
                 "pathSegment": [
                   {
+                    "name": "pathSegment",
                     "children": {
                       "Identifier": [
                         {
-                          "endOffset": 3,
+                          "tokenTypeName": "Identifier",
                           "image": "test",
                           "startOffset": 0,
-                          "tokenTypeName": "Identifier"
+                          "endOffset": 3
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 3,
-                      "startOffset": 0
-                    },
-                    "name": "pathSegment"
+                      "startOffset": 0,
+                      "endOffset": 3
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 3,
-                "startOffset": 0
-              },
-              "name": "path"
+                "startOffset": 0,
+                "endOffset": 3
+              }
             }
           ],
           "value": [
             {
+              "name": "value",
               "children": {
                 "collection": [
                   {
+                    "name": "collection",
                     "children": {
                       "Comma": [
                         {
-                          "endOffset": 7,
+                          "tokenTypeName": "Comma",
                           "image": ",",
                           "startOffset": 7,
-                          "tokenTypeName": "Comma"
+                          "endOffset": 7
                         }
                       ],
                       "LBracket": [
                         {
-                          "endOffset": 6,
+                          "tokenTypeName": "LBracket",
                           "image": "[",
                           "startOffset": 6,
-                          "tokenTypeName": "LBracket"
+                          "endOffset": 6
                         }
                       ],
                       "RBracket": [
                         {
-                          "endOffset": 8,
+                          "tokenTypeName": "RBracket",
                           "image": "]",
                           "startOffset": 8,
-                          "tokenTypeName": "RBracket"
+                          "endOffset": 8
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 8,
-                      "startOffset": 6
-                    },
-                    "name": "collection"
+                      "startOffset": 6,
+                      "endOffset": 8
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 8,
-                "startOffset": 6
-              },
-              "name": "value"
+                "startOffset": 6,
+                "endOffset": 8
+              }
             }
           ]
         },
         "location": {
-          "endOffset": 8,
-          "startOffset": 0
-        },
-        "name": "assignment"
+          "startOffset": 0,
+          "endOffset": 8
+        }
       }
     ]
   },
   "location": {
-    "endOffset": 8,
-    "startOffset": 0
-  },
-  "name": "declaration"
+    "startOffset": 0,
+    "endOffset": 8
+  }
 }

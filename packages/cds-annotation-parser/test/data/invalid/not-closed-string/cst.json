@@ -1,100 +1,100 @@
 {
+  "name": "declaration",
+  "recoveredNode": true,
   "children": {
     "assignment": [
       {
+        "name": "assignment",
+        "recoveredNode": true,
         "children": {
           "Colon": [
             {
-              "endOffset": 5,
+              "tokenTypeName": "Colon",
               "image": ":",
               "startOffset": 5,
-              "tokenTypeName": "Colon"
+              "endOffset": 5
             }
           ],
           "path": [
             {
+              "name": "path",
               "children": {
                 "pathSegment": [
                   {
+                    "name": "pathSegment",
                     "children": {
                       "Identifier": [
                         {
-                          "endOffset": 3,
+                          "tokenTypeName": "Identifier",
                           "image": "Test",
                           "startOffset": 0,
-                          "tokenTypeName": "Identifier"
+                          "endOffset": 3
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 3,
-                      "startOffset": 0
-                    },
-                    "name": "pathSegment"
+                      "startOffset": 0,
+                      "endOffset": 3
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 3,
-                "startOffset": 0
-              },
-              "name": "path"
+                "startOffset": 0,
+                "endOffset": 3
+              }
             }
           ],
           "value": [
             {
+              "name": "value",
+              "recoveredNode": true,
               "children": {
                 "string": [
                   {
+                    "name": "string",
+                    "recoveredNode": true,
                     "children": {
                       "SingleQuote": [
                         {
-                          "endOffset": 7,
+                          "tokenTypeName": "SingleQuote",
                           "image": "'",
                           "startOffset": 7,
-                          "tokenTypeName": "SingleQuote"
+                          "endOffset": 7
                         }
                       ],
                       "String": [
                         {
-                          "endOffset": 10,
+                          "tokenTypeName": "String",
                           "image": "aaa",
                           "startOffset": 8,
-                          "tokenTypeName": "String"
+                          "endOffset": 10
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 10,
-                      "startOffset": 7
-                    },
-                    "name": "string",
-                    "recoveredNode": true
+                      "startOffset": 7,
+                      "endOffset": 10
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 10,
-                "startOffset": 7
-              },
-              "name": "value",
-              "recoveredNode": true
+                "startOffset": 7,
+                "endOffset": 10
+              }
             }
           ]
         },
         "location": {
-          "endOffset": 10,
-          "startOffset": 0
-        },
-        "name": "assignment",
-        "recoveredNode": true
+          "startOffset": 0,
+          "endOffset": 10
+        }
       }
     ]
   },
   "location": {
-    "endOffset": 10,
-    "startOffset": 0
-  },
-  "name": "declaration",
-  "recoveredNode": true
+    "startOffset": 0,
+    "endOffset": 10
+  }
 }

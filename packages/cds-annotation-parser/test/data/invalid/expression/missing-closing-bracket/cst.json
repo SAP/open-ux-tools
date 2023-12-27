@@ -1,141 +1,141 @@
 {
+  "name": "declaration",
+  "recoveredNode": true,
   "children": {
     "assignment": [
       {
+        "name": "assignment",
+        "recoveredNode": true,
         "children": {
           "Colon": [
             {
-              "endOffset": 4,
+              "tokenTypeName": "Colon",
               "image": ":",
               "startOffset": 4,
-              "tokenTypeName": "Colon"
+              "endOffset": 4
             }
           ],
           "path": [
             {
+              "name": "path",
               "children": {
                 "pathSegment": [
                   {
+                    "name": "pathSegment",
                     "children": {
                       "Identifier": [
                         {
-                          "endOffset": 3,
+                          "tokenTypeName": "Identifier",
                           "image": "test",
                           "startOffset": 0,
-                          "tokenTypeName": "Identifier"
+                          "endOffset": 3
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 3,
-                      "startOffset": 0
-                    },
-                    "name": "pathSegment"
+                      "startOffset": 0,
+                      "endOffset": 3
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 3,
-                "startOffset": 0
-              },
-              "name": "path"
+                "startOffset": 0,
+                "endOffset": 3
+              }
             }
           ],
           "value": [
             {
+              "name": "value",
+              "recoveredNode": true,
               "children": {
                 "expression": [
                   {
+                    "name": "expression",
+                    "recoveredNode": true,
                     "children": {
                       "LParen": [
                         {
-                          "endOffset": 6,
+                          "tokenTypeName": "LParen",
                           "image": "(",
                           "startOffset": 6,
-                          "tokenTypeName": "LParen"
+                          "endOffset": 6
                         }
                       ],
                       "Operator": [
                         {
-                          "endOffset": 10,
+                          "tokenTypeName": "Operator",
                           "image": "not",
                           "startOffset": 8,
-                          "tokenTypeName": "Operator"
+                          "endOffset": 10
                         }
                       ],
                       "value": [
                         {
+                          "name": "value",
                           "children": {
                             "path": [
                               {
+                                "name": "path",
                                 "children": {
                                   "pathSegment": [
                                     {
+                                      "name": "pathSegment",
                                       "children": {
                                         "Identifier": [
                                           {
-                                            "endOffset": 12,
+                                            "tokenTypeName": "Identifier",
                                             "image": "a",
                                             "startOffset": 12,
-                                            "tokenTypeName": "Identifier"
+                                            "endOffset": 12
                                           }
                                         ]
                                       },
                                       "location": {
-                                        "endOffset": 12,
-                                        "startOffset": 12
-                                      },
-                                      "name": "pathSegment"
+                                        "startOffset": 12,
+                                        "endOffset": 12
+                                      }
                                     }
                                   ]
                                 },
                                 "location": {
-                                  "endOffset": 12,
-                                  "startOffset": 12
-                                },
-                                "name": "path"
+                                  "startOffset": 12,
+                                  "endOffset": 12
+                                }
                               }
                             ]
                           },
                           "location": {
-                            "endOffset": 12,
-                            "startOffset": 12
-                          },
-                          "name": "value"
+                            "startOffset": 12,
+                            "endOffset": 12
+                          }
                         }
                       ]
                     },
                     "location": {
-                      "endOffset": 12,
-                      "startOffset": 6
-                    },
-                    "name": "expression",
-                    "recoveredNode": true
+                      "startOffset": 6,
+                      "endOffset": 12
+                    }
                   }
                 ]
               },
               "location": {
-                "endOffset": 12,
-                "startOffset": 6
-              },
-              "name": "value",
-              "recoveredNode": true
+                "startOffset": 6,
+                "endOffset": 12
+              }
             }
           ]
         },
         "location": {
-          "endOffset": 12,
-          "startOffset": 0
-        },
-        "name": "assignment",
-        "recoveredNode": true
+          "startOffset": 0,
+          "endOffset": 12
+        }
       }
     ]
   },
   "location": {
-    "endOffset": 12,
-    "startOffset": 0
-  },
-  "name": "declaration",
-  "recoveredNode": true
+    "startOffset": 0,
+    "endOffset": 12
+  }
 }

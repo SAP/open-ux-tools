@@ -1,88 +1,88 @@
 {
+  "type": "annotation-group",
+  "range": "[(0,0)..(2,32)]",
+  "name": {
+    "type": "identifier",
+    "range": "[(0,0)..(0,2)]",
+    "value": "UI",
+    "quoted": false
+  },
   "colon": {
-    "range": "[(0,2)..(0,3)]",
     "type": "token",
+    "range": "[(0,2)..(0,3)]",
     "value": ":"
   },
   "items": {
-    "commas": [],
+    "type": "annotation-group-items",
+    "range": "[(0,4)..(2,32)]",
+    "openToken": {
+      "type": "token",
+      "range": "[(0,4)..(0,5)]",
+      "value": "{"
+    },
     "items": [
       {
-        "colon": {
-          "range": "[(1,13)..(1,14)]",
-          "type": "token",
-          "value": ":"
-        },
+        "type": "annotation",
         "range": "[(1,4)..(2,19)]",
         "term": {
+          "type": "path",
           "range": "[(1,4)..(1,12)]",
+          "value": "LineItem",
           "segments": [
             {
-              "quoted": false,
-              "range": "[(1,4)..(1,12)]",
               "type": "identifier",
-              "value": "LineItem"
+              "range": "[(1,4)..(1,12)]",
+              "value": "LineItem",
+              "quoted": false
             }
           ],
-          "separators": [],
-          "type": "path",
-          "value": "LineItem"
+          "separators": []
         },
-        "type": "annotation",
+        "colon": {
+          "type": "token",
+          "range": "[(1,13)..(1,14)]",
+          "value": ":"
+        },
         "value": {
-          "range": "[(1,14)..(2,4)]",
-          "type": "empty-value"
+          "type": "empty-value",
+          "range": "[(1,14)..(2,4)]"
         }
       },
       {
-        "colon": {
-          "range": "[(2,20)..(2,21)]",
-          "type": "token",
-          "value": ":"
-        },
+        "type": "annotation",
         "range": "[(2,33)..(2,32)]",
         "term": {
-          "range": "[(2,33)..(2,20)]",
-          "segments": [],
-          "separators": [],
           "type": "path",
-          "value": ""
+          "range": "[(2,33)..(2,20)]",
+          "value": "",
+          "segments": [],
+          "separators": []
         },
-        "type": "annotation",
+        "colon": {
+          "type": "token",
+          "range": "[(2,20)..(2,21)]",
+          "value": ":"
+        },
         "value": {
+          "type": "enum",
+          "range": "[(2,22)..(2,32)]",
           "path": {
+            "type": "path",
             "range": "[(2,23)..(2,32)]",
+            "value": "TextFirst",
             "segments": [
               {
-                "quoted": false,
-                "range": "[(2,23)..(2,32)]",
                 "type": "identifier",
-                "value": "TextFirst"
+                "range": "[(2,23)..(2,32)]",
+                "value": "TextFirst",
+                "quoted": false
               }
             ],
-            "separators": [],
-            "type": "path",
-            "value": "TextFirst"
-          },
-          "range": "[(2,22)..(2,32)]",
-          "type": "enum"
+            "separators": []
+          }
         }
       }
     ],
-    "openToken": {
-      "range": "[(0,4)..(0,5)]",
-      "type": "token",
-      "value": "{"
-    },
-    "range": "[(0,4)..(2,32)]",
-    "type": "annotation-group-items"
-  },
-  "name": {
-    "quoted": false,
-    "range": "[(0,0)..(0,2)]",
-    "type": "identifier",
-    "value": "UI"
-  },
-  "range": "[(0,0)..(2,32)]",
-  "type": "annotation-group"
+    "commas": []
+  }
 }

@@ -1,94 +1,94 @@
 {
-  "colon": {
-    "range": "[(0,4)..(0,5)]",
-    "type": "token",
-    "value": ":"
-  },
+  "type": "annotation",
   "range": "[(0,0)..(0,19)]",
   "term": {
+    "type": "path",
     "range": "[(0,0)..(0,4)]",
+    "value": "test",
     "segments": [
       {
-        "quoted": false,
-        "range": "[(0,0)..(0,4)]",
         "type": "identifier",
-        "value": "test"
+        "range": "[(0,0)..(0,4)]",
+        "value": "test",
+        "quoted": false
       }
     ],
-    "separators": [],
-    "type": "path",
-    "value": "test"
+    "separators": []
   },
-  "type": "annotation",
+  "colon": {
+    "type": "token",
+    "range": "[(0,4)..(0,5)]",
+    "value": ":"
+  },
   "value": {
-    "openToken": {
-      "range": "[(0,6)..(0,7)]",
-      "type": "token",
-      "value": "("
-    },
-    "operands": [
-      {
-        "closeToken": {
-          "range": "[(0,18)..(0,19)]",
-          "type": "token",
-          "value": ")"
-        },
-        "openToken": {
-          "range": "[(0,11)..(0,12)]",
-          "type": "token",
-          "value": "("
-        },
-        "operands": [
-          {
-            "range": "[(0,12)..(0,13)]",
-            "segments": [
-              {
-                "quoted": false,
-                "range": "[(0,12)..(0,13)]",
-                "type": "identifier",
-                "value": "a"
-              }
-            ],
-            "separators": [],
-            "type": "path",
-            "value": "a"
-          },
-          {
-            "range": "[(0,17)..(0,18)]",
-            "segments": [
-              {
-                "quoted": false,
-                "range": "[(0,17)..(0,18)]",
-                "type": "identifier",
-                "value": "b"
-              }
-            ],
-            "separators": [],
-            "type": "path",
-            "value": "b"
-          }
-        ],
-        "operatorName": "or",
-        "operators": [
-          {
-            "range": "[(0,14)..(0,16)]",
-            "type": "operator",
-            "value": "OR"
-          }
-        ],
-        "range": "[(0,11)..(0,19)]",
-        "type": "correct-expression"
-      }
-    ],
+    "type": "correct-expression",
+    "range": "[(0,6)..(0,19)]",
     "operatorName": "not",
     "operators": [
       {
-        "range": "[(0,8)..(0,11)]",
         "type": "operator",
+        "range": "[(0,8)..(0,11)]",
         "value": "not"
       }
     ],
-    "range": "[(0,6)..(0,19)]",
-    "type": "correct-expression"
+    "operands": [
+      {
+        "type": "correct-expression",
+        "range": "[(0,11)..(0,19)]",
+        "operatorName": "or",
+        "operators": [
+          {
+            "type": "operator",
+            "range": "[(0,14)..(0,16)]",
+            "value": "OR"
+          }
+        ],
+        "operands": [
+          {
+            "type": "path",
+            "range": "[(0,12)..(0,13)]",
+            "value": "a",
+            "segments": [
+              {
+                "type": "identifier",
+                "range": "[(0,12)..(0,13)]",
+                "value": "a",
+                "quoted": false
+              }
+            ],
+            "separators": []
+          },
+          {
+            "type": "path",
+            "range": "[(0,17)..(0,18)]",
+            "value": "b",
+            "segments": [
+              {
+                "type": "identifier",
+                "range": "[(0,17)..(0,18)]",
+                "value": "b",
+                "quoted": false
+              }
+            ],
+            "separators": []
+          }
+        ],
+        "openToken": {
+          "type": "token",
+          "range": "[(0,11)..(0,12)]",
+          "value": "("
+        },
+        "closeToken": {
+          "type": "token",
+          "range": "[(0,18)..(0,19)]",
+          "value": ")"
+        }
+      }
+    ],
+    "openToken": {
+      "type": "token",
+      "range": "[(0,6)..(0,7)]",
+      "value": "("
+    }
   }
 }
