@@ -6,17 +6,17 @@ Test data can be found in `test/data` folder with sub-folders `valid` and `inval
 3. `ast.json` compact form of AST (Abstract Syntax Tree) for the given source text
 
 ### Writing a new test
-1. open a terminal and navigate to `packages/lib/cds-annotation-parser`
-2. type `yarn test:create <valid/folder/path/for/new/test>` in terminal. This will generate a folder or sub-folders under `test/data/valid` based on given folder path with a new file `assignment.txt`
+1. open a terminal and navigate to `packages/cds-annotation-parser`
+2. type `pnpm test:create <valid/folder/path/for/new/test>` in terminal. This will generate a folder or sub-folders under `test/data/valid` based on given folder path with a new file `assignment.txt`
 3. adjust CDS annotation assignment source text in newly generated `assignment.txt` under given folder path
-4. type `yarn test:update <valid/folder/path/for/new/test>` in terminal. This will generate respective `cst.json` and `ast.json`
-5. run test. `yarn test`
+4. type `pnpm test:update <valid/folder/path/for/new/test>` in terminal. This will generate respective `cst.json` and `ast.json`
+5. run test. `pnpm test`
 
 
 
 ### Tips
-* You can update `cst.json` or `ast.json` by this command: `yarn test:update valid/vocabulary-group cst` or. Replace `cst` with `ast` to update only `ast` of `vocabulary-group` test case
-* Run `yarn test:update` to generate `cst.json` and `ast.json` for all test cases
+* You can update `cst.json` or `ast.json` by this command: `pnpm test:update valid/vocabulary-group cst` or. Replace `cst` with `ast` to update only `ast` of `vocabulary-group` test case
+* Run `pnpm test:update` to generate `cst.json` and `ast.json` for all test cases
 * You can skip or run only a specific test cases or add todo test case by simply providing a folder path to test case in `skip`, `only` or `todo` array variable of `parser.test.ts`. i.e to run only `/valid/vocabulary-group`, we add this folder path to `only` like this:
     ```javascript
   const only: string[] = ['/valid/vocabulary-group'];
