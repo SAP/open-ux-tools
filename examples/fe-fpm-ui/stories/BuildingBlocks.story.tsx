@@ -1,9 +1,9 @@
-import { initIcons } from '@sap-ux/ui-components';
+import { UIDefaultButton, initIcons } from '@sap-ux/ui-components';
 import React from 'react';
 import type { Question } from '../src/components';
 import { Questions } from '../src/components';
 import { SupportedBuildingBlocks } from './utils';
-import { getChoices, getQuestions, getWebSocket } from './utils/communication';
+import { applyAnswers, getChoices, getQuestions, getWebSocket } from './utils/communication';
 import { ActionType, useReducedState } from './utils/state';
 
 export default { title: 'Building Blocks' };
@@ -13,7 +13,18 @@ getWebSocket();
 
 const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQuestions?: string[] }): JSX.Element => {
     const { type, visibleQuestions } = props;
-    const { answers, questions, updateAnswers, updateChoices, updateQuestions } = useReducedState(type);
+    const { answers, questions, updateAnswers, updateChoices, updateQuestions, resetAnswers } = useReducedState(type);
+    function handleApply() {
+        // Call API to apply changes
+        console.log('Applying changes... FPM Writer');
+
+        // resetAnswers(type);
+        applyAnswers(type, answers).then(({ buildingBlockType }) => {
+            resetAnswers(buildingBlockType);
+        });
+
+        // and also the choices
+    }
     React.useEffect(() => {
         getQuestions(type).then((newQuestions) => {
             if (visibleQuestions) {
@@ -26,21 +37,36 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
                 }
                 newQuestions = resolvedQuestions;
             }
-            console.log({ newQuestions });
             updateQuestions(newQuestions as Question[]);
         });
     }, []);
     return (
-        <Questions
-            questions={questions}
-            onChoiceRequest={(name: string) => {
-                getChoices(name, type, answers).then(({ name, choices }) => {
-                    updateChoices(name, choices);
-                });
-            }}
-            onChange={updateAnswers}
-            answers={answers || {}}
-        />
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'stretch',
+                flexDirection: 'column',
+                gap: '20px',
+                padding: '20px 10px',
+                maxWidth: '500px'
+            }}>
+            <Questions
+                questions={questions}
+                onChoiceRequest={(name: string) => {
+                    getChoices(name, type, answers).then(({ name, choices }) => {
+                        updateChoices(name, choices);
+                    });
+                }}
+                onChange={updateAnswers}
+                answers={answers || {}}
+            />
+            <div className="cta">
+                <UIDefaultButton primary={true} onClick={handleApply}>
+                    Apply
+                </UIDefaultButton>
+            </div>
+        </div>
     );
 };
 

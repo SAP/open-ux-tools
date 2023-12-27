@@ -7,7 +7,9 @@ export type Actions =
     | SetChartQuestions
     | SetFilterBarQuestions
     | GetChoices
-    | SetChoices;
+    | SetChoices
+    | ApplyAnswers
+    | ResetAnswers;
 
 export const GET_QUESTIONS = 'GET_QUESTIONS';
 export const SET_TABLE_QUESTIONS = 'SET_TABLE_QUESTIONS';
@@ -15,16 +17,29 @@ export const SET_CHART_QUESTIONS = 'SET_CHART_QUESTIONS';
 export const SET_FILTERBAR_QUESTIONS = 'SET_FILTERBAR_QUESTIONS';
 export const GET_CHOICES = 'GET_CHOICES';
 export const SET_CHOICES = 'SET_CHOICES';
+export const APPLY_ANSWERS = 'APPLY_ANSWERS';
+export const RESET_ANSWERS = 'RESET_ANSWERS';
 
 /**
  * Building block type.
  *
  * @enum {string}
  */
-export const enum SupportedBuildingBlocks {
+export enum SupportedBuildingBlocks {
     FilterBar = 'FilterBar',
     Chart = 'Chart',
     Table = 'Table'
+}
+
+export interface ApplyAnswers {
+    type: typeof APPLY_ANSWERS;
+    answers: unknown;
+    buildingBlockType: SupportedBuildingBlocks;
+}
+
+export interface ResetAnswers {
+    type: typeof RESET_ANSWERS;
+    buildingBlockType: SupportedBuildingBlocks;
 }
 
 export interface GetChoices {

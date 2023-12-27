@@ -18,9 +18,12 @@ import {
     SET_FILTERBAR_QUESTIONS,
     SupportedBuildingBlocks,
     GET_CHOICES,
-    SET_CHOICES
+    SET_CHOICES,
+    APPLY_ANSWERS,
+    RESET_ANSWERS
 } from '../../stories/utils/types';
-import type { Actions, SetChoices } from '../../stories/utils/types';
+import type { Actions, ResetAnswers, SetChoices } from '../../stories/utils/types';
+import { fpmWriterApi } from './writerApi';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 const testAppPath = join(__dirname, '../../../fe-fpm-cli/test-output/fe-app', `${Date.now()}`);
@@ -75,9 +78,9 @@ export function sendMessage(action: Actions): void {
 }
 
 async function handleAction(action: Actions): Promise<void> {
+    const fs = await getEditor();
     switch (action.type) {
         case GET_QUESTIONS: {
-            const fs = await getEditor();
             let responseAction: Actions | undefined;
             if (action.value === SupportedBuildingBlocks.Table) {
                 const prompts = await getTableBuildingBlockPrompts(testAppPath, fs);
@@ -99,12 +102,24 @@ async function handleAction(action: Actions): Promise<void> {
         }
         case GET_CHOICES: {
             const { name, buildingBlockType, answers } = action;
-            const choices = await getBuildingBlockChoices(buildingBlockType, name, answers, sampleAppPath);
+            const choices = await getBuildingBlockChoices(buildingBlockType, name, answers, testAppPath);
 
             const responseAction: SetChoices = {
                 type: SET_CHOICES,
                 name,
                 choices
+            };
+            sendMessage(responseAction);
+            break;
+        }
+        case APPLY_ANSWERS: {
+            const { answers, buildingBlockType /* projectRoot */ } = action;
+            const _fs = fpmWriterApi(buildingBlockType as any, answers as any, testAppPath, fs);
+            console.log(testAppPath);
+            await promisify(_fs.commit).call(_fs);
+            const responseAction: ResetAnswers = {
+                type: RESET_ANSWERS,
+                buildingBlockType
             };
             sendMessage(responseAction);
             break;

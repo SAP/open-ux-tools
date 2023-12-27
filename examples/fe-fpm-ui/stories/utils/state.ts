@@ -13,13 +13,13 @@ export enum ActionType {
     UPDATE_QUESTIONS = 'UPDATE_QUESTIONS',
     UPDATE_ANSWERS = 'UPDATE_ANSWERS',
     UPDATE_CHOICES = 'UPDATE_CHOICES',
-    REFRESH_CHOICES = 'REFRESH_CHOICES'
+    REFRESH_CHOICES = 'REFRESH_CHOICES',
+    RESET_ANSWERS = 'RESET_ANSWERS'
 }
 
-type Actions = RefreshChoices | UpdateAnswers | UpdateQuestions | UpdateChoices;
+type Actions = RefreshChoices | UpdateAnswers | UpdateQuestions | UpdateChoices | ResetAnswers;
 
-// function reducer(state: State, action: Actions) {
-const reducer: React.Reducer<State, Actions> = (state, action): State => {
+function reducer(state: State, action: Actions): State {
     switch (action.type) {
         case ActionType.UPDATE_QUESTIONS:
             return {
@@ -54,11 +54,14 @@ const reducer: React.Reducer<State, Actions> = (state, action): State => {
             getChoices(name, buildingBlockType, state.answers).then(({ choices }) => updateChoicesFn(choices));
             return state;
         }
+        case ActionType.RESET_ANSWERS:
+            return { ...state, answers: {} };
+
         default:
             // return state;
             throw new Error('Unsupported action type');
     }
-};
+}
 
 const initialState: State = {
     questions: [],
@@ -90,7 +93,11 @@ export function useReducedState(type: SupportedBuildingBlocks) {
             dispatch(refreshChoices(name, type, updateChoices));
         });
     }
-    return { questions, answers, updateQuestions, updateChoices, updateAnswers };
+
+    function resetAnswers(buildingBlockType: SupportedBuildingBlocks) {
+        dispatch(resetAnswersAction(buildingBlockType));
+    }
+    return { questions, answers, updateQuestions, updateChoices, updateAnswers, resetAnswers };
 }
 
 interface RefreshChoices {
@@ -144,4 +151,15 @@ interface UpdateChoices {
 }
 function updateChoicesAction(name: string, choices: unknown[]): UpdateChoices {
     return { type: ActionType.UPDATE_CHOICES, name, choices };
+}
+
+interface ResetAnswers {
+    type: ActionType.RESET_ANSWERS;
+    buildingBlockType: SupportedBuildingBlocks;
+}
+function resetAnswersAction(buildingBlockType: SupportedBuildingBlocks): ResetAnswers {
+    return {
+        type: ActionType.RESET_ANSWERS,
+        buildingBlockType
+    };
 }

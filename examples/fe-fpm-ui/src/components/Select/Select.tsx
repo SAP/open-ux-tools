@@ -16,6 +16,9 @@ export const Select = (props: SelectProps) => {
     const { name = '', choices, onChoiceRequest, message, onChange, dependantPromptNames } = props;
     const [value, setValue] = useValue('', props.value);
     let options: UIComboBoxOption[] = [];
+    // TODO: come up with better logic to handle required vs non-required
+    const isRequired = !!((dependantPromptNames && dependantPromptNames.length > 0) || props.selectType === 'dynamic');
+
     if (Array.isArray(choices)) {
         options =
             choices?.map((choice) => {
@@ -36,6 +39,7 @@ export const Select = (props: SelectProps) => {
             allowFreeform={true}
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
+            required={isRequired}
             selectedKey={value}
             onChange={(_, option) => {
                 setValue(option?.key ?? '');

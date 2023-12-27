@@ -7,7 +7,9 @@ import {
     GetQuestions,
     SupportedBuildingBlocks,
     GET_CHOICES,
-    SET_CHOICES
+    SET_CHOICES,
+    RESET_ANSWERS,
+    APPLY_ANSWERS
 } from './types';
 import type { Actions, GetChoices } from './types';
 
@@ -105,9 +107,6 @@ export function getChoices(
         };
         sendMessage(getAction);
         const expectedActionType = SET_CHOICES;
-        // if (!expectedActionType) {
-        //     return error('Unsupported type');
-        // }
         const handleMessage = (action: Actions) => {
             if ('name' in action && 'choices' in action && Array.isArray(action.choices)) {
                 onMessageDetach(expectedActionType, handleMessage);
@@ -118,5 +117,30 @@ export function getChoices(
             }
         };
         onMessageAttach(SET_CHOICES, handleMessage);
+    });
+}
+export function applyAnswers(
+    buildingBlockType: SupportedBuildingBlocks,
+    answers: unknown
+): Promise<{ buildingBlockType: SupportedBuildingBlocks }> {
+    return new Promise((resolve, error) => {
+        const getAction = {
+            type: APPLY_ANSWERS,
+            answers,
+            buildingBlockType
+        };
+        sendMessage(getAction);
+        const expectedActionType = RESET_ANSWERS;
+
+        const handleMessage = (action: Actions) => {
+            console.log('handling');
+            if ('buildingBlockType' in action) {
+                onMessageDetach(expectedActionType, handleMessage);
+                resolve({
+                    buildingBlockType: action.buildingBlockType
+                });
+            }
+        };
+        onMessageAttach(RESET_ANSWERS, handleMessage);
     });
 }
