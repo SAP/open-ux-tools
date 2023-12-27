@@ -34,27 +34,5 @@
     },
     "files": [
         "dist/"
-    ],
-    "jestSonar": {
-        "reportPath": "reports/test/unit",
-        "reportFile": "test-report.xml"
-    },
-    "eslint-formatter-multiple": {
-        "formatters": [
-            {
-                "name": "stylish",
-                "output": "console"
-            },
-            {
-                "name": "json",
-                "output": "file",
-                "path": "reports/lint/eslint.json"
-            },
-            {
-                "name": "checkstyle",
-                "output": "file",
-                "path": "reports/lint/eslint.checkstyle.xml"
-            }
-        ]
-    }
+    ]
 }
