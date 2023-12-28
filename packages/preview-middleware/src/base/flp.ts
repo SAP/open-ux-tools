@@ -205,13 +205,14 @@ export class FlpSandbox {
         });
         this.addStandardRoutes();
         if (this.rta) {
+            const appTitle = manifest['sap.app'].title;
             this.rta.options ??= {};
             this.rta.options.baseId = componentId ?? id;
-            this.rta.options.appName = manifest['sap.app'].title ?? id;
+            this.rta.options.appName = appTitle === '{{appTitle}}' ? 'My Application' : appTitle || id;
             this.addEditorRoutes(this.rta);
         }
         this.addRoutesForAdditionalApps();
-        this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
+        this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
 
@@ -269,7 +270,7 @@ export class FlpSandbox {
                     const html = render(template, {
                         previewUrl: templatePreviewUrl,
                         telemetry: rta.options?.telemetry ?? false,
-                        appName: rta.options?.appName ?? '',
+                        appName: rta.options?.appName,
                         scenario
                     });
                     res.status(200).contentType('html').send(html);
