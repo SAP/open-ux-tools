@@ -1,5 +1,7 @@
 import type { FilterBarPromptsAnswer, ChartPromptsAnswer, TablePromptsAnswer } from '@sap-ux/fe-fpm-writer';
 import type { Question, Answers } from 'inquirer';
+import type { AddonActions } from './types/addon-types';
+export * from './types/addon-types';
 
 export type Actions =
     | GetQuestions
@@ -9,7 +11,8 @@ export type Actions =
     | GetChoices
     | SetChoices
     | ApplyAnswers
-    | ResetAnswers;
+    | ResetAnswers
+    | AddonActions;
 
 export const GET_QUESTIONS = 'GET_QUESTIONS';
 export const SET_TABLE_QUESTIONS = 'SET_TABLE_QUESTIONS';

@@ -9,9 +9,13 @@ import {
     GET_CHOICES,
     SET_CHOICES,
     RESET_ANSWERS,
-    APPLY_ANSWERS
+    APPLY_ANSWERS,
+    GET_PROJECT_PATH,
+    SET_PROJECT_PATH,
+    UPDATE_PROJECT_PATH,
+    UPDATE_PROJECT_PATH_RESULT
 } from './types';
-import type { Actions, GetChoices } from './types';
+import type { Actions, GetChoices, GetProjectPath, UpdateProjectPath, UpdateProjectPathResultPayload } from './types';
 
 let ws: WebSocket | undefined;
 
@@ -142,5 +146,38 @@ export function applyAnswers(
             }
         };
         onMessageAttach(RESET_ANSWERS, handleMessage);
+    });
+}
+
+export function getProjectPath(): Promise<string> {
+    return new Promise((resolve) => {
+        const getAction: GetProjectPath = {
+            type: GET_PROJECT_PATH
+        };
+        sendMessage(getAction);
+        const handleMessage = (action: Actions) => {
+            if (action.type === SET_PROJECT_PATH) {
+                resolve(action.path);
+            }
+            onMessageDetach(SET_PROJECT_PATH, handleMessage);
+        };
+        onMessageAttach(SET_PROJECT_PATH, handleMessage);
+    });
+}
+
+export function updateProjectPath(path: string): Promise<UpdateProjectPathResultPayload> {
+    return new Promise((resolve) => {
+        const action: UpdateProjectPath = {
+            type: UPDATE_PROJECT_PATH,
+            path
+        };
+        sendMessage(action);
+        const handleMessage = (responseAction: Actions) => {
+            if (responseAction.type === UPDATE_PROJECT_PATH_RESULT) {
+                resolve(responseAction);
+            }
+            onMessageDetach(UPDATE_PROJECT_PATH_RESULT, handleMessage);
+        };
+        onMessageAttach(UPDATE_PROJECT_PATH_RESULT, handleMessage);
     });
 }

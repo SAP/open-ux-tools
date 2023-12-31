@@ -31,7 +31,7 @@
         "build:storybook": "storybook build -o ./storybook",
         "test": "jest --ci --forceExit --colors --silent",
         "test-u": "jest --ci --forceExit --colors  --silent -u",
-        "dev": "nodemon --exec 'pnpm storybook -p 60648 --no-open' -w '.storybook/*' -e 'ts'"
+        "dev": "nodemon --exec \"pnpm storybook -p 60648 --no-open\" -w \".storybook/*\" -e \"ts,tsx\""
     },
     "dependencies": {
         "@sap-ux/ui-components": "workspace:*",
@@ -48,6 +48,8 @@
         "@babel/preset-react": "7.22.15",
         "@babel/preset-typescript": "7.22.15",
         "@sap-ux/fe-fpm-writer": "workspace:*",
+        "@storybook/addons": "7.4.3",
+        "@storybook/components": "7.4.3",
         "@storybook/react": "7.4.3",
         "@storybook/react-webpack5": "7.4.3",
         "@testing-library/jest-dom": "5.17.0",
