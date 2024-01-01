@@ -1,4 +1,4 @@
-export type AddonActions = GetProjectPath | SetProjectPath | UpdateProjectPath | UpdateProjectPathResult;
+export type ProjectActions = GetProjectPath | SetProjectPath | UpdateProjectPath | UpdateProjectPathResult;
 
 export const GET_PROJECT_PATH = 'GET_PROJECT_PATH';
 export const UPDATE_PROJECT_PATH = 'UPDATE_PROJECT_PATH';

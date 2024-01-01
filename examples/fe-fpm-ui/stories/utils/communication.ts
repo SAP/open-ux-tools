@@ -9,13 +9,20 @@ import {
     GET_CHOICES,
     SET_CHOICES,
     RESET_ANSWERS,
-    APPLY_ANSWERS,
+    APPLY_ANSWERS
+} from './types';
+import type { Actions, GetChoices } from './types';
+import {
     GET_PROJECT_PATH,
     SET_PROJECT_PATH,
     UPDATE_PROJECT_PATH,
     UPDATE_PROJECT_PATH_RESULT
-} from './types';
-import type { Actions, GetChoices, GetProjectPath, UpdateProjectPath, UpdateProjectPathResultPayload } from './types';
+} from '../../.storybook/addons/project/types';
+import type {
+    GetProjectPath,
+    UpdateProjectPath,
+    UpdateProjectPathResultPayload
+} from '../../.storybook/addons/project/types';
 
 let ws: WebSocket | undefined;
 

@@ -6,7 +6,6 @@ import {
     getBuildingBlockChoices
 } from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'util';
-import { existsSync } from 'fs';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -21,19 +20,15 @@ import {
     GET_CHOICES,
     SET_CHOICES,
     APPLY_ANSWERS,
-    RESET_ANSWERS,
-    GET_PROJECT_PATH,
-    SET_PROJECT_PATH,
-    SetProjectPath,
-    UPDATE_PROJECT_PATH,
-    UPDATE_PROJECT_PATH_RESULT
+    RESET_ANSWERS
 } from '../../stories/utils/types';
-import type { Actions, ResetAnswers, SetChoices, UpdateProjectPathResult } from '../../stories/utils/types';
+import type { Actions, ResetAnswers, SetChoices } from '../../stories/utils/types';
 import { fpmWriterApi } from './writerApi';
+import { getProjectPath, testAppPath } from '../addons/project';
+import { handleAction as handleAddonAction } from '../addons/actions';
+import { AddonActions } from '../addons/types';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
-const testAppPath = join(__dirname, '../../../fe-fpm-cli/test-output/fe-app', `${Date.now()}`);
-let currentAppPath = testAppPath;
 
 let fsEditor: Editor | undefined;
 let connections: WebSocket[] = [];
@@ -43,13 +38,13 @@ let connections: WebSocket[] = [];
  *
  * @returns {Promise<Editor>} the memfs editor object
  */
-async function getEditor(forceUpdate = false): Promise<Editor> {
+export async function getEditor(forceUpdate = false): Promise<Editor> {
     if (fsEditor && !forceUpdate) {
         return fsEditor;
     }
     fsEditor = create(createStorage());
 
-    if (testAppPath === currentAppPath) {
+    if (testAppPath === getProjectPath()) {
         fsEditor.copy([join(sampleAppPath)], join(testAppPath));
     }
 
@@ -79,7 +74,7 @@ export async function createWebSocketConnection(): Promise<void> {
     });
 }
 
-export function sendMessage(action: Actions): void {
+function sendMessage(action: Actions): void {
     if (!connections.length) {
         return;
     }
@@ -88,8 +83,24 @@ export function sendMessage(action: Actions): void {
     }
 }
 
+export const validateProject = async (): Promise<string | undefined> => {
+    try {
+        const fs = await getEditor(true);
+        const currentAppPath = getProjectPath();
+        // Call API to get table questions - it should validate of path is supported
+        const questions = await getTableBuildingBlockPrompts(currentAppPath, fs);
+        const entityQuestion = questions.find((question) => question.name === 'entity');
+        if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
+            await entityQuestion.choices();
+        }
+    } catch (e) {
+        return `Error: ${e.message || e}`;
+    }
+};
+
 async function handleAction(action: Actions): Promise<void> {
     let fs = await getEditor();
+    const currentAppPath = getProjectPath();
     switch (action.type) {
         case GET_QUESTIONS: {
             let responseAction: Actions | undefined;
@@ -135,44 +146,10 @@ async function handleAction(action: Actions): Promise<void> {
             sendMessage(responseAction);
             break;
         }
-        case GET_PROJECT_PATH: {
-            const responseAction: SetProjectPath = {
-                type: SET_PROJECT_PATH,
-                path: currentAppPath
-            };
-            sendMessage(responseAction);
-            break;
-        }
-        case UPDATE_PROJECT_PATH: {
-            let newProjectPath = action.path ? join(action.path) : testAppPath;
-            let message: string | undefined;
-            try {
-                if (action.path && !existsSync(newProjectPath)) {
-                    message = 'Provided path does not exist';
-                }
-                // Reset fs
-                if (!message) {
-                    currentAppPath = newProjectPath;
-                }
-                fs = await getEditor(true);
-                // Call API to get table questions - it should validate of path is supported
-                const questions = await getTableBuildingBlockPrompts(currentAppPath, fs);
-                const entityQuestion = questions.find((question) => question.name === 'entity');
-                if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
-                    await entityQuestion.choices();
-                }
-            } catch (e) {
-                message = `Error: ${e.message || e}`;
-                console.log(e);
-            }
-            const responseAction: UpdateProjectPathResult = {
-                type: UPDATE_PROJECT_PATH_RESULT,
-                saved: !message,
-                message,
-                path: !message ? currentAppPath : undefined
-            };
-            sendMessage(responseAction);
-            break;
-        }
+    }
+    // Handle addon actions
+    const addonResponseAction = await handleAddonAction(action as AddonActions);
+    if (addonResponseAction) {
+        sendMessage(addonResponseAction);
     }
 }

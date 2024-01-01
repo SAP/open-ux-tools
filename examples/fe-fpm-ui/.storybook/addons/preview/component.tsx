@@ -1,5 +1,5 @@
 import React from 'react';
-import { AddonPanel, Code } from '@storybook/components';
+import { AddonPanel, Code, SyntaxHighlighter } from '@storybook/components';
 
 export const render = (props: { active?: boolean }): React.ReactElement => {
     const { active = false } = props;
@@ -11,6 +11,7 @@ export const render = (props: { active?: boolean }): React.ReactElement => {
     </Page>
 </mvc:View>`;
     return <AddonPanel key="panel" active={active}>
+        <SyntaxHighlighter language='html'>{dummyCode}</SyntaxHighlighter>
         <Code>{dummyCode}</Code>
     </AddonPanel>
 }
