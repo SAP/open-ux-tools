@@ -13,14 +13,24 @@ import {
     GET_PROJECT_PATH,
     SET_PROJECT_PATH,
     UPDATE_PROJECT_PATH,
-    UPDATE_PROJECT_PATH_RESULT
+    UPDATE_PROJECT_PATH_RESULT,
+    GET_CODE_SNIPPET,
+    UPDATE_CODE_SNIPPET
 } from './types';
-import type { Actions, GetChoices, GetProjectPath, UpdateProjectPath, UpdateProjectPathResultPayload } from './types';
+import type {
+    Actions,
+    GetChoices,
+    GetCodeSnippet,
+    GetProjectPath,
+    UpdateCodeSnippetPayload,
+    UpdateProjectPath,
+    UpdateProjectPathResultPayload
+} from './types';
 
 let ws: WebSocket | undefined;
 
-export type LIstener = (action: Actions) => void;
-const listeners: { [key: string]: LIstener[] } = {};
+export type Listener = (action: Actions) => void;
+const listeners: { [key: string]: Listener[] } = {};
 export function getWebSocket(): WebSocket {
     if (!ws) {
         // Connect to the WebSocket server from the preview
@@ -56,14 +66,14 @@ export function sendMessage(action: unknown): void {
     });
 }
 
-export function onMessageAttach(type: string, listener: LIstener): void {
+export function onMessageAttach(type: string, listener: Listener): void {
     if (!listeners[type]) {
         listeners[type] = [];
     }
     listeners[type].push(listener);
 }
 
-export function onMessageDetach(type: string, listener: LIstener): void {
+export function onMessageDetach(type: string, listener: Listener): void {
     if (listeners[type]) {
         const index = listeners[type].indexOf(listener);
         listeners[type].splice(index, 1);
@@ -179,5 +189,26 @@ export function updateProjectPath(path: string): Promise<UpdateProjectPathResult
             onMessageDetach(UPDATE_PROJECT_PATH_RESULT, handleMessage);
         };
         onMessageAttach(UPDATE_PROJECT_PATH_RESULT, handleMessage);
+    });
+}
+
+export function getCodeSnippet(
+    buildingBlockType: SupportedBuildingBlocks,
+    answers: unknown
+): Promise<UpdateCodeSnippetPayload> {
+    return new Promise((resolve) => {
+        const action: GetCodeSnippet = {
+            type: GET_CODE_SNIPPET,
+            buildingBlockType,
+            answers
+        };
+        sendMessage(action);
+        const handleMessage = (responseAction: Actions) => {
+            if (responseAction.type === UPDATE_CODE_SNIPPET) {
+                resolve(responseAction);
+            }
+            onMessageDetach(UPDATE_CODE_SNIPPET, handleMessage);
+        };
+        onMessageAttach(UPDATE_CODE_SNIPPET, handleMessage);
     });
 }

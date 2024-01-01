@@ -1,5 +1,8 @@
-import React from 'react';
-import { AddonPanel, Code } from '@storybook/components';
+import React, { useState } from 'react';
+import { AddonPanel, Button, Code } from '@storybook/components';
+import { SupportedBuildingBlocks, getCodeSnippet, getWebSocket } from '../../../stories/utils';
+
+getWebSocket();
 
 export const render = (props: { active?: boolean }): React.ReactElement => {
     const { active = false } = props;
@@ -10,7 +13,20 @@ export const render = (props: { active?: boolean }): React.ReactElement => {
         <content />
     </Page>
 </mvc:View>`;
-    return <AddonPanel key="panel" active={active}>
-        <Code>{dummyCode}</Code>
-    </AddonPanel>
-}
+    const [code, setCode] = useState(dummyCode);
+
+    function handleRefresh() {
+        // TODO - communicate with the main panel to get the answers
+        getCodeSnippet(SupportedBuildingBlocks.Table, {}).then(({ codeSnippet }) => {
+            setCode(codeSnippet ?? dummyCode);
+        });
+    }
+    return (
+        <AddonPanel key="panel" active={active}>
+            <Button type="submit" onClick={handleRefresh}>
+                Refresh
+            </Button>
+            <Code>{code}</Code>
+        </AddonPanel>
+    );
+};

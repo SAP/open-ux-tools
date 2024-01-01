@@ -160,3 +160,43 @@ function updateViewFile(
     }
     return fs;
 }
+
+/**
+ * Gets the serialized content of the updated view file.
+ *
+ * @param {string} basePath - The base path
+ * @param {BuildingBlockConfig} config - The building block configuration
+ * @param {Editor} [fs] - The memfs editor instance
+ * @returns {string} The serialized content of the updated view file
+ */
+export function getSerializedFileContent<T extends BuildingBlock>(
+    basePath: string,
+    config: BuildingBlockConfig<T>,
+    fs: Editor
+): string {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    validateBasePath(basePath, fs);
+    if (!fs.exists(join(basePath, config.viewOrFragmentPath))) {
+        throw new Error(`Invalid view path ${config.viewOrFragmentPath}.`);
+    }
+
+    // Read the view xml and template files and update contents of the view xml file
+    const xmlDocument = getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs);
+    const templateDocument = getTemplateDocument(config.buildingBlockData, xmlDocument, fs);
+    const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
+
+    // Find target aggregated element and append template as child
+    const targetNodes = xpathSelect(config.aggregationPath, xmlDocument);
+    if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
+        const targetNode = targetNodes[0] as Node;
+        const sourceNode = xmlDocument.importNode(templateDocument.documentElement, true);
+        targetNode.appendChild(sourceNode);
+
+        // Serialize and format new view xml document
+        return new XMLSerializer().serializeToString(xmlDocument);
+    } else {
+        throw new Error(`Aggregation control not found ${config.aggregationPath}.`);
+    }
+}

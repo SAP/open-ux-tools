@@ -26,10 +26,18 @@ import {
     SET_PROJECT_PATH,
     SetProjectPath,
     UPDATE_PROJECT_PATH,
-    UPDATE_PROJECT_PATH_RESULT
+    UPDATE_PROJECT_PATH_RESULT,
+    UPDATE_CODE_SNIPPET,
+    UpdateCodeSnippet
 } from '../../stories/utils/types';
-import type { Actions, ResetAnswers, SetChoices, UpdateProjectPathResult } from '../../stories/utils/types';
-import { fpmWriterApi } from './writerApi';
+import {
+    Actions,
+    GET_CODE_SNIPPET,
+    ResetAnswers,
+    SetChoices,
+    UpdateProjectPathResult
+} from '../../stories/utils/types';
+import { fpmWriterApi, getSerializeContent } from './writerApi';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 const testAppPath = join(__dirname, '../../../fe-fpm-cli/test-output/fe-app', `${Date.now()}`);
@@ -124,7 +132,7 @@ async function handleAction(action: Actions): Promise<void> {
             break;
         }
         case APPLY_ANSWERS: {
-            const { answers, buildingBlockType /* projectRoot */ } = action;
+            const { answers, buildingBlockType /*, projectRoot */ } = action;
             const _fs = fpmWriterApi(buildingBlockType as any, answers as any, currentAppPath, fs);
             console.log(currentAppPath);
             await promisify(_fs.commit).call(_fs);
@@ -170,6 +178,17 @@ async function handleAction(action: Actions): Promise<void> {
                 saved: !message,
                 message,
                 path: !message ? currentAppPath : undefined
+            };
+            sendMessage(responseAction);
+            break;
+        }
+        case GET_CODE_SNIPPET: {
+            const { answers, buildingBlockType /*, projectRoot */ } = action;
+            const codeSnippet = getSerializeContent(buildingBlockType as any, answers as any, currentAppPath, fs);
+            const responseAction: UpdateCodeSnippet = {
+                type: UPDATE_CODE_SNIPPET,
+                buildingBlockType,
+                codeSnippet
             };
             sendMessage(responseAction);
             break;

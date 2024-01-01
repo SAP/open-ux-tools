@@ -17,12 +17,9 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
         // Call API to apply changes
         console.log('Applying changes... FPM Writer');
 
-        // resetAnswers(type);
         applyAnswers(type, answers).then(({ buildingBlockType }) => {
-            resetAnswers(buildingBlockType);
+            // resetAnswers(buildingBlockType);
         });
-
-        // and also the choices
     }
     React.useEffect(() => {
         getQuestions(type).then((newQuestions) => {

@@ -21,7 +21,7 @@ export { enableFPM, FPMConfig } from './app';
 export { validateBasePath, validateVersion } from './common/validate';
 
 export { BuildingBlockType, FilterBar, Chart, Field, FieldFormatOptions, Table } from './building-block/types';
-export { generateBuildingBlock } from './building-block';
+export { generateBuildingBlock, getSerializedFileContent } from './building-block';
 export {
     BuildingBlockTypePromptsAnswer,
     ChartPromptsAnswer,

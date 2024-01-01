@@ -12,7 +12,9 @@ export type Actions =
     | SetChoices
     | ApplyAnswers
     | ResetAnswers
-    | AddonActions;
+    | AddonActions
+    | GetCodeSnippet
+    | UpdateCodeSnippet;
 
 export const GET_QUESTIONS = 'GET_QUESTIONS';
 export const SET_TABLE_QUESTIONS = 'SET_TABLE_QUESTIONS';
@@ -78,4 +80,21 @@ export interface SetChartQuestions extends SetQuestions<ChartPromptsAnswer> {
 
 export interface SetFilterBarQuestions extends SetQuestions<FilterBarPromptsAnswer> {
     type: typeof SET_FILTERBAR_QUESTIONS;
+}
+
+// Move to addon?
+export const GET_CODE_SNIPPET = 'GET_CODE_SNIPPET';
+export const UPDATE_CODE_SNIPPET = 'UPDATE_CODE_SNIPPET';
+export interface GetCodeSnippet {
+    type: typeof GET_CODE_SNIPPET;
+    buildingBlockType: SupportedBuildingBlocks;
+    answers: unknown;
+}
+
+export interface UpdateCodeSnippetPayload {
+    buildingBlockType: SupportedBuildingBlocks;
+    codeSnippet: string;
+}
+export interface UpdateCodeSnippet extends UpdateCodeSnippetPayload {
+    type: typeof UPDATE_CODE_SNIPPET;
 }

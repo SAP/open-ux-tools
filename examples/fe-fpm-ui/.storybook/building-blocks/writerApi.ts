@@ -3,7 +3,8 @@ import {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,
     TablePromptsAnswer,
-    generateBuildingBlock
+    generateBuildingBlock,
+    getSerializedFileContent
 } from '@sap-ux/fe-fpm-writer';
 import { BuildingBlockConfig } from '@sap-ux/fe-fpm-writer/dist/building-block/types';
 import { Editor } from 'mem-fs-editor';
@@ -107,3 +108,17 @@ export const fpmWriterApi = <T extends TablePromptsAnswer | FilterBarPromptsAnsw
     fs = generateBuildingBlock(basePath, configData, fs);
     return fs;
 };
+
+export function getSerializeContent<T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
+    buildingBlockType: BuildingBlockType,
+    answers: T,
+    basePath: string,
+    fs: Editor
+) {
+    const getConfigData = configDataGetters(buildingBlockType);
+    if (!getConfigData) {
+        throw new Error(`No writer found for building block type: ${buildingBlockType}`);
+    }
+    const configData = getConfigData(answers, basePath);
+    return getSerializedFileContent(basePath, configData, fs);
+}
