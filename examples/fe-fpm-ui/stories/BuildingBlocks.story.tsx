@@ -1,7 +1,7 @@
 import { UIDefaultButton, initIcons } from '@sap-ux/ui-components';
 import React from 'react';
 import { SupportedBuildingBlocks } from './utils';
-import { applyAnswers, getChoices, getQuestions, getWebSocket } from './utils/communication';
+import { applyAnswers, getChoices, getCodeSnippet, getQuestions, getWebSocket } from './utils/communication';
 import { ActionType, useReducedState } from './utils/state';
 import { Questions } from '../src/components';
 
@@ -21,6 +21,14 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
             // resetAnswers(buildingBlockType);
         });
     }
+    const [codeSnippet, setCodeSnippet] = React.useState('');
+
+    function handleGetCodeSnippet() {
+        getCodeSnippet(type, answers).then(({ codeSnippet }) => {
+            setCodeSnippet(codeSnippet);
+        });
+    }
+
     React.useEffect(() => {
         getQuestions(type).then((newQuestions) => {
             if (visibleQuestions) {
@@ -44,31 +52,52 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
         });
     }, []);
     return (
-        <div
-            style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'stretch',
-                flexDirection: 'column',
-                gap: '20px',
-                padding: '20px 10px',
-                maxWidth: '500px'
-            }}>
-            <Questions
-                questions={questions}
-                onChoiceRequest={(name: string) => {
-                    getChoices(name, type, answers).then(({ name, choices }) => {
-                        updateChoices(name, choices);
-                    });
-                }}
-                onChange={updateAnswers}
-                answers={answers || {}}
-            />
-            {/* Disable the button if there is no answers for the 'required' question */}
-            <div className="cta">
-                <UIDefaultButton primary={true} onClick={handleApply}>
-                    Apply
-                </UIDefaultButton>
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'stretch',
+                    flexDirection: 'column',
+                    gap: '20px',
+                    padding: '20px 10px',
+                    minWidth: '500px'
+                }}>
+                <Questions
+                    questions={questions}
+                    onChoiceRequest={(name: string) => {
+                        getChoices(name, type, answers).then(({ name, choices }) => {
+                            updateChoices(name, choices);
+                        });
+                    }}
+                    onChange={updateAnswers}
+                    answers={answers || {}}
+                />
+                {/* Disable the button if there is no answers for the 'required' question */}
+                <div className="cta">
+                    <UIDefaultButton primary={true} onClick={handleApply}>
+                        Apply
+                    </UIDefaultButton>
+                </div>
+            </div>
+            <div
+                style={{
+                    padding: '20px'
+                }}>
+                <button onClick={handleGetCodeSnippet}>Get code snippet</button>
+                <p
+                    style={{
+                        fontFamily: 'monospace',
+                        fontSize: '10px',
+                        padding: '10px 20px',
+
+                        // border: '#ccc solid 1px',
+                        borderRadius: '4px',
+                        // box shadow inwards
+                        boxShadow: '-1px -1px 0 #ccc, 1px 1px 0 #ccc, 1px -1px 0 #ccc, -1px 1px 0 #ccc'
+                    }}>
+                    {codeSnippet || 'No code snippet available.'}
+                </p>
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { AddonPanel, Button, Code } from '@storybook/components';
+import React, { useState } from 'react';
 import { SupportedBuildingBlocks, getCodeSnippet, getWebSocket } from '../../../stories/utils';
 
 getWebSocket();
@@ -23,7 +23,7 @@ export const render = (props: { active?: boolean }): React.ReactElement => {
     }
     return (
         <AddonPanel key="panel" active={active}>
-            <Button type="submit" onClick={handleRefresh}>
+            <Button secondary type="submit" onClick={handleRefresh}>
                 Refresh
             </Button>
             <Code>{code}</Code>
