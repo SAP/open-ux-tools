@@ -1,4 +1,4 @@
-import type { Question } from '../../src/components';
+import type { IQuestion } from '../../src/components';
 import {
     GET_QUESTIONS,
     SET_TABLE_QUESTIONS,
@@ -76,7 +76,7 @@ const QUESTIONS_TYPE_MAP = new Map([
     [SupportedBuildingBlocks.FilterBar, SET_FILTERBAR_QUESTIONS]
 ]);
 
-export function getQuestions(type: SupportedBuildingBlocks): Promise<Question[]> {
+export function getQuestions(type: SupportedBuildingBlocks): Promise<IQuestion[]> {
     return new Promise((resolve, error) => {
         const getAction: GetQuestions = {
             type: GET_QUESTIONS,
@@ -90,7 +90,7 @@ export function getQuestions(type: SupportedBuildingBlocks): Promise<Question[]>
         const handleMessage = (action: Actions) => {
             if ('questions' in action && Array.isArray(action.questions)) {
                 onMessageDetach(expectedActionType, handleMessage);
-                resolve(action.questions as Question[]);
+                resolve(action.questions as IQuestion[]);
             }
         };
         onMessageAttach(expectedActionType, handleMessage);

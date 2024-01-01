@@ -1,13 +1,13 @@
 import React from 'react';
 import { Questions } from '../src/components';
-import type { Question } from '../src/components';
+import type { IQuestion } from '../src/components';
 import { initIcons } from '@sap-ux/ui-components';
 
 export default { title: 'Basic/Questions' };
 
 initIcons();
 
-const questions: Question[] = [
+const questions: IQuestion[] = [
     {
         name: 'Dummy1',
         type: 'input'

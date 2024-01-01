@@ -1,11 +1,11 @@
 import React, { useReducer } from 'react';
 import { SupportedBuildingBlocks } from './types';
-import { Question } from '../../src/components';
+import { IQuestion } from '../../src/components';
 import { getChoices } from './communication';
 import { Answers } from 'inquirer';
 
 interface State {
-    questions: Question[];
+    questions: IQuestion[];
     answers: Answers;
 }
 
@@ -37,7 +37,7 @@ function reducer(state: State, action: Actions): State {
         case ActionType.UPDATE_CHOICES:
             return {
                 ...state,
-                questions: state.questions.map((question: Question) => {
+                questions: state.questions.map((question: IQuestion) => {
                     if (question.name === action.name) {
                         return {
                             ...question,
@@ -45,7 +45,7 @@ function reducer(state: State, action: Actions): State {
                         };
                     }
                     return question;
-                }) as Question[]
+                }) as IQuestion[]
             };
         case ActionType.REFRESH_CHOICES: {
             const { name, buildingBlockType, updateChoicesFn } = action;
@@ -71,7 +71,7 @@ const initialState: State = {
 export function useReducedState(type: SupportedBuildingBlocks) {
     const [{ questions, answers }, dispatch] = useReducer(reducer, initialState);
 
-    function updateQuestions(questions: Question[]) {
+    function updateQuestions(questions: IQuestion[]) {
         dispatch(updateQuestionsAction(questions));
     }
 
@@ -135,9 +135,9 @@ function updateAnswerAction(name: string, answer: string | number | boolean): Up
 
 interface UpdateQuestions {
     type: ActionType.UPDATE_QUESTIONS;
-    questions: Question[];
+    questions: IQuestion[];
 }
-function updateQuestionsAction(questions: Question[]): UpdateQuestions {
+function updateQuestionsAction(questions: IQuestion[]): UpdateQuestions {
     return {
         type: ActionType.UPDATE_QUESTIONS,
         questions

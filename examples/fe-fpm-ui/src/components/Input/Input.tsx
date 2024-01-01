@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { InputQuestion } from 'inquirer';
 import { UITextInput } from '@sap-ux/ui-components';
 import { useValue } from '../../utilities';
@@ -15,16 +15,10 @@ export const Input = (props: InputProps) => {
     const onLiveChange = (event: React.FormEvent, newValue?: string | undefined) => {
         setValue(newValue ?? '');
     };
-    const onBlur = () => {
-        onChange(name, value);
-    };
-    return (
-        <UITextInput
-            required={required}
-            label={name}
-            value={value.toString()}
-            onChange={onLiveChange}
-            onBlur={onBlur}
-        />
-    );
+    useEffect(() => {
+        const id = setTimeout(() => onChange(name, value), 700);
+        return () => clearTimeout(id);
+    }, [name, value]);
+
+    return <UITextInput required={required} label={name} value={value.toString()} onChange={onLiveChange} />;
 };

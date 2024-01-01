@@ -1,8 +1,6 @@
+import type { CheckboxQuestion, InputQuestion, ListQuestion } from 'inquirer';
 import React from 'react';
-import type { InputQuestion, ListQuestion, CheckboxQuestion } from 'inquirer';
-import { Input } from '../Input';
-import { Checkbox } from '../Checkbox';
-import { Select } from '../Select';
+import { Question } from '../Question/Question';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
@@ -10,7 +8,7 @@ export interface AdditionalQuestionProperties {
     required?: boolean;
 }
 
-export type Question = (ListQuestion | InputQuestion | CheckboxQuestion) & AdditionalQuestionProperties;
+export type IQuestion = (ListQuestion | InputQuestion | CheckboxQuestion) & AdditionalQuestionProperties;
 
 export interface QuestionsProps {
     questions: Array<Question>;
@@ -23,37 +21,15 @@ export const Questions = (props: QuestionsProps) => {
     const { questions, onChoiceRequest, onChange, answers } = props;
     return (
         <div>
-            {questions.map((question: Question, index: number) => {
-                let questionInput: JSX.Element;
-                const value = (question.name && answers?.[question.name]) ?? '';
-                switch (question?.type) {
-                    case 'input': {
-                        questionInput = <Input value={value} {...question} onChange={onChange} />;
-                        break;
-                    }
-                    case 'checkbox': {
-                        questionInput = <Checkbox {...question} onChange={onChange} />;
-                        break;
-                    }
-                    case 'list': {
-                        questionInput = (
-                            <Select
-                                // change to pass the relevant answer
-                                value={value}
-                                {...question}
-                                onChoiceRequest={onChoiceRequest}
-                                onChange={onChange}
-                            />
-                        );
-                        break;
-                    }
-                    default: {
-                        questionInput = <div>Unsupported</div>;
-                        break;
-                    }
-                }
-                return <div key={`question-${index}`}>{questionInput}</div>;
-            })}
+            {questions.map((question: Question, index: number) => (
+                <Question
+                    key={`${question.name}-${index}`}
+                    question={question}
+                    answers={answers}
+                    onChange={onChange}
+                    onChoiceRequest={onChoiceRequest}
+                />
+            ))}
         </div>
     );
 };

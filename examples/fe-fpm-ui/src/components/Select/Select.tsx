@@ -6,30 +6,18 @@ import { useValue } from '../../utilities';
 
 export interface SelectProps extends ListQuestion {
     value?: string | number;
-    onChoiceRequest: (name: string) => void;
+    // onChoiceRequest: (name: string) => void;
     selectType: 'static' | 'dynamic';
     onChange: (name: string, value: string | number | undefined, dependantPromptNames?: string[]) => void;
     dependantPromptNames?: string[];
     required?: boolean;
+    options: UIComboBoxOption[];
 }
 
 export const Select = (props: SelectProps) => {
-    const { name = '', choices, onChoiceRequest, message, onChange, dependantPromptNames, required } = props;
+    const { name = '', message, onChange, dependantPromptNames, required, options } = props;
     const [value, setValue] = useValue('', props.value);
-    let options: UIComboBoxOption[] = [];
 
-    if (Array.isArray(choices)) {
-        options =
-            choices?.map((choice) => {
-                const { name, value } = choice;
-                return {
-                    key: value,
-                    text: typeof name === 'string' ? name : ''
-                };
-            }) ?? [];
-    } else {
-        onChoiceRequest(name);
-    }
     return (
         <UIComboBox
             label={typeof message === 'string' ? message : name}
