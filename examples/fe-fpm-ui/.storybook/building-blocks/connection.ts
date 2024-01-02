@@ -29,16 +29,15 @@ import { fpmWriterApi, getSerializeContent } from './writerApi';
 import { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
 import { existsSync } from 'fs';
+import { testAppPath, getProjectPath } from '../addons/project';
 import {
-    testAppPath,
-    getProjectPath,
     GET_PROJECT_PATH,
     SET_PROJECT_PATH,
     SetProjectPath,
     UPDATE_PROJECT_PATH,
     UPDATE_PROJECT_PATH_RESULT,
     UpdateProjectPathResult
-} from '../addons/project';
+} from '../addons/project/types';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 

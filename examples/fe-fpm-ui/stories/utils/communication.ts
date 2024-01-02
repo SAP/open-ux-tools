@@ -6,7 +6,7 @@ import {
     UPDATE_PROJECT_PATH_RESULT,
     UpdateProjectPath,
     UpdateProjectPathResultPayload
-} from '../../.storybook/addons/project';
+} from '../../.storybook/addons/project/types';
 import type { IQuestion } from '../../src/components';
 import type { Actions, GetChoices, GetCodeSnippet } from './types';
 import {
