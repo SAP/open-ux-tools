@@ -316,25 +316,7 @@ export class MetadataService implements IMetadataService {
         if (!element) {
             return [];
         }
-        const targetKinds: TargetKind[] = [];
-        if (this.isCds) {
-            targetKinds.push(...(targetKindsMapCds.get(element.kind) ?? []));
-            if (element.kind === 'element' && element.structuredType && element.isEntityType) {
-                // CDS elements pointing to an entity type can be annotated like a EDMX navigation property
-                targetKinds.unshift(Edm.NavigationProperty);
-            }
-        } else {
-            targetKinds.push(element.kind);
-            if (element.kind === Edm.FunctionImport && this.ODataVersion !== '4.0') {
-                // vocabulary and annotation files are defined based on OData v4, but are used to annotate both OData v2 and OData v4 metadata.
-                // OData v2 does not have 'Action' but only 'FunctionImport'. Map to 'Action' to support annotating 'FunctionImport' with terms targeting actions.
-                targetKinds.push(Edm.Action);
-            }
-        }
-        if (targetKinds.includes(Edm.EntitySet) || element.isCollectionValued) {
-            targetKinds.push(Edm.Collection);
-        }
-        return targetKinds;
+        return element.targetKinds;
     }
 
     /**

@@ -1,6 +1,6 @@
 import type { XMLDocument, XMLElement } from '@xml-tools/ast';
 
-import type { MetadataElementProperties, MetadataElement } from '@sap-ux/odata-annotation-core-types';
+import type { MetadataElementProperties, MetadataElement, TargetKind } from '@sap-ux/odata-annotation-core-types';
 import type { FullyQualifiedTypeName, FullyQualifiedName } from '@sap-ux/odata-annotation-core';
 import { toFullyQualifiedName, parseIdentifier, Edm, Location, Edmx } from '@sap-ux/odata-annotation-core';
 
@@ -261,6 +261,29 @@ function getTypeForNavigationProperty(context: Context, element: XMLElement): st
 }
 
 /**
+ * Get OData target kinds for a metadata element.
+ *
+ * @param metadata element.
+ * @returns OData target kinds.
+ */
+function getEdmTargetKinds(element: MetadataElementProperties): TargetKind[] {
+    if (!element) {
+        return [];
+    }
+    const targetKinds: TargetKind[] = [];
+    targetKinds.push(element.kind);
+    if (element.kind === Edm.FunctionImport) {
+        // vocabulary and annotation files are defined based on OData v4, but are used to annotate both OData v2 and OData v4 metadata.
+        // OData v2 does not have 'Action' but only 'FunctionImport'. Map to 'Action' to support annotating 'FunctionImport' with terms targeting actions.
+        targetKinds.push(Edm.Action);
+    }
+    if (targetKinds.includes(Edm.EntitySet) || element.isCollectionValued) {
+        targetKinds.push(Edm.Collection);
+    }
+    return targetKinds;
+}
+
+/**
  * @param context Conversion context
  * @param element Source XML element
  * @param type Fully qualified type name
@@ -284,7 +307,8 @@ function createMetadataElementNodeForType(
         name: getMetadataElementName(context, element, forAction),
         isCollectionValued: !!type?.startsWith('Collection(') || element.name === Edm.EntitySet,
         isComplexType: element.name === Edm.ComplexType,
-        isEntityType: ENTITY_TYPE_NAMES.has(element.name ?? '')
+        isEntityType: ENTITY_TYPE_NAMES.has(element.name ?? ''),
+        targetKinds: []
     };
 
     if (element.name === Edm.EntityType) {
@@ -293,6 +317,8 @@ function createMetadataElementNodeForType(
             metadataElementProperties.keys = keys;
         }
     }
+    const targetKinds = getEdmTargetKinds(metadataElementProperties);
+    metadataElementProperties.targetKinds.push(...targetKinds);
 
     // adjust metadata element based on type information
     const functionImportV2Nodes: MetadataElement[] =
@@ -314,8 +340,11 @@ function createMetadataElementNodeForType(
             isCollectionValued: false,
             isComplexType: false,
             isEntityType: true,
-            structuredType: v2ActionFor
+            structuredType: v2ActionFor,
+            targetKinds: []
         };
+        const targetKinds = getEdmTargetKinds(bindingParameterProperties);
+        bindingParameterProperties.targetKinds.push(...targetKinds);
 
         const attributePosition = getElementAttributeByName('sap:action-for', element)?.position;
         const bindingParameterRange = transformElementRange(attributePosition ?? element.position, element);
@@ -498,8 +527,11 @@ function getReturnTypeProperties(
         name: '$ReturnType',
         isCollectionValued: type.startsWith('Collection('),
         isComplexType: baseTypeName === EDM_COMPLEX_TYPE,
-        isEntityType: baseTypeName === EDM_ENTITY_TYPE
+        isEntityType: baseTypeName === EDM_ENTITY_TYPE,
+        targetKinds: []
     };
+    const targetKinds = getEdmTargetKinds(returnTypeProperties);
+    returnTypeProperties.targetKinds.push(...targetKinds);
 
     if (edmPrimitiveType) {
         returnTypeProperties.edmPrimitiveType = edmPrimitiveType;
