@@ -1,27 +1,25 @@
-import type { IQuestion } from '../../src/components';
-import type {
-    Actions,
-    GetChoices,
-    GetCodeSnippet,
+import {
+    GET_PROJECT_PATH,
     GetProjectPath,
+    SET_PROJECT_PATH,
+    UPDATE_PROJECT_PATH,
+    UPDATE_PROJECT_PATH_RESULT,
     UpdateProjectPath,
     UpdateProjectPathResultPayload
-} from './types';
+} from '../../.storybook/addons/project';
+import type { IQuestion } from '../../src/components';
+import type { Actions, GetChoices, GetCodeSnippet } from './types';
 import {
     APPLY_ANSWERS,
     GET_CHOICES,
     GET_CODE_SNIPPET,
-    GET_PROJECT_PATH,
     GET_QUESTIONS,
     GetQuestions,
     SET_CHART_QUESTIONS,
     SET_CHOICES,
     SET_FILTERBAR_QUESTIONS,
-    SET_PROJECT_PATH,
     SET_TABLE_QUESTIONS,
-    SupportedBuildingBlocks,
-    UPDATE_PROJECT_PATH,
-    UPDATE_PROJECT_PATH_RESULT
+    SupportedBuildingBlocks
 } from './types';
 
 let ws: WebSocket | undefined;

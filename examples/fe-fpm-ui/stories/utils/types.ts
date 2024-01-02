@@ -1,7 +1,6 @@
 import type { FilterBarPromptsAnswer, ChartPromptsAnswer, TablePromptsAnswer } from '@sap-ux/fe-fpm-writer';
 import type { Question, Answers } from 'inquirer';
-import type { AddonActions } from './types/addon-types';
-export * from './types/addon-types';
+import { AddonActions } from '../../.storybook/addons/types';
 
 export type Actions =
     | GetQuestions
