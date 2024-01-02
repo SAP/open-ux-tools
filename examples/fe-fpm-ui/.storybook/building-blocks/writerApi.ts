@@ -42,7 +42,7 @@ function getFilterBarBuildingBlockConfig(
     answers.metaPath = qualifier;
     return {
         aggregationPath,
-        viewOrFragmentPath: relative(basePath, viewOrFragmentFile),
+        viewOrFragmentPath: viewOrFragmentFile ? relative(basePath, viewOrFragmentFile) : '',
         buildingBlockData: {
             ...answers,
             buildingBlockType: BuildingBlockType.FilterBar
@@ -62,7 +62,7 @@ function getChartBuildingBlockConfig(
 
     return {
         aggregationPath,
-        viewOrFragmentPath: relative(basePath, viewOrFragmentFile),
+        viewOrFragmentPath: viewOrFragmentFile ? relative(basePath, viewOrFragmentFile) : '',
         buildingBlockData: {
             ...answers,
             buildingBlockType: BuildingBlockType.Chart
