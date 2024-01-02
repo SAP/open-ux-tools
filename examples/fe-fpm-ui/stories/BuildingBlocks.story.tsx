@@ -85,19 +85,20 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
                     padding: '20px'
                 }}>
                 <button onClick={handleGetCodeSnippet}>Get code snippet</button>
-                <p
+                <textarea
+                    disabled
+                    value={codeSnippet || 'No code snippet available.'}
                     style={{
                         fontFamily: 'monospace',
+                        resize: 'none',
                         fontSize: '10px',
+                        display: 'block',
                         padding: '10px 20px',
-
-                        // border: '#ccc solid 1px',
-                        borderRadius: '4px',
-                        // box shadow inwards
-                        boxShadow: '-1px -1px 0 #ccc, 1px 1px 0 #ccc, 1px -1px 0 #ccc, -1px 1px 0 #ccc'
-                    }}>
-                    {codeSnippet || 'No code snippet available.'}
-                </p>
+                        width: '400px',
+                        height: '350px',
+                        border: '#ccc solid 1px',
+                        borderRadius: '4px'
+                    }}></textarea>
             </div>
         </div>
     );
