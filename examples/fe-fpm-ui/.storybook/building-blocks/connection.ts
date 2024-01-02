@@ -184,7 +184,7 @@ async function handleAction(action: Actions): Promise<void> {
         }
         case GET_CODE_SNIPPET: {
             const { answers, buildingBlockType /*, projectRoot */ } = action;
-            const codeSnippet = getSerializeContent(buildingBlockType as any, answers as any, currentAppPath, fs);
+            const codeSnippet = await getSerializeContent(buildingBlockType as any, answers as any, currentAppPath, fs);
             const responseAction: UpdateCodeSnippet = {
                 type: UPDATE_CODE_SNIPPET,
                 buildingBlockType,

@@ -9,6 +9,7 @@ import {
 import { BuildingBlockConfig } from '@sap-ux/fe-fpm-writer/dist/building-block/types';
 import { Editor } from 'mem-fs-editor';
 import { relative } from 'path';
+import prettier from 'prettier';
 import { SupportedBuildingBlocks } from '../../stories/utils/types';
 
 function getContextAndMetaPaths(entity: string, qualifier: string, bindingContextType: string) {
@@ -92,7 +93,7 @@ const configDataGetters = <T extends TablePromptsAnswer | FilterBarPromptsAnswer
         [SupportedBuildingBlocks.FilterBar]: getFilterBarBuildingBlockConfig,
         [SupportedBuildingBlocks.Chart]: getChartBuildingBlockConfig,
         [SupportedBuildingBlocks.Table]: getTableBuildingBlockConfig
-    }[buildingBlockType]);
+    })[buildingBlockType];
 
 export const fpmWriterApi = <T extends TablePromptsAnswer | FilterBarPromptsAnswer | ChartPromptsAnswer>(
     buildingBlockType: BuildingBlockType,
@@ -120,5 +121,5 @@ export function getSerializeContent<T extends TablePromptsAnswer | FilterBarProm
         throw new Error(`No writer found for building block type: ${buildingBlockType}`);
     }
     const configData = getConfigData(answers, basePath);
-    return getSerializedFileContent(basePath, configData, fs);
+    return prettier.format(getSerializedFileContent(basePath, configData, fs), { parser: 'html', useTabs: true });
 }
