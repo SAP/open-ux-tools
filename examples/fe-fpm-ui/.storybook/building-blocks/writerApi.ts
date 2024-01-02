@@ -13,8 +13,11 @@ import prettier from 'prettier';
 import { SupportedBuildingBlocks } from '../../stories/utils/types';
 
 function getContextAndMetaPaths(entity: string, qualifier: string, bindingContextType: string) {
-    let metaPath: string,
-        contextPath: string | undefined = undefined;
+    let metaPath: string = '',
+        contextPath: string | undefined = '';
+    if (entity === undefined || qualifier === undefined) {
+        return { contextPath, metaPath };
+    }
     const entityPath = entity.lastIndexOf('.') >= 0 ? entity?.substring?.(entity.lastIndexOf('.') + 1) : entity;
     let navigationProperty = qualifier.substring(0, qualifier.indexOf('@'));
     const _qualifier = qualifier.substring(qualifier.indexOf('@'));
@@ -78,7 +81,7 @@ function getTableBuildingBlockConfig(
     answers.metaPath = metaPath;
     return {
         aggregationPath,
-        viewOrFragmentPath: relative(basePath, viewOrFragmentFile),
+        viewOrFragmentPath: viewOrFragmentFile ? relative(basePath, viewOrFragmentFile) : '',
         buildingBlockData: {
             ...answers,
             buildingBlockType: BuildingBlockType.Table

@@ -1,5 +1,5 @@
 import { UIDefaultButton, initIcons } from '@sap-ux/ui-components';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SupportedBuildingBlocks } from './utils';
 import { applyAnswers, getChoices, getCodeSnippet, getQuestions, getWebSocket } from './utils/communication';
 import { ActionType, useReducedState } from './utils/state';
@@ -51,6 +51,11 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
             updateQuestions(newQuestions);
         });
     }, []);
+
+    useEffect(() => {
+        getCodeSnippet(type, answers);
+    }, [answers]);
+
     return (
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch' }}>
             <div

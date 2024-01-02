@@ -1,7 +1,8 @@
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
 import { UIComboBox } from '@sap-ux/ui-components';
 import type { CheckboxQuestion } from 'inquirer';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useValue } from '../../utilities';
 
 export interface MultiSelectProps extends CheckboxQuestion {
     value?: string | number;
@@ -15,10 +16,7 @@ export interface MultiSelectProps extends CheckboxQuestion {
 
 export const MultiSelect = (props: MultiSelectProps) => {
     const { name = '', message, onChange, dependantPromptNames, required, options } = props;
-    const [value, setValue] = useState(props.value?.toString());
-    useEffect(() => {
-        onChange(name, value, dependantPromptNames);
-    }, [value]);
+    const [value, setValue] = useValue('', props.value?.toString());
 
     return (
         <UIComboBox
@@ -29,20 +27,21 @@ export const MultiSelect = (props: MultiSelectProps) => {
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
             required={required}
-            defaultSelectedKey={value?.split(',').map((v) => v.trim())}
+            selectedKey={value?.split(',').map((v) => v.trim())}
             multiSelect
             onChange={(_, option) => {
-                setValue((v) => {
-                    if (option?.selected) {
-                        const selectedKeyz = v?.split(',').filter((str) => !!str) ?? [];
-                        selectedKeyz.push(option.key.toString());
-                        return selectedKeyz.join(',');
-                    } else {
-                        return (v?.split(',') ?? [])
-                            .filter((str) => str.includes(option?.key?.toString() ?? ''))
-                            .join(', ');
-                    }
-                });
+                let updatedValue: string | undefined;
+                if (option?.selected) {
+                    const selectedKeyz = value.split(',').filter((str) => !!str) ?? [];
+                    selectedKeyz.push(option.key.toString());
+                    updatedValue = selectedKeyz.join(',');
+                } else {
+                    updatedValue = (value.split(',') ?? [])
+                        .filter((str) => str.includes(option?.key?.toString() ?? ''))
+                        .join(', ');
+                }
+                setValue(updatedValue);
+                onChange(name, value, dependantPromptNames);
             }}
         />
     );

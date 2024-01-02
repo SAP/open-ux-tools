@@ -1,30 +1,27 @@
 import type { IQuestion } from '../../src/components';
-import {
-    GET_QUESTIONS,
-    SET_TABLE_QUESTIONS,
-    SET_CHART_QUESTIONS,
-    SET_FILTERBAR_QUESTIONS,
-    GetQuestions,
-    SupportedBuildingBlocks,
-    GET_CHOICES,
-    SET_CHOICES,
-    RESET_ANSWERS,
-    APPLY_ANSWERS,
-    GET_PROJECT_PATH,
-    SET_PROJECT_PATH,
-    UPDATE_PROJECT_PATH,
-    UPDATE_PROJECT_PATH_RESULT,
-    GET_CODE_SNIPPET,
-    UPDATE_CODE_SNIPPET
-} from './types';
 import type {
     Actions,
     GetChoices,
     GetCodeSnippet,
     GetProjectPath,
-    UpdateCodeSnippetPayload,
     UpdateProjectPath,
     UpdateProjectPathResultPayload
+} from './types';
+import {
+    APPLY_ANSWERS,
+    GET_CHOICES,
+    GET_CODE_SNIPPET,
+    GET_PROJECT_PATH,
+    GET_QUESTIONS,
+    GetQuestions,
+    SET_CHART_QUESTIONS,
+    SET_CHOICES,
+    SET_FILTERBAR_QUESTIONS,
+    SET_PROJECT_PATH,
+    SET_TABLE_QUESTIONS,
+    SupportedBuildingBlocks,
+    UPDATE_PROJECT_PATH,
+    UPDATE_PROJECT_PATH_RESULT
 } from './types';
 
 let ws: WebSocket | undefined;
@@ -144,18 +141,7 @@ export function applyAnswers(
             buildingBlockType
         };
         sendMessage(getAction);
-        const expectedActionType = RESET_ANSWERS;
-
-        const handleMessage = (action: Actions) => {
-            console.log('handling');
-            if ('buildingBlockType' in action) {
-                onMessageDetach(expectedActionType, handleMessage);
-                resolve({
-                    buildingBlockType: action.buildingBlockType
-                });
-            }
-        };
-        onMessageAttach(RESET_ANSWERS, handleMessage);
+        resolve({ buildingBlockType: buildingBlockType });
     });
 }
 
@@ -192,23 +178,11 @@ export function updateProjectPath(path: string): Promise<UpdateProjectPathResult
     });
 }
 
-export function getCodeSnippet(
-    buildingBlockType: SupportedBuildingBlocks,
-    answers: unknown
-): Promise<UpdateCodeSnippetPayload> {
-    return new Promise((resolve) => {
-        const action: GetCodeSnippet = {
-            type: GET_CODE_SNIPPET,
-            buildingBlockType,
-            answers
-        };
-        sendMessage(action);
-        const handleMessage = (responseAction: Actions) => {
-            if (responseAction.type === UPDATE_CODE_SNIPPET) {
-                resolve(responseAction);
-            }
-            onMessageDetach(UPDATE_CODE_SNIPPET, handleMessage);
-        };
-        onMessageAttach(UPDATE_CODE_SNIPPET, handleMessage);
-    });
+export function getCodeSnippet(buildingBlockType: SupportedBuildingBlocks, answers: unknown): void {
+    const action: GetCodeSnippet = {
+        type: GET_CODE_SNIPPET,
+        buildingBlockType,
+        answers
+    };
+    sendMessage(action);
 }

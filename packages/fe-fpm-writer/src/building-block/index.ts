@@ -96,7 +96,7 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
  */
 function getTemplateDocument<T extends BuildingBlock>(
     buildingBlockData: T,
-    viewDocument: Document,
+    viewDocument: Document | undefined,
     fs: Editor
 ): Document {
     const templateFolderName = buildingBlockData.buildingBlockType;
@@ -104,7 +104,7 @@ function getTemplateDocument<T extends BuildingBlock>(
     const templateContent = render(
         fs.read(templateFilePath),
         {
-            macrosNamespace: getOrAddMacrosNamespace(viewDocument),
+            macrosNamespace: viewDocument ? getOrAddMacrosNamespace(viewDocument) : 'macros',
             data: buildingBlockData
         },
         {}
@@ -174,29 +174,16 @@ export function getSerializedFileContent<T extends BuildingBlock>(
     config: BuildingBlockConfig<T>,
     fs: Editor
 ): string {
+    // Validate the base and view paths
     if (!fs) {
         fs = create(createStorage());
     }
-    validateBasePath(basePath, fs);
-    if (!fs.exists(join(basePath, config.viewOrFragmentPath))) {
-        throw new Error(`Invalid view path ${config.viewOrFragmentPath}.`);
-    }
 
     // Read the view xml and template files and update contents of the view xml file
-    const xmlDocument = getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs);
+    const xmlDocument = config.viewOrFragmentPath
+        ? getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs)
+        : undefined;
     const templateDocument = getTemplateDocument(config.buildingBlockData, xmlDocument, fs);
-    const xpathSelect = xpath.useNamespaces((xmlDocument.firstChild as any)._nsMap);
 
-    // Find target aggregated element and append template as child
-    const targetNodes = xpathSelect(config.aggregationPath, xmlDocument);
-    if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
-        const targetNode = targetNodes[0] as Node;
-        const sourceNode = xmlDocument.importNode(templateDocument.documentElement, true);
-        targetNode.appendChild(sourceNode);
-
-        // Serialize and format new view xml document
-        return new XMLSerializer().serializeToString(xmlDocument);
-    } else {
-        throw new Error(`Aggregation control not found ${config.aggregationPath}.`);
-    }
+    return new XMLSerializer().serializeToString(templateDocument);
 }

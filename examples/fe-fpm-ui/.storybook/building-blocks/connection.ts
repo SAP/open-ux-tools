@@ -97,101 +97,110 @@ export function sendMessage(action: Actions): void {
 }
 
 async function handleAction(action: Actions): Promise<void> {
-    let fs = await getEditor();
-    switch (action.type) {
-        case GET_QUESTIONS: {
-            let responseAction: Actions | undefined;
-            if (action.value === SupportedBuildingBlocks.Table) {
-                const prompts = await getTableBuildingBlockPrompts(currentAppPath, fs);
-                // Post processing
-                responseAction = { type: SET_TABLE_QUESTIONS, questions: prompts };
-            } else if (action.value === SupportedBuildingBlocks.Chart) {
-                const prompts = await getChartBuildingBlockPrompts(currentAppPath, fs);
-                // Post processing
-                responseAction = { type: SET_CHART_QUESTIONS, questions: prompts };
-            } else if (action.value === SupportedBuildingBlocks.FilterBar) {
-                const prompts = await getFilterBarBuildingBlockPrompts(currentAppPath, fs);
-                // Post processing
-                responseAction = { type: SET_FILTERBAR_QUESTIONS, questions: prompts };
+    try {
+        let fs = await getEditor();
+        switch (action.type) {
+            case GET_QUESTIONS: {
+                let responseAction: Actions | undefined;
+                if (action.value === SupportedBuildingBlocks.Table) {
+                    const prompts = await getTableBuildingBlockPrompts(currentAppPath, fs);
+                    // Post processing
+                    responseAction = { type: SET_TABLE_QUESTIONS, questions: prompts };
+                } else if (action.value === SupportedBuildingBlocks.Chart) {
+                    const prompts = await getChartBuildingBlockPrompts(currentAppPath, fs);
+                    // Post processing
+                    responseAction = { type: SET_CHART_QUESTIONS, questions: prompts };
+                } else if (action.value === SupportedBuildingBlocks.FilterBar) {
+                    const prompts = await getFilterBarBuildingBlockPrompts(currentAppPath, fs);
+                    // Post processing
+                    responseAction = { type: SET_FILTERBAR_QUESTIONS, questions: prompts };
+                }
+                if (responseAction) {
+                    sendMessage(responseAction);
+                }
+                break;
             }
-            if (responseAction) {
-                sendMessage(responseAction);
-            }
-            break;
-        }
-        case GET_CHOICES: {
-            const { name, buildingBlockType, answers } = action;
-            const choices = await getBuildingBlockChoices(buildingBlockType as any, name, answers, currentAppPath);
+            case GET_CHOICES: {
+                const { name, buildingBlockType, answers } = action;
+                const choices = await getBuildingBlockChoices(buildingBlockType as any, name, answers, currentAppPath);
 
-            const responseAction: SetChoices = {
-                type: SET_CHOICES,
-                name,
-                choices
-            };
-            sendMessage(responseAction);
-            break;
-        }
-        case APPLY_ANSWERS: {
-            const { answers, buildingBlockType /*, projectRoot */ } = action;
-            const _fs = fpmWriterApi(buildingBlockType as any, answers as any, currentAppPath, fs);
-            console.log(currentAppPath);
-            await promisify(_fs.commit).call(_fs);
-            const responseAction: ResetAnswers = {
-                type: RESET_ANSWERS,
-                buildingBlockType
-            };
-            sendMessage(responseAction);
-            break;
-        }
-        case GET_PROJECT_PATH: {
-            const responseAction: SetProjectPath = {
-                type: SET_PROJECT_PATH,
-                path: currentAppPath
-            };
-            sendMessage(responseAction);
-            break;
-        }
-        case UPDATE_PROJECT_PATH: {
-            let newProjectPath = action.path ? join(action.path) : testAppPath;
-            let message: string | undefined;
-            try {
-                if (action.path && !existsSync(newProjectPath)) {
-                    message = 'Provided path does not exist';
-                }
-                // Reset fs
-                if (!message) {
-                    currentAppPath = newProjectPath;
-                }
-                fs = await getEditor(true);
-                // Call API to get table questions - it should validate of path is supported
-                const questions = await getTableBuildingBlockPrompts(currentAppPath, fs);
-                const entityQuestion = questions.find((question) => question.name === 'entity');
-                if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
-                    await entityQuestion.choices();
-                }
-            } catch (e) {
-                message = `Error: ${e.message || e}`;
-                console.log(e);
+                const responseAction: SetChoices = {
+                    type: SET_CHOICES,
+                    name,
+                    choices
+                };
+                sendMessage(responseAction);
+                break;
             }
-            const responseAction: UpdateProjectPathResult = {
-                type: UPDATE_PROJECT_PATH_RESULT,
-                saved: !message,
-                message,
-                path: !message ? currentAppPath : undefined
-            };
-            sendMessage(responseAction);
-            break;
+            case APPLY_ANSWERS: {
+                const { answers, buildingBlockType /*, projectRoot */ } = action;
+                const _fs = fpmWriterApi(buildingBlockType as any, answers as any, currentAppPath, fs);
+                console.log(currentAppPath);
+                await promisify(_fs.commit).call(_fs);
+                const responseAction: ResetAnswers = {
+                    type: RESET_ANSWERS,
+                    buildingBlockType
+                };
+                sendMessage(responseAction);
+                break;
+            }
+            case GET_PROJECT_PATH: {
+                const responseAction: SetProjectPath = {
+                    type: SET_PROJECT_PATH,
+                    path: currentAppPath
+                };
+                sendMessage(responseAction);
+                break;
+            }
+            case UPDATE_PROJECT_PATH: {
+                let newProjectPath = action.path ? join(action.path) : testAppPath;
+                let message: string | undefined;
+                try {
+                    if (action.path && !existsSync(newProjectPath)) {
+                        message = 'Provided path does not exist';
+                    }
+                    // Reset fs
+                    if (!message) {
+                        currentAppPath = newProjectPath;
+                    }
+                    fs = await getEditor(true);
+                    // Call API to get table questions - it should validate of path is supported
+                    const questions = await getTableBuildingBlockPrompts(currentAppPath, fs);
+                    const entityQuestion = questions.find((question) => question.name === 'entity');
+                    if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
+                        await entityQuestion.choices();
+                    }
+                } catch (e) {
+                    message = `Error: ${e.message || e}`;
+                    console.log(e);
+                }
+                const responseAction: UpdateProjectPathResult = {
+                    type: UPDATE_PROJECT_PATH_RESULT,
+                    saved: !message,
+                    message,
+                    path: !message ? currentAppPath : undefined
+                };
+                sendMessage(responseAction);
+                break;
+            }
+            case GET_CODE_SNIPPET: {
+                const { answers, buildingBlockType /*, projectRoot */ } = action;
+                const codeSnippet = await getSerializeContent(
+                    buildingBlockType as any,
+                    answers as any,
+                    currentAppPath,
+                    fs
+                );
+                const responseAction: UpdateCodeSnippet = {
+                    type: UPDATE_CODE_SNIPPET,
+                    buildingBlockType,
+                    codeSnippet
+                };
+                sendMessage(responseAction);
+                break;
+            }
         }
-        case GET_CODE_SNIPPET: {
-            const { answers, buildingBlockType /*, projectRoot */ } = action;
-            const codeSnippet = await getSerializeContent(buildingBlockType as any, answers as any, currentAppPath, fs);
-            const responseAction: UpdateCodeSnippet = {
-                type: UPDATE_CODE_SNIPPET,
-                buildingBlockType,
-                codeSnippet
-            };
-            sendMessage(responseAction);
-            break;
-        }
+    } catch (error) {
+        console.log({ error });
     }
 }
