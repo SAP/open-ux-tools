@@ -1,0 +1,8 @@
+{
+  "Property_is_not_allowed_here": "Property is not allowed here '{{name}}'",
+  "The_attribute_value_must_be_a_string_literal": "The attribute value must be a string literal",
+  "Wrong_element_0_Did_you_mean_1": "Wrong element '{{currentValue}}'. Did you mean '{{proposedValue}}'?",
+  "Mandatory_property_not_provided_0": "Mandatory property not provided: {{property}}",
+  "Path_escaping_brackets_should_be_used": "Path escaping brackets ![] should be used",
+  "Wrong_path_separator_0_Did_you_mean_1": "Wrong path separator '{{currentValue}}'. Did you mean '{{proposedValue}}'?"
+}

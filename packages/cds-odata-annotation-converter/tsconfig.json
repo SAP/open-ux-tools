@@ -1,0 +1,41 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@sap/cds-compiler": [
+        "./node_modules/@sap/ux-cds-compiler-types"
+      ]
+    },
+    "incremental": true,
+    "outDir": "dist",
+    "rootDir": "./src",
+    "lib": [
+      "ES2021"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
+  "references": [
+    {
+      "path": "../cds-annotation-parser"
+    },
+    {
+      "path": "../odata-annotation-core"
+    },
+    {
+      "path": "../odata-annotation-core-types"
+    },
+    {
+      "path": "../odata-vocabularies"
+    },
+    {
+      "path": "../project-access"
+    }
+  ]
+}

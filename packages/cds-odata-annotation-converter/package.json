@@ -1,0 +1,66 @@
+{
+    "name": "@sap-ux/cds-odata-annotation-converter",
+    "description": "Converter for OData annotations in CDS format.",
+    "version": "0.1.0",
+    "publisher": "SAPSE",
+    "author": "SAP SE",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "compile": "tsc --build tsconfig.build.json",
+        "build": "npm-run-all clean compile",
+        "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
+        "clean": "rimraf ./reports",
+        "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
+        "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
+        "lint": "eslint . --ext .ts,.tsx",
+        "lint:fix": "eslint --fix",
+        "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
+        "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
+        "lint:summary": "eslint . --ext .ts,.tsx -f summary",
+        "pre-commit": "lint-staged --quiet",
+        "test": "jest --maxWorkers=2",
+        "test:update": "yarn compile && node scripts/update-test-data.js",
+        "watch": "tsc  --build ./ -watch"
+    },
+    "files": [
+        "dist"
+    ],
+    "dependencies": {
+        "@sap-ux/odata-annotation-core": "workspace:*",
+        "@sap-ux/odata-vocabularies": "workspace:*",
+        "@sap/ux-cds-annotation-parser": "workspace:*",
+        "@sap-ux/odata-annotation-core-types": "workspace:*",
+        "@sap/ux-cds-compiler-facade": "/Users/i501270/SAPDevelop/tools-suite/packages/lib/cds-compiler-facade",
+        "chevrotain": "7.1.1",
+        "i18next": "19.4.4",
+        "vscode-languageserver-types": "3.17.2"
+    },
+    "devDependencies": {
+        "@sap/cds": "7.4.1",
+        "@sap/cds-compiler": "4.4.4",
+        "@sap-ux/project-access": "1.16.1",
+        "npm-run-all": "4.1.5",
+        "typescript": "4.9.5",
+        "vscode-uri": "1.0.6",
+        "yamljs": "0.3.0"
+    },
+    "eslint-formatter-multiple": {
+        "formatters": [
+            {
+                "name": "stylish",
+                "output": "console"
+            },
+            {
+                "name": "json",
+                "output": "file",
+                "path": "reports/lint/eslint.json"
+            },
+            {
+                "name": "checkstyle",
+                "output": "file",
+                "path": "reports/lint/eslint.checkstyle.xml"
+            }
+        ]
+    }
+}

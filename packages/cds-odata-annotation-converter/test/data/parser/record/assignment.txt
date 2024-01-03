@@ -1,0 +1,6 @@
+UI : {
+    Badge: {
+        AAA
+        BB: 
+    }
+}

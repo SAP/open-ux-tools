@@ -1,0 +1,33 @@
+[
+    {
+        "type": "element",
+        "range": "[(0,0)..(0,31)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "a",
+                "valueRange": "[(0,0)..(0,1)]"
+            }
+        },
+        "contentRange": "[(0,2)..(0,31)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(0,3)..(0,31)]",
+                "name": "Path",
+                "attributes": {},
+                "contentRange": "[(0,3)..(0,31)]",
+                "content": [
+                    {
+                        "type": "text",
+                        "range": "[(0,3)..(0,31)]",
+                        "text": "navigation/element@UI.Hidden",
+                        "fragmentRanges": ["[(0,3)..(0,13)]", "[(0,14)..(0,31)]"]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -81,6 +81,9 @@
 # Module: odata-entity-model
 /packages/odata-entity-model/ @SAP/ux-tools-annotations
 
+# Module: cds-odata-annotation-converter
+/packages/cds-odata-annotation-converter/ @SAP/ux-tools-annotations
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin
