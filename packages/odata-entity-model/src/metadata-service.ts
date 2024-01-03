@@ -175,12 +175,6 @@ export class MetadataService implements IMetadataService {
     readonly ODataVersion: ODataVersionType | '';
 
     /**
-     * isCds
-     *   true: metadata are generated based on CDS sources
-     */
-    readonly isCds: boolean;
-
-    /**
      * Metadata file URI.
      */
     fileUri = '';
@@ -192,7 +186,6 @@ export class MetadataService implements IMetadataService {
      */
     constructor(options?: MetadataServiceOptions) {
         this.ODataVersion = options?.ODataVersion ?? '';
-        this.isCds = options?.isCds !== undefined ? options.isCds : this.ODataVersion === '';
         this.uriMap = options?.uriMap ?? new Map();
     }
 
