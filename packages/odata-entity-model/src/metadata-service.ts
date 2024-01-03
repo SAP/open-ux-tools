@@ -14,23 +14,6 @@ import { Edm } from '@sap-ux/odata-annotation-core-types';
 // Mapping of action/function names to all their overloads
 type ActionNameMap = Map<Path, Set<Path>>;
 
-// OData conform target kinds for CDS kinds
-const targetKindsCds = {
-    service: [Edm.EntityContainer],
-    entitySet: [Edm.EntitySet],
-    entity: [Edm.EntityType, Edm.EntitySet],
-    view: [Edm.EntityType, Edm.EntitySet],
-    aspect: [Edm.ComplexType, Edm.EntityType, Edm.EntitySet],
-    element: [Edm.Property],
-    action: [Edm.Action, Edm.ActionImport],
-    function: [Edm.Function, Edm.FunctionImport],
-    actionImport: [Edm.Action],
-    functionImport: [Edm.FunctionImport],
-    param: [Edm.Parameter],
-    type: [Edm.TypeDefinition, Edm.Property, Edm.Parameter]
-};
-const targetKindsMapCds: Map<string, string[]> = new Map(Object.entries(targetKindsCds));
-
 /**
  * Extracts action/function name by removing the part enclosed in parentheses.
  *
