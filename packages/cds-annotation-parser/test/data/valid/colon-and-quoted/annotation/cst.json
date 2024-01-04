@@ -1,0 +1,165 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "Colon": [
+            {
+              "tokenTypeName": "Colon",
+              "image": ":",
+              "startOffset": 13,
+              "endOffset": 13
+            }
+          ],
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "UI",
+                          "startOffset": 0,
+                          "endOffset": 1
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 1
+                    }
+                  },
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "DataPoint",
+                          "startOffset": 3,
+                          "endOffset": 11
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 3,
+                      "endOffset": 11
+                    }
+                  }
+                ],
+                "PathSegmentSeparator": [
+                  {
+                    "tokenTypeName": "PathSegmentSeparator",
+                    "image": ".",
+                    "startOffset": 2,
+                    "endOffset": 2
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 11
+              }
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "path": [
+                  {
+                    "name": "path",
+                    "children": {
+                      "pathSegment": [
+                        {
+                          "name": "pathSegment",
+                          "children": {
+                            "delimitedIdentifier": [
+                              {
+                                "name": "delimitedIdentifier",
+                                "children": {
+                                  "DelimitedIdentifier": [
+                                    {
+                                      "tokenTypeName": "DelimitedIdentifier",
+                                      "image": "@UI",
+                                      "startOffset": 17,
+                                      "endOffset": 19
+                                    },
+                                    {
+                                      "tokenTypeName": "DelimitedIdentifier",
+                                      "image": "DataPoint",
+                                      "startOffset": 21,
+                                      "endOffset": 29
+                                    }
+                                  ],
+                                  "DelimitedIdentifierExit": [
+                                    {
+                                      "tokenTypeName": "DelimitedIdentifierExit",
+                                      "image": "]",
+                                      "startOffset": 30,
+                                      "endOffset": 30
+                                    }
+                                  ],
+                                  "IdentifierStart": [
+                                    {
+                                      "tokenTypeName": "IdentifierStart",
+                                      "image": "![",
+                                      "startOffset": 15,
+                                      "endOffset": 16
+                                    }
+                                  ],
+                                  "PathSegmentSeparator": [
+                                    {
+                                      "tokenTypeName": "PathSegmentSeparator",
+                                      "image": ".",
+                                      "startOffset": 20,
+                                      "endOffset": 20
+                                    }
+                                  ]
+                                },
+                                "location": {
+                                  "startOffset": 15,
+                                  "endOffset": 30
+                                }
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 15,
+                            "endOffset": 30
+                          }
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 15,
+                      "endOffset": 30
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 15,
+                "endOffset": 30
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 30
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 30
+  }
+}

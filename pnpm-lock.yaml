@@ -481,6 +481,17 @@ importers:
       i18next:
         specifier: 19.4.4
         version: 19.4.4
+        specifier: workspace:*
+        version: link:../odata-annotation-core
+      '@sap-ux/odata-entity-model':
+        specifier: workspace:*
+        version: link:../odata-entity-model
+      '@sap-ux/odata-vocabularies':
+        specifier: workspace:*
+        version: link:../odata-vocabularies
+      chevrotain:
+        specifier: 7.1.1
+        version: 7.1.1
       vscode-languageserver-types:
         specifier: 3.17.2
         version: 3.17.2
@@ -16432,6 +16443,13 @@ packages:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
     dependencies:
       brace-expansion: 1.1.11
+
+  /minimatch@5.1.0:
+    resolution: {integrity: sha512-9TPBGGak4nHfGZsPBohm9AWg6NoT7QTCehS3BIJABslyZbzxfV78QM2Y6+i741OPZIafFAaiiEMh5OyIrJPgtg==}
+    engines: {node: '>=10'}
+    dependencies:
+      brace-expansion: 2.0.1
+    dev: false
 
   /minimatch@5.1.6:
     resolution: {integrity: sha512-lKwV/1brpG6mBUFHtb7NUmtABCb2WZZmm2wNiOA5hAb8VdCS4B3dtMWyvcoViccwAW/COERjXLt0zP1zXUN26g==}
