@@ -120,6 +120,12 @@ export interface IMetadataService {
     readonly ODataVersion: ODataVersionType | '';
 
     /**
+     * isCds
+     *   true: metadata are generated based on CDS sources
+     */
+    readonly isCds: boolean;
+
+    /**
      * Metadata file URI.
      */
     fileUri: string;
