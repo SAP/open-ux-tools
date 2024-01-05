@@ -1,0 +1,88 @@
+{
+  "type": "annotation-group",
+  "range": "[(0,0)..(2,32)]",
+  "name": {
+    "type": "identifier",
+    "range": "[(0,0)..(0,2)]",
+    "value": "UI",
+    "quoted": false
+  },
+  "colon": {
+    "type": "token",
+    "range": "[(0,2)..(0,3)]",
+    "value": ":"
+  },
+  "items": {
+    "type": "annotation-group-items",
+    "range": "[(0,4)..(2,32)]",
+    "openToken": {
+      "type": "token",
+      "range": "[(0,4)..(0,5)]",
+      "value": "{"
+    },
+    "items": [
+      {
+        "type": "annotation",
+        "range": "[(1,4)..(2,19)]",
+        "term": {
+          "type": "path",
+          "range": "[(1,4)..(1,12)]",
+          "value": "LineItem",
+          "segments": [
+            {
+              "type": "identifier",
+              "range": "[(1,4)..(1,12)]",
+              "value": "LineItem",
+              "quoted": false
+            }
+          ],
+          "separators": []
+        },
+        "colon": {
+          "type": "token",
+          "range": "[(1,13)..(1,14)]",
+          "value": ":"
+        },
+        "value": {
+          "type": "empty-value",
+          "range": "[(1,14)..(2,4)]"
+        }
+      },
+      {
+        "type": "annotation",
+        "range": "[(2,33)..(2,32)]",
+        "term": {
+          "type": "path",
+          "range": "[(2,33)..(2,20)]",
+          "value": "",
+          "segments": [],
+          "separators": []
+        },
+        "colon": {
+          "type": "token",
+          "range": "[(2,20)..(2,21)]",
+          "value": ":"
+        },
+        "value": {
+          "type": "enum",
+          "range": "[(2,22)..(2,32)]",
+          "path": {
+            "type": "path",
+            "range": "[(2,23)..(2,32)]",
+            "value": "TextFirst",
+            "segments": [
+              {
+                "type": "identifier",
+                "range": "[(2,23)..(2,32)]",
+                "value": "TextFirst",
+                "quoted": false
+              }
+            ],
+            "separators": []
+          }
+        }
+      }
+    ],
+    "commas": []
+  }
+}
