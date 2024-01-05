@@ -8,6 +8,7 @@ export const BASE_STYLES = {
     color: 'var(--vscode-button-foreground)',
     primary: {
         backgroundColor: 'var(--vscode-button-background)',
+        disabledBorderColor: 'var(--vscode-button-border, var(--vscode-button-background))',
         borderColor: 'var(--vscode-button-border, var(--vscode-contrastBorder, var(--vscode-button-background)))',
         hoverBackgroundColor: 'var(--vscode-button-hoverBackground)',
         hoverBorderColor:
@@ -15,6 +16,7 @@ export const BASE_STYLES = {
     },
     secondary: {
         backgroundColor: 'var(--vscode-button-secondaryBackground, #5f6a79)',
+        disabledBorderColor: 'var(--vscode-button-border, var(--vscode-button-secondaryBackground, #5f6a79))',
         borderColor:
             'var(--vscode-button-border, var(--vscode-contrastBorder, var(--vscode-button-secondaryBackground, #5f6a79)))',
         hoverBackgroundColor: 'var(--vscode-button-secondaryHoverBackground, #4c5561)',
@@ -101,13 +103,13 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
                 opacity: '0.5 !important',
                 // Add to use hard coded value here as Theia doesn't support these values correctly
                 backgroundColor: BASE_STYLES.secondary.backgroundColor,
-                borderColor: BASE_STYLES.secondary.backgroundColor,
+                borderColor: BASE_STYLES.secondary.disabledBorderColor,
                 color: BASE_STYLES.secondary.color,
                 ...(props.primary && {
                     opacity: '0.5 !important',
                     color: BASE_STYLES.color,
                     backgroundColor: BASE_STYLES.primary.backgroundColor,
-                    borderColor: BASE_STYLES.primary.backgroundColor
+                    borderColor: BASE_STYLES.primary.disabledBorderColor
                 })
             },
             rootHovered: {

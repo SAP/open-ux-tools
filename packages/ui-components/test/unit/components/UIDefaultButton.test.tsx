@@ -60,6 +60,14 @@ describe('<UIDefaultButton />', () => {
               },
             }
         `);
+        expect(styles?.rootDisabled).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-button-background)",
+              "borderColor": "var(--vscode-button-border, var(--vscode-button-background))",
+              "color": "var(--vscode-button-foreground)",
+              "opacity": "0.5 !important",
+            }
+        `);
     });
 
     it('Styles - secondary', () => {
@@ -101,6 +109,14 @@ describe('<UIDefaultButton />', () => {
                   "fill": "var(--vscode-button-secondaryForeground, #ffffff)",
                 },
               },
+            }
+        `);
+        expect(styles?.rootDisabled).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-button-secondaryBackground, #5f6a79)",
+              "borderColor": "var(--vscode-button-border, var(--vscode-button-secondaryBackground, #5f6a79))",
+              "color": "var(--vscode-button-secondaryForeground, #ffffff)",
+              "opacity": "0.5 !important",
             }
         `);
     });
