@@ -1,5 +1,5 @@
-import { RECORD_TYPE, STRING_LITERAL_TYPE, nodeRange, ReservedProperties } from '@sap/ux-cds-annotation-parser';
-import type { Record, RecordProperty, AnnotationNode } from '@sap/ux-cds-annotation-parser';
+import { RECORD_TYPE, STRING_LITERAL_TYPE, nodeRange, ReservedProperties } from '@sap-ux/cds-annotation-parser';
+import type { Record, RecordProperty, AnnotationNode } from '@sap-ux/cds-annotation-parser';
 
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import {
@@ -64,9 +64,9 @@ export const recordHandler: NodeHandler<Record> = {
 /**
  * Gets the children annotation nodes for the provided record node based on the visitor state.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {Record} node - The record node.
- * @returns {AnnotationNode[]} The array of children annotation nodes.
+ * @param state - The visitor state.
+ * @param node - The record node.
+ * @returns The array of children annotation nodes.
  */
 function getChildren(state: VisitorState, node: Record): AnnotationNode[] {
     const { edmJsonProperty, valueProperty } = findReservedProperties(node.properties);
@@ -121,9 +121,9 @@ const getImplicitType = (typeProperty: RecordProperty | undefined, context: Cont
 /**
  * Gets the explicit type from the provided type property and context.
  *
- * @param {RecordProperty | undefined} typeProperty - The type property to retrieve the explicit type from.
- * @param {Context} context - The context containing additional information.
- * @returns {string | undefined} The explicit type or undefined if not found.
+ * @param typeProperty - The type property to retrieve the explicit type from.
+ * @param context - The context containing additional information.
+ * @returns The explicit type or undefined if not found.
  */
 function getExplicitType(typeProperty: RecordProperty | undefined, context: Context): string | undefined {
     if (typeProperty?.value?.type === STRING_LITERAL_TYPE && typeProperty?.name?.value === ReservedProperties.Type) {
@@ -148,8 +148,8 @@ const normalizedEdmJsonPropertyName = ReservedProperties.EdmJson.toUpperCase();
 /**
  * Finds reserved properties in the provided array of record properties.
  *
- * @param {RecordProperty[]} properties - The array of record properties to search.
- * @returns {FoundReservedProperties} An object containing found reserved properties.
+ * @param properties - The array of record properties to search.
+ * @returns An object containing found reserved properties.
  */
 function findReservedProperties(properties: RecordProperty[]): FoundReservedProperties {
     const result: FoundReservedProperties = {};
@@ -173,9 +173,9 @@ function findReservedProperties(properties: RecordProperty[]): FoundReservedProp
 /**
  * Handles the EdmJson property in the provided record property based on the visitor state.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {RecordProperty | undefined} edmJsonProperty - The EdmJson record property to handle.
- * @returns {Element | Subtree | undefined} The processed element, subtree, or undefined if not applicable.
+ * @param state - The visitor state.
+ * @param edmJsonProperty - The EdmJson record property to handle.
+ * @returns The processed element, subtree, or undefined if not applicable.
  */
 function handleEdmJson(
     state: VisitorState,
@@ -194,10 +194,10 @@ function handleEdmJson(
 /**
  * Handles the value property in the provided record node based on the visitor state and value container information.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {Record} node - The record node.
- * @param {boolean} isValueContainer - A boolean indicating whether the node is a value container.
- * @param {RecordProperty | undefined} valueProperty - The value property associated with the record node.
+ * @param state - The visitor state.
+ * @param node - The record node.
+ * @param isValueContainer - A boolean indicating whether the node is a value container.
+ * @param valueProperty - The value property associated with the record node.
  */
 function handleValueProperty(
     state: VisitorState,
@@ -221,9 +221,9 @@ function handleValueProperty(
 /**
  * Adds diagnostics for extraneous properties in the provided node based on the visitor state and value property.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {Record} node - The record node containing properties to check.
- * @param {RecordProperty | undefined} valueProperty - The value property associated with the record.
+ * @param state - The visitor state.
+ * @param node - The record node containing properties to check.
+ * @param valueProperty - The value property associated with the record.
  */
 function addDiagnosticForExtraneousProperties(
     state: VisitorState,
@@ -251,10 +251,10 @@ function addDiagnosticForExtraneousProperties(
 /**
  * Validates whether the provided property has the expected name, adding a diagnostic if not.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {string} expectedName - The expected name for the property.
- * @param {RecordProperty | undefined} property - The record property to validate.
- * @returns {boolean} True if the property has the expected name, false otherwise.
+ * @param state - The visitor state.
+ * @param expectedName - The expected name for the property.
+ * @param property - The record property to validate.
+ * @returns True if the property has the expected name, false otherwise.
  */
 function validateReservedPropertyName(
     state: VisitorState,
@@ -289,9 +289,9 @@ function validateReservedPropertyName(
 /**
  * Gets a boolean indicating whether the provided value property is a value container based on the visitor state.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {RecordProperty | undefined} valueProperty - The value property to check.
- * @returns {boolean} True if the value property is a value container, false otherwise.
+ * @param state - The visitor state.
+ * @param valueProperty - The value property to check.
+ * @returns True if the value property is a value container, false otherwise.
  */
 function getIsValueContainer(state: VisitorState, valueProperty: RecordProperty | undefined): boolean {
     const typeInfo = state.context.valueType ? state.vocabularyService.getType(state.context.valueType) : undefined;

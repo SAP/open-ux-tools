@@ -1,5 +1,5 @@
-import type { AnnotationNode, Collection } from '@sap/ux-cds-annotation-parser';
-import { COLLECTION_TYPE, nodeRange } from '@sap/ux-cds-annotation-parser';
+import type { AnnotationNode, Collection } from '@sap-ux/cds-annotation-parser';
+import { COLLECTION_TYPE, nodeRange } from '@sap-ux/cds-annotation-parser';
 
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, Edm } from '@sap-ux/odata-annotation-core-types';
@@ -34,9 +34,9 @@ export const collectionHandler: NodeHandler<Collection> = {
 /**
  * Gets the children of a collection node based on the provided visitor state and collection node.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {Collection} node - The collection node.
- * @returns {AnnotationNode[]} The array of children nodes.
+ * @param state - The visitor state.
+ * @param node - The collection node.
+ * @returns The array of children nodes.
  */
 function getChildren(state: VisitorState, node: Collection): AnnotationNode[] {
     const valueType = state.context.valueType;

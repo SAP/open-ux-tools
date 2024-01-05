@@ -1,4 +1,4 @@
-import type { Identifier, AnnotationValue } from '@sap/ux-cds-annotation-parser';
+import type { Identifier, AnnotationValue } from '@sap-ux/cds-annotation-parser';
 
 import type { Element, Range } from '@sap-ux/odata-annotation-core';
 import { Edm, createElementNode } from '@sap-ux/odata-annotation-core';

@@ -1,4 +1,4 @@
-import type { AnnotationNode } from '@sap/ux-cds-annotation-parser';
+import type { AnnotationNode } from '@sap-ux/cds-annotation-parser';
 
 import type { NodeHandler } from '../handler';
 import { annotationHandler } from './annotation';

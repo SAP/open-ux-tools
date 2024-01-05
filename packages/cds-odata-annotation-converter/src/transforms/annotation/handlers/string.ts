@@ -1,5 +1,5 @@
-import type { MultiLineStringLiteral, StringLiteral } from '@sap/ux-cds-annotation-parser';
-import { MULTI_LINE_STRING_LITERAL_TYPE, STRING_LITERAL_TYPE, nodeRange } from '@sap/ux-cds-annotation-parser';
+import type { MultiLineStringLiteral, StringLiteral } from '@sap-ux/cds-annotation-parser';
+import { MULTI_LINE_STRING_LITERAL_TYPE, STRING_LITERAL_TYPE, nodeRange } from '@sap-ux/cds-annotation-parser';
 
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { MultilineType, createElementNode, createTextNode, Edm } from '@sap-ux/odata-annotation-core-types';
@@ -21,9 +21,9 @@ export const multiLineStringHandler: NodeHandler<MultiLineStringLiteral> = {
 /**
  * Converts a string literal or multiline string literal node to an Element.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {StringLiteral | MultiLineStringLiteral} node - The string or multiline string literal node.
- * @returns {Element | undefined} The converted Element or undefined if the conversion is not performed.
+ * @param state - The visitor state.
+ * @param node - The string or multiline string literal node.
+ * @returns The converted Element or undefined if the conversion is not performed.
  */
 function convertString(state: VisitorState, node: StringLiteral | MultiLineStringLiteral): Element | undefined {
     const elementName = pathLikeTypeElementName(state.context.valueType) ?? Edm.String;
@@ -51,8 +51,8 @@ function convertString(state: VisitorState, node: StringLiteral | MultiLineStrin
 /**
  * Determines the multiline type based on the provided string or multiline string literal node.
  *
- * @param {StringLiteral | MultiLineStringLiteral} node - The string or multiline string literal node.
- * @returns {MultilineType | undefined} The determined multiline type, or undefined if the node is not a multiline string literal.
+ * @param node - The string or multiline string literal node.
+ * @returns The determined multiline type, or undefined if the node is not a multiline string literal.
  */
 function getMultiLineType(node: StringLiteral | MultiLineStringLiteral): MultilineType | undefined {
     if (node.type === STRING_LITERAL_TYPE) {

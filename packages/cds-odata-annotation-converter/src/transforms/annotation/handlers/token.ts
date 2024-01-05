@@ -1,5 +1,5 @@
-import type { Token } from '@sap/ux-cds-annotation-parser';
-import { TOKEN_TYPE, nodeRange } from '@sap/ux-cds-annotation-parser';
+import type { Token } from '@sap-ux/cds-annotation-parser';
+import { TOKEN_TYPE, nodeRange } from '@sap-ux/cds-annotation-parser';
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, Edm } from '@sap-ux/odata-annotation-core-types';
 

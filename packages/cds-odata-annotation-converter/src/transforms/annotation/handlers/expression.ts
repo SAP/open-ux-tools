@@ -3,7 +3,7 @@ import type {
     IncorrectExpression,
     CorrectExpression,
     UnsupportedOperatorExpression
-} from '@sap/ux-cds-annotation-parser';
+} from '@sap-ux/cds-annotation-parser';
 import {
     INCORRECT_EXPRESSION_TYPE,
     CORRECT_EXPRESSION_TYPE,
@@ -11,7 +11,7 @@ import {
     nodeRange,
     operatorMap,
     containsIncorrectExpressions
-} from '@sap/ux-cds-annotation-parser';
+} from '@sap-ux/cds-annotation-parser';
 
 import type { Element, Range } from '@sap-ux/odata-annotation-core-types';
 import { Edm, createAttributeNode, createElementNode } from '@sap-ux/odata-annotation-core-types';

@@ -1,4 +1,4 @@
-import type { Assignment } from '@sap/ux-cds-annotation-parser';
+import type { Assignment } from '@sap-ux/cds-annotation-parser';
 import type { Diagnostic, Element, PositionPointer, Range } from '@sap-ux/odata-annotation-core-types';
 
 import { VisitorState } from './visitor-state';

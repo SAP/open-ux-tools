@@ -1,5 +1,5 @@
-import type { AnnotationNode, RecordProperty } from '@sap/ux-cds-annotation-parser';
-import { RECORD_PROPERTY_TYPE, nodeRange } from '@sap/ux-cds-annotation-parser';
+import type { AnnotationNode, RecordProperty } from '@sap-ux/cds-annotation-parser';
+import { RECORD_PROPERTY_TYPE, nodeRange } from '@sap-ux/cds-annotation-parser';
 
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, Edm, Position } from '@sap-ux/odata-annotation-core-types';

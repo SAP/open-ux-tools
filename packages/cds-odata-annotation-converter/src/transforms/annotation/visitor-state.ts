@@ -76,8 +76,8 @@ export class VisitorState {
 
     /**
      *
-     * @param {VocabularyService} vocabularyService - The vocabulary service associated with the instance.
-     * @param {Position} [position] - The optional position associated with the instance.
+     * @param vocabularyService - The vocabulary service associated with the instance.
+     * @param [position] - The optional position associated with the instance.
      */
     constructor(public vocabularyService: VocabularyService, public position?: Position) {}
 
@@ -96,8 +96,8 @@ export class VisitorState {
     // collectors
     /**
      *
-     * @param {Diagnostic} diagnostic - The diagnostic to be added.
-     * @returns {void}
+     * @param diagnostic - The diagnostic to be added.
+     * @returns
      */
     addDiagnostic(diagnostic: Diagnostic) {
         this._diagnostics.push(diagnostic);
@@ -105,8 +105,8 @@ export class VisitorState {
 
     /**
      *
-     * @param {string} path - The path to be added.
-     * @returns {void}
+     * @param path - The path to be added.
+     * @returns
      */
     addPath(path: string) {
         this._pathSet.add(path);

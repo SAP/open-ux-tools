@@ -1,7 +1,7 @@
 import { Position, Range } from 'vscode-languageserver-types';
-import { copyRange, copyPosition, ANNOTATION_GROUP_TYPE, ANNOTATION_TYPE, parse } from '@sap/ux-cds-annotation-parser';
+import { copyRange, copyPosition, ANNOTATION_GROUP_TYPE, ANNOTATION_TYPE, parse } from '@sap-ux/cds-annotation-parser';
 import { convertAnnotation } from './annotation';
-import type { Annotation, AnnotationGroup, Assignment, Identifier } from '@sap/ux-cds-annotation-parser';
+import type { Annotation, AnnotationGroup, Assignment, Identifier } from '@sap-ux/cds-annotation-parser';
 import type { CdsVocabulary, VocabularyService } from '@sap-ux/odata-vocabularies';
 
 import type {
@@ -45,10 +45,10 @@ const SERVICE_NAME_PLACEHOLDER = '<ServiceName>';
 /**
  * Adapts the segments of an array of Identifiers based on a new name.
  *
- * @param {Identifier[]} segments - The array of Identifier segments to adapt.
- * @param {string | undefined} newName - The new name to use for adaptation.
+ * @param segments - The array of Identifier segments to adapt.
+ * @param newName - The new name to use for adaptation.
  * If undefined, the segments will be cleared.
- * @returns {void} This function does not return a value.
+ * @returns This function does not return a value.
  */
 function adaptSegments(segments: Identifier[], newName: string | undefined): void {
     const newSegments = newName ? newName.split('.') : [];
@@ -105,10 +105,10 @@ export const adjustCdsTermNames = (assignment: Assignment, cdsVocabulary: CdsVoc
 /**
  * Get the internal term name from the CDS vocabulary and group item.
  *
- * @param {CdsVocabulary} cdsVocabulary - The CDS vocabulary containing nameMap and alias.
- * @param {Annotation | undefined} groupItem - The group item annotation.
- * @param {AnnotationGroup} assignment - assignment name value
- * @returns {string | undefined} The internal term name, or undefined if not found.
+ * @param cdsVocabulary - The CDS vocabulary containing nameMap and alias.
+ * @param groupItem - The group item annotation.
+ * @param assignment - assignment name value
+ * @returns The internal term name, or undefined if not found.
  */
 function getInternalTermName(
     cdsVocabulary: CdsVocabulary,
@@ -292,8 +292,8 @@ export const toAnnotationFile = (
 /**
  * Sets the end position of the file range in the return value.
  *
- * @param {ReturnValue} returnValue - The return value object.
- * @param {Range} range - The range to copy the end position from.
+ * @param returnValue - The return value object.
+ * @param range - The range to copy the end position from.
  */
 function setFileRange(returnValue: ReturnValue, range: Range) {
     if (returnValue.file.range) {
@@ -304,8 +304,8 @@ function setFileRange(returnValue: ReturnValue, range: Range) {
 /**
  * Sets the end position of the content range in the return value.
  *
- * @param {ReturnValue} returnValue - The return value object.
- * @param {Range} range - The range to copy the end position from.
+ * @param returnValue - The return value object.
+ * @param range - The range to copy the end position from.
  */
 function setContentRange(returnValue: ReturnValue, range: Range) {
     if (returnValue.file.contentRange) {
@@ -316,12 +316,12 @@ function setContentRange(returnValue: ReturnValue, range: Range) {
 /**
  * Converts target annotations from a Target node into Element nodes.
  *
- * @param {Target} value - The Target node containing annotations.
- * @param {VocabularyService} vocabularyService - The vocabulary service for term resolution.
- * @param {ReturnValue} returnValue - The ReturnValue object to store additional information.
- * @param {number} targetIndex - The index of the target within the context.
- * @param {Position} [position] - The optional position within the document for diagnostics.
- * @returns {object} Returns an object containing the converted terms, metadata path set, and diagnostics.
+ * @param value - The Target node containing annotations.
+ * @param vocabularyService - The vocabulary service for term resolution.
+ * @param returnValue - The ReturnValue object to store additional information.
+ * @param targetIndex - The index of the target within the context.
+ * @param [position] - The optional position within the document for diagnostics.
+ * @returns Returns an object containing the converted terms, metadata path set, and diagnostics.
  * @property {Element[]} terms - The array of converted Element nodes representing the terms.
  * @property {Set<string>} mdPathSet - The set of metadata paths extracted from the converted terms.
  * @property {Diagnostic[]} diag - The array of diagnostics generated during conversion.
@@ -382,9 +382,9 @@ function convertTargetAnnotations(
 
 /**
  *
- * @param {ReturnValue} returnValue - The return value containing file targets.
- * @param {PropagatedTargetMap} [propagationMap] - The map of propagated targets.
- * @returns {void}
+ * @param returnValue - The return value containing file targets.
+ * @param [propagationMap] - The map of propagated targets.
+ * @returns
  */
 function checkGhostTarget(returnValue: ReturnValue, propagationMap?: PropagatedTargetMap): void {
     if (propagationMap) {
@@ -508,9 +508,9 @@ function collectAllValueListProperty(collection: Element): string[] {
 
 /**
  *
- * @param {Element[]} terms - An array of elements representing terms with annotations.
- * @param {Set<string>} mdPathSet - The set to which metadata paths are added.
- * @returns {void} - This method has no return value.
+ * @param terms - An array of elements representing terms with annotations.
+ * @param mdPathSet - The set to which metadata paths are added.
+ * @returns - This method has no return value.
  */
 function addMdPathsFromAnnotations(terms: Element[], mdPathSet: Set<string>): void {
     terms
@@ -535,10 +535,10 @@ function addMdPathsFromAnnotations(terms: Element[], mdPathSet: Set<string>): vo
 /**
  * Prepares a map of targets based on annotation assignments.
  *
- * @param {FileIndex} fileIndex - The file index containing annotation assignments.
- * @param {VocabularyService} vocabularyService - The vocabulary service for resolving types.
- * @param {CdsCompilerFacade} [compilerFacade] - Optional compiler facade for additional functionality.
- * @returns {Map<string, Target>} A map where the keys are stringified annotation ranges,
+ * @param fileIndex - The file index containing annotation assignments.
+ * @param vocabularyService - The vocabulary service for resolving types.
+ * @param [compilerFacade] - Optional compiler facade for additional functionality.
+ * @returns A map where the keys are stringified annotation ranges,
  *          and the values are targets with associated assignments.
  */
 function prepareTargetMap(
@@ -557,10 +557,10 @@ function prepareTargetMap(
 /**
  * Update the target map based on the given annotation and assignment.
  *
- * @param {AnnotationAssignmentToken} annotation - The annotation containing the carrier information.
- * @param {CdsCompilerFacade | undefined} compilerFacade - The CDS compiler facade.
- * @param {Assignment} assignment - The assignment associated with the annotation.
- * @param {Map<string, Target>} targetMap - The target map to update.
+ * @param annotation - The annotation containing the carrier information.
+ * @param compilerFacade - The CDS compiler facade.
+ * @param assignment - The assignment associated with the annotation.
+ * @param targetMap - The target map to update.
  */
 function updateTargetMap(
     annotation: AnnotationAssignmentToken,
@@ -592,11 +592,11 @@ function updateTargetMap(
 /**
  * Collects metadata for relative paths used in annotation values based on the provided parameters.
  *
- * @param {string} targetPath - The target path for which relative paths are collected.
- * @param {string} targetCollectorKey - The key used for metadata collection related to the target.
- * @param {Set<string>} mdPathSet - The set of metadata paths extracted from annotation values.
- * @param {MetadataCollector} metadataCollector - The MetadataCollector for collecting metadata.
- * @returns {void} This function does not return a value.
+ * @param targetPath - The target path for which relative paths are collected.
+ * @param targetCollectorKey - The key used for metadata collection related to the target.
+ * @param mdPathSet - The set of metadata paths extracted from annotation values.
+ * @param metadataCollector - The MetadataCollector for collecting metadata.
+ * @returns This function does not return a value.
  */
 function collectRelativePaths(
     targetPath: string,
@@ -643,9 +643,9 @@ function collectRelativePaths(
 /**
  * Get the kind of the parent node associated with a given base entry.
  *
- * @param {MetadataElementWithParentKey | undefined} baseEntry - The base entry for which to retrieve the parent node's kind.
- * @param {MetadataCollector} metadataCollector - The metadata collector containing the metadata element map.
- * @returns {string | undefined} The kind of the parent node, or undefined if not found.
+ * @param baseEntry - The base entry for which to retrieve the parent node's kind.
+ * @param metadataCollector - The metadata collector containing the metadata element map.
+ * @returns The kind of the parent node, or undefined if not found.
  */
 function getNodeKind(
     baseEntry: MetadataElementWithParentKey | undefined,

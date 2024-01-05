@@ -5,10 +5,10 @@ import type { Context } from './visitor-state';
 /**
  * Gets the implicit property type based on the provided vocabulary service, context, and property name.
  *
- * @param {VocabularyService} vocabularyService - The vocabulary service.
- * @param {Context} context - The context containing recordType, termType, etc.
- * @param {string} propertyName - The name of the property for which to get the type.
- * @returns {ComplexTypeProperty | undefined} The implicit property type or undefined if not found.
+ * @param vocabularyService - The vocabulary service.
+ * @param context - The context containing recordType, termType, etc.
+ * @param propertyName - The name of the property for which to get the type.
+ * @returns The implicit property type or undefined if not found.
  */
 export function getImplicitPropertyType(
     vocabularyService: VocabularyService,
@@ -27,10 +27,10 @@ export function getImplicitPropertyType(
 /**
  * Gets the property type from the provided vocabulary service based on the specified record type and property name.
  *
- * @param {VocabularyService} vocabularyService - The vocabulary service.
- * @param {string | undefined} recordType - The record type for which to retrieve the property type.
- * @param {string} propertyName - The name of the property for which to get the type.
- * @returns {ComplexTypeProperty | undefined} The property type or undefined if not found.
+ * @param vocabularyService - The vocabulary service.
+ * @param recordType - The record type for which to retrieve the property type.
+ * @param propertyName - The name of the property for which to get the type.
+ * @returns The property type or undefined if not found.
  */
 export function getPropertyType(
     vocabularyService: VocabularyService,
@@ -48,10 +48,10 @@ export function getPropertyType(
 /**
  * Gets the property type from the base type using the provided vocabulary service, base type, and property name.
  *
- * @param {VocabularyService} vocabularyService - The vocabulary service.
- * @param {string | undefined} baseType - The base type from which to retrieve the property type.
- * @param {string} propertyName - The name of the property for which to get the type.
- * @returns {ComplexTypeProperty | undefined} The property type or undefined if not found.
+ * @param vocabularyService - The vocabulary service.
+ * @param baseType - The base type from which to retrieve the property type.
+ * @param propertyName - The name of the property for which to get the type.
+ * @returns The property type or undefined if not found.
  */
 function getPropertyTypeFromBaseType(
     vocabularyService: VocabularyService,
@@ -73,9 +73,9 @@ function getPropertyTypeFromBaseType(
 
 /**
  *
- * @param {VocabularyService} service - The vocabulary service.
- * @param {string} type - The type string to be qualified.
- * @returns {string | undefined} The fully qualified type string or undefined if the namespace is not found.
+ * @param service - The vocabulary service.
+ * @param type - The type string to be qualified.
+ * @returns The fully qualified type string or undefined if the namespace is not found.
  */
 export function getFullyQualifiedType(service: VocabularyService, type: string): string | undefined {
     const [simpleIdentifier] = type.split('.').slice(-1);
@@ -89,10 +89,10 @@ export function getFullyQualifiedType(service: VocabularyService, type: string):
 /**
  * Gets a term from the provided vocabulary service based on the specified vocabulary name or alias and term name.
  *
- * @param {VocabularyService} vocabularyService - The vocabulary service.
- * @param {string} vocabularyNameOrAlias - The name or alias of the vocabulary.
- * @param {string | undefined} termName - The name of the term to retrieve, if available.
- * @returns {Term | undefined} The retrieved term or undefined if not found.
+ * @param vocabularyService - The vocabulary service.
+ * @param vocabularyNameOrAlias - The name or alias of the vocabulary.
+ * @param termName - The name of the term to retrieve, if available.
+ * @returns The retrieved term or undefined if not found.
  */
 export function getTerm(
     vocabularyService: VocabularyService,

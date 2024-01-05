@@ -44,9 +44,9 @@ export function indent(
 /**
  * Indent a string containing a single line.
  *
- * @param {string} string - The string to be indented.
- * @param {number} level - The level of indentation (number of spaces per level).
- * @returns {string} The indented string.
+ * @param string - The string to be indented.
+ * @param level - The level of indentation (number of spaces per level).
+ * @returns The indented string.
  */
 function indentLine(string: string, level: number): string {
     const indent = '    ';
@@ -55,8 +55,8 @@ function indentLine(string: string, level: number): string {
 
 /**
  *
- * @param {string} line - The line of code or text.
- * @returns {number} The change in indentation level, positive for each opening character,
+ * @param line - The line of code or text.
+ * @returns The change in indentation level, positive for each opening character,
  *                  negative for each closing character.
  */
 function indentChange(line: string): number {

@@ -1,5 +1,5 @@
-import type { Collection, Enum } from '@sap/ux-cds-annotation-parser';
-import { copyRange, ENUM_TYPE, nodeRange } from '@sap/ux-cds-annotation-parser';
+import type { Collection, Enum } from '@sap-ux/cds-annotation-parser';
+import { copyRange, ENUM_TYPE, nodeRange } from '@sap-ux/cds-annotation-parser';
 
 import type { Element, Range } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, createTextNode, Edm } from '@sap-ux/odata-annotation-core-types';
@@ -43,10 +43,10 @@ export const enumHandler: NodeHandler<Enum> = {
 /**
  * Converts collection items representing flags (enums) into an EnumMember element.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {Collection} node - The collection node containing enum items.
- * @param {string} valueType - The type of the enum values.
- * @returns {Element} An EnumMember element representing the converted flags.
+ * @param state - The visitor state.
+ * @param node - The collection node containing enum items.
+ * @param valueType - The type of the enum values.
+ * @returns An EnumMember element representing the converted flags.
  */
 export function convertFlags(state: VisitorState, node: Collection, valueType: string): Element {
     // Alternative is to provide conversion diagnostics

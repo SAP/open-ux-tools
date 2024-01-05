@@ -3,7 +3,7 @@ import { Range, Position } from 'vscode-languageserver-types';
 /**
  *
  * @param value (line,character)
- * @returns {Position} The Position object representing the expanded position.
+ * @returns The Position object representing the expanded position.
  */
 const expandPosition = (value: string): Position =>
     Position.create.apply(
@@ -16,7 +16,7 @@ const expandPosition = (value: string): Position =>
 /**
  *
  * @param value [(line,character)..(line..character)]
- * @returns {Range} The Range object representing the expanded Range.
+ * @returns The Range object representing the expanded Range.
  */
 const expandRange = (value: string): Range =>
     Range.create.apply(

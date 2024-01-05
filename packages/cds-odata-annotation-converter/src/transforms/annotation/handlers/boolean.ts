@@ -1,5 +1,5 @@
-import type { BooleanLiteral } from '@sap/ux-cds-annotation-parser';
-import { BOOLEAN_TYPE, nodeRange } from '@sap/ux-cds-annotation-parser';
+import type { BooleanLiteral } from '@sap-ux/cds-annotation-parser';
+import { BOOLEAN_TYPE, nodeRange } from '@sap-ux/cds-annotation-parser';
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, createTextNode, Edm } from '@sap-ux/odata-annotation-core-types';
 

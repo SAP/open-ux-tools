@@ -1,5 +1,5 @@
-import type { Annotation, AnnotationNode, Identifier } from '@sap/ux-cds-annotation-parser';
-import { copyRange, ANNOTATION_TYPE, nodeRange, EMPTY_VALUE_TYPE } from '@sap/ux-cds-annotation-parser';
+import type { Annotation, AnnotationNode, Identifier } from '@sap-ux/cds-annotation-parser';
+import { copyRange, ANNOTATION_TYPE, nodeRange, EMPTY_VALUE_TYPE } from '@sap-ux/cds-annotation-parser';
 
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { Range, createElementNode, Edm, Position } from '@sap-ux/odata-annotation-core-types';
@@ -25,9 +25,9 @@ export const annotationHandler: NodeHandler<Annotation> = {
 /**
  * Converts an Annotation node into an Element node and handles flattened structures.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {Annotation} annotation - The Annotation node to convert.
- * @returns {ConvertResult} Returns an Element or Subtree representing the converted structure.
+ * @param state - The visitor state.
+ * @param annotation - The Annotation node to convert.
+ * @returns Returns an Element or Subtree representing the converted structure.
  */
 function convert(state: VisitorState, annotation: Annotation): ConvertResult {
     const element: Element = createElementNode({
@@ -95,9 +95,9 @@ function convert(state: VisitorState, annotation: Annotation): ConvertResult {
 /**
  * Get the term segments from an annotation.
  *
- * @param {Annotation} annotation - The annotation object.
- * @param {boolean} isEmbeddedAnnotation - A flag indicating whether the annotation is embedded.
- * @returns {string[]} An array of string segments extracted from the annotation's term property.
+ * @param annotation - The annotation object.
+ * @param isEmbeddedAnnotation - A flag indicating whether the annotation is embedded.
+ * @returns An array of string segments extracted from the annotation's term property.
  */
 function getTermSegments(annotation: Annotation, isEmbeddedAnnotation: boolean): string[] {
     return annotation.term.segments.map((identifier, index) =>
@@ -108,10 +108,10 @@ function getTermSegments(annotation: Annotation, isEmbeddedAnnotation: boolean):
 /**
  * Gets the range for the term name based on the given annotation node and context.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {Annotation} node - The annotation node containing the term.
- * @param {boolean} isEmbeddedAnnotation - Indicates whether the annotation is embedded within another element.
- * @returns {Range | undefined} Returns the range for the term name, or undefined if not applicable.
+ * @param state - The visitor state.
+ * @param node - The annotation node containing the term.
+ * @param isEmbeddedAnnotation - Indicates whether the annotation is embedded within another element.
+ * @returns Returns the range for the term name, or undefined if not applicable.
  */
 function getTermNameRange(state: VisitorState, node: Annotation, isEmbeddedAnnotation: boolean): Range | undefined {
     const segments =
@@ -139,9 +139,9 @@ function getTermNameRange(state: VisitorState, node: Annotation, isEmbeddedAnnot
 /**
  * Gets the flattened segments from the term of the given annotation, considering the context and nesting.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {Annotation} annotation - The annotation containing the term with segments.
- * @returns {Identifier[]} Returns the flattened segments of the term.
+ * @param state - The visitor state.
+ * @param annotation - The annotation containing the term with segments.
+ * @returns Returns the flattened segments of the term.
  */
 function getFlattenedSegments(state: VisitorState, annotation: Annotation): Identifier[] {
     const isEmbeddedAnnotation = state.elementStack.length > 0;
@@ -152,10 +152,10 @@ function getFlattenedSegments(state: VisitorState, annotation: Annotation): Iden
 /**
  * Handles a flattened structure in the CDS syntax and builds nested structures.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {Annotation} annotation - The annotation containing the flattened structure.
- * @param {Element} element - The element to which the flattened structure will be added.
- * @returns {Subtree | undefined} Returns a Subtree representing the nested structures, or undefined if not applicable.
+ * @param state - The visitor state.
+ * @param annotation - The annotation containing the flattened structure.
+ * @param element - The element to which the flattened structure will be added.
+ * @returns Returns a Subtree representing the nested structures, or undefined if not applicable.
  */
 function handleFlattenedStructure(state: VisitorState, annotation: Annotation, element: Element): Subtree | undefined {
     // Build nested structures for CDS flattened syntax

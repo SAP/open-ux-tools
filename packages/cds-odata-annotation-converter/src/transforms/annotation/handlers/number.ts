@@ -1,5 +1,5 @@
-import type { NumberLiteral } from '@sap/ux-cds-annotation-parser';
-import { NUMBER_LITERAL_TYPE, nodeRange } from '@sap/ux-cds-annotation-parser';
+import type { NumberLiteral } from '@sap-ux/cds-annotation-parser';
+import { NUMBER_LITERAL_TYPE, nodeRange } from '@sap-ux/cds-annotation-parser';
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, createTextNode, Edm } from '@sap-ux/odata-annotation-core-types';
 
@@ -22,9 +22,9 @@ export const numberHandler: NodeHandler<NumberLiteral> = {
 /**
  * Determines the corresponding Edm type for the given type name and value.
  *
- * @param {string | undefined} typeName - The type name to be considered.
- * @param {number | string} value - The value for which the Edm type is determined.
- * @returns {string} The corresponding Edm type.
+ * @param typeName - The type name to be considered.
+ * @param value - The value for which the Edm type is determined.
+ * @returns The corresponding Edm type.
  */
 export function getNumberType(typeName: string | undefined, value: number | string): string {
     if (typeName === 'Edm.Decimal') {

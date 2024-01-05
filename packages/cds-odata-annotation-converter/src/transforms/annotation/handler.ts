@@ -1,4 +1,4 @@
-import type { AnnotationNode } from '@sap/ux-cds-annotation-parser';
+import type { AnnotationNode } from '@sap-ux/cds-annotation-parser';
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import type { Context, VisitorState } from './visitor-state';
 
@@ -27,8 +27,8 @@ export interface Subtree {
 /**
  * Checks if the given value is a Subtree.
  *
- * @param {Subtree | Element} value - The value to be checked.
- * @returns {value is Subtree} Returns true if the value is a Subtree, otherwise false.
+ * @param value - The value to be checked.
+ * @returns Returns true if the value is a Subtree, otherwise false.
  */
 export function isSubtree(value: Subtree | Element): value is Subtree {
     return (value as unknown as Element).type === undefined;

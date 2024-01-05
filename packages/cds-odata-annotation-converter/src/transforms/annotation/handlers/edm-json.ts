@@ -10,7 +10,7 @@ import type {
     NumberLiteral,
     AnnotationValue,
     RecordProperty
-} from '@sap/ux-cds-annotation-parser';
+} from '@sap-ux/cds-annotation-parser';
 import {
     RECORD_TYPE,
     nodeRange,
@@ -19,7 +19,7 @@ import {
     EMPTY_VALUE_TYPE,
     BOOLEAN_TYPE,
     NUMBER_LITERAL_TYPE
-} from '@sap/ux-cds-annotation-parser';
+} from '@sap-ux/cds-annotation-parser';
 import { i18n } from '../../../i18n';
 import type { VisitorState } from '../visitor-state';
 import { numberHandler } from './number';
@@ -50,15 +50,15 @@ export class EdmJsonVisitor {
     };
     /**
      *
-     * @param {VisitorState} state - The visitor state.
+     * @param state - The visitor state.
      */
     constructor(private state: VisitorState) {}
 
     /**
      * Visits the given AnnotationNode and invokes the corresponding visitor function based on the node type.
      *
-     * @param {AnnotationNode} node - The AnnotationNode to be visited.
-     * @returns {Element | undefined} Returns an Element or undefined based on the visitor function for the given node type.
+     * @param node - The AnnotationNode to be visited.
+     * @returns Returns an Element or undefined based on the visitor function for the given node type.
      */
     visit(node: AnnotationNode): Element | undefined {
         const visitor = this[node.type as VisitorTypes];
@@ -104,9 +104,9 @@ export class EdmJsonVisitor {
     /**
      * Converts a RecordProperty representing an attribute into an Element and adds it to the provided Element.
      *
-     * @param {RecordProperty} property - The RecordProperty representing the attribute.
-     * @param {Element} element - The Element to which the attribute will be added.
-     * @returns {void} This function does not return a value.
+     * @param property - The RecordProperty representing the attribute.
+     * @param element - The Element to which the attribute will be added.
+     * @returns This function does not return a value.
      */
     convertAttribute(property: RecordProperty, element: Element): void {
         if (property.value) {
@@ -127,9 +127,9 @@ export class EdmJsonVisitor {
     /**
      * Converts an element name based on the provided RecordProperty and Element.
      *
-     * @param {RecordProperty} property - The RecordProperty containing the element name.
-     * @param {Element} element - The Element to be converted.
-     * @returns {void}
+     * @param property - The RecordProperty containing the element name.
+     * @param element - The Element to be converted.
+     * @returns
      */
     convertElementName(property: RecordProperty, element: Element): void {
         element.name = property.name.value.substring(1);
@@ -154,9 +154,9 @@ export class EdmJsonVisitor {
     /**
      * Converts a collection of AnnotationValue items into Elements and adds them to the provided Element.
      *
-     * @param {AnnotationValue[]} items - The collection of AnnotationValue items to be converted.
-     * @param {Element} element - The Element to which the converted items will be added.
-     * @returns {void} This function does not return a value.
+     * @param items - The collection of AnnotationValue items to be converted.
+     * @param element - The Element to which the converted items will be added.
+     * @returns This function does not return a value.
      */
     convertCollection(items: AnnotationValue[], element: Element): void {
         for (const item of items) {

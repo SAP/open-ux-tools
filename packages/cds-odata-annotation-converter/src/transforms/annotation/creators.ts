@@ -4,7 +4,7 @@ import { createAttributeNode, Edm } from '@sap-ux/odata-annotation-core-types';
 /**
  * Factory function that creates an attribute node with the specified attribute name, value, and value range.
  *
- * @param {string} attributeName - The name of the attribute to be created.
+ * @param attributeName - The name of the attribute to be created.
  * @returns A function that creates an AttributeNode.
  */
 function createAttributeFactory(attributeName: string) {

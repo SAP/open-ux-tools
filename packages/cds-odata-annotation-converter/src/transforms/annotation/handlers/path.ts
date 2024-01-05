@@ -1,4 +1,4 @@
-import type { Path, Identifier, Separator } from '@sap/ux-cds-annotation-parser';
+import type { Path, Identifier, Separator } from '@sap-ux/cds-annotation-parser';
 import {
     PATH_TYPE,
     nodeRange,
@@ -6,7 +6,7 @@ import {
     copyPosition,
     IDENTIFIER_TYPE,
     SEPARATOR_TYPE
-} from '@sap/ux-cds-annotation-parser';
+} from '@sap-ux/cds-annotation-parser';
 
 import type { Element, ODataPathSeparatorDiagnostic } from '@sap-ux/odata-annotation-core-types';
 import {
@@ -60,9 +60,9 @@ interface Fragment {
  * before first @ all '.' chars have been replaced by '/', hence every segment considered as fragment.
  * after first @ fragments are parts separated by '/', i.e. dots are not separators of fragments in that region.
  *
- * @param {VisitorState} state - The visitor state.
- * @param {Path} node - The path node containing segments and separators.
- * @returns {Range[]} An array of fragment ranges derived from the positions of segments and separators.
+ * @param state - The visitor state.
+ * @param node - The path node containing segments and separators.
+ * @returns An array of fragment ranges derived from the positions of segments and separators.
  */
 function calculateFragmentRanges(state: VisitorState, node: Path): Range[] {
     const tokens = [...node.segments, ...node.separators].sort((a, b) => {
@@ -87,10 +87,10 @@ function calculateFragmentRanges(state: VisitorState, node: Path): Range[] {
 /**
  * Converts the segments of a Path node into Fragments, handling both data model segments and annotation references.
  *
- * @param {VisitorState} state - The VisitorState object managing the state during the visit.
- * @param {Path} node - The Path node representing the path.
- * @param {Array<Identifier | Separator>} tokens - The array of Identifier or Separator tokens representing the path segments.
- * @returns {Fragment[]} An array of Fragments representing the converted segments of the path.
+ * @param state - The VisitorState object managing the state during the visit.
+ * @param node - The Path node representing the path.
+ * @param tokens - The array of Identifier or Separator tokens representing the path segments.
+ * @returns An array of Fragments representing the converted segments of the path.
  */
 function convertToFragments(state: VisitorState, node: Path, tokens: (Identifier | Separator)[]): Fragment[] {
     // If any of the token range is not defined,
@@ -129,11 +129,11 @@ function convertToFragments(state: VisitorState, node: Path, tokens: (Identifier
 /**
  * Processes the segments of an annotation path, extracting fragments and checking for missing path escaping.
  *
- * @param {VisitorState} state - The VisitorState object managing the state during the visit.
- * @param {Path} node - The Path node representing the path.
- * @param {Array<Identifier | Separator>} tokens - The array of Identifier or Separator tokens representing the path segments.
- * @param {number} startIndex - The index indicating the start of the range in the tokens array.
- * @returns {Fragment[]} An array of Fragments representing the processed segments of the annotation path.
+ * @param state - The VisitorState object managing the state during the visit.
+ * @param node - The Path node representing the path.
+ * @param tokens - The array of Identifier or Separator tokens representing the path segments.
+ * @param startIndex - The index indicating the start of the range in the tokens array.
+ * @returns An array of Fragments representing the processed segments of the annotation path.
  */
 function processAnnotationSegments(
     state: VisitorState,
@@ -185,11 +185,11 @@ function processAnnotationSegments(
 /**
  * Pushes a diagnostic for missing path escaping brackets in the specified range of tokens.
  *
- * @param {VisitorState} state - The VisitorState object managing the state during the visit.
- * @param {Path} node - The Path node representing the path.
- * @param {Array<Identifier | Separator>} tokens - The array of Identifier or Separator tokens representing the path segments.
- * @param {number} startIndex - The index indicating the start of the range in the tokens array.
- * @returns {void} This function does not return a value.
+ * @param state - The VisitorState object managing the state during the visit.
+ * @param node - The Path node representing the path.
+ * @param tokens - The array of Identifier or Separator tokens representing the path segments.
+ * @param startIndex - The index indicating the start of the range in the tokens array.
+ * @returns This function does not return a value.
  */
 function pushMissingPathEscapingDiagnostic(
     state: VisitorState,
@@ -228,9 +228,9 @@ function pushMissingPathEscapingDiagnostic(
 /**
  * Pushes a diagnostic for a wrong path separator in the given token range.
  *
- * @param {VisitorState} state - The VisitorState object managing the state during the visit.
- * @param {Separator} token - The Separator token representing the path separator.
- * @returns {void} This function does not return a value.
+ * @param state - The VisitorState object managing the state during the visit.
+ * @param token - The Separator token representing the path separator.
+ * @returns This function does not return a value.
  */
 function pushWrongPathSeparatorDiagnostic(state: VisitorState, token: Separator): void {
     if (!token.range) {

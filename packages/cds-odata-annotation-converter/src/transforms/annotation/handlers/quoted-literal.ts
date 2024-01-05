@@ -1,5 +1,5 @@
-import type { QuotedLiteral, QuotedLiteralKind } from '@sap/ux-cds-annotation-parser';
-import { QUOTED_LITERAL_TYPE, nodeRange } from '@sap/ux-cds-annotation-parser';
+import type { QuotedLiteral, QuotedLiteralKind } from '@sap-ux/cds-annotation-parser';
+import { QUOTED_LITERAL_TYPE, nodeRange } from '@sap-ux/cds-annotation-parser';
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, Edm } from '@sap-ux/odata-annotation-core-types';
 
@@ -43,8 +43,8 @@ function getElementNameForQuotedLiteral(kind: QuotedLiteralKind): Edm {
 /**
  * Throws an error indicating that a value should never be reached.
  *
- * @param {never} value - The value that should never be reached.
- * @returns {never} - This function never returns; it always throws an error.
+ * @param value - The value that should never be reached.
+ * @returns - This function never returns; it always throws an error.
  * @throws {Error} - An error indicating the unexpected value.
  */
 function assertNever(value: never): never {

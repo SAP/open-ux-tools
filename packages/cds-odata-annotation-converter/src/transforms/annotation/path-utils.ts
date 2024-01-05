@@ -9,8 +9,8 @@ const PATH_TYPES = new Set([
 
 /**
  *
- * @param {string | undefined} type - The path-like type string.
- * @returns {string | undefined} The simplified element name or undefined if the type is not recognized.
+ * @param type - The path-like type string.
+ * @returns The simplified element name or undefined if the type is not recognized.
  */
 export function pathLikeTypeElementName(type: string | undefined): string | undefined {
     if (type === undefined) {

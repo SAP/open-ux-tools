@@ -1,6 +1,6 @@
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
-import type { Path } from '@sap/ux-cds-annotation-parser';
-import { parse, PATH_TYPE } from '@sap/ux-cds-annotation-parser';
+import type { Path } from '@sap-ux/cds-annotation-parser';
+import { parse, PATH_TYPE } from '@sap-ux/cds-annotation-parser';
 
 import { VisitorState } from '../../../../src/transforms/annotation/visitor-state';
 import { pathHandler } from '../../../../src/transforms/annotation/handlers/path';

@@ -3,7 +3,7 @@ import { join, relative } from 'path';
 import { default as cds } from '@sap/cds';
 import type { Diagnostic, Element } from '@sap-ux/odata-annotation-core';
 import * as projectAccess from '@sap-ux/project-access';
-import type { AnnotationGroup, Annotation } from '@sap/ux-cds-annotation-parser';
+import type { AnnotationGroup, Annotation } from '@sap-ux/cds-annotation-parser';
 import { getFileObj } from './testUtils/file-access';
 import { deserialize } from './deserialize-ast';
 import { getCdsArtifacts } from '@sap/ux-cds-compiler-facade';

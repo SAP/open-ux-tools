@@ -29,7 +29,7 @@
     "dependencies": {
         "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
-        "@sap/ux-cds-annotation-parser": "workspace:*",
+        "@sap-ux/cds-annotation-parser": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap/ux-cds-compiler-facade": "/Users/i501270/SAPDevelop/tools-suite/packages/lib/cds-compiler-facade",
         "chevrotain": "7.1.1",

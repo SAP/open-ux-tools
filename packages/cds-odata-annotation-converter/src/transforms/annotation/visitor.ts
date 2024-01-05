@@ -1,4 +1,4 @@
-import type { AnnotationNode } from '@sap/ux-cds-annotation-parser';
+import type { AnnotationNode } from '@sap-ux/cds-annotation-parser';
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { nodeHandlerConfig } from './handlers';
 
@@ -13,9 +13,9 @@ import type { VisitorState } from './visitor-state';
 export class Visitor {
     /**
      *
-     * @param {VisitorState} state - The visitor state.
-     * @param {AnnotationNode} node - The annotation node to be visited.
-     * @returns {Element | undefined} The converted element or undefined if no conversion is performed.
+     * @param state - The visitor state.
+     * @param node - The annotation node to be visited.
+     * @returns The converted element or undefined if no conversion is performed.
      */
     visit(state: VisitorState, node: AnnotationNode): Element | undefined {
         const handler = nodeHandlerConfig[node.type] as unknown as NodeHandler<AnnotationNode>;
@@ -61,9 +61,9 @@ export class Visitor {
 /**
  * Process the conversion result and return a tuple of elements.
  *
- * @param {Element} leaf - The leaf element.
- * @param {ConvertResult | undefined} result - The conversion result.
- * @returns {[Element | undefined, Element]} A tuple containing the root and leaf elements.
+ * @param leaf - The leaf element.
+ * @param result - The conversion result.
+ * @returns A tuple containing the root and leaf elements.
  *            - If the result is undefined, returns [undefined, leaf].
  *            - If the result is a subtree, returns [result.root, result.leaf].
  *            - Otherwise, returns [result, result].

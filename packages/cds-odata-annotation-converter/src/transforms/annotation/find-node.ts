@@ -8,7 +8,7 @@ import type {
     Path,
     RecordProperty,
     StringLiteral
-} from '@sap/ux-cds-annotation-parser';
+} from '@sap-ux/cds-annotation-parser';
 import {
     getAstNodes,
     ANNOTATION_TYPE,
@@ -23,7 +23,7 @@ import {
     PATH_TYPE,
     STRING_LITERAL_TYPE,
     findAnnotationNode
-} from '@sap/ux-cds-annotation-parser';
+} from '@sap-ux/cds-annotation-parser';
 
 import type { Attribute, Element, Position, Range, TextNode } from '@sap-ux/odata-annotation-core';
 import {
@@ -49,10 +49,10 @@ class PositionVisitor {
     /**
      * Visits a TermNode or an array of TermNodes and returns a VisitorReturnValue.
      *
-     * @param {TermNode | TermNode[]} node - The TermNode or array of TermNodes to visit.
-     * @param {PositionVisitorOptions} options - The options for the position visitor.
-     * @param {string[]} segments - The segments representing the path to the current node.
-     * @returns {VisitorReturnValue | undefined} Returns the VisitorReturnValue or undefined if no match is found.
+     * @param node - The TermNode or array of TermNodes to visit.
+     * @param options - The options for the position visitor.
+     * @param - The segments representing the path to the current node.
+     * @returns Returns the VisitorReturnValue or undefined if no match is found.
      */
     visit(
         node: TermNode | TermNode[],
@@ -90,10 +90,10 @@ class PositionVisitor {
     /**
      * Visits a TextNode and returns information based on the specified options and segments.
      *
-     * @param {TextNode} node - The TextNode to be visited.
-     * @param {PositionVisitorOptions} options - The options containing position information.
-     * @param {string[]} segments - The array of segments representing the current path.
-     * @returns {VisitorReturnValue | undefined} Returns information about the visited TextNode or undefined.
+     * @param  node - The TextNode to be visited.
+     * @param options - The options containing position information.
+     * @param segments - The array of segments representing the current path.
+     * @returns Returns information about the visited TextNode or undefined.
      * @private
      */
     private visitText(
@@ -115,10 +115,10 @@ class PositionVisitor {
     /**
      * Visits an Attribute and returns information based on the specified options and segments.
      *
-     * @param {Attribute} attribute - The Attribute to be visited.
-     * @param {PositionVisitorOptions} options - The options containing position information.
-     * @param {string[]} segments - The array of segments representing the current path.
-     * @returns {VisitorReturnValue | undefined} Returns information about the visited Attribute or undefined.
+     * @param attribute - The Attribute to be visited.
+     * @param options - The options containing position information.
+     * @param segments - The array of segments representing the current path.
+     * @returns Returns information about the visited Attribute or undefined.
      * @private
      */
     private visitAttribute(
@@ -147,10 +147,10 @@ class PositionVisitor {
     /**
      * Visits an Element and returns information based on the specified options and segments.
      *
-     * @param {Element} element - The Element to be visited.
-     * @param {PositionVisitorOptions} options - The options containing position information.
-     * @param {string[]} segments - The array of segments representing the current path.
-     * @returns {VisitorReturnValue | undefined} Returns information about the visited Element or undefined.
+     * @param element - The Element to be visited.
+     * @param options - The options containing position information.
+     * @param segments - The array of segments representing the current path.
+     * @returns Returns information about the visited Element or undefined.
      * @private
      */
     private visitElement(
@@ -189,10 +189,10 @@ class PositionVisitor {
     /**
      * Visits the content of an Element and returns information based on the specified options and segments.
      *
-     * @param {Element} element - The Element whose content is being visited.
-     * @param {PositionVisitorOptions} options - The options containing position information.
-     * @param {string[]} segments - The array of segments representing the current path.
-     * @returns {VisitorReturnValue | undefined} Returns information about the visited content or undefined.
+     * @param element - The Element whose content is being visited.
+     * @param options - The options containing position information.
+     * @param segments - The array of segments representing the current path.
+     * @returns Returns information about the visited content or undefined.
      * @private
      */
     private visitContent(
@@ -249,9 +249,9 @@ export function findNode(assignment: Assignment, annotations: Element[], positio
 /**
  * Retrieves the specified nodes from the array of TermNodes based on the provided path.
  *
- * @param {TermNode[]} terms - The array of TermNodes to retrieve nodes from.
- * @param {string[]} path - The path specifying the sequence of indices or property names.
- * @returns {TermNode[]} Returns the retrieved nodes based on the provided path.
+ * @param terms - The array of TermNodes to retrieve nodes from.
+ * @param path - The path specifying the sequence of indices or property names.
+ * @returns Returns the retrieved nodes based on the provided path.
  */
 function getTermNodes(terms: TermNode[], path: string[]): TermNode[] {
     // ignore the first empty segment
@@ -278,16 +278,17 @@ type VisitorReturnValue = {
     path: string[];
     range?: Range;
 };
+type ChildNode = AnnotationNode | AnnotationNode[];
 
 /**
  * Adjusts the VisitorReturnValue based on the provided AST path, assignment, terms, value, and position.
  *
- * @param {string} astPath - The AST path specifying the sequence of indices or property names.
- * @param {Assignment} assignment - The Assignment associated with the value.
- * @param {Element[]} terms - The array of Element terms.
- * @param {VisitorReturnValue} value - The original VisitorReturnValue to be adjusted.
- * @param {Position} position - The position information.
- * @returns {VisitorReturnValue} Returns the adjusted VisitorReturnValue.
+ * @param astPath - The AST path specifying the sequence of indices or property names.
+ * @param assignment - The Assignment associated with the value.
+ * @param terms - The array of Element terms.
+ * @param value - The original VisitorReturnValue to be adjusted.
+ * @param position - The position information.
+ * @returns Returns the adjusted VisitorReturnValue.
  */
 function adjustReturnValue(
     astPath: string,
@@ -297,7 +298,10 @@ function adjustReturnValue(
     position: Position
 ): VisitorReturnValue {
     const astNodes = getAstNodes(assignment, astPath);
-    const node = astNodes[astNodes.length - 1];
+    const node = astNodes?.[astNodes.length - 1];
+    if (!node) {
+        return value;
+    }
     const nodes = getTermNodes(
         terms,
         value.path.filter((segment) => !segment.startsWith('$'))
@@ -305,8 +309,10 @@ function adjustReturnValue(
 
     value = edmJsonContent(astNodes, value, position);
     value = enumCollection(astNodes, nodes, value, position);
-
-    switch (node?.type) {
+    if (Array.isArray(node)) {
+        return value;
+    }
+    switch (node.type) {
         case RECORD_PROPERTY_TYPE:
         case ANNOTATION_TYPE:
             return beforeValue(node, value, position);
@@ -329,10 +335,10 @@ function adjustReturnValue(
 /**
  * Adjusts the VisitorReturnValue before processing the value based on the provided node, value, and position.
  *
- * @param {Annotation | RecordProperty} node - The Annotation or RecordProperty node associated with the value.
- * @param {VisitorReturnValue} value - The original VisitorReturnValue to be adjusted.
- * @param {Position} position - The position information.
- * @returns {VisitorReturnValue} Returns the adjusted VisitorReturnValue.
+ * @param node - The Annotation or RecordProperty node associated with the value.
+ * @param value - The original VisitorReturnValue to be adjusted.
+ * @param position - The position information.
+ * @returns Returns the adjusted VisitorReturnValue.
  */
 function beforeValue(
     node: Annotation | RecordProperty,
@@ -362,10 +368,10 @@ function beforeValue(
 /**
  * Adjusts the VisitorReturnValue for StringLiteral or NumberLiteral nodes based on the provided node, value, and position.
  *
- * @param {StringLiteral | NumberLiteral} node - The StringLiteral or NumberLiteral node associated with the value.
- * @param {VisitorReturnValue} value - The original VisitorReturnValue to be adjusted.
- * @param {Position} position - The position information.
- * @returns {VisitorReturnValue} Returns the adjusted VisitorReturnValue.
+ * @param node - The StringLiteral or NumberLiteral node associated with the value.
+ * @param value - The original VisitorReturnValue to be adjusted.
+ * @param position - The position information.
+ * @returns Returns the adjusted VisitorReturnValue.
  */
 function stringValue(
     node: StringLiteral | NumberLiteral,
@@ -393,9 +399,9 @@ function stringValue(
 /**
  * Adjusts the VisitorReturnValue for EmptyValue nodes based on the provided node and value.
  *
- * @param {EmptyValue} node - The EmptyValue node associated with the value.
- * @param {VisitorReturnValue} value - The original VisitorReturnValue to be adjusted.
- * @returns {VisitorReturnValue} Returns the adjusted VisitorReturnValue.
+ * @param node - The EmptyValue node associated with the value.
+ * @param value - The original VisitorReturnValue to be adjusted.
+ * @returns Returns the adjusted VisitorReturnValue.
  */
 function emptyValue(node: EmptyValue, value: VisitorReturnValue): VisitorReturnValue {
     if (node.range) {
@@ -410,14 +416,14 @@ function emptyValue(node: EmptyValue, value: VisitorReturnValue): VisitorReturnV
 /**
  * Adjusts the VisitorReturnValue for enum collection based on the provided AST nodes, term nodes, value, and position.
  *
- * @param {AnnotationNode[]} astNodes - The array of AST nodes associated with the annotation.
- * @param {TermNode[]} nodes - The array of term nodes associated with the annotation.
- * @param {VisitorReturnValue} value - The original VisitorReturnValue to be adjusted.
- * @param {Position} position - The position information for adjusting the value.
- * @returns {VisitorReturnValue} Returns the adjusted VisitorReturnValue.
+ * @param astNodes - The array of AST nodes associated with the annotation.
+ * @param nodes - The array of term nodes associated with the annotation.
+ * @param value - The original VisitorReturnValue to be adjusted.
+ * @param position - The position information for adjusting the value.
+ * @returns Returns the adjusted VisitorReturnValue.
  */
 function enumCollection(
-    astNodes: AnnotationNode[],
+    astNodes: ChildNode[],
     nodes: TermNode[],
     value: VisitorReturnValue,
     position: Position
@@ -456,17 +462,18 @@ function enumCollection(
  * Finds the last node of a specific type in an array of annotation nodes.
  *
  * @template T - The type of the node to find.
- * @param {AnnotationNode[]} nodes - The array of annotation nodes to search.
- * @param {T} type - The type of the node to find.
- * @returns {NarrowAnnotationNode<T> | undefined} Returns the last node of the specified type, or undefined if not found.
+ * @param nodes - The array of annotation nodes to search.
+ * @param type - The type of the node to find.
+ * @returns Returns the last node of the specified type, or undefined if not found.
  */
 function findLastNode<T extends AnnotationNode['type']>(
-    nodes: AnnotationNode[],
+    nodes: ChildNode[],
     type: T
 ): NarrowAnnotationNode<typeof type> | undefined {
     for (let index = nodes.length - 1; index >= 0; index--) {
         const element = nodes[index];
-        if (element.type === type) {
+
+        if (!Array.isArray(element) && element.type === type) {
             // Type cast needed due to Typescript limitation https://github.com/microsoft/TypeScript/issues/50103
             return element as NarrowAnnotationNode<typeof type>;
         }
@@ -477,14 +484,15 @@ function findLastNode<T extends AnnotationNode['type']>(
 /**
  * Adjusts the VisitorReturnValue for EDM JSON content based on the provided AST nodes, value, and position.
  *
- * @param {AnnotationNode[]} astNodes - The array of AST nodes associated with the annotation.
- * @param {VisitorReturnValue} value - The original VisitorReturnValue to be adjusted.
- * @param {Position} position - The position information for adjusting the value.
- * @returns {VisitorReturnValue} Returns the adjusted VisitorReturnValue for EDM JSON content.
+ * @param astNodes - The array of AST nodes associated with the annotation.
+ * @param value - The original VisitorReturnValue to be adjusted.
+ * @param position - The position information for adjusting the value.
+ * @returns  Returns the adjusted VisitorReturnValue for EDM JSON content.
  */
-function edmJsonContent(astNodes: AnnotationNode[], value: VisitorReturnValue, position: Position): VisitorReturnValue {
+function edmJsonContent(astNodes: ChildNode[], value: VisitorReturnValue, position: Position): VisitorReturnValue {
     const edmJsonIndex = astNodes.findIndex(
-        (node) => node.type === RECORD_PROPERTY_TYPE && node.name.value === ReservedProperties.EdmJson
+        (node) =>
+            !Array.isArray(node) && node.type === RECORD_PROPERTY_TYPE && node.name.value === ReservedProperties.EdmJson
     );
     if (edmJsonIndex === -1) {
         return value;
@@ -493,6 +501,9 @@ function edmJsonContent(astNodes: AnnotationNode[], value: VisitorReturnValue, p
     if (value.path[value.path.length - 1].startsWith('$')) {
         // content pointer
         const node = astNodes[astNodes.length - 1];
+        if (Array.isArray(node)) {
+            return value;
+        }
         const range = nodeRange(node, false);
 
         if (node.type !== RECORD_TYPE || !range) {
@@ -526,8 +537,8 @@ function edmJsonContent(astNodes: AnnotationNode[], value: VisitorReturnValue, p
 /**
  * Adjusts the VisitorReturnValue for an enum text node based on the provided value.
  *
- * @param {VisitorReturnValue} value - The original VisitorReturnValue to be adjusted.
- * @returns {VisitorReturnValue} Returns the adjusted VisitorReturnValue for an enum text node.
+ * @param value - The original VisitorReturnValue to be adjusted.
+ * @returns Returns the adjusted VisitorReturnValue for an enum text node.
  */
 function enumTextNode(value: VisitorReturnValue): VisitorReturnValue {
     if (value.path[value.path.length - 1].startsWith('$')) {
@@ -543,10 +554,10 @@ function enumTextNode(value: VisitorReturnValue): VisitorReturnValue {
 /**
  * Adjusts the VisitorReturnValue for a path text node based on the provided value.
  *
- * @param {Path} node - The Path node being processed.
- * @param {VisitorReturnValue} value - The original VisitorReturnValue to be adjusted.
- * @param {Position} position - The position within the document.
- * @returns {VisitorReturnValue} Returns the adjusted VisitorReturnValue for a path text node.
+ * @param node - The Path node being processed.
+ * @param value - The original VisitorReturnValue to be adjusted.
+ * @param position - The position within the document.
+ * @returns Returns the adjusted VisitorReturnValue for a path text node.
  */
 function pathTextNode(node: Path, value: VisitorReturnValue, position: Position): VisitorReturnValue {
     const lastPathSegment = value.path.slice(-1)[0];

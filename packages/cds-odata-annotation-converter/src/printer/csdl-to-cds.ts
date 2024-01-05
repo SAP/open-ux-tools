@@ -461,12 +461,12 @@ export const printPrimitiveValue = (expressionName: ElementName | AttributeName,
 /**
  * Generates an annotation string for bound action functions in CDS (Core Data Services).
  *
- * @param {Target} target - The target to be annotated.
- * @param {string} terms - The terms to be used in the annotation.
- * @param {string} rootElementName - The root element name for the annotation.
- * @param {string} boundActionFunctionName - The name of the bound action function.
- * @param {string} [childSegment] - The optional child segment for the annotation.
- * @returns {string} The generated annotation string for bound action functions.
+ * @param target - The target to be annotated.
+ * @param terms - The terms to be used in the annotation.
+ * @param rootElementName - The root element name for the annotation.
+ * @param boundActionFunctionName - The name of the bound action function.
+ * @param [childSegment] - The optional child segment for the annotation.
+ * @returns The generated annotation string for bound action functions.
  */
 function getTargetForBoundActionFunctions(
     target: Target,
