@@ -277,9 +277,6 @@ function getEdmTargetKinds(elementKind: string): TargetKind[] {
         // OData v2 does not have 'Action' but only 'FunctionImport'. Map to 'Action' to support annotating 'FunctionImport' with terms targeting actions.
         targetKinds.push(Edm.Action);
     }
-    if (targetKinds.includes(Edm.EntitySet)) {
-        targetKinds.push(Edm.Collection);
-    }
     return targetKinds;
 }
 

@@ -130,6 +130,9 @@ describe('parse', () => {
                         },
                         "name": "Sector",
                         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Sector",
+                        "targetKinds": Array [
+                          "Property",
+                        ],
                       },
                       Object {
                         "content": Array [],
@@ -154,6 +157,9 @@ describe('parse', () => {
                         },
                         "name": "ID",
                         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ID",
+                        "targetKinds": Array [
+                          "Property",
+                        ],
                       },
                       Object {
                         "content": Array [],
@@ -178,6 +184,9 @@ describe('parse', () => {
                         },
                         "name": "Name",
                         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Name",
+                        "targetKinds": Array [
+                          "Property",
+                        ],
                       },
                       Object {
                         "content": Array [],
@@ -202,6 +211,9 @@ describe('parse', () => {
                         },
                         "name": "MemberCount",
                         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/MemberCount",
+                        "targetKinds": Array [
+                          "Property",
+                        ],
                       },
                       Object {
                         "content": Array [],
@@ -226,6 +238,9 @@ describe('parse', () => {
                         },
                         "name": "ManagerID",
                         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ManagerID",
+                        "targetKinds": Array [
+                          "Property",
+                        ],
                       },
                       Object {
                         "content": Array [],
@@ -251,6 +266,10 @@ describe('parse', () => {
                         "name": "DEPARTMENT_2_TEAMS",
                         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/DEPARTMENT_2_TEAMS",
                         "structuredType": "com.sap.gateway.default.iwbep.tea_busi.v0001.TEAM",
+                        "targetKinds": Array [
+                          "NavigationProperty",
+                          "Collection",
+                        ],
                       },
                     ],
                     "isAnnotatable": true,
@@ -277,6 +296,9 @@ describe('parse', () => {
                     },
                     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
                     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
+                    "targetKinds": Array [
+                      "EntityType",
+                    ],
                   },
                 ]
             `);
@@ -323,6 +345,9 @@ describe('parse', () => {
                         },
                         "name": "Sector",
                         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.DepartmentType/Sector",
+                        "targetKinds": Array [
+                          "Property",
+                        ],
                       },
                       Object {
                         "content": Array [],
@@ -347,6 +372,9 @@ describe('parse', () => {
                         },
                         "name": "ID",
                         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.DepartmentType/ID",
+                        "targetKinds": Array [
+                          "Property",
+                        ],
                       },
                     ],
                     "isAnnotatable": true,
@@ -373,6 +401,9 @@ describe('parse', () => {
                     },
                     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.DepartmentType",
                     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.DepartmentType",
+                    "targetKinds": Array [
+                      "EntityType",
+                    ],
                   },
                   Object {
                     "content": Array [
@@ -399,6 +430,10 @@ describe('parse', () => {
                         "name": "Department",
                         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/Department",
                         "structuredType": "com.sap.gateway.default.iwbep.tea_busi.v0001.DepartmentType",
+                        "targetKinds": Array [
+                          "EntitySet",
+                          "Collection",
+                        ],
                       },
                     ],
                     "isAnnotatable": true,
@@ -421,6 +456,9 @@ describe('parse', () => {
                     },
                     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService",
                     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService",
+                    "targetKinds": Array [
+                      "EntityContainer",
+                    ],
                   },
                 ]
             `);
@@ -511,6 +549,9 @@ describe('parse', () => {
                   "name": "to_Currency",
                   "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.Z4SEPMRA_C_PD_PRODUCTSALESDATAType/to_Currency",
                   "structuredType": "Z2SEPMRA_C_PD_PRODUCT_CDS.I_CurrencyType",
+                  "targetKinds": Array [
+                    "NavigationProperty",
+                  ],
                 }
             `);
         });
