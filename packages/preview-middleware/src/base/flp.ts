@@ -205,10 +205,10 @@ export class FlpSandbox {
         });
         this.addStandardRoutes();
         if (this.rta) {
-            const appTitle = manifest['sap.app'].title;
+            // const appTitle = manifest['sap.app'].title;
             this.rta.options ??= {};
             this.rta.options.baseId = componentId ?? id;
-            this.rta.options.appName = appTitle === '{{appTitle}}' ? 'My Application' : appTitle || id;
+            this.rta.options.appName = id;
             this.addEditorRoutes(this.rta);
         }
         this.addRoutesForAdditionalApps();
