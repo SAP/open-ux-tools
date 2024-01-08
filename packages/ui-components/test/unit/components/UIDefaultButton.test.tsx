@@ -29,7 +29,7 @@ describe('<UIDefaultButton />', () => {
             `
             Object {
               "backgroundColor": "var(--vscode-button-background)",
-              "borderColor": "var(--vscode-contrastBorder, var(--vscode-button-background))",
+              "borderColor": "var(--vscode-button-border, var(--vscode-contrastBorder, var(--vscode-button-background)))",
               "borderRadius": 2,
               "color": "var(--vscode-button-foreground)",
               "fontFamily": "var(--vscode-font-family)",
@@ -48,6 +48,26 @@ describe('<UIDefaultButton />', () => {
             }
         `
         );
+        expect(styles?.rootHovered).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-button-hoverBackground)",
+              "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, var(--vscode-button-hoverBackground)))",
+              "color": "var(--vscode-button-foreground)",
+              "selectors": Object {
+                "svg > path, svg > rect": Object {
+                  "fill": "var(--vscode-button-foreground)",
+                },
+              },
+            }
+        `);
+        expect(styles?.rootDisabled).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-button-background)",
+              "borderColor": "var(--vscode-button-border, var(--vscode-button-background))",
+              "color": "var(--vscode-button-foreground)",
+              "opacity": "0.5 !important",
+            }
+        `);
     });
 
     it('Styles - secondary', () => {
@@ -60,7 +80,7 @@ describe('<UIDefaultButton />', () => {
             `
             Object {
               "backgroundColor": "var(--vscode-button-secondaryBackground, #5f6a79)",
-              "borderColor": "var(--vscode-contrastBorder, var(--vscode-button-secondaryBackground, #5f6a79))",
+              "borderColor": "var(--vscode-button-border, var(--vscode-contrastBorder, var(--vscode-button-secondaryBackground, #5f6a79)))",
               "borderRadius": 2,
               "color": "var(--vscode-button-secondaryForeground, #ffffff)",
               "fontFamily": "var(--vscode-font-family)",
@@ -79,5 +99,25 @@ describe('<UIDefaultButton />', () => {
             }
         `
         );
+        expect(styles?.rootHovered).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-button-secondaryHoverBackground, #4c5561)",
+              "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, var(--vscode-button-secondaryHoverBackground, #4c5561)))",
+              "color": "var(--vscode-button-secondaryForeground, #ffffff)",
+              "selectors": Object {
+                "svg > path, svg > rect": Object {
+                  "fill": "var(--vscode-button-secondaryForeground, #ffffff)",
+                },
+              },
+            }
+        `);
+        expect(styles?.rootDisabled).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-button-secondaryBackground, #5f6a79)",
+              "borderColor": "var(--vscode-button-border, var(--vscode-button-secondaryBackground, #5f6a79))",
+              "color": "var(--vscode-button-secondaryForeground, #ffffff)",
+              "opacity": "0.5 !important",
+            }
+        `);
     });
 });
