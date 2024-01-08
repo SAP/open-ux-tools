@@ -1,0 +1,39 @@
+UI : {
+    Chart        : { ChartType : #Column },
+    HeaderFacets : [
+    {
+        $Type  : 'UI.ReferenceFacet',
+        Target : '@UI.Chart'
+    },
+    {
+        $Type  : 'UI.ReferenceFacet',
+        Target : ![@UI.FieldGroup],
+    },
+    ],
+    LineItem     : [
+    {
+        $Type       : 'UI.DataField',
+        Criticality : criticality
+    },
+    {
+        Value : stepStatus
+    }
+    ],
+    HeaderInfo   : {
+        $Type          : 'UI.HeaderInfoType',
+        TypeName       : ,
+        TypeNamePlural : ''
+    },
+    FieldGroup: {
+        Data : [
+            {
+                Value : '123',
+            },
+        ],
+    },
+    DataPoint : {
+        $Type:'UI.DataPointType',
+        Value: true,
+        ![@UI.Hidden]: true
+    },
+}
