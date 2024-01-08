@@ -18,8 +18,7 @@ import {
     propertyChanged,
     propertyChangeFailed,
     showMessage,
-    scenario,
-    scenarioLoaded
+    scenario
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -136,9 +135,6 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             )
             .addMatcher(iconsLoaded.match, (state, action: ReturnType<typeof iconsLoaded>): void => {
                 state.icons = action.payload;
-            })
-            .addMatcher(scenarioLoaded.match, (state, action: ReturnType<typeof scenarioLoaded>): void => {
-                state.scenario = action.payload;
             })
             .addMatcher(changeProperty.match, (state, action: ReturnType<typeof changeProperty>): void => {
                 if (state.selectedControl?.id === action.payload.controlId) {

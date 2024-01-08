@@ -3,8 +3,7 @@ import {
     iconsLoaded,
     propertyChanged,
     propertyChangeFailed,
-    scenario,
-    scenarioLoaded
+    scenario
 } from '@sap-ux-private/control-property-editor-common';
 
 import reducer, {
@@ -159,12 +158,6 @@ describe('main redux slice', () => {
 
         test('iconsLoaded', () => {
             expect(reducer({ icons: [] } as any, iconsLoaded([]))).toStrictEqual({ icons: [] });
-        });
-
-        test('scenarioLoaded', () => {
-            expect(
-                reducer({ scenario: scenario.AdaptationProject } as any, scenarioLoaded(scenario.AdaptationProject))
-            ).toStrictEqual({ scenario: scenario.AdaptationProject });
         });
 
         test('setProjectScenario', () => {
