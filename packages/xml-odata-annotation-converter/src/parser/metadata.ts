@@ -266,18 +266,18 @@ function getTypeForNavigationProperty(context: Context, element: XMLElement): st
  * @param metadata element.
  * @returns OData target kinds.
  */
-function getEdmTargetKinds(element: MetadataElementProperties): TargetKind[] {
-    if (!element) {
+function getEdmTargetKinds(elementKind: string): TargetKind[] {
+    if (!elementKind) {
         return [];
     }
     const targetKinds: TargetKind[] = [];
-    targetKinds.push(element.kind);
-    if (element.kind === Edm.FunctionImport) {
+    targetKinds.push(elementKind);
+    if (elementKind === Edm.FunctionImport) {
         // vocabulary and annotation files are defined based on OData v4, but are used to annotate both OData v2 and OData v4 metadata.
         // OData v2 does not have 'Action' but only 'FunctionImport'. Map to 'Action' to support annotating 'FunctionImport' with terms targeting actions.
         targetKinds.push(Edm.Action);
     }
-    if (targetKinds.includes(Edm.EntitySet) || element.isCollectionValued) {
+    if (targetKinds.includes(Edm.EntitySet)) {
         targetKinds.push(Edm.Collection);
     }
     return targetKinds;
@@ -317,7 +317,11 @@ function createMetadataElementNodeForType(
             metadataElementProperties.keys = keys;
         }
     }
-    const targetKinds = getEdmTargetKinds(metadataElementProperties);
+    const targetKinds = getEdmTargetKinds(metadataElementProperties.kind);
+    if (metadataElementProperties.isCollectionValued) {
+        targetKinds.push(Edm.Collection);
+    }
+
     metadataElementProperties.targetKinds.push(...targetKinds);
 
     // adjust metadata element based on type information
@@ -343,7 +347,7 @@ function createMetadataElementNodeForType(
             structuredType: v2ActionFor,
             targetKinds: []
         };
-        const targetKinds = getEdmTargetKinds(bindingParameterProperties);
+        const targetKinds = getEdmTargetKinds(bindingParameterProperties.kind);
         bindingParameterProperties.targetKinds.push(...targetKinds);
 
         const attributePosition = getElementAttributeByName('sap:action-for', element)?.position;
@@ -530,7 +534,10 @@ function getReturnTypeProperties(
         isEntityType: baseTypeName === EDM_ENTITY_TYPE,
         targetKinds: []
     };
-    const targetKinds = getEdmTargetKinds(returnTypeProperties);
+    const targetKinds = getEdmTargetKinds(returnTypeProperties.kind);
+    if (returnTypeProperties.isCollectionValued) {
+        targetKinds.push(Edm.Collection);
+    }
     returnTypeProperties.targetKinds.push(...targetKinds);
 
     if (edmPrimitiveType) {
