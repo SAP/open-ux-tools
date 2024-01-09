@@ -82,7 +82,7 @@ export function ThemeSelectorCallout(): ReactElement {
 
     return (
         <>
-            <UIIconButton
+            {/* <UIIconButton
                 id={buttonId}
                 iconProps={{
                     iconName: UiIcons.Settings
@@ -91,7 +91,7 @@ export function ThemeSelectorCallout(): ReactElement {
                 onClick={(): void => {
                     setValue(!isCalloutVisible);
                 }}
-            />
+            /> */}
             {isCalloutVisible && (
                 <UICallout
                     id={'themes-selector'}
