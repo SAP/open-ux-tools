@@ -1,0 +1,76 @@
+{
+  "type": "annotation",
+  "range": "[(0,0)..(0,23)]",
+  "term": {
+    "type": "path",
+    "range": "[(0,0)..(0,4)]",
+    "value": "test",
+    "segments": [
+      {
+        "type": "identifier",
+        "range": "[(0,0)..(0,4)]",
+        "value": "test",
+        "quoted": false
+      }
+    ],
+    "separators": []
+  },
+  "colon": {
+    "type": "token",
+    "range": "[(0,4)..(0,5)]",
+    "value": ":"
+  },
+  "value": {
+    "type": "correct-expression",
+    "range": "[(0,6)..(0,23)]",
+    "operatorName": "not-like",
+    "operators": [
+      {
+        "type": "operator",
+        "range": "[(0,9)..(0,17)]",
+        "value": "not like"
+      }
+    ],
+    "operands": [
+      {
+        "type": "path",
+        "range": "[(0,7)..(0,8)]",
+        "value": "a",
+        "segments": [
+          {
+            "type": "identifier",
+            "range": "[(0,7)..(0,8)]",
+            "value": "a",
+            "quoted": false
+          }
+        ],
+        "separators": []
+      },
+      {
+        "type": "string",
+        "range": "[(0,18)..(0,22)]",
+        "value": "_*",
+        "openToken": {
+          "type": "token",
+          "range": "[(0,18)..(0,19)]",
+          "value": "'"
+        },
+        "closeToken": {
+          "type": "token",
+          "range": "[(0,21)..(0,22)]",
+          "value": "'"
+        }
+      }
+    ],
+    "openToken": {
+      "type": "token",
+      "range": "[(0,6)..(0,7)]",
+      "value": "("
+    },
+    "closeToken": {
+      "type": "token",
+      "range": "[(0,22)..(0,23)]",
+      "value": ")"
+    }
+  }
+}

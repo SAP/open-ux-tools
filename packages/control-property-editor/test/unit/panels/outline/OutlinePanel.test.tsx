@@ -372,6 +372,66 @@ describe('OutlinePanel', () => {
         expect(tooltip).toHaveStyle({ visibility: 'hidden', opacity: '0' });
     });
 
+    test('should hide tooltip if another tooltip is already open', () => {
+        const model: OutlineNode[] = [
+            {
+                name: 'one',
+                controlId: '01',
+                children: [
+                    {
+                        name: 'ExtensionPoint',
+                        controlId: '04',
+                        children: [],
+                        controlType: 'sap.ui.extensionpoint',
+                        editable: true,
+                        visible: true
+                    },
+                    {
+                        name: 'ExtensionPoint2',
+                        controlId: '05',
+                        children: [],
+                        controlType: 'sap.ui.extensionpoint',
+                        editable: true,
+                        visible: true
+                    }
+                ],
+                controlType: 'name.space.one',
+                editable: true,
+                visible: true
+            }
+        ];
+        const initialState: State = {
+            deviceType: DeviceType.Desktop,
+            scale: 1,
+            outline: model,
+            filterQuery: filterInitOptions,
+            scenario: scenario.AdaptationProject,
+            selectedControl: undefined,
+            changes: {
+                pending: [],
+                saved: [],
+                controls: {}
+            },
+            icons: []
+        };
+
+        const tooltipId = 'tooltip--ExtensionPoint';
+        const tooltipId2 = 'tooltip--ExtensionPoint2';
+
+        const { container } = render(<OutlinePanel />, { initialState });
+        const spanElements = screen.getAllByTestId('tooltip-container'); // Array of three items
+
+        // Simulate a right-click event
+        fireEvent.contextMenu(spanElements[1]);
+        fireEvent.contextMenu(spanElements[2]);
+
+        const tooltip = container.querySelector(`#${tooltipId}`);
+        const tooltip2 = container.querySelector(`#${tooltipId2}`);
+
+        expect(tooltip).toHaveStyle({ visibility: 'hidden', opacity: '0' });
+        expect(tooltip2).toHaveStyle({ visibility: 'visible', opacity: '1' });
+    });
+
     test('do not expand to previously selected control', () => {
         const { store, container } = render(<OutlinePanel />);
         // clear default applied filters
