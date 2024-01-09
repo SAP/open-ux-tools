@@ -1,5 +1,8 @@
 import { initTelemetrySettings, ClientFactory } from '../src';
 import 'dotenv/config';
+import { getDefaultLogger } from '../src/base/utils';
+
+const logger = getDefaultLogger();
 
 /**
  * Helper function to detect if env var is provided before returning it.
@@ -19,9 +22,9 @@ function env(name: string): string {
  * Example function of sending a telemetry event.
  */
 async function sendTelemetryEvent(): Promise<void> {
-    console.log('Reporting...');
+    logger.info('Reporting...');
     const client = ClientFactory.getTelemetryClient();
-    console.log(`Send event to ${client.getApplicationKey()}`);
+    logger.info(`Send event to ${client.getApplicationKey()}`);
     await client.reportEvent({
         eventName: 'TelemetryExample',
         properties: {
@@ -31,7 +34,7 @@ async function sendTelemetryEvent(): Promise<void> {
             randomNumeric: Math.floor(Math.random() * 9.99)
         }
     });
-    console.log('Reported telemetry event');
+    logger.info('Reported telemetry event');
 }
 
 // Init telemetry settings before sending any telemetry event
@@ -45,5 +48,5 @@ initTelemetrySettings({
 })
     .then(sendTelemetryEvent)
     .catch((error) => {
-        console.log(error);
+        logger.error(error);
     });

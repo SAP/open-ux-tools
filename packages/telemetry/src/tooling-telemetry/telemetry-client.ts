@@ -1,6 +1,5 @@
 import { ApplicationInsightClient } from '../base/client/azure-appinsight-client';
 import type { SampleRate } from '../base/types/sample-rate';
-import type { EventName } from '../base/types/event-name';
 import type {
     TelemetryHelperProperties,
     TelemetryEvent,
@@ -37,7 +36,7 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
      * @returns Promise<void>
      */
     public async report(
-        eventName: EventName,
+        eventName: string,
         properties: { [key: string]: string },
         measurements: { [key: string]: number },
         sampleRate: SampleRate | undefined,
@@ -87,7 +86,7 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
         );
 
         return super.report(
-            event.eventName as EventName,
+            event.eventName,
             finalProperties,
             finalMeasurements,
             sampleRate,
@@ -119,13 +118,7 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
             telemetryHelperProperties
         );
 
-        return super.reportBlocking(
-            event.eventName as EventName,
-            finalProperties,
-            finalMeasurements,
-            sampleRate,
-            ignoreSettings
-        );
+        return super.reportBlocking(event.eventName, finalProperties, finalMeasurements, sampleRate, ignoreSettings);
     }
 
     /**

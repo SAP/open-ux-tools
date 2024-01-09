@@ -1,12 +1,11 @@
 import type { SampleRate } from '../types/sample-rate';
-import type { EventName } from '../types/event-name';
 
 /**
  *
  */
 abstract class Client {
     abstract report(
-        event: EventName,
+        event: string,
         properties: Record<string, string>,
         metrics: Record<string, number>,
         sampleRate: SampleRate | undefined,

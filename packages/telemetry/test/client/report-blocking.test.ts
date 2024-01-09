@@ -56,7 +56,7 @@ describe('ClientFactory Send Report Blocking Tests', () => {
             });
         await telemetryClient.reportEvent(
             {
-                eventName: EventName.SERVICE_INQUIRER_BAS_SUCCESS,
+                eventName: EventName.Test,
                 properties: {},
                 measurements: {}
             },
@@ -77,7 +77,7 @@ describe('ClientFactory Send Report Blocking Tests', () => {
             });
         await telemetryClient.reportEventBlocking(
             {
-                eventName: EventName.SERVICE_INQUIRER_BAS_ERROR,
+                eventName: EventName.Test,
                 properties: {},
                 measurements: {}
             },
