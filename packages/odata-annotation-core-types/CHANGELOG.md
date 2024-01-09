@@ -1,5 +1,11 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.3.0
+
+### Minor Changes
+
+-   d6151909: add target kinds directly to metadata element
+
 ## 0.2.0
 
 ### Minor Changes
