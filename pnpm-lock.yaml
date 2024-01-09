@@ -433,6 +433,31 @@ importers:
         specifier: 7.5.2
         version: 7.5.2
 
+  packages/cds-annotation-parser:
+    dependencies:
+      '@sap-ux/odata-annotation-core':
+        specifier: workspace:*
+        version: link:../odata-annotation-core
+      '@sap-ux/odata-entity-model':
+        specifier: workspace:*
+        version: link:../odata-entity-model
+      '@sap-ux/odata-vocabularies':
+        specifier: workspace:*
+        version: link:../odata-vocabularies
+      chevrotain:
+        specifier: 7.1.1
+        version: 7.1.1
+      vscode-languageserver-types:
+        specifier: 3.17.2
+        version: 3.17.2
+    devDependencies:
+      npm-run-all:
+        specifier: 4.1.5
+        version: 4.1.5
+      typescript:
+        specifier: 4.9.5
+        version: 4.9.5
+
   packages/control-property-editor:
     devDependencies:
       '@esbuild-plugins/node-modules-polyfill':
@@ -1203,6 +1228,9 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -10800,7 +10828,6 @@ packages:
     resolution: {integrity: sha512-wy3mC1x4ye+O+QkEinVJkPf5u2vsrDIYW9G7ZuwFl6v/Yu0LwUuT2POsb+NUWApebyxfkQq6+yDfRExbnI5rcw==}
     dependencies:
       regexp-to-ast: 0.5.0
-    dev: true
 
   /chokidar@3.5.3:
     resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==}
@@ -13835,7 +13862,7 @@ packages:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 5.1.0
+      minimatch: 5.1.6
       once: 1.4.0
     dev: true
 
@@ -16323,13 +16350,13 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       brace-expansion: 2.0.1
+    dev: false
 
   /minimatch@5.1.6:
     resolution: {integrity: sha512-lKwV/1brpG6mBUFHtb7NUmtABCb2WZZmm2wNiOA5hAb8VdCS4B3dtMWyvcoViccwAW/COERjXLt0zP1zXUN26g==}
     engines: {node: '>=10'}
     dependencies:
       brace-expansion: 2.0.1
-    dev: false
 
   /minimatch@7.4.6:
     resolution: {integrity: sha512-sBz8G/YjVniEz6lKPNpKxXwazJe4c19fEfV2GDMX6AjFz+MX9uDWIZW8XreVhkFW3fkIdTv/gxWr/Kks5FFAVw==}
@@ -18474,7 +18501,6 @@ packages:
 
   /regexp-to-ast@0.5.0:
     resolution: {integrity: sha512-tlbJqcMHnPKI9zSrystikWKwHkBqu2a/Sgw01h3zFjvYrMxEDYHzzoMZnUrbIfpTFEsoRnnviOXNCzFiSc54Qw==}
-    dev: true
 
   /regexp.prototype.flags@1.5.0:
     resolution: {integrity: sha512-0SutC3pNudRKgquxGoRGIz946MZVHqbNfPjBdxeOhBrdgDKlRoXmYLQN9xRbrR09ZXWeGAdPuif7egofn6v5LA==}

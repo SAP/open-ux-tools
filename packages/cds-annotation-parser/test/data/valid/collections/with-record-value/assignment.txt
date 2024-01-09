@@ -1,0 +1,11 @@
+UI.LineItem : [
+    {
+        $Type       : 'UI.DataField',
+
+        Value: title,
+    },
+    {
+        $Type : 'UI.DataField',
+        Value : stepStatus
+    },
+]
