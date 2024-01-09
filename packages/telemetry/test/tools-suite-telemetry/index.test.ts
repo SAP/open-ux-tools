@@ -136,15 +136,15 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['/project1/README.md']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/README_LROPv4.md',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/README_LROPv4.md',
                     'utf-8'
                 ),
                 ['/project1/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/package.json',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/package.json',
                     'utf-8'
                 ),
                 ['/project1/webapp/manifest.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/webapp/manifest.json',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/webapp/manifest.json',
                     'utf-8'
                 )
             },
@@ -177,15 +177,15 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['/project1/README.md']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/README_Form.md',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/README_Form.md',
                     'utf-8'
                 ),
                 ['/project1/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/package.json',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/package.json',
                     'utf-8'
                 ),
                 ['/project1/webapp/manifest.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/webapp/manifest.json',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/webapp/manifest.json',
                     'utf-8'
                 )
             },
@@ -218,23 +218,23 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['/project1/ui5-deploy.yaml']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/ui5-deploy.cf.yaml',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/ui5-deploy.cf.yaml',
                     'utf-8'
                 ),
                 ['/project1/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/package.json',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/package.json',
                     'utf-8'
                 ),
                 ['/project1/webapp/manifest.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/webapp/manifest.json',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/webapp/manifest.json',
                     'utf-8'
                 ),
                 ['/project1/webapp/Component.ts']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/webapp/Component.ts',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/webapp/Component.ts',
                     'utf-8'
                 ),
                 ['/project1/tsconfig.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/tsconfig.json',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/tsconfig.json',
                     'utf-8'
                 )
             },
@@ -267,19 +267,19 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['./project1/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/package.json',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/package.json',
                     'utf-8'
                 ),
                 ['./project1/webapp/Component.js']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/webapp/Component.js',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/webapp/Component.js',
                     'utf-8'
                 ),
                 ['./project1/ui5-deploy.yaml']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/ui5-deploy.abap.yaml',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/ui5-deploy.abap.yaml',
                     'utf-8'
                 ),
                 ['/project1/webapp/manifest.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/fiori_elements/webapp/manifest.json',
+                    './test/tools-suite-telemetry/fixtures/fiori_elements/webapp/manifest.json',
                     'utf-8'
                 )
             },
@@ -312,19 +312,19 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['./project1/srv/src/main/resources/application.yaml']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/srv/src/main/resources/application.yaml',
+                    './test/tools-suite-telemetry/fixtures/cap-java-freestyle/srv/src/main/resources/application.yaml',
                     'utf-8'
                 ),
                 ['./project1/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/package.json',
+                    './test/tools-suite-telemetry/fixtures/cap-java-freestyle/package.json',
                     'utf-8'
                 ),
                 ['./project1/app/freestyle/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/app/freestyle/package.json',
+                    './test/tools-suite-telemetry/fixtures/cap-java-freestyle/app/freestyle/package.json',
                     'utf-8'
                 ),
                 ['./project1/app/freestyle/webapp/manifest.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/app/freestyle/webapp/manifest.json',
+                    './test/tools-suite-telemetry/fixtures/cap-java-freestyle/app/freestyle/webapp/manifest.json',
                     'utf-8'
                 )
             },
@@ -357,15 +357,15 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['./project1/srv/src/main/resources/application.yaml']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/srv/src/main/resources/application.yaml',
+                    './test/tools-suite-telemetry/fixtures/cap-java-freestyle/srv/src/main/resources/application.yaml',
                     'utf-8'
                 ),
                 ['./project1/app/freestyle/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/app/freestyle/package.json',
+                    './test/tools-suite-telemetry/fixtures/cap-java-freestyle/app/freestyle/package.json',
                     'utf-8'
                 ),
                 ['./project1/app/freestyle/webapp/manifest.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/cap-java-freestyle/app/freestyle/webapp/manifest.json',
+                    './test/tools-suite-telemetry/fixtures/cap-java-freestyle/app/freestyle/webapp/manifest.json',
                     'utf-8'
                 )
             },
@@ -398,19 +398,19 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['/project1/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/cap-node-freestyle/package.json',
+                    './test/tools-suite-telemetry/fixtures/cap-node-freestyle/package.json',
                     'utf-8'
                 ),
                 ['/project1/srv/keep']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/cap-node-freestyle/srv/keep',
+                    './test/tools-suite-telemetry/fixtures/cap-node-freestyle/srv/keep',
                     'utf-8'
                 ),
                 ['/project1/app/freestyle/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/cap-node-freestyle/app/freestyle/package.json',
+                    './test/tools-suite-telemetry/fixtures/cap-node-freestyle/app/freestyle/package.json',
                     'utf-8'
                 ),
                 ['/project1/app/freestyle/webapp/manifest.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/cap-node-freestyle/app/freestyle/webapp/manifest.json',
+                    './test/tools-suite-telemetry/fixtures/cap-node-freestyle/app/freestyle/webapp/manifest.json',
                     'utf-8'
                 )
             },
@@ -443,19 +443,19 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['./project1/ui5.yaml']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/valid-library/ui5.yaml',
+                    './test/tools-suite-telemetry/fixtures/valid-library/ui5.yaml',
                     'utf-8'
                 ),
                 ['./project1/src/manifest.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/valid-library/src/manifest.json',
+                    './test/tools-suite-telemetry/fixtures/valid-library/src/manifest.json',
                     'utf-8'
                 ),
                 ['./project1/ui5-deploy.yaml']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/valid-library/ui5-deploy.yaml',
+                    './test/tools-suite-telemetry/fixtures/valid-library/ui5-deploy.yaml',
                     'utf-8'
                 ),
                 ['./project1/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/valid-library/package.json',
+                    './test/tools-suite-telemetry/fixtures/valid-library/package.json',
                     'utf-8'
                 )
             },
@@ -488,15 +488,15 @@ describe('Tools Suite Telemetry Tests', () => {
         memfs.vol.fromNestedJSON(
             {
                 ['/project1/.adp/config.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/valid-adaptation/.adp/config.json',
+                    './test/tools-suite-telemetry/fixtures/valid-adaptation/.adp/config.json',
                     'utf-8'
                 ),
                 ['/project1/webapp/manifest.appdescr_variant']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/valid-adaptation/webapp/manifest.appdescr_variant',
+                    './test/tools-suite-telemetry/fixtures/valid-adaptation/webapp/manifest.appdescr_variant',
                     'utf-8'
                 ),
                 ['/project1/package.json']: fs.readFileSync(
-                    './test/tools-suite-telemetry/test-projects/valid-adaptation/package.json',
+                    './test/tools-suite-telemetry/fixtures/valid-adaptation/package.json',
                     'utf-8'
                 )
             },
