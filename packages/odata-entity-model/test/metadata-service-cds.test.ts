@@ -28,9 +28,11 @@ function createTestService() {
                     name: 'ID',
                     originalName: 'scp.cloud.SafetyIncidents.ID',
                     edmPrimitiveType: 'Edm.Guid',
-                    content: []
+                    content: [],
+                    targetKinds: ['Property']
                 }
-            ]
+            ],
+            targetKinds: ['EntityType']
         },
         {
             kind: 'entity',
@@ -53,9 +55,11 @@ function createTestService() {
                     name: 'code',
                     originalName: 'scp.cloud.SafetyIncidents.texts.code',
                     edmPrimitiveType: 'Edm.Int',
-                    content: []
+                    content: [],
+                    targetKinds: ['Property']
                 }
-            ]
+            ],
+            targetKinds: ['EntityType']
         }
     ];
     metadataService.import(metadataElements, metadataFileUri);
@@ -92,9 +96,11 @@ describe('MetadataService for CDS', () => {
                     name: 'ID',
                     originalName: 'scp.cloud.SafetyIncidents.ID',
                     edmPrimitiveType: 'Edm.Guid',
-                    content: []
+                    content: [],
+                    targetKinds: ['Property']
                 }
-            ]
+            ],
+            targetKinds: ['EntityType']
         };
         expect(element).toEqual(expectedResult);
     });
@@ -113,7 +119,8 @@ describe('MetadataService for CDS', () => {
             originalName: 'IncidentService.SafetyIncidents',
             keys: ['ID'],
             path: 'IncidentService.SafetyIncidents',
-            content: []
+            content: [],
+            targetKinds: ['EntityType', 'EntitySet', 'Collection']
         };
         jest.spyOn(metadataService, 'getMetadataElement').mockImplementation((): MetadataElement => {
             return element;
@@ -138,7 +145,8 @@ describe('MetadataService for CDS', () => {
             isAnnotatable: true,
             name: 'IncidentService.SafetyIncidents',
             path: 'IncidentService.SafetyIncidents',
-            content: []
+            content: [],
+            targetKinds: ['EntityType', 'EntitySet', 'Collection']
         };
         jest.spyOn(metadataService, 'getMetadataElement').mockImplementation((): MetadataElement => {
             return element;
@@ -165,7 +173,8 @@ describe('MetadataService for CDS', () => {
             originalName: 'scp.cloud.IncidentFlow.processStep',
             edmPrimitiveType: 'Edm.String',
             path: 'scp.cloud.IncidentFlow/processStep',
-            content: []
+            content: [],
+            targetKinds: ['Property']
         };
         jest.spyOn(metadataService, 'getMetadataElement').mockImplementation((): MetadataElement => {
             return element;
@@ -192,7 +201,8 @@ describe('MetadataService for CDS', () => {
             originalName: 'IncidentService.SafetyIncidentsEditAction',
             keys: ['ID'],
             path: 'IncidentService.SafetyIncidentsEditAction',
-            content: []
+            content: [],
+            targetKinds: ['Action', 'ActionImport', 'Collection']
         };
         jest.spyOn(metadataService, 'getMetadataElement').mockImplementation((): MetadataElement => {
             return element;
@@ -219,7 +229,8 @@ describe('MetadataService for CDS', () => {
             originalName: 'IncidentService.SafetyIncidentsAverage',
             keys: ['ID'],
             path: 'IncidentService.SafetyIncidentsAverage',
-            content: []
+            content: [],
+            targetKinds: ['Function', 'FunctionImport', 'Collection']
         };
         jest.spyOn(metadataService, 'getMetadataElement').mockImplementation((): MetadataElement => {
             return element;
@@ -246,7 +257,8 @@ describe('MetadataService for CDS', () => {
             originalName: 'IncidentService.SafetyIncidentsAverageID',
             keys: ['ID'],
             path: 'IncidentService.SafetyIncidentsAverageID',
-            content: []
+            content: [],
+            targetKinds: ['Parameter', 'Collection']
         };
         jest.spyOn(metadataService, 'getMetadataElement').mockImplementation((): MetadataElement => {
             return element;
@@ -273,7 +285,8 @@ describe('MetadataService for CDS', () => {
             originalName: 'IncidentService.SafetyIncidentsAverageType',
             keys: ['ID'],
             path: 'IncidentService.SafetyIncidentsAverageType',
-            content: []
+            content: [],
+            targetKinds: ['TypeDefinition', 'Property', 'Parameter', 'Collection']
         };
         jest.spyOn(metadataService, 'getMetadataElement').mockImplementation((): MetadataElement => {
             return element;
@@ -300,7 +313,8 @@ describe('MetadataService for CDS', () => {
             originalName: 'scp.cloud.IncidentFlow.processStep',
             structuredType: 'scp.cloud.IncidentStatus',
             path: 'scp.cloud.IncidentFlow/processStep',
-            content: []
+            content: [],
+            targetKinds: ['Property']
         };
         jest.spyOn(metadataService, 'getMetadataElement').mockImplementation((): MetadataElement => {
             return element;
@@ -326,7 +340,8 @@ describe('MetadataService for CDS', () => {
             name: 'incidentStatus',
             structuredType: 'scp.cloud.IncidentStatus',
             path: 'IncidentService.SafetyIncidents/incidentStatus',
-            content: []
+            content: [],
+            targetKinds: ['NavigationProperty', 'Property']
         };
         jest.spyOn(metadataService, 'getMetadataElement').mockImplementation((): MetadataElement => {
             return element;
@@ -357,7 +372,8 @@ function createTestServiceForNodeModule() {
             name: '',
             originalName: 'Managed.Language',
             keys: ['ID'],
-            content: []
+            content: [],
+            targetKinds: ['EntityType']
         }
     ];
     metadataService.import(metadataElements, metadataFileUri);
