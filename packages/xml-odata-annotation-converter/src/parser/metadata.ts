@@ -262,6 +262,7 @@ function getTypeForNavigationProperty(context: Context, element: XMLElement): st
 
 /**
  * Get OData target kinds for a metadata element.
+ *
  * @param elementKind - element kind
  * @param isCollectionValued - collection value flag
  * @returns OData target kinds.
