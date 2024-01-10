@@ -14,9 +14,9 @@
     "author": "SAP SE",
     "license": "Apache-2.0",
     "scripts": {
-        "compile": "tsc --build tsconfig.build.json",
-        "build": "npm-run-all clean compile",
-        "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
+        "compile": "tsc --build",
+        "build": "npm-run-all clean:* compile",
+        "clean:dist": "rimraf ./dist *.tsbuildinfo",
         "clean": "rimraf ./reports",
         "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
@@ -27,7 +27,7 @@
         "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
         "pre-commit": "lint-staged --quiet",
         "test": "jest --ci --forceExit --detectOpenHandles --maxWorkers=2",
-        "watch": "tsc  --build ./ -watch"
+        "watch": "tsc --build ./ -watch"
     },
     "dependencies": {
         "vscode-languageserver-types": "3.17.2"
