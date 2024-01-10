@@ -44,7 +44,7 @@ export const insertWithOptions = (
 };
 
 const createNamespaceAliasMap = (element: XMLElement): NamespaceAliasMap =>
-    Object.keys(element.namespaces).reduce((map, prefix) => {
+    Object.keys(element.namespaces).reduce((map: { [namespace: string]: string }, prefix) => {
         const namespace = element.namespaces[prefix];
         switch (namespace) {
             case EDMX_V4_NAMESPACE: {
@@ -55,6 +55,8 @@ const createNamespaceAliasMap = (element: XMLElement): NamespaceAliasMap =>
                 map[EDM_NAMESPACE_ALIAS] = prefix;
                 break;
             }
+            default:
+                return map;
         }
         return map;
     }, {});
