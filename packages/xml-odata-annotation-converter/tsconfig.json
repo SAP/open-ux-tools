@@ -1,20 +1,11 @@
 {
   "extends": "../../tsconfig.json",
   "include": [
-    "src/**/*.ts",
-    "src/**/*.json"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules"
+    "src"
   ],
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
-    "noImplicitReturns": true,
-    "preserveConstEnums": false
+    "outDir": "dist",
+    "rootDir": "src"
   },
   "references": [
     {
