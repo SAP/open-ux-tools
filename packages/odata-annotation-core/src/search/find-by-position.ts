@@ -119,20 +119,8 @@ class PositionVisitor implements Visitor<AnyNode> {
         segments: Segment[]
     ): VisitorReturnValue | undefined => {
         return (
-            this.visitTextProperty(
-                'name',
-                attribute.name,
-                attribute.nameRange,
-                position,
-                segments
-            ) ??
-            this.visitTextProperty(
-                'value',
-                attribute.value,
-                attribute.valueRange,
-                position,
-                segments
-            )
+            this.visitTextProperty('name', attribute.name, attribute.nameRange, position, segments) ??
+            this.visitTextProperty('value', attribute.value, attribute.valueRange, position, segments)
         );
     };
 
