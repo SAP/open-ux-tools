@@ -14,8 +14,8 @@
   "author": "@SAP/ux-tools-team",
   "main": "dist/index.js",
   "scripts": {
-    "compile": "tsc --build ./tsconfig.build.json",
-    "build": "npm-run-all clean compile",
+    "compile": "tsc --build",
+    "build": "npm-run-all clean:* compile",
     "clean:dist": "rimraf ./dist *.tsbuildinfo",
     "clean": "rimraf ./reports",
     "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
@@ -27,7 +27,7 @@
     "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
     "pre-commit": "lint-staged --quiet",
     "test": "jest --maxWorkers=1 --ci --forceExit --detectOpenHandles",
-    "updateVocabularies": "ts-node --cwdMode tools/run-update.ts",
+    "update:vocabularies": "ts-node --project tsconfig.eslint.json --cwdMode tools/run-update.ts",
     "watch": "tsc --build ./ -watch"
   },
   "dependencies": {
