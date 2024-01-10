@@ -6,8 +6,6 @@ settings:
 
 overrides:
   '@testing-library/jest-dom>@adobe/css-tools@<4.3.2': '>=4.3.2'
-  less-openui5>@adobe/css-tools@<4.3.2: '>=4.3.2'
-  follow-redirects: '>=1.15.4'
   nx-cloud>axios@<1.6.0: '>=1.6.0'
 
 importers:
