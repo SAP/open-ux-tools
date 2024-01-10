@@ -2,6 +2,6 @@
     "extends": ["../../.eslintrc"],
     "parserOptions": {
         "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true,
-        "project": "./tsconfig.esbuild.json"
+        "project": "./tsconfig.eslint.json"
     }
 }
