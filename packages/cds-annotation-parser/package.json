@@ -8,9 +8,8 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "npm-run-all clean compile",
-        "compile": "tsc --build ./tsconfig.build.json",
-        "clean:dist": "rimraf ./dist *.tsbuildinfo",
-        "clean": "rimraf ./reports",
+        "compile": "tsc --build ",
+        "clean": "rimraf ./reports ./dist *.tsbuildinfo",
         "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
         "lint": "eslint . --ext .ts,.tsx",
