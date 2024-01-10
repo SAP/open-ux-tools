@@ -16,7 +16,7 @@
   "scripts": {
     "compile": "tsc --build",
     "build": "npm-run-all clean compile",
-    "clean": "rimraf ./reports ./dist *.tsbuildinfo",
+    "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo",
     "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
     "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
     "lint": "eslint . --ext .ts,.tsx",
