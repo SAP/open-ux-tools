@@ -1,21 +1,19 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "src"
-  ],
-  "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src"
-  },
-  "references": [
-    {
-      "path": "../odata-annotation-core"
+    "extends": "../../tsconfig.json",
+    "include": ["src"],
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src"
     },
-    {
-      "path": "../odata-annotation-core-types"
-    },
-    {
-      "path": "../odata-vocabularies"
-    }
-  ]
+    "references": [
+        {
+            "path": "../odata-annotation-core"
+        },
+        {
+            "path": "../odata-annotation-core-types"
+        },
+        {
+            "path": "../odata-vocabularies"
+        }
+    ]
 }
