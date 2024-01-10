@@ -75,8 +75,8 @@ class PositionVisitor implements Visitor<AnyNode> {
         segments: Segment[]
     ): VisitorReturnValue | undefined => {
         return (
-            this.visitChildren('references', node.references, node.range as Range | undefined, position, segments) ??
-            this.visitChildren('targets', node.targets, node.range as Range | undefined, position, segments) ??
+            this.visitChildren('references', node.references, node.range, position, segments) ??
+            this.visitChildren('targets', node.targets, node.range, position, segments) ??
             this.visitChild(node.namespace, position, [...segments, 'namespace'])
         );
     };
@@ -94,10 +94,10 @@ class PositionVisitor implements Visitor<AnyNode> {
 
     [NAMESPACE_TYPE] = (node: Namespace, position: Position, segments: Segment[]): VisitorReturnValue | undefined => {
         return (
-            this.visitTextProperty('name', node.name, node.nameRange as Range | undefined, position, segments) ??
-            this.visitTextProperty('alias', node.alias, node.aliasRange as Range | undefined, position, segments) ?? {
+            this.visitTextProperty('name', node.name, node.nameRange, position, segments) ??
+            this.visitTextProperty('alias', node.alias, node.aliasRange, position, segments) ?? {
                 path: [...segments, 'targets'],
-                range: node.range as Range | undefined
+                range: node.range
             }
         );
     };
@@ -110,7 +110,7 @@ class PositionVisitor implements Visitor<AnyNode> {
     };
 
     [TEXT_TYPE] = (node: TextNode, position: Position, segments: Segment[]): VisitorReturnValue | undefined => {
-        return this.visitTextProperty('text', node.text, node.range as Range | undefined, position, segments);
+        return this.visitTextProperty('text', node.text, node.range, position, segments);
     };
 
     [ATTRIBUTE_TYPE] = (
@@ -122,14 +122,14 @@ class PositionVisitor implements Visitor<AnyNode> {
             this.visitTextProperty(
                 'name',
                 attribute.name,
-                attribute.nameRange as Range | undefined,
+                attribute.nameRange,
                 position,
                 segments
             ) ??
             this.visitTextProperty(
                 'value',
                 attribute.value,
-                attribute.valueRange as Range | undefined,
+                attribute.valueRange,
                 position,
                 segments
             )
