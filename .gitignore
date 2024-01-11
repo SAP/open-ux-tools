@@ -173,3 +173,6 @@ dist
 **/playwright-report
 **/test-results
 **/fixtures-copy
+
+
+.nx
