@@ -28,7 +28,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "@sap/bas-sdk": "3.1.0",
+        "@sap/bas-sdk": "3.7.7",
         "archiver": "5.3.2",
         "axios": "1.6.1",
         "glob-gitignore": "1.0.14",

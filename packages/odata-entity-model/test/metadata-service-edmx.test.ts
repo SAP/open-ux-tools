@@ -29,7 +29,8 @@ function createTestService() {
                     isCollectionValued: false,
                     isComplexType: false,
                     isEntityType: false,
-                    edmPrimitiveType: 'Edm.String'
+                    edmPrimitiveType: 'Edm.String',
+                    targetKinds: ['Property']
                 },
                 {
                     path: 'com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ID',
@@ -40,7 +41,8 @@ function createTestService() {
                     isCollectionValued: false,
                     isComplexType: false,
                     isEntityType: false,
-                    edmPrimitiveType: 'Edm.String'
+                    edmPrimitiveType: 'Edm.String',
+                    targetKinds: ['Property']
                 },
                 {
                     path: 'com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Name',
@@ -51,7 +53,8 @@ function createTestService() {
                     isComplexType: false,
                     isEntityType: false,
                     edmPrimitiveType: 'Edm.String',
-                    content: []
+                    content: [],
+                    targetKinds: ['Property']
                 },
                 {
                     path: 'com.sap.gateway.default.iwbep.tea_busi.v0001.Department/MemberCount',
@@ -62,7 +65,8 @@ function createTestService() {
                     isComplexType: false,
                     isEntityType: false,
                     edmPrimitiveType: 'Edm.Int32',
-                    content: []
+                    content: [],
+                    targetKinds: ['Property']
                 },
                 {
                     path: 'com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ManagerID',
@@ -73,7 +77,8 @@ function createTestService() {
                     isComplexType: false,
                     isEntityType: false,
                     edmPrimitiveType: 'Edm.String',
-                    content: []
+                    content: [],
+                    targetKinds: ['Property']
                 },
                 {
                     path: 'com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Categories',
@@ -84,9 +89,11 @@ function createTestService() {
                     isComplexType: false,
                     isEntityType: false,
                     edmPrimitiveType: 'Edm.String',
-                    content: []
+                    content: [],
+                    targetKinds: ['Property', 'Collection']
                 }
-            ]
+            ],
+            targetKinds: ['EntityType']
         },
         // function overloads (function 'com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment' with different signature)
         {
@@ -107,9 +114,11 @@ function createTestService() {
                     isComplexType: false,
                     isEntityType: false,
                     edmPrimitiveType: 'Edm.String',
-                    content: []
+                    content: [],
+                    targetKinds: ['Parameter']
                 }
-            ]
+            ],
+            targetKinds: ['Function']
         },
         {
             isAnnotatable: true,
@@ -129,9 +138,11 @@ function createTestService() {
                     isComplexType: false,
                     isEntityType: false,
                     edmPrimitiveType: 'Edm.Int16',
-                    content: []
+                    content: [],
+                    targetKinds: ['Parameter']
                 }
-            ]
+            ],
+            targetKinds: ['Function']
         }
     ];
     metadataService.import(metadataElements, metadataFileUri);
@@ -175,6 +186,9 @@ describe('MetadataService for XML', () => {
                     "kind": "Property",
                     "name": "Sector",
                     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Sector",
+                    "targetKinds": Array [
+                      "Property",
+                    ],
                   },
                   Object {
                     "content": Array [],
@@ -186,6 +200,9 @@ describe('MetadataService for XML', () => {
                     "kind": "Property",
                     "name": "ID",
                     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ID",
+                    "targetKinds": Array [
+                      "Property",
+                    ],
                   },
                   Object {
                     "content": Array [],
@@ -197,6 +214,9 @@ describe('MetadataService for XML', () => {
                     "kind": "Property",
                     "name": "Name",
                     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Name",
+                    "targetKinds": Array [
+                      "Property",
+                    ],
                   },
                   Object {
                     "content": Array [],
@@ -208,6 +228,9 @@ describe('MetadataService for XML', () => {
                     "kind": "Property",
                     "name": "MemberCount",
                     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/MemberCount",
+                    "targetKinds": Array [
+                      "Property",
+                    ],
                   },
                   Object {
                     "content": Array [],
@@ -219,6 +242,9 @@ describe('MetadataService for XML', () => {
                     "kind": "Property",
                     "name": "ManagerID",
                     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ManagerID",
+                    "targetKinds": Array [
+                      "Property",
+                    ],
                   },
                   Object {
                     "content": Array [],
@@ -230,6 +256,10 @@ describe('MetadataService for XML', () => {
                     "kind": "Property",
                     "name": "Categories",
                     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Categories",
+                    "targetKinds": Array [
+                      "Property",
+                      "Collection",
+                    ],
                   },
                 ],
                 "isAnnotatable": true,
@@ -252,6 +282,9 @@ describe('MetadataService for XML', () => {
                 },
                 "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
                 "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
+                "targetKinds": Array [
+                  "EntityType",
+                ],
               },
               "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)" => Object {
                 "content": Array [
@@ -265,6 +298,9 @@ describe('MetadataService for XML', () => {
                     "kind": "Parameter",
                     "name": "DepartmentName",
                     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)/DepartmentName",
+                    "targetKinds": Array [
+                      "Parameter",
+                    ],
                   },
                 ],
                 "isAnnotatable": true,
@@ -274,6 +310,9 @@ describe('MetadataService for XML', () => {
                 "kind": "Function",
                 "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)",
                 "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)",
+                "targetKinds": Array [
+                  "Function",
+                ],
               },
               "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)" => Object {
                 "content": Array [
@@ -287,6 +326,9 @@ describe('MetadataService for XML', () => {
                     "kind": "Parameter",
                     "name": "DepartmentID",
                     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)/DepartmentID",
+                    "targetKinds": Array [
+                      "Parameter",
+                    ],
                   },
                 ],
                 "isAnnotatable": true,
@@ -296,6 +338,9 @@ describe('MetadataService for XML', () => {
                 "kind": "Function",
                 "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)",
                 "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)",
+                "targetKinds": Array [
+                  "Function",
+                ],
               },
             }
         `);
@@ -317,6 +362,9 @@ describe('MetadataService for XML', () => {
                   "kind": "Property",
                   "name": "Sector",
                   "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Sector",
+                  "targetKinds": Array [
+                    "Property",
+                  ],
                 },
                 Object {
                   "content": Array [],
@@ -328,6 +376,9 @@ describe('MetadataService for XML', () => {
                   "kind": "Property",
                   "name": "ID",
                   "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ID",
+                  "targetKinds": Array [
+                    "Property",
+                  ],
                 },
                 Object {
                   "content": Array [],
@@ -339,6 +390,9 @@ describe('MetadataService for XML', () => {
                   "kind": "Property",
                   "name": "Name",
                   "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Name",
+                  "targetKinds": Array [
+                    "Property",
+                  ],
                 },
                 Object {
                   "content": Array [],
@@ -350,6 +404,9 @@ describe('MetadataService for XML', () => {
                   "kind": "Property",
                   "name": "MemberCount",
                   "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/MemberCount",
+                  "targetKinds": Array [
+                    "Property",
+                  ],
                 },
                 Object {
                   "content": Array [],
@@ -361,6 +418,9 @@ describe('MetadataService for XML', () => {
                   "kind": "Property",
                   "name": "ManagerID",
                   "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ManagerID",
+                  "targetKinds": Array [
+                    "Property",
+                  ],
                 },
                 Object {
                   "content": Array [],
@@ -372,6 +432,10 @@ describe('MetadataService for XML', () => {
                   "kind": "Property",
                   "name": "Categories",
                   "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Categories",
+                  "targetKinds": Array [
+                    "Property",
+                    "Collection",
+                  ],
                 },
               ],
               "isAnnotatable": true,
@@ -394,6 +458,9 @@ describe('MetadataService for XML', () => {
               },
               "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
               "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
+              "targetKinds": Array [
+                "EntityType",
+              ],
             }
         `);
     });
@@ -413,6 +480,10 @@ describe('MetadataService for XML', () => {
               "kind": "Property",
               "name": "Categories",
               "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Categories",
+              "targetKinds": Array [
+                "Property",
+                "Collection",
+              ],
             }
         `);
     });
@@ -433,6 +504,9 @@ describe('MetadataService for XML', () => {
                   "kind": "Parameter",
                   "name": "DepartmentName",
                   "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)/DepartmentName",
+                  "targetKinds": Array [
+                    "Parameter",
+                  ],
                 },
               ],
               "isAnnotatable": true,
@@ -442,6 +516,9 @@ describe('MetadataService for XML', () => {
               "kind": "Function",
               "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)",
               "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)",
+              "targetKinds": Array [
+                "Function",
+              ],
             }
         `);
     });
@@ -463,6 +540,9 @@ describe('MetadataService for XML', () => {
               "kind": "Parameter",
               "name": "DepartmentID",
               "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)/DepartmentID",
+              "targetKinds": Array [
+                "Parameter",
+              ],
             }
         `);
     });
@@ -486,6 +566,9 @@ describe('MetadataService for XML', () => {
                   "kind": "Parameter",
                   "name": "DepartmentID",
                   "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)/DepartmentID",
+                  "targetKinds": Array [
+                    "Parameter",
+                  ],
                 },
               ],
               "isAnnotatable": true,
@@ -495,6 +578,9 @@ describe('MetadataService for XML', () => {
               "kind": "Function",
               "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)",
               "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)",
+              "targetKinds": Array [
+                "Function",
+              ],
             }
         `);
     });
@@ -516,6 +602,9 @@ describe('MetadataService for XML', () => {
               "kind": "Parameter",
               "name": "DepartmentID",
               "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)/DepartmentID",
+              "targetKinds": Array [
+                "Parameter",
+              ],
             }
         `);
     });
@@ -591,7 +680,8 @@ describe('MetadataService for XML', () => {
             isComplexType: false,
             isEntityType: false,
             path: 'PROJECT_SERVICE.PROJECT_SERVICE_Entities/ProjectActivation',
-            content: []
+            content: [],
+            targetKinds: ['FunctionImport', 'Action']
         };
         jest.spyOn(metadataService, 'getMetadataElement').mockReturnValue(metadataElement);
         const path = 'PROJECT_SERVICE.PROJECT_SERVICE_Entities/ProjectActivation';

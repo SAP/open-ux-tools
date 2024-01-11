@@ -1,4 +1,4 @@
-import type { Element, ODataNamespaceAlias, TextNode } from '@sap-ux/odata-annotation-core';
+import type { Attributes, Element, ODataNamespaceAlias, TextNode } from '@sap-ux/odata-annotation-core';
 import { ELEMENT_TYPE, TEXT_TYPE, EDM_NAMESPACE_ALIAS, EDMX_NAMESPACE_ALIAS, Edm } from '@sap-ux/odata-annotation-core';
 
 import type { Concat, Document, Options } from './builders';
@@ -39,36 +39,34 @@ export const escapeText = (input: string): string => {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/([<&])/g, (str, item) => {
-        return { '<': '&lt;', '&': '&amp;' }[item];
-    });
+    return input.replace(/([<&])/g, (_str, item: '<' | '&') => ({ '<': '&lt;', '&': '&amp;' }[item]));
 };
 
 export const unescapeText = (input: string) => {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/(&lt;|&amp;)/g, (str, item) => {
-        return { '&lt;': '<', '&amp;': '&' }[item];
-    });
+    return input.replace(/(&lt;|&amp;)/g, (_str, item: '&lt;' | '&amp;') => ({ '&lt;': '<', '&amp;': '&' }[item]));
 };
 
 export const escapeAttribute = (input: string): string => {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/([<&"])/g, (str, item) => {
-        return { '<': '&lt;', '&': '&amp;', '"': '&quot;' }[item];
-    });
+    return input.replace(
+        /([<&"])/g,
+        (_str, item: '<' | '&' | '"') => ({ '<': '&lt;', '&': '&amp;', '"': '&quot;' }[item])
+    );
 };
 
 export const unescapeAttribute = (input: string) => {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/(&lt;|&amp;|&quot;)/g, (str, item) => {
-        return { '&lt;': '<', '&amp;': '&', '&quot;': '"' }[item];
-    });
+    return input.replace(
+        /(&lt;|&amp;|&quot;)/g,
+        (_str, item: '&lt;' | '&amp;' | '&quot;') => ({ '&lt;': '<', '&amp;': '&', '&quot;': '"' }[item])
+    );
 };
 
 type Node = Element | TextNode;
@@ -181,13 +179,13 @@ const printElement = (element: Element, context: PrintContext): Document => {
     return concat([opening, indent(content), textNode && !structured ? '' : hardline, closing]);
 };
 
-const printAttributes = (attributes = {}): Document => {
+const printAttributes = (attributes: Attributes = {}): Document => {
     const names = Object.keys(attributes);
     if (names.length === 0) {
         return '';
     }
     const parts = names.reduce(
-        (accumulator: Document[], name) => [...accumulator, line, printAttribute(name, attributes[name].value)],
+        (accumulator: Document[], name: string) => [...accumulator, line, printAttribute(name, attributes[name].value)],
         []
     );
 
