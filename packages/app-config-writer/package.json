@@ -48,7 +48,7 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.4",
         "axios": "1.6.1",
-        "nock": "13.2.1"
+        "nock": "13.4.0"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
