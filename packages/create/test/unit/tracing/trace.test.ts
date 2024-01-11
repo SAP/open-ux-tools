@@ -90,9 +90,6 @@ describe('Test traceChanges()', () => {
     test('Modified yaml file', async () => {
         // Mock setup
         const modifiedFile = join(rootPath, 'file.yaml');
-        // Read/write file to avoid os-specific errors due to line endings
-        const fileContent = await promises.readFile(modifiedFile, { encoding: 'utf8' });
-        await promises.writeFile(modifiedFile, fileContent);
         const fsMock = {
             dump: () => ({
                 [modifiedFile]: {
