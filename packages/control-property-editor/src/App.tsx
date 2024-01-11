@@ -43,12 +43,6 @@ export default function App(appProps: AppProps): ReactElement {
         );
     }, []);
 
-    useEffect(() => {
-        if (scenario) {
-            dispatch(setProjectScenario(scenario));
-        }
-    }, [scenario, dispatch]);
-
     const [hideWarningDialog, setHideWarningDialog] = useLocalStorage('hide-warning-dialog', false);
     const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => hideWarningDialog !== true);
 

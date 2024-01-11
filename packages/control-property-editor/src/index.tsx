@@ -13,6 +13,7 @@ import { store } from './store';
 import type { ThemeName } from './components';
 import { setThemeOnDocument } from './components';
 import { registerAppIcons } from './icons';
+import { setProjectScenario } from './slice';
 
 export interface StartOptions {
     previewUrl: string;
@@ -37,6 +38,8 @@ export function start(options: StartOptions): void {
 
     const theme = localStorage.getItem('theme') ?? 'dark';
     setThemeOnDocument(theme as ThemeName);
+
+    store.dispatch(setProjectScenario(scenario));
 
     ReactDOM.render(
         <React.StrictMode>
