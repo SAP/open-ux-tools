@@ -89,15 +89,14 @@ describe('Test traceChanges()', () => {
 
     test('Modified yaml file', async () => {
         // Mock setup
-        const ls = process.platform === 'win32' ? '\r' : '';
         const modifiedFile = join(rootPath, 'file.yaml');
         const fsMock = {
             dump: () => ({
                 [modifiedFile]: {
-                    contents: `rootProperty: 'changed prop on root'${ls}
-nested:${ls}
-    - item: one${ls}
-    - item: three${ls}
+                    contents: `rootProperty: 'changed prop on root'
+nested:
+    - item: one
+    - item: three
 `,
                     state: 'modified'
                 }
@@ -109,10 +108,16 @@ nested:${ls}
 
         // Result check
         expect(loggerMock.info).toBeCalledWith(expect.stringContaining(`'${modifiedFile}' modified`));
-        expect(loggerMock.debug).toBeCalledWith(expect.stringContaining(`[31mrootProperty: 'prop on root'[39m${ls}`));
-        expect(loggerMock.debug).toBeCalledWith(expect.stringContaining(`[31m[39m[32mrootProperty: 'changed prop on root'[39m${ls}`));
-        expect(loggerMock.debug).toBeCalledWith(expect.stringContaining(`[90m[39m[31m- item: two[39m${ls}`));
-        expect(loggerMock.debug).toBeCalledWith(expect.stringContaining(`[31m[39m[32m- item: three[39m${ls}`));
+        expect(loggerMock.debug).toBeCalledWith(
+            `File changes:
+[31mrootProperty: 'prop on root'[39m
+[31m[39m[32mrootProperty: 'changed prop on root'[39m
+[32m[39m[90mnested:[39m
+[90m- item: one[39m
+[90m[39m[31m- item: two[39m
+[31m[39m[32m- item: three[39m
+[32m[39m`
+        );
     });
 
     test('Modified file without type', async () => {
