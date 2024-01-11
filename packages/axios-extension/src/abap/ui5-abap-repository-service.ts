@@ -64,6 +64,12 @@ export interface UndeployConfig {
     testMode?: DeployConfig['testMode'];
 }
 
+export interface Config {
+    transport?: TransportConfig['transport'];
+    testMode?: DeployConfig['testMode'];
+    safeMode?: DeployConfig['safeMode'];
+    headers?: RawAxiosRequestHeaders;
+}
 /**
  * Application information object returned by the UI5 Repository service
  */
@@ -187,7 +193,12 @@ export class Ui5AbapRepositoryService extends ODataService {
             info ? info.Package : bsp.package
         );
         this.log.debug(`Payload:\n${payload}`);
-        const config = this.createConfig(bsp.transport, testMode, safeMode, this.SESSION_HEADER_DELETE);
+        const config = this.createConfig({
+            transport: bsp.transport,
+            testMode,
+            safeMode,
+            headers: this.SESSION_HEADER_DELETE
+        });
         const frontendUrl = this.getAbapFrontendUrl();
         try {
             const response: AxiosResponse | undefined = await this.updateRepoRequest(!!info, bsp.name, payload, config);
@@ -235,7 +246,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @returns the Axios response object for further processing or undefined if no request is sent
      */
     public async undeploy({ bsp, testMode = false }: UndeployConfig): Promise<AxiosResponse | undefined> {
-        const config = this.createConfig(bsp.transport, testMode, undefined, this.SESSION_HEADER_DELETE);
+        const config = this.createConfig({ transport: bsp.transport, testMode, headers: this.SESSION_HEADER_DELETE });
         const host = this.getAbapFrontendUrl();
 
         const info: AppInfo = await this.getInfo(bsp.name);
@@ -277,39 +288,35 @@ export class Ui5AbapRepositoryService extends ODataService {
     /**
      * Internal helper method to generate a request configuration (headers, parameters).
      *
-     * @param transport optional transport request id
-     * @param testMode optional url parameter to enable test mode
-     * @param safeMode optional url parameter to disable the safe model (safemode=false)
-     * @param headers optional headers to be added to the config
+     * @param config initial request config
+     * @param config.transport optional transport request id
+     * @param config.testMode optional url parameter to enable test mode
+     * @param config.safeMode optional url parameter to disable the safe model (safemode=false)
+     * @param config.headers optional headers to be added to the config
      * @returns the Axios response object for further processing
      */
-    protected createConfig(
-        transport?: string,
-        testMode?: boolean,
-        safeMode?: boolean,
-        headers?: RawAxiosRequestHeaders
-    ): AxiosRequestConfig {
+    protected createConfig(config: Config): AxiosRequestConfig {
         const defaultHeaders = {
             'Content-Type': 'application/atom+xml',
             type: 'entry',
             charset: 'UTF8'
         };
-        headers = { ...defaultHeaders, ...headers };
+        const headers = { ...defaultHeaders, ...config.headers };
 
         const params: { [key: string]: string | boolean } = {
             CodePage: `'UTF8'`,
             CondenseMessagesInHttpResponseHeader: 'X',
             format: 'json'
         };
-        if (transport) {
-            params.TransportRequest = transport;
+        if (config.transport) {
+            params.TransportRequest = config.transport;
         }
 
-        if (testMode) {
+        if (config.testMode) {
             params.TestMode = true;
         }
-        if (safeMode !== undefined) {
-            params.SafeMode = safeMode;
+        if (config.safeMode !== undefined) {
+            params.SafeMode = config.safeMode;
         }
 
         // `axios` does not properly pass the default values of `maxBodyLength` and `maxContentLength`
