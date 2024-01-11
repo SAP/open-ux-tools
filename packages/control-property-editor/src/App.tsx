@@ -8,7 +8,7 @@ import { PropertiesPanel, LeftPanel } from './panels';
 import { useLocalStorage } from './use-local-storage';
 import type { RootState } from './store';
 import { useAppDispatch } from './store';
-import { changePreviewScale, setProjectScenario } from './slice';
+import { changePreviewScale } from './slice';
 import { useWindowSize } from './use-window-size';
 import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices';
 
