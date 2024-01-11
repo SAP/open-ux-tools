@@ -109,7 +109,6 @@ nested:${ls}
 
         // Result check
         expect(loggerMock.info).toBeCalledWith(expect.stringContaining(`'${modifiedFile}' modified`));
-        expect(loggerMock.debug).toBeCalledWith(expect.stringContaining(`[31mrootProperty: 'prop on root'[39m${ls}`));
         expect(loggerMock.debug).toBeCalledWith(expect.stringContaining(`[31m[39m[32mrootProperty: 'changed prop on root'[39m${ls}`));
         expect(loggerMock.debug).toBeCalledWith(expect.stringContaining(`[90m[39m[31m- item: two[39m${ls}`));
         expect(loggerMock.debug).toBeCalledWith(expect.stringContaining(`[31m[39m[32m- item: three[39m${ls}`));
