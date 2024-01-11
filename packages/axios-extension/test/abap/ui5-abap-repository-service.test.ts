@@ -176,9 +176,8 @@ describe('Ui5AbapRepositoryService', () => {
                 .reply(200);
 
             const response = await service.deploy({ archive, bsp: { name: notExistingApp } });
-
             expect(response.data).toBeDefined();
-            expect(response.request.headers['x-sap-security-session']).toBe('create');
+            expect(response.request.headers['x-sap-security-session']).toBe('delete');
         });
 
         test('deploy new app with additional parameter and info message', async () => {
@@ -299,7 +298,7 @@ describe('Ui5AbapRepositoryService', () => {
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
             expect(response?.status).toBe(200);
-            expect(response?.request.headers['x-sap-security-session']).toBe('create');
+            expect(response?.request.headers['x-sap-security-session']).toBe('delete');
         });
 
         test('successful removal - app name with namespace', async () => {

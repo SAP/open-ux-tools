@@ -139,7 +139,7 @@ export function attachConnectionHandler(provider: ServiceProvider) {
     const oneTimeReqInterceptorId = provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
         request.headers = request.headers ?? new AxiosHeaders();
         request.headers[CSRF.RequestHeaderName] = CSRF.RequestHeaderValue;
-        request.headers['x-sap-security-session'] = 'create';
+        request.headers['x-sap-security-session'] ??= 'create';
         return request;
     });
 

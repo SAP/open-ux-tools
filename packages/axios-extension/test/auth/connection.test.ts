@@ -75,6 +75,7 @@ describe('connection', () => {
             reqHandlers.forEach((handler) => {
                 expect(handler.fulfilled(request)).toBe(request);
             });
+            expect(request.headers['x-sap-security-session']).toBe('create');
             expect(spyOnRequestEject).toHaveBeenCalledTimes(0);
         });
 
