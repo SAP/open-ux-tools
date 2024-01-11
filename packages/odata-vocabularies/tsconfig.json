@@ -1,26 +1,16 @@
 {
-  "extends": "../../tsconfig.json",
-  "ts-node": {
-    "files": true
-  },
-  "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "."
-  },
-  "include": [
-    "src",
-    "test",
-    ".eslintrc.js",
-    "tools",
-    "types"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ],
-  "references": [
-    {
-      "path": "../odata-annotation-core-types"
-    }
-  ]
+    "extends": "../../tsconfig.json",
+    "ts-node": {
+        "files": true
+    },
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src"
+    },
+    "include": ["src", "types"],
+    "references": [
+        {
+            "path": "../odata-annotation-core-types"
+        }
+    ]
 }

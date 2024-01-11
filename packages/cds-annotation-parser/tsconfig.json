@@ -1,33 +1,21 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "lib": [
-      "ES2021"
-    ],
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "preserveConstEnums": false,
-    "incremental": true
-  },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ],
-  "references": [
-    {
-      "path": "../odata-annotation-core"
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src",
+        "lib": ["ES2021"],
+        "preserveConstEnums": false
     },
-    {
-      "path": "../odata-entity-model"
-    },
-    {
-      "path": "../odata-vocabularies"
-    }
-  ]
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../odata-annotation-core"
+        },
+        {
+            "path": "../odata-entity-model"
+        },
+        {
+            "path": "../odata-vocabularies"
+        }
+    ]
 }
