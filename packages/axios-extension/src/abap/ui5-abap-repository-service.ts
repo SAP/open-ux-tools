@@ -1,10 +1,8 @@
 import type { AxiosResponse, AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
-import { AxiosHeaders } from 'axios';
 import { prettyPrintError, prettyPrintMessage } from './message';
 import type { ErrorMessage } from './message';
 import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
-import { Cookies } from '../auth';
 
 /**
  * Required configuration a transportable object.
@@ -109,7 +107,7 @@ export class Ui5AbapRepositoryService extends ODataService {
     public static readonly PATH = '/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV';
     private readonly publicUrl: string;
     private readonly isDest: boolean;
-    private sessionCookies: Cookies;
+    private readonly SESSION_HEADER_DELETE = { 'x-sap-security-session': 'delete' };
 
     /**
      * Extension of the base constructor to set preferred response format if not provided by caller.
@@ -134,15 +132,11 @@ export class Ui5AbapRepositoryService extends ODataService {
      */
     public async getInfo(app: string): Promise<AppInfo> {
         try {
-            const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`, {
-                headers: { 'x-sap-security-session': 'create' }
-            });
-            this.sessionCookies = new Cookies().setCookies(response);
+            const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
             return response.odata();
         } catch (error) {
             this.log.debug(`Retrieving application ${app}, ${error}`);
             if (isAxiosError(error) && error.response?.status === 404) {
-                this.sessionCookies = new Cookies().setCookies(error.response);
                 return undefined;
             }
             throw error;
@@ -175,18 +169,6 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * Adds the sessions headers by adding required for deployment/undeployment.
-     *
-     * @returns the axios headers object
-     */
-    private getSessionHeaders(): AxiosHeaders {
-        const headers = new AxiosHeaders();
-        headers['Cookie'] = this.sessionCookies.toString();
-        headers['x-sap-security-session'] = 'delete';
-        return headers;
-    }
-
-    /**
      * Deploy the given archive either by creating a new BSP or updating an existing one.
      *
      * @param config deployment config
@@ -198,8 +180,6 @@ export class Ui5AbapRepositoryService extends ODataService {
      */
     public async deploy({ archive, bsp, testMode = false, safeMode }: DeployConfig): Promise<AxiosResponse> {
         const info: AppInfo = await this.getInfo(bsp.name);
-        const headers = this.getSessionHeaders();
-
         const payload = this.createPayload(
             archive,
             bsp.name,
@@ -207,8 +187,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             info ? info.Package : bsp.package
         );
         this.log.debug(`Payload:\n${payload}`);
-
-        const config = this.createConfig(bsp.transport, testMode, safeMode, headers);
+        const config = this.createConfig(bsp.transport, testMode, safeMode, this.SESSION_HEADER_DELETE);
         const frontendUrl = this.getAbapFrontendUrl();
         try {
             const response: AxiosResponse | undefined = await this.updateRepoRequest(!!info, bsp.name, payload, config);
@@ -256,12 +235,10 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @returns the Axios response object for further processing or undefined if no request is sent
      */
     public async undeploy({ bsp, testMode = false }: UndeployConfig): Promise<AxiosResponse | undefined> {
-        const info: AppInfo = await this.getInfo(bsp.name);
-        const headers = this.getSessionHeaders();
-
-        const config = this.createConfig(bsp.transport, testMode, undefined, headers);
+        const config = this.createConfig(bsp.transport, testMode, undefined, this.SESSION_HEADER_DELETE);
         const host = this.getAbapFrontendUrl();
 
+        const info: AppInfo = await this.getInfo(bsp.name);
         try {
             if (info) {
                 const response = await this.deleteRepoRequest(bsp.name, config);
@@ -303,7 +280,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param transport optional transport request id
      * @param testMode optional url parameter to enable test mode
      * @param safeMode optional url parameter to disable the safe model (safemode=false)
-     * @param headers optional additional headers to add to the config
+     * @param headers optional headers to be added to the config
      * @returns the Axios response object for further processing
      */
     protected createConfig(

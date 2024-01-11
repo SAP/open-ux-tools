@@ -50,7 +50,7 @@ describe('Ui5AbapRepositoryService', () => {
         // mock an existing and not existing app
         nock(server)
             .get((url) => url.startsWith(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')`))
-            .reply(200, { d: validAppInfo }, { 'Set-Cookie': 'SAP_SESSIONID=34131;' })
+            .reply(200, { d: validAppInfo })
             .persist();
         nock(`https://${destination.Name}.dest`)
             .get(`${Ui5AbapRepositoryService.PATH}/Repositories('NOT_EXISTING_APP')?saml2=disabled&$format=json`)
@@ -178,7 +178,7 @@ describe('Ui5AbapRepositoryService', () => {
             const response = await service.deploy({ archive, bsp: { name: notExistingApp } });
 
             expect(response.data).toBeDefined();
-            expect(response.request.headers.cookie).toBe('SAP_SESSIONID=34131');
+            expect(response.request.headers['x-sap-security-session']).toBe('create');
         });
 
         test('deploy new app with additional parameter and info message', async () => {
@@ -299,7 +299,7 @@ describe('Ui5AbapRepositoryService', () => {
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
             expect(response?.status).toBe(200);
-            expect(response?.request.headers.cookie).toBe('SAP_SESSIONID=34131');
+            expect(response?.request.headers['x-sap-security-session']).toBe('create');
         });
 
         test('successful removal - app name with namespace', async () => {

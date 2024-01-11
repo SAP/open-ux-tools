@@ -135,10 +135,11 @@ function getContentType(contentTypeHeader: string | undefined, responseData: any
  * @param provider any service provider
  */
 export function attachConnectionHandler(provider: ServiceProvider) {
-    // fetch xsrf token with the first request
+    // fetch xsrf token and security session cookie with the first request
     const oneTimeReqInterceptorId = provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
         request.headers = request.headers ?? new AxiosHeaders();
         request.headers[CSRF.RequestHeaderName] = CSRF.RequestHeaderValue;
+        request.headers['x-sap-security-session'] = 'create';
         return request;
     });
 
