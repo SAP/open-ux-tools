@@ -104,10 +104,11 @@ export class VocabularyService {
     /**
      *
      * @param includeCds Flag indicating if CDS vocabulary be loaded
+     * @param includeCdsAnalytics (for includeCds=true only) Flag indicating if additional vocabularies for CDS analytics should be loaded
      * @returns Vocabulary service instance
      */
-    constructor(includeCds?: boolean) {
-        let vocabularyInformation = loadVocabulariesInformation(includeCds);
+    constructor(includeCds?: boolean, includeCdsAnalytics?: boolean) {
+        let vocabularyInformation = loadVocabulariesInformation(includeCds, includeCdsAnalytics);
         // add cds specific annotations (TextArrangement and Capabilities) on fly
         vocabularyInformation = includeCds
             ? this.addCdsSpecificAnnotations(vocabularyInformation)
