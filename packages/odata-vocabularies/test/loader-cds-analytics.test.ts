@@ -2,7 +2,6 @@ import { loadVocabulariesInformation } from '../src/loader';
 import { PROPERTY_KIND } from '@sap-ux/odata-annotation-core-types';
 
 declare const expect: jest.Expect;
-
 const vocabularyInformation = loadVocabulariesInformation(true, true);
 const namespace = 'com.sap.cds.vocabularies.AnalyticsDetails';
 const term = 'com.sap.cds.vocabularies.AnalyticsDetails.exceptionAggregationSteps';
