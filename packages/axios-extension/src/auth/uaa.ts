@@ -12,7 +12,7 @@ import { UAATimeoutError } from './error';
 import { redirectSuccessHtml } from './static';
 import { defaultTimeout } from './connection';
 
-export type RefreshTokenChanged = (refreshToken?: string) => void | Promise<void>;
+export type RefreshTokenChanged = (refreshToken?: string, accessToken?: string) => void | Promise<void>;
 
 /**
  * A class representing interactions with an SAP BTP UAA service
@@ -292,7 +292,7 @@ export class Uaa {
 
         if (newRefreshToken && refreshTokenChangedCb) {
             this.log.info('Sending notification that refresh token changed');
-            await refreshTokenChangedCb(newRefreshToken);
+            await refreshTokenChangedCb(newRefreshToken, response?.data?.access_token);
         }
 
         this.log.info('Got access token successfully');
