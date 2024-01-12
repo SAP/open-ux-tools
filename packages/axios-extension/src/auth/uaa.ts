@@ -290,7 +290,7 @@ export class Uaa {
             newRefreshToken = response.data.refresh_token;
         }
 
-        if (newRefreshToken && refreshTokenChangedCb) {
+        if (refreshTokenChangedCb) {
             this.log.info('Sending notification that refresh token changed');
             await refreshTokenChangedCb(newRefreshToken, response?.data?.access_token);
         }
