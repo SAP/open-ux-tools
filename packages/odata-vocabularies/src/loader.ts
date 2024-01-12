@@ -67,7 +67,10 @@ const SUPPORTED_VOCABULARY_NAMESPACES: Set<VocabularyNamespace> = new Set([
     'com.sap.vocabularies.Hierarchy.v1',
     'com.sap.vocabularies.Session.v1',
     'com.sap.vocabularies.UI.v1',
-    'com.sap.vocabularies.HTML5.v1'
+    'com.sap.vocabularies.HTML5.v1',
+    'com.sap.cds.vocabularies.Aggregation',
+    'com.sap.cds.vocabularies.ObjectModel',
+    'com.sap.cds.vocabularies.AnalyticsDetails'
 ]);
 
 const vocabulariesInformationStatic: Map<string, VocabulariesInformation> = new Map();
@@ -389,6 +392,14 @@ function parseSchemaElements(identifier: string, element: SchemaElement): Vocabu
     }
     return undefined;
 }
+/**
+ *
+ * @param namespace
+ * @returns boolean value
+ */
+function isCdsNamespace(namespace: string): boolean {
+    return namespace.startsWith('com.sap.cds.vocabularies');
+}
 
 /**
  * Appends name and property name to the given uppercase names map.
@@ -556,29 +567,33 @@ const getVocabularyLoader =
     (namespace: VocabularyNamespace): void => {
         const { supportedVocabularies } = maps;
 
-        if (!includeCds && namespace === CDS_VOCABULARY_NAMESPACE) {
+        const isCdsNs = isCdsNamespace(namespace);
+        if (!includeCds && (namespace === CDS_VOCABULARY_NAMESPACE || isCdsNs)) {
             return;
         }
         const alias = NAMESPACE_TO_ALIAS.get(namespace);
         if (!alias) {
             return;
         }
-        const document: CSDL = VOCABULARIES[alias];
+        const document: CSDL = VOCABULARIES[namespace];
         if (!document) {
             return;
         }
+        const namespaceForAlias = ALIAS_TO_NAMESPACE.get(alias) || namespace;
         const vocabulary = document[namespace];
-        supportedVocabularies.set(namespace, {
-            namespace,
-            defaultAlias: alias,
-            defaultUri: getVocabularyUri(vocabulary)
-        });
+        if (namespaceForAlias === namespace) {
+            supportedVocabularies.set(namespace, {
+                namespace,
+                defaultAlias: alias,
+                defaultUri: getVocabularyUri(vocabulary)
+            });
+        }
 
         const objectLoader = getVocabularyObjectLoader(maps, vocabulary);
 
         const properties = Object.keys(vocabulary);
         for (const identifier of properties.filter((property) => PROPERTY_PATTERN.test(property))) {
-            const fqName = namespace + '.' + identifier;
+            const fqName = namespaceForAlias + '.' + identifier;
             const element = vocabulary[identifier];
             const vocabularyObject = parseSchemaElements(fqName, element);
             if (!vocabularyObject) {
@@ -589,7 +604,7 @@ const getVocabularyLoader =
     };
 
 /**
- * Loads vocbulary information.
+ * Loads vocabulary information.
  *
  * @param includeCds Flag indicating if CDS vocabularies should be loaded
  * @returns Vocabularies
@@ -610,12 +625,15 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
     const upperCaseNameMap: Map<string, string | Map<string, string>> = new Map();
 
     NAMESPACE_TO_ALIAS.forEach((alias, namespace) => {
-        if (!includeCds && alias === CDS_VOCABULARY_ALIAS) {
+        const isCdsNs = isCdsNamespace(namespace);
+        if (!includeCds && (alias === CDS_VOCABULARY_ALIAS || isCdsNs)) {
             return;
         }
-        addToUpperCaseNameMap(upperCaseNameMap, alias);
-        addToUpperCaseNameMap(upperCaseNameMap, namespace);
-        namespaceByDefaultAlias.set(alias, namespace);
+        if (!isCdsNs || alias !== 'Aggregation') {
+            addToUpperCaseNameMap(upperCaseNameMap, alias);
+            addToUpperCaseNameMap(upperCaseNameMap, namespace);
+            namespaceByDefaultAlias.set(alias, namespace);
+        }
     });
 
     const vocabularyLoader = getVocabularyLoader(

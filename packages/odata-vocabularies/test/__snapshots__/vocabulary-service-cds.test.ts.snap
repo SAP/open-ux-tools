@@ -64,6 +64,14 @@ Object {
 }
 `;
 
+exports[`getVocabulary(CDS) getVocabulary(com.sap.cap.vocabularies.ObjectModel) 1`] = `
+Object {
+  "defaultAlias": "ObjectModel",
+  "defaultUri": "",
+  "namespace": "com.sap.cds.vocabularies.ObjectModel",
+}
+`;
+
 exports[`getVocabulary(CDS) getVocabulary(com.sap.vocabularies.CDS.v1) 1`] = `
 Object {
   "defaultAlias": "CDS",

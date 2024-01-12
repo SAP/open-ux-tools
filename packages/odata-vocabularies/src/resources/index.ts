@@ -24,6 +24,14 @@ import PersonalData from './com.sap.vocabularies.PersonalData.v1';
 import Session from './com.sap.vocabularies.Session.v1';
 import UI from './com.sap.vocabularies.UI.v1';
 import HTML5 from './com.sap.vocabularies.HTML5.v1';
+import CdsAggregation from './com.sap.cds.vocabularies.Aggregation';
+import ObjectModel from './com.sap.cds.vocabularies.ObjectModel';
+import AnalyticsDetails from './com.sap.cds.vocabularies.AnalyticsDetails';
+
+export type CdsVocabularyNamespace =
+    | 'com.sap.cds.vocabularies.Aggregation'
+    | 'com.sap.cds.vocabularies.ObjectModel'
+    | 'com.sap.cds.vocabularies.AnalyticsDetails';
 
 export type SapVocabularyNamespace =
     | 'com.sap.vocabularies.Analytics.v1'
@@ -80,9 +88,10 @@ export type OasisVocabularyAlias =
     | 'Temporal'
     | 'Validation'
     | 'ODataJSON';
+export type CdsVocabularyAlias = 'ObjectModel' | 'AnalyticsDetails';
 
-export type VocabularyNamespace = SapVocabularyNamespace | OasisVocabularyNamespace;
-export type VocabularyAlias = SapVocabularyAlias | OasisVocabularyAlias;
+export type VocabularyNamespace = SapVocabularyNamespace | OasisVocabularyNamespace | CdsVocabularyNamespace;
+export type VocabularyAlias = SapVocabularyAlias | OasisVocabularyAlias | CdsVocabularyAlias;
 
 export const NAMESPACE_TO_ALIAS: Map<VocabularyNamespace, VocabularyAlias> = new Map([
     ['Org.OData.Aggregation.V1', 'Aggregation'],
@@ -108,7 +117,10 @@ export const NAMESPACE_TO_ALIAS: Map<VocabularyNamespace, VocabularyAlias> = new
     ['com.sap.vocabularies.PersonalData.v1', 'PersonalData'],
     ['com.sap.vocabularies.Session.v1', 'Session'],
     ['com.sap.vocabularies.UI.v1', 'UI'],
-    ['com.sap.vocabularies.HTML5.v1', 'HTML5']
+    ['com.sap.vocabularies.HTML5.v1', 'HTML5'],
+    ['com.sap.cds.vocabularies.Aggregation', 'Aggregation'],
+    ['com.sap.cds.vocabularies.ObjectModel', 'ObjectModel'],
+    ['com.sap.cds.vocabularies.AnalyticsDetails', 'AnalyticsDetails']
 ]);
 
 export const ALIAS_TO_NAMESPACE: Map<VocabularyAlias, VocabularyNamespace> = new Map([
@@ -135,34 +147,39 @@ export const ALIAS_TO_NAMESPACE: Map<VocabularyAlias, VocabularyNamespace> = new
     ['PersonalData', 'com.sap.vocabularies.PersonalData.v1'],
     ['Session', 'com.sap.vocabularies.Session.v1'],
     ['UI', 'com.sap.vocabularies.UI.v1'],
-    ['HTML5', 'com.sap.vocabularies.HTML5.v1']
+    ['HTML5', 'com.sap.vocabularies.HTML5.v1'],
+    ['ObjectModel', 'com.sap.cds.vocabularies.ObjectModel'],
+    ['AnalyticsDetails', 'com.sap.cds.vocabularies.AnalyticsDetails']
 ]);
 
 const vocabularies: Record<string, CSDL> = {
-    Aggregation,
-    Auth,
-    Capabilities,
-    Core,
-    Measures,
-    Repeatability,
-    Temporal,
-    Validation,
-    ODataJSON,
-    Analytics,
-    CDS,
-    CodeList,
-    Common,
-    Communication,
-    DataIntegration,
-    DirectEdit,
-    Graph,
-    Hierarchy,
-    ODM,
-    PDF,
-    PersonalData,
-    Session,
-    UI,
-    HTML5
+    'Org.OData.Aggregation.V1': Aggregation,
+    'Org.OData.Authorization.V1': Auth,
+    'Org.OData.Capabilities.V1': Capabilities,
+    'Org.OData.Core.V1': Core,
+    'Org.OData.Measures.V1': Measures,
+    'Org.OData.Repeatability.V1': Repeatability,
+    'Org.OData.Temporal.V1': Temporal,
+    'Org.OData.Validation.V1': Validation,
+    'Org.OData.JSON.V1': ODataJSON,
+    'com.sap.vocabularies.Analytics.v1': Analytics,
+    'com.sap.vocabularies.CDS.v1': CDS,
+    'com.sap.vocabularies.CodeList.v1': CodeList,
+    'com.sap.vocabularies.Common.v1': Common,
+    'com.sap.vocabularies.Communication.v1': Communication,
+    'com.sap.vocabularies.DataIntegration.v1': DataIntegration,
+    'com.sap.vocabularies.DirectEdit.v1': DirectEdit,
+    'com.sap.vocabularies.Graph.v1': Graph,
+    'com.sap.vocabularies.Hierarchy.v1': Hierarchy,
+    'com.sap.vocabularies.ODM.v1': ODM,
+    'com.sap.vocabularies.PDF.v1': PDF,
+    'com.sap.vocabularies.PersonalData.v1': PersonalData,
+    'com.sap.vocabularies.Session.v1': Session,
+    'com.sap.vocabularies.UI.v1': UI,
+    'com.sap.vocabularies.HTML5.v1': HTML5,
+    'com.sap.cds.vocabularies.Aggregation': CdsAggregation,
+    'com.sap.cds.vocabularies.ObjectModel': ObjectModel,
+    'com.sap.cds.vocabularies.AnalyticsDetails': AnalyticsDetails
 };
 
 export default vocabularies;
