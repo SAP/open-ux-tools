@@ -393,11 +393,12 @@ function parseSchemaElements(identifier: string, element: SchemaElement): Vocabu
 }
 
 /**
- * Find out if namespace is cds specific
+ * Finds out if namespace belongs to cds analytics.
+ *
  * @param namespace
  * @returns boolean value
  */
-function isCdsNamespace(namespace: string): boolean {
+function isCdsAnalyticsNamespace(namespace: string): boolean {
     return namespace.startsWith('com.sap.cds.vocabularies');
 }
 
@@ -545,7 +546,9 @@ const getVocabularyObjectLoader =
  * @param maps.dictionary main vocabulary object map
  * @param maps.supportedVocabularies map of supported vocabularies
  * @param maps.upperCaseNameMap map with names in upperCase representation
- * @param includeCds flag indicating if CDS vocabularies should be loaded
+ * @param options options object
+ * @param options.includeCds flag indicating if CDS vocabularies should be loaded
+ * @param options.includeCdsAnalytics flag indicating if additional vocabularies for CDS analytics should be loaded
  * @returns loader function
  */
 const getVocabularyLoader =
@@ -557,7 +560,7 @@ const getVocabularyLoader =
             supportedVocabularies: Map<VocabularyNamespace, Vocabulary>;
             upperCaseNameMap: Map<string, string | Map<string, string>>;
         },
-        includeCds?: boolean
+        options: { includeCds?: boolean; includeCdsAnalytics?: boolean }
     ) =>
     /**
      * Vocabulary data loader for a specific namespace.
@@ -565,10 +568,14 @@ const getVocabularyLoader =
      * @param namespace namespace name
      */
     (namespace: VocabularyNamespace): void => {
+        const { includeCds, includeCdsAnalytics } = options;
         const { supportedVocabularies } = maps;
 
-        const isCdsNs = isCdsNamespace(namespace);
-        if (!includeCds && (namespace === CDS_VOCABULARY_NAMESPACE || isCdsNs)) {
+        const isCdsAnalyticsNs = isCdsAnalyticsNamespace(namespace);
+        if (!includeCds && (namespace === CDS_VOCABULARY_NAMESPACE || isCdsAnalyticsNs)) {
+            return;
+        }
+        if (!includeCdsAnalytics && isCdsAnalyticsNs) {
             return;
         }
         const alias = NAMESPACE_TO_ALIAS.get(namespace);
@@ -604,11 +611,18 @@ const getVocabularyLoader =
  * Loads vocabulary information.
  *
  * @param includeCds Flag indicating if CDS vocabularies should be loaded
+ * @param includeCdsAnalytics flag indicating if additional vocabularies for CDS analytics should be loaded
  * @returns Vocabularies
  */
-export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesInformation => {
+export const loadVocabulariesInformation = (
+    includeCds?: boolean,
+    includeCdsAnalytics?: boolean
+): VocabulariesInformation => {
     // try to use cache
-    const cacheKey = includeCds ? 'withCDS' : '';
+    let cacheKey = includeCds ? 'withCDS' : '';
+    if (includeCds && includeCdsAnalytics) {
+        cacheKey += 'IncludingAnalytics';
+    }
     const cachedData = vocabulariesInformationStatic.get(cacheKey);
     if (cachedData) {
         return cachedData;
@@ -622,8 +636,11 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
     const upperCaseNameMap: Map<string, string | Map<string, string>> = new Map();
 
     NAMESPACE_TO_ALIAS.forEach((alias, namespace) => {
-        const isCdsNs = isCdsNamespace(namespace);
+        const isCdsNs = isCdsAnalyticsNamespace(namespace);
         if (!includeCds && (alias === CDS_VOCABULARY_ALIAS || isCdsNs)) {
+            return;
+        }
+        if (!includeCdsAnalytics && isCdsNs) {
             return;
         }
         addToUpperCaseNameMap(upperCaseNameMap, alias);
@@ -633,7 +650,7 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
 
     const vocabularyLoader = getVocabularyLoader(
         { byTarget, derivedTypesPerType, dictionary, supportedVocabularies, upperCaseNameMap },
-        includeCds
+        { includeCds, includeCdsAnalytics }
     );
 
     for (const namespace of SUPPORTED_VOCABULARY_NAMESPACES) {
