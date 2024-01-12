@@ -112,4 +112,9 @@ describe('getVocabulary(CDS)', () => {
         // Expect
         expect(term).toEqual(expectedTerm);
     });
+
+    it('getVocabulary(com.sap.cap.vocabularies.ObjectModel)', () => {
+        // Expect
+        expect(vocabularyService.getVocabulary('com.sap.cds.vocabularies.ObjectModel')).toMatchSnapshot();
+    });
 });

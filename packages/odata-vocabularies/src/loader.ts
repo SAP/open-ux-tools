@@ -67,7 +67,9 @@ const SUPPORTED_VOCABULARY_NAMESPACES: Set<VocabularyNamespace> = new Set([
     'com.sap.vocabularies.Hierarchy.v1',
     'com.sap.vocabularies.Session.v1',
     'com.sap.vocabularies.UI.v1',
-    'com.sap.vocabularies.HTML5.v1'
+    'com.sap.vocabularies.HTML5.v1',
+    'com.sap.cds.vocabularies.ObjectModel',
+    'com.sap.cds.vocabularies.AnalyticsDetails'
 ]);
 
 const vocabulariesInformationStatic: Map<string, VocabulariesInformation> = new Map();
@@ -391,6 +393,15 @@ function parseSchemaElements(identifier: string, element: SchemaElement): Vocabu
 }
 
 /**
+ * Find out if namespace is cds specific
+ * @param namespace
+ * @returns boolean value
+ */
+function isCdsNamespace(namespace: string): boolean {
+    return namespace.startsWith('com.sap.cds.vocabularies');
+}
+
+/**
  * Appends name and property name to the given uppercase names map.
  *
  * @param upperCaseNameMap map where keys are names in uppercase and value is the original name itself or a map with properties names where keys are property names in uppercase and values are original property names
@@ -556,14 +567,15 @@ const getVocabularyLoader =
     (namespace: VocabularyNamespace): void => {
         const { supportedVocabularies } = maps;
 
-        if (!includeCds && namespace === CDS_VOCABULARY_NAMESPACE) {
+        const isCdsNs = isCdsNamespace(namespace);
+        if (!includeCds && (namespace === CDS_VOCABULARY_NAMESPACE || isCdsNs)) {
             return;
         }
         const alias = NAMESPACE_TO_ALIAS.get(namespace);
         if (!alias) {
             return;
         }
-        const document: CSDL = VOCABULARIES[alias];
+        const document: CSDL = VOCABULARIES[namespace];
         if (!document) {
             return;
         }
@@ -589,7 +601,7 @@ const getVocabularyLoader =
     };
 
 /**
- * Loads vocbulary information.
+ * Loads vocabulary information.
  *
  * @param includeCds Flag indicating if CDS vocabularies should be loaded
  * @returns Vocabularies
@@ -610,7 +622,8 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
     const upperCaseNameMap: Map<string, string | Map<string, string>> = new Map();
 
     NAMESPACE_TO_ALIAS.forEach((alias, namespace) => {
-        if (!includeCds && alias === CDS_VOCABULARY_ALIAS) {
+        const isCdsNs = isCdsNamespace(namespace);
+        if (!includeCds && (alias === CDS_VOCABULARY_ALIAS || isCdsNs)) {
             return;
         }
         addToUpperCaseNameMap(upperCaseNameMap, alias);
