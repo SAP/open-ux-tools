@@ -253,9 +253,8 @@ export async function enhanceConfigForSystem(
                 refreshToken: system.refreshToken,
                 refreshTokenChangedCb: tokenChangedCallback
             });
-            // sending a request to the backend to get cookies
+            // sending a request to the backend to get token
             await provider.getAtoInfo();
-            proxyOptions.headers['cookie'] = provider.cookies.toString();
         } else {
             throw new Error('Cannot connect to ABAP Environment on BTP without service keys.');
         }
