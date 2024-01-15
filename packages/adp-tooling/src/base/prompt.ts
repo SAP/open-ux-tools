@@ -12,6 +12,8 @@ export type PromptDefaults = {
     id?: string;
     reference?: string;
     url?: string;
+    client?: string;
+    ignoreCertErrors?: boolean;
     ft?: boolean;
     package?: string;
     transport?: string;
@@ -21,7 +23,7 @@ export type PromptDefaults = {
  * Prompt the user for the required properties for an adaptation project.
  *
  * @param defaults optional default values for the prompts
- * @param logger
+ * @param logger optional logger instance
  * @returns a configuration for the adp writer
  */
 export async function promptGeneratorInput(
@@ -40,47 +42,62 @@ export async function promptGeneratorInput(
             type: 'text',
             name: 'client',
             message: 'Client (optional):',
+            initial: defaults.client,
             validate: (input) => (input ? input.length < 4 : true)
         }
     ]);
-    const provider = await createAbapServiceProvider(target, {}, true, logger);
+    const provider = await createAbapServiceProvider(
+        target,
+        {
+            ignoreCertErrors: defaults.ignoreCertErrors
+        },
+        true,
+        logger
+    );
+    logger.info('Fetching system information...');
     const ato = await provider.getAtoInfo();
-    logger.info(ato);
+    const layer = ato.tenantType === 'SAP' ? 'VENDOR' : 'CUSTOMER_BASE';
+    logger.info(`Target layer: ${layer}`);
+    logger.info('Fetching list of available applications... (this can take a moment)');
+    const appIndex = await provider.getAppIndex();
+    const apps = (await appIndex.search(
+        {
+            'sap.ui/technology': 'UI5',
+            'sap.app/type': 'application'
+        },
+        'sap.app/id,sap.fiori/registrationIds,sap.app/title'.split(',')
+    )) as any[];
+
     const app = await prompts([
         {
-            type: 'select',
-            choices: [
-                { title: flexLayer.CUSTOMER_BASE, value: flexLayer.CUSTOMER_BASE },
-                { title: flexLayer.VENDOR, value: flexLayer.VENDOR }
-            ],
-            name: 'layer',
-            message: 'Flex layer:'
+            type: 'autocomplete',
+            name: 'reference',
+            message: 'Original application:',
+            initial: defaults.reference,
+            choices: apps.map((app) => ({
+                title: `${app['sap.app/title']} (${app['sap.fiori/registrationIds'].join(',')})`,
+                value: app['sap.app/id']
+            })),
+            suggest: (input, choices) => Promise.resolve(choices.filter((i) => i.title.includes(input)))
         },
         {
             type: 'text',
             name: 'id',
-            message: (_prev, values) => {
-                if (values.layer === flexLayer.CUSTOMER_BASE) {
-                    return 'New adaptation id (CUSTOMER_BASE selected, customer prefix will be automatically added to the id):';
+            message: (_prev) => {
+                if (ato.tenantType !== 'SAP') {
+                    return 'New adaptation id (prefix "customer" will be automatically added to the id):';
                 } else {
                     return 'New adaptation id:';
                 }
             },
             initial: defaults.id,
-            format: (input, values) => {
-                if (values.layer === flexLayer.CUSTOMER_BASE && !input.startsWith('customer.')) {
+            format: (input) => {
+                if (ato.tenantType !== 'SAP' && !input.startsWith('customer.')) {
                     return `customer.${input}`;
                 } else {
                     return input;
                 }
             },
-            validate: (input) => input?.length > 0
-        },
-        {
-            type: 'text',
-            name: 'reference',
-            message: 'Original application id:',
-            initial: defaults.reference,
             validate: (input) => input?.length > 0
         },
         {
@@ -113,5 +130,14 @@ export async function promptGeneratorInput(
             validate: (input) => input?.length > 0
         }
     ]);
-    return { app, target, options, deploy };
+
+    return {
+        app: {
+            ...app,
+            layer
+        },
+        target,
+        options,
+        deploy
+    };
 }
