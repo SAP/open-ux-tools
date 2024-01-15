@@ -38,7 +38,7 @@
     "devDependencies": {
         "@types/semver": "7.5.4",
         "mock-spawn": "0.2.6",
-        "nock": "11.9.1"
+        "nock": "13.4.0"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",

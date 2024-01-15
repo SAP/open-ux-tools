@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.9
+
+### Patch Changes
+
+-   70296b55: Remove label and icon in control property editor
+
 ## 0.4.8
 
 ### Patch Changes
