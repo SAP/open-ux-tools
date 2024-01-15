@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.11.23
+
+### Patch Changes
+
+-   70296b55: Remove label and icon in control property editor
+
 ## 0.11.22
 
 ### Patch Changes

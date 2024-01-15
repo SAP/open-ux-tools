@@ -196,20 +196,22 @@ export class FlpSandbox {
             },
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
+        const id = manifest['sap.app'].id;
         this.addApp(manifest, {
             componentId,
-            target: resources[componentId ?? manifest['sap.app'].id] ?? this.templateConfig.basePath,
+            target: resources[componentId ?? id] ?? this.templateConfig.basePath,
             local: '.',
             intent: this.config.intent
         });
         this.addStandardRoutes();
         if (this.rta) {
             this.rta.options ??= {};
-            this.rta.options.baseId = componentId ?? manifest['sap.app'].id;
+            this.rta.options.baseId = componentId ?? id;
+            this.rta.options.appName = id;
             this.addEditorRoutes(this.rta);
         }
         this.addRoutesForAdditionalApps();
-        this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
+        this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
 
@@ -258,14 +260,17 @@ export class FlpSandbox {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
                 this.router.get(editor.path, (_req: Request, res: Response) => {
+                    const scenario = rta.options?.scenario;
                     let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`;
-                    if (rta.options?.scenario === 'ADAPTATION_PROJECT') {
+                    if (scenario === 'ADAPTATION_PROJECT') {
                         templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
                     }
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
                     const html = render(template, {
                         previewUrl: templatePreviewUrl,
-                        telemetry: rta.options?.telemetry ?? false
+                        telemetry: rta.options?.telemetry ?? false,
+                        appName: rta.options?.appName,
+                        scenario
                     });
                     res.status(200).contentType('html').send(html);
                 });

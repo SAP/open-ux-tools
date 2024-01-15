@@ -17,6 +17,7 @@ import './Workarounds.scss';
 
 export interface AppProps {
     previewUrl: string;
+    scenario: Scenario;
 }
 
 /**
@@ -26,8 +27,11 @@ export interface AppProps {
  * @returns ReactElement
  */
 export default function App(appProps: AppProps): ReactElement {
-    const { previewUrl } = appProps;
-    const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
+    const { previewUrl, scenario } = appProps;
+
+    const { t } = useTranslation();
+    const dispatch = useAppDispatch();
+
     const isAdpProject = scenario === 'ADAPTATION_PROJECT';
 
     useEffect(() => {
@@ -38,8 +42,7 @@ export default function App(appProps: AppProps): ReactElement {
             sheet.cssRules.length
         );
     }, []);
-    const { t } = useTranslation();
-    const dispatch = useAppDispatch();
+
     const [hideWarningDialog, setHideWarningDialog] = useLocalStorage('hide-warning-dialog', false);
     const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => hideWarningDialog !== true);
 
