@@ -1,5 +1,7 @@
 import prompts from 'prompts';
 import type { AdpWriterConfig } from '../types';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { ToolsLogger } from '@sap-ux/logger';
 
 export const enum flexLayer {
     CUSTOMER_BASE = 'CUSTOMER_BASE',
@@ -19,9 +21,31 @@ export type PromptDefaults = {
  * Prompt the user for the required properties for an adaptation project.
  *
  * @param defaults optional default values for the prompts
+ * @param logger
  * @returns a configuration for the adp writer
  */
-export async function promptGeneratorInput(defaults: PromptDefaults = {}): Promise<AdpWriterConfig> {
+export async function promptGeneratorInput(
+    defaults: PromptDefaults = {},
+    logger = new ToolsLogger()
+): Promise<AdpWriterConfig> {
+    const target = await prompts([
+        {
+            type: 'text',
+            name: 'url',
+            message: 'Target system url:',
+            initial: defaults.url,
+            validate: (input) => input?.length > 0
+        },
+        {
+            type: 'text',
+            name: 'client',
+            message: 'Client (optional):',
+            validate: (input) => (input ? input.length < 4 : true)
+        }
+    ]);
+    const provider = await createAbapServiceProvider(target, {}, true, logger);
+    const ato = await provider.getAtoInfo();
+    logger.info(ato);
     const app = await prompts([
         {
             type: 'select',
@@ -63,21 +87,6 @@ export async function promptGeneratorInput(defaults: PromptDefaults = {}): Promi
             type: 'text',
             name: 'title',
             message: 'Application title:'
-        }
-    ]);
-    const target = await prompts([
-        {
-            type: 'text',
-            name: 'url',
-            message: 'Target system url:',
-            initial: defaults.url,
-            validate: (input) => input?.length > 0
-        },
-        {
-            type: 'text',
-            name: 'client',
-            message: 'Client (optional):',
-            validate: (input) => (input ? input.length < 4 : true)
         }
     ]);
     const deploy = await prompts([
