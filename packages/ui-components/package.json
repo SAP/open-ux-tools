@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "1.14.0",
+    "version": "1.14.1",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
@@ -68,7 +68,7 @@
         "enzyme": "3.11.0",
         "enzyme-adapter-react-16": "1.15.7",
         "eslint-plugin-react": "7.33.2",
-        "eslint-plugin-storybook": "0.6.13",
+        "eslint-plugin-storybook": "0.6.15",
         "jest-environment-jsdom": "29.6.4",
         "jest-scss-transform": "1.0.3",
         "npm-run-all": "4.1.5",
