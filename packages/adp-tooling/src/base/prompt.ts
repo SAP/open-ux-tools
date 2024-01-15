@@ -58,15 +58,15 @@ export async function promptGeneratorInput(
     const ato = await provider.getAtoInfo();
     const layer = ato.tenantType === 'SAP' ? 'VENDOR' : 'CUSTOMER_BASE';
     logger.info(`Target layer: ${layer}`);
-    logger.info('Fetching list of available applications... (this can take a moment)');
+    logger.info('Fetching list of available applications... (it can take a moment)');
     const appIndex = await provider.getAppIndex();
-    const apps = (await appIndex.search(
+    const apps = await appIndex.search(
         {
             'sap.ui/technology': 'UI5',
             'sap.app/type': 'application'
         },
-        'sap.app/id,sap.fiori/registrationIds,sap.app/title'.split(',')
-    )) as any[];
+        ['sap.app/id', 'sap.app/title', 'sap.fiori/registrationIds']
+    );
 
     const app = await prompts([
         {
@@ -75,7 +75,7 @@ export async function promptGeneratorInput(
             message: 'Original application:',
             initial: defaults.reference,
             choices: apps.map((app) => ({
-                title: `${app['sap.app/title']} (${app['sap.fiori/registrationIds'].join(',')})`,
+                title: `${app['sap.app/title']} (${(app['sap.fiori/registrationIds'] ?? []).join(',')})`,
                 value: app['sap.app/id']
             })),
             suggest: (input, choices) => Promise.resolve(choices.filter((i) => i.title.includes(input)))
