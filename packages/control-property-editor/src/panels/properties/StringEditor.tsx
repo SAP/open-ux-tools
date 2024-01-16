@@ -38,8 +38,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
     } = propertyInputProps;
     const [val, setValue] = useState(value);
     const icons = useSelector<RootState, IconDetails[]>((state) => state.icons);
-    const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
-    const isAdpProject = scenario === 'ADAPTATION_PROJECT';
+    const isAdpProject = useSelector<RootState, boolean>((state) => state.isAdpProject);
     useEffect(() => {
         setValue(value);
     }, [value]);

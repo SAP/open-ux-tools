@@ -34,6 +34,7 @@ interface SliceState {
     outline: OutlineNode[];
     filterQuery: FilterOptions[];
     scenario: Scenario;
+    isAdpProject: boolean;
     icons: IconDetails[];
     changes: ChangesSlice;
     dialogMessage: string | undefined;
@@ -97,6 +98,7 @@ export const initialState = {
     outline: [],
     filterQuery: filterInitOptions,
     scenario: scenario.UiAdaptation,
+    isAdpProject: false,
     icons: [],
     changes: {
         controls: {},
@@ -111,6 +113,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     reducers: {
         setProjectScenario: (state, action: PayloadAction<Scenario>) => {
             state.scenario = action.payload;
+            state.isAdpProject = action.payload === scenario.AdaptationProject
         }
     },
     extraReducers: (builder) =>
