@@ -108,6 +108,11 @@ export class VocabularyService {
      * @returns Vocabulary service instance
      */
     constructor(includeCds?: boolean, includeCdsAnalytics?: boolean) {
+        if (!includeCds && includeCdsAnalytics) {
+            throw new Error(
+                'Vocabulary service instantiation: invalid parameterization includeCds=false and includeCdsAnalytics=true'
+            );
+        }
         let vocabularyInformation = loadVocabulariesInformation(includeCds, includeCdsAnalytics);
         // add cds specific annotations (TextArrangement and Capabilities) on fly
         vocabularyInformation = includeCds
