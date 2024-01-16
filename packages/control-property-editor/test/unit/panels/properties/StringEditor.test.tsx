@@ -78,7 +78,7 @@ describe('StringEditor', () => {
 
         render(<StringEditor property={...props} controlId={controlId} />, {
             initialState: {
-                scenario: 'ADAPTATION_PROJECT'
+                isAdpProject: true
             }
         });
 
