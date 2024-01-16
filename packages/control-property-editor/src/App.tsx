@@ -32,7 +32,7 @@ export default function App(appProps: AppProps): ReactElement {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
 
-    const isAdpProject = useSelector<RootState, Boolean>((state) => state.isAdpProject);
+    const isAdpProject = useSelector<RootState, boolean>((state) => state.isAdpProject);
 
     useEffect(() => {
         const sheet = window.document.styleSheets[0];
