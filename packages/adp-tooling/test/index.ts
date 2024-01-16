@@ -1,9 +1,7 @@
 import { promptGeneratorInput } from '../src';
 
 promptGeneratorInput({
-    url: 'https://iccsrm.sap.com:44300',
-    client: '100',
-    ignoreCertErrors: true
+    url: 'https://ldciec1.devint.net.sap:44300'
 })
     .then((result) => console.info(result))
     .catch((e) => console.error(e));

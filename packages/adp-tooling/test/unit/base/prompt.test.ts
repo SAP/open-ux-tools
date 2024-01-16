@@ -1,12 +1,35 @@
 import prompts from 'prompts';
-import { flexLayer, promptGeneratorInput } from '../../../src/base/prompt';
+import { promptGeneratorInput } from '../../../src/base/prompt';
+import nock from 'nock';
 
 describe('base/prompts', () => {
+    const url = 'http://sap.example';
+    beforeAll(() => {
+        nock.disableNetConnect();
+        nock(url)
+            .get((uri) => uri.startsWith('/sap/bc/ui2/app_index'))
+            .reply(200, {
+                results: [
+                    {
+                        'sap.app/id': 'the.original.app',
+                        'sap.app/title': 'My Title',
+                        'sap.fiori/registrationIds': ['TEST']
+                    }
+                ]
+            })
+            .persist();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
     describe('promptGeneratorInput', () => {
         const defaults = {
             id: 'my.id',
             reference: 'the.original.app',
-            url: 'http://sap.example',
+            url,
             package: 'TESTPACKAGE',
             transport: 'TESTTRANSPORT'
         };
@@ -16,8 +39,9 @@ describe('base/prompts', () => {
             const config = await promptGeneratorInput(defaults);
             expect(config).toEqual({
                 app: {
-                    id: defaults.id,
-                    reference: defaults.reference
+                    id: `customer.${defaults.id}`,
+                    reference: defaults.reference,
+                    layer: 'CUSTOMER_BASE'
                 },
                 target: {
                     url: defaults.url
@@ -34,12 +58,13 @@ describe('base/prompts', () => {
 
         test('prompt everything', async () => {
             prompts.inject([
-                flexLayer.VENDOR,
-                defaults.id,
-                defaults.reference,
-                'My Title',
                 defaults.url,
                 undefined,
+                undefined,
+                undefined,
+                defaults.reference,
+                defaults.id,
+                'My Title',
                 defaults.package,
                 defaults.transport,
                 false
@@ -47,12 +72,13 @@ describe('base/prompts', () => {
             const config = await promptGeneratorInput();
             expect(config).toEqual({
                 app: {
-                    id: defaults.id,
-                    layer: flexLayer.VENDOR,
+                    id: `customer.${defaults.id}`,
                     reference: defaults.reference,
+                    layer: 'CUSTOMER_BASE',
                     title: 'My Title'
                 },
                 target: {
+                    client: undefined,
                     url: defaults.url
                 },
                 deploy: {

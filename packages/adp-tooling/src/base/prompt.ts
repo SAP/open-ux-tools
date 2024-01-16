@@ -2,11 +2,8 @@ import prompts from 'prompts';
 import type { AdpWriterConfig } from '../types';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { ToolsLogger } from '@sap-ux/logger';
-
-export const enum flexLayer {
-    CUSTOMER_BASE = 'CUSTOMER_BASE',
-    VENDOR = 'VENDOR'
-}
+import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { AppIndex } from '@sap-ux/axios-extension';
 
 export type PromptDefaults = {
     id?: string;
@@ -30,44 +27,7 @@ export async function promptGeneratorInput(
     defaults: PromptDefaults = {},
     logger = new ToolsLogger()
 ): Promise<AdpWriterConfig> {
-    const target = await prompts([
-        {
-            type: 'text',
-            name: 'url',
-            message: 'Target system url:',
-            initial: defaults.url,
-            validate: (input) => input?.length > 0
-        },
-        {
-            type: 'text',
-            name: 'client',
-            message: 'Client (optional):',
-            initial: defaults.client,
-            validate: (input) => (input ? input.length < 4 : true)
-        }
-    ]);
-    const provider = await createAbapServiceProvider(
-        target,
-        {
-            ignoreCertErrors: defaults.ignoreCertErrors
-        },
-        true,
-        logger
-    );
-    logger.info('Fetching system information...');
-    const ato = await provider.getAtoInfo();
-    const layer = ato.tenantType === 'SAP' ? 'VENDOR' : 'CUSTOMER_BASE';
-    logger.info(`Target layer: ${layer}`);
-    logger.info('Fetching list of available applications... (it can take a moment)');
-    const appIndex = await provider.getAppIndex();
-    const apps = await appIndex.search(
-        {
-            'sap.ui/technology': 'UI5',
-            'sap.app/type': 'application'
-        },
-        ['sap.app/id', 'sap.app/title', 'sap.fiori/registrationIds']
-    );
-
+    const { target, apps, layer } = await promptTarget(defaults, logger);
     const app = await prompts([
         {
             type: 'autocomplete',
@@ -84,7 +44,7 @@ export async function promptGeneratorInput(
             type: 'text',
             name: 'id',
             message: (_prev) => {
-                if (ato.tenantType !== 'SAP') {
+                if (layer === 'CUSTOMER_BASE') {
                     return 'New adaptation id (prefix "customer" will be automatically added to the id):';
                 } else {
                     return 'New adaptation id:';
@@ -92,7 +52,7 @@ export async function promptGeneratorInput(
             },
             initial: defaults.id,
             format: (input) => {
-                if (ato.tenantType !== 'SAP' && !input.startsWith('customer.')) {
+                if (layer === 'CUSTOMER_BASE' && !input.startsWith('customer.')) {
                     return `customer.${input}`;
                 } else {
                     return input;
@@ -140,4 +100,93 @@ export async function promptGeneratorInput(
         options,
         deploy
     };
+}
+
+/**
+ * Prompt the user for the target system.
+ *
+ * @param defaults default values for the prompts
+ * @param logger logger instance
+ * @returns apps, layer, target url and client
+ */
+export async function promptTarget(
+    defaults: PromptDefaults,
+    logger = new ToolsLogger()
+): Promise<{ apps: AppIndex; layer: UI5FlexLayer; target: any }> {
+    let count = 0;
+    while (count < 3) {
+        try {
+            count++;
+            const target = await prompts([
+                {
+                    type: 'text',
+                    name: 'url',
+                    message: 'Target system url:',
+                    initial: defaults.url,
+                    validate: (input) => input?.length > 0
+                },
+                {
+                    type: 'text',
+                    name: 'client',
+                    message: 'Client (optional):',
+                    initial: defaults.client,
+                    validate: (input) => (input ? input.length < 4 : true)
+                }
+            ]);
+            const systemInfo = await fetchSystemInformation(target, defaults.ignoreCertErrors, logger);
+            return { target, ...systemInfo };
+        } catch (error) {
+            logger.error('Error while fetching system information. Please check your input.');
+            logger.debug(error.message);
+            if (error.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY') {
+                logger.error('If you are using a self-signed certificate, please use the --ignore-cert-errors flag.');
+                const confirm = await prompts([
+                    {
+                        type: 'confirm',
+                        name: 'ignoreCertErrors',
+                        message: 'Do you want to ignore certificate errors?'
+                    }
+                ]);
+                defaults.ignoreCertErrors = confirm.ignoreCertErrors;
+            }
+        }
+    }
+    throw new Error('Unable to fetch system information.');
+}
+
+/**
+ * Fetches the system information from the target system.
+ *
+ * @param target target system
+ * @param ignoreCertErrors ignore certificate errors
+ * @param logger logger instance
+ * @returns app index and layer
+ */
+async function fetchSystemInformation(
+    target: prompts.Answers<'url' | 'client'>,
+    ignoreCertErrors: boolean | undefined,
+    logger: ToolsLogger
+): Promise<{ apps: AppIndex; layer: UI5FlexLayer }> {
+    const provider = await createAbapServiceProvider(
+        target,
+        {
+            ignoreCertErrors
+        },
+        true,
+        logger
+    );
+    logger.info('Fetching system information...');
+    const ato = await provider.getAtoInfo();
+    const layer = ato.tenantType === 'SAP' ? 'VENDOR' : 'CUSTOMER_BASE';
+    logger.info(`Target layer: ${layer}`);
+    logger.info('Fetching list of available applications... (it can take a moment)');
+    const appIndex = await provider.getAppIndex();
+    const apps = await appIndex.search(
+        {
+            'sap.ui/technology': 'UI5',
+            'sap.app/type': 'application'
+        },
+        ['sap.app/id', 'sap.app/title', 'sap.fiori/registrationIds']
+    );
+    return { apps, layer };
 }
