@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.8.0
+
+### Minor Changes
+
+-   62232236: Use token for connecting to ABAP Cloud
+
 ## 1.7.3
 
 ### Patch Changes
