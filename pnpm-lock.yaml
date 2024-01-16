@@ -1171,6 +1171,9 @@ importers:
       '@types/express':
         specifier: 4.17.17
         version: 4.17.17
+      '@types/fb-watchman':
+        specifier: 2.0.4
+        version: 2.0.4
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4
@@ -1183,6 +1186,9 @@ importers:
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
+      fb-watchman:
+        specifier: 2.0.2
+        version: 2.0.2
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -1192,6 +1198,9 @@ importers:
       supertest:
         specifier: 6.3.3
         version: 6.3.3
+      ws:
+        specifier: 8.16.0
+        version: 8.16.0
 
   packages/preview-middleware-client:
     devDependencies:
@@ -7465,7 +7474,7 @@ packages:
       util: 0.12.5
       util-deprecate: 1.0.2
       watchpack: 2.4.0
-      ws: 8.13.0
+      ws: 8.16.0
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -8201,6 +8210,12 @@ packages:
       '@types/express-serve-static-core': 4.17.35
       '@types/qs': 6.9.1
       '@types/serve-static': 1.13.10
+
+  /@types/fb-watchman@2.0.4:
+    resolution: {integrity: sha512-h7yAQ5Sf96PdZz+sfDDl6Hscl/JqsVXadjF6YHmJeWviziDCGQtqUQUDS2tYjfD/eTzhfZwNfwcfb91a4PaZKQ==}
+    dependencies:
+      '@types/node': 18.11.9
+    dev: true
 
   /@types/find-cache-dir@3.2.1:
     resolution: {integrity: sha512-frsJrz2t/CeGifcu/6uRo4b+SzAwT4NYCVPu1GN8IB9XTzrpPkGuV0tmh9mN+/L0PklAlsC3u5Fxt0ju00LXIw==}
@@ -12966,8 +12981,8 @@ packages:
     dependencies:
       reusify: 1.0.4
 
-  /fb-watchman@2.0.1:
-    resolution: {integrity: sha512-DkPJKQeY6kKwmuMretBhr7G6Vodr7bFwDYTXIkfG1gjvNpaxBTQV3PbXg6bR1c1UP4jPOX0jHUbbHANL9vRjVg==}
+  /fb-watchman@2.0.2:
+    resolution: {integrity: sha512-p5161BqbuCaSnB8jIbzQHOlpgsPmK5rJVDfDKO91Axs5NC1uu3HRQm6wt9cd9/+GtQQIO53JdGXXoyDpTAsgYA==}
     dependencies:
       bser: 2.1.1
     dev: true
@@ -14992,7 +15007,7 @@ packages:
       '@types/graceful-fs': 4.1.5
       '@types/node': 18.11.9
       anymatch: 3.1.2
-      fb-watchman: 2.0.1
+      fb-watchman: 2.0.2
       graceful-fs: 4.2.11
       jest-regex-util: 29.4.3
       jest-util: 29.6.3
@@ -15413,7 +15428,7 @@ packages:
       whatwg-encoding: 2.0.0
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
-      ws: 8.13.0
+      ws: 8.16.0
       xml-name-validator: 4.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -20971,6 +20986,20 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: false
+
+  /ws@8.16.0:
+    resolution: {integrity: sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: true
 
   /xdg-basedir@5.1.0:
     resolution: {integrity: sha512-GCPAHLvrIH13+c0SuacwvRYj2SxJXQ4kaVTT5xgL3kPrz56XxkF21IGhjSE1+W0aw7gpBWRGXLCPnPby6lSpmQ==}

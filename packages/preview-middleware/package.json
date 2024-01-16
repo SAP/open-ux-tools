@@ -51,6 +51,7 @@
         "@sap-ux/store": "workspace:*",
         "@types/ejs": "3.1.2",
         "@types/express": "4.17.17",
+        "@types/fb-watchman": "2.0.4",
         "@types/prompts": "2.4.4",
         "@types/supertest": "2.0.12",
         "copyfiles": "2.4.1",
@@ -58,7 +59,9 @@
         "nock": "13.4.0",
         "supertest": "6.3.3",
         "@sap-ux-private/playwright": "0.0.1",
-        "dotenv": "16.3.1"
+        "dotenv": "16.3.1",
+        "fb-watchman": "2.0.2",
+        "ws": "8.16.0"
     },
     "peerDependencies": {
         "express": "4"

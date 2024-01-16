@@ -10,6 +10,8 @@ import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import { FileWatcher } from './watcher';
+import { sockets } from './ws-server';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -139,6 +141,7 @@ export class FlpSandbox {
     public readonly config: FlpConfig;
     public readonly rta?: RtaConfig;
     public readonly router: EnhancedRouter;
+    private fileWatcher?: FileWatcher;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -259,6 +262,16 @@ export class FlpSandbox {
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
+                // Call the setupWatchman function with the project path and a callback function
+                this.fileWatcher ??= new FileWatcher(
+                    `${this.utils.getProject().getRootPath()}/webapp`,
+                    (changedFiles) => {
+                        // Use the changed file names as needed
+                        sockets.forEach((socket: any) => {
+                            socket.send(changedFiles.join(','));
+                        });
+                    }
+                );
                 this.router.get(editor.path, (_req: Request, res: Response) => {
                     const scenario = rta.options?.scenario;
                     let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`;
@@ -358,7 +371,8 @@ export class FlpSandbox {
                 const { success, message } = writeChange(
                     req.body,
                     this.utils.getProject().getSourcePath(),
-                    this.logger
+                    this.logger,
+                    this.fileWatcher
                 );
                 if (success) {
                     res.status(200).send(message);
@@ -374,7 +388,8 @@ export class FlpSandbox {
                 const { success, message } = deleteChange(
                     req.body,
                     this.utils.getProject().getSourcePath(),
-                    this.logger
+                    this.logger,
+                    this.fileWatcher
                 );
                 if (success) {
                     res.status(200).send(message);

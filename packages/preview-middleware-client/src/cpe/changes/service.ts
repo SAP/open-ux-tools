@@ -9,7 +9,8 @@ import {
     changeStackModified,
     deletePropertyChanges,
     propertyChangeFailed,
-    FlexChangesEndPoints
+    FlexChangesEndPoints,
+    reloadApplication
 } from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
 import type { SelectionService } from '../selection';
@@ -127,12 +128,18 @@ export class ChangeService {
                 }
             } else if (deletePropertyChanges.match(action)) {
                 await this.deleteChange(action.payload.controlId, action.payload.propertyName, action.payload.fileName);
+            } else if (reloadApplication.match(action)) {
+                console.log('reload action is matched.....');
+
+                await this.options.rta.stop(false, false);
             }
         });
 
         await this.fetchSavedChanges();
         this.updateStack();
-
+        this.options.rta.attachStop(() => {
+            location.reload();
+        });
         this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
     }
 

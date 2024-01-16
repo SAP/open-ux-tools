@@ -1,0 +1,16 @@
+.text {
+    color: var(--vscode-editor-foreground);
+}
+.textLink {
+    color: var(--vscode-editor-foreground);
+}
+.text {
+    margin-left: 15px;
+    margin-right: 5px;
+    line-height: 18px;
+    display: inline-block;
+}
+
+.changeType {
+    overflow-wrap: anywhere;
+}

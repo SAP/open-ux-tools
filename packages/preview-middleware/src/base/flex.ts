@@ -2,6 +2,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'fs';
 import { join, parse } from 'path';
+import type { FileWatcher } from './watcher';
 
 /**
  * Structure of a flex change.
@@ -73,12 +74,14 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
  * @param data.fileType file type that is required
  * @param webappPath path to the webapp folder
  * @param logger logger instance
+ * @param fileWatcher
  * @returns object with success flag and optional message
  */
 export function writeChange(
     data: object & { fileName?: string; fileType?: string },
     webappPath: string,
-    logger: Logger
+    logger: Logger,
+    fileWatcher?: FileWatcher
 ): { success: boolean; message?: string } {
     const fileName = data.fileName;
     const fileType = data.fileType;
@@ -89,6 +92,9 @@ export function writeChange(
             mkdirSync(path);
         }
         const filePath = join(path, fileName + '.' + fileType);
+        if (fileWatcher) {
+            fileWatcher.addIgnorePath(filePath);
+        }
         writeFileSync(filePath, JSON.stringify(data, null, 2));
         const message = `FILE_CREATED ${fileName}.${fileType}`;
         return { success: true, message };
@@ -104,12 +110,14 @@ export function writeChange(
  * @param data.fileName file name that is required for a valid change
  * @param webappPath path to the webapp folder
  * @param logger logger instance
+ * @param fileWatcher
  * @returns object with success flag and optional message
  */
 export function deleteChange(
     data: object & { fileName?: string },
     webappPath: string,
-    logger: Logger
+    logger: Logger,
+    fileWatcher?: FileWatcher
 ): { success: boolean; message?: string } {
     const fileName = data.fileName?.replace('sap.ui.fl.', '');
     if (fileName) {
@@ -120,6 +128,10 @@ export function deleteChange(
             if (file) {
                 logger.debug(`Write change ${file}`);
                 const filePath = join(path, file);
+
+                if (fileWatcher) {
+                    fileWatcher.addIgnorePath(filePath);
+                }
                 unlinkSync(filePath);
                 return { success: true, message: `FILE_DELETED ${file}` };
             }

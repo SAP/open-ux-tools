@@ -175,6 +175,8 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getRootControlInstance: () => {
             getManifest(): Manifest;
         } & Component;
+        stop: (bSkipSave, bSkipRestart) => Promise<void>;
+        attachStop: (handler: (event: Event) => void) => void;
     }
 
     export default RuntimeAuthoring;

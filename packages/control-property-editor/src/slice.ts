@@ -18,7 +18,8 @@ import {
     propertyChanged,
     propertyChangeFailed,
     showMessage,
-    scenario
+    scenario,
+    reloadApplication
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -89,7 +90,7 @@ export const changePreviewScale = createAction<number>('app/change-preview-scale
 export const changePreviewScaleMode = createAction<'fit' | 'fixed'>('app/change-preview-scale-mode');
 export const changeDeviceType = createAction<DeviceType>('app/change-device-type');
 export const filterNodes = createAction<FilterOptions[]>('app/filter-nodes');
-
+export const fileChanged = createAction<string[]>('app/file-changed');
 export const initialState = {
     deviceType: DeviceType.Desktop,
     scale: 1.0,
@@ -224,6 +225,12 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             })
             .addMatcher(showMessage.match, (state, action: ReturnType<typeof showMessage>): void => {
                 state.dialogMessage = action.payload;
+            })
+            .addMatcher(fileChanged.match, (state, action: ReturnType<typeof fileChanged>): void => {
+                state.fileChange = action.payload;
+            })
+            .addMatcher(reloadApplication.match, (state): void => {
+                state.fileChange = [];
             })
 });
 

@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Text } from '@fluentui/react';
+import { Text, Icon } from '@fluentui/react';
 import { UISearchBox } from '@sap-ux/ui-components';
 
 import type { ChangesSlice } from '../../slice';
@@ -16,6 +16,7 @@ import { ChangeStack } from './ChangeStack';
 import { ChangeStackHeader } from './ChangeStackHeader';
 
 import styles from './ChangesPanel.module.scss';
+import { FileChange } from './FileChange';
 
 export interface ChangeProps {
     controlId: string;
@@ -42,6 +43,7 @@ export function ChangesPanel(): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { pending, saved } = useSelector<RootState, ChangesSlice>((state) => state.changes);
+    const fileChanges = useSelector<RootState, string[]>((state) => state.fileChange);
     const onFilterChange = (
         event?: React.ChangeEvent<HTMLInputElement> | undefined,
         filterValue?: string | undefined
@@ -61,6 +63,30 @@ export function ChangesPanel(): ReactElement {
         }
         return (
             <>
+                {fileChanges && fileChanges.length > 0 && (
+                    <>
+                        <Separator />
+                        <Icon
+                            iconName="Info"
+                            title={pending?.length ? 'Save and reload' : 'Reload'}
+                            className={styles.infoIcon}
+                        />
+                        <ChangeStackHeader
+                            backgroundColor="var(--vscode-sideBar-background);"
+                            color="var(--vscode-editor-foreground)"
+                            text={t('EXTERNAL_CHANGES_DETECTED')}
+                        />
+                        <Separator />
+                        {fileChanges.map((fileName, index) => (
+                            <FileChange
+                                key={index}
+                                fileName={fileName}
+                                hasUnsavedChanges={pending?.length ? true : false}
+                            />
+                        ))}
+                    </>
+                )}
+
                 {pending.length > 0 && (
                     <>
                         <Separator />

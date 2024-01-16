@@ -63,6 +63,7 @@
   "FILTER": "Filter",
   "CHANGE_SUMMARY_SAVED_CHANGES": "SAVED CHANGES",
   "CHANGE_SUMMARY_UNSAVED_CHANGES": "UNSAVED CHANGES",
+  "EXTERNAL_CHANGES_DETECTED": "External changes detected!",
   "CONFIRM_CHANGE_SUMMARY_DELETE_SUBTEXT": "Are you sure you want to delete the change for this property? This action cannot be undone.",
   "CONFIRM_OTHER_CHANGE_DELETE_SUBTEXT": "Are you sure you want to delete this {{name}} change? This action cannot be undone.",
   "NO_CONTROL_CHANGES_FOUND": "No Control Changes Found",
