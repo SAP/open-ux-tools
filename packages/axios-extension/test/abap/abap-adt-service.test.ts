@@ -388,7 +388,7 @@ describe('Use existing connection session', () => {
         const provider = createForAbapOnCloud(cloneObj as any);
         expect(await provider.isS4Cloud()).toBe(true);
         expect(await provider.user()).toBe('emailTest');
-        expect(Uaa.prototype.getAccessToken).toBeCalledTimes(2);
+        expect(Uaa.prototype.getAccessToken).toBeCalledTimes(3);
         expect(Uaa.prototype.getAccessTokenWithClientCredentials).toBeCalledTimes(0);
     });
 
