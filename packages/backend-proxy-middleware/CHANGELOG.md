@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.7.8
+
+### Patch Changes
+
+-   10ad4b51: Use token in backend-proxy-middleware when connecting to abap cloud
+
 ## 0.7.7
 
 ### Patch Changes
