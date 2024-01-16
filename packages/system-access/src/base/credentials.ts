@@ -3,7 +3,7 @@ import { getService, BackendSystemKey, BackendSystem } from '@sap-ux/store';
 import type { UrlAbapTarget } from '../types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import prompts from 'prompts';
-import { questions } from './prompts';
+import { questions } from './basePrompts';
 
 export type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
 export type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name' | 'refreshToken'>>;

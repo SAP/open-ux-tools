@@ -1,5 +1,6 @@
 import { UI5_DEFAULT } from '@sap-ux/ui5-config';
-import { mergeUi5, defaultUI5Libs, mergeApp, getSpecTagVersion } from '../src/data/defaults';
+import { mergeUi5, mergeApp, getSpecTagVersion } from '../src/data/defaults';
+import { defaultUI5Libs } from '../src/data/ui5Libs';
 import { mergeWithDefaults } from '../src/data/index';
 import type { App, UI5, Ui5App } from '../src/types';
 

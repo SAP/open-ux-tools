@@ -21,6 +21,7 @@
     "scripts": {
         "clean": "rimraf --glob dist coverage *.tsbuildinfo storybook",
         "build": "npm-run-all -l -p build:extension build:copyfiles build:storybook",
+        "madge": "madge --warning --circular --extensions ts ./",
         "build:extension": "tsc --build --pretty",
         "build:copyfiles": "copyfiles --up 1 \"./src/**/*.scss\" ./dist/",
         "lint": "eslint . --ext .ts,.tsx",

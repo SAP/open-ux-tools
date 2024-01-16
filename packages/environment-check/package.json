@@ -11,6 +11,7 @@
     "scripts": {
         "test:bin": "./bin/envcheck",
         "build": "tsc --build",
+        "madge": "madge --warning --circular --extensions ts ./",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "lint": "eslint . --ext .ts",

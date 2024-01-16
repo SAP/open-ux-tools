@@ -8,6 +8,7 @@
     "scripts": {
         "start": "node -r dotenv/config dist/index.js dotenv_config_path=./.env/env.properties",
         "build": "pnpm clean && tsc",
+        "madge": "madge --warning --circular --extensions ts ./",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist coverage tsconfig.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../../.prettierignore",
