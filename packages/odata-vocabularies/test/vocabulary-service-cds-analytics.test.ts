@@ -24,6 +24,8 @@ describe('getVocabulary(CDS with analytics)', () => {
             error = e;
         }
         // Expect
-        expect(error?.message).toMatchInlineSnapshot(`"Vocabulary service instantiation: invalid parameterization includeCds=false and includeCdsAnalytics=true"`);
+        expect(error?.message).toMatchInlineSnapshot(
+            `"Vocabulary service instantiation: invalid parameterization includeCds=false and includeCdsAnalytics=true"`
+        );
     });
 });
