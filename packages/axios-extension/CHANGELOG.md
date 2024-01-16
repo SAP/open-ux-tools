@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.8.1
+
+### Patch Changes
+
+-   3000e8f4: adds additional log for deployment
+
 ## 1.8.0
 
 ### Minor Changes
