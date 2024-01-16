@@ -113,7 +113,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     reducers: {
         setProjectScenario: (state, action: PayloadAction<Scenario>) => {
             state.scenario = action.payload;
-            state.isAdpProject = action.payload === scenario.AdaptationProject
+            state.isAdpProject = action.payload === scenario.AdaptationProject;
         }
     },
     extraReducers: (builder) =>
