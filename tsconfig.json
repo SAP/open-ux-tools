@@ -114,6 +114,9 @@
       "path": "packages/system-access"
     },
     {
+      "path": "packages/telemetry"
+    },
+    {
       "path": "packages/ui-components"
     },
     {
