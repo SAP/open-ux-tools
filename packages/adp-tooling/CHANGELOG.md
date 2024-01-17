@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.8.0
+
+### Minor Changes
+
+-   349fff1a: Connect to the backend during prompting to determine the layer and offer available apps
+
 ## 0.7.4
 
 ### Patch Changes
