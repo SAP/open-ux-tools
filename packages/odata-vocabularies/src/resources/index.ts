@@ -85,7 +85,7 @@ export type OasisVocabularyAlias =
     | 'Repeatability'
     | 'Temporal'
     | 'Validation'
-    | 'ODataJSON';
+    | 'JSON';
 
 export type CdsVocabularyAlias = 'ObjectModel' | 'AnalyticsDetails';
 
@@ -101,7 +101,7 @@ export const NAMESPACE_TO_ALIAS: Map<VocabularyNamespace, VocabularyAlias> = new
     ['Org.OData.Repeatability.V1', 'Repeatability'],
     ['Org.OData.Temporal.V1', 'Temporal'],
     ['Org.OData.Validation.V1', 'Validation'],
-    ['Org.OData.JSON.V1', 'ODataJSON'],
+    ['Org.OData.JSON.V1', 'JSON'],
     ['com.sap.vocabularies.Analytics.v1', 'Analytics'],
     ['com.sap.vocabularies.CDS.v1', 'CDS'],
     ['com.sap.vocabularies.CodeList.v1', 'CodeList'],
@@ -130,7 +130,7 @@ export const ALIAS_TO_NAMESPACE: Map<VocabularyAlias, VocabularyNamespace> = new
     ['Repeatability', 'Org.OData.Repeatability.V1'],
     ['Temporal', 'Org.OData.Temporal.V1'],
     ['Validation', 'Org.OData.Validation.V1'],
-    ['ODataJSON', 'Org.OData.JSON.V1'],
+    ['JSON', 'Org.OData.JSON.V1'],
     ['Analytics', 'com.sap.vocabularies.Analytics.v1'],
     ['CDS', 'com.sap.vocabularies.CDS.v1'],
     ['CodeList', 'com.sap.vocabularies.CodeList.v1'],
