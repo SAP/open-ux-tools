@@ -1,5 +1,6 @@
-import prompts from 'prompts';
+import prompts, { type Answers } from 'prompts';
 import type { AdpWriterConfig } from '../types';
+import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
@@ -112,24 +113,25 @@ export async function promptGeneratorInput(
 export async function promptTarget(
     defaults: PromptDefaults,
     logger = new ToolsLogger()
-): Promise<{ apps: AppIndex; layer: UI5FlexLayer; target: any }> {
+): Promise<{ apps: AppIndex; layer: UI5FlexLayer; target: AbapTarget }> {
     let count = 0;
+    let target: Answers<'url' | 'client'> = { url: defaults.url, client: defaults.client };
     while (count < 3) {
         try {
             count++;
-            const target = await prompts([
+            target = await prompts([
                 {
                     type: 'text',
                     name: 'url',
                     message: 'Target system url:',
-                    initial: defaults.url,
+                    initial: target.url,
                     validate: (input) => input?.length > 0
                 },
                 {
                     type: 'text',
                     name: 'client',
                     message: 'Client (optional):',
-                    initial: defaults.client,
+                    initial: target.client,
                     validate: (input) => (input ? input.length < 4 : true)
                 }
             ]);

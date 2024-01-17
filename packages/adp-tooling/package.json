@@ -23,8 +23,7 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors --testPathPattern=test/unit",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
-        "unlink": "pnpm unlink --global",
-        "prompt": "ts-node test"
+        "unlink": "pnpm unlink --global"
     },
     "files": [
         "LICENSE",
@@ -60,8 +59,7 @@
         "dotenv": "16.3.1",
         "nock": "13.4.0",
         "rimraf": "5.0.1",
-        "supertest": "6.3.3",
-        "ts-node": "10.9.2"
+        "supertest": "6.3.3"
     },
     "peerDependencies": {
         "express": "4"
