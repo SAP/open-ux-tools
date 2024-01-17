@@ -468,7 +468,7 @@ html[data-theme='light'] {
     --vscode-foreground: #616161;
     --vscode-errorForeground: #a1260d;
     --vscode-descriptionForeground: #717171;
-    --vscode-icon-foreground: #424242;
+    --vscode-icon-foreground: #ffffff;
     --vscode-focusBorder: #0090f1;
     --vscode-textSeparator-foreground: rgba(0, 0, 0, 0.18);
     --vscode-textLink-foreground: #006ab1;
