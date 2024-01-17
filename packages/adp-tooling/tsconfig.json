@@ -9,10 +9,6 @@
         "rootDir": "src",
         "outDir": "dist"
     },
-    "ts-node": {
-        "transpileOnly": true,
-        "files": true
-      },
     "references": [
         {
             "path": "../axios-extension"
