@@ -1,5 +1,11 @@
 # @sap-ux/odata-vocabularies
 
+## 0.3.1
+
+### Patch Changes
+
+-   2f1f8366: fix(odata-vocabularies): replace alias ODataJSON with JSON
+
 ## 0.3.0
 
 ### Minor Changes
