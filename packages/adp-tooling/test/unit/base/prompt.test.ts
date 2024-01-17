@@ -14,6 +14,10 @@ const testApps = [
         'sap.app/id': 'the.original.app',
         'sap.app/title': 'My Title',
         'sap.fiori/registrationIds': ['TEST']
+    },
+    {
+        'sap.app/id': 'another.original.app',
+        'sap.app/title': 'My Title'
     }
 ];
 jest.mock('@sap-ux/system-access', () => {
@@ -43,13 +47,7 @@ describe('base/prompts', () => {
             const { target, apps, layer } = await promptTarget({}, logger);
             expect(layer).toEqual('CUSTOMER_BASE');
             expect(target).toEqual({ url });
-            expect(apps).toEqual([
-                {
-                    'sap.app/id': 'the.original.app',
-                    'sap.app/title': 'My Title',
-                    'sap.fiori/registrationIds': ['TEST']
-                }
-            ]);
+            expect(apps).toEqual(testApps);
         });
 
         test('invalid target', async () => {

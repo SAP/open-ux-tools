@@ -2,9 +2,10 @@ import prompts, { type Answers } from 'prompts';
 import type { AdpWriterConfig } from '../types';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import { ToolsLogger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { AppIndex } from '@sap-ux/axios-extension';
+import { isNotEmptyString, isValidSapClient } from './helper';
 
 export type PromptDefaults = {
     id?: string;
@@ -25,9 +26,10 @@ export type PromptDefaults = {
  * @returns a configuration for the adp writer
  */
 export async function promptGeneratorInput(
-    defaults: PromptDefaults = {},
-    logger = new ToolsLogger()
+    defaults: PromptDefaults | undefined,
+    logger: Logger
 ): Promise<AdpWriterConfig> {
+    defaults = defaults ?? {};
     const { target, apps, layer } = await promptTarget(defaults, logger);
     const app = await prompts([
         {
@@ -112,7 +114,7 @@ export async function promptGeneratorInput(
  */
 export async function promptTarget(
     defaults: PromptDefaults,
-    logger = new ToolsLogger()
+    logger: Logger
 ): Promise<{ apps: AppIndex; layer: UI5FlexLayer; target: AbapTarget }> {
     let count = 0;
     let target: Answers<'url' | 'client'> = { url: defaults.url, client: defaults.client };
@@ -125,14 +127,15 @@ export async function promptTarget(
                     name: 'url',
                     message: 'Target system url:',
                     initial: target.url,
-                    validate: (input) => input?.length > 0
+                    validate: isNotEmptyString,
+                    format: (input) => input.trim()
                 },
                 {
                     type: 'text',
                     name: 'client',
                     message: 'Client (optional):',
                     initial: target.client,
-                    validate: (input) => (input ? input.length < 4 : true)
+                    validate: isValidSapClient
                 }
             ]);
             const systemInfo = await fetchSystemInformation(target, defaults.ignoreCertErrors, logger);
@@ -167,7 +170,7 @@ export async function promptTarget(
 async function fetchSystemInformation(
     target: prompts.Answers<'url' | 'client'>,
     ignoreCertErrors: boolean | undefined,
-    logger: ToolsLogger
+    logger: Logger
 ): Promise<{ apps: AppIndex; layer: UI5FlexLayer }> {
     const provider = await createAbapServiceProvider(
         target,
