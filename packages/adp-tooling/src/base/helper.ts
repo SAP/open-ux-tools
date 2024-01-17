@@ -5,7 +5,7 @@
  * @returns true if the input is a non-empty string
  */
 export function isNotEmptyString(input: string | undefined): boolean {
-    return input !== undefined && input.trim().length > 0;
+    return typeof input === 'string' && input.trim().length > 0;
 }
 
 /**
