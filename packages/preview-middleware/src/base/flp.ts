@@ -177,7 +177,8 @@ export class FlpSandbox {
      * @param resources optional additional resource mappings
      */
     async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
-        const flex = this.createFlexHandler();
+        this.createFlexHandler();
+        const flex = true ? this.getFakeConnectorSettings() : this.getFlexSettings();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         const ui5Theme =
             this.config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
@@ -339,13 +340,43 @@ export class FlpSandbox {
         }
     }
 
+    private getFakeConnectorSettings(): TemplateConfig['ui5']['flex'] {
+        const fakeLrepConnector = 'open/ux/preview/client/flp/FakeLrepConnector';
+        return [
+            // {
+            //     connector: fakeLrepConnector,
+            //     layers: ['VENDOR', 'CUSTOMER_BASE']
+            // }
+            {
+                applyConnector: fakeLrepConnector,
+                writeConnector: fakeLrepConnector,
+                custom: true
+            }
+        ];
+    }
+
+    private getFlexSettings(): TemplateConfig['ui5']['flex'] {
+        const workspaceConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
+
+        return [
+            {
+                applyConnector: workspaceConnectorPath,
+                writeConnector: workspaceConnectorPath,
+                custom: true
+            },
+            {
+                connector: 'LocalStorageConnector',
+                layers: ['CUSTOMER', 'USER']
+            }
+        ];
+    }
+
     /**
      * Create required routes for flex.
      *
      * @returns template configuration for flex.
      */
-    private createFlexHandler(): TemplateConfig['ui5']['flex'] {
-        const workspaceConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
+    private createFlexHandler() {
         const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
@@ -385,18 +416,6 @@ export class FlpSandbox {
                 res.status(500).send(error.message);
             }
         }) as RequestHandler);
-
-        return [
-            {
-                applyConnector: workspaceConnectorPath,
-                writeConnector: workspaceConnectorPath,
-                custom: true
-            },
-            {
-                connector: 'LocalStorageConnector',
-                layers: ['CUSTOMER', 'USER']
-            }
-        ];
     }
 
     /**

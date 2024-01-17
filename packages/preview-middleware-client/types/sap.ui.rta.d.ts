@@ -109,6 +109,12 @@ declare module 'sap/ui/rta/command/OutlineService' {
     export default OutlineService;
 }
 
+declare module 'sap/ui/fl/FakeLrepConnector' {
+    export default class FakeLrepConnector {
+        static enableFakeConnector: () => void;
+    }
+}
+
 declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type Event from 'sap/ui/base/Event';
     import type Component from 'sap/ui/core/Component';
