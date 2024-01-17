@@ -15,5 +15,5 @@ export function isNotEmptyString(input: string | undefined): boolean {
  * @returns true if the input is a valid SAP client
  */
 export function isValidSapClient(input: string | undefined): boolean {
-    return !input || (input.length < 4 && !!input.match(/^[0-9]*$/));
+    return !input || (input.length < 4 && !!new RegExp(/^\d*$/).exec(input));
 }

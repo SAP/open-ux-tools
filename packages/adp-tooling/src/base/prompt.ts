@@ -185,7 +185,7 @@ async function fetchSystemInformation(
     const layer = ato.tenantType === 'SAP' ? 'VENDOR' : 'CUSTOMER_BASE';
     logger.info(`Target layer: ${layer}`);
     logger.info('Fetching list of available applications... (it can take a moment)');
-    const appIndex = await provider.getAppIndex();
+    const appIndex = provider.getAppIndex();
     const apps = await appIndex.search(
         {
             'sap.ui/technology': 'UI5',

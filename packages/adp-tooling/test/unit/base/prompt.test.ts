@@ -31,7 +31,7 @@ jest.mock('@sap-ux/system-access', () => {
             } else {
                 return {
                     getAtoInfo: jest.fn().mockResolvedValue(target.url === sapUrl ? { tenantType: 'SAP' } : {}),
-                    getAppIndex: jest.fn().mockResolvedValue({
+                    getAppIndex: jest.fn().mockReturnValue({
                         search: jest.fn().mockResolvedValue(testApps)
                     })
                 };
