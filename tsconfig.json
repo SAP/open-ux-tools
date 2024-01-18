@@ -42,6 +42,9 @@
       "path": "packages/cap-config-writer"
     },
     {
+      "path": "packages/cds-annotation-parser"
+    },
+    {
       "path": "packages/control-property-editor-common"
     },
     {
@@ -90,6 +93,9 @@
       "path": "packages/odata-vocabularies"
     },
     {
+      "path": "packages/playwright"
+    },
+    {
       "path": "packages/preview-middleware-client"
     },
     {
@@ -106,6 +112,9 @@
     },
     {
       "path": "packages/system-access"
+    },
+    {
+      "path": "packages/telemetry"
     },
     {
       "path": "packages/ui-components"
@@ -130,6 +139,9 @@
     },
     {
       "path": "packages/ui5-test-writer"
+    },
+    {
+      "path": "packages/xml-odata-annotation-converter"
     },
     {
       "path": "packages/yaml"

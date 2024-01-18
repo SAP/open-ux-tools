@@ -1,5 +1,48 @@
 # @sap-ux/odata-vocabularies
 
+## 0.3.1
+
+### Patch Changes
+
+-   2f1f8366: fix(odata-vocabularies): replace alias ODataJSON with JSON
+
+## 0.3.0
+
+### Minor Changes
+
+-   39877d71: support loading additional terms for cap cds analytics features
+
+## 0.2.1
+
+### Patch Changes
+
+-   Updated dependencies [d6151909]
+    -   @sap-ux/odata-annotation-core-types@0.3.0
+
+## 0.2.0
+
+### Minor Changes
+
+-   5b256cea: support applicable terms constraint
+
+### Patch Changes
+
+-   Updated dependencies [5b256cea]
+    -   @sap-ux/odata-annotation-core-types@0.2.0
+
+## 0.1.6
+
+### Patch Changes
+
+-   Updated dependencies [807e2857]
+    -   @sap-ux/odata-annotation-core-types@0.1.3
+
+## 0.1.5
+
+### Patch Changes
+
+-   1df7493f: fix: enable and fill applicableterms
+
 ## 0.1.4
 
 ### Patch Changes
