@@ -4,8 +4,10 @@ import { ToolsLogger } from '@sap-ux/logger';
 import { tmpdir } from 'os';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { deleteChange } from '../../../dist/base/flex';
+import { deleteChange } from '../../../src/base/flex';
+import { FileWatcher } from '../../../src/base/watcher';
 
+jest.mock('fb-watchman');
 describe('flex', () => {
     const logger = new ToolsLogger();
     const path = join(tmpdir(), Date.now().toString());
@@ -82,8 +84,9 @@ describe('flex', () => {
 
     describe('writeChange', () => {
         test('valid change', () => {
+            const fileWatcher = new FileWatcher('/path/to/project', jest.fn());
             const change = { fileName: 'id', fileType: 'ctrl_variant' };
-            const result = writeChange(change, path, logger);
+            const result = writeChange(change, path, logger, fileWatcher);
             expect(result.success).toBe(true);
             expect(result.message).toBeDefined();
             expect(
@@ -99,10 +102,11 @@ describe('flex', () => {
 
     describe('deleteChange', () => {
         test('existing change', () => {
+            const fileWatcher = new FileWatcher('/path/to/project', jest.fn());
             const changeId = 'mychange';
             const fullPath = join(path, 'changes', `${changeId}.change`);
             writeFileSync(fullPath, JSON.stringify({ hello: 'world' }));
-            const result = deleteChange({ fileName: `sap.ui.fl.${changeId}` }, path, logger);
+            const result = deleteChange({ fileName: `sap.ui.fl.${changeId}` }, path, logger, fileWatcher);
             expect(result.success).toBe(true);
             expect(result.message).toBeDefined();
             expect(existsSync(fullPath)).toBe(false);

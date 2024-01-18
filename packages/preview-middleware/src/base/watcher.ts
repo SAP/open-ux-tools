@@ -6,26 +6,26 @@ import { join } from 'path';
  */
 export class FileWatcher {
     private ignorePaths = new Set<string>();
-
+    private client: watchman.Client;
     /**
      *
      * @param projectPath
      * @param onChange
      */
     constructor(projectPath: string, onChange: (changedFiles: string[]) => void) {
-        const client = new watchman.Client();
+        this.client = new watchman.Client();
 
         // Initialize the watchman client
-        client.command(['watch-project', projectPath], (error, resp) => {
+        this.client.command(['watch-project', projectPath], (error, resp) => {
             if (error) {
                 console.error('Error initiating watch:', error);
-                client.end();
+                this.client.end();
                 return;
             }
 
             // Subscribe to *.change file changes in the project directory
             const { watch, relative_path } = resp;
-            client.command(
+            this.client.command(
                 [
                     'subscribe',
                     watch,
@@ -38,14 +38,14 @@ export class FileWatcher {
                 (subscribeErr) => {
                     if (subscribeErr) {
                         console.error('Error subscribing to changes:', subscribeErr);
-                        client.end();
+                        this.client.end();
                         return;
                     }
                 }
             );
 
             // Handle file change events
-            client.on('subscription', (resp) => {
+            this.client.on('subscription', (resp) => {
                 // Only print the file names when a file is being changed, not during initialization
                 if (resp.is_fresh_instance) {
                     console.log(`Watching for TypeScript file changes in ${relative_path}...`);

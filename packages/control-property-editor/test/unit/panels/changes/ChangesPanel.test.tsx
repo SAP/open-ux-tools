@@ -365,4 +365,27 @@ describe('ChangePanel', () => {
         const formFieldChange = screen.getByText(/id_1698648267087_373_movesimpleformfield/i);
         expect(formFieldChange).toBeInTheDocument();
     });
+
+    test('External changes', () => {
+        const model = getModel(true);
+        const filterInitOptions: FilterOptions[] = [
+            { name: FilterName.changeSummaryFilterQuery, value: 'Simple Form' }
+        ];
+        const externalChanges: string[] = ['example1.changes'];
+        const initialState: State = {
+            deviceType: DeviceType.Desktop,
+            scale: 1,
+            outline: {} as any,
+            filterQuery: filterInitOptions,
+            selectedControl: undefined,
+            changes: model,
+            icons: [],
+            fileChanges: externalChanges
+        };
+        render(<ChangesPanel />, { initialState });
+
+        // check unsaved changes
+        const externalChangesTitle = screen.getByText(/External changes detected!/i);
+        expect(externalChangesTitle).toBeInTheDocument();
+    });
 });

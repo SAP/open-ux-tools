@@ -38,6 +38,7 @@ interface SliceState {
     icons: IconDetails[];
     changes: ChangesSlice;
     dialogMessage: string | undefined;
+    fileChanges?: string[];
 }
 
 export interface ChangesSlice {
@@ -227,10 +228,10 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.dialogMessage = action.payload;
             })
             .addMatcher(fileChanged.match, (state, action: ReturnType<typeof fileChanged>): void => {
-                state.fileChange = action.payload;
+                state.fileChanges = action.payload;
             })
             .addMatcher(reloadApplication.match, (state): void => {
-                state.fileChange = [];
+                state.fileChanges = [];
             })
 });
 

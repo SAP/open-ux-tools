@@ -14,13 +14,26 @@ import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 
+jest.mock('fb-watchman');
+
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
         __esModule: true,
         ...jest.requireActual('@sap-ux/adp-tooling')
     };
 });
+// Clear the mock implementation and reset any mocked instances
+jest.mock('../../../src/base/watcher', () => ({
+    FileWatcher: jest.fn().mockImplementation(() => {
+        return {
+            addIgnorePath: jest.fn()
+        };
+    })
+}));
 
+jest.mock('../../../src/base/ws-server', () => ({
+    sockets: []
+}));
 class FlpSandbox extends FlpSandboxUnderTest {
     public templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
@@ -173,6 +186,14 @@ describe('FlpSandbox', () => {
 
     describe('router', () => {
         let server!: SuperTest<Test>;
+        const mockUtils = {
+            getProject() {
+                return {
+                    getSourcePath: () => tmpdir(),
+                    getRootPath: () => tmpdir()
+                };
+            }
+        } as unknown as MiddlewareUtils;
 
         beforeAll(async () => {
             const flp = new FlpSandbox(
@@ -216,7 +237,6 @@ describe('FlpSandbox', () => {
 
             const app = express();
             app.use(flp.router);
-
             server = await supertest(app);
         });
 

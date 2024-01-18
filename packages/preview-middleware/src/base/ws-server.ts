@@ -1,5 +1,5 @@
-const http = require('http');
-const WebSocket = require('ws');
+import * as http from 'http';
+import * as WebSocket from 'ws';
 const port = 1337;
 
 // when curl http:localhost://1337
