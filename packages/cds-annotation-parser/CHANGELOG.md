@@ -1,5 +1,25 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.1.5
+
+### Patch Changes
+
+-   fa99989d: fix(cds-anno-parser): consider ALL potential vocabulary aliases
+
+## 0.1.4
+
+### Patch Changes
+
+-   Updated dependencies [2f1f8366]
+    -   @sap-ux/odata-vocabularies@0.3.1
+
+## 0.1.3
+
+### Patch Changes
+
+-   Updated dependencies [39877d71]
+    -   @sap-ux/odata-vocabularies@0.3.0
+
 ## 0.1.2
 
 ### Patch Changes
