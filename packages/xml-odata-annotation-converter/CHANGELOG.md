@@ -1,5 +1,15 @@
 # @sap-ux/xml-odata-annotation-converter
 
+## 0.2.0
+
+### Minor Changes
+
+-   d6151909: add target kinds directly to metadata element
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core@0.1.7
+
 ## 0.1.3
 
 ### Patch Changes
