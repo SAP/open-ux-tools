@@ -1,4 +1,4 @@
-import { EDMX_ELEMENT_NAMES, EdmxElementName } from '../../src/types/names';
+import { EDMX_ELEMENT_NAMES, EdmxElementName } from '@sap-ux/odata-annotation-core-types';
 
 describe('names', () => {
     it('EDMX_ELEMENT_NAMES', () => {

@@ -18,6 +18,7 @@ import {
 import { toReferenceUri } from '../../src/project/cap';
 import * as file from '../../src/file';
 import os from 'os';
+import type { Logger } from '@sap-ux/logger';
 
 jest.mock('child_process');
 const childProcessMock = jest.mocked(childProcess, { shallow: true });
@@ -169,6 +170,44 @@ describe('Test getCapModelAndServices()', () => {
         // Check results
         expect(capMS.services).toEqual([]);
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
+    });
+
+    test('Get model and service, project root sets `cds.root`', async () => {
+        // Mock setup
+        const cdsMock = {
+            env: {
+                'for': () => ({
+                    folders: {
+                        app: 'APP',
+                        db: 'DB',
+                        srv: 'SRV'
+                    }
+                })
+            },
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL_NO_SERVICES')),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => null)
+                }
+            },
+            home: '/cds/home/path',
+            version: '7.4.2'
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+        const mockLogger: Logger = {
+            info: jest.fn().mockImplementation(() => null)
+        } as unknown as Logger;
+        const loggerSpy = jest.spyOn(mockLogger, 'info');
+        // Test execution with object param
+        const projectRoot = '/some/test/path';
+        const capMS = await getCapModelAndServices({ projectRoot, logger: mockLogger });
+
+        expect(capMS.services).toEqual([]);
+        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: projectRoot });
+        expect(loggerSpy).toHaveBeenNthCalledWith(1, expect.stringContaining("'cds.home': /cds/home/path"));
+        expect(loggerSpy).toHaveBeenNthCalledWith(2, expect.stringContaining("'cds.version': 7.4.2"));
+        expect(loggerSpy).toHaveBeenNthCalledWith(3, expect.stringContaining("'cds.root': /some/test/path"));
     });
 });
 

@@ -91,12 +91,7 @@ describe('adp', () => {
 
         await init(rtaMock);
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
-            type: '[ext] scenario-loaded',
-            payload: 'ADAPTATION_PROJECT'
-        });
-
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] show-dialog-message',
             payload:
                 'The current SAPUI5 version set for this Adaptation project is 1.70.0. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71'

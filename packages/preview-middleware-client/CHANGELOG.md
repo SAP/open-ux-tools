@@ -1,5 +1,35 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.8.13
+
+### Patch Changes
+
+-   70296b55: Remove label and icon in control property editor
+
+## 0.8.12
+
+### Patch Changes
+
+-   83f25073: The extension points not shown as such in the Outline for ADP
+
+## 0.8.11
+
+### Patch Changes
+
+-   132ce16d: Do not block app loading if registering of reuse libs fails
+
+## 0.8.10
+
+### Patch Changes
+
+-   a714d53d: No unsaved change shown when adding fragment to Extension Point
+
+## 0.8.9
+
+### Patch Changes
+
+-   a44e9007: Invalid target aggregation and index are accepted in Add Fragment dialog
+
 ## 0.8.8
 
 ### Patch Changes

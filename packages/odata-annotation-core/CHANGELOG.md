@@ -1,5 +1,34 @@
 # @sap-ux/odata-annotation-core
 
+## 0.1.7
+
+### Patch Changes
+
+-   Updated dependencies [d6151909]
+    -   @sap-ux/odata-annotation-core-types@0.3.0
+
+## 0.1.6
+
+### Patch Changes
+
+-   Updated dependencies [5b256cea]
+    -   @sap-ux/odata-annotation-core-types@0.2.0
+
+## 0.1.5
+
+### Patch Changes
+
+-   807e2857: Vocabularies types and interfaces definitions optimization
+-   Updated dependencies [807e2857]
+    -   @sap-ux/odata-annotation-core-types@0.1.3
+
+## 0.1.4
+
+### Patch Changes
+
+-   Updated dependencies [120d6631]
+    -   @sap-ux/odata-annotation-core-types@0.1.2
+
 ## 0.1.3
 
 ### Patch Changes

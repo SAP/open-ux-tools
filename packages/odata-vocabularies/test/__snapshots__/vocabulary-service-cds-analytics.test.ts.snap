@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getVocabulary(CDS with analytics) getVocabularies(CDS) contains CDS 1`] = `
+Object {
+  "defaultAlias": "CDS",
+  "defaultUri": "",
+  "namespace": "com.sap.vocabularies.CDS.v1",
+}
+`;
+
+exports[`getVocabulary(CDS with analytics) getVocabulary(ObjectModel) should return vocabulary 1`] = `
+Object {
+  "defaultAlias": "ObjectModel",
+  "defaultUri": "",
+  "namespace": "com.sap.cds.vocabularies.ObjectModel",
+}
+`;

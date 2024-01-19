@@ -1,6 +1,6 @@
 import { loadVocabulariesInformation } from './../src/loader';
 import type { Term } from '../src/types/vocabulary-service';
-import { ENTITY_TYPE_KIND } from '../src/types/base-types';
+import { ENTITY_TYPE_KIND } from '@sap-ux/odata-annotation-core-types';
 
 declare const expect: jest.Expect;
 
@@ -65,5 +65,15 @@ describe('lib vocabulary loader', () => {
         const label = result.get('LABEL');
         expect(id).toStrictEqual('ID');
         expect(label).toStrictEqual('Label');
+    });
+    it('JSON vocabulary term listed as available for kind (based on AppliesTo) ', () => {
+        // Act
+        const specificTargetKind = vocabularyInformation.byTarget.get(target);
+        // Expect
+        expect(specificTargetKind?.has('Org.OData.JSON.V1.Schema')).toBeTruthy();
+    });
+    it('JSON vocabulary namespace listed with correct alias', () => {
+        // Expect
+        expect(vocabularyInformation.supportedVocabularies.get('Org.OData.JSON.V1')).toMatchSnapshot();
     });
 });

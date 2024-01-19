@@ -64,7 +64,7 @@ describe('Test getAppType()', () => {
     });
 
     test('Type SAPUI5 freestyle in CAP', async () => {
-        const appType = await getAppType(join(sampleRoot, 'CAP/CAPJava_mix/app/freestyle'));
+        const appType = await getAppType(join(sampleRoot, 'CAP/CAPJava_freestyle/app/freestyle'));
         expect(appType).toBe('SAPUI5 freestyle');
     });
 

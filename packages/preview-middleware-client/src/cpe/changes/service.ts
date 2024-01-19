@@ -316,7 +316,10 @@ export class ChangeService {
                 controlId: selectorId,
                 changeType,
                 isActive: index >= inactiveCommandCount,
-                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
+                controlName:
+                    changeType === 'addXMLAtExtensionPoint'
+                        ? command.getSelector().name ?? ''
+                        : command.getElement().getMetadata().getName().split('.').pop() ?? ''
             };
         }
 
@@ -332,7 +335,11 @@ export class ChangeService {
     private retryOperations<T>(operations: Array<() => T>): T | undefined {
         for (const operation of operations) {
             try {
-                return operation();
+                const result = operation();
+                if (!result) {
+                    continue;
+                }
+                return result;
             } catch (error) {
                 Log.error(`Retry operation failed: ${error?.message}`);
                 continue;
@@ -363,7 +370,9 @@ export class ChangeService {
     private getCommandSelectorId(command: FlexCommand): string | undefined {
         return this.retryOperations([
             () => command.getSelector().id,
-            () => command.getElement().getProperty('persistencyKey')
+            () => command.getElement().getProperty('persistencyKey'),
+            () => command.getElement().getId(),
+            () => command.getParent()?.getElement().getId()
         ]);
     }
 }
