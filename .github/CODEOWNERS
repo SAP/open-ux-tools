@@ -6,6 +6,9 @@
 # Module: cds-odata-annotation-converter
 /packages/cds-odata-annotation-converter/ @SAP/ux-tools-annotations
 
+# Module: i18n
+/packages/i18n/ @SAP/ux-tools-annotations
+
 # Module: create
 /packages/create/ @SAP/ux-tools-create
 
