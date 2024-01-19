@@ -1,6 +1,6 @@
-import { UIIconButton, UiIcons, UICallout } from '@sap-ux/ui-components';
+import { UIIconButton, UiIcons, UICallout, UIFocusZone } from '@sap-ux/ui-components';
 import type { ReactElement } from 'react';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useId } from '@fluentui/react-hooks';
 import { useTranslation } from 'react-i18next';
 
@@ -19,6 +19,7 @@ export function ThemeSelectorCallout(): ReactElement {
     const theme = localStorage.getItem('theme') ?? 'dark';
     const [currentTheme, setTheme] = useState(theme);
     const buttonId = useId('callout-button');
+    const initialFocusRoot = useRef<HTMLElement | null>(null);
 
     /**
      *
@@ -60,6 +61,7 @@ export function ThemeSelectorCallout(): ReactElement {
         const isCurrentTheme = currentTheme === name;
         return (
             <div
+                data-is-focusable={true}
                 id={`theme-${nameSlug}-rect`}
                 key={name}
                 title={t(tooltip)}
@@ -93,6 +95,7 @@ export function ThemeSelectorCallout(): ReactElement {
             {isCalloutVisible && (
                 <UICallout
                     id={'themes-selector'}
+                    data-testid={'theme-selector-callout'}
                     role="alertdialog"
                     alignTargetEdge
                     target={`#${buttonId}`}
@@ -105,10 +108,24 @@ export function ThemeSelectorCallout(): ReactElement {
                             minWidth: 100
                         }
                     }}
+                    setInitialFocus={true}
+                    focusTargetSiblingOnTabPress={true}
                     onDismiss={(): void => {
                         setValue(false);
                     }}>
-                    {...themes.map(createThemeButton)}
+                    <UIFocusZone
+                        defaultTabbableElement={(root: HTMLElement) => {
+                            initialFocusRoot.current = root.querySelector('.theme-child.selected');
+                            return initialFocusRoot.current ?? root;
+                        }}
+                        onActiveElementChanged={() => {
+                            if (initialFocusRoot.current) {
+                                initialFocusRoot.current.focus();
+                                initialFocusRoot.current = null;
+                            }
+                        }}>
+                        {...themes.map(createThemeButton)}
+                    </UIFocusZone>
                 </UICallout>
             )}
         </>

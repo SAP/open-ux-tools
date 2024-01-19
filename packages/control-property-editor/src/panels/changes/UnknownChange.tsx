@@ -101,8 +101,8 @@ export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElem
                     cancelButtonText={t('CANCEL_DELETE')}
                     onCancel={onCancelDelete}
                     dialogContentProps={{
-                        title: t('CONFIRM_DELETE_TITLE'),
-                        subText: t('CONFIRM_CHANGE_SUMMARY_DELETE_SUBTEXT')
+                        title: t('CONFIRM_OTHER_CHANGE_DELETE_TITLE'),
+                        subText: t('CONFIRM_OTHER_CHANGE_DELETE_SUBTEXT', { name })
                     }}
                 />
             )}

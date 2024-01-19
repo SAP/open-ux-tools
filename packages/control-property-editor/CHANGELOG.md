@@ -1,5 +1,47 @@
 # @sap-ux/control-property-editor
 
+## 0.4.9
+
+### Patch Changes
+
+-   70296b55: Remove label and icon in control property editor
+
+## 0.4.8
+
+### Patch Changes
+
+-   7ce50bbd: "Confirm property change deletion"'s message on delete is only for property changes
+
+## 0.4.7
+
+### Patch Changes
+
+-   83f25073: The extension points not shown as such in the Outline for ADP
+
+## 0.4.6
+
+### Patch Changes
+
+-   9e7cbe8e: Disable manually inserting values in dropdowns
+
+## 0.4.5
+
+### Patch Changes
+
+-   b4081d0a: Show warning message for adaptation project if ui5 version is less than 1.71
+
+## 0.4.4
+
+### Patch Changes
+
+-   a280785d: Fix for showing redundant warning dialog in CPE for adaptation projects
+
+## 0.4.3
+
+### Patch Changes
+
+-   b7b3a0c3: keyboard support for theme selector callout
+
 ## 0.4.2
 
 ### Patch Changes

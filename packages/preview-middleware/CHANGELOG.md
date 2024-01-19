@@ -1,5 +1,159 @@
 # @sap-ux/preview-middleware
 
+## 0.11.26
+
+### Patch Changes
+
+-   Updated dependencies [349fff1a]
+    -   @sap-ux/adp-tooling@0.8.0
+
+## 0.11.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.7.4
+
+## 0.11.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.7.3
+
+## 0.11.23
+
+### Patch Changes
+
+-   70296b55: Remove label and icon in control property editor
+
+## 0.11.22
+
+### Patch Changes
+
+-   7ce50bbd: "Confirm property change deletion"'s message on delete is only for property changes
+
+## 0.11.21
+
+### Patch Changes
+
+-   83f25073: The extension points not shown as such in the Outline for ADP
+
+## 0.11.20
+
+### Patch Changes
+
+-   132ce16d: Do not block app loading if registering of reuse libs fails
+
+## 0.11.19
+
+### Patch Changes
+
+-   e224bc43: Exclude reuse libraries from being added to the data-sap-ui-libs
+
+## 0.11.18
+
+### Patch Changes
+
+-   b7f73026: FIX: appdescr changes that require client-side merging are not applied
+
+## 0.11.17
+
+### Patch Changes
+
+-   9e7cbe8e: Disable manually inserting values in dropdowns
+
+## 0.11.16
+
+### Patch Changes
+
+-   a714d53d: No unsaved change shown when adding fragment to Extension Point
+
+## 0.11.15
+
+### Patch Changes
+
+-   a44e9007: Invalid target aggregation and index are accepted in Add Fragment dialog
+
+## 0.11.14
+
+### Patch Changes
+
+-   338fe503: Add integration test
+
+## 0.11.13
+
+### Patch Changes
+
+-   733cec7b: No Datetime is shown for Code Ext changes in saved changes panel
+
+## 0.11.12
+
+### Patch Changes
+
+-   ff457bef: Controller Extension and Fragment name now show error if there is a whitespace after their name
+
+## 0.11.11
+
+### Patch Changes
+
+-   76c751be: Save button for ui5 versions lower than 1.110 is shown
+
+## 0.11.10
+
+### Patch Changes
+
+-   Updated dependencies [5a1eb6ed]
+    -   @sap-ux/adp-tooling@0.7.2
+
+## 0.11.9
+
+### Patch Changes
+
+-   5077d95f: Hide feedback and close buttons for adp projects
+
+## 0.11.8
+
+### Patch Changes
+
+-   b4081d0a: Show warning message for adaptation project if ui5 version is less than 1.71
+
+## 0.11.7
+
+### Patch Changes
+
+-   237e69d1: Fix for missing delete icon for new comp/control variant views
+
+## 0.11.6
+
+### Patch Changes
+
+-   a280785d: Fix for showing redundant warning dialog in CPE for adaptation projects
+
+## 0.11.5
+
+### Patch Changes
+
+-   b5eb0792: Index field is disabled when aggregation with specialIndexHandling is chosen
+
+## 0.11.4
+
+### Patch Changes
+
+-   02609800: Fix for comp/control variant changes not updating in pending changes tab
+
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [de818954]
+    -   @sap-ux/adp-tooling@0.7.1
+
+## 0.11.2
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/adp-tooling@0.7.0
+
 ## 0.11.1
 
 ### Patch Changes

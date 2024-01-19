@@ -1,0 +1,206 @@
+{
+    "type": "annotation-file",
+    "uri": "file://multiple-schemas.xml",
+    "range": "[(1,0)..(39,12)]",
+    "contentRange": "[(1,79)..(39,0)]",
+    "namespace": {
+        "type": "namespace",
+        "name": "NorthwindModel",
+        "range": "[(6,8)..(25,17)]",
+        "nameRange": "[(6,27)..(6,41)]",
+        "contentRange": "[(6,91)..(25,8)]"
+    },
+    "references": [
+        {
+            "type": "reference",
+            "name": "Org.OData.Core.V1",
+            "nameRange": "[(3,33)..(3,50)]",
+            "range": "[(2,4)..(4,21)]",
+            "uri": "https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml",
+            "alias": "Core",
+            "aliasRange": "[(3,59)..(3,63)]"
+        }
+    ],
+    "targets": [
+        {
+            "type": "target",
+            "name": "ODataWebExperimental.Northwind.Model.NorthwindEntities",
+            "nameRange": "[(22,33)..(22,87)]",
+            "range": "[(22,12)..(24,26)]",
+            "termsRange": "[(22,89)..(24,12)]",
+            "terms": [
+                {
+                    "type": "element",
+                    "name": "Annotation",
+                    "range": "[(23,16)..(23,117)]",
+                    "nameRange": "[(23,17)..(23,27)]",
+                    "attributes": {
+                        "Term": {
+                            "type": "attribute",
+                            "name": "Term",
+                            "value": "Com.Microsoft.OData.Service.Conventions.V1.UrlConventions",
+                            "nameRange": "[(23,28)..(23,32)]",
+                            "valueRange": "[(23,34)..(23,91)]"
+                        },
+                        "String": {
+                            "type": "attribute",
+                            "name": "String",
+                            "value": "KeyAsSegment",
+                            "nameRange": "[(23,93)..(23,99)]",
+                            "valueRange": "[(23,101)..(23,113)]"
+                        }
+                    },
+                    "content": []
+                }
+            ]
+        },
+        {
+            "type": "target",
+            "name": "ODataWebExperimental.Northwind.Model.NorthwindEntities/Categories",
+            "nameRange": "[(34,33)..(34,98)]",
+            "range": "[(34,12)..(36,26)]",
+            "termsRange": "[(34,100)..(36,12)]",
+            "terms": [
+                {
+                    "type": "element",
+                    "name": "Annotation",
+                    "range": "[(35,16)..(35,68)]",
+                    "nameRange": "[(35,17)..(35,27)]",
+                    "attributes": {
+                        "Term": {
+                            "type": "attribute",
+                            "name": "Term",
+                            "value": "Core.Description",
+                            "nameRange": "[(35,28)..(35,32)]",
+                            "valueRange": "[(35,34)..(35,50)]"
+                        },
+                        "String": {
+                            "type": "attribute",
+                            "name": "String",
+                            "value": "Test",
+                            "nameRange": "[(35,52)..(35,58)]",
+                            "valueRange": "[(35,60)..(35,64)]"
+                        }
+                    },
+                    "content": []
+                }
+            ]
+        }
+    ],
+    "metadata": [
+        {
+            "path": "NorthwindModel.Category",
+            "isAnnotatable": true,
+            "kind": "EntityType",
+            "name": "NorthwindModel.Category",
+            "isCollectionValued": false,
+            "isComplexType": false,
+            "isEntityType": true,
+            "location": {
+                "uri": "file://multiple-schemas.xml",
+                "range": "[(7,12)..(21,25)]"
+            },
+            "content": [
+                {
+                    "path": "NorthwindModel.Category/CategoryID",
+                    "isAnnotatable": true,
+                    "kind": "Property",
+                    "name": "CategoryID",
+                    "isCollectionValued": false,
+                    "isComplexType": false,
+                    "isEntityType": false,
+                    "edmPrimitiveType": "Edm.Int32",
+                    "location": {
+                        "uri": "file://multiple-schemas.xml",
+                        "range": "[(11,16)..(17,18)]"
+                    },
+                    "content": [],
+                    "targetKinds": ["Property"]
+                },
+                {
+                    "path": "NorthwindModel.Category/CategoryName",
+                    "isAnnotatable": true,
+                    "kind": "Property",
+                    "name": "CategoryName",
+                    "isCollectionValued": false,
+                    "isComplexType": false,
+                    "isEntityType": false,
+                    "edmPrimitiveType": "Edm.String",
+                    "location": {
+                        "uri": "file://multiple-schemas.xml",
+                        "range": "[(18,16)..(18,98)]"
+                    },
+                    "content": [],
+                    "targetKinds": ["Property"]
+                },
+                {
+                    "path": "NorthwindModel.Category/Description",
+                    "isAnnotatable": true,
+                    "kind": "Property",
+                    "name": "Description",
+                    "isCollectionValued": false,
+                    "isComplexType": false,
+                    "isEntityType": false,
+                    "edmPrimitiveType": "Edm.String",
+                    "location": {
+                        "uri": "file://multiple-schemas.xml",
+                        "range": "[(19,16)..(19,81)]"
+                    },
+                    "content": [],
+                    "targetKinds": ["Property"]
+                },
+                {
+                    "path": "NorthwindModel.Category/Picture",
+                    "isAnnotatable": true,
+                    "kind": "Property",
+                    "name": "Picture",
+                    "isCollectionValued": false,
+                    "isComplexType": false,
+                    "isEntityType": false,
+                    "edmPrimitiveType": "Edm.Binary",
+                    "location": {
+                        "uri": "file://multiple-schemas.xml",
+                        "range": "[(20,16)..(20,77)]"
+                    },
+                    "content": [],
+                    "targetKinds": ["Property"]
+                }
+            ],
+            "keys": ["CategoryID"],
+            "targetKinds": ["EntityType"]
+        },
+        {
+            "path": "ODataWebExperimental.Northwind.Model.NorthwindEntities",
+            "isAnnotatable": true,
+            "kind": "EntityContainer",
+            "name": "ODataWebExperimental.Northwind.Model.NorthwindEntities",
+            "isCollectionValued": false,
+            "isComplexType": false,
+            "isEntityType": false,
+            "location": {
+                "uri": "file://multiple-schemas.xml",
+                "range": "[(27,12)..(33,30)]"
+            },
+            "content": [
+                {
+                    "path": "ODataWebExperimental.Northwind.Model.NorthwindEntities/Categories",
+                    "isAnnotatable": true,
+                    "kind": "EntitySet",
+                    "name": "Categories",
+                    "isCollectionValued": true,
+                    "isComplexType": false,
+                    "isEntityType": true,
+                    "edmPrimitiveType": "NorthwindModel.Category",
+                    "structuredType": "NorthwindModel.Category",
+                    "location": {
+                        "uri": "file://multiple-schemas.xml",
+                        "range": "[(31,16)..(32,28)]"
+                    },
+                    "content": [],
+                    "targetKinds": ["EntitySet", "Collection"]
+                }
+            ],
+            "targetKinds": ["EntityContainer"]
+        }
+    ]
+}

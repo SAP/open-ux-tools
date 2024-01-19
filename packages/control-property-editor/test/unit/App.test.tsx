@@ -163,8 +163,16 @@ test('renders properties', () => {
     expect(notFoundException).toBeTruthy();
 });
 
-test('renders warning dialog', async () => {
+test('does not render warning dialog', async () => {
     render(<App previewUrl="" />);
+    const dialogContent = screen.queryByText(
+        /The Control Property Editor enables you to change control properties and behavior directly. These changes may not have the desired effect with Fiori elements applications. Please consult documentation to learn which changes are supported./i
+    );
+    expect(dialogContent).not.toBeInTheDocument();
+});
+
+test('renders warning dialog for "FE_FROM_SCRATCH" scenario', async () => {
+    render(<App previewUrl="" scenario="FE_FROM_SCRATCH" />, { initialState });
     const dialogContent = screen.getByText(
         /The Control Property Editor enables you to change control properties and behavior directly. These changes may not have the desired effect with Fiori elements applications. Please consult documentation to learn which changes are supported./i
     );

@@ -1,3 +1,5 @@
+import type { CapProjectType } from '../cap';
+
 import type { ManifestNamespace } from '../webapp';
 
 export type AppProgrammingLanguage = 'JavaScript' | 'TypeScript' | '';
@@ -30,3 +32,12 @@ export interface ServiceSpecification {
 }
 
 export type DetailedProjectType = 'EDMX Backend' | 'CAP Node.js' | 'CAP Java';
+
+export type ProjectType = 'EDMXBackend' | CapProjectType;
+
+export type AppType =
+    | 'SAP Fiori elements'
+    | 'SAPUI5 freestyle'
+    | 'SAPUI5 Extension'
+    | 'Fiori Reuse'
+    | 'Fiori Adaptation';

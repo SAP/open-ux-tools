@@ -37,7 +37,7 @@ import {
 import BaseDialog from './BaseDialog.controller';
 
 interface ControllerExtensionService {
-    add: (codeRef: string, viewId: string) => Promise<unknown>;
+    add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
 }
 
 interface ControllerInfo {
@@ -80,7 +80,7 @@ export default class ControllerExtension extends BaseDialog {
         const input = event.getSource<Input>();
         const beginBtn = this.dialog.getBeginButton();
 
-        const controllerName: string = input.getValue().trim();
+        const controllerName: string = input.getValue();
         const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList');
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
@@ -266,6 +266,7 @@ export default class ControllerExtension extends BaseDialog {
             const service = await this.rta.getService<ControllerExtensionService>('controllerExtension');
 
             const change = await service.add(controllerRef.codeRef, controllerRef.viewId);
+            change.creation = new Date().toISOString();
 
             await writeChange(change);
             MessageToast.show(`Controller extension with name '${controllerName}' was created.`);

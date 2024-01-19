@@ -22,6 +22,34 @@ const DEVELOPER_MODE_CONFIG = new Map([
 ]);
 
 /**
+ * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
+ */
+const UI5_LIBS = [
+    'sap.apf',
+    'sap.base',
+    'sap.chart',
+    'sap.collaboration',
+    'sap.f',
+    'sap.fe',
+    'sap.fileviewer',
+    'sap.gantt',
+    'sap.landvisz',
+    'sap.m',
+    'sap.ndc',
+    'sap.ovp',
+    'sap.rules',
+    'sap.suite',
+    'sap.tnt',
+    'sap.ui',
+    'sap.uiext',
+    'sap.ushell',
+    'sap.uxap',
+    'sap.viz',
+    'sap.webanalytics',
+    'sap.zen'
+];
+
+/**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
  */
 export type EnhancedRouter = Router & {
@@ -82,6 +110,9 @@ export interface TemplateConfig {
             additionalInformation: string;
             applicationType: 'URL';
             url: string;
+            applicationDependencies?: {
+                manifest: boolean;
+            };
         }
     >;
     ui5: {
@@ -154,7 +185,7 @@ export class FlpSandbox {
             basePath: relative(dirname(this.config.path), '/') ?? '.',
             apps: {},
             ui5: {
-                libs: Object.keys(manifest['sap.ui5']?.dependencies?.libs ?? {}).join(','),
+                libs: this.getUI5Libs(manifest),
                 theme: ui5Theme,
                 flex,
                 resources: {
@@ -165,20 +196,22 @@ export class FlpSandbox {
             },
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
+        const id = manifest['sap.app'].id;
         this.addApp(manifest, {
             componentId,
-            target: resources[componentId ?? manifest['sap.app'].id] ?? this.templateConfig.basePath,
+            target: resources[componentId ?? id] ?? this.templateConfig.basePath,
             local: '.',
             intent: this.config.intent
         });
         this.addStandardRoutes();
         if (this.rta) {
             this.rta.options ??= {};
-            this.rta.options.baseId = componentId ?? manifest['sap.app'].id;
+            this.rta.options.baseId = componentId ?? id;
+            this.rta.options.appName = id;
             this.addEditorRoutes(this.rta);
         }
         this.addRoutesForAdditionalApps();
-        this.logger.info(`Initialized for app ${manifest['sap.app'].id}`);
+        this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
 
@@ -227,10 +260,17 @@ export class FlpSandbox {
                 previewUrl = `${previewUrl}.inner.html`;
                 editor.pluginScript ??= 'open/ux/preview/client/cpe/init';
                 this.router.get(editor.path, (_req: Request, res: Response) => {
+                    const scenario = rta.options?.scenario;
+                    let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`;
+                    if (scenario === 'ADAPTATION_PROJECT') {
+                        templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
+                    }
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
                     const html = render(template, {
-                        previewUrl: `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`,
-                        telemetry: rta.options?.telemetry ?? false
+                        previewUrl: templatePreviewUrl,
+                        telemetry: rta.options?.telemetry ?? false,
+                        appName: rta.options?.appName,
+                        scenario
                     });
                     res.status(200).contentType('html').send(html);
                 });
@@ -377,8 +417,32 @@ export class FlpSandbox {
             description: manifest['sap.app'].description ?? '',
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
-            url: app.target
+            url: app.target,
+            applicationDependencies: {
+                manifest: true
+            }
         };
+    }
+
+    /**
+     * Gets the UI5 libs dependencies from manifest.json.
+     *
+     * @param manifest application manifest
+     * @returns UI5 libs that should preloaded
+     */
+    private getUI5Libs(manifest: Manifest): string {
+        if (manifest['sap.ui5']?.dependencies?.libs) {
+            const libNames = Object.keys(manifest['sap.ui5'].dependencies.libs);
+            return libNames
+                .filter((key) => {
+                    return UI5_LIBS.some((substring) => {
+                        return key === substring || key.startsWith(substring + '.');
+                    });
+                })
+                .join(',');
+        } else {
+            return 'sap.m,sap.ui.core,sap.ushell';
+        }
     }
 }
 

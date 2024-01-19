@@ -1,5 +1,5 @@
 import type { IMetadataService, MetadataElement, ODataVersionType } from '@sap-ux/odata-annotation-core-types';
-import { MetadataService } from '../../src';
+import { MetadataService } from '@sap-ux/odata-entity-model';
 import { getAliasInformation, getPathBaseMetadataElement, getSegmentWithoutAlias } from '../../src';
 import type { Namespace, Reference } from '@sap-ux/odata-annotation-core-types';
 
@@ -14,6 +14,7 @@ const metadataElements: MetadataElement[] = [
         isCollectionValued: false,
         isComplexType: false,
         isEntityType: true,
+        targetKinds: ['EntityType'],
         content: [
             {
                 content: [],
@@ -24,7 +25,8 @@ const metadataElements: MetadataElement[] = [
                 isCollectionValued: false,
                 isComplexType: false,
                 isEntityType: false,
-                edmPrimitiveType: 'Edm.String'
+                edmPrimitiveType: 'Edm.String',
+                targetKinds: ['Property']
             }
         ]
     },
@@ -36,7 +38,7 @@ const metadataElements: MetadataElement[] = [
         isCollectionValued: false,
         isComplexType: false,
         isEntityType: true,
-
+        targetKinds: ['EntityType'],
         content: [
             {
                 content: [],
@@ -47,7 +49,8 @@ const metadataElements: MetadataElement[] = [
                 isCollectionValued: false,
                 isComplexType: false,
                 isEntityType: false,
-                edmPrimitiveType: 'Edm.String'
+                edmPrimitiveType: 'Edm.String',
+                targetKinds: ['Property']
             },
             {
                 content: [],
@@ -58,7 +61,8 @@ const metadataElements: MetadataElement[] = [
                 isCollectionValued: false,
                 isComplexType: false,
                 isEntityType: false,
-                structuredType: 'com.sap.gateway.default.iwbep.tea_busi.v0001.Department'
+                structuredType: 'com.sap.gateway.default.iwbep.tea_busi.v0001.Department',
+                targetKinds: ['NavigationProperty']
             }
         ]
     },
@@ -70,6 +74,7 @@ const metadataElements: MetadataElement[] = [
         isCollectionValued: false,
         isComplexType: false,
         isEntityType: false,
+        targetKinds: ['Action'],
         content: [
             {
                 content: [],
@@ -80,7 +85,8 @@ const metadataElements: MetadataElement[] = [
                 isCollectionValued: false,
                 isComplexType: false,
                 isEntityType: false,
-                edmPrimitiveType: 'Edm.String'
+                edmPrimitiveType: 'Edm.String',
+                targetKinds: ['Property']
             }
         ]
     },
@@ -89,6 +95,7 @@ const metadataElements: MetadataElement[] = [
         kind: 'EntityContainer',
         name: 'TestNamespace.EntityContainer',
         path: 'TestNamespace.EntityContainer',
+        targetKinds: ['EntityContainer'],
         content: [
             {
                 isAnnotatable: true,
@@ -96,21 +103,23 @@ const metadataElements: MetadataElement[] = [
                 name: 'Currencies',
                 path: 'TestNamespace.EntityContainer/Currencies',
                 structuredType: 'TestNamespace.Currencies',
-
+                targetKinds: ['EntitySet'],
                 content: [
                     {
                         path: 'TestNamespace.EntityContainer/Currencies/code',
                         isAnnotatable: true,
                         kind: 'Property',
                         name: 'code',
-                        content: []
+                        content: [],
+                        targetKinds: ['Property']
                     },
                     {
                         path: 'TestNamespace.EntityContainer/Currencies/name',
                         isAnnotatable: true,
                         kind: 'Property',
                         name: 'name',
-                        content: []
+                        content: [],
+                        targetKinds: ['Property']
                     }
                 ]
             },
@@ -120,21 +129,23 @@ const metadataElements: MetadataElement[] = [
                 name: 'Countries',
                 path: 'TestNamespace.EntityContainer/Countries',
                 structuredType: 'TestNamespace.Countries',
-
+                targetKinds: ['EntitySet'],
                 content: [
                     {
                         path: 'TestNamespace.EntityContainer/Countries/code',
                         isAnnotatable: true,
                         kind: 'Property',
                         name: 'code',
-                        content: []
+                        content: [],
+                        targetKinds: ['Property']
                     },
                     {
                         path: 'TestNamespace.EntityContainer/Countries/name',
                         isAnnotatable: true,
                         kind: 'Property',
                         name: 'name',
-                        content: []
+                        content: [],
+                        targetKinds: ['Property']
                     }
                 ]
             }
@@ -148,6 +159,7 @@ const metadataElements: MetadataElement[] = [
         isCollectionValued: true,
         isComplexType: false,
         isEntityType: true,
+        targetKinds: ['EntityType'],
         content: [
             {
                 isAnnotatable: true,
@@ -155,7 +167,8 @@ const metadataElements: MetadataElement[] = [
                 name: 'code',
                 path: 'TestNamespace.Currencies/code',
                 edmPrimitiveType: 'Edm.String',
-                content: []
+                content: [],
+                targetKinds: ['Property']
             },
             {
                 isAnnotatable: true,
@@ -163,7 +176,8 @@ const metadataElements: MetadataElement[] = [
                 name: 'name',
                 path: 'TestNamespace.Currencies/name',
                 edmPrimitiveType: 'Edm.String',
-                content: []
+                content: [],
+                targetKinds: ['Property']
             }
         ]
     },
@@ -175,6 +189,7 @@ const metadataElements: MetadataElement[] = [
         isCollectionValued: true,
         isComplexType: false,
         isEntityType: true,
+        targetKinds: ['EntityType'],
         content: [
             {
                 isAnnotatable: true,
@@ -182,7 +197,8 @@ const metadataElements: MetadataElement[] = [
                 name: 'code',
                 path: 'TestNamespace.Countries/code',
                 edmPrimitiveType: 'Edm.Int16',
-                content: []
+                content: [],
+                targetKinds: ['Property']
             },
             {
                 isAnnotatable: true,
@@ -190,7 +206,8 @@ const metadataElements: MetadataElement[] = [
                 name: 'descr',
                 path: 'TestNamespace.Countries/descr',
                 edmPrimitiveType: 'Edm.String',
-                content: []
+                content: [],
+                targetKinds: ['Property']
             },
             {
                 isAnnotatable: true,
@@ -198,7 +215,8 @@ const metadataElements: MetadataElement[] = [
                 name: 'createdAt',
                 path: 'TestNamespace.Countries/createdAt',
                 edmPrimitiveType: 'Edm.DateTimeOffset',
-                content: []
+                content: [],
+                targetKinds: ['Property']
             }
         ]
     }

@@ -11,6 +11,8 @@ import ControlUtils from '../../../../src/adp/control-utils';
 import AddFragment from '../../../../src/adp/controllers/AddFragment.controller';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
+import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -59,6 +61,14 @@ describe('AddFragment', () => {
             };
             sapCoreMock.byId.mockReturnValue(overlayControl);
 
+            OverlayRegistry.getOverlay = jest.fn().mockReturnValue({
+                getDesignTimeMetadata: jest.fn().mockReturnValue({
+                    getData: jest.fn().mockReturnValue({
+                        aggregations: {}
+                    })
+                })
+            });
+
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 overlays as unknown as UI5Element,
@@ -71,6 +81,8 @@ describe('AddFragment', () => {
                 close: jest.fn(),
                 setEscapeHandler: jest.fn()
             });
+
+            addFragment.createId = jest.fn().mockReturnValue('sampleId');
 
             addFragment.getView = jest.fn().mockReturnValue({ destroy: jest.fn(), setModel: jest.fn() });
 
@@ -98,21 +110,51 @@ describe('AddFragment', () => {
 
             const event = {
                 getSource: jest.fn().mockReturnValue({
-                    getSelectedItem: jest.fn().mockReturnValue({ getText: jest.fn().mockReturnValue('some-text') }),
+                    getSelectedItem: jest.fn().mockReturnValue({ getText: jest.fn().mockReturnValue('someText') }),
                     getSelectedKey: jest.fn().mockReturnValue('0')
                 })
             };
 
             ControlUtils.getControlAggregationByName = jest.fn().mockReturnValue({ 0: {} });
 
+            OverlayRegistry.getOverlay = jest.fn().mockReturnValue({
+                getDesignTimeMetadata: jest.fn().mockReturnValue({
+                    getData: jest.fn().mockReturnValue({
+                        aggregations: { someText: { specialIndexHandling: 'true' } }
+                    })
+                })
+            });
+
+            addFragment['runtimeControl'] = {
+                getMetadata: jest.fn().mockReturnValue({
+                    getName: jest.fn().mockReturnValue('Toolbar')
+                })
+            } as unknown as ManagedObject;
+
             const setPropertySpy = jest.fn();
             addFragment.model = {
                 setProperty: setPropertySpy
             } as unknown as JSONModel;
 
+            const updatedIndexArray = [
+                { key: 0, value: 0 },
+                { key: 1, value: 1 },
+                { key: 2, value: 2 }
+            ];
+
             addFragment.onAggregationChanged(event as unknown as Event);
 
-            expect(setPropertySpy).toHaveBeenCalledTimes(4);
+            expect(setPropertySpy).toHaveBeenCalledTimes(7);
+            expect(setPropertySpy).toHaveBeenCalledWith('/selectedAggregation/key', '0');
+            expect(setPropertySpy).toHaveBeenCalledWith('/selectedAggregation/value', 'someText');
+            expect(setPropertySpy).toHaveBeenCalledWith('/indexHandlingFlag', false);
+            expect(setPropertySpy).toHaveBeenCalledWith('/specialIndexHandlingIcon', true);
+            expect(setPropertySpy).toHaveBeenCalledWith(
+                '/iconTooltip',
+                'Index is defined by special logic of Toolbar and can\'t be set here'
+            );
+            expect(setPropertySpy).toHaveBeenCalledWith('/index', updatedIndexArray);
+            expect(setPropertySpy).toHaveBeenCalledWith('/selectedIndex', 2);
         });
     });
 
@@ -135,36 +177,6 @@ describe('AddFragment', () => {
             addFragment.handleDialogClose();
 
             expect(closeSpy).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe('onIndexChanged', () => {
-        afterEach(() => {
-            jest.restoreAllMocks();
-        });
-
-        test('on selected aggragations changed', () => {
-            const addFragment = new AddFragment(
-                'adp.extension.controllers.AddFragment',
-                {} as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
-            );
-
-            const event = {
-                getSource: jest.fn().mockReturnValue({
-                    getSelectedItem: jest.fn().mockReturnValue({ getText: jest.fn().mockReturnValue('0') })
-                })
-            };
-
-            const setPropertySpy = jest.fn();
-
-            addFragment.model = {
-                setProperty: setPropertySpy
-            } as unknown as JSONModel;
-
-            addFragment.onIndexChanged(event as unknown as Event);
-
-            expect(setPropertySpy).toHaveBeenCalledWith('/selectedIndex', '0');
         });
     });
 
@@ -230,7 +242,7 @@ describe('AddFragment', () => {
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.None);
         });
 
-        test('sets error when the fragment name is has special characters', () => {
+        test('sets error when the fragment name has special characters', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
@@ -256,7 +268,7 @@ describe('AddFragment', () => {
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
 
-        test('sets error when the fragment name exceeds 64 characters', () => {
+        test('sets error when the fragment name contains a whitespace at the end', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
@@ -266,7 +278,7 @@ describe('AddFragment', () => {
             const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
             const event = {
                 getSource: jest.fn().mockReturnValue({
-                    getValue: jest.fn().mockReturnValue('thisisverylongnamethisisverylongnamethisisverylongnamethisisveryl'),
+                    getValue: jest.fn().mockReturnValue('samplename '),
                     setValueState: valueStateSpy
                 })
             };
@@ -281,6 +293,34 @@ describe('AddFragment', () => {
 
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         })
+
+        test('sets error when the fragment name exceeds 64 characters', () => {
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
+
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    getValue: jest
+                        .fn()
+                        .mockReturnValue('thisisverylongnamethisisverylongnamethisisverylongnamethisisveryl'),
+                    setValueState: valueStateSpy
+                })
+            };
+
+            addFragment.model = testModel;
+
+            addFragment.dialog = {
+                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+            } as unknown as Dialog;
+
+            addFragment.onFragmentNameInputChange(event as unknown as Event);
+
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
+        });
 
         test('sets create button to true when the fragment name is valid', () => {
             const addFragment = new AddFragment(

@@ -1,10 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`FlpSandbox init add default libs if no libs in manifest.json 1`] = `"sap.m,sap.ui.core,sap.ushell"`;
+
 exports[`FlpSandbox init additional apps 1`] = `
 Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
       "applicationType": "URL",
       "description": "",
       "title": "my.id",
@@ -12,6 +17,9 @@ Object {
     },
     "myObject-action": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.other",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Other App",
@@ -19,6 +27,9 @@ Object {
     },
     "testfev2app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Simple App",
@@ -43,7 +54,7 @@ Object {
         ],
       },
     ],
-    "libs": "",
+    "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
       "my.id": "..",
       "open.ux.preview.client": "/preview/client",
@@ -60,6 +71,9 @@ Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=my.id",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
       "applicationType": "URL",
       "description": "",
       "title": "my.id",
@@ -84,7 +98,7 @@ Object {
         ],
       },
     ],
-    "libs": "",
+    "libs": "sap.m,sap.ui.core,sap.ushell",
     "resources": Object {
       "my.id": "..",
       "open.ux.preview.client": "/preview/client",
@@ -99,6 +113,9 @@ Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Simple App",
@@ -133,11 +150,16 @@ Object {
 }
 `;
 
+exports[`FlpSandbox init reuse libs not part of data-sap-ui-libs 1`] = `"sap.ui.core,sap.m"`;
+
 exports[`FlpSandbox init ui5Theme 1`] = `
 Object {
   "apps": Object {
     "app-preview": Object {
       "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
+      "applicationDependencies": Object {
+        "manifest": true,
+      },
       "applicationType": "URL",
       "description": "This is a very simple application.",
       "title": "My Simple App",
@@ -213,7 +235,7 @@ exports[`FlpSandbox router editor with config 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
@@ -285,7 +307,7 @@ exports[`FlpSandbox router rta 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
@@ -305,7 +327,7 @@ exports[`FlpSandbox router rta 1`] = `
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>
     </script>
 </head>
 
@@ -324,9 +346,8 @@ exports[`FlpSandbox router rta with developerMode=true 1`] = `
         <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />
         <meta name=\\"theme-color\\" content=\\"#000000\\" />
         <meta name=\\"description\\" content=\\"Web page for rendering SAP Fiori Tools Control Property Editor\\" />
-        <link rel=\\"shortcut icon\\" type=\\"image/x-icon\\" href=\\"./editor/favicon.ico\\" />
         <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"./editor/app.css\\" />
-        <title>Control Property Editor</title>
+        <title>Editing test.fe.v2.app</title>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -336,7 +357,8 @@ exports[`FlpSandbox router rta with developerMode=true 1`] = `
             start({
                 previewUrl: '/my/editor.html.inner.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#app-preview',
                 telemetry: false,
-                rootElementId: 'root'
+                rootElementId: 'root',
+                scenario: ''
             });
         </script>
     </body>
@@ -383,7 +405,7 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
@@ -406,7 +428,7 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
     </script>
 </head>
 
@@ -456,7 +478,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 
@@ -479,7 +501,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
-        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
+        data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
     </script>
 </head>
 
@@ -529,7 +551,7 @@ exports[`FlpSandbox router test/flp.html 1`] = `
                     }
                 }
             },
-            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\",\\"applicationDependencies\\":{\\"manifest\\":true}},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\",\\"applicationDependencies\\":{\\"manifest\\":true}}}
         };
     </script>
 

@@ -1,6 +1,7 @@
 import type { Command } from 'commander';
+import chalk from 'chalk';
 import { getLogger, traceChanges } from '../../tracing';
-import type { AdpWriterConfig } from '@sap-ux/adp-tooling';
+import type { AdpWriterConfig, PromptDefaults } from '@sap-ux/adp-tooling';
 import { promptGeneratorInput, generate } from '@sap-ux/adp-tooling';
 import { runNpmInstallCommand } from '../../common';
 import { join } from 'path';
@@ -17,7 +18,18 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
         .option('--id [id]', 'id of the adaptation project')
         .option('--reference [reference]', 'id of the original application')
         .option('--url [url]', 'url pointing to the target system containing the original app')
+        .option('--ft', 'enable the Fiori tools for the generated project')
+        .option('--package [package]', 'ABAP package to be used for deployments')
+        .option('--transport [transport]', 'ABAP transport to be used for deployments')
         .action(async (path, options) => {
+            console.log(
+                `\nThe generation of adaptation projects outside of SAP Business Application Studio is currently ${chalk.bold(
+                    'experimental'
+                )}.`
+            );
+            console.log(
+                'Please report any issues or feedback at https://github.com/SAP/open-ux-tools/issues/new/choose.\n'
+            );
             await generateAdaptationProject(path, { ...options }, !!options.simulate, !!options.skipInstall);
         });
 }
@@ -27,15 +39,12 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
  *
  * @param basePath target folder of the new project
  * @param defaults optional defaults
- * @param defaults.id id of the new adaptation project
- * @param defaults.reference id of the referenced original app
- * @param defaults.url url of the target system
  * @param simulate if set to true, then no files will be written to the filesystem
  * @param skipInstall if set to true then `npm i` is not executed in the new project
  */
 async function generateAdaptationProject(
     basePath: string,
-    defaults: { id?: string; reference?: string; url?: string },
+    defaults: PromptDefaults,
     simulate: boolean,
     skipInstall: boolean
 ): Promise<void> {
@@ -44,6 +53,7 @@ async function generateAdaptationProject(
         logger.debug(`Called generate adaptation-project for path '${basePath}', skip install is '${skipInstall}'`);
         let config: AdpWriterConfig;
         if (defaults.id && defaults.reference && defaults.url) {
+            const url = new URL(defaults.url);
             config = {
                 app: {
                     id: defaults.id,
@@ -51,11 +61,19 @@ async function generateAdaptationProject(
                     layer: 'CUSTOMER_BASE'
                 },
                 target: {
-                    url: defaults.url
+                    url: url.origin,
+                    client: url.searchParams.get('sap-client') ?? undefined
+                },
+                deploy: {
+                    package: defaults.package ? defaults.package.toUpperCase() : '$TMP',
+                    transport: defaults.transport ? defaults.transport.toUpperCase() : undefined
+                },
+                options: {
+                    fioriTools: defaults.ft
                 }
             };
         } else {
-            config = await promptGeneratorInput(defaults);
+            config = await promptGeneratorInput(defaults, logger);
         }
         if (!basePath) {
             basePath = join(process.cwd(), config.app.id);

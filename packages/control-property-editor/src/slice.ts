@@ -1,4 +1,4 @@
-import type { SliceCaseReducers } from '@reduxjs/toolkit';
+import type { PayloadAction, SliceCaseReducers } from '@reduxjs/toolkit';
 import { createSlice, createAction } from '@reduxjs/toolkit';
 
 import type {
@@ -17,8 +17,8 @@ import {
     outlineChanged,
     propertyChanged,
     propertyChangeFailed,
-    scenario,
-    scenarioLoaded
+    showMessage,
+    scenario
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -36,6 +36,7 @@ interface SliceState {
     scenario: Scenario;
     icons: IconDetails[];
     changes: ChangesSlice;
+    dialogMessage: string | undefined;
 }
 
 export interface ChangesSlice {
@@ -101,12 +102,17 @@ export const initialState = {
         controls: {},
         pending: [],
         saved: []
-    }
+    },
+    dialogMessage: undefined
 };
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
     initialState,
-    reducers: {},
+    reducers: {
+        setProjectScenario: (state, action: PayloadAction<Scenario>) => {
+            state.scenario = action.payload;
+        }
+    },
     extraReducers: (builder) =>
         builder
             .addMatcher(outlineChanged.match, (state, action: ReturnType<typeof outlineChanged>): void => {
@@ -129,9 +135,6 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             )
             .addMatcher(iconsLoaded.match, (state, action: ReturnType<typeof iconsLoaded>): void => {
                 state.icons = action.payload;
-            })
-            .addMatcher(scenarioLoaded.match, (state, action: ReturnType<typeof scenarioLoaded>): void => {
-                state.scenario = action.payload;
             })
             .addMatcher(changeProperty.match, (state, action: ReturnType<typeof changeProperty>): void => {
                 if (state.selectedControl?.id === action.payload.controlId) {
@@ -219,6 +222,11 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     state.changes.controls[key] = control;
                 }
             })
+            .addMatcher(showMessage.match, (state, action: ReturnType<typeof showMessage>): void => {
+                state.dialogMessage = action.payload;
+            })
 });
+
+export const { setProjectScenario } = slice.actions;
 
 export default slice.reducer;

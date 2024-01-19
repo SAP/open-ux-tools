@@ -32,13 +32,13 @@
     ],
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "axios": "1.6.0",
+        "axios": "1.6.1",
         "semver": "7.5.4"
     },
     "devDependencies": {
         "@types/semver": "7.5.4",
         "mock-spawn": "0.2.6",
-        "nock": "11.8.2"
+        "nock": "13.4.0"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",

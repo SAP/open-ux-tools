@@ -60,6 +60,33 @@ export default class AddFragment extends BaseDialog {
     }
 
     /**
+     * Handles the index field whenever a specific aggregation is chosen
+     *
+     * @param specialIndexAggregation string | number
+     */
+    private specialIndexHandling(specialIndexAggregation: string | number): void {
+        const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
+        const aggregations = overlay.getDesignTimeMetadata().getData().aggregations;
+
+        if (
+            specialIndexAggregation in aggregations &&
+            'specialIndexHandling' in aggregations[specialIndexAggregation]
+        ) {
+            const controlType = this.runtimeControl.getMetadata().getName();
+            this.model.setProperty('/indexHandlingFlag', false);
+            this.model.setProperty('/specialIndexHandlingIcon', true);
+            this.model.setProperty(
+                '/iconTooltip',
+                `Index is defined by special logic of ${controlType} and can't be set here`
+            );
+        } else {
+            this.model.setProperty('/indexHandlingFlag', true);
+            this.model.setProperty('/specialIndexHandlingIcon', false);
+            this.model.setProperty('/specialIndexHandlingIconPressed', false);
+        }
+    }
+
+    /**
      * Handles the change in aggregations
      *
      * @param event Event
@@ -86,21 +113,12 @@ export default class AddFragment extends BaseDialog {
             return parseInt(key);
         });
 
+        this.specialIndexHandling(selectedItemText);
+
         const updatedIndexArray: { key: number; value: number }[] = this.fillIndexArray(newSelectedControlChildren);
 
         this.model.setProperty('/index', updatedIndexArray);
         this.model.setProperty('/selectedIndex', updatedIndexArray.length - 1);
-    }
-
-    /**
-     * Handles the change in target indexes
-     *
-     * @param event Event
-     */
-    onIndexChanged(event: Event) {
-        const source = event.getSource<ComboBox>();
-        const selectedIndex = source.getSelectedItem()?.getText();
-        this.model.setProperty('/selectedIndex', selectedIndex);
     }
 
     /**
@@ -178,11 +196,13 @@ export default class AddFragment extends BaseDialog {
                     obj.key = 'default';
                     this.model.setProperty('/selectedAggregation/key', obj.key);
                     this.model.setProperty('/selectedAggregation/value', obj.value);
+                    this.specialIndexHandling(obj.value);
                 }
             });
         } else {
             this.model.setProperty('/selectedAggregation/key', controlAggregation[0].key);
             this.model.setProperty('/selectedAggregation/value', controlAggregation[0].value);
+            this.specialIndexHandling(controlAggregation[0].value);
         }
 
         try {
