@@ -24,6 +24,9 @@ Array [
     },
     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.CancelRequest()",
     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.CancelRequest()",
+    "targetKinds": Array [
+      "Action",
+    ],
   },
   Object {
     "content": Array [
@@ -50,6 +53,9 @@ Array [
         },
         "name": "Table",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Reindex(Edm.String)/Table",
+        "targetKinds": Array [
+          "Parameter",
+        ],
       },
     ],
     "isAnnotatable": true,
@@ -72,6 +78,9 @@ Array [
     },
     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.Reindex(Edm.String)",
     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Reindex(Edm.String)",
+    "targetKinds": Array [
+      "Action",
+    ],
   },
 ]
 `;
@@ -103,6 +112,9 @@ Array [
         },
         "name": "Sector",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.DepartmentType/Sector",
+        "targetKinds": Array [
+          "Property",
+        ],
       },
       Object {
         "content": Array [],
@@ -127,6 +139,9 @@ Array [
         },
         "name": "ID",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.DepartmentType/ID",
+        "targetKinds": Array [
+          "Property",
+        ],
       },
     ],
     "isAnnotatable": true,
@@ -153,6 +168,9 @@ Array [
     },
     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.DepartmentType",
     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.DepartmentType",
+    "targetKinds": Array [
+      "EntityType",
+    ],
   },
   Object {
     "content": Array [
@@ -181,6 +199,9 @@ Array [
             "name": "LeaveRequestApproval",
             "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/Department/LeaveRequestApproval",
             "structuredType": "com.sap.gateway.default.iwbep.tea_busi.v0001.Approval",
+            "targetKinds": Array [
+              "ActionImport",
+            ],
           },
           Object {
             "content": Array [],
@@ -205,6 +226,10 @@ Array [
             "name": "ProductsByRating",
             "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/Department/ProductsByRating",
             "structuredType": "com.sap.gateway.default.iwbep.tea_busi.v0001.ProductsByRating",
+            "targetKinds": Array [
+              "FunctionImport",
+              "Action",
+            ],
           },
           Object {
             "content": Array [
@@ -231,6 +256,9 @@ Array [
                 },
                 "name": "$ReturnType",
                 "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/Department/IsSyncActive/$ReturnType",
+                "targetKinds": Array [
+                  "ReturnType",
+                ],
               },
             ],
             "isAnnotatable": true,
@@ -253,6 +281,10 @@ Array [
             },
             "name": "IsSyncActive",
             "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/Department/IsSyncActive",
+            "targetKinds": Array [
+              "FunctionImport",
+              "Action",
+            ],
           },
           Object {
             "content": Array [
@@ -279,6 +311,9 @@ Array [
                 "name": "$ReturnType",
                 "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/Department/GetDepatment/$ReturnType",
                 "structuredType": "com.sap.gateway.default.iwbep.tea_busi.v0001.DepartmentType",
+                "targetKinds": Array [
+                  "ReturnType",
+                ],
               },
             ],
             "isAnnotatable": true,
@@ -301,6 +336,10 @@ Array [
             },
             "name": "GetDepatment",
             "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/Department/GetDepatment",
+            "targetKinds": Array [
+              "FunctionImport",
+              "Action",
+            ],
           },
         ],
         "isAnnotatable": true,
@@ -324,6 +363,10 @@ Array [
         "name": "Department",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/Department",
         "structuredType": "com.sap.gateway.default.iwbep.tea_busi.v0001.DepartmentType",
+        "targetKinds": Array [
+          "EntitySet",
+          "Collection",
+        ],
       },
     ],
     "isAnnotatable": true,
@@ -346,6 +389,9 @@ Array [
     },
     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService",
     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService",
+    "targetKinds": Array [
+      "EntityContainer",
+    ],
   },
 ]
 `;
@@ -378,6 +424,9 @@ Array [
             },
             "name": "$ReturnType",
             "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/SEPMRA_C_PD_ProductActivation/$ReturnType",
+            "targetKinds": Array [
+              "ReturnType",
+            ],
           },
           Object {
             "content": Array [],
@@ -402,6 +451,9 @@ Array [
             "name": "_it",
             "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/SEPMRA_C_PD_ProductActivation/_it",
             "structuredType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType",
+            "targetKinds": Array [
+              "Parameter",
+            ],
           },
           Object {
             "content": Array [],
@@ -426,6 +478,9 @@ Array [
             },
             "name": "Product",
             "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/SEPMRA_C_PD_ProductActivation/Product",
+            "targetKinds": Array [
+              "Parameter",
+            ],
           },
           Object {
             "content": Array [],
@@ -450,6 +505,9 @@ Array [
             },
             "name": "DraftUUID",
             "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/SEPMRA_C_PD_ProductActivation/DraftUUID",
+            "targetKinds": Array [
+              "Parameter",
+            ],
           },
           Object {
             "content": Array [],
@@ -474,6 +532,9 @@ Array [
             },
             "name": "IsActiveEntity",
             "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/SEPMRA_C_PD_ProductActivation/IsActiveEntity",
+            "targetKinds": Array [
+              "Parameter",
+            ],
           },
         ],
         "isAnnotatable": true,
@@ -496,6 +557,10 @@ Array [
         },
         "name": "SEPMRA_C_PD_ProductActivation",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService/SEPMRA_C_PD_ProductActivation",
+        "targetKinds": Array [
+          "FunctionImport",
+          "Action",
+        ],
       },
     ],
     "isAnnotatable": true,
@@ -518,6 +583,9 @@ Array [
     },
     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService",
     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.TestService",
+    "targetKinds": Array [
+      "EntityContainer",
+    ],
   },
 ]
 `;
@@ -549,6 +617,9 @@ Array [
         },
         "name": "Name",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Employee/Name",
+        "targetKinds": Array [
+          "Property",
+        ],
       },
       Object {
         "content": Array [],
@@ -573,6 +644,9 @@ Array [
         },
         "name": "Age",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Employee/Age",
+        "targetKinds": Array [
+          "Property",
+        ],
       },
       Object {
         "content": Array [],
@@ -597,6 +671,9 @@ Array [
         },
         "name": "Gender",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Employee/Gender",
+        "targetKinds": Array [
+          "Property",
+        ],
       },
     ],
     "isAnnotatable": true,
@@ -619,6 +696,9 @@ Array [
     },
     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.Employee",
     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Employee",
+    "targetKinds": Array [
+      "ComplexType",
+    ],
   },
   Object {
     "content": Array [
@@ -645,6 +725,9 @@ Array [
         },
         "name": "Sector",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Sector",
+        "targetKinds": Array [
+          "Property",
+        ],
       },
       Object {
         "content": Array [],
@@ -669,6 +752,9 @@ Array [
         },
         "name": "ID",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ID",
+        "targetKinds": Array [
+          "Property",
+        ],
       },
       Object {
         "content": Array [],
@@ -693,6 +779,9 @@ Array [
         },
         "name": "Name",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Name",
+        "targetKinds": Array [
+          "Property",
+        ],
       },
     ],
     "isAnnotatable": true,
@@ -719,6 +808,9 @@ Array [
     },
     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
+    "targetKinds": Array [
+      "EntityType",
+    ],
   },
   Object {
     "content": Array [
@@ -745,6 +837,9 @@ Array [
         },
         "name": "Department",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.EmployeeCount(Edm.String)/Department",
+        "targetKinds": Array [
+          "Parameter",
+        ],
       },
       Object {
         "content": Array [],
@@ -769,6 +864,9 @@ Array [
         },
         "name": "$ReturnType",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.EmployeeCount(Edm.String)/$ReturnType",
+        "targetKinds": Array [
+          "ReturnType",
+        ],
       },
     ],
     "isAnnotatable": true,
@@ -791,6 +889,9 @@ Array [
     },
     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.EmployeeCount(Edm.String)",
     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.EmployeeCount(Edm.String)",
+    "targetKinds": Array [
+      "Function",
+    ],
   },
   Object {
     "content": Array [
@@ -817,6 +918,9 @@ Array [
         },
         "name": "ID",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetEmployeeData(Edm.String)/ID",
+        "targetKinds": Array [
+          "Parameter",
+        ],
       },
       Object {
         "content": Array [],
@@ -841,6 +945,9 @@ Array [
         "name": "$ReturnType",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetEmployeeData(Edm.String)/$ReturnType",
         "structuredType": "com.sap.gateway.default.iwbep.tea_busi.v0001.Employee",
+        "targetKinds": Array [
+          "ReturnType",
+        ],
       },
     ],
     "isAnnotatable": true,
@@ -863,6 +970,9 @@ Array [
     },
     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetEmployeeData(Edm.String)",
     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetEmployeeData(Edm.String)",
+    "targetKinds": Array [
+      "Function",
+    ],
   },
   Object {
     "content": Array [
@@ -889,6 +999,9 @@ Array [
         },
         "name": "ID",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartmentData(Edm.String)/ID",
+        "targetKinds": Array [
+          "Parameter",
+        ],
       },
       Object {
         "content": Array [],
@@ -913,6 +1026,9 @@ Array [
         "name": "$ReturnType",
         "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartmentData(Edm.String)/$ReturnType",
         "structuredType": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
+        "targetKinds": Array [
+          "ReturnType",
+        ],
       },
     ],
     "isAnnotatable": true,
@@ -935,6 +1051,9 @@ Array [
     },
     "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartmentData(Edm.String)",
     "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartmentData(Edm.String)",
+    "targetKinds": Array [
+      "Function",
+    ],
   },
 ]
 `;
@@ -966,6 +1085,9 @@ Array [
         },
         "name": "Height",
         "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.Size/Height",
+        "targetKinds": Array [
+          "Property",
+        ],
       },
       Object {
         "content": Array [],
@@ -990,6 +1112,9 @@ Array [
         },
         "name": "Width",
         "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.Size/Width",
+        "targetKinds": Array [
+          "Property",
+        ],
       },
       Object {
         "content": Array [],
@@ -1014,6 +1139,9 @@ Array [
         },
         "name": "Units",
         "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.Size/Units",
+        "targetKinds": Array [
+          "Property",
+        ],
       },
     ],
     "isAnnotatable": true,
@@ -1036,6 +1164,9 @@ Array [
     },
     "name": "Z2SEPMRA_C_PD_PRODUCT_CDS.Size",
     "path": "Z2SEPMRA_C_PD_PRODUCT_CDS.Size",
+    "targetKinds": Array [
+      "ComplexType",
+    ],
   },
 ]
 `;

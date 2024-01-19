@@ -1,5 +1,30 @@
 # @sap-ux/preview-middleware
 
+## 0.11.26
+
+### Patch Changes
+
+-   Updated dependencies [349fff1a]
+    -   @sap-ux/adp-tooling@0.8.0
+
+## 0.11.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.7.4
+
+## 0.11.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.7.3
+
+## 0.11.23
+
+### Patch Changes
+
+-   70296b55: Remove label and icon in control property editor
+
 ## 0.11.22
 
 ### Patch Changes

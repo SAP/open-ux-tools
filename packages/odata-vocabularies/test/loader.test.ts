@@ -66,4 +66,14 @@ describe('lib vocabulary loader', () => {
         expect(id).toStrictEqual('ID');
         expect(label).toStrictEqual('Label');
     });
+    it('JSON vocabulary term listed as available for kind (based on AppliesTo) ', () => {
+        // Act
+        const specificTargetKind = vocabularyInformation.byTarget.get(target);
+        // Expect
+        expect(specificTargetKind?.has('Org.OData.JSON.V1.Schema')).toBeTruthy();
+    });
+    it('JSON vocabulary namespace listed with correct alias', () => {
+        // Expect
+        expect(vocabularyInformation.supportedVocabularies.get('Org.OData.JSON.V1')).toMatchSnapshot();
+    });
 });
