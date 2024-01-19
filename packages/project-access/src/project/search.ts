@@ -187,22 +187,22 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
             // in root -> not supported
             return null;
         }
-        // Now we have the app root folder. Check for freestyle non CAP
-        if (
+        // Check if app is included in CAP project
+        const projectRoot = await findCapProjectRoot(appRoot);
+        if (projectRoot) {
+            // App included in CAP
+            return {
+                appRoot,
+                projectRoot
+            };
+        } else if (
+            // Check for freestyle non CAP
             (await fileExists(join(appRoot, FileName.Ui5LocalYaml))) &&
             hasDependency(appPckJson, '@sap/ux-ui5-tooling')
         ) {
             return {
                 appRoot,
                 projectRoot: appRoot
-            };
-        }
-        // Project must be CAP, find project root
-        const projectRoot = await findCapProjectRoot(appRoot);
-        if (projectRoot) {
-            return {
-                appRoot,
-                projectRoot
             };
         }
     } catch {
