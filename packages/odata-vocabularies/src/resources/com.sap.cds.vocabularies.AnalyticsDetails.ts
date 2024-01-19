@@ -32,7 +32,6 @@ export default {
                 '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.ExceptionAggregationBehaviorType',
                 '@Org.OData.Core.V1.Description': 'Description exception aggregation behavior (TODO)'
             },
-
             'exceptionAggregationElements': {
                 '$Collection': true,
                 '$Type': 'Edm.PropertyPath',
@@ -183,7 +182,6 @@ export default {
                 '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.RangeOptionType',
                 '@Org.OData.Core.V1.Description': 'Description range option (TODO)'
             },
-
             'low': {
                 '@Org.OData.Core.V1.Description': 'TODO description for range type low'
             },
