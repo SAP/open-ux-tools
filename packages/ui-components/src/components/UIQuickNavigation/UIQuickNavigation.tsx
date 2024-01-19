@@ -1,39 +1,38 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getUIFirstFocusable, isHTMLElement, setUIFocusVisibility } from '../../utilities';
 
 import './UIQuickNavigation.scss';
-import { getDocument } from '@fluentui/react';
 
 export const QUICK_NAVIGATION_ATTRIBUTE = 'data-quick-navigation-key';
 const QUICK_NAVIGATION_CLASSES = {
     inline: 'quick-navigation--inline',
     external: 'quick-navigation--external'
 };
-const EXTERNAL_HELPER_OFFSET: QuickNavigationOffset = {
+const EXTERNAL_HELPER_OFFSET: UIQuickNavigationOffset = {
     x: 15,
     y: 15
 };
 
-export interface QuickNavigationAttribute {
+export interface UIQuickNavigationAttribute {
     [QUICK_NAVIGATION_ATTRIBUTE]: string;
 }
 
-export const setQuickNavigationKey = (key: string): QuickNavigationAttribute => {
+export const setQuickNavigationKey = (key: string): UIQuickNavigationAttribute => {
     return {
         [QUICK_NAVIGATION_ATTRIBUTE]: key.toUpperCase()
     };
 };
 
-interface QuickNavigationOffset {
+interface UIQuickNavigationOffset {
     x: number;
     y: number;
 }
 
-export interface QuickNavigationProps {
+export interface UIQuickNavigationProps {
     className?: string;
     children: React.ReactNode;
     inline?: boolean;
-    offset?: QuickNavigationOffset;
+    offset?: UIQuickNavigationOffset;
 }
 
 /**
@@ -53,35 +52,52 @@ function getClassName(className?: string, enabled?: boolean, inline?: boolean): 
 }
 
 /**
+ * Method returns scroll offset position for external rendering approach.
+ * External rendering happens in 'document.body' and body scroll position should be considered.
+ *
+ * @returns Scroll position of body and html.
+ */
+function getScrollOffset(): UIQuickNavigationOffset {
+    let container: HTMLElement | undefined = document.body;
+    const scrollOffset = {
+        y: 0,
+        x: 0
+    };
+    do {
+        scrollOffset.y += container.scrollTop || 0;
+        scrollOffset.x += container.scrollLeft || 0;
+        container = container.parentNode && isHTMLElement(container.parentNode) ? container.parentNode : undefined;
+    } while (container);
+    return scrollOffset;
+}
+
+/**
  * Method toggles visibility of external quick navigation helpers UI.
  *
  * @param enabled Is quick navigation enabled/activated.
  * @param offset Offset values for helper position.
  */
 function toggleExternalVisibility(enabled: boolean, offset = EXTERNAL_HELPER_OFFSET): void {
-    const doc = getDocument();
-    if (!doc) {
-        return;
-    }
-    const holder = doc.body;
+    const holder = document.body;
     // Cleanup container
-    const existingContainer = doc.querySelector(`.${QUICK_NAVIGATION_CLASSES.external}`);
+    const existingContainer = document.querySelector(`.${QUICK_NAVIGATION_CLASSES.external}`);
     if (existingContainer) {
         holder.removeChild(existingContainer);
     }
     // Show helpers if quick navigation is active
     if (enabled) {
         // Create external container
-        const externalContainer = doc.createElement('div');
+        const externalContainer = document.createElement('div');
         externalContainer.classList.add(QUICK_NAVIGATION_CLASSES.external);
-        const navigationTargets = doc.querySelectorAll(`[${QUICK_NAVIGATION_ATTRIBUTE}]`);
+        const navigationTargets = document.querySelectorAll(`[${QUICK_NAVIGATION_ATTRIBUTE}]`);
         // Create external DOM element to each navigation target
+        const scrollOffset = getScrollOffset();
         navigationTargets.forEach((target) => {
             const rect = target.getBoundingClientRect();
-            const helper = doc.createElement('div');
+            const helper = document.createElement('div');
             helper.textContent = target.getAttribute(QUICK_NAVIGATION_ATTRIBUTE);
-            helper.style.top = `${rect.top - offset.y}px`;
-            helper.style.left = `${rect.left - offset.x}px`;
+            helper.style.top = `${rect.top - offset.y + scrollOffset.y}px`;
+            helper.style.left = `${rect.left - offset.x + scrollOffset.x}px`;
             externalContainer.appendChild(helper);
         });
         holder.appendChild(externalContainer);
@@ -96,10 +112,7 @@ function toggleExternalVisibility(enabled: boolean, offset = EXTERNAL_HELPER_OFF
  * @returns True if quick navigation should be enabled for passed keyboard event.
  */
 export const isQuickNavigationEnabled = (event: KeyboardEvent): boolean => {
-    if ((event.ctrlKey || event.metaKey) && event.altKey) {
-        return true;
-    }
-    return false;
+    return (event.ctrlKey || event.metaKey) && event.altKey;
 };
 
 /**
@@ -112,9 +125,22 @@ function resolveKeyCode(code: string): string | undefined {
     return code.replace('Digit', '').replace('Key', '').toUpperCase();
 }
 
-export const UIQuickNavigation: React.FC<QuickNavigationProps> = (props: QuickNavigationProps) => {
+/**
+ * Method to stop event bubbling.
+ *
+ * @param event Keyboard event.
+ */
+function stopEventBubling(event: KeyboardEvent | FocusEvent): void {
+    event.stopImmediatePropagation();
+    event.stopPropagation();
+    event.preventDefault();
+}
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const UIQuickNavigation: React.FC<UIQuickNavigationProps> = (props: UIQuickNavigationProps) => {
     const { className, children, inline, offset } = props;
     const [enabled, setEnabled] = useState(false);
+    const navigated = useRef<boolean>(false);
 
     // Handle visibility for 'external' rendering approach(helpers rendered outside of target navigation containers)
     useEffect(() => {
@@ -153,9 +179,8 @@ export const UIQuickNavigation: React.FC<QuickNavigationProps> = (props: QuickNa
                     // Apply focus to element
                     firstFocusableElement?.focus();
                     // Prevent event bubbling
-                    event.stopImmediatePropagation();
-                    event.stopPropagation();
-                    event.preventDefault();
+                    stopEventBubling(event);
+                    navigated.current = true;
                 }
                 // Disable/deactivate UI with quick navigation
                 setEnabled(false);
@@ -173,6 +198,10 @@ export const UIQuickNavigation: React.FC<QuickNavigationProps> = (props: QuickNa
         (event: KeyboardEvent | FocusEvent) => {
             if (enabled && (!('keyCode' in event) || !isQuickNavigationEnabled(event))) {
                 setEnabled(false);
+            }
+            if (navigated.current) {
+                navigated.current = false;
+                stopEventBubling(event);
             }
         },
         [enabled]
