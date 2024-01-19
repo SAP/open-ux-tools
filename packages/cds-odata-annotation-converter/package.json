@@ -31,7 +31,6 @@
         "@sap-ux/cds-annotation-parser": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap/ux-cds-compiler-facade": "1.12.2",
-        "chevrotain": "7.1.1",
         "i18next": "19.4.4",
         "vscode-languageserver-types": "3.17.2"
     },

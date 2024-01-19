@@ -476,9 +476,6 @@ importers:
       '@sap/ux-cds-compiler-facade':
         specifier: 1.12.2
         version: 1.12.2(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)
-      chevrotain:
-        specifier: 7.1.1
-        version: 7.1.1
       i18next:
         specifier: 19.4.4
         version: 19.4.4
