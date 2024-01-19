@@ -1,0 +1,8 @@
+{
+    "extends": "../../tsconfig.json",
+    "include": ["src", "test/unit/helper", "src/i18n/**/*.json"],
+    "compilerOptions": {
+        "rootDirs": ["src", "test/unit/helper"],
+        "outDir": "dist"
+    }
+}

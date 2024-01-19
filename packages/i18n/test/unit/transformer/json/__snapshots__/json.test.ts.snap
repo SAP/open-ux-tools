@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`json jsonToI18nBundle 1`] = `
+Object {
+  "": Array [
+    Object {
+      "filePath": "absolute/file/path",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 21,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 17,
+            "line": 3,
+          },
+        },
+        "value": "App1",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 30,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 25,
+            "line": 3,
+          },
+        },
+        "value": "App 1",
+      },
+    },
+    Object {
+      "filePath": "absolute/file/path",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 20,
+            "line": 4,
+          },
+          "start": Object {
+            "character": 17,
+            "line": 4,
+          },
+        },
+        "value": "Key",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 33,
+            "line": 4,
+          },
+          "start": Object {
+            "character": 24,
+            "line": 4,
+          },
+        },
+        "value": "App Layer",
+      },
+    },
+  ],
+}
+`;
