@@ -20,3 +20,11 @@ jQuery.extend(FakeLrepConnector.prototype, {
 });
 
 FakeLrepConnector.enableFakeConnector();
+// @ts-ignore
+FakeLrepConnector.loadFlexData = async function () {
+    return { variants: [] };
+};
+
+export default FakeLrepConnector;
+// // @ts-ignore
+// sap.ui.fl.LrepConnector.loadFlexData = () => {};

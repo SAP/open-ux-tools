@@ -58,7 +58,40 @@
         data-sap-ui-oninit="module:open/ux/preview/client/flp/init"<% if (locals.flex) { %>
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flex) %>'<% } if (locals.locateReuseLibsScript) { %>
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>>
-    </script><% if (locals.flex && flex?.scenario === 'ADAPTATION_PROJECT') { %>
+    </script>
+    
+    <script />
+        jQuery.sap.require("sap.ui.fl.FakeLrepConnector");
+        jQuery.extend(sap.ui.fl.FakeLrepConnector.prototype, {
+            loadChanges: async function () {
+                    const lrep = new sap.ui.fl.LrepConnector()
+                    
+                    const path = '/preview/api/changes';
+                    const response = await fetch(path, {
+                        method: 'GET',
+                        headers: {
+                            'content-type': 'application/json'
+                        }
+                    });
+                    const changes = await response.json();
+                return sap.ui.fl.LrepConnector.prototype.loadChanges.apply(lrep, arguments).then((res) => {
+                    const arr = [];
+                    Object.entries(changes).forEach(([key, val]) => {
+                        arr.push(val);
+                    })
+                    res.changes.changes = arr;
+                    return res;
+                });
+            },
+            loadSettings: function () {
+                return Promise.resolve();
+            }
+			});
+			sap.ui.fl.FakeLrepConnector.enableFakeConnector();
+       
+    </script>
+    
+    <% if (locals.flex && flex?.scenario === 'ADAPTATION_PROJECT') { %>
         <!-- Temporary fix until RTA provides api for enable/disable buttons in main RTA navigation menu -->
     <style>
         .sapUiRtaToolbarActionsSection button[aria-label="Exit"],

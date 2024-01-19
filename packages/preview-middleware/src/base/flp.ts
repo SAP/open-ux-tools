@@ -357,12 +357,12 @@ export class FlpSandbox {
             //     layers: ['VENDOR', 'CUSTOMER_BASE']
             // }
             // @ts-ignore
-            // { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
-            {
-                applyConnector: fakeLrepConnector,
-                writeConnector: fakeLrepConnector,
-                custom: true
-            }
+            { connector: 'LrepConnector', layers: [], url: "/sap/bc/lrep" }
+            // {
+            //     applyConnector: fakeLrepConnector,
+            //     writeConnector: fakeLrepConnector,
+            //     custom: true
+            // }
         ];
     }
 
