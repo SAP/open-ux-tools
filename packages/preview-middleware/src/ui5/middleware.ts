@@ -49,7 +49,7 @@ async function createRouter(
     } else {
         const manifest = await resources.rootProject.byPath('/manifest.json');
         if (manifest) {
-            await flp.init(JSON.parse(await manifest.getString()));
+            await flp.init(JSON.parse(await manifest.getString()), { manifest: true });
         } else {
             throw new Error('No manifest.json found.');
         }

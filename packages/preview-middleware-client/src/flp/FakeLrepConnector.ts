@@ -13,6 +13,9 @@ jQuery.extend(FakeLrepConnector.prototype, {
         });
         const changes = await response.json();
         return changes;
+    },
+    loadSettings: function () {
+        return Promise.resolve();
     }
 });
 
