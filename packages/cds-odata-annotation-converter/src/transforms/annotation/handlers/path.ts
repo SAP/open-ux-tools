@@ -189,7 +189,6 @@ function processAnnotationSegments(
  * @param node - The Path node representing the path.
  * @param tokens - The array of Identifier or Separator tokens representing the path segments.
  * @param startIndex - The index indicating the start of the range in the tokens array.
- * @returns This function does not return a value.
  */
 function pushMissingPathEscapingDiagnostic(
     state: VisitorState,
@@ -230,7 +229,6 @@ function pushMissingPathEscapingDiagnostic(
  *
  * @param state - The VisitorState object managing the state during the visit.
  * @param token - The Separator token representing the path separator.
- * @returns This function does not return a value.
  */
 function pushWrongPathSeparatorDiagnostic(state: VisitorState, token: Separator): void {
     if (!token.range) {

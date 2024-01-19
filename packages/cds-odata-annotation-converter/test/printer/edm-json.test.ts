@@ -22,9 +22,7 @@ describe('edmJson', () => {
                 Function: {
                     type: 'attribute',
                     name: 'Function',
-                    nameRange: null,
-                    value: 'odata.concat',
-                    valueRange: null
+                    value: 'odata.concat'
                 }
             },
             type: 'element'
@@ -63,8 +61,8 @@ describe('edmJson', () => {
                     content: [],
                     contentRange: noRange,
                     attributes: {
-                        Name: { type: 'attribute', name: 'Name', nameRange: null, value: '$2', valueRange: null },
-                        $0: { type: 'attribute', name: '$0', nameRange: null, value: '', valueRange: null }
+                        Name: { type: 'attribute', name: 'Name', value: '$2' },
+                        $0: { type: 'attribute', name: '$0', value: '' }
                     },
                     type: 'element'
                 }
@@ -74,9 +72,7 @@ describe('edmJson', () => {
                 Function: {
                     type: 'attribute',
                     name: 'Function',
-                    nameRange: null,
-                    value: 'odata.fillUriTemplate',
-                    valueRange: null
+                    value: 'odata.fillUriTemplate'
                 }
             },
             type: 'element'
@@ -112,9 +108,7 @@ describe('edmJson', () => {
                 Function: {
                     type: 'attribute',
                     name: 'Function',
-                    nameRange: null,
-                    value: 'odata.uriEncode',
-                    valueRange: null
+                    value: 'odata.uriEncode'
                 }
             },
             type: 'element'

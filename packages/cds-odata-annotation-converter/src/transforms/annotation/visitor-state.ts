@@ -97,7 +97,6 @@ export class VisitorState {
     /**
      *
      * @param diagnostic - The diagnostic to be added.
-     * @returns
      */
     addDiagnostic(diagnostic: Diagnostic) {
         this._diagnostics.push(diagnostic);
@@ -106,7 +105,6 @@ export class VisitorState {
     /**
      *
      * @param path - The path to be added.
-     * @returns
      */
     addPath(path: string) {
         this._pathSet.add(path);

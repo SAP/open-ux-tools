@@ -4,10 +4,16 @@ import { default as cds } from '@sap/cds';
 import type { Diagnostic, Element } from '@sap-ux/odata-annotation-core';
 import * as projectAccess from '@sap-ux/project-access';
 import type { AnnotationGroup, Annotation } from '@sap-ux/cds-annotation-parser';
-import { getFileObj } from './testUtils/file-access';
 import { deserialize } from './deserialize-ast';
 import { getCdsArtifacts } from '@sap/ux-cds-compiler-facade';
 import type { CdsArtifactsType, File } from '@sap/ux-cds-compiler-facade';
+import * as fs from 'fs';
+
+export const getFileObj = async (root: string, fileUri: string): Promise<File> => {
+    const fileContentBuffer = await fs.promises.readFile(join(root, fileUri));
+    const fileContent = fileContentBuffer.toString('utf-8'); // Convert Buffer to string
+    return { fileUri, fileContent };
+};
 
 export type TestCaseName =
     | 'json'
@@ -86,21 +92,3 @@ export const prepare = async (
 
     return { projectRoot, cdsArtifacts, fileCache };
 };
-
-// const setProjectFileSequence = (
-//     provider: projectAccess.ProjectProvider,
-//     fileSequence: string[],
-//     cdsServiceName: string,
-//     cdsAppName: string
-// ): void => {
-//     const project = provider.project;
-//     project.apps[cdsAppName] = project.apps[cdsAppName] || {
-//         manifest: '',
-//         changes: '',
-//         mainService: '',
-//         services: {}
-//     };
-//     project.apps[cdsAppName].services[cdsServiceName] = project.apps[cdsAppName].services[cdsServiceName] || {};
-//     project.apps[cdsAppName].annotations = {};
-//     project.apps[cdsAppName].annotations[cdsServiceName] = fileSequence; // all cds files can contain annotations
-// };

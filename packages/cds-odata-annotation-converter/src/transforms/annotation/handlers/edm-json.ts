@@ -106,7 +106,6 @@ export class EdmJsonVisitor {
      *
      * @param property - The RecordProperty representing the attribute.
      * @param element - The Element to which the attribute will be added.
-     * @returns This function does not return a value.
      */
     convertAttribute(property: RecordProperty, element: Element): void {
         if (property.value) {
@@ -129,7 +128,6 @@ export class EdmJsonVisitor {
      *
      * @param property - The RecordProperty containing the element name.
      * @param element - The Element to be converted.
-     * @returns
      */
     convertElementName(property: RecordProperty, element: Element): void {
         element.name = property.name.value.substring(1);
@@ -156,7 +154,6 @@ export class EdmJsonVisitor {
      *
      * @param items - The collection of AnnotationValue items to be converted.
      * @param element - The Element to which the converted items will be added.
-     * @returns This function does not return a value.
      */
     convertCollection(items: AnnotationValue[], element: Element): void {
         for (const item of items) {

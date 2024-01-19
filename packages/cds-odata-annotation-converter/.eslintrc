@@ -4,7 +4,7 @@
     ],
     "parserOptions": {
         "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true,
-        "project": "./tsconfig-test.json"
+        "project": "./tsconfig.eslint.json"
     },
     "rules": {
         "@typescript-eslint/no-use-before-define": [

@@ -44,8 +44,6 @@ function getElementNameForQuotedLiteral(kind: QuotedLiteralKind): Edm {
  * Throws an error indicating that a value should never be reached.
  *
  * @param value - The value that should never be reached.
- * @returns - This function never returns; it always throws an error.
- * @throws {Error} - An error indicating the unexpected value.
  */
 function assertNever(value: never): never {
     throw new Error(`Unexpected value: ${value}`);

@@ -20,7 +20,6 @@
         "lint:summary": "eslint . --ext .ts,.tsx -f summary",
         "pre-commit": "lint-staged --quiet",
         "test": "jest --maxWorkers=2",
-        "test:update": "yarn compile && node scripts/update-test-data.js",
         "watch": "tsc  --build ./ -watch"
     },
     "files": [
@@ -31,7 +30,7 @@
         "@sap-ux/odata-vocabularies": "workspace:*",
         "@sap-ux/cds-annotation-parser": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
-        "@sap/ux-cds-compiler-facade": "/Users/i501270/SAPDevelop/tools-suite/packages/lib/cds-compiler-facade",
+        "@sap/ux-cds-compiler-facade": "1.12.2",
         "chevrotain": "7.1.1",
         "i18next": "19.4.4",
         "vscode-languageserver-types": "3.17.2"
@@ -39,28 +38,7 @@
     "devDependencies": {
         "@sap/cds": "7.4.1",
         "@sap/cds-compiler": "4.4.4",
-        "@sap-ux/project-access": "1.16.1",
-        "npm-run-all": "4.1.5",
-        "typescript": "4.9.5",
-        "vscode-uri": "1.0.6",
-        "yamljs": "0.3.0"
-    },
-    "eslint-formatter-multiple": {
-        "formatters": [
-            {
-                "name": "stylish",
-                "output": "console"
-            },
-            {
-                "name": "json",
-                "output": "file",
-                "path": "reports/lint/eslint.json"
-            },
-            {
-                "name": "checkstyle",
-                "output": "file",
-                "path": "reports/lint/eslint.checkstyle.xml"
-            }
-        ]
+        "@sap-ux/project-access": "workspace:*",
+        "npm-run-all": "4.1.5"
     }
 }

@@ -51,7 +51,7 @@ class PositionVisitor {
      *
      * @param node - The TermNode or array of TermNodes to visit.
      * @param options - The options for the position visitor.
-     * @param - The segments representing the path to the current node.
+     * @param segments - The segments representing the path to the current node.
      * @returns Returns the VisitorReturnValue or undefined if no match is found.
      */
     visit(

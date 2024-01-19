@@ -153,7 +153,8 @@ describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
             content: [],
             isAnnotatable: true,
             name: '',
-            kind: ''
+            kind: '',
+            targetKinds: []
         };
         cdsArtifactsPlus.cdsCompilerFacade
             ?.getAllSourceUris()

@@ -211,7 +211,7 @@ describe('csdlToCds', () => {
                             Term: {
                                 type: 'attribute',
                                 name: 'Term',
-                                nameRange: null,
+
                                 value: 'Common.IsActionCritical',
                                 valueRange: {
                                     start: { line: 49, character: 12 },
@@ -221,7 +221,7 @@ describe('csdlToCds', () => {
                             Qualifier: {
                                 type: 'attribute',
                                 name: 'Qualifier',
-                                nameRange: null,
+
                                 value: 'actionAfter',
                                 valueRange: {
                                     start: { line: 49, character: 37 },
@@ -296,7 +296,7 @@ describe('csdlToCds', () => {
                             Term: {
                                 type: 'attribute',
                                 name: 'Term',
-                                nameRange: null,
+
                                 value: 'UI.ParameterDefaultValue',
                                 valueRange: {
                                     start: { line: 57, character: 12 },
@@ -306,7 +306,7 @@ describe('csdlToCds', () => {
                             Qualifier: {
                                 type: 'attribute',
                                 name: 'Qualifier',
-                                nameRange: null,
+
                                 value: 'paramAfter',
                                 valueRange: {
                                     start: { line: 57, character: 38 },
@@ -381,7 +381,7 @@ describe('csdlToCds', () => {
                             Term: {
                                 type: 'attribute',
                                 name: 'Term',
-                                nameRange: null,
+
                                 value: 'UI.ParameterDefaultValue',
                                 valueRange: {
                                     start: { line: 14, character: 10 },
@@ -391,7 +391,7 @@ describe('csdlToCds', () => {
                             Qualifier: {
                                 type: 'attribute',
                                 name: 'Qualifier',
-                                nameRange: null,
+
                                 value: 'paramAfter',
                                 valueRange: {
                                     start: { line: 14, character: 36 },
@@ -581,9 +581,7 @@ describe('csdlToCds', () => {
                     propValueElement.attributes[name] = {
                         type: 'attribute',
                         name: name,
-                        value: value,
-                        nameRange: null,
-                        valueRange: null
+                        value: value
                     };
                 } else {
                     propValueElement.content.push({
@@ -683,9 +681,7 @@ describe('csdlToCds', () => {
                     propValueElement.attributes[name] = {
                         type: 'attribute',
                         name: name,
-                        value: value,
-                        nameRange: null,
-                        valueRange: null
+                        value: value
                     };
                 } else {
                     propValueElement.content.push({
@@ -954,16 +950,14 @@ describe('csdlToCds', () => {
                         Property: {
                             type: 'attribute',
                             name: 'Property',
-                            nameRange: null,
-                            value: 'Target',
-                            valueRange: null
+
+                            value: 'Target'
                         },
                         AnnotationPath: {
                             type: 'attribute',
                             name: 'AnnotationPath',
-                            nameRange: null,
-                            value: '$0',
-                            valueRange: null
+
+                            value: '$0'
                         }
                     },
                     type: 'element'
@@ -1016,16 +1010,14 @@ describe('csdlToCds', () => {
                                         Property: {
                                             type: 'attribute',
                                             name: 'Property',
-                                            nameRange: null,
-                                            value: 'Value',
-                                            valueRange: null
+
+                                            value: 'Value'
                                         },
                                         $2: {
                                             type: 'attribute',
                                             name: '$2',
-                                            nameRange: null,
-                                            value: '',
-                                            valueRange: null
+
+                                            value: ''
                                         }
                                     },
                                     type: 'element'
@@ -1036,9 +1028,8 @@ describe('csdlToCds', () => {
                                 Type: {
                                     type: 'attribute',
                                     name: 'Type',
-                                    nameRange: null,
-                                    value: 'UI.DataField',
-                                    valueRange: null
+
+                                    value: 'UI.DataField'
                                 }
                             },
                             type: 'element'
@@ -1049,9 +1040,8 @@ describe('csdlToCds', () => {
                         Property: {
                             type: 'attribute',
                             name: 'Property',
-                            nameRange: null,
-                            value: 'HeadLine',
-                            valueRange: null
+
+                            value: 'HeadLine'
                         }
                     },
                     type: 'element'
@@ -1076,11 +1066,10 @@ describe('csdlToCds', () => {
                             Property: {
                                 type: 'attribute',
                                 name: 'Property',
-                                nameRange: null,
-                                value: 'TypeName',
-                                valueRange: null
+
+                                value: 'TypeName'
                             },
-                            $1: { type: 'attribute', name: '$1', nameRange: null, valueRange: null } as Attribute
+                            $1: { type: 'attribute', name: '$1' } as Attribute
                         },
                         type: 'element'
                     },
@@ -1093,11 +1082,10 @@ describe('csdlToCds', () => {
                             Property: {
                                 type: 'attribute',
                                 name: 'Property',
-                                nameRange: null,
-                                value: 'TypeNamePlural',
-                                valueRange: null
+
+                                value: 'TypeNamePlural'
                             },
-                            $2: { type: 'attribute', name: '$2', nameRange: null, valueRange: null } as Attribute
+                            $2: { type: 'attribute', name: '$2' } as Attribute
                         },
                         type: 'element'
                     },
@@ -1110,9 +1098,8 @@ describe('csdlToCds', () => {
                             Property: {
                                 type: 'attribute',
                                 name: 'Property',
-                                nameRange: null,
-                                value: 'Title',
-                                valueRange: null
+
+                                value: 'Title'
                             }
                         },
                         type: 'element'
@@ -1126,9 +1113,8 @@ describe('csdlToCds', () => {
                             Property: {
                                 type: 'attribute',
                                 name: 'Property',
-                                nameRange: null,
-                                value: 'Description',
-                                valueRange: null
+
+                                value: 'Description'
                             }
                         },
                         type: 'element'
@@ -1142,11 +1128,10 @@ describe('csdlToCds', () => {
                             Property: {
                                 type: 'attribute',
                                 name: 'Property',
-                                nameRange: null,
-                                value: 'ImageUrl',
-                                valueRange: null
+
+                                value: 'ImageUrl'
                             },
-                            $5: { type: 'attribute', name: '$5', nameRange: null, valueRange: null } as Attribute
+                            $5: { type: 'attribute', name: '$5' } as Attribute
                         },
                         type: 'element'
                     },
@@ -1159,11 +1144,10 @@ describe('csdlToCds', () => {
                             Property: {
                                 type: 'attribute',
                                 name: 'Property',
-                                nameRange: null,
-                                value: 'TypeImageUrl',
-                                valueRange: null
+
+                                value: 'TypeImageUrl'
                             },
-                            $6: { type: 'attribute', name: '$6', nameRange: null, valueRange: null } as Attribute
+                            $6: { type: 'attribute', name: '$6' } as Attribute
                         },
                         type: 'element'
                     },
@@ -1176,11 +1160,10 @@ describe('csdlToCds', () => {
                             Property: {
                                 type: 'attribute',
                                 name: 'Property',
-                                nameRange: null,
-                                value: 'Initials',
-                                valueRange: null
+
+                                value: 'Initials'
                             },
-                            $0: { type: 'attribute', name: '$0', nameRange: null, valueRange: null } as Attribute
+                            $0: { type: 'attribute', name: '$0' } as Attribute
                         },
                         type: 'element'
                     }
@@ -1205,9 +1188,8 @@ describe('csdlToCds', () => {
                             Property: {
                                 type: 'attribute',
                                 name: 'Property',
-                                nameRange: null,
-                                value: 'Target',
-                                valueRange: null
+
+                                value: 'Target'
                             },
                             AnnotationPath: { type: 'attribute', name: 'AnnotationPath', value: '$1' }
                         },
@@ -1222,11 +1204,10 @@ describe('csdlToCds', () => {
                             Property: {
                                 type: 'attribute',
                                 name: 'Property',
-                                nameRange: null,
-                                value: 'Label',
-                                valueRange: null
+
+                                value: 'Label'
                             },
-                            $2: { type: 'attribute', name: '$2', nameRange: null, valueRange: null } as Attribute
+                            $2: { type: 'attribute', name: '$2' } as Attribute
                         },
                         type: 'element'
                     },
@@ -1239,11 +1220,10 @@ describe('csdlToCds', () => {
                             Property: {
                                 type: 'attribute',
                                 name: 'Property',
-                                nameRange: null,
-                                value: 'ID',
-                                valueRange: null
+
+                                value: 'ID'
                             },
-                            $0: { type: 'attribute', name: '$0', nameRange: null, valueRange: null } as Attribute
+                            $0: { type: 'attribute', name: '$0' } as Attribute
                         },
                         type: 'element'
                     }
@@ -1267,16 +1247,14 @@ describe('csdlToCds', () => {
                         Property: {
                             type: 'attribute',
                             name: 'Property',
-                            nameRange: null,
-                            value: 'Value',
-                            valueRange: null
+
+                            value: 'Value'
                         },
                         $1: {
                             type: 'attribute',
                             name: '$1',
-                            nameRange: null,
-                            value: '',
-                            valueRange: null
+
+                            value: ''
                         }
                     },
                     type: 'element'
@@ -1304,16 +1282,14 @@ describe('csdlToCds', () => {
                             Property: {
                                 type: 'attribute',
                                 name: 'Property',
-                                nameRange: null,
-                                value: 'Kind',
-                                valueRange: null
+
+                                value: 'Kind'
                             },
                             $2: {
                                 type: 'attribute',
                                 name: '$2',
-                                nameRange: null,
-                                value: '',
-                                valueRange: null
+
+                                value: ''
                             }
                         },
                         type: 'element'
@@ -1327,16 +1303,14 @@ describe('csdlToCds', () => {
                             Property: {
                                 type: 'attribute',
                                 name: 'Property',
-                                nameRange: null,
-                                value: 'Description',
-                                valueRange: null
+
+                                value: 'Description'
                             },
                             $0: {
                                 type: 'attribute',
                                 name: '$0',
-                                nameRange: null,
-                                value: '',
-                                valueRange: null
+
+                                value: ''
                             }
                         },
                         type: 'element'
@@ -1347,9 +1321,8 @@ describe('csdlToCds', () => {
                     Type: {
                         type: 'attribute',
                         name: 'Type',
-                        nameRange: null,
-                        value: 'Core.RevisionType',
-                        valueRange: null
+
+                        value: 'Core.RevisionType'
                     }
                 },
                 type: 'element'
@@ -1400,11 +1373,10 @@ describe('csdlToCds', () => {
                                     Property: {
                                         type: 'attribute',
                                         name: 'Property',
-                                        nameRange: null,
-                                        value: 'ImprovementDirection',
-                                        valueRange: null
+
+                                        value: 'ImprovementDirection'
                                     },
-                                    $0: { type: 'attribute', name: '$0', nameRange: null, valueRange: null, value: '' }
+                                    $0: { type: 'attribute', name: '$0', value: '' }
                                 },
                                 type: 'element'
                             }
@@ -1414,9 +1386,8 @@ describe('csdlToCds', () => {
                             Type: {
                                 type: 'attribute',
                                 name: 'Type',
-                                nameRange: null,
-                                value: 'UI.CriticalityCalculationType',
-                                valueRange: null
+
+                                value: 'UI.CriticalityCalculationType'
                             }
                         },
                         type: 'element'
@@ -1427,11 +1398,10 @@ describe('csdlToCds', () => {
                     Term: {
                         type: 'attribute',
                         name: 'Term',
-                        nameRange: null,
-                        value: '![@UI.CriticalityCalculation]',
-                        valueRange: null
+
+                        value: '![@UI.CriticalityCalculation]'
                     },
-                    $1: { type: 'attribute', name: '$1', nameRange: null, valueRange: null, value: '' }
+                    $1: { type: 'attribute', name: '$1', value: '' }
                 },
                 type: 'element'
             };
@@ -1458,11 +1428,10 @@ describe('csdlToCds', () => {
                         Term: {
                             type: 'attribute',
                             name: 'Term',
-                            nameRange: null,
-                            value: 'Core.Description',
-                            valueRange: null
+
+                            value: 'Core.Description'
                         },
-                        String: { type: 'attribute', name: 'String', nameRange: null, value: '$0', valueRange: null }
+                        String: { type: 'attribute', name: 'String', value: '$0' }
                     },
                     type: 'element'
                 };
@@ -1497,16 +1466,14 @@ describe('csdlToCds', () => {
                                                 Property: {
                                                     type: 'attribute',
                                                     name: 'Property',
-                                                    nameRange: null,
-                                                    value: 'Kind',
-                                                    valueRange: null
+
+                                                    value: 'Kind'
                                                 },
                                                 $2: {
                                                     type: 'attribute',
                                                     name: '$2',
-                                                    nameRange: null,
-                                                    value: '',
-                                                    valueRange: null
+
+                                                    value: ''
                                                 }
                                             },
                                             type: 'element'
@@ -1520,16 +1487,14 @@ describe('csdlToCds', () => {
                                                 Property: {
                                                     type: 'attribute',
                                                     name: 'Property',
-                                                    nameRange: null,
-                                                    value: 'Description',
-                                                    valueRange: null
+
+                                                    value: 'Description'
                                                 },
                                                 $0: {
                                                     type: 'attribute',
                                                     name: '$0',
-                                                    nameRange: null,
-                                                    value: '',
-                                                    valueRange: null
+
+                                                    value: ''
                                                 }
                                             },
                                             type: 'element'
@@ -1540,9 +1505,8 @@ describe('csdlToCds', () => {
                                         Type: {
                                             type: 'attribute',
                                             name: 'Type',
-                                            nameRange: null,
-                                            value: 'Core.RevisionType',
-                                            valueRange: null
+
+                                            value: 'Core.RevisionType'
                                         }
                                     },
                                     type: 'element'
@@ -1558,11 +1522,10 @@ describe('csdlToCds', () => {
                         Term: {
                             type: 'attribute',
                             name: 'Term',
-                            nameRange: null,
-                            value: 'Core.Revisions',
-                            valueRange: null
+
+                            value: 'Core.Revisions'
                         },
-                        $1: { type: 'attribute', name: '$1', nameRange: null, value: '', valueRange: null }
+                        $1: { type: 'attribute', name: '$1', value: '' }
                     },
                     type: 'element'
                 };
@@ -1593,16 +1556,14 @@ describe('csdlToCds', () => {
                                     Property: {
                                         type: 'attribute',
                                         name: 'Property',
-                                        nameRange: null,
-                                        value: 'rel',
-                                        valueRange: null
+
+                                        value: 'rel'
                                     },
                                     $2: {
                                         type: 'attribute',
                                         name: '$2',
-                                        nameRange: null,
-                                        value: '',
-                                        valueRange: null
+
+                                        value: ''
                                     }
                                 },
                                 type: 'element'
@@ -1616,16 +1577,14 @@ describe('csdlToCds', () => {
                                     Property: {
                                         type: 'attribute',
                                         name: 'Property',
-                                        nameRange: null,
-                                        value: 'href',
-                                        valueRange: null
+
+                                        value: 'href'
                                     },
                                     $0: {
                                         type: 'attribute',
                                         name: '$0',
-                                        nameRange: null,
-                                        value: '',
-                                        valueRange: null
+
+                                        value: ''
                                     }
                                 },
                                 type: 'element'
@@ -1636,9 +1595,8 @@ describe('csdlToCds', () => {
                             Type: {
                                 type: 'attribute',
                                 name: 'Type',
-                                nameRange: null,
-                                value: 'Core.Link',
-                                valueRange: null
+
+                                value: 'Core.Link'
                             }
                         },
                         type: 'element'
@@ -1688,16 +1646,14 @@ describe('csdlToCds', () => {
                         Property: {
                             type: 'attribute',
                             name: 'Property',
-                            nameRange: null,
-                            value: 'rel',
-                            valueRange: null
+
+                            value: 'rel'
                         },
                         $2: {
                             type: 'attribute',
                             name: '$2',
-                            nameRange: null,
-                            value: '',
-                            valueRange: null
+
+                            value: ''
                         }
                     },
                     type: 'element'
@@ -1711,16 +1667,12 @@ describe('csdlToCds', () => {
                         Property: {
                             type: 'attribute',
                             name: 'Property',
-                            nameRange: null,
-                            value: 'href',
-                            valueRange: null
+                            value: 'href'
                         },
                         $0: {
                             type: 'attribute',
                             name: '$0',
-                            nameRange: null,
-                            value: '',
-                            valueRange: null
+                            value: ''
                         }
                     },
                     type: 'element'
@@ -1740,9 +1692,7 @@ describe('csdlToCds', () => {
                         Type: {
                             type: 'attribute',
                             name: 'Type',
-                            nameRange: null,
-                            value: 'UI.ReferencePeriod',
-                            valueRange: null
+                            value: 'UI.ReferencePeriod'
                         }
                     }
                 }
@@ -1829,16 +1779,14 @@ describe('csdlToCds', () => {
                                                     Property: {
                                                         type: 'attribute',
                                                         name: 'Property',
-                                                        nameRange: null,
-                                                        value: 'Value',
-                                                        valueRange: null
+
+                                                        value: 'Value'
                                                     },
                                                     $2: {
                                                         type: 'attribute',
                                                         name: '$2',
-                                                        nameRange: null,
-                                                        value: '',
-                                                        valueRange: null
+
+                                                        value: ''
                                                     }
                                                 },
                                                 type: 'element'
@@ -1849,9 +1797,8 @@ describe('csdlToCds', () => {
                                             Type: {
                                                 type: 'attribute',
                                                 name: 'Type',
-                                                nameRange: null,
-                                                value: 'UI.DataField',
-                                                valueRange: null
+
+                                                value: 'UI.DataField'
                                             }
                                         },
                                         type: 'element'
@@ -1862,9 +1809,8 @@ describe('csdlToCds', () => {
                                     Property: {
                                         type: 'attribute',
                                         name: 'Property',
-                                        nameRange: null,
-                                        value: 'HeadLine',
-                                        valueRange: null
+
+                                        value: 'HeadLine'
                                     }
                                 },
                                 type: 'element'
@@ -1906,9 +1852,7 @@ describe('csdlToCds', () => {
                                             Type: {
                                                 type: 'attribute',
                                                 name: 'Type',
-                                                nameRange: null,
-                                                value: 'UI.DataField',
-                                                valueRange: null
+                                                value: 'UI.DataField'
                                             }
                                         },
                                         type: 'element'
@@ -1919,9 +1863,7 @@ describe('csdlToCds', () => {
                                     Property: {
                                         type: 'attribute',
                                         name: 'Property',
-                                        nameRange: null,
-                                        value: 'Title',
-                                        valueRange: null
+                                        value: 'Title'
                                     }
                                 },
                                 type: 'element'
@@ -1932,9 +1874,7 @@ describe('csdlToCds', () => {
                             Type: {
                                 type: 'attribute',
                                 name: 'Type',
-                                nameRange: null,
-                                value: 'UI.BadgeType',
-                                valueRange: null
+                                value: 'UI.BadgeType'
                             }
                         },
                         type: 'element'
@@ -1942,8 +1882,8 @@ describe('csdlToCds', () => {
                 ],
 
                 attributes: {
-                    Term: { type: 'attribute', name: 'Term', nameRange: null, value: 'UI.Badge', valueRange: null },
-                    $1: { type: 'attribute', name: '$1', nameRange: null, value: '', valueRange: null }
+                    Term: { type: 'attribute', name: 'Term', value: 'UI.Badge' },
+                    $1: { type: 'attribute', name: '$1', value: '' }
                 },
                 type: 'element'
             };
@@ -1970,16 +1910,13 @@ describe('csdlToCds', () => {
                     annotation.attributes[name] = {
                         type: 'attribute',
                         name: name,
-                        value: value,
-                        nameRange: null,
-                        valueRange: null
+                        value: value
                     };
                 } else {
                     annotation.content.push({
                         type: 'element',
                         name: name,
                         attributes: {},
-                        nameRange: null,
                         content: [
                             {
                                 type: 'text',

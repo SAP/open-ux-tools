@@ -48,7 +48,6 @@ const SERVICE_NAME_PLACEHOLDER = '<ServiceName>';
  * @param segments - The array of Identifier segments to adapt.
  * @param newName - The new name to use for adaptation.
  * If undefined, the segments will be cleared.
- * @returns This function does not return a value.
  */
 function adaptSegments(segments: Identifier[], newName: string | undefined): void {
     const newSegments = newName ? newName.split('.') : [];
@@ -384,7 +383,6 @@ function convertTargetAnnotations(
  *
  * @param returnValue - The return value containing file targets.
  * @param [propagationMap] - The map of propagated targets.
- * @returns
  */
 function checkGhostTarget(returnValue: ReturnValue, propagationMap?: PropagatedTargetMap): void {
     if (propagationMap) {
@@ -510,7 +508,6 @@ function collectAllValueListProperty(collection: Element): string[] {
  *
  * @param terms - An array of elements representing terms with annotations.
  * @param mdPathSet - The set to which metadata paths are added.
- * @returns - This method has no return value.
  */
 function addMdPathsFromAnnotations(terms: Element[], mdPathSet: Set<string>): void {
     terms
@@ -596,7 +593,6 @@ function updateTargetMap(
  * @param targetCollectorKey - The key used for metadata collection related to the target.
  * @param mdPathSet - The set of metadata paths extracted from annotation values.
  * @param metadataCollector - The MetadataCollector for collecting metadata.
- * @returns This function does not return a value.
  */
 function collectRelativePaths(
     targetPath: string,
