@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { createEvent, fireEvent, render } from '@testing-library/react';
 import {
     UIQuickNavigation,
     UITextInput,
@@ -311,6 +311,16 @@ describe('UIQuickNavigation', () => {
         expect(findContainers().length).toEqual(valid ? 0 : 1);
         if (valid) {
             expect(document.activeElement?.id).toEqual(focusedElement);
+            const keyDownEvent = createEvent.keyDown(document.body, {
+                ctrlKey: false,
+                metaKey: false,
+                altKey: false,
+                code
+            });
+            const stopPropagationSpy = jest.spyOn(KeyboardEvent.prototype, 'stopPropagation');
+            fireEvent.keyUp(document.body, keyDownEvent);
+            expect(stopPropagationSpy).toBeCalledTimes(1);
+            stopPropagationSpy.mockRestore();
         }
     });
 
