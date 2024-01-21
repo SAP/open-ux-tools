@@ -1,13 +1,6 @@
 import React from 'react';
 
-import {
-    UIQuickNavigation,
-    UIDefaultButton,
-    UiIcons,
-    initIcons,
-    UITextInput,
-    setQuickNavigationKey
-} from '../src/components';
+import { UIQuickNavigation, UIDefaultButton, initIcons, UITextInput, setQuickNavigationKey } from '../src/components';
 
 export default { title: 'Utilities/Quick Navigation' };
 
