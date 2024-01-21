@@ -5,8 +5,10 @@ import {
     UITextInput,
     UIDefaultButton,
     initIcons,
-    setQuickNavigationKey
+    setQuickNavigationKey,
+    QUICK_NAVIGATION_ATTRIBUTE
 } from '../../../src/components';
+import type { UIQuickNavigationOffset } from '../../../src/components';
 
 export interface TextComponentProps {
     id: string;
@@ -23,12 +25,12 @@ const Content = (props: { id: string; title: string }) => {
     );
 };
 
-const QuickNavigationTest = (props: { inline?: boolean; groups: string[] }) => {
-    const { inline, groups } = props;
+const QuickNavigationTest = (props: { inline?: boolean; groups: string[]; offset?: UIQuickNavigationOffset }) => {
+    const { inline, groups, offset } = props;
     return (
         <div style={{ margin: 10 }}>
             <div>{`Inline = ${inline}`}</div>
-            <UIQuickNavigation inline={inline}>
+            <UIQuickNavigation inline={inline} offset={offset}>
                 {groups.map((group) => {
                     return (
                         <div key={group} {...setQuickNavigationKey(group)}>
@@ -91,6 +93,100 @@ describe('UIQuickNavigation', () => {
         expect(helpers[1]?.textContent).toEqual('B');
         expect(helpers[2]?.textContent).toEqual('C');
         expect(helpers[3]?.textContent).toEqual('3');
+    });
+
+    describe('Render with external', () => {
+        const getRect = (top: number, left: number, height: number, width: number): DOMRect => {
+            const bottom = top + height;
+            const right = left + width;
+            return {
+                top,
+                height,
+                width,
+                left,
+                bottom,
+                right
+            } as DOMRect;
+        };
+        const mockRectangles = (sizes: DOMRect[]) => {
+            const sizesMap = {
+                A: sizes[0],
+                B: sizes[1],
+                C: sizes[2],
+                D: sizes[3]
+            };
+            function getBoundingClientRect() {
+                const group = this.getAttribute(QUICK_NAVIGATION_ATTRIBUTE);
+                if (sizesMap[group]) {
+                    return sizesMap[group];
+                }
+                return getRect(0, 0, 0, 0);
+            }
+            jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(getBoundingClientRect);
+        };
+
+        const testCases = [
+            {
+                name: 'Positive positions',
+                sizes: [
+                    getRect(100, 100, 50, 300),
+                    getRect(200, 100, 50, 300),
+                    getRect(300, 100, 50, 300),
+                    getRect(400, 100, 50, 300)
+                ],
+                expectedTop: ['85px', '185px', '285px', '385px'],
+                expectedLeft: ['85px', '85px', '85px', '85px']
+            },
+            {
+                name: 'Custom offset',
+                offset: {
+                    x: 30,
+                    y: 50
+                },
+                sizes: [
+                    getRect(100, 100, 50, 300),
+                    getRect(200, 100, 50, 300),
+                    getRect(300, 100, 50, 300),
+                    getRect(400, 80, 50, 300)
+                ],
+                expectedTop: ['50px', '150px', '250px', '350px'],
+                expectedLeft: ['70px', '70px', '70px', '50px']
+            },
+            {
+                name: 'Negative entries',
+                offset: {
+                    x: 50,
+                    y: 50
+                },
+                sizes: [
+                    getRect(10, 0, 50, 300),
+                    getRect(200, 0, 50, 300),
+                    getRect(300, 0, 50, 300),
+                    getRect(400, 0, 50, 300)
+                ],
+                expectedTop: ['0px', '150px', '250px', '350px'],
+                expectedLeft: ['0px', '0px', '0px', '0px']
+            }
+        ];
+        for (const testCase of testCases) {
+            const { name, sizes, expectedTop, expectedLeft, offset } = testCase;
+            it(name, () => {
+                mockRectangles(sizes);
+                render(<QuickNavigationTest groups={['A', 'b', 'C', 'd']} inline={false} offset={offset} />);
+                expect(findInlineContainers().length).toEqual(0);
+                expect(findExternalContainers().length).toEqual(0);
+                activateQuickNavigation();
+                expect(findInlineContainers().length).toEqual(0);
+                const externalContainers = findExternalContainers();
+                expect(externalContainers.length).toEqual(1);
+                const helpers = externalContainers[0]?.childNodes as NodeListOf<HTMLElement>;
+                expect(helpers.length).toEqual(4);
+                for (let i = 0; i < expectedTop.length; i++) {
+                    expect(helpers[i]?.style.top).toEqual(expectedTop[i]);
+                    expect(helpers[i]?.style.left).toEqual(expectedLeft[i]);
+                }
+            });
+        }
     });
 
     it('Render with inline', () => {

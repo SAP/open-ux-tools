@@ -23,7 +23,7 @@ export const setQuickNavigationKey = (key: string): UIQuickNavigationAttribute =
     };
 };
 
-interface UIQuickNavigationOffset {
+export interface UIQuickNavigationOffset {
     x: number;
     y: number;
 }
@@ -96,8 +96,14 @@ function toggleExternalVisibility(enabled: boolean, offset = EXTERNAL_HELPER_OFF
             const rect = target.getBoundingClientRect();
             const helper = document.createElement('div');
             helper.textContent = target.getAttribute(QUICK_NAVIGATION_ATTRIBUTE);
-            helper.style.top = `${rect.top - offset.y + scrollOffset.y}px`;
-            helper.style.left = `${rect.left - offset.x + scrollOffset.x}px`;
+            const position = {
+                top: rect.top + scrollOffset.y - offset.y,
+                left: rect.left + scrollOffset.x - offset.x
+            };
+            position.top = Math.max(position.top, 0);
+            position.left = Math.max(position.left, 0);
+            helper.style.top = `${position.top}px`;
+            helper.style.left = `${position.left}px`;
             externalContainer.appendChild(helper);
         });
         holder.appendChild(externalContainer);
