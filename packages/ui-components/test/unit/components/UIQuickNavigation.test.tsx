@@ -113,7 +113,8 @@ describe('UIQuickNavigation', () => {
                 A: sizes[0],
                 B: sizes[1],
                 C: sizes[2],
-                D: sizes[3]
+                D: sizes[3],
+                E: sizes[4]
             };
             function getBoundingClientRect() {
                 const group = this.getAttribute(QUICK_NAVIGATION_ATTRIBUTE);
@@ -188,8 +189,14 @@ describe('UIQuickNavigation', () => {
             });
         }
 
-        it('Custom offset for ', () => {
-            mockRectangles([getRect(100, 100, 50, 300), getRect(200, 100, 50, 300)]);
+        it('Custom offset for groups', () => {
+            mockRectangles([
+                getRect(100, 100, 50, 300),
+                getRect(200, 100, 50, 300),
+                getRect(300, 100, 50, 300),
+                getRect(400, 100, 50, 300),
+                getRect(500, 100, 50, 300)
+            ]);
             render(
                 <div style={{ margin: 10 }}>
                     <UIQuickNavigation inline={false}>
@@ -209,6 +216,19 @@ describe('UIQuickNavigation', () => {
                             })}>
                             <Content id="group-b" title="Group B" />
                         </div>
+                        <div key="C" {...setQuickNavigationKey('C')} data-quick-navigation-offset-y="5">
+                            <Content id="group-c" title="Group C" />
+                        </div>
+                        <div key="D" {...setQuickNavigationKey('D')} data-quick-navigation-offset-x="5">
+                            <Content id="group-d" title="Group D" />
+                        </div>
+                        <div
+                            key="E"
+                            {...setQuickNavigationKey('E')}
+                            data-quick-navigation-offset-x="a"
+                            data-quick-navigation-offset-y="b">
+                            <Content id="group-e" title="Group E" />
+                        </div>
                     </UIQuickNavigation>
                 </div>
             );
@@ -216,11 +236,17 @@ describe('UIQuickNavigation', () => {
             const externalContainers = findExternalContainers();
             expect(externalContainers.length).toEqual(1);
             const helpers = externalContainers[0]?.childNodes as NodeListOf<HTMLElement>;
-            expect(helpers.length).toEqual(2);
+            expect(helpers.length).toEqual(5);
             expect(helpers[0]?.style.top).toEqual('70px');
             expect(helpers[0]?.style.left).toEqual('60px');
             expect(helpers[1]?.style.top).toEqual('140px');
             expect(helpers[1]?.style.left).toEqual('50px');
+            expect(helpers[2]?.style.top).toEqual('285px');
+            expect(helpers[2]?.style.left).toEqual('85px');
+            expect(helpers[3]?.style.top).toEqual('385px');
+            expect(helpers[3]?.style.left).toEqual('85px');
+            expect(helpers[4]?.style.top).toEqual('485px');
+            expect(helpers[4]?.style.left).toEqual('85px');
         });
     });
 
