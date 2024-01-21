@@ -4,6 +4,8 @@ import { getUIFirstFocusable, isHTMLElement, setUIFocusVisibility } from '../../
 import './UIQuickNavigation.scss';
 
 export const QUICK_NAVIGATION_ATTRIBUTE = 'data-quick-navigation-key';
+export const QUICK_NAVIGATION_ATTRIBUTE_OFFSET_Y = 'data-quick-navigation-offset-y';
+export const QUICK_NAVIGATION_ATTRIBUTE_OFFSET_X = 'data-quick-navigation-offset-x';
 const QUICK_NAVIGATION_CLASSES = {
     inline: 'quick-navigation--inline',
     external: 'quick-navigation--external'
@@ -15,12 +17,19 @@ const EXTERNAL_HELPER_OFFSET: UIQuickNavigationOffset = {
 
 export interface UIQuickNavigationAttribute {
     [QUICK_NAVIGATION_ATTRIBUTE]: string;
+    [QUICK_NAVIGATION_ATTRIBUTE_OFFSET_Y]?: string;
+    [QUICK_NAVIGATION_ATTRIBUTE_OFFSET_X]?: string;
 }
 
-export const setQuickNavigationKey = (key: string): UIQuickNavigationAttribute => {
-    return {
+export const setQuickNavigationKey = (key: string, offset?: UIQuickNavigationOffset): UIQuickNavigationAttribute => {
+    const attributes: UIQuickNavigationAttribute = {
         [QUICK_NAVIGATION_ATTRIBUTE]: key.toUpperCase()
     };
+    if (offset) {
+        attributes[QUICK_NAVIGATION_ATTRIBUTE_OFFSET_Y] = offset.y.toString();
+        attributes[QUICK_NAVIGATION_ATTRIBUTE_OFFSET_X] = offset.x.toString();
+    }
+    return attributes;
 };
 
 export interface UIQuickNavigationOffset {
@@ -72,6 +81,23 @@ function getScrollOffset(): UIQuickNavigationOffset {
 }
 
 /**
+ * Method returns offset for passed DOM element.
+ *
+ * @param target Target element to detect offset.
+ * @returns Scroll position of body and html.
+ */
+function getOffsetFromElement(target: Element): UIQuickNavigationOffset | undefined {
+    const yAttr = target.getAttribute(QUICK_NAVIGATION_ATTRIBUTE_OFFSET_Y);
+    const xAttr = target.getAttribute(QUICK_NAVIGATION_ATTRIBUTE_OFFSET_X);
+    if (!yAttr || !xAttr) {
+        return undefined;
+    }
+    const y = parseFloat(yAttr);
+    const x = parseFloat(xAttr);
+    return !isNaN(y) && !isNaN(x) ? { y, x } : undefined;
+}
+
+/**
  * Method toggles visibility of external quick navigation helpers UI.
  *
  * @param enabled Is quick navigation enabled/activated.
@@ -96,9 +122,10 @@ function toggleExternalVisibility(enabled: boolean, offset = EXTERNAL_HELPER_OFF
             const rect = target.getBoundingClientRect();
             const helper = document.createElement('div');
             helper.textContent = target.getAttribute(QUICK_NAVIGATION_ATTRIBUTE);
+            const elementOffset = getOffsetFromElement(target) ?? offset;
             const position = {
-                top: rect.top + scrollOffset.y - offset.y,
-                left: rect.left + scrollOffset.x - offset.x
+                top: rect.top + scrollOffset.y - elementOffset.y,
+                left: rect.left + scrollOffset.x - elementOffset.x
             };
             position.top = Math.max(position.top, 0);
             position.left = Math.max(position.left, 0);

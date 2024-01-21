@@ -1,6 +1,13 @@
 import React from 'react';
 
-import { UIQuickNavigation, UIDefaultButton, initIcons, UITextInput, setQuickNavigationKey } from '../src/components';
+import {
+    UIQuickNavigation,
+    UIDefaultButton,
+    initIcons,
+    UITextInput,
+    setQuickNavigationKey,
+    UIQuickNavigationOffset
+} from '../src/components';
 
 export default { title: 'Utilities/Quick Navigation' };
 
@@ -28,22 +35,22 @@ const Content = (props: { title: string }) => {
     );
 };
 
-const QuickNavigation = (props: { inline: boolean }) => {
-    const { inline } = props;
+const QuickNavigation = (props: { inline: boolean; offsets?: UIQuickNavigationOffset[] }) => {
+    const { inline, offsets } = props;
     return (
         <div style={{ margin: 10 }}>
             <div>{`Inline = ${inline}`}</div>
             <UIQuickNavigation inline={inline}>
-                <div {...setQuickNavigationKey('A')}>
+                <div {...setQuickNavigationKey('A', offsets?.[0])}>
                     <Content title="Group 1" />
                 </div>
-                <div {...setQuickNavigationKey('B')}>
+                <div {...setQuickNavigationKey('B', offsets?.[1])}>
                     <Content title="Group 2" />
                 </div>
-                <div {...setQuickNavigationKey('C')}>
+                <div {...setQuickNavigationKey('C', offsets?.[2])}>
                     <Content title="Group 3" />
                 </div>
-                <div {...setQuickNavigationKey('D')}>
+                <div {...setQuickNavigationKey('D', offsets?.[3])}>
                     <Content title="Group 4" />
                 </div>
             </UIQuickNavigation>
@@ -57,4 +64,12 @@ export const Inline = () => {
 
 export const External = () => {
     return <QuickNavigation inline={false} />;
+};
+
+export const ExternalWithCustomOffset = () => {
+    return <QuickNavigation inline={false} offsets={[
+        { y: 30, x: 0},
+        { y: 0, x: 30},
+        { y: -15, x: -15}
+    ]} />;
 };

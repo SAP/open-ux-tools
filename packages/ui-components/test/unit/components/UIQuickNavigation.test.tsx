@@ -187,6 +187,41 @@ describe('UIQuickNavigation', () => {
                 }
             });
         }
+
+        it('Custom offset for ', () => {
+            mockRectangles([getRect(100, 100, 50, 300), getRect(200, 100, 50, 300)]);
+            render(
+                <div style={{ margin: 10 }}>
+                    <UIQuickNavigation inline={false}>
+                        <div
+                            key="A"
+                            {...setQuickNavigationKey('A', {
+                                y: 30,
+                                x: 40
+                            })}>
+                            <Content id="group-a" title="Group A" />
+                        </div>
+                        <div
+                            key="B"
+                            {...setQuickNavigationKey('B', {
+                                y: 60,
+                                x: 50
+                            })}>
+                            <Content id="group-b" title="Group B" />
+                        </div>
+                    </UIQuickNavigation>
+                </div>
+            );
+            activateQuickNavigation();
+            const externalContainers = findExternalContainers();
+            expect(externalContainers.length).toEqual(1);
+            const helpers = externalContainers[0]?.childNodes as NodeListOf<HTMLElement>;
+            expect(helpers.length).toEqual(2);
+            expect(helpers[0]?.style.top).toEqual('70px');
+            expect(helpers[0]?.style.left).toEqual('60px');
+            expect(helpers[1]?.style.top).toEqual('140px');
+            expect(helpers[1]?.style.left).toEqual('50px');
+        });
     });
 
     it('Render with inline', () => {
