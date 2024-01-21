@@ -23,11 +23,11 @@ export default {
             '$Kind': 'Term',
             '$AppliesTo': ['EntityType'],
             '$Type': 'com.sap.cds.vocabularies.ObjectModel.SupportedCapabilitiesType',
-            '$Collection': true,
             '@Org.OData.Core.V1.Description': '(CDS annotation) Defines the supported capabilities (TODO)'
         },
         'SupportedCapabilitiesType': {
             '$Kind': 'EnumType',
+            '$IsFlags': true,
             'ANALYTICAL_DIMENSION': 0,
             'ANALYTICAL_DIMENSION@Org.OData.Core.V1.Description': 'Description for ANALYTICAL_DIMENSION (TODO)',
             'ANALYTICAL_PROVIDER': 1,

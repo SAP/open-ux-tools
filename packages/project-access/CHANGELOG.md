@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.16.3
+
+### Patch Changes
+
+-   e6f454ab: Fix for detecting apps that are part of CAP
+
 ## 1.16.2
 
 ### Patch Changes
