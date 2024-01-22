@@ -47,7 +47,20 @@
         }
     }
 }
-
+.uicpe-icon-light-theme {
+    background-color: var(--vscode-terminal-ansiBlue);
+    margin-right: 5px;
+    border-radius: 50%;
+    height: 16px;
+    width: 16px;
+    vertical-align: bottom;
+    svg {
+        path,
+        rect {
+            fill: var(--vscode-button-foreground);
+        }
+    }
+}
 // Tree
 .app-panel-selected-bg {
     .ms-GroupHeader-expand:hover {
