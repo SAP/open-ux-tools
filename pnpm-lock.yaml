@@ -1610,8 +1610,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       axios:
-        specifier: 1.6.1
-        version: 1.6.1
+        specifier: 1.6.5
+        version: 1.6.5
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -10249,6 +10249,15 @@ packages:
       - debug
     dev: false
 
+  /axios@1.6.5:
+    resolution: {integrity: sha512-Ii012v05KEVuUoFWmMW/UQv9aRIc3ZwkWDcM+h5Il8izZCtRVpDUfwpoFf7eOtajT3QiGR4yDUx7lPqHJULgbg==}
+    dependencies:
+      follow-redirects: 1.15.4
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
   /babel-core@7.0.0-bridge.0(@babel/core@7.22.20):
     resolution: {integrity: sha512-poPX9mZH/5CSanm50Q+1toVci6pv5KSRv/5TWCwtzQS5XEwn40BcCrgIeMFWP9CKKIniKXNxoIOnOq4VVlGXhg==}
     peerDependencies:
@@ -17047,7 +17056,7 @@ packages:
     hasBin: true
     dependencies:
       '@nrwl/nx-cloud': 16.5.2
-      axios: 1.6.1
+      axios: 1.6.5
       chalk: 4.1.2
       dotenv: 10.0.0
       fs-extra: 11.1.1
@@ -17078,7 +17087,7 @@ packages:
       '@yarnpkg/lockfile': 1.1.0
       '@yarnpkg/parsers': 3.0.0-rc.27
       '@zkochan/js-yaml': 0.0.6
-      axios: 1.6.1
+      axios: 1.6.5
       chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
@@ -20944,7 +20953,7 @@ packages:
     engines: {node: '>=12.0.0'}
     hasBin: true
     dependencies:
-      axios: 1.6.1
+      axios: 1.6.5
       joi: 17.11.0
       lodash: 4.17.21
       minimist: 1.2.8

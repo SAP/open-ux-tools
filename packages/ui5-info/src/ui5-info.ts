@@ -259,6 +259,24 @@ async function retrieveUI5Versions(
         versions = versions.filter((ele) => ele && /^\d+(\.\d+)*$/.test(ele));
     }
 
+    if (filterOptions?.onlyLatestPatchVersion) {
+        const latestPathVersions: { version: string; patch: number }[] = [];
+        versions.forEach((version) => {
+            const [major, minor, patch] = version.split('.').map(Number);
+            const currentPatch = parseInt(version.split('.')[2], 10);
+            const minorKey: any = `${major}.${minor}`;
+
+            // Filter versions for the latest patch version for each minor version
+            if (!(minorKey in latestPathVersions) || currentPatch > latestPathVersions[minorKey].patch) {
+                latestPathVersions[minorKey] = {
+                    version: version,
+                    patch
+                };
+            }
+        });
+        versions = Object.values(latestPathVersions).map((entry) => entry.version);
+    }
+
     // Remove duplicates, as they may be returned from some UI5 version APIs
     return [...new Set(versions)];
 }
