@@ -39,6 +39,7 @@ describe('Test findAllApps()', () => {
             'single_apps-custom_webapp_fiori_elements',
             'single_apps-custom_webapp_freestyle',
             'CAPJava_fiori_elements-fiori_elements_no_package_json',
+            'CAPJava_mix-fiori_elements_with_ui5tooling_and_localyaml',
             'CAPJava_fiori_elements-fiori_elements',
             'CAPJava_freestyle-freestyle',
             'CAPJava_mix-fiori_elements',

@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.14.2
+
+### Patch Changes
+
+-   be152c6f: Add lightning icon
+
 ## 1.14.1
 
 ### Patch Changes
