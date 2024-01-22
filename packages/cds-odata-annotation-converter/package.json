@@ -26,18 +26,20 @@
         "dist"
     ],
     "dependencies": {
-        "@sap-ux/odata-annotation-core": "workspace:*",
-        "@sap-ux/odata-vocabularies": "workspace:*",
         "@sap-ux/cds-annotation-parser": "workspace:*",
+        "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
+        "@sap-ux/odata-vocabularies": "workspace:*",
         "@sap/ux-cds-compiler-facade": "1.12.2",
         "i18next": "19.4.4",
         "vscode-languageserver-types": "3.17.2"
     },
     "devDependencies": {
+        "@sap-ux/project-access": "workspace:*",
         "@sap/cds": "7.4.1",
         "@sap/cds-compiler": "4.4.4",
-        "@sap-ux/project-access": "workspace:*",
-        "npm-run-all": "4.1.5"
+        "@types/prettier": "2.7.3",
+        "npm-run-all": "4.1.5",
+        "prettier": "2.8.8"
     }
 }

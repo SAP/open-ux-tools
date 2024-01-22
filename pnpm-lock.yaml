@@ -492,9 +492,15 @@ importers:
       '@sap/cds-compiler':
         specifier: 4.4.4
         version: 4.4.4
+      '@types/prettier':
+        specifier: 2.7.3
+        version: 2.7.3
       npm-run-all:
         specifier: 4.1.5
         version: 4.1.5
+      prettier:
+        specifier: 2.8.8
+        version: 2.8.8
 
   packages/control-property-editor:
     devDependencies:
@@ -7718,6 +7724,10 @@ packages:
 
   /@types/pluralize@0.0.30:
     resolution: {integrity: sha512-kVww6xZrW/db5BR9OqiT71J9huRdQ+z/r+LbDuT7/EK50mCmj5FoaIARnVv0rvjUS/YpDox0cDU9lpQT011VBA==}
+    dev: true
+
+  /@types/prettier@2.7.3:
+    resolution: {integrity: sha512-+68kP9yzs4LMp7VNh8gdzMSPZFL44MLGqiHWvttYJe+6qnuVr4Ek9wSBQoveqY/r+LwjCcU29kNVkidwim+kYA==}
     dev: true
 
   /@types/pretty-hrtime@1.0.3:
