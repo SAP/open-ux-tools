@@ -61,16 +61,8 @@ export function PropertyChange(propertyChangeProps: Readonly<ChangeProps>): Reac
                             <UIIcon iconName={IconName.arrow} className={styles.text} />
                             {valueIcon && (
                                 <UIIcon
-                                    className={styles.valueIcon}
+                                    className={'ui-cpe-icon-light-theme'}
                                     iconName={valueIcon}
-                                    style={{
-                                        marginRight: 5,
-                                        background: 'var(--vscode-terminal-ansiBlue)',
-                                        borderRadius: '50%',
-                                        height: 16,
-                                        width: 16,
-                                        verticalAlign: 'bottom'
-                                    }}
                                 />
                             )}
                             <Text className={styles.text}>{value}</Text>
