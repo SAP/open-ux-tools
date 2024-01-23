@@ -30,7 +30,7 @@
         "axios": "1.6.1"
     },
     "devDependencies": {
-        "nock": "13.2.1"
+        "nock": "13.4.0"
     },
     "files": [
         "dist",

@@ -1,0 +1,21 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src",
+        "lib": ["ES2021"],
+        "preserveConstEnums": false
+    },
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../odata-annotation-core"
+        },
+        {
+            "path": "../odata-entity-model"
+        },
+        {
+            "path": "../odata-vocabularies"
+        }
+    ]
+}

@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.14.2
+
+### Patch Changes
+
+-   be152c6f: Add lightning icon
+
+## 1.14.1
+
+### Patch Changes
+
+-   17cd1c21: fix: UIDefaultButton. Apply VSCode border color(`--vscode-button-border`) to UIDefaultButton
+
+## 1.14.0
+
+### Minor Changes
+
+-   3ec4de4b: Fix: UIComboBox. Prevent caret jump on input value change and on autocomplete value click
+
 ## 1.13.5
 
 ### Patch Changes

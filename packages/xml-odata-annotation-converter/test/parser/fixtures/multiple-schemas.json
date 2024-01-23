@@ -114,7 +114,8 @@
                         "uri": "file://multiple-schemas.xml",
                         "range": "[(11,16)..(17,18)]"
                     },
-                    "content": []
+                    "content": [],
+                    "targetKinds": ["Property"]
                 },
                 {
                     "path": "NorthwindModel.Category/CategoryName",
@@ -129,7 +130,8 @@
                         "uri": "file://multiple-schemas.xml",
                         "range": "[(18,16)..(18,98)]"
                     },
-                    "content": []
+                    "content": [],
+                    "targetKinds": ["Property"]
                 },
                 {
                     "path": "NorthwindModel.Category/Description",
@@ -144,7 +146,8 @@
                         "uri": "file://multiple-schemas.xml",
                         "range": "[(19,16)..(19,81)]"
                     },
-                    "content": []
+                    "content": [],
+                    "targetKinds": ["Property"]
                 },
                 {
                     "path": "NorthwindModel.Category/Picture",
@@ -159,10 +162,12 @@
                         "uri": "file://multiple-schemas.xml",
                         "range": "[(20,16)..(20,77)]"
                     },
-                    "content": []
+                    "content": [],
+                    "targetKinds": ["Property"]
                 }
             ],
-            "keys": ["CategoryID"]
+            "keys": ["CategoryID"],
+            "targetKinds": ["EntityType"]
         },
         {
             "path": "ODataWebExperimental.Northwind.Model.NorthwindEntities",
@@ -191,9 +196,11 @@
                         "uri": "file://multiple-schemas.xml",
                         "range": "[(31,16)..(32,28)]"
                     },
-                    "content": []
+                    "content": [],
+                    "targetKinds": ["EntitySet", "Collection"]
                 }
-            ]
+            ],
+            "targetKinds": ["EntityContainer"]
         }
     ]
 }

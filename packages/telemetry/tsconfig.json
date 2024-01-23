@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../ui5-config"
+    }
+  ]
+}

@@ -11,7 +11,16 @@
                     singleContainerFullSize="false">
                     <f:content>
                         <Label text="Extension Point" />
-                        <Text text="{/extensionPointName}" />
+                        <Select
+                            enabled="{/extensionListEnabled}"
+                            change="onExtensionPointHandler"
+                            selectedKey='{/extensionPointKey}'
+                            items="{
+                                path: '/extensionPointList',
+                                sorter: { path: 'text' }
+                            }">
+                            <core:Item key="{key}" text="{value}" />
+                        </Select>
                         <Label text="Fragment Name" />
                         <Input 
                             description=".fragment.xml" 

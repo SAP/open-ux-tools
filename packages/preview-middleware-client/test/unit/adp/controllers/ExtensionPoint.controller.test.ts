@@ -1,4 +1,6 @@
+import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
+import type JSONModel from 'sap/ui/model/json/JSONModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { fetchMock } from 'mock/window';
@@ -6,8 +8,6 @@ import { fetchMock } from 'mock/window';
 import { type ExtensionPointData } from '../../../../src/adp/extension-point';
 
 import ExtensionPoint from '../../../../src/adp/controllers/ExtensionPoint.controller';
-import type JSONModel from 'sap/ui/model/json/JSONModel';
-import Event from 'sap/ui/base/Event';
 
 describe('ExtensionPoint', () => {
     beforeAll(() => {
@@ -38,7 +38,10 @@ describe('ExtensionPoint', () => {
                 'adp.extension.controllers.ExtensionPoint',
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
-                {} as ExtensionPointData
+                {
+                    name: 'ExtensionPoint1',
+                    info: [{ name: 'ExtensionPoint1' }, { name: 'ExtensionPoint2' }]
+                } as ExtensionPointData
             );
 
             const openSpy = jest.fn();
@@ -52,7 +55,39 @@ describe('ExtensionPoint', () => {
             expect(openSpy).toHaveBeenCalledTimes(1);
         });
 
-        test('fills json model with data', async () => {
+        test('fills json model with data when name is undefined', async () => {
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({ fragments: [] }),
+                text: jest.fn(),
+                ok: true
+            });
+
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const extPoint = new ExtensionPoint(
+                'adp.extension.controllers.ExtensionPoint',
+                overlays as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring,
+                {
+                    name: '',
+                    info: [{ name: 'ExtensionPoint1' }, { name: 'ExtensionPoint2' }]
+                } as ExtensionPointData
+            );
+
+            const openSpy = jest.fn();
+            extPoint.byId = jest.fn().mockReturnValue({
+                open: openSpy,
+                setEscapeHandler: jest.fn()
+            });
+
+            await extPoint.onInit();
+
+            expect(openSpy).toHaveBeenCalledTimes(1);
+        });
+
+        test('throws error message when retrieving fragments fails', async () => {
             const errorMsg = 'Could not get fragments!';
             fetchMock.mockResolvedValue({
                 json: jest.fn().mockRejectedValue({ message: errorMsg }),
@@ -68,7 +103,7 @@ describe('ExtensionPoint', () => {
                 'adp.extension.controllers.ExtensionPoint',
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
-                {} as ExtensionPointData
+                { name: 'ExtensionPoint1' } as ExtensionPointData
             );
 
             const openSpy = jest.fn();
@@ -92,22 +127,21 @@ describe('ExtensionPoint', () => {
             jest.restoreAllMocks();
         });
 
+        const extensionPointName = 'some-extension-point';
         const testModel = {
-            getProperty: jest.fn().mockReturnValueOnce('Share'),
+            getProperty: jest.fn().mockReturnValueOnce('Share').mockReturnValueOnce(extensionPointName),
             setProperty: jest.fn()
         } as unknown as JSONModel;
 
         test('creates new fragment at extension point and a change', async () => {
             const resolveSpy = jest.fn();
-            const extensionPointName = 'some-extension-point';
 
             const extPoint = new ExtensionPoint(
                 'adp.extension.controllers.ExtensionPoint',
                 {} as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
                 {
-                    name: extensionPointName,
-                    deffered: {
+                    deferred: {
                         resolve: resolveSpy
                     }
                 } as unknown as ExtensionPointData
@@ -140,7 +174,6 @@ describe('ExtensionPoint', () => {
         test('throws error when creating new fragment', async () => {
             const errorMsg = 'Could not create XML Fragment!';
             const resolveSpy = jest.fn();
-            const extensionPointName = 'some-extension-point';
 
             const extPoint = new ExtensionPoint(
                 'adp.extension.controllers.ExtensionPoint',
@@ -148,7 +181,7 @@ describe('ExtensionPoint', () => {
                 {} as unknown as RuntimeAuthoring,
                 {
                     name: extensionPointName,
-                    deffered: {
+                    deferred: {
                         resolve: resolveSpy
                     }
                 } as unknown as ExtensionPointData
@@ -177,6 +210,39 @@ describe('ExtensionPoint', () => {
             }
 
             expect(resolveSpy).not.toBeCalled;
+        });
+    });
+
+    describe('onCreateBtnPress', () => {
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        const extensionPointName = 'ExtensionPoint1';
+
+        test('should set correct name when user selects entry from dropdown', () => {
+            const extPoint = new ExtensionPoint(
+                'adp.extension.controllers.ExtensionPoint',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring,
+                {} as unknown as ExtensionPointData
+            );
+
+            const setPropertySpy = jest.fn();
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    getSelectedItem: jest.fn().mockReturnValue({ getText: () => extensionPointName })
+                })
+            } as unknown as Event;
+
+            extPoint.model = {
+                setProperty: setPropertySpy
+            } as unknown as JSONModel;
+
+            extPoint.onExtensionPointHandler(event);
+
+            expect(setPropertySpy).toHaveBeenCalledWith('/extensionPointName', extensionPointName);
         });
     });
 });

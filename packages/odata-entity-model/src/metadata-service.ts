@@ -9,27 +9,9 @@ import type {
     MetadataElementVisitor,
     IMetadataService
 } from '@sap-ux/odata-annotation-core-types';
-import { Edm } from '@sap-ux/odata-annotation-core-types';
 
 // Mapping of action/function names to all their overloads
 type ActionNameMap = Map<Path, Set<Path>>;
-
-// OData conform target kinds for CDS kinds
-const targetKindsCds = {
-    service: [Edm.EntityContainer],
-    entitySet: [Edm.EntitySet],
-    entity: [Edm.EntityType, Edm.EntitySet],
-    view: [Edm.EntityType, Edm.EntitySet],
-    aspect: [Edm.ComplexType, Edm.EntityType, Edm.EntitySet],
-    element: [Edm.Property],
-    action: [Edm.Action, Edm.ActionImport],
-    function: [Edm.Function, Edm.FunctionImport],
-    actionImport: [Edm.Action],
-    functionImport: [Edm.FunctionImport],
-    param: [Edm.Parameter],
-    type: [Edm.TypeDefinition, Edm.Property, Edm.Parameter]
-};
-const targetKindsMapCds: Map<string, string[]> = new Map(Object.entries(targetKindsCds));
 
 /**
  * Extracts action/function name by removing the part enclosed in parentheses.
@@ -316,25 +298,7 @@ export class MetadataService implements IMetadataService {
         if (!element) {
             return [];
         }
-        const targetKinds: TargetKind[] = [];
-        if (this.isCds) {
-            targetKinds.push(...(targetKindsMapCds.get(element.kind) ?? []));
-            if (element.kind === 'element' && element.structuredType && element.isEntityType) {
-                // CDS elements pointing to an entity type can be annotated like a EDMX navigation property
-                targetKinds.unshift(Edm.NavigationProperty);
-            }
-        } else {
-            targetKinds.push(element.kind);
-            if (element.kind === Edm.FunctionImport && this.ODataVersion !== '4.0') {
-                // vocabulary and annotation files are defined based on OData v4, but are used to annotate both OData v2 and OData v4 metadata.
-                // OData v2 does not have 'Action' but only 'FunctionImport'. Map to 'Action' to support annotating 'FunctionImport' with terms targeting actions.
-                targetKinds.push(Edm.Action);
-            }
-        }
-        if (targetKinds.includes(Edm.EntitySet) || element.isCollectionValued) {
-            targetKinds.push(Edm.Collection);
-        }
-        return targetKinds;
+        return element.targetKinds;
     }
 
     /**

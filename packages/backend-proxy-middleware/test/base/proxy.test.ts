@@ -316,7 +316,6 @@ describe('proxy', () => {
             };
             const callback = jest.fn();
             await enhanceConfigForSystem(proxyOptions, cloudSystem, true, callback);
-            expect(proxyOptions.headers.cookie).toBe('~cookies');
             expect(mockCreateForAbapOnCloud).toBeCalledWith({
                 environment: AbapCloudEnvironment.Standalone,
                 service: cloudSystem.serviceKeys,

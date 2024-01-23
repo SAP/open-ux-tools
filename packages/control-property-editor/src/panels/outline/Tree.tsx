@@ -46,6 +46,7 @@ export const Tree = (): ReactElement => {
         localStorage.getItem('theme') === 'high contrast' ? 'app-panel-hc-selected-bg' : 'app-panel-selected-bg';
 
     const tooltipEventListeners: Record<string, (event: MouseEvent) => void> = {};
+    let currentOpenTooltipId: string | null = null;
 
     useEffect(() => {
         if (selection.cell === undefined && selection.group === undefined && selectedControl !== undefined) {
@@ -101,6 +102,10 @@ export const Tree = (): ReactElement => {
             document.removeEventListener('click', tooltipEventListeners[tooltipId]);
             delete tooltipEventListeners[tooltipId];
         }
+
+        if (currentOpenTooltipId === tooltipId) {
+            currentOpenTooltipId = null;
+        }
     };
 
     /**
@@ -113,9 +118,14 @@ export const Tree = (): ReactElement => {
         e.preventDefault();
         const tooltip = document.getElementById(tooltipId);
 
+        if (currentOpenTooltipId && currentOpenTooltipId !== tooltipId) {
+            closeTooltip(currentOpenTooltipId);
+        }
+
         if (tooltip) {
             tooltip.style.visibility = 'visible';
             tooltip.style.opacity = '1';
+            currentOpenTooltipId = tooltipId;
 
             const handleCloseTooltip = (event: MouseEvent) => {
                 if (!tooltip.contains(event.target as Node)) {
@@ -283,24 +293,45 @@ export const Tree = (): ReactElement => {
         ) : (
             <></>
         );
+        const isExtensionPoint = item?.controlType === 'sap.ui.extensionpoint';
+        const tooltipId = `tooltip--${item?.name}`;
+
         return item && typeof itemIndex === 'number' && itemIndex > -1 ? (
             <div
                 aria-hidden
                 id={item.controlId}
                 className={classNames.join(' ')}
                 onClick={(): void => onSelectCell(item)}>
-                <div
+                <span
                     {...props}
-                    className={`tree-cell`}
-                    style={{
-                        paddingLeft: paddingValue,
-                        cursor: 'auto',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: 'block'
-                    }}>
-                    {item.name}
-                </div>
+                    data-testid={isExtensionPoint ? 'tooltip-container' : ''}
+                    style={{ paddingLeft: paddingValue }}
+                    className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
+                    onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
+                    {isExtensionPoint && (
+                        <Icon className="right-chevron-icon extension-icon" iconName={UiIcons.DataSource} />
+                    )}
+                    <div
+                        style={{
+                            cursor: 'auto',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: 'block'
+                        }}
+                        title={isExtensionPoint ? item?.name : ''}>
+                        {item.name}
+                    </div>
+                    {isExtensionPoint && (
+                        <div id={tooltipId} className="tooltip">
+                            <button
+                                data-testid="tooltip-dialog-button"
+                                onClick={() => handleOpenFragmentDialog(item, tooltipId)}>
+                                {t('ADD_FRAGMENT_AT_EXTENSION_POINT')}
+                            </button>
+                        </div>
+                    )}
+                </span>
+
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>{indicator}</div>
             </div>
         ) : null;
@@ -424,7 +455,8 @@ export const Tree = (): ReactElement => {
                 onRenderCell={onRenderCell}
                 groups={groups}
                 onSelect={onSelectHeader}
-                groupProps={groupRenderProps}></UIList>
+                groupProps={groupRenderProps}
+            />
         </div>
     );
 };
