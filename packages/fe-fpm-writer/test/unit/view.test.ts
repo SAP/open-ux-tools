@@ -9,7 +9,7 @@ import * as manifest from './sample/view/webapp/manifest.json';
 import type { Views, EventHandlerConfiguration } from '../../src/common/types';
 import type { Manifest } from '@sap-ux/project-access';
 import { detectTabSpacing } from '../../src/common/file';
-import { tabSizingTestCases } from '../common';
+import { getEndOfLinesLength, tabSizingTestCases } from '../common';
 
 const testDir = join(__dirname, 'sample/view');
 
@@ -285,12 +285,13 @@ describe('CustomView', () => {
             },
             {
                 name: 'absolute position',
-                position: 196 + 8 * os.EOL.length
+                position: 196 + 8 * os.EOL.length,
+                endOfLines: 8
             }
         ];
         test.each(positions)(
             '"eventHandler" is object. Append new function to existing js file with $name',
-            ({ position }) => {
+            ({ position, endOfLines }) => {
                 const fileName = 'MyExistingAction';
                 // Create existing file with existing actions
                 const folder = join('extensions', 'custom');
@@ -299,6 +300,10 @@ describe('CustomView', () => {
                 fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, {
                     eventHandlerFnName: 'onPress'
                 });
+                if (typeof position === 'number' && endOfLines !== undefined) {
+                    const content = fs.read(existingPath);
+                    position += getEndOfLinesLength(endOfLines, content);
+                }
                 const fnName = 'onHandleSecondAction';
 
                 const extension = {
