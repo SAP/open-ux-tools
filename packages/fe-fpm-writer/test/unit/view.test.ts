@@ -285,7 +285,7 @@ describe('CustomView', () => {
             },
             {
                 name: 'absolute position',
-                position: 196 + 8 * os.EOL.length,
+                position: 196,
                 endOfLines: 8
             }
         ];

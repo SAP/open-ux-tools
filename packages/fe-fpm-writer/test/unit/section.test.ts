@@ -347,14 +347,6 @@ describe('CustomSection', () => {
             test.each(positions)(
                 '"eventHandler" is object. Append new function to existing js file with $name',
                 ({ position, endOfLines }) => {
-                    const extension = {
-                        fnName,
-                        fileName,
-                        insertScript: {
-                            fragment: `,\n        ${fnName}: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
-                            position
-                        }
-                    };
                     // Generate handler with single method - content should be updated during generating of custom section
                     fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, {
                         eventHandlerFnName: 'onPress'
@@ -363,6 +355,14 @@ describe('CustomSection', () => {
                         const content = fs.read(existingPath);
                         position += getEndOfLinesLength(endOfLines, content);
                     }
+                    const extension = {
+                        fnName,
+                        fileName,
+                        insertScript: {
+                            fragment: `,\n        ${fnName}: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
+                            position
+                        }
+                    };
 
                     generateCustomSectionWithEventHandler(id, extension, folder);
                     const xmlPath = join(testDir, 'webapp', folder, `${id}.fragment.xml`);
