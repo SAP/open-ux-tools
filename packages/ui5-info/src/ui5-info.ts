@@ -1,4 +1,4 @@
-import { coerce, major, minor, valid } from 'semver';
+import { coerce, major, minor, patch, valid } from 'semver';
 import type { UI5VersionFilterOptions, UI5VersionOverview, UI5VersionsResponse, UI5Version } from './types';
 import { executeNpmUI5VersionsCmd } from './commands';
 import axios from 'axios';
@@ -262,15 +262,13 @@ async function retrieveUI5Versions(
     if (filterOptions?.onlyLatestPatchVersion) {
         const latestPathVersions: { version: string; patch: number }[] = [];
         versions.forEach((version) => {
-            const [major, minor, patch] = version.split('.').map(Number);
-            const currentPatch = parseInt(version.split('.')[2], 10);
-            const minorKey: any = `${major}.${minor}`;
+            const minorKey: any = `${major(version)}.${minor(version)}`;
 
             // Filter versions for the latest patch version for each minor version
-            if (!(minorKey in latestPathVersions) || currentPatch > latestPathVersions[minorKey].patch) {
+            if (!(minorKey in latestPathVersions) || patch(version) > latestPathVersions[minorKey].patch) {
                 latestPathVersions[minorKey] = {
                     version: version,
-                    patch
+                    patch: patch(version)
                 };
             }
         });
