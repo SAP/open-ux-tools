@@ -274,15 +274,15 @@ async function retrieveUI5Versions(
  * @returns list of latest patch versions
  */
 function retrieveLatestPatchVersions(versions: string[]): string[] {
-    const latestPathVersions: string[] = [];
+    const latestPatchVersions: string[] = [];
     versions.forEach((version) => {
         const minorKey: any = `${major(version)}.${minor(version)}`;
         const latestPatchVersion = maxSatisfying(versions, minorKey);
-        if (latestPatchVersion && !latestPathVersions.includes(latestPatchVersion)) {
-            latestPathVersions.push(latestPatchVersion);
+        if (latestPatchVersion && !latestPatchVersions.includes(latestPatchVersion)) {
+            latestPatchVersions.push(latestPatchVersion);
         }
     });
-    return latestPathVersions;
+    return latestPatchVersions;
 }
 
 /**
