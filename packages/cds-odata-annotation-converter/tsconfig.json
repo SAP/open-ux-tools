@@ -8,10 +8,8 @@
     },
     "incremental": true,
     "outDir": "dist",
-    "rootDir": "./src",
-    "lib": [
-      "ES2021"
-    ]
+    "rootDir": "src",
+    "lib": ["ES2021"]
   },
   "include": [
     "src/**/*.ts",
