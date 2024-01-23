@@ -59,20 +59,7 @@ export function PropertyChange(propertyChangeProps: Readonly<ChangeProps>): Reac
                         <Stack.Item>
                             <Text className={styles.text}>{convertCamelCaseToPascalCase(propertyName)}</Text>
                             <UIIcon iconName={IconName.arrow} className={styles.text} />
-                            {valueIcon && (
-                                <UIIcon
-                                    className={styles.valueIcon}
-                                    iconName={valueIcon}
-                                    style={{
-                                        marginRight: 5,
-                                        background: 'var(--vscode-terminal-ansiBlue)',
-                                        borderRadius: '50%',
-                                        height: 16,
-                                        width: 16,
-                                        verticalAlign: 'bottom'
-                                    }}
-                                />
-                            )}
+                            {valueIcon && <UIIcon className={'ui-cpe-icon-light-theme'} iconName={valueIcon} />}
                             <Text className={styles.text}>{value}</Text>
                         </Stack.Item>
                         {fileName && (
