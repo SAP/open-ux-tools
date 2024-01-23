@@ -94,6 +94,40 @@ importers:
         specifier: 2.6.1
         version: 2.6.1(ts-jest@29.1.0)
 
+  examples/fe-fpm-cli:
+    dependencies:
+      '@sap-ux/fe-fpm-writer':
+        specifier: workspace:*
+        version: link:../../packages/fe-fpm-writer
+      inquirer:
+        specifier: ^8.0.0
+        version: 8.2.6
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+    devDependencies:
+      '@types/inquirer':
+        specifier: ^8.0.0
+        version: 8.2.6
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/vinyl':
+        specifier: 2.0.7
+        version: 2.0.7
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^5.59.0
+        version: 5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.56.0)(typescript@4.9.5)
+      '@typescript-eslint/parser':
+        specifier: ^5.59.0
+        version: 5.62.0(eslint@8.56.0)(typescript@4.9.5)
+
   examples/odata-cli:
     dependencies:
       '@sap-ux/axios-extension':
@@ -771,12 +805,30 @@ importers:
 
   packages/fe-fpm-writer:
     dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.8.0
+        version: 0.8.0
+      '@sap-ux/edmx-parser':
+        specifier: ^0.7.0
+        version: 0.7.0
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/vocabularies-types':
+        specifier: 0.10.0
+        version: 0.10.0
       '@xmldom/xmldom':
         specifier: 0.8.10
         version: 0.8.10
       ejs:
         specifier: 3.1.9
         version: 3.1.9
+      i18next:
+        specifier: 21.6.11
+        version: 21.6.11
+      i18next-fs-backend:
+        specifier: 1.1.1
+        version: 1.1.1
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -793,12 +845,15 @@ importers:
         specifier: 0.0.33
         version: 0.0.33
     devDependencies:
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
+      '@types/i18next-fs-backend':
+        specifier: 1.0.0
+        version: 1.0.0
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -808,6 +863,9 @@ importers:
       '@types/semver':
         specifier: 7.5.2
         version: 7.5.2
+      '@types/vinyl':
+        specifier: 2.0.7
+        version: 2.0.7
 
   packages/fiori-elements-writer:
     dependencies:
@@ -7217,6 +7275,18 @@ packages:
       rollup: 3.29.1
     dev: true
 
+  /@sap-ux/annotation-converter@0.8.0:
+    resolution: {integrity: sha512-LrTDVMRGC2V5xphaB9cDDJMxsK+YBjNbObmQcHJCk6TL2P/trcZzV2UKDsckVv43ZCXjYGK5jkhkbiGgaLbokA==}
+    dependencies:
+      '@sap-ux/vocabularies-types': 0.10.0
+    dev: false
+
+  /@sap-ux/edmx-parser@0.7.0:
+    resolution: {integrity: sha512-48J86KjuX3uchs211f+RaEUL4bGYK5dkZonhDf6C7g0YCMrC5hsnPFd28yce850KZn4pMegNrtlYRwN6vVszAg==}
+    dependencies:
+      xml-js: 1.6.11
+    dev: false
+
   /@sap-ux/fe-fpm-writer@0.24.0:
     resolution: {integrity: sha512-ki2ZazdT8DfuPUgN8P8c+R8SqjT28JDSrYOPAA9EqKR1n24MyjerKq+49mRJ8fjR6iGciMG7UqbNkj6Sy/KCoA==}
     engines: {node: '>=18.x', pnpm: '>=6.26.1 < 7.0.0 || >=7.1.0'}
@@ -8470,6 +8540,12 @@ packages:
     dependencies:
       '@types/node': 17.0.9
 
+  /@types/i18next-fs-backend@1.0.0:
+    resolution: {integrity: sha512-PotQ0NE17NavxXCsdyq9qIKZQOB7+A5O/2nDdvfbfm6/IgvvC1YUO6hxK3nIHASu+QGjO1QV5J8PJw4OL12LMQ==}
+    dependencies:
+      i18next: 19.9.2
+    dev: true
+
   /@types/i18next-fs-backend@1.1.2:
     resolution: {integrity: sha512-ZzTRXA5B0x0oGhzKNp08IsYjZpli4LjRZpg3q4j0XFxN5lKG2MVLnR4yHX8PPExBk4sj9Yfk1z9O6CjPrAlmIQ==}
     dependencies:
@@ -8480,7 +8556,7 @@ packages:
     resolution: {integrity: sha512-gp/SIShAuf4WOqi8ey0nuI7qfWaVpMNCcs/xLygrh/QTQIXmlDC1E0TtVejweNW+7SGDY7g0lyxyKZIJuCKIJw==}
     deprecated: This is a stub types definition. i18next provides its own type definitions, so you do not need this installed.
     dependencies:
-      i18next: 21.10.0
+      i18next: 23.5.1
     dev: true
 
   /@types/inquirer-autocomplete-prompt@2.0.1:
@@ -8489,22 +8565,8 @@ packages:
       '@types/inquirer': 8.2.6
     dev: true
 
-  /@types/inquirer@8.2.1:
-    resolution: {integrity: sha512-wKW3SKIUMmltbykg4I5JzCVzUhkuD9trD6efAmYgN2MrSntY0SMRQzEnD3mkyJ/rv9NLbTC7g3hKKE86YwEDLw==}
-    dependencies:
-      '@types/through': 0.0.30
-      rxjs: 7.8.1
-    dev: true
-
   /@types/inquirer@8.2.6:
     resolution: {integrity: sha512-3uT88kxg8lNzY8ay2ZjP44DKcRaTGztqeIvN2zHvhzIBH/uAPaL75aBtdNRKbA7xXoMbBt5kX0M00VKAnfOYlA==}
-    dependencies:
-      '@types/through': 0.0.30
-      rxjs: 7.8.1
-    dev: true
-
-  /@types/inquirer@8.2.7:
-    resolution: {integrity: sha512-uICJEaJOf6MsKyyAf8p58+QxTS6dwy91QVfXk1hnQ0rUT+u7KpkeFx5dxQ/oju0BaOKB284brEMBHLpNf4bZDQ==}
     dependencies:
       '@types/through': 0.0.30
       rxjs: 7.8.1
@@ -8603,7 +8665,7 @@ packages:
       '@types/glob': 8.1.0
       '@types/json-schema': 7.0.12
       '@types/mem-fs': 1.1.2
-      '@types/node': 12.20.55
+      '@types/node': 18.11.9
       '@types/vinyl': 2.0.7
     dev: true
 
@@ -8882,7 +8944,7 @@ packages:
     resolution: {integrity: sha512-4UqPv+2567NhMQuMLdKAyK4yzrfCqwaTt6bLhHEs8PFcxbHILsrxaY63n4wgE/BRLDWDQeI+WcTmkXKExh9hQg==}
     dependencies:
       '@types/expect': 1.20.4
-      '@types/node': 17.0.9
+      '@types/node': 18.11.9
     dev: true
 
   /@types/vscode@1.73.1:
@@ -8903,7 +8965,7 @@ packages:
     resolution: {integrity: sha512-/g92Z/PAMXklSoWafGxTW8DxB4admgl5NDHvKn0qMkz2C0GJUvbV7tpU9LbKNnlMO+ynerz5bCVbhuBzEHbb6Q==}
     dependencies:
       '@types/diff': 5.0.3
-      '@types/inquirer': 8.2.1
+      '@types/inquirer': 8.2.6
       '@types/mem-fs': 1.1.2
       '@types/text-table': 0.2.2
       '@types/vinyl': 2.0.7
@@ -8919,7 +8981,7 @@ packages:
     dependencies:
       '@types/debug': 4.1.8
       '@types/ejs': 3.1.2
-      '@types/inquirer': 8.2.7
+      '@types/inquirer': 8.2.6
       '@types/mem-fs-editor': 7.0.1
       '@types/yeoman-environment': 2.10.8
       rxjs: 6.6.7
@@ -14372,9 +14434,19 @@ packages:
     hasBin: true
     dev: true
 
+  /i18next-fs-backend@1.1.1:
+    resolution: {integrity: sha512-RFkfy10hNxJqc7MVAp5iAZq0Tum6msBCNebEe3OelOBvrROvzHUPaR8Qe10RQrOGokTm0W4vJGEJzruFkEt+hQ==}
+    dev: false
+
   /i18next-fs-backend@1.2.0:
     resolution: {integrity: sha512-pUx3AcgXCbur0jpFA7U67Z2RJflAcIi698Y8VL+phdOqUchahxriV3Cs+M6UkPNQSS/zPEzWLfdJ8EgjB7HVxg==}
     dev: false
+
+  /i18next@19.9.2:
+    resolution: {integrity: sha512-0i6cuo6ER6usEOtKajUUDj92zlG+KArFia0857xxiEHAQcUwh/RtOQocui1LPJwunSYT574Pk64aNva1kwtxZg==}
+    dependencies:
+      '@babel/runtime': 7.23.2
+    dev: true
 
   /i18next@20.6.1:
     resolution: {integrity: sha512-yCMYTMEJ9ihCwEQQ3phLo7I/Pwycf8uAx+sRHwwk5U9Aui/IZYgQRyMqXafQOw5QQ7DM1Z+WyEXWIqSuJHhG2A==}
@@ -14386,11 +14458,16 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.2
 
+  /i18next@21.6.11:
+    resolution: {integrity: sha512-tJ2+o0lVO+fhi8bPkCpBAeY1SgkqmQm5NzgPWCQssBrywJw98/o+Kombhty5nxQOpHtvMmsxcOopczUiH6bJxQ==}
+    dependencies:
+      '@babel/runtime': 7.23.2
+    dev: false
+
   /i18next@23.5.1:
     resolution: {integrity: sha512-JelYzcaCoFDaa+Ysbfz2JsGAKkrHiMG6S61+HLBUEIPaF40WMwW9hCPymlQGrP+wWawKxKPuSuD71WZscCsWHg==}
     dependencies:
       '@babel/runtime': 7.23.2
-    dev: false
 
   /iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -19165,7 +19242,6 @@ packages:
 
   /sax@1.2.4:
     resolution: {integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==}
-    dev: true
 
   /saxes@6.0.0:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
@@ -21324,6 +21400,13 @@ packages:
     engines: {node: '>= 10'}
     dependencies:
       xml-parser-xo: 3.2.0
+    dev: false
+
+  /xml-js@1.6.11:
+    resolution: {integrity: sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==}
+    hasBin: true
+    dependencies:
+      sax: 1.2.4
     dev: false
 
   /xml-name-validator@4.0.0:
