@@ -1,4 +1,4 @@
-import { coerce, major, minor, patch, valid } from 'semver';
+import { coerce, major, minor, patch, valid, maxSatisfying } from 'semver';
 import type { UI5VersionFilterOptions, UI5VersionOverview, UI5VersionsResponse, UI5Version } from './types';
 import { executeNpmUI5VersionsCmd } from './commands';
 import axios from 'axios';
@@ -260,19 +260,15 @@ async function retrieveUI5Versions(
     }
 
     if (filterOptions?.onlyLatestPatchVersion) {
-        const latestPathVersions: { version: string; patch: number }[] = [];
+        const latestPathVersions: string[] = [];
         versions.forEach((version) => {
             const minorKey: any = `${major(version)}.${minor(version)}`;
-
-            // Filter versions for the latest patch version for each minor version
-            if (!(minorKey in latestPathVersions) || patch(version) > latestPathVersions[minorKey].patch) {
-                latestPathVersions[minorKey] = {
-                    version: version,
-                    patch: patch(version)
-                };
+            const latestPatchVersion = maxSatisfying(versions, minorKey);
+            if (latestPatchVersion && !latestPathVersions.includes(latestPatchVersion)) {
+                latestPathVersions.push(latestPatchVersion);
             }
         });
-        versions = Object.values(latestPathVersions).map((entry) => entry.version);
+        versions = latestPathVersions;
     }
 
     // Remove duplicates, as they may be returned from some UI5 version APIs
