@@ -260,19 +260,29 @@ async function retrieveUI5Versions(
     }
 
     if (filterOptions?.onlyLatestPatchVersion) {
-        const latestPathVersions: string[] = [];
-        versions.forEach((version) => {
-            const minorKey: any = `${major(version)}.${minor(version)}`;
-            const latestPatchVersion = maxSatisfying(versions, minorKey);
-            if (latestPatchVersion && !latestPathVersions.includes(latestPatchVersion)) {
-                latestPathVersions.push(latestPatchVersion);
-            }
-        });
-        versions = latestPathVersions;
+        versions = retrieveLatestPatchVersions(versions);
     }
 
     // Remove duplicates, as they may be returned from some UI5 version APIs
     return [...new Set(versions)];
+}
+
+/**
+ * Retrieve a list of versions filtered by latest patch version.
+ *
+ * @param versions - list of all versions
+ * @returns list of latest patch versions
+ */
+function retrieveLatestPatchVersions(versions: string[]): string[] {
+    const latestPathVersions: string[] = [];
+    versions.forEach((version) => {
+        const minorKey: any = `${major(version)}.${minor(version)}`;
+        const latestPatchVersion = maxSatisfying(versions, minorKey);
+        if (latestPatchVersion && !latestPathVersions.includes(latestPatchVersion)) {
+            latestPathVersions.push(latestPatchVersion);
+        }
+    });
+    return latestPathVersions;
 }
 
 /**
