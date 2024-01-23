@@ -1,4 +1,4 @@
-import { coerce, major, minor, patch, valid, maxSatisfying } from 'semver';
+import { coerce, major, minor, valid, maxSatisfying } from 'semver';
 import type { UI5VersionFilterOptions, UI5VersionOverview, UI5VersionsResponse, UI5Version } from './types';
 import { executeNpmUI5VersionsCmd } from './commands';
 import axios from 'axios';
