@@ -81,7 +81,6 @@ function internalPrint(node: Element | TextNode, options: EdmJsonOptions, isRoot
         default:
             return '';
     }
-    return '';
 }
 
 /**

@@ -65,7 +65,6 @@ export class EdmJsonVisitor {
         if (visitor) {
             return visitor(node as VisitNodeTypes);
         } else {
-            // console.warn(`No visitor function found for type ${node.type}`);
             return undefined;
         }
     }

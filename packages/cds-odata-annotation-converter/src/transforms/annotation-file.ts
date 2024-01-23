@@ -367,7 +367,7 @@ function convertTargetAnnotations(
         (pathSet ?? new Set()).forEach((path) => {
             let mdPath = path.split('@')[0];
             if (mdPath.endsWith('/')) {
-                mdPath = mdPath.substr(0, mdPath.length - 1);
+                mdPath = mdPath.slice(0, -1);
             }
             if (mdPath) {
                 mdPathSet.add(mdPath);
@@ -391,7 +391,7 @@ function checkGhostTarget(returnValue: ReturnValue, propagationMap?: PropagatedT
         sourceTargets.forEach((target) => {
             if (propagationMap[target.name]) {
                 Object.keys(propagationMap[target.name]).forEach((propagatedTargetName) => {
-                    const ghostTarget = Object.assign({}, target);
+                    const ghostTarget = { ...target };
                     ghostTarget.name = propagatedTargetName;
                     ghostTargets.push(ghostTarget);
                 });

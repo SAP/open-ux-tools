@@ -69,7 +69,7 @@ export const resolveTarget = (
         const fqboundActionFunctionName = rootElementName.split('(')[0];
         boundActionFunctionName = fqboundActionFunctionName.split('.').pop() as string;
 
-        const matchResult = rootElementName?.match(/\((.{0,127})\)/);
+        const matchResult = /\((.{0,127})\)/.exec(rootElementName);
         // Check if matchResult is not null before using pop
         const extractedValue = matchResult ? matchResult.pop() : null;
 
@@ -182,7 +182,6 @@ export const printCsdlNode = (node: Element | TextNode, options: FormatterOption
         default:
             return '';
     }
-    return '';
 };
 
 const printNonRecordNode = (node: Element, embedded: boolean, options: FormatterOptions): string => {
@@ -215,7 +214,6 @@ const printKey = (node: Element, embedded: boolean): string => {
         default:
             return '';
     }
-    return '';
 };
 
 const printContainerNode =

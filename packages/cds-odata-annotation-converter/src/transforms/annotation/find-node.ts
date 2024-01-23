@@ -83,8 +83,6 @@ class PositionVisitor {
             default:
                 return undefined;
         }
-
-        return undefined;
     }
 
     /**
@@ -329,7 +327,6 @@ function adjustReturnValue(
         default:
             return value;
     }
-    return value;
 }
 
 /**
