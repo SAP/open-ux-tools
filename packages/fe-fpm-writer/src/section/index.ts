@@ -111,7 +111,7 @@ function generate(
     });
 
     // add fragment
-    const viewPath = join(completeSection.path, `${completeSection.name}.fragment.xml`);
+    const viewPath = join(completeSection.path, `${completeSection.fragmentFile ?? completeSection.name}.fragment.xml`);
     if (!fs.exists(viewPath)) {
         fs.copyTpl(getTemplatePath('common/FragmentWithVBox.xml'), viewPath, completeSection);
     }

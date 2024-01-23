@@ -6,12 +6,11 @@ import type { Editor } from 'mem-fs-editor';
 import { relative } from 'path';
 import type ProjectProvider from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
-
 /**
  * Returns a Prompt to choose a boolean value.
  *
- * @param name
- * @param message
+ * @param name - The name of the prompt
+ * @param message - The message to display in the prompt
  * @returns a boolean prompt
  */
 export function getBooleanPrompt(name: string, message: string): ListQuestion {
@@ -30,10 +29,10 @@ export function getBooleanPrompt(name: string, message: string): ListQuestion {
 /**
  * Returns the prompt for choosing the existing annotation term.
  *
- * @param name
- * @param message
- * @param projectProvider
- * @param annotationTerm
+ * @param name - The name of the prompt
+ * @param message - The message to display in the prompt
+ * @param projectProvider - The project provider
+ * @param annotationTerm - The annotation term
  * @returns prompt for choosing the annotation term
  */
 export function getAnnotationPathQualifierPrompt(
@@ -63,14 +62,15 @@ export function getAnnotationPathQualifierPrompt(
         }
     } as ListQuestion;
 }
+
 /**
  * Returns the prompt for choosing a View or a Fragment file.
  *
- * @param fs
- * @param basePath
- * @param message
- * @param validationErrorMessage
- * @param dependantPromptNames
+ * @param fs - The file system object for reading files
+ * @param basePath - The base path to search for files
+ * @param message - The message to display in the prompt
+ * @param validationErrorMessage - The error message to show if validation fails
+ * @param dependantPromptNames - Dependant prompts names
  * @returns a prompt
  */
 export function getViewOrFragmentFilePrompt(
@@ -105,9 +105,9 @@ export function getViewOrFragmentFilePrompt(
 /**
  * Returns a Prompt for choosing an entity.
  *
- * @param message
- * @param projectProvider
- * @param dependantPromptNames
+ * @param message - The message to display in the prompt
+ * @param projectProvider - The project provider
+ * @param dependantPromptNames - Dependant prompts names
  * @returns entity question
  */
 export function getEntityPrompt(
@@ -133,9 +133,9 @@ export function getEntityPrompt(
 /**
  * Return a Prompt for choosing the aggregation path.
  *
- * @param message
- * @param fs
- * @returns
+ * @param message - The message to display in the prompt
+ * @param fs - The file system object for reading files
+ * @returns A ListQuestion object representing the prompt
  */
 export function getAggregationPathPrompt(message: string, fs: Editor): ListQuestion {
     return {
@@ -173,7 +173,7 @@ export const augmentXpathWithLocalNames = (path: string): string => {
  * Returns a list of xpath strings for each element of the xml file provided.
  *
  * @param {string} xmlFilePath - the xml file path
- * @param fs
+ * @param fs - The file system object for reading files
  * @returns {Record<string, string>} the list of xpath strings
  */
 export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Record<string, string> {
@@ -229,7 +229,7 @@ function getErrorMessage(error: Error): string {
 /**
  * Returns a Prompt for entering filter bar ID.
  *
- * @param message
+ * @param message - prompt message
  * @returns a Input Prompt
  */
 export function getFilterBarIdPrompt(message: string): InputQuestion {
@@ -243,7 +243,7 @@ export function getFilterBarIdPrompt(message: string): InputQuestion {
 /**
  * Returns the Binding Context Type Prompt.
  *
- * @param message
+ * @param message - prompt message
  * @returns a List Prompt
  */
 export function getBindingContextTypePrompt(message: string): ListQuestion {
@@ -262,9 +262,9 @@ export function getBindingContextTypePrompt(message: string): ListQuestion {
 /**
  * Returns a Prompt for entering a Building block ID.
  *
- * @param message
- * @param validationErrorMessage
- * @returns a Input Prompt
+ * @param message - The message to display in the prompt
+ * @param validationErrorMessage - The error message to show if ID validation fails
+ * @returns An InputPrompt object for getting the building block ID
  */
 export function getBuildingBlockIdPrompt(message: string, validationErrorMessage: string): InputQuestion {
     return {

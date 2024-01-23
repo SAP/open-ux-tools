@@ -138,7 +138,6 @@ export async function getChartBuildingBlockPrompts(
         getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate')),
         getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
         getBindingContextTypePrompt(t('bindingContextType')),
-
         getFilterBarIdPrompt(t('filterBar')),
         {
             type: 'checkbox',

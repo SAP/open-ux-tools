@@ -1,0 +1,121 @@
+{
+  "type": "annotation",
+  "range": "[(0,0)..(0,19)]",
+  "term": {
+    "type": "path",
+    "range": "[(0,0)..(0,1)]",
+    "value": "a",
+    "segments": [
+      {
+        "type": "identifier",
+        "range": "[(0,0)..(0,1)]",
+        "value": "a",
+        "quoted": false
+      }
+    ],
+    "separators": []
+  },
+  "colon": {
+    "type": "token",
+    "range": "[(0,1)..(0,2)]",
+    "value": ":"
+  },
+  "value": {
+    "type": "record",
+    "range": "[(0,3)..(0,19)]",
+    "properties": [
+      {
+        "type": "record-property",
+        "range": "[(0,5)..(0,17)]",
+        "colon": {
+          "type": "token",
+          "range": "[(0,6)..(0,7)]",
+          "value": ":"
+        },
+        "name": {
+          "type": "path",
+          "range": "[(0,5)..(0,6)]",
+          "value": "b",
+          "segments": [
+            {
+              "type": "identifier",
+              "range": "[(0,5)..(0,6)]",
+              "value": "b",
+              "quoted": false
+            }
+          ],
+          "separators": []
+        },
+        "value": {
+          "type": "correct-expression",
+          "range": "[(0,8)..(0,17)]",
+          "operatorName": "and",
+          "operators": [
+            {
+              "type": "operator",
+              "range": "[(0,11)..(0,14)]",
+              "value": "AND"
+            }
+          ],
+          "operands": [
+            {
+              "type": "path",
+              "range": "[(0,9)..(0,10)]",
+              "value": "c",
+              "segments": [
+                {
+                  "type": "identifier",
+                  "range": "[(0,9)..(0,10)]",
+                  "value": "c",
+                  "quoted": false
+                }
+              ],
+              "separators": []
+            },
+            {
+              "type": "path",
+              "range": "[(0,15)..(0,16)]",
+              "value": "d",
+              "segments": [
+                {
+                  "type": "identifier",
+                  "range": "[(0,15)..(0,16)]",
+                  "value": "d",
+                  "quoted": false
+                }
+              ],
+              "separators": []
+            }
+          ],
+          "openToken": {
+            "type": "token",
+            "range": "[(0,8)..(0,9)]",
+            "value": "("
+          },
+          "closeToken": {
+            "type": "token",
+            "range": "[(0,16)..(0,17)]",
+            "value": ")"
+          }
+        }
+      }
+    ],
+    "commas": [
+      {
+        "type": "token",
+        "range": "[(0,17)..(0,18)]",
+        "value": ","
+      }
+    ],
+    "openToken": {
+      "type": "token",
+      "range": "[(0,3)..(0,4)]",
+      "value": "{"
+    },
+    "closeToken": {
+      "type": "token",
+      "range": "[(0,18)..(0,19)]",
+      "value": "}"
+    }
+  }
+}

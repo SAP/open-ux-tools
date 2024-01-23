@@ -253,9 +253,8 @@ export async function enhanceConfigForSystem(
                 refreshToken: system.refreshToken,
                 refreshTokenChangedCb: tokenChangedCallback
             });
-            // sending a request to the backend to get cookies
+            // sending a request to the backend to get token
             await provider.getAtoInfo();
-            proxyOptions.headers['cookie'] = provider.cookies.toString();
         } else {
             throw new Error('Cannot connect to ABAP Environment on BTP without service keys.');
         }
@@ -322,12 +321,24 @@ export async function generateProxyMiddlewareOptions(
                 new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
             );
             if (system) {
-                await enhanceConfigForSystem(proxyOptions, system, backend.scp, (refreshToken?: string) => {
-                    if (refreshToken) {
-                        logger.info('Updating refresh token for: ' + localBackend.url);
-                        systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
+                await enhanceConfigForSystem(
+                    proxyOptions,
+                    system,
+                    backend.scp,
+                    (refreshToken?: string, accessToken?: string) => {
+                        if (refreshToken) {
+                            logger.info('Updating refresh token for: ' + localBackend.url);
+                            systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
+                        }
+
+                        if (accessToken) {
+                            logger.info('Setting access token');
+                            proxyOptions.headers['authorization'] = `bearer ${accessToken}`;
+                        } else {
+                            logger.warn('Setting of access token failed.');
+                        }
                     }
-                });
+                );
             }
         } catch (error) {
             logger.warn('Accessing the credentials store failed.');

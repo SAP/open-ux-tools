@@ -1,0 +1,7 @@
+UI.LineItem : [
+    {
+        $Type       : 'UI.DataField',
+        // Criticality : criticality
+        Value: title,
+    },
+]
