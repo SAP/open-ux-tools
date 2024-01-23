@@ -61,8 +61,38 @@
     </script>
     
     <script />
+        function getFlexSettings() {
+            let result;
+            const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
+            const flexSetting = bootstrapConfig?.getAttribute('data-open-ux-preview-flex-settings');
+            if (flexSetting) {
+                result = JSON.parse(flexSetting);
+            }
+            return result;
+        }
+
+        jQuery.sap.require("sap.ui.comp.smarttable.SmartTable");
+        jQuery.sap.require("sap.ui.dt.plugin.ContextMenu");
+        jQuery.sap.require("sap.ui.dt.DesignTime");
+        jQuery.sap.require("sap.ui.fl.FlexControllerFactory");
+
         jQuery.sap.require("sap.ui.fl.FakeLrepConnector");
         jQuery.extend(sap.ui.fl.FakeLrepConnector.prototype, {
+            create: function (_key, change) {
+                const settings = getFlexSettings();
+                if (settings) {
+                    change.support ??= {};
+                    change.support.generator = settings.generator;
+                }
+
+                return fetch(path, {
+                    method: 'POST',
+                    body: JSON.stringify(change, null, 2),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                })
+            },
             loadChanges: async function () {
                     const lrep = new sap.ui.fl.LrepConnector()
                     
@@ -80,6 +110,7 @@
                         arr.push(val);
                     })
                     res.changes.changes = arr;
+                    res.changes.settings.isKeyUser = true;
                     return res;
                 });
             },
