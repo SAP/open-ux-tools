@@ -115,6 +115,12 @@ declare module 'sap/ui/fl/FakeLrepConnector' {
     }
 }
 
+declare module 'sap/ui/fl/LrepConnector' {
+    export default class LrepConnector {
+        loadChanges(): Promise<any>;
+    }
+}
+
 declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type Event from 'sap/ui/base/Event';
     import type Component from 'sap/ui/core/Component';
@@ -168,7 +174,12 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         generator: string;
     }
 
-    interface RuntimeAuthoring {
+    export default class RuntimeAuthoring {
+        constructor(options: { flexSettings: FlexSettings; [key: string]: any }) {}
+
+        destroy: () => void;
+        start: () => Promise<void>;
+        attachEvent: (name: string, fn: () => any) => void;
         attachSelectionChange(handler: (event: SelectionChangeEvent) => void): void;
         attachModeChanged: (handler: (event: Event) => void) => void;
         attachUndoRedoStackModified: (handler: (event: Event) => Promise<void>) => void;
@@ -182,14 +193,12 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
             getManifest(): Manifest;
         } & Component;
     }
-
-    export default RuntimeAuthoring;
 }
 
 declare module 'sap/ui/rta/api/startAdaptation' {
     import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-    export type RTAPlugin = (rta: RuntimeAuthoring) => void;
+    export type RTAPlugin = (rta: RuntimeAuthoring) => Promise<void> | void;
     export type StartAdaptation = (options: object, plugin?: RTAPlugin) => void;
 
     const startAdaptation: StartAdaptation;

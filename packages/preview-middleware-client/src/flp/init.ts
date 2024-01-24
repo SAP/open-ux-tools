@@ -4,6 +4,7 @@ import type { RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation'
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import UriParameters from 'sap/base/util/UriParameters';
+import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -178,6 +179,22 @@ export function setI18nTitle(i18nKey = 'appTitle') {
     }
 }
 
+export async function initRta(options: any, loadPlugins: RTAPlugin) {
+    const rta = new RuntimeAuthoring(options);
+
+    const fnOnStop = function () {
+        rta.destroy();
+    };
+
+    rta.attachEvent('stop', fnOnStop);
+
+    if (loadPlugins) {
+        await loadPlugins(rta);
+    }
+
+    await rta.start();
+}
+
 /**
  * Apply additional configuration and initialize sandbox.
  *
@@ -192,21 +209,36 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
         sap.ushell.Container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
+                // @ts-ignore
+                const version = sap.ui.version;
+                const minor = version.split(/[.-]/)[1];
                 const view = event.getParameter('componentInstance');
-                const libs = ['sap/ui/rta/api/startAdaptation'];
                 const flexSettings = JSON.parse(flex);
+                const pluginScript = flexSettings.pluginScript ?? '';
+                const libs = ['sap/ui/rta/api/startAdaptation'];
+
                 if (flexSettings.pluginScript) {
-                    libs.push(flexSettings.pluginScript);
+                    libs.push(pluginScript);
                     delete flexSettings.pluginScript;
                 }
-                sap.ui.require(libs, function (startAdaptation: StartAdaptation, pluginScript?: RTAPlugin) {
-                    const options = {
-                        rootControl: view,
-                        validateAppVersion: false,
-                        flexSettings
-                    };
-                    startAdaptation(options, pluginScript);
-                });
+
+                const options = {
+                    rootControl: view,
+                    validateAppVersion: false,
+                    flexSettings
+                };
+
+                if (minor > 71) {
+                    sap.ui.require(libs, function (startAdaptation: StartAdaptation, pluginScript?: RTAPlugin) {
+                        startAdaptation(options, pluginScript);
+                    });
+                } else {
+                    // For ui5 version 1.71.x startAdaptation will fail (because 'sap/ui/rta/api/startAdaptation' does not exists -> the plugin script is never executed)
+                    // thus we need to initialize and start rta ourselves.
+                    sap.ui.require([pluginScript], async function (pluginScript: RTAPlugin) {
+                        await initRta(options, pluginScript);
+                    });
+                }
             });
         });
     }
