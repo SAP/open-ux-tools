@@ -1,10 +1,10 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import UriParameters from 'sap/base/util/UriParameters';
-import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -207,7 +207,7 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
                     delete flexSettings.pluginScript;
                 }
 
-                const options = {
+                const options: RTAOptions = {
                     rootControl: view,
                     validateAppVersion: false,
                     flexSettings
@@ -223,7 +223,7 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
                     sap.ui.require(
                         [initRtaScript, pluginScript],
                         async function (
-                            initRta: (options: any, pluginScript: RTAPlugin) => Promise<void>,
+                            initRta: (options: RTAOptions, pluginScript: RTAPlugin) => Promise<void>,
                             pluginScript: RTAPlugin
                         ) {
                             await initRta(options, pluginScript);

@@ -129,6 +129,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
     import type { Layer } from 'sap/ui/fl';
     import type { Scenario } from 'sap/ui/fl/Scenario';
+    import type Control from 'sap/ui/core/Control';
 
     type Manifest = {
         [key: string]: unknown;
@@ -174,8 +175,15 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         generator: string;
     }
 
+    export interface RTAOptions {
+        [key: string]: any;
+        flexSettings: FlexSettings;
+        rootControl: Control;
+        validateAppVersion: boolean;
+    }
+
     export default class RuntimeAuthoring {
-        constructor(options: { flexSettings: FlexSettings; [key: string]: any }) {}
+        constructor(options: RTAOptions) {}
 
         destroy: () => void;
         start: () => Promise<void>;

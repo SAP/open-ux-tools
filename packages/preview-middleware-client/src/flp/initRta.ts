@@ -2,9 +2,8 @@ import merge from 'sap/base/util/merge';
 import Control from 'sap/ui/core/Control';
 import UIComponent from 'sap/ui/core/UIComponent';
 import Utils from 'sap/ui/fl/Utils';
-import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import RuntimeAuthoring, { type RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type { RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
-import LayerUtils from 'sap/ui/fl/LayerUtils';
 import FeaturesAPI from 'sap/ui/fl/write/api/FeaturesAPI';
 
 const defaultOptions = {
@@ -70,11 +69,11 @@ export async function checkKeyUser(layer: string) {
     return Promise.resolve();
 }
 
-export default async function (options: any, loadPlugins: RTAPlugin) {
+export default async function (options: RTAOptions, loadPlugins: RTAPlugin) {
     const layer = options.flexSettings.layer;
     const rootControl = options.rootControl;
 
-    options = merge(defaultOptions, options);
+    options = merge(defaultOptions, options) as RTAOptions;
 
     checkLayer(layer);
 
