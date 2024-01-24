@@ -208,6 +208,7 @@ declare module 'sap/ui/rta/api/startAdaptation' {
 
     export type RTAPlugin = (rta: RuntimeAuthoring) => Promise<void> | void;
     export type StartAdaptation = (options: object, plugin?: RTAPlugin) => void;
+    export type InitRtaScript = (options: RTAOptions, pluginScript: RTAPlugin) => Promise<void>;
 
     const startAdaptation: StartAdaptation;
 

@@ -1,6 +1,6 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
-import type { RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
@@ -222,10 +222,7 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
                     // thus we need to initialize and start rta ourselves.
                     sap.ui.require(
                         [initRtaScript, pluginScript],
-                        async function (
-                            initRta: (options: RTAOptions, pluginScript: RTAPlugin) => Promise<void>,
-                            pluginScript: RTAPlugin
-                        ) {
+                        async function (initRta: InitRtaScript, pluginScript: RTAPlugin) {
                             await initRta(options, pluginScript);
                         }
                     );
