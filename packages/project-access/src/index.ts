@@ -16,6 +16,7 @@ export {
     getCdsServices,
     getMtaPath,
     getNodeModulesPath,
+    getProject,
     getProjectType,
     getWebappPath,
     isCapJavaProject,
