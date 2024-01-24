@@ -32,8 +32,8 @@ export async function getProject(root: string): Promise<Project> {
     const apps = await getApps(root, appFolders);
     return {
         root,
-        apps,
-        projectType
+        projectType,
+        apps
     };
 }
 
