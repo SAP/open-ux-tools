@@ -350,19 +350,9 @@ export class FlpSandbox {
     }
 
     private getFakeConnectorSettings(): TemplateConfig['ui5']['flex'] {
-        const fakeLrepConnector = 'open/ux/preview/client/flp/FakeLrepConnector';
         return [
-            // {
-            //     connector: fakeLrepConnector,
-            //     layers: ['VENDOR', 'CUSTOMER_BASE']
-            // }
             // @ts-ignore
-            { connector: 'LrepConnector', layers: [], url: "/sap/bc/lrep" }
-            // {
-            //     applyConnector: fakeLrepConnector,
-            //     writeConnector: fakeLrepConnector,
-            //     custom: true
-            // }
+            { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' }
         ];
     }
 
