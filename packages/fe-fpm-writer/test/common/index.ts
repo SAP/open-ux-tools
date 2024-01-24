@@ -1,3 +1,4 @@
+import os from 'os';
 import { rmdirSync, existsSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
 
@@ -62,3 +63,20 @@ export const tabSizingTestCases = [
         }
     }
 ];
+
+/**
+ * Method returns length of end of lines symbols for passed line.
+ * In Windows it might be two symbols '\r\n'.
+ *
+ * @param line Index of line to calculate.
+ * @param content Existing content to check.
+ * @returns Length of end of line symbols.
+ */
+export function getEndOfLinesLength(line: number, content?: string) {
+    let size = line * os.EOL.length;
+    if (content) {
+        // Apply 2 symbols as end of line for Windows if it exists in original file '\n\n'
+        size = content.includes('\r\n') ? line * 2 : line;
+    }
+    return size;
+}
