@@ -5,6 +5,8 @@ import Utils from 'sap/ui/fl/Utils';
 import RuntimeAuthoring, { type RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type { RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
 import FeaturesAPI from 'sap/ui/fl/write/api/FeaturesAPI';
+import Button from 'sap/m/Button';
+import MessageToast from 'sap/m/MessageToast';
 
 const defaultOptions = {
     flexSettings: {
@@ -87,14 +89,34 @@ export default async function (options: RTAOptions, loadPlugins: RTAPlugin) {
 
     const rta = new RuntimeAuthoring(options);
 
-    const fnOnStop = function () {
-        rta.destroy();
+    rta.stop = async function (bDontSaveChanges, bSkipRestart) {
+        // await (bSkipRestart ? Promise.resolve(this._RESTART.NOT_NEEDED) : this._handleReloadOnExit());
+        return await (bDontSaveChanges ? Promise.resolve() : this._serializeToLrep(this)).then(() => {
+            MessageToast.show('Changes saved.');
+        });
     };
-    rta.attachEvent('stop', fnOnStop);
 
     if (loadPlugins) {
         await loadPlugins(rta);
     }
 
     await rta.start();
+
+    const button = sap.ui.getCore().byId('__button12') as Button & { ontap: () => void };
+    const resetBtn = sap.ui.getCore().byId('__button9') as Button;
+    const publishBtn = sap.ui.getCore().byId('__button10') as Button;
+
+    resetBtn.setVisible(false);
+    publishBtn.setVisible(false);
+    button.setText('Save').setEnabled(false);
+
+    // @ts-ignore
+    rta.attachUndoRedoStackModified(() => {
+        const stack = rta.getCommandStack();
+        const allCommands = stack.getCommands();
+
+        const shouldEnableSaveBtn = allCommands.length > 0;
+
+        button.setEnabled(shouldEnableSaveBtn);
+    });
 }

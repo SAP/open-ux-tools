@@ -183,10 +183,17 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     }
 
     export default class RuntimeAuthoring {
+        _RESTART: {
+            NOT_NEEDED: 'no restart';
+            RELOAD_PAGE: 'reload';
+            VIA_HASH: 'without max layer';
+        };
+
         constructor(options: RTAOptions) {}
 
         destroy: () => void;
         start: () => Promise<void>;
+        stop: (dontSaveChanges: boolean, skipRestart: boolean) => void;
         attachEvent: (name: string, fn: () => any) => void;
         attachSelectionChange(handler: (event: SelectionChangeEvent) => void): void;
         attachModeChanged: (handler: (event: Event) => void) => void;
@@ -200,6 +207,9 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getRootControlInstance: () => {
             getManifest(): Manifest;
         } & Component;
+
+        _handleReloadOnExit: () => Promise<void>;
+        _serializeToLrep: (self: unknown) => Promise<void>;
     }
 }
 
