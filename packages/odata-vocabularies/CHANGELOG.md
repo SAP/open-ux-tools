@@ -1,5 +1,11 @@
 # @sap-ux/odata-vocabularies
 
+## 0.3.3
+
+### Patch Changes
+
+-   aa8469f3: OData Vocabularies: Update Vocabularies Containing Cds Specific Analytics Annotations
+
 ## 0.3.2
 
 ### Patch Changes
