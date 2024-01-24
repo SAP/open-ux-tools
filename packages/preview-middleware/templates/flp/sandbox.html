@@ -59,67 +59,11 @@
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flex) %>'<% } if (locals.locateReuseLibsScript) { %>
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>>
     </script>
-    
-    <script />
-        function getFlexSettings() {
-            let result;
-            const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
-            const flexSetting = bootstrapConfig?.getAttribute('data-open-ux-preview-flex-settings');
-            if (flexSetting) {
-                result = JSON.parse(flexSetting);
-            }
-            return result;
-        }
 
-        jQuery.sap.require("sap.ui.comp.smarttable.SmartTable");
-        jQuery.sap.require("sap.ui.dt.plugin.ContextMenu");
-        jQuery.sap.require("sap.ui.dt.DesignTime");
-        jQuery.sap.require("sap.ui.fl.FlexControllerFactory");
-
-        jQuery.sap.require("sap.ui.fl.FakeLrepConnector");
-        jQuery.extend(sap.ui.fl.FakeLrepConnector.prototype, {
-            create: function (_key, change) {
-                const settings = getFlexSettings();
-                if (settings) {
-                    change.support ??= {};
-                    change.support.generator = settings.generator;
-                }
-
-                return fetch(path, {
-                    method: 'POST',
-                    body: JSON.stringify(change, null, 2),
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                })
-            },
-            loadChanges: async function () {
-                    const lrep = new sap.ui.fl.LrepConnector()
-                    
-                    const path = '/preview/api/changes';
-                    const response = await fetch(path, {
-                        method: 'GET',
-                        headers: {
-                            'content-type': 'application/json'
-                        }
-                    });
-                    const changes = await response.json();
-                return sap.ui.fl.LrepConnector.prototype.loadChanges.apply(lrep, arguments).then((res) => {
-                    const arr = [];
-                    Object.entries(changes).forEach(([key, val]) => {
-                        arr.push(val);
-                    })
-                    res.changes.changes = arr;
-                    res.changes.settings.isKeyUser = true;
-                    return res;
-                });
-            },
-            loadSettings: function () {
-                return Promise.resolve();
-            }
-			});
-			sap.ui.fl.FakeLrepConnector.enableFakeConnector();
-       
+    <script type="text/javascript">
+        (() => sap.ui.require(['open/ux/preview/client/flp/FakeLrepConnector'], function(script) {
+            script()
+        }))()
     </script>
     
     <% if (locals.flex && flex?.scenario === 'ADAPTATION_PROJECT') { %>
