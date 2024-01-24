@@ -11,7 +11,10 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { FileWatcher } from './watcher';
-import { sockets } from './ws-server';
+import type WebSocket from 'ws';
+const websocket = require('ui5-middleware-websocket/lib/websocket');
+
+type WSMiddlewareFunction = (ws: WebSocket, req: Express.Request, next: () => any) => void;
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -141,6 +144,11 @@ export class FlpSandbox {
     public readonly config: FlpConfig;
     public readonly rta?: RtaConfig;
     public readonly router: EnhancedRouter;
+    private _websocketMiddleware?: RequestHandler;
+    public get websocketMiddleware(): RequestHandler | undefined {
+        return this._websocketMiddleware;
+    }
+    private _websockets: WebSocket[] = [];
     private fileWatcher?: FileWatcher;
 
     /**
@@ -208,6 +216,7 @@ export class FlpSandbox {
         });
         this.addStandardRoutes();
         if (this.rta) {
+            this.initWebSocketMiddleware();
             this.rta.options ??= {};
             this.rta.options.baseId = componentId ?? id;
             this.rta.options.appName = id;
@@ -216,6 +225,23 @@ export class FlpSandbox {
         this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
+    }
+
+    private initWebSocketMiddleware() {
+        const wsRequestHandler: WSMiddlewareFunction = (ws /*, req, next */) => {
+            this._websockets.push(ws);
+            this.logger.info('Websocket client connected');
+
+            ws.on('close', () => {
+                this.logger.info('Websocket client disconnected');
+                const idx = this._websockets.indexOf(ws);
+                if (idx > -1) {
+                    this._websockets.splice(idx, 1);
+                }
+            });
+        };
+
+        this._websocketMiddleware = websocket(wsRequestHandler);
     }
 
     /**
@@ -267,7 +293,8 @@ export class FlpSandbox {
                     `${this.utils.getProject().getRootPath()}/webapp`,
                     (changedFiles) => {
                         // Use the changed file names as needed
-                        sockets.forEach((socket: any) => {
+                        this.logger.info(`File changes detected: ${changedFiles.join('\n')}`);
+                        this._websockets.forEach((socket: any) => {
                             socket.send(changedFiles.join(','));
                         });
                     }

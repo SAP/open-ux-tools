@@ -11,7 +11,7 @@ import { fileChanged } from './slice';
  * @returns Function
  */
 export const webSocketMiddleware: Middleware<Dispatch<Action>> = (store: MiddlewareAPI) => {
-    const socket = new WebSocket('ws://localhost:1337');
+    const socket = new WebSocket(`ws://${location.host}`);
     socket.addEventListener('message', (event) => {
         store.dispatch(fileChanged(event.data.split(',')));
     });

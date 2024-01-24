@@ -42,6 +42,7 @@
     "dependencies": {
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/control-property-editor-sources": "workspace:@sap-ux/control-property-editor@*",
+        "ui5-middleware-websocket": "3.0.1",
         "@sap-ux/logger": "workspace:*",
         "@types/ws": "8.5.10",
         "ejs": "3.1.9"

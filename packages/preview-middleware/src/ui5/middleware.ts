@@ -56,7 +56,14 @@ async function createRouter(
     }
     // add exposed endpoints for cds-plugin-ui5
     flp.router.getAppPages = () => [`${flp.config.path}#${flp.config.intent.object}-${flp.config.intent.action}`];
-    return flp.router;
+
+    // include websocket middleware
+    const wsMiddleware = flp.websocketMiddleware;
+    if (wsMiddleware) {
+        return [flp.router, wsMiddleware];
+    } else {
+        return flp.router;
+    }
 }
 
 /**
@@ -65,7 +72,7 @@ async function createRouter(
  * @param params middleware configuration
  * @returns a promise for the request handler
  */
-module.exports = async (params: MiddlewareParameters<MiddlewareConfig>): Promise<RequestHandler> => {
+module.exports = async (params: MiddlewareParameters<MiddlewareConfig>): Promise<RequestHandler | RequestHandler[]> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'preview-middleware' })],
         logLevel: params.options.configuration?.debug ? LogLevel.Debug : LogLevel.Info

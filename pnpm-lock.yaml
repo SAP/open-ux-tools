@@ -1155,6 +1155,9 @@ importers:
       express:
         specifier: '4'
         version: 4.18.2
+      ui5-middleware-websocket:
+        specifier: 3.0.1
+        version: 3.0.1
     devDependencies:
       '@private/preview-middleware-client':
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
@@ -20578,6 +20581,16 @@ packages:
     dev: true
     optional: true
 
+  /ui5-middleware-websocket@3.0.1:
+    resolution: {integrity: sha512-9Y4qSW8KtokAAcQj4/9rZ8q1bDFgNIc15B+CfsWV26mZlv9njuxBX5LWlQTQE1r1bE+fSwjiR1hG1embp8+BBA==}
+    dependencies:
+      ui5-utils-express: 1.2.1
+      ws: 8.16.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
   /ui5-tooling-modules@3.0.5:
     resolution: {integrity: sha512-6H6+DWIA+iiMnW2T7SjeEf9ztghYzsAO+t5uK/eZEA3G/MeAncFg+W299TaZh0EdnWe3juLPxEBp82ZDimg6Hg==}
     dependencies:
@@ -20617,6 +20630,10 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /ui5-utils-express@1.2.1:
+    resolution: {integrity: sha512-XOci8ELI9+Ude+4iAdQrF3gm9ega0dfy7p8nH1tmP/BAlr+mNTjJkQeAgArDE9oQ2D6LYAcD183yRqBlvp1tHA==}
+    dev: false
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
@@ -21350,7 +21367,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-    dev: true
 
   /xdg-basedir@5.1.0:
     resolution: {integrity: sha512-GCPAHLvrIH13+c0SuacwvRYj2SxJXQ4kaVTT5xgL3kPrz56XxkF21IGhjSE1+W0aw7gpBWRGXLCPnPby6lSpmQ==}
