@@ -161,7 +161,6 @@ function findReservedProperties(properties: RecordProperty[]): FoundReservedProp
             result.valueProperty = property;
         } else if (
             normalizedName === normalizedEdmJsonPropertyName ||
-            // TODO: check if we should make this consistent?
             (normalizedName.startsWith('$EDMJ') && property.name.value.length <= normalizedEdmJsonPropertyName.length)
         ) {
             result.edmJsonProperty = property;

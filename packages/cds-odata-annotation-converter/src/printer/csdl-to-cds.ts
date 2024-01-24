@@ -177,7 +177,7 @@ export const printCsdlNode = (node: Element | TextNode, options: FormatterOption
                 return printNonRecordNode(node, true, options);
             }
         case TEXT_TYPE:
-            // TODO text nodes can have all kinds of primitive values which might need enclosing '' or not (e.g. true, false, paths)
+            // text nodes can have all kinds of primitive values which might need enclosing '' or not (e.g. true, false, paths)
             return escapeText(node.text);
         default:
             return '';

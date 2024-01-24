@@ -7,10 +7,9 @@ import type { AnnotationGroup, Annotation } from '@sap-ux/cds-annotation-parser'
 import { deserialize } from './deserialize-ast';
 import { getCdsArtifacts } from '@sap/ux-cds-compiler-facade';
 import type { CdsArtifactsType, File } from '@sap/ux-cds-compiler-facade';
-import * as fs from 'fs';
 
 export const getFileObj = async (root: string, fileUri: string): Promise<File> => {
-    const fileContentBuffer = await fs.promises.readFile(join(root, fileUri));
+    const fileContentBuffer = await promises.readFile(join(root, fileUri));
     const fileContent = fileContentBuffer.toString('utf-8'); // Convert Buffer to string
     return { fileUri, fileContent };
 };
@@ -88,7 +87,6 @@ export const prepare = async (
         }, new Map<string, File>());
     }
     const cdsArtifacts = await getCdsArtifacts(project as unknown as any, cdsServiceName, roots, fileCache);
-    //setProjectFileSequence(projectProvider, cdsArtifacts.fileSequence, cdsServiceName, cdsAppName);
 
     return { projectRoot, cdsArtifacts, fileCache };
 };
