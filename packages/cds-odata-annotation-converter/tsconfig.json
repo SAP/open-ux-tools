@@ -1,11 +1,6 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "paths": {
-      "@sap/cds-compiler": [
-        "./node_modules/@sap/ux-cds-compiler-types"
-      ]
-    },
     "incremental": true,
     "outDir": "dist",
     "rootDir": "src",
