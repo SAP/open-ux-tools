@@ -1,12 +1,6 @@
 {
-    "_version": "1.48.0",
     "sap.app": {
         "id": "two",
-        "type": "application",
-        "applicationVersion": {
-            "version": "0.0.1"
-        },
-        "title": "Two",
         "dataSources": {
             "main": {
                 "uri": "/sap/opu/odata4/dmo/ODATA_SERVICE/",
@@ -26,33 +20,11 @@
             }
         }
     },
-    "sap.ui": {
-        "technology": "UI5",
-        "deviceTypes": {
-            "desktop": true,
-            "tablet": true,
-            "phone": true
-        }
-    },
     "sap.ui5": {
-        "dependencies": {
-            "minUI5Version": "1.108.20",
-            "libs": {
-                "sap.ui.core": {},
-                "sap.fe.templates": {}
-            }
-        },
-        "contentDensities": {
-            "compact": true,
-            "cozy": true
-        },
         "models": {
             "": {
                 "dataSource": "main"
             }
-        },
-        "resources": {
-            "css": []
         }
     }
 }
