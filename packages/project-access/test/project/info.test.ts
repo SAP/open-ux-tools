@@ -164,9 +164,7 @@ describe('Test getProject()', () => {
         expect(Object.keys(project.apps).length).toBe(1);
         expect(project.apps).toEqual({
             '': {
-                'appRoot': join(
-                    '/Users/d045154/git/github.com/SAP/open-ux-tools/packages/project-access/test/test-data/project/info/empty-project'
-                ),
+                'appRoot': projectRoot,
                 'manifest': join('webapp/manifest.json'),
                 'changes': join('webapp/changes'),
                 'i18n': {
