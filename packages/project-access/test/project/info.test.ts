@@ -181,8 +181,8 @@ describe('Test getProject()', () => {
 
         expect(project).toEqual({
             'root': projectRoot,
-            'apps': {},
-            'projectType': 'EDMXBackend'
+            'projectType': 'EDMXBackend',
+            'apps': {}
         });
     });
 });
