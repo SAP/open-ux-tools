@@ -22,7 +22,7 @@ export function getMainService(manifest: Manifest): string | undefined {
  *
  * @param manifest - parsed content of manifest.json
  * @param relativeWebAppFolder - relative path to webapp folder from project root
- * @returns
+ * @returns - service and annotation specification
  */
 export function getServicesAndAnnotations(
     manifest: Manifest,
