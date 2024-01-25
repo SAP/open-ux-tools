@@ -158,6 +158,7 @@ export default async function (options: RTAOptions, loadPlugins: RTAPlugin): Pro
     checkFlexEnabled(options.rootControl);
 
     const rta = new RuntimeAuthoring(options);
+    rta.attachEvent('stop', () => rta.destroy());
 
     if (loadPlugins) {
         await loadPlugins(rta);
