@@ -60,15 +60,6 @@ declare module 'sap/ui/fl/Utils' {
     export default Utils;
 }
 
-declare module 'sap/ui/fl/LayerUtils' {
-    interface LayerUtils {
-        isValidLayer(layer: string): string | boolean;
-    }
-
-    const LayerUtils: LayerUtils;
-    export default LayerUtils;
-}
-
 declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
     import type { Layer } from 'sap/ui/fl';
     interface Features {
