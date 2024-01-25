@@ -1,12 +1,16 @@
-import merge from 'sap/base/util/merge';
-import Control from 'sap/ui/core/Control';
-import UIComponent from 'sap/ui/core/UIComponent';
-import Utils from 'sap/ui/fl/Utils';
-import RuntimeAuthoring, { type RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
-import type { RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
-import FeaturesAPI from 'sap/ui/fl/write/api/FeaturesAPI';
 import Button from 'sap/m/Button';
 import MessageToast from 'sap/m/MessageToast';
+
+import merge from 'sap/base/util/merge';
+
+import Control from 'sap/ui/core/Control';
+import UIComponent from 'sap/ui/core/UIComponent';
+
+import Utils from 'sap/ui/fl/Utils';
+import FeaturesAPI from 'sap/ui/fl/write/api/FeaturesAPI';
+
+import type { RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
+import RuntimeAuthoring, { type RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
 const defaultOptions = {
     flexSettings: {
@@ -25,26 +29,51 @@ const layers = {
     VENDOR: 'VENDOR'
 };
 
-export function isValidLayer(layer: string) {
+/**
+ * Checks if the given layer is a valid layer.
+ *
+ * @param {string} layer - The layer name to be validated.
+ * @returns {boolean} Returns true if the layer is valid, otherwise false.
+ */
+export function isValidLayer(layer: string): boolean {
     return Object.keys(layers).some(function (existingLayer) {
         return existingLayer === layer;
     });
 }
 
-export function checkLayer(layer: string) {
+/**
+ * Validates a given layer and throws an error if it is invalid.
+ *
+ * @param {string} layer - The layer name to be checked.
+ * @throws {Error} Throws an error if the layer is not valid.
+ */
+export function checkLayer(layer: string): void {
     // LayerUtils does not have isValidLayer in ui5 version 1.71.60
     if (!isValidLayer(layer)) {
         throw new Error('An invalid layer is passed');
     }
 }
 
-function checkRootControl(rootControl: Control | UIComponent) {
+/**
+ * Checks if the given root control is an instance of Control or UIComponent.
+ *
+ * @param {Control | UIComponent} rootControl - The root control to be checked.
+ * @throws {Error} Throws an error if the root control is not an instance of Control or UIComponent.
+ */
+export function checkRootControl(rootControl: Control | UIComponent): void {
     if (!(rootControl instanceof Control) && !(rootControl instanceof UIComponent)) {
         throw new Error('An invalid root control was passed');
     }
 }
 
-function checkFlexEnabled(component: Control) {
+/**
+ * Checks if key user adaptation is enabled for the specified component.
+ * Fiori tools mode is considered a developer scenario where the `flexEnabled` flag should not be evaluated.
+ *
+ * @param {Control} component - The UI5 control component to check for flex (key user adaptation) enabled status.
+ * @throws {Error} Throws an error if key user adaptation is explicitly disabled in the component's manifest.
+ */
+export function checkFlexEnabled(component: Control): void {
     // fiori tools is always a developer scenario where the flexEnabled flag should not be evaluated
     var fioriToolsMode = new URLSearchParams(window.location.search).get('fiori-tools-rta-mode');
     if (!fioriToolsMode || fioriToolsMode === 'false') {
@@ -58,7 +87,61 @@ function checkFlexEnabled(component: Control) {
     }
 }
 
-export async function checkKeyUser(layer: string) {
+/**
+ * Checks the validity of the specified layer and root control.
+ * It ensures that the layer is valid and the root control is an instance of Control or UIComponent.
+ * Additionally, it checks key user permissions for the specified layer.
+ *
+ * @param {Control} rootControl - The root control to be validated.
+ * @param {string} layer - The layer name to be validated.
+ * @returns {Promise<void>} A promise that resolves when all checks pass without errors.
+ * @throws {Error} Throws an error if any of the checks fail.
+ */
+async function checkLayerAndControl(rootControl: Control, layer: string): Promise<void> {
+    checkLayer(layer);
+
+    checkRootControl(rootControl);
+
+    await checkKeyUser(layer);
+}
+
+/**
+ * Hides specific buttons by ID from the UI toolbar.
+ * This function specifically targets buttons with IDs '__button9' and '__button10' (that are 'Reset' and 'Publish' respectively).
+ */
+function removeExtraBtnsFromToolbar(): void {
+    const resetBtn = sap.ui.getCore().byId('__button9') as Button;
+    const publishBtn = sap.ui.getCore().byId('__button10') as Button;
+
+    resetBtn.setVisible(false);
+    publishBtn.setVisible(false);
+}
+
+/**
+ * Modifies the properties of a specific 'Save' button.
+ *
+ * @returns {Button} The modified button instance.
+ */
+function modifySaveBtn(): Button {
+    const button = sap.ui.getCore().byId('__button12') as Button & { ontap: () => void };
+    button.setText('Save').setEnabled(false);
+    return button;
+}
+
+/**
+ * Checks if the current user is a key user for the given layer.
+ * Specifically, it checks for key user rights if the layer is the CUSTOMER layer.
+ * If the user is not a key user and the layer is CUSTOMER, an error is thrown.
+ *
+ * Note: The function assumes the presence of 'layers.CUSTOMER'. In case of non-CUSTOMER layers,
+ * it simply resolves the promise without any additional checks.
+ *
+ * @param {string} layer - The layer for which to check key user rights.
+ * @returns {Promise<void>} A promise that resolves if the user is a key user or the layer is not CUSTOMER.
+ *                          Rejects with an error if the user is not a key user for the CUSTOMER layer.
+ * @throws {Error} Throws an error with the message 'No key user rights found' if the user lacks key user rights.
+ */
+export async function checkKeyUser(layer: string): Promise<void> {
     if (layers.CUSTOMER === layer) {
         const isKeyUser = await FeaturesAPI.isKeyUser();
         if (!isKeyUser) {
@@ -77,11 +160,7 @@ export default async function (options: RTAOptions, loadPlugins: RTAPlugin) {
 
     options = merge(defaultOptions, options) as RTAOptions;
 
-    checkLayer(layer);
-
-    checkRootControl(rootControl);
-
-    await checkKeyUser(layer);
+    await checkLayerAndControl(rootControl, layer);
 
     options.rootControl = Utils.getAppComponentForControl(rootControl);
 
@@ -89,11 +168,10 @@ export default async function (options: RTAOptions, loadPlugins: RTAPlugin) {
 
     const rta = new RuntimeAuthoring(options);
 
-    rta.stop = async function (bDontSaveChanges, bSkipRestart) {
-        // await (bSkipRestart ? Promise.resolve(this._RESTART.NOT_NEEDED) : this._handleReloadOnExit());
-        return await (bDontSaveChanges ? Promise.resolve() : this._serializeToLrep(this)).then(() => {
-            MessageToast.show('Changes saved.');
-        });
+    // overwrite stop function to only save instead of stopping & exiting ui adaptation
+    rta.stop = async function (_, __) {
+        await this._serializeToLrep(this);
+        MessageToast.show('Changes saved.');
     };
 
     if (loadPlugins) {
@@ -102,16 +180,10 @@ export default async function (options: RTAOptions, loadPlugins: RTAPlugin) {
 
     await rta.start();
 
-    const button = sap.ui.getCore().byId('__button12') as Button & { ontap: () => void };
-    const resetBtn = sap.ui.getCore().byId('__button9') as Button;
-    const publishBtn = sap.ui.getCore().byId('__button10') as Button;
+    removeExtraBtnsFromToolbar();
+    const button = modifySaveBtn();
 
-    resetBtn.setVisible(false);
-    publishBtn.setVisible(false);
-    button.setText('Save').setEnabled(false);
-
-    // @ts-ignore
-    rta.attachUndoRedoStackModified(() => {
+    rta.attachUndoRedoStackModified(async () => {
         const stack = rta.getCommandStack();
         const allCommands = stack.getCommands();
 
