@@ -2,6 +2,7 @@
 
 import { FileWatcher } from '../../../src/base/watcher';
 import * as watchman from 'fb-watchman';
+import { sep } from 'path';
 
 jest.mock('fb-watchman');
 
@@ -35,7 +36,8 @@ describe('FileWatcher', () => {
         fileWatcher['client'].emit('subscription', {});
 
         // Assert
-        expect(onChangeMock).toHaveBeenCalledWith(['/path/to/project/example.change']);
+        const expectedPath = '/path/to/project/example.change'.split('/').join(sep);
+        expect(onChangeMock).toHaveBeenCalledWith([expectedPath]);
     });
 
     it('should add paths to ignorePaths set', () => {

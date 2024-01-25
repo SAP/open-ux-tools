@@ -72,7 +72,8 @@ describe('main', () => {
         getFlexSettings: jest.fn().mockReturnValue({ layer: 'VENDOR', scenario: common.scenario.UiAdaptation }),
         getRootControlInstance: jest.fn().mockReturnValue({
             getManifest: jest.fn().mockReturnValue({ 'sap.app': { id: 'testId' } })
-        })
+        }),
+        attachStop: jest.fn()
     } as any;
 
     const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {

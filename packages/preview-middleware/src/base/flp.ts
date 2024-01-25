@@ -12,7 +12,7 @@ import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { FileWatcher } from './watcher';
 import type WebSocket from 'ws';
-const websocket = require('ui5-middleware-websocket/lib/websocket');
+import websocket = require('ui5-middleware-websocket/lib/websocket');
 
 type WSMiddlewareFunction = (ws: WebSocket, req: Express.Request, next: () => any) => void;
 

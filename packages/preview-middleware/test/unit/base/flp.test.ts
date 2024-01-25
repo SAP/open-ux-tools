@@ -31,9 +31,6 @@ jest.mock('../../../src/base/watcher', () => ({
     })
 }));
 
-jest.mock('../../../src/base/ws-server', () => ({
-    sockets: []
-}));
 class FlpSandbox extends FlpSandboxUnderTest {
     public templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
