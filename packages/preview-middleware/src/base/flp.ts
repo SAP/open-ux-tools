@@ -145,6 +145,12 @@ export class FlpSandbox {
     public readonly rta?: RtaConfig;
     public readonly router: EnhancedRouter;
     private _websocketMiddleware?: RequestHandler;
+
+    /**
+     * Retrieves the WebSocket middleware function.
+     *
+     * @returns The WebSocket middleware function if available, otherwise undefined.
+     */
     public get websocketMiddleware(): RequestHandler | undefined {
         return this._websocketMiddleware;
     }
