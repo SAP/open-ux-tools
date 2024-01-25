@@ -1,5 +1,4 @@
 import Button from 'sap/m/Button';
-import MessageToast from 'sap/m/MessageToast';
 
 import merge from 'sap/base/util/merge';
 
@@ -48,7 +47,6 @@ export function isValidLayer(layer: string): boolean {
  * @throws {Error} Throws an error if the layer is not valid.
  */
 export function checkLayer(layer: string): void {
-    // LayerUtils does not have isValidLayer in ui5 version 1.71.60
     if (!isValidLayer(layer)) {
         throw new Error('An invalid layer is passed');
     }
@@ -118,17 +116,6 @@ function removeExtraBtnsFromToolbar(): void {
 }
 
 /**
- * Modifies the properties of a specific 'Save' button.
- *
- * @returns {Button} The modified button instance.
- */
-function modifySaveBtn(): Button {
-    const button = sap.ui.getCore().byId('__button12') as Button & { ontap: () => void };
-    button.setText('Save').setEnabled(false);
-    return button;
-}
-
-/**
  * Checks if the current user is a key user for the given layer.
  * Specifically, it checks for key user rights if the layer is the CUSTOMER layer.
  * If the user is not a key user and the layer is CUSTOMER, an error is thrown.
@@ -145,9 +132,6 @@ export async function checkKeyUser(layer: string): Promise<void> {
     if (layers.CUSTOMER === layer) {
         const isKeyUser = await FeaturesAPI.isKeyUser();
         if (!isKeyUser) {
-            // Lib (sap/ui/core/Lib) does not have getResourceBundleFor in ui5 version 1.71.60
-            // var rtaResourceBundle = Lib.getResourceBundleFor('sap.ui.rta');
-            // throw new Error(rtaResourceBundle?.getText('MSG_NO_KEY_USER_RIGHTS_ERROR_MESSAGE'));
             throw new Error('No key user rights found');
         }
     }
@@ -163,10 +147,10 @@ export async function checkKeyUser(layer: string): Promise<void> {
  * @returns {Promise<void>} A promise that resolves when all the checks have passed and RuntimeAuthoring is started.
  */
 export default async function (options: RTAOptions, loadPlugins: RTAPlugin): Promise<void> {
+    options = merge(defaultOptions, options) as RTAOptions;
+
     const layer = options.flexSettings.layer;
     const rootControl = options.rootControl;
-
-    options = merge(defaultOptions, options) as RTAOptions;
 
     await checkLayerAndControl(rootControl, layer);
 
@@ -176,12 +160,6 @@ export default async function (options: RTAOptions, loadPlugins: RTAPlugin): Pro
 
     const rta = new RuntimeAuthoring(options);
 
-    // overwrite stop function to only save instead of stopping & exiting ui adaptation
-    rta.stop = async function (_, __) {
-        await this._serializeToLrep(this);
-        MessageToast.show('Changes saved.');
-    };
-
     if (loadPlugins) {
         await loadPlugins(rta);
     }
@@ -189,14 +167,4 @@ export default async function (options: RTAOptions, loadPlugins: RTAPlugin): Pro
     await rta.start();
 
     removeExtraBtnsFromToolbar();
-    const button = modifySaveBtn();
-
-    rta.attachUndoRedoStackModified(async () => {
-        const stack = rta.getCommandStack();
-        const allCommands = stack.getCommands();
-
-        const shouldEnableSaveBtn = allCommands.length > 0;
-
-        button.setEnabled(shouldEnableSaveBtn);
-    });
 }
