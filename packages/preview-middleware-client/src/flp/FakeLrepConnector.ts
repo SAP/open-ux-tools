@@ -101,7 +101,17 @@ export async function loadChanges(): Promise<LoadChangesResult> {
         });
 }
 
-export default function () {
+/**
+ * Configures and enables the FakeLrepConnector based on the SAP UI5 version.
+ * If the minor version of the SAP UI5 is less than 72, this function extends
+ * the FakeLrepConnector's prototype with specific methods and enables the fake connector.
+ *
+ * Assumes the existence of a global 'sap' object with a 'ui.version' property,
+ * and global jQuery object with 'extend' method.
+ *
+ * @returns {void}
+ */
+export default function (): void {
     // @ts-ignore
     const version = sap.ui.version;
     const minor = version.split(/[.-]/)[1];

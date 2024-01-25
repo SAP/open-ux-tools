@@ -154,7 +154,15 @@ export async function checkKeyUser(layer: string): Promise<void> {
     return Promise.resolve();
 }
 
-export default async function (options: RTAOptions, loadPlugins: RTAPlugin) {
+/**
+ * Initializes custom RuntimeAuthoring for UI5 Versions < 1.72 and start UI Adaptation.
+ * Ensures that the passed options are valid.
+ *
+ * @param {RTAOptions} options - Options Options that are passed to RuntimeAuthoring upon initialization.
+ * @param {RTAPlugin} loadPlugins - Script that needs to be executed after rta is initialized.
+ * @returns {Promise<void>} A promise that resolves when all the checks have passed and RuntimeAuthoring is started.
+ */
+export default async function (options: RTAOptions, loadPlugins: RTAPlugin): Promise<void> {
     const layer = options.flexSettings.layer;
     const rootControl = options.rootControl;
 
