@@ -137,6 +137,10 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
             [key: string]: string;
             id: string;
         };
+        'sap.ui5': {
+            [key: string]: string;
+            flexEnabled?: boolean;
+        };
     };
 
     export type SelectionChangeEvent = Event<SelectionChangeParams>;

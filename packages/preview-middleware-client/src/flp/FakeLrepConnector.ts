@@ -112,12 +112,10 @@ export async function loadChanges(): Promise<LoadChangesResult> {
  * @returns {void}
  */
 export default function (): void {
-    // @ts-ignore
     const version = sap.ui.version;
-    const minor = version.split(/[.-]/)[1];
+    const minor = Number(version.split(/[.-]/)[1]);
 
     if (minor < 72) {
-        // @ts-ignore
         jQuery.extend(FakeLrepConnector.prototype, {
             create,
             loadChanges,

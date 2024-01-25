@@ -95,6 +95,7 @@ export interface CustomConnector {
 export interface FlexConnector {
     connector: string;
     layers: string[];
+    url?: string;
 }
 
 /**
@@ -350,10 +351,7 @@ export class FlpSandbox {
     }
 
     private getFakeConnectorSettings(): TemplateConfig['ui5']['flex'] {
-        return [
-            // @ts-ignore
-            { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' }
-        ];
+        return [{ connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' }];
     }
 
     private getFlexSettings(): TemplateConfig['ui5']['flex'] {
@@ -521,7 +519,6 @@ export async function initAdp(
                 editor.pluginScript ??= 'open/ux/preview/client/adp/init';
             }
         }
-        // @ts-ignore
         adp.descriptor.asyncHints.requests = [];
         await flp.init(adp.descriptor.manifest, adp.descriptor, adp.descriptor.name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);

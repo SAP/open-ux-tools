@@ -9,7 +9,7 @@ import Utils from 'sap/ui/fl/Utils';
 import FeaturesAPI from 'sap/ui/fl/write/api/FeaturesAPI';
 
 import type { RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
-import RuntimeAuthoring, { type RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import RuntimeAuthoring, { Manifest, type RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
 const defaultOptions = {
     flexSettings: {
@@ -75,8 +75,7 @@ export function checkFlexEnabled(component: Control): void {
     // fiori tools is always a developer scenario where the flexEnabled flag should not be evaluated
     var fioriToolsMode = new URLSearchParams(window.location.search).get('fiori-tools-rta-mode');
     if (!fioriToolsMode || fioriToolsMode === 'false') {
-        // @ts-ignore
-        const manifest = component.getManifest() || {};
+        const manifest = ((component as Control & { getManifest: Function }).getManifest() as Manifest) || {};
         const flexEnabled = manifest['sap.ui5'] && manifest['sap.ui5'].flexEnabled;
 
         if (flexEnabled === false) {
