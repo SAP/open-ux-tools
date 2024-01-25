@@ -1,4 +1,4 @@
-import { coerce, major, minor, valid } from 'semver';
+import { coerce, major, minor, valid, maxSatisfying } from 'semver';
 import type { UI5VersionFilterOptions, UI5VersionOverview, UI5VersionsResponse, UI5Version } from './types';
 import { executeNpmUI5VersionsCmd } from './commands';
 import axios from 'axios';
@@ -259,8 +259,30 @@ async function retrieveUI5Versions(
         versions = versions.filter((ele) => ele && /^\d+(\.\d+)*$/.test(ele));
     }
 
+    if (filterOptions?.onlyLatestPatchVersion) {
+        versions = retrieveLatestPatchVersions(versions);
+    }
+
     // Remove duplicates, as they may be returned from some UI5 version APIs
     return [...new Set(versions)];
+}
+
+/**
+ * Retrieve a list of versions filtered by latest patch version.
+ *
+ * @param versions - list of all versions
+ * @returns list of latest patch versions
+ */
+function retrieveLatestPatchVersions(versions: string[]): string[] {
+    const latestPatchVersions: string[] = [];
+    versions.forEach((version) => {
+        const minorKey: any = `${major(version)}.${minor(version)}`;
+        const latestPatchVersion = maxSatisfying(versions, minorKey);
+        if (latestPatchVersion && !latestPatchVersions.includes(latestPatchVersion)) {
+            latestPatchVersions.push(latestPatchVersion);
+        }
+    });
+    return latestPatchVersions;
 }
 
 /**
