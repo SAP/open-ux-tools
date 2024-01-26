@@ -241,12 +241,12 @@ export async function enhanceConfigsForDestination(
  */
 export async function enhanceConfigForSystem(
     proxyOptions: Options & { headers: object },
-    system: BackendSystem,
+    system: BackendSystem | undefined,
     oAuthRequired: boolean | undefined,
     tokenChangedCallback: (refreshToken?: string) => void
 ): Promise<void> {
     if (oAuthRequired) {
-        if (system.serviceKeys) {
+        if (system?.serviceKeys) {
             const provider = createForAbapOnCloud({
                 environment: AbapCloudEnvironment.Standalone,
                 service: system.serviceKeys as ServiceInfo,
@@ -258,7 +258,7 @@ export async function enhanceConfigForSystem(
         } else {
             throw new Error('Cannot connect to ABAP Environment on BTP without service keys.');
         }
-    } else if (system.authenticationType === AuthenticationType.ReentranceTicket) {
+    } else if (system?.authenticationType === AuthenticationType.ReentranceTicket) {
         const provider = createForAbapOnCloud({
             environment: AbapCloudEnvironment.EmbeddedSteampunk,
             url: system.url
@@ -266,7 +266,7 @@ export async function enhanceConfigForSystem(
         // sending a request to the backend to get cookies
         await provider.getAtoInfo();
         proxyOptions.headers['cookie'] = provider.cookies.toString();
-    } else if (system.username && system.password) {
+    } else if (system?.username && system.password) {
         proxyOptions.auth = `${system.username}:${system.password}`;
     }
 }
@@ -317,29 +317,31 @@ export async function generateProxyMiddlewareOptions(
         // check if system credentials are stored in the store
         try {
             const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
-            const system = await systemStore.read(
+            const system = (await systemStore.read(
                 new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
-            );
-            if (system) {
-                await enhanceConfigForSystem(
-                    proxyOptions,
-                    system,
-                    backend.scp,
-                    (refreshToken?: string, accessToken?: string) => {
-                        if (refreshToken) {
-                            logger.info('Updating refresh token for: ' + localBackend.url);
-                            systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
-                        }
-
-                        if (accessToken) {
-                            logger.info('Setting access token');
-                            proxyOptions.headers['authorization'] = `bearer ${accessToken}`;
-                        } else {
-                            logger.warn('Setting of access token failed.');
-                        }
+            )) ?? {
+                name: '<unknown>',
+                url: localBackend.url,
+                authenticationType: localBackend.authenticationType
+            };
+            await enhanceConfigForSystem(
+                proxyOptions,
+                system,
+                backend.scp,
+                (refreshToken?: string, accessToken?: string) => {
+                    if (refreshToken) {
+                        logger.info('Updating refresh token for: ' + localBackend.url);
+                        systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
                     }
-                );
-            }
+
+                    if (accessToken) {
+                        logger.info('Setting access token');
+                        proxyOptions.headers['authorization'] = `bearer ${accessToken}`;
+                    } else {
+                        logger.warn('Setting of access token failed.');
+                    }
+                }
+            );
         } catch (error) {
             logger.warn('Accessing the credentials store failed.');
             logger.debug(error as object);

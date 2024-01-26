@@ -17,6 +17,12 @@ export interface BaseBackendConfig {
      * If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP
      */
     scp?: boolean;
+
+    /**
+     * Authentication mechanism to be used.
+     */
+    authenticationType?: string;
+
     /**
      * If set to true then the proxy will connect to the SAP API Business Hub
      */
