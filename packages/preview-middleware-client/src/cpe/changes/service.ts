@@ -129,8 +129,6 @@ export class ChangeService {
             } else if (deletePropertyChanges.match(action)) {
                 await this.deleteChange(action.payload.controlId, action.payload.propertyName, action.payload.fileName);
             } else if (reloadApplication.match(action)) {
-                console.log('reload action is matched.....');
-
                 await this.options.rta.stop(false, false);
             }
         });
@@ -138,7 +136,7 @@ export class ChangeService {
         await this.fetchSavedChanges();
         this.updateStack();
         this.options.rta.attachStop(() => {
-            location.reload();
+            window.history.go(0);
         });
         this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
     }
