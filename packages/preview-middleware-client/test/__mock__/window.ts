@@ -14,6 +14,7 @@ export const sapCoreMock = {
 };
 export const sapMock = {
     ui: {
+        version: '',
         getCore: jest.fn().mockReturnValue(sapCoreMock),
         require: jest.fn(),
         loader: {
@@ -29,8 +30,13 @@ export const sapMock = {
     }
 };
 
+export const jQueryMock = {
+    extend: jest.fn()
+};
+
 (sapMock.ui.require as any).toUrl = jest.fn();
 
 window.fetch = fetchMock;
 window.open = openMock;
 window.sap = sapMock as unknown as typeof sap & typeof sapMock;
+window.jQuery = jQueryMock;
