@@ -85,6 +85,29 @@ export function checkFlexEnabled(component: Control): void {
 }
 
 /**
+ * Checks if the current user is a key user for the given layer.
+ * Specifically, it checks for key user rights if the layer is the CUSTOMER layer.
+ * If the user is not a key user and the layer is CUSTOMER, an error is thrown.
+ *
+ * Note: The function assumes the presence of 'layers.CUSTOMER'. In case of non-CUSTOMER layers,
+ * it simply resolves the promise without any additional checks.
+ *
+ * @param {string} layer - The layer for which to check key user rights.
+ * @returns {Promise<void>} A promise that resolves if the user is a key user or the layer is not CUSTOMER.
+ *                          Rejects with an error if the user is not a key user for the CUSTOMER layer.
+ * @throws {Error} Throws an error with the message 'No key user rights found' if the user lacks key user rights.
+ */
+export async function checkKeyUser(layer: string): Promise<void> {
+    if (layers.CUSTOMER === layer) {
+        const isKeyUser = await FeaturesAPI.isKeyUser();
+        if (!isKeyUser) {
+            throw new Error('No key user rights found');
+        }
+    }
+    return Promise.resolve();
+}
+
+/**
  * Checks the validity of the specified layer and root control.
  * It ensures that the layer is valid and the root control is an instance of Control or UIComponent.
  * Additionally, it checks key user permissions for the specified layer.
@@ -112,29 +135,6 @@ function removeExtraBtnsFromToolbar(): void {
 
     resetBtn.setVisible(false);
     publishBtn.setVisible(false);
-}
-
-/**
- * Checks if the current user is a key user for the given layer.
- * Specifically, it checks for key user rights if the layer is the CUSTOMER layer.
- * If the user is not a key user and the layer is CUSTOMER, an error is thrown.
- *
- * Note: The function assumes the presence of 'layers.CUSTOMER'. In case of non-CUSTOMER layers,
- * it simply resolves the promise without any additional checks.
- *
- * @param {string} layer - The layer for which to check key user rights.
- * @returns {Promise<void>} A promise that resolves if the user is a key user or the layer is not CUSTOMER.
- *                          Rejects with an error if the user is not a key user for the CUSTOMER layer.
- * @throws {Error} Throws an error with the message 'No key user rights found' if the user lacks key user rights.
- */
-export async function checkKeyUser(layer: string): Promise<void> {
-    if (layers.CUSTOMER === layer) {
-        const isKeyUser = await FeaturesAPI.isKeyUser();
-        if (!isKeyUser) {
-            throw new Error('No key user rights found');
-        }
-    }
-    return Promise.resolve();
 }
 
 /**
