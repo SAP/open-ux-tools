@@ -1,0 +1,74 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(6,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "Common.SideEffects",
+                "valueRange": "[(1,4)..(1,15)]"
+            }
+        },
+        "contentRange": "[(1,18)..(6,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(1,19)..(6,5)]",
+                "name": "Record",
+                "attributes": {
+                    "Type": {
+                        "type": "attribute",
+                        "name": "Type",
+                        "nameRange": "[(2,8)..(2,13)]",
+                        "value": "Common.SideEffectsType",
+                        "valueRange": "[(2,17)..(2,39)]"
+                    }
+                },
+                "contentRange": "[(1,20)..(6,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(3,8)..(5,9)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "TargetProperties",
+                                "valueRange": "[(3,8)..(3,24)]"
+                            }
+                        },
+                        "contentRange": "[(3,26)..(5,9)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(3,27)..(5,9)]",
+                                "name": "Collection",
+                                "attributes": {},
+                                "contentRange": "[(3,28)..(5,8)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(4,12)..(4,24)]",
+                                        "name": "String",
+                                        "attributes": {},
+                                        "contentRange": "[(4,13)..(4,23)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(4,13)..(4,23)]",
+                                                "text": "category/*"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

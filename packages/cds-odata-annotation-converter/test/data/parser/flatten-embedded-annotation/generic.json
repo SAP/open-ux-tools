@@ -1,0 +1,49 @@
+[
+    {
+        "type": "element",
+        "range": "[(0,0)..(0,43)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "Common.Text",
+                "valueRange": "[(0,0)..(0,11)]"
+            }
+        },
+        "contentRange": "[(0,12)..(0,43)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(0,12)..(0,43)]",
+                "name": "Annotation",
+                "attributes": {
+                    "Term": {
+                        "type": "attribute",
+                        "name": "Term",
+                        "value": "UI.TextArrangement",
+                        "valueRange": "[(0,12)..(0,31)]"
+                    }
+                },
+                "contentRange": "[(0,34)..(0,43)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(0,34)..(0,43)]",
+                        "name": "EnumMember",
+                        "attributes": {},
+                        "contentRange": "[(0,34)..(0,43)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(0,34)..(0,43)]",
+                                "text": "com.sap.vocabularies.UI.v1.TextArrangementType/TextLast",
+                                "fragmentRanges": ["[(0,34)..(0,43)]"]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

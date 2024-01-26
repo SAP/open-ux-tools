@@ -1,0 +1,80 @@
+[
+    {
+        "type": "element",
+        "range": "[(0,0)..(0,80)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "Common.SideEffects",
+                "valueRange": "[(0,0)..(0,18)]"
+            }
+        },
+        "contentRange": "[(0,19)..(0,80)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(0,19)..(0,80)]",
+                "name": "Record",
+                "attributes": {},
+                "contentRange": "[(0,19)..(0,80)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(0,19)..(0,80)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "TargetProperties",
+                                "valueRange": "[(0,19)..(0,35)]"
+                            }
+                        },
+                        "contentRange": "[(0,37)..(0,80)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(0,37)..(0,80)]",
+                                "name": "Collection",
+                                "attributes": {},
+                                "contentRange": "[(0,38)..(0,79)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(0,38)..(0,54)]",
+                                        "name": "String",
+                                        "attributes": {},
+                                        "contentRange": "[(0,39)..(0,53)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(0,39)..(0,53)]",
+                                                "text": "_it2/author_ID"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "element",
+                                        "range": "[(0,56)..(0,79)]",
+                                        "name": "String",
+                                        "attributes": {},
+                                        "contentRange": "[(0,57)..(0,78)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(0,57)..(0,78)]",
+                                                "text": "_it2/author_author_ID"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
