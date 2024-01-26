@@ -1,5 +1,5 @@
 ---
-"@sap-ux/cds-odata-annotation-converter": patch
+"@sap-ux/cds-odata-annotation-converter": minor
 ---
 
-feat: move cds annoation converter package
+feat: move cds annotation converter package
