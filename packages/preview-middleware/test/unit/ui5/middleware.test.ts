@@ -18,6 +18,12 @@ jest.mock('@sap-ux/store', () => {
     };
 });
 
+jest.mock('fb-watchman', () => ({
+    Client: jest.fn().mockReturnValue({
+        command: jest.fn()
+    })
+}));
+
 async function getRouter(fixture?: string, configuration: Partial<MiddlewareConfig> = {}): Promise<EnhancedRouter> {
     return await (previewMiddleware as any).default({
         options: { configuration },
