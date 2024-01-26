@@ -1,5 +1,29 @@
 # @sap-ux/odata-vocabularies
 
+## 0.3.3
+
+### Patch Changes
+
+-   aa8469f3: OData Vocabularies: Update Vocabularies Containing Cds Specific Analytics Annotations
+
+## 0.3.2
+
+### Patch Changes
+
+-   820ad0dc: odata-vocabularies for CDS analytics: use IsFLags for collection of enums, remove empty lines
+
+## 0.3.1
+
+### Patch Changes
+
+-   2f1f8366: fix(odata-vocabularies): replace alias ODataJSON with JSON
+
+## 0.3.0
+
+### Minor Changes
+
+-   39877d71: support loading additional terms for cap cds analytics features
+
 ## 0.2.1
 
 ### Patch Changes
