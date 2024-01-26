@@ -1,0 +1,199 @@
+[
+    {
+        "type": "element",
+        "range": "[(0,0)..(12,1)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.LineItem",
+                "valueRange": "[(0,0)..(0,11)]"
+            }
+        },
+        "contentRange": "[(0,13)..(12,1)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(0,14)..(12,1)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(0,15)..(12,0)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(1,4)..(11,2)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "nameRange": "[(2,8)..(2,13)]",
+                                "value": "UI.DataFieldForIntentBasedNavigation",
+                                "valueRange": "[(2,17)..(2,53)]"
+                            }
+                        },
+                        "contentRange": "[(1,5)..(11,1)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(3,8)..(3,35)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "SemanticObject",
+                                        "valueRange": "[(3,8)..(3,22)]"
+                                    }
+                                },
+                                "contentRange": "[(3,24)..(3,35)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(3,25)..(3,35)]",
+                                        "name": "String",
+                                        "attributes": {},
+                                        "contentRange": "[(3,26)..(3,34)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(3,26)..(3,34)]",
+                                                "text": "Scholars"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "element",
+                                "range": "[(4,8)..(4,25)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Action",
+                                        "valueRange": "[(4,8)..(4,14)]"
+                                    }
+                                },
+                                "contentRange": "[(4,16)..(4,25)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(4,17)..(4,25)]",
+                                        "name": "String",
+                                        "attributes": {},
+                                        "contentRange": "[(4,18)..(4,24)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(4,18)..(4,24)]",
+                                                "text": "Manage"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "element",
+                                "range": "[(5,8)..(10,9)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Mapping",
+                                        "valueRange": "[(5,8)..(5,15)]"
+                                    }
+                                },
+                                "contentRange": "[(5,17)..(10,9)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(5,18)..(10,9)]",
+                                        "name": "Collection",
+                                        "attributes": {},
+                                        "contentRange": "[(5,19)..(10,8)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(6,12)..(9,13)]",
+                                                "name": "Record",
+                                                "attributes": {},
+                                                "contentRange": "[(6,13)..(9,12)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(7,16)..(7,38)]",
+                                                        "name": "PropertyValue",
+                                                        "attributes": {
+                                                            "Property": {
+                                                                "type": "attribute",
+                                                                "name": "Property",
+                                                                "value": "LocalProperty",
+                                                                "valueRange": "[(7,16)..(7,29)]"
+                                                            }
+                                                        },
+                                                        "contentRange": "[(7,31)..(7,38)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "element",
+                                                                "range": "[(7,32)..(7,38)]",
+                                                                "name": "PropertyPath",
+                                                                "attributes": {},
+                                                                "contentRange": "[(7,32)..(7,38)]",
+                                                                "content": [
+                                                                    {
+                                                                        "type": "text",
+                                                                        "range": "[(7,32)..(7,38)]",
+                                                                        "text": "userID",
+                                                                        "fragmentRanges": ["[(7,32)..(7,38)]"]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(8,16)..(8,49)]",
+                                                        "name": "PropertyValue",
+                                                        "attributes": {
+                                                            "Property": {
+                                                                "type": "attribute",
+                                                                "name": "Property",
+                                                                "value": "SemanticObjectProperty",
+                                                                "valueRange": "[(8,16)..(8,38)]"
+                                                            }
+                                                        },
+                                                        "contentRange": "[(8,40)..(8,49)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "element",
+                                                                "range": "[(8,41)..(8,49)]",
+                                                                "name": "String",
+                                                                "attributes": {},
+                                                                "contentRange": "[(8,42)..(8,48)]",
+                                                                "content": [
+                                                                    {
+                                                                        "type": "text",
+                                                                        "range": "[(8,42)..(8,48)]",
+                                                                        "text": "userID"
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
