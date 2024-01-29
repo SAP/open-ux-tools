@@ -1,0 +1,13 @@
+UI : {
+    Chart : {
+        $Type:'UI.ChartDefinitionType',
+        ChartType : ,
+        Actions : [
+            
+        ],
+    },
+    Hidden: true,
+    Hidden #second: false,
+    Badge #first: ,
+    Badge
+}

@@ -1,0 +1,34 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "incremental": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "lib": ["ES2021"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ],
+  "references": [
+    {
+      "path": "../cds-annotation-parser"
+    },
+    {
+      "path": "../odata-annotation-core"
+    },
+    {
+      "path": "../odata-annotation-core-types"
+    },
+    {
+      "path": "../odata-vocabularies"
+    },
+    {
+      "path": "../project-access"
+    }
+  ]
+}
