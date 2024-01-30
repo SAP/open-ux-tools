@@ -258,7 +258,7 @@ export async function findAllApps(
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
-async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResults[]> {
+async function filterApplications(pathMap: FileMapAndCache, debug = false): Promise<AllAppResults[]> {
     const result: AllAppResults[] = [];
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
@@ -270,19 +270,11 @@ async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResul
                 continue;
             }
             const roots = await findRootsForPath(manifestPath);
-            if (
-                manifestPath.includes(
-                    'packages/project-access/test/test-data/project/find-all-apps/CAP/CAPnode_mix/app/freestyle'
-                )
-            ) {
+            if (debug) {
                 console.error('APP_TEST_ROOTS', roots);
             }
             if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig)))) {
-                if (
-                    manifestPath.includes(
-                        'packages/project-access/test/test-data/project/find-all-apps/CAP/CAPnode_mix/app/freestyle'
-                    )
-                ) {
+                if (debug) {
                     console.error('APP_TEST_PUSH', {
                         appRoot: roots.appRoot,
                         projectRoot: roots.projectRoot,
@@ -295,6 +287,7 @@ async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResul
             }
         } catch {
             // ignore exceptions for invalid manifests
+            console.error('APP_TEST_ERROR', manifestPath);
         }
     }
     return result;
@@ -408,10 +401,13 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
  * @param options.artifacts - list of artifacts to search for: 'application', 'adaptation', 'extension' see FioriArtifactTypes
  * @returns - data structure containing the search results, for app e.g. as path to app plus files already parsed, e.g. manifest.json
  */
-export async function findFioriArtifacts(options: {
-    wsFolders?: readonly WorkspaceFolder[] | string[];
-    artifacts: FioriArtifactTypes[];
-}): Promise<FoundFioriArtifacts> {
+export async function findFioriArtifacts(
+    options: {
+        wsFolders?: readonly WorkspaceFolder[] | string[];
+        artifacts: FioriArtifactTypes[];
+    },
+    debug = false
+): Promise<FoundFioriArtifacts> {
     const results: FoundFioriArtifacts = {};
     const fileNames: string[] = getFilterFileNames(options.artifacts);
     const wsRoots = wsFoldersToRootPaths(options.wsFolders);
@@ -429,7 +425,7 @@ export async function findFioriArtifacts(options: {
         }
     }
     if (options.artifacts.includes('applications')) {
-        results.applications = await filterApplications(pathMap);
+        results.applications = await filterApplications(pathMap, debug);
     }
     if (options.artifacts.includes('adaptations')) {
         results.adaptations = await filterAdaptations(pathMap);
