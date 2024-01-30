@@ -375,8 +375,6 @@ export class FlpSandbox {
 
     /**
      * Create required routes for flex.
-     *
-     * @returns template configuration for flex.
      */
     private createFlexHandler(): void {
         const api = `${PREVIEW_URL.api}/changes`;
