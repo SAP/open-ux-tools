@@ -10,6 +10,7 @@ import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -98,6 +99,8 @@ export interface FlexConnector {
     url?: string;
 }
 
+export type ApplicationDependecies = MergedAppDescriptor | { manifest: boolean };
+
 /**
  * Internal structure used to fill the sandbox.html template
  */
@@ -111,9 +114,7 @@ export interface TemplateConfig {
             additionalInformation: string;
             applicationType: 'URL';
             url: string;
-            applicationDependencies?: {
-                manifest: boolean;
-            };
+            applicationDependencies?: ApplicationDependecies;
         }
     >;
     ui5: {
@@ -174,13 +175,13 @@ export class FlpSandbox {
      * Initialize the FLP sandbox router.
      *
      * @param manifest application manifest
-     * @param descriptor
+     * @param applicationDeps application dependencies
      * @param componentId optional componentId e.g. for adaptation projects
      * @param resources optional additional resource mappings
      */
     async init(
         manifest: Manifest,
-        descriptor: any,
+        applicationDeps: ApplicationDependecies,
         componentId?: string,
         resources: Record<string, string> = {}
     ): Promise<void> {
@@ -213,7 +214,7 @@ export class FlpSandbox {
                 local: '.',
                 intent: this.config.intent
             },
-            descriptor
+            applicationDeps
         );
         this.addStandardRoutes();
         if (this.rta) {
@@ -424,9 +425,9 @@ export class FlpSandbox {
      *
      * @param manifest manifest of the additional target app
      * @param app configuration for the preview
-     * @param descriptor
+     * @param applicationDeps application dependencies
      */
-    addApp(manifest: Manifest, app: App, descriptor: any) {
+    addApp(manifest: Manifest, app: App, applicationDeps: ApplicationDependecies) {
         const id = manifest['sap.app'].id;
         app.intent ??= {
             object: id.replace(/\./g, ''),
@@ -439,7 +440,7 @@ export class FlpSandbox {
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
             url: app.target,
-            applicationDependencies: descriptor
+            applicationDependencies: applicationDeps
         };
     }
 
@@ -522,8 +523,12 @@ export async function initAdp(
                 editor.pluginScript ??= 'open/ux/preview/client/adp/init';
             }
         }
-        adp.descriptor.asyncHints.requests = [];
-        await flp.init(adp.descriptor.manifest, adp.descriptor, adp.descriptor.name, adp.resources);
+
+        const descriptor = adp.descriptor;
+        descriptor.asyncHints.requests = [];
+        const { name, manifest } = descriptor;
+
+        await flp.init(manifest, descriptor, name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
         adp.addApis(flp.router);
     } else {
