@@ -17,7 +17,6 @@ import * as validate from '../../../src/base/validate';
 import { SummaryStatus } from '../../../src/base/validate';
 
 const validateBeforeDeployMock = jest.spyOn(validate, 'validateBeforeDeploy');
-const formatSummaryMock = jest.spyOn(validate, 'formatSummary');
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -47,7 +46,8 @@ describe('base/deploy', () => {
             mockedLrepService.deploy.mockReset();
             mockedAdtService.createTransportRequest.mockReset();
             validateBeforeDeployMock.mockReset();
-            formatSummaryMock.mockReset();
+            jest.clearAllMocks();
+            jest.restoreAllMocks();
         });
 
         test('No errors locally with url', async () => {
@@ -79,6 +79,7 @@ describe('base/deploy', () => {
         });
 
         test('Log validation summaries regardless of validation result', async () => {
+            const formatSummaryMock = jest.spyOn(validate, 'formatSummary');
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             validateBeforeDeployMock.mockResolvedValueOnce({
