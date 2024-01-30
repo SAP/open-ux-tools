@@ -16,4 +16,4 @@ export const FileName = {
 
 export const DirName = {
     Changes: 'changes'
-};
+} as const;

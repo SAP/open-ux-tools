@@ -1,6 +1,6 @@
 import { dirname, join } from 'path';
-import type { I18nPropertiesPaths, Manifest } from '../types';
-import { readJSON } from '../file';
+import type { I18nPropertiesPaths, Manifest } from '../../types';
+import { readJSON } from '../../file';
 
 /**
  * Return absolute paths to i18n.properties files from manifest.

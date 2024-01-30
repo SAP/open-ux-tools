@@ -1,6 +1,6 @@
 import { join } from 'path';
-import type { Manifest } from '../../src';
-import { getI18nPropertiesPaths, getRelativeI18nPropertiesPaths } from '../../src/project/i18n';
+import { getI18nPropertiesPaths, type Manifest } from '../../../src';
+import { getRelativeI18nPropertiesPaths } from '../../../src/project/i18n/i18n';
 
 describe('Test getI18nPropertiesPaths()', () => {
     test('All paths in manifest', async () => {

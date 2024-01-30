@@ -1,4 +1,5 @@
 export { FileName } from './constants';
+export { getFilePaths } from './file';
 export {
     findAllApps,
     findCapProjects,
@@ -14,6 +15,7 @@ export {
     getCdsFiles,
     getCdsRoots,
     getCdsServices,
+    getI18nPropertiesPaths,
     getMtaPath,
     getNodeModulesPath,
     getProject,
@@ -25,5 +27,4 @@ export {
     readCapServiceMetadataEdmx,
     readUi5Yaml
 } from './project';
-export { getFilePaths } from './file';
 export * from './types';

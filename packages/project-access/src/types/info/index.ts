@@ -3,58 +3,64 @@ import type { ManifestNamespace } from '../webapp';
 
 export interface Project {
     /**
-     * Absolute path to the project root
+     * Absolute path to the project root.
      */
     root: string;
 
     /**
-     * Applications in the project
-     */
-    apps: { [index: string]: ApplicationStructure };
-
-    /**
-     * Project type like 'EDMXBackend' | 'CAPJava' | 'CAPNodejs', see ProjectType
+     * Project type like 'EDMXBackend' | 'CAPJava' | 'CAPNodejs', see ProjectType.
      */
     projectType: ProjectType;
+
+    /**
+     * Applications in the project. For CAP projects the index is relative
+     * path to the app, like apps/myapp. For single app projects the index
+     * is an empty string ''.
+     */
+    apps: { [index: string]: ApplicationStructure };
 }
+
 export interface ApplicationStructure {
     /**
-     * Absolute path to the app root
+     * Absolute path to the application root.
      */
     appRoot: string;
 
     /**
-     * Absolute path to the manifest.json
+     * Absolute path to the manifest.json.
      */
     manifest: string;
 
     /**
-     * Absolute path to the folder containing changes
+     * Absolute path to the folder containing changes.
      */
     changes: string;
 
     /**
-     * Absolute path to i18n files
+     * Absolute paths to i18n files.
      */
     i18n: I18nPropertiesPaths;
 
     /**
-     * Main service of the application
+     * Main service of the application.
      */
     mainService?: string;
 
     /**
-     * Service information with annotation references
+     * Service information with annotation references and local annotation files.
      */
     services: { [index: string]: ServiceSpecification };
 }
 
 export interface I18nPropertiesPaths {
+    /**
+     * Absolute path to the i18n.properties file from sap.app namespace.
+     */
     'sap.app': string;
     models: {
         [modelKey: string]: {
             /**
-             * Absolute path to the i18m.properties file
+             * Absolute path to the i18n.properties files.
              */
             path: string;
         };

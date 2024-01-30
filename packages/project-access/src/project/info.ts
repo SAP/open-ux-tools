@@ -1,10 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { getCapProjectType } from './cap';
-import { getI18nPropertiesPaths } from './i18n';
-import { findFioriArtifacts } from './search';
-import { getMainService, getServicesAndAnnotations } from './service';
-import { getWebappPath } from './ui5-config';
 import { DirName, FileName } from '../constants';
 import { fileExists, findFilesByExtension, readJSON } from '../file';
 import type {
@@ -17,6 +12,11 @@ import type {
     Project,
     ProjectType
 } from '../types';
+import { getCapProjectType } from './cap';
+import { getI18nPropertiesPaths } from './i18n/i18n';
+import { findFioriArtifacts } from './search';
+import { getMainService, getServicesAndAnnotations } from './service';
+import { getWebappPath } from './ui5-config';
 
 /**
  * Returns the project structure for a given Fiori project.
