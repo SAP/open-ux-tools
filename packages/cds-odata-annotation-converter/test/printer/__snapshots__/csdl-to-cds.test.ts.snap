@@ -198,6 +198,28 @@ exports[`csdlToCds printTarget childSegments.length === 1] 1`] = `
 "
 `;
 
+exports[`csdlToCds printTarget childSegments.length > 1] 1`] = `
+"annotate AdminService.Books with {
+    Autor @(UI.Facets : [
+            {
+                $Type : 'UI.ReferenceFacet',
+                Label : 'Sales',
+                ID : 'Sales',
+                Target : 'to_ProductSalesData/@UI.Chart',
+            },
+        ],
+        UI.Facets : [
+            {
+                $Type : 'UI.ReferenceFacet',
+                Label : 'Sales',
+                ID : 'Sales',
+                Target : 'to_ProductSalesData/@UI.Chart',
+            },
+        ]
+)};
+"
+`;
+
 exports[`csdlToCds printTarget multiple terms in single target 1`] = `
 "annotate AdminService.Books with @(
     UI.Facets : [
