@@ -48,80 +48,75 @@ describe('Test getMainService()', () => {
 });
 
 describe('Test getServicesAndAnnotations()', () => {
-    test('No manifest', () => {
-        const result = getServicesAndAnnotations(undefined as unknown as Manifest, '');
+    test('No manifest, should throw error', async () => {
+        try {
+            await getServicesAndAnnotations('not-valid-manifest-path', undefined as unknown as Manifest);
+            throw Error('getI18nPropertiesPaths() should have thrown an error but did not.');
+        } catch (error) {
+            expect(error.message).toContain('not-valid-manifest-path');
+        }
+    });
+
+    test('Empty manifest', async () => {
+        const result = await getServicesAndAnnotations('', {} as unknown as Manifest);
         expect(result).toEqual({});
     });
 
-    test('Empty manifest', () => {
-        const result = getServicesAndAnnotations({} as unknown as Manifest, '');
+    test('No dataSources', async () => {
+        const result = await getServicesAndAnnotations('', { 'sap.app': {} } as unknown as Manifest);
         expect(result).toEqual({});
     });
 
-    test('No dataSources', () => {
-        const result = getServicesAndAnnotations({ 'sap.app': {} } as unknown as Manifest, '');
+    test('No OData dataSources', async () => {
+        const result = await getServicesAndAnnotations('', {
+            'sap.app': { dataSources: { 'foo': { type: 'foo' } } }
+        } as unknown as Manifest);
         expect(result).toEqual({});
     });
 
-    test('No OData dataSources', () => {
-        const result = getServicesAndAnnotations(
-            { 'sap.app': { dataSources: { 'foo': { type: 'foo' } } } } as unknown as Manifest,
-            ''
-        );
-        expect(result).toEqual({});
-    });
-
-    test('OData data source no settings', () => {
-        const result = getServicesAndAnnotations(
-            { 'sap.app': { dataSources: { 'foo': { type: 'OData' } } } } as unknown as Manifest,
-            ''
-        );
+    test('OData data source no settings', async () => {
+        const result = await getServicesAndAnnotations('', {
+            'sap.app': { dataSources: { 'foo': { type: 'OData' } } }
+        } as unknown as Manifest);
         expect(result).toEqual({ foo: { uri: undefined, local: '', odataVersion: '2.0', annotations: [] } });
     });
 
-    test('OData dataSources with uri', () => {
-        const result = getServicesAndAnnotations(
-            {
-                'sap.app': {
-                    dataSources: { 'foo': { type: 'OData', uri: 'bar/uri' } }
-                }
-            } as unknown as Manifest,
-            ''
-        );
+    test('OData dataSources with uri', async () => {
+        const result = await getServicesAndAnnotations('', {
+            'sap.app': {
+                dataSources: { 'foo': { type: 'OData', uri: 'bar/uri' } }
+            }
+        } as unknown as Manifest);
         expect(result).toEqual({ foo: { uri: 'bar/uri', local: '', odataVersion: '2.0', annotations: [] } });
     });
 
-    test('OData dataSources with uri and localUri, v 4.0', () => {
-        const result = getServicesAndAnnotations(
-            {
-                'sap.app': {
-                    dataSources: {
-                        'foo': { type: 'OData', uri: 'bar', settings: { localUri: 'baz/path', odataVersion: '4.0' } }
-                    }
+    test('OData dataSources with uri and localUri, v 4.0', async () => {
+        const result = await getServicesAndAnnotations(join('foo/manifest.json'), {
+            'sap.app': {
+                dataSources: {
+                    'foo': { type: 'OData', uri: 'bar', settings: { localUri: 'baz/path', odataVersion: '4.0' } }
                 }
-            } as unknown as Manifest,
-            ''
-        );
-        expect(result).toEqual({ foo: { uri: 'bar', local: join('baz/path'), odataVersion: '4.0', annotations: [] } });
+            }
+        } as unknown as Manifest);
+        expect(result).toEqual({
+            foo: { uri: 'bar', local: join('foo/baz/path'), odataVersion: '4.0', annotations: [] }
+        });
     });
 
-    test('OData dataSources with annotations', () => {
-        const result = getServicesAndAnnotations(
-            {
-                'sap.app': {
-                    dataSources: {
-                        'foo': {
-                            type: 'OData',
-                            uri: 'bar',
-                            settings: { annotations: ['anno1', 'anno2', 'not_existing_anno'] }
-                        },
-                        'anno1': { uri: 'anno1/uri' },
-                        'anno2': { uri: 'anno2/uri', settings: { localUri: 'anno2/path' } }
-                    }
+    test('OData dataSources with annotations', async () => {
+        const result = await getServicesAndAnnotations('/some/path/manifest.json', {
+            'sap.app': {
+                dataSources: {
+                    'foo': {
+                        type: 'OData',
+                        uri: 'bar',
+                        settings: { annotations: ['anno1', 'anno2', 'not_existing_anno'] }
+                    },
+                    'anno1': { uri: 'anno1/uri' },
+                    'anno2': { uri: 'anno2/uri', settings: { localUri: 'anno2/path' } }
                 }
-            } as unknown as Manifest,
-            ''
-        );
+            }
+        } as unknown as Manifest);
         expect(result).toEqual({
             foo: {
                 uri: 'bar',
@@ -129,7 +124,7 @@ describe('Test getServicesAndAnnotations()', () => {
                 odataVersion: '2.0',
                 annotations: [
                     { uri: 'anno1/uri', local: undefined },
-                    { uri: 'anno2/uri', local: join('anno2/path') }
+                    { uri: 'anno2/uri', local: join('/some/path/anno2/path') }
                 ]
             }
         });

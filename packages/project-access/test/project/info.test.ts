@@ -104,54 +104,60 @@ describe('Test getProject()', () => {
         expect(project.root).toBe(projectRoot);
         expect(project.projectType).toBe('CAPNodejs');
         expect(Object.keys(project.apps).length).toBe(2);
-        expect(project.apps['apps/one'].appRoot).toBe(join(projectRoot, 'apps/one'));
-        expect(project.apps['apps/one'].manifest).toBe(join('source/webapp/manifest.json'));
-        expect(project.apps['apps/one'].changes).toBe(join('source/webapp/changes'));
-        expect(project.apps['apps/one'].i18n?.['sap.app']).toBe(join('source/webapp/i18n/i18n.properties'));
-        expect(project.apps['apps/one'].i18n?.['sap.ui5.i18n']).toBe(join('source/webapp/ovp/i18n/i18n.properties'));
-        expect(project.apps['apps/one'].i18n?.['sap.ui5.@i18n']).toBe(join('source/webapp/i18n/i18n.properties'));
+        const appOneRoot = project.apps['apps/one'].appRoot;
+        expect(appOneRoot).toBe(join(projectRoot, 'apps/one'));
+        expect(project.apps['apps/one'].manifest).toBe(join(appOneRoot, 'source/webapp/manifest.json'));
+        expect(project.apps['apps/one'].changes).toBe(join(appOneRoot, 'source/webapp/changes'));
+        expect(project.apps['apps/one'].i18n['sap.app']).toBe(join(appOneRoot, 'source/webapp/i18n/i18n.properties'));
+        expect(project.apps['apps/one'].i18n.models['i18n']).toEqual({
+            path: join(appOneRoot, 'source/webapp/ovp/i18n/i18n.properties')
+        });
+        expect(project.apps['apps/one'].i18n.models['@i18n']).toEqual({
+            path: join(appOneRoot, 'source/webapp/i18n/i18n.properties')
+        });
         expect(project.apps['apps/one'].mainService).toBe('mainService');
         expect(Object.keys(project.apps['apps/one'].services).length).toBe(2);
         expect(project.apps['apps/one'].services.mainService.uri).toBe('/sap/opu/odata/sap/ODATA_SERVICE/');
         expect(project.apps['apps/one'].services.mainService.local).toBe(
-            join('apps/one/source/webapp/localService/mainService/metadata.xml')
+            join(appOneRoot, 'source/webapp/localService/mainService/metadata.xml')
         );
         expect(project.apps['apps/one'].services.mainService.odataVersion).toBe('2.0');
         expect(project.apps['apps/one'].services.mainService.annotations).toEqual([
             {
                 'uri': "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ODATA_SERVICE',Version='0001')/$value/",
-                'local': join('apps/one/source/webapp/localService/mainService/ANNOTATION_ONE.xml')
+                'local': join(appOneRoot, 'source/webapp/localService/mainService/ANNOTATION_ONE.xml')
             },
             {
                 'uri': 'annotations/ANNOTATION_TWO.xml',
-                'local': join('apps/one/source/webapp/annotations/ANNOTATION_TWO.xml')
+                'local': join(appOneRoot, 'source/webapp/annotations/ANNOTATION_TWO.xml')
             }
         ]);
         expect(project.apps['apps/one'].services.ODATA_SERVICE_2.uri).toBe('/sap/opu/odata/sap/ODATA_SERVICE_2');
         expect(project.apps['apps/one'].services.ODATA_SERVICE_2.local).toBe(
-            join('apps/one/source/webapp/localService/ODATA_SERVICE_2/metadata.xml')
+            join(appOneRoot, 'source/webapp/localService/ODATA_SERVICE_2/metadata.xml')
         );
         expect(project.apps['apps/one'].services.ODATA_SERVICE_2.odataVersion).toBe('2.0');
         expect(project.apps['apps/one'].services.ODATA_SERVICE_2.annotations).toEqual([
             {
                 'uri': "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ODATA_SERVICE_2',Version='0001')/$value/",
-                'local': join('apps/one/source/webapp/localService/ODATA_SERVICE_2/ODATA_SERVICE_2_Annotation.xml')
+                'local': join(appOneRoot, 'source/webapp/localService/ODATA_SERVICE_2/ODATA_SERVICE_2_Annotation.xml')
             }
         ]);
-        expect(project.apps['apps/two'].appRoot).toBe(join(projectRoot, 'apps/two'));
-        expect(project.apps['apps/two'].manifest).toBe(join('webapp/manifest.json'));
-        expect(project.apps['apps/two'].changes).toBe(join('webapp/changes'));
-        expect(project.apps['apps/two'].i18n?.['sap.app']).toBe(join('webapp/i18n/i18n.properties'));
-        expect(project.apps['apps/two'].i18n?.['sap.ui5.i18n']).toBeUndefined();
+        const appTwoRoot = project.apps['apps/two'].appRoot;
+        expect(appTwoRoot).toBe(join(projectRoot, 'apps/two'));
+        expect(project.apps['apps/two'].manifest).toBe(join(appTwoRoot, 'webapp/manifest.json'));
+        expect(project.apps['apps/two'].changes).toBe(join(appTwoRoot, 'webapp/changes'));
+        expect(project.apps['apps/two'].i18n['sap.app']).toEqual(join(appTwoRoot, 'webapp/i18n/i18n.properties'));
+        expect(project.apps['apps/two'].i18n.models.i18n).toBeUndefined();
         expect(project.apps['apps/two'].mainService).toBe('main');
         expect(Object.keys(project.apps['apps/two'].services).length).toBe(1);
         expect(project.apps['apps/two'].services.main.uri).toBe('/sap/opu/odata4/dmo/ODATA_SERVICE/');
-        expect(project.apps['apps/two'].services.main.local).toBe(join('apps/two/webapp/localService/metadata.xml'));
+        expect(project.apps['apps/two'].services.main.local).toBe(join(appTwoRoot, 'webapp/localService/metadata.xml'));
         expect(project.apps['apps/two'].services.main.odataVersion).toBe('4.0');
         expect(project.apps['apps/two'].services.main.annotations).toEqual([
             {
                 'uri': 'annotations/annotation.xml',
-                'local': join('apps/two/webapp/annotations/annotation.xml')
+                'local': join(appTwoRoot, 'webapp/annotations/annotation.xml')
             }
         ]);
     });
@@ -166,10 +172,11 @@ describe('Test getProject()', () => {
         expect(project.apps).toEqual({
             '': {
                 'appRoot': projectRoot,
-                'manifest': join('webapp/manifest.json'),
-                'changes': join('webapp/changes'),
+                'manifest': join(projectRoot, 'webapp/manifest.json'),
+                'changes': join(projectRoot, 'webapp/changes'),
                 'i18n': {
-                    'sap.app': join('webapp/i18n/i18n.properties')
+                    'sap.app': join(projectRoot, 'webapp/i18n/i18n.properties'),
+                    models: {}
                 },
                 'services': {}
             }

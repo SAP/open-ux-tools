@@ -1,5 +1,6 @@
-import { join } from 'path';
+import { dirname, join } from 'path';
 import type { Manifest, ManifestNamespace, ServiceSpecification } from '../types';
+import { readJSON } from '../file';
 
 /**
  * Get the main service name from the manifest.
@@ -20,21 +21,24 @@ export function getMainService(manifest: Manifest): string | undefined {
 /**
  * Return the service annotation specification for a specific app.
  *
- * @param manifest - parsed content of manifest.json
- * @param relativeWebAppFolder - relative path to webapp folder from project root
+ * @param manifestPath - path to manifest.json
+ * @param manifest - optionally, parsed content of manifest.json, pass to avoid reading it again.
  * @returns - service and annotation specification
  */
-export function getServicesAndAnnotations(
-    manifest: Manifest,
-    relativeWebAppFolder: string
-): { [index: string]: ServiceSpecification } {
+export async function getServicesAndAnnotations(
+    manifestPath: string,
+    manifest: Manifest
+): Promise<{ [index: string]: ServiceSpecification }> {
+    const parsedManifest = manifest ?? (await readJSON<Manifest>(manifestPath));
+    const manifestFolder = dirname(manifestPath);
+
     const services: { [index: string]: ServiceSpecification } = {};
-    const dataSources = manifest?.['sap.app']?.dataSources ?? {};
+    const dataSources = parsedManifest?.['sap.app']?.dataSources ?? {};
     for (const name in dataSources) {
         if (dataSources[name].type !== 'OData') {
             continue;
         }
-        services[name] = getServiceSpecification(relativeWebAppFolder, name, dataSources);
+        services[name] = getServiceSpecification(manifestFolder, name, dataSources);
     }
     return services;
 }
@@ -42,13 +46,13 @@ export function getServicesAndAnnotations(
 /**
  * Get the service specification for a given service.
  *
- * @param relativeWebAppFolder - relative path to webapp folder from project root
+ * @param webappFolder - relative path to webapp folder from project root
  * @param name - name of the service
  * @param dataSources - dataSources from manifest
  * @returns - service specification
  */
 function getServiceSpecification(
-    relativeWebAppFolder: string,
+    webappFolder: string,
     name: string,
     dataSources: { [k: string]: ManifestNamespace.DataSource }
 ): Partial<ServiceSpecification> {
@@ -56,7 +60,7 @@ function getServiceSpecification(
     const uri = dataSource.uri;
     const local =
         typeof dataSource.settings?.localUri === 'string'
-            ? join(relativeWebAppFolder, (dataSource.settings as ManifestNamespace.Setting).localUri as string)
+            ? join(webappFolder, (dataSource.settings as ManifestNamespace.Setting).localUri as string)
             : '';
     const odataVersion = dataSource.settings?.odataVersion ?? '2.0';
     const annotations: { uri?: string; local?: string }[] = [];
@@ -67,9 +71,7 @@ function getServiceSpecification(
             if (annotation) {
                 annotations.push({
                     uri: annotation.uri,
-                    local: annotation.settings?.localUri
-                        ? join(relativeWebAppFolder, annotation.settings.localUri)
-                        : undefined
+                    local: annotation.settings?.localUri ? join(webappFolder, annotation.settings.localUri) : undefined
                 });
             }
         }

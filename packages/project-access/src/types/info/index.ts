@@ -3,7 +3,7 @@ import type { ManifestNamespace } from '../webapp';
 
 export interface Project {
     /**
-     * Path to the project root
+     * Absolute path to the project root
      */
     root: string;
 
@@ -19,22 +19,22 @@ export interface Project {
 }
 export interface ApplicationStructure {
     /**
-     * Path to the app root
+     * Absolute path to the app root
      */
     appRoot: string;
 
     /**
-     * Path to the manifest.json relative from project root
+     * Absolute path to the manifest.json
      */
     manifest: string;
 
     /**
-     * Path to the folder containing changes, relative from project root
+     * Absolute path to the folder containing changes
      */
     changes: string;
 
     /**
-     * Path to i18n files, relative from project root
+     * Absolute path to i18n files
      */
     i18n: I18nPropertiesPaths;
 
@@ -51,8 +51,14 @@ export interface ApplicationStructure {
 
 export interface I18nPropertiesPaths {
     'sap.app': string;
-    'sap.ui5.i18n'?: string;
-    'sap.ui5.@i18n'?: string;
+    models: {
+        [modelKey: string]: {
+            /**
+             * Absolute path to the i18m.properties file
+             */
+            path: string;
+        };
+    };
 }
 
 export interface ServiceSpecification {
@@ -61,6 +67,9 @@ export interface ServiceSpecification {
     odataVersion?: ManifestNamespace.Setting['odataVersion'];
     annotations?: {
         uri?: string;
+        /**
+         * Absolute path to the local annotation file
+         */
         local?: string;
     }[];
 }

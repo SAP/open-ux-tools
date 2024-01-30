@@ -3,23 +3,24 @@ import type { I18nPropertiesPaths, Manifest } from '../types';
 import { readJSON } from '../file';
 
 /**
- * Return paths to i18n.properties files from manifest, combined with path.
+ * Return absolute paths to i18n.properties files from manifest.
  *
- * @param manifestPath - path to manifest.json
- * @returns - paths to i18n.properties files combined with path to manifest.json
+ * @param manifestPath - path to manifest.json; used to parse manifest.json if not provided as second argument and to resolve absolute paths
+ * @param manifest - optionally, parsed content of manifest.json, pass to avoid reading it again.
+ * @returns - absolute paths to i18n.properties
  */
-export async function getI18nPropertiesPaths(manifestPath: string): Promise<I18nPropertiesPaths> {
-    const manifest = await readJSON<Manifest>(manifestPath);
+export async function getI18nPropertiesPaths(manifestPath: string, manifest?: Manifest): Promise<I18nPropertiesPaths> {
+    const parsedManifest = manifest ?? (await await readJSON<Manifest>(manifestPath));
     const manifestFolder = dirname(manifestPath);
-    const relativeI18nPropertiesPaths = getRelativeI18nPropertiesPaths(manifest);
+    const relativeI18nPropertiesPaths = getRelativeI18nPropertiesPaths(parsedManifest);
     const i18nPropertiesPaths: I18nPropertiesPaths = {
-        'sap.app': join(manifestFolder, relativeI18nPropertiesPaths['sap.app'])
+        'sap.app': join(manifestFolder, relativeI18nPropertiesPaths['sap.app']),
+        models: {}
     };
-    if (relativeI18nPropertiesPaths['sap.ui5.i18n']) {
-        i18nPropertiesPaths['sap.ui5.i18n'] = join(manifestFolder, relativeI18nPropertiesPaths['sap.ui5.i18n']);
-    }
-    if (relativeI18nPropertiesPaths['sap.ui5.@i18n']) {
-        i18nPropertiesPaths['sap.ui5.@i18n'] = join(manifestFolder, relativeI18nPropertiesPaths['sap.ui5.@i18n']);
+    for (const modelKey in relativeI18nPropertiesPaths.models) {
+        i18nPropertiesPaths.models[modelKey] = {
+            path: join(manifestFolder, relativeI18nPropertiesPaths.models[modelKey].path)
+        };
     }
     return i18nPropertiesPaths;
 }
@@ -34,8 +35,7 @@ export async function getI18nPropertiesPaths(manifestPath: string): Promise<I18n
 export function getRelativeI18nPropertiesPaths(manifest: Manifest): I18nPropertiesPaths {
     return {
         'sap.app': getI18nAppPath(manifest),
-        'sap.ui5.i18n': getI18nModelPath(manifest),
-        'sap.ui5.@i18n': getI18nModelPath(manifest, true)
+        models: getI18nModelPaths(manifest)
     };
 }
 
@@ -83,28 +83,34 @@ function getI18nAppPath(manifest: Manifest): string {
  * 3. from `sap.ui5.models.i18n.uri`
  *
  * @param manifest - parsed content of manifest.json
- * @param forAnnotation - indicates if `@i18n` model should be considered (default is false)
- * @returns - path to i18n.properties file
+ * @returns - paths to i18n.properties file from models
  */
-function getI18nModelPath(manifest: Manifest, forAnnotation = false): string | undefined {
-    const modelName = forAnnotation ? '@i18n' : 'i18n';
-    const i18nModel = manifest?.['sap.ui5']?.models?.[modelName] ?? {};
-
-    // settings wins over `uri`
-    if (i18nModel.settings) {
-        // bundleName wins over `bundleUrl`
-        if (i18nModel.settings.bundleName) {
-            // module name is in dot notation
-            const withoutAppId = i18nModel.settings.bundleName.replace(manifest['sap.app'].id, '');
-            const i18nPath = `${join(...withoutAppId.split('.'))}.properties`;
-            return i18nPath;
+function getI18nModelPaths(manifest: Manifest): { [modelKey: string]: { path: string } } {
+    const result: { [modelKey: string]: { path: string } } = {};
+    const models = manifest?.['sap.ui5']?.models ?? {};
+    const resourceModelKeys = Object.keys(models).filter(
+        (key) => models[key].type === 'sap.ui.model.resource.ResourceModel'
+    );
+    for (const modelKey of resourceModelKeys) {
+        const i18nModel = models[modelKey];
+        // settings wins over `uri`
+        if (i18nModel.settings) {
+            // bundleName wins over `bundleUrl`
+            if (i18nModel.settings.bundleName) {
+                // module name is in dot notation
+                const withoutAppId = i18nModel.settings.bundleName.replace(manifest['sap.app'].id, '');
+                const i18nPath = `${join(...withoutAppId.split('.'))}.properties`;
+                result[modelKey] = { path: i18nPath };
+                continue;
+            }
+            if (i18nModel.settings.bundleUrl) {
+                result[modelKey] = { path: i18nModel.settings.bundleUrl };
+                continue;
+            }
         }
-        if (i18nModel.settings.bundleUrl) {
-            return i18nModel.settings.bundleUrl;
+        if (i18nModel.uri) {
+            result[modelKey] = { path: i18nModel.uri };
         }
     }
-    if (i18nModel.uri) {
-        return i18nModel.uri;
-    }
-    return undefined;
+    return result;
 }

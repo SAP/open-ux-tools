@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
-import { join, relative } from 'path';
+import { join } from 'path';
 import { getCapProjectType } from './cap';
-import { getRelativeI18nPropertiesPaths } from './i18n';
+import { getI18nPropertiesPaths } from './i18n';
 import { findFioriArtifacts } from './search';
 import { getMainService, getServicesAndAnnotations } from './service';
 import { getWebappPath } from './ui5-config';
@@ -12,7 +12,6 @@ import type {
     ApplicationStructure,
     AppProgrammingLanguage,
     AppType,
-    I18nPropertiesPaths,
     Manifest,
     Package,
     Project,
@@ -80,17 +79,15 @@ async function getApps(root: string, appFolders: string[]): Promise<{ [index: st
 async function getApplicationStructure(root: string, appFolder: string): Promise<ApplicationStructure | undefined> {
     const appRoot = join(root, appFolder);
     const absoluteWebappPath = await getWebappPath(appRoot);
-    const relativeWebappPath = relative(appRoot, absoluteWebappPath);
-    const absoluteManifestPath = join(absoluteWebappPath, FileName.Manifest);
-    if (!(await fileExists(absoluteManifestPath))) {
+    const manifest = join(absoluteWebappPath, FileName.Manifest);
+    if (!(await fileExists(manifest))) {
         return undefined;
     }
-    const manifestObject = await readJSON<Manifest>(absoluteManifestPath);
-    const manifest = relative(appRoot, absoluteManifestPath);
-    const changes = join(relativeWebappPath, DirName.Changes);
-    const i18n = getRootRelativeI18nPaths(relativeWebappPath, manifestObject);
+    const manifestObject = await readJSON<Manifest>(manifest);
+    const changes = join(absoluteWebappPath, DirName.Changes);
+    const i18n = await getI18nPropertiesPaths(manifest, manifestObject);
     const mainService = getMainService(manifestObject);
-    const services = getServicesAndAnnotations(manifestObject, relative(root, absoluteWebappPath));
+    const services = await getServicesAndAnnotations(manifest, manifestObject);
     return {
         appRoot,
         manifest,
@@ -191,27 +188,6 @@ async function getApplicationType(application: AllAppResults): Promise<'SAP Fior
     }
 
     return appType;
-}
-
-/**
- * Return i18n paths to i18n.properties files from manifest, combined with relativeWebappPath.
- *
- * @param relativeWebappPath - root path for which i18n files should be relative to
- * @param manifest - parsed manifest.json
- * @returns - paths to i18n.properties files combined with relativeWebappPath
- */
-function getRootRelativeI18nPaths(relativeWebappPath: string, manifest: Manifest): I18nPropertiesPaths {
-    const i18nPaths = getRelativeI18nPropertiesPaths(manifest);
-    const relI18nPaths: I18nPropertiesPaths = {
-        'sap.app': join(relativeWebappPath, i18nPaths['sap.app'])
-    };
-    if (i18nPaths['sap.ui5.i18n']) {
-        relI18nPaths['sap.ui5.i18n'] = join(relativeWebappPath, i18nPaths['sap.ui5.i18n']);
-    }
-    if (i18nPaths['sap.ui5.@i18n']) {
-        relI18nPaths['sap.ui5.@i18n'] = join(relativeWebappPath, i18nPaths['sap.ui5.@i18n']);
-    }
-    return relI18nPaths;
 }
 
 /**
