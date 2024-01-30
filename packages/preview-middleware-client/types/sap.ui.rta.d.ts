@@ -187,7 +187,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     }
 
     export default class RuntimeAuthoring {
-        constructor(options: RTAOptions) {}
+        constructor(_: RTAOptions) {}
 
         destroy: () => void;
         start: () => Promise<void>;

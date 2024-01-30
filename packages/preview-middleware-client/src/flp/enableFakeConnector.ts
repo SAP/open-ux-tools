@@ -90,7 +90,7 @@ export async function loadChanges(): Promise<LoadChangesResult> {
     const changes = (await response.json()) as FetchedChanges;
 
     return LrepConnector.prototype.loadChanges
-        .apply(lrep, arguments as unknown as any)
+        .apply(lrep, [...arguments] as unknown as any)
         .then((res: LoadChangesResult) => {
             const arr: FlexChange[] = [];
             Object.entries(changes).forEach(([_, val]) => {

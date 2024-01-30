@@ -3,7 +3,6 @@ import { ChangeService } from '../../../../src/cpe/changes/service';
 import { changeProperty, deletePropertyChanges } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
-import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
 describe('SelectionService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {

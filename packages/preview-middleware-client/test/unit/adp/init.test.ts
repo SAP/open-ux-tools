@@ -1,5 +1,4 @@
 import * as common from '@sap-ux-private/control-property-editor-common';
-import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import init from '../../../src/adp/init';
 import { fetchMock } from 'mock/window';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
