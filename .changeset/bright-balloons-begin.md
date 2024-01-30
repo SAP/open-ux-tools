@@ -3,4 +3,4 @@
 '@sap-ux/preview-middleware': minor
 ---
 
-Support ui5 version 1.71.\* in CPE for Adaptation Projects.
+Support ui5 version 1.71.\* in CPE.
