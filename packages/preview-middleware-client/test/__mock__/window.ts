@@ -17,6 +17,7 @@ export const sapMock = {
         version: '',
         getCore: jest.fn().mockReturnValue(sapCoreMock),
         require: jest.fn(),
+        define: jest.fn(),
         loader: {
             config: jest.fn()
         }
