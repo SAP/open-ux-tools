@@ -731,15 +731,23 @@ describe('csdlToCds', () => {
             // assert
             expect(result).toMatchSnapshot();
             /* "annotate AdminService.Books with {
-                Autor @UI.Facets: [
-                        {
-                            $Type:'UI.ReferenceFacet',
-                            Label : 'Sales',
-                            ID : 'Sales',
-                            Target :  'to_ProductSalesData/@UI.Chart',
-                        },
-                        ]
-                    }
+                Autor @(UI.Facets : [
+                    {
+                      $Type : 'UI.ReferenceFacet',
+                      Label : 'Sales',
+                      ID : 'Sales',
+                      Target : 'to_ProductSalesData/@UI.Chart',
+                  },
+                ],
+                UI.Facets #qual1 : [
+                    {
+                        $Type : 'UI.ReferenceFacet',
+                        Label : 'Sales',
+                        ID : 'Sales',
+                        Target : 'to_ProductSalesData/@UI.Chart',
+                    },
+                ]
+                    )};
                 " */
         });
         describe('primitive values as Annotation values', () => {
