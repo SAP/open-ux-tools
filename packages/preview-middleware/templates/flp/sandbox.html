@@ -61,9 +61,7 @@
     </script>
 
     <script type="text/javascript">
-        (() => sap.ui.require(['open/ux/preview/client/flp/FakeLrepConnector'], function(script) {
-            script()
-        }))()
+        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
     
     <% if (locals.flex && flex?.scenario === 'ADAPTATION_PROJECT') { %>

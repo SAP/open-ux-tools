@@ -184,7 +184,7 @@ export class FlpSandbox {
         resources: Record<string, string> = {}
     ): Promise<void> {
         this.createFlexHandler();
-        const flex = true ? this.getFakeConnectorSettings() : this.getFlexSettings();
+        const flex = this.getFlexSettings();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         const ui5Theme =
             this.config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
@@ -350,17 +350,20 @@ export class FlpSandbox {
         }
     }
 
-    private getFakeConnectorSettings(): TemplateConfig['ui5']['flex'] {
-        return [{ connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' }];
-    }
-
+    /**
+     * Retrieves the configuration settings for UI5 flexibility services.
+     *
+     * @returns An array of flexibility service configurations, each specifying a connector
+     *          and its options, such as the layers it applies to and its service URL, if applicable.
+     */
     private getFlexSettings(): TemplateConfig['ui5']['flex'] {
-        const workspaceConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
+        const localConnectorPath = 'open.ux.preview.client.flp.LocalConnector';
 
         return [
+            { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
             {
-                applyConnector: workspaceConnectorPath,
-                writeConnector: workspaceConnectorPath,
+                applyConnector: localConnectorPath,
+                writeConnector: localConnectorPath,
                 custom: true
             },
             {

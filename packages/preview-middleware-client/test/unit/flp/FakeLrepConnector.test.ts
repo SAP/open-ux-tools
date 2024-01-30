@@ -1,7 +1,7 @@
-import { documentMock, fetchMock, sapMock } from 'mock/window';
+import { documentMock, fetchMock } from 'mock/window';
 import FakeLrepConnector from 'mock/sap/ui/fl/FakeLrepConnector';
 
-import initFakeLrepConnector, { loadChanges, create } from '../../../src/flp/FakeLrepConnector';
+import enableFakeConnector, { loadChanges, create } from '../../../src/flp/enableFakeConnector';
 import LrepConnector from 'mock/sap/ui/fl/LrepConnector';
 
 describe('flp/FakeLrepConnector', () => {
@@ -10,10 +10,9 @@ describe('flp/FakeLrepConnector', () => {
     });
 
     test('initializes FakeLrepConnector', async () => {
-        sapMock.ui.version = '1.71.60';
         const enableFakeConnectorSpy = FakeLrepConnector.enableFakeConnector;
 
-        initFakeLrepConnector();
+        enableFakeConnector();
 
         expect(enableFakeConnectorSpy).toBeCalledTimes(1);
     });
