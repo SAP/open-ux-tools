@@ -35,9 +35,7 @@ const layers = {
  * @returns {boolean} Returns true if the layer is valid, otherwise false.
  */
 export function isValidLayer(layer: string): boolean {
-    return Object.keys(layers).some(function (existingLayer) {
-        return existingLayer === layer;
-    });
+    return Object.keys(layers).some((existingLayer) => existingLayer === layer);
 }
 
 /**
