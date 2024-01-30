@@ -108,7 +108,8 @@ describe('Test getProject()', () => {
         expect(project.apps['apps/one'].manifest).toBe(join('source/webapp/manifest.json'));
         expect(project.apps['apps/one'].changes).toBe(join('source/webapp/changes'));
         expect(project.apps['apps/one'].i18n?.['sap.app']).toBe(join('source/webapp/i18n/i18n.properties'));
-        expect(project.apps['apps/one'].i18n?.['sap.ui5']).toBe(join('source/webapp/ovp/i18n/i18n.properties'));
+        expect(project.apps['apps/one'].i18n?.['sap.ui5.i18n']).toBe(join('source/webapp/ovp/i18n/i18n.properties'));
+        expect(project.apps['apps/one'].i18n?.['sap.ui5.@i18n']).toBe(join('source/webapp/i18n/i18n.properties'));
         expect(project.apps['apps/one'].mainService).toBe('mainService');
         expect(Object.keys(project.apps['apps/one'].services).length).toBe(2);
         expect(project.apps['apps/one'].services.mainService.uri).toBe('/sap/opu/odata/sap/ODATA_SERVICE/');
@@ -141,7 +142,7 @@ describe('Test getProject()', () => {
         expect(project.apps['apps/two'].manifest).toBe(join('webapp/manifest.json'));
         expect(project.apps['apps/two'].changes).toBe(join('webapp/changes'));
         expect(project.apps['apps/two'].i18n?.['sap.app']).toBe(join('webapp/i18n/i18n.properties'));
-        expect(project.apps['apps/two'].i18n?.['sap.ui5']).toBeUndefined();
+        expect(project.apps['apps/two'].i18n?.['sap.ui5.i18n']).toBeUndefined();
         expect(project.apps['apps/two'].mainService).toBe('main');
         expect(Object.keys(project.apps['apps/two'].services).length).toBe(1);
         expect(project.apps['apps/two'].services.main.uri).toBe('/sap/opu/odata4/dmo/ODATA_SERVICE/');

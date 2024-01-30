@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { join, relative } from 'path';
 import { getCapProjectType } from './cap';
-import { getI18nPaths } from './i18n';
+import { getRelativeI18nPropertiesPaths } from './i18n';
 import { findFioriArtifacts } from './search';
 import { getMainService, getServicesAndAnnotations } from './service';
 import { getWebappPath } from './ui5-config';
@@ -12,6 +12,7 @@ import type {
     ApplicationStructure,
     AppProgrammingLanguage,
     AppType,
+    I18nPropertiesPaths,
     Manifest,
     Package,
     Project,
@@ -87,7 +88,7 @@ async function getApplicationStructure(root: string, appFolder: string): Promise
     const manifestObject = await readJSON<Manifest>(absoluteManifestPath);
     const manifest = relative(appRoot, absoluteManifestPath);
     const changes = join(relativeWebappPath, DirName.Changes);
-    const i18n = getI18nPaths(relativeWebappPath, manifestObject);
+    const i18n = getRootRelativeI18nPaths(relativeWebappPath, manifestObject);
     const mainService = getMainService(manifestObject);
     const services = getServicesAndAnnotations(manifestObject, relative(root, absoluteWebappPath));
     return {
@@ -190,6 +191,27 @@ async function getApplicationType(application: AllAppResults): Promise<'SAP Fior
     }
 
     return appType;
+}
+
+/**
+ * Return i18n paths to i18n.properties files from manifest, combined with relativeWebappPath.
+ *
+ * @param relativeWebappPath - root path for which i18n files should be relative to
+ * @param manifest - parsed manifest.json
+ * @returns - paths to i18n.properties files combined with relativeWebappPath
+ */
+function getRootRelativeI18nPaths(relativeWebappPath: string, manifest: Manifest): I18nPropertiesPaths {
+    const i18nPaths = getRelativeI18nPropertiesPaths(manifest);
+    const relI18nPaths: I18nPropertiesPaths = {
+        'sap.app': join(relativeWebappPath, i18nPaths['sap.app'])
+    };
+    if (i18nPaths['sap.ui5.i18n']) {
+        relI18nPaths['sap.ui5.i18n'] = join(relativeWebappPath, i18nPaths['sap.ui5.i18n']);
+    }
+    if (i18nPaths['sap.ui5.@i18n']) {
+        relI18nPaths['sap.ui5.@i18n'] = join(relativeWebappPath, i18nPaths['sap.ui5.@i18n']);
+    }
+    return relI18nPaths;
 }
 
 /**

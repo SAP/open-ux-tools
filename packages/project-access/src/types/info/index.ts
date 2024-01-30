@@ -36,7 +36,7 @@ export interface ApplicationStructure {
     /**
      * Path to i18n files, relative from project root
      */
-    i18n: { ['sap.app']: string; ['sap.ui5']?: string };
+    i18n: I18nPropertiesPaths;
 
     /**
      * Main service of the application
@@ -47,6 +47,12 @@ export interface ApplicationStructure {
      * Service information with annotation references
      */
     services: { [index: string]: ServiceSpecification };
+}
+
+export interface I18nPropertiesPaths {
+    'sap.app': string;
+    'sap.ui5.i18n'?: string;
+    'sap.ui5.@i18n'?: string;
 }
 
 export interface ServiceSpecification {
