@@ -73,7 +73,7 @@ export function checkRootControl(rootControl: Control | UIComponent): void {
  */
 export function checkFlexEnabled(component: Control): void {
     // fiori tools is always a developer scenario where the flexEnabled flag should not be evaluated
-    var fioriToolsMode = new URLSearchParams(window.location.search).get('fiori-tools-rta-mode');
+    const fioriToolsMode = new URLSearchParams(window.location.search).get('fiori-tools-rta-mode');
     if (!fioriToolsMode || fioriToolsMode === 'false') {
         const manifest = ((component as Control & { getManifest: Function }).getManifest() as Manifest) || {};
         const flexEnabled = manifest['sap.ui5'] && manifest['sap.ui5'].flexEnabled;
