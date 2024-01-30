@@ -14,7 +14,8 @@ export {
     AbapTarget,
     AbapDeployConfig,
     UI5ProxyConfig,
-    UI5ProxyConfigTarget
+    UI5ProxyConfigTarget,
+    DestinationAbapTarget
 } from './types';
 export { UI5_DEFAULT } from './defaults';
 export { mergeObjects, getEsmTypesVersion, getTypesVersion, getTypesPackage } from './utils';

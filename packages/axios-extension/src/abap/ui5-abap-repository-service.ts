@@ -3,7 +3,7 @@ import { prettyPrintError, prettyPrintMessage } from './message';
 import type { ErrorMessage } from './message';
 import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
-import type { DestinationAbapTarget } from '../../../ui5-config/src/types';
+import type { DestinationAbapTarget } from '@sap-ux/ui5-config';
 import { listDestinations, isOnPremiseSystem } from '@sap-ux/btp-utils';
 
 /**
@@ -181,7 +181,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param config.bsp BSP configuration
      * @param config.testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
      * @param config.safeMode if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
-     * @param config.target destination config
+     * @param config.target destination target
      * @returns the Axios response object for further processing
      */
     public async deploy({ archive, bsp, testMode = false, safeMode, target }: DeployConfig): Promise<AxiosResponse> {

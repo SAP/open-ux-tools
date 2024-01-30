@@ -291,6 +291,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/ui5-config':
+        specifier: 0.21.0
+        version: link:../ui5-config
       '@xmldom/xmldom':
         specifier: 0.8.10
         version: 0.8.10
