@@ -267,9 +267,11 @@ async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResul
             pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
             const manifest = pathMap[manifestPath] as Manifest;
             if (!manifest['sap.app']?.id || manifest['sap.app'].type !== 'application') {
+                console.error('APP_TEST', manifest);
                 continue;
             }
             const roots = await findRootsForPath(manifestPath);
+            console.error('APP_TEST', roots);
             if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig)))) {
                 result.push({ appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest, manifestPath });
             }
@@ -395,7 +397,6 @@ export async function findFioriArtifacts(options: {
     const results: FoundFioriArtifacts = {};
     const fileNames: string[] = getFilterFileNames(options.artifacts);
     const wsRoots = wsFoldersToRootPaths(options.wsFolders);
-    console.error('APP_TEST', wsRoots);
     const pathMap: FileMapAndCache = {};
     for (const root of wsRoots) {
         try {
@@ -404,9 +405,7 @@ export async function findFioriArtifacts(options: {
                 root,
                 excludeFolders
             });
-            console.error('APP_TEST', foundFiles);
             foundFiles.forEach((path) => (pathMap[path] = null));
-            console.error('APP_TEST', pathMap);
         } catch {
             // ignore exceptions during find
         }
