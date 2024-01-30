@@ -263,10 +263,16 @@ async function filterApplications(pathMap: FileMapAndCache, debug = false): Prom
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
         try {
+            if (debug) {
+                console.error('APP_TEST_FILTER', manifestPath);
+            }
             // All UI5 apps have at least sap.app: { id: <ID>, type: "application" } in manifest.json
             pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
             const manifest = pathMap[manifestPath] as Manifest;
             if (!manifest['sap.app']?.id || manifest['sap.app'].type !== 'application') {
+                if (debug) {
+                    console.error('APP_TEST_CONTINUE', manifestPath);
+                }
                 continue;
             }
             const roots = await findRootsForPath(manifestPath);
