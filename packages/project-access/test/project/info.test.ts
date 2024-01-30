@@ -1,7 +1,14 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { getAppProgrammingLanguage, getAppType, getProject, getProjectType } from '../../src';
+import {
+    findAllApps,
+    findFioriArtifacts,
+    getAppProgrammingLanguage,
+    getAppType,
+    getProject,
+    getProjectType
+} from '../../src';
 
 describe('Test getAppProgrammingLanguage()', () => {
     const sampleRoot = join(__dirname, '../test-data/project/info');
@@ -68,7 +75,12 @@ describe('Test getAppType()', () => {
         expect(appType).toBe('SAPUI5 freestyle');
     });
 
-    test('Type SAPUI5 freestyle in CAP', async () => {
+    test('Type SAPUI5 freestyle in mixed CAP project', async () => {
+        const apps = await findFioriArtifacts({
+            wsFolders: [join(sampleRoot, 'CAP/CAPNode_mix/app/freestyle')],
+            artifacts: ['adaptations', 'applications', 'extensions', 'libraries']
+        });
+        console.log(apps);
         const appType = await getAppType(join(sampleRoot, 'CAP/CAPNode_mix/app/freestyle'));
         expect(appType).toBe('SAPUI5 freestyle');
     });
