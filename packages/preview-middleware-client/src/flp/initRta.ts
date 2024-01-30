@@ -76,7 +76,7 @@ export function checkFlexEnabled(component: Control): void {
     const fioriToolsMode = new URLSearchParams(window.location.search).get('fiori-tools-rta-mode');
     if (!fioriToolsMode || fioriToolsMode === 'false') {
         const manifest = (component as Control & { getManifest: () => Manifest }).getManifest() || {};
-        const flexEnabled = manifest['sap.ui5'] && manifest['sap.ui5'].flexEnabled;
+        const flexEnabled = manifest['sap.ui5']?.flexEnabled;
 
         if (flexEnabled === false) {
             throw new Error('This app is not enabled for key user adaptation');
