@@ -190,14 +190,6 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
         // Check if app is included in CAP project
         const projectRoot = await findCapProjectRoot(appRoot);
         if (projectRoot) {
-            if (
-                path.includes(
-                    'packages/project-access/test/test-data/project/find-all-apps/CAP/CAPnode_mix/app/freestyle'
-                )
-            ) {
-                console.error('APP_TEST_PACKAGEJSON_ROOT', projectRoot);
-                console.error('APP_TEST_APP_ROOT', appRoot);
-            }
             // App included in CAP
             return {
                 appRoot,
@@ -286,6 +278,19 @@ async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResul
                 console.error('APP_TEST_ROOTS', roots);
             }
             if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig)))) {
+                if (
+                    manifestPath.includes(
+                        'packages/project-access/test/test-data/project/find-all-apps/CAP/CAPnode_mix/app/freestyle'
+                    )
+                ) {
+                    console.error('APP_TEST_PUSH', {
+                        appRoot: roots.appRoot,
+                        projectRoot: roots.projectRoot,
+                        manifest,
+                        manifestPath
+                    });
+                }
+
                 result.push({ appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest, manifestPath });
             }
         } catch {
