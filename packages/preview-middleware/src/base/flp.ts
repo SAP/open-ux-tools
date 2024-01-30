@@ -378,7 +378,7 @@ export class FlpSandbox {
      *
      * @returns template configuration for flex.
      */
-    private createFlexHandler() {
+    private createFlexHandler(): void {
         const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
