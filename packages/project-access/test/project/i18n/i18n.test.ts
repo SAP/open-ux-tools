@@ -4,7 +4,7 @@ import { getRelativeI18nPropertiesPaths } from '../../../src/project/i18n/i18n';
 
 describe('Test getI18nPropertiesPaths()', () => {
     test('All paths in manifest', async () => {
-        const manifestFolder = join(__dirname, '../test-data/project/info/cap-project/apps/one/source/webapp');
+        const manifestFolder = join(__dirname, '../../test-data/project/info/cap-project/apps/one/source/webapp');
         const manifestPath = join(manifestFolder, 'manifest.json');
         const result = await getI18nPropertiesPaths(manifestPath);
         expect(result).toEqual({
