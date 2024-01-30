@@ -78,7 +78,7 @@ export async function create(changeArr: FlexChange[]): Promise<void> {
  *
  * @returns {Promise<LoadChangesResult>} A promise that resolves to an object of type LoadChangesResult.
  */
-export async function loadChanges(): Promise<LoadChangesResult> {
+export async function loadChanges(...args: []): Promise<LoadChangesResult> {
     const lrep = new LrepConnector();
 
     const response = await fetch(path, {
@@ -89,16 +89,14 @@ export async function loadChanges(): Promise<LoadChangesResult> {
     });
     const changes = (await response.json()) as FetchedChanges;
 
-    return LrepConnector.prototype.loadChanges
-        .apply(lrep, [...arguments] as unknown as any)
-        .then((res: LoadChangesResult) => {
-            const arr: FlexChange[] = [];
-            Object.entries(changes).forEach(([_, val]) => {
-                arr.push(val);
-            });
-            res.changes.changes = arr;
-            return res;
+    return LrepConnector.prototype.loadChanges.apply(lrep, args).then((res: LoadChangesResult) => {
+        const arr: FlexChange[] = [];
+        Object.entries(changes).forEach(([_, val]) => {
+            arr.push(val);
         });
+        res.changes.changes = arr;
+        return res;
+    });
 }
 
 /**
