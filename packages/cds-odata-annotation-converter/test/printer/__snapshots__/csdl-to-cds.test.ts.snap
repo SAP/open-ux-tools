@@ -208,7 +208,7 @@ exports[`csdlToCds printTarget childSegments.length > 1] 1`] = `
                 Target : 'to_ProductSalesData/@UI.Chart',
             },
         ],
-        UI.Facets : [
+        UI.Facets #qual1 : [
             {
                 $Type : 'UI.ReferenceFacet',
                 Label : 'Sales',

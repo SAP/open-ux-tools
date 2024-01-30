@@ -645,6 +645,11 @@ describe('csdlToCds', () => {
                                 type: 'attribute',
                                 name: 'Term',
                                 value: 'UI.Facets'
+                            },
+                            Qualifier: {
+                                type: 'attribute',
+                                name: 'Qualifier',
+                                value: 'qual1'
                             }
                         },
                         content: [
