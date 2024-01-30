@@ -18,7 +18,6 @@ jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn(),
     listDestinations: jest.fn()
 }));
 
