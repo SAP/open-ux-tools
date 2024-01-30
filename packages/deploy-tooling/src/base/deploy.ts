@@ -291,7 +291,13 @@ async function tryDeploy(
                 );
             }
             const service = getDeployService(provider.getUi5AbapRepository.bind(provider), config, logger);
-            await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
+            await service.deploy({
+                archive,
+                bsp: config.app,
+                testMode: config.test,
+                safeMode: config.safe,
+                target: { destination: `${config.target.destination}` }
+            });
         } else {
             await tryDeployToLrep(provider, config, logger, archive);
         }

@@ -1,3 +1,4 @@
+import { DestinationProxyType } from '../dist';
 import {
     Destination,
     isAbapSystem,
@@ -6,7 +7,8 @@ import {
     WebIDEAdditionalData,
     isGenericODataDestination,
     isPartialUrlDestination,
-    isFullUrlDestination
+    isFullUrlDestination,
+    isOnPremiseSystem
 } from '../src';
 import destinations from './mockResponses/destinations.json';
 
@@ -96,6 +98,16 @@ describe('destination', () => {
         it('not a generic OData destination', () => {
             expect(isFullUrlDestination(destination)).toBe(false);
             expect(isFullUrlDestination({ ...destination, WebIDEUsage: 'anything' })).toBe(false);
+        });
+    });
+    describe('isOnPremiseSystem', () => {
+        it('destination is onPremise', () => {
+            expect(
+                isOnPremiseSystem({
+                    ...destination,
+                    ProxyType: DestinationProxyType.ON_PREMISE
+                })
+            ).toBe(true);
         });
     });
 });

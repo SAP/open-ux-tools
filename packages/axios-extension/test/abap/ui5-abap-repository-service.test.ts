@@ -5,6 +5,7 @@ import mockErrorDetails from './mockResponses/errordetails.json';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
 import { WebIDEUsage as WebIDEUsageType, type Destination } from '@sap-ux/btp-utils';
+import * as btp from '@sap-ux/btp-utils';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -14,6 +15,14 @@ const loggerMock: ToolsLogger = {
 } as Partial<ToolsLogger> as ToolsLogger;
 
 jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
+
+jest.mock('@sap-ux/btp-utils', () => ({
+    ...jest.requireActual('@sap-ux/btp-utils'),
+    isAppStudio: jest.fn(),
+    listDestinations: jest.fn()
+}));
+
+let listDestinationsMock: jest.SpyInstance;
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
@@ -72,6 +81,7 @@ describe('Ui5AbapRepositoryService', () => {
     });
 
     beforeEach(() => {
+        listDestinationsMock = jest.spyOn(btp, 'listDestinations');
         jest.resetModules();
     });
 
@@ -113,6 +123,18 @@ describe('Ui5AbapRepositoryService', () => {
         const archive = Buffer.from('TestData');
 
         test('deploy new app with destination', async () => {
+            const destinationsMock = {
+                'ABC123': {
+                    Name: 'ABC123',
+                    Type: 'MockType',
+                    Authentication: 'NoAuthentication',
+                    ProxyType: 'OnPremise',
+                    Description: 'MockDestination',
+                    Host: 'MockHost'
+                }
+            };
+            listDestinationsMock.mockResolvedValue(destinationsMock);
+
             nock(`https://${destination.Name}.dest`)
                 .defaultReplyHeaders({
                     'sap-message': sapMessageHeader
@@ -122,7 +144,11 @@ describe('Ui5AbapRepositoryService', () => {
                     (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
                 .reply(200);
-            const response = await destinationService.deploy({ archive, bsp: { name: notExistingApp } });
+            const response = await destinationService.deploy({
+                archive,
+                bsp: { name: notExistingApp },
+                target: { destination: 'ABC123' }
+            });
             expect(response.data).toBeDefined();
             expect(loggerMock.info).toHaveBeenCalledTimes(8); // Ensures the logFullURL method is called to support destinations
             expect(loggerMock.warn).toHaveBeenCalledTimes(0);
