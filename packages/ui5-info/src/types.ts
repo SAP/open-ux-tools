@@ -36,6 +36,11 @@ export interface UI5VersionFilterOptions {
      * Adds the property `default` to the default ui5 version
      */
     includeDefault?: boolean;
+
+    /**
+     * Includes only versions filtered by latest patch.
+     */
+    onlyLatestPatchVersion?: boolean;
 }
 
 export interface UI5Version {
