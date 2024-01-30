@@ -174,6 +174,7 @@ export class FlpSandbox {
      * Initialize the FLP sandbox router.
      *
      * @param manifest application manifest
+     * @param descriptor
      * @param componentId optional componentId e.g. for adaptation projects
      * @param resources optional additional resource mappings
      */
@@ -423,6 +424,7 @@ export class FlpSandbox {
      *
      * @param manifest manifest of the additional target app
      * @param app configuration for the preview
+     * @param descriptor
      */
     addApp(manifest: Manifest, app: App, descriptor: any) {
         const id = manifest['sap.app'].id;
