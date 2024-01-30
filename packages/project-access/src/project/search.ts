@@ -172,32 +172,12 @@ export async function getAppRootFromWebappPath(webappPath: string): Promise<stri
  */
 async function findRootsForPath(path: string): Promise<{ appRoot: string; projectRoot: string } | null> {
     try {
-        if (
-            path.includes('packages/project-access/test/test-data/project/find-all-apps/CAP/CAPnode_mix/app/freestyle')
-        ) {
-            console.error('APP_TEST_PATH', path);
-        }
-
         // Get the root of the app, that is where the package.json is, otherwise not supported
         const appRoot = await findProjectRoot(path, false);
         if (!appRoot) {
             return null;
         }
-
-        if (
-            path.includes('packages/project-access/test/test-data/project/find-all-apps/CAP/CAPnode_mix/app/freestyle')
-        ) {
-            console.error('APP_TEST_PATH', path);
-        }
-
         const appPckJson = await readJSON<Package>(join(appRoot, FileName.Package));
-
-        if (
-            path.includes('packages/project-access/test/test-data/project/find-all-apps/CAP/CAPnode_mix/app/freestyle')
-        ) {
-            console.error('APP_TEST_PACKAGEJSON', appPckJson);
-        }
-
         // Check for most common app, Fiori elements with sapux=true in package.json
         if (appPckJson.sapux) {
             return findRootsWithSapux(appPckJson.sapux, path, appRoot);
@@ -209,14 +189,15 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
         }
         // Check if app is included in CAP project
         const projectRoot = await findCapProjectRoot(appRoot);
-
-        if (
-            path.includes('packages/project-access/test/test-data/project/find-all-apps/CAP/CAPnode_mix/app/freestyle')
-        ) {
-            console.error('APP_TEST_PACKAGEJSON_ROOT', projectRoot);
-        }
-
         if (projectRoot) {
+            if (
+                path.includes(
+                    'packages/project-access/test/test-data/project/find-all-apps/CAP/CAPnode_mix/app/freestyle'
+                )
+            ) {
+                console.error('APP_TEST_PACKAGEJSON_ROOT', projectRoot);
+                console.error('APP_TEST_APP_ROOT', appRoot);
+            }
             // App included in CAP
             return {
                 appRoot,
@@ -297,6 +278,13 @@ async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResul
                 continue;
             }
             const roots = await findRootsForPath(manifestPath);
+            if (
+                manifestPath.includes(
+                    'packages/project-access/test/test-data/project/find-all-apps/CAP/CAPnode_mix/app/freestyle'
+                )
+            ) {
+                console.error('APP_TEST_ROOTS', roots);
+            }
             if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig)))) {
                 result.push({ appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest, manifestPath });
             }
