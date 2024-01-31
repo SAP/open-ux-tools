@@ -124,15 +124,40 @@ async function checkLayerAndControl(rootControl: Control, layer: string): Promis
 }
 
 /**
- * Hides specific buttons by ID from the UI toolbar.
- * This function specifically targets buttons with IDs '__button9' and '__button10' (that are 'Reset' and 'Publish' respectively).
+ * Retrieves the first HTML element with the specified title attribute.
+ *
+ * @param {string} title - The title attribute value to search for in the HTML elements.
+ * @returns {Element | null} The first HTML element that matches the given title attribute value, or null if no such element is found.
+ */
+function getElementByTitle(title: string): Element | null {
+    return document.querySelector(`[title="${title}"]`);
+}
+
+/**
+ * Hides a UI5 Button control with the specified ID.
+ *
+ * This function attempts to find a UI5 Button control by its ID and then sets its visibility to false.
+ *
+ * @param {string | undefined} buttonId - The ID of the Button control to hide. If undefined, no action is taken.
+ * @returns {void}
+ */
+function hideButtonById(buttonId: string | undefined): void {
+    const button = sap.ui.getCore().byId(buttonId) as Button;
+    if (button) {
+        button.setVisible(false);
+    }
+}
+
+/**
+ * Hides specific buttons by ID from the RTA toolbar.
+ * This function specifically targets buttons 'Reset' and 'Publish'.
  */
 function removeExtraBtnsFromToolbar(): void {
-    const resetBtn = sap.ui.getCore().byId('__button9') as Button;
-    const publishBtn = sap.ui.getCore().byId('__button10') as Button;
+    const resetEl = getElementByTitle('Reset');
+    const publishEl = getElementByTitle('Publish');
 
-    resetBtn.setVisible(false);
-    publishBtn.setVisible(false);
+    hideButtonById(resetEl?.id);
+    hideButtonById(publishEl?.id);
 }
 
 /**

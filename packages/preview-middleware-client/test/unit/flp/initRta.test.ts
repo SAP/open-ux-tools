@@ -5,7 +5,7 @@ import Control from 'mock/sap/ui/core/Control';
 import Utils from 'mock/sap/ui/fl/Utils';
 
 import initRta from '../../../src/flp/initRta';
-import { sapCoreMock } from 'mock/window';
+import { sapCoreMock, documentMock } from 'mock/window';
 
 describe('flp/initRta', () => {
     afterEach(() => {
@@ -15,6 +15,7 @@ describe('flp/initRta', () => {
     test('initializes RuntimeAuthoring and starts ui adaptation', async () => {
         const mockRootControl = new Control();
 
+        documentMock.querySelector = jest.fn().mockReturnValue({ id: '__button09' });
         mockRootControl.getManifest.mockReturnValue({
             'sap.app': {
                 id: 'some-id'
