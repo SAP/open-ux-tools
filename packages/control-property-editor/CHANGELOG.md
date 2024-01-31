@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.10
+
+### Patch Changes
+
+-   52265581: Fix styling for the funnel icon on Outline Panel
+
 ## 0.4.9
 
 ### Patch Changes
