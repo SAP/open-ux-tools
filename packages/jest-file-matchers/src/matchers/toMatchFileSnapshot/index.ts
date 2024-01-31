@@ -3,24 +3,24 @@
  */
 
 import fs from 'fs';
-import path, { basename } from 'path';
+import path from 'path';
 import chalk from 'chalk';
 import diff from 'jest-diff';
 import type { MatcherIgnore } from '../types';
 import type { FileMatcherOptions } from './types';
 import mkdirp from 'mkdirp';
-import filenamify from 'filenamify';
+import { getFileName } from '../utils';
 
 const removedValueToken = '--IGNORED-VALUE--';
+
 /**
- * Check if 2 strings are equal, after replacing the MatcerIgnore options.
+ * Check if 2 strings are equal, after replacing the MatcherIgnore options.
  *
- * @param aContent - file contents as string
- * @param bContent - file contents as string
- * @param fileName - filename not including path
- * @param utils - jest matcher utilities
- * @param ignoreOpts
- * @returns
+ * @param aContent file contents as string
+ * @param bContent file contents as string
+ * @param fileName filename not including path
+ * @param ignoreOpts matcher ignore regex pattern definitions
+ * @returns result object
  */
 const isEqual = (
     aContent: string,
@@ -36,7 +36,7 @@ const isEqual = (
         bReplacedContent = bContent;
     // Replace values before comparison
     ignoreOpts?.groups?.forEach((replaceGrp) => {
-        if (replaceGrp.filenames.includes(basename(fileName))) {
+        if (replaceGrp.filenames.includes(path.basename(fileName))) {
             replaceGrp.ignore.forEach((replaceRegEx) => {
                 try {
                     aReplacedContent = aReplacedContent.replace(new RegExp(replaceRegEx, 'g'), removedValueToken);
@@ -58,13 +58,10 @@ const isEqual = (
 /**
  * Match given content against content of the specified file.
  *
- * @param {string} content Output content to match
- * @param {string} [filepath] Path to the file to match against
- * @param {{ diff?: import('jest-diff').DiffOptions }} options Additional options for matching
- * @this {{ testPath: string, currentTestName: string, assertionCalls: number, isNot: boolean,
- *          snapshotState: { added: number, updated: number, unmatched: number,
- *          _updateSnapshot: 'none' | 'new' | 'all' },
- *          utils: jest.MatcherUtils }}
+ * @param content output content to match
+ * @param filepath path to the file to match against
+ * @param options additional options for matching
+ * @returns results for custom matcher
  */
 export function toMatchFile(
     content: string,
@@ -74,15 +71,7 @@ export function toMatchFile(
     const { isNot, snapshotState } = this as jest.MatcherContext;
 
     // If file name is not specified, generate one from the test title
-    const filename =
-        filepath ??
-        path.join(
-            path.dirname(this.testPath),
-            '__file_snapshots__',
-            `${filenamify(this.currentTestName, {
-                replacement: '-'
-            }).replace(/\s/g, '-')}-${this.assertionCalls}`
-        );
+    const filename = getFileName(filepath);
 
     options = {
         ...options,

@@ -5,7 +5,12 @@ import chalk from 'chalk';
 import type { MatcherOptions } from '../types';
 
 /**
- *  Matcher to assert that `receivedFolder` contains all the files in  the `expectedFolder`
+ * Matcher to assert that `receivedFolder` contains all the files in  the `expectedFolder`.
+ *
+ * @param receivedFolder path to received folder
+ * @param expectedFolder path to expected folder
+ * @param options additional options for matching
+ * @returns results for custom matcher
  */
 export function toContainAllFilesIn(
     receivedFolder: string,

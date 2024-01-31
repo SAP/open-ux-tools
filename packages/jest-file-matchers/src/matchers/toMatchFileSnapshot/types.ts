@@ -8,8 +8,8 @@ export interface FileMatcherOptions {
 
 declare global {
     namespace jest {
-        interface Matchers<R, T> {
-            toMatchFile: (filename?: string, options?: FileMatcherOptions) => void;
+        interface Matchers<R> {
+            toMatchFile: (filename?: string, options?: FileMatcherOptions) => R;
         }
 
         interface Expect {

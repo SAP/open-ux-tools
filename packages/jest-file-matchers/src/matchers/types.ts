@@ -17,7 +17,6 @@ export interface Filter {
 /**
  * Matcher ignore regex pattern definitions. Used as an option for .toMatchFolder to replace dynamic
  * values in file snapshots.
- *
  */
 export interface MatcherIgnore {
     groups?: {

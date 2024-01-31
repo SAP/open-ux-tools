@@ -6,10 +6,10 @@ export { toMatchFolder } from './toMatchFolder';
 
 declare global {
     namespace jest {
-        interface Matchers<R, T> {
-            toMatchFolder: (expectedFolder: string, options?: Filter & MatcherIgnore) => void;
-            toContainAllFilesIn: (expectedFolder: string, options?: Filter) => void;
-            toMatchFilesIn: (expectedFolder: string, options?: Filter) => void;
+        interface Matchers<R> {
+            toMatchFolder: (expectedFolder: string, options?: Filter & MatcherIgnore) => R;
+            toContainAllFilesIn: (expectedFolder: string, options?: Filter) => R;
+            toMatchFilesIn: (expectedFolder: string, options?: Filter) => R;
         }
 
         interface Expect {
