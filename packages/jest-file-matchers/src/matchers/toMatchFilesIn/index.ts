@@ -22,13 +22,17 @@ export function toMatchFilesIn(
     const messages: string[] = [];
     let pass = true;
 
-    const toMatchFileSnaphot = toMatchFile.bind(this);
+    const toMatchFileSnapshot = toMatchFile.bind(this);
 
     getAllFileNames({ dir: receivedFolder, filter: options }).forEach((fileName) => {
         const snapshotFilename = fileName.replace(receivedFolder, expectedFolder);
         const fileContents = fs.readFileSync(fileName, 'utf-8').replace(/\r\n/g, '\n');
 
-        const { pass: snapshotPass, message: getMessage } = toMatchFileSnaphot(fileContents, snapshotFilename, options);
+        const { pass: snapshotPass, message: getMessage } = toMatchFileSnapshot(
+            fileContents,
+            snapshotFilename,
+            options
+        );
 
         pass = pass && snapshotPass;
         extractMessage({ getMessage, messages });

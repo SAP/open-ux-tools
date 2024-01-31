@@ -4,7 +4,7 @@ import type { MatcherOptions } from '../types';
 import { extractMessage } from '../utils';
 
 /**
- * Matcher to assert that the files and file content match are the same in `recievedFolder` and `expectedFolder`.
+ * Matcher to assert that the files and file content match are the same in `receivedFolder` and `expectedFolder`.
  *
  * @param receivedFolder path to received folder
  * @param expectedFolder path to expected folder

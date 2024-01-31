@@ -14,7 +14,7 @@ import { getFilePath } from '../utils';
 const removedValueToken = '--IGNORED-VALUE--';
 
 /**
- * Check if 2 strings are equal, after replacing the MatcherIgnore options.
+ * Check if two strings are equal, after replacing the MatcherIgnore options.
  *
  * @param aContent file contents as string
  * @param bContent file contents as string
