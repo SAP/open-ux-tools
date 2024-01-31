@@ -24,6 +24,7 @@ interface WriteControllerBody {
  * @description Handles API Routes
  */
 export default class RoutesHandler {
+    private fragmentPaths: Set<string>;
     /**
      * Constructor taking project as input.
      *
@@ -35,7 +36,9 @@ export default class RoutesHandler {
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
-    ) {}
+    ) {
+        this.fragmentPaths = new Set<string>();
+    }
 
     /**
      * Reads files from workspace by given search pattern.
@@ -71,6 +74,17 @@ export default class RoutesHandler {
         this.logger.error(sanitizedMsg);
         res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send({ message: sanitizedMsg });
         next(e);
+    }
+
+    private getFragmentPathFromCache(fragmentName: string | undefined): boolean {
+        return Array.from(this.fragmentPaths).some((path: string) => {
+            const targetPath = path.split('/').pop();
+            const isInCache = targetPath === fragmentName;
+            // if (isInCache) {
+            //     this.fragmentPaths.delete(path);
+            // }
+            return isInCache;
+        });
     }
 
     /**
@@ -132,13 +146,11 @@ export default class RoutesHandler {
                 return;
             }
 
-            // Copy the template XML Fragment to the project's workspace
-            const fragmentTemplatePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
-            fs.copyFileSync(fragmentTemplatePath, filePath);
+            this.fragmentPaths.add(filePath);
 
-            const message = 'XML Fragment created';
+            const message = 'XML fragment path added to cache';
             res.status(HttpStatusCodes.CREATED).send(message);
-            this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
+            this.logger.debug(`XML fragment with name "${fragmentName}" was added to cache`);
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);
             this.logger.error(sanitizedMsg);
@@ -288,6 +300,39 @@ export default class RoutesHandler {
             const message = 'Controller extension created!';
             res.status(HttpStatusCodes.CREATED).send(message);
             this.logger.debug(`Controller extension with name "${controllerExtName}" was created`);
+        } catch (e) {
+            const sanitizedMsg = sanitize(e.message);
+            this.logger.error(sanitizedMsg);
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
+            next(e);
+        }
+    };
+
+    public handleFragmentMemoryFs = async (req: Request, res: Response, next: NextFunction) => {
+        if (req.method !== 'GET') {
+            next();
+            return;
+        }
+
+        try {
+            const url = req.url;
+            if (!this.fragmentPaths.size || !url.includes('fragment')) {
+                next();
+                return;
+            }
+
+            const fragmentName = url.split('/').pop();
+
+            const isInCache = this.getFragmentPathFromCache(fragmentName);
+
+            if (isInCache) {
+                const fragmentTemplatePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
+
+                res.sendFile(fragmentTemplatePath);
+                return;
+            } else {
+                throw new Error(`Fragment '${fragmentName}' was not found in cache. XML fragment will not be served`);
+            }
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);
             this.logger.error(sanitizedMsg);

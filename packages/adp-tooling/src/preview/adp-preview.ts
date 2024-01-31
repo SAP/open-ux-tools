@@ -147,5 +147,6 @@ export class AdpPreview {
         );
 
         router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
+        router.use(this.routesHandler.handleFragmentMemoryFs);
     }
 }
