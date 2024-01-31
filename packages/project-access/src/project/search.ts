@@ -258,42 +258,23 @@ export async function findAllApps(
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
-async function filterApplications(pathMap: FileMapAndCache, debug = false): Promise<AllAppResults[]> {
+async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResults[]> {
     const result: AllAppResults[] = [];
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
         try {
-            if (debug) {
-                console.error('APP_TEST_FILTER', manifestPath);
-            }
             // All UI5 apps have at least sap.app: { id: <ID>, type: "application" } in manifest.json
             pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
             const manifest = pathMap[manifestPath] as Manifest;
             if (!manifest['sap.app']?.id || manifest['sap.app'].type !== 'application') {
-                if (debug) {
-                    console.error('APP_TEST_CONTINUE', manifestPath);
-                }
                 continue;
             }
             const roots = await findRootsForPath(manifestPath);
-            if (debug) {
-                console.error('APP_TEST_ROOTS', roots);
-            }
             if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig)))) {
-                if (debug) {
-                    console.error('APP_TEST_PUSH', {
-                        appRoot: roots.appRoot,
-                        projectRoot: roots.projectRoot,
-                        manifest,
-                        manifestPath
-                    });
-                }
-
                 result.push({ appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest, manifestPath });
             }
         } catch {
             // ignore exceptions for invalid manifests
-            console.error('APP_TEST_ERROR', manifestPath);
         }
     }
     return result;
@@ -434,10 +415,13 @@ export async function findFioriArtifacts(
             foundFiles.forEach((path) => (pathMap[path] = null));
         } catch {
             // ignore exceptions during find
+            if (debug) {
+                console.error('APP_TEST_FIND_EXCEPTION', root);
+            }
         }
     }
     if (options.artifacts.includes('applications')) {
-        results.applications = await filterApplications(pathMap, debug);
+        results.applications = await filterApplications(pathMap);
     }
     if (options.artifacts.includes('adaptations')) {
         results.adaptations = await filterAdaptations(pathMap);
