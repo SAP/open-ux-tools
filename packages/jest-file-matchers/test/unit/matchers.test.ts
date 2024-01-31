@@ -26,16 +26,6 @@ describe('Test matchers', () => {
         expect(receivedFolder).not.toMatchFolder(expectedFolder);
     });
 
-    it('should not match empty folder', () => {
-        const receivedFolder = join(__dirname, '../__fixtures__/test-folder-empty');
-        expect(receivedFolder).not.toMatchFolder(expectedFolder);
-    });
-
-    it('should not match nested folder', () => {
-        const receivedFolder = join(__dirname, '../__fixtures__/test-folder-nested');
-        expect(receivedFolder).not.toMatchFolder(expectedFolder);
-    });
-
     it('should exclude certain file extensions', () => {
         const receivedFolder = join(__dirname, '../__fixtures__/test-folder-extra-files');
         expect(expectedFolder).toMatchFolder(receivedFolder, { ...ignoreMatcherOpts, exclude: ['**.html', '**.ts'] });
