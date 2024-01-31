@@ -13,3 +13,7 @@ export const FileName = {
     Ui5MockYaml: 'ui5-mock.yaml',
     UI5DeployYaml: 'ui5-deploy.yaml'
 } as const;
+
+export const DirName = {
+    Changes: 'changes'
+} as const;
