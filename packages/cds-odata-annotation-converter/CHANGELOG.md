@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.2.1
+
+### Patch Changes
+
+-   6a3947a2: fix: refactor print target
+
 ## 0.2.0
 
 ### Minor Changes

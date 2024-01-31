@@ -551,6 +551,205 @@ describe('csdlToCds', () => {
                 " */
         });
 
+        test('childSegments.length > 1]', () => {
+            // arrange
+            const target: Target = {
+                type: 'target',
+                name: 'AdminService.Books/Autor',
+                terms: [
+                    {
+                        type: 'element',
+                        name: 'Annotation',
+                        attributes: {
+                            Term: {
+                                type: 'attribute',
+                                name: 'Term',
+                                value: 'UI.Facets'
+                            }
+                        },
+                        content: [
+                            {
+                                type: 'element',
+                                name: 'Collection',
+                                content: [
+                                    {
+                                        type: 'element',
+                                        name: 'Record',
+                                        content: [
+                                            {
+                                                type: 'element',
+                                                name: 'PropertyValue',
+                                                attributes: {
+                                                    Property: {
+                                                        type: 'attribute',
+                                                        name: 'Property',
+                                                        value: 'Label'
+                                                    },
+                                                    String: {
+                                                        type: 'attribute',
+                                                        name: 'String',
+                                                        value: 'Sales'
+                                                    }
+                                                },
+                                                content: []
+                                            },
+                                            {
+                                                type: 'element',
+                                                name: 'PropertyValue',
+                                                attributes: {
+                                                    Property: {
+                                                        type: 'attribute',
+                                                        name: 'Property',
+                                                        value: 'ID'
+                                                    },
+                                                    String: {
+                                                        type: 'attribute',
+                                                        name: 'String',
+                                                        value: 'Sales'
+                                                    }
+                                                },
+                                                content: []
+                                            },
+                                            {
+                                                type: 'element',
+                                                name: 'PropertyValue',
+                                                attributes: {
+                                                    Property: {
+                                                        type: 'attribute',
+                                                        name: 'Property',
+                                                        value: 'Target'
+                                                    },
+                                                    AnnotationPath: {
+                                                        type: 'attribute',
+                                                        name: 'AnnotationPath',
+                                                        value: 'to_ProductSalesData/@UI.Chart'
+                                                    }
+                                                },
+                                                content: []
+                                            }
+                                        ],
+                                        attributes: {
+                                            Type: { type: 'attribute', name: 'Type', value: 'UI.ReferenceFacet' }
+                                        }
+                                    }
+                                ],
+                                attributes: {}
+                            }
+                        ]
+                    },
+                    {
+                        type: 'element',
+                        name: 'Annotation',
+                        attributes: {
+                            Term: {
+                                type: 'attribute',
+                                name: 'Term',
+                                value: 'UI.Facets'
+                            },
+                            Qualifier: {
+                                type: 'attribute',
+                                name: 'Qualifier',
+                                value: 'qual1'
+                            }
+                        },
+                        content: [
+                            {
+                                type: 'element',
+                                name: 'Collection',
+                                content: [
+                                    {
+                                        type: 'element',
+                                        name: 'Record',
+                                        content: [
+                                            {
+                                                type: 'element',
+                                                name: 'PropertyValue',
+                                                attributes: {
+                                                    Property: {
+                                                        type: 'attribute',
+                                                        name: 'Property',
+                                                        value: 'Label'
+                                                    },
+                                                    String: {
+                                                        type: 'attribute',
+                                                        name: 'String',
+                                                        value: 'Sales'
+                                                    }
+                                                },
+                                                content: []
+                                            },
+                                            {
+                                                type: 'element',
+                                                name: 'PropertyValue',
+                                                attributes: {
+                                                    Property: {
+                                                        type: 'attribute',
+                                                        name: 'Property',
+                                                        value: 'ID'
+                                                    },
+                                                    String: {
+                                                        type: 'attribute',
+                                                        name: 'String',
+                                                        value: 'Sales'
+                                                    }
+                                                },
+                                                content: []
+                                            },
+                                            {
+                                                type: 'element',
+                                                name: 'PropertyValue',
+                                                attributes: {
+                                                    Property: {
+                                                        type: 'attribute',
+                                                        name: 'Property',
+                                                        value: 'Target'
+                                                    },
+                                                    AnnotationPath: {
+                                                        type: 'attribute',
+                                                        name: 'AnnotationPath',
+                                                        value: 'to_ProductSalesData/@UI.Chart'
+                                                    }
+                                                },
+                                                content: []
+                                            }
+                                        ],
+                                        attributes: {
+                                            Type: { type: 'attribute', name: 'Type', value: 'UI.ReferenceFacet' }
+                                        }
+                                    }
+                                ],
+                                attributes: {}
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            // act
+            const result = printTarget(target);
+
+            // assert
+            expect(result).toMatchSnapshot();
+            /* "annotate AdminService.Books with {
+                Autor @(UI.Facets : [
+                    {
+                      $Type : 'UI.ReferenceFacet',
+                      Label : 'Sales',
+                      ID : 'Sales',
+                      Target : 'to_ProductSalesData/@UI.Chart',
+                  },
+                ],
+                UI.Facets #qual1 : [
+                    {
+                        $Type : 'UI.ReferenceFacet',
+                        Label : 'Sales',
+                        ID : 'Sales',
+                        Target : 'to_ProductSalesData/@UI.Chart',
+                    },
+                ]
+                    )};
+                " */
+        });
         describe('primitive values as Annotation values', () => {
             const buildTarget = (name: string, value: string, asAttribute: boolean): Target => {
                 const targetTemplate = {
