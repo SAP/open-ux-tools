@@ -128,10 +128,9 @@ export const printTarget = (target: Target): string => {
             //        <term> <qualifier>: <value>
             //     );
             // }
-            result = `annotate ${rootElementName} with {\n${childSegments[0]} @${result}};\n`;
-            if (target.terms.length > 1) {
-                result = `annotate ${rootElementName} with {\n${childSegments[0]} @(${result})};\n`;
-            }
+            result = `annotate ${rootElementName} with {\n${childSegments[0]} ${
+                target.terms.length > 1 ? `@(${result})` : `@${result}`
+            }};\n`;
         }
     }
 
