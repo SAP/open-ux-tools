@@ -5,7 +5,7 @@ Object {
   "appliesTo": Array [
     "Property",
   ],
-  "description": "TODO description for exception aggregation steps",
+  "description": "Used to define different (to the default aggregation) aggregation behavior for specified elements. In general there can be multiple elements in which a measure has to be aggregated differently. Therefore a list of ExceptionAggregationSteps can be assigned.",
   "isCollection": true,
   "kind": "Term",
   "name": "com.sap.cds.vocabularies.AnalyticsDetails.exceptionAggregationSteps",
