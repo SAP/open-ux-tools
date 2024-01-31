@@ -12,7 +12,7 @@ import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './con
 import { promptConfirmation } from './prompt';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
 import { getAppDescriptorVariant } from './archive';
-import { validateBeforeDeploy, formatSummary } from './validate';
+import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem } from './validate';
 
 /**
  * Internal deployment commands
@@ -296,7 +296,7 @@ async function tryDeploy(
                 bsp: config.app,
                 testMode: config.test,
                 safeMode: config.safe,
-                target: { destination: `${config.target.destination}` }
+                showAddInfo: await showAdditionalInfoForOnPrem(`${config.target.destination}`)
             });
         } else {
             await tryDeployToLrep(provider, config, logger, archive);

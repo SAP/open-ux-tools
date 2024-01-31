@@ -123,6 +123,6 @@ export function isFullUrlDestination(destination: Destination): boolean {
  * @param destination destination info
  * @returns true if the destination is configured as an on-premise system
  */
-export function isOnPremiseSystem(destination: Destination): boolean {
+export function isOnPremiseDestination(destination: Destination): boolean {
     return Boolean(destination.ProxyType.includes(DestinationProxyType.ON_PREMISE));
 }

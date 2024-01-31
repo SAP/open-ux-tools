@@ -13,7 +13,7 @@ import {
 } from '@sap-ux/project-input-validator';
 import { EOL } from 'os';
 import type { AbapDeployConfig } from '../types';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { isAppStudio, isOnPremiseDestination, listDestinations } from '@sap-ux/btp-utils';
 
 export type ValidationInputs = {
     appName: string;
@@ -386,4 +386,19 @@ async function validateTransportRequestWithAdt(
             output.result = false;
         }
     }
+}
+
+/**
+ * Returns true if specified destination is on-premise and if environment is App Studio
+ * to show additional info.
+ *
+ * @param destination Indentifier for destination to be checked.
+ * @returns Promise boolean.
+ */
+export async function showAdditionalInfoForOnPrem(destination: string): Promise<boolean> {
+    if (!isAppStudio() || !destination) {
+        return false;
+    }
+    const destinations = await listDestinations();
+    return isOnPremiseDestination(destinations[destination]);
 }

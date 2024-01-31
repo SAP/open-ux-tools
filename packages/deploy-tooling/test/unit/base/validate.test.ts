@@ -1,16 +1,22 @@
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { formatSummary, summaryMessage, validateBeforeDeploy } from '../../../src/base/validate';
+import {
+    formatSummary,
+    showAdditionalInfoForOnPrem,
+    summaryMessage,
+    validateBeforeDeploy
+} from '../../../src/base/validate';
 import { mockedProvider, mockedAdtService } from '../../__mocks__';
 import { green, red, yellow } from 'chalk';
 import { TransportChecksService } from '@sap-ux/axios-extension';
 import { t } from '@sap-ux/project-input-validator/src/i18n';
+import { isAppStudio, isOnPremiseDestination, listDestinations } from '@sap-ux/btp-utils';
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
 
-import { isAppStudio } from '@sap-ux/btp-utils';
-
 jest.mock('@sap-ux/btp-utils');
 const mockIsAppStudio = isAppStudio as jest.Mock;
+const mockListDestinations = listDestinations as jest.Mock;
+const mockisOnPremiseDestination = isOnPremiseDestination as jest.Mock;
 
 describe('deploy-test validation', () => {
     // default app for testing
@@ -445,6 +451,33 @@ describe('deploy-test validation', () => {
             expect(summaryStr).toContain(
                 `${yellow('?')} ${summaryMessage.adtServiceUndefined} for TransportChecksService`
             );
+        });
+    });
+    describe('Validate show additional info', () => {
+        const destinationsMock = { 'ABC123': {} };
+        test('show additional info ', async () => {
+            mockIsAppStudio.mockReturnValueOnce(true);
+            mockListDestinations.mockResolvedValue(destinationsMock);
+            mockisOnPremiseDestination.mockResolvedValue(true);
+            const result = await showAdditionalInfoForOnPrem('ABC123');
+            expect(result).toBe(true);
+        });
+        test('if not in App Studio', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const result = await showAdditionalInfoForOnPrem('ABC123');
+            expect(result).toBe(false);
+        });
+        test('if destination not provided', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            const result = await showAdditionalInfoForOnPrem('');
+            expect(result).toBe(false);
+        });
+        test('if non-onPremise destination', async () => {
+            mockIsAppStudio.mockReturnValueOnce(true);
+            mockListDestinations.mockResolvedValue(destinationsMock);
+            mockisOnPremiseDestination.mockResolvedValue(false);
+            const result = await showAdditionalInfoForOnPrem('ABC123');
+            expect(result).toBe(false);
         });
     });
 });

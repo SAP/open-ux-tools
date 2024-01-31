@@ -8,7 +8,7 @@ import {
     isGenericODataDestination,
     isPartialUrlDestination,
     isFullUrlDestination,
-    isOnPremiseSystem
+    isOnPremiseDestination
 } from '../src';
 import destinations from './mockResponses/destinations.json';
 
@@ -100,14 +100,22 @@ describe('destination', () => {
             expect(isFullUrlDestination({ ...destination, WebIDEUsage: 'anything' })).toBe(false);
         });
     });
-    describe('isOnPremiseSystem', () => {
-        it('destination is onPremise', () => {
+    describe('isOnPremise', () => {
+        it('destination set to onPremise', () => {
             expect(
-                isOnPremiseSystem({
+                isOnPremiseDestination({
                     ...destination,
-                    ProxyType: DestinationProxyType.ON_PREMISE
+                    ProxyType: DestinationProxyType.ON_PREMISE,
+                    WebIDEAdditionalData: WebIDEAdditionalData.FULL_URL
                 })
             ).toBe(true);
+        });
+        it('Destination is internet facing', () => {
+            expect(
+                isOnPremiseDestination(
+                    destinations.find((destination) => destination.Name === 'ABAP_ON_BTP') as Destination
+                )
+            ).toBe(false);
         });
     });
 });

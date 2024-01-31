@@ -3,9 +3,6 @@ import { prettyPrintError, prettyPrintMessage } from './message';
 import type { ErrorMessage } from './message';
 import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
-import type { DestinationAbapTarget } from '@sap-ux/ui5-config';
-import { listDestinations, isOnPremiseSystem } from '@sap-ux/btp-utils';
-
 /**
  * Required configuration a transportable object.
  */
@@ -57,9 +54,9 @@ export interface DeployConfig {
      */
     safeMode?: boolean;
     /**
-     * name of target destination
+     * if set to true, then additional info message will be logged
      */
-    target?: DestinationAbapTarget;
+    showAddInfo?: boolean;
 }
 
 /**
@@ -181,10 +178,16 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param config.bsp BSP configuration
      * @param config.testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
      * @param config.safeMode if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
-     * @param config.target destination target
+     * @param config.showAddInfo if set to true, then additional info message will be logged
      * @returns the Axios response object for further processing
      */
-    public async deploy({ archive, bsp, testMode = false, safeMode, target }: DeployConfig): Promise<AxiosResponse> {
+    public async deploy({
+        archive,
+        bsp,
+        testMode = false,
+        safeMode,
+        showAddInfo = false
+    }: DeployConfig): Promise<AxiosResponse> {
         const info: AppInfo = await this.getInfo(bsp.name);
         const payload = this.createPayload(
             archive,
@@ -212,13 +215,10 @@ export class Ui5AbapRepositoryService extends ODataService {
                 const query = this.defaults.params?.['sap-client']
                     ? '?sap-client=' + this.defaults.params['sap-client']
                     : '';
-                if (this.isDest) {
-                    const destinations = await listDestinations();
-                    if (isOnPremiseSystem(destinations[target.destination])) {
-                        this.log.info(
-                            '(Note: You will need to replace the host in the URL with the internal host, if your destination is configured using an On-Premise SAP Cloud Connector)'
-                        );
-                    }
+                if (this.isDest && showAddInfo) {
+                    this.log.info(
+                        '(Note: You will need to replace the host in the URL with the internal host, if your destination is configured using an On-Premise SAP Cloud Connector)'
+                    );
                 }
                 this.log.info(`App available at ${frontendUrl}${path}${query}`);
             } else {
