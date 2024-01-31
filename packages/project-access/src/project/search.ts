@@ -417,6 +417,9 @@ export async function findFioriArtifacts(
     const results: FoundFioriArtifacts = {};
     const fileNames: string[] = getFilterFileNames(options.artifacts);
     const wsRoots = wsFoldersToRootPaths(options.wsFolders);
+    if (debug) {
+        console.error('APP_TEST_WS_ROOTS', wsRoots);
+    }
     const pathMap: FileMapAndCache = {};
     for (const root of wsRoots) {
         try {
@@ -425,6 +428,10 @@ export async function findFioriArtifacts(
                 root,
                 excludeFolders
             });
+            if (debug) {
+                console.error('APP_TEST_FOUND_FILES', foundFiles);
+            }
+            cons;
             foundFiles.forEach((path) => (pathMap[path] = null));
         } catch {
             // ignore exceptions during find
