@@ -51,10 +51,10 @@ export function getRelativeI18nPropertiesPaths(manifest: Manifest): I18nProperti
  * @returns - path to i18n.properties file
  */
 function getI18nAppPath(manifest: Manifest): string {
-    const defaultPath = 'i18n/i18n.properties';
+    const defaultPath = join('i18n/i18n.properties');
 
     if (typeof manifest?.['sap.app']?.i18n === 'string') {
-        return manifest['sap.app'].i18n;
+        return join(manifest['sap.app'].i18n);
     }
     if (typeof manifest?.['sap.app']?.i18n === 'object') {
         // bundleName wins over `bundleUrl`
@@ -62,11 +62,11 @@ function getI18nAppPath(manifest: Manifest): string {
             // module name is in dot notation
             const withoutAppId = manifest['sap.app'].i18n.bundleName.replace(manifest['sap.app'].id, '');
             const i18nPath = `${join(...withoutAppId.split('.'))}.properties`;
-            return i18nPath;
+            return join(i18nPath);
         }
 
         if ('bundleUrl' in manifest['sap.app'].i18n) {
-            return manifest['sap.app'].i18n.bundleUrl;
+            return join(manifest['sap.app'].i18n.bundleUrl);
         }
     }
     // default
@@ -101,16 +101,16 @@ function getI18nModelPaths(manifest: Manifest): { [modelKey: string]: { path: st
                 // module name is in dot notation
                 const withoutAppId = i18nModel.settings.bundleName.replace(manifest['sap.app'].id, '');
                 const i18nPath = `${join(...withoutAppId.split('.'))}.properties`;
-                result[modelKey] = { path: i18nPath };
+                result[modelKey] = { path: join(i18nPath) };
                 continue;
             }
             if (i18nModel.settings.bundleUrl) {
-                result[modelKey] = { path: i18nModel.settings.bundleUrl };
+                result[modelKey] = { path: join(i18nModel.settings.bundleUrl) };
                 continue;
             }
         }
         if (i18nModel.uri) {
-            result[modelKey] = { path: i18nModel.uri };
+            result[modelKey] = { path: join(i18nModel.uri) };
         }
     }
     return result;
