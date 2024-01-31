@@ -141,7 +141,10 @@ describe('Test getProject()', () => {
         expect(appOne.services.ODATA_SERVICE_2.annotations).toEqual([
             {
                 'uri': "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ODATA_SERVICE_2',Version='0001')/$value/",
-                'local': join(appOne.appRoot, 'source/webapp/localService/ODATA_SERVICE_2/ODATA_SERVICE_2_Annotation.xml')
+                'local': join(
+                    appOne.appRoot,
+                    'source/webapp/localService/ODATA_SERVICE_2/ODATA_SERVICE_2_Annotation.xml'
+                )
             }
         ]);
 
