@@ -123,48 +123,43 @@ export function toMatchFile(
             const comparedContent = isEqual(content, output, filename, options);
             if (comparedContent.equal) {
                 return { pass: true, message: () => '' };
+            } else if (snapshotState._updateSnapshot === 'all') {
+                mkdirp.sync(path.dirname(filename));
+                fs.writeFileSync(filename, content);
+
+                snapshotState.updated++;
+
+                return { pass: true, message: () => '' };
             } else {
-                if (snapshotState._updateSnapshot === 'all') {
-                    mkdirp.sync(path.dirname(filename));
-                    fs.writeFileSync(filename, content);
+                snapshotState.unmatched++;
 
-                    snapshotState.updated++;
+                const difference =
+                    Buffer.isBuffer(content) || Buffer.isBuffer(output)
+                        ? ''
+                        : `\n\n${diff(comparedContent.bReplaced, comparedContent.aReplaced, options.diff)}`;
 
-                    return { pass: true, message: () => '' };
-                } else {
-                    snapshotState.unmatched++;
-
-                    const difference =
-                        Buffer.isBuffer(content) || Buffer.isBuffer(output)
-                            ? ''
-                            : `\n\n${diff(comparedContent.bReplaced, comparedContent.aReplaced, options.diff)}`;
-
-                    return {
-                        pass: false,
-                        message: () =>
-                            `Received content ${chalk.red("doesn't match")} the file ${chalk.blue(
-                                path.basename(filename)
-                            )}.${difference}`
-                    };
-                }
+                return {
+                    pass: false,
+                    message: () =>
+                        `Received content ${chalk.red("doesn't match")} the file ${chalk.blue(
+                            path.basename(filename)
+                        )}.${difference}`
+                };
             }
         }
+    } else if (!isNot && (snapshotState._updateSnapshot === 'new' || snapshotState._updateSnapshot === 'all')) {
+        mkdirp.sync(path.dirname(filename));
+        fs.writeFileSync(filename, content);
+
+        snapshotState.added++;
+
+        return { pass: true, message: () => '' };
     } else {
-        if (!isNot && (snapshotState._updateSnapshot === 'new' || snapshotState._updateSnapshot === 'all')) {
-            mkdirp.sync(path.dirname(filename));
-            fs.writeFileSync(filename, content);
+        snapshotState.unmatched++;
 
-            snapshotState.added++;
-
-            return { pass: true, message: () => '' };
-        } else {
-            snapshotState.unmatched++;
-
-            return {
-                pass: true,
-                message: () =>
-                    `The output file ${chalk.blue(path.basename(filename))} ${chalk.bold.red("doesn't exist")}.`
-            };
-        }
+        return {
+            pass: true,
+            message: () => `The output file ${chalk.blue(path.basename(filename))} ${chalk.bold.red("doesn't exist")}.`
+        };
     }
 }
