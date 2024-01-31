@@ -40,7 +40,7 @@ export function getRelativeI18nPropertiesPaths(manifest: Manifest): I18nProperti
 }
 
 /**
- * Get I18N path from sap.app part of the manifest.
+ * Get the i18n path from sap.app.i18n part of the manifest.
  *
  * 1. from `sap.app.i18n` if `i18n` is string
  * 2. from `sap.app.bundleName` as `bundleName` wins over `bundleUrl`
@@ -74,13 +74,14 @@ function getI18nAppPath(manifest: Manifest): string {
 }
 
 /**
- * Get the I18N path from UI5 model declared in sap.ui5 part of the manifest. This is
- * model 'i18n' by default and can be set to annotation model '@18n' if forAnnotation is true.
+ * Get the i18n path from UI5 resource models declared in sap.ui5.models part of the manifest.
+ * By default the model used for internationalization in the UI is 'i18n'. For
+ * internationalization of annotations the model is '@18n'.
  *
  * for For `sap.ui5` namespace
- * 1. from `sap.ui5.models.i18n.bundleName` as `bundleName` wins over `bundleUrl`
- * 2. from `sap.ui5.models.i18n.bundleUrl`
- * 3. from `sap.ui5.models.i18n.uri`
+ * 1. from `sap.ui5.models.{resource model key}.bundleName` as `bundleName` wins over `bundleUrl`
+ * 2. from `sap.ui5.models.{resource model key}.bundleUrl`
+ * 3. from `sap.ui5.models.{resource model key}.uri`
  *
  * @param manifest - parsed content of manifest.json
  * @returns - paths to i18n.properties file from models

@@ -47,7 +47,7 @@ export async function getProject(root: string): Promise<Project> {
  */
 function getAppFolders(packageJson: Package): string[] {
     return Array.isArray(packageJson.sapux)
-        ? packageJson.sapux.map((appFolder) => join(...appFolder.split(/[/\\]/)))
+        ? packageJson.sapux.map((appFolder) => join(...appFolder.split(/[\/\\]/)))
         : [''];
 }
 
@@ -179,7 +179,7 @@ async function getApplicationType(application: AllAppResults): Promise<'SAP Fior
         appType =
             Array.isArray(packageJson.sapux) &&
             packageJson.sapux.find(
-                (relAppPath) => join(application.projectRoot, ...relAppPath.split(/[/\\]/)) === application.appRoot
+                (relAppPath) => join(application.projectRoot, ...relAppPath.split(/[\/\\]/)) === application.appRoot
             )
                 ? 'SAP Fiori elements'
                 : 'SAPUI5 freestyle';
