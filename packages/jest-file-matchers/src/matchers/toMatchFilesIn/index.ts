@@ -38,7 +38,7 @@ export function toMatchFilesIn(
         extractMessage({ getMessage, messages });
     });
 
-    return { pass, message: () => messages.join('\n' ?? '') };
+    return { pass, message: () => messages.join('\n') };
 }
 
 /**

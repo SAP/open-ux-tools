@@ -9,7 +9,7 @@ import filenamify from 'filenamify';
  * @param msg.messages an array containing existing messages to which the extracted message will be added.
  */
 export function extractMessage({ getMessage, messages }: { getMessage?: () => string; messages: string[] }): void {
-    const message = getMessage && getMessage();
+    const message = getMessage?.();
     if (message) {
         messages.push(message);
     }

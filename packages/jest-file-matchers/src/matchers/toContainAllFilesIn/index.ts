@@ -56,5 +56,5 @@ export function toContainAllFilesIn(
         }
     }
 
-    return { pass, message: () => messages.join('\n') || '' };
+    return { pass, message: () => messages.join('\n') };
 }

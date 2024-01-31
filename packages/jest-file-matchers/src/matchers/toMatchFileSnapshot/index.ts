@@ -13,6 +13,12 @@ import { getFilePath } from '../utils';
 
 const removedValueToken = '--IGNORED-VALUE--';
 
+interface ComparedContent {
+    equal: boolean;
+    aReplaced: string;
+    bReplaced: string;
+}
+
 /**
  * Check if two strings are equal, after replacing the MatcherIgnore options.
  *
@@ -20,18 +26,9 @@ const removedValueToken = '--IGNORED-VALUE--';
  * @param bContent file contents as string
  * @param fileName filename not including path
  * @param ignoreOpts matcher ignore regex pattern definitions
- * @returns result object
+ * @returns comparison result object
  */
-const isEqual = (
-    aContent: string,
-    bContent: string,
-    fileName: string,
-    ignoreOpts?: MatcherIgnore
-): {
-    equal: boolean;
-    aReplaced: string;
-    bReplaced: string;
-} => {
+const isEqual = (aContent: string, bContent: string, fileName: string, ignoreOpts?: MatcherIgnore): ComparedContent => {
     let aReplacedContent = aContent,
         bReplacedContent = bContent;
     // Replace values before comparison
@@ -56,9 +53,29 @@ const isEqual = (
 };
 
 /**
+ * Returns the difference of the content of both files.
+ *
+ * @param content file content
+ * @param output snapshot content
+ * @param comparedContent comparison result object
+ * @param options matcher options and ignore patterns
+ * @returns difference in string format
+ */
+const getDifference = (
+    content: string,
+    output: string,
+    comparedContent: ComparedContent,
+    options: FileMatcherOptions
+): string => {
+    return Buffer.isBuffer(content) || Buffer.isBuffer(output)
+        ? ''
+        : `\n\n${diff(comparedContent.bReplaced, comparedContent.aReplaced, options.diff)}`;
+};
+
+/**
  * Match given content against content of the specified file.
  *
- * @param content output content to match
+ * @param content content to match
  * @param filepath path to the file to match against
  * @param options additional options for matching
  * @returns results for custom matcher
@@ -133,10 +150,7 @@ export function toMatchFile(
             } else {
                 snapshotState.unmatched++;
 
-                const difference =
-                    Buffer.isBuffer(content) || Buffer.isBuffer(output)
-                        ? ''
-                        : `\n\n${diff(comparedContent.bReplaced, comparedContent.aReplaced, options.diff)}`;
+                const difference = getDifference(content, output, comparedContent, options);
 
                 return {
                     pass: false,
