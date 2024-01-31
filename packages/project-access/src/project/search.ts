@@ -409,9 +409,6 @@ export async function findFioriArtifacts(
                 root,
                 excludeFolders
             });
-            if (debug) {
-                console.error('APP_TEST_FOUND_FILES', foundFiles);
-            }
             foundFiles.forEach((path) => (pathMap[path] = null));
         } catch (error) {
             // ignore exceptions during find

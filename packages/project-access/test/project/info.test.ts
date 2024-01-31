@@ -80,13 +80,13 @@ describe('Test getAppType()', () => {
         console.error('APP_TEST', appRoot);
         const apps = await findFioriArtifacts(
             {
-                wsFolders: [join(sampleRoot, 'CAP/CAPNode_mix/app/freestyle')],
+                wsFolders: [appRoot],
                 artifacts: ['adaptations', 'applications', 'extensions', 'libraries']
             },
             true
         );
         console.error('APP_TEST', apps);
-        const appType = await getAppType(join(sampleRoot, 'CAP/CAPNode_mix/app/freestyle'));
+        const appType = await getAppType(appRoot);
         expect(appType).toBe('SAPUI5 freestyle');
     });
 
