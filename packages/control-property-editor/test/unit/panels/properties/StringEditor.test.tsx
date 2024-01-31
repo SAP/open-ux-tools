@@ -105,7 +105,7 @@ describe('StringEditor', () => {
         fireEvent.keyPress(textBox, { key: 'Enter', code: 'Enter', charCode: 13 });
         expect((textBox as any).value).toBe('12345');
     });
-    
+
     test('float value', () => {
         const value = '0.12345';
         const props: any = {

@@ -12,11 +12,7 @@ import { isExpression, InputType } from './types';
 import { setCachedValue } from './propertyValuesCache';
 
 import './Properties.scss';
-import {
-    reportTelemetry,
-    FLOAT_VALUE_TYPE,
-    INTEGER_VALUE_TYPE,
-} from '@sap-ux-private/control-property-editor-common';
+import { reportTelemetry, FLOAT_VALUE_TYPE, INTEGER_VALUE_TYPE } from '@sap-ux-private/control-property-editor-common';
 import './SapUiIcon.scss';
 import { IconValueHelp } from './IconValueHelp';
 import type { IconDetails } from '@sap-ux-private/control-property-editor-common';
@@ -54,7 +50,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
     };
     const dispatch = useDispatch();
 
-    const handlеChange = (e: React.FocusEvent | React.KeyboardEvent <HTMLInputElement | HTMLTextAreaElement>) => {
+    const handlеChange = (e: React.FocusEvent | React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         reportTelemetry({ category: 'Property Change', propertyName: name }).catch((error) => {
             console.error(`Error in reporting telemetry`, error);
         });
@@ -72,14 +68,14 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
             const action = changeProperty({ controlId, propertyName: name, value: val, controlName });
             dispatch(action);
         }
-    }
+    };
 
     const inputProps: UITextInputProps = {};
 
     inputProps.onBlur = (e) => handlеChange(e);
 
     inputProps.onKeyPress = (e) => {
-        if(e.key === 'Enter'){ 
+        if (e.key === 'Enter') {
             handlеChange(e);
         }
     };
