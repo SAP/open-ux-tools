@@ -47,7 +47,7 @@ export async function getProject(root: string): Promise<Project> {
  */
 function getAppFolders(packageJson: Package): string[] {
     return Array.isArray(packageJson.sapux)
-        ? packageJson.sapux.map((appFolder) => join(...appFolder.split(/\\|\//)))
+        ? packageJson.sapux.map((appFolder) => join(...appFolder.split(/[/\\]/)))
         : [''];
 }
 

@@ -10,7 +10,7 @@ import { readJSON } from '../../file';
  * @returns - absolute paths to i18n.properties
  */
 export async function getI18nPropertiesPaths(manifestPath: string, manifest?: Manifest): Promise<I18nPropertiesPaths> {
-    const parsedManifest = manifest ?? (await await readJSON<Manifest>(manifestPath));
+    const parsedManifest = manifest ?? (await readJSON<Manifest>(manifestPath));
     const manifestFolder = dirname(manifestPath);
     const relativeI18nPropertiesPaths = getRelativeI18nPropertiesPaths(parsedManifest);
     const i18nPropertiesPaths: I18nPropertiesPaths = {
