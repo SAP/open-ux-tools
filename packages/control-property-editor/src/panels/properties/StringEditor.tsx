@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import type { UITextInputProps } from '@sap-ux/ui-components';
@@ -14,10 +14,8 @@ import { setCachedValue } from './propertyValuesCache';
 import './Properties.scss';
 import {
     reportTelemetry,
-    debounce,
     FLOAT_VALUE_TYPE,
     INTEGER_VALUE_TYPE,
-    BOOLEAN_VALUE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
 import './SapUiIcon.scss';
 import { IconValueHelp } from './IconValueHelp';
@@ -38,7 +36,6 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
     } = propertyInputProps;
     const [val, setValue] = useState(value);
     const icons = useSelector<RootState, IconDetails[]>((state) => state.icons);
-    const isAdpProject = useSelector<RootState, boolean>((state) => state.isAdpProject);
     useEffect(() => {
         setValue(value);
     }, [value]);
@@ -56,11 +53,8 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
         );
     };
     const dispatch = useDispatch();
-    const dispatchWithDelay = useRef(debounce(dispatch, 500));
 
-    const inputProps: UITextInputProps = {};
-
-    inputProps.onBlur = (e) => {
+    const handlеChange = (e: React.FocusEvent | React.KeyboardEvent <HTMLInputElement | HTMLTextAreaElement>) => {
         reportTelemetry({ category: 'Property Change', propertyName: name }).catch((error) => {
             console.error(`Error in reporting telemetry`, error);
         });
@@ -74,9 +68,19 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
             const action = changeProperty({ controlId, propertyName: name, value: newValue, controlName });
             dispatch(action);
             setValue(newValue);
-        } else if (isAdpProject) {
+        } else {
             const action = changeProperty({ controlId, propertyName: name, value: val, controlName });
             dispatch(action);
+        }
+    }
+
+    const inputProps: UITextInputProps = {};
+
+    inputProps.onBlur = (e) => handlеChange(e);
+
+    inputProps.onKeyPress = (e) => {
+        if(e.key === 'Enter'){ 
+            handlеChange(e);
         }
     };
 
@@ -109,12 +113,6 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
                         }
                         const inputType = type === INTEGER_VALUE_TYPE ? InputType.number : InputType.string;
                         setCachedValue(controlId, name, inputType, value);
-                        const action = changeProperty({ controlId, propertyName: name, value: value, controlName });
-                        // starting from ui5 version 1.106, empty string "" is not accepted as change for boolean type properties
-                        if (!isAdpProject && (value || type !== BOOLEAN_VALUE_TYPE)) {
-                            // allow empty string "" when we have string type property
-                            dispatchWithDelay.current(action);
-                        }
                     }
                     setValue(value);
                 }}
