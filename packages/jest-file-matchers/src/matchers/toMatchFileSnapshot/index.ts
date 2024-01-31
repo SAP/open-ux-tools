@@ -9,7 +9,7 @@ import diff from 'jest-diff';
 import type { MatcherIgnore } from '../types';
 import type { FileMatcherOptions } from './types';
 import mkdirp from 'mkdirp';
-import { getFileName } from '../utils';
+import { getFilePath } from '../utils';
 
 const removedValueToken = '--IGNORED-VALUE--';
 
@@ -71,7 +71,7 @@ export function toMatchFile(
     const { isNot, snapshotState } = this as jest.MatcherContext;
 
     // If file name is not specified, generate one from the test title
-    const filename = getFileName(filepath);
+    const filename = getFilePath(filepath);
 
     options = {
         ...options,

@@ -15,7 +15,13 @@ export function extractMessage({ getMessage, messages }: { getMessage?: () => st
     }
 }
 
-export function getFileName(filepath: string): string {
+/**
+ * Returns the file path or creates one from the test name.
+ *
+ * @param filepath path to file
+ * @returns file path
+ */
+export function getFilePath(filepath: string): string {
     return (
         filepath ??
         join(
