@@ -15,13 +15,6 @@ const loggerMock: ToolsLogger = {
 
 jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    listDestinations: jest.fn()
-}));
-
-// let listDestinationsMock: jest.SpyInstance;
-
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
     const validApp = 'VALID_APP';
@@ -79,7 +72,6 @@ describe('Ui5AbapRepositoryService', () => {
     });
 
     beforeEach(() => {
-        // listDestinationsMock = jest.spyOn(btp, 'listDestinations');
         jest.resetModules();
     });
 
@@ -119,20 +111,7 @@ describe('Ui5AbapRepositoryService', () => {
 
     describe('deploy', () => {
         const archive = Buffer.from('TestData');
-
         test('deploy new app with destination', async () => {
-            // const destinationsMock = {
-            //     'ABC123': {
-            //         Name: 'ABC123',
-            //         Type: 'MockType',
-            //         Authentication: 'NoAuthentication',
-            //         ProxyType: 'OnPremise',
-            //         Description: 'MockDestination',
-            //         Host: 'MockHost'
-            //     }
-            // };
-            // listDestinationsMock.mockResolvedValue(destinationsMock);
-
             nock(`https://${destination.Name}.dest`)
                 .defaultReplyHeaders({
                     'sap-message': sapMessageHeader
