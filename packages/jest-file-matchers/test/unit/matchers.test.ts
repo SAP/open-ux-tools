@@ -13,7 +13,7 @@ export const ignoreMatcherOpts: MatcherIgnore = {
     ]
 };
 
-describe('Test toMatchFolder', () => {
+describe('Test matchers', () => {
     const expectedFolder = join(__dirname, '../__fixtures__/expected/test-folder-expected');
 
     it('should match folders', () => {
@@ -39,13 +39,6 @@ describe('Test toMatchFolder', () => {
     it('should exclude certain file extensions', () => {
         const receivedFolder = join(__dirname, '../__fixtures__/test-folder-extra-files');
         expect(expectedFolder).toMatchFolder(receivedFolder, { ...ignoreMatcherOpts, exclude: ['**.html', '**.ts'] });
-    });
-
-    it.skip('should fail snapshot', () => {
-        const receivedFolder = join(__dirname, '../__fixtures__/test-folder-extra-files');
-        expect(() => {
-            expect(expectedFolder).toMatchFolder(receivedFolder, { exclude: ['**.html', '**.ts'] });
-        }).toThrowErrorMatchingSnapshot();
     });
 
     it('should include certain file extensions', () => {
@@ -78,12 +71,4 @@ describe('Test toMatchFolder', () => {
             expect(receivedFolder).toMatchFolder(expectedFolder, invalidignoreMatcherOpts as any);
         }).toThrowError(`Invalid ignore regex provided to file snapshot matcher: ${'('}`);
     });
-
-    // it('should not match empty folder', () => {
-    //     const receivedFolder = join(__dirname, '../__fixtures__/test-folder-empty');
-
-    //     expect(() => {
-    //         expect(receivedFolder).toMatchFolder(expectedFolder);
-    //     }).toThrowErrorMatchingSnapshot();
-    // });
 });

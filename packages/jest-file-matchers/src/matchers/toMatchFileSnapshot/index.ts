@@ -117,14 +117,11 @@ export function toMatchFile(
 
         if (isNot) {
             // The matcher is being used with `.not`
-
             if (!isEqual(content, output, filename, options).equal) {
                 // The value of `pass` is reversed when used with `.not`
-
                 return { pass: false, message: () => '' };
             } else {
                 snapshotState.unmatched++;
-
                 return {
                     pass: true,
                     message: () =>
@@ -135,7 +132,6 @@ export function toMatchFile(
             }
         } else {
             const comparedContent = isEqual(content, output, filename, options);
-
             if (comparedContent.equal) {
                 return { pass: true, message: () => '' };
             } else {
