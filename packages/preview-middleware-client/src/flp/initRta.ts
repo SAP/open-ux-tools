@@ -127,10 +127,12 @@ async function checkLayerAndControl(rootControl: Control, layer: string): Promis
  * Retrieves the first HTML element with the specified title attribute.
  *
  * @param {string} title - The title attribute value to search for in the HTML elements.
+ * @param {Element | null} element - The target element that will be searched.
  * @returns {Element | null} The first HTML element that matches the given title attribute value, or null if no such element is found.
  */
-function getElementByTitle(title: string): Element | null {
-    return document.querySelector(`[title="${title}"]`);
+function getElementByTitle(title: string, element?: Element | null): Element | null {
+    const selector = `[title="${title}"]`;
+    return element ? element.querySelector(selector) : document.querySelector(selector);
 }
 
 /**
@@ -153,8 +155,9 @@ function hideButtonById(buttonId: string | undefined): void {
  * This function specifically targets buttons 'Reset' and 'Publish'.
  */
 function removeExtraBtnsFromToolbar(): void {
-    const resetEl = getElementByTitle('Reset');
-    const publishEl = getElementByTitle('Publish');
+    const rtaToolbarEl = document.querySelector('.sapUiRtaToolbar');
+    const resetEl = getElementByTitle('Reset', rtaToolbarEl);
+    const publishEl = getElementByTitle('Publish', rtaToolbarEl);
 
     hideButtonById(resetEl?.id);
     hideButtonById(publishEl?.id);
