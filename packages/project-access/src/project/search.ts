@@ -388,19 +388,13 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
  * @param options.artifacts - list of artifacts to search for: 'application', 'adaptation', 'extension' see FioriArtifactTypes
  * @returns - data structure containing the search results, for app e.g. as path to app plus files already parsed, e.g. manifest.json
  */
-export async function findFioriArtifacts(
-    options: {
-        wsFolders?: readonly WorkspaceFolder[] | string[];
-        artifacts: FioriArtifactTypes[];
-    },
-    debug = false
-): Promise<FoundFioriArtifacts> {
+export async function findFioriArtifacts(options: {
+    wsFolders?: readonly WorkspaceFolder[] | string[];
+    artifacts: FioriArtifactTypes[];
+}): Promise<FoundFioriArtifacts> {
     const results: FoundFioriArtifacts = {};
     const fileNames: string[] = getFilterFileNames(options.artifacts);
     const wsRoots = wsFoldersToRootPaths(options.wsFolders);
-    if (debug) {
-        console.error('APP_TEST_WS_ROOTS', wsRoots);
-    }
     const pathMap: FileMapAndCache = {};
     for (const root of wsRoots) {
         try {
@@ -412,9 +406,6 @@ export async function findFioriArtifacts(
             foundFiles.forEach((path) => (pathMap[path] = null));
         } catch (error) {
             // ignore exceptions during find
-            if (debug) {
-                console.error('APP_TEST_FIND_EXCEPTION', root, error);
-            }
         }
     }
     if (options.artifacts.includes('applications')) {

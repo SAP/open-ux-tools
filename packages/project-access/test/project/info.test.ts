@@ -76,17 +76,7 @@ describe('Test getAppType()', () => {
     });
 
     test('Type SAPUI5 freestyle in mixed CAP project', async () => {
-        const appRoot = join(sampleRoot, 'CAP/CAPNode_mix/app/freestyle');
-        console.error('APP_TEST', appRoot);
-        const apps = await findFioriArtifacts(
-            {
-                wsFolders: [appRoot],
-                artifacts: ['adaptations', 'applications', 'extensions', 'libraries']
-            },
-            true
-        );
-        console.error('APP_TEST', apps);
-        const appType = await getAppType(appRoot);
+        const appType = await getAppType(join(sampleRoot, 'CAP/CAPnode_mix/app/freestyle'));
         expect(appType).toBe('SAPUI5 freestyle');
     });
 
