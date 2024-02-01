@@ -217,7 +217,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                     : '';
                 if (this.isDest && showAddInfo) {
                     this.log.info(
-                        '(Note: You will need to replace the host in the URL with the internal host, if your destination is configured using an On-Premise SAP Cloud Connector)'
+                        '(Note: As the destination is configured using an On-Premise SAP Cloud Connector, you will need to replace the host in the URL above with the internal host)'
                     );
                 }
                 this.log.info(`App available at ${frontendUrl}${path}${query}`);
