@@ -1,0 +1,162 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,8)..(12,9)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.ConnectedFields",
+                "valueRange": "[(1,8)..(1,23)]"
+            }
+        },
+        "contentRange": "[(1,25)..(12,9)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(1,26)..(12,9)]",
+                "name": "Record",
+                "attributes": {
+                    "Type": {
+                        "type": "attribute",
+                        "name": "Type",
+                        "nameRange": "[(2,12)..(2,17)]",
+                        "value": "UI.ConnectedFieldsType",
+                        "valueRange": "[(2,24)..(2,46)]"
+                    }
+                },
+                "contentRange": "[(1,27)..(12,8)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(3,12)..(3,28)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "Template",
+                                "valueRange": "[(3,12)..(3,20)]"
+                            }
+                        },
+                        "contentRange": "[(3,22)..(3,28)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(3,23)..(3,28)]",
+                                "name": "Path",
+                                "attributes": {},
+                                "contentRange": "[(3,23)..(3,28)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(3,23)..(3,28)]",
+                                        "text": "title",
+                                        "fragmentRanges": ["[(3,23)..(3,28)]"]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(4,12)..(10,13)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "Data",
+                                "valueRange": "[(4,12)..(4,16)]"
+                            }
+                        },
+                        "contentRange": "[(4,18)..(10,13)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(4,19)..(10,13)]",
+                                "name": "Record",
+                                "attributes": {
+                                    "Type": {
+                                        "type": "attribute",
+                                        "name": "Type",
+                                        "nameRange": "[(5,16)..(5,21)]",
+                                        "value": "Core.Dictionary",
+                                        "valueRange": "[(5,25)..(5,40)]"
+                                    }
+                                },
+                                "contentRange": "[(4,20)..(10,12)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(6,16)..(9,17)]",
+                                        "name": "PropertyValue",
+                                        "attributes": {
+                                            "Property": {
+                                                "type": "attribute",
+                                                "name": "Property",
+                                                "value": "aaa",
+                                                "valueRange": "[(6,16)..(6,19)]"
+                                            }
+                                        },
+                                        "contentRange": "[(6,21)..(9,17)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(6,22)..(9,17)]",
+                                                "name": "Record",
+                                                "attributes": {
+                                                    "Type": {
+                                                        "type": "attribute",
+                                                        "name": "Type",
+                                                        "nameRange": "[(7,20)..(7,25)]",
+                                                        "value": "UI.DataField",
+                                                        "valueRange": "[(7,29)..(7,41)]"
+                                                    }
+                                                },
+                                                "contentRange": "[(6,23)..(9,16)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(8,20)..(8,30)]",
+                                                        "name": "PropertyValue",
+                                                        "attributes": {
+                                                            "Property": {
+                                                                "type": "attribute",
+                                                                "name": "Property",
+                                                                "value": "Value",
+                                                                "valueRange": "[(8,20)..(8,25)]"
+                                                            }
+                                                        },
+                                                        "contentRange": "[(8,27)..(8,30)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "element",
+                                                                "range": "[(8,28)..(8,30)]",
+                                                                "name": "String",
+                                                                "attributes": {},
+                                                                "contentRange": "[(8,29)..(8,29)]",
+                                                                "content": [
+                                                                    {
+                                                                        "type": "text",
+                                                                        "range": "[(8,29)..(8,29)]",
+                                                                        "text": ""
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
