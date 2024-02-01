@@ -458,8 +458,8 @@ describe('deploy-test validation', () => {
         const destinationsMock = { 'ABC123': {} };
         test.each([
             ['Show additional info', true, destinationsMock, true, 'ABC123', true],
-            ['If not in App Studio', false, null, null, 'ABC123', false],
-            ['If destination not provided', true, null, null, '', false],
+            ['If not in App Studio', false, destinationsMock, true, 'ABC123', false],
+            ['If destination not provided', true, destinationsMock, true, '', false],
             ['If non-onPremise destination', true, destinationsMock, false, 'ABC123', false]
         ])(
             '%s',
