@@ -315,18 +315,13 @@ export default class RoutesHandler {
     };
 
     public handleFragmentMemoryFs = async (req: Request, res: Response, next: NextFunction) => {
-        if (req.method !== 'GET') {
+        const url = req.url;
+        if (req.method !== 'GET' || !this.fragmentPaths.size || !url.includes('.fragment.')) {
             next();
             return;
         }
 
         try {
-            const url = req.url;
-            if (!this.fragmentPaths.size || !url.includes('.fragment.')) {
-                next();
-                return;
-            }
-
             const fragmentName = url.split('/').pop();
 
             const cachedFragmentPath = this.getFragmentPathFromCache(fragmentName);
