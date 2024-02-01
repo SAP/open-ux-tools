@@ -1,10 +1,9 @@
 import { join } from 'path';
 import fs from 'fs';
-import { toMatchFolder, toContainAllFilesIn } from '../../src';
 import { MatcherIgnore, README_GENERATION_PLATFORM_REGEX, README_GENERATOR_REGEX } from '../../src/matchers/types';
 import { toMatchFile } from '../../src/matchers/toMatchFileSnapshot';
 
-expect.extend({ toMatchFolder, toContainAllFilesIn, toMatchFile });
+expect.extend({ toMatchFile });
 
 export const ignoreMatcherOpts: MatcherIgnore = {
     groups: [
@@ -16,6 +15,10 @@ export const ignoreMatcherOpts: MatcherIgnore = {
 };
 
 describe('Test matchers', () => {
+    beforeAll(() => {
+        require('../../src/setup');
+    });
+
     const expectedFolder = join(__dirname, '../__fixtures__/expected/');
 
     it('should match folders', () => {
