@@ -89,16 +89,14 @@ export function toMatchFile(
 
     // If file name is not specified, generate one from the test title
     const filename =
-        filepath === undefined
-            ? // If file name is not specified, generate one from the test title
-              path.join(
-                  path.dirname(this.testPath),
-                  '__file_snapshots__',
-                  `${filenamify(this.currentTestName, {
-                      replacement: '-'
-                  }).replace(/\s/g, '-')}-${this.assertionCalls}`
-              )
-            : filepath;
+        filepath ??
+        path.join(
+            path.dirname(this.testPath),
+            '__file_snapshots__',
+            `${filenamify(this.currentTestName, {
+                replacement: '-'
+            }).replace(/\s/g, '-')}-${this.assertionCalls}`
+        );
 
     options = {
         ...options,
