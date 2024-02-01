@@ -36,10 +36,13 @@
         "@sap-ux/ui5-config": "workspace:*",
         "findit2": "2.2.3",
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0"
+        "mem-fs-editor": "9.4.0",
+        "fs-extra": "11.2.0",
+        "@types/fs-extra": "11.0.4"
     },
     "devDependencies": {
         "@sap-ux/logger": "workspace:*",
+        "@sap-ux/i18n": "workspace:*",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@ui5/manifest": "1.61.0",
