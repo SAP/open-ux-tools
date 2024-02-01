@@ -1,0 +1,26 @@
+[
+    {
+        "type": "element",
+        "range": "[(0,0)..(0,40)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "a",
+                "valueRange": "[(0,0)..(0,1)]"
+            }
+        },
+        "contentRange": "[(0,3)..(0,40)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(0,4)..(0,40)]",
+                "name": "DateTimeOffset",
+                "nameRange": "[(0,4)..(0,40)]",
+                "attributes": {},
+                "content": []
+            }
+        ]
+    }
+]

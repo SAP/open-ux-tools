@@ -1,0 +1,41 @@
+UI: {
+    A: {
+        "$edmJson" : {
+            $Apply : [
+                '{url}',
+                {
+                    $LabeledElement : {
+                        $Apply : [{$Path : 'url'}],
+                        $Function : 'odata.uriEncode'
+                    },
+                    $Name : 'url'
+                }
+            ],
+            $Function : 'odata.fillUriTemplate'
+        }
+    },
+    B: {
+        $edmJson : {
+            $Apply    : [
+                {$Path : 'product'},
+                '/',
+                {$Path : 'location'},
+            ],
+            $Function : 
+        }
+    },
+    C: {
+        $edmJson : {
+            $Apply    : [
+                { $Path : 'path' },
+                { $PropertyPath : 'propertyPath' },
+                { $AnnotationPath : 'annotationPath' },
+                { $ModelElementPath : 'modelElementPath' },
+                { $NavigationPropertyPath : 'navigationPropertyPath' },
+                'constant',
+                { $String: 'other string' }
+            ],
+            $Function : ['']
+        }
+    }
+}
