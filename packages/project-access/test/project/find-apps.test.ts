@@ -293,7 +293,14 @@ describe('Test findFioriArtifacts()', () => {
 
 describe('Test findCapProjects()', () => {
     test('Find CAP projects', async () => {
-        const capProjects = (await findCapProjects({ wsFolders: [join(__dirname, '../test-data/project')] })).sort();
+        const capProjects = (
+            await findCapProjects({
+                wsFolders: [
+                    join(__dirname, '../test-data/project/cap-root/'),
+                    join(__dirname, '../test-data/project/find-all-apps/')
+                ]
+            })
+        ).sort();
         const expectedProjects = [
             join(__dirname, '../test-data/project/cap-root/valid-cap-root'),
             join(__dirname, '../test-data/project/find-all-apps/CAP/CAPJava_fiori_elements'),
