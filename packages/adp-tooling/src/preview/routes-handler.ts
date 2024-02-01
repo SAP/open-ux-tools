@@ -76,19 +76,16 @@ export default class RoutesHandler {
         next(e);
     }
 
-    private deleteFragmentPathByName(fragmentName: string | undefined): void {
-        const fragmentInCache = this.getFragmentPathFromCache(fragmentName);
-        if (fragmentInCache) {
-            this.fragmentPaths.delete(fragmentInCache);
-        }
-    }
-
+    /**
+     * Searches for a fragment's full path in the cache by its name.
+     *
+     * @param {string | undefined} fragmentName - The name of the fragment to search for.
+     * @returns {string | undefined} The full path of the fragment if a matching name is found in the cache, or `undefined` if not found.
+     */
     private getFragmentPathFromCache(fragmentName: string | undefined): string | undefined {
         return Array.from(this.fragmentPaths).find((path: string) => {
             const targetPath = path.split('/').pop();
-            const isInCache = targetPath === fragmentName;
-
-            return isInCache;
+            return targetPath === fragmentName;
         });
     }
 
@@ -313,6 +310,17 @@ export default class RoutesHandler {
         }
     };
 
+    /**
+     * Middleware function to handle requests for fragment files from an in-memory cache.
+     *
+     * This function intercepts GET requests that appear to request fragment files (identified by '.fragment.' in the URL).
+     * If a matching fragment is found in the cache, it serves a corresponding template file.
+     *
+     * @param req Request
+     * @param res Response
+     * @param next Next Function
+     * @returns {void}
+     */
     public handleFragmentMemoryFs = async (req: Request, res: Response, next: NextFunction) => {
         const url = req.url;
         if (req.method !== 'GET' || !this.fragmentPaths.size || !url.includes('.fragment.')) {
@@ -322,18 +330,16 @@ export default class RoutesHandler {
 
         try {
             const fragmentName = url.split('/').pop();
-
             const cachedFragmentPath = this.getFragmentPathFromCache(fragmentName);
 
             if (cachedFragmentPath) {
                 const fragmentTemplatePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
-
                 res.sendFile(fragmentTemplatePath);
                 this.logger.debug(`Serving fragment from cache: ${cachedFragmentPath}`);
             } else {
                 const errMsg = `Fragment '${fragmentName}' was not found in cache. XML fragment will not be served`;
                 const sanitizedMsg = sanitize(errMsg);
-                this.logger.debug(sanitizedMsg);
+                this.logger.warn(sanitizedMsg);
                 res.status(HttpStatusCodes.NOT_FOUND).send(sanitizedMsg);
             }
         } catch (e) {
