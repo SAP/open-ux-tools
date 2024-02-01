@@ -50,7 +50,11 @@ export class UISection extends React.Component<UISectionProps & Readonly<{ child
         if ('height' in this.props) {
             style.height = this.props.height;
         }
-        const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(this.props, divProperties);
+        const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(this.props, divProperties, [
+            'onScroll',
+            'className',
+            'children'
+        ]);
         return (
             <div
                 {...divProps}

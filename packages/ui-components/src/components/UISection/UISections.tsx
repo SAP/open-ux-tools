@@ -790,7 +790,10 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @returns {React.ReactElement}
      */
     render(): React.ReactElement {
-        const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(this.props, divProperties);
+        const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(this.props, divProperties, [
+            'className',
+            'children'
+        ]);
         const sections = [];
         let visibleSections = 0;
         for (let i = 0; i < this.props.children.length; i++) {

@@ -113,7 +113,10 @@ export class UIToolbar extends React.Component<UIToolbarProps, UIToolbarState> {
      * @returns {React.ReactNode}
      */
     render(): React.ReactNode {
-        const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(this.props, divProperties);
+        const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(this.props, divProperties, [
+            'className',
+            'children'
+        ]);
         return (
             <div
                 {...divProps}

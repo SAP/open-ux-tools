@@ -9,7 +9,10 @@ export interface UIColumnProps {
 }
 
 export const UIToolbarColumn: React.FC<UIColumnProps> = (props: UIColumnProps) => {
-    const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(props, divProperties);
+    const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(props, divProperties, [
+        'className',
+        'children'
+    ]);
     return (
         <div {...divProps} className={'ui-toolbar__column ' + props.className}>
             <div className="ui-toolbar__column__content">{props.children}</div>
