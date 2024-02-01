@@ -1,9 +1,10 @@
 import { join } from 'path';
 import fs from 'fs';
 import { MatcherIgnore, README_GENERATION_PLATFORM_REGEX, README_GENERATOR_REGEX } from '../../src/matchers/types';
+import { toMatchFolder, toContainAllFilesIn } from '../../src/index';
 import { toMatchFile } from '../../src/matchers/toMatchFileSnapshot';
 
-expect.extend({ toMatchFile });
+expect.extend({ toMatchFile, toMatchFolder, toContainAllFilesIn });
 
 export const ignoreMatcherOpts: MatcherIgnore = {
     groups: [
