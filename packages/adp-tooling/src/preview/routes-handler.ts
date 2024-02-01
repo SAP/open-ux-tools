@@ -124,12 +124,11 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleWriteFragment = async (req: Request, res: Response, next: NextFunction) => {
-        let fragmentName = '';
+    public handleCacheFragment = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data = req.body as WriteFragmentBody;
 
-            fragmentName = sanitize(data.fragmentName);
+            const fragmentName = sanitize(data.fragmentName);
 
             const sourcePath = this.util.getProject().getSourcePath();
 
@@ -344,4 +343,29 @@ export default class RoutesHandler {
             next(e);
         }
     };
+}
+
+/**
+ * Writes an XML fragment to a specified location within the workspace.
+ *
+ * @param {string} webappPath - The absolute path to the webapp directory of the current project.
+ * @param {string} fragmentPath - The path where the fragment will be written under the 'changes' directory.
+ * @throws {Error} Throws an error if the directory creation or file copy operation fails.
+ * @returns {void}
+ */
+export function writeFragmentToWorkspace(webappPath: string, fragmentPath: string): void {
+    const changeFolderPath = path.join(webappPath, FolderNames.Changes);
+    const folderPath = path.join(changeFolderPath, FolderNames.Fragments);
+    const filePath = path.join(changeFolderPath, fragmentPath);
+
+    try {
+        if (!fs.existsSync(folderPath)) {
+            fs.mkdirSync(folderPath, { recursive: true });
+        }
+
+        const fragmentTemplatePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
+        fs.copyFileSync(fragmentTemplatePath, filePath);
+    } catch (e) {
+        throw new Error(`Could not write XML fragment to ${filePath}. Reason: ${e.message}`);
+    }
 }

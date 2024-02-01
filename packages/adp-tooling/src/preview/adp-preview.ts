@@ -137,7 +137,7 @@ export class AdpPreview {
      */
     addApis(router: Router): void {
         router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
-        router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment as RequestHandler);
+        router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleCacheFragment as RequestHandler);
 
         router.get(ApiRoutes.CONTROLLER, this.routesHandler.handleReadAllControllers as RequestHandler);
         router.post(

@@ -1,3 +1,4 @@
+import { writeFragmentToWorkspace } from '@sap-ux/adp-tooling';
 import type { Logger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'fs';
@@ -76,13 +77,17 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
  * @returns object with success flag and optional message
  */
 export function writeChange(
-    data: object & { fileName?: string; fileType?: string },
+    data: FlexChange,
     webappPath: string,
     logger: Logger
 ): { success: boolean; message?: string } {
     const fileName = data.fileName;
     const fileType = data.fileType;
     if (fileName && fileType) {
+        if (data.changeType === 'addXML' && data.content?.fragmentPath) {
+            const fragmentPath = data.content?.fragmentPath;
+            writeFragmentToWorkspace(webappPath, fragmentPath);
+        }
         logger.debug(`Write change ${fileName}.${fileType}`);
         const path = join(webappPath, 'changes');
         if (!existsSync(path)) {
