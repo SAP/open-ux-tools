@@ -1,8 +1,10 @@
 import { join } from 'path';
+import fs from 'fs';
 import { toMatchFolder, toContainAllFilesIn } from '../../src';
 import { MatcherIgnore, README_GENERATION_PLATFORM_REGEX, README_GENERATOR_REGEX } from '../../src/matchers/types';
+import { toMatchFile } from '../../src/matchers/toMatchFileSnapshot';
 
-expect.extend({ toMatchFolder, toContainAllFilesIn });
+expect.extend({ toMatchFolder, toContainAllFilesIn, toMatchFile });
 
 export const ignoreMatcherOpts: MatcherIgnore = {
     groups: [
@@ -60,5 +62,25 @@ describe('Test matchers', () => {
         expect(() => {
             expect(receivedFolder).toMatchFolder(expectedFolder, invalidignoreMatcherOpts as any);
         }).toThrowError(`Invalid ignore regex provided to file snapshot matcher: ${'('}`);
+    });
+
+    it('matches content of file on disk with specified filename', () => {
+        expect(`# this is a test`).toMatchFile(join(__dirname, '../__fixtures__/output.md'));
+    });
+
+    it('matches content of file on disk without filename', () => {
+        expect(`# this is a another test`).toMatchFile();
+    });
+
+    it('matches binary content of file on disk', () => {
+        expect(fs.readFileSync(join(__dirname, '../__fixtures__/minimal.pdf'), 'binary')).toMatchFile();
+    });
+
+    it('works with .not', () => {
+        expect(`# this is a nice test`).not.toMatchFile();
+    });
+
+    it('works with .not for binary files', () => {
+        expect(fs.readFileSync(join(__dirname, '../__fixtures__/minimal.pdf'), 'binary')).not.toMatchFile();
     });
 });

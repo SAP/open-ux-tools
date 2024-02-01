@@ -1,6 +1,3 @@
-import { join, dirname } from 'path';
-import filenamify from 'filenamify';
-
 /**
  * Extracts a message from the provided function and adds it to an array of messages.
  *
@@ -13,23 +10,4 @@ export function extractMessage({ getMessage, messages }: { getMessage?: () => st
     if (message) {
         messages.push(message);
     }
-}
-
-/**
- * Returns the file path or creates one from the test name.
- *
- * @param filepath path to file
- * @returns file path
- */
-export function getFilePath(filepath: string): string {
-    return (
-        filepath ??
-        join(
-            dirname(this.testPath),
-            '__file_snapshots__',
-            `${filenamify(this.currentTestName, {
-                replacement: '-'
-            }).replace(/\s/g, '-')}-${this.assertionCalls}`
-        )
-    );
 }
