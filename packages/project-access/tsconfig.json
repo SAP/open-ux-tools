@@ -10,6 +10,9 @@
   },
   "references": [
     {
+      "path": "../i18n"
+    },
+    {
       "path": "../logger"
     },
     {
