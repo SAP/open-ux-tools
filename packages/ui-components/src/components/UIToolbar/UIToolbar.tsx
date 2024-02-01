@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { divProperties, getNativeProps } from '@fluentui/react';
+
 import './UIToolbar.scss';
 
 export interface UIToolbarProps {
@@ -111,8 +113,10 @@ export class UIToolbar extends React.Component<UIToolbarProps, UIToolbarState> {
      * @returns {React.ReactNode}
      */
     render(): React.ReactNode {
+        const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(this.props, divProperties);
         return (
             <div
+                {...divProps}
                 tabIndex={-1}
                 ref={this.toolbarRef}
                 className={`ui-toolbar ${this.state.toolbarWidthClassName} ${
