@@ -654,10 +654,7 @@ export function initIcons(): void {
             ),
             [UiIcons.CollapseGroup]: (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M9 9H4V10H9V9Z"
-                        fill={COLORS.default}
-                    />
+                    <path d="M9 9H4V10H9V9Z" fill={COLORS.default} />
                     <path
                         fillRule="evenodd"
                         clipRule="evenodd"
@@ -813,9 +810,7 @@ export function initIcons(): void {
             ),
             [UiIcons.ExpandGroup]: (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 12V10H4V9H6V7H7V9H9V10H7V12H6Z"
-                        fill="#C5C5C5"
-                    />
+                    <path d="M6 12V10H4V9H6V7H7V9H9V10H7V12H6Z" fill="#C5C5C5" />
                     <path
                         fillRule="evenodd"
                         clipRule="evenodd"
