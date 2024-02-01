@@ -1,1 +1,1 @@
-export { createCapI18nEntry } from './create';
+export { createCapI18nEntries } from './create';

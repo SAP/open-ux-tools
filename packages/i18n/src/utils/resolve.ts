@@ -1,6 +1,6 @@
 import { join, dirname, sep } from 'path';
 import { existsSync } from 'fs';
-import { mkdir } from 'fs/promises';
+import { promises } from 'fs';
 import { type CdsEnvironment } from '../types';
 import { getI18nConfiguration } from './config';
 
@@ -87,7 +87,7 @@ export const getCapI18nFolder = async (root: string, path: string, env: CdsEnvir
     if (!i18nFolderPath) {
         const folder = folders[0];
         i18nFolderPath = join(root, folder);
-        await mkdir(i18nFolderPath);
+        await promises.mkdir(i18nFolderPath);
     }
     return i18nFolderPath;
 };

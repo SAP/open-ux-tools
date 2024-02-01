@@ -1,2 +1,2 @@
-export { createCapI18nEntry } from './cap';
-export { createPropertiesI18nEntry } from './properties';
+export { createCapI18nEntries } from './cap';
+export { createPropertiesI18nEntries } from './properties';

@@ -1,4 +1,4 @@
-import { writeFile } from 'fs/promises';
+import { promises } from 'fs';
 import { join, dirname } from 'path';
 import { getAllNormalizeFolderPath, serialize, getBase, getFileContent } from '.';
 import { FileFormat } from '../../../src/parser/types';
@@ -30,13 +30,13 @@ export const update = async (format: FileFormat): Promise<void | Error> => {
             const text = await getFileContent(test);
             if (ext === FileExtension.properties) {
                 const { tokens, ast } = parseProperties(text);
-                await writeFile(join(ROOT, 'token.json'), serialize(tokens));
-                await writeFile(join(ROOT, 'ast.json'), serialize(ast));
+                await promises.writeFile(join(ROOT, 'token.json'), serialize(tokens));
+                await promises.writeFile(join(ROOT, 'ast.json'), serialize(ast));
             }
             if (ext === FileExtension.csv) {
                 const { ast, tokens } = parseCsv(text);
-                await writeFile(join(ROOT, 'token.json'), serialize(tokens));
-                await writeFile(join(ROOT, 'ast.json'), serialize(ast));
+                await promises.writeFile(join(ROOT, 'token.json'), serialize(tokens));
+                await promises.writeFile(join(ROOT, 'ast.json'), serialize(ast));
             }
         } catch (error) {
             throw Error(`Failed to update: ${test}`);

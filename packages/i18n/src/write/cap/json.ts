@@ -9,7 +9,7 @@ import {
     discoverLineEnding,
     doesExist
 } from '../../utils';
-import { readFile, writeFile } from 'fs/promises';
+import { promises } from 'fs';
 import { Range } from '../../parser/utils';
 import type { Node } from 'jsonc-parser';
 import { parseTree } from 'jsonc-parser';
@@ -119,8 +119,8 @@ export async function tryAddJsonTexts(
         return false;
     }
     const { fallbackLanguage } = getI18nConfiguration(env);
-    const content = await readFile(i18nFilePath, { encoding: 'utf8' });
+    const content = await promises.readFile(i18nFilePath, { encoding: 'utf8' });
     const newContent = addJsonTexts(content, fallbackLanguage, newI18nEntries);
-    await writeFile(i18nFilePath, newContent, { encoding: 'utf8' });
+    await promises.writeFile(i18nFilePath, newContent, { encoding: 'utf8' });
     return true;
 }

@@ -31,13 +31,9 @@ const getTransformers = (fallbackLanguage: string) => [
  * Merges i18n files in to a single bundle for CDS source files
  * @param env CDS environment configuration
  * @param filePaths CDS file path
- * @param logger tools logger
+ * @returns i18n bundle or exception
  */
-export async function getCapI18nBundle(
-    root: string,
-    env: CdsEnvironment,
-    filePaths: string[]
-): Promise<I18nBundle | Error> {
+export async function getCapI18nBundle(root: string, env: CdsEnvironment, filePaths: string[]): Promise<I18nBundle> {
     const bundle: I18nBundle = {};
     const { defaultLanguage, fallbackLanguage } = getI18nConfiguration(env);
     const i18nFileLocations = getCapI18nFiles(root, env, filePaths);

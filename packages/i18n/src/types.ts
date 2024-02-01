@@ -30,7 +30,7 @@ export interface NewI18nEntry {
     /**
      * Annotations for the translation entry, which can contain additional metadata about the entry
      */
-    annotation?: I18nAnnotation;
+    annotation?: I18nAnnotation | string;
 }
 
 export interface I18nEntry {
@@ -109,7 +109,7 @@ export enum SapLongTextType {
     GeneralTextLong = 'YTXT'
 }
 
-export const NOT_RELEVANT_FOR_TRANSLATION = 'not-relevant-for-translation';
+export const NOT_RELEVANT_FOR_TRANSLATION = 'NOTR';
 export type SapTextType = SapShortTextType | SapLongTextType | typeof NOT_RELEVANT_FOR_TRANSLATION;
 
 export interface CdsEnvironment {
