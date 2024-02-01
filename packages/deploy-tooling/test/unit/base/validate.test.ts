@@ -453,31 +453,30 @@ describe('deploy-test validation', () => {
             );
         });
     });
+
     describe('Validate show additional info', () => {
         const destinationsMock = { 'ABC123': {} };
-        test('show additional info ', async () => {
-            mockIsAppStudio.mockReturnValueOnce(true);
-            mockListDestinations.mockResolvedValue(destinationsMock);
-            mockisOnPremiseDestination.mockResolvedValue(true);
-            const result = await showAdditionalInfoForOnPrem('ABC123');
-            expect(result).toBe(true);
-        });
-        test('if not in App Studio', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            const result = await showAdditionalInfoForOnPrem('ABC123');
-            expect(result).toBe(false);
-        });
-        test('if destination not provided', async () => {
-            mockIsAppStudio.mockReturnValue(true);
-            const result = await showAdditionalInfoForOnPrem('');
-            expect(result).toBe(false);
-        });
-        test('if non-onPremise destination', async () => {
-            mockIsAppStudio.mockReturnValueOnce(true);
-            mockListDestinations.mockResolvedValue(destinationsMock);
-            mockisOnPremiseDestination.mockResolvedValue(false);
-            const result = await showAdditionalInfoForOnPrem('ABC123');
-            expect(result).toBe(false);
-        });
+        test.each([
+            ['Show additional info', true, destinationsMock, true, 'ABC123', true],
+            ['If not in App Studio', false, null, null, 'ABC123', false],
+            ['If destination not provided', true, null, null, '', false],
+            ['If non-onPremise destination', true, destinationsMock, false, 'ABC123', false]
+        ])(
+            '%s',
+            async (
+                desc,
+                isAppStudio,
+                listDestinationsMock,
+                isOnPremiseDestinationMock,
+                destinationMock,
+                expectedResult
+            ) => {
+                mockIsAppStudio.mockReturnValue(isAppStudio);
+                mockListDestinations.mockResolvedValue(listDestinationsMock);
+                mockisOnPremiseDestination.mockResolvedValue(isOnPremiseDestinationMock);
+                const result = await showAdditionalInfoForOnPrem(destinationMock);
+                expect(result).toBe(expectedResult);
+            }
+        );
     });
 });
