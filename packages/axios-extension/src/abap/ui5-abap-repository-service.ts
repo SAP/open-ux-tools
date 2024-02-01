@@ -54,7 +54,7 @@ export interface DeployConfig {
      */
     safeMode?: boolean;
     /**
-     * if set to true, then additional info message will be logged
+     * if set to true, then any additional info messages will be logged
      */
     showAddInfo?: boolean;
 }

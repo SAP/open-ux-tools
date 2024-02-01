@@ -27,7 +27,6 @@
     },
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
-        "@sap-ux/ui5-config": "0.21.0",
         "@sap-ux/logger": "workspace:*",
         "axios": "1.6.1",
         "detect-content-type": "1.2.0",

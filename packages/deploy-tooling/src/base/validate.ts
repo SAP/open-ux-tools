@@ -396,9 +396,10 @@ async function validateTransportRequestWithAdt(
  * @returns Promise boolean.
  */
 export async function showAdditionalInfoForOnPrem(destination: string): Promise<boolean> {
-    if (!isAppStudio() || !destination) {
-        return false;
+    let showInfo = false;
+    if (isAppStudio() && destination) {
+        const destinations = await listDestinations();
+        showInfo = isOnPremiseDestination(destinations[destination]);
     }
-    const destinations = await listDestinations();
-    return isOnPremiseDestination(destinations[destination]);
+    return showInfo;
 }
