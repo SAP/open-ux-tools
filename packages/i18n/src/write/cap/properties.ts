@@ -1,4 +1,4 @@
-import { writeFile } from 'fs/promises';
+import { promises } from 'fs';
 import type { CdsEnvironment, NewI18nEntry } from '../../types';
 import { printPropertiesI18nEntry, capPropertiesPath, doesExist } from '../../utils';
 import { tryAddCsvTexts } from './csv';
@@ -21,7 +21,7 @@ export async function tryAddPropertiesTexts(
             return true;
         }
         //  create a `.properties` file with new content
-        await writeFile(i18nFilePath, newContent, { encoding: 'utf8' });
+        await promises.writeFile(i18nFilePath, newContent, { encoding: 'utf8' });
         return true;
     }
 

@@ -1,10 +1,10 @@
-import { createPropertiesI18nEntry } from '../../../../src';
+import { NewI18nEntry, createPropertiesI18nEntries } from '../../../../src';
 import * as utilsWrite from '../../../../src/write/utils';
 import * as utils from '../../../../src/utils';
 import { promises } from 'fs';
 
 describe('create', () => {
-    describe('createPropertiesI18nEntry', () => {
+    describe('createPropertiesI18nEntries', () => {
         beforeEach(() => jest.resetAllMocks());
         describe('i18n.properties does not exist', () => {
             test('without root', async () => {
@@ -19,7 +19,7 @@ describe('create', () => {
                         value: 'New Value'
                     }
                 ];
-                const result = await createPropertiesI18nEntry('i18n.properties', newEntries);
+                const result = await createPropertiesI18nEntries('i18n.properties', newEntries);
                 expect(result).toEqual(true);
                 expect(doesExistSpy).toHaveBeenCalledTimes(1);
                 expect(writeFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', '# Resource bundle \n', {
@@ -39,7 +39,7 @@ describe('create', () => {
                         value: 'New Value'
                     }
                 ];
-                const result = await createPropertiesI18nEntry('i18n.properties', newEntries, 'root/my-project');
+                const result = await createPropertiesI18nEntries('i18n.properties', newEntries, 'root/my-project');
                 expect(result).toEqual(true);
                 expect(doesExistSpy).toHaveBeenCalledTimes(1);
                 expect(writeFileSpy).toHaveBeenNthCalledWith(
@@ -53,7 +53,7 @@ describe('create', () => {
                 expect(writeToExistingI18nPropertiesFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', newEntries);
             });
         });
-        test('boolean', async () => {
+        test('success', async () => {
             const writeToExistingI18nPropertiesFileSpy = jest
                 .spyOn(utilsWrite, 'writeToExistingI18nPropertiesFile')
                 .mockResolvedValue(true);
@@ -64,7 +64,7 @@ describe('create', () => {
                     value: 'New Value'
                 }
             ];
-            const result = await createPropertiesI18nEntry('i18n.properties', newEntries);
+            const result = await createPropertiesI18nEntries('i18n.properties', newEntries);
             expect(result).toEqual(true);
             expect(doesExistSpy).toHaveBeenCalledTimes(1);
             expect(writeToExistingI18nPropertiesFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', newEntries);
@@ -80,7 +80,7 @@ describe('create', () => {
                     value: 'New Value'
                 }
             ];
-            const result = createPropertiesI18nEntry('i18n.properties', newEntries);
+            const result = createPropertiesI18nEntries('i18n.properties', newEntries);
             expect(doesExistSpy).toHaveBeenCalledTimes(1);
             expect(result).rejects.toThrowError('should-throw-error');
         });

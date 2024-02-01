@@ -1,5 +1,5 @@
 export { getCapI18nBundle, getPropertiesI18nBundle } from './read';
-export { createCapI18nEntry, createPropertiesI18nEntry } from './write';
+export { createCapI18nEntries, createPropertiesI18nEntries } from './write';
 
 export {
     getI18nFolderNames,
@@ -25,8 +25,11 @@ export {
     NewI18nEntry,
     SapLongTextType,
     SapShortTextType,
-    SapTextType
+    SapTextType,
+    ValueNode
 } from './types';
+
+export { csvToI18nBundle, jsonToI18nBundle, propertiesToI18nEntry } from './transformer';
 
 export { initI18n, i18n } from './i18n';
 

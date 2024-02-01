@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'fs/promises';
+import { promises } from 'fs';
 import type { CdsEnvironment, NewI18nEntry } from '../../types';
 import { csvPath, discoverLineEnding, getI18nConfiguration, doesExist } from '../../utils';
 
@@ -83,8 +83,8 @@ export async function tryAddCsvTexts(
         return false;
     }
     const { defaultLanguage } = getI18nConfiguration(env);
-    const content = await readFile(i18nFilePath, { encoding: 'utf8' });
+    const content = await promises.readFile(i18nFilePath, { encoding: 'utf8' });
     const newContent = addCsvTexts(content, defaultLanguage, newI18nEntries);
-    await writeFile(i18nFilePath, newContent, { encoding: 'utf8' });
+    await promises.writeFile(i18nFilePath, newContent, { encoding: 'utf8' });
     return true;
 }

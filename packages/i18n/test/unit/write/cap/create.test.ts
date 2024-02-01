@@ -1,10 +1,10 @@
 import * as resolve from '../../../../src/utils';
-import { createCapI18nEntry } from '../../../../src';
+import { createCapI18nEntries } from '../../../../src';
 import * as json from '../../../../src/write/cap/json';
 import * as properties from '../../../../src/write/cap/properties';
 import * as csv from '../../../../src/write/cap/csv';
 
-describe('createCapI18nEntry', () => {
+describe('createCapI18nEntries', () => {
     const env = Object.freeze({
         i18n: {
             folders: ['_i18n', 'i18n', 'assets/i18n'],
@@ -21,7 +21,7 @@ describe('createCapI18nEntry', () => {
         const tryAddPropertiesTextsSpy = jest.spyOn(properties, 'tryAddPropertiesTexts').mockResolvedValue(true);
         const tryAddCsvTextsSpy = jest.spyOn(csv, 'tryAddCsvTexts').mockResolvedValue(true);
         // act
-        const result = await createCapI18nEntry(
+        const result = await createCapI18nEntries(
             'root',
             'path',
             [
@@ -46,7 +46,7 @@ describe('createCapI18nEntry', () => {
         const tryAddPropertiesTextsSpy = jest.spyOn(properties, 'tryAddPropertiesTexts').mockResolvedValue(true);
         const tryAddCsvTextsSpy = jest.spyOn(csv, 'tryAddCsvTexts').mockResolvedValue(true);
         // act
-        const result = await createCapI18nEntry(
+        const result = await createCapI18nEntries(
             'root',
             'path',
             [
@@ -71,7 +71,7 @@ describe('createCapI18nEntry', () => {
         const tryAddPropertiesTextsSpy = jest.spyOn(properties, 'tryAddPropertiesTexts').mockResolvedValue(false);
         const tryAddCsvTextsSpy = jest.spyOn(csv, 'tryAddCsvTexts').mockResolvedValue(true);
         // act
-        const result = await createCapI18nEntry(
+        const result = await createCapI18nEntries(
             'root',
             'path',
             [
@@ -96,7 +96,7 @@ describe('createCapI18nEntry', () => {
         const tryAddPropertiesTextsSpy = jest.spyOn(properties, 'tryAddPropertiesTexts').mockResolvedValue(false);
         const tryAddCsvTextsSpy = jest.spyOn(csv, 'tryAddCsvTexts').mockResolvedValue(false);
         // act
-        const result = await createCapI18nEntry(
+        const result = await createCapI18nEntries(
             'root',
             'path',
             [
@@ -121,7 +121,7 @@ describe('createCapI18nEntry', () => {
             throw new Error('should-throw-error');
         });
         // act
-        const result = createCapI18nEntry(
+        const result = createCapI18nEntries(
             'root',
             'path',
             [

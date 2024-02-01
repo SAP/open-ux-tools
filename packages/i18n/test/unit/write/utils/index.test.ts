@@ -83,5 +83,35 @@ describe('index', () => {
                 }
             );
         });
+        describe('with annotation', () => {
+            test('string', async () => {
+                // arrange
+                const writeFileSpy = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+                const readFileSpy = jest
+                    .spyOn(fs.promises, 'readFile')
+                    .mockResolvedValue('\n#XFLD,27\nExistingKey=New Value');
+                // act
+                const result = await writeToExistingI18nPropertiesFile('i18n.properties', [
+                    {
+                        key: 'NewKey',
+                        value: 'New Value',
+                        annotation: 'TIT: Name'
+                    }
+                ]);
+                // assert
+                expect(result).toEqual(true);
+                expect(readFileSpy).toHaveBeenCalledTimes(1);
+                expect(writeFileSpy).toHaveBeenCalledTimes(1);
+                expect(writeFileSpy).toHaveBeenNthCalledWith(
+                    1,
+                    'i18n.properties',
+                    '\n#XFLD,27\nExistingKey=New Value\n\n#XTIT: Name\nNewKey=New Value\n',
+                    {
+                        encoding: 'utf8'
+                    }
+                );
+            });
+            test.todo('object');
+        });
     });
 });

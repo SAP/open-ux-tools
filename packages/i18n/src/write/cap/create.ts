@@ -13,17 +13,18 @@ import { tryAddPropertiesTexts } from './properties';
  * @param path path to cds file for which translation should be maintained
  * @param newI18nEntries new i18n entries that will be maintained
  * @param env CDS environment configuration
+ * @returns boolean or exception
  * @description to create new entries, if tries:
  * 1. `.json` file
  * 2. `.properties` file, if failed for `.json` file
  * 3. `.csv` file if failed for `.properties` file
  */
-export const createCapI18nEntry = async (
+export const createCapI18nEntries = async (
     root: string,
     path: string,
     newI18nEntries: NewI18nEntry[],
     env: CdsEnvironment
-): Promise<boolean | Error> => {
+): Promise<boolean> => {
     const { baseFileName } = getI18nConfiguration(env);
     const i18nFolderPath = await getCapI18nFolder(root, path, env);
 
