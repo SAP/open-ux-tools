@@ -16,32 +16,41 @@ export const ignoreMatcherOpts: MatcherIgnore = {
 };
 
 describe('Test matchers', () => {
-    const expectedFolder = join(__dirname, '../__fixtures__/expected/test-folder-expected');
+    const expectedFolder = join(__dirname, '../__fixtures__/expected/');
 
     it('should match folders', () => {
-        const receivedFolder = join(__dirname, '../__fixtures__/test-folder');
-        expect(receivedFolder).toMatchFolder(expectedFolder, ignoreMatcherOpts);
+        const expected = join(expectedFolder, 'test-folder-expected');
+        const receivedFolder = join(__dirname, '../__fixtures__/test-folders/test-folder-main');
+        expect(receivedFolder).toMatchFolder(expected, ignoreMatcherOpts);
     });
 
     it('should not match folder with different file contents', () => {
-        const receivedFolder = join(__dirname, '../__fixtures__/test-folder-different-files');
-        expect(receivedFolder).not.toMatchFolder(expectedFolder);
+        const expected = join(expectedFolder, 'test-folder-expected');
+        const receivedFolder = join(__dirname, '../__fixtures__/test-folders/test-folder-different-files');
+        expect(receivedFolder).not.toMatchFolder(expected);
+    });
+
+    it('should match nested folder structure', () => {
+        const expected = join(expectedFolder, 'test-folder-expected-nested');
+        const receivedFolder = join(__dirname, '../__fixtures__/test-folders/test-folder-nested');
+        expect(receivedFolder).toMatchFolder(expected);
     });
 
     it('should exclude certain file extensions', () => {
-        const receivedFolder = join(__dirname, '../__fixtures__/test-folder-extra-files');
-        expect(expectedFolder).toMatchFolder(receivedFolder, { ...ignoreMatcherOpts, exclude: ['**.html', '**.ts'] });
+        const expected = join(expectedFolder, 'test-folder-expected');
+        const receivedFolder = join(__dirname, '../__fixtures__/test-folders/test-folder-extra-files');
+        expect(expected).toMatchFolder(receivedFolder, { ...ignoreMatcherOpts, exclude: ['**.html', '**.ts'] });
     });
 
     it('should include certain file extensions', () => {
-        const testFolder = join(__dirname, '../__fixtures__/test-folder');
-        const receivedFolder = join(__dirname, '../__fixtures__/test-folder-extra-files');
-        expect(testFolder).toMatchFolder(receivedFolder, { include: ['**.js', '**.txt'] });
+        const expected = join(expectedFolder, 'test-folder-expected');
+        const receivedFolder = join(__dirname, '../__fixtures__/test-folders/test-folder-extra-files');
+        expect(expected).toMatchFolder(receivedFolder, { include: ['**.js', '**.txt'] });
     });
 
     it('should fail with contain all files in', () => {
-        const testFolder = join(__dirname, '../__fixtures__/test-folder');
-        const receivedFolder = join(__dirname, '../__fixtures__/test-folder-extra-files');
+        const testFolder = join(__dirname, '../__fixtures__/test-folders/test-folder-main');
+        const receivedFolder = join(__dirname, '../__fixtures__/test-folders/test-folder-extra-files');
         expect(() => {
             expect(testFolder).toContainAllFilesIn(receivedFolder);
         }).toThrow();
@@ -56,11 +65,11 @@ describe('Test matchers', () => {
                 }
             ]
         };
-
-        const receivedFolder = join(__dirname, '../__fixtures__/test-folder');
+        const expected = join(expectedFolder, 'test-folder-expected');
+        const receivedFolder = join(__dirname, '../__fixtures__/test-folders/test-folder-main');
 
         expect(() => {
-            expect(receivedFolder).toMatchFolder(expectedFolder, invalidignoreMatcherOpts as any);
+            expect(receivedFolder).toMatchFolder(expected, invalidignoreMatcherOpts as any);
         }).toThrowError(`Invalid ignore regex provided to file snapshot matcher: ${'('}`);
     });
 
