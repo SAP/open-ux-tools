@@ -76,13 +76,18 @@ export default class RoutesHandler {
         next(e);
     }
 
-    private getFragmentPathFromCache(fragmentName: string | undefined): boolean {
-        return Array.from(this.fragmentPaths).some((path: string) => {
+    private deleteFragmentPathByName(fragmentName: string | undefined): void {
+        const fragmentInCache = this.getFragmentPathFromCache(fragmentName);
+        if (fragmentInCache) {
+            this.fragmentPaths.delete(fragmentInCache);
+        }
+    }
+
+    private getFragmentPathFromCache(fragmentName: string | undefined): string | undefined {
+        return Array.from(this.fragmentPaths).find((path: string) => {
             const targetPath = path.split('/').pop();
             const isInCache = targetPath === fragmentName;
-            // if (isInCache) {
-            //     this.fragmentPaths.delete(path);
-            // }
+
             return isInCache;
         });
     }
@@ -120,10 +125,11 @@ export default class RoutesHandler {
      * @param next Next Function
      */
     public handleWriteFragment = async (req: Request, res: Response, next: NextFunction) => {
+        let fragmentName = '';
         try {
             const data = req.body as WriteFragmentBody;
 
-            const fragmentName = sanitize(data.fragmentName);
+            fragmentName = sanitize(data.fragmentName);
 
             const sourcePath = this.util.getProject().getSourcePath();
 
@@ -316,22 +322,25 @@ export default class RoutesHandler {
 
         try {
             const url = req.url;
-            if (!this.fragmentPaths.size || !url.includes('fragment')) {
+            if (!this.fragmentPaths.size || !url.includes('.fragment.')) {
                 next();
                 return;
             }
 
             const fragmentName = url.split('/').pop();
 
-            const isInCache = this.getFragmentPathFromCache(fragmentName);
+            const cachedFragmentPath = this.getFragmentPathFromCache(fragmentName);
 
-            if (isInCache) {
+            if (cachedFragmentPath) {
                 const fragmentTemplatePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
 
                 res.sendFile(fragmentTemplatePath);
-                return;
+                this.logger.debug(`Serving fragment from cache: ${cachedFragmentPath}`);
             } else {
-                throw new Error(`Fragment '${fragmentName}' was not found in cache. XML fragment will not be served`);
+                const errMsg = `Fragment '${fragmentName}' was not found in cache. XML fragment will not be served`;
+                const sanitizedMsg = sanitize(errMsg);
+                this.logger.debug(sanitizedMsg);
+                res.status(HttpStatusCodes.NOT_FOUND).send(sanitizedMsg);
             }
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);
