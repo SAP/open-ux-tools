@@ -1,25 +1,8 @@
 import { getCapI18nBundle, getI18nFolderNames, getPropertiesI18nBundle } from '@sap-ux/i18n';
-import type { I18nBundle } from '@sap-ux/i18n';
 import { getCapEnvironment, getCdsFiles } from '..';
-import { Project } from '../../types';
+import type { I18nBundles, Project } from '../../types';
 
 // replaces: get18nBundle, getCapI18nBundle, getEdmxI18nBundle in project-access
-interface I18nBundles {
-    /**
-     * i18n bundle for `i18n` of `"sap.app"` namespace in `manifest.json` file
-     */
-    'sap.app': I18nBundle;
-    /**
-     * i18n bundle for `models` entry of `sap.ui5` namespace in `manifest.json` file with type `sap.ui.model.resource.ResourceModel`
-     */
-    models: {
-        [modelKey: string]: I18nBundle;
-    };
-    /**
-     * i18n bundle for cap services
-     */
-    service: I18nBundle;
-}
 
 /**
  * Retrieves app, ui5 and service bundles for a given app in project.
@@ -83,6 +66,7 @@ export const getI18nBundles = async (project: Project, appId: string): Promise<I
 
 /**
  * Retrieves a list of potential folder names for i18n files.
+ *
  * @param root Project root.
  * @returns ii18n folder names
  */
