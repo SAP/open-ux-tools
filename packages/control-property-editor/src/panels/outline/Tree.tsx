@@ -40,7 +40,7 @@ export const Tree = (): ReactElement => {
         const items: OutlineNodeItem[] = [];
         const filteredModel = getFilteredModel(model, filterQuery);
         return { groups: getGroups(filteredModel, items), items };
-    }, [model, filterQuery, selection]);
+    }, [model, filterQuery, selection, controlChanges]);
 
     const selectedClassName =
         localStorage.getItem('theme') === 'high contrast' ? 'app-panel-hc-selected-bg' : 'app-panel-selected-bg';
