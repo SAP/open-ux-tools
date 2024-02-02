@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.11.27
+
+### Patch Changes
+
+-   52265581: Fix styling for the funnel icon on Outline Panel
+
 ## 0.11.26
 
 ### Patch Changes
