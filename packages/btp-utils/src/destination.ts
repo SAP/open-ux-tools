@@ -22,6 +22,15 @@ export enum WebIDEAdditionalData {
     API_MGMT = 'api_mgmt'
 }
 
+/**
+ * Relevant values for DestinationProxyType property
+ */
+export enum DestinationProxyType {
+    ON_PREMISE = 'OnPremise',
+    INTERNET = 'Internet',
+    PRIVATE_LINK = 'PrivateLink'
+}
+
 // Additional destination properties relevant for development
 type DestinationProperty =
     | 'WebIDEEnabled'
@@ -115,13 +124,13 @@ export function isFullUrlDestination(destination: Destination): boolean {
 }
 
 /**
- * A destination configured as OnPremise.
+ * Checks whether the provided destination is configured as an on-premise system.
  *
- * @param destination
- * @returns true, if this destination has ProxyType set as OnPremise
+ * @param destination destination info
+ * @returns true if the destination is configured as an on-premise system
  */
 export function isOnPremiseDestination(destination: Destination): boolean {
-    return Boolean(destination.ProxyType?.includes(ProxyType.ON_PREMISE));
+    return Boolean(destination.ProxyType.includes(DestinationProxyType.ON_PREMISE));
 }
 
 /**

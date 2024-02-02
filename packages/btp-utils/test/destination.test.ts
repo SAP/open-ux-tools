@@ -1,10 +1,10 @@
+import { DestinationProxyType } from '../dist';
 import {
     Destination,
     isAbapSystem,
     isAbapEnvironmentOnBtp,
     WebIDEUsage,
     WebIDEAdditionalData,
-    ProxyType,
     isGenericODataDestination,
     isPartialUrlDestination,
     isFullUrlDestination,
@@ -103,11 +103,11 @@ describe('destination', () => {
     });
 
     describe('isOnPremise', () => {
-        it('destination set to OnPremise', () => {
+        it('destination set to onPremise', () => {
             expect(
                 isOnPremiseDestination({
                     ...destination,
-                    ProxyType: ProxyType.ON_PREMISE,
+                    ProxyType: DestinationProxyType.ON_PREMISE,
                     WebIDEAdditionalData: WebIDEAdditionalData.FULL_URL
                 })
             ).toBe(true);
