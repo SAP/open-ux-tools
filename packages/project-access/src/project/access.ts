@@ -34,7 +34,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      *
      * @param newEntries translation entries to write in the `.properties` file
      * @returns boolean or exception
-     * @description it also update `manifest.json` file if `@i18n` entry is missing from `"sap.ui5":{"models": {}}`
+     * @description It also update `manifest.json` file if `@i18n` entry is missing from `"sap.ui5":{"models": {}}`
      * as
      * ```JSON
      * {
@@ -59,7 +59,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param newEntries translation entries to write in the `.properties` file
      * @param modelKey i18n model key. Default key is `i18n`
      * @returns boolean or exception
-     * @description it also update `manifest.json` file if `<modelKey>` entry is missing from `"sap.ui5":{"models": {}}`
+     * @description It also update `manifest.json` file if `<modelKey>` entry is missing from `"sap.ui5":{"models": {}}`
      * as
      * ```JSON
      * {
@@ -83,7 +83,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      *
      * @param newEntries translation entries to write in the `.properties` file
      * @returns boolean or exception
-     * @description if `i18n` entry is missing from `"sap.app":{}`, default `i18n/i18n.properties` is used. Update of `manifest.json` file is not needed
+     * @description If `i18n` entry is missing from `"sap.app":{}`, default `i18n/i18n.properties` is used. Update of `manifest.json` file is not needed.
      */
     createManifestI18nEntries(newEntries: NewI18nEntry[]): Promise<boolean> {
         const app = this.project.apps[this.appId];

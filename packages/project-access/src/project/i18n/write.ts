@@ -4,7 +4,7 @@ import { getCapEnvironment } from '..';
 import type { I18nPropertiesPaths, Manifest } from '../../types';
 import { join, dirname } from 'path';
 import { readJSON } from '../../file';
-import { ensureDir, writeJson } from 'fs-extra';
+import { mkdir, writeFile } from 'fs/promises';
 
 /**
  * Maintains new translation entries in CAP i18n files.
@@ -24,13 +24,14 @@ export async function createCapI18nEntries(
 }
 
 /**
- * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist for given model key
+ * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist for given model key.
  *
  * @param root project root
  * @param manifestPath absolute path to `manifest.json` file
  * @param i18nPropertiesPaths paths to `.properties` file`
  * @param newEntries translation entries to write in the `.properties` file
  * @param modelKey i18n model key
+ * @returns boolean or exception
  */
 async function createUI5I18nEntriesBase(
     root: string,
@@ -44,7 +45,7 @@ async function createUI5I18nEntriesBase(
     if (i18nFilePath) {
         // ensure folder for i18n exists
         const dirPath = dirname(i18nFilePath);
-        await ensureDir(dirPath);
+        await mkdir(dirPath, { recursive: true });
 
         return createPropertiesI18nEntries(i18nFilePath, newEntries, root);
     }
@@ -62,11 +63,11 @@ async function createUI5I18nEntriesBase(
             models
         }
     } as Manifest;
-    await writeJson(manifestPath, newContent);
+    await writeFile(manifestPath, JSON.stringify(newContent, undefined, 4), { encoding: 'utf8' });
 
     // make sure i18n folder exists
     const dirPath = dirname(defaultPath);
-    await ensureDir(join(root, dirPath));
+    await mkdir(join(root, dirPath), { recursive: true });
     return createPropertiesI18nEntries(join(root, defaultPath), newEntries, root);
 }
 
@@ -79,7 +80,7 @@ async function createUI5I18nEntriesBase(
  * @param newEntries translation entries to write in the `.properties` file
  * @param modelKey i18n model key
  * @returns boolean or exception
- * @description it also update `manifest.json` file if `<modelKey>` entry is missing from `"sap.ui5":{"models": {}}`
+ * @description It also update `manifest.json` file if `<modelKey>` entry is missing from `"sap.ui5":{"models": {}}`
  * as
  * ```JSON
  * {
@@ -111,7 +112,7 @@ export async function createUI5I18nEntries(
  * @param i18nPropertiesPaths paths to `.properties` file`
  * @param newEntries translation entries to write in the `.properties` file
  * @returns boolean or exception
- * @description it also update `manifest.json` file if `@i18n` entry is missing from `"sap.ui5":{"models": {}}`
+ * @description It also update `manifest.json` file if `@i18n` entry is missing from `"sap.ui5":{"models": {}}`
  * as
  * ```JSON
  * {
@@ -142,7 +143,7 @@ export async function createAnnotationI18nEntries(
  * @param i18nPropertiesPaths paths to `.properties` file`
  * @param newEntries translation entries to write in the `.properties` file
  * @returns boolean or exception
- * @description if `i18n` entry is missing from `"sap.app":{}`, default `i18n/i18n.properties` is used. Update of `manifest.json` file is not needed
+ * @description If `i18n` entry is missing from `"sap.app":{}`, default `i18n/i18n.properties` is used. Update of `manifest.json` file is not needed.
  */
 export async function createManifestI18nEntries(
     root: string,
@@ -152,6 +153,6 @@ export async function createManifestI18nEntries(
     const i18nFilePath = i18nPropertiesPaths['sap.app'];
     // make sure i18n folder exists
     const dirPath = dirname(i18nFilePath);
-    await ensureDir(dirPath);
+    await mkdir(dirPath, { recursive: true });
     return createPropertiesI18nEntries(i18nFilePath, newEntries, root);
 }
