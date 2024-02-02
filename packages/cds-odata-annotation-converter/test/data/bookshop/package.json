@@ -1,0 +1,26 @@
+{
+  "name": "annotation-api-cds-test",
+  "version": "1.0.0",
+  "description": "A simple bookshop application, build in a self-contained all-in-one fashion, i.e. w/o reusing other packages.",
+  "license": "SAP SAMPLE CODE LICENSE",
+  "dependencies": {
+    "@sap/cds": "5.3.2",
+    "express": "*"
+  },
+  "scripts": {
+    "start": "cds run --in-memory?",
+    "watch": "cds watch"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sql"
+      }
+    }
+  },
+  "sapux": [
+    "app/admin",
+    "app/browse",
+    "app/orders"
+  ]
+}

@@ -45,6 +45,9 @@
       "path": "packages/cds-annotation-parser"
     },
     {
+      "path": "packages/cds-odata-annotation-converter"
+    },
+    {
       "path": "packages/control-property-editor-common"
     },
     {
