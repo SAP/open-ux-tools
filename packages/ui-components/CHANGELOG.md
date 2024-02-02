@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.15.2
+
+### Patch Changes
+
+-   ccf2767a: Update Icons - Expand/Collapse Groups & 3 Layout options (Layout Centre, Left. & Right)
+
 ## 1.15.1
 
 ### Patch Changes
