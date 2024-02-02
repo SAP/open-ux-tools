@@ -1305,15 +1305,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
-      '@types/fs-extra':
-        specifier: 11.0.4
-        version: 11.0.4
       findit2:
         specifier: 2.2.3
         version: 2.2.3
-      fs-extra:
-        specifier: 11.2.0
-        version: 11.2.0
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -13728,6 +13722,7 @@ packages:
       graceful-fs: 4.2.11
       jsonfile: 6.1.0
       universalify: 2.0.0
+    dev: true
 
   /fs-extra@7.0.1:
     resolution: {integrity: sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==}
