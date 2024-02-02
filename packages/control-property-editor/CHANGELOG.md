@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.11
+
+### Patch Changes
+
+-   f6bf758e: Mark for saved changes now changes on press of save button
+
 ## 0.4.10
 
 ### Patch Changes
