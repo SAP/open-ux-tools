@@ -1,0 +1,112 @@
+{
+    "_version": "3.1.0",
+    "site": {
+        "identification": {
+            "id": "c9dcc1f3-dec0-4db4-91d3-639bf38d91ce",
+            "namespace": "",
+            "title": "Local Testsuite",
+            "description": "Local Testsuite"
+        },
+        "payload": {
+            "groupsOrder": [
+                "group:examples"
+            ],
+            "config": {
+                "ushellConfig": {
+                    "renderers": {
+                        "fiori2": {
+                            "componentData": {
+                                "config": {
+                                    "enableSearch": false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "groups": {
+        "group:examples": {
+            "identification": {
+                "id": "group:examples",
+                "namespace": "",
+                "title": "Preview"
+            },
+            "payload": {
+                "tiles": [],
+                "links": [],
+                "groups": []
+            }
+        }
+    },
+    "catalogs": {
+        "catalog:examples": {
+            "identification": {
+                "id": "catalog:examples",
+                "title": "Examples"
+            },
+            "payload": {
+                "viz": []
+            }
+        }
+    },
+    "applications": {},
+    "systemAliases": {},
+    "visualizations": {},
+    "pages": {
+        "Preview": {
+            "identification": {
+                "id": "Preview",
+                "title": "Preview Home"
+            },
+            "payload": {
+                "layout": {
+                    "sectionOrder": ["section:examples"]
+                },
+                "sections": {
+                    "section:examples": {
+                        "id": "section:examples",
+                        "title": "Example Apps",
+                        "layout": {
+                            "vizOrder": []
+                        },
+                        "viz": {}
+                    }
+                }
+            }
+        }
+    },
+    "menus": {
+        "main": {
+            "identification": {
+                "id": "main"
+            },
+            "payload": {
+				"menuEntries": [
+					{
+						"id": "Preview",
+						"title": "Showcase",
+						"description": "",
+						"icon": "sap-icon://syringe",
+						"type": "IBN",
+						"target": {
+							"semanticObject": "Launchpad",
+							"action": "openFLPPage",
+							"parameters": [
+								{
+									"name": "pageId",
+									"value": "Preview"
+								},
+								{
+									"name": "spaceId",
+									"value": "Preview"
+								}
+							]
+						}
+					}
+				]
+            }
+        }
+    }
+}
