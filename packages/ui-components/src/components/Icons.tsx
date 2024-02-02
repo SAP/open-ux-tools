@@ -55,7 +55,7 @@ export enum UiIcons {
     DataSource = 'DataSource',
     Edit = 'Edit',
     Error = 'Error',
-    ExpandGroup = 'ExandGroup',
+    ExpandGroup = 'ExpandGroup',
     ExpandNodes = 'ExpandNodes',
     Export = 'Export',
     Eye = 'Eye',
