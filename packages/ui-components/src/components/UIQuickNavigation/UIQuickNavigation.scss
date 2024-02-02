@@ -1,0 +1,33 @@
+// Define here
+@mixin quick-navigation-helper {
+    font-family: var(--vscode-font-family);
+    color: var(--vscode-activityBarBadge-foreground);
+    font-size: 16px;
+    position: absolute;
+    background: var(--vscode-activityBarBadge-background);
+    padding: 5px;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    line-height: 18px;
+    border-radius: 2px;
+    box-shadow: var(--ui-box-shadow-small);
+    pointer-events: none;
+}
+
+.quick-navigation {
+    // Approach where we render helpers internally inside target containers
+    &--inline [data-quick-navigation-key] {
+        position: relative;
+        &:before {
+            @include quick-navigation-helper;
+            content: attr(data-quick-navigation-key);
+            top: -15px;
+            left: -15px;
+        }
+    }
+    // Approach where we render helpers externally outside target containers
+    &--external > div {
+        @include quick-navigation-helper;
+    }
+}

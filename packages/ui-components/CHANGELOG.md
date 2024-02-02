@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.15.2
+
+### Patch Changes
+
+-   ccf2767a: Update Icons - Expand/Collapse Groups & 3 Layout options (Layout Centre, Left. & Right)
+
+## 1.15.1
+
+### Patch Changes
+
+-   601f6389: fix: Allow to pass custom `data-*` attributes for `UISections`, `UISection`, `UIToolbar` and `UIToolbarColumn` components.
+
+## 1.15.0
+
+### Minor Changes
+
+-   ea1ed433: feat: New component UIQuickNavigation to allow focus through groups using keyboard shortcuts
+
 ## 1.14.2
 
 ### Patch Changes
