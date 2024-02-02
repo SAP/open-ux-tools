@@ -1,7 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { TemplateConfig } from './flp';
-import { debug } from 'console';
 
 /**
  * Generate CDM based on the given apps.
@@ -10,7 +9,6 @@ import { debug } from 'console';
  * @returns CDM JSON as string.
  */
 export function generateCdm(apps: TemplateConfig['apps']): string {
-    debugger;
     const cdm = JSON.parse(readFileSync(join(__dirname, '../../templates/flp/cdm.base.json'), 'utf-8'));
     // add apps
     Object.keys(apps).forEach((id) => {
