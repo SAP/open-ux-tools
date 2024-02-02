@@ -153,7 +153,7 @@ export async function createApplicationAccess(appRoot: string): Promise<Applicat
     return new ApplicationAccessImp(project, appId);
 }
 
-export async function getProjectAccess(root: string): Promise<ProjectAccess> {
+export async function createProjectAccess(root: string): Promise<ProjectAccess> {
     const project = await getProject(root);
     const projectAccess = new ProjectAccessImp(project);
     return projectAccess;
