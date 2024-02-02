@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.15.0
+
+### Minor Changes
+
+-   ea1ed433: feat: New component UIQuickNavigation to allow focus through groups using keyboard shortcuts
+
 ## 1.14.2
 
 ### Patch Changes
