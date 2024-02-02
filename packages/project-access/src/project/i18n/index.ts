@@ -1,12 +1,6 @@
 export { getI18nPropertiesPaths } from './i18n';
 
-export { getI18nBundles, getCapI18nFolderNames } from './read';
-export {
-    createCapI18nEntries,
-    createManifestI18nEntries,
-    createUI5I18nEntries,
-    createAnnotationI18nEntries
-} from './write';
+export { getCapI18nFolderNames } from './read';
 
 export {
     getI18nFolderNames,
@@ -22,7 +16,7 @@ export {
     csvToI18nBundle,
     jsonToI18nBundle,
     propertiesToI18nEntry,
-    createCapI18nEntries as createCdsI18nEntries,
+    createCapI18nEntries,
     createPropertiesI18nEntries,
     getCapI18nBundle,
     getPropertiesI18nBundle

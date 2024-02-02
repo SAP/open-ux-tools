@@ -11,9 +11,30 @@ export {
     readCapServiceMetadataEdmx
 } from './cap';
 export { getNodeModulesPath } from './dependencies';
-export { getI18nPropertiesPaths } from './i18n';
+export {
+    convertToCamelCase,
+    convertToPascalCase,
+    createCapI18nEntries,
+    createPropertiesI18nEntries,
+    csvToI18nBundle,
+    extractI18nKey,
+    getCapI18nFolderNames,
+    getI18nPropertiesPaths,
+    getI18nFolderNames,
+    getI18nDocumentation,
+    getI18nMaxLength,
+    getI18nTextType,
+    getI18nUniqueKey,
+    getCapI18nBundle,
+    getPropertiesI18nBundle,
+    printPropertiesI18nEntry,
+    jsonToI18nBundle,
+    printPropertiesI18nAnnotation,
+    propertiesToI18nEntry
+} from './i18n';
 export { getAppProgrammingLanguage, getAppType, getProject, getProjectType } from './info';
 export { loadModuleFromProject } from './module-loader';
 export { findAllApps, findCapProjects, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from './search';
 export { getWebappPath, readUi5Yaml } from './ui5-config';
 export { getMtaPath } from './mta';
+export { createApplicationAccess, getProjectAccess } from './access';
