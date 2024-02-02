@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.15.1
+
+### Patch Changes
+
+-   601f6389: fix: Allow to pass custom `data-*` attributes for `UISections`, `UISection`, `UIToolbar` and `UIToolbarColumn` components.
+
 ## 1.15.0
 
 ### Minor Changes
