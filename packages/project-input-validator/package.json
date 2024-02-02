@@ -26,7 +26,7 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "i18next": "20.6.1",
+        "i18next": "23.5.1",
         "validate-npm-package-name": "5.0.0"
     },
     "devDependencies": {

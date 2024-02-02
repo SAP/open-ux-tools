@@ -1,0 +1,51 @@
+{
+    "prompts": {
+        "appNameTooltip": "The name of the module for this application that will be loaded at runtime. This also determines the directory name of the generated application.",
+        "appNameMessage": "Module name",
+        "appNameDefault": "project{{defaultProjectNumber}}",
+        "appTitleTooltip": "The title of your application that is displayed in the header of the application.",
+        "appTitleMessage": "Application title",
+        "appTitleDefault": "App Title",
+        "appNamespaceTooltip": "A unique package name for the application module being created. It should follow the standard Java package notation.",
+        "appNamespaceMessage": "Application namespace",
+        "appDescTooltip": "Project description in package.json of your project",
+        "appDescMessage": "Description",
+        "appDescDefault": "An SAP Fiori application.",
+        "appFolderPathMessage": "Project folder path",
+        "appFolderPathBreadcrumb": "Project Path",
+        "appUi5VersionTooltip": "Represents the minimum version of SAPUI5 that this application requires.",
+        "appUi5VersionMessage": "Minimum SAPUI5 version",
+        "appUi5VersionBreadcrumb": "UI5 Version",
+        "appAddDeployConfigMessage": "Add deployment configuration",
+        "appAddDeployConfigToMtaMessage": "Add deployment configuration to MTA project ({{-path}})",
+        "appAddDeployConfigBreadcrumb": "Deploy Config",
+        "appAddFlpConfigMessage": "Add FLP configuration",
+        "appAddFlpConfigBreadcrumb": "FLP Config",
+        "appUi5ThemeMessage": "UI5 theme",
+        "appEnableEslintMessage": "Add Eslint configuration to the project",
+        "appEnableEslintBreadcrumb": "Eslint",
+
+
+        "LABEL_CODE_ASSIST_ENABLED_BREADCRUMB": "Code Assist",
+        "LABEL_SKIP_ANNOTATIONS_BREADCRUMB": "Skip Annotations",
+        "LABEL_SERVICE_URL_BREADCRUMB": "Service URL",
+        "LABEL_CAP_PROJECT_BREADCRUMB": "CAP Project",
+        "LABEL_DESTINATION_BREADCRUMB": "Destination",
+        "LABEL_SAP_CLIENT_BREADCRUMB": "SAP Client",
+        "LABEL_ENABLE_TYPESCRIPT_BREADCRUMB": "Enable TypeScript",
+        "LABEL_ENABLE_NPM_WORKSPACES_BREADCRUMB": "Enable NPM Workspaces",
+        "ENABLE_ESLINT": "Add Eslint configuration to the project",
+        "ENABLE_TYPESCRIPT": "Enable TypeScript",
+        "ENABLE_NPM_WORKSPACES": "Generation of this application can update the CAP project to use NPM workspaces and an associated CDS plugin library (cds-plugin-ui5). Do you want to enable this feature? (Note: this is requirement for generating with TypeScript)",
+        "ENABLE_CODE_ASSIST_MESSAGE": "Add code assist libraries to your project"
+    },
+    "validators": {
+        "appFolderExistsAtPath": "A module with this name already exists in the folder: {{-path}}"
+    },
+    "ui5VersionLabels": {
+        "maintained": "Maintained",
+        "outOfMaintenance": "Out of maintenance",
+        "version_one": "version",
+        "version_other": "versions"
+    }
+}

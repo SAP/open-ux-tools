@@ -1,3 +1,5 @@
+import type { ui5ThemeIds } from './ui5-theme-info';
+
 export type FioriElementsVersion = 'v2' | 'v4';
 
 export interface UI5VersionFilterOptions {
@@ -62,4 +64,13 @@ export interface UI5VersionsResponse {
     [key: string]: {
         patches?: string[];
     } & UI5VersionOverview;
+}
+
+export interface UI5Theme {
+    id: ui5ThemeIds;
+    label: string;
+    /**
+     * The UI5 minimum UI% version that supports this theme
+     */
+    sinceVersion?: string;
 }

@@ -123,6 +123,9 @@
       "path": "packages/ui-components"
     },
     {
+      "path": "packages/ui5-application-inquirer"
+    },
+    {
       "path": "packages/ui5-application-writer"
     },
     {
