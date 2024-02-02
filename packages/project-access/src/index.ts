@@ -2,6 +2,7 @@ export { FileName } from './constants';
 export { getFilePaths } from './file';
 export {
     createApplicationAccess,
+    createProjectAccess,
     createCapI18nEntries,
     createPropertiesI18nEntries,
     convertToCamelCase,
@@ -33,7 +34,6 @@ export {
     getI18nUniqueKey,
     getMtaPath,
     getNodeModulesPath,
-    getProjectAccess,
     getProject,
     getProjectType,
     getWebappPath,

@@ -37,4 +37,4 @@ export { loadModuleFromProject } from './module-loader';
 export { findAllApps, findCapProjects, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from './search';
 export { getWebappPath, readUi5Yaml } from './ui5-config';
 export { getMtaPath } from './mta';
-export { createApplicationAccess, getProjectAccess } from './access';
+export { createApplicationAccess, createProjectAccess } from './access';
