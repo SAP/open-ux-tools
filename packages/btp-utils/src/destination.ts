@@ -1,3 +1,9 @@
+export enum ProxyType {
+    ON_PREMISE = 'OnPremise',
+    INTERNET = 'Internet',
+    PRIVATE_LINK = 'PrivateLink'
+}
+
 /**
  * Relevant values for the WebIDEUsage property used to identify different types of destinations.
  */
@@ -107,3 +113,43 @@ export function isFullUrlDestination(destination: Destination): boolean {
             isGenericODataDestination(destination)
     );
 }
+
+/**
+ * A destination configured as OnPremise.
+ *
+ * @param destination
+ * @returns true, if this destination has ProxyType set as OnPremise
+ */
+export function isOnPremiseDestination(destination: Destination): boolean {
+    return Boolean(destination.ProxyType?.includes(ProxyType.ON_PREMISE));
+}
+
+/**
+ * Validate if a destination has the property `HTML5.DynamicDestination` configured.
+ *
+ * @param destination
+ * @returns true, if this destination has HTML5.DynamicDestination configured
+ */
+export function isHTML5DynamicConfigured(destination: Destination): boolean {
+    return Boolean(destination['HTML5.DynamicDestination']);
+}
+
+// /**
+//  * Validate if a destination has the property `HTML5.DynamicDestination` configured.
+//  *
+//  * @param destination
+//  * @returns true, if this destination has HTML5.DynamicDestination configured
+//  */
+// export function getDisplayName(destination: Destination): string {
+//     const userDisplayName = includeUserName && this.userDisplayName ? ` [${this.userDisplayName}]` : '';
+//     let systemDisplayName: string;
+//     if (this.isScp()) {
+//         systemDisplayName = toSCPSystemName(this.name);
+//     } else if (this.isS4HC()) {
+//         systemDisplayName = this.addS4HCSuffix(this.name);
+//     } else {
+//         systemDisplayName = this.name;
+//     }
+//     return systemDisplayName + userDisplayName;
+//     return Boolean(destination['HTML5.DynamicDestination']);
+// }

@@ -85,7 +85,7 @@ export class TransportChecksService extends AdtService {
                 return this.getTransportList(doc);
             case 'E':
             default:
-                this.log.warn(`Error or unkown response content: ${xml}`);
+                this.log.warn(`Error or unknown response content: ${xml}`);
                 return [];
         }
     }

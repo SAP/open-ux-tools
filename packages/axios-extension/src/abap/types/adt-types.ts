@@ -86,6 +86,7 @@ export interface AtoSettings {
     isExtensibilityDevelopmentSystem?: boolean;
     tenantType?: TenantType;
     isTransportRequestRequired?: boolean;
+    isConfigured?: boolean;
 }
 
 // Success | Error
