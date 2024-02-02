@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.15.3
+
+### Patch Changes
+
+-   13dcde74: Update Icons.tsx to fix typo
+
 ## 1.15.2
 
 ### Patch Changes
