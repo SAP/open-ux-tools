@@ -1,4 +1,5 @@
 import React from 'react';
+import { divProperties, getNativeProps } from '@fluentui/react';
 import { UISection } from './UISection';
 import type { UISectionProps } from './UISection';
 import { UISplitter, UISplitterType, UISplitterLayoutType } from './UISplitter';
@@ -789,6 +790,10 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @returns {React.ReactElement}
      */
     render(): React.ReactElement {
+        const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(this.props, divProperties, [
+            'className',
+            'children'
+        ]);
         const sections = [];
         let visibleSections = 0;
         for (let i = 0; i < this.props.children.length; i++) {
@@ -806,6 +811,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
         return (
             <div
+                {...divProps}
                 ref={this.rootRef}
                 className={`sections ${this.getClassNames(visibleSections === 1)}`}
                 style={{
