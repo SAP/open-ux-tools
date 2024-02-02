@@ -1,7 +1,6 @@
 import type { I18nBundle } from '@sap-ux/i18n';
 
 export type {
-    // CdsEnvironment,
     CdsI18nConfiguration,
     CdsI18nEnv,
     I18nAnnotation,
