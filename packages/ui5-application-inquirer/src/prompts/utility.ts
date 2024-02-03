@@ -1,8 +1,9 @@
 import { Separator, type ListChoiceOptions } from 'inquirer';
 import * as fuzzy from 'fuzzy';
 import { defaultProjectNumber, t } from '../i18n';
-import { getUi5Themes, UI5Theme, type UI5Version } from '@sap-ux/ui5-info';
-import type { UI5VersionChoice } from '../types';
+import type { UI5Theme } from '@sap-ux/ui5-info';
+import { getUi5Themes, type UI5Version } from '@sap-ux/ui5-info';
+import { promptNames, type UI5ApplicationPromptOptions, type UI5VersionChoice } from '../types';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
@@ -80,19 +81,26 @@ export function ui5VersionsGrouped(
     return [...maintChoices, ...notMaintChoices];
 }
 
-export function pathExists(projectName: string, folderPath?: string): boolean | string {
-    return existsSync(join(folderPath ?? process.cwd(), projectName.trim()));
+/**
+ * Tests if a directory with the specified `appName` exists at the path specified by `targetPath`.
+ *
+ * @param appName directory name of application
+ * @param targetPath directory path where application directory would be created
+ * @returns true, if the combined path exists otherwise false
+ */
+export function pathExists(appName: string, targetPath?: string): boolean | string {
+    return existsSync(join(targetPath ?? process.cwd(), appName.trim()));
 }
 /**
- * Generate a default project name that does not exist at the specified path.
+ * Generate a default applicaiton name that does not exist at the specified path.
  *
- * @param name
- * @param projectPath
+ * @param targetPath the target path where the application directory would be created
+ * @returns a suggested application name that can be created at the specified target path
  */
-export function defaultAppName(projectPath: string) {
+export function defaultAppName(targetPath: string): string {
     let defProjNum = defaultProjectNumber;
     let defaultName = t('prompts.appNameDefault');
-    while (pathExists(`${defaultName}`, projectPath)) {
+    while (pathExists(`${defaultName}`, targetPath)) {
         defaultName = t('prompts.appNameDefault', { defaultProjectNumber: ++defProjNum });
         // Dont loop forever, user will need to provide input otherwise
         if (defProjNum > 999) {
@@ -104,9 +112,9 @@ export function defaultAppName(projectPath: string) {
 
 /**
  * Get the UI5 themes as prompt choices applicable for the specified UI5 version.
- * 
- * @param ui5Version - UI5 semantic version 
- * @returns 
+ *
+ * @param ui5Version - UI5 semantic version
+ * @returns UI5 themes as list choice options
  */
 export function getUI5ThemesChoices(ui5Version?: string): ListChoiceOptions[] {
     const themes = getUi5Themes(ui5Version);
@@ -114,4 +122,29 @@ export function getUI5ThemesChoices(ui5Version?: string): ListChoiceOptions[] {
         name: theme.label,
         value: theme.id
     }));
+}
+
+/**
+ * Replace any empty string values where they are not valid inputs and replace with undefined.
+ * This allows nullish coalescing operator to be used without additional empty string conditions
+ * when generating prompts.
+ *
+ * @param promptOptions the prompt options to be cleaned
+ * @returns prompt options with empty string values replaced with undefined where appropriate
+ */
+export function cleanPromptOptions(promptOptions?: UI5ApplicationPromptOptions) {
+    if (promptOptions) {
+        // Prompt option values that should not allow empty strings (zero length or all spaces)
+        const nonEmptyPrompts = [promptNames.name, promptNames.targetFolder, promptNames.ui5Version];
+        Object.entries(promptOptions).forEach(([promptKey, promptOpt]) => {
+            if (
+                nonEmptyPrompts.includes(promptNames[promptKey as keyof typeof promptNames]) &&
+                promptOpt.value &&
+                (promptOpt?.value as string).trim().length === 0
+            ) {
+                promptOpt.value = undefined;
+            }
+        });
+    }
+    return promptOptions;
 }

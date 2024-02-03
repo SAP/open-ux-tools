@@ -47,9 +47,10 @@ const ui5Themes: Record<ui5ThemeIds, UI5Theme> = {
  * @param ui5Version - optional, if not specified the latest supported theme will be returned
  * @returns UI5 theme identifier e.g. 'sap_fiori_3'
  */
-export function getDefaultTheme(ui5Version?: string): string {
+export function getDefaultUI5Theme(ui5Version?: string): string {
     if (ui5Version) {
-        if (coerce(ui5Version) && lt(ui5Version, MIN_UI5_VER_HORIZON_THEME)) {
+        const cleanSemVer = coerce(ui5Version);
+        if (cleanSemVer && lt(cleanSemVer, MIN_UI5_VER_HORIZON_THEME)) {
             return ui5ThemeIds.SAP_FIORI_3;
         }
     }
@@ -60,14 +61,18 @@ export function getDefaultTheme(ui5Version?: string): string {
  * Return supported UI5 themes.
  *
  * @param [ui5Version] - optional, restrict the returned themes to only those supported by specified UI5 version
+ * If the passed version is not a valid semantic version all themes will be returned.
  * @returns UI5 themes array
  */
 export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
-    let ui5VersionSince = ui5Version.replace('snapshot-', '');
+    const ui5VersionSince = ui5Version.replace('snapshot-', '');
     const cleanSemVer = coerce(ui5VersionSince);
-    // If the ui5 version passed cannot be coerced we cannot determine the theme and only defaults will be returned
-    ui5VersionSince = cleanSemVer ? cleanSemVer.version : ui5VersionSince;
-    return Object.values(ui5Themes).filter((ui5Theme) =>
-        ui5Theme.sinceVersion ? cleanSemVer && gte(ui5VersionSince, ui5Theme.sinceVersion) : ui5Theme
-    );
+    // If the ui5 version is a valid semver use it to filter themes
+    if (cleanSemVer) {
+        return Object.values(ui5Themes).filter((ui5Theme) =>
+            ui5Theme.sinceVersion ? gte(cleanSemVer, ui5Theme.sinceVersion) : ui5Theme
+        );
+    }
+    // Return all themes if ui5 version is not a valid semver
+    return Object.values(ui5Themes);
 }

@@ -1,15 +1,13 @@
 import type {
-    ConfirmQuestion as BaseConfirmQuestion,
-    InputQuestion as BaseInputQuestion,
-    ListQuestion as BaseListQuestion,
     Answers,
+    ConfirmQuestion as BaseConfirmQuestion,
+    ListQuestion as BaseListQuestion,
+    InputQuestion,
     ListChoiceOptions,
     PromptFunction,
     PromptModule,
-    Question,
-    InputQuestion
+    Question
 } from 'inquirer';
-import { getPrompts } from '.';
 
 // todo: move to YUI types
 export interface GuiOptions {
@@ -21,7 +19,7 @@ export interface GuiOptions {
 
 export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
     guiOptions?: GuiOptions;
-}
+};
 
 export interface FileBrowserQuestion<A extends Answers = Answers> extends InputQuestion<A> {
     guiType: 'file-browser' | 'folder-browser';
@@ -79,7 +77,7 @@ export enum promptNames {
     addDeployConfig = 'addDeployConfig',
     addFlpConfig = 'addFlpConfig',
     ui5Theme = 'ui5Theme',
-    enableEslint = 'enableEslint',
+    enableEslint = 'enableEslint'
     /* enableCodeAssist = 'enableCodeAssist',
     enableNPMWorkspaces = 'enableNPMWorkspaces',
     skipAnnotations = 'skipAnnotations',
@@ -178,4 +176,3 @@ export interface GuiOptions {
     applyDefaultWhenDirty?: boolean;
     breadcrumb?: boolean | string;
 }
-

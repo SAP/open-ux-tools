@@ -12,7 +12,8 @@ jest.mock('@sap-ux/project-input-validator', () => {
 });
 
 describe('getPrompts', () => {
-    initI18n();
+    beforeAll(async () => initI18n());
+
     test('getQuestions, no options', () => {
         expect(getQuestions([])).toMatchInlineSnapshot(`
             [
@@ -188,7 +189,7 @@ describe('getPrompts', () => {
     });
 
     test('getQuestions, prompt: `addDeployConfig` conditions and message based on mta.yaml discovery', async () => {
-        let mockMtaPath = undefined;
+        const mockMtaPath = undefined;
         const getMtaPathSpy = jest.spyOn(projectAccess, 'getMtaPath').mockResolvedValue(mockMtaPath);
 
         // 'addDeployConfig' is always returned based on static inputs, it is the 'when' condition that determines its presence
