@@ -1590,6 +1590,9 @@ importers:
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.6)
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
     devDependencies:
       '@types/inquirer':
         specifier: 8.2.6
@@ -1597,6 +1600,9 @@ importers:
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
 
   packages/ui5-application-writer:
     dependencies:
@@ -5632,7 +5638,7 @@ packages:
     dependencies:
       '@formatjs/ts-transformer': 2.13.0(ts-jest@29.1.0)
       '@types/json-stable-stringify': 1.0.34
-      '@types/lodash': 4.14.198
+      '@types/lodash': 4.14.202
       '@types/loud-rejection': 2.0.0
       '@types/node': 14.18.54
       '@vue/compiler-core': 3.3.4
@@ -8695,6 +8701,10 @@ packages:
 
   /@types/lodash@4.14.198:
     resolution: {integrity: sha512-trNJ/vtMZYMLhfN45uLq4ShQSw0/S7xCTLLVM+WM1rmFpba/VS42jVUgaO3w/NOLiWR/09lnYk0yMaA/atdIsg==}
+    dev: true
+
+  /@types/lodash@4.14.202:
+    resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
     dev: true
 
   /@types/loud-rejection@2.0.0:
