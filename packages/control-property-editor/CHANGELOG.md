@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.12
+
+### Patch Changes
+
+-   b817c8d5: Property change is created (unsaved) on the key press but should be on blur for the adaptation projects
+
 ## 0.4.11
 
 ### Patch Changes
