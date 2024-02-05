@@ -5,6 +5,25 @@ import chalk from 'chalk';
 import type { MatcherOptions } from '../types';
 
 /**
+ * Returns the messages(s), if any, related to the missing files in the directory.
+ *
+ * @param isNot if .not has been used
+ * @param index index of the array of comparisons
+ * @param missingFile the file not found when doing the comparison
+ * @returns messages array
+ */
+function getMissingFileMessages(isNot: boolean, index: number, missingFile: string): string[] {
+    const messages: string[] = [];
+    if (!isNot) {
+        if (index === 0) {
+            messages.push(chalk.red('Missing in actual folder (pass update flag to delete snapshot):'));
+        }
+        messages.push(chalk.bold.red(`● ${missingFile}`));
+    }
+    return messages;
+}
+
+/**
  * Matcher to assert that `receivedFolder` contains all the files in  the `expectedFolder`.
  *
  * @param receivedFolder path to received folder
@@ -41,12 +60,8 @@ export function toContainAllFilesIn(
                     snapshotState.updated++; // We don't have a count of `deleted`
                 } else {
                     pass = false;
-                    if (!isNot) {
-                        if (i === 0) {
-                            messages.push(chalk.red('Missing in actual folder (pass update flag to delete snapshot):'));
-                        }
-                        messages.push(chalk.bold.red(`● ${missingFile}`));
-                    }
+                    const msgs = getMissingFileMessages(isNot, i, missingFile);
+                    messages.push(...msgs);
                 }
             });
     } else {
