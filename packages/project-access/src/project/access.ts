@@ -1,10 +1,13 @@
+import { relative } from 'path';
 import type {
     ApplicationAccess,
     ProjectAccess,
     Project,
     I18nBundles,
     I18nPropertiesPaths,
-    NewI18nEntry
+    NewI18nEntry,
+    ProjectType,
+    ApplicationStructure
 } from '../types';
 import { getI18nPropertiesPaths } from './i18n';
 import { getCapI18nFolderNames, getI18nBundles } from './i18n/read';
@@ -17,6 +20,7 @@ import {
 } from './i18n/write';
 
 import { getProject } from './info';
+import { findAllApps } from './search';
 
 /**
  *
@@ -25,15 +29,25 @@ class ApplicationAccessImp implements ApplicationAccess {
     /**
      * Constructor for ApplicationAccess.
      *
-     * @param project - Project structure
+     * @param _project - Project structure
      * @param appId - Application ID
      */
-    constructor(private project: Project, private appId: string) {}
+    constructor(private _project: Project, private appId: string) {}
+
+    /**
+     * Returns the application structure.
+     *
+     * @returns ApplicationStructure
+     */
+    public get app(): ApplicationStructure {
+        return this.project.apps[this.appId];
+    }
+
     /**
      * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist.
      *
-     * @param newEntries translation entries to write in the `.properties` file
-     * @returns boolean or exception
+     * @param newEntries - translation entries to write in the `.properties` file
+     * @returns - boolean or exception
      * @description It also update `manifest.json` file if `@i18n` entry is missing from `"sap.ui5":{"models": {}}`
      * as
      * ```JSON
@@ -50,14 +64,13 @@ class ApplicationAccessImp implements ApplicationAccess {
      * ```
      */
     createAnnotationI18nEntries(newEntries: NewI18nEntry[]): Promise<boolean> {
-        const app = this.project.apps[this.appId];
-        return createAnnotationI18nEntries(this.project.root, app.manifest, app.i18n, newEntries);
+        return createAnnotationI18nEntries(this.project.root, this.app.manifest, this.app.i18n, newEntries);
     }
     /**
      * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist.
      *
-     * @param newEntries translation entries to write in the `.properties` file
-     * @param modelKey i18n model key. Default key is `i18n`
+     * @param newEntries - translation entries to write in the `.properties` file
+     * @param modelKey - i18n model key. Default key is `i18n`
      * @returns boolean or exception
      * @description It also update `manifest.json` file if `<modelKey>` entry is missing from `"sap.ui5":{"models": {}}`
      * as
@@ -75,9 +88,9 @@ class ApplicationAccessImp implements ApplicationAccess {
      * ```
      */
     createUI5I18nEntries(newEntries: NewI18nEntry[], modelKey: string = 'i18n'): Promise<boolean> {
-        const app = this.project.apps[this.appId];
-        return createUI5I18nEntries(this.project.root, app.manifest, app.i18n, newEntries, modelKey);
+        return createUI5I18nEntries(this.project.root, this.app.manifest, this.app.i18n, newEntries, modelKey);
     }
+
     /**
      * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist.
      *
@@ -86,9 +99,9 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @description If `i18n` entry is missing from `"sap.app":{}`, default `i18n/i18n.properties` is used. Update of `manifest.json` file is not needed.
      */
     createManifestI18nEntries(newEntries: NewI18nEntry[]): Promise<boolean> {
-        const app = this.project.apps[this.appId];
-        return createManifestI18nEntries(this.project.root, app.i18n, newEntries);
+        return createManifestI18nEntries(this.project.root, this.app.i18n, newEntries);
     }
+
     /**
      * Maintains new translation entries in CAP i18n files.
      *
@@ -99,6 +112,26 @@ class ApplicationAccessImp implements ApplicationAccess {
     createCapI18nEntries(filePath: string, newI18nEntries: NewI18nEntry[]): Promise<boolean> {
         return createCapI18nEntries(this.project.root, filePath, newI18nEntries);
     }
+
+    /**
+     * Return the application id of this app, which is the relative path from the project root
+     * to the app root.
+     *
+     * @returns - Application root path
+     */
+    getAppId(): string {
+        return this.appId;
+    }
+
+    /**
+     * Return the absolute application root path.
+     *
+     * @returns - Application root path
+     */
+    getAppRoot(): string {
+        return this.app.appRoot;
+    }
+
     /**
      * Retrieves a list of potential folder names for i18n files.
      *
@@ -107,54 +140,148 @@ class ApplicationAccessImp implements ApplicationAccess {
     getCapI18nFolderNames(): Promise<string[]> {
         return getCapI18nFolderNames(this.project.root);
     }
+
     /**
      * For a given app in project, retrieves i18n bundles for 'sap.app' namespace,`models` of `sap.ui5` namespace and service for cap services.
      *
      * @returns i18n bundles or exception
      */
     getI18nBundles(): Promise<I18nBundles> {
-        const app = this.project.apps[this.appId];
-        return getI18nBundles(this.project.root, app.i18n, this.project.projectType);
+        return getI18nBundles(this.project.root, this.app.i18n, this.project.projectType);
     }
+
     /**
      * Return absolute paths to i18n.properties files from manifest.
      *
      * @returns absolute paths to i18n.properties
      */
     getI18nPropertiesPaths(): Promise<I18nPropertiesPaths> {
-        const app = this.project.apps[this.appId];
-        return getI18nPropertiesPaths(app.manifest);
+        return getI18nPropertiesPaths(this.app.manifest);
+    }
+
+    /**
+     * Project structure.
+     *
+     * @returns - Project structure
+     */
+    get project(): Project {
+        return this._project;
+    }
+
+    /**
+     * Project type.
+     *
+     * @returns - Project type, like EDMXBackend, CAPJava, or CAPNodejs
+     */
+    get projectType(): ProjectType {
+        return this.project.projectType;
+    }
+
+    /**
+     * Project root path.
+     *
+     * @returns - Project root path
+     */
+    get root(): string {
+        return this.project.root;
     }
 }
 
+/**
+ * Class that implements ProjectAccess interface.
+ * It can be used to retrieve information about the project, like applications, paths, services.
+ */
 class ProjectAccessImp implements ProjectAccess {
-    private apps: { [index: string]: ApplicationAccess } = {};
+    /**
+     * Constructor for ProjectAccess.
+     *
+     * @param _project - Project structure
+     */
+    constructor(private _project: Project) {}
 
-    constructor(private project: Project) {}
-
+    /**
+     * Returns list of application IDs.
+     *
+     * @returns - array of application IDs. For single application projects it will return ['']
+     */
     getApplicationIds(): string[] {
-        return Object.keys(this.project.apps);
+        return Object.keys(this._project.apps);
     }
 
+    /**
+     * Returns an instance of an application for a given application ID. The contains information about the application, like paths and services.
+     *
+     * @param appId - application ID
+     * @returns - Instance of ApplicationAccess that contains information about the application, like paths and services
+     */
     getApplication(appId: string): ApplicationAccess {
-        if (!this.apps[appId]) {
+        if (!this.project.apps[appId]) {
             throw new Error(`Could not find app with id ${appId}`);
         }
         return new ApplicationAccessImp(this.project, appId);
     }
-}
 
-export async function createApplicationAccess(appRoot: string): Promise<ApplicationAccess> {
-    const project = await getProject(appRoot);
-    const appId = Object.keys(project.apps).find((app) => project.apps[app].appRoot === appRoot);
-    if (!appId) {
-        throw new Error(`Could not find app with root ${appRoot}`);
+    /**
+     * Project structure.
+     *
+     * @returns - Project structure
+     */
+    get project(): Project {
+        return this._project;
     }
-    return new ApplicationAccessImp(project, appId);
+
+    /**
+     * Project type.
+     *
+     * @returns - Project type, like EDMXBackend, CAPJava, or CAPNodejs
+     */
+    get projectType(): ProjectType {
+        return this.project.projectType;
+    }
+
+    /**
+     * Project root path.
+     *
+     * @returns - Project root path
+     */
+    get root(): string {
+        return this.project.root;
+    }
 }
 
+/**
+ * Create an instance of ApplicationAccess that contains information about the application, like paths and services.
+ *
+ * @param appRoot - Application root path
+ * @returns - Instance of ApplicationAccess that contains information about the application, like paths and services
+ */
+export async function createApplicationAccess(appRoot: string): Promise<ApplicationAccess> {
+    try {
+        const apps = await findAllApps([appRoot]);
+        const app = apps.find((app) => app.appRoot === appRoot);
+        if (!app) {
+            throw new Error(`Could not find app with root ${appRoot}`);
+        }
+        const project = await getProject(app.projectRoot);
+        const appId = relative(project.root, appRoot);
+        return new ApplicationAccessImp(project, appId);
+    } catch (error) {
+        throw Error(`Error when creating application access for ${appRoot}: ${error}`);
+    }
+}
+
+/**
+ * Create an instance of ProjectAccess that contains information about the project, like applications, paths, services.
+ *
+ * @param root - Project root path
+ * @returns - Instance of ProjectAccess that contains information about the project
+ */
 export async function createProjectAccess(root: string): Promise<ProjectAccess> {
-    const project = await getProject(root);
-    const projectAccess = new ProjectAccessImp(project);
-    return projectAccess;
+    try {
+        const project = await getProject(root);
+        const projectAccess = new ProjectAccessImp(project);
+        return projectAccess;
+    } catch (error) {
+        throw Error(`Error when creating project access for ${root}: ${error}`);
+    }
 }
