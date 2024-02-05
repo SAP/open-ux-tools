@@ -1,13 +1,16 @@
-import { I18nEntry } from "../types";
-import { printPropertiesI18nAnnotation } from "./print";
+import type { I18nEntry } from '../types';
+import { printPropertiesI18nAnnotation } from './print';
 import { i18n } from './../i18n';
 
 export type MarkdownString = string;
 
 /**
- * Get documentation for i18n entry
+ * Get documentation for i18n entry.
+ *
+ * @param entry i18n entry
+ * @returns markdown string
  */
-export const getI18nDocumentation = (entry: I18nEntry): MarkdownString => {
+export function getI18nDocumentation(entry: I18nEntry): MarkdownString {
     const documentation: MarkdownString[] = [];
     const key = `**${i18n.t('Text_Key')}:** ${entry.key.value}`;
     const value = `**${i18n.t('Text_Value')}:** ${entry.value.value}`;
@@ -21,4 +24,4 @@ export const getI18nDocumentation = (entry: I18nEntry): MarkdownString => {
         documentation.push(`**${i18n.t('Additional_Information')}:** ${annotationText}`);
     }
     return documentation.join('\n\n');
-};
+}

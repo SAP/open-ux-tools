@@ -4,30 +4,41 @@ import { SapLongTextType, SapShortTextType } from '../types';
 /**
  * Get the calculated maximum text length for an i18n property value.
  *
- * (The algorithm considers the current UI5 specification)
- *
  * @param value - Value of the i18n property
+ * @returns max length for a given value
+ * @description The algorithm considers the current UI5 specification.
  */
-export const getI18nMaxLength = (value: string): number => {
+export function getI18nMaxLength(value: string): number {
     const iLength = value.length;
-    return iLength < 8 ? iLength * 5 : iLength <= 30 ? iLength * 3 : iLength * 1.5;
-};
+    if (iLength < 8) {
+        return iLength * 5;
+    }
+    if (iLength <= 30) {
+        return iLength * 3;
+    }
+    return iLength * 1.5;
+}
 
 /**
  * Get a suitable textType for an i18n property.
  *
- * The textType is derived from the maximum text length maxLength of the property value.
- *
  * @param maxLength - Maximum text length of the i18n property value
+ * @returns returns text type
+ * @description The textType is derived from the maximum text length maxLength of the property value.
  */
-export const getI18nTextType = (maxLength: number): SapTextType => {
+export function getI18nTextType(maxLength: number): SapTextType {
     if (maxLength <= 120) {
         return SapShortTextType.Label;
     }
     return SapLongTextType.MessageText;
-};
+}
 
-
+/**
+ * Discover line ending.
+ *
+ * @param text text
+ * @returns text
+ */
 export function discoverLineEnding(text: string): string {
     for (let i = 0; i < text.length; i++) {
         const character = text[i];
@@ -44,6 +55,13 @@ export function discoverLineEnding(text: string): string {
     return '\n';
 }
 const INDENT_PATTERN = /(?:\r|\n|\r?\n)([\t|\s]+)/;
+
+/**
+ * Discover indent.
+ *
+ * @param text text
+ * @returns indented text
+ */
 export function discoverIndent(text: string): string {
     const match = INDENT_PATTERN.exec(text);
     if (match) {
@@ -53,6 +71,16 @@ export function discoverIndent(text: string): string {
     return '    ';
 }
 const LINE_ENDING_PATTERN = /\r|\n|\r?\n/;
+
+/**
+ * Apply indent.
+ *
+ * @param text text
+ * @param indent indent
+ * @param eol end of line
+ * @param indentFirstLine indent first line
+ * @returns indented text
+ */
 export function applyIndent(text: string, indent: string, eol: string, indentFirstLine = true): string {
     const lines = text.split(LINE_ENDING_PATTERN);
     let out = '';
@@ -71,13 +99,13 @@ export function applyIndent(text: string, indent: string, eol: string, indentFir
 }
 
 /**
- * Convert to camel case
+ * Convert to camel case. It gets text like 'product details info' and convert it to 'productDetailsInfo'.
  *
- * It gets text like 'product details info' and convert it
- * to 'productDetailsInfo'
- *
+ * @param text text
+ * @param maxWord maximal word
+ * @returns camel case text
  */
-export const convertToCamelCase = (text = '', maxWord = 4): string => {
+export function convertToCamelCase(text = '', maxWord = 4): string {
     let output = '';
     const parts = text
         .replace(/[^a-zA-Z0-9 ]/g, '')
@@ -96,14 +124,15 @@ export const convertToCamelCase = (text = '', maxWord = 4): string => {
     }
 
     return output;
-};
+}
 /**
- * Convert to pascal case
+ * Convert to pascal case. It gets text like 'product details info' and convert it to 'ProductDetailsInfo'.
  *
- * It gets text like 'product details info' and convert it
- * to 'ProductDetailsInfo'
+ * @param text text
+ * @param maxWord maximal word
+ * @returns pascal case text
  */
-export const convertToPascalCase = (text: string, maxWord = 4): string => {
+export function convertToPascalCase(text: string, maxWord = 4): string {
     let output = '';
     const parts = text
         .replace(/[^a-zA-Z0-9 ]/g, '')
@@ -118,4 +147,4 @@ export const convertToPascalCase = (text: string, maxWord = 4): string => {
     }
 
     return output;
-};
+}

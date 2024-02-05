@@ -9,9 +9,10 @@ import { basename } from 'path';
  *
  * @param i18nFilePath absolute path to `i18n.properties` file
  * @param newI18nEntries new i18n entries that will be maintained
+ * @param root project root optionally used in comment if file is newly generated
  * @returns boolean or exception
- * @note if `i18n.properties` file does not exits, it tries to create
- * @note consumer should maintain respective `manifest.json` entry if needed
+ * @description If `i18n.properties` file does not exits, it tries to create.
+ * @description Consumer should maintain respective `manifest.json` entry if needed.
  */
 export async function createPropertiesI18nEntries(
     i18nFilePath: string,

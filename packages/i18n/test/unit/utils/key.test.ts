@@ -1,4 +1,5 @@
-import { type I18nEntry, I18nBundle, extractI18nKey, getI18nUniqueKey } from '../../../src';
+import { extractI18nKey, getI18nUniqueKey } from '../../../src';
+import type { I18nEntry, I18nBundle } from '../../../src';
 import { Range } from '../../../src/parser/utils';
 
 describe('key', () => {

@@ -1,4 +1,4 @@
-import { csvToI18nBundle } from '../../../../src/transformer/csv';
+import { csvToI18nBundle } from '../../../../src';
 
 describe('csv', () => {
     test('csvToI18nBundle', () => {

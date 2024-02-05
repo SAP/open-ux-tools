@@ -1,4 +1,4 @@
-import { propertiesToI18nEntry } from '../../../../src/transformer/properties';
+import { propertiesToI18nEntry } from '../../../../src';
 describe('properties', () => {
     test('propertiesToI18nEntry', () => {
         // arrange

@@ -4,6 +4,12 @@ import { promises } from 'fs';
 import { type CdsEnvironment } from '../types';
 import { getI18nConfiguration } from './config';
 
+/**
+ * Normalize file pth.
+ *
+ * @param path file path
+ * @returns normalized file path
+ */
 function normalizePath(path: string): string {
     if (process.platform === 'win32') {
         return path.charAt(0).toLowerCase() + path.slice(1);
@@ -11,21 +17,37 @@ function normalizePath(path: string): string {
     return path;
 }
 
+/**
+ * Check if path a start with path b.
+ *
+ * @param a file path one
+ * @param b file path two
+ * @returns boolean
+ */
 function pathStartsWith(a: string, b: string): boolean {
     return normalizePath(a).startsWith(normalizePath(b));
 }
 
 const nodeModules = sep + 'node_modules';
+
 /**
- * Returns the location of an existing _i18n folder next to or in the
+ * Returns the location of an existing `_i18n` folder next to or in the
  * folder hierarchy above the given path, if any.
+ *
+ * @param root project root
  * @param env CDS environment configuration
  * @param filePath CDS source file path
- * @param cache If translation file mapping should be cached
+ * @returns i18n folder or undefined
  */
 export function resolveCapI18nFolderForFile(root: string, env: CdsEnvironment, filePath: string): string | undefined {
     const { folders } = getI18nConfiguration(env);
 
+    /**
+     * Resolve file path.
+     *
+     * @param path file path
+     * @returns file path or undefined
+     */
     function resolve(path: string): string | undefined {
         // check whether a <path>/_i18n exists
         for (const folderName of folders) {
@@ -41,10 +63,8 @@ export function resolveCapI18nFolderForFile(root: string, env: CdsEnvironment, f
             if (next.endsWith(nodeModules)) {
                 return undefined;
             }
-        } else {
-            if (!pathStartsWith(next, root)) {
-                return undefined;
-            }
+        } else if (!pathStartsWith(next, root)) {
+            return undefined;
         }
         return !next || next === path ? undefined : resolve(next);
     }
@@ -52,12 +72,14 @@ export function resolveCapI18nFolderForFile(root: string, env: CdsEnvironment, f
 }
 
 /**
- * Merges i18n files for CDS source files
+ * Merges i18n files for CDS source files.
+ *
  * @param root project root
  * @param env CDS environment configuration
  * @param filePaths CDS file path
+ * @returns i18n files
  */
-export const getCapI18nFiles = (root: string, env: CdsEnvironment, filePaths: string[]): string[] => {
+export function getCapI18nFiles(root: string, env: CdsEnvironment, filePaths: string[]): string[] {
     const { baseFileName } = getI18nConfiguration(env);
     const i18nFiles = filePaths.reduce((acc: string[], filePath) => {
         const i18nFolder = resolveCapI18nFolderForFile(root, env, filePath);
@@ -71,17 +93,17 @@ export const getCapI18nFiles = (root: string, env: CdsEnvironment, filePaths: st
     }, []);
 
     return i18nFiles;
-};
+}
 
 /**
- * Get an i18n folder for an existing CDS file. A new folder is created, if it does not exist
+ * Get an i18n folder for an existing CDS file. A new folder is created, if it does not exist.
  *
  * @param root project root
  * @param path path to cds file
  * @param env CDS environment configuration
+ * @returns i18n folder path
  */
-
-export const getCapI18nFolder = async (root: string, path: string, env: CdsEnvironment): Promise<string> => {
+export async function getCapI18nFolder(root: string, path: string, env: CdsEnvironment): Promise<string> {
     const { folders } = getI18nConfiguration(env);
     let i18nFolderPath = resolveCapI18nFolderForFile(root, env, join(root, path));
     if (!i18nFolderPath) {
@@ -90,4 +112,4 @@ export const getCapI18nFolder = async (root: string, path: string, env: CdsEnvir
         await promises.mkdir(i18nFolderPath);
     }
     return i18nFolderPath;
-};
+}

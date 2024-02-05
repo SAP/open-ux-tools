@@ -2,32 +2,72 @@ import { Range, positionAt, getLineOffsets } from '../../utils';
 import { type CsvDocument, type Token, type CsvField, type CsvRow, type CsvParseResult, TokenType } from '../types';
 import { tokenize } from '../lexer';
 
+/**
+ * Parse CSV
+ */
 class ParseCsv {
     private text: string;
     private lineOffsets: number[];
     private i: number;
     private tokens: Token[];
+
+    /**
+     * Constructor of ParseCsv class.
+     *
+     * @param text text
+     */
     constructor(text: string) {
         this.text = text;
         this.tokens = tokenize(text);
         this.lineOffsets = getLineOffsets(text);
         this.i = 0;
     }
-    getTokens() {
+    /**
+     * Get tokens.
+     *
+     * @returns list of tokens
+     */
+    getTokens(): Token[] {
         return this.tokens;
     }
+    /**
+     * Get content length from text.
+     *
+     * @returns number
+     */
     getContentLength(): number {
         return this.text.length;
     }
+    /**
+     * Peek a token.
+     *
+     * @param count number to peek
+     * @returns Token or undefined
+     */
     peek(count = 0): Token | undefined {
         return this.tokens[this.i + count];
     }
+    /**
+     * Consume a token.
+     *
+     * @returns token
+     */
     consume(): Token {
         return this.tokens[this.i++];
     }
+    /**
+     * End of line.
+     *
+     * @returns boolean
+     */
     eof(): boolean {
         return this.i >= this.tokens.length;
     }
+    /**
+     * Parse CSV field.
+     *
+     * @returns CSV filed
+     */
     parseField(): CsvField {
         const token = this.consume();
         return {
@@ -39,6 +79,11 @@ class ParseCsv {
             )
         };
     }
+    /**
+     * Parse CSV row.
+     *
+     * @returns CDV row
+     */
     parseRow(): CsvRow {
         const row: CsvRow = {
             fields: [],
@@ -74,6 +119,11 @@ class ParseCsv {
         }
         return row;
     }
+    /**
+     * Parse CSV document.
+     *
+     * @returns CSV document
+     */
     parseDocument(): CsvDocument {
         // escape newline(s)
         while (!this.eof()) {
@@ -100,6 +150,12 @@ class ParseCsv {
     }
 }
 
+/**
+ * Parse CSV content.
+ *
+ * @param text text
+ * @returns CSV parsed result
+ */
 export function parseCsv(text: string): CsvParseResult {
     const csv = new ParseCsv(text);
     const tokens = csv.getTokens();

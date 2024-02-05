@@ -1,4 +1,4 @@
-import { Token, TokenType } from '../types';
+import type { Token, TokenType } from '../types';
 import {
     COMMENT_START,
     WHITESPACE,
@@ -10,6 +10,15 @@ import {
     UNICODE_CHARACTER_LENGTH
 } from '../constant';
 
+/**
+ * Create token for image.
+ *
+ * @param type token type
+ * @param image text image
+ * @param start start
+ * @param end end
+ * @returns token
+ */
 export function createToken(type: TokenType, image: string, start: number, end: number): Token {
     return {
         type,
@@ -19,6 +28,12 @@ export function createToken(type: TokenType, image: string, start: number, end: 
     };
 }
 
+/**
+ * Tokenize text.
+ *
+ * @param text text
+ * @returns list of tokens
+ */
 export function tokenize(text: string): Token[] {
     const tokens: Token[] = [];
     let i = 0;

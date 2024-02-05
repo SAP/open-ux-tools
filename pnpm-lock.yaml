@@ -964,6 +964,9 @@ importers:
 
   packages/i18n:
     dependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       i18next:
         specifier: 19.0.2
         version: 19.0.2

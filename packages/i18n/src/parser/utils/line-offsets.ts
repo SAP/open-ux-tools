@@ -1,6 +1,8 @@
 /**
- * Computes line offsets for the given string
- * @param text
+ * Computes line offsets for the given string.
+ *
+ * @param text text
+ * @returns array of number
  */
 export function getLineOffsets(text: string): number[] {
     const lineOffsets: number[] = [0];

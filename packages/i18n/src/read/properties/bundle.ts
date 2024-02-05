@@ -1,9 +1,10 @@
-import { type I18nBundle } from '../../types';
+import type { I18nBundle } from '../../types';
 import { promises } from 'fs';
 import { propertiesToI18nEntry } from '../../transformer/properties';
 
 /**
- * Gets i18n bundle for `.properties` file
+ * Gets i18n bundle for `.properties` file.
+ *
  * @param i18nFilePath absolute path to `i18n.properties` file
  * @returns i18n bundle or exception
  */

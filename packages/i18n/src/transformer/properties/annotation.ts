@@ -2,7 +2,15 @@ import { Range } from '../../parser/utils';
 import type { I18nAnnotationNode, ValueNode, SapTextType, TextNode } from './../../types';
 import type { CommentLine, PropertyLine } from '../../parser/properties/types';
 
-const toTextTypeNode = (comment: CommentLine, commaIndex: number, colonIndex: number): ValueNode<SapTextType> => {
+/**
+ * Convert text to value node with range information.
+ *
+ * @param comment comment
+ * @param commaIndex comma index
+ * @param colonIndex colon index
+ * @returns value node with range info
+ */
+function toTextTypeNode(comment: CommentLine, commaIndex: number, colonIndex: number): ValueNode<SapTextType> {
     const {
         range: { start },
         value
@@ -25,18 +33,26 @@ const toTextTypeNode = (comment: CommentLine, commaIndex: number, colonIndex: nu
         value: value.slice(1) as SapTextType,
         range: Range.create(start.line, start.character, start.line, start.character + value.length)
     };
-};
+}
 
-const toMaxLength = (comment: CommentLine, commaIndex: number, colonIndex: number): ValueNode<number> | undefined => {
+/**
+ * Convert text to value node with range information.
+ *
+ * @param comment comment
+ * @param commaIndex comma index
+ * @param colonIndex colon index
+ * @returns value node with range info
+ */
+function toMaxLength(comment: CommentLine, commaIndex: number, colonIndex: number): ValueNode<number> | undefined {
     if (commaIndex === -1) {
-        return;
+        return undefined;
     }
     const {
         range: { start },
         value
     } = comment;
     return {
-        value: parseInt(value.slice(commaIndex + 1, colonIndex === -1 ? undefined : colonIndex)),
+        value: parseInt(value.slice(commaIndex + 1, colonIndex === -1 ? undefined : colonIndex), 10),
         range: Range.create(
             start.line,
             start.character + commaIndex + 1,
@@ -44,10 +60,18 @@ const toMaxLength = (comment: CommentLine, commaIndex: number, colonIndex: numbe
             start.character + (colonIndex === -1 ? value.length : colonIndex)
         )
     };
-};
-const toNote = (comment: CommentLine, colonIndex: number): TextNode | undefined => {
+}
+
+/**
+ * Convert comment to note node with range info.
+ *
+ * @param comment comment
+ * @param colonIndex colon index
+ * @returns note node with range info
+ */
+function toNote(comment: CommentLine, colonIndex: number): TextNode | undefined {
     if (colonIndex === -1) {
-        return;
+        return undefined;
     }
     const {
         range: { start },
@@ -57,11 +81,17 @@ const toNote = (comment: CommentLine, colonIndex: number): TextNode | undefined 
         value: value.slice(colonIndex + 1),
         range: Range.create(start.line, start.character + colonIndex + 1, start.line, start.character + value.length)
     };
-};
+}
 
-export const getAnnotation = (commentLine: PropertyLine | undefined): I18nAnnotationNode | undefined => {
+/**
+ * Get i18n annotation.
+ *
+ * @param commentLine comment line
+ * @returns annotation node
+ */
+export function getAnnotation(commentLine: PropertyLine | undefined): I18nAnnotationNode | undefined {
     if (commentLine?.type !== 'comment-line') {
-        return;
+        return undefined;
     }
     const { value } = commentLine;
     const commaIndex = value.indexOf(',');
@@ -73,4 +103,4 @@ export const getAnnotation = (commentLine: PropertyLine | undefined): I18nAnnota
     };
 
     return annotation;
-};
+}

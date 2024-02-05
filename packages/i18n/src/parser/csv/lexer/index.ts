@@ -1,6 +1,13 @@
-import { Token, TokenType } from '../types';
+import type { Token } from '../types';
+import { TokenType } from '../types';
 const SEPARATOR = /[,;\t]/;
 
+/**
+ * Tokenize CSV text.
+ *
+ * @param text text
+ * @returns list of token
+ */
 export function tokenize(text: string): Token[] {
     const tokens: Token[] = [];
     let i = 0;

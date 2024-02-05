@@ -1,4 +1,4 @@
-import { NewI18nEntry, createPropertiesI18nEntries } from '../../../../src';
+import { createPropertiesI18nEntries } from '../../../../src';
 import * as utilsWrite from '../../../../src/write/utils';
 import * as utils from '../../../../src/utils';
 import { promises } from 'fs';
@@ -80,9 +80,13 @@ describe('create', () => {
                     value: 'New Value'
                 }
             ];
-            const result = createPropertiesI18nEntries('i18n.properties', newEntries);
-            expect(doesExistSpy).toHaveBeenCalledTimes(1);
-            expect(result).rejects.toThrowError('should-throw-error');
+            try {
+                await createPropertiesI18nEntries('i18n.properties', newEntries);
+                expect(false).toBeTruthy(); // should never happens.
+            } catch (error) {
+                expect(doesExistSpy).toHaveBeenCalledTimes(1);
+                expect(error.message).toEqual('should-throw-error');
+            }
         });
     });
 });

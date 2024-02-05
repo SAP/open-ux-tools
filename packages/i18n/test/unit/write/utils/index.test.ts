@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { writeToExistingI18nPropertiesFile } from '../../../../src/write/utils';
+import { SapShortTextType } from '../../../../src';
 describe('index', () => {
     describe('writeToExistingI18nPropertiesFile', () => {
         beforeEach(() => {
@@ -111,7 +112,33 @@ describe('index', () => {
                     }
                 );
             });
-            test.todo('object');
+            test('object', async () => {
+                // arrange
+                const writeFileSpy = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+                const readFileSpy = jest
+                    .spyOn(fs.promises, 'readFile')
+                    .mockResolvedValue('\n#XFLD,27\nExistingKey=New Value');
+                // act
+                const result = await writeToExistingI18nPropertiesFile('i18n.properties', [
+                    {
+                        key: 'NewKey',
+                        value: 'New Value',
+                        annotation: { textType: SapShortTextType.Label, maxLength: 27 }
+                    }
+                ]);
+                // assert
+                expect(result).toEqual(true);
+                expect(readFileSpy).toHaveBeenCalledTimes(1);
+                expect(writeFileSpy).toHaveBeenCalledTimes(1);
+                expect(writeFileSpy).toHaveBeenNthCalledWith(
+                    1,
+                    'i18n.properties',
+                    '\n#XFLD,27\nExistingKey=New Value\n\n#XFLD,27\nNewKey=New Value\n',
+                    {
+                        encoding: 'utf8'
+                    }
+                );
+            });
         });
     });
 });

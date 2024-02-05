@@ -2,10 +2,16 @@ import { readdirSync, statSync, promises } from 'fs';
 import { join, dirname } from 'path';
 import { platform } from 'os';
 import { deserialize } from '../helper/deserialize-ast';
-import { FileExtension } from './types';
+import type { FileExtension } from './types';
 const { readFile } = promises;
 
-export const getBase = (parts: string[] = []): string => {
+/**
+ * Get file base path.
+ *
+ * @param parts file path parts
+ * @returns base
+ */
+export function getBase(parts: string[] = []): string {
     try {
         const filePath = join(__dirname, '..', 'data', ...parts);
         if (statSync(filePath)) {
@@ -17,44 +23,75 @@ export const getBase = (parts: string[] = []): string => {
     }
 
     return '';
-};
+}
 
-export const getFileContent = async (filePath: string): Promise<string> => {
+/**
+ * Get file content.
+ *
+ * @param filePath file path
+ * @returns file content
+ */
+export async function getFileContent(filePath: string): Promise<string> {
     const buffer = await readFile(filePath, 'utf8');
     return buffer.toString();
-};
+}
 
-export const getInput = async (testCasePath: string, ext: FileExtension): Promise<string> => {
+/**
+ * Get file content.
+ *
+ * @param testCasePath path to a test case
+ * @param ext file extension
+ * @returns file content
+ */
+export async function getInput(testCasePath: string, ext: FileExtension): Promise<string> {
     const path = join(getBase(), testCasePath, `input${ext}`);
     return getFileContent(path);
-};
+}
 
-export const getAllNormalizeFolderPath = (ext: FileExtension, base: string, allFolderPath: string[] = []): string[] => {
+/**
+ * Get normalized folder path.
+ *
+ * @param ext file extension
+ * @param base base location to look for file
+ * @param allFolderPath collect folder path
+ * @returns array of normalized folder path
+ */
+export function getAllNormalizeFolderPath(ext: FileExtension, base: string, allFolderPath: string[] = []): string[] {
     const fileOrFolder = readdirSync(base);
-    fileOrFolder.forEach(async function (item: string) {
+    fileOrFolder.forEach(async (item: string) => {
         const itemPath = join(base, item);
         if (statSync(itemPath).isDirectory()) {
             allFolderPath = getAllNormalizeFolderPath(ext, itemPath, allFolderPath);
-        } else {
-            if (itemPath.endsWith(ext)) {
-                const dirPath = dirname(itemPath);
-                const relativeLike = dirPath.split(getBase())[1];
-                const normalizedPath = relativeLike.replace(platform() === 'win32' ? /\\/g : /\//g, '/');
-                allFolderPath.push(normalizedPath);
-            }
+        } else if (itemPath.endsWith(ext)) {
+            const dirPath = dirname(itemPath);
+            const relativeLike = dirPath.split(getBase())[1];
+            const normalizedPath = relativeLike.replace(platform() === 'win32' ? /\\/g : /\//g, '/');
+            allFolderPath.push(normalizedPath);
         }
     });
 
     return allFolderPath;
-};
+}
 
-export const getToken = async <T>(testCasePath: string): Promise<T> => {
+/**
+ * Get token.
+ *
+ * @param testCasePath path to a test case
+ * @returns deserialized token
+ */
+export async function getToken<T>(testCasePath: string): Promise<T> {
     const path = join(getBase(), testCasePath, 'token.json');
     const content = await getFileContent(path);
     return deserialize<T>(content);
-};
-export const getAst = async <T>(testCasePath: string): Promise<T> => {
+}
+/**
+ * Get AST.
+ *
+ * @param testCasePath path to a test case
+ * @returns deserialized AST content
+ */
+export async function getAst<T>(testCasePath: string): Promise<T> {
     const path = join(getBase(), testCasePath, 'ast.json');
     const content = await getFileContent(path);
     return deserialize<T>(content);
-};
+}

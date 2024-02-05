@@ -14,6 +14,13 @@ import { Range } from '../../parser/utils';
 import type { Node } from 'jsonc-parser';
 import { parseTree } from 'jsonc-parser';
 
+/**
+ * Create full bundle.
+ *
+ * @param fallbackLocale fallback local
+ * @param newEntries new i18n entries that will be maintained
+ * @returns fallback key with i18n bundle
+ */
 function createFullBundle(fallbackLocale: string, newEntries: NewI18nEntry[]): Record<string, Record<string, string>> {
     const fallbackBundle = newEntries.reduce((acc: Record<string, string>, entry) => {
         acc[entry.key] = entry.value;
@@ -23,16 +30,34 @@ function createFullBundle(fallbackLocale: string, newEntries: NewI18nEntry[]): R
         [fallbackLocale]: fallbackBundle
     };
 }
+
+/**
+ * Get text document.
+ *
+ * @param text json text
+ * @returns text document instance
+ */
 const getTextDocument = (text: string) => TextDocument.create('', '', 0, text);
 
-const addToExistingFallbackLocalNode = (
+/**
+ * Add json text to fallback node.
+ *
+ * @param text json text
+ * @param fallbackLocale fallback node
+ * @param fallbackLocaleNode fallback local node
+ * @param indent indentation
+ * @param eol end of line
+ * @param newEntries new i18n entries that will be maintained
+ * @returns text string
+ */
+function addToExistingFallbackLocalNode(
     text: string,
     fallbackLocale: string,
     fallbackLocaleNode: Node,
     indent: string,
     eol: string,
     newEntries: NewI18nEntry[]
-): string => {
+): string {
     const bundleNode = (fallbackLocaleNode.children ?? [])[1];
     const textNodes = bundleNode?.children ?? [];
     if (textNodes.length) {
@@ -65,8 +90,16 @@ const addToExistingFallbackLocalNode = (
         return TextDocument.applyEdits(document, [edit]);
     }
     return text;
-};
+}
 
+/**
+ * Add json text.
+ *
+ * @param text json text
+ * @param fallbackLocale fallback local i18n
+ * @param newEntries new i18n entries that will be maintained
+ * @returns text string
+ */
 export function addJsonTexts(text: string, fallbackLocale: string, newEntries: NewI18nEntry[]): string {
     if (text === '') {
         const bundle = createFullBundle(fallbackLocale, newEntries);
@@ -109,6 +142,14 @@ export function addJsonTexts(text: string, fallbackLocale: string, newEntries: N
     return TextDocument.applyEdits(document, [edit]);
 }
 
+/**
+ * Try add new i18n entries to json file.
+ *
+ * @param env cds environment
+ * @param path file path
+ * @param newI18nEntries new i18n entries that will be maintained
+ * @returns boolean
+ */
 export async function tryAddJsonTexts(
     env: CdsEnvironment,
     path: string,

@@ -1,11 +1,21 @@
 import type { Range } from './parser/utils';
 
+/**
+ * Value node
+ */
 export interface ValueNode<T> {
     value: T;
     range: Range;
 }
+
+/**
+ * Text node
+ */
 export type TextNode = ValueNode<string>;
 
+/**
+ * i18n annotation node
+ */
 export interface I18nAnnotationNode {
     textType: ValueNode<SapTextType>;
     maxLength?: ValueNode<number>;
@@ -15,6 +25,9 @@ export interface I18nAnnotationNode {
     note?: TextNode;
 }
 
+/**
+ * Annotations for the translation entry, which can contain additional metadata about the entry.
+ */
 export interface I18nAnnotation {
     textType: SapTextType;
     maxLength?: number;
@@ -24,6 +37,9 @@ export interface I18nAnnotation {
     note?: string;
 }
 
+/**
+ * new i18n entry
+ */
 export interface NewI18nEntry {
     key: string;
     value: string;
@@ -33,6 +49,9 @@ export interface NewI18nEntry {
     annotation?: I18nAnnotation | string;
 }
 
+/**
+ * i18n entry
+ */
 export interface I18nEntry {
     filePath: string;
     key: TextNode;
@@ -43,6 +62,9 @@ export interface I18nEntry {
     annotation?: I18nAnnotationNode;
 }
 
+/**
+ * i18n bundle
+ */
 export type I18nBundle = Record<string, I18nEntry[]>;
 
 /**
@@ -110,12 +132,19 @@ export enum SapLongTextType {
 }
 
 export const NOT_RELEVANT_FOR_TRANSLATION = 'NOTR';
+
 export type SapTextType = SapShortTextType | SapLongTextType | typeof NOT_RELEVANT_FOR_TRANSLATION;
 
+/**
+ * CDS environment.
+ */
 export interface CdsEnvironment {
     i18n?: CdsI18nEnv;
 }
 
+/**
+ * CDS i18n configuration.
+ */
 export interface CdsI18nConfiguration {
     folders: string[];
     baseFileName: string;
@@ -123,6 +152,9 @@ export interface CdsI18nConfiguration {
     fallbackLanguage: string;
 }
 
+/**
+ * CDS i18n environment.
+ */
 export interface CdsI18nEnv {
     folders?: string[];
     file?: string;
