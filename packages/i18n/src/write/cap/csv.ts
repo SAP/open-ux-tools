@@ -7,7 +7,15 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Range, Position } from '../../parser/utils';
 import { parseCsv } from '../../parser/csv/parser';
 
-export const addCsvTexts = (text: string, fallbackLocale: string, newEntries: NewI18nEntry[]): string => {
+/**
+ * Add csv text.
+ *
+ * @param text csv text
+ * @param fallbackLocale fallback local
+ * @param newEntries new i18n entries that will be maintained
+ * @returns csv text
+ */
+export function addCsvTexts(text: string, fallbackLocale: string, newEntries: NewI18nEntry[]): string {
     const { ast } = parseCsv(text);
     const eol = discoverLineEnding(text);
 
@@ -71,8 +79,16 @@ export const addCsvTexts = (text: string, fallbackLocale: string, newEntries: Ne
         range: Range.create(position, position)
     });
     return TextDocument.applyEdits(document, edits);
-};
+}
 
+/**
+ * Try add new i18n entries to csv file.
+ *
+ * @param env cds environment
+ * @param path file path
+ * @param newI18nEntries new i18n entries that will be maintained
+ * @returns boolean
+ */
 export async function tryAddCsvTexts(
     env: CdsEnvironment,
     path: string,

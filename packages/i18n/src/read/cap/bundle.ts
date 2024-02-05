@@ -5,17 +5,30 @@ import { jsonToI18nBundle } from '../../transformer/json';
 import { propertiesToI18nEntry } from '../../transformer/properties';
 import { csvToI18nBundle } from '../../transformer/csv';
 
+/**
+ * Try to convert text to i18n bundle.
+ *
+ * @param path file path
+ * @param toI18nBundle function to convert to i18n bundle
+ * @returns i18n bundle or undefine
+ */
 async function tryTransformTexts(
     path: string,
     toI18nBundle: (content: string, path?: string) => I18nBundle
 ): Promise<I18nBundle | undefined> {
     if (!(await doesExist(path))) {
-        return;
+        return undefined;
     }
     const content = await promises.readFile(path, { encoding: 'utf8' });
     return toI18nBundle(content, path);
 }
 
+/**
+ * Get transformers.
+ *
+ * @param fallbackLanguage fallback language
+ * @returns array of transformer
+ */
 const getTransformers = (fallbackLanguage: string) => [
     { toI18nBundle: jsonToI18nBundle, filePath: jsonPath },
     {
@@ -28,7 +41,9 @@ const getTransformers = (fallbackLanguage: string) => [
 ];
 
 /**
- * Merges i18n files in to a single bundle for CDS source files
+ * Merges i18n files in to a single bundle for CDS source files.
+ *
+ * @param root project root
  * @param env CDS environment configuration
  * @param filePaths CDS file path
  * @returns i18n bundle or exception

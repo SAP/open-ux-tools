@@ -4,6 +4,16 @@ import { printPropertiesI18nEntry, capPropertiesPath, doesExist } from '../../ut
 import { tryAddCsvTexts } from './csv';
 import { writeToExistingI18nPropertiesFile } from '../utils';
 
+/**
+ * Add i18n entries to respective i18n file.
+ *
+ * @description It first tries to add to an existing `.properties` file, it it does not exist, it tries to add to `.csv` file,
+ * if it fails, it generates new `.properties` file with new i18n entries.
+ * @param env cds environment
+ * @param path file path
+ * @param newI18nEntries new i18n entries that will be maintained
+ * @returns boolean
+ */
 export async function tryAddPropertiesTexts(
     env: CdsEnvironment,
     path: string,

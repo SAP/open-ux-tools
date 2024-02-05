@@ -2,10 +2,12 @@ import type { I18nAnnotation } from '../types';
 import { getI18nMaxLength, getI18nTextType } from './text';
 
 /**
- * Creates annotation text in .properties file format.
+ * Creates annotation text in .properties file format
  * If no annotation is not provided, default one is generated based on text.
- * @param text
+ *
+ * @param text text
  * @param annotation Context information for the text
+ * @returns printed i18n annotation
  */
 export function printPropertiesI18nAnnotation(text: string, annotation?: string | I18nAnnotation): string {
     if (!annotation) {
@@ -37,11 +39,13 @@ export function printPropertiesI18nAnnotation(text: string, annotation?: string 
 }
 
 /**
- * Creates text for i18n entry for `.properties` file format.
+ * Creates text for i18n entry for `.properties` file format
  * If no annotation is not present, generic default one will be generated based on the text.
- * @param key
- * @param text
+ *
+ * @param key key
+ * @param text text
  * @param annotation Context information for the text
+ * @returns printed i18n entries
  */
 export function printPropertiesI18nEntry(key: string, text: string, annotation?: string | I18nAnnotation): string {
     const annotationText = printPropertiesI18nAnnotation(text, annotation);

@@ -1,4 +1,4 @@
-import { jsonToI18nBundle } from '../../../../src/transformer/json';
+import { jsonToI18nBundle } from '../../../../src';
 
 describe('json', () => {
     test('jsonToI18nBundle', () => {

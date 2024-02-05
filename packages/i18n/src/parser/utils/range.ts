@@ -11,7 +11,8 @@ import { Position, positionAt } from './position';
  *     end : { line 6, character : 0 }
  * }
  * ```
- * @Note copied from: node_modules\vscode-languageserver-types\lib\umd\main.d.ts. To keep source code lightweight since it depends only on `Range`
+ *
+ * @description copied from: node_modules\vscode-languageserver-types\lib\umd\main.d.ts. To keep source code lightweight since it depends only on `Range`
  */
 export interface Range {
     /**
@@ -26,6 +27,15 @@ export interface Range {
 
 function createRange(start: Position, end: Position): Range;
 function createRange(startLine: number, startCharacter: number, endLine: number, endCharacter: number): Range;
+/**
+ * Create range.
+ *
+ * @param one position or number
+ * @param two position or number
+ * @param three number
+ * @param four number
+ * @returns range
+ */
 function createRange(one: Position | number, two: Position | number, three?: number, four?: number): Range {
     if (
         typeof one === 'number' &&
@@ -54,6 +64,15 @@ export const Range = {
     create: createRange
 };
 
+/**
+ * Create range.
+ *
+ * @param lineOffsets line offset
+ * @param start start point
+ * @param end end point
+ * @param textLength text length
+ * @returns range
+ */
 export function rangeAt(lineOffsets: number[], start: number, end: number, textLength: number): Range {
     return Range.create(positionAt(lineOffsets, start, textLength), positionAt(lineOffsets, end, textLength));
 }

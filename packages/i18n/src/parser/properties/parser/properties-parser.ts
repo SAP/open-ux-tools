@@ -2,7 +2,11 @@ import { Range, getLineOffsets, rangeAt } from '../../utils';
 import type { CommentLine, KeyElementLine, PropertyList, TextNode, Token } from '../types';
 
 /**
- * Implements reading files Java properties files as described in https://docs.oracle.com/javase/10/docs/api/java/util/Properties.html
+ * Implements reading files Java properties files as described in https://docs.oracle.com/javase/10/docs/api/java/util/Properties.html.
+ *
+ * @param tokens list of token
+ * @param text text content
+ * @returns array of property line
  */
 export function getPropertyList(tokens: Token[], text: string): PropertyList {
     const lineOffsets = getLineOffsets(text);
@@ -13,6 +17,11 @@ export function getPropertyList(tokens: Token[], text: string): PropertyList {
     const consume = (): Token => tokens[i++];
     const eof = (): boolean => i >= tokens.length;
 
+    /**
+     * Parse comment.
+     *
+     * @returns comment line
+     */
     function parseComment(): CommentLine {
         const comment = consume();
         return {
@@ -22,6 +31,11 @@ export function getPropertyList(tokens: Token[], text: string): PropertyList {
         };
     }
 
+    /**
+     * Parse key element line.
+     *
+     * @returns key element line
+     */
     function parseKeyElement(): KeyElementLine {
         const keyToken = consume();
 
@@ -81,6 +95,11 @@ export function getPropertyList(tokens: Token[], text: string): PropertyList {
         };
     }
 
+    /**
+     * Parse property lines.
+     *
+     * @returns property lines
+     */
     function parseList(): PropertyList {
         const list = [];
 

@@ -8,7 +8,7 @@
  * Positions are line end character agnostic. So you can not specify a position that
  * denotes `\r|\n` or `\n|` where `|` represents the character offset.
  *
- * @Note copied from: node_modules\vscode-languageserver-types\lib\umd\main.d.ts. To keep source code lightweight since it depends only on `Range`
+ * @description copied from: node_modules\vscode-languageserver-types\lib\umd\main.d.ts. To keep source code lightweight since it depends only on `Range`
  */
 export interface Position {
     /**
@@ -37,13 +37,14 @@ export const Position = {
     }
 };
 
-
 /**
+ * Position at.
  *
  * @param lineOffsets Array of indices with line start offsets.
  * e.g [0] represents a document with one line that starts at offset 0.
- * @param offset
- * @param textLength
+ * @param offset offset
+ * @param textLength max length
+ * @returns position
  */
 export function positionAt(lineOffsets: number[], offset: number, textLength: number): Position {
     const target = Math.max(Math.min(offset, textLength), 0);

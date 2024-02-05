@@ -1,10 +1,10 @@
-import type { Range } from "../utils";
+import type { Range } from '../utils';
 export enum TokenType {
     separator = 'separator',
     eol = 'eol',
     text = 'text',
     escaped = 'escaped-text'
-};
+}
 
 export interface Token {
     type: TokenType;

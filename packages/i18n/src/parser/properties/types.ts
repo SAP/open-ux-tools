@@ -1,4 +1,4 @@
-import { Range } from "../utils";
+import type { Range } from '../utils';
 export interface TextNode {
     type: 'text';
     value: string;
@@ -17,7 +17,6 @@ export interface CommentLine {
     value: string;
     range: Range;
 }
-
 
 export type TokenType =
     | 'comment'
@@ -44,7 +43,6 @@ export interface Token {
      */
     end: number;
 }
-
 
 export type PropertyLine = KeyElementLine | CommentLine;
 export type PropertyList = PropertyLine[];
