@@ -6,6 +6,7 @@
     "@sap/generator-fiori": "latest",
     "@sap/ux-cds-odata-language-server-extension": "latest",
     "@sap-ux/create": "latest",
+    "@sap-ux/deploy-tooling": "latest",
     "@sapui5/distribution-metadata": "latest",
     "@ui5/builder": "latest",
     "chokidar": "latest",
