@@ -1,0 +1,29 @@
+{
+    "type": "annotation",
+    "term": {
+        "type": "path",
+        "value": "a",
+        "segments": [
+            {
+                "type": "identifier",
+                "value": "a",
+                "range": "[(0,0)..(0,1)]",
+                "quoted": false
+            }
+        ],
+        "separators": [],
+        "range": "[(0,0)..(0,1)]"
+    },
+    "range": "[(0,0)..(0,40)]",
+    "colon": {
+        "type": "token",
+        "range": "[(0,2)..(0,3)]",
+        "value": ":"
+    },
+    "value": {
+        "type": "quoted-literal",
+        "value": "2012-09-03 14:530:00.0000",
+        "range": "[(0,4)..(0,40)]",
+        "kind": "timestamp"
+    }
+}

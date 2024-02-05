@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.11.28
+
+### Patch Changes
+
+-   b817c8d5: Property change is created (unsaved) on the key press but should be on blur for the adaptation projects
+
+## 0.11.27
+
+### Patch Changes
+
+-   52265581: Fix styling for the funnel icon on Outline Panel
+
 ## 0.11.26
 
 ### Patch Changes

@@ -1,0 +1,101 @@
+{
+    "type": "annotation",
+    "term": {
+        "type": "path",
+        "value": "Common.SideEffects.TargetProperties",
+        "segments": [
+            {
+                "type": "identifier",
+                "value": "Common",
+                "range": "[(0,0)..(0,6)]",
+                "quoted": false
+            },
+            {
+                "type": "identifier",
+                "value": "SideEffects",
+                "range": "[(0,7)..(0,18)]",
+                "quoted": false
+            },
+            {
+                "type": "identifier",
+                "value": "TargetProperties",
+                "range": "[(0,19)..(0,35)]",
+                "quoted": false
+            }
+        ],
+        "separators": [
+            {
+                "type": "separator",
+                "value": ".",
+                "range": "[(0,6)..(0,7)]",
+                "escaped": false
+            },
+            {
+                "type": "separator",
+                "value": ".",
+                "range": "[(0,18)..(0,19)]",
+                "escaped": false
+            }
+        ],
+        "range": "[(0,0)..(0,35)]"
+    },
+    "range": "[(0,0)..(0,80)]",
+    "colon": {
+        "type": "token",
+        "range": "[(0,35)..(0,36)]",
+        "value": ":"
+    },
+    "value": {
+        "type": "collection",
+        "items": [
+            {
+                "type": "string",
+                "value": "_it2/author_ID",
+                "range": "[(0,38)..(0,54)]",
+                "openToken": {
+                    "type": "token",
+                    "value": "'",
+                    "range": "[(0,38)..(0,39)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "'",
+                    "range": "[(0,53)..(0,54)]"
+                }
+            },
+            {
+                "type": "string",
+                "value": "_it2/author_author_ID",
+                "range": "[(0,56)..(0,79)]",
+                "openToken": {
+                    "type": "token",
+                    "value": "'",
+                    "range": "[(0,56)..(0,57)]"
+                },
+                "closeToken": {
+                    "type": "token",
+                    "value": "'",
+                    "range": "[(0,78)..(0,79)]"
+                }
+            }
+        ],
+        "range": "[(0,37)..(0,80)]",
+        "commas": [
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(0,54)..(0,55)]"
+            }
+        ],
+        "openToken": {
+            "type": "token",
+            "value": "[",
+            "range": "[(0,37)..(0,38)]"
+        },
+        "closeToken": {
+            "type": "token",
+            "value": "]",
+            "range": "[(0,79)..(0,80)]"
+        }
+    }
+}
