@@ -3,7 +3,6 @@ import { prettyPrintError, prettyPrintMessage } from './message';
 import type { ErrorMessage } from './message';
 import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
-
 /**
  * Required configuration a transportable object.
  */
@@ -54,6 +53,10 @@ export interface DeployConfig {
      * if set then the SafeMode url parameter will be set. SafeMode is by default active, to deactivate provide false
      */
     safeMode?: boolean;
+    /**
+     * if set to true, then any additional info messages will be logged
+     */
+    showAddInfo?: boolean;
 }
 
 /**
@@ -175,9 +178,16 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param config.bsp BSP configuration
      * @param config.testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
      * @param config.safeMode if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
+     * @param config.showAddInfo if set to true, then additional info message will be logged
      * @returns the Axios response object for further processing
      */
-    public async deploy({ archive, bsp, testMode = false, safeMode }: DeployConfig): Promise<AxiosResponse> {
+    public async deploy({
+        archive,
+        bsp,
+        testMode = false,
+        safeMode,
+        showAddInfo = false
+    }: DeployConfig): Promise<AxiosResponse> {
         const info: AppInfo = await this.getInfo(bsp.name);
         const payload = this.createPayload(
             archive,
@@ -205,9 +215,9 @@ export class Ui5AbapRepositoryService extends ODataService {
                 const query = this.defaults.params?.['sap-client']
                     ? '?sap-client=' + this.defaults.params['sap-client']
                     : '';
-                if (this.isDest) {
+                if (this.isDest && showAddInfo) {
                     this.log.info(
-                        '(Note: You will need to replace the host in the URL with the internal host, if your destination is configured using an On-Premise SAP Cloud Connector)'
+                        '(Note: As the destination is configured using an On-Premise SAP Cloud Connector, you will need to replace the host in the URL above with the internal host)'
                     );
                 }
                 this.log.info(`App available at ${frontendUrl}${path}${query}`);

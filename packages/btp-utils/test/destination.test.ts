@@ -1,3 +1,4 @@
+import { DestinationProxyType } from '../dist';
 import {
     Destination,
     isAbapSystem,
@@ -6,7 +7,8 @@ import {
     WebIDEAdditionalData,
     isGenericODataDestination,
     isPartialUrlDestination,
-    isFullUrlDestination
+    isFullUrlDestination,
+    isOnPremiseDestination
 } from '../src';
 import destinations from './mockResponses/destinations.json';
 
@@ -96,6 +98,24 @@ describe('destination', () => {
         it('not a generic OData destination', () => {
             expect(isFullUrlDestination(destination)).toBe(false);
             expect(isFullUrlDestination({ ...destination, WebIDEUsage: 'anything' })).toBe(false);
+        });
+    });
+    describe('isOnPremise', () => {
+        it('destination set to onPremise', () => {
+            expect(
+                isOnPremiseDestination({
+                    ...destination,
+                    ProxyType: DestinationProxyType.ON_PREMISE,
+                    WebIDEAdditionalData: WebIDEAdditionalData.FULL_URL
+                })
+            ).toBe(true);
+        });
+        it('Destination is internet facing', () => {
+            expect(
+                isOnPremiseDestination(
+                    destinations.find((destination) => destination.Name === 'ABAP_ON_BTP') as Destination
+                )
+            ).toBe(false);
         });
     });
 });
