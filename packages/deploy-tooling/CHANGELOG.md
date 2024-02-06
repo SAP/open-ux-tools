@@ -1,5 +1,20 @@
 # @sap-ux/deploy-tooling
 
+## 0.12.0
+
+### Minor Changes
+
+-   de8a4878: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
+### Patch Changes
+
+-   Updated dependencies [de8a4878]
+    -   @sap-ux/axios-extension@1.9.0
+    -   @sap-ux/btp-utils@0.13.0
+    -   @sap-ux/system-access@0.3.8
+
 ## 0.11.10
 
 ### Patch Changes
