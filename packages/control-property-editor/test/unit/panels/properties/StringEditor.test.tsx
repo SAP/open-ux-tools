@@ -15,7 +15,7 @@ describe('StringEditor', () => {
             name: 'testProperty',
             value
         };
-        render(<StringEditor property={...props} controlId={controlId} />);
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe('StringEditor', () => {
             name: 'testProperty',
             value
         };
-        render(<StringEditor property={...props} controlId={controlId} />);
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -57,7 +57,7 @@ describe('StringEditor', () => {
             type: 'integer'
         };
 
-        render(<StringEditor property={...props} controlId={controlId} />);
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -76,7 +76,7 @@ describe('StringEditor', () => {
             type: 'float'
         };
 
-        render(<StringEditor property={...props} controlId={controlId} />);
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -96,7 +96,7 @@ describe('StringEditor', () => {
             type: 'float'
         };
 
-        render(<StringEditor property={...props} controlId={controlId} />);
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();

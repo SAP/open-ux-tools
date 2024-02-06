@@ -35,7 +35,7 @@
     "@xml-tools/parser": "1.0.11",
     "chevrotain": "7.1.1",
     "npm-run-all": "4.1.5",
-    "typescript": "4.9.5"
+    "typescript": "5.3.3"
   },
   "eslint-formatter-multiple": {
     "formatters": [
