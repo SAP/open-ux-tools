@@ -10,12 +10,25 @@ export type WSMiddlewareFunction = (ws: WebSocket, req: Express.Request & { url:
 
 const websockets: WebSocket[] = [];
 
+/**
+ * Creates fileWatcher instance.
+ *
+ * @param middlewareUtil Convenience functions for UI5 Server middleware
+ * @param cb Callback function which is called on file changes
+ * @returns FileWather instance
+ */
 function initFileWatcher(middlewareUtil: MiddlewareUtils, cb: (changedFiles: string[]) => void): FileWatcher {
     return new FileWatcher(`${middlewareUtil.getProject().getRootPath()}/webapp`, cb);
 }
 
+/**
+ * Initializes websocket middleware.
+ *
+ * @param logger Logger instance
+ * @returns Websocket middleware
+ */
 function initWebSocketMiddleware(logger: ToolsLogger) {
-    const wsRequestHandler: WSMiddlewareFunction = (ws, req /*, next */) => {
+    const wsRequestHandler: WSMiddlewareFunction = (ws /* req, next */) => {
         websockets.push(ws);
         logger.info('Websocket client connected');
 

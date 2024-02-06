@@ -73,7 +73,6 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
  * @param data.fileType file type that is required
  * @param webappPath path to the webapp folder
  * @param logger logger instance
- * @param fileWatcher
  * @returns object with success flag and optional message
  */
 export function writeChange(
@@ -105,7 +104,6 @@ export function writeChange(
  * @param data.fileName file name that is required for a valid change
  * @param webappPath path to the webapp folder
  * @param logger logger instance
- * @param fileWatcher
  * @returns object with success flag and optional message
  */
 export function deleteChange(

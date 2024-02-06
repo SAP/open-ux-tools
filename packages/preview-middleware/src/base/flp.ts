@@ -10,7 +10,6 @@ import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
-import type WebSocket from 'ws';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
