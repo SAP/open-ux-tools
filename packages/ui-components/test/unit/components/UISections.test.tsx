@@ -446,4 +446,21 @@ describe('<Sections />', () => {
             });
         }
     });
+
+    it('Test data property', () => {
+        const testValue = 'test value';
+        wrapper = Enzyme.mount(
+            <UISections data-test={testValue}>
+                <UISections.Section>
+                    <div />
+                </UISections.Section>
+                <UISections.Section>
+                    <div />
+                </UISections.Section>
+            </UISections>
+        );
+        expect(wrapper.find('.sections[data-test="test value"]').getDOMNode().getAttribute('data-test')).toEqual(
+            testValue
+        );
+    });
 });

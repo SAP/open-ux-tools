@@ -163,7 +163,7 @@ describe('main redux slice', () => {
         test('setProjectScenario', () => {
             expect(
                 reducer({ scenario: scenario.UiAdaptation } as any, setProjectScenario(scenario.AdaptationProject))
-            ).toStrictEqual({ scenario: scenario.AdaptationProject });
+            ).toStrictEqual({ scenario: scenario.AdaptationProject, isAdpProject: true });
         });
 
         test('non existing property', () => {

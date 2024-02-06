@@ -12,7 +12,7 @@ import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './con
 import { promptConfirmation } from './prompt';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
 import { getAppDescriptorVariant } from './archive';
-import { validateBeforeDeploy, formatSummary } from './validate';
+import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem } from './validate';
 
 /**
  * Internal deployment commands
@@ -291,7 +291,13 @@ async function tryDeploy(
                 );
             }
             const service = getDeployService(provider.getUi5AbapRepository.bind(provider), config, logger);
-            await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
+            await service.deploy({
+                archive,
+                bsp: config.app,
+                testMode: config.test,
+                safeMode: config.safe,
+                showAddInfo: await showAdditionalInfoForOnPrem(`${config.target.destination}`)
+            });
         } else {
             await tryDeployToLrep(provider, config, logger, archive);
         }
