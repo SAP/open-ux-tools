@@ -1303,6 +1303,9 @@ importers:
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
+      copyfiles:
+        specifier: 2.4.1
+        version: 2.4.1
       express:
         specifier: 4.18.2
         version: 4.18.2

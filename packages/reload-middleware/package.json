@@ -48,6 +48,7 @@
         "@sap-ux-private/playwright": "0.0.1",
         "@types/fb-watchman": "2.0.4",
         "@types/supertest": "2.0.12",
+        "copyfiles": "2.4.1",
         "express": "4.18.2",
         "fb-watchman": "2.0.2",
         "npm-run-all": "4.1.5",
