@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.10.0
+
+### Minor Changes
+
+-   ecd5275d: fix log info order, remove showAddInfo
+
 ## 1.9.0
 
 ### Minor Changes

@@ -123,11 +123,10 @@ describe('Ui5AbapRepositoryService', () => {
                 .reply(200);
             const response = await destinationService.deploy({
                 archive,
-                bsp: { name: notExistingApp },
-                showAddInfo: true
+                bsp: { name: notExistingApp }
             });
             expect(response.data).toBeDefined();
-            expect(loggerMock.info).toHaveBeenCalledTimes(8); // Ensures the logFullURL method is called to support destinations
+            expect(loggerMock.info).toHaveBeenCalledTimes(7); // Ensures the logFullURL method is called to support destinations
             expect(loggerMock.warn).toHaveBeenCalledTimes(0);
             expect(loggerMock.error).toHaveBeenCalledTimes(0);
         });
