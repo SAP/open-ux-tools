@@ -16,6 +16,9 @@ const css = `
         min-width: 100px;
         margin-right: 10px;
     }
+    #storybook-root {
+        height: 100%;
+    }
 `;
 
 const text = `Lorem ipsum dolor sit amet, modo iriure prompta eos in, eos ex meis ponderum, veniam cetero imperdiet ex mel. Munere recteque nam ut, ipsum aeterno est ex. Duo porro nulla ea, ut iudicabit scriptorem sed. Eos senserit imperdiet consequuntur in.
@@ -191,7 +194,11 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
                         onClose={() => {
                             setRightSectionVisible(!rightSectionVisible);
                         }}>
-                        <UISections.Section height="100%" cleanPadding={true} hidden={!leftSectionVisible}>
+                        <UISections.Section
+                            height="100%"
+                            cleanPadding={true}
+                            hidden={!leftSectionVisible}
+                            data-test="test">
                             <div>
                                 {text}
                                 {text}

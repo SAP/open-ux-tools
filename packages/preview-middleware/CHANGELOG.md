@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.11.29
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.1
+
+## 0.11.28
+
+### Patch Changes
+
+-   b817c8d5: Property change is created (unsaved) on the key press but should be on blur for the adaptation projects
+
 ## 0.11.27
 
 ### Patch Changes

@@ -59,12 +59,19 @@ describe('base/deploy', () => {
                 archive,
                 bsp: app,
                 testMode: undefined,
-                safeMode: undefined
+                safeMode: undefined,
+                showAddInfo: false
             });
             mockedUi5RepoService.deploy.mockClear();
 
             await deploy(archive, { app, target, test: true, safe: false, credentials }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: true,
+                safeMode: false,
+                showAddInfo: false
+            });
             mockedUi5RepoService.deploy.mockClear();
             mockCreateForAbap.mockClear();
 
@@ -74,7 +81,13 @@ describe('base/deploy', () => {
                 { app, target: { ...target, params }, test: true, safe: false, credentials },
                 nullLogger
             );
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: true,
+                safeMode: false,
+                showAddInfo: false
+            });
             expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
         });
 
@@ -92,12 +105,19 @@ describe('base/deploy', () => {
                 archive,
                 bsp: app,
                 testMode: undefined,
-                safeMode: undefined
+                safeMode: undefined,
+                showAddInfo: false
             });
             mockedUi5RepoService.deploy.mockClear();
 
             await deploy(archive, { app, target, test: true, safe: false, credentials }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: true,
+                safeMode: false,
+                showAddInfo: false
+            });
             mockedUi5RepoService.deploy.mockClear();
             mockCreateForAbap.mockClear();
 
@@ -107,7 +127,13 @@ describe('base/deploy', () => {
                 { app, target: { ...target, params }, test: true, safe: false, credentials },
                 nullLogger
             );
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: true,
+                safeMode: false,
+                showAddInfo: false
+            });
             expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
             expect(formatSummaryMock).toHaveBeenCalled();
         });
@@ -162,7 +188,8 @@ describe('base/deploy', () => {
                 archive,
                 bsp: app,
                 testMode: undefined,
-                safeMode: undefined
+                safeMode: undefined,
+                showAddInfo: false
             });
         });
 
@@ -209,7 +236,8 @@ describe('base/deploy', () => {
                 archive,
                 bsp: { ...app, transport: '~transport123' },
                 testMode: true,
-                safeMode: false
+                safeMode: false,
+                showAddInfo: false
             });
             expect(config.createTransport).toBe(false);
             expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
