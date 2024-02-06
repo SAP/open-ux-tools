@@ -1,7 +1,8 @@
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import path from 'path';
 
-import { AnnotationsData, FolderTypes, AnnotationFileSelectType, InboundData } from '../types';
+import type { AnnotationsData, InboundData } from '../types';
+import { FolderTypes, AnnotationFileSelectType } from '../types';
 
 /**
  * Writes annotation changes to the specified project path using the provided `mem-fs-editor` instance.
@@ -9,7 +10,6 @@ import { AnnotationsData, FolderTypes, AnnotationFileSelectType, InboundData } f
  * @param {string} projectPath - The root path of the project.
  * @param {AnnotationsData} data - The data object containing information about the annotation change.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- *
  * @returns {void}
  */
 export function writeAnnotationChange(projectPath: string, data: AnnotationsData, fs: Editor): void {
@@ -43,7 +43,6 @@ export function writeAnnotationChange(projectPath: string, data: AnnotationsData
  * @param {string} projectPath - The root path of the project.
  * @param {InboundData} data - The data object containing information about the inbound change.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- *
  * @returns {void}
  */
 export function writeInboundChange(projectPath: string, data: InboundData, fs: Editor): void {
@@ -62,7 +61,6 @@ export function writeInboundChange(projectPath: string, data: InboundData, fs: E
  *
  * @param {string | string[]} filesToDelete - A single file path or an array of file paths to delete.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- *
  * @returns {void}
  */
 export function cleanupFiles(filesToDelete: string | string[], fs: Editor): void {
@@ -77,7 +75,7 @@ export function cleanupFiles(filesToDelete: string | string[], fs: Editor): void
  * @param {object} change - The change data to be written to the file.
  * @param {string} fileName - The name of the file to write the change data to.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- * @param {string} [dir=''] - An optional subdirectory within the 'changes' directory where the file will be written.
+ * @param {string} [dir] - An optional subdirectory within the 'changes' directory where the file will be written.
  */
 export function writeChangeToFolder(projectPath: string, change: object, fileName: string, fs: Editor, dir = ''): void {
     try {

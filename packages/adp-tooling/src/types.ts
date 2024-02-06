@@ -172,9 +172,9 @@ export interface AnnotationsData extends BaseData {
     annotationFileName: string;
     annotationChange: AnnotationChangeAnswers;
 }
-export interface ComponentUsagesData extends BaseData {}
-export interface NewModelData extends BaseData {}
-export interface DataSourceData extends BaseData {}
+export type ComponentUsagesData = BaseData;
+export type NewModelData = BaseData;
+export type DataSourceData = BaseData;
 export interface InboundData extends BaseData {
     isChangeWithInbound: boolean;
     existingChangeFilePath: string;
