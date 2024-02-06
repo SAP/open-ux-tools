@@ -12,12 +12,22 @@ import {
 import type { AbapTarget } from '@sap-ux/system-access';
 import AdmZip from 'adm-zip';
 import { join } from 'path';
+import * as Logger from '@sap-ux/logger';
 
 import * as validate from '../../../src/base/validate';
 import { SummaryStatus } from '../../../src/base/validate';
 
+const loggerMock: ToolsLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+} as Partial<ToolsLogger> as ToolsLogger;
+
+jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 const validateBeforeDeployMock = jest.spyOn(validate, 'validateBeforeDeploy');
 const formatSummaryMock = jest.spyOn(validate, 'formatSummary');
+const showAdditionalInfoForOnPremMock = jest.spyOn(validate, 'showAdditionalInfoForOnPrem');
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -48,6 +58,7 @@ describe('base/deploy', () => {
             mockedAdtService.createTransportRequest.mockReset();
             validateBeforeDeployMock.mockReset();
             formatSummaryMock.mockReset();
+            jest.clearAllMocks();
         });
 
         test('No errors locally with url', async () => {
@@ -266,6 +277,15 @@ describe('base/deploy', () => {
                 expect(error.message).toBe('ADT Service Not Found');
             }
             expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
+        });
+        test('additional info logged', async () => {
+            showAdditionalInfoForOnPremMock.mockResolvedValue(true);
+            await deploy(archive, { app, target }, nullLogger);
+            expect(loggerMock.info).toHaveBeenCalledWith(
+                expect.stringContaining(
+                    '(Note: As the destination is configured using an On-Premise SAP Cloud Connector, you will need to replace the host in the URL above with the internal host)'
+                )
+            );
         });
 
         describe('adaptation projects', () => {
