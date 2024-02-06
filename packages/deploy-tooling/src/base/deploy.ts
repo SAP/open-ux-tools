@@ -295,8 +295,7 @@ async function tryDeploy(
                 archive,
                 bsp: config.app,
                 testMode: config.test,
-                safeMode: config.safe,
-                showAddInfo: await showAdditionalInfoForOnPrem(`${config.target.destination}`)
+                safeMode: config.safe
             });
         } else {
             await tryDeployToLrep(provider, config, logger, archive);
@@ -307,6 +306,11 @@ async function tryDeploy(
             );
         } else {
             logger.info('Deployment Successful.');
+            if (await showAdditionalInfoForOnPrem(`${config.target.destination}`)) {
+                logger.info(
+                    '(Note: As the destination is configured using an On-Premise SAP Cloud Connector, you will need to replace the host in the URL above with the internal host)'
+                );
+            }
         }
     } catch (error) {
         await handleError(tryDeploy, error, provider, config, logger, archive);
