@@ -113,10 +113,13 @@ export interface CodeExtChange extends CommonChangeProperties {
     };
 }
 
-export const enum FolderNames {
-    Changes = 'changes',
-    Fragments = 'fragments',
-    Coding = 'coding'
+export const enum FolderTypes {
+    CHANGES = 'changes',
+    FRAGMENTS = 'fragments',
+    CODING = 'coding',
+    MANIFEST = 'manifest',
+    ANNOTATIONS = 'annotations',
+    WEBAPP = 'webapp'
 }
 
 export const enum TemplateFileName {
@@ -137,4 +140,53 @@ export const enum HttpStatusCodes {
     INTERNAL_SERVER_ERROR = 500,
     NOT_IMPLEMETED = 501,
     SERVICE_UNAVAILABLE = 503
+}
+
+export const enum GeneratorType {
+    ADD_ANNOTATIONS_TO_ODATA = 'Add Annotations to OData',
+    ADD_COMPONENT_USAGES = 'Add Component Usages',
+    ADD_NEW_MODEL = 'Add New Model',
+    CHANGE_DATA_SOURCE = 'Change Data Source',
+    CHANGE_INBOUND = 'Change Inbound'
+}
+
+export type GeneratorData<T extends GeneratorType> = T extends GeneratorType.ADD_ANNOTATIONS_TO_ODATA
+    ? AnnotationsData
+    : T extends GeneratorType.ADD_COMPONENT_USAGES
+    ? ComponentUsagesData
+    : T extends GeneratorType.ADD_NEW_MODEL
+    ? NewModelData
+    : T extends GeneratorType.CHANGE_DATA_SOURCE
+    ? DataSourceData
+    : T extends GeneratorType.CHANGE_INBOUND
+    ? InboundData
+    : never;
+
+export interface BaseData {
+    change: object;
+    fileName: string;
+}
+
+export interface AnnotationsData extends BaseData {
+    timestamp: number;
+    annotationFileName: string;
+    annotationChange: AnnotationChangeAnswers;
+}
+export interface ComponentUsagesData extends BaseData {}
+export interface NewModelData extends BaseData {}
+export interface DataSourceData extends BaseData {}
+export interface InboundData extends BaseData {
+    isChangeWithInbound: boolean;
+    existingChangeFilePath: string;
+}
+
+export enum AnnotationFileSelectType {
+    ExistingFile = 0,
+    NewEmptyFile = 1
+}
+
+export interface AnnotationChangeAnswers {
+    targetODataSource: string;
+    targetAnnotationFileSelectOption: AnnotationFileSelectType;
+    targetAnnotationFilePath: string;
 }
