@@ -2,7 +2,6 @@ import type { Logger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'fs';
 import { join, parse } from 'path';
-import type { FileWatcher } from './watcher';
 
 /**
  * Structure of a flex change.
@@ -80,8 +79,7 @@ export async function readChanges(project: ReaderCollection, logger: Logger): Pr
 export function writeChange(
     data: object & { fileName?: string; fileType?: string },
     webappPath: string,
-    logger: Logger,
-    fileWatcher?: FileWatcher
+    logger: Logger
 ): { success: boolean; message?: string } {
     const fileName = data.fileName;
     const fileType = data.fileType;
@@ -92,9 +90,6 @@ export function writeChange(
             mkdirSync(path);
         }
         const filePath = join(path, fileName + '.' + fileType);
-        if (fileWatcher) {
-            fileWatcher.addIgnorePath(filePath);
-        }
         writeFileSync(filePath, JSON.stringify(data, null, 2));
         const message = `FILE_CREATED ${fileName}.${fileType}`;
         return { success: true, message };
@@ -116,8 +111,7 @@ export function writeChange(
 export function deleteChange(
     data: object & { fileName?: string },
     webappPath: string,
-    logger: Logger,
-    fileWatcher?: FileWatcher
+    logger: Logger
 ): { success: boolean; message?: string } {
     const fileName = data.fileName?.replace('sap.ui.fl.', '');
     if (fileName) {
@@ -129,9 +123,6 @@ export function deleteChange(
                 logger.debug(`Write change ${file}`);
                 const filePath = join(path, file);
 
-                if (fileWatcher) {
-                    fileWatcher.addIgnorePath(filePath);
-                }
                 unlinkSync(filePath);
                 return { success: true, message: `FILE_DELETED ${file}` };
             }

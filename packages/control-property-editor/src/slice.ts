@@ -19,7 +19,8 @@ import {
     propertyChangeFailed,
     showMessage,
     scenario,
-    reloadApplication
+    reloadApplication,
+    deletePropertyChanges
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -45,6 +46,7 @@ export interface ChangesSlice {
     controls: ControlChanges;
     pending: PendingPropertyChange[];
     saved: SavedPropertyChange[];
+    pendingChangeIds: string[];
 }
 export interface ControlChanges {
     [id: string]: ControlChangeStats;
@@ -92,7 +94,7 @@ export const changePreviewScaleMode = createAction<'fit' | 'fixed'>('app/change-
 export const changeDeviceType = createAction<DeviceType>('app/change-device-type');
 export const filterNodes = createAction<FilterOptions[]>('app/filter-nodes');
 export const fileChanged = createAction<string[]>('app/file-changed');
-export const initialState = {
+export const initialState: SliceState = {
     deviceType: DeviceType.Desktop,
     scale: 1.0,
     selectedControl: undefined,
@@ -103,7 +105,8 @@ export const initialState = {
     changes: {
         controls: {},
         pending: [],
-        saved: []
+        saved: [],
+        pendingChangeIds: []
     },
     dialogMessage: undefined
 };
@@ -181,6 +184,13 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.changes.saved = action.payload.saved;
                 state.changes.pending = action.payload.pending;
                 state.changes.controls = {};
+
+                if (action.payload.pending.length) {
+                    state.changes.pendingChangeIds = action.payload.pending
+                        .filter((change) => change.isActive)
+                        .map((change) => change.fileName);
+                }
+
                 for (const change of [...action.payload.pending, ...action.payload.saved].reverse()) {
                     const { controlId, propertyName, type, controlName } = change;
                     const key = `${controlId}`;
@@ -228,11 +238,28 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.dialogMessage = action.payload;
             })
             .addMatcher(fileChanged.match, (state, action: ReturnType<typeof fileChanged>): void => {
-                state.fileChanges = action.payload;
+                state.fileChanges = action.payload.filter((changedFile) => {
+                    const idx = state.changes.pendingChangeIds.findIndex((pendingFile) =>
+                        changedFile.includes(pendingFile)
+                    );
+                    if (idx > -1) {
+                        state.changes.pendingChangeIds.splice(idx, 1);
+                    }
+                    return idx < 0;
+                });
             })
             .addMatcher(reloadApplication.match, (state): void => {
                 state.fileChanges = [];
             })
+            .addMatcher(
+                deletePropertyChanges.match,
+                (state, action: ReturnType<typeof deletePropertyChanges>): void => {
+                    const fileName = action.payload.fileName;
+                    if (fileName) {
+                        state.changes.pendingChangeIds.push(fileName);
+                    }
+                }
+            )
 });
 
 export const { setProjectScenario } = slice.actions;

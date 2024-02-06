@@ -108,6 +108,9 @@
       "path": "packages/project-input-validator"
     },
     {
+      "path": "packages/reload-middleware"
+    },
+    {
       "path": "packages/store"
     },
     {

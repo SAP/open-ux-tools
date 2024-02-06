@@ -305,6 +305,7 @@ export class ChangeService {
                 value = command.getProperty('newBinding');
                 break;
         }
+        const { fileName } = command.getPreparedChange().getDefinition();
         if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
             result = {
                 type: 'pending',
@@ -313,7 +314,8 @@ export class ChangeService {
                 propertyName: command.getProperty('propertyName'),
                 isActive: index >= inactiveCommandCount,
                 value,
-                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
+                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? '',
+                fileName
             };
         } else {
             result = {
@@ -324,7 +326,8 @@ export class ChangeService {
                 controlName:
                     changeType === 'addXMLAtExtensionPoint'
                         ? command.getSelector().name ?? ''
-                        : command.getElement().getMetadata().getName().split('.').pop() ?? ''
+                        : command.getElement().getMetadata().getName().split('.').pop() ?? '',
+                fileName
             };
         }
 

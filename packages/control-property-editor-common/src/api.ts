@@ -120,6 +120,7 @@ export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> 
      * Indicates if change is before or after current position in undo redo stack
      */
     isActive: boolean;
+    fileName: string;
 }
 
 export interface PendingOtherChange {
@@ -128,6 +129,7 @@ export interface PendingOtherChange {
     changeType: string;
     controlId: string;
     controlName: string;
+    fileName: string;
 }
 
 export type PendingChange = PendingPropertyChange | PendingOtherChange;

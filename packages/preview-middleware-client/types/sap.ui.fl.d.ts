@@ -20,6 +20,7 @@ declare module 'sap/ui/fl/Change' {
         support: {
             generator: string;
         };
+        fileName: string;
     }
     interface Change {
         getDefinition: () => ChangeDefinition;

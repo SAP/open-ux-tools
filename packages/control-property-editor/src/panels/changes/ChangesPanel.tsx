@@ -43,7 +43,7 @@ export function ChangesPanel(): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { pending, saved } = useSelector<RootState, ChangesSlice>((state) => state.changes);
-    const fileChanges = useSelector<RootState, string[]>((state) => state.fileChanges);
+    const fileChanges = useSelector<RootState, string[]>((state) => state.fileChanges ?? []);
     const onFilterChange = (
         event?: React.ChangeEvent<HTMLInputElement> | undefined,
         filterValue?: string | undefined
@@ -79,7 +79,7 @@ export function ChangesPanel(): ReactElement {
                         <Separator />
                         {fileChanges.map((fileName, index) => (
                             <FileChange
-                                key={index}
+                                key={fileName + index}
                                 fileName={fileName}
                                 hasUnsavedChanges={pending?.length ? true : false}
                             />
