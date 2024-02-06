@@ -1,5 +1,23 @@
 # @sap-ux/control-property-editor
 
+## 0.4.12
+
+### Patch Changes
+
+-   b817c8d5: Property change is created (unsaved) on the key press but should be on blur for the adaptation projects
+
+## 0.4.11
+
+### Patch Changes
+
+-   f6bf758e: Mark for saved changes now changes on press of save button
+
+## 0.4.10
+
+### Patch Changes
+
+-   52265581: Fix styling for the funnel icon on Outline Panel
+
 ## 0.4.9
 
 ### Patch Changes
