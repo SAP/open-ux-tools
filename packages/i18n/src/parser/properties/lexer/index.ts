@@ -96,25 +96,6 @@ export function tokenize(text: string): Token[] {
                         if (mappedValue !== undefined) {
                             image += mappedValue;
                             i += 2;
-                        } else if (character + next === '\\u') {
-                            const unicodeEscapeEnd = i + UNICODE_CHARACTER_LENGTH + 1;
-                            let unicodeCharacterCode = '';
-                            for (let index = i + 2; index <= unicodeEscapeEnd; index++) {
-                                const c = text[index];
-                                if (HEX_DIGIT.test(c)) {
-                                    unicodeCharacterCode += c;
-                                } else {
-                                    break;
-                                }
-                            }
-                            if (unicodeCharacterCode.length === 4) {
-                                image += String.fromCharCode(parseInt(unicodeCharacterCode, 16));
-                                i += 2 + UNICODE_CHARACTER_LENGTH;
-                            } else {
-                                // partial unicode escape sequence
-                                image += '\\u' + unicodeCharacterCode;
-                                i += 2 + unicodeCharacterCode.length;
-                            }
                         } else {
                             i++;
                         }
@@ -196,25 +177,6 @@ export function tokenize(text: string): Token[] {
                             if (mappedValue !== undefined) {
                                 image += mappedValue;
                                 i += 2;
-                            } else if (character + next === '\\u') {
-                                const unicodeEscapeEnd = i + UNICODE_CHARACTER_LENGTH + 1;
-                                let unicodeCharacterCode = '';
-                                for (let index = i + 2; index <= unicodeEscapeEnd; index++) {
-                                    const c = text[index];
-                                    if (HEX_DIGIT.test(c)) {
-                                        unicodeCharacterCode += c;
-                                    } else {
-                                        break;
-                                    }
-                                }
-                                if (unicodeCharacterCode.length === 4) {
-                                    image += String.fromCharCode(parseInt(unicodeCharacterCode, 16));
-                                    i += 2 + UNICODE_CHARACTER_LENGTH;
-                                } else {
-                                    // partial unicode escape sequence
-                                    image += '\\u' + unicodeCharacterCode;
-                                    i += 2 + unicodeCharacterCode.length;
-                                }
                             } else if (next === '\n') {
                                 tokens.push(createToken('text', image, start, i));
                                 tokens.push(createToken('continuation-line-marker', '\\\n', i, i + 2));
