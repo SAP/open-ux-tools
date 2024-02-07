@@ -28,8 +28,8 @@ export function findChrome(): string | null {
         const suffix = '\\Google\\Chrome\\Application\\chrome.exe';
         const prefixes = [process.env.LOCALAPPDATA, process.env.PROGRAMFILES, process.env['PROGRAMFILES(X86)']];
 
-        for (let i = 0; i < prefixes.length; i++) {
-            const exe = prefixes[i] + suffix;
+        for (const element of prefixes) {
+            const exe = element + suffix;
             if (existsSync(exe)) {
                 return exe;
             }
