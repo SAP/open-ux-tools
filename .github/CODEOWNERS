@@ -66,6 +66,9 @@
 # Module: preview-middleware-client
 /packages/preview-middleware-client/ @SAP/ux-tools-middlewares-and-tasks
 
+# Module: reload-middleware
+/packages/reload-middleware/ @SAP/ux-tools-middlewares-and-tasks
+
 # Module: adp-tooling
 /packages/adp-tooling/ @SAP/ux-tools-adp
 
