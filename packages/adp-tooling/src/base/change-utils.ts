@@ -22,7 +22,6 @@ type InboundChange = { filePath: string; changeWithInboundId: { content: Inbound
  * @param {string} projectPath - The root path of the project.
  * @param {AnnotationsData} data - The data object containing information about the annotation change.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- *
  * @returns {void}
  */
 export function writeAnnotationChange(projectPath: string, data: AnnotationsData, change: object, fs: Editor): void {
@@ -54,7 +53,6 @@ export function writeAnnotationChange(projectPath: string, data: AnnotationsData
  *
  * @param {string | string[]} filesToDelete - A single file path or an array of file paths to delete.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- *
  * @returns {void}
  */
 export function cleanupFiles(filesToDelete: string | string[], fs: Editor): void {
