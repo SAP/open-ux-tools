@@ -1,6 +1,10 @@
 import * as flexChange from '../../../../src/cpe/changes/flex-change';
 import { ChangeService } from '../../../../src/cpe/changes/service';
-import { changeProperty, deletePropertyChanges } from '@sap-ux-private/control-property-editor-common';
+import {
+    changeProperty,
+    deletePropertyChanges,
+    reloadApplication
+} from '@sap-ux-private/control-property-editor-common';
 import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
 describe('SelectionService', () => {
@@ -566,5 +570,45 @@ describe('SelectionService', () => {
             headers: { 'Content-Type': 'application/json' },
             method: 'DELETE'
         });
+    });
+
+    test('reload application', async () => {
+        jest.spyOn(Date, 'now').mockReturnValueOnce(123);
+        fetchMock.mockResolvedValue({
+            json: () => Promise.resolve(undefined)
+        });
+
+        const service = new ChangeService(
+            { rta: rtaMock } as any,
+            {
+                applyControlPropertyChange: jest.fn()
+            } as any
+        );
+
+        await service.init(sendActionMock, subscribeMock);
+        await subscribeMock.mock.calls[0][0](reloadApplication(''));
+        expect(rtaMock.stop).toHaveBeenNthCalledWith(1, false, false);
+    });
+
+    test('attach stop callback check', async () => {
+        jest.spyOn(Date, 'now').mockReturnValueOnce(123);
+        fetchMock.mockResolvedValue({
+            json: () => Promise.resolve(undefined)
+        });
+
+        const service = new ChangeService(
+            { rta: rtaMock } as any,
+            {
+                applyControlPropertyChange: jest.fn()
+            } as any
+        );
+
+        rtaMock.attachStop.mockClear();
+        await service.init(sendActionMock, subscribeMock);
+        expect(rtaMock.attachStop).toBeCalledTimes(1);
+        const spy = jest.spyOn(window.history, 'go').mockReturnValue();
+        rtaMock.attachStop.mock.calls[0][0]();
+        expect(spy).toHaveBeenCalledWith(0);
+        spy.mockRestore();
     });
 });
