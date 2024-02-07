@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare namespace sap.ushell {
     import type ComponentContainer from 'sap/ui/core/ComponentContainer';
 

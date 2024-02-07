@@ -1,5 +1,11 @@
 # @sap-ux/types
 
+## 1.1.2
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
 ## 1.1.1
 
 ### Patch Changes
