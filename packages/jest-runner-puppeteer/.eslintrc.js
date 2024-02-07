@@ -5,6 +5,14 @@ module.exports = {
         project: './tsconfig.eslint.json'
     },
     rules: {
-        '@typescript-eslint/no-namespace': 'off'
+        '@typescript-eslint/no-namespace': 'off',
+        'space-before-function-paren': [
+            'error',
+            {
+                'anonymous': 'always',
+                'named': 'never',
+                'asyncArrow': 'always'
+            }
+        ]
     }
 };

@@ -37,7 +37,7 @@ function getBrowserPath(browser: string) {
  * Sets up the Puppeteer environment.
  * Launches a Puppeteer browser instance with specified configurations.
  */
-export default async function() {
+export default async function () {
     console.log(
         chalk.green(
             `Running Puppeteer${
