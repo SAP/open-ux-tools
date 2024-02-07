@@ -1,6 +1,8 @@
 import { Editor } from 'mem-fs-editor';
 
 import {
+    AnnotationChangeAnswers,
+    AnnotationFileSelectType,
     AnnotationsData,
     ChangeTypes,
     ComponentUsagesAnswers,
@@ -23,7 +25,8 @@ import {
     parseStringToObject,
     writeChangeToFolder,
     findChangeWithInboundId,
-    writeChangeToFile
+    writeChangeToFile,
+    getParsedPropertyValue
 } from '../../base/change-utils';
 
 export class WriterFactory {
@@ -49,13 +52,14 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
     constructor(private fs: Editor, private projectPath: string) {}
 
     private constructContent(data: AnnotationsData) {
-        const { annotationFileName, annotationChange, isInternalUsage } = data;
-        const annotationFileNameWithoutExtension = annotationFileName.toLocaleLowerCase().replace('.xml', '');
+        const { answers, isInternalUsage, annotationFileName } = data;
+        const annotationFileNameWithoutExtension =
+            annotationFileName && annotationFileName.toLocaleLowerCase().replace('.xml', '');
         const annotationNameSpace = isInternalUsage
             ? `annotation.${annotationFileNameWithoutExtension}`
             : `customer.annotation.${annotationFileNameWithoutExtension}`;
         return {
-            dataSourceId: `${annotationChange.targetODataSource}`,
+            dataSourceId: `${answers.targetODataSource}`,
             annotations: [annotationNameSpace],
             annotationsInsertPosition: 'END',
             dataSource: {
@@ -67,7 +71,14 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
         };
     }
 
+    private getAnnotationFileName(answers: AnnotationChangeAnswers) {
+        return answers.targetAnnotationFileSelectOption === AnnotationFileSelectType.NewEmptyFile
+            ? `annotation_${Date.now()}.xml`
+            : answers.targetAnnotationFilePath.split('/').pop();
+    }
+
     async write(data: AnnotationsData): Promise<void> {
+        data.annotationFileName = this.getAnnotationFileName(data.answers);
         const content = this.constructContent(data);
         const change = getGenericChange<AnnotationsData>(
             data,
@@ -312,7 +323,7 @@ export class InboundWriter implements IWriter<InboundData> {
     }
 
     private getEnhancedContent(answers: InboundAnswers, content: InboundContent) {
-        const { icon = null, title = null, subTitle = null } = answers;
+        const { icon, title, subTitle } = answers;
         if (title) {
             content.entityPropertyChange.push({
                 propertyPath: 'title',
@@ -338,8 +349,19 @@ export class InboundWriter implements IWriter<InboundData> {
         }
     }
 
+    private getModifiedAnswers(answers: InboundAnswers): InboundAnswers {
+        const { inboundId, title, subTitle, icon } = answers;
+
+        return {
+            inboundId,
+            title: getParsedPropertyValue(title),
+            subTitle: getParsedPropertyValue(subTitle),
+            icon: getParsedPropertyValue(icon)
+        };
+    }
+
     async write(data: InboundData): Promise<void> {
-        const { answers } = data;
+        const answers = this.getModifiedAnswers(data.answers);
         const { changeWithInboundId, filePath } = findChangeWithInboundId(this.projectPath, answers.inboundId);
 
         if (!changeWithInboundId) {

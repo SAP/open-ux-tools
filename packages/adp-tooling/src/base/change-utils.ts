@@ -10,7 +10,8 @@ import {
     ChangeTypes,
     GeneratorName,
     BaseData,
-    InboundContent
+    InboundContent,
+    PopertyValueType
 } from '../types';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
@@ -26,7 +27,7 @@ type InboundChange = { filePath: string; changeWithInboundId: { content: Inbound
  */
 export function writeAnnotationChange(projectPath: string, data: AnnotationsData, change: object, fs: Editor): void {
     try {
-        const { annotationChange, annotationFileName, timestamp } = data;
+        const { answers, timestamp, annotationFileName } = data;
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, FolderTypes.WEBAPP, FolderTypes.CHANGES);
         const manifestFolderPath = path.join(changesFolderPath, FolderTypes.MANIFEST);
@@ -34,12 +35,12 @@ export function writeAnnotationChange(projectPath: string, data: AnnotationsData
 
         writeChangeToFile(`${manifestFolderPath}/${changeFileName}`, change, fs);
 
-        if (annotationChange.targetAnnotationFileSelectOption === AnnotationFileSelectType.NewEmptyFile) {
+        if (answers.targetAnnotationFileSelectOption === AnnotationFileSelectType.NewEmptyFile) {
             fs.write(`${annotationsFolderPath}/${annotationFileName}`, '');
         } else {
-            const selectedDir = annotationChange.targetAnnotationFilePath.replace(`/${annotationFileName}`, '');
+            const selectedDir = answers.targetAnnotationFilePath.replace(`/${annotationFileName}`, '');
             if (selectedDir !== annotationsFolderPath) {
-                fs.copy(annotationChange.targetAnnotationFilePath, `${annotationsFolderPath}/${annotationFileName}`);
+                fs.copy(answers.targetAnnotationFilePath, `${annotationsFolderPath}/${annotationFileName}`);
             }
         }
     } catch (e) {
@@ -112,6 +113,27 @@ export function writeChangeToFile(path: string, change: object, fs: Editor): voi
  */
 export function parseStringToObject(str: string): { [key: string]: string } {
     return JSON.parse(`{${str}}`);
+}
+
+/**
+ * Attempts to parse a property value as JSON.
+ *
+ * @param {string} propertyValue - The property value to be parsed.
+ * @returns {PopertyValueType} The parsed value if `propertyValue` is valid JSON; otherwise, returns the original `propertyValue`.
+ * @example
+ * // Returns the object { key: "value" }
+ * getParsedPropertyValue('{"key": "value"}');
+ *
+ * // Returns the string "nonJSONValue" because it cannot be parsed as JSON
+ * getParsedPropertyValue('nonJSONValue');
+ */
+export function getParsedPropertyValue(propertyValue: PopertyValueType): PopertyValueType {
+    try {
+        const value = JSON.parse(propertyValue);
+        return value;
+    } catch (e) {
+        return propertyValue;
+    }
 }
 
 /**

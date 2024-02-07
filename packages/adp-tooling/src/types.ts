@@ -191,9 +191,9 @@ export interface BaseData {
 }
 
 export interface AnnotationsData extends BaseData {
-    annotationFileName: string;
+    annotationFileName?: string;
     isInternalUsage: boolean;
-    annotationChange: AnnotationChangeAnswers;
+    answers: AnnotationChangeAnswers;
 }
 export interface ComponentUsagesData extends BaseData {
     answers: ComponentUsagesAnswers;
@@ -259,9 +259,9 @@ export interface DataSourceAnswers {
 
 export interface InboundAnswers {
     inboundId: string;
-    title?: PopertyValueType;
-    subTitle?: PopertyValueType;
-    icon?: PopertyValueType;
+    title: PopertyValueType;
+    subTitle: PopertyValueType;
+    icon: PopertyValueType;
     isInSafeMode?: boolean;
 }
 
