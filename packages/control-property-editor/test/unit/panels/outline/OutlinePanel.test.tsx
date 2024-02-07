@@ -116,9 +116,12 @@ describe('OutlinePanel', () => {
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         render(<OutlinePanel />, { initialState });
         // check one
@@ -148,9 +151,12 @@ describe('OutlinePanel', () => {
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         render(<OutlinePanel />, { initialState });
         const search = screen.getByRole('searchbox');
@@ -198,9 +204,12 @@ describe('OutlinePanel', () => {
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         const { container } = render(<OutlinePanel />, { initialState });
         let focusEditableRow = container.querySelector('.focusEditable');
@@ -258,9 +267,12 @@ describe('OutlinePanel', () => {
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         const { container } = render(<OutlinePanel />, { initialState });
         const funnelIcon = container.querySelector('[data-icon-name="funnel"]') as Element;
@@ -304,9 +316,12 @@ describe('OutlinePanel', () => {
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
 
         const tooltipId = 'tooltip--ExtensionPoint';
@@ -348,9 +363,12 @@ describe('OutlinePanel', () => {
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
 
         const tooltipId = 'tooltip--ExtensionPoint';
@@ -410,9 +428,12 @@ describe('OutlinePanel', () => {
             changes: {
                 pending: [],
                 saved: [],
-                controls: {}
+                controls: {},
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
 
         const tooltipId = 'tooltip--ExtensionPoint';
@@ -507,9 +528,12 @@ describe('OutlinePanel', () => {
                         properties: {},
                         controlName: 'test01-01'
                     }
-                }
+                },
+                pendingChangeIds: []
             },
-            icons: []
+            icons: [],
+            dialogMessage: undefined,
+            isAdpProject: false
         };
         const { container } = render(<OutlinePanel />, { initialState });
 

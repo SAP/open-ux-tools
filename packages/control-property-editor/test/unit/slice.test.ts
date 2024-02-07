@@ -277,6 +277,7 @@ describe('main redux slice', () => {
                             value: '{i18n>DELETE}'
                         }
                     ],
+                    pendingChangeIds: [undefined],
                     saved: [
                         {
                             controlId: 'control1',
