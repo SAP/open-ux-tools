@@ -1039,8 +1039,8 @@ importers:
         version: 4.5.0
     devDependencies:
       '@types/debug':
-        specifier: 4.1.8
-        version: 4.1.8
+        specifier: 4.1.12
+        version: 4.1.12
       '@types/lodash':
         specifier: 4.14.198
         version: 4.14.198
@@ -1300,8 +1300,8 @@ importers:
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
       '@sapui5/types':
-        specifier: 1.120.1
-        version: 1.120.1
+        specifier: 1.120.5
+        version: 1.120.5
       '@ui5/cli':
         specifier: 3.8.0
         version: 3.8.0
@@ -7405,8 +7405,8 @@ packages:
       '@sap-ux/vocabularies-types': 0.10.0
     dev: false
 
-  /@sapui5/types@1.120.1:
-    resolution: {integrity: sha512-9IsokJ/J4PJl7t59ZW26Bp8FQzCFB+V0hK3jV3abPD8f/gMiaWIDUMHvbLw+6zAtDYNQ9yVAmoo15hpFaxC2Gw==}
+  /@sapui5/types@1.120.5:
+    resolution: {integrity: sha512-5n0pzbS4sP1eA0m1bFgnD1cKQT7BJQn9b1JADWanteElZTbyJjoaTFzSHIUjrCU+vxOwkHTajCjp+/6UNJ1KbQ==}
     dependencies:
       '@types/jquery': 3.5.13
       '@types/offscreencanvas': 2019.6.4
@@ -8463,6 +8463,12 @@ packages:
     resolution: {integrity: sha512-KuwNhp3eza+Rhu8IFI5HUXRP0LIhqH5cAjubUvGXXthh4YYBuP2ntwEX+Cz8GJoZUHlKo247wPWOfA9LYEq4cw==}
     dependencies:
       '@types/node': 18.11.9
+    dev: true
+
+  /@types/debug@4.1.12:
+    resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
+    dependencies:
+      '@types/ms': 0.7.31
     dev: true
 
   /@types/debug@4.1.8:
