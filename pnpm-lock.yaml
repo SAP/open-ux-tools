@@ -666,8 +666,8 @@ importers:
         version: 2.4.2
     devDependencies:
       '@types/diff':
-        specifier: 5.0.4
-        version: 5.0.4
+        specifier: 5.0.9
+        version: 5.0.9
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -8487,8 +8487,8 @@ packages:
     resolution: {integrity: sha512-amrLbRqTU9bXMCc6uX0sWpxsQzRIo9z6MJPkH1pkez/qOxuqSZVuryJAWoBRq94CeG8JxY+VK4Le9HtjQR5T9A==}
     dev: true
 
-  /@types/diff@5.0.4:
-    resolution: {integrity: sha512-d7489/WO4B65k0SIqxXtviR9+MrPDipWQF6w+5D7YPrqgu6Qb87JsTdWQaNZo7itcdbViQSev3Jaz7dtKO0+Dg==}
+  /@types/diff@5.0.9:
+    resolution: {integrity: sha512-RWVEhh/zGXpAVF/ZChwNnv7r4rvqzJ7lYNSmZSVTxjV0PBLf6Qu7RNg+SUtkpzxmiNkjCx0Xn2tPp7FIkshJwQ==}
     dev: true
 
   /@types/doctrine@0.0.3:
