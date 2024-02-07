@@ -16355,27 +16355,6 @@ packages:
     resolution: {integrity: sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=}
     engines: {node: '>= 0.6'}
 
-  /mem-fs-editor@9.4.0:
-    resolution: {integrity: sha512-HSSOLSVRrsDdui9I6i96dDtG+oAez/4EB2g4cjSrNhgNQ3M+L57/+22NuPdORSoxvOHjIg/xeOE+C0wwF91D2g==}
-    engines: {node: '>=12.10.0'}
-    peerDependencies:
-      mem-fs: ^2.1.0
-    peerDependenciesMeta:
-      mem-fs:
-        optional: true
-    dependencies:
-      binaryextensions: 4.18.0
-      commondir: 1.0.1
-      deep-extend: 0.6.0
-      ejs: 3.1.9
-      globby: 11.1.0
-      isbinaryfile: 4.0.10
-      minimatch: 3.0.4
-      multimatch: 5.0.0
-      normalize-path: 3.0.0
-      textextensions: 5.14.0
-    dev: false
-
   /mem-fs-editor@9.4.0(mem-fs@2.1.0):
     resolution: {integrity: sha512-HSSOLSVRrsDdui9I6i96dDtG+oAez/4EB2g4cjSrNhgNQ3M+L57/+22NuPdORSoxvOHjIg/xeOE+C0wwF91D2g==}
     engines: {node: '>=12.10.0'}
@@ -21605,7 +21584,7 @@ packages:
       execa: 5.1.1
       github-username: 6.0.0
       lodash: 4.17.21
-      mem-fs-editor: 9.4.0
+      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
       minimist: 1.2.6
       pacote: 15.2.0
       read-pkg-up: 7.0.1
