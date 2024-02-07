@@ -498,7 +498,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         };
         // Use values from state or calculate initial percents
         const childrenCount = this.getVisibleChildrenCount();
-        const stateSize = this.state.sizes && this.state.sizes[index];
+        const stateSize = this.state.sizes?.[index];
         if (childrenCount === this.props.children.length && stateSize) {
             sectionStyle.style = {
                 ...(stateSize.start !== undefined && { [this.startPositionProperty]: stateSize.start + 'px' }),
@@ -540,13 +540,8 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             visible: false
         };
         // Hidden section when animation is ON
-        let stateSize = this.state.sizes && this.state.sizes[index];
-        if (
-            !stateSize &&
-            this.props.splitterType === UISplitterType.Toggle &&
-            this.props.sizes &&
-            this.props.sizes[index]
-        ) {
+        let stateSize = this.state.sizes?.[index];
+        if (!stateSize && this.props.splitterType === UISplitterType.Toggle && this.props.sizes?.[index]) {
             stateSize = {
                 size: this.props.sizes[index],
                 percentage: false

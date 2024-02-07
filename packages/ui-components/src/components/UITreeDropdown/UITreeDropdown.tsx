@@ -187,7 +187,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * @returns {ItemsProps}
      */
     buildSubItems = (item: ItemsProps): ItemsProps => {
-        if (item.children && item.children.length) {
+        if (item.children?.length) {
             item.children = item.children.map((el) => {
                 const regex = new RegExp(item.value, 'ig');
                 const value =
@@ -213,7 +213,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      */
     mapValuesToContextMenu = (items: ItemsProps[], level = 0): IContextualMenuItem[] => {
         return items.map((item: ItemsProps) => {
-            if (item.children && item.children.length) {
+            if (item.children?.length) {
                 item.split = true;
 
                 const refId = this.getRefId(item.value, level);

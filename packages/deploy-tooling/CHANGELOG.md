@@ -1,5 +1,17 @@
 # @sap-ux/deploy-tooling
 
+## 0.13.2
+
+### Patch Changes
+
+-   2bedc697: chore(deps): update dependency @types/adm-zip to v0.5.5
+
+## 0.13.1
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.3.10
+
 ## 0.13.0
 
 ### Minor Changes
