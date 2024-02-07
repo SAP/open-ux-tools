@@ -198,8 +198,8 @@ importers:
         specifier: 3.1.2
         version: 3.1.2
       '@types/express':
-        specifier: 4.17.17
-        version: 4.17.17
+        specifier: 4.17.21
+        version: 4.17.21
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -351,7 +351,7 @@ importers:
         version: 16.3.1
       http-proxy-middleware:
         specifier: 2.0.6
-        version: 2.0.6(@types/express@4.17.17)
+        version: 2.0.6(@types/express@4.17.21)
       https-proxy-agent:
         specifier: 5.0.1
         version: 5.0.1
@@ -366,8 +366,8 @@ importers:
         version: 1.1.0
     devDependencies:
       '@types/express':
-        specifier: 4.17.17
-        version: 4.17.17
+        specifier: 4.17.21
+        version: 4.17.21
       '@types/http-proxy':
         specifier: ^1.17.5
         version: 1.17.8
@@ -1231,8 +1231,8 @@ importers:
         specifier: 3.1.2
         version: 3.1.2
       '@types/express':
-        specifier: 4.17.17
-        version: 4.17.17
+        specifier: 4.17.21
+        version: 4.17.21
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4
@@ -1784,7 +1784,7 @@ importers:
         version: 16.3.1
       http-proxy-middleware:
         specifier: 2.0.6
-        version: 2.0.6(@types/express@4.17.17)
+        version: 2.0.6(@types/express@4.17.21)
       https-proxy-agent:
         specifier: 5.0.1
         version: 5.0.1
@@ -1799,8 +1799,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@types/express':
-        specifier: 4.17.17
-        version: 4.17.17
+        specifier: 4.17.21
+        version: 4.17.21
       '@types/proxy-from-env':
         specifier: 1.0.1
         version: 1.0.1
@@ -8144,7 +8144,7 @@ packages:
     dependencies:
       '@storybook/channels': 7.4.3
       '@types/babel__core': 7.1.18
-      '@types/express': 4.17.17
+      '@types/express': 4.17.21
       file-system-cache: 2.3.0
     dev: true
 
@@ -8539,8 +8539,8 @@ packages:
       '@types/range-parser': 1.2.4
       '@types/send': 0.17.1
 
-  /@types/express@4.17.17:
-    resolution: {integrity: sha512-Q4FmmuLGBG58btUnfS1c1r/NQdlp3DMfGDGig8WhfpA2YRUtEkxAjkZb0yvplJGYdF1fsQ81iMDcH24sSCNC/Q==}
+  /@types/express@4.17.21:
+    resolution: {integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==}
     dependencies:
       '@types/body-parser': 1.19.2
       '@types/express-serve-static-core': 4.17.35
@@ -14517,7 +14517,7 @@ packages:
       - debug
     dev: true
 
-  /http-proxy-middleware@2.0.6(@types/express@4.17.17):
+  /http-proxy-middleware@2.0.6(@types/express@4.17.21):
     resolution: {integrity: sha512-ya/UeJ6HVBYxrgYotAZo1KvPWlgB48kUJLDePFeneHsVujFaW5WNj2NgWCAE//B1Dl02BIfYlpNgBy8Kf8Rjmw==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -14526,7 +14526,7 @@ packages:
       '@types/express':
         optional: true
     dependencies:
-      '@types/express': 4.17.17
+      '@types/express': 4.17.21
       '@types/http-proxy': 1.17.8
       http-proxy: 1.18.1
       is-glob: 4.0.3
