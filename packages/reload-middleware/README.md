@@ -1,6 +1,10 @@
 #  `@sap-ux/reload-middleware`
 
-The `@sap-ux/reload-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) which creates a websocket server upon the current running UI5 Server and filesystem changes listener of the current project flex changes files. This allows to create websocket connections to the current UI5 server and get notifications about changed flex changes files via websocket. Intended to be used as external file changes notification middleware for Control Property Editor to get the user an opportunity to reload app preview editor after manual changes in flex changes files.
+The `@sap-ux/reload-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) which creates a websocket server upon the current running UI5 Server and also creates a filesystem watcher that listens for filesystem changes to the current project's flex changes files.
+
+This allows to create websocket connections to the current UI5 server and receive notifications through it about updated, created, or deleted flex change files.
+
+The middleware is intended to be used as an external file changes notification tool for Control Property Editor to notify the user about external manual changes to flex changes files and provide an ability to manually reload app preview editor after them.
 
 
 ## Configuration Options
