@@ -1,30 +1,22 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
-import { writeAnnotationChange, writeChangeToFolder, writeInboundChange } from '../base/change-helpers';
-import { AnnotationsData, InboundData, FolderTypes, GeneratorData, GeneratorType } from '../types';
+import { GeneratorData, GeneratorType } from '../types';
+import { WriterFactory } from './changes/change-writers';
 
 /**
- * Generates and writes changes to the appropriate folder based on the generator type.
+ * Generates and applies changes to a project based on a specified generator type.
  *
- * This function acts as a dispatcher that calls specific functions to handle writing changes
- * for different generator types. It ensures that the `fs` (file system editor) instance is initialized
- * and then delegates the writing task to the relevant function based on the `type` of change requested.
+ * This function initializes the file system editor if not provided, selects the appropriate writer based on the generator type,
+ * and then invokes the writer's write method to apply changes. The changes are made in-memory and need to be committed
+ * to be reflected on the disk.
  *
  * @param {string} projectPath - The root path of the project.
- * @param {T} type - The type of generator, determining how the data is handled and written.
- * @param {GeneratorData<T>} data - The data associated with the change, structured according to the generator type.
- * @param {Editor | null} [fs=null] - An optional `mem-fs-editor` instance for handling file system operations. If not provided, a new instance will be created.
- * @returns {Promise<Editor>} A promise that resolves with the `mem-fs-editor` instance used for the operation, allowing for further manipulations or committing changes.
- *
- * @template T - A type parameter that extends `GeneratorType`, ensuring type safety between the generator type and the associated data.
- *
- * @example
- * // Assuming `projectPath` is defined and points to the root of your project
- * const editorInstance = await generateChange(projectPath, GeneratorType.ADD_ANNOTATIONS_TO_ODATA, data);
- *
- * // To commit the changes to the disk
- * editorInstance.commit(() => console.log('Changes written to disk'));
+ * @param {T} type - The type of generator.
+ * @param {GeneratorData<T>} data - The data specific to the type of generator, containing information necessary for making changes.
+ * @param {Editor | null} [fs=null] - The `mem-fs-editor` instance used for file operations.
+ * @returns {Promise<Editor>} A promise that resolves to the mem-fs editor instance used for making changes, allowing for further operations or committing changes to disk.
+ * @template T - A type parameter extending `GeneratorType`, ensuring the function handles a defined set of generator types.
  */
 export async function generateChange<T extends GeneratorType>(
     projectPath: string,
@@ -36,22 +28,9 @@ export async function generateChange<T extends GeneratorType>(
         fs = create(createStorage());
     }
 
-    switch (type) {
-        case GeneratorType.ADD_ANNOTATIONS_TO_ODATA:
-            writeAnnotationChange(projectPath, data as AnnotationsData, fs);
-            break;
-        case GeneratorType.ADD_COMPONENT_USAGES:
-        case GeneratorType.ADD_NEW_MODEL:
-        case GeneratorType.CHANGE_DATA_SOURCE:
-            writeChangeToFolder(projectPath, data.change, data.fileName, fs, FolderTypes.MANIFEST);
-            break;
-        case GeneratorType.CHANGE_INBOUND:
-            writeInboundChange(projectPath, data as InboundData, fs);
-            break;
+    const writer = WriterFactory.createWriter<T>(type, fs, projectPath);
 
-        default:
-            throw new Error(`Generator type '${type}' does not exist. Could not write manifest editor changes.`);
-    }
+    await writer.write(data);
 
     return fs;
 }
