@@ -15,7 +15,7 @@
                                             "position": <%- JSON.stringify(position) %>,
                                     <% if (locals.horizontalAlign) { %> "horizontalAlign": "<%- horizontalAlign %>", <%
                                             } %>
-                                    "template": "<%- ns %>.<%- name %>"
+                                    "template": "<%- ns %>.<%- typeof fragmentFile !== 'undefined' ? fragmentFile : name  %>"
                                     <% if (locals.availability) { %> , "availability": "<%- availability %>" <%
                                             } %>
                                     <% if (locals.properties) { %> , "properties": [ 

@@ -3,11 +3,16 @@ import {
     iconsLoaded,
     propertyChanged,
     propertyChangeFailed,
-    scenario,
-    scenarioLoaded
+    scenario
 } from '@sap-ux-private/control-property-editor-common';
 
-import reducer, { FilterName, filterNodes, changeProperty, changeDeviceType } from '../../src/slice';
+import reducer, {
+    FilterName,
+    filterNodes,
+    changeProperty,
+    changeDeviceType,
+    setProjectScenario
+} from '../../src/slice';
 import { DeviceType } from '../../src/devices';
 
 describe('main redux slice', () => {
@@ -155,10 +160,10 @@ describe('main redux slice', () => {
             expect(reducer({ icons: [] } as any, iconsLoaded([]))).toStrictEqual({ icons: [] });
         });
 
-        test('scenarioLoaded', () => {
+        test('setProjectScenario', () => {
             expect(
-                reducer({ scenario: scenario.AdaptationProject } as any, scenarioLoaded(scenario.AdaptationProject))
-            ).toStrictEqual({ scenario: scenario.AdaptationProject });
+                reducer({ scenario: scenario.UiAdaptation } as any, setProjectScenario(scenario.AdaptationProject))
+            ).toStrictEqual({ scenario: scenario.AdaptationProject, isAdpProject: true });
         });
 
         test('non existing property', () => {

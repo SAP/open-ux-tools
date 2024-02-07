@@ -1,4 +1,3 @@
-import os from 'os';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -9,7 +8,7 @@ import type { EventHandlerConfiguration, Manifest } from '../../src/common/types
 import { Placement } from '../../src/common/types';
 import * as manifest from './sample/section/webapp/manifest.json';
 import { detectTabSpacing } from '../../src/common/file';
-import { tabSizingTestCases } from '../common';
+import { getEndOfLinesLength, tabSizingTestCases } from '../common';
 
 const testDir = join(__dirname, 'sample/section');
 
@@ -53,6 +52,23 @@ describe('CustomSection', () => {
             fs = create(createStorage());
             fs.delete(testDir);
             fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
+        });
+        test('with fragmentFile', () => {
+            const testCustomSection: CustomSection = {
+                ...customSection,
+                fragmentFile: 'NewCustomSectionFragment'
+            };
+            const expectedSectionFragmentPath = join(
+                testDir,
+                `webapp/${testCustomSection.folder}/${testCustomSection.fragmentFile}.fragment.xml`
+            );
+            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
+            expect(settings.content).toMatchSnapshot();
+            expect(fs.read(expectedSectionFragmentPath)).toMatchSnapshot();
         });
         test('with handler, all properties', () => {
             const testCustomSection: CustomSection = {
@@ -324,12 +340,21 @@ describe('CustomSection', () => {
                 },
                 {
                     name: 'absolute position',
-                    position: 196 + 8 * os.EOL.length
+                    position: 196,
+                    endOfLines: 8
                 }
             ];
             test.each(positions)(
                 '"eventHandler" is object. Append new function to existing js file with $name',
-                ({ position }) => {
+                ({ position, endOfLines }) => {
+                    // Generate handler with single method - content should be updated during generating of custom section
+                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, {
+                        eventHandlerFnName: 'onPress'
+                    });
+                    if (typeof position === 'number' && endOfLines !== undefined) {
+                        const content = fs.read(existingPath);
+                        position += getEndOfLinesLength(endOfLines, content);
+                    }
                     const extension = {
                         fnName,
                         fileName,
@@ -338,10 +363,6 @@ describe('CustomSection', () => {
                             position
                         }
                     };
-                    // Generate handler with single method - content should be updated during generating of custom section
-                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, {
-                        eventHandlerFnName: 'onPress'
-                    });
 
                     generateCustomSectionWithEventHandler(id, extension, folder);
                     const xmlPath = join(testDir, 'webapp', folder, `${id}.fragment.xml`);

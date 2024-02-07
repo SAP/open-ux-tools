@@ -42,6 +42,12 @@
       "path": "packages/cap-config-writer"
     },
     {
+      "path": "packages/cds-annotation-parser"
+    },
+    {
+      "path": "packages/cds-odata-annotation-converter"
+    },
+    {
       "path": "packages/control-property-editor-common"
     },
     {
@@ -69,6 +75,9 @@
       "path": "packages/fiori-freestyle-writer"
     },
     {
+      "path": "packages/jest-file-matchers"
+    },
+    {
       "path": "packages/logger"
     },
     {
@@ -81,10 +90,16 @@
       "path": "packages/odata-annotation-core"
     },
     {
+      "path": "packages/odata-entity-model"
+    },
+    {
       "path": "packages/odata-service-writer"
     },
     {
       "path": "packages/odata-vocabularies"
+    },
+    {
+      "path": "packages/playwright"
     },
     {
       "path": "packages/preview-middleware-client"
@@ -103,6 +118,9 @@
     },
     {
       "path": "packages/system-access"
+    },
+    {
+      "path": "packages/telemetry"
     },
     {
       "path": "packages/ui-components"
@@ -127,6 +145,9 @@
     },
     {
       "path": "packages/ui5-test-writer"
+    },
+    {
+      "path": "packages/xml-odata-annotation-converter"
     },
     {
       "path": "packages/yaml"

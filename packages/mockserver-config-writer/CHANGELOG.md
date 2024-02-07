@@ -1,5 +1,11 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.2.2
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/odata-annotation-core",
-    "version": "0.1.2",
+    "version": "0.1.8",
     "description": "Annotation Core",
     "repository": {
         "type": "git",
@@ -14,15 +14,14 @@
     "author": "SAP SE",
     "license": "Apache-2.0",
     "scripts": {
-        "compile": "tsc --build tsconfig.build.json",
+        "compile": "tsc --build",
         "build": "npm-run-all clean compile",
-        "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
-        "clean": "rimraf ./reports",
+        "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo",
         "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
         "lint": "eslint . --ext .ts,.tsx",
         "lint:summary": "eslint . --ext .ts,.tsx -f summary",
-        "lint:fix": "eslint --fix",
+        "lint:fix": "eslint . --ext .ts --fix",
         "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
         "lint:report": "eslint . --ext .ts,.tsx -f multiple ",
         "pre-commit": "lint-staged --quiet",
@@ -34,32 +33,11 @@
     },
     "devDependencies": {
         "npm-run-all": "4.1.5",
-        "typescript": "4.9.5"
+        "typescript": "5.3.3",
+        "@sap-ux/odata-entity-model": "workspace:*"
     },
     "files": [
         "LICENSE",
         "dist/**"
-    ],
-    "jestSonar": {
-        "reportPath": "reports/test/unit",
-        "reportFile": "test-report.xml"
-    },
-    "eslint-formatter-multiple": {
-        "formatters": [
-            {
-                "name": "stylish",
-                "output": "console"
-            },
-            {
-                "name": "json",
-                "output": "file",
-                "path": "reports/lint/eslint.json"
-            },
-            {
-                "name": "checkstyle",
-                "output": "file",
-                "path": "reports/lint/eslint.checkstyle.xml"
-            }
-        ]
-    }
+    ]
 }

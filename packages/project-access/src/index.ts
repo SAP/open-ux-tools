@@ -1,4 +1,5 @@
 export { FileName } from './constants';
+export { getFilePaths } from './file';
 export {
     findAllApps,
     findCapProjects,
@@ -6,6 +7,7 @@ export {
     findProjectRoot,
     getAppRootFromWebappPath,
     getAppProgrammingLanguage,
+    getAppType,
     getCapCustomPaths,
     getCapEnvironment,
     getCapModelAndServices,
@@ -13,8 +15,11 @@ export {
     getCdsFiles,
     getCdsRoots,
     getCdsServices,
+    getI18nPropertiesPaths,
     getMtaPath,
     getNodeModulesPath,
+    getProject,
+    getProjectType,
     getWebappPath,
     isCapJavaProject,
     isCapNodeJsProject,
@@ -22,5 +27,4 @@ export {
     readCapServiceMetadataEdmx,
     readUi5Yaml
 } from './project';
-export { getFilePaths } from './file';
 export * from './types';

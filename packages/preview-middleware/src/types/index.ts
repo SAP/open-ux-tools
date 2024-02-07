@@ -36,6 +36,7 @@ export interface RtaConfig {
         baseId?: string;
         projectId?: string;
         scenario?: string;
+        appName?: string;
     };
     editors: Editor[];
 }

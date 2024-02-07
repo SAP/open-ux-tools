@@ -1,0 +1,13 @@
+UI.LineItem : [
+    {
+        $Type : 'UI.DataFieldForIntentBasedNavigation',
+        SemanticObject : 'Scholars',
+        Action : 'Manage',
+        Mapping : [
+            { 
+                LocalProperty : userID, 
+                SemanticObjectProperty : 'userID'
+            }
+        ]
+	}
+]

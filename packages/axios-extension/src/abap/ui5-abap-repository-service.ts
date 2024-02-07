@@ -3,7 +3,6 @@ import { prettyPrintError, prettyPrintMessage } from './message';
 import type { ErrorMessage } from './message';
 import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
-
 /**
  * Required configuration a transportable object.
  */

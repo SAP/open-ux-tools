@@ -1,5 +1,55 @@
 # @sap-ux/adp-tooling
 
+## 0.8.3
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.3.10
+
+## 0.8.2
+
+### Patch Changes
+
+-   Updated dependencies [ecd5275d]
+    -   @sap-ux/axios-extension@1.10.0
+    -   @sap-ux/system-access@0.3.9
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [de8a4878]
+    -   @sap-ux/axios-extension@1.9.0
+    -   @sap-ux/system-access@0.3.8
+
+## 0.8.0
+
+### Minor Changes
+
+-   349fff1a: Connect to the backend during prompting to determine the layer and offer available apps
+
+## 0.7.4
+
+### Patch Changes
+
+-   Updated dependencies [3000e8f4]
+    -   @sap-ux/axios-extension@1.8.1
+    -   @sap-ux/system-access@0.3.7
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [62232236]
+    -   @sap-ux/axios-extension@1.8.0
+    -   @sap-ux/system-access@0.3.6
+
+## 0.7.2
+
+### Patch Changes
+
+-   5a1eb6ed: Correctly escape quote for windows support
+
 ## 0.7.1
 
 ### Patch Changes

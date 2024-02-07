@@ -1,5 +1,69 @@
 # @sap-ux/ui-components
 
+## 1.15.4
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 1.15.3
+
+### Patch Changes
+
+-   13dcde74: Update Icons.tsx to fix typo
+
+## 1.15.2
+
+### Patch Changes
+
+-   ccf2767a: Update Icons - Expand/Collapse Groups & 3 Layout options (Layout Centre, Left. & Right)
+
+## 1.15.1
+
+### Patch Changes
+
+-   601f6389: fix: Allow to pass custom `data-*` attributes for `UISections`, `UISection`, `UIToolbar` and `UIToolbarColumn` components.
+
+## 1.15.0
+
+### Minor Changes
+
+-   ea1ed433: feat: New component UIQuickNavigation to allow focus through groups using keyboard shortcuts
+
+## 1.14.2
+
+### Patch Changes
+
+-   be152c6f: Add lightning icon
+
+## 1.14.1
+
+### Patch Changes
+
+-   17cd1c21: fix: UIDefaultButton. Apply VSCode border color(`--vscode-button-border`) to UIDefaultButton
+
+## 1.14.0
+
+### Minor Changes
+
+-   3ec4de4b: Fix: UIComboBox. Prevent caret jump on input value change and on autocomplete value click
+
+## 1.13.5
+
+### Patch Changes
+
+-   4f792c88: - add `ValidateInfo` icon
+    -   add `ValidateError` icon
+    -   add `ValidateWarning` icon
+
+## 1.13.4
+
+### Patch Changes
+
+-   e47492f0: Reusable css variables and classes for common box shadows.
+    Variables - `--ui-box-shadow-small`, `--ui-box-shadow-medium`, `--ui-box-shadow-large`.
+    Classes - `ui-box-shadow-small `, `ui-box-shadow-medium`, `ui-box-shadow-large`.
+
 ## 1.13.3
 
 ### Patch Changes

@@ -111,7 +111,6 @@ describe('Ui5AbapRepositoryService', () => {
 
     describe('deploy', () => {
         const archive = Buffer.from('TestData');
-
         test('deploy new app with destination', async () => {
             nock(`https://${destination.Name}.dest`)
                 .defaultReplyHeaders({
@@ -122,7 +121,10 @@ describe('Ui5AbapRepositoryService', () => {
                     (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
                 .reply(200);
-            const response = await destinationService.deploy({ archive, bsp: { name: notExistingApp } });
+            const response = await destinationService.deploy({
+                archive,
+                bsp: { name: notExistingApp }
+            });
             expect(response.data).toBeDefined();
             expect(loggerMock.info).toHaveBeenCalledTimes(7); // Ensures the logFullURL method is called to support destinations
             expect(loggerMock.warn).toHaveBeenCalledTimes(0);

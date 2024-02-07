@@ -40,6 +40,7 @@
     --vscode-button-foreground: #ffffff;
     --vscode-button-background: #0e639c;
     --vscode-button-hoverBackground: #1177bb;
+    --vscode-button-border: rgba(255, 255, 255, 0.07);
     --vscode-button-secondaryForeground: #ffffff;
     --vscode-button-secondaryBackground: #3a3d41;
     --vscode-button-secondaryHoverBackground: #45494e;

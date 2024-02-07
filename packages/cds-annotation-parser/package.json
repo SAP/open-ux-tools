@@ -1,0 +1,37 @@
+{
+    "name": "@sap-ux/cds-annotation-parser",
+    "version": "0.1.8",
+    "description": "Annotation Parser for CDS",
+    "publisher": "SAPSE",
+    "author": "SAP SE",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "npm-run-all clean compile",
+        "compile": "tsc --build ",
+        "clean": "rimraf --glob ./coverage ./dist *.tsbuildinfo",
+        "format:fix": "prettier --write --loglevel silent --ignore-path ../../../.prettierignore",
+        "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
+        "lint": "eslint . --ext .ts,.tsx",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
+        "test": "jest --maxWorkers=2",
+        "test:update": "node scripts/updateTestData.js",
+        "test:create": "node scripts/createTestData.js",
+        "watch": "tsc  --build ./ -watch"
+    },
+    "dependencies": {
+        "@sap-ux/odata-annotation-core": "workspace:*",
+        "@sap-ux/odata-vocabularies": "workspace:*",
+        "@sap-ux/odata-entity-model": "workspace:*",
+        "chevrotain": "7.1.1",
+        "vscode-languageserver-types": "3.17.2"
+    },
+    "devDependencies": {
+        "typescript": "5.3.3",
+        "npm-run-all": "4.1.5"
+    },
+    "files": [
+        "dist/"
+    ]
+}

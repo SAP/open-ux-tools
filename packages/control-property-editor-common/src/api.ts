@@ -215,7 +215,6 @@ export const EXTERNAL_ACTION_PREFIX = '[ext]';
 const createExternalAction = createActionFactory(EXTERNAL_ACTION_PREFIX);
 
 export const iconsLoaded = createExternalAction<IconDetails[]>('icons-loaded');
-export const scenarioLoaded = createExternalAction<Scenario>('scenario-loaded');
 export const controlSelected = createExternalAction<Control>('control-selected');
 export const selectControl = createExternalAction<string>('select-control');
 export const addExtensionPoint = createExternalAction<OutlineNode>('add-extension-point');
@@ -225,6 +224,7 @@ export const changeProperty = createExternalAction<PropertyChange>('change-prope
 export const propertyChanged = createExternalAction<PropertyChanged>('property-changed');
 export const propertyChangeFailed = createExternalAction<PropertyChangeFailed>('change-property-failed');
 export const changeStackModified = createExternalAction<ChangeStackModified>('change-stack-modified');
+export const showMessage = createExternalAction<string>('show-dialog-message');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -236,4 +236,5 @@ export type ExternalAction =
     | ReturnType<typeof selectControl>
     | ReturnType<typeof addExtensionPoint>
     | ReturnType<typeof propertyChangeFailed>
-    | ReturnType<typeof changeStackModified>;
+    | ReturnType<typeof changeStackModified>
+    | ReturnType<typeof showMessage>;

@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`print document concat strings 1`] = `"abc"`;
+
+exports[`print document double indent 1`] = `
+"        a
+        b"
+`;
+
+exports[`print document hard line 1`] = `
+"a
+b"
+`;
+
+exports[`print document indent 1`] = `
+"    a
+    b"
+`;
+
+exports[`print document indent content 1`] = `
+"a
+    b
+c"
+`;
+
+exports[`print document soft line 1`] = `"a b"`;
+
+exports[`print document tabWidth 1`] = `
+"          a
+          b"
+`;
+
+exports[`print document trailing whitespace removal 1`] = `
+"a
+    b
+
+
+c"
+`;
