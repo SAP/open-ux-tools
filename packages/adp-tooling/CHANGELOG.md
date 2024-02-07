@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.8.4
+
+### Patch Changes
+
+-   2bedc697: chore(deps): update dependency @types/adm-zip to v0.5.5
+
 ## 0.8.3
 
 ### Patch Changes
