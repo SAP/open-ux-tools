@@ -17,7 +17,6 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -27,16 +26,12 @@
         "src"
     ],
     "devDependencies": {
-        "@jest/test-sequencer": "29.5.0",
         "chalk": "4.1.2",
-        "jest-circus": "29.5.0",
         "jest-environment-node": "29.5.0",
-        "jest-runner": "29.5.0",
         "mkdirp": "1.0.4",
         "puppeteer-core": "7.0.0",
         "rimraf": "5.0.1",
         "typescript": "^5.1.6",
-        "userhome": "1.0.0",
         "which": "2.0.2"
     },
     "eslint-formatter-multiple": {

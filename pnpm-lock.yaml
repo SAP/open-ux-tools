@@ -989,19 +989,10 @@ importers:
 
   packages/jest-runner-puppeteer:
     devDependencies:
-      '@jest/test-sequencer':
-        specifier: 29.5.0
-        version: 29.5.0
       chalk:
         specifier: 4.1.2
         version: 4.1.2
-      jest-circus:
-        specifier: 29.5.0
-        version: 29.5.0
       jest-environment-node:
-        specifier: 29.5.0
-        version: 29.5.0
-      jest-runner:
         specifier: 29.5.0
         version: 29.5.0
       mkdirp:
@@ -1016,9 +1007,6 @@ importers:
       typescript:
         specifier: ^5.1.6
         version: 5.3.3
-      userhome:
-        specifier: 1.0.0
-        version: 1.0.0
       which:
         specifier: 2.0.2
         version: 2.0.2
@@ -21146,11 +21134,6 @@ packages:
       detect-node-es: 1.1.0
       react: 16.14.0
       tslib: 2.5.0
-    dev: true
-
-  /userhome@1.0.0:
-    resolution: {integrity: sha512-ayFKY3H+Pwfy4W98yPdtH1VqH4psDeyW8lYYFzfecR9d6hqLpqhecktvYR3SEEXt7vG0S1JEpciI3g94pMErig==}
-    engines: {node: '>= 0.8.0'}
     dev: true
 
   /utf8-byte-length@1.0.4:
