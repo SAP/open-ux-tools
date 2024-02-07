@@ -10,7 +10,7 @@ export function getMainServiceDataSource(manifest: Manifest): ManifestNamespace.
     let dataSource;
     const model = manifest['sap.ovp']?.globalFilterModel || '';
     const dataSourceName =
-        manifest['sap.ui5'] && manifest['sap.ui5'].models && manifest['sap.ui5'].models[model]
+        manifest['sap.ui5'] && manifest['sap.ui5'].models?.[model]
             ? manifest['sap.ui5'].models[model].dataSource
             : undefined;
     if (dataSourceName) {

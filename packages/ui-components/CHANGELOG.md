@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.15.4
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
 ## 1.15.3
 
 ### Patch Changes
