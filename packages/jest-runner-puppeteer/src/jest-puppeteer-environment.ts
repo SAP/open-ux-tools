@@ -3,10 +3,10 @@ import NodeEnvironment from 'jest-environment-node';
 import puppeteer from 'puppeteer-core';
 import fs from 'fs';
 import os from 'os';
-import path from 'path';
+import { join } from 'path';
 import type { Context } from 'vm';
 
-const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
+const DIR = join(os.tmpdir(), 'jest_puppeteer_global_setup');
 
 /**
  * PuppeteerEnvironment class extends NodeEnvironment and provides setup and teardown methods
@@ -39,7 +39,7 @@ export class PuppeteerEnvironment extends NodeEnvironment {
         console.log(chalk.yellow('Setup Test Environment.'));
         await super.setup();
 
-        const wsEndpoint = fs.readFileSync(path.join(DIR, 'wsEndpoint'), 'utf8');
+        const wsEndpoint = fs.readFileSync(join(DIR, 'wsEndpoint'), 'utf8');
         if (!wsEndpoint) {
             throw new Error('wsEndpoint not found');
         }

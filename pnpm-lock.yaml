@@ -962,6 +962,31 @@ importers:
         specifier: 10.0.0
         version: 10.0.0
 
+  packages/jest-file-matchers:
+    dependencies:
+      chalk:
+        specifier: 4.1.2
+        version: 4.1.2
+      dir-compare:
+        specifier: 3.3.0
+        version: 3.3.0
+      filenamify:
+        specifier: 4.2.0
+        version: 4.2.0
+      jest-diff:
+        specifier: 26.6.2
+        version: 26.6.2
+      minimatch:
+        specifier: 3.0.4
+        version: 3.0.4
+      mkdirp:
+        specifier: 1.0.4
+        version: 1.0.4
+    devDependencies:
+      typescript:
+        specifier: ^5.1.6
+        version: 5.3.3
+
   packages/jest-runner-puppeteer:
     devDependencies:
       '@jest/test-sequencer':
@@ -997,30 +1022,6 @@ importers:
       which:
         specifier: 2.0.2
         version: 2.0.2
-  packages/jest-file-matchers:
-    dependencies:
-      chalk:
-        specifier: 4.1.2
-        version: 4.1.2
-      dir-compare:
-        specifier: 3.3.0
-        version: 3.3.0
-      filenamify:
-        specifier: 4.2.0
-        version: 4.2.0
-      jest-diff:
-        specifier: 26.6.2
-        version: 26.6.2
-      minimatch:
-        specifier: 3.0.4
-        version: 3.0.4
-      mkdirp:
-        specifier: 1.0.4
-        version: 1.0.4
-    devDependencies:
-      typescript:
-        specifier: ^5.1.6
-        version: 5.3.3
 
   packages/logger:
     dependencies:
