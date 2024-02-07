@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.13.1
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.3.10
+
 ## 0.13.0
 
 ### Minor Changes
