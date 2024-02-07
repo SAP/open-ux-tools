@@ -345,11 +345,25 @@ seq1:
             const doc = await YamlDocument.newInstance(serializedYaml);
             doc.deleteAt({ path: 'seq1', matcher: { key: 'name', value: 'name1' } });
             expect(doc.toString()).toMatchInlineSnapshot(`
-            "key1: 42
-            seq1:
-              - name: name2
-            "
-        `);
+                            "key1: 42
+                            seq1:
+                              - name: name2
+                            "
+                    `);
+        });
+
+        it('delete node in existing empty sequence', async () => {
+            const serializedYaml2 = `key1: 42
+seq1:
+
+`;
+            const doc = await YamlDocument.newInstance(serializedYaml2);
+            try {
+                doc.deleteAt({ path: 'seq1', matcher: { key: 'name', value: 'name1' } });
+                throw new Error('This test should fail');
+            } catch (error) {
+                expect(error.toString()).toMatchInlineSnapshot(`"YAMLError: Sequence does not exist at: [seq1]"`);
+            }
         });
 
         it('try deleting a non-existing node', async () => {
