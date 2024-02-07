@@ -273,7 +273,7 @@ describe('base/deploy', () => {
             jest.spyOn(nullLogger, 'info');
             showAdditionalInfoForOnPremMock.mockResolvedValue(true);
             await deploy(archive, { app, target }, nullLogger);
-            expect(nullLogger.info).toHaveBeenCalledTimes(3);
+            expect(nullLogger.info).toHaveBeenCalledTimes(2);
         });
 
         describe('adaptation projects', () => {
