@@ -198,6 +198,7 @@ describe('SelectionService', () => {
             getElement: () => any;
             getSelector: () => any;
             getChangeType: () => string;
+            getPreparedChange: () => { getDefinition: () => { fileName: string } };
         } {
             const cache = new Map(properties);
             return {
@@ -212,6 +213,9 @@ describe('SelectionService', () => {
                 }),
                 getChangeType: (): any => {
                     return cache.get('changeType');
+                },
+                getPreparedChange: (): { getDefinition: () => { fileName: string } } => {
+                    return { getDefinition: () => ({ fileName: 'testFileName' }) };
                 }
             };
         }
@@ -259,6 +263,7 @@ describe('SelectionService', () => {
                         controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         isActive: true,
                         controlName: 'SimpleForm',
+                        fileName: 'testFileName',
                         type: 'pending'
                     },
                     {
@@ -266,6 +271,7 @@ describe('SelectionService', () => {
                         controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         isActive: true,
                         controlName: 'SimpleForm',
+                        fileName: 'testFileName',
                         type: 'pending'
                     }
                 ]
@@ -379,6 +385,7 @@ describe('SelectionService', () => {
             getSelector: () => any;
             getChangeType: () => string;
             getParent: () => any;
+            getPreparedChange: () => { getDefinition: () => { fileName: string } };
         } {
             const cache = new Map(properties);
             return {
@@ -399,7 +406,10 @@ describe('SelectionService', () => {
                     getElement: jest.fn().mockReturnValue({
                         getId: () => 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
                     })
-                })
+                }),
+                getPreparedChange: (): { getDefinition: () => { fileName: string } } => {
+                    return { getDefinition: () => ({ fileName: 'testFileName' }) };
+                }
             };
         }
         const commands = [
@@ -453,6 +463,7 @@ describe('SelectionService', () => {
                         isActive: true,
                         propertyName: 'text',
                         controlName: 'Button',
+                        fileName: 'testFileName',
                         type: 'pending',
                         value: 'abc'
                     },
@@ -462,6 +473,7 @@ describe('SelectionService', () => {
                         isActive: true,
                         propertyName: 'text',
                         controlName: 'Button',
+                        fileName: 'testFileName',
                         type: 'pending',
                         value: '{i18n>DELETE}'
                     },
@@ -469,6 +481,7 @@ describe('SelectionService', () => {
                         changeType: 'addXMLAtExtensionPoint',
                         controlId: 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
                         controlName: 'ExtensionPoint1',
+                        fileName: 'testFileName',
                         isActive: true,
                         type: 'pending'
                     }
