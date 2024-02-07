@@ -222,6 +222,16 @@ key1: 42
             expect(doc.toString()).toEqual(expectedValue);
         });
 
+        it('adds comment at invalid location - comment is not added', async () => {
+            const serializedYaml = 'key1: 42';
+
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.addDocumentComment({ comment: 'This goes at the end', location: 'test' as any });
+            const expectedValue = `key1: 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
         it('adds comment at the end (changes existing)', async () => {
             const serializedYaml = `# Top comment
 
