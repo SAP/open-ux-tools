@@ -10,9 +10,7 @@ import {
     DataSourceData,
     FolderTypes,
     GeneratorName,
-    GeneratorType,
     IWriter,
-    IWriterData,
     InboundAnswers,
     InboundContent,
     InboundData,
@@ -28,25 +26,6 @@ import {
     writeChangeToFile,
     getParsedPropertyValue
 } from '../../base/change-utils';
-
-export class WriterFactory {
-    static createWriter<T extends GeneratorType>(type: T, fs: Editor, projectPath: string): IWriterData<T> {
-        switch (type) {
-            case GeneratorType.ADD_ANNOTATIONS_TO_ODATA:
-                return new AnnotationsWriter(fs, projectPath) as IWriterData<T>;
-            case GeneratorType.ADD_COMPONENT_USAGES:
-                return new ComponentUsagesWriter(fs, projectPath) as IWriterData<T>;
-            case GeneratorType.ADD_NEW_MODEL:
-                return new NewModelWriter(fs, projectPath) as IWriterData<T>;
-            case GeneratorType.CHANGE_DATA_SOURCE:
-                return new DataSourceWriter(fs, projectPath) as IWriterData<T>;
-            case GeneratorType.CHANGE_INBOUND:
-                return new InboundWriter(fs, projectPath) as IWriterData<T>;
-            default:
-                throw new Error(`Unsupported generator type: ${type}`);
-        }
-    }
-}
 
 export class AnnotationsWriter implements IWriter<AnnotationsData> {
     constructor(private fs: Editor, private projectPath: string) {}
