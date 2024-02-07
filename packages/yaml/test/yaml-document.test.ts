@@ -990,6 +990,27 @@ seq1:
         expect(doc.toString().trim()).toEqual(serializedYaml);
     });
 
+    describe('findItem', () => {
+        it('will return all item', async () => {
+            const serializedYaml = `l1:
+  l2:
+    - l3: 13
+    - l3: 14`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            const seq = doc.getSequence({
+                path: 'l1.l2'
+            }) as YAMLSeq;
+
+            const node = doc.findItem(seq, (item) => item['l3'] === 13);
+
+            expect(String(node)).toEqual(JSON.stringify({ l3: 13 }));
+
+            const node2 = doc.findItem(seq, (item) => item['l3'] === 14);
+
+            expect(String(node2)).toEqual(JSON.stringify({ l3: 14 }));
+        });
+    });
+
     describe('getNode', () => {
         it('will return a node searching from the root', async () => {
             const serializedYaml = `seq1:
