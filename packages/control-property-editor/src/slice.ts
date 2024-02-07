@@ -1,4 +1,4 @@
-import type { SliceCaseReducers } from '@reduxjs/toolkit';
+import type { PayloadAction, SliceCaseReducers } from '@reduxjs/toolkit';
 import { createSlice, createAction } from '@reduxjs/toolkit';
 
 import type {
@@ -18,8 +18,7 @@ import {
     propertyChanged,
     propertyChangeFailed,
     showMessage,
-    scenario,
-    scenarioLoaded
+    scenario
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -35,6 +34,7 @@ interface SliceState {
     outline: OutlineNode[];
     filterQuery: FilterOptions[];
     scenario: Scenario;
+    isAdpProject: boolean;
     icons: IconDetails[];
     changes: ChangesSlice;
     dialogMessage: string | undefined;
@@ -98,6 +98,7 @@ export const initialState = {
     outline: [],
     filterQuery: filterInitOptions,
     scenario: scenario.UiAdaptation,
+    isAdpProject: false,
     icons: [],
     changes: {
         controls: {},
@@ -109,7 +110,12 @@ export const initialState = {
 const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
     name: 'app',
     initialState,
-    reducers: {},
+    reducers: {
+        setProjectScenario: (state, action: PayloadAction<Scenario>) => {
+            state.scenario = action.payload;
+            state.isAdpProject = action.payload === scenario.AdaptationProject;
+        }
+    },
     extraReducers: (builder) =>
         builder
             .addMatcher(outlineChanged.match, (state, action: ReturnType<typeof outlineChanged>): void => {
@@ -132,9 +138,6 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             )
             .addMatcher(iconsLoaded.match, (state, action: ReturnType<typeof iconsLoaded>): void => {
                 state.icons = action.payload;
-            })
-            .addMatcher(scenarioLoaded.match, (state, action: ReturnType<typeof scenarioLoaded>): void => {
-                state.scenario = action.payload;
             })
             .addMatcher(changeProperty.match, (state, action: ReturnType<typeof changeProperty>): void => {
                 if (state.selectedControl?.id === action.payload.controlId) {
@@ -226,5 +229,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.dialogMessage = action.payload;
             })
 });
+
+export const { setProjectScenario } = slice.actions;
 
 export default slice.reducer;

@@ -1,5 +1,68 @@
 # @sap-ux/preview-middleware
 
+## 0.11.32
+
+### Patch Changes
+
+-   Updated dependencies [2bedc697]
+    -   @sap-ux/adp-tooling@0.8.4
+
+## 0.11.31
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+    -   @sap-ux/adp-tooling@0.8.3
+
+## 0.11.30
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.2
+
+## 0.11.29
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.1
+
+## 0.11.28
+
+### Patch Changes
+
+-   b817c8d5: Property change is created (unsaved) on the key press but should be on blur for the adaptation projects
+
+## 0.11.27
+
+### Patch Changes
+
+-   52265581: Fix styling for the funnel icon on Outline Panel
+
+## 0.11.26
+
+### Patch Changes
+
+-   Updated dependencies [349fff1a]
+    -   @sap-ux/adp-tooling@0.8.0
+
+## 0.11.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.7.4
+
+## 0.11.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.7.3
+
+## 0.11.23
+
+### Patch Changes
+
+-   70296b55: Remove label and icon in control property editor
+
 ## 0.11.22
 
 ### Patch Changes

@@ -45,6 +45,9 @@
       "path": "packages/cds-annotation-parser"
     },
     {
+      "path": "packages/cds-odata-annotation-converter"
+    },
+    {
       "path": "packages/control-property-editor-common"
     },
     {
@@ -70,6 +73,9 @@
     },
     {
       "path": "packages/fiori-freestyle-writer"
+    },
+    {
+      "path": "packages/jest-file-matchers"
     },
     {
       "path": "packages/logger"
@@ -112,6 +118,9 @@
     },
     {
       "path": "packages/system-access"
+    },
+    {
+      "path": "packages/telemetry"
     },
     {
       "path": "packages/ui-components"

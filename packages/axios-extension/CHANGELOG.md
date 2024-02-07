@@ -1,5 +1,36 @@
 # @sap-ux/axios-extension
 
+## 1.10.0
+
+### Minor Changes
+
+-   ecd5275d: fix log info order, remove showAddInfo
+
+## 1.9.0
+
+### Minor Changes
+
+-   de8a4878: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
+### Patch Changes
+
+-   Updated dependencies [de8a4878]
+    -   @sap-ux/btp-utils@0.13.0
+
+## 1.8.1
+
+### Patch Changes
+
+-   3000e8f4: adds additional log for deployment
+
+## 1.8.0
+
+### Minor Changes
+
+-   62232236: Use token for connecting to ABAP Cloud
+
 ## 1.7.3
 
 ### Patch Changes
