@@ -1,5 +1,13 @@
 # @sap-ux/app-config-writer
 
+## 0.3.21
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+-   Updated dependencies [eb0b7b37]
+    -   @sap-ux/store@0.4.1
+
 ## 0.3.20
 
 ### Patch Changes

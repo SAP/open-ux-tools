@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.13
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
 ## 0.4.12
 
 ### Patch Changes
