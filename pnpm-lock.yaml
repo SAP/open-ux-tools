@@ -1279,8 +1279,8 @@ importers:
         specifier: workspace:*
         version: link:../eslint-plugin-fiori-tools
       '@sapui5/types':
-        specifier: 1.120.1
-        version: 1.120.1
+        specifier: 1.120.5
+        version: 1.120.5
       '@ui5/cli':
         specifier: 3.8.0
         version: 3.8.0
@@ -7449,8 +7449,8 @@ packages:
       '@sap-ux/vocabularies-types': 0.10.0
     dev: false
 
-  /@sapui5/types@1.120.1:
-    resolution: {integrity: sha512-9IsokJ/J4PJl7t59ZW26Bp8FQzCFB+V0hK3jV3abPD8f/gMiaWIDUMHvbLw+6zAtDYNQ9yVAmoo15hpFaxC2Gw==}
+  /@sapui5/types@1.120.5:
+    resolution: {integrity: sha512-5n0pzbS4sP1eA0m1bFgnD1cKQT7BJQn9b1JADWanteElZTbyJjoaTFzSHIUjrCU+vxOwkHTajCjp+/6UNJ1KbQ==}
     dependencies:
       '@types/jquery': 3.5.13
       '@types/offscreencanvas': 2019.6.4

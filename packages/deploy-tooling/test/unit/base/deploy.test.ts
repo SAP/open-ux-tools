@@ -18,6 +18,7 @@ import { SummaryStatus } from '../../../src/base/validate';
 
 const validateBeforeDeployMock = jest.spyOn(validate, 'validateBeforeDeploy');
 const formatSummaryMock = jest.spyOn(validate, 'formatSummary');
+const showAdditionalInfoForOnPremMock = jest.spyOn(validate, 'showAdditionalInfoForOnPrem');
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -59,8 +60,7 @@ describe('base/deploy', () => {
                 archive,
                 bsp: app,
                 testMode: undefined,
-                safeMode: undefined,
-                showAddInfo: false
+                safeMode: undefined
             });
             mockedUi5RepoService.deploy.mockClear();
 
@@ -69,8 +69,7 @@ describe('base/deploy', () => {
                 archive,
                 bsp: app,
                 testMode: true,
-                safeMode: false,
-                showAddInfo: false
+                safeMode: false
             });
             mockedUi5RepoService.deploy.mockClear();
             mockCreateForAbap.mockClear();
@@ -85,8 +84,7 @@ describe('base/deploy', () => {
                 archive,
                 bsp: app,
                 testMode: true,
-                safeMode: false,
-                showAddInfo: false
+                safeMode: false
             });
             expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
         });
@@ -104,8 +102,7 @@ describe('base/deploy', () => {
                 archive,
                 bsp: app,
                 testMode: undefined,
-                safeMode: undefined,
-                showAddInfo: false
+                safeMode: undefined
             });
             mockedUi5RepoService.deploy.mockClear();
 
@@ -114,8 +111,7 @@ describe('base/deploy', () => {
                 archive,
                 bsp: app,
                 testMode: true,
-                safeMode: false,
-                showAddInfo: false
+                safeMode: false
             });
             mockedUi5RepoService.deploy.mockClear();
             mockCreateForAbap.mockClear();
@@ -130,8 +126,7 @@ describe('base/deploy', () => {
                 archive,
                 bsp: app,
                 testMode: true,
-                safeMode: false,
-                showAddInfo: false
+                safeMode: false
             });
             expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
             expect(formatSummaryMock).toHaveBeenCalled();
@@ -187,8 +182,7 @@ describe('base/deploy', () => {
                 archive,
                 bsp: app,
                 testMode: undefined,
-                safeMode: undefined,
-                showAddInfo: false
+                safeMode: undefined
             });
         });
 
@@ -235,8 +229,7 @@ describe('base/deploy', () => {
                 archive,
                 bsp: { ...app, transport: '~transport123' },
                 testMode: true,
-                safeMode: false,
-                showAddInfo: false
+                safeMode: false
             });
             expect(config.createTransport).toBe(false);
             expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
@@ -274,6 +267,12 @@ describe('base/deploy', () => {
                 expect(error.message).toBe('ADT Service Not Found');
             }
             expect(mockedAdtService.createTransportRequest).toBeCalledTimes(1);
+        });
+        test('additional info logged', async () => {
+            jest.spyOn(nullLogger, 'info');
+            showAdditionalInfoForOnPremMock.mockResolvedValue(true);
+            await deploy(archive, { app, target }, nullLogger);
+            expect(nullLogger.info).toHaveBeenCalledTimes(3);
         });
 
         describe('adaptation projects', () => {
