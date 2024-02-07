@@ -90,7 +90,7 @@ export function getCellFromCoords(rowIdx: number, columnKey: string, columns: UI
         `.ms-DetailsList .ms-DetailsList-contentWrapper .ms-List-page .ms-DetailsRow[data-item-index="${rowIdx || 0}"]`
     );
     const cols = row?.querySelectorAll('.ms-DetailsRow-cell');
-    return cols && cols.length && cols[selectedIdx];
+    return cols?.length && cols[selectedIdx];
 }
 
 // manual workaround due to the lack of API for selecting columns
