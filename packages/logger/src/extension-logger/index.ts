@@ -14,6 +14,14 @@ export class ExtensionLogger extends WinstonLogger {
         });
     }
 
+    /**
+     * Private function to enable adding additional arguments to the log message.
+     * Prepares the message for formatting with format.splat().
+     *
+     * @param level - log level
+     * @param message - log message
+     * @param args - additional arguments like objects, arrays, etc.
+     */
     private logWithArgs(level: LogLevel, message: string, ...args: any): void {
         const winstonLevel = toWinstonLogLevel(level) ?? this._logger.level;
         if (args.length > 0) {
@@ -71,6 +79,9 @@ export class ExtensionLogger extends WinstonLogger {
         this.logWithArgs(LogLevel.Silly, message, ...args);
     }
 
+    /**
+     * Show the output channel.
+     */
     show(): void {
         const winstonVSCodeTransport = this._logger.transports.find((t) => t instanceof WinstonVSCodeTransport);
         if (winstonVSCodeTransport) {
