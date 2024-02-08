@@ -2,19 +2,13 @@ import merge from 'sap/base/util/merge';
 import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import Layer from 'sap/ui/fl/Layer';
 import VersionInfo from 'sap/ui/VersionInfo';
-import { CHANGES_API_PATH, getFlexSettings } from './common';
-
-interface Change {
-    support?: {
-        generator?: string;
-    };
-}
+import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
 
 const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
     storage: {
         _itemsStoredAsObjects: true,
-        setItem: function (_key: string, change: Change) {
+        setItem: function (_key: string, change: FlexChange) {
             const settings = getFlexSettings();
             if (settings) {
                 change.support ??= {};
