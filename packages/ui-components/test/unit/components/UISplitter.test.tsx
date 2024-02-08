@@ -12,7 +12,7 @@ describe('<Splitter />', () => {
 
     beforeEach(() => {
         wrapper = Enzyme.mount(<UISplitter type={UISplitterType.Resize} onResize={onResize} />);
-        jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+        jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => {
             cb(1);
             return 1;
         });
