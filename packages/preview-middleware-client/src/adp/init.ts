@@ -16,7 +16,7 @@ import { getUI5VersionValidationMessage } from './ui5-version-utils';
 export default async function (rta: RuntimeAuthoring) {
     const { version } = (await VersionInfo.load()) as { version: string };
     const versionParts = version.split(/[.-]/);
-    const minor = parseInt(versionParts[1]);
+    const minor = parseInt(versionParts[1], 10);
 
     const actionHandlers: ActionHandler[] = [];
     /**

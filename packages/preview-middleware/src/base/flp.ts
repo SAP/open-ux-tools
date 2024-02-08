@@ -99,7 +99,7 @@ export interface FlexConnector {
     url?: string;
 }
 
-export type ApplicationDependecies = MergedAppDescriptor | { manifest: boolean };
+export type ApplicationDependencies = MergedAppDescriptor | { manifest: boolean };
 
 /**
  * Internal structure used to fill the sandbox.html template
@@ -114,7 +114,7 @@ export interface TemplateConfig {
             additionalInformation: string;
             applicationType: 'URL';
             url: string;
-            applicationDependencies?: ApplicationDependecies;
+            applicationDependencies?: ApplicationDependencies;
         }
     >;
     ui5: {
@@ -181,7 +181,7 @@ export class FlpSandbox {
      */
     async init(
         manifest: Manifest,
-        applicationDeps: ApplicationDependecies,
+        applicationDeps: ApplicationDependencies,
         componentId?: string,
         resources: Record<string, string> = {}
     ): Promise<void> {
@@ -427,7 +427,7 @@ export class FlpSandbox {
      * @param app configuration for the preview
      * @param applicationDeps application dependencies
      */
-    addApp(manifest: Manifest, app: App, applicationDeps: ApplicationDependecies) {
+    addApp(manifest: Manifest, app: App, applicationDeps: ApplicationDependencies) {
         const id = manifest['sap.app'].id;
         app.intent ??= {
             object: id.replace(/\./g, ''),

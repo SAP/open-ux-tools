@@ -1,13 +1,7 @@
 import LrepConnector from 'sap/ui/fl/LrepConnector';
 import FakeLrepConnector from 'sap/ui/fl/FakeLrepConnector';
-import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 
-interface FlexChange {
-    [key: string]: string | object | undefined;
-    support: {
-        generator?: string;
-    };
-}
+import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
 
 interface FetchedChanges {
     [key: string]: FlexChange;
@@ -27,24 +21,6 @@ interface LoadChangesResult {
     messagebundle: string | undefined;
 }
 
-const path = '/preview/api/changes';
-
-/**
- * Retrieves Flex settings from a 'sap-ui-bootstrap' element's data attribute.
- * Parses the 'data-open-ux-preview-flex-settings' attribute as JSON.
- *
- * @returns {FlexSettings | undefined} The parsed Flex settings if available, otherwise undefined.
- */
-function getFlexSettings(): FlexSettings | undefined {
-    let result;
-    const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
-    const flexSetting = bootstrapConfig?.getAttribute('data-open-ux-preview-flex-settings');
-    if (flexSetting) {
-        result = JSON.parse(flexSetting);
-    }
-    return result;
-}
-
 /**
  * Processes an array of FlexChange objects.
  * It updates each change object with settings and sends them to a API endpoint.
@@ -61,7 +37,7 @@ export async function create(changeArr: FlexChange[]): Promise<void> {
                 change.support.generator = settings.generator;
             }
 
-            await fetch(path, {
+            await fetch(CHANGES_API_PATH, {
                 method: 'POST',
                 body: JSON.stringify(change, null, 2),
                 headers: {
@@ -81,7 +57,7 @@ export async function create(changeArr: FlexChange[]): Promise<void> {
 export async function loadChanges(...args: []): Promise<LoadChangesResult> {
     const lrep = new LrepConnector();
 
-    const response = await fetch(path, {
+    const response = await fetch(CHANGES_API_PATH, {
         method: 'GET',
         headers: {
             'content-type': 'application/json'
