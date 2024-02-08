@@ -1173,7 +1173,7 @@ importers:
         specifier: 1.39.0
         version: 1.39.0
       '@sap-ux/logger':
-        specifier: 0.4.0
+        specifier: 0.5.0
         version: link:../logger
       '@types/folder-hash':
         specifier: 4.0.4
@@ -1219,7 +1219,7 @@ importers:
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
         version: link:../preview-middleware-client
       '@sap-ux-private/playwright':
-        specifier: 0.0.1
+        specifier: 0.0.2
         version: link:../playwright
       '@sap-ux/project-access':
         specifier: workspace:*
