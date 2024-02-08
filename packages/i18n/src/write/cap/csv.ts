@@ -6,6 +6,44 @@ import type { TextEdit } from 'vscode-languageserver-textdocument';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Range, Position } from '../../parser/utils';
 import { parseCsv } from '../../parser/csv/parser';
+import type { CsvField } from '../../parser/csv/types';
+
+/**
+ * Add CSV text for fallback.
+ *
+ * @param text csv text
+ * @param eol end of line
+ * @param newEntries new i18n entries
+ * @param headerFields header fields of csv
+ * @param fallbackLocale fallback local
+ * @returns csv text
+ */
+function addFallbackCsvText(
+    text: string,
+    eol: string,
+    newEntries: NewI18nEntry[],
+    headerFields: CsvField[],
+    fallbackLocale: string
+) {
+    let newText = '';
+    for (const entry of newEntries) {
+        newText += `${entry.key};`;
+        for (let column = 1; column < headerFields.length; column++) {
+            const columnHeader = headerFields[column];
+            if (columnHeader.value === fallbackLocale) {
+                newText += `${entry.value}`;
+            }
+            if (column + 1 !== headerFields.length) {
+                newText += ';';
+            }
+        }
+        newText += eol;
+    }
+    if (text.endsWith(eol)) {
+        return text + newText;
+    }
+    return text + eol + newText;
+}
 
 /**
  * Add csv text.
@@ -30,24 +68,7 @@ export function addCsvTexts(text: string, fallbackLocale: string, newEntries: Ne
 
     const fallbackFieldIndex = headerFields.findIndex((field) => field.value === fallbackLocale);
     if (fallbackFieldIndex !== -1) {
-        let newText = '';
-        for (const entry of newEntries) {
-            newText += `${entry.key};`;
-            for (let column = 1; column < headerFields.length; column++) {
-                const columnHeader = headerFields[column];
-                if (columnHeader.value === fallbackLocale) {
-                    newText += `${entry.value}`;
-                }
-                if (column + 1 !== headerFields.length) {
-                    newText += ';';
-                }
-            }
-            newText += eol;
-        }
-        if (text.endsWith(eol)) {
-            return text + newText;
-        }
-        return text + eol + newText;
+        return addFallbackCsvText(text, eol, newEntries, headerFields, fallbackLocale);
     }
 
     const document = TextDocument.create('', '', 0, text);
