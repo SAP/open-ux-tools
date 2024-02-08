@@ -916,6 +916,7 @@ describe('<UIFlexibleTable />', () => {
             expect(enabledRow.prop('style')).toEqual(
                 expect.objectContaining({
                     cursor: 'inherit',
+                    touchAction: 'none',
                     userSelect: 'none',
                     pointerEvents: 'all'
                 })
@@ -967,6 +968,7 @@ describe('<UIFlexibleTable />', () => {
                     const row = wrapper.find('li').at(rowIndex);
                     expect(row.prop('style')).toEqual(
                         expect.objectContaining({
+                            touchAction: isTouchDragDisabled ? 'auto' : 'none',
                             pointerEvents: 'all'
                         })
                     );

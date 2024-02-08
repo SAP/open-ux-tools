@@ -214,7 +214,8 @@ function isRowDisabled(value: unknown): boolean {
 function getRowStyles(isDragDisabled: boolean, isDragged: boolean, isTouchDragDisabled: boolean): CSSProperties {
     const style: CSSProperties = {
         pointerEvents: 'all',
-        cursor: isDragged ? 'grabbing' : 'inherit'
+        cursor: isDragged ? 'grabbing' : 'inherit',
+        touchAction: 'none'
     };
     if (isDragDisabled) {
         style.cursor = 'default';
