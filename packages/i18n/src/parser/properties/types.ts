@@ -1,14 +1,14 @@
 import type { Range } from '../utils';
-export interface TextNode {
-    type: 'text';
+export interface TextNode<T = 'key' | 'value'> {
+    type: T;
     value: string;
     range: Range;
 }
 
 export interface KeyElementLine {
     type: 'key-element-line';
-    key: TextNode;
-    element: TextNode;
+    key: TextNode<'key'>;
+    element: TextNode<'value'>;
     range: Range;
 }
 
@@ -18,14 +18,7 @@ export interface CommentLine {
     range: Range;
 }
 
-export type TokenType =
-    | 'comment'
-    | 'separator'
-    | 'continuation-line-marker'
-    | 'end-of-line'
-    | 'text'
-    | 'escape'
-    | 'whitespace';
+export type TokenType = 'comment' | 'separator' | 'end-of-line' | 'key' | 'value' | 'whitespace';
 
 export interface Token {
     type: TokenType;

@@ -7,13 +7,13 @@
   {
     "type": "key-element-line",
     "key": {
-      "type": "text",
+      "type": "key",
       "value": "multiline",
       "range": "[(1,0)..(1,9)]"
     },
     "element": {
-      "type": "text",
-      "value": "This line continues",
+      "type": "value",
+      "value": "This line \\continues",
       "range": "[(1,12)..(2,9)]"
     },
     "range": "[(1,0)..(2,9)]"
@@ -31,13 +31,13 @@
   {
     "type": "key-element-line",
     "key": {
-      "type": "text",
+      "type": "key",
       "value": "oddKey",
       "range": "[(5,0)..(5,6)]"
     },
     "element": {
-      "type": "text",
-      "value": "This is line one and\\# This is line two",
+      "type": "value",
+      "value": "This is line one and\\\\\\# This is line two",
       "range": "[(5,9)..(6,18)]"
     },
     "range": "[(5,0)..(6,18)]"
@@ -60,13 +60,13 @@
   {
     "type": "key-element-line",
     "key": {
-      "type": "text",
+      "type": "key",
       "value": "welcome",
       "range": "[(11,0)..(11,7)]"
     },
     "element": {
-      "type": "text",
-      "value": "Welcome to Wikipedia!",
+      "type": "value",
+      "value": "Welcome to \\Wikipedia!",
       "range": "[(11,10)..(12,20)]"
     },
     "range": "[(11,0)..(12,20)]"

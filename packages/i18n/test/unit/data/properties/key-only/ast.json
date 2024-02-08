@@ -7,12 +7,12 @@
   {
     "type": "key-element-line",
     "key": {
-      "type": "text",
+      "type": "key",
       "value": "empty",
       "range": "[(1,0)..(1,5)]"
     },
     "element": {
-      "type": "text",
+      "type": "value",
       "value": "",
       "range": "[(1,5)..(1,5)]"
     },
