@@ -74,13 +74,14 @@ export class ExtensionLogger extends WinstonLogger {
      * Log a trace message.
      *
      * @param message - log message
+     * @param args - additional arguments like objects, arrays, etc.
      */
     trace(message: string, ...args: any): void {
         this.logWithArgs(LogLevel.Silly, message, ...args);
     }
 
     /**
-     * Show the output channel.
+     * Show the output channel in Visual Studio Code.
      */
     show(): void {
         const winstonVSCodeTransport = this._logger.transports.find((t) => t instanceof WinstonVSCodeTransport);
