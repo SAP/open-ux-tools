@@ -57,16 +57,17 @@ export async function getCapI18nBundle(root: string, env: CdsEnvironment, filePa
         for (const { toI18nBundle, filePath } of transformers) {
             const i18nFilePath = filePath(path, env);
             const entries = await tryTransformTexts(i18nFilePath, toI18nBundle);
-            if (entries) {
-                const currentBundle = entries[fallbackLanguage] ?? entries[defaultLanguage] ?? [];
-                for (const entry of currentBundle) {
-                    if (!bundle[entry.key.value]) {
-                        bundle[entry.key.value] = [];
-                    }
-                    bundle[entry.key.value].push(entry);
-                }
-                break;
+            if (!entries) {
+                continue;
             }
+            const currentBundle = entries[fallbackLanguage] ?? entries[defaultLanguage] ?? [];
+            for (const entry of currentBundle) {
+                if (!bundle[entry.key.value]) {
+                    bundle[entry.key.value] = [];
+                }
+                bundle[entry.key.value].push(entry);
+            }
+            break;
         }
     }
 

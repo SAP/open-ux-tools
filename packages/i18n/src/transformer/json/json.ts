@@ -67,7 +67,38 @@ function toTextNode(node: Node | undefined, lineOffsets: number[], contentLength
     }
     return result;
 }
+/**
+ * Process text nodes.
+ *
+ * @param textNodes text nodes
+ * @param lineOffsets line offsets
+ * @param contentLength content length
+ * @param filePath file path
+ * @returns i18n entires
+ */
+function processTextNodes(
+    textNodes: Node[],
+    lineOffsets: number[],
+    contentLength: number,
+    filePath: string
+): I18nEntry[] {
+    const entries: I18nEntry[] = [];
+    for (const textNode of textNodes) {
+        if (textNode.type === 'property') {
+            const key = toTextNode((textNode.children ?? [])[0], lineOffsets, contentLength);
+            const value = toTextNode((textNode.children ?? [])[1], lineOffsets, contentLength);
+            if (key && value) {
+                entries.push({
+                    filePath,
+                    key,
+                    value
+                });
+            }
+        }
+    }
 
+    return entries;
+}
 /**
  * Convert json text to i18n bundles.
  *
@@ -87,23 +118,9 @@ export function jsonToI18nBundle(text: string, filePath = ''): I18nBundle {
     const localeNodes = rootNode.children ?? [];
     for (const localeNode of localeNodes) {
         if (localeNode.type === 'property') {
-            const entries: I18nEntry[] = [];
             const locale = (localeNode.children ?? [])[0]?.value ?? '';
-            bundle[locale] = entries;
             const textNodes = (localeNode.children ?? [])[1]?.children ?? [];
-            for (const textNode of textNodes) {
-                if (textNode.type === 'property') {
-                    const key = toTextNode((textNode.children ?? [])[0], lineOffsets, contentLength);
-                    const value = toTextNode((textNode.children ?? [])[1], lineOffsets, contentLength);
-                    if (key && value) {
-                        entries.push({
-                            filePath,
-                            key,
-                            value
-                        });
-                    }
-                }
-            }
+            bundle[locale] = processTextNodes(textNodes, lineOffsets, contentLength, filePath);
         }
     }
 
