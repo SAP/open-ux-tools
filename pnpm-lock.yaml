@@ -7,7 +7,6 @@ settings:
 overrides:
   '@testing-library/jest-dom>@adobe/css-tools@<4.3.2': '>=4.3.2'
   nx-cloud>axios@<1.6.0: '>=1.6.0'
-  '@jest/environment': 29.5.0
 
 importers:
 
@@ -5842,6 +5841,16 @@ packages:
       jest-mock: 29.5.0
     dev: true
 
+  /@jest/environment@29.7.0:
+    resolution: {integrity: sha512-aQIfHDq33ExsN4jP1NWGXhxgQ/wixs60gDiKO+XVMd8Mn0NWPWgc34ZQDTb2jKaUWQ7MuwoitXAsN2XVXNMpAw==}
+    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+    dependencies:
+      '@jest/fake-timers': 29.7.0
+      '@jest/types': 29.6.3
+      '@types/node': 18.11.9
+      jest-mock: 29.7.0
+    dev: true
+
   /@jest/expect-utils@29.5.0:
     resolution: {integrity: sha512-fmKzsidoXQT2KwnrwE0SQq3uj8Z763vzR8LnLBwC2qYWEFpjX8daRsk6rHUM1QvNlEW/UJXNXm59ztmJJWs2Mg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -5890,7 +5899,7 @@ packages:
       '@jest/environment': 29.5.0
       '@jest/expect': 29.5.0
       '@jest/types': 29.6.3
-      jest-mock: 29.5.0
+      jest-mock: 29.7.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -15516,8 +15525,8 @@ packages:
       '@jest/types': 29.6.3
       chalk: 4.1.2
       jest-get-type: 29.4.3
-      jest-util: 29.6.3
-      pretty-format: 29.6.3
+      jest-util: 29.7.0
+      pretty-format: 29.7.0
     dev: true
 
   /jest-environment-jsdom@29.6.4:
@@ -15529,7 +15538,7 @@ packages:
       canvas:
         optional: true
     dependencies:
-      '@jest/environment': 29.5.0
+      '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
       '@types/jsdom': 20.0.1
@@ -15740,7 +15749,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/environment': 29.5.0
-      '@jest/fake-timers': 29.5.0
+      '@jest/fake-timers': 29.7.0
       '@jest/globals': 29.5.0
       '@jest/source-map': 29.4.3
       '@jest/test-result': 29.5.0
@@ -15754,7 +15763,7 @@ packages:
       graceful-fs: 4.2.11
       jest-haste-map: 29.5.0
       jest-message-util: 29.6.3
-      jest-mock: 29.5.0
+      jest-mock: 29.7.0
       jest-regex-util: 29.4.3
       jest-resolve: 29.5.0
       jest-snapshot: 29.5.0
