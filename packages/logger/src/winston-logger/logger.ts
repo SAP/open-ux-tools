@@ -139,7 +139,7 @@ export class WinstonLogger extends BaseWinstonLogger {
         const logger = winston.createLogger({
             level,
             transports: Array.from(transportMap.values()),
-            format: format.combine(format.timestamp(), format.json()),
+            format: format.combine(format.timestamp(), format.json(), format.splat()),
             defaultMeta: { label: logPrefix, labelColor: nextColor() }
         });
         const winstonLevel = level ?? logger.level;
