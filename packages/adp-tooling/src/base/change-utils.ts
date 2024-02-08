@@ -1,16 +1,8 @@
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import path, { posix } from 'path';
 
-import {
-    AnnotationsData,
-    FolderTypes,
-    AnnotationFileSelectType,
-    ChangeTypes,
-    GeneratorName,
-    BaseData,
-    InboundContent,
-    PopertyValueType
-} from '../types';
+import type { AnnotationsData, ChangeTypes, GeneratorName, BaseData, InboundContent, PopertyValueType } from '../types';
+import { FolderTypes, AnnotationFileSelectType } from '../types';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
 type InboundChange = { filePath: string; changeWithInboundId: { content: InboundContent } };
@@ -20,6 +12,7 @@ type InboundChange = { filePath: string; changeWithInboundId: { content: Inbound
  *
  * @param {string} projectPath - The root path of the project.
  * @param {AnnotationsData} data - The data object containing information about the annotation change.
+ * @param {object} change - The annotation data change that will be written.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
@@ -66,8 +59,7 @@ export function cleanupFiles(filesToDelete: string | string[], fs: Editor): void
  * @param {object} change - The change data to be written to the file.
  * @param {string} fileName - The name of the file to write the change data to.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- * @param {string} [dir=''] - An optional subdirectory within the 'changes' directory where the file will be written.
- *
+ * @param {string} [dir] - An optional subdirectory within the 'changes' directory where the file will be written.
  * @returns {void}
  */
 export function writeChangeToFolder(projectPath: string, change: object, fileName: string, fs: Editor, dir = ''): void {

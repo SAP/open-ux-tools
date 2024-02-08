@@ -1,6 +1,7 @@
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 
-import { GeneratorType, IWriter, IWriterData } from '../../types';
+import type { IWriterData, Writer } from '../../types';
+import { GeneratorType } from '../../types';
 import {
     AnnotationsWriter,
     ComponentUsagesWriter,
@@ -10,7 +11,7 @@ import {
 } from './change-writers';
 
 export class WriterFactory {
-    private static writers = new Map<GeneratorType, new (fs: Editor, projectPath: string) => IWriter<any>>([
+    private static writers = new Map<GeneratorType, Writer>([
         [GeneratorType.ADD_ANNOTATIONS_TO_ODATA, AnnotationsWriter],
         [GeneratorType.ADD_COMPONENT_USAGES, ComponentUsagesWriter],
         [GeneratorType.ADD_NEW_MODEL, NewModelWriter],

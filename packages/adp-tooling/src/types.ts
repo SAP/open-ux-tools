@@ -1,6 +1,7 @@
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp } from '@sap-ux/ui5-config';
+import type { Editor } from 'mem-fs-editor';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -142,6 +143,7 @@ export const enum HttpStatusCodes {
     SERVICE_UNAVAILABLE = 503
 }
 
+export type Writer = new (fs: Editor, projectPath: string) => IWriter<any>;
 export type IWriterData<T extends GeneratorType> = IWriter<GeneratorData<T>>;
 export interface IWriter<T extends BaseData> {
     write(data: T): Promise<void>;

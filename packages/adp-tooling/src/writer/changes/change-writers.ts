@@ -1,22 +1,19 @@
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 
-import {
+import type {
     AnnotationChangeAnswers,
-    AnnotationFileSelectType,
     AnnotationsData,
-    ChangeTypes,
     ComponentUsagesAnswers,
     ComponentUsagesData,
     DataSourceData,
-    FolderTypes,
-    GeneratorName,
     IWriter,
     InboundAnswers,
     InboundContent,
     InboundData,
     NewModelAnswers,
     NewModelData
-} from '../..';
+} from '../../types';
+import { AnnotationFileSelectType, ChangeTypes, FolderTypes, GeneratorName } from '../../types';
 import {
     getGenericChange,
     writeAnnotationChange,
@@ -42,8 +39,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      */
     private constructContent(data: AnnotationsData): object {
         const { answers, isInternalUsage, annotationFileName } = data;
-        const annotationFileNameWithoutExtension =
-            annotationFileName && annotationFileName.toLocaleLowerCase().replace('.xml', '');
+        const annotationFileNameWithoutExtension = annotationFileName?.toLocaleLowerCase().replace('.xml', '');
         const annotationNameSpace = isInternalUsage
             ? `annotation.${annotationFileNameWithoutExtension}`
             : `customer.annotation.${annotationFileNameWithoutExtension}`;
@@ -394,7 +390,6 @@ export class InboundWriter implements IWriter<InboundData> {
      *
      * @param {InboundAnswers} answers - An object containing potential values for title, subTitle, and icon.
      * @param {InboundContent} content - The initial content object to be enhanced.
-     *
      * @returns {void}
      */
     private getEnhancedContent(answers: InboundAnswers, content: InboundContent): void {
