@@ -18,7 +18,7 @@ import { TargetType } from '../types';
  * @returns boolean or error message
  */
 const validator = (value: string, error: string): boolean | string => {
-    if (!value || !value.trim()) {
+    if (!value?.trim()) {
         return t(error);
     } else {
         return true;
@@ -134,7 +134,7 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
                 name: 'username',
                 message: `${cyan(t('info.username'))}`,
                 validate: (value: string): boolean | string => {
-                    if (!value || !value.trim()) {
+                    if (!value?.trim()) {
                         return `${t('error.emptyUsername')}`;
                     } else {
                         return true;
@@ -146,7 +146,7 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
                 name: 'password',
                 message: `${cyan(t('info.password'))}`,
                 validate: (value: string): boolean | string => {
-                    if (!value || !value.trim()) {
+                    if (!value?.trim()) {
                         return `${t('error.emptyPassword')}`;
                     } else {
                         return true;

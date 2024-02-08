@@ -12,7 +12,7 @@ import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './con
 import { promptConfirmation } from './prompt';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
 import { getAppDescriptorVariant } from './archive';
-import { validateBeforeDeploy, formatSummary } from './validate';
+import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem } from './validate';
 
 /**
  * Internal deployment commands
@@ -291,7 +291,12 @@ async function tryDeploy(
                 );
             }
             const service = getDeployService(provider.getUi5AbapRepository.bind(provider), config, logger);
-            await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
+            await service.deploy({
+                archive,
+                bsp: config.app,
+                testMode: config.test,
+                safeMode: config.safe
+            });
         } else {
             await tryDeployToLrep(provider, config, logger, archive);
         }
@@ -301,6 +306,11 @@ async function tryDeploy(
             );
         } else {
             logger.info('Deployment Successful.');
+            if (await showAdditionalInfoForOnPrem(`${config.target.destination}`)) {
+                logger.info(
+                    '(Note: As the destination is configured using an On-Premise SAP Cloud Connector, you will need to replace the host in the URL above with the internal host)'
+                );
+            }
         }
     } catch (error) {
         await handleError(tryDeploy, error, provider, config, logger, archive);
