@@ -1,12 +1,12 @@
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import type { RequestHandler } from 'express';
+import type { RequestHandler, Request } from 'express';
 import type WebSocket from 'ws';
 import websocket = require('ui5-middleware-websocket/lib/websocket');
 import type { MiddlewareParameters, MiddlewareUtils } from '@ui5/server';
 import type { MiddlewareConfig } from '../types';
 import { FileWatcher } from '../base';
 
-export type WSMiddlewareFunction = (ws: WebSocket, req: Express.Request & { url: string }, next: () => any) => void;
+export type WSMiddlewareFunction = (ws: WebSocket, req: Request & { url: string }, next: () => any) => void;
 
 const websockets: WebSocket[] = [];
 
