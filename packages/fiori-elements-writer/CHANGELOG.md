@@ -1,5 +1,30 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.18.2
+
+### Patch Changes
+
+-   Updated dependencies [eb0b7b37]
+    -   @sap-ux/fe-fpm-writer@0.24.4
+
+## 0.18.1
+
+### Patch Changes
+
+-   Updated dependencies [b84cb0f3]
+    -   @sap-ux/fe-fpm-writer@0.24.3
+
+## 0.18.0
+
+### Minor Changes
+
+-   446f290c: adds new service type
+
+### Patch Changes
+
+-   Updated dependencies [446f290c]
+    -   @sap-ux/odata-service-writer@0.16.0
+
 ## 0.17.4
 
 ### Patch Changes

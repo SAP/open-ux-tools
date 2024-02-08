@@ -1,0 +1,223 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(9,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "Communication.Contact",
+                "valueRange": "[(1,4)..(1,11)]"
+            }
+        },
+        "contentRange": "[(1,13)..(9,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(1,14)..(9,5)]",
+                "name": "Record",
+                "attributes": {
+                    "Type": {
+                        "type": "attribute",
+                        "name": "Type",
+                        "nameRange": "[(2,8)..(2,13)]",
+                        "value": "Communication.ContactType",
+                        "valueRange": "[(2,15)..(2,40)]"
+                    }
+                },
+                "contentRange": "[(1,15)..(9,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(3,8)..(8,9)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "url",
+                                "valueRange": "[(3,8)..(3,11)]"
+                            }
+                        },
+                        "contentRange": "[(3,13)..(8,9)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(3,14)..(8,9)]",
+                                "name": "Collection",
+                                "attributes": {},
+                                "contentRange": "[(3,15)..(8,8)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(4,12)..(7,13)]",
+                                        "name": "Record",
+                                        "attributes": {
+                                            "Type": {
+                                                "type": "attribute",
+                                                "name": "Type",
+                                                "nameRange": "[(5,16)..(5,21)]",
+                                                "value": "Communication.UrlType",
+                                                "valueRange": "[(5,23)..(5,44)]"
+                                            }
+                                        },
+                                        "contentRange": "[(4,13)..(7,12)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(6,16)..(6,43)]",
+                                                "name": "PropertyValue",
+                                                "attributes": {
+                                                    "Property": {
+                                                        "type": "attribute",
+                                                        "name": "Property",
+                                                        "value": "type",
+                                                        "valueRange": "[(6,16)..(6,20)]"
+                                                    }
+                                                },
+                                                "contentRange": "[(6,22)..(6,43)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(6,23)..(6,43)]",
+                                                        "name": "EnumMember",
+                                                        "attributes": {},
+                                                        "contentRange": "[(6,24)..(6,42)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(6,24)..(6,42)]",
+                                                                "text": "com.sap.vocabularies.Communication.v1.ContactInformationType/home com.sap.vocabularies.Communication.v1.ContactInformationType/preferred",
+                                                                "fragmentRanges": [
+                                                                    "[(6,24)..(6,29)]",
+                                                                    "[(6,31)..(6,41)]"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(10,4)..(18,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "Communication.Contact",
+                "valueRange": "[(10,4)..(10,11)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "two",
+                "valueRange": "[(10,13)..(10,16)]"
+            }
+        },
+        "contentRange": "[(10,17)..(18,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(10,18)..(18,5)]",
+                "name": "Record",
+                "attributes": {
+                    "Type": {
+                        "type": "attribute",
+                        "name": "Type",
+                        "nameRange": "[(11,8)..(11,13)]",
+                        "value": "Communication.ContactType",
+                        "valueRange": "[(11,15)..(11,40)]"
+                    }
+                },
+                "contentRange": "[(10,19)..(18,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(12,8)..(17,9)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "url",
+                                "valueRange": "[(12,8)..(12,11)]"
+                            }
+                        },
+                        "contentRange": "[(12,13)..(17,9)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(12,14)..(17,9)]",
+                                "name": "Collection",
+                                "attributes": {},
+                                "contentRange": "[(12,15)..(17,8)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(13,12)..(16,13)]",
+                                        "name": "Record",
+                                        "attributes": {
+                                            "Type": {
+                                                "type": "attribute",
+                                                "name": "Type",
+                                                "nameRange": "[(14,16)..(14,21)]",
+                                                "value": "Communication.UrlType",
+                                                "valueRange": "[(14,23)..(14,44)]"
+                                            }
+                                        },
+                                        "contentRange": "[(13,13)..(16,12)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(15,16)..(15,25)]",
+                                                "name": "PropertyValue",
+                                                "attributes": {
+                                                    "Property": {
+                                                        "type": "attribute",
+                                                        "name": "Property",
+                                                        "value": "type",
+                                                        "valueRange": "[(15,16)..(15,20)]"
+                                                    }
+                                                },
+                                                "contentRange": "[(15,22)..(15,25)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(15,23)..(15,25)]",
+                                                        "name": "EnumMember",
+                                                        "attributes": {},
+                                                        "contentRange": "[(15,24)..(15,24)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(15,24)..(15,24)]",
+                                                                "text": "",
+                                                                "fragmentRanges": []
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

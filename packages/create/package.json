@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/create",
     "description": "SAP Fiori tools module to add or remove features",
-    "version": "0.5.16",
+    "version": "0.5.27",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -46,7 +46,7 @@
         "prompts": "2.4.2"
     },
     "devDependencies": {
-        "@types/diff": "5.0.4",
+        "@types/diff": "5.0.9",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.4.4"

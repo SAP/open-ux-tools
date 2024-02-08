@@ -1,0 +1,14 @@
+UI : {
+    LineItem : {
+        $value: [
+            {
+                $Type             : 'UI.DataField',
+                Value             : {
+                    $value: true,
+                    ![@Common.Label] #possible: 'this is also possible'
+                },
+                ![@UI.Hidden] #data: true,
+            }
+        ]
+    }
+}

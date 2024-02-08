@@ -1,5 +1,11 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
+# Module: cds-odata-annotation-parser
+/packages/cds-annotation-parser/ @SAP/ux-tools-annotations
+
+# Module: cds-odata-annotation-converter
+/packages/cds-odata-annotation-converter/ @SAP/ux-tools-annotations
+
 # Module: create
 /packages/create/ @SAP/ux-tools-create
 

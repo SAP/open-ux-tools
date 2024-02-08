@@ -1,32 +1,14 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "composite": true,
-    "declaration": true,
-    "declarationMap": true,
-    "incremental": true,
-    "outDir": "dist",
-    "rootDir": "./src",
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitAny": false,
-    "noImplicitReturns": true,
-    "esModuleInterop": true,
-    "preserveConstEnums": false
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.json"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ],
-  "references": [
-    {
-      "path": "../odata-annotation-core-types"
-    }
-  ]
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src",
+        "preserveConstEnums": false
+    },
+    "include": ["src"],
+    "references": [
+        {
+            "path": "../odata-annotation-core-types"
+        }
+    ]
 }

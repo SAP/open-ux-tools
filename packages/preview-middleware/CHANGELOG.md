@@ -1,5 +1,112 @@
 # @sap-ux/preview-middleware
 
+## 0.11.33
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+    -   @sap-ux/adp-tooling@0.8.5
+
+## 0.11.32
+
+### Patch Changes
+
+-   Updated dependencies [2bedc697]
+    -   @sap-ux/adp-tooling@0.8.4
+
+## 0.11.31
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+    -   @sap-ux/adp-tooling@0.8.3
+
+## 0.11.30
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.2
+
+## 0.11.29
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.1
+
+## 0.11.28
+
+### Patch Changes
+
+-   b817c8d5: Property change is created (unsaved) on the key press but should be on blur for the adaptation projects
+
+## 0.11.27
+
+### Patch Changes
+
+-   52265581: Fix styling for the funnel icon on Outline Panel
+
+## 0.11.26
+
+### Patch Changes
+
+-   Updated dependencies [349fff1a]
+    -   @sap-ux/adp-tooling@0.8.0
+
+## 0.11.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.7.4
+
+## 0.11.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.7.3
+
+## 0.11.23
+
+### Patch Changes
+
+-   70296b55: Remove label and icon in control property editor
+
+## 0.11.22
+
+### Patch Changes
+
+-   7ce50bbd: "Confirm property change deletion"'s message on delete is only for property changes
+
+## 0.11.21
+
+### Patch Changes
+
+-   83f25073: The extension points not shown as such in the Outline for ADP
+
+## 0.11.20
+
+### Patch Changes
+
+-   132ce16d: Do not block app loading if registering of reuse libs fails
+
+## 0.11.19
+
+### Patch Changes
+
+-   e224bc43: Exclude reuse libraries from being added to the data-sap-ui-libs
+
+## 0.11.18
+
+### Patch Changes
+
+-   b7f73026: FIX: appdescr changes that require client-side merging are not applied
+
+## 0.11.17
+
+### Patch Changes
+
+-   9e7cbe8e: Disable manually inserting values in dropdowns
+
 ## 0.11.16
 
 ### Patch Changes

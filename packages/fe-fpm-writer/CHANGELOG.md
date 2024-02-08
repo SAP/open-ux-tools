@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.4
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 0.24.3
+
+### Patch Changes
+
+-   b84cb0f3: Added `fragmentFile` property in order to allow to use fragment name different from custom extension key
+
 ## 0.24.2
 
 ### Patch Changes

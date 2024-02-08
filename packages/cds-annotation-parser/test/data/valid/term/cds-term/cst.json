@@ -1,0 +1,50 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "readonly",
+                          "startOffset": 0,
+                          "endOffset": 7
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 7
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 7
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 7
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 7
+  }
+}

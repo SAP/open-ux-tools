@@ -67,7 +67,9 @@ const SUPPORTED_VOCABULARY_NAMESPACES: Set<VocabularyNamespace> = new Set([
     'com.sap.vocabularies.Hierarchy.v1',
     'com.sap.vocabularies.Session.v1',
     'com.sap.vocabularies.UI.v1',
-    'com.sap.vocabularies.HTML5.v1'
+    'com.sap.vocabularies.HTML5.v1',
+    'com.sap.cds.vocabularies.ObjectModel',
+    'com.sap.cds.vocabularies.AnalyticsDetails'
 ]);
 
 const vocabulariesInformationStatic: Map<string, VocabulariesInformation> = new Map();
@@ -285,6 +287,10 @@ function parseComplexType(name: string, raw: CSDLComplexType): ComplexType {
         complexType.isOpenType = !!raw.$OpenType;
     }
 
+    const constraints = getConstraints(raw);
+    if (Object.keys(constraints).length) {
+        complexType.constraints = constraints;
+    }
     // collect properties
     Object.keys(raw)
         .filter((key) => !isValidKey(key))
@@ -384,6 +390,16 @@ function parseSchemaElements(identifier: string, element: SchemaElement): Vocabu
         }
     }
     return undefined;
+}
+
+/**
+ * Finds out if namespace belongs to cds analytics.
+ *
+ * @param namespace
+ * @returns boolean value
+ */
+function isCdsAnalyticsNamespace(namespace: string): boolean {
+    return namespace.startsWith('com.sap.cds.vocabularies');
 }
 
 /**
@@ -530,7 +546,9 @@ const getVocabularyObjectLoader =
  * @param maps.dictionary main vocabulary object map
  * @param maps.supportedVocabularies map of supported vocabularies
  * @param maps.upperCaseNameMap map with names in upperCase representation
- * @param includeCds flag indicating if CDS vocabularies should be loaded
+ * @param options options object
+ * @param options.includeCds flag indicating if CDS vocabularies should be loaded
+ * @param options.includeCdsAnalytics flag indicating if additional vocabularies for CDS analytics should be loaded
  * @returns loader function
  */
 const getVocabularyLoader =
@@ -542,7 +560,7 @@ const getVocabularyLoader =
             supportedVocabularies: Map<VocabularyNamespace, Vocabulary>;
             upperCaseNameMap: Map<string, string | Map<string, string>>;
         },
-        includeCds?: boolean
+        options: { includeCds?: boolean; includeCdsAnalytics?: boolean }
     ) =>
     /**
      * Vocabulary data loader for a specific namespace.
@@ -550,16 +568,21 @@ const getVocabularyLoader =
      * @param namespace namespace name
      */
     (namespace: VocabularyNamespace): void => {
+        const { includeCds, includeCdsAnalytics } = options;
         const { supportedVocabularies } = maps;
 
-        if (!includeCds && namespace === CDS_VOCABULARY_NAMESPACE) {
+        const isCdsAnalyticsNs = isCdsAnalyticsNamespace(namespace);
+        if (!includeCds && (namespace === CDS_VOCABULARY_NAMESPACE || isCdsAnalyticsNs)) {
+            return;
+        }
+        if (!includeCdsAnalytics && isCdsAnalyticsNs) {
             return;
         }
         const alias = NAMESPACE_TO_ALIAS.get(namespace);
         if (!alias) {
             return;
         }
-        const document: CSDL = VOCABULARIES[alias];
+        const document: CSDL = VOCABULARIES[namespace];
         if (!document) {
             return;
         }
@@ -585,14 +608,21 @@ const getVocabularyLoader =
     };
 
 /**
- * Loads vocbulary information.
+ * Loads vocabulary information.
  *
  * @param includeCds Flag indicating if CDS vocabularies should be loaded
+ * @param includeCdsAnalytics flag indicating if additional vocabularies for CDS analytics should be loaded
  * @returns Vocabularies
  */
-export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesInformation => {
+export const loadVocabulariesInformation = (
+    includeCds?: boolean,
+    includeCdsAnalytics?: boolean
+): VocabulariesInformation => {
     // try to use cache
-    const cacheKey = includeCds ? 'withCDS' : '';
+    let cacheKey = includeCds ? 'withCDS' : '';
+    if (includeCds && includeCdsAnalytics) {
+        cacheKey += 'IncludingAnalytics';
+    }
     const cachedData = vocabulariesInformationStatic.get(cacheKey);
     if (cachedData) {
         return cachedData;
@@ -606,7 +636,11 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
     const upperCaseNameMap: Map<string, string | Map<string, string>> = new Map();
 
     NAMESPACE_TO_ALIAS.forEach((alias, namespace) => {
-        if (!includeCds && alias === CDS_VOCABULARY_ALIAS) {
+        const isCdsNs = isCdsAnalyticsNamespace(namespace);
+        if (!includeCds && (alias === CDS_VOCABULARY_ALIAS || isCdsNs)) {
+            return;
+        }
+        if (!includeCdsAnalytics && isCdsNs) {
             return;
         }
         addToUpperCaseNameMap(upperCaseNameMap, alias);
@@ -616,12 +650,13 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
 
     const vocabularyLoader = getVocabularyLoader(
         { byTarget, derivedTypesPerType, dictionary, supportedVocabularies, upperCaseNameMap },
-        includeCds
+        { includeCds, includeCdsAnalytics }
     );
 
     for (const namespace of SUPPORTED_VOCABULARY_NAMESPACES) {
         vocabularyLoader(namespace);
     }
+    propagateConstraints(dictionary, derivedTypesPerType);
 
     const vocabulariesInformation: VocabulariesInformation = {
         dictionary,
@@ -636,6 +671,58 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
     vocabulariesInformationStatic.set(cacheKey, vocabulariesInformation);
     return vocabulariesInformation;
 };
+
+/**
+ * Propagates constraints from base types to derived types.
+ *
+ * @param dictionary dictionary map
+ * @param derivedTypesPerType map with types derivation information
+ */
+function propagateConstraints(
+    dictionary: Map<FullyQualifiedName, VocabularyObject>,
+    derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>
+): void {
+    for (const typeName of derivedTypesPerType.keys()) {
+        propagateConstraintsForType(typeName, dictionary, derivedTypesPerType);
+    }
+}
+
+/**
+ * Recursively propagates constraints of the given base type to its derived types based on derived types map.
+ *
+ * @param typeName base type name
+ * @param dictionary dictionary map
+ * @param derivedTypesPerType map with types derivation information
+ */
+function propagateConstraintsForType(
+    typeName: FullyQualifiedName,
+    dictionary: Map<FullyQualifiedName, VocabularyObject>,
+    derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>
+): void {
+    const mergeConstraints = (constraints: Constraints, derivationMap: Map<FullyQualifiedName, boolean>) => {
+        for (const derivedTypeName of derivationMap.keys()) {
+            const derivedType = dictionary.get(derivedTypeName);
+            if (derivedType?.kind === COMPLEX_TYPE_KIND) {
+                // merge base type constraints into the current type constraints
+                derivedType.constraints = { ...constraints, ...(derivedType.constraints ?? {}) };
+            }
+            if (derivedTypesPerType.has(derivedTypeName)) {
+                propagateConstraintsForType(derivedTypeName, dictionary, derivedTypesPerType);
+            }
+        }
+    };
+
+    const typeDef = dictionary.get(typeName);
+    const derivationMap = derivedTypesPerType.get(typeName);
+    if (
+        typeDef?.kind === COMPLEX_TYPE_KIND &&
+        typeDef.constraints &&
+        Object.keys(typeDef.constraints).length &&
+        derivationMap
+    ) {
+        mergeConstraints(typeDef.constraints, derivationMap);
+    }
+}
 
 /**
  *

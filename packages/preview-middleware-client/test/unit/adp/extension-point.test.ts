@@ -33,7 +33,7 @@ describe('ExtensionPointService', () => {
 
             const result = await service.fragmentHandler(
                 {} as UI5Element,
-                { name: 'some-extension-point' } as ExtensionPointData
+                [{ name: 'some-extension-point' }] as ExtensionPointData[]
             );
 
             expect(result).toBe(true);

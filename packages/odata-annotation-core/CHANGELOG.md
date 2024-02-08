@@ -1,5 +1,27 @@
 # @sap-ux/odata-annotation-core
 
+## 0.1.8
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+-   Updated dependencies [eb0b7b37]
+    -   @sap-ux/odata-annotation-core-types@0.3.1
+
+## 0.1.7
+
+### Patch Changes
+
+-   Updated dependencies [d6151909]
+    -   @sap-ux/odata-annotation-core-types@0.3.0
+
+## 0.1.6
+
+### Patch Changes
+
+-   Updated dependencies [5b256cea]
+    -   @sap-ux/odata-annotation-core-types@0.2.0
+
 ## 0.1.5
 
 ### Patch Changes

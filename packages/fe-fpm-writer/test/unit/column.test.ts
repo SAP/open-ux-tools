@@ -1,4 +1,3 @@
-import os from 'os';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -11,7 +10,7 @@ import * as manifest from './sample/column/webapp/manifest.json';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import { detectTabSpacing } from '../../src/common/file';
-import { tabSizingTestCases } from '../common';
+import { getEndOfLinesLength, tabSizingTestCases } from '../common';
 
 const testDir = join(__dirname, 'sample/column');
 
@@ -69,7 +68,24 @@ describe('CustomAction', () => {
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
+        test('version 1.86, with fragmentFile', () => {
+            const testCustomColumn: CustomTableColumn = {
+                ...customColumn,
+                fragmentFile: 'NewCustomColumnFragment'
+            };
+            const expectedSectionFragmentPath = join(
+                testDir,
+                `webapp/${customColumn.folder}/${testCustomColumn.fragmentFile}.fragment.xml`
+            );
+            generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.86' }, fs);
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
+            expect(settings.controlConfiguration).toMatchSnapshot();
 
+            expect(fs.read(expectedSectionFragmentPath)).toMatchSnapshot();
+        });
         test('version 1.86, with new handler, all properties', () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
@@ -260,12 +276,13 @@ describe('CustomAction', () => {
                     {
                         line: 8,
                         character: 9
-                    }
+                    },
+                    undefined
                 ],
-                ['absolute position', 196 + 8 * os.EOL.length]
+                ['absolute position', 196, 8]
             ])(
                 '"eventHandler" is object. Append new function to existing js file with %s',
-                (_desc: string, position: number | FileContentPosition) => {
+                (_desc: string, position: number | FileContentPosition, appendLines?: number) => {
                     const fileName = 'MyExistingAction';
                     // Create existing file with existing actions
                     const folder = join('extensions', 'custom');
@@ -274,6 +291,10 @@ describe('CustomAction', () => {
                     fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, {
                         eventHandlerFnName: 'onPress'
                     });
+                    if (typeof position === 'number' && appendLines !== undefined) {
+                        const content = fs.read(existingPath);
+                        position += getEndOfLinesLength(appendLines, content);
+                    }
                     const fnName = 'onHandleSecondAction';
 
                     const extension = {

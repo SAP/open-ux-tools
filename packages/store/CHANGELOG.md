@@ -1,5 +1,18 @@
 # @sap-ux/store
 
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+
+## 0.4.1
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
 ## 0.4.0
 
 ### Minor Changes

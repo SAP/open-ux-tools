@@ -440,6 +440,101 @@ exports[`getUI5Versions No filter options, all supported versions returned 1`] =
 ]
 `;
 
+exports[`getUI5Versions filterOptions: \`onlyLatestPatchVersion\` 1`] = `
+[
+  {
+    "version": "1.109.3",
+  },
+  {
+    "version": "1.108.4",
+  },
+  {
+    "version": "1.107.1",
+  },
+  {
+    "version": "1.106.1",
+  },
+  {
+    "version": "1.105.4",
+  },
+  {
+    "version": "1.104.2",
+  },
+  {
+    "version": "1.103.1",
+  },
+  {
+    "version": "1.102.13",
+  },
+  {
+    "version": "1.101.1",
+  },
+  {
+    "version": "1.100.2",
+  },
+  {
+    "version": "1.99.4",
+  },
+  {
+    "version": "1.98.0",
+  },
+  {
+    "version": "1.97.2",
+  },
+  {
+    "version": "1.96.16",
+  },
+  {
+    "version": "1.95.0",
+  },
+  {
+    "version": "1.94.1",
+  },
+  {
+    "version": "1.93.7",
+  },
+  {
+    "version": "1.92.2",
+  },
+  {
+    "version": "1.91.1",
+  },
+  {
+    "version": "1.90.14",
+  },
+  {
+    "version": "1.87.7",
+  },
+  {
+    "version": "1.84.31",
+  },
+  {
+    "version": "1.82.0",
+  },
+  {
+    "version": "1.80.0",
+  },
+  {
+    "version": "1.78.9",
+  },
+  {
+    "version": "1.75.0",
+  },
+  {
+    "version": "1.74.0",
+  },
+  {
+    "version": "1.73.1",
+  },
+  {
+    "version": "1.71.53",
+  },
+  {
+    "version": "1.65.1",
+  },
+]
+`;
+
 exports[`getUI5Versions filterOptions: \`onlyVersionNumbers\` takes precedence, snapshots versions removed - snapshotVersionsHost, onlyVersionNumbers 1`] = `
 [
   {

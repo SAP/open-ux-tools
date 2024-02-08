@@ -1,0 +1,147 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "Colon": [
+            {
+              "tokenTypeName": "Colon",
+              "image": ":",
+              "startOffset": 1,
+              "endOffset": 1
+            }
+          ],
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "tokenTypeName": "Identifier",
+                          "image": "a",
+                          "startOffset": 0,
+                          "endOffset": 0
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "endOffset": 0
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "endOffset": 0
+              }
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "collection": [
+                  {
+                    "name": "collection",
+                    "children": {
+                      "collectionValue": [
+                        {
+                          "name": "collectionValue",
+                          "recoveredNode": true,
+                          "children": {
+                            "extendCollectionValue": [
+                              {
+                                "name": "extendCollectionValue",
+                                "recoveredNode": true,
+                                "children": {
+                                  "SpreadOperator": [
+                                    {
+                                      "tokenTypeName": "SpreadOperator",
+                                      "image": "...",
+                                      "startOffset": 4,
+                                      "endOffset": 6
+                                    }
+                                  ],
+                                  "UpToKeyword": [
+                                    {
+                                      "tokenTypeName": "UpToKeyword",
+                                      "image": "up to",
+                                      "startOffset": 8,
+                                      "endOffset": 12
+                                    }
+                                  ],
+                                  "value": [
+                                    {
+                                      "name": "value",
+                                      "recoveredNode": true,
+                                      "children": {},
+                                      "location": {
+                                        "startOffset": -1,
+                                        "endOffset": -1
+                                      }
+                                    }
+                                  ]
+                                },
+                                "location": {
+                                  "startOffset": 4,
+                                  "endOffset": 12
+                                }
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 4,
+                            "endOffset": 12
+                          }
+                        }
+                      ],
+                      "LBracket": [
+                        {
+                          "tokenTypeName": "LBracket",
+                          "image": "[",
+                          "startOffset": 3,
+                          "endOffset": 3
+                        }
+                      ],
+                      "RBracket": [
+                        {
+                          "tokenTypeName": "RBracket",
+                          "image": "]",
+                          "startOffset": 13,
+                          "endOffset": 13
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 3,
+                      "endOffset": 13
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 3,
+                "endOffset": 13
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "endOffset": 13
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "endOffset": 13
+  }
+}

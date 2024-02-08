@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.8.14
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 0.8.13
+
+### Patch Changes
+
+-   70296b55: Remove label and icon in control property editor
+
+## 0.8.12
+
+### Patch Changes
+
+-   83f25073: The extension points not shown as such in the Outline for ADP
+
+## 0.8.11
+
+### Patch Changes
+
+-   132ce16d: Do not block app loading if registering of reuse libs fails
+
 ## 0.8.10
 
 ### Patch Changes

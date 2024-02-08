@@ -1,5 +1,23 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.3.1
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 0.3.0
+
+### Minor Changes
+
+-   d6151909: add target kinds directly to metadata element
+
+## 0.2.0
+
+### Minor Changes
+
+-   5b256cea: support applicable terms constraint
+
 ## 0.1.3
 
 ### Patch Changes
