@@ -12,13 +12,13 @@
   {
     "type": "key-element-line",
     "key": {
-      "type": "text",
-      "value": "delimiterCharacters:=",
+      "type": "key",
+      "value": "delimiterCharacters\\:\\=",
       "range": "[(2,0)..(2,23)]"
     },
     "element": {
-      "type": "text",
-      "value": "This is the value for the key \"delimiterCharacters:= \"",
+      "type": "value",
+      "value": "This is the value for the key \"delimiterCharacters\\:\\=\\\"",
       "range": "[(2,26)..(2,83)]"
     },
     "range": "[(2,0)..(2,83)]"

@@ -12,13 +12,13 @@
   {
     "type": "key-element-line",
     "key": {
-      "type": "text",
+      "type": "key",
       "value": "evenKey",
       "range": "[(2,0)..(2,7)]"
     },
     "element": {
-      "type": "text",
-      "value": "This is on one line\\",
+      "type": "value",
+      "value": "This is on one line\\\\",
       "range": "[(2,10)..(2,31)]"
     },
     "range": "[(2,0)..(2,31)]"

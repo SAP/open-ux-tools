@@ -12,13 +12,13 @@
   {
     "type": "key-element-line",
     "key": {
-      "type": "text",
+      "type": "key",
       "value": "encodedHelloInJapanese",
       "range": "[(2,0)..(2,22)]"
     },
     "element": {
-      "type": "text",
-      "value": "u3053u3093u306bu3061u306f",
+      "type": "value",
+      "value": "\\u3053\\u3093\\u306b\\u3061\\u306f",
       "range": "[(2,25)..(2,55)]"
     },
     "range": "[(2,0)..(2,55)]"
@@ -31,12 +31,12 @@
   {
     "type": "key-element-line",
     "key": {
-      "type": "text",
+      "type": "key",
       "value": "helloInJapanese",
       "range": "[(4,0)..(4,15)]"
     },
     "element": {
-      "type": "text",
+      "type": "value",
       "value": "こんにちは",
       "range": "[(4,18)..(4,23)]"
     },

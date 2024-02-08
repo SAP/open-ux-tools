@@ -7,12 +7,12 @@
   {
     "type": "key-element-line",
     "key": {
-      "type": "text",
+      "type": "key",
       "value": "website",
       "range": "[(1,0)..(1,7)]"
     },
     "element": {
-      "type": "text",
+      "type": "value",
       "value": "https://en.wikipedia.org/",
       "range": "[(1,10)..(1,35)]"
     },
