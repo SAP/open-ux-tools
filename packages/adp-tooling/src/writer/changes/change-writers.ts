@@ -24,6 +24,9 @@ import {
     getParsedPropertyValue
 } from '../../base/change-utils';
 
+/**
+ *
+ */
 export class AnnotationsWriter implements IWriter<AnnotationsData> {
     /**
      * @param {Editor} fs - The filesystem editor instance.
@@ -87,6 +90,9 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
     }
 }
 
+/**
+ *
+ */
 export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
     /**
      * @param {Editor} fs - The filesystem editor instance.
@@ -181,6 +187,9 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
     }
 }
 
+/**
+ *
+ */
 export class NewModelWriter implements IWriter<NewModelData> {
     /**
      * @param {Editor} fs - The filesystem editor instance.
@@ -271,6 +280,9 @@ export class NewModelWriter implements IWriter<NewModelData> {
     }
 }
 
+/**
+ *
+ */
 export class DataSourceWriter implements IWriter<DataSourceData> {
     /**
      * @param {Editor} fs - The filesystem editor instance.
@@ -361,6 +373,9 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
     }
 }
 
+/**
+ *
+ */
 export class InboundWriter implements IWriter<InboundData> {
     /**
      * @param {Editor} fs - The filesystem editor instance.

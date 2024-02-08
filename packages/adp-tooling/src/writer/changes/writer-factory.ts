@@ -10,6 +10,9 @@ import {
     InboundWriter
 } from './change-writers';
 
+/**
+ *
+ */
 export class WriterFactory {
     private static writers = new Map<GeneratorType, Writer>([
         [GeneratorType.ADD_ANNOTATIONS_TO_ODATA, AnnotationsWriter],
