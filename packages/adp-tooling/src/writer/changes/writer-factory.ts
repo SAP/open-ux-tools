@@ -11,7 +11,7 @@ import {
 } from './change-writers';
 
 /**
- *
+ * Handles the creation of a writer instance based on the generator type.
  */
 export class WriterFactory {
     private static writers = new Map<GeneratorType, Writer>([

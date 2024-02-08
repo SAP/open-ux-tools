@@ -25,7 +25,7 @@ import {
 } from '../../base/change-utils';
 
 /**
- *
+ * Handles constructing and writing changes to the project's workspace.
  */
 export class AnnotationsWriter implements IWriter<AnnotationsData> {
     /**
@@ -91,7 +91,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
 }
 
 /**
- *
+ * Handles constructing and writing changes to the project's workspace.
  */
 export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
     /**
@@ -188,7 +188,7 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
 }
 
 /**
- *
+ * Handles constructing and writing changes to the project's workspace.
  */
 export class NewModelWriter implements IWriter<NewModelData> {
     /**
@@ -281,7 +281,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
 }
 
 /**
- *
+ * Handles constructing and writing changes to the project's workspace.
  */
 export class DataSourceWriter implements IWriter<DataSourceData> {
     /**
@@ -374,7 +374,7 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
 }
 
 /**
- *
+ * Handles constructing and writing changes to the project's workspace.
  */
 export class InboundWriter implements IWriter<InboundData> {
     /**
