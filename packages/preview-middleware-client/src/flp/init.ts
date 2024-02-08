@@ -194,12 +194,17 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
             const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const version = sap.ui.version;
-                const minor = Number(version.split(/[.-]/)[1]);
+                const minor = Number(version.split('.')[1]);
                 const view = event.getParameter('componentInstance');
                 const flexSettings = JSON.parse(flex);
                 const pluginScript = flexSettings.pluginScript ?? '';
-                const initRtaScript = 'open/ux/preview/client/flp/initRta';
-                const libs = ['sap/ui/rta/api/startAdaptation'];
+
+                let libs: string[] = [];
+                if (minor > 71) {
+                    libs.push('sap/ui/rta/api/startAdaptation');
+                } else {
+                    libs.push('open/ux/preview/client/flp/initRta');
+                }
 
                 if (flexSettings.pluginScript) {
                     libs.push(pluginScript);
@@ -212,20 +217,12 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
                     flexSettings
                 };
 
-                if (minor > 71) {
-                    sap.ui.require(libs, function (startAdaptation: StartAdaptation, pluginScript?: RTAPlugin) {
-                        startAdaptation(options, pluginScript);
-                    });
-                } else {
-                    // For ui5 version 1.71.x startAdaptation will fail (because 'sap/ui/rta/api/startAdaptation' does not exists -> the plugin script is never executed)
-                    // thus we need to initialize and start rta ourselves.
-                    sap.ui.require(
-                        [initRtaScript, pluginScript],
-                        async function (initRta: InitRtaScript, pluginScript: RTAPlugin) {
-                            await initRta(options, pluginScript);
-                        }
-                    );
-                }
+                sap.ui.require(
+                    libs,
+                    async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
+                        await startAdaptation(options, pluginScript);
+                    }
+                );
             });
         });
     }
