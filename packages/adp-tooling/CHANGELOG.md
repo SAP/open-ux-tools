@@ -1,5 +1,20 @@
 # @sap-ux/adp-tooling
 
+## 0.8.5
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+    -   @sap-ux/axios-extension@1.10.1
+    -   @sap-ux/system-access@0.3.11
+
+## 0.8.4
+
+### Patch Changes
+
+-   2bedc697: chore(deps): update dependency @types/adm-zip to v0.5.5
+
 ## 0.8.3
 
 ### Patch Changes
