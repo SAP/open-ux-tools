@@ -5,8 +5,6 @@ import {
     AnnotationsData,
     FolderTypes,
     AnnotationFileSelectType,
-    InboundData,
-    AdpProjectData,
     ChangeTypes,
     GeneratorName,
     BaseData,

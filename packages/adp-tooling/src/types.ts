@@ -1,7 +1,6 @@
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp } from '@sap-ux/ui5-config';
-import type { Editor } from 'mem-fs-editor';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
