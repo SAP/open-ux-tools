@@ -14,22 +14,12 @@ import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 
-jest.mock('fb-watchman');
-
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
         __esModule: true,
         ...jest.requireActual('@sap-ux/adp-tooling')
     };
 });
-// Clear the mock implementation and reset any mocked instances
-jest.mock('../../../src/base/watcher', () => ({
-    FileWatcher: jest.fn().mockImplementation(() => {
-        return {
-            addIgnorePath: jest.fn()
-        };
-    })
-}));
 
 class FlpSandbox extends FlpSandboxUnderTest {
     public templateConfig: TemplateConfig;
