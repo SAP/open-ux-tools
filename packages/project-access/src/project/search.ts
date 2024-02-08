@@ -16,6 +16,7 @@ import { hasDependency } from './dependencies';
 import { getCapProjectType } from './cap';
 import { getWebappPath } from './ui5-config';
 import { default as generateLibraryManifest } from '@ui5/builder/tasks/generateLibraryManifest';
+import type { ExtensionLogger } from '@sap-ux/logger';
 
 /**
  * Map artifact to file that is specific to the artifact type. Some artifacts can
@@ -343,9 +344,10 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
  * Generates manifest.json from provided .library file.
  *
  * @param paths paths to .library file
+ * @param logger - logger instance
  * @returns library result containing virtually generate manifest.json, project path and empty manifestPath
  */
-async function getVirtualManifest(paths: string[]): Promise<LibraryResults[]> {
+async function getVirtualManifest(paths: string[], logger?: ExtensionLogger): Promise<LibraryResults[]> {
     const FileSystem = await import('@ui5/fs/adapters/FileSystem');
     const ResourceFactory = await import('@ui5/fs/resourceFactory');
 
@@ -374,7 +376,7 @@ async function getVirtualManifest(paths: string[]): Promise<LibraryResults[]> {
                 virtualLibraries.push({ manifest, projectRoot, manifestPath: '' });
             }
         } catch (error) {
-            return error;
+            logger?.warn(error);
         }
     }
     return virtualLibraries;
@@ -384,9 +386,10 @@ async function getVirtualManifest(paths: string[]): Promise<LibraryResults[]> {
  * Filter extensions projects from a list of files.
  *
  * @param pathMap - path to files
+ * @param logger - logger instance
  * @returns - results as array of found library projects.
  */
-async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults[]> {
+async function filterLibraries(pathMap: FileMapAndCache, logger?: ExtensionLogger): Promise<LibraryResults[]> {
     const results: LibraryResults[] = [];
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     const dotLibraryPaths = Object.keys(pathMap)
@@ -394,7 +397,7 @@ async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults
         .map((path) => dirname(path))
         .filter((path) => !manifestPaths.map((manifestPath) => dirname(manifestPath)).includes(path));
     if (dotLibraryPaths) {
-        const libraries: LibraryResults[] = await getVirtualManifest(dotLibraryPaths);
+        const libraries: LibraryResults[] = await getVirtualManifest(dotLibraryPaths, logger);
         libraries.forEach((library) => results.push(library));
     }
     for (const manifestPath of manifestPaths) {
@@ -436,11 +439,13 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
  * @param options - find options
  * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @param options.artifacts - list of artifacts to search for: 'application', 'adaptation', 'extension' see FioriArtifactTypes
+ * @param options.logger - logger instance
  * @returns - data structure containing the search results, for app e.g. as path to app plus files already parsed, e.g. manifest.json
  */
 export async function findFioriArtifacts(options: {
     wsFolders?: readonly WorkspaceFolder[] | string[];
     artifacts: FioriArtifactTypes[];
+    logger?: ExtensionLogger;
 }): Promise<FoundFioriArtifacts> {
     const results: FoundFioriArtifacts = {};
     const fileNames: string[] = getFilterFileNames(options.artifacts);
@@ -468,7 +473,7 @@ export async function findFioriArtifacts(options: {
         results.extensions = await filterExtensions(pathMap);
     }
     if (options.artifacts.includes('libraries')) {
-        results.libraries = await filterLibraries(pathMap);
+        results.libraries = await filterLibraries(pathMap, options.logger);
     }
     return results;
 }
