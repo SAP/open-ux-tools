@@ -15,7 +15,6 @@ import { fileExists, findBy, findFileUp, readJSON } from '../file';
 import { hasDependency } from './dependencies';
 import { getCapProjectType } from './cap';
 import { getWebappPath } from './ui5-config';
-import { default as generateLibraryManifest } from '@ui5/builder/tasks/generateLibraryManifest';
 import type { ExtensionLogger } from '@sap-ux/logger';
 
 /**
@@ -350,6 +349,7 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
 async function getVirtualManifest(paths: string[], logger?: ExtensionLogger): Promise<LibraryResults[]> {
     const FileSystem = await import('@ui5/fs/adapters/FileSystem');
     const ResourceFactory = await import('@ui5/fs/resourceFactory');
+    const generateLibraryManifest = await import('@ui5/builder/tasks/generateLibraryManifest');
 
     const virtualLibraries = [];
     for (const libraryPath of paths) {
