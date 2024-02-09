@@ -6,6 +6,7 @@ import type Event from 'sap/ui/base/Event';
 import Log from 'mock/sap/base/Log';
 import { fetchMock, sapCoreMock } from 'mock/window';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
+import connector from '../../../src/flp/WorkspaceConnector';
 
 describe('main', () => {
     let sendActionMock: jest.Mock;
@@ -96,9 +97,14 @@ describe('main', () => {
             payload
         });
 
+        // check delete notifier
+        sendActionMock.mockClear();
+        await connector.storage.removeItem('sap.ui.fl.testFile');
+
         //assert
         expect(applyChangeSpy).toBeCalledWith({ rta: rta }, payload);
         expect(initOutlineSpy).toBeCalledWith(rta, sendActionMock);
+        expect(sendActionMock).toBeCalledWith(common.storageFileChanged('testFile'));
     });
     test('init - rta exception', async () => {
         initOutlineSpy.mockRejectedValue('error');

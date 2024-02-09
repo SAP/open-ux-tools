@@ -8,13 +8,16 @@ interface Change {
     support?: {
         generator?: string;
     };
+    fileName?: string;
 }
 
-function getFlexSettings(): {
-    generator?: string;
-    developerMode?: boolean;
-    scenario?: string;
-} | undefined {
+function getFlexSettings():
+    | {
+          generator?: string;
+          developerMode?: boolean;
+          scenario?: string;
+      }
+    | undefined {
     let result;
     const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
     const flexSetting = bootstrapConfig?.getAttribute('data-open-ux-preview-flex-settings');
@@ -28,6 +31,7 @@ const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
     storage: {
         _itemsStoredAsObjects: true,
+        deleteRequestNotifier: undefined,
         setItem: function (_key: string, change: Change) {
             const settings = getFlexSettings();
             if (settings) {
@@ -44,6 +48,14 @@ const connector = merge({}, ObjectStorageConnector, {
             });
         },
         removeItem: function (key: string) {
+            if (typeof this.deleteRequestNotifier === 'function') {
+                try {
+                    this.deleteRequestNotifier(key);
+                } catch (e) {
+                    // exceptions in the listener call are ignored
+                }
+            }
+
             return fetch(path, {
                 method: 'DELETE',
                 body: JSON.stringify({ fileName: key }),
@@ -68,7 +80,7 @@ const connector = merge({}, ObjectStorageConnector, {
             const changes = await response.json();
             return changes;
         }
-    },
+    } as typeof ObjectStorageConnector.storage,
     loadFeatures: async function () {
         const features = await ObjectStorageConnector.loadFeatures();
 

@@ -2,7 +2,8 @@ import type { ExternalAction } from '@sap-ux-private/control-property-editor-com
 import {
     startPostMessageCommunication,
     iconsLoaded,
-    enableTelemetry
+    enableTelemetry,
+    storageFileChanged
 } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
@@ -14,6 +15,8 @@ import { loadDefaultLibraries } from './documentation';
 import Log from 'sap/base/Log';
 import { logger } from './logger';
 import { getIcons } from './ui5-utils';
+import workspaceConnector from '../flp/WorkspaceConnector';
+import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
@@ -62,6 +65,12 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
             Log.error('Error during initialization of Control Property Editor', error)
         );
         const icons = getIcons();
+
+        // hook the file deletion listener to the UI5 workspace connector
+        (workspaceConnector as typeof ObjectStorageConnector).storage.deleteRequestNotifier = (fileName: string) => {
+            sendAction(storageFileChanged(fileName?.replace('sap.ui.fl.', '')));
+        };
+
         sendAction(iconsLoaded(icons));
     } catch (error) {
         Log.error('Error during initialization of Control Property Editor', error);

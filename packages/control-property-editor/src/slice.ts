@@ -20,7 +20,8 @@ import {
     showMessage,
     scenario,
     reloadApplication,
-    deletePropertyChanges
+    deletePropertyChanges,
+    storageFileChanged
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -241,7 +242,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.dialogMessage = action.payload;
             })
             .addMatcher(fileChanged.match, (state, action: ReturnType<typeof fileChanged>): void => {
-                state.fileChanges = action.payload.filter((changedFile) => {
+                const newFileChanges = action.payload.filter((changedFile) => {
                     const idx = state.changes.pendingChangeIds.findIndex((pendingFile) =>
                         changedFile.includes(pendingFile)
                     );
@@ -250,6 +251,14 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     }
                     return idx < 0;
                 });
+                if (!state.fileChanges) {
+                    state.fileChanges = newFileChanges;
+                } else {
+                    state.fileChanges = [
+                        ...state.fileChanges,
+                        ...newFileChanges.filter((changedFile) => !state.fileChanges?.includes(changedFile))
+                    ];
+                }
             })
             .addMatcher(reloadApplication.match, (state): void => {
                 state.fileChanges = [];
@@ -263,6 +272,12 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     }
                 }
             )
+            .addMatcher(storageFileChanged.match, (state, action: ReturnType<typeof storageFileChanged>): void => {
+                const fileName = action.payload;
+                if (fileName) {
+                    state.changes.pendingChangeIds.push(fileName);
+                }
+            })
 });
 
 export const { setProjectScenario } = slice.actions;

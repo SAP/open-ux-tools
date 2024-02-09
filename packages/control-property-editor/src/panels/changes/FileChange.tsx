@@ -4,8 +4,8 @@ import { Stack, Text } from '@fluentui/react';
 import styles from './FileChange.module.scss';
 import { useDispatch } from 'react-redux';
 import { reloadApplication } from '@sap-ux-private/control-property-editor-common';
+import { useTranslation } from 'react-i18next';
 interface FileChangeProps {
-    fileName: string;
     hasUnsavedChanges: boolean;
 }
 
@@ -13,17 +13,17 @@ interface FileChangeProps {
  * React element for Other change.
  *
  * @param FileChangeProps FileChangeProps
- * @param FileChangeProps.fileName
  * @param FileChangeProps.hasUnsavedChanges
  * @returns ReactElement
  */
-export function FileChange({ fileName, hasUnsavedChanges }: Readonly<FileChangeProps>): ReactElement {
+export function FileChange({ hasUnsavedChanges }: Readonly<FileChangeProps>): ReactElement {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
+
     function handleSaveAndReload() {
-        if (fileName) {
-            dispatch(reloadApplication(fileName)); // dispatch your action here
-        }
+        dispatch(reloadApplication()); // dispatch your action here
     }
+
     return (
         <Stack
             tokens={{
@@ -39,14 +39,10 @@ export function FileChange({ fileName, hasUnsavedChanges }: Readonly<FileChangeP
                     }}>
                     <Stack.Item>
                         <Text className={styles.text}>
-                            {fileName ? (
-                                <a href="#" className={styles.textLink} onClick={handleSaveAndReload}>
-                                    {hasUnsavedChanges ? 'Save and Reload' : 'Save'}
-                                </a>
-                            ) : (
-                                ''
-                            )}{' '}
-                            the editor to show those changes
+                            <a href="#" className={styles.textLink} onClick={handleSaveAndReload}>
+                                {t(hasUnsavedChanges ? 'SAVE_AND_RELOAD' : 'RELOAD')}
+                            </a>
+                            <span> the editor to show those changes</span>
                         </Text>
                     </Stack.Item>
                 </Stack>

@@ -9,6 +9,9 @@ export interface ChangeStackHeaderProps {
     backgroundColor: string;
     color: string;
     text: string;
+    tooltip?: string;
+    fontSize?: string;
+    isMessageHeader?: boolean;
 }
 
 /**
@@ -18,24 +21,25 @@ export interface ChangeStackHeaderProps {
  * @returns ReactElement
  */
 export function ChangeStackHeader(changeStackHeaderProps: ChangeStackHeaderProps): ReactElement {
-    const { backgroundColor, color, text } = changeStackHeaderProps;
+    const { backgroundColor, color, text, tooltip, fontSize, isMessageHeader } = changeStackHeaderProps;
     return (
         <div
             style={{
                 backgroundColor: backgroundColor,
-                padding: '6px 15px'
+                padding: isMessageHeader ? '0px 15px' : '6px 15px'
             }}>
             <Text
                 style={{
                     color: color,
-                    fontSize: sectionHeaderFontSize,
+                    fontSize: fontSize ?? sectionHeaderFontSize,
                     fontWeight: 'bold',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                     overflowX: 'hidden',
                     lineHeight: '18px',
                     display: 'block'
-                }}>
+                }}
+                title={tooltip}>
                 {text}
             </Text>
         </div>

@@ -392,7 +392,7 @@ describe('ChangePanel', () => {
         const filterInitOptions: FilterOptions[] = [
             { name: FilterName.changeSummaryFilterQuery, value: 'Simple Form' }
         ];
-        const externalChanges: string[] = ['example1.changes'];
+        const externalChanges: string[] = ['example1.changes', 'example2.changes'];
         const initialState: State = {
             deviceType: DeviceType.Desktop,
             scale: 1,
@@ -410,5 +410,10 @@ describe('ChangePanel', () => {
         // check unsaved changes
         const externalChangesTitle = screen.getByText(/External changes detected!/i);
         expect(externalChangesTitle).toBeInTheDocument();
+        expect(externalChangesTitle.title.split('\n')).toEqual([
+            'External changes in files:',
+            'example1.changes',
+            'example2.changes'
+        ]);
     });
 });

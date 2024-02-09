@@ -5,10 +5,10 @@
     color: var(--vscode-editor-foreground);
 }
 .text {
-    margin-left: 15px;
-    margin-right: 5px;
+    margin: 0 0 5px 15px;
     line-height: 18px;
     display: inline-block;
+    font-size: 11px;
 }
 
 .changeType {

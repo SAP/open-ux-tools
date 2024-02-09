@@ -1,4 +1,3 @@
-
 declare module 'sap/ui/fl' {
     export type Layer = 'USER' | 'PUBLIC' | 'CUSTOMER' | 'CUSTOMER_BASE' | 'PARTNER' | 'VENDOR' | 'BASE';
 }
@@ -46,7 +45,6 @@ declare module 'sap/ui/fl/Utils' {
     import type ManagedObject from 'sap/ui/base/ManagedObject';
     import type Controller from 'sap/ui/core/mvc/Controller';
 
-
     interface Utils {
         checkControlId(control: ManagedObject): boolean;
         getViewForControl(control: ManagedObject): ControlView;
@@ -54,7 +52,7 @@ declare module 'sap/ui/fl/Utils' {
 
     interface ControlView {
         getId(): string;
-        getController(): Controller
+        getController(): Controller;
     }
 
     const Utils: Utils;
@@ -78,6 +76,7 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
         clear(): void;
         getItem(key: string): unknown;
         getItems(): Promise<unknown[]>;
+        deleteRequestNotifier: ((fileName: string) => void) | undefined;
     }
 
     class ObjectStorageConnector {

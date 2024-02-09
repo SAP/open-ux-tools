@@ -5,7 +5,8 @@ import {
     propertyChangeFailed,
     reloadApplication,
     scenario,
-    showMessage
+    showMessage,
+    storageFileChanged
 } from '@sap-ux-private/control-property-editor-common';
 
 import reducer, {
@@ -326,7 +327,7 @@ describe('main redux slice', () => {
             });
         });
 
-        test('fileChanged (external change)', () => {
+        test('fileChanged (external changes (scenario 1))', () => {
             expect(
                 reducer(
                     {
@@ -345,6 +346,49 @@ describe('main redux slice', () => {
             });
         });
 
+        test('fileChanged (external changes (scenario 2))', () => {
+            expect(
+                reducer(
+                    {
+                        fileChanges: ['testFile3'],
+                        changes: {
+                            saved: [],
+                            pending: [],
+                            controls: [], // make sure that old value is not reused
+                            pendingChangeIds: ['testFile1']
+                        }
+                    } as any,
+                    fileChanged(['testFile2'])
+                )
+            ).toStrictEqual({
+                'changes': { 'controls': [], 'pending': [], 'pendingChangeIds': ['testFile1'], 'saved': [] },
+                'fileChanges': ['testFile3', 'testFile2']
+            });
+        });
+
+        test('storageFileChanged', () => {
+            expect(
+                reducer(
+                    {
+                        changes: {
+                            saved: [],
+                            pending: [],
+                            controls: [], // make sure that old value is not reused
+                            pendingChangeIds: ['testFile1']
+                        }
+                    } as any,
+                    storageFileChanged('testFile2')
+                )
+            ).toStrictEqual({
+                'changes': {
+                    'controls': [],
+                    'pending': [],
+                    'pendingChangeIds': ['testFile1', 'testFile2'],
+                    'saved': []
+                }
+            });
+        });
+
         test('show message', () => {
             expect(reducer({} as any, showMessage('testMessage'))).toStrictEqual({
                 dialogMessage: 'testMessage'
@@ -356,7 +400,7 @@ describe('main redux slice', () => {
                     {
                         fileChanges: ['testFile']
                     } as any,
-                    reloadApplication('')
+                    reloadApplication()
                 )
             ).toStrictEqual({
                 fileChanges: []
