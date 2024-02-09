@@ -364,7 +364,7 @@ async function getVirtualManifest(paths: string[], logger?: ExtensionLogger): Pr
             const getProject = () => {
                 return { getVersion: () => '1.0.0' };
             };
-            await generateLibraryManifest({
+            await generateLibraryManifest.default({
                 workspace,
                 taskUtil: { getProject },
                 options: { projectName }
