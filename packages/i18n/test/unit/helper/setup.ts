@@ -1,6 +1,5 @@
 import { readdirSync, statSync, promises } from 'fs';
-import { join, dirname } from 'path';
-import { platform } from 'os';
+import { join, dirname, normalize } from 'path';
 import { deserialize } from '../helper/deserialize-ast';
 import type { FileExtension } from './types';
 const { readFile } = promises;
@@ -65,7 +64,7 @@ export function getAllNormalizeFolderPath(ext: FileExtension, base: string, allF
         } else if (itemPath.endsWith(ext)) {
             const dirPath = dirname(itemPath);
             const relativeLike = dirPath.split(getBase())[1];
-            const normalizedPath = relativeLike.replace(platform() === 'win32' ? /\\/g : /\//g, '/');
+            const normalizedPath = normalize(relativeLike);
             allFolderPath.push(normalizedPath);
         }
     });
