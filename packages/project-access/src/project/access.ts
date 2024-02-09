@@ -9,8 +9,7 @@ import type {
     ProjectType,
     ApplicationStructure
 } from '../types';
-import { getI18nPropertiesPaths } from './i18n';
-import { getCapI18nFolderNames, getI18nBundles } from './i18n/read';
+import { getCapI18nFolderNames, getI18nBundles, getI18nPropertiesPaths } from './i18n';
 
 import {
     createCapI18nEntries,

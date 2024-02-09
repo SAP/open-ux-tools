@@ -1,6 +1,6 @@
 import * as uxI18n from '@sap-ux/i18n';
 import * as cap from '../../../src/project/cap';
-import { getCapI18nFolderNames, getI18nBundles } from '../../../src/project/i18n/read';
+import { getCapI18nFolderNames, getI18nBundles } from '../../../src/project/i18n';
 import { join } from 'path';
 
 describe('read', () => {

@@ -6,7 +6,7 @@ import {
     createCapI18nEntries,
     createManifestI18nEntries,
     createUI5I18nEntries
-} from '../../../src/project/i18n/write';
+} from '../../../src/project/i18n';
 import { dirname, join } from 'path';
 import type { I18nPropertiesPaths } from '../../../src';
 import * as fs from 'fs';
