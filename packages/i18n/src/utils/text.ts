@@ -54,7 +54,7 @@ export function discoverLineEnding(text: string): string {
 
     return '\n';
 }
-const INDENT_PATTERN = /(?:\r|\n|\r?\n)([\t|\s]+)/;
+const INDENT_PATTERN = /(?:\r|\n|\r?\n)([ \t]+)/;
 
 /**
  * Discover indent.
@@ -118,7 +118,7 @@ export function convertToCamelCase(text = '', maxWord = 4): string {
             output += part.toLowerCase();
         } else {
             const initial = part.charAt(0).toUpperCase();
-            const rest = part.substr(1).toLowerCase();
+            const rest = part.substring(1).toLowerCase();
             output += `${initial}${rest}`;
         }
     }
@@ -142,7 +142,7 @@ export function convertToPascalCase(text: string, maxWord = 4): string {
     for (let i = 0; len > i; i++) {
         const part = parts[i];
         const initial = part.charAt(0).toUpperCase();
-        const rest = part.substr(1).toLowerCase();
+        const rest = part.substring(1).toLowerCase();
         output += `${initial}${rest}`;
     }
 

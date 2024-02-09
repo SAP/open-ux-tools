@@ -31,8 +31,7 @@ export function csvToI18nBundle(text: string, filePath = ''): I18nBundle {
     for (let columnIndex = 1; columnIndex < ast.header.fields.length; columnIndex++) {
         const locale = ast.header.fields[columnIndex];
         const entries: I18nEntry[] = [];
-        for (let i = 0; i < ast.rows.length; i++) {
-            const row = ast.rows[i];
+        for (const row of ast.rows) {
             if (row) {
                 const key = toTextNode(row.fields[0]);
                 const value = toTextNode(row.fields[columnIndex]);

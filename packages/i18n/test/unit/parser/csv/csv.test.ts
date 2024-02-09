@@ -38,7 +38,7 @@ describe('csv file', () => {
             const cb = async () => {
                 await testParser(t);
             };
-            test.only(`${t}`, cb);
+            test.only(`${t}`, cb); //NOSONAR
             continue;
         }
         test(`${t}`, async () => {

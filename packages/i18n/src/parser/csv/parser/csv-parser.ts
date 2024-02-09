@@ -71,7 +71,7 @@ class ParseCsv {
     parseField(): CsvField {
         const token = this.consume();
         return {
-            quoted: token.type === TokenType.escaped ? true : false,
+            quoted: token.type === TokenType.escaped,
             value: token.value,
             range: Range.create(
                 positionAt(this.lineOffsets, token.start, this.getContentLength()),
@@ -131,7 +131,6 @@ class ParseCsv {
             if (next?.type === TokenType.text && next.value.length === 0 && this.peek(1)?.type === TokenType.eol) {
                 this.consume(); // empty text
                 this.consume(); // eol
-                continue;
             } else {
                 break;
             }

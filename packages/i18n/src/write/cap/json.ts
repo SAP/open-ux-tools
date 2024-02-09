@@ -64,8 +64,7 @@ function addToExistingFallbackLocalNode(
         const document = getTextDocument(text);
         const position = document.positionAt(textNodes[0].offset);
         let newText = '';
-        for (let i = 0; i < newEntries.length; i++) {
-            const entry = newEntries[i];
+        for (const entry of newEntries) {
             newText += `${indent + indent}"${entry.key}": "${entry.value}",${eol}`;
         }
         const edit: TextEdit = {
