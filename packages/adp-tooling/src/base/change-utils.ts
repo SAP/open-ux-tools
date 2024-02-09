@@ -3,7 +3,8 @@ import path, { posix } from 'path';
 
 import type { AnnotationsData, ChangeTypes, GeneratorName, BaseData, InboundContent, PopertyValueType } from '../types';
 import { FolderTypes, AnnotationFileSelectType } from '../types';
-import { Dirent, existsSync, readFileSync, readdirSync } from 'fs';
+import type { Dirent } from 'fs';
+import { existsSync, readFileSync, readdirSync } from 'fs';
 
 type InboundChange = { filePath: string; changeWithInboundId: { content: InboundContent } };
 
