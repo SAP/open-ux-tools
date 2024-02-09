@@ -24,7 +24,7 @@ describe('key', () => {
             // arrange
             const input = '{i18n>generalInformation}';
             // act
-            const result = extractI18nKey(input, true);
+            const result = extractI18nKey(input);
             // assert
             expect(result).toEqual('generalInformation');
         });
@@ -32,7 +32,15 @@ describe('key', () => {
             // arrange
             const input = '{i18n&gt;generalInformation}';
             // act
-            const result = extractI18nKey(input, true);
+            const result = extractI18nKey(input);
+            // assert
+            expect(result).toEqual('generalInformation');
+        });
+        test('case 4: different key', () => {
+            // arrange
+            const input = '{myI18nTest>generalInformation}';
+            // act
+            const result = extractI18nKey(input, 'myI18nTest');
             // assert
             expect(result).toEqual('generalInformation');
         });

@@ -4,20 +4,13 @@ import type { I18nBundle, I18nEntry } from './../types';
  * Extract i18n key.
  *
  * @param input input content
- * @param withoutAt without @ symbol
- * @returns key
+ * @param key i18n key used. Default is `i18n`
+ * @returns extracted key
  */
-export function extractI18nKey(input: string, withoutAt?: boolean): string {
-    if (withoutAt) {
-        return input
-            .replace(/{i18n>|{i18n&gt;/, '')
-            .replace('}', '')
-            .trim();
-    }
-    return input
-        .replace(/{@i18n>|{@i18n&gt;/, '')
-        .replace('}', '')
-        .trim();
+export function extractI18nKey(input: string, key = 'i18n'): string {
+    input = input.trim();
+    const regPattern = new RegExp(`^({@?${key}(>|&gt;))`, 'g');
+    return input.replace(regPattern, '').replace(/\}$/gm, '').trim();
 }
 
 /**
