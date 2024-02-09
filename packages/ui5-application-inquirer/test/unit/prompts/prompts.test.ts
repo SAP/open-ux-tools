@@ -109,6 +109,15 @@ describe('getPrompts', () => {
                 "validate": [Function],
               },
               {
+                "default": false,
+                "guiOptions": {
+                  "hint": "Choosing 'No' will apply defaults",
+                },
+                "message": "Configure advanced options",
+                "name": "showAdvanced",
+                "type": "confirm",
+              },
+              {
                 "choices": [Function],
                 "default": [Function],
                 "guiOptions": {
@@ -162,7 +171,7 @@ describe('getPrompts', () => {
                 "guiOptions": {
                   "breadcrumb": true,
                 },
-                "message": "prompts.appEnableTypescxriptMessage",
+                "message": "Enable TypeScript",
                 "name": "enableTypeScript",
                 "type": "confirm",
                 "when": [Function],

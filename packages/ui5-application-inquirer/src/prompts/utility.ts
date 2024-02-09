@@ -32,14 +32,14 @@ export function searchChoices(searchVal: string, searchList: ListChoiceOptions[]
  * and grouping according to maintenance status.
  *
  * @param versions ui5Versions
- * @param defaultChoice
  * @param includeSeparators Include a separator to visually identify groupings, if false then grouping info is included in each entry as additional name text
+ * @param defaultChoice optional, provides an additionsl version choice entry and sets as the default
  * @returns Array of ui5 version choices and separators if applicable, grouped by maintenance state
  */
 export function ui5VersionsGrouped(
     versions: UI5Version[],
-    defaultChoice?: ListChoiceOptions,
-    includeSeparators = false
+    includeSeparators = false,
+    defaultChoice?: ListChoiceOptions
 ): (UI5VersionChoice | Separator)[] {
     if (!versions || (Array.isArray(versions) && versions.length === 0)) {
         return [];
@@ -73,16 +73,19 @@ export function ui5VersionsGrouped(
                 } as UI5VersionChoice)
         );
 
-    
-    const defaultChoices = defaultChoice ? [{
-        name: !includeSeparators
-            ? `${defaultChoice?.name} - (Provided default ${t('ui5VersionLabels.version')})`
-            : defaultChoice?.name,
-        value: defaultChoice?.value
-    } as UI5VersionChoice] : [];
+    const defaultChoices = defaultChoice
+        ? [
+              {
+                  name: !includeSeparators
+                      ? `${defaultChoice?.name} - (Provided default ${t('ui5VersionLabels.version')})`
+                      : defaultChoice?.name,
+                  value: defaultChoice?.value
+              } as UI5VersionChoice
+          ]
+        : [];
 
     if (includeSeparators) {
-        if (defaultChoices) {
+        if (defaultChoices.length > 0) {
             (defaultChoices as (UI5VersionChoice | Separator)[]).unshift(
                 new Separator(`Provided default ${t('ui5VersionLabels.version', { count: 1 })}`)
             );

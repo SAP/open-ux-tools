@@ -3,4 +3,5 @@
  */
 describe.skip('API test', () => {
     /* todo */
+    test('todo', () => {});
 });

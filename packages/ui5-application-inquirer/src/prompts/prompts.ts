@@ -47,8 +47,8 @@ export function getQuestions(
     /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
     const ui5VersionChoices = ui5VersionsGrouped(
         ui5Versions,
-        promptOptions?.ui5Version?.defaultChoice,
-        promptOptions?.ui5Version?.includeSeparators
+        promptOptions?.ui5Version?.includeSeparators,
+        promptOptions?.ui5Version?.defaultChoice
     );
 
     // Set shared defaults
