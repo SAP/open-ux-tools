@@ -586,7 +586,7 @@ describe('SelectionService', () => {
         );
 
         await service.init(sendActionMock, subscribeMock);
-        await subscribeMock.mock.calls[0][0](reloadApplication(''));
+        await subscribeMock.mock.calls[0][0](reloadApplication());
         expect(rtaMock.stop).toHaveBeenNthCalledWith(1, false, false);
     });
 
