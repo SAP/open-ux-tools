@@ -16,7 +16,6 @@ import Log from 'sap/base/Log';
 import { logger } from './logger';
 import { getIcons } from './ui5-utils';
 import workspaceConnector from '../flp/WorkspaceConnector';
-import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 
 export default function init(rta: RuntimeAuthoring): Promise<void> {
     Log.info('Initializing Control Property Editor');
@@ -67,7 +66,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         const icons = getIcons();
 
         // hook the file deletion listener to the UI5 workspace connector
-        (workspaceConnector as typeof ObjectStorageConnector).storage.deleteRequestNotifier = (fileName: string) => {
+        workspaceConnector.storage.deleteRequestNotifier = (fileName: string) => {
             sendAction(storageFileChanged(fileName?.replace('sap.ui.fl.', '')));
         };
 
