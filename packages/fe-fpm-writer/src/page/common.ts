@@ -203,7 +203,7 @@ export function validatePageConfig(basePath: string, config: CustomPage | Object
         }
 
         const route = routes[config.navigation.sourcePage];
-        if (!route || !route.pattern || !route.target) {
+        if (!route?.pattern || !route.target) {
             throw new Error(`Invalid routing configuration for navigation source ${config.navigation.sourcePage}!`);
         }
     }

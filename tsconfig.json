@@ -75,6 +75,12 @@
       "path": "packages/fiori-freestyle-writer"
     },
     {
+      "path": "packages/jest-file-matchers"
+    },
+    {
+      "path": "packages/jest-runner-puppeteer"
+    },
+    {
       "path": "packages/logger"
     },
     {

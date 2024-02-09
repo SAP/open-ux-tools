@@ -111,7 +111,7 @@ describe('<UITable />', () => {
 
     beforeEach(() => {
         jest.useFakeTimers();
-        jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+        jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => {
             cb(1);
             return 1;
         });
