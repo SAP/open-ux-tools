@@ -1,5 +1,12 @@
 # @sap-ux/axios-extension
 
+## 1.10.1
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+
 ## 1.10.0
 
 ### Minor Changes
