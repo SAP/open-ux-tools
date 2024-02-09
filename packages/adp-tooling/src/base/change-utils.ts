@@ -3,7 +3,7 @@ import path, { posix } from 'path';
 
 import type { AnnotationsData, ChangeTypes, GeneratorName, BaseData, InboundContent, PopertyValueType } from '../types';
 import { FolderTypes, AnnotationFileSelectType } from '../types';
-import { existsSync, readFileSync, readdirSync } from 'fs';
+import { Dirent, existsSync, readFileSync, readdirSync } from 'fs';
 
 type InboundChange = { filePath: string; changeWithInboundId: { content: InboundContent } };
 
@@ -148,17 +148,19 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
     }
 
     try {
-        readdirSync(pathToInboundChangeFiles, { withFileTypes: true })
-            .filter((dirent) => dirent.isFile() && dirent.name.includes('changeInbound'))
-            .forEach((file) => {
-                const pathToFile = `${pathToInboundChangeFiles}/${file.name}`;
-                const change = JSON.parse(readFileSync(pathToFile, 'utf-8'));
-                const condition = change.content?.inboundId === inboundId;
-                if (condition) {
-                    changeObj = change;
-                    filePath = pathToFile;
-                }
-            });
+        const file: Dirent | undefined = readdirSync(pathToInboundChangeFiles, { withFileTypes: true }).find(
+            (dirent: Dirent) => dirent.isFile() && dirent.name.includes('changeInbound')
+        );
+
+        if (file) {
+            const pathToFile = path.join(pathToInboundChangeFiles, file.name);
+            const change: { content: { inboundId: string } } = JSON.parse(readFileSync(pathToFile, 'utf-8'));
+
+            if (change.content?.inboundId === inboundId) {
+                changeObj = change;
+                filePath = pathToFile;
+            }
+        }
 
         return {
             filePath,
