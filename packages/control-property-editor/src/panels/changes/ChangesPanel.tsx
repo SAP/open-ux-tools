@@ -77,7 +77,7 @@ export function ChangesPanel(): ReactElement {
                             isMessageHeader={true}
                             text={t('EXTERNAL_CHANGES_DETECTED')}
                         />
-                        <FileChange key="file-change-informer" hasUnsavedChanges={pending?.length ? true : false} />
+                        <FileChange key="file-change-informer" hasUnsavedChanges={pending?.length > 0} />
                     </>
                 )}
 

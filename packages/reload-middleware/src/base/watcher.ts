@@ -38,7 +38,6 @@ export class FileWatcher {
                     if (subscribeErr) {
                         console.error('Error subscribing to changes:', subscribeErr);
                         this.client.end();
-                        return;
                     }
                 }
             );
