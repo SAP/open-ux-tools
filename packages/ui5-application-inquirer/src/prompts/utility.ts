@@ -1,11 +1,13 @@
-import { Separator, type ListChoiceOptions } from 'inquirer';
-import * as fuzzy from 'fuzzy';
-import { defaultProjectNumber, t } from '../i18n';
 import type { UI5Theme } from '@sap-ux/ui5-info';
 import { getUi5Themes, type UI5Version } from '@sap-ux/ui5-info';
-import { promptNames, type UI5ApplicationPromptOptions, type UI5VersionChoice } from '../types';
 import { existsSync } from 'fs';
+import * as fuzzy from 'fuzzy';
+import type { Answers, Question } from 'inquirer';
+import { Separator, type ListChoiceOptions } from 'inquirer';
 import { join } from 'path';
+import { coerce, gte } from 'semver';
+import { defaultProjectNumber, t } from '../i18n';
+import { type UI5VersionChoice } from '../types';
 
 /**
  * Finds the search value in the provided list using `fuzzy` search.
@@ -30,11 +32,13 @@ export function searchChoices(searchVal: string, searchList: ListChoiceOptions[]
  * and grouping according to maintenance status.
  *
  * @param versions ui5Versions
+ * @param defaultChoice
  * @param includeSeparators Include a separator to visually identify groupings, if false then grouping info is included in each entry as additional name text
  * @returns Array of ui5 version choices and separators if applicable, grouped by maintenance state
  */
 export function ui5VersionsGrouped(
     versions: UI5Version[],
+    defaultChoice?: ListChoiceOptions,
     includeSeparators = false
 ): (UI5VersionChoice | Separator)[] {
     if (!versions || (Array.isArray(versions) && versions.length === 0)) {
@@ -69,7 +73,20 @@ export function ui5VersionsGrouped(
                 } as UI5VersionChoice)
         );
 
+    
+    const defaultChoices = defaultChoice ? [{
+        name: !includeSeparators
+            ? `${defaultChoice?.name} - (Provided default ${t('ui5VersionLabels.version')})`
+            : defaultChoice?.name,
+        value: defaultChoice?.value
+    } as UI5VersionChoice] : [];
+
     if (includeSeparators) {
+        if (defaultChoices) {
+            (defaultChoices as (UI5VersionChoice | Separator)[]).unshift(
+                new Separator(`Provided default ${t('ui5VersionLabels.version', { count: 1 })}`)
+            );
+        }
         (maintChoices as (UI5VersionChoice | Separator)[]).unshift(
             new Separator(`${t('ui5VersionLabels.maintained')} ${t('ui5VersionLabels.version', { count: 0 })}`)
         );
@@ -78,7 +95,7 @@ export function ui5VersionsGrouped(
         );
     }
 
-    return [...maintChoices, ...notMaintChoices];
+    return [...defaultChoices, ...maintChoices, ...notMaintChoices];
 }
 
 /**
@@ -132,7 +149,7 @@ export function getUI5ThemesChoices(ui5Version?: string): ListChoiceOptions[] {
  * @param promptOptions the prompt options to be cleaned
  * @returns prompt options with empty string values replaced with undefined where appropriate
  */
-export function cleanPromptOptions(promptOptions?: UI5ApplicationPromptOptions) {
+/* export function cleanPromptOptions(promptOptions?: UI5ApplicationPromptOptions) {
     if (promptOptions) {
         // Prompt option values that should not allow empty strings (zero length or all spaces)
         const nonEmptyPrompts = [promptNames.name, promptNames.targetFolder, promptNames.ui5Version];
@@ -147,4 +164,52 @@ export function cleanPromptOptions(promptOptions?: UI5ApplicationPromptOptions) 
         });
     }
     return promptOptions;
+} */
+
+/**
+ * Checks if the specified semantic version string is greater than or equal to the minimum version.
+ * If the specified version is not a parseable semantic version, returns true.
+ *
+ * @param version the version to test
+ * @param minVersion the minimum version to test against
+ * @returns - true if the specified version is greater than or equal to the minimum version, or the version is not a coercable semver
+ */
+export function isVersionIncluded(version: string, minVersion: string): boolean {
+    // Extract a usable version, `snapshot`, `latest` etc will be ignored
+    const ui5SemVer = coerce(version);
+    if (ui5SemVer) {
+        return gte(ui5SemVer, minVersion);
+    }
+    return true;
+}
+
+/**
+ * Adds additional conditions to the provided questions.
+ *
+ * @param questions
+ * @param condition function which returns true or false
+ * @returns the passed questions reference
+ */
+export function withCondition(questions: Question[], condition: (answers: Answers) => boolean): Question[] {
+    questions.forEach((question) => {
+        if (question.when !== undefined) {
+            if (typeof question.when === 'function') {
+                const when = question.when as (answers: Answers) => boolean | Promise<boolean>;
+                question.when = (answers: Answers): boolean | Promise<boolean> => {
+                    if (condition(answers)) {
+                        return when(answers);
+                    } else {
+                        return false;
+                    }
+                };
+            } else {
+                question.when = (answers: Answers): boolean => {
+                    return condition(answers) && (question.when as boolean);
+                };
+            }
+        } else {
+            question.when = condition;
+        }
+    });
+    return questions;
 }

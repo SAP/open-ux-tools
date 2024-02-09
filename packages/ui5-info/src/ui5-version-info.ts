@@ -12,7 +12,8 @@ import {
     latestVersionString,
     ui5VersionRequestInfo,
     ui5VersionsType,
-    ui5VersionsCache
+    ui5VersionsCache,
+    minUi5VersionSupportingCodeAssist
 } from './constants';
 
 // Semantic version equivalent of 'Latest'
@@ -50,7 +51,7 @@ function sortUI5Versions(ui5Versions: string[]): string[] {
  * Sort function for snapshot versions.
  *
  * @param a - The first element for comparison.
- * @param b - The first element for comparison.
+ * @param b - The second element for comparison.
  * @returns 0, 1 or -1
  */
 function snapshotSort(a: string, b: string): number {
@@ -378,4 +379,18 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
         }
         return ui5Version;
     });
+}
+
+/**
+ * Filters an array of versions based on a ui5 version parameter and returns a boolean for code assist libraries enablement.
+ *
+ * @param versions - array of versions
+ * @param ui5Version - minimum version to filter
+ * @returns true if the specified ui5 version supports code assist
+ */
+export function uI5VersionsWithCodeAssist(versions: string[], ui5Version: string): boolean {
+    return (
+        filterNewerEqual(versions, minUi5VersionSupportingCodeAssist).includes(ui5Version) ||
+        ui5Version === defaultVersion
+    );
 }

@@ -10,6 +10,9 @@
   },
   "references": [
     {
+      "path": "../cap-config-writer"
+    },
+    {
       "path": "../project-access"
     },
     {

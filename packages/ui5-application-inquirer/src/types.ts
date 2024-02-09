@@ -1,8 +1,10 @@
+import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
+import type { CapProjectType } from '@sap-ux/project-access';
 import type {
     Answers,
     ConfirmQuestion as BaseConfirmQuestion,
     ListQuestion as BaseListQuestion,
-    InputQuestion,
+    InputQuestion as BaseInputuestion,
     ListChoiceOptions,
     PromptFunction,
     PromptModule,
@@ -21,7 +23,7 @@ export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
     guiOptions?: GuiOptions;
 };
 
-export interface FileBrowserQuestion<A extends Answers = Answers> extends InputQuestion<A> {
+export interface FileBrowserQuestion<A extends Answers = Answers> extends BaseInputuestion<A> {
     guiType: 'file-browser' | 'folder-browser';
     guiOptions?: YUIQuestion['guiOptions'];
 }
@@ -34,6 +36,10 @@ export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfir
     guiOptions?: YUIQuestion['guiOptions'];
 }
 
+export interface InputQuestion<A extends Answers = Answers> extends BaseInputuestion<A> {
+    guiOptions?: YUIQuestion['guiOptions'];
+}
+
 export interface UI5ApplicationAnswers {
     name?: string;
     title?: string;
@@ -41,9 +47,24 @@ export interface UI5ApplicationAnswers {
     description?: string;
     targetFolder?: string;
     ui5Version?: string;
+    addDeployConfig?: boolean;
+    addFlpConfig?: boolean;
     ui5Theme?: string;
-    enableTypescript?: boolean;
+    enableEslint?: boolean;
+    enableCodeAssist?: boolean;
+    skipAnnotations?: boolean;
+    enableTypeScript?: boolean;
+    enableNPMWorkspaces?: boolean;
+    showAdvanced?: boolean;
 }
+
+/**
+ * All info relevant to prompting for CAP projects
+ *
+ */
+export type CapCdsInfo = Partial<CdsUi5PluginInfo> & {
+    capProjectType?: CapProjectType;
+};
 
 /**
  * Enumeration of prompt names used by UI5ApplicationInquirerPromptOptions
@@ -77,11 +98,12 @@ export enum promptNames {
     addDeployConfig = 'addDeployConfig',
     addFlpConfig = 'addFlpConfig',
     ui5Theme = 'ui5Theme',
-    enableEslint = 'enableEslint'
-    /* enableCodeAssist = 'enableCodeAssist',
+    enableEslint = 'enableEslint',
     enableNPMWorkspaces = 'enableNPMWorkspaces',
+    enableCodeAssist = 'enableCodeAssist',
     skipAnnotations = 'skipAnnotations',
-    enableTypeScript = 'enableTypeScript' */
+    enableTypeScript = 'enableTypeScript',
+    showAdvanced = 'showAdvanced'
 }
 
 type UI5VersionPromptOptions = {
@@ -99,44 +121,77 @@ type UI5VersionPromptOptions = {
      * // todo: consider removing and referencing if CLI instead
      */
     useAutocomplete?: boolean;
+    /**
+     * Choice will be added to the UI5 versions offered and set as the default selection
+     *
+     */
+    defaultChoice?: ListChoiceOptions;
 };
 
-// Creates a general type for all string value prompts
-type stringValuePromptType = Omit<
-    typeof promptNames,
-    'addDeployConfig' | 'addFlpConfig' /* | 'enableEslint' | 'skipAnnotations' | 'enableTypeScript' */
->;
+/**
+ * These are boolean value prompt option keys
+ */
+type booleanPromptKeys =
+    | 'addDeployConfig'
+    | 'addFlpConfig'
+    | 'enableEslint'
+    | 'skipAnnotations'
+    | 'enableTypeScript'
+    | 'enableCodeAssist'
+    | 'showAdvanced'
+    | 'enableNPMWorkspaces';
+
+// Creates a general type for all string value prompt options
+type stringValuePromptType = Omit<typeof promptNames, booleanPromptKeys>;
 type stringValuePrompts = stringValuePromptType[keyof stringValuePromptType];
 
-// Creates a general type for all boolean value prompts
-type booleanValuePromptType = Pick<
-    typeof promptNames,
-    'addDeployConfig' | 'addFlpConfig' /* | 'enableEslint' | 'skipAnnotations' | 'enableTypeScript' */
->;
+// Creates a general type for all boolean value prompt options
+type booleanValuePromptType = Pick<typeof promptNames, booleanPromptKeys>;
 type booleanValuePrompts = booleanValuePromptType[keyof booleanValuePromptType];
+
+// Prompt options that can be assigned a default
+type DefaultValueInputPrompts = promptNames.name | promptNames.ui5Version | promptNames.targetFolder;
+type DefaultValueConfirmPrompts =
+    | promptNames.enableCodeAssist
+    | promptNames.enableEslint
+    | promptNames.skipAnnotations
+    | promptNames.enableTypeScript;
+
+// Default value type for input prompt options
+type InputPromptDefaultValue = {
+    value?: string;
+};
+// Default value type for confirm prompt options
+type ConfirmPromptDefaultValue = {
+    value?: boolean;
+};
+
 /**
  * Defines prompt/question default values and/or whether or not they should be shown.
  */
 type commonPromptSettings = {
     hide?: boolean;
+    advancedOption?: boolean;
 };
 
-type stringValuePromptOptions =
-    | Record<
-          stringValuePrompts,
-          {
-              value?: string;
-          } & commonPromptSettings
-      > &
-          Record<promptNames.ui5Version, UI5VersionPromptOptions>;
+/**
+ * Provide the correct type checking for string value prompts and `ui5Version` options
+ *
+ */
+type stringValuePromptOptions = Record<stringValuePrompts, commonPromptSettings> &
+    Record<DefaultValueInputPrompts, InputPromptDefaultValue> &
+    Record<promptNames.ui5Version, UI5VersionPromptOptions>;
 
+/**
+ * Provide the correct type checking for boolean value prompts and validator callback options
+ *
+ */
 type booleanValuePromptOtions = Record<
     booleanValuePrompts,
     {
-        value?: boolean;
         /**
          * Callback function can be provided which will be executed on input validation.
-         * This may be used to trigger conditional steps in Yeoman UI.
+         * This may be used, for example, to trigger conditional steps in Yeoman UI.
          *
          * @param answer
          * @param promptName
@@ -144,17 +199,10 @@ type booleanValuePromptOtions = Record<
          */
         validatorCallback?: (answer: boolean | string, promptName: string) => void;
     } & commonPromptSettings
->;
+> &
+    Record<DefaultValueConfirmPrompts, ConfirmPromptDefaultValue>;
 
 export type UI5ApplicationPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOtions>;
-
-// {
-//
-//     /**
-//      * Optionally register the `inquirer-autocomplete-prompt` plugin and use for UI5 version searching
-//      */
-//     useAutocomplete?: boolean;
-// }
 
 export interface UI5VersionChoice extends ListChoiceOptions {
     value: string; // UI5 semantic version
@@ -170,7 +218,6 @@ export interface InquirerAdapter {
  * Remove when YUI specific types are available from `"@sap-devx/yeoman-ui-types`
  *
  */
-
 export interface GuiOptions {
     hint?: string;
     applyDefaultWhenDirty?: boolean;

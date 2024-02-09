@@ -128,13 +128,52 @@ describe('getPrompts', () => {
                 "name": "enableEslint",
                 "type": "confirm",
               },
+              {
+                "default": false,
+                "guiOptions": {
+                  "breadcrumb": "Code Assist",
+                },
+                "message": "Add code assist libraries to your project",
+                "name": "enableCodeAssist",
+                "type": "confirm",
+                "when": [Function],
+              },
+              {
+                "default": false,
+                "guiOptions": {
+                  "breadcrumb": "Skip Annotations",
+                },
+                "message": "Skip generation of associated annotations.cds file",
+                "name": "skipAnnotations",
+                "type": "confirm",
+              },
+              {
+                "default": false,
+                "guiOptions": {
+                  "breadcrumb": "Enable NPM Workspaces",
+                },
+                "message": "Generation of this application can update the CAP project to use NPM workspaces and an associated CDS plugin library (cds-plugin-ui5). Do you want to enable this feature? (Note: this is requirement for generating with TypeScript)",
+                "name": "enableNPMWorkspaces",
+                "type": "confirm",
+                "when": [Function],
+              },
+              {
+                "default": false,
+                "guiOptions": {
+                  "breadcrumb": true,
+                },
+                "message": "prompts.appEnableTypescxriptMessage",
+                "name": "enableTypeScript",
+                "type": "confirm",
+                "when": [Function],
+              },
             ]
         `);
     });
 
     test('getQuestions, parameter `isCap` specified', () => {
         // Prompt: `targetFolder` should not returned for CAP projects
-        expect(getQuestions([], undefined, undefined, true)).not.toEqual(
+        expect(getQuestions([], undefined, undefined, { capProjectType: 'CAPNodejs' })).not.toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.targetFolder })])
         );
 
@@ -146,6 +185,7 @@ describe('getPrompts', () => {
 
     test('getQuestions, prompt: `name`, conditional validator', () => {
         jest.spyOn(utility, 'pathExists').mockReturnValue(true);
+        // Test default when `isCLi` === true
         let questions = getQuestions([], {
             [promptNames.targetFolder]: {
                 value: '/cap/specific/target/path'
@@ -155,6 +195,7 @@ describe('getPrompts', () => {
             (questions.find((question) => question.name === promptNames.name)?.validate as Function)('project1', {})
         ).toMatchInlineSnapshot(`"A module with this name already exists in the folder: /cap/specific/target/path"`);
 
+        // Test default when CAP project info provided
         questions = getQuestions(
             [],
             {
@@ -163,7 +204,7 @@ describe('getPrompts', () => {
                 }
             },
             false,
-            true
+            { capProjectType: 'CAPJava' }
         );
         expect(
             (questions.find((question) => question.name === promptNames.name)?.validate as Function)('project1', {})
@@ -193,7 +234,7 @@ describe('getPrompts', () => {
         const getMtaPathSpy = jest.spyOn(projectAccess, 'getMtaPath').mockResolvedValue(mockMtaPath);
 
         // 'addDeployConfig' is always returned based on static inputs, it is the 'when' condition that determines its presence
-        let questions = getQuestions([], undefined, undefined, true);
+        let questions = getQuestions([], undefined, undefined, { capProjectType: 'CAPNodejs' });
         expect(questions).toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.addDeployConfig })])
         );
@@ -206,7 +247,7 @@ describe('getPrompts', () => {
         ).toMatchInlineSnapshot(`"Add deployment configuration"`);
 
         getMtaPathSpy.mockResolvedValue({ mtaPath: 'any/path', hasRoot: false });
-        questions = getQuestions([], undefined, undefined, true);
+        questions = getQuestions([], undefined, undefined, { capProjectType: 'CAPJava' });
         expect(
             await (questions.find((question) => question.name === promptNames.addDeployConfig)?.when as Function)()
         ).toMatchInlineSnapshot(`true`);

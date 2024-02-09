@@ -1,22 +1,29 @@
-import { findProjectRoot, getCapProjectType } from '@sap-ux/project-access';
 import { getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import { type Question } from 'inquirer';
 import autocomplete from 'inquirer-autocomplete-prompt';
-import { getQuestions } from './prompts';
-import { type InquirerAdapter, type UI5ApplicationAnswers, type UI5ApplicationPromptOptions } from './types';
-import { cleanPromptOptions } from './prompts/utility';
 import cloneDeep from 'lodash/cloneDeep';
+import { getQuestions } from './prompts';
+// import { cleanPromptOptions } from './prompts/utility';
+import {
+    promptNames,
+    type CapCdsInfo,
+    type InquirerAdapter,
+    type UI5ApplicationAnswers,
+    type UI5ApplicationPromptOptions
+} from './types';
 
 /**
  * Get the inquirer prompts for ui5 library inquirer.
  *
  * @param promptOptions See {@link UI5ApplicationPromptOptions} for details
  * @param [isCli] Changes some prompt logic for YUI execution otherwise prompts will be executed serially in a command line environment
+ * @param [capCdsInfo] - optional, additional information about CAP projects which if provided will be used instead of detecting and parsing CAP projects from the file system
  * @returns the prompts used to provide input for ui5 library generation
  */
 async function getPrompts(
     promptOptions?: UI5ApplicationPromptOptions,
-    isCli = true
+    isCli = true,
+    capCdsInfo?: CapCdsInfo
 ): Promise<Question<UI5ApplicationAnswers>[]> {
     const filterOptions: UI5VersionFilterOptions = {
         useCache: true,
@@ -24,23 +31,26 @@ async function getPrompts(
         includeDefault: true
     };
     const ui5Versions = await getUI5Versions(filterOptions);
-    let isCapProject = false;
 
-    const promptOptionsClean = cleanPromptOptions(cloneDeep(promptOptions));
-
-    if (promptOptionsClean?.targetFolder?.value) {
+    const promptOptionsClean = /* cleanPromptOptions( */ cloneDeep(promptOptions); /* ) */
+    /* 
+    if (!capCdsInfo && promptOptionsClean?.targetFolder?.value) {
         // Is this a cap project, target dir will be set to the `app` or custom app folder not the project root
-        isCapProject = !!(await getCapProjectType(
-            await findProjectRoot(promptOptionsClean.targetFolder?.value, false, true)
-        ));
-    }
-    /*  const ui5LibPromptInputs: UI5ApplicationPromptOptions = {
-        targetFolder: promptOptions?.targetFolder,
-        includeSeparators: promptOptions?.includeSeparators,
-        useAutocomplete: promptOptions?.useAutocomplete
-    }; */
+        const capRootPath = await findProjectRoot(promptOptionsClean.targetFolder?.value, false, true);
+        const capProjectType = await getCapProjectType(capRootPath);
 
-    return getQuestions(ui5Versions, promptOptionsClean, isCli, isCapProject);
+        // Additional CAP project info is required for specific prompts
+        if (!capCdsInfo && capProjectType === 'CAPNodejs') {
+            capCdsInfo = await checkCdsUi5PluginEnabled(
+                await findProjectRoot(promptOptionsClean.targetFolder?.value, false, true),
+                fs,
+                true
+            );
+        }
+        capCdsInfo = Object.assign(capCdsInfo ?? {}, { capProjectType });
+    } */
+
+    return getQuestions(ui5Versions, promptOptionsClean, isCli, capCdsInfo);
 }
 
 /**
@@ -54,25 +64,6 @@ async function prompt(
     promptOptions: UI5ApplicationPromptOptions,
     adapter: InquirerAdapter
 ): Promise<UI5ApplicationAnswers> {
-    /*     const input: UI5ApplicationPromptOptions = {
-        [promptNames.ui5Version]: {
-            hide: false,
-            minUI5Version: '1.120.0',
-            includeSeparators: true,
-            useAutocomplete: true,
-            value: '1.120.0'
-        },
-        [promptNames.addDeployConfig]: {
-            value: true,
-            validatorCallback: (a, b: string) => {
-                //do something in YUI
-            },
-        },
-        [promptNames.name]: {
-            value: 'some prompt'
-        }
-    } */
-
     const ui5AppPrompts = await exports.getPrompts(promptOptions);
 
     if (adapter?.promptModule && promptOptions.ui5Version?.useAutocomplete) {
@@ -80,7 +71,16 @@ async function prompt(
         pm.registerPrompt('autocomplete', autocomplete);
     }
 
-    return adapter.prompt(ui5AppPrompts);
+    const answers = adapter.prompt<UI5ApplicationAnswers>(ui5AppPrompts);
+    // Apply default values to prompts that may not have been executed
+    return answers;
 }
 
-export { getPrompts, prompt, type UI5ApplicationAnswers, type UI5ApplicationPromptOptions };
+export {
+    getPrompts,
+    prompt,
+    promptNames,
+    type CapCdsInfo,
+    type UI5ApplicationAnswers,
+    type UI5ApplicationPromptOptions
+};

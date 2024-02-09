@@ -1,13 +1,32 @@
-import { type UI5Version, defaultVersion, getDefaultUI5Theme } from '@sap-ux/ui5-info';
-import { t } from '../i18n';
-import type { YUIQuestion, ListQuestion, FileBrowserQuestion, ConfirmQuestion } from '../types';
-import { promptNames, type UI5ApplicationAnswers, type UI5ApplicationPromptOptions } from '../types';
-import { defaultAppName, getUI5ThemesChoices, searchChoices, ui5VersionsGrouped } from './utility';
-import { validateAppName } from './validators';
-import { validateModuleName, validateNamespace, validateProjectFolder } from '@sap-ux/project-input-validator';
-import type { ListChoiceOptions } from 'inquirer';
 import { getMtaPath } from '@sap-ux/project-access';
+import { validateModuleName, validateNamespace, validateProjectFolder } from '@sap-ux/project-input-validator';
+import {
+    defaultVersion,
+    getDefaultUI5Theme,
+    minUi5VersionSupportingCodeAssist,
+    type UI5Version
+} from '@sap-ux/ui5-info';
+import type { ListChoiceOptions } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import { t } from '../i18n';
+import type {
+    CapCdsInfo,
+    ConfirmQuestion,
+    FileBrowserQuestion,
+    InputQuestion,
+    ListQuestion,
+    YUIQuestion
+} from '../types';
+import { promptNames, type UI5ApplicationAnswers, type UI5ApplicationPromptOptions } from '../types';
+import {
+    defaultAppName,
+    getUI5ThemesChoices,
+    isVersionIncluded,
+    searchChoices,
+    ui5VersionsGrouped,
+    withCondition
+} from './utility';
+import { validateAppName } from './validators';
 
 /**
  * Get the prompts that will provide input for UI5 applcation writing.
@@ -15,40 +34,35 @@ import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
  * @param ui5Versions - ui5 versions to prompt for selection
  * @param promptOptions - optional inputs used to pre-populate some prompt choices, default values and other prompting options. See {@link UI5ApplicationPromptOptions}.
  * @param [isCli] - optional, default is `true`. Changes the behaviour of some prompts as CLI executes prompts serially
- * @param [isCapProject] - optional, default is `false`. Changes the behaviour of some prompts to accomodate CAP projects
+ * @param [capCdsInfo] - optional, additional information about CAP projects
  * @returns the prompts
  */
 export function getQuestions(
     ui5Versions: UI5Version[],
     promptOptions?: UI5ApplicationPromptOptions,
     isCli = true,
-    isCapProject = false
+    capCdsInfo?: CapCdsInfo
 ): YUIQuestion<UI5ApplicationAnswers>[] {
-    const ui5VersionChoices = ui5VersionsGrouped(ui5Versions, promptOptions?.ui5Version?.includeSeparators);
+    // Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
+    /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+    const ui5VersionChoices = ui5VersionsGrouped(
+        ui5Versions,
+        promptOptions?.ui5Version?.defaultChoice,
+        promptOptions?.ui5Version?.includeSeparators
+    );
 
     // Set shared defaults
     const appName = promptOptions?.[promptNames.name]?.value;
-    const targetDir = promptOptions?.[promptNames.targetFolder]?.value ?? process.cwd();
+    const targetDir = promptOptions?.[promptNames.targetFolder]?.value || process.cwd();
     let mtaPath: Awaited<Promise<string | undefined>>; // cache mta path discovery
+    const isCapProject = !!capCdsInfo?.capProjectType;
     // Always show breadcrumbs in YUI - opt. in
     const breadcrumb = true;
 
     const questions: YUIQuestion<UI5ApplicationAnswers>[] = [];
 
     // todo: use all prompt names as record key
-    const keyedPrompts: Record<
-        | promptNames.name
-        | promptNames.title
-        | promptNames.description
-        | promptNames.namespace
-        | promptNames.targetFolder
-        | promptNames.ui5Version
-        | promptNames.addDeployConfig
-        | promptNames.addFlpConfig
-        | promptNames.ui5Theme
-        | promptNames.enableEslint,
-        YUIQuestion<UI5ApplicationAnswers>
-    > = {
+    const keyedPrompts: Record<promptNames, YUIQuestion<UI5ApplicationAnswers>> = {
         [promptNames.name]: {
             type: 'input',
             guiOptions: {
@@ -59,15 +73,15 @@ export function getQuestions(
             },
             name: promptNames.name,
             message: t('prompts.appNameMessage'),
-            default: (answers: UI5ApplicationAnswers) => answers.name ?? appName ?? defaultAppName(targetDir),
+            default: (answers: UI5ApplicationAnswers) => answers.name || appName || defaultAppName(targetDir),
             validate: (name, answers: UI5ApplicationAnswers): boolean | string => {
                 if (isCli || isCapProject) {
-                    return validateAppName(name, answers.targetFolder ?? targetDir);
+                    return validateAppName(name, answers.targetFolder || targetDir);
                 } else {
                     return validateModuleName(name);
                 }
             }
-        },
+        } as InputQuestion<UI5ApplicationAnswers>,
         [promptNames.title]: {
             type: 'input',
             guiOptions: {
@@ -76,8 +90,8 @@ export function getQuestions(
             },
             name: promptNames.title,
             message: t('prompts.appTitleMessage'),
-            default: (answers: UI5ApplicationAnswers) => answers.title ?? t('prompts.appTitleDefault')
-        },
+            default: (answers: UI5ApplicationAnswers) => answers.title || t('prompts.appTitleDefault')
+        } as InputQuestion<UI5ApplicationAnswers>,
         [promptNames.namespace]: {
             type: 'input',
             guiOptions: {
@@ -89,11 +103,11 @@ export function getQuestions(
             default: (answers: UI5ApplicationAnswers) => answers.namespace ?? '',
             validate: (namespace: string, answers: UI5ApplicationAnswers): boolean | string => {
                 if (namespace) {
-                    return validateNamespace(namespace, answers.name ?? appName);
+                    return validateNamespace(namespace, answers.name || appName);
                 }
                 return true;
             }
-        },
+        } as InputQuestion<UI5ApplicationAnswers>,
         [promptNames.description]: {
             type: 'input',
             name: promptNames.description,
@@ -102,8 +116,8 @@ export function getQuestions(
                 breadcrumb
             },
             message: t('prompts.appDescMessage'),
-            default: (answers: UI5ApplicationAnswers) => answers.description ?? t('prompts.appDescDefault')
-        },
+            default: (answers: UI5ApplicationAnswers) => answers.description || t('prompts.appDescDefault')
+        } as InputQuestion<UI5ApplicationAnswers>,
         [promptNames.targetFolder]: {
             type: 'input',
             name: promptNames.targetFolder,
@@ -114,7 +128,7 @@ export function getQuestions(
                 mandatory: true,
                 breadcrumb: t('prompts.appFolderPathBreadcrumb')
             },
-            default: (answers: UI5ApplicationAnswers) => answers.targetFolder ?? targetDir ?? process.cwd(),
+            default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir || process.cwd(),
             validate: (target, { name = '' }: UI5ApplicationAnswers): boolean | string => {
                 // todo: why not check for valid name
                 if (name.length > 2) {
@@ -122,7 +136,7 @@ export function getQuestions(
                 }
                 return false;
             }
-        } as FileBrowserQuestion,
+        } as FileBrowserQuestion<UI5ApplicationAnswers>,
         [promptNames.ui5Version]: {
             when: () => !!ui5VersionChoices,
             type: promptOptions?.ui5Version?.useAutocomplete ? 'autocomplete' : 'list',
@@ -138,7 +152,8 @@ export function getQuestions(
             default: () => {
                 // Set the default to be the passed value or the default as defined by ui5 version service
                 return (
-                    promptOptions?.ui5Version?.value ??
+                    promptOptions?.ui5Version?.value ||
+                    promptOptions?.ui5Version?.defaultChoice?.value ||
                     ui5Versions.find((ui5Ver) => ui5Ver.default && ui5Ver.version)?.version
                 );
             }
@@ -151,7 +166,7 @@ export function getQuestions(
             },
             // If the target directory is a CAP project then only offer `addDeployConfig (addToMta)` if an mta file is found
             when: async (answers: UI5ApplicationAnswers): Promise<boolean> =>
-                !!((mtaPath = (await getMtaPath(answers?.targetFolder ?? targetDir))?.mtaPath) && isCapProject) ||
+                !!((mtaPath = (await getMtaPath(answers?.targetFolder || targetDir))?.mtaPath) && isCapProject) ||
                 !isCapProject,
             message: (): string => {
                 return mtaPath
@@ -184,6 +199,15 @@ export function getQuestions(
                 return true;
             }
         } as ConfirmQuestion<UI5ApplicationAnswers>,
+        [promptNames.showAdvanced]: {
+            type: 'confirm',
+            name: 'showAdvanced',
+            message: t('prompts.appShowAdvancedOptionsMessage'),
+            guiOptions: {
+                hint: t('prompts.appShowAdvancedOptionsHint')
+            },
+            default: false
+        } as ConfirmQuestion<UI5ApplicationAnswers>,
         [promptNames.ui5Theme]: {
             type: 'list',
             name: promptNames.ui5Theme,
@@ -208,17 +232,66 @@ export function getQuestions(
             guiOptions: {
                 breadcrumb: t('prompts.appEnableEslintBreadcrumb')
             }
+        } as ConfirmQuestion<UI5ApplicationAnswers>,
+        [promptNames.enableCodeAssist]: {
+            when: (answers): boolean =>
+                isVersionIncluded(answers?.ui5Version || defaultVersion, minUi5VersionSupportingCodeAssist),
+            type: 'confirm',
+            name: promptNames.enableCodeAssist,
+            message: t('prompts.appEnableCodeAssistMessage'),
+            default: promptOptions?.[promptNames.enableCodeAssist]?.value ?? false,
+            guiOptions: {
+                breadcrumb: t('prompts.appEnableCodeAssistBreadcrumb')
+            }
+        } as ConfirmQuestion<UI5ApplicationAnswers>,
+        [promptNames.skipAnnotations]: {
+            type: 'confirm',
+            name: promptNames.skipAnnotations,
+            message: t('prompts.appSkipAnnotationsMessage'),
+            default: promptOptions?.[promptNames.skipAnnotations]?.value ?? false,
+            guiOptions: {
+                breadcrumb: t('prompts.appSkipAnnotationsBreadcrumb')
+            }
+        } as ConfirmQuestion<UI5ApplicationAnswers>,
+        [promptNames.enableNPMWorkspaces]: {
+            when: () => {
+                if (capCdsInfo) {
+                    return capCdsInfo.hasMinCdsVersion && !capCdsInfo.hasCdsUi5Plugin;
+                }
+                return false;
+            },
+            type: 'confirm',
+            name: 'enableNPMWorkspaces',
+            message: t('prompts.appEnableNpmWorkspacesMessage'),
+            default: false,
+            guiOptions: {
+                breadcrumb: t('prompts.appEnableNpmWorkspacesBreadcrumb')
+            }
+        } as ConfirmQuestion<UI5ApplicationAnswers>,
+        [promptNames.enableTypeScript]: {
+            when: (answers): boolean => {
+                if (capCdsInfo) {
+                    return capCdsInfo.isCdsUi5PluginEnabled || answers?.enableNPMWorkspaces ? true : false;
+                }
+                return true;
+            },
+            type: 'confirm',
+            name: promptNames.enableTypeScript,
+            message: t('prompts.appEnableTypeScriptMessage'),
+            default: promptOptions?.[promptNames.enableTypeScript]?.value ?? false,
+            guiOptions: {
+                breadcrumb
+            }
         } as ConfirmQuestion<UI5ApplicationAnswers>
     };
 
     // Hide not applicable prompts based on passed options or if this is a CAP project
-    // Dynamic prompt 'when' conditions are evaluated by the executing framework e.g. YUI, Yo
     if (promptOptions || isCapProject) {
         Object.keys(keyedPrompts).forEach((key) => {
             const promptKey = key as keyof typeof promptNames;
             if (
                 !promptOptions?.[promptKey]?.hide &&
-                // Target directory is determined by the CAP project. `enableEsLint` is not available for CAP projects
+                // Target directory is determined by the CAP project. `enableEsLint` and `targetFolder` are not available for CAP projects
                 !([promptNames.targetFolder, promptNames.enableEslint].includes(promptNames[promptKey]) && isCapProject)
             ) {
                 questions.push(keyedPrompts[promptKey]);
@@ -227,6 +300,12 @@ export function getQuestions(
     } else {
         questions.push(...Object.values(keyedPrompts));
     }
+
+    // Add an additonal condition to 'advanced' prompts
+    withCondition(
+        questions.filter(({ name }) => promptOptions?.[name as keyof typeof promptNames]?.advancedOption),
+        (answers: UI5ApplicationAnswers) => answers.showAdvanced ?? false
+    );
 
     // todo: apply default values
 

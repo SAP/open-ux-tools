@@ -29,6 +29,7 @@ export const ui5VersionRequestInfo = {
 export const defaultMinUi5Version = '1.65.0';
 export const latestVersionString = 'Latest';
 export const defaultVersion = latestVersionString;
+export const minUi5VersionSupportingCodeAssist = '1.76.0';
 
 // Determine defaults from support fallback versions
 const defaultUi5Version = ui5VersionFallbacks
