@@ -1,5 +1,15 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.1.8
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+-   Updated dependencies [eb0b7b37]
+    -   @sap-ux/odata-annotation-core@0.1.8
+    -   @sap-ux/odata-entity-model@0.2.1
+    -   @sap-ux/odata-vocabularies@0.3.4
+
 ## 0.1.7
 
 ### Patch Changes

@@ -114,7 +114,7 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
                         border: this.isError === true ? 'thin solid var(--vscode-errorForeground)' : 'thin solid none'
                     }
                 }}>
-                {(this.icon && this.icon.render()) || <UIIcon iconName={UiIcons.HelpAction}></UIIcon>}
+                {this.icon?.render() ?? <UIIcon iconName={UiIcons.HelpAction}></UIIcon>}
                 {/* We do not use the 'UILink' here as it or its 'link' component do not expose a 'ref' to the underlying HTMLElement, needed to trigger click */}
                 <a
                     ref={this.anchor}

@@ -58,7 +58,7 @@ export class UIToggleGroup extends React.Component<UIToggleGroupProps, UIToggleG
     ): void => {
         let isSelected = false;
 
-        if (option && option.itemKey) {
+        if (option?.itemKey) {
             this.setState((prevState) => {
                 const newState = {
                     options: prevState.options.map(
@@ -91,7 +91,7 @@ export class UIToggleGroup extends React.Component<UIToggleGroupProps, UIToggleG
     };
 
     public onFocus = (_evt: React.FocusEvent<HTMLButtonElement>, option?: UIToggleGroupOptionProps): void => {
-        if (option && option.itemKey) {
+        if (option?.itemKey) {
             this.setState((prevState) => ({
                 options: prevState.options.map((entry: ToggleGroupOption) => {
                     if (entry.key === option.itemKey) {
