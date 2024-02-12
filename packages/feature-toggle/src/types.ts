@@ -9,9 +9,7 @@ export interface ExtensionConfigKeys {
     [key: string]: string | boolean | undefined;
 }
 
-export type Feature = string;
-
 export type FeatureToggle = {
-    feature: Feature;
+    feature: string;
     isEnabled: boolean;
 };

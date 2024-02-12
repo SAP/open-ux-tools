@@ -1,11 +1,11 @@
-import type { Feature, FeatureToggle } from './types';
+import type { FeatureToggle } from './types';
 import { extensionConfigKeys, tokenToggleGuid, FeatureToggleKey, ExperimentalFeatures } from './constants';
 
 /**
  * Utility class for accessing and managing feature toggles.
  */
 export class FeatureToggleAccess {
-    public static vscode = getVSCodeInstance();
+    public static readonly vscode = getVSCodeInstance();
 
     /**
      * Retrieves the toggle state of the specified feature.
@@ -13,7 +13,7 @@ export class FeatureToggleAccess {
      * @param feature the feature to retrieve the toggle state for.
      * @returns the toggle state of the feature.
      */
-    public static getFeatureToggle(feature: Feature): FeatureToggle {
+    public static getFeatureToggle(feature: string): FeatureToggle {
         let toggleConfigValue: boolean | undefined;
 
         if ((feature.includes(FeatureToggleKey) || feature === ExperimentalFeatures) && FeatureToggleAccess.vscode) {
@@ -139,7 +139,7 @@ export function isInternalFeaturesSettingEnabled(): boolean {
         const internalSetting = FeatureToggleAccess.vscode.workspace
             ? FeatureToggleAccess.vscode.workspace.getConfiguration()?.get(enableInternalFeaturesSetting)
             : false;
-        internalEnabled = internalSetting === true ? true : false;
+        internalEnabled = internalSetting ?? false;
     }
     if (process.env.TOOLSUITE_INTERNAL && process.env.TOOLSUITE_INTERNAL === 'true') {
         internalEnabled = true;
