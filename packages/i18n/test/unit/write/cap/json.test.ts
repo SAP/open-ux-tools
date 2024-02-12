@@ -1,7 +1,7 @@
 import { addJsonTexts, tryAddJsonTexts } from '../../../../src/write/cap/json';
 import * as utils from '../../../../src/utils';
-import fs from 'fs';
 import { join } from 'path';
+import type { Editor } from 'mem-fs-editor';
 
 describe('json', () => {
     describe('add new i18n entries to json file', () => {
@@ -86,58 +86,71 @@ describe('json', () => {
     });
     describe('tryAddJsonTexts', () => {
         const path = join('root', '_i18n', 'i18n');
+        const i18nPath = join('root', '_i18n', 'i18n.json');
         const env = Object.freeze({
             i18n: {
                 folders: ['_i18n', 'i18n', 'assets/i18n'],
                 default_language: 'en'
             }
         });
+        const entries = [
+            {
+                key: 'NewKey',
+                value: 'New Value'
+            }
+        ];
         afterEach(() => {
             jest.resetAllMocks();
         });
         test('json file does not exist', async () => {
             // arrange
             const doesExistSpy = jest.spyOn(utils, 'doesExist').mockResolvedValue(false);
-            const readFileSpy = jest.spyOn(fs.promises, 'readFile').mockResolvedValue('');
-            const writeFileSpy = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+            const readFileSpy = jest.spyOn(utils, 'readFile').mockResolvedValue('');
+            const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
             // act
-            const result = await tryAddJsonTexts(env, path, [
-                {
-                    key: 'NewKey',
-                    value: 'New Value'
-                }
-            ]);
+            const result = await tryAddJsonTexts(env, path, entries);
             // assert
             expect(result).toEqual(false);
-            expect(doesExistSpy).toHaveBeenCalledTimes(1);
+            expect(doesExistSpy).toHaveBeenNthCalledWith(1, i18nPath);
             expect(readFileSpy).toHaveBeenCalledTimes(0);
             expect(writeFileSpy).toHaveBeenCalledTimes(0);
         });
         test('add to existing .json file', async () => {
             // arrange
             const doesExistSpy = jest.spyOn(utils, 'doesExist').mockResolvedValue(true);
-            const readFileSpy = jest.spyOn(fs.promises, 'readFile').mockResolvedValue('');
-            const writeFileSpy = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+            const readFileSpy = jest.spyOn(utils, 'readFile').mockResolvedValue('');
+            const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
             // act
-            const result = await tryAddJsonTexts(env, path, [
-                {
-                    key: 'NewKey',
-                    value: 'New Value'
-                }
-            ]);
+            const result = await tryAddJsonTexts(env, path, entries);
             // assert
             expect(result).toEqual(true);
-            expect(doesExistSpy).toHaveBeenCalledTimes(1);
-            expect(readFileSpy).toHaveBeenCalledTimes(1);
-            expect(writeFileSpy).toHaveBeenCalledTimes(1);
+            expect(doesExistSpy).toHaveBeenNthCalledWith(1, i18nPath);
+            expect(readFileSpy).toHaveBeenNthCalledWith(1, i18nPath, undefined);
             const addedContent = `{
     "": {
         "NewKey": "New Value"
     }
 }`;
-            expect(writeFileSpy).toHaveBeenNthCalledWith(1, join('root', '_i18n', 'i18n.json'), addedContent, {
-                encoding: 'utf8'
-            });
+            expect(writeFileSpy).toHaveBeenNthCalledWith(1, i18nPath, addedContent, undefined);
+        });
+        test('add to existing .json file - mem-fs-editor', async () => {
+            // arrange
+            const doesExistSpy = jest.spyOn(utils, 'doesExist').mockResolvedValue(true);
+            const readFileSpy = jest.spyOn(utils, 'readFile').mockResolvedValue('');
+            const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue('');
+            const editor = {} as unknown as Editor;
+            // act
+            const result = await tryAddJsonTexts(env, path, entries, editor);
+            // assert
+            expect(result).toEqual(true);
+            expect(doesExistSpy).toHaveBeenNthCalledWith(1, i18nPath);
+            expect(readFileSpy).toHaveBeenNthCalledWith(1, i18nPath, editor);
+            const addedContent = `{
+    "": {
+        "NewKey": "New Value"
+    }
+}`;
+            expect(writeFileSpy).toHaveBeenNthCalledWith(1, i18nPath, addedContent, editor);
         });
     });
 });

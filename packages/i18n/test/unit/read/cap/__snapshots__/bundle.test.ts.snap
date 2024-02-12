@@ -302,6 +302,43 @@ Object {
 }
 `;
 
+exports[`getCapI18nBundle single .properties file - mem-fs-editor 1`] = `
+Object {
+  "Product": Array [
+    Object {
+      "annotation": undefined,
+      "filePath": "srv/i18n/i18n.properties",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 7,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 0,
+          },
+        },
+        "value": "Product",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 25,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 10,
+            "line": 0,
+          },
+        },
+        "value": "Service Product",
+      },
+    },
+  ],
+}
+`;
+
 exports[`getCapI18nBundle single .properties file 1`] = `
 Object {
   "Key": Array [

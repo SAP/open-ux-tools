@@ -2,6 +2,7 @@ import { promises } from 'fs';
 import { join } from 'path';
 import { getCapI18nBundle } from '../../../../src';
 import { replaceBundleWithUnifiedFileUri } from '../../helper';
+import type { Editor } from 'mem-fs-editor';
 
 const DATA_ROOT = join(__dirname, '..', '..', 'data');
 const PROJECT_ROOT = join(DATA_ROOT, 'project');
@@ -71,5 +72,13 @@ describe('getCapI18nBundle', () => {
             join(PROJECT_ROOT, 'app', 'properties-csv', 'service.cds')
         ]);
         return expect(result).rejects.toThrowError('should-throw-error');
+    });
+
+    test('single .properties file - mem-fs-editor', async () => {
+        const readSpy = jest.fn().mockReturnValue('Product = Service Product');
+        const fs = { read: readSpy } as unknown as Editor;
+        const bundle = await getCapI18nBundle(PROJECT_ROOT, env, [join(PROJECT_ROOT, 'srv', 'service.cds')], fs);
+        replaceBundleWithUnifiedFileUri(PROJECT_ROOT, bundle);
+        expect(bundle).toMatchSnapshot();
     });
 });

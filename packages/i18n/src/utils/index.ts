@@ -13,3 +13,4 @@ export {
 } from './text';
 export { getI18nDocumentation } from './documentation';
 export { extractI18nKey, getI18nUniqueKey } from './key';
+export { readFile, writeFile } from './mem-fs-editor';

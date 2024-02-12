@@ -7,12 +7,14 @@ import {
     discoverIndent,
     applyIndent,
     discoverLineEnding,
-    doesExist
+    doesExist,
+    readFile,
+    writeFile
 } from '../../utils';
-import { promises } from 'fs';
 import { Range } from '../../parser/utils';
 import type { Node } from 'jsonc-parser';
 import { parseTree } from 'jsonc-parser';
+import type { Editor } from 'mem-fs-editor';
 
 /**
  * Create full bundle.
@@ -147,20 +149,22 @@ export function addJsonTexts(text: string, fallbackLocale: string, newEntries: N
  * @param env cds environment
  * @param path file path
  * @param newI18nEntries new i18n entries that will be maintained
+ * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
  * @returns boolean
  */
 export async function tryAddJsonTexts(
     env: CdsEnvironment,
     path: string,
-    newI18nEntries: NewI18nEntry[]
+    newI18nEntries: NewI18nEntry[],
+    fs?: Editor
 ): Promise<boolean> {
     const i18nFilePath = jsonPath(path);
     if (!(await doesExist(i18nFilePath))) {
         return false;
     }
     const { fallbackLanguage } = getI18nConfiguration(env);
-    const content = await promises.readFile(i18nFilePath, { encoding: 'utf8' });
+    const content = await readFile(i18nFilePath, fs);
     const newContent = addJsonTexts(content, fallbackLanguage, newI18nEntries);
-    await promises.writeFile(i18nFilePath, newContent, { encoding: 'utf8' });
+    await writeFile(i18nFilePath, newContent, fs);
     return true;
 }

@@ -1,7 +1,7 @@
 import { addCsvTexts, tryAddCsvTexts } from '../../../../src/write/cap/csv';
 import * as utils from '../../../../src/utils';
-import fs from 'fs';
 import { join } from 'path';
+import type { Editor } from 'mem-fs-editor';
 
 describe('csv', () => {
     describe('add new i18n entries to csv file', () => {
@@ -87,18 +87,19 @@ describe('csv', () => {
         afterEach(() => {
             jest.resetAllMocks();
         });
+        const entries = [
+            {
+                key: 'NewKey',
+                value: 'New Value'
+            }
+        ];
         test('csv file does not exist', async () => {
             // arrange
             const doesExistSpy = jest.spyOn(utils, 'doesExist').mockResolvedValue(false);
-            const readFileSpy = jest.spyOn(fs.promises, 'readFile').mockResolvedValue('');
-            const writeFileSpy = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+            const readFileSpy = jest.spyOn(utils, 'readFile').mockResolvedValue('');
+            const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
             // act
-            const result = await tryAddCsvTexts(env, path, [
-                {
-                    key: 'NewKey',
-                    value: 'New Value'
-                }
-            ]);
+            const result = await tryAddCsvTexts(env, path, entries);
             // assert
             expect(result).toEqual(false);
             expect(doesExistSpy).toHaveBeenCalledTimes(1);
@@ -107,29 +108,32 @@ describe('csv', () => {
         });
         test('add to existing .csv file', async () => {
             // arrange
+            const csvI18nFilePath = join('root', '_i18n', 'i18n.csv');
             const doesExistSpy = jest.spyOn(utils, 'doesExist').mockResolvedValue(true);
-            const readFileSpy = jest.spyOn(fs.promises, 'readFile').mockResolvedValue('');
-            const writeFileSpy = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+            const readFileSpy = jest.spyOn(utils, 'readFile').mockResolvedValue('');
+            const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
             // act
-            const result = await tryAddCsvTexts(env, path, [
-                {
-                    key: 'NewKey',
-                    value: 'New Value'
-                }
-            ]);
+            const result = await tryAddCsvTexts(env, path, entries);
             // assert
             expect(result).toEqual(true);
-            expect(doesExistSpy).toHaveBeenCalledTimes(1);
-            expect(readFileSpy).toHaveBeenCalledTimes(1);
-            expect(writeFileSpy).toHaveBeenCalledTimes(1);
-            expect(writeFileSpy).toHaveBeenNthCalledWith(
-                1,
-                join('root', '_i18n', 'i18n.csv'),
-                'key;en\nNewKey;New Value\n',
-                {
-                    encoding: 'utf8'
-                }
-            );
+            expect(doesExistSpy).toHaveBeenNthCalledWith(1, csvI18nFilePath);
+            expect(readFileSpy).toHaveBeenNthCalledWith(1, csvI18nFilePath, undefined);
+            expect(writeFileSpy).toHaveBeenNthCalledWith(1, csvI18nFilePath, 'key;en\nNewKey;New Value\n', undefined);
+        });
+        test('add to existing .csv file - mem-fs-editor', async () => {
+            // arrange
+            const editor = {} as unknown as Editor;
+            const csvI18nFilePath = join('root', '_i18n', 'i18n.csv');
+            const doesExistSpy = jest.spyOn(utils, 'doesExist').mockResolvedValue(true);
+            const readFileSpy = jest.spyOn(utils, 'readFile').mockResolvedValue('');
+            const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
+            // act
+            const result = await tryAddCsvTexts(env, path, entries, editor);
+            // assert
+            expect(result).toEqual(true);
+            expect(doesExistSpy).toHaveBeenNthCalledWith(1, csvI18nFilePath);
+            expect(readFileSpy).toHaveBeenNthCalledWith(1, csvI18nFilePath, editor);
+            expect(writeFileSpy).toHaveBeenNthCalledWith(1, csvI18nFilePath, 'key;en\nNewKey;New Value\n', editor);
         });
     });
 });
