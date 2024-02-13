@@ -123,7 +123,7 @@ describe('<Sections />', () => {
             jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => rect);
             jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => 1000);
             jest.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(() => 1000);
-            jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+            jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => {
                 cb(1);
                 return 1;
             });

@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.5.0
+
+### Minor Changes
+
+-   2e0b1a6d: Adding ExtensionLogger for convenient VSCode extension logging
+
 ## 0.4.0
 
 ### Minor Changes
