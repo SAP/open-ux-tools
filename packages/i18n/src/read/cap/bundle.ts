@@ -1,6 +1,13 @@
 import type { CdsEnvironment, I18nBundle } from '../../types';
-import { getCapI18nFiles, getI18nConfiguration, jsonPath, capPropertiesPath, csvPath, doesExist } from '../../utils';
-import { readFile } from '../../utils';
+import {
+    getCapI18nFiles,
+    getI18nConfiguration,
+    jsonPath,
+    capPropertiesPath,
+    csvPath,
+    doesExist,
+    readFile
+} from '../../utils';
 import { jsonToI18nBundle } from '../../transformer/json';
 import { propertiesToI18nEntry } from '../../transformer/properties';
 import { csvToI18nBundle } from '../../transformer/csv';

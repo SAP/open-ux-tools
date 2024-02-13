@@ -1,7 +1,7 @@
 import type { NewI18nEntry } from '../../types';
-import { printPropertiesI18nEntry } from '../../utils';
+import { printPropertiesI18nEntry, readFile, writeFile } from '../../utils';
 import type { Editor } from 'mem-fs-editor';
-import { readFile, writeFile } from '../../utils';
+
 /**
  * Write i18n entries to an existing i18n.properties file.
  *
