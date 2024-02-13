@@ -1,5 +1,6 @@
 import type { I18nBundles, NewI18nEntry } from '../i18n';
 import type { ApplicationStructure, I18nPropertiesPaths, Project, ProjectType } from '../info';
+import type { Editor } from 'mem-fs-editor';
 
 interface BaseAccess {
     readonly project: Project;
@@ -9,14 +10,14 @@ interface BaseAccess {
 
 export interface ApplicationAccess extends BaseAccess {
     readonly app: ApplicationStructure;
-    createAnnotationI18nEntries(newEntries: NewI18nEntry[]): Promise<boolean>;
-    createUI5I18nEntries(newEntries: NewI18nEntry[], modelKey?: string): Promise<boolean>;
-    createManifestI18nEntries(newEntries: NewI18nEntry[]): Promise<boolean>;
-    createCapI18nEntries(filePath: string, newI18nEntries: NewI18nEntry[]): Promise<boolean>;
+    createAnnotationI18nEntries(newEntries: NewI18nEntry[], fs?: Editor): Promise<boolean>;
+    createUI5I18nEntries(newEntries: NewI18nEntry[], modelKey?: string, fs?: Editor): Promise<boolean>;
+    createManifestI18nEntries(newEntries: NewI18nEntry[], fs?: Editor): Promise<boolean>;
+    createCapI18nEntries(filePath: string, newI18nEntries: NewI18nEntry[], fs?: Editor): Promise<boolean>;
     getAppId(): string;
     getAppRoot(): string;
     getCapI18nFolderNames(): Promise<string[]>;
-    getI18nBundles(): Promise<I18nBundles>;
+    getI18nBundles(fs?: Editor): Promise<I18nBundles>;
     getI18nPropertiesPaths(): Promise<I18nPropertiesPaths>;
 }
 

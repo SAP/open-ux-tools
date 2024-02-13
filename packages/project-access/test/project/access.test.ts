@@ -2,8 +2,11 @@ import { join } from 'path';
 import { createApplicationAccess, createProjectAccess } from '../../src';
 import * as i18nMock from '../../src/project/i18n/write';
 import * as i18nReadMock from '../../src/project/i18n/read';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 describe('Test function createApplicationAccess()', () => {
+    const memFs = create(createStorage());
     beforeEach(() => {
         jest.restoreAllMocks();
     });
@@ -36,6 +39,26 @@ describe('Test function createApplicationAccess()', () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
         const appAccess = await createApplicationAccess(appRoot);
         const i18nBundles = await appAccess.getI18nBundles();
+        const i18nPropertiesPaths = await appAccess.getI18nPropertiesPaths();
+        expect(i18nBundles['sap.app'].testTextKey[0].key.value).toBe('testTextKey');
+        expect(i18nBundles['sap.app'].testTextKey[0].value.value).toBe('Test Text Value');
+        expect(i18nBundles['sap.app'].testTextKey[0].annotation?.textType.value).toBe(' Test comment');
+        expect(i18nPropertiesPaths).toEqual({
+            'sap.app': join(appRoot, 'webapp/i18n/i18n.properties'),
+            'models': {
+                '@i18n': {
+                    'path': join(appRoot, 'webapp/i18n/i18n.properties')
+                },
+                'modelKey': {
+                    'path': join(appRoot, 'webapp/i18n/i18n.properties')
+                }
+            }
+        });
+    });
+    test('Read access to i18n of standalone app - mem-fs-editor', async () => {
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const appAccess = await createApplicationAccess(appRoot);
+        const i18nBundles = await appAccess.getI18nBundles(memFs);
         const i18nPropertiesPaths = await appAccess.getI18nPropertiesPaths();
         expect(i18nBundles['sap.app'].testTextKey[0].key.value).toBe('testTextKey');
         expect(i18nBundles['sap.app'].testTextKey[0].value.value).toBe('Test Text Value');
@@ -105,19 +128,88 @@ describe('Test function createApplicationAccess()', () => {
                     value: 'newValue',
                     annotation: 'newAnnotation'
                 }
-            ]
+            ],
+            undefined
         );
         expect(createUI5I18nEntriesMock).toBeCalledWith(
             appRoot,
             appAccess.project.apps[''].manifest,
             appAccess.project.apps[''].i18n,
             [{ key: 'one', value: 'two', annotation: 'three' }],
-            'modelKey'
+            'modelKey',
+            undefined
         );
-        expect(createManifestI18nEntriesMock).toBeCalledWith(appRoot, appAccess.app.i18n, [
-            { key: '1', value: '1v' },
-            { key: '2', value: '2v' }
-        ]);
+        expect(createManifestI18nEntriesMock).toBeCalledWith(
+            appRoot,
+            appAccess.app.i18n,
+            [
+                { key: '1', value: '1v' },
+                { key: '2', value: '2v' }
+            ],
+            undefined
+        );
+    });
+    test('Write access to i18n of standalone app - mem-fs-editor (mocked)', async () => {
+        // Mock setup
+        const createAnnotationI18nEntriesMock = jest
+            .spyOn(i18nMock, 'createAnnotationI18nEntries')
+            .mockResolvedValue(true);
+        const createUI5I18nEntriesMock = jest.spyOn(i18nMock, 'createUI5I18nEntries').mockResolvedValue(true);
+        const createManifestI18nEntriesMock = jest.spyOn(i18nMock, 'createManifestI18nEntries').mockResolvedValue(true);
+        const appRoot = join(sampleRoot, 'fiori_elements');
+
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot);
+        await appAccess.createAnnotationI18nEntries(
+            [
+                {
+                    key: 'newKey',
+                    value: 'newValue',
+                    annotation: 'newAnnotation'
+                }
+            ],
+            memFs
+        );
+        await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }], 'modelKey', memFs);
+        await appAccess.createManifestI18nEntries(
+            [
+                { key: '1', value: '1v' },
+                { key: '2', value: '2v' }
+            ],
+            memFs
+        );
+
+        // Result check
+        expect(createAnnotationI18nEntriesMock).toBeCalledWith(
+            appRoot,
+            join(appRoot, 'webapp/manifest.json'),
+            appAccess.project.apps[''].i18n,
+            [
+                {
+                    key: 'newKey',
+                    value: 'newValue',
+                    annotation: 'newAnnotation'
+                }
+            ],
+            memFs
+        );
+        expect(createUI5I18nEntriesMock).toBeCalledWith(
+            appRoot,
+            appAccess.project.apps[''].manifest,
+            appAccess.project.apps[''].i18n,
+            [{ key: 'one', value: 'two', annotation: 'three' }],
+            'modelKey',
+            memFs
+        );
+        expect(createManifestI18nEntriesMock).toBeCalledWith(
+            appRoot,
+            appAccess.app.i18n,
+            [
+                { key: '1', value: '1v' },
+                { key: '2', value: '2v' }
+            ],
+            memFs
+        );
     });
 
     test('Write access to i18n of app in CAP project (mocked)', async () => {
@@ -133,13 +225,37 @@ describe('Test function createApplicationAccess()', () => {
         await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }]);
 
         // Result check
-        expect(createCapI18nEntriesMock).toBeCalledWith(projectRoot, 'filePath', []);
+        expect(createCapI18nEntriesMock).toBeCalledWith(projectRoot, 'filePath', [], undefined);
         expect(createUI5I18nEntriesMock).toBeCalledWith(
             projectRoot,
             appAccess.app.manifest,
             appAccess.app.i18n,
             [{ key: 'one', value: 'two', annotation: 'three' }],
-            'i18n'
+            'i18n',
+            undefined
+        );
+    });
+    test('Write access to i18n of app in CAP project - mem-fs-editor (mocked)', async () => {
+        // Mock setup
+        const createCapI18nEntriesMock = jest.spyOn(i18nMock, 'createCapI18nEntries').mockResolvedValue(true);
+        const createUI5I18nEntriesMock = jest.spyOn(i18nMock, 'createUI5I18nEntries').mockResolvedValue(true);
+        const projectRoot = join(sampleRoot, 'cap-project');
+        const appRoot = join(projectRoot, 'apps/one');
+        const appAccess = await createApplicationAccess(appRoot);
+
+        // Test execution
+        await appAccess.createCapI18nEntries('filePath', [], memFs);
+        await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }], 'i18n', memFs);
+
+        // Result check
+        expect(createCapI18nEntriesMock).toBeCalledWith(projectRoot, 'filePath', [], memFs);
+        expect(createUI5I18nEntriesMock).toBeCalledWith(
+            projectRoot,
+            appAccess.app.manifest,
+            appAccess.app.i18n,
+            [{ key: 'one', value: 'two', annotation: 'three' }],
+            'i18n',
+            memFs
         );
     });
 

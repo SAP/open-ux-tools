@@ -1,8 +1,9 @@
 import { join } from 'path';
 import type { Package } from '../../src';
-import { readFile, readJSON, fileExists } from '../../src/file';
+import { readFile, readJSON, fileExists, writeFile } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { promises } from 'fs';
 
 describe('fileAccess', () => {
     const memFs = create(createStorage());
@@ -50,6 +51,26 @@ describe('fileAccess', () => {
             const content = await readJSON<typeof memFileContent>(memFilePath, memFs);
             expect(content.hello).toBe(memFileContent.hello);
             expect(content).toEqual(memFileContent);
+        });
+    });
+
+    describe('writeFile', () => {
+        const filePath = join(__dirname, 'write-to-a-file.txt');
+        beforeEach(() => {
+            jest.resetAllMocks();
+            memFs.write(filePath, '');
+        });
+        test('Write to a file - mem-fs-editor', async () => {
+            const content = 'test-data';
+            await writeFile(filePath, content, memFs);
+            const result = memFs.read(filePath);
+            expect(result).toContain(content);
+        });
+        test('Write to a file', async () => {
+            const content = 'test-data';
+            const writeFileSpy = jest.spyOn(promises, 'writeFile').mockResolvedValue();
+            await writeFile(filePath, content);
+            expect(writeFileSpy).toHaveBeenNthCalledWith(1, filePath, content, { encoding: 'utf8' });
         });
     });
 

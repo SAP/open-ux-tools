@@ -12,6 +12,5 @@ export async function readFile(filePath: string, fs?: Editor): Promise<string> {
     if (fs) {
         return fs.read(filePath);
     }
-    const content = await promises.readFile(filePath, { encoding: 'utf8' });
-    return content;
+    return promises.readFile(filePath, { encoding: 'utf8' });
 }

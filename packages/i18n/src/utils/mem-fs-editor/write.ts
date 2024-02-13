@@ -13,5 +13,5 @@ export async function writeFile(filePath: string, content: string, fs?: Editor):
     if (fs) {
         return fs.write(filePath, content);
     }
-    return await promises.writeFile(filePath, content, { encoding: 'utf8' });
+    return promises.writeFile(filePath, content, { encoding: 'utf8' });
 }

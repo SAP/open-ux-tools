@@ -17,11 +17,11 @@ describe('write', () => {
             expect(promiseWriteFileSpy).toHaveBeenCalledTimes(0);
         });
         test('promises.readFile', async () => {
-            const promiseReadFileSpy = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
+            const promiseWriteFileSpy = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
 
             const result = await writeFile(filePath, content);
             expect(result).toEqual(undefined);
-            expect(promiseReadFileSpy).toHaveBeenNthCalledWith(1, filePath, content, { encoding: 'utf8' });
+            expect(promiseWriteFileSpy).toHaveBeenNthCalledWith(1, filePath, content, { encoding: 'utf8' });
         });
     });
 });

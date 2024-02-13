@@ -111,6 +111,7 @@ export async function getCapI18nFolder(root: string, path: string, env: CdsEnvir
         const folder = folders[0];
         i18nFolderPath = join(root, folder);
         if (!fs) {
+            // create directory when mem-fs-editor is not provided. when mem-fs-editor is provided, directory is created on using `.commit()` API
             await promises.mkdir(i18nFolderPath);
         }
     }
