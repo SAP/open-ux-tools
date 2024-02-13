@@ -4,6 +4,7 @@ import * as json from '../../../../src/write/cap/json';
 import * as properties from '../../../../src/write/cap/properties';
 import * as csv from '../../../../src/write/cap/csv';
 import type { Editor } from 'mem-fs-editor';
+import { join } from 'path';
 
 describe('createCapI18nEntries', () => {
     const env = Object.freeze({
@@ -21,9 +22,11 @@ describe('createCapI18nEntries', () => {
     afterEach(() => {
         jest.resetAllMocks();
     });
+    const pathToFolder = join('path', 'to', 'i18n', 'folder');
+    const pathToFolderI18n = join(pathToFolder, 'i18n');
     test('existing json file', async () => {
         // arrange
-        const getCapI18nFolder = jest.spyOn(resolve, 'getCapI18nFolder').mockResolvedValue('path/to/i18n/folder');
+        const getCapI18nFolder = jest.spyOn(resolve, 'getCapI18nFolder').mockResolvedValue(pathToFolder);
         const tryAddJsonTextsSpy = jest.spyOn(json, 'tryAddJsonTexts').mockResolvedValue(true);
         const tryAddPropertiesTextsSpy = jest.spyOn(properties, 'tryAddPropertiesTexts').mockResolvedValue(true);
         const tryAddCsvTextsSpy = jest.spyOn(csv, 'tryAddCsvTexts').mockResolvedValue(true);
@@ -32,13 +35,13 @@ describe('createCapI18nEntries', () => {
         // assert
         expect(result).toBeTruthy();
         expect(getCapI18nFolder).toHaveBeenNthCalledWith(1, 'root', 'path', env, undefined);
-        expect(tryAddJsonTextsSpy).toHaveBeenNthCalledWith(1, env, 'path/to/i18n/folder/i18n', newEntries, undefined);
+        expect(tryAddJsonTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, undefined);
         expect(tryAddPropertiesTextsSpy).toHaveBeenCalledTimes(0);
         expect(tryAddCsvTextsSpy).toHaveBeenCalledTimes(0);
     });
     test('existing properties file', async () => {
         // arrange
-        const getCapI18nFolder = jest.spyOn(resolve, 'getCapI18nFolder').mockResolvedValue('path/to/i18n/folder');
+        const getCapI18nFolder = jest.spyOn(resolve, 'getCapI18nFolder').mockResolvedValue(pathToFolder);
         const tryAddJsonTextsSpy = jest.spyOn(json, 'tryAddJsonTexts').mockResolvedValue(false);
         const tryAddPropertiesTextsSpy = jest.spyOn(properties, 'tryAddPropertiesTexts').mockResolvedValue(true);
         const tryAddCsvTextsSpy = jest.spyOn(csv, 'tryAddCsvTexts').mockResolvedValue(true);
@@ -47,19 +50,13 @@ describe('createCapI18nEntries', () => {
         // assert
         expect(result).toBeTruthy();
         expect(getCapI18nFolder).toHaveBeenNthCalledWith(1, 'root', 'path', env, undefined);
-        expect(tryAddJsonTextsSpy).toHaveBeenNthCalledWith(1, env, 'path/to/i18n/folder/i18n', newEntries, undefined);
-        expect(tryAddPropertiesTextsSpy).toHaveBeenNthCalledWith(
-            1,
-            env,
-            'path/to/i18n/folder/i18n',
-            newEntries,
-            undefined
-        );
+        expect(tryAddJsonTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, undefined);
+        expect(tryAddPropertiesTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, undefined);
         expect(tryAddCsvTextsSpy).toHaveBeenCalledTimes(0);
     });
     test('existing csv file', async () => {
         // arrange
-        const getCapI18nFolder = jest.spyOn(resolve, 'getCapI18nFolder').mockResolvedValue('path/to/i18n/folder');
+        const getCapI18nFolder = jest.spyOn(resolve, 'getCapI18nFolder').mockResolvedValue(pathToFolder);
         const tryAddJsonTextsSpy = jest.spyOn(json, 'tryAddJsonTexts').mockResolvedValue(false);
         const tryAddPropertiesTextsSpy = jest.spyOn(properties, 'tryAddPropertiesTexts').mockResolvedValue(false);
         const tryAddCsvTextsSpy = jest.spyOn(csv, 'tryAddCsvTexts').mockResolvedValue(true);
@@ -68,19 +65,13 @@ describe('createCapI18nEntries', () => {
         // assert
         expect(result).toBeTruthy();
         expect(getCapI18nFolder).toHaveBeenNthCalledWith(1, 'root', 'path', env, undefined);
-        expect(tryAddJsonTextsSpy).toHaveBeenNthCalledWith(1, env, 'path/to/i18n/folder/i18n', newEntries, undefined);
-        expect(tryAddPropertiesTextsSpy).toHaveBeenNthCalledWith(
-            1,
-            env,
-            'path/to/i18n/folder/i18n',
-            newEntries,
-            undefined
-        );
-        expect(tryAddCsvTextsSpy).toHaveBeenNthCalledWith(1, env, 'path/to/i18n/folder/i18n', newEntries, undefined);
+        expect(tryAddJsonTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, undefined);
+        expect(tryAddPropertiesTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, undefined);
+        expect(tryAddCsvTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, undefined);
     });
     test('existing csv file - mem-fs-editor', async () => {
         // arrange
-        const getCapI18nFolder = jest.spyOn(resolve, 'getCapI18nFolder').mockResolvedValue('path/to/i18n/folder');
+        const getCapI18nFolder = jest.spyOn(resolve, 'getCapI18nFolder').mockResolvedValue(pathToFolder);
         const tryAddJsonTextsSpy = jest.spyOn(json, 'tryAddJsonTexts').mockResolvedValue(false);
         const tryAddPropertiesTextsSpy = jest.spyOn(properties, 'tryAddPropertiesTexts').mockResolvedValue(false);
         const tryAddCsvTextsSpy = jest.spyOn(csv, 'tryAddCsvTexts').mockResolvedValue(true);
@@ -90,13 +81,13 @@ describe('createCapI18nEntries', () => {
         // assert
         expect(result).toBeTruthy();
         expect(getCapI18nFolder).toHaveBeenNthCalledWith(1, 'root', 'path', env, fs);
-        expect(tryAddJsonTextsSpy).toHaveBeenNthCalledWith(1, env, 'path/to/i18n/folder/i18n', newEntries, fs);
-        expect(tryAddPropertiesTextsSpy).toHaveBeenNthCalledWith(1, env, 'path/to/i18n/folder/i18n', newEntries, fs);
-        expect(tryAddCsvTextsSpy).toHaveBeenNthCalledWith(1, env, 'path/to/i18n/folder/i18n', newEntries, fs);
+        expect(tryAddJsonTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, fs);
+        expect(tryAddPropertiesTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, fs);
+        expect(tryAddCsvTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, fs);
     });
     test('none existing files', async () => {
         // arrange
-        const getCapI18nFolder = jest.spyOn(resolve, 'getCapI18nFolder').mockResolvedValue('path/to/i18n/folder');
+        const getCapI18nFolder = jest.spyOn(resolve, 'getCapI18nFolder').mockResolvedValue(pathToFolder);
         const tryAddJsonTextsSpy = jest.spyOn(json, 'tryAddJsonTexts').mockResolvedValue(false);
         const tryAddPropertiesTextsSpy = jest.spyOn(properties, 'tryAddPropertiesTexts').mockResolvedValue(false);
         const tryAddCsvTextsSpy = jest.spyOn(csv, 'tryAddCsvTexts').mockResolvedValue(false);
@@ -105,19 +96,13 @@ describe('createCapI18nEntries', () => {
         // assert
         expect(result).toBeFalsy();
         expect(getCapI18nFolder).toHaveBeenNthCalledWith(1, 'root', 'path', env, undefined);
-        expect(tryAddJsonTextsSpy).toHaveBeenNthCalledWith(1, env, 'path/to/i18n/folder/i18n', newEntries, undefined);
-        expect(tryAddPropertiesTextsSpy).toHaveBeenNthCalledWith(
-            1,
-            env,
-            'path/to/i18n/folder/i18n',
-            newEntries,
-            undefined
-        );
-        expect(tryAddCsvTextsSpy).toHaveBeenNthCalledWith(1, env, 'path/to/i18n/folder/i18n', newEntries, undefined);
+        expect(tryAddJsonTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, undefined);
+        expect(tryAddPropertiesTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, undefined);
+        expect(tryAddCsvTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, undefined);
     });
     test('exception / error case', async () => {
         // arrange
-        jest.spyOn(resolve, 'getCapI18nFolder').mockResolvedValue('path/to/i18n/folder');
+        jest.spyOn(resolve, 'getCapI18nFolder').mockResolvedValue(pathToFolder);
         jest.spyOn(json, 'tryAddJsonTexts').mockImplementation(() => {
             throw new Error('should-throw-error');
         });
