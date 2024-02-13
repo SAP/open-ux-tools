@@ -220,7 +220,7 @@ export interface InboundContent {
     entityPropertyChange: { propertyPath: string; operation: string; propertyValue: unknown }[];
 }
 
-export type PopertyValueType = 'boolean' | 'number' | 'string' | 'binding' | 'object';
+export type PropertyValueType = 'boolean' | 'number' | 'string' | 'binding' | 'object';
 
 export interface AnnotationChangeAnswers {
     targetODataSource: string;
@@ -260,9 +260,9 @@ export interface DataSourceAnswers {
 
 export interface InboundAnswers {
     inboundId: string;
-    title: PopertyValueType;
-    subTitle: PopertyValueType;
-    icon: PopertyValueType;
+    title: PropertyValueType;
+    subTitle: PropertyValueType;
+    icon: PropertyValueType;
     isInSafeMode?: boolean;
 }
 

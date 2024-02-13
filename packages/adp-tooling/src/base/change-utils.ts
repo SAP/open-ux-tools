@@ -1,7 +1,14 @@
 import type { Editor } from 'mem-fs-editor';
 import path, { posix } from 'path';
 
-import type { AnnotationsData, ChangeTypes, GeneratorName, BaseData, InboundContent, PopertyValueType } from '../types';
+import type {
+    AnnotationsData,
+    ChangeTypes,
+    GeneratorName,
+    BaseData,
+    InboundContent,
+    PropertyValueType
+} from '../types';
 import { FolderTypes, AnnotationFileSelectType } from '../types';
 import type { Dirent } from 'fs';
 import { existsSync, readFileSync, readdirSync } from 'fs';
@@ -41,18 +48,6 @@ export function writeAnnotationChange(projectPath: string, data: AnnotationsData
 }
 
 /**
- * Deletes the specified files from the in-memory file system. This function is typically used for cleanup
- * operations in case of errors or when certain files are no longer needed.
- *
- * @param {string | string[]} filesToDelete - A single file path or an array of file paths to delete.
- * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
- * @returns {void}
- */
-export function cleanupFiles(filesToDelete: string | string[], fs: Editor): void {
-    Array.from(filesToDelete).forEach((filePath) => fs.delete(filePath));
-}
-
-/**
  * Writes a given change object to a file within a specified folder in the project's 'changes' directory.
  * If an additional subdirectory is specified, the change file is written there.
  *
@@ -73,7 +68,7 @@ export function writeChangeToFolder(projectPath: string, change: object, fileNam
 
         writeChangeToFile(`${targetFolderPath}/${fileName}`, change, fs);
     } catch (e) {
-        throw new Error(`Could not write change to folder: ${path}. Reason: ${e.message}`);
+        throw new Error(`Could not write change to folder. Reason: ${e.message}`);
     }
 }
 
@@ -118,7 +113,7 @@ export function parseStringToObject(str: string): { [key: string]: string } {
  * // Returns the string "nonJSONValue" because it cannot be parsed as JSON
  * getParsedPropertyValue('nonJSONValue');
  */
-export function getParsedPropertyValue(propertyValue: PopertyValueType): PopertyValueType {
+export function getParsedPropertyValue(propertyValue: PropertyValueType): PropertyValueType {
     try {
         const value = JSON.parse(propertyValue);
         return value;
