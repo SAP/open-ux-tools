@@ -38,10 +38,14 @@ describe('Feature Toggle Tests', () => {
     test('Feature Toggle Tests - getFeatureToggle of token type - enabled', () => {
         workspace.getConfiguration = jest.fn().mockReturnValueOnce({
             get: (toggleId: string) => {
-                return toggleId === 'someTokenFeature' ? '77e0469d-1448-42bf-8d47-0944896dd9ed' : undefined;
+                return toggleId === 'enableAppStudioGDContribution'
+                    ? 'c8c52f0b-0d7d-4697-997a-d6f29814f42e'
+                    : undefined;
             }
         });
-        const featureToggle = FeatureToggleAccess.getFeatureToggle(`dummy.test.${FeatureToggleKey}.someTokenFeature`);
+        const featureToggle = FeatureToggleAccess.getFeatureToggle(
+            `sap.ux.help.${FeatureToggleKey}.enableAppStudioGDContribution`
+        );
         expect(featureToggle).toBeDefined();
         expect(featureToggle.isEnabled).toBeTruthy();
     });
@@ -187,20 +191,24 @@ describe('Feature Toggle Tests - Negative', () => {
     test('Feature Toggle Tests - getFeatureToggle of token type - disabled - bad token', () => {
         workspace.getConfiguration = jest.fn().mockReturnValueOnce({
             get: (toggleId: string) => {
-                return toggleId === 'someTokenFeature' ? 'e45d49d1-bbab-4ddc-8a35-549cf3ad77ea' : undefined;
+                return toggleId === 'enableAppStudioGDContribution' ? 'cmoz123-0d7d-4697-997a-d6f29814f42e' : undefined;
             }
         });
-        const featureToggle = FeatureToggleAccess.getFeatureToggle(`dummy.test.${FeatureToggleKey}.someTokenFeature`);
+        const featureToggle = FeatureToggleAccess.getFeatureToggle(
+            `sap.ux.help.${FeatureToggleKey}.enableAppStudioGDContribution`
+        );
         expect(featureToggle).toBeDefined();
         expect(featureToggle.isEnabled).toBeFalsy();
     });
     test('Feature Toggle Tests - getFeatureToggle of token type - disabled - bad value', () => {
         workspace.getConfiguration = jest.fn().mockReturnValueOnce({
             get: (toggleId: string) => {
-                return toggleId === 'someTokenFeature' ? true : undefined;
+                return toggleId === 'enableAppStudioGDContribution' ? true : undefined;
             }
         });
-        const featureToggle = FeatureToggleAccess.getFeatureToggle(`dummy.test.${FeatureToggleKey}.someTokenFeature`);
+        const featureToggle = FeatureToggleAccess.getFeatureToggle(
+            `sap.ux.help.${FeatureToggleKey}.enableAppStudioGDContribution`
+        );
         expect(featureToggle).toBeDefined();
         expect(featureToggle.isEnabled).toBeFalsy();
     });
