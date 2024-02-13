@@ -83,7 +83,7 @@ describe('ObjectPage', () => {
             const minInput = {
                 ...minimalInput,
                 id: 'DummyPage'
-            }
+            };
             const testApiData = JSON.parse(JSON.stringify(minInput));
             //act
             generate(target, testApiData, fs);
