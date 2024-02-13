@@ -194,7 +194,7 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
             const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const version = sap.ui.version;
-                const minor = Number(version.split('.')[1]);
+                const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
                 const flexSettings = JSON.parse(flex);
                 const pluginScript = flexSettings.pluginScript ?? '';

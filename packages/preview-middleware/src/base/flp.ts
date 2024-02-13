@@ -359,7 +359,7 @@ export class FlpSandbox {
      *          and its options, such as the layers it applies to and its service URL, if applicable.
      */
     private getFlexSettings(): TemplateConfig['ui5']['flex'] {
-        const localConnectorPath = 'open.ux.preview.client.flp.LocalConnector';
+        const localConnectorPath = 'custom.connectors.WorkspaceConnector';
 
         return [
             { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },

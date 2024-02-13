@@ -11,7 +11,7 @@
  */
 export function initConnectors(): void {
     const version = sap.ui.version;
-    const minor = Number(version.split(/[.-]/)[1]);
+    const minor = parseInt(version.split('.')[1], 10);
 
     if (minor < 72) {
         sap.ui.require(['open/ux/preview/client/flp/enableFakeConnector'], function (enableFakeConnector: () => void) {
@@ -19,13 +19,9 @@ export function initConnectors(): void {
         });
     } else {
         sap.ui.define(
-            'open.ux.preview.client.flp.LocalConnector',
+            'custom.connectors.WorkspaceConnector',
             ['open/ux/preview/client/flp/WorkspaceConnector'],
-            function (WorkspaceConnector: any) {
-                'use strict';
-
-                return WorkspaceConnector;
-            },
+            (connector: object) => connector,
             true
         );
     }
