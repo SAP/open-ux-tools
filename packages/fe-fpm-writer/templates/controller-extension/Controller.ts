@@ -2,7 +2,7 @@ import ControllerExtension from 'sap/ui/core/mvc/ControllerExtension';
 import ExtensionAPI from 'sap/fe/<%- typeof extension === "object" ? `templates/${extension.pageType}` : "core" -%>/ExtensionAPI';
 
 /**
- * @namespace <%- ns %>.<%- name %>
+ * @namespace <%- ns %>
  * @controller
  */
 export default class <%- name %> extends ControllerExtension<ExtensionAPI> {
