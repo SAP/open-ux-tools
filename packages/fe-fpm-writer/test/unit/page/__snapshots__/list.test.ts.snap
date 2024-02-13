@@ -121,3 +121,40 @@ Object {
   },
 }
 `;
+
+exports[`ListReport generate minimal input, plus optional page id 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "RootEntityListReport",
+          "pattern": ":?query:",
+          "target": "RootEntityListReport",
+        },
+      ],
+      "targets": Object {
+        "DummyPage": Object {
+          "id": "DummyPage",
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/RootEntity",
+              "navigation": Object {},
+            },
+          },
+          "type": "Component",
+        },
+      },
+    },
+  },
+}
+`;
