@@ -1,4 +1,5 @@
-import { type I18nEntry, SapShortTextType, initI18n, getI18nDocumentation } from '../../../src';
+import { type I18nEntry, SapShortTextType, getI18nDocumentation } from '../../../src';
+import { initI18n } from '../../../src/i18n';
 import { Range } from '../../../src/parser/utils';
 
 describe('documentation', () => {

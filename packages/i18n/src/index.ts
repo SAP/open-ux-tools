@@ -31,15 +31,9 @@ export {
 
 export { csvToI18nBundle, jsonToI18nBundle, propertiesToI18nEntry } from './transformer';
 
-export { initI18n, i18n } from './i18n';
-
 import { initI18n } from './i18n';
 
-import { ToolsLogger } from '@sap-ux/logger';
-
-export const logger = new ToolsLogger();
-
 // init i18n
-(async (): Promise<void> => {
-    await initI18n();
-})().catch((error) => logger.warn(error));
+initI18n().catch(() => {
+    // Ignore any errors since this module will still work
+});

@@ -13,8 +13,5 @@
     "outDir": "dist"
   },
   "references": [
-    {
-      "path": "../logger"
-    }
   ]
 }
