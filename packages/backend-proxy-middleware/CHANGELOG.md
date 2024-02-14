@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.7.13
+
+### Patch Changes
+
+-   9f1836b2: Remove 'Partitioned' from cookies
+
 ## 0.7.12
 
 ### Patch Changes
