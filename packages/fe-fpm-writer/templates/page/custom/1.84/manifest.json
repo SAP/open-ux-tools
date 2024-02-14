@@ -2,7 +2,7 @@
     "sap.ui5": {
         "routing": {
             "targets": {
-                "<%- entity %><%- name %>": {
+                "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>": {
                     "viewId": "<%- name %>View",
                     "viewName": "<%- ns %>.<%- name %>",<%if (locals.controlAggregation) {%>
                     "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
