@@ -592,9 +592,9 @@ Object {
           "target": "TestObjectPage",
         },
         Object {
-          "name": "RootEntityCustomPage",
+          "name": "DummyPage",
           "pattern": "RootEntity:?query:",
-          "target": "RootEntityCustomPage",
+          "target": "DummyPage",
         },
       ],
       "targets": Object {
@@ -780,9 +780,9 @@ Object {
           "target": "TestObjectPage",
         },
         Object {
-          "name": "RootEntityCustomPage",
+          "name": "DummyPage",
           "pattern": "RootEntity:?query:",
-          "target": "RootEntityCustomPage",
+          "target": "DummyPage",
         },
       ],
       "targets": Object {

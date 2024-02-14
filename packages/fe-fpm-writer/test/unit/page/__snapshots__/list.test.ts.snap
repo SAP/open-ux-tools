@@ -136,9 +136,9 @@ Object {
     "routing": Object {
       "routes": Array [
         Object {
-          "name": "RootEntityListReport",
+          "name": "DummyPage",
           "pattern": ":?query:",
-          "target": "RootEntityListReport",
+          "target": "DummyPage",
         },
       ],
       "targets": Object {

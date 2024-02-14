@@ -173,9 +173,9 @@ Object {
           "target": "RootEntityObjectPage",
         },
         Object {
-          "name": "OtherEntityObjectPage",
+          "name": "DummyPage",
           "pattern": "OtherEntity:?query:",
-          "target": "OtherEntityObjectPage",
+          "target": "DummyPage",
         },
       ],
       "targets": Object {
