@@ -102,7 +102,6 @@ export async function checkKeyUser(layer: string): Promise<void> {
             throw new Error('No key user rights found');
         }
     }
-    return Promise.resolve();
 }
 
 /**
@@ -145,9 +144,7 @@ function getElementByTitle(title: string, element?: Element | null): Element | n
  */
 function hideButtonById(buttonId: string | undefined): void {
     const button = sap.ui.getCore().byId(buttonId) as Button;
-    if (button) {
-        button.setVisible(false);
-    }
+    button?.setVisible(false);
 }
 
 /**
