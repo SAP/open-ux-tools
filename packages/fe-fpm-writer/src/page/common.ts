@@ -113,11 +113,11 @@ export function getManifestJsonExtensionHelper(
             case 'routes':
                 const routes = value as ManifestNamespace.Route[];
                 routes.push({
-                    name: config.id || `${config.entity}${config.name}`,
+                    name: config.id ?? `${config.entity}${config.name}`,
                     pattern: generateRoutePattern(routes, config.entity, config.navigation),
                     target: generateRouteTarget(
                         routes,
-                        config.id || `${config.entity}${config.name}`,
+                        config.id ?? `${config.entity}${config.name}`,
                         config.fcl,
                         config.navigation
                     )
