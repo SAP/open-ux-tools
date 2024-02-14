@@ -846,6 +846,24 @@ importers:
         specifier: 7.5.2
         version: 7.5.2
 
+  packages/feature-toggle:
+    devDependencies:
+      '@types/jest-when':
+        specifier: 2.7.0
+        version: 2.7.0
+      '@types/vscode':
+        specifier: 1.73.1
+        version: 1.73.1
+      jest-when:
+        specifier: 3.4.2
+        version: 3.4.2(jest@29.5.0)
+      rimraf:
+        specifier: 5.0.1
+        version: 5.0.1
+      typescript:
+        specifier: ^5.1.6
+        version: 5.3.3
+
   packages/fiori-elements-writer:
     dependencies:
       '@sap-ux/fe-fpm-writer':
@@ -8566,6 +8584,12 @@ packages:
     dependencies:
       '@types/istanbul-lib-report': 3.0.0
 
+  /@types/jest-when@2.7.0:
+    resolution: {integrity: sha512-oahwfICJSaEmmtyN7JeOg6P7ey+GKigzk26zdKLxYLewmr2F3WeDPo/U+kVpIxPuZG3EiVFdRy97q9N9DoEkSg==}
+    dependencies:
+      '@types/jest': 29.5.5
+    dev: true
+
   /@types/jest@29.5.5:
     resolution: {integrity: sha512-ebylz2hnsWR9mYvmBFbXJXr+33UPc4+ZdxyDXh5w0FlPBTfCVN3wPL+kuOiQt3xvrK419v7XWeAs+AeOksafXg==}
     dependencies:
@@ -15689,6 +15713,14 @@ packages:
       string-length: 4.0.2
     dev: true
 
+  /jest-when@3.4.2(jest@29.5.0):
+    resolution: {integrity: sha512-vO1r+1XsyeavhoSapj7q4xD5xuM9i+UdopfhmJJK/aKaDpzDesxZ6hreLSO1JUZhZInqdM7CCn+At7c0SI2EEw==}
+    peerDependencies:
+      jest: '>= 25'
+    dependencies:
+      jest: 29.5.0(@types/node@18.11.9)(ts-node@10.9.2)
+    dev: true
+
   /jest-worker@27.5.1:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
@@ -16398,27 +16430,6 @@ packages:
   /media-typer@0.3.0:
     resolution: {integrity: sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=}
     engines: {node: '>= 0.6'}
-
-  /mem-fs-editor@9.4.0:
-    resolution: {integrity: sha512-HSSOLSVRrsDdui9I6i96dDtG+oAez/4EB2g4cjSrNhgNQ3M+L57/+22NuPdORSoxvOHjIg/xeOE+C0wwF91D2g==}
-    engines: {node: '>=12.10.0'}
-    peerDependencies:
-      mem-fs: ^2.1.0
-    peerDependenciesMeta:
-      mem-fs:
-        optional: true
-    dependencies:
-      binaryextensions: 4.18.0
-      commondir: 1.0.1
-      deep-extend: 0.6.0
-      ejs: 3.1.9
-      globby: 11.1.0
-      isbinaryfile: 4.0.10
-      minimatch: 3.0.5
-      multimatch: 5.0.0
-      normalize-path: 3.0.0
-      textextensions: 5.14.0
-    dev: false
 
   /mem-fs-editor@9.4.0(mem-fs@2.1.0):
     resolution: {integrity: sha512-HSSOLSVRrsDdui9I6i96dDtG+oAez/4EB2g4cjSrNhgNQ3M+L57/+22NuPdORSoxvOHjIg/xeOE+C0wwF91D2g==}
@@ -21636,7 +21647,7 @@ packages:
       execa: 5.1.1
       github-username: 6.0.0
       lodash: 4.17.21
-      mem-fs-editor: 9.4.0
+      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
       minimist: 1.2.6
       pacote: 15.2.0
       read-pkg-up: 7.0.1
