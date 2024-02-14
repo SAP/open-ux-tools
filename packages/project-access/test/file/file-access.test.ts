@@ -3,6 +3,7 @@ import type { Package } from '../../src';
 import { readFile, readJSON, fileExists } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { updateFile } from '../../src/file/file-access';
 
 describe('fileAccess', () => {
     const memFs = create(createStorage());
@@ -67,6 +68,36 @@ describe('fileAccess', () => {
         test('Check existing file in memf-fs, should return true', async () => {
             const exists = await fileExists(memFilePath, memFs);
             expect(exists).toBe(true);
+        });
+    });
+
+    describe('updateFile', () => {
+        test('Update a file that does not exist', async () => {
+            const testFile = join(memFilePath, 'testfile.json');
+            try {
+                await updateFile(testFile, '{ "test": "create"}');
+                throw new Error('test should not have failed!!!!');
+            } catch (error) {
+                expect(error.toString()).toContain('ENOENT');
+            }
+            const testFileExists = await fileExists(testFile);
+            expect(testFileExists).toBeFalsy();
+        });
+        test('Update a file that exists', async () => {
+            const filename = 'testfile.json';
+            const memFileContent = { hello: 'world' };
+            memFs.writeJSON(filename, memFileContent);
+            const testFile = join(__dirname, filename);
+            // update file and check contents
+            await updateFile(testFile, '{ "test": "update"}');
+            const testFileExists = await fileExists(testFile);
+            expect(testFileExists).toBeTruthy();
+            const content = await readFile(testFile);
+            expect(content).toContain('update');
+            // update file with empty contents should cause file to be deleted
+            await updateFile(testFile, undefined as unknown as string);
+            const testFileExists2 = await fileExists(testFile);
+            expect(testFileExists2).toBeFalsy();
         });
     });
 });
