@@ -3965,7 +3965,7 @@ export default class Component extends BaseComponent {
     "contents": "import Controller from \\"sap/fe/core/PageController\\";
 
 /**
- * @namespace fefpmts.ext.main.Main.controller
+ * @namespace fefpmts.ext.main
  */
 export default class Main extends Controller {
 
