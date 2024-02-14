@@ -48,11 +48,7 @@ export class FileWatcher {
                 if (resp.is_fresh_instance) {
                     console.log(`Watching for TypeScript file changes in ${relative_path}...`);
                 } else {
-                    const changedFiles = [];
-                    for (const file of resp.files) {
-                        const fullPath = join(resp.root, file.name);
-                        changedFiles.push(fullPath);
-                    }
+                    const changedFiles = resp.files.map((file: { name: string }) => join(resp.root, file.name));
 
                     // Call the provided onChange callback with the changed file names
                     if (changedFiles.length) {

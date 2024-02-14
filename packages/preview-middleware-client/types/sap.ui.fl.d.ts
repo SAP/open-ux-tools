@@ -76,7 +76,7 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
         clear(): void;
         getItem(key: string): unknown;
         getItems(): Promise<unknown[]>;
-        deleteRequestNotifier: ((fileName: string) => void) | undefined;
+        fileChangeRequestNotifier: ((fileName: string) => void) | undefined;
     }
 
     class ObjectStorageConnector {

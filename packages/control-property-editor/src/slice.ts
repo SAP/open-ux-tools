@@ -189,12 +189,6 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.changes.pending = action.payload.pending;
                 state.changes.controls = {};
 
-                if (action.payload.pending.length) {
-                    state.changes.pendingChangeIds = action.payload.pending
-                        .filter((change) => change.isActive)
-                        .map((change) => change.fileName);
-                }
-
                 for (const change of [...action.payload.pending, ...action.payload.saved].reverse()) {
                     const { controlId, propertyName, type, controlName } = change;
                     const key = `${controlId}`;

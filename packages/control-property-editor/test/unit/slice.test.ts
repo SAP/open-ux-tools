@@ -290,7 +290,6 @@ describe('main redux slice', () => {
                             value: '{i18n>DELETE}'
                         }
                     ],
-                    pendingChangeIds: ['testFile1'],
                     saved: [
                         {
                             changeType: 'propertyChange',

@@ -66,7 +66,7 @@ export default function init(rta: RuntimeAuthoring): Promise<void> {
         const icons = getIcons();
 
         // hook the file deletion listener to the UI5 workspace connector
-        workspaceConnector.storage.deleteRequestNotifier = (fileName: string) => {
+        workspaceConnector.storage.fileChangeRequestNotifier = (fileName: string) => {
             sendAction(storageFileChanged(fileName?.replace('sap.ui.fl.', '')));
         };
 

@@ -31,12 +31,20 @@ const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
     storage: {
         _itemsStoredAsObjects: true,
-        deleteRequestNotifier: undefined,
+        fileChangeRequestNotifier: undefined,
         setItem: function (_key: string, change: Change) {
             const settings = getFlexSettings();
             if (settings) {
                 change.support ??= {};
                 change.support.generator = settings.generator;
+            }
+
+            if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
+                try {
+                    this.fileChangeRequestNotifier(change.fileName);
+                } catch (e) {
+                    // exceptions in the listener call are ignored
+                }
             }
 
             return fetch(path, {
@@ -48,9 +56,9 @@ const connector = merge({}, ObjectStorageConnector, {
             });
         },
         removeItem: function (key: string) {
-            if (typeof this.deleteRequestNotifier === 'function') {
+            if (typeof this.fileChangeRequestNotifier === 'function') {
                 try {
-                    this.deleteRequestNotifier(key);
+                    this.fileChangeRequestNotifier(key);
                 } catch (e) {
                     // exceptions in the listener call are ignored
                 }
