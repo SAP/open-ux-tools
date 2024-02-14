@@ -15,11 +15,12 @@ import type {
     FileBrowserQuestion,
     InputQuestion,
     ListQuestion,
-    YUIQuestion
+    UI5ApplicationQuestion
 } from '../types';
 import { promptNames, type UI5ApplicationAnswers, type UI5ApplicationPromptOptions } from '../types';
 import {
     defaultAppName,
+    extendWithOptions,
     getUI5ThemesChoices,
     isVersionIncluded,
     searchChoices,
@@ -42,7 +43,7 @@ export function getQuestions(
     promptOptions?: UI5ApplicationPromptOptions,
     isCli = true,
     capCdsInfo?: CapCdsInfo
-): YUIQuestion<UI5ApplicationAnswers>[] {
+): UI5ApplicationQuestion<UI5ApplicationAnswers>[] {
     // Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
     /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
     const ui5VersionChoices = ui5VersionsGrouped(
@@ -52,17 +53,22 @@ export function getQuestions(
     );
 
     // Set shared defaults
-    const appName = promptOptions?.[promptNames.name]?.value;
-    const targetDir = promptOptions?.[promptNames.targetFolder]?.value || process.cwd();
+    const appName =
+        typeof promptOptions?.[promptNames.name]?.default === 'string'
+            ? promptOptions[promptNames.name].default
+            : undefined;
+    const targetDir =
+        typeof promptOptions?.[promptNames.targetFolder]?.default === 'string'
+            ? promptOptions[promptNames.targetFolder].default
+            : process.cwd();
     let mtaPath: Awaited<Promise<string | undefined>>; // cache mta path discovery
     const isCapProject = !!capCdsInfo?.capProjectType;
     // Always show breadcrumbs in YUI - opt. in
     const breadcrumb = true;
 
-    const questions: YUIQuestion<UI5ApplicationAnswers>[] = [];
+    let questions: UI5ApplicationQuestion<UI5ApplicationAnswers>[] = [];
 
-    // todo: use all prompt names as record key
-    const keyedPrompts: Record<promptNames, YUIQuestion<UI5ApplicationAnswers>> = {
+    const keyedPrompts: Record<promptNames, UI5ApplicationQuestion<UI5ApplicationAnswers>> = {
         [promptNames.name]: {
             type: 'input',
             guiOptions: {
@@ -152,7 +158,7 @@ export function getQuestions(
             default: () => {
                 // Set the default to be the passed value or the default as defined by ui5 version service
                 return (
-                    promptOptions?.ui5Version?.value ||
+                    promptOptions?.ui5Version?.default ||
                     promptOptions?.ui5Version?.defaultChoice?.value ||
                     ui5Versions.find((ui5Ver) => ui5Ver.default && ui5Ver.version)?.version
                 );
@@ -228,7 +234,7 @@ export function getQuestions(
             type: 'confirm',
             name: promptNames.enableEslint,
             message: t('prompts.appEnableEslintMessage'),
-            default: promptOptions?.[promptNames.enableEslint]?.value ?? false,
+            default: promptOptions?.[promptNames.enableEslint]?.default ?? false,
             guiOptions: {
                 breadcrumb: t('prompts.appEnableEslintBreadcrumb')
             }
@@ -239,7 +245,7 @@ export function getQuestions(
             type: 'confirm',
             name: promptNames.enableCodeAssist,
             message: t('prompts.appEnableCodeAssistMessage'),
-            default: promptOptions?.[promptNames.enableCodeAssist]?.value ?? false,
+            default: promptOptions?.[promptNames.enableCodeAssist]?.default ?? false,
             guiOptions: {
                 breadcrumb: t('prompts.appEnableCodeAssistBreadcrumb')
             }
@@ -248,7 +254,7 @@ export function getQuestions(
             type: 'confirm',
             name: promptNames.skipAnnotations,
             message: t('prompts.appSkipAnnotationsMessage'),
-            default: promptOptions?.[promptNames.skipAnnotations]?.value ?? false,
+            default: promptOptions?.[promptNames.skipAnnotations]?.default ?? false,
             guiOptions: {
                 breadcrumb: t('prompts.appSkipAnnotationsBreadcrumb')
             }
@@ -278,7 +284,7 @@ export function getQuestions(
             type: 'confirm',
             name: promptNames.enableTypeScript,
             message: t('prompts.appEnableTypeScriptMessage'),
-            default: promptOptions?.[promptNames.enableTypeScript]?.value ?? false,
+            default: promptOptions?.[promptNames.enableTypeScript]?.default ?? false,
             guiOptions: {
                 breadcrumb
             }
@@ -301,13 +307,17 @@ export function getQuestions(
         questions.push(...Object.values(keyedPrompts));
     }
 
-    // Add an additonal condition to 'advanced' prompts
+    // Add an additonal condition to 'advanced' prompts so they can be shown/hidden at runtime
     withCondition(
         questions.filter(({ name }) => promptOptions?.[name as keyof typeof promptNames]?.advancedOption),
         (answers: UI5ApplicationAnswers) => answers.showAdvanced ?? false
     );
 
-    // todo: apply default values
-
-    return questions as YUIQuestion<UI5ApplicationAnswers>[] | AutocompleteQuestionOptions<UI5ApplicationAnswers>[];
+    // Apply extended `validate`, `additionalMessages` or override `default` prompt properties
+    if (promptOptions) {
+        questions = extendWithOptions(questions, promptOptions);
+    }
+    return questions as
+        | UI5ApplicationQuestion<UI5ApplicationAnswers>[]
+        | AutocompleteQuestionOptions<UI5ApplicationAnswers>[];
 }

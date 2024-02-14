@@ -4,6 +4,7 @@ import autocomplete from 'inquirer-autocomplete-prompt';
 import cloneDeep from 'lodash/cloneDeep';
 import { getQuestions } from './prompts';
 // import { cleanPromptOptions } from './prompts/utility';
+import type { PromptDefaultValue } from './types';
 import {
     promptNames,
     type CapCdsInfo,
@@ -28,27 +29,12 @@ async function getPrompts(
     const filterOptions: UI5VersionFilterOptions = {
         useCache: true,
         includeMaintained: true,
-        includeDefault: true
+        includeDefault: true,
+        minSupportedUI5Version: promptOptions?.ui5Version?.minUI5Version ?? undefined
     };
     const ui5Versions = await getUI5Versions(filterOptions);
 
-    const promptOptionsClean = /* cleanPromptOptions( */ cloneDeep(promptOptions); /* ) */
-    /* 
-    if (!capCdsInfo && promptOptionsClean?.targetFolder?.value) {
-        // Is this a cap project, target dir will be set to the `app` or custom app folder not the project root
-        const capRootPath = await findProjectRoot(promptOptionsClean.targetFolder?.value, false, true);
-        const capProjectType = await getCapProjectType(capRootPath);
-
-        // Additional CAP project info is required for specific prompts
-        if (!capCdsInfo && capProjectType === 'CAPNodejs') {
-            capCdsInfo = await checkCdsUi5PluginEnabled(
-                await findProjectRoot(promptOptionsClean.targetFolder?.value, false, true),
-                fs,
-                true
-            );
-        }
-        capCdsInfo = Object.assign(capCdsInfo ?? {}, { capProjectType });
-    } */
+    const promptOptionsClean = cloneDeep(promptOptions);
 
     return getQuestions(ui5Versions, promptOptionsClean, isCli, capCdsInfo);
 }
@@ -58,22 +44,55 @@ async function getPrompts(
  *
  * @param promptOptions - options that can control some of the prompt behavior. See {@link UI5ApplicationPromptOptions} for details
  * @param adapter - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
+ * @param isCli
+ * @param capCdsInfo
  * @returns the prompt answers
  */
 async function prompt(
     promptOptions: UI5ApplicationPromptOptions,
-    adapter: InquirerAdapter
+    adapter: InquirerAdapter,
+    isCli = true,
+    capCdsInfo?: CapCdsInfo
 ): Promise<UI5ApplicationAnswers> {
-    const ui5AppPrompts = await exports.getPrompts(promptOptions);
+    const ui5AppPrompts = await exports.getPrompts(promptOptions, isCli, capCdsInfo);
 
     if (adapter?.promptModule && promptOptions.ui5Version?.useAutocomplete) {
         const pm = adapter.promptModule;
         pm.registerPrompt('autocomplete', autocomplete);
     }
 
-    const answers = adapter.prompt<UI5ApplicationAnswers>(ui5AppPrompts);
-    // Apply default values to prompts that may not have been executed
+    const answers = await adapter.prompt<UI5ApplicationAnswers>(ui5AppPrompts);
+    // Apply default values to prompts in case they have not been executed
+    if (!answers?.showAdvanced) {
+        Object.assign(answers, await getAdvancedPromptDefaults(answers, promptOptions));
+    }
+
     return answers;
+}
+
+/**
+ * Return the advanced configuration option default values.
+ * This can be derived from user input, or a fallback default in case an answer was not provided due to the prompt not having been executed.
+ *
+ * @param answers
+ * @param promptOptions
+ * @returns advanced configuration answer values
+ */
+function getAdvancedPromptDefaults(
+    answers: Partial<UI5ApplicationAnswers>,
+    promptOptions: UI5ApplicationPromptOptions
+): Partial<UI5ApplicationAnswers> {
+    const defaultAnswers: Partial<UI5ApplicationAnswers> = {};
+    Object.entries(promptOptions).forEach(([promptKey, promptOpt]) => {
+        if (promptOpt.advancedOption) {
+            const advPromptKey = promptKey as keyof typeof promptNames;
+            Object.assign(defaultAnswers, {
+                [advPromptKey]: answers[advPromptKey] ?? (promptOpt as PromptDefaultValue<string | boolean>).default
+            });
+        }
+    });
+
+    return defaultAnswers;
 }
 
 export {
@@ -82,5 +101,6 @@ export {
     promptNames,
     type CapCdsInfo,
     type UI5ApplicationAnswers,
-    type UI5ApplicationPromptOptions
+    type UI5ApplicationPromptOptions,
+    type InquirerAdapter
 };

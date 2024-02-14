@@ -197,7 +197,7 @@ describe('getPrompts', () => {
         // Test default when `isCLi` === true
         let questions = getQuestions([], {
             [promptNames.targetFolder]: {
-                value: '/cap/specific/target/path'
+                default: '/cap/specific/target/path'
             }
         });
         expect(
@@ -209,7 +209,7 @@ describe('getPrompts', () => {
             [],
             {
                 [promptNames.targetFolder]: {
-                    value: '/cap/specific/target/path1'
+                    default: '/cap/specific/target/path1'
                 }
             },
             false,
@@ -224,7 +224,7 @@ describe('getPrompts', () => {
             [],
             {
                 [promptNames.targetFolder]: {
-                    value: '/cap/specific/target/path1'
+                    default: '/cap/specific/target/path1'
                 }
             },
             false

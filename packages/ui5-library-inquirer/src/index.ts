@@ -42,4 +42,4 @@ async function prompt(promptOptions?: UI5LibraryPromptOptions, adapter?: Inquire
     return adapter ? adapter.prompt(ui5LibPrompts) : inquirer.prompt(ui5LibPrompts);
 }
 
-export { getPrompts, prompt, type UI5LibraryPromptOptions, type UI5LibraryAnswers };
+export { getPrompts, prompt, type UI5LibraryPromptOptions, type UI5LibraryAnswers, type InquirerAdapter };

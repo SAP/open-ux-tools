@@ -4,12 +4,14 @@ import type {
     Answers,
     ConfirmQuestion as BaseConfirmQuestion,
     ListQuestion as BaseListQuestion,
-    InputQuestion as BaseInputuestion,
+    InputQuestion as BaseInputQuestion,
     ListChoiceOptions,
     PromptFunction,
     PromptModule,
-    Question
+    Question,
+    AsyncDynamicQuestionProperty
 } from 'inquirer';
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 // todo: move to YUI types
 export interface GuiOptions {
@@ -19,25 +21,34 @@ export interface GuiOptions {
     breadcrumb?: boolean | string;
 }
 
-export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
+export type PromptSeverityMessage = (input?: unknown, previousAnswers?: Answers) => IMessageSeverity | undefined;
+export type validate<T> = (input: any, answers?: T) => boolean | string | Promise<boolean | string>;
+
+export type UI5ApplicationQuestion<A extends Answers = Answers> = Question<A> & {
+    name: string;
     guiOptions?: GuiOptions;
+    additionalMessages?: PromptSeverityMessage;
 };
 
-export interface FileBrowserQuestion<A extends Answers = Answers> extends BaseInputuestion<A> {
+export interface FileBrowserQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
+    name: UI5ApplicationQuestion['name'];
     guiType: 'file-browser' | 'folder-browser';
-    guiOptions?: YUIQuestion['guiOptions'];
+    guiOptions?: UI5ApplicationQuestion['guiOptions'];
 }
 
 export interface ListQuestion<A extends Answers = Answers> extends BaseListQuestion<A> {
-    guiOptions?: YUIQuestion['guiOptions'];
+    name: UI5ApplicationQuestion['name'];
+    guiOptions?: UI5ApplicationQuestion['guiOptions'];
 }
 
 export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfirmQuestion<A> {
-    guiOptions?: YUIQuestion['guiOptions'];
+    name: UI5ApplicationQuestion['name'];
+    guiOptions?: UI5ApplicationQuestion['guiOptions'];
 }
 
-export interface InputQuestion<A extends Answers = Answers> extends BaseInputuestion<A> {
-    guiOptions?: YUIQuestion['guiOptions'];
+export interface InputQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
+    name: UI5ApplicationQuestion['name'];
+    guiOptions?: UI5ApplicationQuestion['guiOptions'];
 }
 
 export interface UI5ApplicationAnswers {
@@ -125,7 +136,7 @@ type UI5VersionPromptOptions = {
      * Choice will be added to the UI5 versions offered and set as the default selection
      *
      */
-    defaultChoice?: ListChoiceOptions;
+    defaultChoice?: UI5VersionChoice;
 };
 
 /**
@@ -158,28 +169,26 @@ type DefaultValueConfirmPrompts =
     | promptNames.enableTypeScript;
 
 // Default value type for input prompt options
-type InputPromptDefaultValue = {
-    value?: string;
-};
-// Default value type for confirm prompt options
-type ConfirmPromptDefaultValue = {
-    value?: boolean;
+export type PromptDefaultValue<T> = {
+    default?: AsyncDynamicQuestionProperty<T>;
 };
 
 /**
  * Defines prompt/question default values and/or whether or not they should be shown.
  */
-type commonPromptSettings = {
+export type CommonPromptOptions = {
     hide?: boolean;
     advancedOption?: boolean;
+    validate?: validate<UI5ApplicationAnswers>;
+    additionalMessages?: PromptSeverityMessage;
 };
 
 /**
  * Provide the correct type checking for string value prompts and `ui5Version` options
  *
  */
-type stringValuePromptOptions = Record<stringValuePrompts, commonPromptSettings> &
-    Record<DefaultValueInputPrompts, InputPromptDefaultValue> &
+type stringValuePromptOptions = Record<stringValuePrompts, CommonPromptOptions> &
+    Record<DefaultValueInputPrompts, PromptDefaultValue<string>> &
     Record<promptNames.ui5Version, UI5VersionPromptOptions>;
 
 /**
@@ -197,10 +206,10 @@ type booleanValuePromptOtions = Record<
          * @param promptName
          * @returns
          */
-        validatorCallback?: (answer: boolean | string, promptName: string) => void;
-    } & commonPromptSettings
+        validatorCallback?: (answer: boolean, promptName: string) => void;
+    } & CommonPromptOptions
 > &
-    Record<DefaultValueConfirmPrompts, ConfirmPromptDefaultValue>;
+    Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>>;
 
 export type UI5ApplicationPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOtions>;
 

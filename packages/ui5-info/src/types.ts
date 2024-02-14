@@ -1,7 +1,5 @@
 import type { ui5ThemeIds } from './ui5-theme-info';
 
-export type FioriElementsVersion = 'v2' | 'v4';
-
 export interface UI5VersionFilterOptions {
     /**
      * The host from which snapshot version may be fetched. If provided snapshots will be included.
@@ -22,8 +20,7 @@ export interface UI5VersionFilterOptions {
      */
     ui5SelectedVersion?: string;
     /**
-     * Sets the minimum UI5 version to return. If `fioriElementsVersion` is also specified then the minimum ui5
-     * version that is supported will take precedence if it is higher
+     * Sets the minimum UI5 version to return.
      */
     minSupportedUI5Version?: string;
     /**
@@ -38,7 +35,6 @@ export interface UI5VersionFilterOptions {
      * Adds the property `default` to the default ui5 version
      */
     includeDefault?: boolean;
-
     /**
      * Includes only versions filtered by latest patch.
      */
