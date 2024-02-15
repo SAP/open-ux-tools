@@ -272,4 +272,30 @@ describe('CustomPage', () => {
             expect(result).toEqual(expectedAfterSave);
         });
     });
+
+    describe('Typescript controller', () => {
+        const minimalInput: CustomPage = {
+            name: 'CustomPage',
+            entity: 'RootEntity',
+            typescript: true
+        };
+        test('latest version with minimal input', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            //act
+            generateCustomPage(target, minimalInput, fs);
+            //check
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.ts'))).toMatchSnapshot();
+        });
+
+        test('lower UI5 version(1.84)', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const testInput = { ...minimalInput, minUI5Version: '1.84.62' };
+            //act
+            generateCustomPage(target, testInput, fs);
+            //check
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.ts'))).toMatchSnapshot();
+        });
+    });
 });
