@@ -247,6 +247,55 @@ Object {
 }
 `;
 
+exports[`ObjectPage generate simple inbound navigation, plus optional page id 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "RootEntityListReport",
+      "pattern": ":?query:",
+      "target": "TestListReport",
+    },
+    Object {
+      "name": "RootEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey}):?query:",
+      "target": "RootEntityObjectPage",
+    },
+    Object {
+      "name": "DummyPage",
+      "pattern": "OtherEntity({OtherEntityKey}):?query:",
+      "target": "DummyPage",
+    },
+  ],
+  "targets": Object {
+    "DummyPage": Object {
+      "id": "DummyPage",
+      "name": "sap.fe.templates.ObjectPage",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/OtherEntity",
+          "navigation": Object {},
+        },
+      },
+      "type": "Component",
+    },
+    "RootEntityListReport": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "OtherEntity": Object {
+              "detail": Object {
+                "route": "DummyPage",
+              },
+            },
+          },
+        },
+      },
+    },
+    "RootEntityObjectPage": Object {},
+  },
+}
+`;
+
 exports[`ObjectPage generate simple nested navigation 1`] = `
 Object {
   "routes": Array [

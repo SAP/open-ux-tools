@@ -127,6 +127,22 @@ describe('ObjectPage', () => {
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
+        test('simple inbound navigation, plus optional page id', () => {
+            const target = join(testDir, 'with-nav');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...minimalInput,
+                id: 'DummyPage',
+                navigation: {
+                    sourcePage: 'RootEntityListReport',
+                    navEntity: minimalInput.entity,
+                    navKey: true
+                }
+            };
+            generate(target, minInput, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+
         test('simple nested navigation', () => {
             const target = join(testDir, 'with-nested-nav');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);

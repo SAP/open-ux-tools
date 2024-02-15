@@ -256,6 +256,50 @@ Object {
 }
 `;
 
+exports[`CustomPage generateCustomPage: different navigations simple inbound navigation, plus optional page id 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "TestObjectPage",
+      "pattern": ":?query:",
+      "target": "TestObjectPage",
+    },
+    Object {
+      "name": "DummyPage",
+      "pattern": "ChildEntity({navToChildEntityKey}):?query:",
+      "target": "DummyPage",
+    },
+  ],
+  "targets": Object {
+    "DummyPage": Object {
+      "id": "DummyPage",
+      "name": "sap.fe.core.fpm",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/ChildEntity",
+          "navigation": Object {},
+          "viewName": "my.test.App.ext.customPage.CustomPage",
+        },
+      },
+      "type": "Component",
+    },
+    "TestObjectPage": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "navToChildEntity": Object {
+              "detail": Object {
+                "route": "DummyPage",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
 exports[`CustomPage generateCustomPage: different versions or target folder latest version with contextPath 1`] = `
 Object {
   "sap.app": Object {

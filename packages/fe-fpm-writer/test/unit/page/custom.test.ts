@@ -198,6 +198,17 @@ describe('CustomPage', () => {
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
+        test('simple inbound navigation, plus optional page id', () => {
+            const target = join(testDir, 'with-nav');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...inputWithNavigation,
+                id: 'DummyPage'
+            };
+            generateCustomPage(target, minInput, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+
         test('inbound navigation defined as array (for FCL)', () => {
             const testManifestWithArray = JSON.parse(testAppManifest);
             testManifestWithArray['sap.ui5'].routing.config = {

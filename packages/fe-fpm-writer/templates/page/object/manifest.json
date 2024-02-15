@@ -17,7 +17,7 @@
                             "navigation": {
                                 "<%- navigation.navEntity %>": {
                                     "detail": {
-                                        "route": "<%- entity %>ObjectPage"
+                                        "route": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ObjectPage<% } %>"
                                     }
                                 }
                             }
