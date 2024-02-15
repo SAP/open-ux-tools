@@ -1,0 +1,174 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`json jsonToI18nBundle key boolean value 1`] = `
+Object {
+  "": Array [
+    Object {
+      "filePath": "absolute/file/path",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 36,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 25,
+            "line": 3,
+          },
+        },
+        "value": "i18nSupport",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 43,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 39,
+            "line": 3,
+          },
+        },
+        "value": "true",
+      },
+    },
+  ],
+}
+`;
+
+exports[`json jsonToI18nBundle key null value 1`] = `
+Object {
+  "": Array [
+    Object {
+      "filePath": "absolute/file/path",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 36,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 25,
+            "line": 3,
+          },
+        },
+        "value": "i18nSupport",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 39,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 39,
+            "line": 3,
+          },
+        },
+        "value": "",
+      },
+    },
+  ],
+}
+`;
+
+exports[`json jsonToI18nBundle key number value 1`] = `
+Object {
+  "": Array [
+    Object {
+      "filePath": "absolute/file/path",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 29,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 25,
+            "line": 3,
+          },
+        },
+        "value": "App1",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 33,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 32,
+            "line": 3,
+          },
+        },
+        "value": "1",
+      },
+    },
+  ],
+}
+`;
+
+exports[`json jsonToI18nBundle key string value 1`] = `
+Object {
+  "": Array [
+    Object {
+      "filePath": "absolute/file/path",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 29,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 25,
+            "line": 3,
+          },
+        },
+        "value": "App1",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 38,
+            "line": 3,
+          },
+          "start": Object {
+            "character": 33,
+            "line": 3,
+          },
+        },
+        "value": "App 1",
+      },
+    },
+    Object {
+      "filePath": "absolute/file/path",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 28,
+            "line": 4,
+          },
+          "start": Object {
+            "character": 25,
+            "line": 4,
+          },
+        },
+        "value": "Key",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 41,
+            "line": 4,
+          },
+          "start": Object {
+            "character": 32,
+            "line": 4,
+          },
+        },
+        "value": "App Layer",
+      },
+    },
+  ],
+}
+`;

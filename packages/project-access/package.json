@@ -33,6 +33,7 @@
         "node": ">=18.x"
     },
     "dependencies": {
+        "@sap-ux/i18n": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "findit2": "2.2.3",
         "mem-fs": "2.1.0",
