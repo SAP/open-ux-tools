@@ -1,7 +1,8 @@
 import { createPropertiesI18nEntries } from '../../../../src';
 import * as utilsWrite from '../../../../src/write/utils';
 import * as utils from '../../../../src/utils';
-import type { Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 describe('create', () => {
     describe('createPropertiesI18nEntries', () => {
@@ -56,20 +57,20 @@ describe('create', () => {
                 const writeToExistingI18nPropertiesFileSpy = jest
                     .spyOn(utilsWrite, 'writeToExistingI18nPropertiesFile')
                     .mockResolvedValue(true);
-                const editor = {} as unknown as Editor;
+                const memFs = create(createStorage());
                 const doesExistSpy = jest.spyOn(utils, 'doesExist').mockResolvedValue(false);
                 const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
 
-                const result = await createPropertiesI18nEntries('i18n.properties', newEntries, undefined, editor);
+                const result = await createPropertiesI18nEntries('i18n.properties', newEntries, undefined, memFs);
 
                 expect(result).toEqual(true);
                 expect(doesExistSpy).toHaveBeenCalledTimes(1);
-                expect(writeFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', '# Resource bundle \n', editor);
+                expect(writeFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', '# Resource bundle \n', memFs);
                 expect(writeToExistingI18nPropertiesFileSpy).toHaveBeenNthCalledWith(
                     1,
                     'i18n.properties',
                     newEntries,
-                    editor
+                    memFs
                 );
             });
         });

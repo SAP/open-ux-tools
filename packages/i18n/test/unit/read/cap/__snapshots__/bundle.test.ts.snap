@@ -304,6 +304,38 @@ Object {
 
 exports[`getCapI18nBundle single .properties file - mem-fs-editor 1`] = `
 Object {
+  "Key": Array [
+    Object {
+      "annotation": undefined,
+      "filePath": "srv/i18n/i18n.properties",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 3,
+            "line": 1,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 1,
+          },
+        },
+        "value": "Key",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 19,
+            "line": 1,
+          },
+          "start": Object {
+            "character": 6,
+            "line": 1,
+          },
+        },
+        "value": "Service Layer",
+      },
+    },
+  ],
   "Product": Array [
     Object {
       "annotation": undefined,

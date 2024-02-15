@@ -3,7 +3,6 @@ export { createCapI18nEntries, createPropertiesI18nEntries } from './write';
 
 export {
     getI18nFolderNames,
-    getI18nDocumentation,
     getI18nMaxLength,
     getI18nTextType,
     extractI18nKey,
@@ -30,10 +29,3 @@ export {
 } from './types';
 
 export { csvToI18nBundle, jsonToI18nBundle, propertiesToI18nEntry } from './transformer';
-
-import { initI18n } from './i18n';
-
-// init i18n
-initI18n().catch(() => {
-    // Ignore any errors since this module will still work
-});

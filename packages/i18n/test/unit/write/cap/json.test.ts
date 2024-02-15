@@ -1,7 +1,8 @@
 import { addJsonTexts, tryAddJsonTexts } from '../../../../src/write/cap/json';
 import * as utils from '../../../../src/utils';
 import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 describe('json', () => {
     describe('add new i18n entries to json file', () => {
@@ -138,19 +139,19 @@ describe('json', () => {
             const doesExistSpy = jest.spyOn(utils, 'doesExist').mockResolvedValue(true);
             const readFileSpy = jest.spyOn(utils, 'readFile').mockResolvedValue('');
             const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue('');
-            const editor = {} as unknown as Editor;
+            const memFs = create(createStorage());
             // act
-            const result = await tryAddJsonTexts(env, path, entries, editor);
+            const result = await tryAddJsonTexts(env, path, entries, memFs);
             // assert
             expect(result).toEqual(true);
             expect(doesExistSpy).toHaveBeenNthCalledWith(1, i18nPath);
-            expect(readFileSpy).toHaveBeenNthCalledWith(1, i18nPath, editor);
+            expect(readFileSpy).toHaveBeenNthCalledWith(1, i18nPath, memFs);
             const addedContent = `{
     "": {
         "NewKey": "New Value"
     }
 }`;
-            expect(writeFileSpy).toHaveBeenNthCalledWith(1, i18nPath, addedContent, editor);
+            expect(writeFileSpy).toHaveBeenNthCalledWith(1, i18nPath, addedContent, memFs);
         });
     });
 });

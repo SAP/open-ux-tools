@@ -2,11 +2,7 @@ export { FileName } from './constants';
 export { getFilePaths } from './file';
 export {
     createApplicationAccess,
-    createAnnotationI18nEntries,
-    createManifestI18nEntries,
-    createUI5I18nEntries,
     createProjectAccess,
-    createCapI18nEntries,
     findAllApps,
     findCapProjects,
     findFioriArtifacts,
@@ -22,8 +18,6 @@ export {
     getCdsRoots,
     getCdsServices,
     getCapI18nFolderNames,
-    getI18nBundles,
-    getI18nPropertiesPaths,
     getMtaPath,
     getNodeModulesPath,
     getProject,

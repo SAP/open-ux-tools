@@ -9,14 +9,15 @@ import type {
     ProjectType,
     ApplicationStructure
 } from '../types';
-import { getCapI18nFolderNames, getI18nBundles, getI18nPropertiesPaths } from './i18n';
 
 import {
+    getI18nBundles,
+    getI18nPropertiesPaths,
     createCapI18nEntries,
     createManifestI18nEntries,
     createUI5I18nEntries,
     createAnnotationI18nEntries
-} from './i18n/write';
+} from './i18n';
 
 import { getProject } from './info';
 import { findAllApps } from './search';
@@ -32,8 +33,9 @@ class ApplicationAccessImp implements ApplicationAccess {
      *
      * @param _project - Project structure
      * @param appId - Application ID
+     * @param fs optional `mem-fs-editor` instance.
      */
-    constructor(private _project: Project, private appId: string) {}
+    constructor(private _project: Project, private appId: string, private fs?: Editor) {}
 
     /**
      * Returns the application structure.
@@ -48,7 +50,6 @@ class ApplicationAccessImp implements ApplicationAccess {
      * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist.
      *
      * @param newEntries - translation entries to write in the `.properties` file
-     * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
      * @returns - boolean or exception
      * @description It also update `manifest.json` file if `@i18n` entry is missing from `"sap.ui5":{"models": {}}`
      * as
@@ -65,15 +66,14 @@ class ApplicationAccessImp implements ApplicationAccess {
      * }
      * ```
      */
-    createAnnotationI18nEntries(newEntries: NewI18nEntry[], fs?: Editor): Promise<boolean> {
-        return createAnnotationI18nEntries(this.project.root, this.app.manifest, this.app.i18n, newEntries, fs);
+    createAnnotationI18nEntries(newEntries: NewI18nEntry[]): Promise<boolean> {
+        return createAnnotationI18nEntries(this.project.root, this.app.manifest, this.app.i18n, newEntries, this.fs);
     }
     /**
      * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist.
      *
      * @param newEntries - translation entries to write in the `.properties` file
      * @param modelKey - i18n model key. Default key is `i18n`
-     * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
      * @returns boolean or exception
      * @description It also update `manifest.json` file if `<modelKey>` entry is missing from `"sap.ui5":{"models": {}}`
      * as
@@ -90,20 +90,19 @@ class ApplicationAccessImp implements ApplicationAccess {
      * }
      * ```
      */
-    createUI5I18nEntries(newEntries: NewI18nEntry[], modelKey: string = 'i18n', fs?: Editor): Promise<boolean> {
-        return createUI5I18nEntries(this.project.root, this.app.manifest, this.app.i18n, newEntries, modelKey, fs);
+    createUI5I18nEntries(newEntries: NewI18nEntry[], modelKey: string = 'i18n'): Promise<boolean> {
+        return createUI5I18nEntries(this.project.root, this.app.manifest, this.app.i18n, newEntries, modelKey, this.fs);
     }
 
     /**
      * Maintains new translation entries in an existing i18n file or in a new i18n properties file if it does not exist.
      *
      * @param newEntries translation entries to write in the `.properties` file
-     * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
      * @returns boolean or exception
      * @description If `i18n` entry is missing from `"sap.app":{}`, default `i18n/i18n.properties` is used. Update of `manifest.json` file is not needed.
      */
-    createManifestI18nEntries(newEntries: NewI18nEntry[], fs?: Editor): Promise<boolean> {
-        return createManifestI18nEntries(this.project.root, this.app.i18n, newEntries, fs);
+    createManifestI18nEntries(newEntries: NewI18nEntry[]): Promise<boolean> {
+        return createManifestI18nEntries(this.project.root, this.app.i18n, newEntries, this.fs);
     }
 
     /**
@@ -111,11 +110,10 @@ class ApplicationAccessImp implements ApplicationAccess {
      *
      * @param filePath file in which the translation entry will be used.
      * @param newI18nEntries translation entries to write in the i18n file.
-     * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
      * @returns boolean or exception
      */
-    createCapI18nEntries(filePath: string, newI18nEntries: NewI18nEntry[], fs?: Editor): Promise<boolean> {
-        return createCapI18nEntries(this.project.root, filePath, newI18nEntries, fs);
+    createCapI18nEntries(filePath: string, newI18nEntries: NewI18nEntry[]): Promise<boolean> {
+        return createCapI18nEntries(this.project.root, filePath, newI18nEntries, this.fs);
     }
 
     /**
@@ -138,22 +136,12 @@ class ApplicationAccessImp implements ApplicationAccess {
     }
 
     /**
-     * Retrieves a list of potential folder names for i18n files.
-     *
-     * @returns ii18n folder names
-     */
-    getCapI18nFolderNames(): Promise<string[]> {
-        return getCapI18nFolderNames(this.project.root);
-    }
-
-    /**
      * For a given app in project, retrieves i18n bundles for 'sap.app' namespace,`models` of `sap.ui5` namespace and service for cap services.
      *
-     * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
      * @returns i18n bundles or exception
      */
-    getI18nBundles(fs?: Editor): Promise<I18nBundles> {
-        return getI18nBundles(this.project.root, this.app.i18n, this.project.projectType, fs);
+    getI18nBundles(): Promise<I18nBundles> {
+        return getI18nBundles(this.project.root, this.app.i18n, this.project.projectType, this.fs);
     }
 
     /**
@@ -259,9 +247,12 @@ class ProjectAccessImp implements ProjectAccess {
  * Create an instance of ApplicationAccess that contains information about the application, like paths and services.
  *
  * @param appRoot - Application root path
+ * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node.
+ * In case of CAP project, some CDS APIs are used internally which depends on `fs` of node and not `mem-fs-editor`.
+ * When calling this function, adding or removing a CDS file in memory or changing CDS configuration will not be considered until present on real file system.
  * @returns - Instance of ApplicationAccess that contains information about the application, like paths and services
  */
-export async function createApplicationAccess(appRoot: string): Promise<ApplicationAccess> {
+export async function createApplicationAccess(appRoot: string, fs?: Editor): Promise<ApplicationAccess> {
     try {
         const apps = await findAllApps([appRoot]);
         const app = apps.find((app) => app.appRoot === appRoot);
@@ -270,7 +261,7 @@ export async function createApplicationAccess(appRoot: string): Promise<Applicat
         }
         const project = await getProject(app.projectRoot);
         const appId = relative(project.root, appRoot);
-        return new ApplicationAccessImp(project, appId);
+        return new ApplicationAccessImp(project, appId, fs);
     } catch (error) {
         throw Error(`Error when creating application access for ${appRoot}: ${error}`);
     }

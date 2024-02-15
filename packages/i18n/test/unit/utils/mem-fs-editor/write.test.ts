@@ -1,4 +1,5 @@
-import type { Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 import { writeFile } from '../../../../src/utils';
 import * as fs from 'fs';
 
@@ -7,11 +8,11 @@ describe('write', () => {
         const filePath = 'absolute-path-to-a-file';
         const content = 'some-content';
         test('mem-fs-editor', async () => {
-            const writeSpy = jest.fn().mockReturnValue(content);
             const promiseWriteFileSpy = jest.spyOn(fs.promises, 'writeFile').mockResolvedValue();
-            const editor = { write: writeSpy } as unknown as Editor;
+            const memFs = create(createStorage());
+            const writeSpy = jest.spyOn(memFs, 'write').mockReturnValue(content);
 
-            const result = await writeFile(filePath, content, editor);
+            const result = await writeFile(filePath, content, memFs);
             expect(result).toEqual('some-content');
             expect(writeSpy).toHaveBeenNthCalledWith(1, filePath, content);
             expect(promiseWriteFileSpy).toHaveBeenCalledTimes(0);

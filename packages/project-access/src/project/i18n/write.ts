@@ -14,6 +14,8 @@ import type { Editor } from 'mem-fs-editor';
  * @param filePath file in which the translation entry will be used.
  * @param newI18nEntries translation entries to write in the i18n file.
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
+ * In case of CAP project, some CDS APIs are used internally which depends on `fs` of node and not `mem-fs-editor`.
+ * When calling this function, adding or removing a CDS file in memory or changing CDS configuration will not be considered until present on real file system.
  * @returns boolean or exception
  */
 export async function createCapI18nEntries(

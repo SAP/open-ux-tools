@@ -3,7 +3,8 @@ import { join } from 'path';
 import { toUnifiedUri } from '../helper';
 import fs from 'fs';
 import type { CdsEnvironment } from '../../../src';
-import type { Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 const DATA_ROOT = join(__dirname, '..', 'data');
 const PROJECT_ROOT = join(DATA_ROOT, 'project');
@@ -149,8 +150,8 @@ describe('resolve', () => {
                     default_language: 'en'
                 }
             };
-            const editor = {} as unknown as Editor;
-            const result = await getCapI18nFolder('root', 'file-path', env, editor);
+            const memFs = create(createStorage());
+            const result = await getCapI18nFolder('root', 'file-path', env, memFs);
             expect(result).toStrictEqual(join('root', '_i18n'));
             expect(mkdirSpy).toHaveBeenCalledTimes(0);
         });

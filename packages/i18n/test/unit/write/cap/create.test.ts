@@ -3,8 +3,9 @@ import { createCapI18nEntries } from '../../../../src';
 import * as json from '../../../../src/write/cap/json';
 import * as properties from '../../../../src/write/cap/properties';
 import * as csv from '../../../../src/write/cap/csv';
-import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 describe('createCapI18nEntries', () => {
     const env = Object.freeze({
@@ -75,15 +76,15 @@ describe('createCapI18nEntries', () => {
         const tryAddJsonTextsSpy = jest.spyOn(json, 'tryAddJsonTexts').mockResolvedValue(false);
         const tryAddPropertiesTextsSpy = jest.spyOn(properties, 'tryAddPropertiesTexts').mockResolvedValue(false);
         const tryAddCsvTextsSpy = jest.spyOn(csv, 'tryAddCsvTexts').mockResolvedValue(true);
-        const fs = {} as unknown as Editor;
+        const memFs = create(createStorage());
         // act
-        const result = await createCapI18nEntries('root', 'path', newEntries, env, fs);
+        const result = await createCapI18nEntries('root', 'path', newEntries, env, memFs);
         // assert
         expect(result).toBeTruthy();
-        expect(getCapI18nFolder).toHaveBeenNthCalledWith(1, 'root', 'path', env, fs);
-        expect(tryAddJsonTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, fs);
-        expect(tryAddPropertiesTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, fs);
-        expect(tryAddCsvTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, fs);
+        expect(getCapI18nFolder).toHaveBeenNthCalledWith(1, 'root', 'path', env, memFs);
+        expect(tryAddJsonTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, memFs);
+        expect(tryAddPropertiesTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, memFs);
+        expect(tryAddCsvTextsSpy).toHaveBeenNthCalledWith(1, env, pathToFolderI18n, newEntries, memFs);
     });
     test('none existing files', async () => {
         // arrange

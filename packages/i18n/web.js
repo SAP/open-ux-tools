@@ -1,3 +1,3 @@
 'use strict';
 
-module.exports = require('./dist/src/web');
+module.exports = require('./dist/web');

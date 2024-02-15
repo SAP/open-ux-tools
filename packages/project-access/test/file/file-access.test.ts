@@ -85,7 +85,7 @@ describe('fileAccess', () => {
             expect(exists).toBe(false);
         });
 
-        test('Check existing file in memf-fs, should return true', async () => {
+        test('Check existing file in mem-fs, should return true', async () => {
             const exists = await fileExists(memFilePath, memFs);
             expect(exists).toBe(true);
         });

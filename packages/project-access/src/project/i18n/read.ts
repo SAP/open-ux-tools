@@ -9,7 +9,9 @@ import type { Editor } from 'mem-fs-editor';
  * @param root project root
  * @param i18nPropertiesPaths paths to `.properties` file`
  * @param projectType optional type of project
- * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
+ * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node.
+ * In case of CAP project, some CDS APIs are used internally which depends on `fs` of node and not `mem-fs-editor`.
+ * When calling this function, adding or removing a CDS file in memory or changing CDS configuration will not be considered until present on real file system.
  * @returns i18n bundles or exception
  */
 export async function getI18nBundles(

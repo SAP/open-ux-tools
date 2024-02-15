@@ -1,7 +1,6 @@
 import { join } from 'path';
 import { createApplicationAccess, createProjectAccess } from '../../src';
 import * as i18nMock from '../../src/project/i18n/write';
-import * as i18nReadMock from '../../src/project/i18n/read';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
@@ -57,8 +56,8 @@ describe('Test function createApplicationAccess()', () => {
     });
     test('Read access to i18n of standalone app - mem-fs-editor', async () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
-        const appAccess = await createApplicationAccess(appRoot);
-        const i18nBundles = await appAccess.getI18nBundles(memFs);
+        const appAccess = await createApplicationAccess(appRoot, memFs);
+        const i18nBundles = await appAccess.getI18nBundles();
         const i18nPropertiesPaths = await appAccess.getI18nPropertiesPaths();
         expect(i18nBundles['sap.app'].testTextKey[0].key.value).toBe('testTextKey');
         expect(i18nBundles['sap.app'].testTextKey[0].value.value).toBe('Test Text Value');
@@ -74,23 +73,6 @@ describe('Test function createApplicationAccess()', () => {
                 }
             }
         });
-    });
-
-    test('Read access to i18n of app in CAP project (mocked)', async () => {
-        // Mock setup
-        const projectRoot = join(sampleRoot, 'cap-project');
-        const appRoot = join(projectRoot, 'apps/one');
-        const i18nFolderNamesMock = jest
-            .spyOn(i18nReadMock, 'getCapI18nFolderNames')
-            .mockResolvedValue(['folderOne', 'folderTwo']);
-        const appAccess = await createApplicationAccess(appRoot);
-
-        // Test execution
-        const capI18nFolderNames = await appAccess.getCapI18nFolderNames();
-
-        // Result check
-        expect(capI18nFolderNames).toEqual(['folderOne', 'folderTwo']);
-        expect(i18nFolderNamesMock).toBeCalledWith(projectRoot);
     });
 
     test('Write access to i18n of standalone app (mocked)', async () => {
@@ -159,25 +141,19 @@ describe('Test function createApplicationAccess()', () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
 
         // Test execution
-        const appAccess = await createApplicationAccess(appRoot);
-        await appAccess.createAnnotationI18nEntries(
-            [
-                {
-                    key: 'newKey',
-                    value: 'newValue',
-                    annotation: 'newAnnotation'
-                }
-            ],
-            memFs
-        );
-        await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }], 'modelKey', memFs);
-        await appAccess.createManifestI18nEntries(
-            [
-                { key: '1', value: '1v' },
-                { key: '2', value: '2v' }
-            ],
-            memFs
-        );
+        const appAccess = await createApplicationAccess(appRoot, memFs);
+        await appAccess.createAnnotationI18nEntries([
+            {
+                key: 'newKey',
+                value: 'newValue',
+                annotation: 'newAnnotation'
+            }
+        ]);
+        await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }], 'modelKey');
+        await appAccess.createManifestI18nEntries([
+            { key: '1', value: '1v' },
+            { key: '2', value: '2v' }
+        ]);
 
         // Result check
         expect(createAnnotationI18nEntriesMock).toBeCalledWith(
@@ -241,11 +217,11 @@ describe('Test function createApplicationAccess()', () => {
         const createUI5I18nEntriesMock = jest.spyOn(i18nMock, 'createUI5I18nEntries').mockResolvedValue(true);
         const projectRoot = join(sampleRoot, 'cap-project');
         const appRoot = join(projectRoot, 'apps/one');
-        const appAccess = await createApplicationAccess(appRoot);
+        const appAccess = await createApplicationAccess(appRoot, memFs);
 
         // Test execution
-        await appAccess.createCapI18nEntries('filePath', [], memFs);
-        await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }], 'i18n', memFs);
+        await appAccess.createCapI18nEntries('filePath', []);
+        await appAccess.createUI5I18nEntries([{ key: 'one', value: 'two', annotation: 'three' }], 'i18n');
 
         // Result check
         expect(createCapI18nEntriesMock).toBeCalledWith(projectRoot, 'filePath', [], memFs);

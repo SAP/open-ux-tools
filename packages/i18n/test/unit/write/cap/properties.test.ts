@@ -3,7 +3,8 @@ import * as csv from '../../../../src/write/cap/csv';
 import * as utils from '../../../../src/utils';
 import fs from 'fs';
 import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 describe('properties', () => {
     describe('tryAddPropertiesTexts', () => {
@@ -59,7 +60,7 @@ describe('properties', () => {
             const doesExistSpy = jest.spyOn(utils, 'doesExist').mockResolvedValue(false);
             const tryAddCsvTextsSpy = jest.spyOn(csv, 'tryAddCsvTexts').mockResolvedValue(false);
             const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue('');
-            const editor = {} as unknown as Editor;
+            const memFs = create(createStorage());
             // act
             const newEntries = [
                 {
@@ -67,13 +68,13 @@ describe('properties', () => {
                     value: 'New Value'
                 }
             ];
-            const result = await tryAddPropertiesTexts(env, path, newEntries, editor);
+            const result = await tryAddPropertiesTexts(env, path, newEntries, memFs);
             // assert
             expect(result).toEqual(true);
 
             expect(doesExistSpy).toHaveBeenNthCalledWith(1, i18nPath);
-            expect(tryAddCsvTextsSpy).toHaveBeenNthCalledWith(1, env, path, newEntries, editor);
-            expect(writeFileSpy).toHaveBeenNthCalledWith(1, i18nPath, '\n#XFLD,27\nNewKey=New Value\n', editor);
+            expect(tryAddCsvTextsSpy).toHaveBeenNthCalledWith(1, env, path, newEntries, memFs);
+            expect(writeFileSpy).toHaveBeenNthCalledWith(1, i18nPath, '\n#XFLD,27\nNewKey=New Value\n', memFs);
         });
         describe('add to existing .properties file', () => {
             test('file ends with new line', async () => {

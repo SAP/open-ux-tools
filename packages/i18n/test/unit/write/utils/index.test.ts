@@ -1,7 +1,8 @@
 import { writeToExistingI18nPropertiesFile } from '../../../../src/write/utils';
 import { SapShortTextType } from '../../../../src';
 import * as utils from '../../../../src/utils';
-import type { Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 describe('index', () => {
     describe('writeToExistingI18nPropertiesFile', () => {
@@ -130,17 +131,17 @@ describe('index', () => {
             // arrange
             const readFileSpy = jest.spyOn(utils, 'readFile').mockResolvedValue('key = value\n');
             const writeFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
-            const editor = {} as unknown as Editor;
+            const memFs = create(createStorage());
             // act
-            const result = await writeToExistingI18nPropertiesFile('i18n.properties', entries, editor);
+            const result = await writeToExistingI18nPropertiesFile('i18n.properties', entries, memFs);
             // assert
             expect(result).toEqual(true);
-            expect(readFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', editor);
+            expect(readFileSpy).toHaveBeenNthCalledWith(1, 'i18n.properties', memFs);
             expect(writeFileSpy).toHaveBeenNthCalledWith(
                 1,
                 'i18n.properties',
                 'key = value\n\n#XFLD,27\nNewKey=New Value\n',
-                editor
+                memFs
             );
         });
     });
