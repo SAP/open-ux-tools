@@ -1,5 +1,13 @@
 # @sap-ux/project-access
 
+## 1.17.1
+
+### Patch Changes
+
+-   86da13e3: Add i18n support
+-   Updated dependencies [86da13e3]
+    -   @sap-ux/i18n@0.0.2
+
 ## 1.17.0
 
 ### Minor Changes
