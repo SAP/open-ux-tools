@@ -1,8 +1,8 @@
 import * as projectAccess from '@sap-ux/project-access';
 import { getQuestions } from '../../../src/prompts';
-import { promptNames } from '../../../src/types';
 import * as utility from '../../../src/prompts/utility';
-import { initI18n } from '../../../src/i18n';
+import { promptNames } from '../../../src/types';
+import { initI18nUi5AppInquirer } from '../../../src/i18n';
 
 jest.mock('@sap-ux/project-input-validator', () => {
     return {
@@ -12,8 +12,16 @@ jest.mock('@sap-ux/project-input-validator', () => {
 });
 
 describe('getPrompts', () => {
-    beforeAll(async () => initI18n());
-
+    const mockCdsInfo = {
+        isWorkspaceEnabled: false,
+        hasMinCdsVersion: true,
+        isCdsUi5PluginEnabled: false,
+        hasCdsUi5Plugin: false
+    };
+    beforeAll(async () => {
+        // Wait for i18n to bootstrap
+        await initI18nUi5AppInquirer();
+    });
     test('getQuestions, no options', () => {
         expect(getQuestions([])).toMatchInlineSnapshot(`
             [
@@ -182,7 +190,7 @@ describe('getPrompts', () => {
 
     test('getQuestions, parameter `isCap` specified', () => {
         // Prompt: `targetFolder` should not returned for CAP projects
-        expect(getQuestions([], undefined, undefined, { capProjectType: 'CAPNodejs' })).not.toEqual(
+        expect(getQuestions([], undefined, undefined, mockCdsInfo)).not.toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.targetFolder })])
         );
 
@@ -213,7 +221,7 @@ describe('getPrompts', () => {
                 }
             },
             false,
-            { capProjectType: 'CAPJava' }
+            mockCdsInfo
         );
         expect(
             (questions.find((question) => question.name === promptNames.name)?.validate as Function)('project1', {})
@@ -243,7 +251,7 @@ describe('getPrompts', () => {
         const getMtaPathSpy = jest.spyOn(projectAccess, 'getMtaPath').mockResolvedValue(mockMtaPath);
 
         // 'addDeployConfig' is always returned based on static inputs, it is the 'when' condition that determines its presence
-        let questions = getQuestions([], undefined, undefined, { capProjectType: 'CAPNodejs' });
+        let questions = getQuestions([], undefined, undefined, mockCdsInfo);
         expect(questions).toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.addDeployConfig })])
         );
@@ -256,7 +264,7 @@ describe('getPrompts', () => {
         ).toMatchInlineSnapshot(`"Add deployment configuration"`);
 
         getMtaPathSpy.mockResolvedValue({ mtaPath: 'any/path', hasRoot: false });
-        questions = getQuestions([], undefined, undefined, { capProjectType: 'CAPJava' });
+        questions = getQuestions([], undefined, undefined, mockCdsInfo);
         expect(
             await (questions.find((question) => question.name === promptNames.addDeployConfig)?.when as Function)()
         ).toMatchInlineSnapshot(`true`);

@@ -1,55 +1,5 @@
-import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
-import type { CapProjectType } from '@sap-ux/project-access';
-import type {
-    Answers,
-    ConfirmQuestion as BaseConfirmQuestion,
-    ListQuestion as BaseListQuestion,
-    InputQuestion as BaseInputQuestion,
-    ListChoiceOptions,
-    PromptFunction,
-    PromptModule,
-    Question,
-    AsyncDynamicQuestionProperty
-} from 'inquirer';
-import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-
-// todo: move to YUI types
-export interface GuiOptions {
-    hint?: string;
-    mandatory?: boolean;
-    applyDefaultWhenDirty?: boolean;
-    breadcrumb?: boolean | string;
-}
-
-export type PromptSeverityMessage = (input?: unknown, previousAnswers?: Answers) => IMessageSeverity | undefined;
-export type validate<T> = (input: any, answers?: T) => boolean | string | Promise<boolean | string>;
-
-export type UI5ApplicationQuestion<A extends Answers = Answers> = Question<A> & {
-    name: string;
-    guiOptions?: GuiOptions;
-    additionalMessages?: PromptSeverityMessage;
-};
-
-export interface FileBrowserQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
-    name: UI5ApplicationQuestion['name'];
-    guiType: 'file-browser' | 'folder-browser';
-    guiOptions?: UI5ApplicationQuestion['guiOptions'];
-}
-
-export interface ListQuestion<A extends Answers = Answers> extends BaseListQuestion<A> {
-    name: UI5ApplicationQuestion['name'];
-    guiOptions?: UI5ApplicationQuestion['guiOptions'];
-}
-
-export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfirmQuestion<A> {
-    name: UI5ApplicationQuestion['name'];
-    guiOptions?: UI5ApplicationQuestion['guiOptions'];
-}
-
-export interface InputQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
-    name: UI5ApplicationQuestion['name'];
-    guiOptions?: UI5ApplicationQuestion['guiOptions'];
-}
+import type { PromptSeverityMessage, UI5VersionChoice, validate } from '@sap-ux/inquirer-common';
+import type { AsyncDynamicQuestionProperty } from 'inquirer';
 
 export interface UI5ApplicationAnswers {
     name?: string;
@@ -68,14 +18,6 @@ export interface UI5ApplicationAnswers {
     enableNPMWorkspaces?: boolean;
     showAdvanced?: boolean;
 }
-
-/**
- * All info relevant to prompting for CAP projects
- *
- */
-export type CapCdsInfo = Partial<CdsUi5PluginInfo> & {
-    capProjectType?: CapProjectType;
-};
 
 /**
  * Enumeration of prompt names used by UI5ApplicationInquirerPromptOptions
@@ -212,23 +154,3 @@ type booleanValuePromptOtions = Record<
     Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>>;
 
 export type UI5ApplicationPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOtions>;
-
-export interface UI5VersionChoice extends ListChoiceOptions {
-    value: string; // UI5 semantic version
-}
-
-export interface InquirerAdapter {
-    prompt: PromptFunction;
-    promptModule: PromptModule;
-}
-
-/**
- *
- * Remove when YUI specific types are available from `"@sap-devx/yeoman-ui-types`
- *
- */
-export interface GuiOptions {
-    hint?: string;
-    applyDefaultWhenDirty?: boolean;
-    breadcrumb?: boolean | string;
-}

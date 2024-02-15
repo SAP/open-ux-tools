@@ -1,7 +1,8 @@
 import { getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
+import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import inquirer, { type Question } from 'inquirer';
 import { getQuestions } from './prompts';
-import type { InquirerAdapter, UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
+import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
 import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**

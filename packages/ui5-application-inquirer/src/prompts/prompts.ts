@@ -1,4 +1,15 @@
+import {
+    type ConfirmQuestion,
+    type FileBrowserQuestion,
+    type InputQuestion,
+    type ListQuestion,
+    type YUIQuestion,
+    searchChoices,
+    ui5VersionsGrouped,
+    getUI5ThemesChoices
+} from '@sap-ux/inquirer-common';
 import { getMtaPath } from '@sap-ux/project-access';
+import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
 import { validateModuleName, validateNamespace, validateProjectFolder } from '@sap-ux/project-input-validator';
 import {
     defaultVersion,
@@ -9,24 +20,8 @@ import {
 import type { ListChoiceOptions } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { t } from '../i18n';
-import type {
-    CapCdsInfo,
-    ConfirmQuestion,
-    FileBrowserQuestion,
-    InputQuestion,
-    ListQuestion,
-    UI5ApplicationQuestion
-} from '../types';
 import { promptNames, type UI5ApplicationAnswers, type UI5ApplicationPromptOptions } from '../types';
-import {
-    defaultAppName,
-    extendWithOptions,
-    getUI5ThemesChoices,
-    isVersionIncluded,
-    searchChoices,
-    ui5VersionsGrouped,
-    withCondition
-} from './utility';
+import { defaultAppName, extendWithOptions, isVersionIncluded, withCondition } from './utility';
 import { validateAppName } from './validators';
 
 /**
@@ -42,8 +37,8 @@ export function getQuestions(
     ui5Versions: UI5Version[],
     promptOptions?: UI5ApplicationPromptOptions,
     isCli = true,
-    capCdsInfo?: CapCdsInfo
-): UI5ApplicationQuestion<UI5ApplicationAnswers>[] {
+    capCdsInfo?: CdsUi5PluginInfo
+): YUIQuestion<UI5ApplicationAnswers>[] {
     // Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
     /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
     const ui5VersionChoices = ui5VersionsGrouped(
@@ -62,13 +57,13 @@ export function getQuestions(
             ? promptOptions[promptNames.targetFolder].default
             : process.cwd();
     let mtaPath: Awaited<Promise<string | undefined>>; // cache mta path discovery
-    const isCapProject = !!capCdsInfo?.capProjectType;
+    const isCapProject = !!capCdsInfo;
     // Always show breadcrumbs in YUI - opt. in
     const breadcrumb = true;
 
-    let questions: UI5ApplicationQuestion<UI5ApplicationAnswers>[] = [];
+    let questions: YUIQuestion<UI5ApplicationAnswers>[] = [];
 
-    const keyedPrompts: Record<promptNames, UI5ApplicationQuestion<UI5ApplicationAnswers>> = {
+    const keyedPrompts: Record<promptNames, YUIQuestion<UI5ApplicationAnswers>> = {
         [promptNames.name]: {
             type: 'input',
             guiOptions: {
@@ -136,7 +131,6 @@ export function getQuestions(
             },
             default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir || process.cwd(),
             validate: (target, { name = '' }: UI5ApplicationAnswers): boolean | string => {
-                // todo: why not check for valid name
                 if (name.length > 2) {
                     return validateProjectFolder(target, name);
                 }
@@ -317,7 +311,5 @@ export function getQuestions(
     if (promptOptions) {
         questions = extendWithOptions(questions, promptOptions);
     }
-    return questions as
-        | UI5ApplicationQuestion<UI5ApplicationAnswers>[]
-        | AutocompleteQuestionOptions<UI5ApplicationAnswers>[];
+    return questions as YUIQuestion<UI5ApplicationAnswers>[] | AutocompleteQuestionOptions<UI5ApplicationAnswers>[];
 }

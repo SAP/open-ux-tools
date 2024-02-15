@@ -1,8 +1,22 @@
 import { Separator, type ListChoiceOptions } from 'inquirer';
 import * as fuzzy from 'fuzzy';
 import { t } from '../i18n';
-import type { UI5Version } from '@sap-ux/ui5-info';
+import { getUi5Themes, type UI5Theme, type UI5Version } from '@sap-ux/ui5-info';
 import type { UI5VersionChoice } from '../types';
+
+/**
+ * Get the UI5 themes as prompt choices applicable for the specified UI5 version.
+ *
+ * @param ui5Version - UI5 semantic version
+ * @returns UI5 themes as list choice options
+ */
+export function getUI5ThemesChoices(ui5Version?: string): ListChoiceOptions[] {
+    const themes = getUi5Themes(ui5Version);
+    return themes.map((theme: UI5Theme) => ({
+        name: theme.label,
+        value: theme.id
+    }));
+}
 
 /**
  * Finds the search value in the provided list using `fuzzy` search.
@@ -28,11 +42,13 @@ export function searchChoices(searchVal: string, searchList: ListChoiceOptions[]
  *
  * @param versions ui5Versions
  * @param includeSeparators Include a separator to visually identify groupings, if false then grouping info is included in each entry as additional name text
+ * @param defaultChoice optional, provides an additionsl version choice entry and sets as the default
  * @returns Array of ui5 version choices and separators if applicable, grouped by maintenance state
  */
 export function ui5VersionsGrouped(
     versions: UI5Version[],
-    includeSeparators = false
+    includeSeparators = false,
+    defaultChoice?: UI5VersionChoice
 ): (UI5VersionChoice | Separator)[] {
     if (!versions || (Array.isArray(versions) && versions.length === 0)) {
         return [];
@@ -75,5 +91,9 @@ export function ui5VersionsGrouped(
         );
     }
 
-    return [...maintChoices, ...notMaintChoices];
+    const versionChoices = [...maintChoices, ...notMaintChoices];
+    if (defaultChoice) {
+        versionChoices.unshift(defaultChoice);
+    }
+    return versionChoices;
 }

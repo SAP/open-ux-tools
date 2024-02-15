@@ -1,17 +1,13 @@
-import { getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
+import { getDefaultUI5Theme, getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
+import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
 import { type Question } from 'inquirer';
 import autocomplete from 'inquirer-autocomplete-prompt';
 import cloneDeep from 'lodash/cloneDeep';
+import isNil from 'lodash/isNil';
 import { getQuestions } from './prompts';
-// import { cleanPromptOptions } from './prompts/utility';
 import type { PromptDefaultValue } from './types';
-import {
-    promptNames,
-    type CapCdsInfo,
-    type InquirerAdapter,
-    type UI5ApplicationAnswers,
-    type UI5ApplicationPromptOptions
-} from './types';
+import { promptNames, type UI5ApplicationAnswers, type UI5ApplicationPromptOptions } from './types';
+import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 
 /**
  * Get the inquirer prompts for ui5 library inquirer.
@@ -24,7 +20,7 @@ import {
 async function getPrompts(
     promptOptions?: UI5ApplicationPromptOptions,
     isCli = true,
-    capCdsInfo?: CapCdsInfo
+    capCdsInfo?: CdsUi5PluginInfo
 ): Promise<Question<UI5ApplicationAnswers>[]> {
     const filterOptions: UI5VersionFilterOptions = {
         useCache: true,
@@ -52,7 +48,7 @@ async function prompt(
     promptOptions: UI5ApplicationPromptOptions,
     adapter: InquirerAdapter,
     isCli = true,
-    capCdsInfo?: CapCdsInfo
+    capCdsInfo?: CdsUi5PluginInfo
 ): Promise<UI5ApplicationAnswers> {
     const ui5AppPrompts = await exports.getPrompts(promptOptions, isCli, capCdsInfo);
 
@@ -63,33 +59,48 @@ async function prompt(
 
     const answers = await adapter.prompt<UI5ApplicationAnswers>(ui5AppPrompts);
     // Apply default values to prompts in case they have not been executed
-    if (!answers?.showAdvanced) {
-        Object.assign(answers, await getAdvancedPromptDefaults(answers, promptOptions));
-    }
+    //if (!answers?.showAdvanced) {
+    Object.assign(answers, await getDefaults(answers, promptOptions));
+    //}
 
     return answers;
 }
 
 /**
- * Return the advanced configuration option default values.
+ * Return the default values for prompts that did not provide an answer.
  * This can be derived from user input, or a fallback default in case an answer was not provided due to the prompt not having been executed.
  *
  * @param answers
  * @param promptOptions
- * @returns advanced configuration answer values
+ * @returns answer values
  */
-function getAdvancedPromptDefaults(
+function getDefaults(
     answers: Partial<UI5ApplicationAnswers>,
     promptOptions: UI5ApplicationPromptOptions
 ): Partial<UI5ApplicationAnswers> {
     const defaultAnswers: Partial<UI5ApplicationAnswers> = {};
-    Object.entries(promptOptions).forEach(([promptKey, promptOpt]) => {
-        if (promptOpt.advancedOption) {
-            const advPromptKey = promptKey as keyof typeof promptNames;
+    Object.entries(promptOptions).forEach(([key, promptOpt]) => {
+        //if (promptOpt.advancedOption) {
+        const promptKey = key as keyof typeof promptNames;
+        // Do we have an answer, if notapply the default, either passed or fallback
+        if (isNil(answers[promptKey])) {
+            let defaultValue;
+
+            if (typeof (promptOpt as PromptDefaultValue<string | boolean>).default === 'function') {
+                defaultValue = ((promptOpt as PromptDefaultValue<string | boolean>).default as Function)(answers);
+            } else if ((promptOpt as PromptDefaultValue<string | boolean>).default) {
+                defaultValue = (promptOpt as PromptDefaultValue<string | boolean>).default;
+            } else if (promptKey === promptNames.ui5Theme) {
+                defaultValue = getDefaultUI5Theme(answers.ui5Version);
+            }
             Object.assign(defaultAnswers, {
-                [advPromptKey]: answers[advPromptKey] ?? (promptOpt as PromptDefaultValue<string | boolean>).default
+                [promptKey]: defaultValue
             });
-        }
+        } /*  else {
+            defaultValue = answers[promptKey];
+        } */
+
+        //}
     });
 
     return defaultAnswers;
@@ -99,8 +110,9 @@ export {
     getPrompts,
     prompt,
     promptNames,
-    type CapCdsInfo,
+    type CdsUi5PluginInfo,
     type UI5ApplicationAnswers,
     type UI5ApplicationPromptOptions,
-    type InquirerAdapter
+    type InquirerAdapter,
+    type PromptDefaultValue
 };

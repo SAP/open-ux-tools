@@ -78,6 +78,9 @@
       "path": "packages/fiori-freestyle-writer"
     },
     {
+      "path": "packages/inquirer-common"
+    },
+    {
       "path": "packages/jest-file-matchers"
     },
     {

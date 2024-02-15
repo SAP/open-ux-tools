@@ -31,6 +31,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
         "fuzzy": "0.1.3",
