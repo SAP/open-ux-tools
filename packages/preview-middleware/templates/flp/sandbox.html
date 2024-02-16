@@ -3,6 +3,7 @@
     <head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta charset="UTF-8" />
+        <meta http-equiv="Content-Security-Policy" content="script-src 'unsafe-eval' 'unsafe-inline' 'self' http://localhost ">
         <meta
             name="sap.ushellConfig.crossPlatformDefaults"
             content='{
@@ -60,9 +61,14 @@
         }' />
         <title>Local FLP Sandbox</title>
         <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"'' is a NON-SECURE setting for test environments -->
+        <script>
+            window['sap-ui-config'] = {
+                oninit: "module:open/ux/preview/client/flp/init"
+            };
+        </script>
         <script 
             id="sap-ui-bootstrap"
-            src="/resources/sap/ushell/bootstrap/cdm.js"
+            src="<%- basePath %>/resources/sap/ushell/bootstrap/cdm.js"
             data-sap-ui-libs="<%- ui5.libs %>"
             data-sap-ui-async="true"
             data-sap-ui-preload="async"

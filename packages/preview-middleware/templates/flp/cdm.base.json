@@ -67,7 +67,7 @@
                 "sections": {
                     "section:examples": {
                         "id": "section:examples",
-                        "title": "Example Apps",
+                        "title": "Preview",
                         "layout": {
                             "vizOrder": []
                         },
@@ -86,7 +86,7 @@
 				"menuEntries": [
 					{
 						"id": "Preview",
-						"title": "Showcase",
+						"title": "Local",
 						"description": "",
 						"icon": "sap-icon://syringe",
 						"type": "IBN",

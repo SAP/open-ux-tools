@@ -165,12 +165,13 @@ export function registerSAPFonts() {
 /**
  * Read the application title from the resource bundle and set it as document title.
  *
+ * @param pathPrefix optional parameter to define the path prefix to the i18n folder.
  * @param i18nKey optional parameter to define the i18n key to be used for the title.
  */
-export function setI18nTitle(i18nKey = 'appTitle') {
+export function setI18nTitle(pathPrefix = '.', i18nKey = 'appTitle') {
     const locale = sap.ui.getCore().getConfiguration().getLanguage();
     const resourceBundle = ResourceBundle.create({
-        url: 'i18n/i18n.properties',
+        url: `${pathPrefix}/i18n/i18n.properties`,
         locale
     }) as ResourceBundle;
     if (resourceBundle.hasText(i18nKey)) {
@@ -212,15 +213,21 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
     }
 
     // Load custom library paths if configured
+    let root = '.';
     if (appUrls) {
-        await registerComponentDependencyPaths(JSON.parse(appUrls));
+        const urls = JSON.parse(appUrls);
+        root = urls[0];
+        await registerComponentDependencyPaths(urls);
     }
 
     // init
-    setI18nTitle();
+    setI18nTitle(root);
     registerSAPFonts();
-    const renderer = await sap.ushell.Container.createRenderer(undefined, true);
-    renderer.placeAt('content');
+
+    if (document.getElementById('content')) {
+        const renderer = await sap.ushell.Container.createRenderer(undefined, true);
+        renderer.placeAt('content');
+    }
 }
 
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
