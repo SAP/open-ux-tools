@@ -1,6 +1,8 @@
 export { FileName } from './constants';
 export { getFilePaths } from './file';
 export {
+    createApplicationAccess,
+    createProjectAccess,
     findAllApps,
     findCapProjects,
     findFioriArtifacts,
@@ -15,7 +17,7 @@ export {
     getCdsFiles,
     getCdsRoots,
     getCdsServices,
-    getI18nPropertiesPaths,
+    getCapI18nFolderNames,
     getMtaPath,
     getNodeModulesPath,
     getProject,

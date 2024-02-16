@@ -78,6 +78,20 @@ describe('CustomPage', () => {
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
         });
 
+        test('latest version with minimal input, plus optional page id', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...minimalInput,
+                id: 'DummyPage'
+            };
+            const testApiData = JSON.parse(JSON.stringify(minInput));
+            //act
+            generateCustomPage(target, testApiData, fs);
+            //check
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+        });
+
         test('latest version with entitySet and lower UI5 version', () => {
             const target = join(testDir, 'ui5_1_71');
             const localManifest = JSON.parse(testAppManifest);
@@ -114,6 +128,19 @@ describe('CustomPage', () => {
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+        });
+
+        test('with older but supported UI5 version, plus optional page id', () => {
+            const target = join(testDir, 'version-1.84');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...minimalInput,
+                id: 'DummyPage',
+                minUI5Version: '1.84'
+            };
+            const testApiData = JSON.parse(JSON.stringify(minInput));
+            generateCustomPage(target, testApiData, fs);
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
         test('with not supported version', () => {
@@ -168,6 +195,17 @@ describe('CustomPage', () => {
             const target = join(testDir, 'with-nav');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             generateCustomPage(target, inputWithNavigation, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+
+        test('simple inbound navigation, plus optional page id', () => {
+            const target = join(testDir, 'with-nav');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const minInput = {
+                ...inputWithNavigation,
+                id: 'DummyPage'
+            };
+            generateCustomPage(target, minInput, fs);
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 

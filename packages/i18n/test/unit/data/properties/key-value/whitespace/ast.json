@@ -1,0 +1,16 @@
+[
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "topic",
+      "range": "[(0,0)..(0,5)]"
+    },
+    "element": {
+      "type": "value",
+      "value": ".properties files",
+      "range": "[(0,6)..(0,23)]"
+    },
+    "range": "[(0,0)..(0,23)]"
+  }
+]

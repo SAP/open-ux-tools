@@ -1,0 +1,13 @@
+{
+  "header": {
+    "fields": [
+      {
+        "quoted": false,
+        "value": "key",
+        "range": "[(0,0)..(0,3)]"
+      }
+    ],
+    "range": "[(0,0)..(0,3)]"
+  },
+  "rows": []
+}
