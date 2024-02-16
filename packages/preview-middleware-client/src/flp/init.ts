@@ -209,7 +209,7 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
                     startAdaptation(options, pluginScript);
                 });
             });
-        }
+        };
         if (sap.ushell.Container.isInitialized()) {
             initAdp();
         } else {
