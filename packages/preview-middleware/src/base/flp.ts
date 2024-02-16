@@ -286,6 +286,15 @@ export class FlpSandbox {
                 const html = this.generateSandboxForEditor(rta, editor);
                 res.status(200).contentType('html').send(html);
             });
+
+            // add route for the cdm.json
+            const path = previewUrl.split('/');
+            path.pop();
+            path.push('cdm.json');
+            this.router.get(path.join('/'), (async (_req: Request, res: Response & { _livereload?: boolean }) => {
+                const json = generateCdm(this.templateConfig.apps);
+                res.status(200).contentType('json').send(json);
+            }) as RequestHandler);
         }
     }
 

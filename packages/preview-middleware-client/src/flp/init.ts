@@ -188,9 +188,9 @@ export function setI18nTitle(pathPrefix = '.', i18nKey = 'appTitle') {
  * @returns promise
  */
 export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: string | null }): Promise<void> {
-    // Register RTA if configured
+    // Register RTA if configured  
     if (flex) {
-        sap.ushell.Container.attachRendererCreatedEvent(async function () {
+        const initAdp = async function () {
             const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const view = event.getParameter('componentInstance');
@@ -209,7 +209,12 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
                     startAdaptation(options, pluginScript);
                 });
             });
-        });
+        }
+        if (sap.ushell.Container.isInitialized()) {
+            initAdp();
+        } else {
+            sap.ushell.Container.attachRendererCreatedEvent(initAdp);
+        }
     }
 
     // Load custom library paths if configured
