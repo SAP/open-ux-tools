@@ -41,6 +41,10 @@ export type ListReportSettings = StandardPageSettings & {
  */
 export interface FpmPage {
     /**
+     * Optional unique id parameter.
+     */
+    id?: string;
+    /**
      * Name of the entity used for the custom page.
      */
     entity: string;
