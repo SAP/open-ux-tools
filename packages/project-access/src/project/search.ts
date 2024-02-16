@@ -342,54 +342,40 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
 /**
  * Generates manifest.json from provided .library file.
  *
- * @param paths paths to .library file
- * @param logger - logger instance
- * @returns library result containing virtually generate manifest.json, project path and empty manifestPath
+ * @param dotLibraryPath paths to .library file
+ * @returns virtually generated manifest.json
  */
-async function getVirtualManifest(paths: string[], logger?: ExtensionLogger): Promise<LibraryResults[]> {
+export async function getVirtualManifest(dotLibraryPath: string): Promise<Manifest> {
     const FileSystem = await import('@ui5/fs/adapters/FileSystem');
     const ResourceFactory = await import('@ui5/fs/resourceFactory');
     const generateLibraryManifest = await import('@ui5/builder/tasks/generateLibraryManifest');
 
-    const virtualLibraries = [];
-    for (const libraryPath of paths) {
-        const projectName = 'library';
-        const virBasePath = `/resources/${projectName}/`;
-        const fs = new FileSystem.default({
-            virBasePath,
-            fsBasePath: libraryPath
-        });
-        const workspace = await ResourceFactory.createWorkspace({ reader: fs, name: 'library', virBasePath });
-        try {
-            const getProject = () => {
-                return { getVersion: () => '1.0.0' };
-            };
-            await generateLibraryManifest.default({
-                workspace,
-                taskUtil: { getProject },
-                options: { projectName }
-            });
-            const files = await workspace.byGlob('**/manifest.json');
-            for (const file of files) {
-                const projectRoot = dirname((await findFileUp(FileName.Package, dirname(libraryPath))) ?? libraryPath);
-                const manifest: Manifest = JSON.parse(await file.getString());
-                virtualLibraries.push({ manifest, projectRoot, manifestPath: '' });
-            }
-        } catch (error) {
-            logger?.warn(error);
-        }
-    }
-    return virtualLibraries;
+    const projectName = 'library';
+    const virBasePath = `/resources/${projectName}/`;
+    const fs = new FileSystem.default({
+        virBasePath,
+        fsBasePath: dotLibraryPath
+    });
+    const workspace = await ResourceFactory.createWorkspace({ reader: fs, name: 'library', virBasePath });
+    const getProject = () => {
+        return { getVersion: () => '1.0.0' };
+    };
+    await generateLibraryManifest.default({
+        workspace,
+        taskUtil: { getProject },
+        options: { projectName }
+    });
+    const manifestFiles = await workspace.byGlob('**/manifest.json');
+    return JSON.parse(await manifestFiles?.[0].getString());
 }
 
 /**
  * Filter extensions projects from a list of files.
  *
  * @param pathMap - path to files
- * @param logger - logger instance
  * @returns - results as array of found library projects.
  */
-async function filterLibraries(pathMap: FileMapAndCache, logger?: ExtensionLogger): Promise<LibraryResults[]> {
+async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults[]> {
     const results: LibraryResults[] = [];
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     const dotLibraryPaths = Object.keys(pathMap)
@@ -397,8 +383,10 @@ async function filterLibraries(pathMap: FileMapAndCache, logger?: ExtensionLogge
         .map((path) => dirname(path))
         .filter((path) => !manifestPaths.map((manifestPath) => dirname(manifestPath)).includes(path));
     if (dotLibraryPaths) {
-        const libraries: LibraryResults[] = await getVirtualManifest(dotLibraryPaths, logger);
-        libraries.forEach((library) => results.push(library));
+        for (const libraryPath of dotLibraryPaths) {
+            const projectRoot = dirname((await findFileUp(FileName.Package, dirname(libraryPath))) ?? libraryPath);
+            results.push({ projectRoot, libraryPath });
+        }
     }
     for (const manifestPath of manifestPaths) {
         try {
@@ -439,13 +427,11 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
  * @param options - find options
  * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @param options.artifacts - list of artifacts to search for: 'application', 'adaptation', 'extension' see FioriArtifactTypes
- * @param options.logger - logger instance
  * @returns - data structure containing the search results, for app e.g. as path to app plus files already parsed, e.g. manifest.json
  */
 export async function findFioriArtifacts(options: {
     wsFolders?: readonly WorkspaceFolder[] | string[];
     artifacts: FioriArtifactTypes[];
-    logger?: ExtensionLogger;
 }): Promise<FoundFioriArtifacts> {
     const results: FoundFioriArtifacts = {};
     const fileNames: string[] = getFilterFileNames(options.artifacts);
@@ -473,7 +459,7 @@ export async function findFioriArtifacts(options: {
         results.extensions = await filterExtensions(pathMap);
     }
     if (options.artifacts.includes('libraries')) {
-        results.libraries = await filterLibraries(pathMap, options.logger);
+        results.libraries = await filterLibraries(pathMap);
     }
     return results;
 }
