@@ -1,0 +1,1 @@
+export { serveStaticMiddleware } from './base';

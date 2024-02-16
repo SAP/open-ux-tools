@@ -120,6 +120,9 @@
       "path": "packages/project-input-validator"
     },
     {
+      "path": "packages/serve-static-middleware"
+    },
+    {
       "path": "packages/store"
     },
     {
