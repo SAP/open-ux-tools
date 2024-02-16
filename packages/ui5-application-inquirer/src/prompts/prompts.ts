@@ -51,10 +51,10 @@ export function getQuestions(
     const appName =
         typeof promptOptions?.[promptNames.name]?.default === 'string'
             ? promptOptions[promptNames.name].default
-            : undefined;
+            : undefined; // Default functions will be applied later, these replace the existing defaults
     const targetDir =
         typeof promptOptions?.[promptNames.targetFolder]?.default === 'string'
-            ? promptOptions[promptNames.targetFolder].default
+            ? promptOptions[promptNames.targetFolder].default // Default functions will be applied later, these replace the existing defaults
             : process.cwd();
     let mtaPath: Awaited<Promise<string | undefined>>; // cache mta path discovery
     const isCapProject = !!capCdsInfo;

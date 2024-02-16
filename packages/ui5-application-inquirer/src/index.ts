@@ -8,7 +8,6 @@ import { getQuestions } from './prompts';
 import type { PromptDefaultValue } from './types';
 import { promptNames, type UI5ApplicationAnswers, type UI5ApplicationPromptOptions } from './types';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
-
 /**
  * Get the inquirer prompts for ui5 library inquirer.
  *

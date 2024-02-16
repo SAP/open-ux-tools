@@ -1,6 +1,8 @@
 import * as projectAccess from '@sap-ux/project-access';
+import * as projectValidators from '@sap-ux/project-input-validator';
 import { getQuestions } from '../../../src/prompts';
 import * as utility from '../../../src/prompts/utility';
+import type { UI5ApplicationPromptOptions } from '../../../src/types';
 import { promptNames } from '../../../src/types';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 
@@ -19,176 +21,21 @@ describe('getPrompts', () => {
         hasCdsUi5Plugin: false
     };
     beforeAll(async () => {
-        // Wait for i18n to bootstrap
+        // Wait for i18n to bootstrap so we can test localised strings
         await initI18nUi5AppInquirer();
     });
-    test('getQuestions, no options', () => {
-        expect(getQuestions([])).toMatchInlineSnapshot(`
-            [
-              {
-                "default": [Function],
-                "guiOptions": {
-                  "applyDefaultWhenDirty": true,
-                  "breadcrumb": true,
-                  "hint": "The name of the module for this application that will be loaded at runtime. This also determines the directory name of the generated application.",
-                  "mandatory": true,
-                },
-                "message": "Module name",
-                "name": "name",
-                "type": "input",
-                "validate": [Function],
-              },
-              {
-                "default": [Function],
-                "guiOptions": {
-                  "breadcrumb": true,
-                  "hint": "The title of your application that is displayed in the header of the application.",
-                },
-                "message": "Application title",
-                "name": "title",
-                "type": "input",
-              },
-              {
-                "default": [Function],
-                "guiOptions": {
-                  "breadcrumb": true,
-                  "hint": "A unique package name for the application module being created. It should follow the standard Java package notation.",
-                },
-                "message": "Application namespace",
-                "name": "namespace",
-                "type": "input",
-                "validate": [Function],
-              },
-              {
-                "default": [Function],
-                "guiOptions": {
-                  "breadcrumb": true,
-                  "hint": "Project description in package.json of your project",
-                },
-                "message": "Description",
-                "name": "description",
-                "type": "input",
-              },
-              {
-                "default": [Function],
-                "guiOptions": {
-                  "applyDefaultWhenDirty": true,
-                  "breadcrumb": "Project Path",
-                  "mandatory": true,
-                },
-                "guiType": "folder-browser",
-                "message": "Project folder path",
-                "name": "targetFolder",
-                "type": "input",
-                "validate": [Function],
-              },
-              {
-                "choices": [Function],
-                "default": [Function],
-                "guiOptions": {
-                  "breadcrumb": "UI5 Version",
-                  "hint": "Represents the minimum version of SAPUI5 that this application requires.",
-                },
-                "message": "Minimum SAPUI5 version",
-                "name": "ui5Version",
-                "source": [Function],
-                "type": "list",
-                "when": [Function],
-              },
-              {
-                "default": [Function],
-                "guiOptions": {
-                  "breadcrumb": "Deploy Config",
-                },
-                "message": [Function],
-                "name": "addDeployConfig",
-                "type": "confirm",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "default": false,
-                "guiOptions": {
-                  "breadcrumb": "FLP Config",
-                },
-                "message": [Function],
-                "name": "addFlpConfig",
-                "type": "confirm",
-                "validate": [Function],
-              },
-              {
-                "default": false,
-                "guiOptions": {
-                  "hint": "Choosing 'No' will apply defaults",
-                },
-                "message": "Configure advanced options",
-                "name": "showAdvanced",
-                "type": "confirm",
-              },
-              {
-                "choices": [Function],
-                "default": [Function],
-                "guiOptions": {
-                  "applyDefaultWhenDirty": true,
-                  "breadcrumb": true,
-                },
-                "message": "UI5 theme",
-                "name": "ui5Theme",
-                "type": "list",
-              },
-              {
-                "default": false,
-                "guiOptions": {
-                  "breadcrumb": "Eslint",
-                },
-                "message": "Add Eslint configuration to the project",
-                "name": "enableEslint",
-                "type": "confirm",
-              },
-              {
-                "default": false,
-                "guiOptions": {
-                  "breadcrumb": "Code Assist",
-                },
-                "message": "Add code assist libraries to your project",
-                "name": "enableCodeAssist",
-                "type": "confirm",
-                "when": [Function],
-              },
-              {
-                "default": false,
-                "guiOptions": {
-                  "breadcrumb": "Skip Annotations",
-                },
-                "message": "Skip generation of associated annotations.cds file",
-                "name": "skipAnnotations",
-                "type": "confirm",
-              },
-              {
-                "default": false,
-                "guiOptions": {
-                  "breadcrumb": "Enable NPM Workspaces",
-                },
-                "message": "Generation of this application can update the CAP project to use NPM workspaces and an associated CDS plugin library (cds-plugin-ui5). Do you want to enable this feature? (Note: this is requirement for generating with TypeScript)",
-                "name": "enableNPMWorkspaces",
-                "type": "confirm",
-                "when": [Function],
-              },
-              {
-                "default": false,
-                "guiOptions": {
-                  "breadcrumb": true,
-                },
-                "message": "Enable TypeScript",
-                "name": "enableTypeScript",
-                "type": "confirm",
-                "when": [Function],
-              },
-            ]
-        `);
+
+    afterEach(() => {
+        // Reset all spys (not mocks)
+        // jest.restoreAllMocks() only works when the mock was created with jest.spyOn().
+        jest.restoreAllMocks();
     });
 
-    test('getQuestions, parameter `isCap` specified', () => {
+    test('getQuestions, no options', () => {
+        expect(getQuestions([])).toMatchSnapshot();
+    });
+
+    test('getQuestions, parameter `capCdsInfo` specified', () => {
         // Prompt: `targetFolder` should not returned for CAP projects
         expect(getQuestions([], undefined, undefined, mockCdsInfo)).not.toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.targetFolder })])
@@ -239,11 +86,103 @@ describe('getPrompts', () => {
         );
         expect(
             (questions.find((question) => question.name === promptNames.name)?.validate as Function)('project1', {})
-        ).toMatchInlineSnapshot(`true`);
+        ).toEqual(true);
+
+        // Default generated name
+        expect((questions.find((question) => question.name === promptNames.name)?.default as Function)({})).toEqual(
+            'project1'
+        );
+
+        // Name answer
+        expect(
+            (questions.find((question) => question.name === promptNames.name)?.default as Function)({ name: 'abc123' })
+        ).toEqual('abc123');
+
+        // Default name provided
+        const promptOpts: UI5ApplicationPromptOptions = {
+            [promptNames.name]: {
+                default: 'defaultAppName'
+            }
+        };
+        questions = getQuestions([], promptOpts);
+        const namePrompt = questions.find((question) => question.name === promptNames.name);
+        expect(namePrompt?.default).toEqual(promptOpts.name?.default);
+    });
+
+    test('getQuestions, prompt: `title`, default', () => {
+        const questions = getQuestions([]);
+        // defaults
+        expect(
+            (questions.find((question) => question.name === promptNames.title)?.default as Function)({})
+        ).toMatchInlineSnapshot(`"App Title"`);
 
         expect(
-            (questions.find((question) => question.name === promptNames.name)?.default as Function)({})
-        ).toMatchInlineSnapshot(`"project1"`);
+            (questions.find((question) => question.name === promptNames.title)?.default as Function)({
+                title: 'alreadyAnsweredTitle'
+            })
+        ).toMatchInlineSnapshot(`"alreadyAnsweredTitle"`);
+    });
+
+    test('getQuestions, prompt: `namespace`', () => {
+        let questions = getQuestions([]);
+        // defaults
+        let namespacePrompt = questions.find((question) => question.name === promptNames.namespace);
+        expect((namespacePrompt?.default as Function)({})).toMatchInlineSnapshot(`""`);
+
+        expect(
+            (namespacePrompt?.default as Function)({
+                namespace: 'abc'
+            })
+        ).toMatchInlineSnapshot(`"abc"`);
+
+        // validators
+        const validateNamespaceSpy = jest.spyOn(projectValidators, 'validateNamespace').mockReturnValue(true);
+        expect(namespacePrompt?.validate!(undefined, {})).toEqual(true);
+
+        const args = ['abc', { name: 'project1' }] as const;
+        expect(namespacePrompt?.validate!(...args)).toEqual(true);
+        expect(validateNamespaceSpy).toHaveBeenCalledWith(args[0], args[1].name);
+
+        const promptOpts: UI5ApplicationPromptOptions = {
+            [promptNames.name]: {
+                default: 'defaultAppName'
+            }
+        };
+        questions = getQuestions([], promptOpts);
+        namespacePrompt = questions.find((question) => question.name === promptNames.namespace);
+        expect(namespacePrompt?.validate!('def', {})).toEqual(true);
+        expect(validateNamespaceSpy).toHaveBeenCalledWith('def', promptOpts.name?.default);
+    });
+
+    test('getQuestions, prompt: `description`, default', () => {
+        let questions = getQuestions([]);
+        // defaults
+        let namespacePrompt = questions.find((question) => question.name === promptNames.namespace);
+        expect((namespacePrompt?.default as Function)({})).toMatchInlineSnapshot(`""`);
+
+        expect(
+            (namespacePrompt?.default as Function)({
+                namespace: 'abc'
+            })
+        ).toMatchInlineSnapshot(`"abc"`);
+
+        // validators
+        const validateNamespaceSpy = jest.spyOn(projectValidators, 'validateNamespace').mockReturnValue(true);
+        expect(namespacePrompt?.validate!(undefined, {})).toEqual(true);
+
+        const args = ['abc', { name: 'project1' }] as const;
+        expect(namespacePrompt?.validate!(...args)).toEqual(true);
+        expect(validateNamespaceSpy).toHaveBeenCalledWith(args[0], args[1].name);
+
+        const promptOpts: UI5ApplicationPromptOptions = {
+            [promptNames.name]: {
+                default: 'defaultAppName'
+            }
+        };
+        questions = getQuestions([], promptOpts);
+        namespacePrompt = questions.find((question) => question.name === promptNames.namespace);
+        expect(namespacePrompt?.validate!('def', {})).toEqual(true);
+        expect(validateNamespaceSpy).toHaveBeenCalledWith('def', promptOpts.name?.default);
     });
 
     test('getQuestions, prompt: `addDeployConfig` conditions and message based on mta.yaml discovery', async () => {
