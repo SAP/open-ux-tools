@@ -155,34 +155,49 @@ describe('getPrompts', () => {
     });
 
     test('getQuestions, prompt: `description`, default', () => {
-        let questions = getQuestions([]);
+        const questions = getQuestions([]);
         // defaults
-        let namespacePrompt = questions.find((question) => question.name === promptNames.namespace);
-        expect((namespacePrompt?.default as Function)({})).toMatchInlineSnapshot(`""`);
+        const descPrompt = questions.find((question) => question.name === promptNames.description);
+        expect((descPrompt?.default as Function)({})).toMatchInlineSnapshot(`"An SAP Fiori application."`);
 
         expect(
-            (namespacePrompt?.default as Function)({
-                namespace: 'abc'
+            (descPrompt?.default as Function)({
+                description: 'abc 123'
             })
-        ).toMatchInlineSnapshot(`"abc"`);
+        ).toMatchInlineSnapshot(`"abc 123"`);
+    });
 
-        // validators
-        const validateNamespaceSpy = jest.spyOn(projectValidators, 'validateNamespace').mockReturnValue(true);
-        expect(namespacePrompt?.validate!(undefined, {})).toEqual(true);
-
-        const args = ['abc', { name: 'project1' }] as const;
-        expect(namespacePrompt?.validate!(...args)).toEqual(true);
-        expect(validateNamespaceSpy).toHaveBeenCalledWith(args[0], args[1].name);
-
+    test('getQuestions, prompt: `targetFolder`', () => {
+        const mockCwd = '/any/current/working/directory';
+        jest.spyOn(process, 'cwd').mockReturnValueOnce(mockCwd);
+        let questions = getQuestions([]);
+        // defaults, cwd
+        let targetFolderPrompt = questions.find((question) => question.name === promptNames.targetFolder);
+        expect((targetFolderPrompt?.default as Function)({})).toEqual(mockCwd);
+        // already answered
+        const mockAnsTargetFolder = '/any/answered/target/folder';
+        expect((targetFolderPrompt?.default as Function)({ targetFolder: mockAnsTargetFolder })).toEqual(
+            mockAnsTargetFolder
+        );
+        // target folder provided with prompt options
         const promptOpts: UI5ApplicationPromptOptions = {
-            [promptNames.name]: {
-                default: 'defaultAppName'
+            [promptNames.targetFolder]: {
+                default: '/any/passed/target/folder'
             }
         };
         questions = getQuestions([], promptOpts);
-        namespacePrompt = questions.find((question) => question.name === promptNames.namespace);
-        expect(namespacePrompt?.validate!('def', {})).toEqual(true);
-        expect(validateNamespaceSpy).toHaveBeenCalledWith('def', promptOpts.name?.default);
+        targetFolderPrompt = questions.find((question) => question.name === promptNames.targetFolder);
+        expect(targetFolderPrompt?.default).toEqual(promptOpts.targetFolder?.default);
+
+        // validators
+        questions = getQuestions([]);
+        targetFolderPrompt = questions.find((question) => question.name === promptNames.targetFolder);
+        expect(targetFolderPrompt?.validate!(undefined, {})).toEqual(false);
+
+        const projectValidatorSpy = jest.spyOn(projectValidators, 'validateProjectFolder').mockReturnValueOnce(true);
+        const args = ['/some/target/path', { name: 'project1' }] as const;
+        expect(targetFolderPrompt?.validate!(...args)).toEqual(true);
+        expect(projectValidatorSpy).toHaveBeenCalledWith(...[args[0], args[1].name]);
     });
 
     test('getQuestions, prompt: `addDeployConfig` conditions and message based on mta.yaml discovery', async () => {

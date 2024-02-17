@@ -129,7 +129,7 @@ export function getQuestions(
                 mandatory: true,
                 breadcrumb: t('prompts.appFolderPathBreadcrumb')
             },
-            default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir || process.cwd(),
+            default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
             validate: (target, { name = '' }: UI5ApplicationAnswers): boolean | string => {
                 if (name.length > 2) {
                     return validateProjectFolder(target, name);
