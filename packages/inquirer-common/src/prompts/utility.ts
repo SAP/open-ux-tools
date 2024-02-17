@@ -42,13 +42,13 @@ export function searchChoices(searchVal: string, searchList: ListChoiceOptions[]
  *
  * @param versions ui5Versions
  * @param includeSeparators Include a separator to visually identify groupings, if false then grouping info is included in each entry as additional name text
- * @param defaultChoice optional, provides an additionsl version choice entry and sets as the default
+ * @param defaultChoice optional, provides an additional version choice entry that is added as the first entry in the version choices and sets as the default
  * @returns Array of ui5 version choices and separators if applicable, grouped by maintenance state
  */
 export function ui5VersionsGrouped(
     versions: UI5Version[],
     includeSeparators = false,
-    defaultChoice?: UI5VersionChoice
+    git?: UI5VersionChoice
 ): (UI5VersionChoice | Separator)[] {
     if (!versions || (Array.isArray(versions) && versions.length === 0)) {
         return [];
