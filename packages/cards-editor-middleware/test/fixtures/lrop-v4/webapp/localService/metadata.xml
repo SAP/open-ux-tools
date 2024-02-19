@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+    <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+    <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Measures.V1.xml">
+    <edmx:Include Alias="Measures" Namespace="Org.OData.Measures.V1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+    <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="sap.fe.core.InsightsTableService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="RootElement" EntityType="sap.fe.core.InsightsTableService.RootElement">
+          <NavigationPropertyBinding Path="referencedTestEntities" Target="RootElement"/>
+          <NavigationPropertyBinding Path="_RootPaymentTerms" Target="RootPaymentTerms"/>
+          <NavigationPropertyBinding Path="SiblingEntity" Target="RootElement"/>
+        </EntitySet>
+        <EntitySet Name="RootPaymentTerms" EntityType="sap.fe.core.InsightsTableService.RootPaymentTerms"/>
+      </EntityContainer>
+      <EntityType Name="RootElement">
+        <Key>
+          <PropertyRef Name="ID"/>
+          <PropertyRef Name="IsActiveEntity"/>
+        </Key>
+        <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="EntityLabel" Type="Edm.String" MaxLength="10"/>
+        <Property Name="targetText" Type="Edm.String"/>
+        <Property Name="textOnly" Type="Edm.String"/>
+        <Property Name="textFirst" Type="Edm.String"/>
+        <Property Name="textLast" Type="Edm.String"/>
+        <Property Name="textSeparate" Type="Edm.String"/>
+        <Property Name="date" Type="Edm.Date"/>
+        <Property Name="dateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="imageUrl" Type="Edm.String"/>
+        <Property Name="amountWithCurrency" Type="Edm.Int64"/>
+        <Property Name="amountWithUnit" Type="Edm.Int64"/>
+        <Property Name="currency" Type="Edm.String"/>
+        <Property Name="unit" Type="Edm.String"/>
+        <NavigationProperty Name="referencedTestEntities" Type="Collection(sap.fe.core.InsightsTableService.RootElement)"/>
+        <Property Name="referencedTestEntities_ID" Type="Edm.Guid"/>
+        <Property Name="statusCriticality" Type="Edm.Int32"/>
+        <Property Name="justCritical" Type="Edm.String"/>
+        <Property Name="onlyIcon" Type="Edm.String"/>
+        <Property Name="withIcon" Type="Edm.String"/>
+        <Property Name="withoutIcon" Type="Edm.String"/>
+        <NavigationProperty Name="_RootPaymentTerms" Type="sap.fe.core.InsightsTableService.RootPaymentTerms">
+          <ReferentialConstraint Property="RootPaymentTerms" ReferencedProperty="RootPaymentTerms"/>
+        </NavigationProperty>
+        <Property Name="RootPaymentTerms" Type="Edm.String" MaxLength="4"/>
+        <Property Name="NetAmountSemanticObject" Type="Edm.String" MaxLength="7"/>
+        <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+        <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <NavigationProperty Name="DraftAdministrativeData" Type="sap.fe.core.InsightsTableService.DraftAdministrativeData" ContainsTarget="true"/>
+        <NavigationProperty Name="SiblingEntity" Type="sap.fe.core.InsightsTableService.RootElement"/>
+      </EntityType>
+      <EntityType Name="RootPaymentTerms">
+        <Key>
+          <PropertyRef Name="RootPaymentTerms"/>
+        </Key>
+        <Property Name="RootPaymentTerms" Type="Edm.String" MaxLength="4" Nullable="false"/>
+        <Property Name="RootPaymentTerms_Text" Type="Edm.String" MaxLength="30"/>
+      </EntityType>
+      <EntityType Name="DraftAdministrativeData">
+        <Key>
+          <PropertyRef Name="DraftUUID"/>
+        </Key>
+        <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+        <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
+      </EntityType>
+      <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="sap.fe.core.InsightsTableService.RootElement"/>
+        <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+        <ReturnType Type="sap.fe.core.InsightsTableService.RootElement"/>
+      </Action>
+      <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="sap.fe.core.InsightsTableService.RootElement"/>
+        <ReturnType Type="sap.fe.core.InsightsTableService.RootElement"/>
+      </Action>
+      <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="sap.fe.core.InsightsTableService.RootElement"/>
+        <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+        <ReturnType Type="sap.fe.core.InsightsTableService.RootElement"/>
+      </Action>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement">
+        <Annotation Term="Common.SemanticKey">
+          <Collection>
+            <PropertyPath>ID</PropertyPath>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+          <Record Type="UI.HeaderInfoType">
+            <PropertyValue Property="TypeName" String="Root Element"/>
+            <PropertyValue Property="TypeNamePlural" String="Root Elements"/>
+            <PropertyValue Property="Title">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="EntityLabel"/>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="Description">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="textLast"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Facets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="Identification"/>
+              <PropertyValue Property="Target" AnnotationPath="@UI.Identification"/>
+            </Record>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="ID" String="SubElements"/>
+              <PropertyValue Property="Label" String="Sub Elements"/>
+              <PropertyValue Property="Target" AnnotationPath="referencedTestEntities/@UI.LineItem"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.Identification">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="ID"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+          <Collection>
+            <PropertyPath>EntityLabel</PropertyPath>
+            <PropertyPath>date</PropertyPath>
+            <PropertyPath>amountWithCurrency</PropertyPath>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="ID"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Label" String="Test Date"/>
+              <PropertyValue Property="Value" Path="date"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Label" String="Date and Time"/>
+              <PropertyValue Property="Value" Path="dateTime"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="targetText"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="textOnly"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="textFirst"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="textSeparate"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="textLast"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="textFirst"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="amountWithCurrency"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="amountWithUnit"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="imageUrl"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="referencedTestEntities/ID"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="justCritical"/>
+              <PropertyValue Property="Criticality" Path="statusCriticality"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="onlyIcon"/>
+              <PropertyValue Property="Criticality" Path="statusCriticality"/>
+              <PropertyValue Property="CriticalityRepresentation" EnumMember="UI.CriticalityRepresentationType/OnlyIcon"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="withIcon"/>
+              <PropertyValue Property="Criticality" EnumMember="UI.CriticalityType/Positive"/>
+              <PropertyValue Property="CriticalityRepresentation" EnumMember="UI.CriticalityRepresentationType/WithIcon"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="withoutIcon"/>
+              <PropertyValue Property="Criticality" EnumMember="UI.CriticalityType/VeryNegative"/>
+              <PropertyValue Property="CriticalityRepresentation" EnumMember="UI.CriticalityRepresentationType/WithoutIcon"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="RootPaymentTerms"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="NetAmountSemanticObject"/>
+            </Record>
+            <Record Type="UI.DataFieldWithIntentBasedNavigation">
+              <PropertyValue Property="Label" String="Intent based Navigation"/>
+              <PropertyValue Property="SemanticObject" String="ActionEnablement"/>
+              <PropertyValue Property="Value" Path="statusCriticality"/>
+            </Record>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.EntityContainer/RootElement">
+        <Annotation Term="Capabilities.FilterRestrictions">
+          <Record Type="Capabilities.FilterRestrictionsType">
+            <PropertyValue Property="FilterExpressionRestrictions">
+              <Collection>
+                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                  <PropertyValue Property="Property" PropertyPath="date"/>
+                  <PropertyValue Property="AllowedExpressions" String="SingleRange"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.DraftRoot">
+          <Record Type="Common.DraftRootType">
+            <PropertyValue Property="ActivationAction" String="sap.fe.core.InsightsTableService.draftActivate"/>
+            <PropertyValue Property="EditAction" String="sap.fe.core.InsightsTableService.draftEdit"/>
+            <PropertyValue Property="PreparationAction" String="sap.fe.core.InsightsTableService.draftPrepare"/>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/ID">
+        <Annotation Term="Common.Text" Path="EntityLabel"/>
+        <Annotation Term="Common.Label" String="My Entity"/>
+        <Annotation Term="Core.Computed" Bool="true"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/EntityLabel">
+        <Annotation Term="Common.Label" String="My RootElement"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/targetText">
+        <Annotation Term="Common.Label" String="A text"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/textOnly">
+        <Annotation Term="Common.Label" String="Only Text"/>
+        <Annotation Term="Common.Text" Path="targetText">
+          <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/textFirst">
+        <Annotation Term="Common.Label" String="Text First"/>
+        <Annotation Term="Common.Text" Path="targetText">
+          <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/textLast">
+        <Annotation Term="Common.Text" Path="targetText">
+          <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextLast"/>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/textSeparate">
+        <Annotation Term="Common.Text" Path="targetText">
+          <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextSeparate"/>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/date">
+        <Annotation Term="Common.Label" String="Date"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/dateTime">
+        <Annotation Term="Common.Label" String="Date And Time"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/imageUrl">
+        <Annotation Term="UI.IsImageURL" Bool="true"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/amountWithCurrency">
+        <Annotation Term="Measures.ISOCurrency" Path="currency"/>
+        <Annotation Term="Common.Label" String="Price"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/amountWithUnit">
+        <Annotation Term="Measures.Unit" Path="unit"/>
+        <Annotation Term="Common.Label" String="Amount"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/statusCriticality">
+        <Annotation Term="UI.ValueCriticality" String="true"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/justCritical">
+        <Annotation Term="Common.Label" String="Status"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/RootPaymentTerms">
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Common.Text" Path="_RootPaymentTerms/RootPaymentTerms_Text">
+          <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly"/>
+        </Annotation>
+        <Annotation Term="Common.IsUpperCase" Bool="true"/>
+        <Annotation Term="Common.Label" String="Terms of Payment"/>
+        <Annotation Term="Common.ValueListWithFixedValues" Bool="true"/>
+        <Annotation Term="Common.ValueList">
+          <Record Type="Common.ValueListType">
+            <PropertyValue Property="Label" String="Root Payment Terms"/>
+            <PropertyValue Property="CollectionPath" String="RootPaymentTerms"/>
+            <PropertyValue Property="Parameters">
+              <Collection>
+                <Record Type="Common.ValueListParameterInOut">
+                  <PropertyValue Property="LocalDataProperty" PropertyPath="RootPaymentTerms"/>
+                  <PropertyValue Property="ValueListProperty" String="RootPaymentTerms"/>
+                </Record>
+                <Record Type="Common.ValueListParameterDisplayOnly">
+                  <PropertyValue Property="ValueListProperty" String="RootPaymentTerms_Text"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/NetAmountSemanticObject">
+        <Annotation Term="Common.Label" String="Net Value (With Semantic Object)"/>
+        <Annotation Term="Common.SemanticObject" String="ActionVisibility"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/IsActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/HasActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/HasDraftEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootElement/DraftAdministrativeData">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootPaymentTerms">
+        <Annotation Term="UI.QuickViewFacets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="Root Payment Terms"/>
+              <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#RootPaymentGroup"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="RootPaymentGroup">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="RootPaymentTerms"/>
+                  <PropertyValue Property="Label" String="Root Payment Terms"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="Common.Label" String="Root Payment Terms"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootPaymentTerms/RootPaymentTerms">
+        <Annotation Term="Common.Text" Path="RootPaymentTerms_Text"/>
+        <Annotation Term="Common.IsUpperCase" Bool="true"/>
+        <Annotation Term="Common.Label" String="Payment Terms"/>
+        <Annotation Term="Common.QuickInfo" String="Terms of Payment Key"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.RootPaymentTerms/RootPaymentTerms_Text">
+        <Annotation Term="Core.Immutable" Bool="true"/>
+        <Annotation Term="Common.Label" String="Description"/>
+        <Annotation Term="Common.QuickInfo" String="Description of terms of payment"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.DraftAdministrativeData">
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftAdministrativeData}"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.DraftAdministrativeData/DraftUUID">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftUUID}"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.DraftAdministrativeData/CreationDateTime">
+        <Annotation Term="Common.Label" String="{i18n>Draft_CreationDateTime}"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.DraftAdministrativeData/CreatedByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_CreatedByUser}"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.DraftAdministrativeData/DraftIsCreatedByMe">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsCreatedByMe}"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.DraftAdministrativeData/LastChangeDateTime">
+        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangeDateTime}"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.DraftAdministrativeData/LastChangedByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangedByUser}"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.DraftAdministrativeData/InProcessByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_InProcessByUser}"/>
+      </Annotations>
+      <Annotations Target="sap.fe.core.InsightsTableService.DraftAdministrativeData/DraftIsProcessedByMe">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsProcessedByMe}"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

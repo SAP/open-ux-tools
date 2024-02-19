@@ -477,9 +477,15 @@ importers:
         specifier: 2.0.5
         version: 2.0.5
     devDependencies:
+      '@types/body-parser':
+        specifier: 1.19.5
+        version: 1.19.5
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
+      '@types/express':
+        specifier: 4.17.21
+        version: 4.17.21
 
   packages/cds-annotation-parser:
     dependencies:
@@ -8400,6 +8406,13 @@ packages:
     dependencies:
       '@types/connect': 3.4.35
       '@types/node': 18.11.9
+
+  /@types/body-parser@1.19.5:
+    resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
+    dependencies:
+      '@types/connect': 3.4.35
+      '@types/node': 18.11.9
+    dev: true
 
   /@types/cheerio@0.22.31:
     resolution: {integrity: sha512-Kt7Cdjjdi2XWSfrZ53v4Of0wG3ZcmaegFXjMmz9tfNrZSkzzo36G0AL1YqSdcIA78Etjt6E609pt5h1xnQkPUw==}

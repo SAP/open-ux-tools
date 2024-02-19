@@ -41,7 +41,7 @@ describe('enableCardEditor', () => {
         const fs = create(createStorage());
         await enableCardEditor(basePath, fs);
 
-        if (process.env.DEBUG) {
+        if (process.env.UX_DEBUG) {
             fs.commit(() => {});
         }
 
