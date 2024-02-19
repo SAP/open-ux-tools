@@ -1,0 +1,43 @@
+{
+    "name": "@sap-ux/cards-editor-middleware",
+    "version": "0.2.1",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/cards-editor-middleware"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Acards-editor-middleware"
+    },
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist test/test-output *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "templates",
+        "ui5.yaml"
+    ],
+    "dependencies": {
+        "@sap-ux/logger": "workspace:*",
+        "ejs": "3.1.9",
+        "body-parser": "^1.19.0",
+        "express": "^4.17.1",
+        "server-static": "^2.0.5"
+    },
+    "devDependencies": {
+        "@types/ejs": "3.1.2"
+    },
+    "engines": {
+        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
+        "node": ">=18.x"
+    }
+}
