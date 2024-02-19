@@ -1441,12 +1441,12 @@ importers:
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
+      chokidar:
+        specifier: 3.6.0
+        version: 3.6.0
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
-      fb-watchman:
-        specifier: 2.0.2
-        version: 2.0.2
       npm-run-all:
         specifier: 4.1.5
         version: 4.1.5
@@ -11101,6 +11101,21 @@ packages:
       fsevents: 2.3.2
     dev: true
 
+  /chokidar@3.6.0:
+    resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
+    engines: {node: '>= 8.10.0'}
+    dependencies:
+      anymatch: 3.1.2
+      braces: 3.0.2
+      glob-parent: 5.1.2
+      is-binary-path: 2.1.0
+      is-glob: 4.0.3
+      normalize-path: 3.0.0
+      readdirp: 3.6.0
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: true
+
   /chownr@1.1.4:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
     requiresBuild: true
@@ -13741,7 +13756,7 @@ packages:
     dependencies:
       '@babel/code-frame': 7.23.5
       chalk: 4.1.2
-      chokidar: 3.5.3
+      chokidar: 3.6.0
       cosmiconfig: 7.0.1
       deepmerge: 4.2.2
       fs-extra: 10.0.0
@@ -19466,7 +19481,7 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
-      chokidar: 3.5.3
+      chokidar: 3.6.0
       immutable: 4.1.0
       source-map-js: 1.0.2
     dev: true

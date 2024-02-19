@@ -1,61 +1,48 @@
-import * as watchman from 'fb-watchman';
-import { join } from 'path';
+import chokidar from 'chokidar';
 
 /**
  *
  */
 export class FileWatcher {
-    private client: watchman.Client;
+    client: chokidar.FSWatcher;
+
     /**
      *
      * @param projectPath
      * @param onChange
      */
     constructor(projectPath: string, onChange: (changedFiles: string[]) => void) {
-        this.client = new watchman.Client();
+        // Initialize the chokidar watcher
+        this.client = chokidar.watch(`${projectPath}/**/*.change`, {
+            ignored: /(^|[\/\\])\../, // ignore dotfiles
+            persistent: true
+        });
+        // Ready event indicates that chokidar is watching the specified paths
+        this.client.on('ready', () => {
+            console.log(`Watching for TypeScript file changes in ${projectPath}...`);
+        });
 
-        // Initialize the watchman client
-        this.client.command(['watch-project', projectPath], (error, resp) => {
-            if (error) {
-                console.error('Error initiating watch:', error);
-                this.client.end();
-                return;
-            }
+        // Add listener for file change events
+        this.client.on('change', (filePath: string) => {
+            console.log(`File ${filePath} has been changed`);
+            onChange([filePath]); // Call the provided onChange callback with the changed file path
+        });
 
-            // Subscribe to *.change file changes in the project directory
-            const { watch, relative_path } = resp;
-            this.client.command(
-                [
-                    'subscribe',
-                    watch,
-                    'my-subscription',
-                    {
-                        expression: ['allof', ['match', '*.change']],
-                        fields: ['name', 'size', 'exists', 'type']
-                    }
-                ],
-                (subscribeErr) => {
-                    if (subscribeErr) {
-                        console.error('Error subscribing to changes:', subscribeErr);
-                        this.client.end();
-                    }
-                }
-            );
+        // Add listener for file addition events
+        this.client.on('add', (filePath: string) => {
+            console.log(`File ${filePath} has been added`);
+            onChange([filePath]); // Call the provided onChange callback with the added file path
+        });
 
-            // Handle file change events
-            this.client.on('subscription', (resp) => {
-                // Only print the file names when a file is being changed, not during initialization
-                if (resp.is_fresh_instance) {
-                    console.log(`Watching for TypeScript file changes in ${relative_path}...`);
-                } else {
-                    const changedFiles = resp.files.map((file: { name: string }) => join(resp.root, file.name));
+        // Add listener for file deletion events
+        this.client.on('unlink', (filePath: string) => {
+            console.log(`File ${filePath} has been deleted`);
+            onChange([filePath]); // Call the provided onChange callback with the deleted file path
+        });
 
-                    // Call the provided onChange callback with the changed file names
-                    if (changedFiles.length) {
-                        onChange(changedFiles);
-                    }
-                }
-            });
+        // Error event handling
+        this.client.on('error', (error: Error) => {
+            console.error('Error occurred while watching files:', error);
         });
     }
 }

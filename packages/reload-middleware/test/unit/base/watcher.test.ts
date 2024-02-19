@@ -1,98 +1,83 @@
-// FileWatcher.test.ts
-
 import { FileWatcher } from '../../../src/base/watcher';
-import * as watchman from 'fb-watchman';
-import { sep } from 'path';
+import chokidar from 'chokidar';
 
-jest.mock('fb-watchman', () => ({
-    Client: jest.fn().mockReturnValue({
-        command: jest.fn(),
-        emit: jest.fn(),
-        end: jest.fn()
-    })
+jest.mock('chokidar', () => ({
+    watch: jest.fn()
 }));
 
-const onChangeMock = jest.fn();
-
 describe('FileWatcher', () => {
-    it('should handle file changes', () => {
-        // Arrange
-        const clientMock = new (watchman.Client as jest.MockedClass<typeof watchman.Client>)();
-        clientMock.command = jest.fn().mockImplementation((commands, callback) => {
-            // Mock the response from the watch-project command
-            const resp = { watch: 'test-watch', relative_path: 'test-path' };
-            callback(null, resp);
-        });
+    let mockWatcher: any;
+    let onChangeMock: jest.Mock;
+    let consoleLogSpy: jest.SpyInstance;
+    let consoleErrorSpy: jest.SpyInstance;
 
-        clientMock.on = jest.fn().mockImplementation((event, callback) => {
-            // Mock the response from the subscription event
-            const fileChangeResp = {
-                is_fresh_instance: false,
-                root: '/path/to/project',
-                files: [{ name: 'example.change' }]
-            };
-            callback(fileChangeResp);
-        });
-
-        // Act
-        // eslint-disable-next-line no-new
-        new FileWatcher('/path/to/project', onChangeMock);
-
-        // Assert
-        const expectedPath = '/path/to/project/example.change'.split('/').join(sep);
-        expect(onChangeMock).toHaveBeenCalledWith([expectedPath]);
+    beforeEach(() => {
+        jest.resetModules();
+        mockWatcher = {
+            on: jest.fn()
+        };
+        jest.mock('chokidar', () => ({
+            watch: jest.fn(() => mockWatcher)
+        }));
+        onChangeMock = jest.fn();
+        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+        consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     });
 
-    describe('error handlers', () => {
-        let consoleSpy: jest.SpyInstance;
-        beforeAll(() => {
-            consoleSpy = jest.spyOn(console, 'error').mockReturnValue();
-        });
-        beforeEach(() => {
-            jest.clearAllMocks();
-        });
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
 
-        test('watch-project error', () => {
-            // Arrange
-            const clientMock = new (watchman.Client as jest.MockedClass<typeof watchman.Client>)();
-            clientMock.command = jest.fn().mockImplementation((commands, callback) => {
-                // Mock the response from the watch-project command
-                // const resp = { watch: 'test-watch', relative_path: 'test-path' };
-                callback('Test error', null);
-            });
+    it('should watch for file changes and invoke onChange callback', () => {
+        const projectPath = '/path/to/project';
 
-            // Act
-            // eslint-disable-next-line no-new
-            new FileWatcher('/path/to/project', onChangeMock);
+        // Mock the chokidar watcher
+        const mockWatcher = {
+            on: jest.fn()
+        };
+        (chokidar.watch as jest.Mock).mockReturnValue(mockWatcher);
 
-            // Assert
-            expect(consoleSpy).toHaveBeenCalledTimes(1);
-            expect(consoleSpy).toHaveBeenCalledWith('Error initiating watch:', 'Test error');
-            expect(clientMock.end as jest.Mock).toHaveBeenCalled();
-        });
+        // Create FileWatcher instance
+        new FileWatcher(projectPath, onChangeMock);
 
-        test('subscribe error', () => {
-            // Arrange
-            const clientMock = new (watchman.Client as jest.MockedClass<typeof watchman.Client>)();
-            clientMock.command = jest
-                .fn()
-                .mockImplementationOnce((commands, callback) => {
-                    // Mock the response from the watch-project command
-                    const resp = { watch: 'test-watch', relative_path: 'test-path' };
-                    callback(null, resp);
-                })
-                .mockImplementationOnce((commands, callback) => {
-                    callback('Test error', null);
-                });
+        // Simulate 'change' event
+        const changeHandler = mockWatcher.on.mock.calls.find((args: any) => args[0] === 'change')[1];
+        changeHandler('file/path.change');
 
-            // Act
-            // eslint-disable-next-line no-new
-            new FileWatcher('/path/to/project', onChangeMock);
+        // Expect onChange callback to be called with the changed file path
+        expect(onChangeMock).toHaveBeenCalledWith(['file/path.change']);
 
-            // Assert
-            expect(consoleSpy).toHaveBeenCalledTimes(1);
-            expect(consoleSpy).toHaveBeenCalledWith('Error subscribing to changes:', 'Test error');
-            expect(clientMock.end as jest.Mock).toHaveBeenCalled();
-        });
+        // Simulate 'add' event
+        const addHandler = mockWatcher.on.mock.calls.find((args: any) => args[0] === 'add')[1];
+        addHandler('new/file.change');
+        expect(consoleLogSpy).toHaveBeenCalledWith(`File new/file.change has been added`);
+        expect(onChangeMock).toHaveBeenCalledWith(['new/file.change']);
+
+        // Simulate 'unlink' event
+        const unlinkHandler = mockWatcher.on.mock.calls.find((args: any) => args[0] === 'unlink')[1];
+        unlinkHandler('deleted/file.change');
+        expect(consoleLogSpy).toHaveBeenCalledWith(`File deleted/file.change has been deleted`);
+        expect(onChangeMock).toHaveBeenCalledWith(['deleted/file.change']);
+    });
+
+    it('should log an error when an error occurs while watching files', () => {
+        consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const projectPath = '/path/to/project';
+
+        // Mock the chokidar watcher
+        const mockWatcher = {
+            on: jest.fn()
+        };
+        (chokidar.watch as jest.Mock).mockReturnValue(mockWatcher);
+
+        // Create FileWatcher instance
+        new FileWatcher(projectPath, jest.fn());
+
+        // Simulate 'error' event
+        const errorHandler = mockWatcher.on.mock.calls.find((args: any) => args[0] === 'error')[1];
+        errorHandler(new Error('Test error'));
+
+        // Expect console.error to be called with the error message
+        expect(consoleErrorSpy).toHaveBeenCalledWith('Error occurred while watching files:', expect.any(Error));
     });
 });
