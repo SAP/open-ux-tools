@@ -14,12 +14,13 @@ export class FileWatcher {
     constructor(projectPath: string, onChange: (changedFiles: string[]) => void) {
         // Initialize the chokidar watcher
         this.client = chokidar.watch(`${projectPath}/**/*.change`, {
-            ignored: /(^|[\/\\])\../, // ignore dotfiles
+            ignored: /(^|[/\\])\../, // ignore dotfiles without unnecessary escape
             persistent: true
         });
+
         // Ready event indicates that chokidar is watching the specified paths
         this.client.on('ready', () => {
-            console.log(`Watching for TypeScript file changes in ${projectPath}...`);
+            console.log(`Watching for *.changes file changes in ${projectPath}...`);
         });
 
         // Add listener for file change events

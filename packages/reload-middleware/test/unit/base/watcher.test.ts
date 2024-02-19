@@ -40,6 +40,15 @@ describe('FileWatcher', () => {
         // Create FileWatcher instance
         new FileWatcher(projectPath, onChangeMock);
 
+        // Check if 'ready' event handler is registered
+        const readyHandlers = mockWatcher.on.mock.calls.filter((args: any) => args[0] === 'ready');
+        expect(readyHandlers.length).toBe(1);
+
+        // Call the 'ready' event handler directly
+        readyHandlers.forEach((args: any) => {
+            args[1](); // Call the 'ready' event handler
+        });
+
         // Simulate 'change' event
         const changeHandler = mockWatcher.on.mock.calls.find((args: any) => args[0] === 'change')[1];
         changeHandler('file/path.change');
