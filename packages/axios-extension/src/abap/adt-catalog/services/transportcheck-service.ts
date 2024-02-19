@@ -100,7 +100,7 @@ export class TransportChecksService extends AdtService {
     private logErrorMsgs(doc: Document) {
         const messages = doc.getElementsByTagName('CTS_MESSAGE');
 
-        for (const msg of messages) {
+        for (const msg of Array.from(messages)) {
             if (msg.getElementsByTagName('SEVERITY')[0].textContent === 'E') {
                 const text = msg.getElementsByTagName('TEXT')[0].textContent;
                 this.log.error(text);
