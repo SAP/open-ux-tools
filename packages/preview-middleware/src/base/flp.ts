@@ -10,7 +10,6 @@ import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
-import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -173,7 +172,6 @@ export class FlpSandbox {
      * Initialize the FLP sandbox router.
      *
      * @param manifest application manifest
-     * @param applicationDeps application dependencies
      * @param componentId optional componentId e.g. for adaptation projects
      * @param resources optional additional resource mappings
      */
@@ -414,7 +412,6 @@ export class FlpSandbox {
      *
      * @param manifest manifest of the additional target app
      * @param app configuration for the preview
-     * @param applicationDeps application dependencies
      */
     addApp(manifest: Manifest, app: App) {
         const id = manifest['sap.app'].id;
