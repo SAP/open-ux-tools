@@ -14,7 +14,6 @@ export class BackendSystem {
     @serializable public readonly client?: string;
     @serializable public readonly userDisplayName?: string;
     @sensitiveData public readonly serviceKeys?: unknown;
-    @sensitiveData public readonly serviceKeysContents?: string;
     @sensitiveData public readonly refreshToken?: string;
     @sensitiveData public readonly username?: string;
     @sensitiveData public readonly password?: string;

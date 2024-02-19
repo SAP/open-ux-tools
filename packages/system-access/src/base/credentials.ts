@@ -6,9 +6,7 @@ import prompts from 'prompts';
 import { questions } from './prompts';
 
 export type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
-export type ServiceAuth = Required<
-    Pick<BackendSystem, 'serviceKeys' | 'name' | 'refreshToken' | 'serviceKeysContents'>
->;
+export type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name' | 'refreshToken'>>;
 
 /**
  * Checks if credentials are of basic auth type.
