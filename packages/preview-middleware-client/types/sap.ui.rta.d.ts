@@ -45,7 +45,7 @@ declare module 'sap/ui/rta/command/FlexCommand' {
 
     interface FlexCommand extends Omit<BaseCommand, 'getCommands'> {
         _oPreparedChange?: {
-            _oDefinition?: {
+            _oDefinition: {
                 moduleName: string;
             };
             setModuleName(moduleName: string): void;

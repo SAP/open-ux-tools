@@ -253,11 +253,9 @@ export default class AddFragment extends BaseDialog {
      */
     private modifyCommand(command: FlexCommand, moduleName: string): void {
         const minor = parseInt(this.ui5Version.split('.')[1], 10);
-        if (minor < 72) {
-            command._oPreparedChange?.setModuleName(moduleName);
-            if (command._oPreparedChange && command._oPreparedChange._oDefinition) {
-                command._oPreparedChange._oDefinition.moduleName = moduleName;
-            }
+        if (minor < 72 && command._oPreparedChange) {
+            command._oPreparedChange.setModuleName(moduleName);
+            command._oPreparedChange._oDefinition.moduleName = moduleName;
         }
     }
 
