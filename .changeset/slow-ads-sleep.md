@@ -3,4 +3,4 @@
 '@sap-ux/i18n': patch
 ---
 
-fix: expose getI18nPropertiesPaths and include web.js in @sap-ux/i18n
+fix: expose getI18nPropertiesPaths and export types for browser in @sap-ux/i18n

@@ -13,6 +13,13 @@
     "license": "Apache-2.0",
     "private": false,
     "main": "dist/index.js",
+    "exports": {
+        ".": {
+            "browser": "./dist/web/index.js",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        }
+    },
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
@@ -44,9 +51,7 @@
         "dist",
         "LICENSE",
         "!dist/*.map",
-        "!dist/**/*.map",
-        "web.js",
-        "web.d.ts"
+        "!dist/**/*.map"
     ],
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
