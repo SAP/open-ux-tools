@@ -5,6 +5,7 @@ import Controller from 'mock/sap/ui/core/mvc/Controller';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import { sapMock } from 'mock/window';
 
 describe('Dialogs', () => {
     describe('initDialogs', () => {
@@ -25,6 +26,7 @@ describe('Dialogs', () => {
         });
 
         test('addMenuItem handler function', async () => {
+            sapMock.ui.version = '1.120.4';
             Controller.create.mockResolvedValue({ overlays: {}, rta: {} });
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 

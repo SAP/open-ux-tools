@@ -16,6 +16,7 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 /** sap.ui.dt */
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
@@ -41,6 +42,7 @@ export default class AddFragment extends BaseDialog {
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel();
+        this.ui5Version = sap.ui.version;
         this.commandExecutor = new CommandExecutor(this.rta);
     }
 
@@ -54,7 +56,7 @@ export default class AddFragment extends BaseDialog {
 
         await this.buildDialogData();
 
-        this.getView()?.addDependent(this.dialog).setModel(this.model);
+        this.getView()?.setModel(this.model);
 
         this.dialog.open();
     }
@@ -243,6 +245,23 @@ export default class AddFragment extends BaseDialog {
     }
 
     /**
+     * Modifies the given FlexCommand by setting its module name, if the UI5 version is less than 1.72.
+     *
+     * @param {FlexCommand} command - The FlexCommand instance to be modified.
+     * @param {string} moduleName - The module name to be set for the command.
+     * @returns {void}
+     */
+    private modifyCommand(command: FlexCommand, moduleName: string): void {
+        const minor = parseInt(this.ui5Version.split('.')[1], 10);
+        if (minor < 72) {
+            command._oPreparedChange?.setModuleName(moduleName);
+            if (command._oPreparedChange && command._oPreparedChange._oDefinition) {
+                command._oPreparedChange._oDefinition.moduleName = moduleName;
+            }
+        }
+    }
+
+    /**
      * Creates a new fragment for the specified control
      *
      * @param fragmentData Fragment Data
@@ -283,12 +302,20 @@ export default class AddFragment extends BaseDialog {
             targetAggregation: targetAggregation ?? 'content'
         };
 
-        await this.commandExecutor.generateAndExecuteCommand(
+        const command = await this.commandExecutor.getCommand(
             this.runtimeControl,
             'addXML',
             modifiedValue,
             designMetadata,
             flexSettings
         );
+
+        let moduleName = flexSettings.projectId?.replace(/\./g, '/') || '';
+        moduleName += '/changes/';
+        moduleName += modifiedValue.fragmentPath;
+
+        this.modifyCommand(command, moduleName);
+
+        await this.commandExecutor.pushAndExecuteCommand(command);
     }
 }

@@ -4,6 +4,7 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 type CommandNames = 'addXML';
 
@@ -18,7 +19,7 @@ export default class CommandExecutor {
     constructor(private readonly rta: RuntimeAuthoring) {}
 
     /**
-     * Generates command based on given values and executes it
+     * Generates command based on given values
      *
      * @param runtimeControl Managed object
      * @param commandName Command name
@@ -26,22 +27,23 @@ export default class CommandExecutor {
      * @param designMetadata Design time metadata
      * @param flexSettings Additional flex settings
      */
-    public async generateAndExecuteCommand(
+    public async getCommand(
         runtimeControl: ManagedObject,
         commandName: CommandNames,
         modifiedValue: object,
         designMetadata: DesignTimeMetadata,
         flexSettings: FlexSettings
-    ): Promise<void> {
-        try {
-            const command = await CommandFactory.getCommandFor(
-                runtimeControl,
-                commandName,
-                modifiedValue,
-                designMetadata,
-                flexSettings
-            );
+    ): Promise<FlexCommand> {
+        return CommandFactory.getCommandFor(runtimeControl, commandName, modifiedValue, designMetadata, flexSettings);
+    }
 
+    /**
+     * Pushed and executes the provided command
+     *
+     * @param command Command
+     */
+    public async pushAndExecuteCommand(command: FlexCommand): Promise<void> {
+        try {
             /**
              * The change will have pending state and will only be saved to the workspace when the user clicks save icon
              */

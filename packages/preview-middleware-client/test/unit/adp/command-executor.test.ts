@@ -1,9 +1,7 @@
-import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
-import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 
 import CommandExecutor from '../../../src/adp/command-executor';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 describe('client/command-executor', () => {
     describe('generateAndExecuteCommand', () => {
@@ -22,13 +20,7 @@ describe('client/command-executor', () => {
 
         test('generates command and executes command', async () => {
             const commandExecutor = new CommandExecutor(rta as unknown as RuntimeAuthoring);
-            await commandExecutor.generateAndExecuteCommand(
-                {} as ManagedObject,
-                'addXML',
-                {},
-                {} as DesignTimeMetadata,
-                {} as FlexSettings
-            );
+            await commandExecutor.pushAndExecuteCommand({} as FlexCommand);
 
             expect(pushAndExecuteSpy.mock.calls.length).toBe(1);
         });
@@ -37,13 +29,7 @@ describe('client/command-executor', () => {
             pushAndExecuteSpy.mockRejectedValueOnce({ message: 'Could not execute command!' });
             const commandExecutor = new CommandExecutor(rta as unknown as RuntimeAuthoring);
             try {
-                await commandExecutor.generateAndExecuteCommand(
-                    {} as ManagedObject,
-                    'addXML',
-                    {},
-                    {} as DesignTimeMetadata,
-                    {} as FlexSettings
-                );
+                await commandExecutor.pushAndExecuteCommand({} as FlexCommand);
             } catch (e) {
                 expect(e.message).toBe('Could not execute command!');
                 expect(pushAndExecuteSpy.mock.calls.length).toBe(1);

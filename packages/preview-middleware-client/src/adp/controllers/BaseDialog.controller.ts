@@ -35,6 +35,10 @@ export default abstract class BaseDialog extends Controller {
      */
     public dialog: Dialog;
     /**
+     * UI5 version
+     */
+    public ui5Version: string;
+    /**
      * RTA Command Executor
      */
     protected commandExecutor: CommandExecutor;
@@ -84,7 +88,7 @@ export default abstract class BaseDialog extends Controller {
             return;
         }
 
-        if(fragmentName.length > 64) {
+        if (fragmentName.length > 64) {
             updateDialogState(ValueState.Error, 'A fragment file name cannot contain more than 64 characters.');
             return;
         }
