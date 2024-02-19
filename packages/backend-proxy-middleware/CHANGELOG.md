@@ -1,5 +1,43 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.7.13
+
+### Patch Changes
+
+-   9f1836b2: Remove 'Partitioned' from cookies
+
+## 0.7.12
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+    -   @sap-ux/axios-extension@1.10.1
+    -   @sap-ux/store@0.4.2
+
+## 0.7.11
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+-   Updated dependencies [eb0b7b37]
+    -   @sap-ux/store@0.4.1
+
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [ecd5275d]
+    -   @sap-ux/axios-extension@1.10.0
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [de8a4878]
+    -   @sap-ux/axios-extension@1.9.0
+    -   @sap-ux/btp-utils@0.13.0
+
 ## 0.7.8
 
 ### Patch Changes

@@ -113,9 +113,14 @@ export function getManifestJsonExtensionHelper(
             case 'routes':
                 const routes = value as ManifestNamespace.Route[];
                 routes.push({
-                    name: `${config.entity}${config.name}`,
+                    name: config.id ?? `${config.entity}${config.name}`,
                     pattern: generateRoutePattern(routes, config.entity, config.navigation),
-                    target: generateRouteTarget(routes, `${config.entity}${config.name}`, config.fcl, config.navigation)
+                    target: generateRouteTarget(
+                        routes,
+                        config.id ?? `${config.entity}${config.name}`,
+                        config.fcl,
+                        config.navigation
+                    )
                 });
                 break;
             default:
@@ -203,7 +208,7 @@ export function validatePageConfig(basePath: string, config: CustomPage | Object
         }
 
         const route = routes[config.navigation.sourcePage];
-        if (!route || !route.pattern || !route.target) {
+        if (!route?.pattern || !route.target) {
             throw new Error(`Invalid routing configuration for navigation source ${config.navigation.sourcePage}!`);
         }
     }

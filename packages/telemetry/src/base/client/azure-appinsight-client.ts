@@ -21,7 +21,7 @@ class ApplicationInsightClient extends Client {
         super();
         this.clients = new Map<SampleRate, appInsights.TelemetryClient>();
 
-        super.applicationKey = applicationKey;
+        this.applicationKey = applicationKey;
         this.extensionVersion = extensionVersion;
         this.extensionName = extensionName;
         const clientOnePercent = this.createTelemetryClient(SampleRate.OnePercent);

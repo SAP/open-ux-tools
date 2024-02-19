@@ -142,23 +142,3 @@ export function isOnPremiseDestination(destination: Destination): boolean {
 export function isHTML5DynamicConfigured(destination: Destination): boolean {
     return Boolean(destination['HTML5.DynamicDestination']);
 }
-
-// /**
-//  * Validate if a destination has the property `HTML5.DynamicDestination` configured.
-//  *
-//  * @param destination
-//  * @returns true, if this destination has HTML5.DynamicDestination configured
-//  */
-// export function getDisplayName(destination: Destination): string {
-//     const userDisplayName = includeUserName && this.userDisplayName ? ` [${this.userDisplayName}]` : '';
-//     let systemDisplayName: string;
-//     if (this.isScp()) {
-//         systemDisplayName = toSCPSystemName(this.name);
-//     } else if (this.isS4HC()) {
-//         systemDisplayName = this.addS4HCSuffix(this.name);
-//     } else {
-//         systemDisplayName = this.name;
-//     }
-//     return systemDisplayName + userDisplayName;
-//     return Boolean(destination['HTML5.DynamicDestination']);
-// }
