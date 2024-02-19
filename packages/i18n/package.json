@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/i18n",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Library for i18n",
     "repository": {
         "type": "git",
@@ -13,6 +13,13 @@
     "license": "Apache-2.0",
     "private": false,
     "main": "dist/index.js",
+    "exports": {
+        ".": {
+            "browser": "./dist/web/index.js",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        }
+    },
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",

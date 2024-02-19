@@ -1,11 +1,11 @@
 import { relative } from 'path';
+import type { NewI18nEntry } from '@sap-ux/i18n';
 import type {
     ApplicationAccess,
     ProjectAccess,
     Project,
     I18nBundles,
     I18nPropertiesPaths,
-    NewI18nEntry,
     ProjectType,
     ApplicationStructure
 } from '../types';

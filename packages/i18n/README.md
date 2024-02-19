@@ -1,6 +1,6 @@
 # `@sap-ux/i18n`
 
-Package containing low level APIs and utility functions for working with i18n of a project. For more convenient high level APIs on i18n, check [`@sap-ux/project-access`](../project-access/src/i18n/index.ts)
+Package containing low level APIs and utility functions for working with i18n of a project. For more convenient high level APIs on i18n, check [`@sap-ux/project-access`](../project-access)
 
 
 ## Installation

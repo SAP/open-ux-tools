@@ -11,7 +11,7 @@ export {
     readCapServiceMetadataEdmx
 } from './cap';
 export { getNodeModulesPath } from './dependencies';
-export { getCapI18nFolderNames } from './i18n';
+export { getCapI18nFolderNames, getI18nPropertiesPaths } from './i18n';
 export { getAppProgrammingLanguage, getAppType, getProject, getProjectType } from './info';
 export { loadModuleFromProject } from './module-loader';
 export { findAllApps, findCapProjects, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from './search';
