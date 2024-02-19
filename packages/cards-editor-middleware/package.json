@@ -29,9 +29,9 @@
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
         "ejs": "3.1.9",
-        "body-parser": "^1.19.0",
-        "express": "^4.17.1",
-        "server-static": "^2.0.5"
+        "body-parser": "1.20.2",
+        "express": "4",
+        "server-static": "2.0.5"
     },
     "devDependencies": {
         "@types/ejs": "3.1.2"
