@@ -99,8 +99,6 @@ export interface FlexConnector {
     url?: string;
 }
 
-export type ApplicationDependencies = MergedAppDescriptor | { manifest: boolean };
-
 /**
  * Internal structure used to fill the sandbox.html template
  */
@@ -114,7 +112,7 @@ export interface TemplateConfig {
             additionalInformation: string;
             applicationType: 'URL';
             url: string;
-            applicationDependencies?: ApplicationDependencies;
+            applicationDependencies?: { manifest: boolean };
         }
     >;
     ui5: {
@@ -179,12 +177,7 @@ export class FlpSandbox {
      * @param componentId optional componentId e.g. for adaptation projects
      * @param resources optional additional resource mappings
      */
-    async init(
-        manifest: Manifest,
-        applicationDeps: ApplicationDependencies,
-        componentId?: string,
-        resources: Record<string, string> = {}
-    ): Promise<void> {
+    async init(manifest: Manifest, componentId?: string, resources: Record<string, string> = {}): Promise<void> {
         this.createFlexHandler();
         const flex = this.getFlexSettings();
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
@@ -206,16 +199,12 @@ export class FlpSandbox {
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
         const id = manifest['sap.app'].id;
-        this.addApp(
-            manifest,
-            {
-                componentId,
-                target: resources[componentId ?? id] ?? this.templateConfig.basePath,
-                local: '.',
-                intent: this.config.intent
-            },
-            applicationDeps
-        );
+        this.addApp(manifest, {
+            componentId,
+            target: resources[componentId ?? id] ?? this.templateConfig.basePath,
+            local: '.',
+            intent: this.config.intent
+        });
         this.addStandardRoutes();
         if (this.rta) {
             this.rta.options ??= {};
@@ -345,7 +334,7 @@ export class FlpSandbox {
         for (const app of this.config.apps) {
             if (app.local) {
                 const manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
-                this.addApp(manifest, app, { manifest: true });
+                this.addApp(manifest, app);
                 this.router.use(app.target, serveStatic(join(app.local, 'webapp')));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
             }
@@ -427,7 +416,7 @@ export class FlpSandbox {
      * @param app configuration for the preview
      * @param applicationDeps application dependencies
      */
-    addApp(manifest: Manifest, app: App, applicationDeps: ApplicationDependencies) {
+    addApp(manifest: Manifest, app: App) {
         const id = manifest['sap.app'].id;
         app.intent ??= {
             object: id.replace(/\./g, ''),
@@ -440,7 +429,7 @@ export class FlpSandbox {
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
             url: app.target,
-            applicationDependencies: applicationDeps
+            applicationDependencies: { manifest: true }
         };
     }
 
@@ -528,7 +517,7 @@ export async function initAdp(
         descriptor.asyncHints.requests = [];
         const { name, manifest } = descriptor;
 
-        await flp.init(manifest, descriptor, name, adp.resources);
+        await flp.init(manifest, name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
         adp.addApis(flp.router);
     } else {

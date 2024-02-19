@@ -57,7 +57,8 @@ export default abstract class BaseDialog extends Controller {
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
             input.setValueState(valueState).setValueStateText(valueStateText);
-            beginBtn.setEnabled(valueState === ValueState.Success);
+            // fix for ui5 version 1.71 (button does not invalidate and rerender)
+            beginBtn.setEnabled(valueState === ValueState.Success).rerender();
         };
 
         if (fragmentName.length <= 0) {

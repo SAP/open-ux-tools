@@ -92,21 +92,21 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            await flp.init(manifest, { manifest: true });
+            await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
         test('optional configurations', async () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
-            await flp.init(manifest, { manifest: true });
+            await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
         test('ui5Theme', async () => {
             const flp = new FlpSandbox({ flp: { theme: 'sap_fiori_3' } }, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
-            await flp.init(manifest, { manifest: true });
+            await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
@@ -137,7 +137,7 @@ describe('FlpSandbox', () => {
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
-            await flp.init(manifest, { manifest: true });
+            await flp.init(manifest);
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
@@ -157,7 +157,7 @@ describe('FlpSandbox', () => {
                 }
             } as unknown as Manifest;
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
-            await flp.init(manifest, { manifest: true });
+            await flp.init(manifest);
             expect(flp.templateConfig.ui5.libs).toMatchSnapshot();
         });
 
@@ -166,7 +166,7 @@ describe('FlpSandbox', () => {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
-            await flp.init(manifest, { manifest: true });
+            await flp.init(manifest);
             expect(flp.templateConfig.ui5.libs).toMatchSnapshot();
         });
     });
@@ -212,7 +212,7 @@ describe('FlpSandbox', () => {
                 logger
             );
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
-            await flp.init(manifest, { manifest: true });
+            await flp.init(manifest);
 
             const app = express();
             app.use(flp.router);

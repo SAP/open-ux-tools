@@ -54,7 +54,7 @@ export default class AddFragment extends BaseDialog {
 
         await this.buildDialogData();
 
-        this.getView()?.setModel(this.model);
+        this.getView()?.addDependent(this.dialog).setModel(this.model);
 
         this.dialog.open();
     }
