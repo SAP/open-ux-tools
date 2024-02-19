@@ -13,7 +13,8 @@ import { FolderTypes, AnnotationFileSelectType } from '../types';
 import type { Dirent } from 'fs';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
-type InboundChange = { filePath: string; changeWithInboundId: { content: InboundContent } };
+type InboundChangeData = { filePath: string; changeWithInboundId: { content?: InboundContent } };
+type InboundChange = { content?: InboundContent };
 
 /**
  * Writes annotation changes to the specified project path using the provided `mem-fs-editor` instance.
@@ -127,11 +128,11 @@ export function getParsedPropertyValue(propertyValue: PropertyValueType): Proper
  *
  * @param {string} projectPath - The root path of the project.
  * @param {string} inboundId - The inbound ID to search for within change files.
- * @returns {InboundChange} An object containing the file path and the change object with the matching inbound ID.
+ * @returns {InboundChangeData} An object containing the file path and the change object with the matching inbound ID.
  * @throws {Error} Throws an error if the change file cannot be read or if there's an issue accessing the directory.
  */
-export function findChangeWithInboundId(projectPath: string, inboundId: string): InboundChange {
-    let changeObj: any;
+export function findChangeWithInboundId(projectPath: string, inboundId: string): InboundChangeData {
+    let changeObj: InboundChange = {};
     let filePath = '';
 
     const pathToInboundChangeFiles = path.join(projectPath, '/webapp/changes/manifest');
@@ -150,7 +151,7 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
 
         if (file) {
             const pathToFile = path.join(pathToInboundChangeFiles, file.name);
-            const change: { content: { inboundId: string } } = JSON.parse(readFileSync(pathToFile, 'utf-8'));
+            const change: InboundChange = JSON.parse(readFileSync(pathToFile, 'utf-8'));
 
             if (change.content?.inboundId === inboundId) {
                 changeObj = change;

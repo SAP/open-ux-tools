@@ -6,6 +6,7 @@ import type {
     ComponentUsagesAnswers,
     ComponentUsagesData,
     DataSourceData,
+    DataSourceItem,
     IWriter,
     InboundAnswers,
     InboundContent,
@@ -212,7 +213,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
                 };
             };
             dataSource: {
-                [key: string]: any;
+                [key: string]: DataSourceItem;
             };
         } = {
             dataSource: {
@@ -244,7 +245,7 @@ export class NewModelWriter implements IWriter<NewModelData> {
             content.dataSource[answers.targerODataAnnotationDataSourceName] = {
                 uri: answers.targetODataAnnotationDataSourceURI,
                 type: 'ODataAnnotation'
-            };
+            } as DataSourceItem;
 
             if (answers.targetODataAnnotationSettings && answers.targetODataAnnotationSettings.length !== 0) {
                 content.dataSource[answers.targerODataAnnotationDataSourceName].settings = parseStringToObject(
@@ -479,7 +480,9 @@ export class InboundWriter implements IWriter<InboundData> {
                 FolderTypes.MANIFEST
             );
         } else {
-            this.getEnhancedContent(answers, changeWithInboundId.content);
+            if (changeWithInboundId.content) {
+                this.getEnhancedContent(answers, changeWithInboundId.content);
+            }
             writeChangeToFile(filePath, changeWithInboundId, this.fs);
         }
     }

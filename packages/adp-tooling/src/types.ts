@@ -220,6 +220,14 @@ export interface InboundContent {
     entityPropertyChange: { propertyPath: string; operation: string; propertyValue: unknown }[];
 }
 
+export type DataSourceItem = {
+    uri?: string;
+    type: string;
+    settings: {
+        [key: string]: unknown;
+    };
+};
+
 export type PropertyValueType = 'boolean' | 'number' | 'string' | 'binding' | 'object';
 
 export interface AnnotationChangeAnswers {
