@@ -11,8 +11,6 @@ export const enum ui5ThemeIds {
     SAP_FIORI_3_DARK = 'sap_fiori_3_dark',
     SAP_HORIZON = 'sap_horizon',
     SAP_HORIZON_DARK = 'sap_horizon_dark'
-    // SAP_HORIZON_CONTRAST = 'sap_horizon_hcw',
-    // SAP_HORIZON_CONTRAST_DARK = 'sap_horizon_hcb'
 }
 
 const ui5Themes: Record<ui5ThemeIds, UI5Theme> = {
