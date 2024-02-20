@@ -69,10 +69,16 @@
       "path": "packages/fe-fpm-writer"
     },
     {
+      "path": "packages/feature-toggle"
+    },
+    {
       "path": "packages/fiori-elements-writer"
     },
     {
       "path": "packages/fiori-freestyle-writer"
+    },
+    {
+      "path": "packages/i18n"
     },
     {
       "path": "packages/jest-file-matchers"

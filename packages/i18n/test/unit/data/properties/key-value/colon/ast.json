@@ -1,0 +1,16 @@
+[
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "language",
+      "range": "[(0,0)..(0,8)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "English",
+      "range": "[(0,11)..(0,18)]"
+    },
+    "range": "[(0,0)..(0,18)]"
+  }
+]

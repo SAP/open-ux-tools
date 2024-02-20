@@ -1,0 +1,44 @@
+{
+  "header": {
+    "fields": [
+      {
+        "quoted": false,
+        "value": "one",
+        "range": "[(0,0)..(0,3)]"
+      },
+      {
+        "quoted": false,
+        "value": "two",
+        "range": "[(0,4)..(0,7)]"
+      },
+      {
+        "quoted": false,
+        "value": "three",
+        "range": "[(0,8)..(0,13)]"
+      }
+    ],
+    "range": "[(0,0)..(0,13)]"
+  },
+  "rows": [
+    {
+      "fields": [
+        {
+          "quoted": false,
+          "value": "four",
+          "range": "[(1,0)..(1,4)]"
+        },
+        {
+          "quoted": false,
+          "value": "five",
+          "range": "[(1,5)..(1,9)]"
+        },
+        {
+          "quoted": false,
+          "value": "six",
+          "range": "[(1,10)..(1,13)]"
+        }
+      ],
+      "range": "[(1,0)..(1,13)]"
+    }
+  ]
+}
