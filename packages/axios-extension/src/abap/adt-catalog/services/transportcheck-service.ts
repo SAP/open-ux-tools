@@ -102,7 +102,7 @@ export class TransportChecksService extends AdtService {
 
         for (const msg of Array.from(messages)) {
             if (msg.getElementsByTagName('SEVERITY')[0]?.textContent === 'E') {
-                const text = msg.getElementsByTagName('TEXT')[0].textContent;
+                const text = msg.getElementsByTagName('TEXT')[0]?.textContent;
                 this.log.error(text);
             }
         }
