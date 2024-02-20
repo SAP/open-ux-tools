@@ -46,6 +46,9 @@
     "ui5": {
         "dependencies": []
     },
+    "peerDependencies": {
+        "express": "4"
+    },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
         "node": ">=18.x"
