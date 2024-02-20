@@ -72,7 +72,7 @@ export function applyEventHandlerConfiguration(
         return eventHandler;
     }
     let insertScript: TextFragmentInsertion | undefined;
-    let controllerPrefix = '';
+    let controllerPrefix: string | undefined = '';
     // By default - use config name for created file name
     let fileName = config.name;
     if (typeof eventHandler === 'object') {
@@ -84,9 +84,7 @@ export function applyEventHandlerConfiguration(
             // Use passed file name
             fileName = eventHandler.fileName;
         }
-        if (eventHandler.controllerPrefix) {
-            controllerPrefix = eventHandler.controllerPrefix;
-        }
+        controllerPrefix = eventHandler.controllerPrefix;
     }
 
     const ext = typescript ? 'ts' : 'js';
