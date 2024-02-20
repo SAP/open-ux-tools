@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.10.2
+
+### Patch Changes
+
+-   64f9c513: adds more concise logging of error from xml response
+
 ## 1.10.1
 
 ### Patch Changes
