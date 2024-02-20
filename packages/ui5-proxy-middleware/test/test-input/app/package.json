@@ -4,7 +4,7 @@
     "private": true,
     "devDependencies": {
         "@sap-ux/ui5-proxy-middleware": "../../..",
-        "@ui5/cli": "2.14.1"
+        "@ui5/cli": "3.9.1"
     },
     "scripts": {
         "build": "ui5 build",
