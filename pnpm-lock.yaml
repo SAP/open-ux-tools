@@ -1312,9 +1312,6 @@ importers:
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
-      '@types/fb-watchman':
-        specifier: 2.0.4
-        version: 2.0.4
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4

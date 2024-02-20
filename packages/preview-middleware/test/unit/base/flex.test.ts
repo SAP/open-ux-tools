@@ -6,7 +6,6 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { deleteChange } from '../../../src/base/flex';
 
-jest.mock('fb-watchman');
 describe('flex', () => {
     const logger = new ToolsLogger();
     const path = join(tmpdir(), Date.now().toString());

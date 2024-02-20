@@ -173,15 +173,6 @@ describe('FlpSandbox', () => {
 
     describe('router', () => {
         let server!: SuperTest<Test>;
-        const mockUtils = {
-            getProject() {
-                return {
-                    getSourcePath: () => tmpdir(),
-                    getRootPath: () => tmpdir()
-                };
-            }
-        } as unknown as MiddlewareUtils;
-
         beforeAll(async () => {
             const flp = new FlpSandbox(
                 {

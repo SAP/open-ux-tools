@@ -56,8 +56,6 @@ async function createRouter(
     }
     // add exposed endpoints for cds-plugin-ui5
     flp.router.getAppPages = () => [`${flp.config.path}#${flp.config.intent.object}-${flp.config.intent.action}`];
-
-    // include websocket middleware
     return flp.router;
 }
 

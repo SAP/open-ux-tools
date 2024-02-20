@@ -120,7 +120,6 @@ export function deleteChange(
             if (file) {
                 logger.debug(`Write change ${file}`);
                 const filePath = join(path, file);
-
                 unlinkSync(filePath);
                 return { success: true, message: `FILE_DELETED ${file}` };
             }
