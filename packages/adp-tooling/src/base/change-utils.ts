@@ -13,7 +13,7 @@ import { FolderTypes, AnnotationFileSelectType } from '../types';
 import type { Dirent } from 'fs';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
-type InboundChangeData = { filePath: string; changeWithInboundId: { content?: InboundContent } };
+type InboundChangeData = { filePath: string; changeWithInboundId: InboundChange | undefined };
 type InboundChange = { content?: InboundContent };
 
 /**
@@ -132,7 +132,7 @@ export function getParsedPropertyValue(propertyValue: PropertyValueType): Proper
  * @throws {Error} Throws an error if the change file cannot be read or if there's an issue accessing the directory.
  */
 export function findChangeWithInboundId(projectPath: string, inboundId: string): InboundChangeData {
-    let changeObj: InboundChange = {};
+    let changeObj: InboundChange | undefined = undefined;
     let filePath = '';
 
     const pathToInboundChangeFiles = path.join(projectPath, '/webapp/changes/manifest');
