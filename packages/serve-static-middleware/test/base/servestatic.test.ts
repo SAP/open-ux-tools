@@ -2,6 +2,7 @@ import { serveStaticMiddleware } from '../../src/base';
 import type { ServeStaticConfig } from '../../src/base';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import * as expressServeStatic from 'serve-static';
+import { relative, join } from 'path';
 
 jest.mock('serve-static', () => ({
     __esModule: true,
@@ -55,7 +56,12 @@ describe('serve-static-middleware', () => {
         };
         serveStaticMiddleware(__dirname, config, logger);
         expect(serveStaticMock).toHaveBeenCalledTimes(2);
-        expect(serveStaticMock.mock.calls).toMatchSnapshot();
+        expect(serveStaticMock).toHaveBeenNthCalledWith(1, relative(process.cwd(), join(__dirname, 'resources')), {});
+        expect(serveStaticMock).toHaveBeenNthCalledWith(
+            2,
+            relative(process.cwd(), join(__dirname, 'test-resources')),
+            {}
+        );
     });
 
     test('serveStaticMiddleware: call with global options', () => {

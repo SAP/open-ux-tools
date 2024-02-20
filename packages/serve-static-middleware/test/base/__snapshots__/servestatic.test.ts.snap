@@ -52,16 +52,3 @@ Array [
   ],
 ]
 `;
-
-exports[`serve-static-middleware serveStaticMiddleware: call with src path resolution 1`] = `
-Array [
-  Array [
-    "test/base/resources",
-    Object {},
-  ],
-  Array [
-    "test/base/test-resources",
-    Object {},
-  ],
-]
-`;
