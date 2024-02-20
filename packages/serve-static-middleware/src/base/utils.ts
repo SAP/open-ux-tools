@@ -3,10 +3,12 @@ import type { ServeStaticOptions } from 'serve-static';
 import { relative, isAbsolute, join } from 'path';
 
 /**
- * Resolves the serve static options from a configuration object.
+ * Resolves the serve static options from the yaml configuration.
+ * The properties 'paths', src', and 'path' are removed from the configuration object, as they are not part of the serve static options.
+ * The property setHeaders is also removed, because it is not supported (can not be set in yaml files).
  *
  * @param options configuration object
- * @returns resolved serve static options
+ * @returns serve static options (https://www.npmjs.com/package/serve-static#options)
  */
 export const resolveServeStaticOptions = (options: ServeStaticConfig | PathConfig): ServeStaticOptions => {
     return Object.fromEntries(
