@@ -4,7 +4,7 @@ import { ToolsLogger } from '@sap-ux/logger';
 import { tmpdir } from 'os';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { deleteChange } from '../../../src/base/flex';
+import { deleteChange } from '../../../dist/base/flex';
 
 describe('flex', () => {
     const logger = new ToolsLogger();

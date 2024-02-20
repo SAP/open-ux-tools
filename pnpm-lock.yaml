@@ -1281,18 +1281,12 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@types/ws':
-        specifier: 8.5.10
-        version: 8.5.10
       ejs:
         specifier: 3.1.9
         version: 3.1.9
       express:
         specifier: '4'
         version: 4.18.2
-      ui5-middleware-websocket:
-        specifier: 3.0.1
-        version: 3.0.1
     devDependencies:
       '@private/preview-middleware-client':
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
@@ -1333,9 +1327,6 @@ importers:
       supertest:
         specifier: 6.3.3
         version: 6.3.3
-      ws:
-        specifier: 8.16.0
-        version: 8.16.0
 
   packages/preview-middleware-client:
     devDependencies:

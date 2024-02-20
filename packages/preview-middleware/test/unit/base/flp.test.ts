@@ -173,6 +173,7 @@ describe('FlpSandbox', () => {
 
     describe('router', () => {
         let server!: SuperTest<Test>;
+
         beforeAll(async () => {
             const flp = new FlpSandbox(
                 {
@@ -215,6 +216,7 @@ describe('FlpSandbox', () => {
 
             const app = express();
             app.use(flp.router);
+
             server = await supertest(app);
         });
 
