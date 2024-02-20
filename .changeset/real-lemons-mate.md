@@ -1,5 +1,5 @@
 ---
-'@sap-ux/serve-static-middleware': major
+'@sap-ux/serve-static-middleware': minor
 ---
 
 Add serve-static-middleware
