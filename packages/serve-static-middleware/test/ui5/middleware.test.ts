@@ -2,7 +2,7 @@ import { join } from 'path';
 import express from 'express';
 import supertest from 'supertest';
 import * as serveStaticMiddleware from '../../src/ui5/middlewares';
-import type { ServeStaticConfig } from '../../src/base/types';
+import type { ServeStaticConfig } from '../../src';
 
 const localUI5Path = join(__dirname, '..', 'fixtures', 'local');
 
@@ -54,6 +54,30 @@ describe('Start server with serve-static-middleware', () => {
 
     test('throw error on missing configuration', async () => {
         await expect(getTestServer({} as any)).rejects.toThrow(
+            'No configuration found for the serve-static-middleware'
+        );
+    });
+
+    test('throw error on missing configuration: no paths', async () => {
+        await expect(getTestServer({ configuration: {} } as any)).rejects.toThrow(
+            'No configuration found for the serve-static-middleware'
+        );
+    });
+
+    test('throw error on missing configuration: no paths', async () => {
+        await expect(getTestServer({ configuration: { paths: undefined } } as any)).rejects.toThrow(
+            'No configuration found for the serve-static-middleware'
+        );
+    });
+
+    test('throw error on missing configuration: no paths', async () => {
+        await expect(getTestServer({ configuration: { paths: {} } } as any)).rejects.toThrow(
+            'No configuration found for the serve-static-middleware'
+        );
+    });
+
+    test('throw error on missing configuration: no paths', async () => {
+        await expect(getTestServer(undefined as any)).rejects.toThrow(
             'No configuration found for the serve-static-middleware'
         );
     });

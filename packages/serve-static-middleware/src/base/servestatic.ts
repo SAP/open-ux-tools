@@ -20,7 +20,7 @@ export const serveStaticMiddleware = (root: string, config: ServeStaticConfig, l
 
     for (const pathConfig of paths) {
         const localOptions = resolveServeStaticOptions(pathConfig);
-        const serveStaticOptions = Object.assign({}, globalOptions, localOptions);
+        const serveStaticOptions = { ...globalOptions, ...localOptions };
         const srcPath = resolveSrcPath(root, pathConfig.src);
 
         logger.info(
