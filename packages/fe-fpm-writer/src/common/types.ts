@@ -155,6 +155,10 @@ export interface EventHandlerConfiguration {
      * If file exists, then existing file should be appended with passed script fragment.
      */
     insertScript?: TextFragmentInsertion;
+    /**
+     * Controller extension prefix.
+     */
+    controllerPrefix?: '.extension';
 }
 
 export interface EventHandler {
