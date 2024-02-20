@@ -32,6 +32,22 @@ export async function readJSON<T>(path: string, memFs?: Editor): Promise<T> {
 }
 
 /**
+ * Read file asynchronously. Throws error if file does not exist.
+ *
+ * @param path - path to file
+ * @param content - content to write to a file
+ * @param memFs - optional mem-fs-editor instance
+ * @returns - file content as string
+ */
+export async function writeFile(path: string, content: string, memFs?: Editor): Promise<string | void> {
+    if (memFs) {
+        return memFs.write(path, content);
+    }
+
+    return fs.writeFile(path, content, { encoding: 'utf8' });
+}
+
+/**
  * Checks if the provided file exists in the file system.
  *
  * @param path - the file path to check

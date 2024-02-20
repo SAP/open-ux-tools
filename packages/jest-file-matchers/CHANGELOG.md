@@ -1,5 +1,11 @@
 # @sap-ux/jest-file-matchers
 
+## 0.1.2
+
+### Patch Changes
+
+-   dbaba67c: export types
+
 ## 0.1.1
 
 ### Patch Changes

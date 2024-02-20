@@ -1,5 +1,21 @@
 # @sap-ux/project-access
 
+## 1.17.2
+
+### Patch Changes
+
+-   76ce5c2f: fix: expose getI18nPropertiesPaths and export types for browser in @sap-ux/i18n
+-   Updated dependencies [76ce5c2f]
+    -   @sap-ux/i18n@0.0.3
+
+## 1.17.1
+
+### Patch Changes
+
+-   86da13e3: Add i18n support
+-   Updated dependencies [86da13e3]
+    -   @sap-ux/i18n@0.0.2
+
 ## 1.17.0
 
 ### Minor Changes

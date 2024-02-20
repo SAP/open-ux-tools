@@ -15,6 +15,96 @@ exports[`CustomPage Test property custom "tabSizing" 6 spaces 1`] = `
 CustomPageTitle=CustomPage"
 `;
 
+exports[`CustomPage Typescript controller latest version with minimal input 1`] = `
+"import Controller from \\"sap/fe/core/PageController\\";
+
+/**
+ * @namespace my.test.App.ext.customPage
+ */
+export default class CustomPage extends Controller {
+
+    /**
+     * Called when a controller is instantiated and its View controls (if available) are already created.
+     * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+     * @memberOf my.test.App.ext.customPage.CustomPage
+     */
+    // public onInit(): void {
+    //
+    //}
+
+    /**
+     * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
+     * (NOT before the first rendering! onInit() is used for that one!).
+     * @memberOf my.test.App.ext.customPage.CustomPage
+     */
+    // public  onBeforeRendering(): void {
+    //
+    //  }
+
+    /**
+     * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
+     * This hook is the same one that SAPUI5 controls get after being rendered.
+     * @memberOf my.test.App.ext.customPage.CustomPage
+     */
+    // public  onAfterRendering(): void {
+    //
+    //  }
+
+    /**
+     * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
+     * @memberOf my.test.App.ext.customPage.CustomPage
+     */
+    // public onExit(): void {
+    //
+    //  }
+}"
+`;
+
+exports[`CustomPage Typescript controller lower UI5 version(1.84) 1`] = `
+"import Controller from 'sap/ui/core/mvc/Controller'; /** If UI5 version 1.94 or newer can be used, the change the base controller to sap/fe/core/PageController to get full FEv4 FPM support */
+
+/**
+ * @namespace my.test.App.ext.customPage
+ */
+export default class CustomPage extends Controller {
+
+    /**
+     * Called when a controller is instantiated and its View controls (if available) are already created.
+     * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+     * @memberOf my.test.App.ext.customPage.CustomPage
+     */
+    // public onInit(): void {
+    //
+    //}
+
+    /**
+     * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
+     * (NOT before the first rendering! onInit() is used for that one!).
+     * @memberOf my.test.App.ext.customPage.CustomPage
+     */
+    // public  onBeforeRendering(): void {
+    //
+    //  }
+
+    /**
+     * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
+     * This hook is the same one that SAPUI5 controls get after being rendered.
+     * @memberOf my.test.App.ext.customPage.CustomPage
+     */
+    // public  onAfterRendering(): void {
+    //
+    //  }
+
+    /**
+     * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
+     * @memberOf my.test.App.ext.customPage.CustomPage
+     */
+    // public onExit(): void {
+    //
+    //  }
+}"
+`;
+
 exports[`CustomPage generateCustomPage: different navigations inbound navigation defined as array (for FCL) 1`] = `
 Object {
   "config": Object {
@@ -156,6 +246,50 @@ Object {
             "navToChildEntity": Object {
               "detail": Object {
                 "route": "ChildEntityCustomPage",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomPage generateCustomPage: different navigations simple inbound navigation, plus optional page id 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "TestObjectPage",
+      "pattern": ":?query:",
+      "target": "TestObjectPage",
+    },
+    Object {
+      "name": "DummyPage",
+      "pattern": "ChildEntity({navToChildEntityKey}):?query:",
+      "target": "DummyPage",
+    },
+  ],
+  "targets": Object {
+    "DummyPage": Object {
+      "id": "DummyPage",
+      "name": "sap.fe.core.fpm",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/ChildEntity",
+          "navigation": Object {},
+          "viewName": "my.test.App.ext.customPage.CustomPage",
+        },
+      },
+      "type": "Component",
+    },
+    "TestObjectPage": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "navToChildEntity": Object {
+              "detail": Object {
+                "route": "DummyPage",
               },
             },
           },
@@ -573,6 +707,50 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
 "
 `;
 
+exports[`CustomPage generateCustomPage: different versions or target folder latest version with minimal input, plus optional page id 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "TestObjectPage",
+          "pattern": ":?query:",
+          "target": "TestObjectPage",
+        },
+        Object {
+          "name": "DummyPage",
+          "pattern": "RootEntity:?query:",
+          "target": "DummyPage",
+        },
+      ],
+      "targets": Object {
+        "DummyPage": Object {
+          "id": "DummyPage",
+          "name": "sap.fe.core.fpm",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/RootEntity",
+              "navigation": Object {},
+              "viewName": "my.test.App.ext.customPage.CustomPage",
+            },
+          },
+          "type": "Component",
+        },
+        "TestObjectPage": Object {},
+      },
+    },
+  },
+}
+`;
+
 exports[`CustomPage generateCustomPage: different versions or target folder with existing target files 1`] = `
 Object {
   "sap.app": Object {
@@ -715,6 +893,48 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
     }
 );
 "
+`;
+
+exports[`CustomPage generateCustomPage: different versions or target folder with older but supported UI5 version, plus optional page id 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "TestObjectPage",
+          "pattern": ":?query:",
+          "target": "TestObjectPage",
+        },
+        Object {
+          "name": "DummyPage",
+          "pattern": "RootEntity:?query:",
+          "target": "DummyPage",
+        },
+      ],
+      "targets": Object {
+        "DummyPage": Object {
+          "options": Object {
+            "settings": Object {
+              "entitySet": "RootEntity",
+              "navigation": Object {},
+            },
+          },
+          "viewId": "CustomPageView",
+          "viewName": "my.test.App.ext.customPage.CustomPage",
+        },
+        "TestObjectPage": Object {},
+      },
+    },
+  },
+}
 `;
 
 exports[`CustomPage generateCustomPage: only page, no others FCL enabled single page app 1`] = `

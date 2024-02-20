@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.6
+
+### Patch Changes
+
+-   9b62f5a1: Added optional `id` property to use as page key in manifest templates
+
+## 0.24.5
+
+### Patch Changes
+
+-   112170a1: fix: use correct namespace when generating typescript controllers of controller extension and custom page controllers
+
 ## 0.24.4
 
 ### Patch Changes

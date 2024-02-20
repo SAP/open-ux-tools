@@ -1,0 +1,26 @@
+[
+  {
+    "type": "comment-line",
+    "value": "# This means that if the number of \\ at the end of the line is even, the next line is not included in the value. ",
+    "range": "[(0,0)..(0,113)]"
+  },
+  {
+    "type": "comment-line",
+    "value": "# In the following example, the value for \"evenKey\" is \"This is on one line\\\".",
+    "range": "[(1,0)..(1,78)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "evenKey",
+      "range": "[(2,0)..(2,7)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "This is on one line\\\\",
+      "range": "[(2,10)..(2,31)]"
+    },
+    "range": "[(2,0)..(2,31)]"
+  }
+]
