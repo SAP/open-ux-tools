@@ -84,9 +84,27 @@ export class TransportChecksService extends AdtService {
             case 'S':
                 return this.getTransportList(doc);
             case 'E':
-            default:
-                this.log.warn(`Error or unkown response content: ${xml}`);
+                this.logErrorMsgs(doc);
                 return [];
+            default:
+                this.log.warn(`Unknown response content: ${xml}`);
+                return [];
+        }
+    }
+
+    /**
+     * Parses the document to find and log the <CTS_MESSAGE> with severity 'E' in <MESSAGES>.
+     *
+     * @param doc document
+     */
+    private logErrorMsgs(doc: Document) {
+        const messages = doc.getElementsByTagName('CTS_MESSAGE');
+
+        for (const msg of Array.from(messages)) {
+            if (msg.getElementsByTagName('SEVERITY')[0]?.textContent === 'E') {
+                const text = msg.getElementsByTagName('TEXT')[0]?.textContent;
+                this.log.error(text);
+            }
         }
     }
 
