@@ -1,4 +1,5 @@
-import type { I18nBundles, NewI18nEntry } from '../i18n';
+import type { I18nBundles } from '../i18n';
+import type { NewI18nEntry } from '@sap-ux/i18n';
 import type { ApplicationStructure, I18nPropertiesPaths, Project, ProjectType } from '../info';
 
 interface BaseAccess {

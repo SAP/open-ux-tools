@@ -18,6 +18,7 @@ export {
     getCdsRoots,
     getCdsServices,
     getCapI18nFolderNames,
+    getI18nPropertiesPaths,
     getMtaPath,
     getNodeModulesPath,
     getProject,
