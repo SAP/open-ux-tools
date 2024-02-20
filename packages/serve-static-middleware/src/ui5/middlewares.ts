@@ -11,7 +11,7 @@ module.exports = ({ options, middlewareUtil }: MiddlewareParameters<ServeStaticC
     const rootPath = middlewareUtil.getProject().getRootPath();
     const configuration = options.configuration;
 
-    if (configuration) {
+    if (configuration?.paths) {
         return serveStaticMiddleware(rootPath, configuration, log);
     } else {
         const message = 'No configuration found for the serve-static-middleware';

@@ -1420,12 +1420,18 @@ importers:
       '@types/serve-static':
         specifier: 1.15.5
         version: 1.15.5
+      '@types/supertest':
+        specifier: 2.0.12
+        version: 2.0.12
       express:
         specifier: 4.18.2
         version: 4.18.2
       serve-static:
         specifier: 1.15.0
         version: 1.15.0
+      supertest:
+        specifier: 6.3.3
+        version: 6.3.3
 
   packages/store:
     dependencies:
