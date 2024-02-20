@@ -1407,12 +1407,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      dotenv:
-        specifier: 16.3.1
-        version: 16.3.1
-      i18next:
-        specifier: 20.6.1
-        version: 20.6.1
     devDependencies:
       '@types/express':
         specifier: 4.17.21
