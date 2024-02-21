@@ -1,5 +1,12 @@
 # @sap-ux/telemetry
 
+## 0.2.8
+
+### Patch Changes
+
+-   Updated dependencies [0f6e0e1b]
+    -   @sap-ux/btp-utils@0.14.0
+
 ## 0.2.7
 
 ### Patch Changes
