@@ -6,10 +6,10 @@ It can be used either with the `ui5 serve` or the `fiori run` commands.
 
 ## Configuration Options
 
-| Option       | Default Value | Description |
+| Option       | Type | Description |
 | ------------ | ------------- | ----------- |
-| `paths`        | `object`      | List of mount paths and local paths that should be handled by the serve static middleware. |
-| `options`    | `object`   | Configuration options of [serve-static](https://www.npmjs.com/package/serve-static#options). Excluding `setHeaders`!  |
+| `paths`        | `array`      | List of mount paths and local paths that should be handled by the serve static middleware. |
+| `[option]`    | `string \| number \| boolean`   | Configuration options of [serve-static](https://www.npmjs.com/package/serve-static#options). Excluding `setHeaders`! Alternatively you can add each option on a specific path |
 
 ## Configuration Examples
 
