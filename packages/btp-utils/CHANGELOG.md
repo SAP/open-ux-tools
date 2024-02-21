@@ -1,5 +1,13 @@
 # @sap-ux/btp-utils
 
+## 0.14.0
+
+### Minor Changes
+
+-   0f6e0e1b: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
 ## 0.13.0
 
 ### Minor Changes

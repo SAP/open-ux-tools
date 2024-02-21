@@ -1,5 +1,23 @@
 # @sap-ux/preview-middleware
 
+## 0.11.36
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.7
+
+## 0.11.35
+
+### Patch Changes
+
+-   c05fd77a: Add express in devDependencies
+
+## 0.11.34
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.6
+
 ## 0.11.33
 
 ### Patch Changes

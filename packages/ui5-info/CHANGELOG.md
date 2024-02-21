@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.3.0
+
+### Minor Changes
+
+-   ec57237a: Adds UI5 theme support
+
 ## 0.2.3
 
 ### Patch Changes
