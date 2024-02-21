@@ -1,10 +1,13 @@
 import * as projectAccess from '@sap-ux/project-access';
 import * as projectValidators from '@sap-ux/project-input-validator';
+import * as ui5Info from '@sap-ux/ui5-info';
 import { getQuestions } from '../../../src/prompts';
 import * as utility from '../../../src/prompts/utility';
 import type { UI5ApplicationPromptOptions } from '../../../src/types';
 import { promptNames } from '../../../src/types';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
+import { UI5Version, defaultVersion, ui5ThemeIds } from '@sap-ux/ui5-info';
+import { ListQuestion } from '@sap-ux/inquirer-common';
 
 jest.mock('@sap-ux/project-input-validator', () => {
     return {
@@ -200,32 +203,183 @@ describe('getPrompts', () => {
         expect(projectValidatorSpy).toHaveBeenCalledWith(...[args[0], args[1].name]);
     });
 
+    test('getQuestions, prompt: `ui5VersionChoice`', () => {
+        // No UI5 versions specified
+        let questions = getQuestions([]);
+        let ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
+        expect((ui5VersionPrompt?.when as Function)()).toEqual(true);
+        expect(ui5VersionPrompt?.type).toEqual('list');
+        expect(((ui5VersionPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`[]`);
+
+        const ui5Vers: UI5Version[] = [
+            {
+                version: '1.118.0',
+                maintained: true,
+                default: true
+            },
+            {
+                version: '1.117.0',
+                maintained: true
+            },
+            {
+                version: '1.116.0',
+                maintained: false
+            }
+        ];
+        const expectedUI5VerChoices = [
+            {
+                'name': '1.118.0 - (Maintained version)',
+                'value': '1.118.0'
+            },
+            {
+                'name': '1.117.0 - (Maintained version)',
+                'value': '1.117.0'
+            },
+            {
+                'name': '1.116.0 - (Out of maintenance version)',
+                'value': '1.116.0'
+            }
+        ];
+        // UI5 versions specified
+        questions = getQuestions(ui5Vers);
+        ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
+        expect((ui5VersionPrompt?.when as Function)()).toEqual(true);
+        expect(ui5VersionPrompt?.type).toEqual('list');
+        expect(((ui5VersionPrompt as ListQuestion)?.choices as Function)()).toEqual(expectedUI5VerChoices);
+        // No search input, all choices returned, source search is unit tested elsewhere
+        expect((ui5VersionPrompt?.source as Function)()).toEqual(expectedUI5VerChoices);
+
+        // Option `useAutocomplete` specified
+        // UI5 versions specified
+        questions = getQuestions(ui5Vers, {
+            ui5Version: {
+                useAutocomplete: true
+            }
+        });
+        ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
+        expect((ui5VersionPrompt?.when as Function)()).toEqual(true);
+        expect(ui5VersionPrompt?.type).toEqual('autocomplete');
+        expect(((ui5VersionPrompt as ListQuestion)?.choices as Function)()).toEqual(expectedUI5VerChoices);
+        expect((ui5VersionPrompt?.source as Function)()).toEqual(expectedUI5VerChoices);
+        // Default version should be used
+        expect((ui5VersionPrompt?.default as Function)()).toEqual(expectedUI5VerChoices[0].value);
+
+        // Provide a non-returned version as a choice and default
+        const defaultChoice = {
+            'name': '1.120.99',
+            'value': '1.120.99'
+        };
+        questions = getQuestions(ui5Vers, {
+            ui5Version: {
+                defaultChoice
+            }
+        });
+
+        ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
+        expect(((ui5VersionPrompt as ListQuestion)?.choices as Function)()).toEqual([
+            defaultChoice,
+            ...expectedUI5VerChoices
+        ]);
+        expect((ui5VersionPrompt?.default as Function)()).toEqual('1.120.99');
+    });
+
     test('getQuestions, prompt: `addDeployConfig` conditions and message based on mta.yaml discovery', async () => {
         const mockMtaPath = undefined;
         const getMtaPathSpy = jest.spyOn(projectAccess, 'getMtaPath').mockResolvedValue(mockMtaPath);
+        const mockCwd = '/any/current/working/directory';
+        jest.spyOn(process, 'cwd').mockReturnValueOnce(mockCwd);
 
         // 'addDeployConfig' is always returned based on static inputs, it is the 'when' condition that determines its presence
         let questions = getQuestions([], undefined, undefined, mockCdsInfo);
+        let addDeployConfigQuestion = questions.find((question) => question.name === promptNames.addDeployConfig);
         expect(questions).toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.addDeployConfig })])
         );
         // Mta path is calculated by the when condition which is executed before the message function
-        expect(
-            await (questions.find((question) => question.name === promptNames.addDeployConfig)?.when as Function)()
-        ).toMatchInlineSnapshot(`false`);
-        expect(
-            (questions.find((question) => question.name === promptNames.addDeployConfig)?.message as Function)()
-        ).toMatchInlineSnapshot(`"Add deployment configuration"`);
+        expect(await (addDeployConfigQuestion?.when as Function)()).toEqual(false);
+        expect((addDeployConfigQuestion?.message as Function)()).toMatchInlineSnapshot(
+            `"Add deployment configuration"`
+        );
 
         getMtaPathSpy.mockResolvedValue({ mtaPath: 'any/path', hasRoot: false });
         questions = getQuestions([], undefined, undefined, mockCdsInfo);
-        expect(
-            await (questions.find((question) => question.name === promptNames.addDeployConfig)?.when as Function)()
-        ).toMatchInlineSnapshot(`true`);
-        expect(
-            (questions.find((question) => question.name === promptNames.addDeployConfig)?.message as Function)()
-        ).toMatchInlineSnapshot(`"Add deployment configuration to MTA project (any/path)"`);
+        addDeployConfigQuestion = questions.find((question) => question.name === promptNames.addDeployConfig);
+        expect(await (addDeployConfigQuestion?.when as Function)()).toEqual(true);
+        expect(getMtaPathSpy).toHaveBeenCalledWith(mockCwd);
+        
+        const targetFolder = '/any/target/folder'
+        expect(await (addDeployConfigQuestion?.when as Function)({ targetFolder })).toEqual(true);
+        expect(getMtaPathSpy).toHaveBeenCalledWith(targetFolder);
 
-        getMtaPathSpy.mockRestore();
+
+        expect((addDeployConfigQuestion?.message as Function)()).toMatchInlineSnapshot(
+            `"Add deployment configuration to MTA project (any/path)"`
+        );
+        expect(await (addDeployConfigQuestion?.default as Function)()).toEqual(true);
+    });
+
+    test('getQuestions, prompt: `addDeployConfig` validator', async () => {
+        // 'addDeployConfig' is always returned based on static inputs, it is the 'when' condition that determines its presence
+        let questions = getQuestions([]);
+        let addDeployConfigQuestion = questions.find((question) => question.name === promptNames.addDeployConfig);
+        expect(await (addDeployConfigQuestion?.validate as Function)()).toEqual(true);
+        const validatorCbSpy = jest.fn();
+        questions = getQuestions([], {
+            addDeployConfig: {
+                validatorCallback: validatorCbSpy
+            }
+        });
+        addDeployConfigQuestion = questions.find((question) => question.name === promptNames.addDeployConfig);
+        expect((addDeployConfigQuestion?.validate as Function)(false));
+        expect(validatorCbSpy).toHaveBeenCalledWith(false, promptNames.addDeployConfig);
+        expect((addDeployConfigQuestion?.validate as Function)(true));
+        expect(validatorCbSpy).toHaveBeenCalledWith(true, promptNames.addDeployConfig);
+    });
+
+    test('getQuestions, prompt: `addFlpConfig`', async () => {
+        let questions = getQuestions([]);
+        let addFlpConfigQuestion = questions.find((question) => question.name === promptNames.addFlpConfig);
+
+        expect(questions).toEqual(
+            expect.arrayContaining([expect.objectContaining({ name: promptNames.addFlpConfig })])
+        );
+        expect((addFlpConfigQuestion?.message as Function)()).toMatchInlineSnapshot(`"Add FLP configuration"`);
+
+        expect(await (addFlpConfigQuestion?.validate as Function)()).toEqual(true);
+        const validatorCbSpy = jest.fn();
+        questions = getQuestions([], {
+            addFlpConfig: {
+                validatorCallback: validatorCbSpy
+            }
+        });
+        addFlpConfigQuestion = questions.find((question) => question.name === promptNames.addFlpConfig);
+        expect((addFlpConfigQuestion?.validate as Function)(false));
+        expect(validatorCbSpy).toHaveBeenCalledWith(false, promptNames.addFlpConfig);
+        expect((addFlpConfigQuestion?.validate as Function)(true));
+        expect(validatorCbSpy).toHaveBeenCalledWith(true, promptNames.addFlpConfig);
+    });
+
+    test.only('getQuestions, prompt: `ui5Theme`', async () => {
+        const getDefaultUI5ThemeSpy = jest.spyOn(ui5Info, 'getDefaultUI5Theme');
+        let questions = getQuestions([]);
+        let ui5ThemeQuestion = questions.find((question) => question.name === promptNames.ui5Theme);
+
+        expect(questions).toEqual(
+            expect.arrayContaining([expect.objectContaining({ name: promptNames.ui5Theme })])
+        );
+        expect((ui5ThemeQuestion?.default as Function)({})).toEqual(ui5ThemeIds.SAP_HORIZON);
+        expect(getDefaultUI5ThemeSpy).toHaveBeenCalledWith(undefined);
+
+        const ui5Theme = ui5ThemeIds.SAP_FIORI_3;
+        getDefaultUI5ThemeSpy.mockClear();
+        expect((ui5ThemeQuestion?.default as Function)({ ui5Theme })).toEqual(ui5ThemeIds.SAP_FIORI_3);
+        expect(getDefaultUI5ThemeSpy).not.toHaveBeenCalledWith();
+
+        const ui5Version = '9.999.999'
+        getDefaultUI5ThemeSpy.mockClear();
+        expect((ui5ThemeQuestion?.default as Function)({ ui5Version })).toEqual(ui5ThemeIds.SAP_HORIZON);
+        expect(getDefaultUI5ThemeSpy).toHaveBeenCalledWith(ui5Version);
+
+        // choices
     });
 });

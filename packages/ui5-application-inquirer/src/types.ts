@@ -61,9 +61,9 @@ export enum promptNames {
 
 type UI5VersionPromptOptions = {
     /**
-     * todo: example
+     * Specifies the miminum UI5 version to consider when fetching UI5 versions
      */
-    minUI5Version: string;
+    minUI5Version?: string;
     /**
      * Optionally include an Inquirer Separator for grouped UI5 versions
      */

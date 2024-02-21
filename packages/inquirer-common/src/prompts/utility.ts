@@ -48,7 +48,7 @@ export function searchChoices(searchVal: string, searchList: ListChoiceOptions[]
 export function ui5VersionsGrouped(
     versions: UI5Version[],
     includeSeparators = false,
-    git?: UI5VersionChoice
+    defaultChoice?: UI5VersionChoice
 ): (UI5VersionChoice | Separator)[] {
     if (!versions || (Array.isArray(versions) && versions.length === 0)) {
         return [];

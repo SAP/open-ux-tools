@@ -38,7 +38,7 @@ export function getQuestions(
     promptOptions?: UI5ApplicationPromptOptions,
     isCli = true,
     capCdsInfo?: CdsUi5PluginInfo
-): YUIQuestion<UI5ApplicationAnswers>[] {
+): (YUIQuestion<UI5ApplicationAnswers> & AutocompleteQuestionOptions<UI5ApplicationAnswers>)[] {
     // Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
     /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
     const ui5VersionChoices = ui5VersionsGrouped(
@@ -157,7 +157,7 @@ export function getQuestions(
                     ui5Versions.find((ui5Ver) => ui5Ver.default && ui5Ver.version)?.version
                 );
             }
-        } as ListQuestion<UI5ApplicationAnswers>,
+        } as ListQuestion<UI5ApplicationAnswers> & AutocompleteQuestionOptions<UI5ApplicationAnswers>,
         [promptNames.addDeployConfig]: {
             type: 'confirm',
             name: promptNames.addDeployConfig,
@@ -177,9 +177,9 @@ export function getQuestions(
                     : t('prompts.appAddDeployConfigMessage');
             },
             default: async () => !!mtaPath,
-            validate: (add: boolean): boolean => {
+            validate: (addDeployConfig: boolean): boolean => {
                 if (typeof promptOptions?.[promptNames.addDeployConfig]?.validatorCallback === 'function') {
-                    promptOptions?.[promptNames.addDeployConfig].validatorCallback(add, promptNames.addDeployConfig);
+                    promptOptions?.[promptNames.addDeployConfig].validatorCallback(addDeployConfig, promptNames.addDeployConfig);
                 }
                 return true;
             }
@@ -192,9 +192,9 @@ export function getQuestions(
             },
             message: (): string => t('prompts.appAddFlpConfigMessage'),
             default: false,
-            validate: (add: boolean): boolean => {
+            validate: (addFlpConfig: boolean): boolean => {
                 if (typeof promptOptions?.[promptNames.addFlpConfig]?.validatorCallback === 'function') {
-                    promptOptions?.[promptNames.addFlpConfig].validatorCallback(add, promptNames.addFlpConfig);
+                    promptOptions?.[promptNames.addFlpConfig].validatorCallback(addFlpConfig, promptNames.addFlpConfig);
                 }
                 return true;
             }
@@ -311,5 +311,5 @@ export function getQuestions(
     if (promptOptions) {
         questions = extendWithOptions(questions, promptOptions);
     }
-    return questions as YUIQuestion<UI5ApplicationAnswers>[] | AutocompleteQuestionOptions<UI5ApplicationAnswers>[];
+    return questions as (YUIQuestion<UI5ApplicationAnswers> & AutocompleteQuestionOptions<UI5ApplicationAnswers>)[];
 }
