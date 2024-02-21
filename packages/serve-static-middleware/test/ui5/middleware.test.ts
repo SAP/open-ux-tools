@@ -1,7 +1,7 @@
 import { join } from 'path';
 import express from 'express';
 import supertest from 'supertest';
-import * as serveStaticMiddleware from '../../src/ui5/middlewares';
+import * as serveStaticMiddleware from '../../src/ui5/middleware';
 import type { ServeStaticConfig } from '../../src';
 
 const localUI5Path = join(__dirname, '..', 'fixtures', 'local');
