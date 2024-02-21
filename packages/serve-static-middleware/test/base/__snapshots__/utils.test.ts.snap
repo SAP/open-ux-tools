@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`utils resolveServeStaticOptions: call with minimal config 1`] = `
+Object {
+  "fallthrough": false,
+  "maxAge": 123,
+}
+`;
+
+exports[`utils resolveServeStaticOptions: global options 1`] = `
+Object {
+  "dotfiles": "ignore",
+  "etag": false,
+}
+`;
