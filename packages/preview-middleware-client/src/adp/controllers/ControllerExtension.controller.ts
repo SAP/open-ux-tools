@@ -57,16 +57,18 @@ export default class ControllerExtension extends BaseDialog {
     }
 
     /**
-     * Initializes controller, fills model with data and opens the dialog
+     * Setups the Dialog and the JSON Model
+     *
+     * @param {Dialog} dialog - Dialog instance
      */
-    async onInit() {
-        this.dialog = this.byId('controllerExtensionDialog') as unknown as Dialog;
+    async setup(dialog: Dialog): Promise<void> {
+        this.dialog = dialog;
 
         this.setEscapeHandler();
 
         await this.buildDialogData();
 
-        this.getView()?.setModel(this.model);
+        this.dialog.setModel(this.model);
 
         this.dialog.open();
     }
@@ -199,10 +201,10 @@ export default class ControllerExtension extends BaseDialog {
         this.model.setProperty('/controllerPath', controllerPath);
         this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
 
-        const form = this.byId('controllerExtensionDialog_Form') as SimpleForm;
+        const form = this.dialog.getContent()[0] as SimpleForm;
         form.setVisible(false);
 
-        const messageForm = this.byId('controllerExtensionDialog_Form--existingController') as SimpleForm;
+        const messageForm = this.dialog.getContent()[1] as SimpleForm;
         messageForm.setVisible(true);
 
         this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);

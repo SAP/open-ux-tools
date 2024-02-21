@@ -24,7 +24,7 @@ describe('AddFragment', () => {
         });
     });
 
-    describe('onInit', () => {
+    describe('setup', () => {
         afterEach(() => {
             jest.restoreAllMocks();
         });
@@ -77,17 +77,14 @@ describe('AddFragment', () => {
             );
 
             const openSpy = jest.fn();
-            addFragment.byId = jest.fn().mockReturnValue({
+
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
                 open: openSpy,
-                close: jest.fn(),
-                setEscapeHandler: jest.fn()
-            });
-
-            addFragment.createId = jest.fn().mockReturnValue('sampleId');
-
-            addFragment.getView = jest.fn().mockReturnValue({ destroy: jest.fn(), setModel: jest.fn() });
-
-            await addFragment.onInit();
+                close: jest.fn()
+            } as unknown as Dialog);
 
             const escapeHandlerCb = (addFragment.dialog.setEscapeHandler as jest.Mock).mock.calls[0][0];
 
@@ -152,7 +149,7 @@ describe('AddFragment', () => {
             expect(setPropertySpy).toHaveBeenCalledWith('/specialIndexHandlingIcon', true);
             expect(setPropertySpy).toHaveBeenCalledWith(
                 '/iconTooltip',
-                'Index is defined by special logic of Toolbar and can\'t be set here'
+                "Index is defined by special logic of Toolbar and can't be set here"
             );
             expect(setPropertySpy).toHaveBeenCalledWith('/index', updatedIndexArray);
             expect(setPropertySpy).toHaveBeenCalledWith('/selectedIndex', 2);
@@ -170,10 +167,9 @@ describe('AddFragment', () => {
             const closeSpy = jest.fn();
 
             addFragment.dialog = {
-                close: closeSpy
+                close: closeSpy,
+                destroy: jest.fn()
             } as unknown as Dialog;
-
-            addFragment.getView = jest.fn().mockReturnValue({ destroy: jest.fn() });
 
             addFragment.handleDialogClose();
 
@@ -394,7 +390,10 @@ describe('AddFragment', () => {
             addFragment.model = testModel;
 
             CommandFactory.getCommandFor = jest.fn().mockReturnValue({
-                _oPreparedChange: { _oDefinition: { moduleName: '' }, setModuleName: jest.fn() }
+                _oPreparedChange: {
+                    _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
+                    setModuleName: jest.fn()
+                }
             });
 
             fetchMock.mockResolvedValue({

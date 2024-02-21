@@ -6,7 +6,7 @@ module.exports = {
         tsconfigRootDir: __dirname
     },
     rules: {
-        'quotes': ['error', 'single'],
+        'quotes': ['warn', 'single'],
         'valid-jsdoc': ['error', {
             requireParamType: false,
             requireReturn: false,

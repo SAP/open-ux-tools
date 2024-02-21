@@ -43,6 +43,8 @@ export default abstract class BaseDialog extends Controller {
      */
     protected commandExecutor: CommandExecutor;
 
+    abstract setup(dialog: Dialog): Promise<void>;
+
     abstract onCreateBtnPress(event: Event): Promise<void>;
 
     abstract buildDialogData(): Promise<void>;
@@ -61,8 +63,7 @@ export default abstract class BaseDialog extends Controller {
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
             input.setValueState(valueState).setValueStateText(valueStateText);
-            // fix for ui5 version 1.71 (button does not invalidate and rerender)
-            beginBtn.setEnabled(valueState === ValueState.Success).rerender();
+            beginBtn.setEnabled(valueState === ValueState.Success);
         };
 
         if (fragmentName.length <= 0) {
@@ -112,6 +113,6 @@ export default abstract class BaseDialog extends Controller {
      */
     handleDialogClose() {
         this.dialog.close();
-        this.getView()?.destroy();
+        this.dialog.destroy();
     }
 }

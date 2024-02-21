@@ -16,7 +16,6 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 /** sap.ui.dt */
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
@@ -47,16 +46,18 @@ export default class AddFragment extends BaseDialog {
     }
 
     /**
-     * Initializes controller, fills model with data and opens the dialog
+     * Setups the Dialog and the JSON Model
+     * 
+     * @param {Dialog} dialog - Dialog instance
      */
-    async onInit() {
-        this.dialog = this.byId('addNewFragmentDialog') as unknown as Dialog;
+    async setup(dialog: Dialog): Promise<void> {
+        this.dialog = dialog;
 
         this.setEscapeHandler();
 
         await this.buildDialogData();
 
-        this.getView()?.setModel(this.model);
+        this.dialog.setModel(this.model);
 
         this.dialog.open();
     }
@@ -245,21 +246,6 @@ export default class AddFragment extends BaseDialog {
     }
 
     /**
-     * Modifies the given FlexCommand by setting its module name, if the UI5 version is less than 1.72.
-     *
-     * @param {FlexCommand} command - The FlexCommand instance to be modified.
-     * @param {string} moduleName - The module name to be set for the command.
-     * @returns {void}
-     */
-    private modifyCommand(command: FlexCommand, moduleName: string): void {
-        const minor = parseInt(this.ui5Version.split('.')[1], 10);
-        if (minor < 72 && command._oPreparedChange) {
-            command._oPreparedChange.setModuleName(moduleName);
-            command._oPreparedChange._oDefinition.moduleName = moduleName;
-        }
-    }
-
-    /**
      * Creates a new fragment for the specified control
      *
      * @param fragmentData Fragment Data
@@ -295,6 +281,8 @@ export default class AddFragment extends BaseDialog {
         const designMetadata = overlay.getDesignTimeMetadata();
 
         const modifiedValue = {
+            fragment:
+                "<!-- Use stable and unique IDs!--><core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'><!--  add your xml here --></core:FragmentDefinition>",
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,
             index: index ?? 0,
             targetAggregation: targetAggregation ?? 'content'
@@ -307,12 +295,6 @@ export default class AddFragment extends BaseDialog {
             designMetadata,
             flexSettings
         );
-
-        let moduleName = flexSettings.projectId?.replace(/\./g, '/') || '';
-        moduleName += '/changes/';
-        moduleName += modifiedValue.fragmentPath;
-
-        this.modifyCommand(command, moduleName);
 
         await this.commandExecutor.pushAndExecuteCommand(command);
     }

@@ -33,16 +33,18 @@ export default class ExtensionPoint extends BaseDialog {
     }
 
     /**
-     * Initializes controller, fills model with data and opens the dialog
+     * Setups the Dialog and the JSON Model
+     *
+     * @param {Dialog} dialog - Dialog instance
      */
-    async onInit() {
-        this.dialog = this.byId('addFragmentAtExtPointDialog') as unknown as Dialog;
+    async setup(dialog: Dialog): Promise<void> {
+        this.dialog = dialog;
 
         this.setEscapeHandler();
 
         await this.buildDialogData();
 
-        this.getView()?.setModel(this.model);
+        this.dialog.setModel(this.model);
 
         this.dialog.open();
     }
@@ -112,11 +114,11 @@ export default class ExtensionPoint extends BaseDialog {
 
     /**
      * Updates the Select control according to provided values
-     * 
+     *
      * @param name Extension point name
      * @param key Selected extension point key
      * @param list All of the extension points that are under a view
-     * @param enabled Enables the select control    
+     * @param enabled Enables the select control
      */
     private updateModel(name: string, key: number, list: { key: number; value: string }[], enabled: boolean): void {
         this.model.setProperty('/extensionPointName', name);
