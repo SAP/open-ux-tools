@@ -53,13 +53,13 @@ describe('FileWatcher', () => {
         let changeHandler = mockWatcher.on.mock.calls.find((args: any) => args[0] === 'change')[1];
         changeHandler('file/path.change');
 
-        // Simulate 'change' event json file
+        // Simulate 'change' event .json file
         changeHandler = mockWatcher.on.mock.calls.find((args: any) => args[0] === 'change')[1];
         changeHandler('file/path.json');
         // Expect onChange callback to be called with the changed file path
         expect(onChangeMock).toHaveBeenCalledWith(['file/path.json']);
 
-        // Simulate 'change' event json file
+        // Simulate 'change' event .properties file
         changeHandler = mockWatcher.on.mock.calls.find((args: any) => args[0] === 'change')[1];
         changeHandler('file/path.properties');
         // Expect onChange callback to be called with the changed file path
