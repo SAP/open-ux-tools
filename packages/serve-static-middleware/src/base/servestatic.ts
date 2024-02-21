@@ -2,7 +2,7 @@ import { default as serveStatic } from 'serve-static';
 import type { ServeStaticOptions } from 'serve-static';
 import type { ServeStaticConfig } from './types';
 import { resolveServeStaticOptions, resolveSrcPath } from './utils';
-import type { ToolsLogger } from '@sap-ux/logger';
+import { ToolsLogger } from '@sap-ux/logger';
 import { type RequestHandler, Router } from 'express';
 
 /**
@@ -13,7 +13,11 @@ import { type RequestHandler, Router } from 'express';
  * @param logger - logger
  * @returns a middleware function to serve files
  */
-export const serveStaticMiddleware = (root: string, config: ServeStaticConfig, logger: ToolsLogger): RequestHandler => {
+export const serveStaticMiddleware = (
+    root: string,
+    config: ServeStaticConfig,
+    logger: ToolsLogger = new ToolsLogger()
+): RequestHandler => {
     const paths = config.paths;
     const globalOptions: ServeStaticOptions = resolveServeStaticOptions(config);
     const router = Router();
