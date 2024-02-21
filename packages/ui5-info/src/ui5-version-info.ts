@@ -4,7 +4,7 @@ import { executeNpmUI5VersionsCmd } from './commands';
 import axios from 'axios';
 import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
-import { ui5VersionFallbacks } from './ui5VersionFallback';
+import { ui5VersionFallbacks } from './ui5-version-fallback';
 import {
     defaultMinUi5Version,
     defaultUi5Versions,
@@ -50,7 +50,7 @@ function sortUI5Versions(ui5Versions: string[]): string[] {
  * Sort function for snapshot versions.
  *
  * @param a - The first element for comparison.
- * @param b - The first element for comparison.
+ * @param b - The second element for comparison.
  * @returns 0, 1 or -1
  */
 function snapshotSort(a: string, b: string): number {
