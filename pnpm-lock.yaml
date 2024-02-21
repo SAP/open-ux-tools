@@ -1407,15 +1407,18 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@types/ws':
-        specifier: 8.5.10
-        version: 8.5.10
+      chokidar:
+        specifier: 3.6.0
+        version: 3.6.0
       express:
         specifier: '4'
         version: 4.18.2
       ui5-middleware-websocket:
         specifier: 3.0.1
         version: 3.0.1
+      ws:
+        specifier: 8.16.0
+        version: 8.16.0
     devDependencies:
       '@sap-ux-private/playwright':
         specifier: 0.0.2
@@ -1423,15 +1426,12 @@ importers:
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
-      '@types/fb-watchman':
-        specifier: 2.0.4
-        version: 2.0.4
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
-      chokidar:
-        specifier: 3.6.0
-        version: 3.6.0
+      '@types/ws':
+        specifier: 8.5.10
+        version: 8.5.10
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -1441,9 +1441,6 @@ importers:
       supertest:
         specifier: 6.3.3
         version: 6.3.3
-      ws:
-        specifier: 8.16.0
-        version: 8.16.0
 
   packages/serve-static-middleware:
     dependencies:
@@ -8538,12 +8535,6 @@ packages:
       '@types/qs': 6.9.1
       '@types/serve-static': 1.15.5
 
-  /@types/fb-watchman@2.0.4:
-    resolution: {integrity: sha512-h7yAQ5Sf96PdZz+sfDDl6Hscl/JqsVXadjF6YHmJeWviziDCGQtqUQUDS2tYjfD/eTzhfZwNfwcfb91a4PaZKQ==}
-    dependencies:
-      '@types/node': 18.11.9
-    dev: true
-
   /@types/find-cache-dir@3.2.1:
     resolution: {integrity: sha512-frsJrz2t/CeGifcu/6uRo4b+SzAwT4NYCVPu1GN8IB9XTzrpPkGuV0tmh9mN+/L0PklAlsC3u5Fxt0ju00LXIw==}
     dev: true
@@ -9017,7 +9008,7 @@ packages:
     resolution: {integrity: sha512-vmQSUcfalpIq0R9q7uTo2lXs6eGIpt9wtnLdMv9LVpIjCA/+ufZRozlVoVelIYixx1ugCBKDhn89vnsEGOCx9A==}
     dependencies:
       '@types/node': 18.11.9
-    dev: false
+    dev: true
 
   /@types/yargs-parser@20.2.1:
     resolution: {integrity: sha512-7tFImggNeNBVMsn0vLrpn1H1uPrUBdnARPTpZoitY37ZrdJREzf7I16tMrlK3hen349gr1NYh8CmZQa7CTG6Aw==}
@@ -10047,7 +10038,6 @@ packages:
     dependencies:
       normalize-path: 3.0.0
       picomatch: 2.3.1
-    dev: true
 
   /app-root-dir@1.0.2:
     resolution: {integrity: sha512-jlpIfsOoNoafl92Sz//64uQHGSyMrD2vYG5d8o2a4qGvyNCvXur7bzIsWtAC/6flI2RYAp3kv8rsfBtaLm7w0g==}
@@ -10713,7 +10703,6 @@ packages:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
     requiresBuild: true
-    dev: true
 
   /binaryextensions@4.18.0:
     resolution: {integrity: sha512-PQu3Kyv9dM4FnwB7XGj1+HucW+ShvJzJqjuw1JkKVs1mWdwOKVcRjOi+pV9X52A0tNvrPCsPkbFFQb+wE1EAXw==}
@@ -11131,7 +11120,6 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
 
   /chownr@1.1.4:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
@@ -14898,7 +14886,6 @@ packages:
     requiresBuild: true
     dependencies:
       binary-extensions: 2.2.0
-    dev: true
 
   /is-boolean-object@1.1.2:
     resolution: {integrity: sha512-gDYaKHJmnj4aWxyj6YHyXVpdQawtVLHU5cb+eztPGczf6cjuTdwve5ZIEfgXqH4e57An1D1AKf8CZ3kYrQRqYA==}
@@ -18953,7 +18940,6 @@ packages:
     requiresBuild: true
     dependencies:
       picomatch: 2.3.1
-    dev: true
 
   /recast@0.21.5:
     resolution: {integrity: sha512-hjMmLaUXAm1hIuTqOdeYObMslq/q+Xff6QE3Y2P+uoHAg2nmVlLBps2hzh1UJDdMtDTMXOFewK6ky51JQIeECg==}
