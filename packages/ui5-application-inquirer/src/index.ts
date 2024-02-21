@@ -1,13 +1,12 @@
-import { getDefaultUI5Theme, getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
-import { type Question } from 'inquirer';
+import type { InquirerAdapter } from '@sap-ux/inquirer-common';
+import { getDefaultUI5Theme, getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import autocomplete from 'inquirer-autocomplete-prompt';
 import cloneDeep from 'lodash/cloneDeep';
 import isNil from 'lodash/isNil';
 import { getQuestions } from './prompts';
-import type { PromptDefaultValue } from './types';
+import type { PromptDefaultValue, UI5ApplicationQuestion } from './types';
 import { promptNames, type UI5ApplicationAnswers, type UI5ApplicationPromptOptions } from './types';
-import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 /**
  * Get the inquirer prompts for ui5 library inquirer.
  *
@@ -20,7 +19,7 @@ async function getPrompts(
     promptOptions?: UI5ApplicationPromptOptions,
     isCli = true,
     capCdsInfo?: CdsUi5PluginInfo
-): Promise<Question<UI5ApplicationAnswers>[]> {
+): Promise<UI5ApplicationQuestion[]> {
     const filterOptions: UI5VersionFilterOptions = {
         useCache: true,
         includeMaintained: true,
@@ -110,8 +109,8 @@ export {
     prompt,
     promptNames,
     type CdsUi5PluginInfo,
-    type UI5ApplicationAnswers,
-    type UI5ApplicationPromptOptions,
     type InquirerAdapter,
-    type PromptDefaultValue
+    type PromptDefaultValue,
+    type UI5ApplicationAnswers,
+    type UI5ApplicationPromptOptions
 };

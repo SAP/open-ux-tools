@@ -1,5 +1,5 @@
 import { validateModuleName } from '@sap-ux/project-input-validator';
-import { pathExists } from './utility';
+import { pathExists } from './prompt-helpers';
 import { t } from '../i18n';
 
 /**

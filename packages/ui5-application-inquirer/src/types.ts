@@ -1,5 +1,6 @@
-import type { PromptSeverityMessage, UI5VersionChoice, validate } from '@sap-ux/inquirer-common';
+import type { PromptSeverityMessage, UI5VersionChoice, YUIQuestion, validate } from '@sap-ux/inquirer-common';
 import type { AsyncDynamicQuestionProperty } from 'inquirer';
+import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 export interface UI5ApplicationAnswers {
     name?: string;
@@ -152,5 +153,8 @@ type booleanValuePromptOtions = Record<
     } & CommonPromptOptions
 > &
     Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>>;
+
+export type UI5ApplicationQuestion = YUIQuestion<UI5ApplicationAnswers> &
+    Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
 
 export type UI5ApplicationPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOtions>;

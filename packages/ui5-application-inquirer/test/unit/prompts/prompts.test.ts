@@ -2,12 +2,14 @@ import * as projectAccess from '@sap-ux/project-access';
 import * as projectValidators from '@sap-ux/project-input-validator';
 import * as ui5Info from '@sap-ux/ui5-info';
 import { getQuestions } from '../../../src/prompts';
-import * as utility from '../../../src/prompts/utility';
+import * as utility from '../../../src/prompts/prompt-helpers';
 import type { UI5ApplicationPromptOptions } from '../../../src/types';
 import { promptNames } from '../../../src/types';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
-import { UI5Version, defaultVersion, ui5ThemeIds } from '@sap-ux/ui5-info';
-import { ListQuestion } from '@sap-ux/inquirer-common';
+import type { UI5Version } from '@sap-ux/ui5-info';
+import { defaultVersion, minUi5VersionSupportingCodeAssist, ui5ThemeIds } from '@sap-ux/ui5-info';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
+import { inc } from 'semver';
 
 jest.mock('@sap-ux/project-input-validator', () => {
     return {
@@ -16,7 +18,7 @@ jest.mock('@sap-ux/project-input-validator', () => {
     };
 });
 
-describe('getPrompts', () => {
+describe('getQuestions', () => {
     const mockCdsInfo = {
         isWorkspaceEnabled: false,
         hasMinCdsVersion: true,
@@ -35,6 +37,7 @@ describe('getPrompts', () => {
     });
 
     test('getQuestions, no options', () => {
+        // Tests all declaritive values
         expect(getQuestions([])).toMatchSnapshot();
     });
 
@@ -306,11 +309,10 @@ describe('getPrompts', () => {
         addDeployConfigQuestion = questions.find((question) => question.name === promptNames.addDeployConfig);
         expect(await (addDeployConfigQuestion?.when as Function)()).toEqual(true);
         expect(getMtaPathSpy).toHaveBeenCalledWith(mockCwd);
-        
-        const targetFolder = '/any/target/folder'
+
+        const targetFolder = '/any/target/folder';
         expect(await (addDeployConfigQuestion?.when as Function)({ targetFolder })).toEqual(true);
         expect(getMtaPathSpy).toHaveBeenCalledWith(targetFolder);
-
 
         expect((addDeployConfigQuestion?.message as Function)()).toMatchInlineSnapshot(
             `"Add deployment configuration to MTA project (any/path)"`
@@ -359,27 +361,180 @@ describe('getPrompts', () => {
         expect(validatorCbSpy).toHaveBeenCalledWith(true, promptNames.addFlpConfig);
     });
 
-    test.only('getQuestions, prompt: `ui5Theme`', async () => {
+    test('getQuestions, prompt: `ui5Theme`', async () => {
         const getDefaultUI5ThemeSpy = jest.spyOn(ui5Info, 'getDefaultUI5Theme');
-        let questions = getQuestions([]);
-        let ui5ThemeQuestion = questions.find((question) => question.name === promptNames.ui5Theme);
+        const questions = getQuestions([]);
+        const ui5ThemeQuestion = questions.find((question) => question.name === promptNames.ui5Theme);
 
-        expect(questions).toEqual(
-            expect.arrayContaining([expect.objectContaining({ name: promptNames.ui5Theme })])
-        );
+        expect(questions).toEqual(expect.arrayContaining([expect.objectContaining({ name: promptNames.ui5Theme })]));
         expect((ui5ThemeQuestion?.default as Function)({})).toEqual(ui5ThemeIds.SAP_HORIZON);
         expect(getDefaultUI5ThemeSpy).toHaveBeenCalledWith(undefined);
 
         const ui5Theme = ui5ThemeIds.SAP_FIORI_3;
         getDefaultUI5ThemeSpy.mockClear();
-        expect((ui5ThemeQuestion?.default as Function)({ ui5Theme })).toEqual(ui5ThemeIds.SAP_FIORI_3);
+        expect((ui5ThemeQuestion?.default as Function)({ [promptNames.ui5Theme]: ui5Theme })).toEqual(
+            ui5ThemeIds.SAP_FIORI_3
+        );
         expect(getDefaultUI5ThemeSpy).not.toHaveBeenCalledWith();
 
-        const ui5Version = '9.999.999'
+        const ui5Version = '9.999.999';
         getDefaultUI5ThemeSpy.mockClear();
-        expect((ui5ThemeQuestion?.default as Function)({ ui5Version })).toEqual(ui5ThemeIds.SAP_HORIZON);
+        expect((ui5ThemeQuestion?.default as Function)({ [promptNames.ui5Version]: ui5Version })).toEqual(
+            ui5ThemeIds.SAP_HORIZON
+        );
         expect(getDefaultUI5ThemeSpy).toHaveBeenCalledWith(ui5Version);
 
         // choices
+        // Mock themes
+        const mockThemes = [
+            { id: ui5ThemeIds.SAP_FIORI_3_DARK, label: 'Theme One' },
+            { id: ui5ThemeIds.SAP_HORIZON_DARK, label: 'Theme Two' }
+        ];
+        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockReturnValue(mockThemes);
+        expect(((ui5ThemeQuestion as ListQuestion)?.choices as Function)({})).toMatchInlineSnapshot(`
+            [
+              {
+                "name": "Theme One",
+                "value": "sap_fiori_3_dark",
+              },
+              {
+                "name": "Theme Two",
+                "value": "sap_horizon_dark",
+              },
+            ]
+        `);
+        expect(getUI5ThemesSpy).toHaveBeenCalledWith(defaultVersion);
+        getUI5ThemesSpy.mockClear();
+        ((ui5ThemeQuestion as ListQuestion)?.choices as Function)({ [promptNames.ui5Version]: ui5Version });
+        expect(getUI5ThemesSpy).toHaveBeenCalledWith(ui5Version);
+    });
+
+    test('getQuestions, prompt: `enableEslint`', () => {
+        let questions = getQuestions([]);
+        let enableEslintQuestion = questions.find((question) => question.name === promptNames.enableEslint);
+        // defaults
+        expect(enableEslintQuestion?.default).toEqual(false);
+        questions = getQuestions([], {
+            enableEslint: {
+                default: true
+            }
+        });
+        enableEslintQuestion = questions.find((question) => question.name === promptNames.enableEslint);
+        expect(enableEslintQuestion?.default).toEqual(true);
+    });
+
+    test('getQuestions, prompt: `enableCodeAssist`', () => {
+        let questions = getQuestions([]);
+        let enableCodeAssistQuestion = questions.find((question) => question.name === promptNames.enableCodeAssist);
+        // defaults
+        expect(enableCodeAssistQuestion?.default).toEqual(false);
+        questions = getQuestions([], {
+            enableCodeAssist: {
+                default: true
+            }
+        });
+        enableCodeAssistQuestion = questions.find((question) => question.name === promptNames.enableCodeAssist);
+        expect(enableCodeAssistQuestion?.default).toEqual(true);
+
+        // when condition, test that the ui5Version answer supports code assist
+        let ui5Version = '1.64.0';
+        expect((enableCodeAssistQuestion?.when as Function)({ [promptNames.ui5Version]: ui5Version })).toEqual(false);
+        ui5Version = inc(minUi5VersionSupportingCodeAssist, 'patch')!;
+        expect((enableCodeAssistQuestion?.when as Function)({ [promptNames.ui5Version]: ui5Version })).toEqual(true);
+        // No ui5 version should default to latest and therefore return true
+        expect((enableCodeAssistQuestion?.when as Function)({})).toEqual(true);
+    });
+
+    test('getQuestions, prompt: `skipAnnotations`', () => {
+        let questions = getQuestions([]);
+        let skipAnnotationsQuestion = questions.find((question) => question.name === promptNames.skipAnnotations);
+        // defaults
+        expect(skipAnnotationsQuestion?.default).toEqual(false);
+        questions = getQuestions([], {
+            skipAnnotations: {
+                default: true
+            }
+        });
+        skipAnnotationsQuestion = questions.find((question) => question.name === promptNames.skipAnnotations);
+        // defaults
+        expect(skipAnnotationsQuestion?.default).toEqual(true);
+    });
+
+    test('getQuestions, prompt: `enableNPMWorkspaces`', () => {
+        const questions = getQuestions([]);
+        let enableNPMWorkspacesQuestion = questions.find(
+            (question) => question.name === promptNames.enableNPMWorkspaces
+        );
+        // when condition
+        expect((enableNPMWorkspacesQuestion?.when as Function)()).toEqual(false);
+
+        enableNPMWorkspacesQuestion = getQuestions([], undefined, undefined, mockCdsInfo).find(
+            (question) => question.name === promptNames.enableNPMWorkspaces
+        );
+        expect((enableNPMWorkspacesQuestion?.when as Function)()).toEqual(true);
+    });
+
+    test('getQuestions, prompt: `enableTypeScript`', () => {
+        let questions = getQuestions([]);
+        let enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
+        // default
+        expect(enableTypeScriptQuestion?.default).toEqual(false);
+        questions = getQuestions([], {
+            enableTypeScript: {
+                default: true
+            }
+        });
+        enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
+        expect(enableTypeScriptQuestion?.default).toEqual(true);
+
+        // when
+        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
+        const mockCdsInfoFalse = {
+            hasCdsUi5Plugin: false,
+            isCdsUi5PluginEnabled: false,
+            isWorkspaceEnabled: false,
+            hasMinCdsVersion: false
+        };
+        enableTypeScriptQuestion = getQuestions([], undefined, undefined, mockCdsInfoFalse).find(
+            (question) => question.name === promptNames.enableTypeScript
+        );
+        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(false);
+
+        enableTypeScriptQuestion = getQuestions([], undefined, undefined, mockCdsInfoFalse).find(
+            (question) => question.name === promptNames.enableTypeScript
+        );
+        expect((enableTypeScriptQuestion?.when as Function)({ [promptNames.enableNPMWorkspaces]: true })).toEqual(true);
+
+        enableTypeScriptQuestion = getQuestions([], undefined, undefined, {
+            hasCdsUi5Plugin: true,
+            isCdsUi5PluginEnabled: true,
+            isWorkspaceEnabled: true,
+            hasMinCdsVersion: true
+        }).find((question) => question.name === promptNames.enableTypeScript);
+        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
+    });
+
+    test('getQuestions, advanced prompt grouping', () => {
+        const advancedOptions = {
+            [promptNames.ui5Theme]: {
+                advancedOption: true
+            },
+            [promptNames.skipAnnotations]: {
+                advancedOption: true
+            },
+            /**
+             * Existing when() combined with advanced condition
+             */
+            [promptNames.enableNPMWorkspaces]: {
+                advancedOption: true
+            }
+        };
+        const questions = getQuestions([], advancedOptions, undefined, mockCdsInfo);
+
+        Object.keys(advancedOptions).forEach((questionName) => {
+            const question = questions.find(({ name }) => name === questionName);
+            expect((question?.when as Function)({ [promptNames.showAdvanced]: false })).toEqual(false);
+            expect((question?.when as Function)({ [promptNames.showAdvanced]: true })).toEqual(true);
+        });
     });
 });

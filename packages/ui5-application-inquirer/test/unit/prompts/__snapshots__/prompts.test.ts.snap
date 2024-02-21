@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getPrompts getQuestions, no options 1`] = `
+exports[`getQuestions getQuestions, no options 1`] = `
 [
   {
     "default": [Function],
