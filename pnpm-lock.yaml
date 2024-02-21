@@ -1309,9 +1309,6 @@ importers:
       ejs:
         specifier: 3.1.9
         version: 3.1.9
-      express:
-        specifier: '4'
-        version: 4.18.2
     devDependencies:
       '@private/preview-middleware-client':
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
@@ -1343,6 +1340,9 @@ importers:
       dotenv:
         specifier: 16.3.1
         version: 16.3.1
+      express:
+        specifier: 4.18.2
+        version: 4.18.2
       nock:
         specifier: 13.4.0
         version: 13.4.0

@@ -63,10 +63,16 @@ export interface UI5VersionsResponse {
 }
 
 export interface UI5Theme {
+    /**
+     * The technical theme identifier
+     */
     id: ui5ThemeIds;
+    /**
+     * The official end-user theme name
+     */
     label: string;
     /**
-     * The UI5 minimum UI% version that supports this theme
+     * The UI5 minimum UI5 version that supports this theme
      */
     sinceVersion?: string;
 }

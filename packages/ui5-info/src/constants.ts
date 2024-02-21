@@ -1,6 +1,6 @@
 import { coerce, gte } from 'semver';
 import type { UI5VersionOverview } from './types';
-import { supportState, ui5VersionFallbacks } from './ui5VersionFallback';
+import { supportState, ui5VersionFallbacks } from './ui5-version-fallback';
 
 export const enum ui5VersionsType {
     official = 'officialVersions',

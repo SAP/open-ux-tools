@@ -4,7 +4,7 @@ import { executeNpmUI5VersionsCmd } from './commands';
 import axios from 'axios';
 import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
-import { ui5VersionFallbacks } from './ui5VersionFallback';
+import { ui5VersionFallbacks } from './ui5-version-fallback';
 import {
     defaultMinUi5Version,
     defaultUi5Versions,
@@ -12,8 +12,7 @@ import {
     latestVersionString,
     ui5VersionRequestInfo,
     ui5VersionsType,
-    ui5VersionsCache,
-    minUi5VersionSupportingCodeAssist
+    ui5VersionsCache
 } from './constants';
 
 // Semantic version equivalent of 'Latest'
@@ -379,18 +378,4 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
         }
         return ui5Version;
     });
-}
-
-/**
- * Filters an array of versions based on a ui5 version parameter and returns a boolean for code assist libraries enablement.
- *
- * @param versions - array of versions
- * @param ui5Version - minimum version to filter
- * @returns true if the specified ui5 version supports code assist
- */
-export function uI5VersionsWithCodeAssist(versions: string[], ui5Version: string): boolean {
-    return (
-        filterNewerEqual(versions, minUi5VersionSupportingCodeAssist).includes(ui5Version) ||
-        ui5Version === defaultVersion
-    );
 }
