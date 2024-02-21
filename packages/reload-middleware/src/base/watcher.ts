@@ -11,12 +11,34 @@ export class FileWatcher {
      * @param projectPath
      * @param onChange
      */
+
+    /**
+     *
+     * @param projectPath
+     * @param onChange
+     */
     constructor(projectPath: string, onChange: (changedFiles: string[]) => void) {
+        const filePatterns = [
+            '**/*.html',
+            '**/*.js',
+            '**/*.json',
+            '**/*.xml',
+            '**/*.properties',
+            '**/*.change',
+            '**/*.variant',
+            '**/*.ctrl_variant',
+            '**/*.ctrl_variant_change',
+            '**/*.ctrl_variant_management_change'
+        ];
+
         // Initialize the chokidar watcher
-        this.client = chokidar.watch(`${projectPath}/**/*.change`, {
-            ignored: /(^|[/\\])\../, // ignore dotfiles without unnecessary escape
-            persistent: true
-        });
+        this.client = chokidar.watch(
+            filePatterns.map((pattern) => `${projectPath}/${pattern}`),
+            {
+                ignored: /(^|[/\\])\../, // ignore dotfiles without unnecessary escape
+                persistent: true
+            }
+        );
 
         // Ready event indicates that chokidar is watching the specified paths
         this.client.on('ready', () => {
