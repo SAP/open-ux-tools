@@ -201,10 +201,12 @@ export default class ControllerExtension extends BaseDialog {
         this.model.setProperty('/controllerPath', controllerPath);
         this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
 
-        const form = this.dialog.getContent()[0] as SimpleForm;
+        const content = this.dialog.getContent();
+
+        const form = content[0] as SimpleForm;
         form.setVisible(false);
 
-        const messageForm = this.dialog.getContent()[1] as SimpleForm;
+        const messageForm = content[1] as SimpleForm;
         messageForm.setVisible(true);
 
         this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);

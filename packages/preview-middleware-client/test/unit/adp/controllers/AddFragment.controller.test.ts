@@ -149,7 +149,7 @@ describe('AddFragment', () => {
             expect(setPropertySpy).toHaveBeenCalledWith('/specialIndexHandlingIcon', true);
             expect(setPropertySpy).toHaveBeenCalledWith(
                 '/iconTooltip',
-                'Index is defined by special logic of Toolbar and can\'t be set here'
+                `Index is defined by special logic of Toolbar and can't be set here`
             );
             expect(setPropertySpy).toHaveBeenCalledWith('/index', updatedIndexArray);
             expect(setPropertySpy).toHaveBeenCalledWith('/selectedIndex', 2);

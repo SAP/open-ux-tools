@@ -7,7 +7,7 @@
     contentWidth="450px" 
     class="sapUiRTABorder">
     <content>
-        <f:SimpleForm id="controllerExtensionDialog_Form"
+        <f:SimpleForm
             editable="true"
             layout="ResponsiveGridLayout"
             labelSpanS="4"
@@ -21,7 +21,7 @@
                 </Input>
             </f:content>
         </f:SimpleForm>
-        <f:SimpleForm id="controllerExtensionDialog_Form--existingController"
+        <f:SimpleForm
             editable="true"
             layout="ResponsiveGridLayout"
             labelSpanS="12"
