@@ -35,7 +35,7 @@ export default class CommandExecutor {
         flexSettings: FlexSettings
     ): Promise<FlexCommand> {
         try {
-            return CommandFactory.getCommandFor(
+            return await CommandFactory.getCommandFor(
                 runtimeControl,
                 commandName,
                 modifiedValue,
