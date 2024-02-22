@@ -12,6 +12,7 @@ import {
     type UI5ApplicationPromptOptions,
     type UI5ApplicationQuestion
 } from '../types';
+import { latestVersionString } from '@sap-ux/ui5-info';
 
 /**
  * Tests if a directory with the specified `appName` exists at the path specified by `targetPath`.
@@ -20,7 +21,7 @@ import {
  * @param targetPath directory path where application directory would be created
  * @returns true, if the combined path exists otherwise false
  */
-export function pathExists(appName: string, targetPath?: string): boolean | string {
+export function appPathExists(appName: string, targetPath?: string): boolean | string {
     return existsSync(join(targetPath ?? process.cwd(), appName.trim()));
 }
 /**
@@ -32,7 +33,7 @@ export function pathExists(appName: string, targetPath?: string): boolean | stri
 export function defaultAppName(targetPath: string): string {
     let defProjNum = defaultProjectNumber;
     let defaultName = t('prompts.appNameDefault');
-    while (pathExists(`${defaultName}`, targetPath)) {
+    while (exports.appPathExists(`${defaultName}`, targetPath)) {
         defaultName = t('prompts.appNameDefault', { defaultProjectNumber: ++defProjNum });
         // Dont loop forever, user will need to provide input otherwise
         if (defProjNum > 999) {
@@ -56,7 +57,7 @@ export function isVersionIncluded(version: string, minVersion: string): boolean 
     if (ui5SemVer) {
         return gte(ui5SemVer, minVersion);
     }
-    return true;
+    return version === latestVersionString ? true : false;
 }
 
 /**
@@ -66,7 +67,7 @@ export function isVersionIncluded(version: string, minVersion: string): boolean 
  * @param condition function which returns true or false
  * @returns the passed questions reference
  */
-export function withCondition(questions: YUIQuestion[], condition: (answers: Answers) => boolean): YUIQuestion[] {
+export function withCondition(questions: Question[], condition: (answers: Answers) => boolean): Question[] {
     questions.forEach((question) => {
         if (question.when !== undefined) {
             if (typeof question.when === 'function') {
@@ -79,8 +80,9 @@ export function withCondition(questions: YUIQuestion[], condition: (answers: Ans
                     }
                 };
             } else {
+                const whenValue = question.when as boolean;
                 question.when = (answers: Answers): boolean => {
-                    return condition(answers) && (question.when as boolean);
+                    return condition(answers) && whenValue;
                 };
             }
         } else {
@@ -203,7 +205,7 @@ export function hidePrompts(
     isCapProject?: boolean
 ): YUIQuestion[] {
     const questions: UI5ApplicationQuestion[] = [];
-    if (promptOptions || isCapProject) {
+    if (promptOptions ?? isCapProject) {
         Object.keys(prompts).forEach((key) => {
             const promptKey = key as keyof typeof promptNames;
             if (

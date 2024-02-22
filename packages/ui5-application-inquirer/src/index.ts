@@ -80,7 +80,7 @@ function getDefaults(
     Object.entries(promptOptions).forEach(([key, promptOpt]) => {
         //if (promptOpt.advancedOption) {
         const promptKey = key as keyof typeof promptNames;
-        // Do we have an answer, if notapply the default, either passed or fallback
+        // Do we have an answer, if not apply the default, either specified or fallback
         if (isNil(answers[promptKey])) {
             let defaultValue;
 

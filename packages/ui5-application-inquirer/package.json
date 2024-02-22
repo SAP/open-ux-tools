@@ -36,16 +36,20 @@
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
         "i18next": "23.5.1",
-        "inquirer": "8.2.6",
         "inquirer-autocomplete-prompt": "2.0.1",
         "lodash": "4.17.21",
         "semver": "7.5.4"
     },
     "devDependencies": {
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0",
+        "fs-extra": "11.2.0",
         "@sap-ux/cap-config-writer": "workspace:*",
         "@types/inquirer-autocomplete-prompt": "2.0.1",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.202",
+        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs": "1.1.2",
         "@types/semver": "7.5.4"
     },
     "engines": {

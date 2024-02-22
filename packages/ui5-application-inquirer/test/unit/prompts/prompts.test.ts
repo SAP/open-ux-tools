@@ -54,7 +54,7 @@ describe('getQuestions', () => {
     });
 
     test('getQuestions, prompt: `name`, conditional validator', () => {
-        jest.spyOn(utility, 'pathExists').mockReturnValue(true);
+        jest.spyOn(utility, 'appPathExists').mockReturnValue(true);
         // Test default when `isCLi` === true
         let questions = getQuestions([], {
             [promptNames.targetFolder]: {
@@ -94,6 +94,7 @@ describe('getQuestions', () => {
             (questions.find((question) => question.name === promptNames.name)?.validate as Function)('project1', {})
         ).toEqual(true);
 
+        jest.spyOn(utility, 'appPathExists').mockReturnValue(false);
         // Default generated name
         expect((questions.find((question) => question.name === promptNames.name)?.default as Function)({})).toEqual(
             'project1'
