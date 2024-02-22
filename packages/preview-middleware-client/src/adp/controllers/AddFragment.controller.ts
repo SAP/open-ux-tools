@@ -281,7 +281,7 @@ export default class AddFragment extends BaseDialog {
         const designMetadata = overlay.getDesignTimeMetadata();
 
         const modifiedValue = {
-            fragment: `<!-- Use stable and unique IDs!--><core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'><!--  add your xml here --></core:FragmentDefinition>`,
+            fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,
             index: index ?? 0,
             targetAggregation: targetAggregation ?? 'content'
