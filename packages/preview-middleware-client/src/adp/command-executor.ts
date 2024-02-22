@@ -34,7 +34,19 @@ export default class CommandExecutor {
         designMetadata: DesignTimeMetadata,
         flexSettings: FlexSettings
     ): Promise<FlexCommand> {
-        return CommandFactory.getCommandFor(runtimeControl, commandName, modifiedValue, designMetadata, flexSettings);
+        try {
+            return CommandFactory.getCommandFor(
+                runtimeControl,
+                commandName,
+                modifiedValue,
+                designMetadata,
+                flexSettings
+            );
+        } catch (e) {
+            const errorMsg = `Could not get command for '${commandName}'. ${e.message}`;
+            MessageToast.show(errorMsg);
+            throw new Error(errorMsg);
+        }
     }
 
     /**
