@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.7
+
+### Patch Changes
+
+-   392522e8: Added optional `controllerPrefix` property to custom action event handler
+
 ## 0.24.6
 
 ### Patch Changes
