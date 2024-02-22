@@ -1,23 +1,57 @@
 import { UIDefaultButton, initIcons } from '@sap-ux/ui-components';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SupportedBuildingBlocks } from './utils';
-import { applyAnswers, getChoices, getCodeSnippet, getQuestions, getWebSocket, subscribeOnChoicesUpdate } from './utils/communication';
-import { ActionType, useReducedState } from './utils/state';
-import { Questions } from '../src/components';
+import { applyAnswers, getChoices, getCodeSnippet, getQuestions, getWebSocket } from './utils/communication';
+import { IQuestion, Questions } from '../src/components';
+import { useChoices } from './utils/hooks';
+import { Answers } from 'inquirer';
 
 export default { title: 'Building Blocks' };
 
 initIcons();
 getWebSocket();
 
+function _updateAnswers(
+    answers: Answers,
+    name: string,
+    answer: string | number | boolean | undefined,
+    dependantPromptNames: string[] = []
+) {
+    let newAnswers = {
+        ...answers,
+        [name]: answer
+    };
+    dependantPromptNames.forEach((name) => {
+        // Reset the values of dependant prompts
+        newAnswers = _updateAnswers(newAnswers, name, '');
+    });
+    return newAnswers;
+}
+
 const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQuestions?: string[] }): JSX.Element => {
     const { type, visibleQuestions } = props;
-    const { answers, questions, updateAnswers, updateChoices, updateQuestions, resetAnswers } = useReducedState(type);
+    const [questions, setQuestions] = useState<IQuestion[]>([]);
+    const [answers, setAnswers] = useState<Answers>({});
+    const choices = useChoices();
+    console.log(Object.keys(choices));
+
+    function updateAnswers(
+        name: string,
+        answer: string | number | boolean | undefined,
+        dependantPromptNames: string[] = []
+    ) {
+        const newAnswers = _updateAnswers(answers, name, answer, dependantPromptNames);
+        dependantPromptNames.forEach((name) => {
+            // refresh the choices in dependant prompts
+            getChoices(name, type, newAnswers);
+        });
+        setAnswers(newAnswers);
+    }
+
     function handleApply() {
         // Call API to apply changes
         console.log('Applying changes... FPM Writer');
-
-        applyAnswers(type, answers).then(({ buildingBlockType }) => { });
+        applyAnswers(type, answers).then(({ buildingBlockType }) => {});
     }
 
     React.useEffect(() => {
@@ -39,12 +73,8 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
                     question.selectType === 'dynamic'
                 );
             });
-            updateQuestions(newQuestions);
+            setQuestions(newQuestions);
         });
-        // Update choices on callback
-        subscribeOnChoicesUpdate((name, choices) => {
-            updateChoices(name, choices);
-        })
     }, []);
 
     useEffect(() => {
@@ -69,6 +99,7 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
                 }}
                 onChange={updateAnswers}
                 answers={answers || {}}
+                choices={choices}
             />
             {/* Disable the button if there is no answers for the 'required' question */}
             <div className="cta">
@@ -108,14 +139,3 @@ export const customChart = (): JSX.Element => {
         />
     );
 };
-
-function refreshChoices(
-    name: string,
-    type: SupportedBuildingBlocks,
-    updateChoices: (name: string, choices: unknown) => void
-): { type: ActionType; payload?: any } {
-    return {
-        type: ActionType.REFRESH_CHOICES,
-        payload: { name, type, updateChoicesFn: (choices: unknown[]) => updateChoices(name, choices) }
-    };
-}

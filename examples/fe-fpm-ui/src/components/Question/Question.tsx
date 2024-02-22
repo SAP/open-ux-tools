@@ -9,6 +9,7 @@ import { Input } from '../Input';
 import { Select } from '../Select';
 import { MultiSelect } from '../MultiSelect';
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
+import { Choice } from '../Questions';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
@@ -31,19 +32,21 @@ export interface QuestionProps {
     answers: Record<string, string | number>;
     onChoiceRequest: (name: string) => void;
     onChange: (name: string, answer: string | number | boolean | undefined, dependantPromptNames?: string[]) => void;
+    choices?: Choice[];
 }
 
 export const Question = (props: QuestionProps) => {
-    const { question, onChoiceRequest, onChange, answers } = props;
+    const { question, onChoiceRequest, onChange, answers, choices } = props;
     let questionInput: JSX.Element;
     const value = (question.name && answers?.[question.name]) ?? '';
     const [options, setOptions] = useState<UIComboBoxOption[]>([]);
     useEffect(() => {
         // For type safety
         if (!isInputType(question)) {
-            if (Array.isArray(question.choices)) {
+            const resolvedChoices = choices ?? question.choices;
+            if (Array.isArray(resolvedChoices)) {
                 setOptions(
-                    question.choices?.map((choice) => {
+                    resolvedChoices.map((choice) => {
                         const { name, value } = choice;
                         return {
                             key: value,
@@ -55,7 +58,7 @@ export const Question = (props: QuestionProps) => {
                 onChoiceRequest(question?.name ?? '');
             }
         }
-    }, [question]);
+    }, [question, choices]);
 
     switch (question?.type) {
         case 'input': {
