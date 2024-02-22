@@ -1,3 +1,4 @@
+import { sep } from 'path';
 import type { Editor } from 'mem-fs-editor';
 
 import type {
@@ -69,7 +70,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
     private getAnnotationFileName(answers: AnnotationChangeAnswers): string | undefined {
         return answers.targetAnnotationFileSelectOption === AnnotationFileSelectType.NewEmptyFile
             ? `annotation_${Date.now()}.xml`
-            : answers.targetAnnotationFilePath.split('/').pop();
+            : answers.targetAnnotationFilePath.split(sep).pop();
     }
 
     /**
