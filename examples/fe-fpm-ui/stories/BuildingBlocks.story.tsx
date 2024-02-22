@@ -1,7 +1,7 @@
 import { UIDefaultButton, initIcons } from '@sap-ux/ui-components';
 import React, { useEffect } from 'react';
 import { SupportedBuildingBlocks } from './utils';
-import { applyAnswers, getChoices, getCodeSnippet, getQuestions, getWebSocket } from './utils/communication';
+import { applyAnswers, getChoices, getCodeSnippet, getQuestions, getWebSocket, subscribeOnChoicesUpdate } from './utils/communication';
 import { ActionType, useReducedState } from './utils/state';
 import { Questions } from '../src/components';
 
@@ -17,7 +17,7 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
         // Call API to apply changes
         console.log('Applying changes... FPM Writer');
 
-        applyAnswers(type, answers).then(({ buildingBlockType }) => {});
+        applyAnswers(type, answers).then(({ buildingBlockType }) => { });
     }
 
     React.useEffect(() => {
@@ -41,6 +41,10 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
             });
             updateQuestions(newQuestions);
         });
+        // Update choices on callback
+        subscribeOnChoicesUpdate((name, choices) => {
+            updateChoices(name, choices);
+        })
     }, []);
 
     useEffect(() => {
@@ -61,9 +65,7 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
             <Questions
                 questions={questions}
                 onChoiceRequest={(name: string) => {
-                    getChoices(name, type, answers).then(({ name, choices }) => {
-                        updateChoices(name, choices);
-                    });
+                    getChoices(name, type, answers);
                 }}
                 onChange={updateAnswers}
                 answers={answers || {}}

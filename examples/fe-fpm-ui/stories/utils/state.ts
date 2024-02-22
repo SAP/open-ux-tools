@@ -51,7 +51,8 @@ function reducer(state: State, action: Actions): State {
             const { name, buildingBlockType, updateChoicesFn } = action;
             // get the choices and update the state with choices of the question
             // TODO: Handle this properly?
-            getChoices(name, buildingBlockType, state.answers).then(({ choices }) => updateChoicesFn(choices));
+            //getChoices(name, buildingBlockType, state.answers).then(({ choices }) => updateChoicesFn(choices));
+            getChoices(name, buildingBlockType, state.answers);
             return state;
         }
         case ActionType.RESET_ANSWERS:

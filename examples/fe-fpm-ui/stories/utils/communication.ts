@@ -106,28 +106,28 @@ export function getChoices(
     name: string,
     buildingBlockType: SupportedBuildingBlocks,
     answers: unknown
-): Promise<{ name: string; choices: unknown[] }> {
-    return new Promise((resolve, error) => {
-        const getAction: GetChoices = {
-            type: GET_CHOICES,
-            answers,
-            buildingBlockType,
-            name
-        };
-        sendMessage(getAction);
-        const expectedActionType = SET_CHOICES;
-        const handleMessage = (action: Actions) => {
-            if ('name' in action && 'choices' in action && Array.isArray(action.choices)) {
-                onMessageDetach(expectedActionType, handleMessage);
-                resolve({
-                    name: action.name as any,
-                    choices: action.choices
-                });
-            }
-        };
-        onMessageAttach(SET_CHOICES, handleMessage);
-    });
+): void {
+    const getAction: GetChoices = {
+        type: GET_CHOICES,
+        answers,
+        buildingBlockType,
+        name
+    };
+    sendMessage(getAction);
 }
+
+
+export function subscribeOnChoicesUpdate(
+    cb: (name: string, choices: unknown[]) => void
+): void {
+    const handleMessage = (action: Actions) => {
+        if ('name' in action && 'choices' in action && Array.isArray(action.choices)) {
+            cb(action.name as any, action.choices);
+        }
+    };
+    onMessageAttach(SET_CHOICES, handleMessage);
+}
+
 export function applyAnswers(
     buildingBlockType: SupportedBuildingBlocks,
     answers: unknown
