@@ -27,7 +27,10 @@ export const Questions = (props: QuestionsProps) => {
                     question={question}
                     answers={answers}
                     onChange={onChange}
-                    onChoiceRequest={onChoiceRequest}
+                    onChoiceRequest={(name: string) => {
+                        console.log(`REQUEST -> ${name}`);
+                        onChoiceRequest(name);
+                    }}
                 />
             ))}
         </div>

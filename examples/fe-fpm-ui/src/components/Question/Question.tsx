@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type {
     InputQuestion as _InputQuestion,
     ListQuestion as _ListQuestion,
@@ -37,22 +37,25 @@ export const Question = (props: QuestionProps) => {
     const { question, onChoiceRequest, onChange, answers } = props;
     let questionInput: JSX.Element;
     const value = (question.name && answers?.[question.name]) ?? '';
-    let options: UIComboBoxOption[] = [];
-    // For type safety
-    if (!isInputType(question)) {
-        if (Array.isArray(question.choices)) {
-            options =
-                question.choices?.map((choice) => {
-                    const { name, value } = choice;
-                    return {
-                        key: value,
-                        text: typeof name === 'string' ? name : ''
-                    };
-                }) ?? [];
-        } else {
-            onChoiceRequest(question?.name ?? '');
+    const [options, setOptions] = useState<UIComboBoxOption[]>([]);
+    useEffect(() => {
+        // For type safety
+        if (!isInputType(question)) {
+            if (Array.isArray(question.choices)) {
+                setOptions(
+                    question.choices?.map((choice) => {
+                        const { name, value } = choice;
+                        return {
+                            key: value,
+                            text: typeof name === 'string' ? name : ''
+                        };
+                    }) ?? []
+                );
+            } else {
+                onChoiceRequest(question?.name ?? '');
+            }
         }
-    }
+    }, [question]);
 
     switch (question?.type) {
         case 'input': {
