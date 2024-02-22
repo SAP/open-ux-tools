@@ -10,6 +10,7 @@ import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import { generateCdm } from './cdm';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -285,6 +286,15 @@ export class FlpSandbox {
                 const html = this.generateSandboxForEditor(rta, editor);
                 res.status(200).contentType('html').send(html);
             });
+
+            // add route for the cdm.json
+            const path = previewUrl.split('/');
+            path.pop();
+            path.push('cdm.json');
+            this.router.get(path.join('/'), (async (_req: Request, res: Response & { _livereload?: boolean }) => {
+                const json = generateCdm(this.templateConfig.apps);
+                res.status(200).contentType('json').send(json);
+            }) as RequestHandler);
         }
     }
 
@@ -312,6 +322,15 @@ export class FlpSandbox {
             } else {
                 res.status(200).contentType('html').send(html);
             }
+        }) as RequestHandler);
+
+        // add route for the cdm.json
+        const path = this.config.path.split('/');
+        path.pop();
+        path.push('cdm.json');
+        this.router.get(path.join('/'), (async (_req: Request, res: Response & { _livereload?: boolean }) => {
+            const json = generateCdm(this.templateConfig.apps);
+            res.status(200).contentType('json').send(json);
         }) as RequestHandler);
     }
 
