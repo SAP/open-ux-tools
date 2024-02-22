@@ -8,7 +8,8 @@ import {
     isGenericODataDestination,
     isPartialUrlDestination,
     isFullUrlDestination,
-    isOnPremiseDestination
+    isOnPremiseDestination,
+    isHTML5DynamicConfigured
 } from '../src';
 import destinations from './mockResponses/destinations.json';
 
@@ -100,6 +101,7 @@ describe('destination', () => {
             expect(isFullUrlDestination({ ...destination, WebIDEUsage: 'anything' })).toBe(false);
         });
     });
+
     describe('isOnPremise', () => {
         it('destination set to onPremise', () => {
             expect(
@@ -110,7 +112,27 @@ describe('destination', () => {
                 })
             ).toBe(true);
         });
+
         it('Destination is internet facing', () => {
+            expect(
+                isOnPremiseDestination(
+                    destinations.find((destination) => destination.Name === 'ABAP_ON_BTP') as Destination
+                )
+            ).toBe(false);
+        });
+    });
+
+    describe('isHTML5DynamicConfigured', () => {
+        it('destination is configured with HTML5.DynamicDestination', () => {
+            expect(
+                isHTML5DynamicConfigured({
+                    ...destination,
+                    'HTML5.DynamicDestination': 'true'
+                })
+            ).toBe(true);
+        });
+
+        it('Destination is missing HTML5.DynamicDestination', () => {
             expect(
                 isOnPremiseDestination(
                     destinations.find((destination) => destination.Name === 'ABAP_ON_BTP') as Destination

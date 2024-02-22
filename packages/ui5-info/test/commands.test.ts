@@ -2,7 +2,7 @@ jest.disableAutomock();
 
 import * as cp from 'child_process';
 import { executeNpmUI5VersionsCmd } from '../src/commands';
-import { getUI5Versions } from '../src/ui5-info';
+import { getUI5Versions } from '../src/ui5-version-info';
 import os from 'os';
 
 jest.mock('child_process');

@@ -1,6 +1,6 @@
 import { coerce, gte } from 'semver';
 import type { UI5VersionOverview } from './types';
-import { supportState, ui5VersionFallbacks } from './ui5VersionFallback';
+import { supportState, ui5VersionFallbacks } from './ui5-version-fallback';
 
 export const enum ui5VersionsType {
     official = 'officialVersions',
@@ -29,6 +29,7 @@ export const ui5VersionRequestInfo = {
 export const defaultMinUi5Version = '1.65.0';
 export const latestVersionString = 'Latest';
 export const defaultVersion = latestVersionString;
+export const minUi5VersionSupportingCodeAssist = '1.76.0';
 
 // Determine defaults from support fallback versions
 const defaultUi5Version = ui5VersionFallbacks
