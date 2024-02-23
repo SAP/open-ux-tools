@@ -1,7 +1,42 @@
 import { getCapI18nBundle, getI18nFolderNames, getPropertiesI18nBundle } from '@sap-ux/i18n';
+import type { I18nBundle } from '@sap-ux/i18n';
 import { getCapEnvironment, getCdsFiles } from '..';
 import type { I18nBundles, I18nPropertiesPaths, ProjectType } from '../../types';
 import type { Editor } from 'mem-fs-editor';
+
+/**
+ * Try to get i18n properties bundle.
+ *
+ * @param i18nPath path to an i18n file
+ * @param fs optional `mem-fs-editor` instance
+ * @returns i18n bundle or exception
+ */
+async function tryGetPropertiesI18nBundle(i18nPath: string, fs?: Editor): Promise<I18nBundle | Error> {
+    try {
+        const result = await getPropertiesI18nBundle(i18nPath, fs);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
+
+/**
+ * Try to get i18n bundle for cap.
+ *
+ * @param root project root
+ * @param fs optional `mem-fs-editor` instance
+ * @returns i18n bundle or exception
+ */
+async function tryGetCapI18nBundle(root: string, fs?: Editor): Promise<I18nBundle | Error> {
+    try {
+        const env = await getCapEnvironment(root);
+        const cdsFiles = await getCdsFiles(root, true);
+        const result = await getCapI18nBundle(root, env, cdsFiles, fs);
+        return result;
+    } catch (error) {
+        return error;
+    }
+}
 
 /**
  * For a given app in project, retrieves i18n bundles for 'sap.app' namespace,`models` of `sap.ui5` namespace and service for cap services.
@@ -25,17 +60,16 @@ export async function getI18nBundles(
         models: {},
         service: {}
     };
-    result['sap.app'] = await getPropertiesI18nBundle(i18nPropertiesPaths['sap.app'], fs);
+    result['sap.app'] = await tryGetPropertiesI18nBundle(i18nPropertiesPaths['sap.app'], fs);
 
     for (const key of Object.keys(i18nPropertiesPaths.models)) {
-        result.models[key] = await getPropertiesI18nBundle(i18nPropertiesPaths.models[key].path, fs);
+        result.models[key] = await tryGetPropertiesI18nBundle(i18nPropertiesPaths.models[key].path, fs);
     }
 
     if (projectType === 'CAPNodejs') {
-        const env = await getCapEnvironment(root);
-        const cdsFiles = await getCdsFiles(root, true);
-        result.service = await getCapI18nBundle(root, env, cdsFiles, fs);
+        result.service = await tryGetCapI18nBundle(root, fs);
     }
+
     return result;
 }
 /**

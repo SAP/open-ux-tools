@@ -106,6 +106,63 @@ describe('read', () => {
             expect(getPropertiesI18nBundleSpy).toHaveBeenNthCalledWith(2, absolutePathI18n, memFs);
             expect(getPropertiesI18nBundleSpy).toHaveBeenNthCalledWith(3, absolutePathAtI18n, memFs);
         });
+        describe('exception', () => {
+            test('bundles for CAPNodejs', async () => {
+                const data: uxI18n.I18nBundle = {
+                    'key': []
+                };
+                const absolutePath = join('absolute', 'path', 'to', 'i18n', 'properties', 'file');
+                const root = 'root';
+                const getPropertiesI18nBundleSpy = jest
+                    .spyOn(uxI18n, 'getPropertiesI18nBundle')
+                    .mockResolvedValue(data);
+                const getCapEnvironmentSoy = jest.spyOn(cap, 'getCapEnvironment').mockResolvedValue({});
+                const getCdsFilesSpy = jest.spyOn(cap, 'getCdsFiles').mockResolvedValue([]);
+                const getCapI18nBundleSpy = jest.spyOn(uxI18n, 'getCapI18nBundle').mockRejectedValue('error-raised');
+                const result = await getI18nBundles(
+                    root,
+                    {
+                        'sap.app': absolutePath,
+                        models: {}
+                    },
+                    'CAPNodejs'
+                );
+                expect(result).toEqual({ 'sap.app': data, models: {}, service: 'error-raised' });
+                expect(getPropertiesI18nBundleSpy).toHaveBeenNthCalledWith(1, absolutePath, undefined);
+                expect(getCapEnvironmentSoy).toHaveBeenNthCalledWith(1, root);
+                expect(getCdsFilesSpy).toHaveBeenNthCalledWith(1, root, true);
+                expect(getCapI18nBundleSpy).toHaveBeenNthCalledWith(1, root, {}, [], undefined);
+            });
+            test('bundles with models', async () => {
+                const data: uxI18n.I18nBundle = {
+                    'key': []
+                };
+                const absolutePath = join('absolute', 'path', 'to', 'properties', 'file');
+                const absolutePathI18n = join('absolute', 'path', 'to', 'i18n', 'properties', 'file');
+                const absolutePathAtI18n = join('absolute', 'path', 'to', '@i18n', 'properties', 'file');
+                const root = 'root';
+                const getPropertiesI18nBundleSpy = jest
+                    .spyOn(uxI18n, 'getPropertiesI18nBundle')
+                    .mockRejectedValueOnce('error-raised-app')
+                    .mockRejectedValueOnce('error-raised-model-i18n')
+                    .mockResolvedValue(data);
+                const result = await getI18nBundles(root, {
+                    'sap.app': absolutePath,
+                    models: {
+                        'i18n': { path: absolutePathI18n },
+                        '@i18n': { path: absolutePathAtI18n }
+                    }
+                });
+                expect(result).toEqual({
+                    'sap.app': 'error-raised-app',
+                    models: { i18n: 'error-raised-model-i18n', '@i18n': data },
+                    service: {}
+                });
+                expect(getPropertiesI18nBundleSpy).toHaveBeenNthCalledWith(1, absolutePath, undefined);
+                expect(getPropertiesI18nBundleSpy).toHaveBeenNthCalledWith(2, absolutePathI18n, undefined);
+                expect(getPropertiesI18nBundleSpy).toHaveBeenNthCalledWith(3, absolutePathAtI18n, undefined);
+            });
+        });
     });
     test('getCapI18nFolderNames()', async () => {
         const data = ['i18n', '_i18n'];

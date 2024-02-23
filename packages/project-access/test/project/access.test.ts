@@ -3,6 +3,7 @@ import { createApplicationAccess, createProjectAccess } from '../../src';
 import * as i18nMock from '../../src/project/i18n/write';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import type { I18nBundle } from '@sap-ux/i18n';
 
 describe('Test function createApplicationAccess()', () => {
     const memFs = create(createStorage());
@@ -39,9 +40,10 @@ describe('Test function createApplicationAccess()', () => {
         const appAccess = await createApplicationAccess(appRoot);
         const i18nBundles = await appAccess.getI18nBundles();
         const i18nPropertiesPaths = await appAccess.getI18nPropertiesPaths();
-        expect(i18nBundles['sap.app'].testTextKey[0].key.value).toBe('testTextKey');
-        expect(i18nBundles['sap.app'].testTextKey[0].value.value).toBe('Test Text Value');
-        expect(i18nBundles['sap.app'].testTextKey[0].annotation?.textType.value).toBe(' Test comment');
+        const app = i18nBundles['sap.app'] as I18nBundle;
+        expect(app.testTextKey[0].key.value).toBe('testTextKey');
+        expect(app.testTextKey[0].value.value).toBe('Test Text Value');
+        expect(app.testTextKey[0].annotation?.textType.value).toBe(' Test comment');
         expect(i18nPropertiesPaths).toEqual({
             'sap.app': join(appRoot, 'webapp/i18n/i18n.properties'),
             'models': {
@@ -59,9 +61,10 @@ describe('Test function createApplicationAccess()', () => {
         const appAccess = await createApplicationAccess(appRoot, memFs);
         const i18nBundles = await appAccess.getI18nBundles();
         const i18nPropertiesPaths = await appAccess.getI18nPropertiesPaths();
-        expect(i18nBundles['sap.app'].testTextKey[0].key.value).toBe('testTextKey');
-        expect(i18nBundles['sap.app'].testTextKey[0].value.value).toBe('Test Text Value');
-        expect(i18nBundles['sap.app'].testTextKey[0].annotation?.textType.value).toBe(' Test comment');
+        const app = i18nBundles['sap.app'] as I18nBundle;
+        expect(app.testTextKey[0].key.value).toBe('testTextKey');
+        expect(app.testTextKey[0].value.value).toBe('Test Text Value');
+        expect(app.testTextKey[0].annotation?.textType.value).toBe(' Test comment');
         expect(i18nPropertiesPaths).toEqual({
             'sap.app': join(appRoot, 'webapp/i18n/i18n.properties'),
             'models': {
