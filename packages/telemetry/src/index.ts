@@ -12,6 +12,7 @@ export {
     setEnableTelemetry,
     getTelemetrySetting,
     ToolsSuiteTelemetryClient,
+    ToolsSuiteTelemetryInitSettings,
     TelemetryHelperProperties,
     TelemetryEvent,
     TelemetryMeasurements,
