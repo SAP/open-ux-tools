@@ -12,10 +12,9 @@
     },
     "license": "Apache-2.0",
     "private": false,
-    "azureInstrumentationKey": "AZURE_KEY_GOES_HERE",
     "main": "dist/index.js",
     "scripts": {
-        "build": "ts-node ./build-script/ && tsc --build",
+        "build": "node ./build-script/ && tsc --build",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",

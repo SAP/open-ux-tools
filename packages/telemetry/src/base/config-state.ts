@@ -1,12 +1,13 @@
 // @ts-ignore
 import packageJson from '../../package.json';
+import azure from '../../azure.json';
 
 /**
  * Runtime telemetry settings
  */
 export const TelemetrySettings = {
     // Target Azure apps insight destination
-    azureInstrumentationKey: packageJson.azureInstrumentationKey,
+    azureInstrumentationKey: azure.azureInstrumentationKey,
     // Allow user to opt out from telemetry collection
     telemetryEnabled: true,
     // Module name in telemetry/pacakge.json
