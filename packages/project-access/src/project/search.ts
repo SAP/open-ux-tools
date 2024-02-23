@@ -15,7 +15,6 @@ import { fileExists, findBy, findFileUp, readJSON } from '../file';
 import { hasDependency } from './dependencies';
 import { getCapProjectType } from './cap';
 import { getWebappPath } from './ui5-config';
-import type { ExtensionLogger } from '@sap-ux/logger';
 
 /**
  * Map artifact to file that is specific to the artifact type. Some artifacts can
@@ -337,36 +336,6 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
         }
     }
     return results;
-}
-
-/**
- * Generates manifest.json from provided .library file.
- *
- * @param dotLibraryPath paths to .library file
- * @returns virtually generated manifest.json
- */
-export async function getVirtualManifest(dotLibraryPath: string): Promise<Manifest> {
-    const FileSystem = await import('@ui5/fs/adapters/FileSystem');
-    const ResourceFactory = await import('@ui5/fs/resourceFactory');
-    const generateLibraryManifest = await import('@ui5/builder/tasks/generateLibraryManifest');
-
-    const projectName = 'library';
-    const virBasePath = `/resources/${projectName}/`;
-    const fs = new FileSystem.default({
-        virBasePath,
-        fsBasePath: dotLibraryPath
-    });
-    const workspace = await ResourceFactory.createWorkspace({ reader: fs, name: 'library', virBasePath });
-    const getProject = () => {
-        return { getVersion: () => '1.0.0' };
-    };
-    await generateLibraryManifest.default({
-        workspace,
-        taskUtil: { getProject },
-        options: { projectName }
-    });
-    const manifestFiles = await workspace.byGlob('**/manifest.json');
-    return JSON.parse(await manifestFiles?.[0].getString());
 }
 
 /**

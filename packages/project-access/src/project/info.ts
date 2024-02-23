@@ -203,3 +203,33 @@ export async function getProjectType(projectRoot: string): Promise<ProjectType> 
     }
     return capType;
 }
+
+/**
+ * Generates a manifest.json from a provided .library file path.
+ *
+ * @param dotLibraryPath path to .library file
+ * @returns virtually generated manifest.json
+ */
+export async function generateLibraryManifest(dotLibraryPath: string): Promise<Manifest> {
+    const FileSystem = await import('@ui5/fs/adapters/FileSystem');
+    const ResourceFactory = await import('@ui5/fs/resourceFactory');
+    const generateLibraryManifest = await import('@ui5/builder/tasks/generateLibraryManifest');
+
+    const projectName = 'library';
+    const virBasePath = `/resources/${projectName}/`;
+    const fs = new FileSystem.default({
+        virBasePath,
+        fsBasePath: dotLibraryPath
+    });
+    const workspace = await ResourceFactory.createWorkspace({ reader: fs, name: 'library', virBasePath });
+    const getProject = () => {
+        return { getVersion: () => '1.0.0' };
+    };
+    await generateLibraryManifest.default({
+        workspace,
+        taskUtil: { getProject },
+        options: { projectName }
+    });
+    const manifestFiles = await workspace.byGlob('**/manifest.json');
+    return JSON.parse(await manifestFiles?.[0].getString());
+}
