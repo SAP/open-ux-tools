@@ -2,14 +2,15 @@ import type Dialog from 'sap/m/Dialog';
 import Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
 import JSONModel from 'sap/ui/model/json/JSONModel';
+import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
-import { fetchMock, sapCoreMock } from 'mock/window';
+import { fetchMock, sapCoreMock, sapMock } from 'mock/window';
 
 import ControlUtils from '../../../../src/adp/control-utils';
 import AddFragment from '../../../../src/adp/controllers/AddFragment.controller';
-import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
@@ -23,7 +24,7 @@ describe('AddFragment', () => {
         });
     });
 
-    describe('onInit', () => {
+    describe('setup', () => {
         afterEach(() => {
             jest.restoreAllMocks();
         });
@@ -76,17 +77,14 @@ describe('AddFragment', () => {
             );
 
             const openSpy = jest.fn();
-            addFragment.byId = jest.fn().mockReturnValue({
+
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
                 open: openSpy,
-                close: jest.fn(),
-                setEscapeHandler: jest.fn()
-            });
-
-            addFragment.createId = jest.fn().mockReturnValue('sampleId');
-
-            addFragment.getView = jest.fn().mockReturnValue({ destroy: jest.fn(), setModel: jest.fn() });
-
-            await addFragment.onInit();
+                close: jest.fn()
+            } as unknown as Dialog);
 
             const escapeHandlerCb = (addFragment.dialog.setEscapeHandler as jest.Mock).mock.calls[0][0];
 
@@ -151,7 +149,7 @@ describe('AddFragment', () => {
             expect(setPropertySpy).toHaveBeenCalledWith('/specialIndexHandlingIcon', true);
             expect(setPropertySpy).toHaveBeenCalledWith(
                 '/iconTooltip',
-                'Index is defined by special logic of Toolbar and can\'t be set here'
+                `Index is defined by special logic of Toolbar and can't be set here`
             );
             expect(setPropertySpy).toHaveBeenCalledWith('/index', updatedIndexArray);
             expect(setPropertySpy).toHaveBeenCalledWith('/selectedIndex', 2);
@@ -169,10 +167,9 @@ describe('AddFragment', () => {
             const closeSpy = jest.fn();
 
             addFragment.dialog = {
-                close: closeSpy
+                close: closeSpy,
+                destroy: jest.fn()
             } as unknown as Dialog;
-
-            addFragment.getView = jest.fn().mockReturnValue({ destroy: jest.fn() });
 
             addFragment.handleDialogClose();
 
@@ -208,7 +205,9 @@ describe('AddFragment', () => {
             addFragment.model = testModel;
 
             addFragment.dialog = {
-                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+                getBeginButton: jest
+                    .fn()
+                    .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
@@ -234,7 +233,9 @@ describe('AddFragment', () => {
             addFragment.model = testModel;
 
             addFragment.dialog = {
-                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+                getBeginButton: jest
+                    .fn()
+                    .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
@@ -260,7 +261,9 @@ describe('AddFragment', () => {
             addFragment.model = testModel;
 
             addFragment.dialog = {
-                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+                getBeginButton: jest
+                    .fn()
+                    .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
@@ -284,15 +287,17 @@ describe('AddFragment', () => {
             };
 
             addFragment.model = testModel;
-            
+
             addFragment.dialog = {
-                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+                getBeginButton: jest
+                    .fn()
+                    .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
-        })
+        });
 
         test('sets error when the fragment name exceeds 64 characters', () => {
             const addFragment = new AddFragment(
@@ -314,7 +319,9 @@ describe('AddFragment', () => {
             addFragment.model = testModel;
 
             addFragment.dialog = {
-                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+                getBeginButton: jest
+                    .fn()
+                    .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
@@ -340,7 +347,9 @@ describe('AddFragment', () => {
             addFragment.model = testModel;
 
             addFragment.dialog = {
-                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+                getBeginButton: jest
+                    .fn()
+                    .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
@@ -356,16 +365,20 @@ describe('AddFragment', () => {
         const testModel = {
             getProperty: jest.fn().mockReturnValueOnce('Share').mockReturnValueOnce('0').mockReturnValueOnce('content')
         } as unknown as JSONModel;
+        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
         test('creates new fragment and a change', async () => {
+            sapMock.ui.version = '1.71.62';
             const executeSpy = jest.fn();
             rtaMock.getCommandStack.mockReturnValue({
                 pushAndExecute: executeSpy
             });
+            rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 {} as unknown as UI5Element,
-                rtaMock
+                rtaMock as unknown as RuntimeAuthoring
             );
 
             const event = {
@@ -376,7 +389,12 @@ describe('AddFragment', () => {
 
             addFragment.model = testModel;
 
-            CommandFactory.getCommandFor = jest.fn().mockReturnValue({ fileName: 'something.change' });
+            CommandFactory.getCommandFor = jest.fn().mockReturnValue({
+                _oPreparedChange: {
+                    _oDefinition: { moduleName: 'adp/app/changes/fragments/Share.fragment.xml' },
+                    setModuleName: jest.fn()
+                }
+            });
 
             fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue({
@@ -393,7 +411,14 @@ describe('AddFragment', () => {
 
             await addFragment.onCreateBtnPress(event as unknown as Event);
 
-            expect(executeSpy).toHaveBeenCalledWith({ fileName: 'something.change' });
+            expect(executeSpy).toHaveBeenCalledWith({
+                _oPreparedChange: {
+                    _oDefinition: {
+                        moduleName: 'adp/app/changes/fragments/Share.fragment.xml'
+                    },
+                    setModuleName: expect.any(Function)
+                }
+            });
         });
 
         test('throws error when creating new fragment', async () => {

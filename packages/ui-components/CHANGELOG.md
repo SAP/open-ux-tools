@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.15.5
+
+### Patch Changes
+
+-   80fae216: Addition of Icon for App Info Page. Needed for new dev efforts
+
 ## 1.15.4
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.11.1
+
+### Patch Changes
+
+-   efd2f6d4: Support ui5 version 1.71.\* in CPE.
+
 ## 1.11.0
 
 ### Minor Changes
