@@ -1,8 +1,22 @@
 import { join } from 'path';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import * as promptHelpers from '../../../src/prompts/prompt-helpers';
-import { appPathExists, defaultAppName, isVersionIncluded, withCondition } from '../../../src/prompts/prompt-helpers';
+import {
+    appPathExists,
+    defaultAppName,
+    isVersionIncluded,
+    withCondition,
+    extendWithOptions
+} from '../../../src/prompts/prompt-helpers';
 import { latestVersionString } from '@sap-ux/ui5-info';
+import {
+    UI5ApplicationAnswers,
+    UI5ApplicationPromptOptions,
+    UI5ApplicationQuestion,
+    promptNames
+} from '../../../src/types';
+import { IMessageSeverity, Severity } from '@sap-ux/inquirer-common';
+import { Answers } from 'inquirer';
 
 describe('prompt-helpers', () => {
     const testTempDir = join(__dirname, './test-tmp');
@@ -129,5 +143,241 @@ describe('prompt-helpers', () => {
         const questionsWithFalseCondition = withCondition(questions, () => false);
         expect(questionsWithFalseCondition[0].name).toEqual('A');
         expect((questionsWithFalseCondition[0].when as Function)()).toEqual(false);
+    });
+
+    test('extendWithOptions, no options specified', () => {
+        const questions = [
+            {
+                type: 'input',
+                name: promptNames.name,
+                message: 'Message A',
+                validate: (input: string) => !!input
+            },
+            {
+                type: 'input',
+                name: promptNames.description,
+                message: 'Message B',
+                validate: (input: string) => !!input
+            }
+        ] as UI5ApplicationQuestion[];
+
+        // No options provided
+        let extQuestions = extendWithOptions(questions, {});
+        expect(extendWithOptions(questions, {})).toEqual(questions);
+        let nameQuestionValidate = extQuestions.find((question) => question.name === promptNames.name)
+            ?.validate as Function;
+        expect(nameQuestionValidate('')).toEqual(false);
+        expect(nameQuestionValidate('a')).toEqual(true);
+
+        let descriptionQuestionValidate = extQuestions.find((question) => question.name === promptNames.description)
+            ?.validate as Function;
+        expect(descriptionQuestionValidate('')).toEqual(false);
+        expect(descriptionQuestionValidate('a')).toEqual(true);
+    });
+
+    test('extendWithOptions, `validate` and `default` prompt options specified', () => {
+        const questionA = {
+            type: 'input',
+            name: promptNames.name,
+            message: 'Message',
+            default: false
+        };
+
+        let promptOptions: UI5ApplicationPromptOptions = {
+            [promptNames.name]: {
+                validate: (val) => (!val ? 'bad input' : true),
+                default: () => 'some default val from func'
+            }
+        };
+
+        let extQuestions = extendWithOptions([questionA], promptOptions);
+        let nameQuestion = extQuestions.find((question) => question.name === promptNames.name);
+        let nameQuestionDefault = nameQuestion?.default as Function;
+        // Default value should override original value
+        expect(nameQuestionDefault()).toEqual('some default val from func');
+        // No validate in original question, should apply extension
+        let nameQuestionValidate = nameQuestion?.validate as Function;
+        expect(nameQuestionValidate(undefined)).toEqual('bad input');
+        expect(nameQuestionValidate('good')).toEqual(true);
+
+        // Test that original validator is still applied
+        const questionB = {
+            type: 'input',
+            name: promptNames.name,
+            message: 'Message',
+            default: false,
+            validate: (val: string) => (val === 'bad input B' ? `Input: "${val}" is invalid` : true)
+        };
+
+        promptOptions = {
+            [promptNames.name]: {
+                validate: (val) => (!val ? 'bad input' : true)
+            }
+        };
+
+        extQuestions = extendWithOptions([questionB], promptOptions);
+        nameQuestion = extQuestions.find((question) => question.name === promptNames.name);
+        nameQuestionDefault = nameQuestion?.default;
+        // Default value should override original value
+        // Default value should use original value
+        expect(nameQuestionDefault).toEqual(false);
+        // Both original and extended validation is applied
+        nameQuestionValidate = nameQuestion?.validate as Function;
+        expect(nameQuestionValidate(undefined)).toEqual('bad input');
+        expect(nameQuestionValidate('bad input B')).toEqual('Input: "bad input B" is invalid');
+        expect(nameQuestionValidate('good')).toEqual(true);
+
+        // Previous answers are provided to extended validator/default funcs
+        const questions = [
+            {
+                type: 'input',
+                name: promptNames.name,
+                message: 'Message A'
+            },
+            {
+                type: 'input',
+                name: promptNames.description,
+                message: 'Message B',
+                validate: (input: string) => !!input,
+                default: 'description'
+            }
+        ] as UI5ApplicationQuestion[];
+
+        promptOptions = {
+            [promptNames.name]: {
+                validate: (input: string, answers: UI5ApplicationAnswers | undefined) =>
+                    input === 'name1' && answers?.description === 'abcd'
+            },
+            [promptNames.description]: {
+                default: (answers: UI5ApplicationAnswers | undefined) =>
+                    answers?.name === '1234' ? '1234 description' : 'none'
+            }
+        };
+
+        // Options with validate funcs
+        extQuestions = extendWithOptions(questions, promptOptions);
+        nameQuestionValidate = extQuestions.find((question) => question.name === promptNames.name)
+            ?.validate as Function;
+        expect(nameQuestionValidate('name1', { description: 'abcd' })).toEqual(true);
+        expect(nameQuestionValidate('name1', { description: 'efgh' })).toEqual(false);
+
+        // Defaults should be replaced
+        let descriptionQuestionDefault = extQuestions.find(
+            (question) => question.name === promptNames.description
+        )?.default;
+        expect(descriptionQuestionDefault()).toEqual('none');
+        expect(descriptionQuestionDefault({ name: '1234' })).toEqual('1234 description');
+    });
+
+    test('extendWithOptions: `additionaMessages` options specified', () => {
+        // Additional messages
+        const confirmQuestion = {
+            type: 'confirm',
+            name: promptNames.skipAnnotations,
+            message: 'Message',
+            default: false
+        } as UI5ApplicationQuestion;
+
+        const addMessageWarn: IMessageSeverity = {
+            message: 'You must enter something',
+            severity: Severity.warning
+        };
+
+        const addMessageInfo: IMessageSeverity = { message: 'thanks!', severity: Severity.information };
+
+        let promptOptions: UI5ApplicationPromptOptions = {
+            [promptNames.skipAnnotations]: {
+                additionalMessages: (val) => (!val ? addMessageWarn : addMessageInfo)
+            }
+        };
+
+        let extQuestions = extendWithOptions([confirmQuestion], promptOptions);
+        let additionalMessages = extQuestions.find((question) => question.name === promptNames.skipAnnotations)
+            ?.additionalMessages as Function;
+        // Default value should use original value
+        expect(additionalMessages()).toEqual(addMessageWarn);
+        expect(additionalMessages(true)).toEqual(addMessageInfo);
+
+        // Ensure override behaviour, use existing message if no message (undefined) returned
+        const baseMsgWarn = {
+            message: 'This is the base msg',
+            severity: Severity.warning
+        };
+        const inputQuestion = {
+            type: 'input',
+            name: promptNames.name,
+            message: 'Message',
+            default: false,
+            additionalMessages: (): IMessageSeverity => baseMsgWarn
+        } as UI5ApplicationQuestion;
+        const addMessageError = {
+            message: 'The input value will result in an error',
+            severity: Severity.warning
+        };
+        const previousAnswers: Answers = {
+            a: 123,
+            b: true,
+            c: {
+                name: 'name',
+                value: 'somevalue'
+            }
+        };
+        promptOptions = {
+            [promptNames.name]: {
+                additionalMessages: (val, previousAnswers) => {
+                    if (val == 'abc' && previousAnswers?.a === 123) {
+                        return addMessageError;
+                    }
+                    if (val === 'abc') {
+                        return addMessageInfo;
+                    }
+                }
+            }
+        };
+        extQuestions = extendWithOptions([inputQuestion], promptOptions);
+        additionalMessages = extQuestions.find((question) => question.name === promptNames.name)
+            ?.additionalMessages as Function;
+        // Default value should use original value
+        expect(additionalMessages()).toEqual(baseMsgWarn);
+        // Previous answers tests
+        expect(additionalMessages('abc', previousAnswers)).toEqual(addMessageError);
+        expect(additionalMessages('def')).toEqual(baseMsgWarn);
+
+        // Ensure only relevant prompt is updated
+        const testNameAddMsg = { message: 'success', severity: Severity.information };
+        promptOptions = {
+            [promptNames.name]: {
+                additionalMessages: (val) => (val === 'testName' ? testNameAddMsg : undefined)
+            }
+        };
+        extQuestions = extendWithOptions(
+            [
+                { name: promptNames.name },
+                { name: promptNames.description },
+                { name: promptNames.title },
+                { name: promptNames.targetFolder }
+            ],
+            promptOptions
+        );
+        expect(extQuestions).toMatchInlineSnapshot(`
+            [
+              {
+                "additionalMessages": [Function],
+                "name": "name",
+              },
+              {
+                "name": "description",
+              },
+              {
+                "name": "title",
+              },
+              {
+                "name": "targetFolder",
+              },
+            ]
+        `);
+        additionalMessages = extQuestions.find((question) => question.name === promptNames.name)
+            ?.additionalMessages as Function;
+        expect(additionalMessages('testName')).toEqual(testNameAddMsg);
     });
 });

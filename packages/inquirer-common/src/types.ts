@@ -1,4 +1,4 @@
-import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
 import type {
     Answers,
     ConfirmQuestion as BaseConfirmQuestion,
@@ -9,6 +9,9 @@ import type {
     PromptModule,
     Question
 } from 'inquirer';
+
+// Re-export for convienient import in consuming modules
+export { type IMessageSeverity, Severity };
 
 export interface UI5VersionChoice extends ListChoiceOptions {
     value: string; // UI5 semantic version

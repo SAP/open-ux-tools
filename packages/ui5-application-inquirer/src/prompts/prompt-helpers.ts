@@ -135,7 +135,7 @@ function extendAdditionalMessages(question: YUIQuestion, addMsgFunc: PromptSever
     };
 }
 /**
- * Apply the extended function to the existing question property function or add as new.
+ * Extend the existing prompt property function with the one specified in prompt options or add as new.
  *
  * @param question
  * @param promptOption
@@ -167,7 +167,7 @@ function applyExtensionFunction(
  * @param promptOptions
  * @returns - the extended questions
  */
-export function extendWithOptions(questions: YUIQuestion[], promptOptions: UI5ApplicationPromptOptions): YUIQuestion[] {
+export function extendWithOptions(questions: UI5ApplicationQuestion[], promptOptions: UI5ApplicationPromptOptions): UI5ApplicationQuestion[] {
     questions.forEach((question) => {
         const promptOptKey = question.name as keyof typeof promptNames;
         const promptOpt = promptOptions[promptOptKey];
@@ -200,10 +200,10 @@ export function extendWithOptions(questions: YUIQuestion[], promptOptions: UI5Ap
  * @returns
  */
 export function hidePrompts(
-    prompts: Record<promptNames, YUIQuestion<UI5ApplicationAnswers>>,
+    prompts: Record<promptNames, UI5ApplicationQuestion>,
     promptOptions?: UI5ApplicationPromptOptions,
     isCapProject?: boolean
-): YUIQuestion[] {
+): UI5ApplicationQuestion[] {
     const questions: UI5ApplicationQuestion[] = [];
     if (promptOptions ?? isCapProject) {
         Object.keys(prompts).forEach((key) => {
