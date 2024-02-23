@@ -70,7 +70,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
     private getAnnotationFileName(answers: AnnotationChangeAnswers): string | undefined {
         return answers.targetAnnotationFileSelectOption === AnnotationFileSelectType.NewEmptyFile
             ? `annotation_${Date.now()}.xml`
-            : answers.targetAnnotationFilePath.split(sep).pop();
+            : answers.targetAnnotationFilePath.split('/').pop();
     }
 
     /**

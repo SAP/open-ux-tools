@@ -33,14 +33,14 @@ export function writeAnnotationChange(projectPath: string, data: AnnotationsData
         const manifestFolderPath = path.join(changesFolderPath, FolderTypes.MANIFEST);
         const annotationsFolderPath = path.join(changesFolderPath, FolderTypes.ANNOTATIONS);
 
-        writeChangeToFile(`${manifestFolderPath}${sep}${changeFileName}`, change, fs);
+        writeChangeToFile(`${manifestFolderPath}/${changeFileName}`, change, fs);
 
         if (answers.targetAnnotationFileSelectOption === AnnotationFileSelectType.NewEmptyFile) {
-            fs.write(`${annotationsFolderPath}${sep}${annotationFileName}`, '');
+            fs.write(`${annotationsFolderPath}/${annotationFileName}`, '');
         } else {
-            const selectedDir = answers.targetAnnotationFilePath.replace(`${sep}${annotationFileName}`, '');
+            const selectedDir = answers.targetAnnotationFilePath.replace(`/${annotationFileName}`, '');
             if (selectedDir !== annotationsFolderPath) {
-                fs.copy(answers.targetAnnotationFilePath, `${annotationsFolderPath}${sep}${annotationFileName}`);
+                fs.copy(answers.targetAnnotationFilePath, `${annotationsFolderPath}/${annotationFileName}`);
             }
         }
     } catch (e) {
