@@ -1,4 +1,3 @@
-import { sep } from 'path';
 import type { Editor } from 'mem-fs-editor';
 
 import type {

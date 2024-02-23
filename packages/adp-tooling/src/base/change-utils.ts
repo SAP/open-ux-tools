@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import path, { posix, sep } from 'path';
+import path, { posix } from 'path';
 
 import type {
     AnnotationsData,
