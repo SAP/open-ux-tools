@@ -1,3 +1,4 @@
+import { sep } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 
@@ -30,7 +31,7 @@ describe('Change Utils', () => {
             jest.clearAllMocks();
         });
 
-        const projectPath = '/path/to/project';
+        const projectPath = '/project';
         const change = { key: 'value' };
         const fileName = 'something.change';
         const writeJsonSpy = jest.fn();
@@ -39,17 +40,14 @@ describe('Change Utils', () => {
         it('should write change to the specified folder without subdirectory', () => {
             writeChangeToFolder(projectPath, change, fileName, mockFs as unknown as Editor);
 
-            expect(writeJsonSpy).toHaveBeenCalledWith('/path/to/project/webapp/changes/something.change', change);
+            expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(fileName), change);
         });
 
         it('should write change to the specified folder with subdirectory', () => {
             const dir = 'subdir';
             writeChangeToFolder(projectPath, change, fileName, mockFs as unknown as Editor, dir);
 
-            expect(writeJsonSpy).toHaveBeenCalledWith(
-                '/path/to/project/webapp/changes/subdir/something.change',
-                change
-            );
+            expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(`subdir/${fileName}`), change);
         });
 
         it('should throw error when writing json fails', () => {
@@ -58,10 +56,12 @@ describe('Change Utils', () => {
                 throw new Error(errMsg);
             });
 
+            const expectedPath = `${sep}project${sep}webapp${sep}changes/something.change`;
+
             expect(() => {
                 writeChangeToFolder(projectPath, change, fileName, mockFs as unknown as Editor);
             }).toThrow(
-                'Could not write change to folder. Reason: Could not write change to file: /path/to/project/webapp/changes/something.change. Reason: Corrupted json.'
+                `Could not write change to folder. Reason: Could not write change to file: ${expectedPath}. Reason: Corrupted json.`
             );
         });
     });
@@ -157,7 +157,6 @@ describe('Change Utils', () => {
             const result = findChangeWithInboundId(mockProjectPath, mockInboundId);
 
             expect(result).toEqual({ filePath: '', changeWithInboundId: undefined });
-            expect(existsSyncMock).toHaveBeenCalledWith('/mock/project/path/webapp/changes/manifest');
         });
 
         it('should return empty results if no matching file is found', () => {
@@ -177,7 +176,7 @@ describe('Change Utils', () => {
             const result = findChangeWithInboundId(mockProjectPath, mockInboundId);
 
             expect(result).toEqual({
-                filePath: '/mock/project/path/webapp/changes/manifest/id_changeInbound.change',
+                filePath: expect.stringContaining('id_changeInbound.change'),
                 changeWithInboundId: { content: { inboundId: mockInboundId } }
             });
         });
@@ -228,14 +227,11 @@ describe('Change Utils', () => {
             );
 
             expect(writeJsonSpy).toHaveBeenCalledWith(
-                '/mock/project/path/webapp/changes/manifest/id_123456789_addAnnotationsToOData.change',
+                expect.stringContaining('id_123456789_addAnnotationsToOData.change'),
                 mockChange
             );
 
-            expect(writeSpy).toHaveBeenCalledWith(
-                '/mock/project/path/webapp/changes/annotations/mockAnnotation.xml',
-                ''
-            );
+            expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('mockAnnotation.xml'), '');
         });
 
         it('should copy the annotation file to the correct directory if not creating a new empty file', () => {
@@ -250,14 +246,13 @@ describe('Change Utils', () => {
 
             expect(copySpy).toHaveBeenCalledWith(
                 mockData.answers.targetAnnotationFilePath,
-                '/mock/project/path/webapp/changes/annotations/mockAnnotation.xml'
+                expect.stringContaining('mockAnnotation.xml')
             );
         });
 
         it('should not copy the annotation file if the selected directory is the same as the target', () => {
             mockData.answers.targetAnnotationFileSelectOption = AnnotationFileSelectType.ExistingFile;
-            mockData.answers.targetAnnotationFilePath =
-                '/mock/project/path/webapp/changes/annotations/mockAnnotation.xml';
+            mockData.answers.targetAnnotationFilePath = `${sep}mock${sep}project${sep}path${sep}webapp${sep}changes${sep}annotations${sep}mockAnnotation.xml`;
 
             writeAnnotationChange(
                 mockProjectPath,
