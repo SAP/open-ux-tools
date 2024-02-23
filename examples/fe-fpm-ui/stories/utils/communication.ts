@@ -26,12 +26,14 @@ let ws: WebSocket | undefined;
 
 export type Listener = (action: Actions) => void;
 const listeners: { [key: string]: Listener[] } = {};
-export function getWebSocket(): WebSocket {
+export function getWebSocket(log = true): WebSocket {
     if (!ws) {
         // Connect to the WebSocket server from the preview
         ws = new WebSocket('ws://localhost:8080');
         ws.onmessage = (event) => {
-            console.log(`Received message from main.js: ${event.data}`);
+            if (log) {
+                console.log(`Received message from main.js: ${event.data}`);
+            }
             const action = JSON.parse(event.data);
             const handlers = listeners[action.type];
             if (handlers) {

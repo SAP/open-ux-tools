@@ -2,7 +2,7 @@ import { AddonPanel, SyntaxHighlighter } from '@storybook/components';
 import React, { useEffect, useState } from 'react';
 import { Actions, UPDATE_CODE_SNIPPET, getWebSocket, onMessageAttach } from '../../../stories/utils';
 
-getWebSocket();
+getWebSocket(false);
 
 export const render = (props: { active?: boolean }): React.ReactElement => {
     const { active = false } = props;

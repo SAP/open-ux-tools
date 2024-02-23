@@ -33,7 +33,6 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
     const [answers, setAnswers] = useState<Answers>({});
     const choices = useChoices();
     const questions = useQuestions(type, visibleQuestions);
-    console.log(Object.keys(choices));
 
     function updateAnswers(
         name: string,
