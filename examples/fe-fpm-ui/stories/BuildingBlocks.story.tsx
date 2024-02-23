@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { SupportedBuildingBlocks } from './utils';
 import { applyAnswers, getChoices, getCodeSnippet, getQuestions, getWebSocket } from './utils/communication';
 import { IQuestion, Questions } from '../src/components';
-import { useChoices } from './utils/hooks';
+import { useChoices, useQuestions } from './utils/hooks';
 import { Answers } from 'inquirer';
 
 export default { title: 'Building Blocks' };
@@ -30,9 +30,9 @@ function _updateAnswers(
 
 const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQuestions?: string[] }): JSX.Element => {
     const { type, visibleQuestions } = props;
-    const [questions, setQuestions] = useState<IQuestion[]>([]);
     const [answers, setAnswers] = useState<Answers>({});
     const choices = useChoices();
+    const questions = useQuestions(type, visibleQuestions);
     console.log(Object.keys(choices));
 
     function updateAnswers(
@@ -53,29 +53,6 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
         console.log('Applying changes... FPM Writer');
         applyAnswers(type, answers).then(({ buildingBlockType }) => {});
     }
-
-    React.useEffect(() => {
-        getQuestions(type).then((newQuestions) => {
-            if (visibleQuestions) {
-                const resolvedQuestions: typeof newQuestions = [];
-                for (const name of visibleQuestions) {
-                    const question = newQuestions.find((question) => question.name === name);
-                    if (question) {
-                        resolvedQuestions.push(question);
-                    }
-                }
-                newQuestions = resolvedQuestions;
-            }
-            // initialize the required property - better logic?
-            newQuestions.forEach((question) => {
-                question.required = !!(
-                    (question.dependantPromptNames && question.dependantPromptNames?.length > 0) ||
-                    question.selectType === 'dynamic'
-                );
-            });
-            setQuestions(newQuestions);
-        });
-    }, []);
 
     useEffect(() => {
         getCodeSnippet(type, answers);
