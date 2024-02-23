@@ -60,6 +60,7 @@ export interface MergedAppDescriptor {
                 final: boolean;
             };
         }[];
+        requests?: unknown[];
     };
 }
 
