@@ -306,7 +306,10 @@ describe('initAdp', () => {
             descriptor: {
                 manifest: {},
                 name: 'descriptorName',
-                url
+                url,
+                asyncHints: {
+                    requests: []
+                }
             },
             resources: [],
             proxy: jest.fn(),

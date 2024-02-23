@@ -13,9 +13,9 @@ import {
     isCapJavaProject,
     getCapModelAndServices,
     getCapProjectType,
-    readCapServiceMetadataEdmx
+    readCapServiceMetadataEdmx,
+    toReferenceUri
 } from '../../src';
-import { toReferenceUri } from '../../src/project/cap';
 import * as file from '../../src/file';
 import os from 'os';
 import type { Logger } from '@sap-ux/logger';

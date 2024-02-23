@@ -1316,6 +1316,9 @@ importers:
       '@sap-ux-private/playwright':
         specifier: 0.0.2
         version: link:../playwright
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
