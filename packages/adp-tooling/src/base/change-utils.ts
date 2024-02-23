@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import path, { posix } from 'path';
+import path, { posix, sep } from 'path';
 
 import type {
     AnnotationsData,
@@ -33,14 +33,14 @@ export function writeAnnotationChange(projectPath: string, data: AnnotationsData
         const manifestFolderPath = path.join(changesFolderPath, FolderTypes.MANIFEST);
         const annotationsFolderPath = path.join(changesFolderPath, FolderTypes.ANNOTATIONS);
 
-        writeChangeToFile(`${manifestFolderPath}/${changeFileName}`, change, fs);
+        writeChangeToFile(`${manifestFolderPath}${sep}${changeFileName}`, change, fs);
 
         if (answers.targetAnnotationFileSelectOption === AnnotationFileSelectType.NewEmptyFile) {
-            fs.write(`${annotationsFolderPath}/${annotationFileName}`, '');
+            fs.write(`${annotationsFolderPath}${sep}${annotationFileName}`, '');
         } else {
-            const selectedDir = answers.targetAnnotationFilePath.replace(`/${annotationFileName}`, '');
+            const selectedDir = answers.targetAnnotationFilePath.replace(`${sep}${annotationFileName}`, '');
             if (selectedDir !== annotationsFolderPath) {
-                fs.copy(answers.targetAnnotationFilePath, `${annotationsFolderPath}/${annotationFileName}`);
+                fs.copy(answers.targetAnnotationFilePath, `${annotationsFolderPath}${sep}${annotationFileName}`);
             }
         }
     } catch (e) {
