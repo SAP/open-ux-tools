@@ -41,20 +41,23 @@ export default class AddFragment extends BaseDialog {
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel();
+        this.ui5Version = sap.ui.version;
         this.commandExecutor = new CommandExecutor(this.rta);
     }
 
     /**
-     * Initializes controller, fills model with data and opens the dialog
+     * Setups the Dialog and the JSON Model
+     *
+     * @param {Dialog} dialog - Dialog instance
      */
-    async onInit() {
-        this.dialog = this.byId('addNewFragmentDialog') as unknown as Dialog;
+    async setup(dialog: Dialog): Promise<void> {
+        this.dialog = dialog;
 
         this.setEscapeHandler();
 
         await this.buildDialogData();
 
-        this.getView()?.setModel(this.model);
+        this.dialog.setModel(this.model);
 
         this.dialog.open();
     }
@@ -278,17 +281,20 @@ export default class AddFragment extends BaseDialog {
         const designMetadata = overlay.getDesignTimeMetadata();
 
         const modifiedValue = {
+            fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,
             index: index ?? 0,
             targetAggregation: targetAggregation ?? 'content'
         };
 
-        await this.commandExecutor.generateAndExecuteCommand(
+        const command = await this.commandExecutor.getCommand(
             this.runtimeControl,
             'addXML',
             modifiedValue,
             designMetadata,
             flexSettings
         );
+
+        await this.commandExecutor.pushAndExecuteCommand(command);
     }
 }

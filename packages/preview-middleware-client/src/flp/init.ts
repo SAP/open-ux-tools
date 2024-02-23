@@ -1,6 +1,7 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
-import type { RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import UriParameters from 'sap/base/util/UriParameters';
@@ -192,21 +193,36 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
         sap.ushell.Container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
+                const version = sap.ui.version;
+                const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
-                const libs = ['sap/ui/rta/api/startAdaptation'];
                 const flexSettings = JSON.parse(flex);
+                const pluginScript = flexSettings.pluginScript ?? '';
+
+                let libs: string[] = [];
+                if (minor > 71) {
+                    libs.push('sap/ui/rta/api/startAdaptation');
+                } else {
+                    libs.push('open/ux/preview/client/flp/initRta');
+                }
+
                 if (flexSettings.pluginScript) {
-                    libs.push(flexSettings.pluginScript);
+                    libs.push(pluginScript);
                     delete flexSettings.pluginScript;
                 }
-                sap.ui.require(libs, function (startAdaptation: StartAdaptation, pluginScript?: RTAPlugin) {
-                    const options = {
-                        rootControl: view,
-                        validateAppVersion: false,
-                        flexSettings
-                    };
-                    startAdaptation(options, pluginScript);
-                });
+
+                const options: RTAOptions = {
+                    rootControl: view,
+                    validateAppVersion: false,
+                    flexSettings
+                };
+
+                sap.ui.require(
+                    libs,
+                    async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
+                        await startAdaptation(options, pluginScript);
+                    }
+                );
             });
         });
     }
