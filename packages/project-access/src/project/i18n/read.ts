@@ -47,7 +47,7 @@ async function tryGetCapI18nBundle(root: string, fs?: Editor): Promise<I18nBundl
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node.
  * In case of CAP project, some CDS APIs are used internally which depends on `fs` of node and not `mem-fs-editor`.
  * When calling this function, adding or removing a CDS file in memory or changing CDS configuration will not be considered until present on real file system.
- * @returns i18n bundles or exception
+ * @returns i18n bundles or exception for respective bundle
  */
 export async function getI18nBundles(
     root: string,
