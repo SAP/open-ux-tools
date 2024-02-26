@@ -196,16 +196,16 @@ describe('AdaptationProject', () => {
             await server.get('/my/adaptation/Component-preload.js').expect(404);
         });
 
-        test('/local.file', async () => {
-            const testFileContent = '~test';
+        test('/local-file.ts', async () => {
+            const localPath = '/local-file';
             mockProject.byGlob.mockResolvedValueOnce([
                 {
-                    getPath: () => '/local.file',
-                    getString: () => testFileContent
+                    getPath: () => `${localPath}.ts`
                 }
             ]);
-            const response = await server.get(`${mockMergedDescriptor.url}/local.file`).expect(200);
-            expect(response.text).toEqual(testFileContent);
+            const response = await server.get(`${mockMergedDescriptor.url}${localPath}.js`).expect(302);
+            expect(response.text).toEqual(`Found. Redirecting to ${localPath}.js`);
+            expect(mockProject.byGlob).toBeCalledWith(`${localPath}.*`);
         });
 
         test('/original.file', async () => {
