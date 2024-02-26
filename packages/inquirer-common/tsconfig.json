@@ -10,9 +10,6 @@
   },
   "references": [
     {
-      "path": "../project-access"
-    },
-    {
       "path": "../ui5-info"
     }
   ]
