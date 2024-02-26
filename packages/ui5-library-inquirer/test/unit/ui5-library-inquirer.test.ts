@@ -12,10 +12,6 @@ import inquirer, { createPromptModule, type Answers, type ListQuestion } from 'i
  * Tests the exported ui5-library-inquirer APIs
  */
 describe('API test', () => {
-    beforeAll(async () => {
-        // Wait for i18n to bootstrap
-        await initI18n();
-    });
     const ui5Vers: UI5Version[] = [
         {
             version: '1.118.0',
@@ -32,8 +28,15 @@ describe('API test', () => {
         }
     ];
 
+    beforeAll(async () => {
+        // Wait for i18n to bootstrap
+        await initI18n();
+    });
+
     afterEach(() => {
-        jest.resetAllMocks();
+        // Reset all spys (not mocks)
+        // jest.restoreAllMocks() only works when the mock was created with jest.spyOn().
+        jest.restoreAllMocks();
     });
 
     it('getPrompts, no prompt options', async () => {

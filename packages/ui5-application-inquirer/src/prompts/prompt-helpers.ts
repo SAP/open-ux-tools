@@ -167,7 +167,10 @@ function applyExtensionFunction(
  * @param promptOptions
  * @returns - the extended questions
  */
-export function extendWithOptions(questions: UI5ApplicationQuestion[], promptOptions: UI5ApplicationPromptOptions): UI5ApplicationQuestion[] {
+export function extendWithOptions(
+    questions: UI5ApplicationQuestion[],
+    promptOptions: UI5ApplicationPromptOptions
+): UI5ApplicationQuestion[] {
     questions.forEach((question) => {
         const promptOptKey = question.name as keyof typeof promptNames;
         const promptOpt = promptOptions[promptOptKey];

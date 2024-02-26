@@ -1,22 +1,20 @@
+import type { IMessageSeverity } from '@sap-ux/inquirer-common';
+import { Severity } from '@sap-ux/inquirer-common';
+import { latestVersionString } from '@sap-ux/ui5-info';
+import type { Answers } from 'inquirer';
 import { join } from 'path';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import * as promptHelpers from '../../../src/prompts/prompt-helpers';
 import {
     appPathExists,
     defaultAppName,
+    extendWithOptions,
+    hidePrompts,
     isVersionIncluded,
-    withCondition,
-    extendWithOptions
+    withCondition
 } from '../../../src/prompts/prompt-helpers';
-import { latestVersionString } from '@sap-ux/ui5-info';
-import {
-    UI5ApplicationAnswers,
-    UI5ApplicationPromptOptions,
-    UI5ApplicationQuestion,
-    promptNames
-} from '../../../src/types';
-import { IMessageSeverity, Severity } from '@sap-ux/inquirer-common';
-import { Answers } from 'inquirer';
+import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../../../src/types';
+import { promptNames } from '../../../src/types';
 
 describe('prompt-helpers', () => {
     const testTempDir = join(__dirname, './test-tmp');
@@ -162,14 +160,14 @@ describe('prompt-helpers', () => {
         ] as UI5ApplicationQuestion[];
 
         // No options provided
-        let extQuestions = extendWithOptions(questions, {});
+        const extQuestions = extendWithOptions(questions, {});
         expect(extendWithOptions(questions, {})).toEqual(questions);
-        let nameQuestionValidate = extQuestions.find((question) => question.name === promptNames.name)
+        const nameQuestionValidate = extQuestions.find((question) => question.name === promptNames.name)
             ?.validate as Function;
         expect(nameQuestionValidate('')).toEqual(false);
         expect(nameQuestionValidate('a')).toEqual(true);
 
-        let descriptionQuestionValidate = extQuestions.find((question) => question.name === promptNames.description)
+        const descriptionQuestionValidate = extQuestions.find((question) => question.name === promptNames.description)
             ?.validate as Function;
         expect(descriptionQuestionValidate('')).toEqual(false);
         expect(descriptionQuestionValidate('a')).toEqual(true);
@@ -262,7 +260,7 @@ describe('prompt-helpers', () => {
         expect(nameQuestionValidate('name1', { description: 'efgh' })).toEqual(false);
 
         // Defaults should be replaced
-        let descriptionQuestionDefault = extQuestions.find(
+        const descriptionQuestionDefault = extQuestions.find(
             (question) => question.name === promptNames.description
         )?.default;
         expect(descriptionQuestionDefault()).toEqual('none');
@@ -379,5 +377,82 @@ describe('prompt-helpers', () => {
         additionalMessages = extQuestions.find((question) => question.name === promptNames.name)
             ?.additionalMessages as Function;
         expect(additionalMessages('testName')).toEqual(testNameAddMsg);
+    });
+
+    test('hidePrompts', () => {
+        const prompts: Record<Partial<promptNames>, UI5ApplicationQuestion> = {
+            [promptNames.name]: {
+                name: promptNames.name
+            },
+            [promptNames.description]: {
+                when: () => true,
+                name: promptNames.description
+            },
+            [promptNames.addDeployConfig]: {
+                when: (answers: UI5ApplicationAnswers) => answers.name === 'abcd1234',
+                name: promptNames.addDeployConfig
+            },
+            [promptNames.title]: {
+                name: promptNames.title
+            },
+            [promptNames.namespace]: {
+                name: promptNames.namespace
+            },
+            [promptNames.targetFolder]: {
+                name: promptNames.targetFolder
+            },
+            [promptNames.ui5Version]: {
+                name: promptNames.ui5Version
+            },
+            [promptNames.addFlpConfig]: {
+                name: promptNames.addFlpConfig
+            },
+            [promptNames.ui5Theme]: {
+                name: promptNames.ui5Theme
+            },
+            [promptNames.enableEslint]: {
+                name: promptNames.enableEslint
+            },
+            [promptNames.enableNPMWorkspaces]: {
+                name: promptNames.enableNPMWorkspaces
+            },
+            [promptNames.enableCodeAssist]: {
+                name: promptNames.enableCodeAssist
+            },
+            [promptNames.skipAnnotations]: {
+                name: promptNames.skipAnnotations
+            },
+            [promptNames.enableTypeScript]: {
+                name: promptNames.enableTypeScript
+            },
+            [promptNames.showAdvanced]: {
+                name: promptNames.showAdvanced
+            }
+        };
+        // All prompts returned
+        expect(hidePrompts(prompts).length).toEqual(15);
+        // Hide prompts that are not applicable for CAP projects
+        let filteredPrompts = hidePrompts(prompts, {}, true);
+        expect(filteredPrompts.length).toEqual(13);
+        expect(filteredPrompts).not.toContainEqual({ name: promptNames.targetFolder });
+        expect(filteredPrompts).not.toContainEqual({ name: promptNames.enableEslint });
+
+        // Hide prompts based on propmt options
+        const promptOpts: UI5ApplicationPromptOptions = {
+            [promptNames.addDeployConfig]: {
+                hide: true
+            },
+            [promptNames.skipAnnotations]: {
+                hide: true
+            },
+            [promptNames.ui5Version]: {
+                hide: true
+            }
+        };
+        filteredPrompts = hidePrompts(prompts, promptOpts);
+        expect(filteredPrompts.length).toEqual(12);
+        expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.addDeployConfig }]));
+        expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.skipAnnotations }]));
+        expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.ui5Version }]));
     });
 });

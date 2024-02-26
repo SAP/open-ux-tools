@@ -36,30 +36,30 @@ async function getPrompts(
 /**
  * Prompt for ui5 application writer inputs.
  *
- * @param promptOptions - options that can control some of the prompt behavior. See {@link UI5ApplicationPromptOptions} for details
  * @param adapter - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
+ * @param promptOptions - options that can control some of the prompt behavior. See {@link UI5ApplicationPromptOptions} for details
  * @param isCli
  * @param capCdsInfo
  * @returns the prompt answers
  */
 async function prompt(
-    promptOptions: UI5ApplicationPromptOptions,
     adapter: InquirerAdapter,
+    promptOptions?: UI5ApplicationPromptOptions,
     isCli = true,
     capCdsInfo?: CdsUi5PluginInfo
 ): Promise<UI5ApplicationAnswers> {
     const ui5AppPrompts = await exports.getPrompts(promptOptions, isCli, capCdsInfo);
 
-    if (adapter?.promptModule && promptOptions.ui5Version?.useAutocomplete) {
+    if (adapter?.promptModule && promptOptions?.ui5Version?.useAutocomplete) {
         const pm = adapter.promptModule;
         pm.registerPrompt('autocomplete', autocomplete);
     }
 
     const answers = await adapter.prompt<UI5ApplicationAnswers>(ui5AppPrompts);
     // Apply default values to prompts in case they have not been executed
-    //if (!answers?.showAdvanced) {
-    Object.assign(answers, await getDefaults(answers, promptOptions));
-    //}
+    if (promptOptions) {
+        Object.assign(answers, await getDefaults(answers, promptOptions));
+    }
 
     return answers;
 }
@@ -81,24 +81,20 @@ function getDefaults(
         //if (promptOpt.advancedOption) {
         const promptKey = key as keyof typeof promptNames;
         // Do we have an answer, if not apply the default, either specified or fallback
-        if (isNil(answers[promptKey])) {
+        const defaultProperty = (promptOpt as PromptDefaultValue<string | boolean>).default;
+        if (isNil(answers[promptKey]) && (defaultProperty || promptKey === promptNames.ui5Theme)) {
             let defaultValue;
-
-            if (typeof (promptOpt as PromptDefaultValue<string | boolean>).default === 'function') {
-                defaultValue = ((promptOpt as PromptDefaultValue<string | boolean>).default as Function)(answers);
-            } else if ((promptOpt as PromptDefaultValue<string | boolean>).default) {
-                defaultValue = (promptOpt as PromptDefaultValue<string | boolean>).default;
+            if (typeof defaultProperty === 'function') {
+                defaultValue = (defaultProperty as Function)(answers);
+            } else if (defaultProperty) {
+                defaultValue = defaultProperty;
             } else if (promptKey === promptNames.ui5Theme) {
                 defaultValue = getDefaultUI5Theme(answers.ui5Version);
             }
             Object.assign(defaultAnswers, {
                 [promptKey]: defaultValue
             });
-        } /*  else {
-            defaultValue = answers[promptKey];
-        } */
-
-        //}
+        }
     });
 
     return defaultAnswers;

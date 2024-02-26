@@ -2,7 +2,7 @@ import * as projectAccess from '@sap-ux/project-access';
 import * as projectValidators from '@sap-ux/project-input-validator';
 import * as ui5Info from '@sap-ux/ui5-info';
 import { getQuestions } from '../../../src/prompts';
-import * as utility from '../../../src/prompts/prompt-helpers';
+import * as promptHelpers from '../../../src/prompts/prompt-helpers';
 import type { UI5ApplicationPromptOptions } from '../../../src/types';
 import { promptNames } from '../../../src/types';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
@@ -54,7 +54,7 @@ describe('getQuestions', () => {
     });
 
     test('getQuestions, prompt: `name`, conditional validator', () => {
-        jest.spyOn(utility, 'appPathExists').mockReturnValue(true);
+        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(true);
         // Test default when `isCLi` === true
         let questions = getQuestions([], {
             [promptNames.targetFolder]: {
@@ -94,7 +94,7 @@ describe('getQuestions', () => {
             (questions.find((question) => question.name === promptNames.name)?.validate as Function)('project1', {})
         ).toEqual(true);
 
-        jest.spyOn(utility, 'appPathExists').mockReturnValue(false);
+        jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(false);
         // Default generated name
         expect((questions.find((question) => question.name === promptNames.name)?.default as Function)({})).toEqual(
             'project1'

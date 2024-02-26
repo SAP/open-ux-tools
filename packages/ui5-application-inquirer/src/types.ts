@@ -104,13 +104,17 @@ type booleanValuePromptType = Pick<typeof promptNames, booleanPromptKeys>;
 type booleanValuePrompts = booleanValuePromptType[keyof booleanValuePromptType];
 
 // Prompt options that can be assigned a default
-type DefaultValueInputPrompts = promptNames.name | promptNames.description | promptNames.namespace | promptNames.ui5Version | promptNames.targetFolder;
+type DefaultValueInputPrompts =
+    | promptNames.name
+    | promptNames.description
+    | promptNames.namespace
+    | promptNames.ui5Version
+    | promptNames.targetFolder;
 type DefaultValueConfirmPrompts =
     | promptNames.enableCodeAssist
     | promptNames.enableEslint
     | promptNames.skipAnnotations
-    | promptNames.enableTypeScript
-;
+    | promptNames.enableTypeScript;
 
 // Default value type for input prompt options
 export type PromptDefaultValue<T> = {

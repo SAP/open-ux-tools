@@ -14,7 +14,10 @@ import type {
 export { type IMessageSeverity, Severity };
 
 export interface UI5VersionChoice extends ListChoiceOptions {
-    value: string; // UI5 semantic version
+    /**
+     * UI5 semantic version
+     */
+    value: string;
 }
 
 export interface InquirerAdapter {
@@ -23,13 +26,25 @@ export interface InquirerAdapter {
 }
 
 /**
- * To be replaced when YUI specific types are available from `"@sap-devx/yeoman-ui-types`
+ * To be replaced when YUI specific types are available from `"@sap-devx/yeoman-ui-types`.
  *
  */
 export interface GuiOptions {
+    /**
+     * Provides a tooltip with a YUI prompt
+     */
     hint?: string;
+    /**
+     * A valid prompt answer is mandatory to progress with prompting
+     */
     mandatory?: boolean;
+    /**
+     * Defaults will be re-applied if a previous answer has changed
+     */
     applyDefaultWhenDirty?: boolean;
+    /**
+     * Indicate state in the left hand navigation panel in YUI
+     */
     breadcrumb?: boolean | string;
 }
 
