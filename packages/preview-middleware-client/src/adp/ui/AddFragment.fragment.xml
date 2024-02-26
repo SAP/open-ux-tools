@@ -50,6 +50,18 @@
                 </Input>
             </f:content>
         </f:SimpleForm>
+        <VBox 
+            class="sapUiSmallMarginBeginEnd" 
+            visible="false">
+            <items>
+                <MessageStrip
+                    text="Have in mind that adding this change will also save the changes you have made to your project that are yet unsaved."
+                    type="Warning"
+                    showIcon="true"
+                    class="sapUiSmallMarginBottom">
+                </MessageStrip>
+            </items>
+        </VBox>
     </content>
     <beginButton>
         <Button 

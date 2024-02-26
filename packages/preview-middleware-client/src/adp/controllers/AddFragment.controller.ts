@@ -1,5 +1,6 @@
 /** sap.m */
 import Button from 'sap/m/Button';
+import type VBox from 'sap/m/VBox';
 import type Dialog from 'sap/m/Dialog';
 import type ComboBox from 'sap/m/ComboBox';
 import MessageToast from 'sap/m/MessageToast';
@@ -57,9 +58,33 @@ export default class AddFragment extends BaseDialog {
 
         await this.buildDialogData();
 
+        this.checkForActiveChanges();
+
         this.dialog.setModel(this.model);
 
         this.dialog.open();
+    }
+
+    /**
+     * Checks the command stack for any active (unsaved) changes. If there are any,
+     * displays a warning message to the user.
+     */
+    private checkForActiveChanges(): void {
+        const stack = this.rta.getCommandStack();
+        const allCommands = stack.getCommands();
+
+        if (allCommands.length > 0) {
+            this.showWarningMessage();
+        }
+    }
+
+    /**
+     * Displays a warning message to the user by making the warning VBox visible
+     * within the dialog's content.
+     */
+    private showWarningMessage(): void {
+        const warningBox = this.dialog.getContent()[1] as VBox;
+        warningBox.setVisible(true);
     }
 
     /**
@@ -296,5 +321,7 @@ export default class AddFragment extends BaseDialog {
         );
 
         await this.commandExecutor.pushAndExecuteCommand(command);
+
+        await this.rta._serializeToLrep();
     }
 }

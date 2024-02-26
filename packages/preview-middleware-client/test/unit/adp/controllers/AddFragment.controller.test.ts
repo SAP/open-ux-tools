@@ -30,9 +30,12 @@ describe('AddFragment', () => {
         });
 
         test('fills json model with data', async () => {
+            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
+
+            rtaMock.getCommandStack.mockReturnValue({ getCommands: jest.fn().mockReturnValue([{}]) });
 
             ControlUtils.getRuntimeControl = jest.fn().mockReturnValue({
                 getMetadata: jest.fn().mockReturnValue({
@@ -73,18 +76,22 @@ describe('AddFragment', () => {
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
                 overlays as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring
+                rtaMock as unknown as RuntimeAuthoring
             );
 
             const openSpy = jest.fn();
+            const setVisibleSpy = jest.fn();
 
             await addFragment.setup({
                 setEscapeHandler: jest.fn(),
                 destroy: jest.fn(),
                 setModel: jest.fn(),
                 open: openSpy,
-                close: jest.fn()
+                close: jest.fn(),
+                getContent: jest.fn().mockReturnValue([{}, { setVisible: setVisibleSpy }])
             } as unknown as Dialog);
+
+            expect(setVisibleSpy).toHaveBeenCalledTimes(1);
 
             const escapeHandlerCb = (addFragment.dialog.setEscapeHandler as jest.Mock).mock.calls[0][0];
 
@@ -419,6 +426,7 @@ describe('AddFragment', () => {
                     setModuleName: expect.any(Function)
                 }
             });
+            expect(rtaMock._serializeToLrep).toHaveBeenCalledTimes(1);
         });
 
         test('throws error when creating new fragment', async () => {

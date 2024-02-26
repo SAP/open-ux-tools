@@ -210,6 +210,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getRootControlInstance: () => {
             getManifest(): Manifest;
         } & Component;
+        _serializeToLrep: () => Promise<void>;
     }
 }
 
