@@ -1,15 +1,11 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "../../types/mem-fs-editor.d.ts",
-    "../../types/ui5.d.ts",
-    "src"
-  ],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist"
-  },
-  "references": [
+    "extends": "../../tsconfig.json",
+    "include": ["../../types/mem-fs-editor.d.ts", "../../types/ui5.d.ts", "src"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
+    },
+    "references": [
         {
             "path": "../i18n"
         },
