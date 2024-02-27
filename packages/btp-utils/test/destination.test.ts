@@ -1,19 +1,24 @@
 import { DestinationProxyType } from '../dist';
 import {
+    Authentication,
     Destination,
-    isAbapSystem,
     isAbapEnvironmentOnBtp,
-    WebIDEUsage,
-    WebIDEAdditionalData,
-    isGenericODataDestination,
-    isPartialUrlDestination,
+    isAbapSystem,
     isFullUrlDestination,
+    isGenericODataDestination,
+    isHTML5DynamicConfigured,
     isOnPremiseDestination,
-    isHTML5DynamicConfigured
+    isPartialUrlDestination,
+    isS4HC,
+    WebIDEAdditionalData,
+    WebIDEUsage,
+    getDisplayName,
+    Suffix
 } from '../src';
 import destinations from './mockResponses/destinations.json';
 
 const destination: Destination = destinations.find((destination) => destination.Name === 'NO_ADDITIONAL_PROPERTIES')!;
+const S4HCDestination: Destination = destinations.find((destination) => destination.Name === 'S4HC')!;
 
 describe('destination', () => {
     describe('isAbapSystem', () => {
@@ -138,6 +143,43 @@ describe('destination', () => {
                     destinations.find((destination) => destination.Name === 'ABAP_ON_BTP') as Destination
                 )
             ).toBe(false);
+        });
+    });
+
+    describe('getDisplayName', () => {
+        it('getDisplayName with without S4HC and SCP', () => {
+            expect(getDisplayName({ ...destination }, '~TestUser')).toEqual(`${destination.Name} [~TestUser]`);
+        });
+
+        it('getDisplayName with SCP enabled', () => {
+            expect(getDisplayName({ ...destination }, '~TestUser')).toEqual(
+                `${destination.Name} (${Suffix.BTP}) [~TestUser]`
+            );
+        });
+
+        it('getDisplayName with S4HC enabled', () => {
+            expect(getDisplayName(S4HCDestination, '~TestUser')).toEqual(
+                `${S4HCDestination.Name} (${Suffix.S4HC}) [~TestUser]`
+            );
+        });
+
+        it('getDisplayName with S4HC enabled and no user', () => {
+            expect(getDisplayName(S4HCDestination)).toEqual(`${S4HCDestination.Name} (${Suffix.S4HC})`);
+        });
+    });
+
+    describe('isS4HC', () => {
+        it('Authentication set to NoAuthentication', () => {
+            expect(isS4HC({ ...destination })).toBe(false);
+        });
+
+        it('Authentication set to SamlAssertion', () => {
+            expect(
+                isS4HC({
+                    ...S4HCDestination,
+                    Authentication: Authentication.SAML_ASSERTION
+                })
+            ).toBe(true);
         });
     });
 });
