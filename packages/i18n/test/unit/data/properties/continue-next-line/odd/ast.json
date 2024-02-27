@@ -1,0 +1,74 @@
+[
+  {
+    "type": "comment-line",
+    "value": "# Adding a \\ at the end of a line means that the value continues to the next line.",
+    "range": "[(0,0)..(0,82)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "multiline",
+      "range": "[(1,0)..(1,9)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "This line \\continues",
+      "range": "[(1,12)..(2,9)]"
+    },
+    "range": "[(1,0)..(2,9)]"
+  },
+  {
+    "type": "comment-line",
+    "value": "# If the number of \\ is odd, then the next line is included in the value.",
+    "range": "[(3,0)..(3,73)]"
+  },
+  {
+    "type": "comment-line",
+    "value": "# In the following example, the value for \"oddKey\" is \"This is line one and\\#This is line two\".",
+    "range": "[(4,0)..(4,95)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "oddKey",
+      "range": "[(5,0)..(5,6)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "This is line one and\\\\\\# This is line two",
+      "range": "[(5,9)..(6,18)]"
+    },
+    "range": "[(5,0)..(6,18)]"
+  },
+  {
+    "type": "comment-line",
+    "value": "# White space characters are removed before each line.",
+    "range": "[(8,0)..(8,54)]"
+  },
+  {
+    "type": "comment-line",
+    "value": "# Make sure to add your spaces before your \\ if you need them on the next line.",
+    "range": "[(9,0)..(9,79)]"
+  },
+  {
+    "type": "comment-line",
+    "value": "# In the following example, the value for \"welcome\" is \"Welcome to Wikipedia!\".",
+    "range": "[(10,0)..(10,79)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "welcome",
+      "range": "[(11,0)..(11,7)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "Welcome to \\Wikipedia!",
+      "range": "[(11,10)..(12,20)]"
+    },
+    "range": "[(11,0)..(12,20)]"
+  }
+]

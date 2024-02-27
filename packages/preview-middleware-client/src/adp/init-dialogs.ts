@@ -1,5 +1,8 @@
+/** sap.m */
+import type Dialog from 'sap/m/Dialog';
+
 /** sap.ui.core */
-import XMLView from 'sap/ui/core/mvc/XMLView';
+import Fragment from 'sap/ui/core/Fragment';
 import type UI5Element from 'sap/ui/core/Element';
 
 /** sap.ui.rta */
@@ -44,13 +47,13 @@ export const initDialogs = (rta: RuntimeAuthoring): void => {
 /**
  * Handler for new context menu entry
  *
- * @param overlays Control overlays
+ * @param overlay Control overlays
  * @param rta Runtime Authoring
  * @param dialogName Dialog name
  * @param extensionPointData Control ID
  */
 export async function handler(
-    overlays: UI5Element,
+    overlay: UI5Element,
     rta: RuntimeAuthoring,
     dialogName: DialogNames,
     extensionPointData?: ExtensionPointData
@@ -59,15 +62,15 @@ export async function handler(
 
     switch (dialogName) {
         case DialogNames.ADD_FRAGMENT:
-            controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlays, rta);
+            controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta);
             break;
         case DialogNames.CONTROLLER_EXTENSION:
-            controller = new ControllerExtension(`open.ux.preview.client.adp.controllers.${dialogName}`, overlays, rta);
+            controller = new ControllerExtension(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta);
             break;
         case DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT:
             controller = new ExtensionPoint(
                 `open.ux.preview.client.adp.controllers.${dialogName}`,
-                overlays,
+                overlay,
                 rta,
                 extensionPointData!
             );
@@ -76,9 +79,11 @@ export async function handler(
 
     const id = dialogName === DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT ? `dialog--${dialogName}` : undefined;
 
-    await XMLView.create({
-        viewName: `open.ux.preview.client.adp.ui.${dialogName}`,
+    const dialog = await Fragment.load({
+        name: `open.ux.preview.client.adp.ui.${dialogName}`,
         controller,
         id
     });
+
+    await controller.setup(dialog as Dialog);
 }

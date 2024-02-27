@@ -10,11 +10,14 @@
     "outDir": "dist"
   },
   "references": [
-    {
-      "path": "../logger"
-    },
-    {
-      "path": "../ui5-config"
-    }
-  ]
+        {
+            "path": "../i18n"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../ui5-config"
+        }
+    ]
 }

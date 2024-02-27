@@ -78,6 +78,9 @@
       "path": "packages/fiori-freestyle-writer"
     },
     {
+      "path": "packages/i18n"
+    },
+    {
       "path": "packages/jest-file-matchers"
     },
     {
@@ -118,6 +121,9 @@
     },
     {
       "path": "packages/project-input-validator"
+    },
+    {
+      "path": "packages/serve-static-middleware"
     },
     {
       "path": "packages/store"

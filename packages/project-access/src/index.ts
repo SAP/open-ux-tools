@@ -1,10 +1,13 @@
 export { FileName } from './constants';
 export { getFilePaths } from './file';
 export {
+    createApplicationAccess,
+    createProjectAccess,
     findAllApps,
     findCapProjects,
     findFioriArtifacts,
     findProjectRoot,
+    generateLibraryManifest,
     getAppRootFromWebappPath,
     getAppProgrammingLanguage,
     getAppType,
@@ -15,6 +18,7 @@ export {
     getCdsFiles,
     getCdsRoots,
     getCdsServices,
+    getCapI18nFolderNames,
     getI18nPropertiesPaths,
     getMtaPath,
     getNodeModulesPath,
@@ -26,6 +30,6 @@ export {
     loadModuleFromProject,
     readCapServiceMetadataEdmx,
     readUi5Yaml,
-    generateLibraryManifest
+    toReferenceUri
 } from './project';
 export * from './types';
