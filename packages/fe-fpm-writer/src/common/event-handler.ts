@@ -65,7 +65,7 @@ function getFileNameForController(fileName: string, controllerPrefix?: string): 
         resolvedName = fileName;
     }
     return resolvedName;
-};
+}
 
 /**
  * Method creates or updates handler js file and update 'settings.eventHandler' entry with namespace path entry to method.
