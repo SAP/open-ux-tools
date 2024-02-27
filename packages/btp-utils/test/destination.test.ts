@@ -1,12 +1,9 @@
 import { DestinationProxyType } from '../dist';
 import {
-    Authentication,
     Destination,
     isAbapEnvironmentOnBtp,
     isAbapSystem,
-    isFullUrlDestination,
     isGenericODataDestination,
-    isHTML5DynamicConfigured,
     isOnPremiseDestination,
     isPartialUrlDestination,
     isS4HC,
@@ -15,13 +12,13 @@ import {
     getDisplayName,
     Suffix,
     isFullUrlDestination,
-    isOnPremiseDestination,
     isHTML5DynamicConfigured
 } from '../src';
 import destinations from './mockResponses/destinations.json';
 
 const destination: Destination = destinations.find((destination) => destination.Name === 'NO_ADDITIONAL_PROPERTIES')!;
 const S4HCDestination: Destination = destinations.find((destination) => destination.Name === 'S4HC')!;
+const btpDestination: Destination = destinations.find((destination) => destination.Name === 'ABAP_ON_BTP')!;
 
 describe('destination', () => {
     describe('isAbapSystem', () => {
@@ -150,13 +147,13 @@ describe('destination', () => {
     });
 
     describe('getDisplayName', () => {
-        it('getDisplayName with without S4HC and SCP', () => {
+        it('getDisplayName without S4HC and SCP enabled', () => {
             expect(getDisplayName({ ...destination }, '~TestUser')).toEqual(`${destination.Name} [~TestUser]`);
         });
 
         it('getDisplayName with SCP enabled', () => {
-            expect(getDisplayName({ ...destination }, '~TestUser')).toEqual(
-                `${destination.Name} (${Suffix.BTP}) [~TestUser]`
+            expect(getDisplayName({ ...btpDestination }, '~TestUser')).toEqual(
+                `${btpDestination.Name} (${Suffix.BTP}) [~TestUser]`
             );
         });
 
@@ -166,8 +163,14 @@ describe('destination', () => {
             );
         });
 
-        it('getDisplayName with S4HC enabled and no user', () => {
+        it('getDisplayName with S4HC enabled and no user appended', () => {
             expect(getDisplayName(S4HCDestination)).toEqual(`${S4HCDestination.Name} (${Suffix.S4HC})`);
+        });
+
+        it('getDisplayName with S4HC already appended to the name', () => {
+            expect(getDisplayName({ ...S4HCDestination, Name: `${S4HCDestination.Name} (${Suffix.S4HC})` })).toEqual(
+                `${S4HCDestination.Name} (${Suffix.S4HC})`
+            );
         });
     });
 
@@ -179,8 +182,7 @@ describe('destination', () => {
         it('Authentication set to SamlAssertion', () => {
             expect(
                 isS4HC({
-                    ...S4HCDestination,
-                    Authentication: Authentication.SAML_ASSERTION
+                    ...S4HCDestination
                 })
             ).toBe(true);
         });
