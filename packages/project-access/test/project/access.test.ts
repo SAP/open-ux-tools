@@ -3,7 +3,6 @@ import { createApplicationAccess, createProjectAccess } from '../../src';
 import * as i18nMock from '../../src/project/i18n/write';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { I18nBundle } from '@sap-ux/i18n';
 
 describe('Test function createApplicationAccess()', () => {
     const memFs = create(createStorage());
@@ -40,7 +39,7 @@ describe('Test function createApplicationAccess()', () => {
         const appAccess = await createApplicationAccess(appRoot);
         const i18nBundles = await appAccess.getI18nBundles();
         const i18nPropertiesPaths = await appAccess.getI18nPropertiesPaths();
-        const app = i18nBundles['sap.app'] as I18nBundle;
+        const app = i18nBundles['sap.app'];
         expect(app.testTextKey[0].key.value).toBe('testTextKey');
         expect(app.testTextKey[0].value.value).toBe('Test Text Value');
         expect(app.testTextKey[0].annotation?.textType.value).toBe(' Test comment');
@@ -61,7 +60,7 @@ describe('Test function createApplicationAccess()', () => {
         const appAccess = await createApplicationAccess(appRoot, memFs);
         const i18nBundles = await appAccess.getI18nBundles();
         const i18nPropertiesPaths = await appAccess.getI18nPropertiesPaths();
-        const app = i18nBundles['sap.app'] as I18nBundle;
+        const app = i18nBundles['sap.app'];
         expect(app.testTextKey[0].key.value).toBe('testTextKey');
         expect(app.testTextKey[0].value.value).toBe('Test Text Value');
         expect(app.testTextKey[0].annotation?.textType.value).toBe(' Test comment');

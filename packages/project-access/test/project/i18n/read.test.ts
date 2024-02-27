@@ -127,7 +127,12 @@ describe('read', () => {
                     },
                     'CAPNodejs'
                 );
-                expect(result).toEqual({ 'sap.app': data, models: {}, service: 'error-raised' });
+                expect(result).toEqual({
+                    'sap.app': data,
+                    models: {},
+                    service: {},
+                    errors: { service: 'error-raised' }
+                });
                 expect(getPropertiesI18nBundleSpy).toHaveBeenNthCalledWith(1, absolutePath, undefined);
                 expect(getCapEnvironmentSoy).toHaveBeenNthCalledWith(1, root);
                 expect(getCdsFilesSpy).toHaveBeenNthCalledWith(1, root, true);
@@ -149,14 +154,18 @@ describe('read', () => {
                 const result = await getI18nBundles(root, {
                     'sap.app': absolutePath,
                     models: {
-                        'i18n': { path: absolutePathI18n },
+                        i18n: { path: absolutePathI18n },
                         '@i18n': { path: absolutePathAtI18n }
                     }
                 });
                 expect(result).toEqual({
-                    'sap.app': 'error-raised-app',
-                    models: { i18n: 'error-raised-model-i18n', '@i18n': data },
-                    service: {}
+                    'sap.app': {},
+                    models: { i18n: {}, '@i18n': data },
+                    service: {},
+                    errors: {
+                        'sap.app': 'error-raised-app',
+                        'models.i18n': 'error-raised-model-i18n'
+                    }
                 });
                 expect(getPropertiesI18nBundleSpy).toHaveBeenNthCalledWith(1, absolutePath, undefined);
                 expect(getPropertiesI18nBundleSpy).toHaveBeenNthCalledWith(2, absolutePathI18n, undefined);

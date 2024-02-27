@@ -1,41 +1,20 @@
 import { getCapI18nBundle, getI18nFolderNames, getPropertiesI18nBundle } from '@sap-ux/i18n';
-import type { I18nBundle } from '@sap-ux/i18n';
 import { getCapEnvironment, getCdsFiles } from '..';
 import type { I18nBundles, I18nPropertiesPaths, ProjectType } from '../../types';
 import type { Editor } from 'mem-fs-editor';
 
 /**
- * Try to get i18n properties bundle.
- *
- * @param i18nPath path to an i18n file
- * @param fs optional `mem-fs-editor` instance
- * @returns i18n bundle or exception
+ * Add error to optional errors object.
+ * 
+ * @param result i18n bundles
+ * @param key key to associate with the error
+ * @param error error to add
  */
-async function tryGetPropertiesI18nBundle(i18nPath: string, fs?: Editor): Promise<I18nBundle | Error> {
-    try {
-        const result = await getPropertiesI18nBundle(i18nPath, fs);
-        return result;
-    } catch (error) {
-        return error;
+function addToErrors(result: I18nBundles, key: string, error: Error): void {
+    if (!result.errors) {
+        result.errors = {};
     }
-}
-
-/**
- * Try to get i18n bundle for cap.
- *
- * @param root project root
- * @param fs optional `mem-fs-editor` instance
- * @returns i18n bundle or exception
- */
-async function tryGetCapI18nBundle(root: string, fs?: Editor): Promise<I18nBundle | Error> {
-    try {
-        const env = await getCapEnvironment(root);
-        const cdsFiles = await getCdsFiles(root, true);
-        const result = await getCapI18nBundle(root, env, cdsFiles, fs);
-        return result;
-    } catch (error) {
-        return error;
-    }
+    result.errors[key] = error;
 }
 
 /**
@@ -47,7 +26,7 @@ async function tryGetCapI18nBundle(root: string, fs?: Editor): Promise<I18nBundl
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node.
  * In case of CAP project, some CDS APIs are used internally which depends on `fs` of node and not `mem-fs-editor`.
  * When calling this function, adding or removing a CDS file in memory or changing CDS configuration will not be considered until present on real file system.
- * @returns i18n bundles or exception for respective bundle
+ * @returns i18n bundles or exception captured in optional errors object
  */
 export async function getI18nBundles(
     root: string,
@@ -60,14 +39,31 @@ export async function getI18nBundles(
         models: {},
         service: {}
     };
-    result['sap.app'] = await tryGetPropertiesI18nBundle(i18nPropertiesPaths['sap.app'], fs);
+    try {
+        result['sap.app'] = await getPropertiesI18nBundle(i18nPropertiesPaths['sap.app'], fs);
+    } catch (error) {
+        addToErrors(result, 'sap.app', error);
+    }
 
     for (const key of Object.keys(i18nPropertiesPaths.models)) {
-        result.models[key] = await tryGetPropertiesI18nBundle(i18nPropertiesPaths.models[key].path, fs);
+        try {
+            result.models[key] = await getPropertiesI18nBundle(i18nPropertiesPaths.models[key].path, fs);
+        } catch (error) {
+            // add models key with empty model 
+            result.models[key] = {};
+
+            addToErrors(result, `models.${key}`, error);
+        }
     }
 
     if (projectType === 'CAPNodejs') {
-        result.service = await tryGetCapI18nBundle(root, fs);
+        try {
+            const env = await getCapEnvironment(root);
+            const cdsFiles = await getCdsFiles(root, true);
+            result.service = await getCapI18nBundle(root, env, cdsFiles, fs);
+        } catch (error) {
+            addToErrors(result, 'service', error)
+        }
     }
 
     return result;
