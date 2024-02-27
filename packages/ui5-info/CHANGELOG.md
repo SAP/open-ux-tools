@@ -1,5 +1,13 @@
 # @sap-ux/ui5-info
 
+## 0.3.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/logger@0.5.1
+
 ## 0.3.0
 
 ### Minor Changes
