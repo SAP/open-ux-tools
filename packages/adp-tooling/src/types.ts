@@ -68,7 +68,7 @@ export interface Content {
     texts?: object;
 }
 
-interface CommonChangeProperties {
+export interface CommonChangeProperties {
     changeType: string;
     reference: string;
     namespace: string;

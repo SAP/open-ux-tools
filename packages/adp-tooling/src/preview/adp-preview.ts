@@ -4,13 +4,15 @@ import type { ReaderCollection } from '@ui5/fs';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 
-import type { ToolsLogger } from '@sap-ux/logger';
+import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
-import type { AdpPreviewConfig, DescriptorVariant } from '../types';
+import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant } from '../types';
+import type { Editor } from 'mem-fs-editor';
+import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
 
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
@@ -149,5 +151,35 @@ export class AdpPreview {
         );
 
         router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
+    }
+
+    /**
+     *
+     * @param type
+     * @param change
+     * @param fs
+     * @param logger
+     */
+    async onChangeRequest(
+        type: 'read' | 'write' | 'delete',
+        change: CommonChangeProperties,
+        fs: Editor,
+        logger: Logger
+    ): Promise<void> {
+        switch (type) {
+            case 'read':
+                if (moduleNameContentMap[change.changeType] && !change.moduleName) {
+                    tryFixChange(change, logger);
+                }
+                break;
+            case 'write':
+                if (isAddXMLChange(change)) {
+                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger);
+                }
+                break;
+            default:
+                // no need to handle delete changes
+                break;
+        }
     }
 }

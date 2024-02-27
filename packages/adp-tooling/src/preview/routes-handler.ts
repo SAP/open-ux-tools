@@ -11,10 +11,6 @@ import type { NextFunction, Request, Response } from 'express';
 import { FolderNames, TemplateFileName, HttpStatusCodes } from '../types';
 import type { CodeExtChange } from '../types';
 
-interface WriteFragmentBody {
-    fragmentName: string;
-}
-
 interface WriteControllerBody {
     controllerName: string;
     projectId: string;
@@ -101,11 +97,15 @@ export default class RoutesHandler {
     /**
      * Handler for writing a fragment file to the workspace.
      *
-     * @param req Request
+     * @param _req Request
      * @param res Response
-     * @param next Next Function
+     * @param _next Next Function
      */
-    public handleWriteFragment = async (req: Request, res: Response, next: NextFunction) => {
+    public handleWriteFragment = async (_req: Request, res: Response, _next: NextFunction) => {
+        this.logger.info('Not creating a fragment beforehand anymore.');
+        const message = 'XML Fragment created';
+        res.status(HttpStatusCodes.CREATED).send(message);
+        /*
         try {
             const data = req.body as WriteFragmentBody;
 
@@ -144,7 +144,7 @@ export default class RoutesHandler {
             this.logger.error(sanitizedMsg);
             res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
             next(e);
-        }
+        }*/
     };
 
     /**

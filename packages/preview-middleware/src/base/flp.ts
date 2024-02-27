@@ -1,4 +1,7 @@
 import type { ReaderCollection } from '@ui5/fs';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+import type { Editor as MemFsEditor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
@@ -9,6 +12,7 @@ import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
+import type { CommonChangeProperties } from '@sap-ux/adp-tooling';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 
 const DEVELOPER_MODE_CONFIG = new Map([
@@ -130,10 +134,18 @@ export interface TemplateConfig {
     locateReuseLibsScript?: boolean;
 }
 
+type OnChangeRequestHandler = (
+    type: 'read' | 'write' | 'delete',
+    change: CommonChangeProperties,
+    fs: MemFsEditor,
+    logger: Logger
+) => Promise<void>;
+
 /**
  * Class handling preview of a sandbox FLP.
  */
 export class FlpSandbox {
+    protected onChangeRequest: OnChangeRequestHandler | undefined;
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
     public readonly rta?: RtaConfig;
@@ -166,6 +178,14 @@ export class FlpSandbox {
         this.rta = config.rta;
         logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta })}`);
         this.router = createRouter();
+    }
+
+    /**
+     *
+     * @param handler
+     */
+    public addOnChangeRequestHandler(handler: OnChangeRequestHandler) {
+        this.onChangeRequest = handler;
     }
 
     /**
@@ -373,15 +393,21 @@ export class FlpSandbox {
                 .contentType('application/json')
                 .send(await readChanges(this.project, this.logger));
         }) as RequestHandler);
+        const fs = create(createStorage());
         this.router.post(api, (async (req: Request, res: Response) => {
             try {
+                const change = req.body as CommonChangeProperties;
+                if (this.onChangeRequest) {
+                    await this.onChangeRequest('write', change, fs, this.logger);
+                }
                 const { success, message } = writeChange(
-                    req.body,
+                    change,
                     this.utils.getProject().getSourcePath(),
+                    fs,
                     this.logger
                 );
                 if (success) {
-                    res.status(200).send(message);
+                    fs.commit(() => res.status(200).send(message));
                 } else {
                     res.status(400).send('INVALID_DATA');
                 }
@@ -516,6 +542,7 @@ export async function initAdp(
 
         await flp.init(manifest, name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
+        flp.addOnChangeRequestHandler(adp.onChangeRequest.bind(adp));
         adp.addApis(flp.router);
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
