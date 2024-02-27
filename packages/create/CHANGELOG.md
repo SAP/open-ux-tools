@@ -1,5 +1,18 @@
 # @sap-ux/create
 
+## 0.5.35
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/mockserver-config-writer@0.2.3
+    -   @sap-ux/app-config-writer@0.3.29
+    -   @sap-ux/project-access@1.17.4
+    -   @sap-ux/adp-tooling@0.8.10
+    -   @sap-ux/logger@0.5.1
+    -   @sap-ux/cap-config-writer@0.2.15
+
 ## 0.5.34
 
 ### Patch Changes

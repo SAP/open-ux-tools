@@ -1,5 +1,14 @@
 # @sap-ux/project-access
 
+## 1.17.4
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-config@0.21.1
+    -   @sap-ux/i18n@0.0.4
+
 ## 1.17.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.9.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
 ## 0.9.0
 
 ### Minor Changes
