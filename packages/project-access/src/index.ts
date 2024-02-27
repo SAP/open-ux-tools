@@ -26,6 +26,6 @@ export {
     loadModuleFromProject,
     readCapServiceMetadataEdmx,
     readUi5Yaml,
-    getVirtualManifest
+    generateLibraryManifest
 } from './project';
 export * from './types';
