@@ -1,7 +1,24 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { getAppProgrammingLanguage, getAppType, getProject, getProjectType } from '../../src';
+import { getAppProgrammingLanguage, getAppType, getProject, getProjectType, generateLibraryManifest } from '../../src';
+
+const getStringMock = jest.fn();
+const generateLibraryManifestMock = jest.fn().mockImplementation(() => {
+    return { default: jest.fn() };
+});
+
+jest.mock('@ui5/fs/resourceFactory', () => ({
+    createWorkspace: jest.fn().mockImplementation(() => {
+        return { byGlob: jest.fn().mockResolvedValue([{ getString: getStringMock }]) };
+    })
+}));
+jest.mock('@ui5/fs/adapters/FileSystem', () =>
+    jest.fn().mockImplementation(() => {
+        return { default: jest.fn() };
+    })
+);
+jest.mock('@ui5/builder/tasks/generateLibraryManifest', () => generateLibraryManifestMock);
 
 describe('Test getAppProgrammingLanguage()', () => {
     const sampleRoot = join(__dirname, '../test-data/project/info');
@@ -197,5 +214,27 @@ describe('Test getProject()', () => {
             'projectType': 'EDMXBackend',
             'apps': {}
         });
+    });
+});
+
+describe('Test generateLibraryManifest()', () => {
+    test('Detect .library file, generate `manifest.json`', async () => {
+        const mockManifest = {
+            'sap.app': {
+                'id': 'generated-library',
+                'type': 'library'
+            }
+        };
+        getStringMock.mockResolvedValueOnce(JSON.stringify(mockManifest));
+        expect(await generateLibraryManifest('dot-library-path')).toEqual(mockManifest);
+    });
+    test('Failure in .library file generation', async () => {
+        generateLibraryManifestMock.mockRejectedValueOnce(new Error('Error reading .library file'));
+        try {
+            await generateLibraryManifest('dot-library-path');
+            fail('Should have thrown an error');
+        } catch (err) {
+            expect(err.message).toBe('Error reading .library file');
+        }
     });
 });
