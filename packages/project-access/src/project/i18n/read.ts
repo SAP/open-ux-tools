@@ -5,7 +5,7 @@ import type { Editor } from 'mem-fs-editor';
 
 /**
  * Add error to optional errors object.
- * 
+ *
  * @param result i18n bundles
  * @param key key to associate with the error
  * @param error error to add
@@ -49,7 +49,7 @@ export async function getI18nBundles(
         try {
             result.models[key] = await getPropertiesI18nBundle(i18nPropertiesPaths.models[key].path, fs);
         } catch (error) {
-            // add models key with empty model 
+            // add models key with empty model
             result.models[key] = {};
 
             addToErrors(result, `models.${key}`, error);
@@ -62,7 +62,7 @@ export async function getI18nBundles(
             const cdsFiles = await getCdsFiles(root, true);
             result.service = await getCapI18nBundle(root, env, cdsFiles, fs);
         } catch (error) {
-            addToErrors(result, 'service', error)
+            addToErrors(result, 'service', error);
         }
     }
 
