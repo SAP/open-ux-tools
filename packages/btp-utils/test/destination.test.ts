@@ -13,7 +13,10 @@ import {
     WebIDEAdditionalData,
     WebIDEUsage,
     getDisplayName,
-    Suffix
+    Suffix,
+    isFullUrlDestination,
+    isOnPremiseDestination,
+    isHTML5DynamicConfigured
 } from '../src';
 import destinations from './mockResponses/destinations.json';
 

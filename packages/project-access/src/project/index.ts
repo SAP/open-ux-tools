@@ -8,7 +8,8 @@ export {
     isCapJavaProject,
     isCapNodeJsProject,
     getCapEnvironment,
-    readCapServiceMetadataEdmx
+    readCapServiceMetadataEdmx,
+    toReferenceUri
 } from './cap';
 export { getNodeModulesPath } from './dependencies';
 export { getCapI18nFolderNames, getI18nPropertiesPaths } from './i18n';

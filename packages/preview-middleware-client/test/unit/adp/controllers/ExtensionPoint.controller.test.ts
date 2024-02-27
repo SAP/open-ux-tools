@@ -1,3 +1,4 @@
+import type Dialog from 'sap/m/Dialog';
 import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
 import type JSONModel from 'sap/ui/model/json/JSONModel';
@@ -45,12 +46,12 @@ describe('ExtensionPoint', () => {
             );
 
             const openSpy = jest.fn();
-            extPoint.byId = jest.fn().mockReturnValue({
-                open: openSpy,
-                setEscapeHandler: jest.fn()
-            });
 
-            await extPoint.onInit();
+            await extPoint.setup({
+                open: openSpy,
+                setEscapeHandler: jest.fn(),
+                setModel: jest.fn()
+            } as unknown as Dialog);
 
             expect(openSpy).toHaveBeenCalledTimes(1);
         });
@@ -77,12 +78,12 @@ describe('ExtensionPoint', () => {
             );
 
             const openSpy = jest.fn();
-            extPoint.byId = jest.fn().mockReturnValue({
-                open: openSpy,
-                setEscapeHandler: jest.fn()
-            });
 
-            await extPoint.onInit();
+            await extPoint.setup({
+                open: openSpy,
+                setEscapeHandler: jest.fn(),
+                setModel: jest.fn()
+            } as unknown as Dialog);
 
             expect(openSpy).toHaveBeenCalledTimes(1);
         });
@@ -107,13 +108,13 @@ describe('ExtensionPoint', () => {
             );
 
             const openSpy = jest.fn();
-            extPoint.byId = jest.fn().mockReturnValue({
-                open: openSpy,
-                setEscapeHandler: jest.fn()
-            });
 
             try {
-                await extPoint.onInit();
+                await extPoint.setup({
+                    open: openSpy,
+                    setEscapeHandler: jest.fn(),
+                    setModel: jest.fn()
+                } as unknown as Dialog);
             } catch (e) {
                 expect(e.message).toBe(errorMsg);
             }

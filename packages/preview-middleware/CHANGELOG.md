@@ -1,5 +1,28 @@
 # @sap-ux/preview-middleware
 
+## 0.12.1
+
+### Patch Changes
+
+-   Updated dependencies [05953a48]
+    -   @sap-ux/adp-tooling@0.8.9
+
+## 0.12.0
+
+### Minor Changes
+
+-   efd2f6d4: Support ui5 version 1.71.\* in CPE.
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.8
+
+## 0.11.36
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.7
+
 ## 0.11.35
 
 ### Patch Changes

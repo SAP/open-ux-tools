@@ -70,6 +70,5 @@
         "HTML5.DynamicDestination": "true",
         "audience": "https://s4hc-example.sap.example",
         "authnContextClassRef": "urn:oasis:names:tc:SAML:2.0:ac:classes:PreviousSession"
-
     }
 ]
