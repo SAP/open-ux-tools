@@ -383,7 +383,9 @@ describe('CustomAction', () => {
                 const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Manifest;
                 const action = getActionByName(manifest, actionName);
                 // Check if action press has controller prefix added
-                expect(action['press']).toEqual(`${controllerPrefix}.my.test.App.ext.fragments.${expectedFileName}.${fnName}`);
+                expect(action['press']).toEqual(
+                    `${controllerPrefix}.my.test.App.ext.fragments.${expectedFileName}.${fnName}`
+                );
                 // Check update js file content
                 expect(fs.read(existingPath)).toMatchSnapshot();
             });
