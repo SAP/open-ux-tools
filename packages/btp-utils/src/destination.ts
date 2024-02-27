@@ -186,7 +186,7 @@ function escapeRegExp(str: string): string {
  */
 function addSuffix(destinationName: string, suffix: Suffix): string {
     const suffixStr = ` (${suffix})`;
-    return destinationName.trim().match(`${escapeRegExp(suffixStr)}$`)
+    return RegExp(`${escapeRegExp(suffixStr)}$`).exec(destinationName.trim())
         ? destinationName
         : `${destinationName} (${suffix})`;
 }
