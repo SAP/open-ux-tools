@@ -15,7 +15,6 @@
         "sap-ux": "./dist/index.js"
     },
     "engines": {
-        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
         "node": ">=18.x"
     },
     "scripts": {
