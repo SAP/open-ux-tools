@@ -49,6 +49,25 @@ export const contextParameter: EventHandlerTypescriptParameters = {
 };
 
 /**
+ * Method returns file name to use in namespace.
+ *
+ * @param fileName - event handler file name
+ * @param controllerPrefix - controller prefix '.extension'
+ * @returns {string} full namespace path to method
+ */
+function getFileNameForController(fileName: string, controllerPrefix?: string): string {
+    let resolvedName = fileName;
+    // For name part in namespace we use passed file name or if it's controller extension, then remove 'controller' part from path
+    // 'Handler.controller' should be resolved as 'Handler' in namespace
+    if (controllerPrefix && fileName.endsWith('.controller')) {
+        resolvedName = fileName.replace('.controller', '');
+    } else {
+        resolvedName = fileName;
+    }
+    return resolvedName;
+};
+
+/**
  * Method creates or updates handler js file and update 'settings.eventHandler' entry with namespace path entry to method.
  *
  * @param fs - the memfs editor instance
@@ -86,13 +105,7 @@ export function applyEventHandlerConfiguration(
         if (eventHandler.fileName) {
             // Use passed file name
             fileName = eventHandler.fileName;
-            // For name part in namespace we use passed file name or if it's controller extension, then remove 'controller' part from path
-            // 'Handler.controller' should be resolved as 'Handler' in namespace
-            if (controllerPrefix && fileName.endsWith('.controller')) {
-                resolvedName = fileName.replace('.controller', '');
-            } else {
-                resolvedName = fileName;
-            }
+            resolvedName = getFileNameForController(fileName, controllerPrefix);
         }
     }
 
