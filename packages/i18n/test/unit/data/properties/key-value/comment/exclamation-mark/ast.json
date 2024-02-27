@@ -1,0 +1,21 @@
+[
+  {
+    "type": "comment-line",
+    "value": "! The exclamation mark can also be used for comments.",
+    "range": "[(0,0)..(0,53)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "website",
+      "range": "[(1,0)..(1,7)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "https://en.wikipedia.org/",
+      "range": "[(1,10)..(1,35)]"
+    },
+    "range": "[(1,0)..(1,35)]"
+  }
+]

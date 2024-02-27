@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.9.0
+
+### Minor Changes
+
+-   efd2f6d4: Support ui5 version 1.71.\* in CPE.
+
 ## 0.8.14
 
 ### Patch Changes
