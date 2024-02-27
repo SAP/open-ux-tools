@@ -1,5 +1,24 @@
 # @sap-ux/axios-extension
 
+## 1.11.1
+
+### Patch Changes
+
+-   efd2f6d4: Support ui5 version 1.71.\* in CPE.
+
+## 1.11.0
+
+### Minor Changes
+
+-   0f6e0e1b: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
+### Patch Changes
+
+-   Updated dependencies [0f6e0e1b]
+    -   @sap-ux/btp-utils@0.14.0
+
 ## 1.10.2
 
 ### Patch Changes

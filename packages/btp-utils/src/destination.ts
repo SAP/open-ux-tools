@@ -1,3 +1,9 @@
+export enum ProxyType {
+    ON_PREMISE = 'OnPremise',
+    INTERNET = 'Internet',
+    PRIVATE_LINK = 'PrivateLink'
+}
+
 /**
  * Relevant values for the WebIDEUsage property used to identify different types of destinations.
  */
@@ -125,4 +131,14 @@ export function isFullUrlDestination(destination: Destination): boolean {
  */
 export function isOnPremiseDestination(destination: Destination): boolean {
     return Boolean(destination.ProxyType.includes(DestinationProxyType.ON_PREMISE));
+}
+
+/**
+ * Validate if a destination has the property `HTML5.DynamicDestination` configured.
+ *
+ * @param destination
+ * @returns true, if this destination has HTML5.DynamicDestination configured
+ */
+export function isHTML5DynamicConfigured(destination: Destination): boolean {
+    return Boolean(destination['HTML5.DynamicDestination']);
 }

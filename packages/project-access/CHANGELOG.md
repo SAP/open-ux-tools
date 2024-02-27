@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.17.3
+
+### Patch Changes
+
+-   2eda843d: feat(project-access): expose "toReferenceUri" in package interface
+
 ## 1.17.2
 
 ### Patch Changes

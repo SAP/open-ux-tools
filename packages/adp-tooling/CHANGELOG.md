@@ -1,5 +1,27 @@
 # @sap-ux/adp-tooling
 
+## 0.8.9
+
+### Patch Changes
+
+-   05953a48: FIX: preview of controller extensions in typescript
+
+## 0.8.8
+
+### Patch Changes
+
+-   Updated dependencies [efd2f6d4]
+    -   @sap-ux/axios-extension@1.11.1
+    -   @sap-ux/system-access@0.3.14
+
+## 0.8.7
+
+### Patch Changes
+
+-   Updated dependencies [0f6e0e1b]
+    -   @sap-ux/axios-extension@1.11.0
+    -   @sap-ux/system-access@0.3.13
+
 ## 0.8.6
 
 ### Patch Changes
