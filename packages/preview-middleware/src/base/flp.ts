@@ -386,14 +386,18 @@ export class FlpSandbox {
      * Create required routes for flex.
      */
     private createFlexHandler(): void {
+        const fs = create(createStorage());
         const api = `${PREVIEW_URL.api}/changes`;
         this.router.use(api, json());
         this.router.get(api, (async (_req: Request, res: Response) => {
-            res.status(200)
-                .contentType('application/json')
-                .send(await readChanges(this.project, this.logger));
+            const changes = await readChanges(this.project, this.logger);
+            if (this.onChangeRequest) {
+                for (const change of Object.values(changes)) {
+                    await this.onChangeRequest('read', change, fs, this.logger);
+                }
+            }
+            res.status(200).contentType('application/json').send(changes);
         }) as RequestHandler);
-        const fs = create(createStorage());
         this.router.post(api, (async (req: Request, res: Response) => {
             try {
                 const change = req.body as CommonChangeProperties;
