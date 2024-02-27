@@ -78,8 +78,8 @@ export const feBaseConfig = (
 
     if (addUi5Config) {
         config.ui5 = {
-            version: '1.92.0',
-            minUI5Version: '1.90.0',
+            version: '1.94.0',
+            minUI5Version: '1.94.0',
             descriptorVersion: '1.37.0',
             ui5Libs: [],
             ui5Theme: 'sap_belize',

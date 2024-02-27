@@ -136,14 +136,14 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v2]: oldestSupportedUI5Version,
-            [OdataVersion.v4]: '1.84.0'
+            [OdataVersion.v4]: '1.94.0'
         }
     },
     [TemplateType.AnalyticalListPage]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v2]: oldestSupportedUI5Version,
-            [OdataVersion.v4]: '1.90.0'
+            [OdataVersion.v4]: '1.94.0'
         }
     },
     [TemplateType.OverviewPage]: {
@@ -156,7 +156,7 @@ export const TemplateTypeAttributes: TemplateAttributes = {
     [TemplateType.FormEntryObjectPage]: {
         supportedODataVersions: [OdataVersion.v4],
         minimumUi5Version: {
-            [OdataVersion.v4]: '1.90.0'
+            [OdataVersion.v4]: '1.94.0'
         }
     },
     [TemplateType.FlexibleProgrammingModel]: {

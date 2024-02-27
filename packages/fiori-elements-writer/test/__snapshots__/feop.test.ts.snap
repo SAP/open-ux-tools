@@ -31,7 +31,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.94\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -3224,7 +3224,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -3283,7 +3283,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"content\\": {
                 \\"header\\": {
                   \\"visible\\": false,
@@ -3307,7 +3307,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Booking\\"
+              \\"contextPath\\": \\"/Travel/_Booking\\"
             }
           }
         }
@@ -3694,7 +3694,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.94\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
     \\"typescript\\": \\"^5.1.6\\",
@@ -6961,7 +6961,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -7020,7 +7020,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"content\\": {
                 \\"header\\": {
                   \\"visible\\": false,
@@ -7044,7 +7044,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Booking\\"
+              \\"contextPath\\": \\"/Travel/_Booking\\"
             }
           }
         }

@@ -31,7 +31,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.94\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -2932,7 +2932,7 @@ appDescription=A Fiori application.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},

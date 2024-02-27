@@ -31,7 +31,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.94\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -2931,7 +2931,7 @@ appDescription=A Fiori application.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -7102,7 +7102,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.94\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -10284,7 +10284,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -10347,7 +10347,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"name\\": \\"sap.fe.templates.ListReport\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"variantManagement\\": \\"Page\\",
               \\"navigation\\": {
                 \\"Travel\\": {
@@ -10366,7 +10366,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"navigation\\": {
                 \\"_Booking\\": {
                   \\"detail\\": {
@@ -10384,7 +10384,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Booking\\"
+              \\"contextPath\\": \\"/Travel/_Booking\\"
             }
           }
         }
@@ -14374,7 +14374,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.94\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -17557,7 +17557,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -17620,7 +17620,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"name\\": \\"sap.fe.templates.ListReport\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"variantManagement\\": \\"Page\\",
               \\"navigation\\": {
                 \\"Travel\\": {
@@ -17639,7 +17639,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"navigation\\": {
                 \\"_Booking\\": {
                   \\"detail\\": {
@@ -17657,7 +17657,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Booking\\"
+              \\"contextPath\\": \\"/Travel/_Booking\\"
             }
           }
         }
@@ -17875,7 +17875,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         {
             appId: 'lrop_v4_addtests',
             componentId: 'BookingObjectPage',
-            entitySet: 'Booking'
+            contextPath: '/Travel/_Booking'
         },
         CustomPageDefinitions
     );
@@ -17895,7 +17895,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         {
             appId: 'lrop_v4_addtests',
             componentId: 'TravelList',
-            entitySet: 'Travel'
+            contextPath: '/Travel'
         },
         CustomPageDefinitions
     );
@@ -17915,7 +17915,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         {
             appId: 'lrop_v4_addtests',
             componentId: 'TravelObjectPage',
-            entitySet: 'Travel'
+            contextPath: '/Travel'
         },
         CustomPageDefinitions
     );
@@ -18202,7 +18202,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\"
+    \\"@sap/ux-specification\\": \\"UI5-1.94\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lrop_v4_addtests_cds-tile\\\\\\"\\",
@@ -18403,7 +18403,7 @@ appDescription=A Fiori application.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -18466,7 +18466,7 @@ appDescription=A Fiori application.",
           \\"name\\": \\"sap.fe.templates.ListReport\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"variantManagement\\": \\"Page\\",
               \\"navigation\\": {
                 \\"Travel\\": {
@@ -18485,7 +18485,7 @@ appDescription=A Fiori application.",
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"navigation\\": {
                 \\"_Booking\\": {
                   \\"detail\\": {
@@ -18503,7 +18503,7 @@ appDescription=A Fiori application.",
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Booking\\"
+              \\"contextPath\\": \\"/Travel/_Booking\\"
             }
           }
         }
@@ -18721,7 +18721,7 @@ appDescription=A Fiori application.",
         {
             appId: 'lrop_v4_addtests_cds',
             componentId: 'BookingObjectPage',
-            entitySet: 'Booking'
+            contextPath: '/Travel/_Booking'
         },
         CustomPageDefinitions
     );
@@ -18741,7 +18741,7 @@ appDescription=A Fiori application.",
         {
             appId: 'lrop_v4_addtests_cds',
             componentId: 'TravelList',
-            entitySet: 'Travel'
+            contextPath: '/Travel'
         },
         CustomPageDefinitions
     );
@@ -18761,7 +18761,7 @@ appDescription=A Fiori application.",
         {
             appId: 'lrop_v4_addtests_cds',
             componentId: 'TravelObjectPage',
-            entitySet: 'Travel'
+            contextPath: '/Travel'
         },
         CustomPageDefinitions
     );
@@ -22175,7 +22175,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/manifest.json": Object {
     "contents": "{
-  \\"_version\\": \\"1.28.0\\",
+  \\"_version\\": \\"1.35.0\\",
   \\"sap.app\\": {
     \\"id\\": \\"felropui5\\",
     \\"type\\": \\"application\\",
@@ -22230,7 +22230,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.84.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -22293,7 +22293,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"name\\": \\"sap.fe.templates.ListReport\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"variantManagement\\": \\"Page\\",
               \\"navigation\\": {
                 \\"Travel\\": {
@@ -22312,7 +22312,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"navigation\\": {
                 \\"_Booking\\": {
                   \\"detail\\": {
@@ -22330,7 +22330,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"options\\": {
             \\"settings\\": {
               \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Booking\\"
+              \\"contextPath\\": \\"/Travel/_Booking\\"
             }
           }
         }
@@ -29627,7 +29627,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.94\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -32528,7 +32528,7 @@ appDescription=A Fiori application.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -33206,7 +33206,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.94\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
@@ -36107,7 +36107,7 @@ appDescription=A Fiori application.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},

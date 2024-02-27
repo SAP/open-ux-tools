@@ -95,7 +95,7 @@ describe('Validate', () => {
                 {
                     ui5: {
                         version: '1.88.1',
-                        minUI5Version: '1.92.0'
+                        minUI5Version: '1.94.0'
                     }
                 },
                 {
@@ -127,7 +127,7 @@ describe('Validate', () => {
                 feBaseConfig('felrop1'),
                 {
                     ui5: {
-                        version: '1.92.0',
+                        version: '1.94.0',
                         minUI5Version: '1.60.0'
                     }
                 },
@@ -161,7 +161,7 @@ describe('Validate', () => {
                 feBaseConfig('felrop1'),
                 {
                     ui5: {
-                        version: '1.92.0',
+                        version: '1.94.0',
                         minUI5Version: '1.60.0'
                     }
                 },
