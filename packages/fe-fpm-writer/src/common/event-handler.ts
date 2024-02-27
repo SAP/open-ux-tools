@@ -75,7 +75,10 @@ export function applyEventHandlerConfiguration(
     let controllerPrefix: string | undefined = '';
     // By default - use config name for created file name
     let fileName = config.name;
+    // Name part used in namespace
+    let resolvedName = fileName;
     if (typeof eventHandler === 'object') {
+        controllerPrefix = eventHandler.controllerPrefix;
         if (eventHandler.fnName) {
             eventHandlerFnName = eventHandler.fnName;
         }
@@ -83,8 +86,14 @@ export function applyEventHandlerConfiguration(
         if (eventHandler.fileName) {
             // Use passed file name
             fileName = eventHandler.fileName;
+            // For name part in namespace we use passed file name or if it's controller extension, then remove 'controller' part from path
+            // 'Handler.controller' should be resolved as 'Handler' in namespace
+            if (controllerPrefix && fileName.endsWith('.controller')) {
+                resolvedName = fileName.replace('.controller', '');
+            } else {
+                resolvedName = fileName;
+            }
         }
-        controllerPrefix = eventHandler.controllerPrefix;
     }
 
     const ext = typescript ? 'ts' : 'js';
@@ -107,6 +116,6 @@ export function applyEventHandlerConfiguration(
         fs.write(controllerPath, content);
     }
     // Return full namespace path to method
-    const fullNamespace = `${config.ns}.${fileName}.${eventHandlerFnName}`;
+    const fullNamespace = `${config.ns}.${resolvedName}.${eventHandlerFnName}`;
     return controllerPrefix ? `${controllerPrefix}.${fullNamespace}` : `${fullNamespace}`;
 }
