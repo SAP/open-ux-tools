@@ -227,6 +227,7 @@ describe('Test generateLibraryManifest()', () => {
         };
         getStringMock.mockResolvedValueOnce(JSON.stringify(mockManifest));
         expect(await generateLibraryManifest('dot-library-path')).toEqual(mockManifest);
+        expect(generateLibraryManifestMock.mock.calls[0][0].taskUtil.getProject().getVersion()).toBeDefined();
     });
     test('Failure in .library file generation', async () => {
         generateLibraryManifestMock.mockRejectedValueOnce(new Error('Error reading .library file'));

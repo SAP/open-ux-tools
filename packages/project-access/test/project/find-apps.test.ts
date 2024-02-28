@@ -210,6 +210,10 @@ describe('Test findFioriArtifacts()', () => {
         ]);
         expect(result.libraries).toEqual([
             {
+                libraryPath: join(testDataRoot, 'project/find-all-apps/libraries/dot-library/src/com/sap/library'),
+                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/dot-library')
+            },
+            {
                 manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library/src/manifest.json'),
                 manifest: {
                     'sap.app': {
@@ -230,6 +234,10 @@ describe('Test findFioriArtifacts()', () => {
         expect(result.adaptations).toBeUndefined();
         expect(result.extensions).toBeUndefined();
         expect(result.libraries).toEqual([
+            {
+                libraryPath: join(testDataRoot, 'project/find-all-apps/libraries/dot-library/src/com/sap/library'),
+                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/dot-library')
+            },
             {
                 manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library/src/manifest.json'),
                 manifest: {
