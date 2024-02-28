@@ -1,8 +1,8 @@
-import { UIDefaultButton, initIcons } from '@sap-ux/ui-components';
+import { UIComboBox, UIDefaultButton, initIcons } from '@sap-ux/ui-components';
 import React, { useEffect, useState } from 'react';
 import { SupportedBuildingBlocks } from './utils';
 import { applyAnswers, getChoices, getCodeSnippet, getQuestions, getWebSocket } from './utils/communication';
-import { IQuestion, Questions } from '../src/components';
+import { IQuestion, Questions, PromptsLayoutType } from '../src/components';
 import { useChoices, useQuestions } from './utils/hooks';
 import { Answers } from 'inquirer';
 
@@ -28,8 +28,23 @@ function _updateAnswers(
     return newAnswers;
 }
 
-const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQuestions?: string[] }): JSX.Element => {
-    const { type, visibleQuestions } = props;
+const layouts = [
+    {
+        text: PromptsLayoutType.MultiColumn,
+        key: PromptsLayoutType.MultiColumn
+    },
+    {
+        text: PromptsLayoutType.SingleColumn,
+        key: PromptsLayoutType.SingleColumn
+    }
+];
+
+const BuildingBlockQuestions = (props: {
+    type: SupportedBuildingBlocks;
+    visibleQuestions?: string[];
+    layout?: PromptsLayoutType;
+}): JSX.Element => {
+    const { type, visibleQuestions, layout = PromptsLayoutType.MultiColumn } = props;
     const [answers, setAnswers] = useState<Answers>({});
     const choices = useChoices();
     const questions = useQuestions(type, visibleQuestions);
@@ -76,6 +91,7 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
                 onChange={updateAnswers}
                 answers={answers || {}}
                 choices={choices}
+                layoutType={layout as PromptsLayoutType}
             />
             {/* Disable the button if there is no answers for the 'required' question */}
             <div className="cta">
@@ -88,14 +104,26 @@ const BuildingBlockQuestions = (props: { type: SupportedBuildingBlocks; visibleQ
 };
 
 export const table = (): JSX.Element => {
-    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Table} />;
+    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Table} layout={PromptsLayoutType.SingleColumn} />;
 };
 
 export const chart = (): JSX.Element => {
-    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Chart} />;
+    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Chart} layout={PromptsLayoutType.SingleColumn} />;
 };
 
 export const filterBar = (): JSX.Element => {
+    return <BuildingBlockQuestions type={SupportedBuildingBlocks.FilterBar} layout={PromptsLayoutType.SingleColumn} />;
+};
+
+export const multiLayoutTable = (): JSX.Element => {
+    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Table} />;
+};
+
+export const multiLayoutChart = (): JSX.Element => {
+    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Chart} />;
+};
+
+export const multiLayoutFilterBar = (): JSX.Element => {
     return <BuildingBlockQuestions type={SupportedBuildingBlocks.FilterBar} />;
 };
 
