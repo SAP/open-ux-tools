@@ -36,7 +36,6 @@
         "@sap-ux/ui5-config": "workspace:*",
         "@ui5/builder": "3.3.0",
         "@ui5/fs": "3.0.5",
-        "@ui5/project": "3.9.0",
         "findit2": "2.2.3",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0"
