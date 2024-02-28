@@ -40,7 +40,7 @@ export * from './services';
 export * from './entities/backend-system';
 export * from './entities/telemetry-setting';
 export * from './entities/api-hub';
-
+export { getSecureStore } from './secure-store';
 // @todo: change notification needs to be more generic and not tied to filesystems
 // Support any filesystem watchers
 export { getFilesystemWatcherFor } from './data-access';
