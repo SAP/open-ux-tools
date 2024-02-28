@@ -8,7 +8,7 @@ export const supportState = {
     skipped: 'Skipped'
 } as const;
 
-// Updated Feb-28-2023
+// Updated Feb-28-2024
 export const ui5VersionFallbacks = [
     {
         version: '1.120.*',
