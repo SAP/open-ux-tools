@@ -12,7 +12,8 @@ import {
     getDisplayName,
     Suffix,
     isFullUrlDestination,
-    isHTML5DynamicConfigured
+    isHTML5DynamicConfigured,
+    ProxyType
 } from '../src';
 import destinations from './mockResponses/destinations.json';
 
@@ -179,12 +180,20 @@ describe('destination', () => {
             expect(isS4HC({ ...destination })).toBe(false);
         });
 
-        it('Authentication set to SamlAssertion', () => {
+        it('Authentication set to SamlAssertion and is internet facing', () => {
             expect(
                 isS4HC({
                     ...S4HCDestination
                 })
             ).toBe(true);
+        });
+        it('Authentication set to SamlAssertion and is OnPremise', () => {
+            expect(
+                isS4HC({
+                    ...S4HCDestination,
+                    ProxyType: ProxyType.ON_PREMISE
+                })
+            ).toBe(false);
         });
     });
 });
