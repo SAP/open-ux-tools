@@ -63,7 +63,7 @@ export function isVersionIncluded(version: string, minVersion: string): boolean 
 /**
  * Adds additional conditions to the provided questions.
  *
- * @param questions
+ * @param questions the questions to which the condition will be added
  * @param condition function which returns true or false
  * @returns the passed questions reference
  */
@@ -95,9 +95,9 @@ export function withCondition(questions: Question[], condition: (answers: Answer
 /**
  * Extends a validate function.
  *
- * @param question
- * @param validateFunc
- * @returns
+ * @param question - the question to which the validate function will be applied
+ * @param validateFunc - the validate function which will be applied to the question
+ * @returns the extended validate function
  */
 function extendValidate(
     question: Question,
@@ -119,9 +119,9 @@ function extendValidate(
 /**
  * Extends an additionalMessages function.
  *
- * @param question
- * @param addMsgFunc
- * @returns
+ * @param question - the question to which the validate function will be applied
+ * @param addMsgFunc - the additional messages function which will be applied to the question
+ * @returns the extended additional messages function
  */
 function extendAdditionalMessages(question: YUIQuestion, addMsgFunc: PromptSeverityMessage): PromptSeverityMessage {
     const addMsgs = question.additionalMessages;
@@ -137,10 +137,10 @@ function extendAdditionalMessages(question: YUIQuestion, addMsgFunc: PromptSever
 /**
  * Extend the existing prompt property function with the one specified in prompt options or add as new.
  *
- * @param question
- * @param promptOption
- * @param funcName
- * @returns
+ * @param question - the question to which the extending function will be applied
+ * @param promptOption - prompt options, containing extending functions
+ * @param funcName - the question property (function) name to extend
+ * @returns the extended question
  */
 function applyExtensionFunction(
     question: YUIQuestion,
@@ -163,8 +163,8 @@ function applyExtensionFunction(
 /**
  * Updates questions with extensions for specific properties. Only `validate`, `default` and `additionalMessages` are currently supported.
  *
- * @param questions - array of inquirer prompts
- * @param promptOptions
+ * @param questions - array of prompts to be extended
+ * @param promptOptions - the prompt options possibly containing function extensions
  * @returns - the extended questions
  */
 export function extendWithOptions(
@@ -200,7 +200,7 @@ export function extendWithOptions(
  * @param prompts Keyed prompts object containing all possible prompts
  * @param promptOptions prompt options
  * @param isCapProject if we are generating into a CAP project certain prompts may be removed
- * @returns
+ * @returns the updated questions
  */
 export function hidePrompts(
     prompts: Record<promptNames, UI5ApplicationQuestion>,

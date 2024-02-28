@@ -38,8 +38,8 @@ async function getPrompts(
  *
  * @param adapter - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
  * @param promptOptions - options that can control some of the prompt behavior. See {@link UI5ApplicationPromptOptions} for details
- * @param isCli
- * @param capCdsInfo
+ * @param isCli - since CLI prompting is done serially but UI prompting occurs in parallel this impacts on how some validation is run
+ * @param capCdsInfo - the CAP CDS info for the project, if this prompting will add a UI% app to an existing CAP project
  * @returns the prompt answers
  */
 async function prompt(
@@ -68,8 +68,8 @@ async function prompt(
  * Return the default values for prompts that did not provide an answer.
  * This can be derived from user input, or a fallback default in case an answer was not provided due to the prompt not having been executed.
  *
- * @param answers
- * @param promptOptions
+ * @param answers - the answers from previous prompting, which if present will be used instead of defaults
+ * @param promptOptions - the prompt options
  * @returns answer values
  */
 function getDefaults(
@@ -82,7 +82,7 @@ function getDefaults(
         const promptKey = key as keyof typeof promptNames;
         // Do we have an answer, if not apply the default, either specified or fallback
         const defaultProperty = (promptOpt as PromptDefaultValue<string | boolean>).default;
-        if (isNil(answers[promptKey]) && (defaultProperty || promptKey === promptNames.ui5Theme)) {
+        if (isNil(answers[promptKey]) && (defaultProperty ?? promptKey === promptNames.ui5Theme)) {
             let defaultValue;
             if (typeof defaultProperty === 'function') {
                 defaultValue = (defaultProperty as Function)(answers);
