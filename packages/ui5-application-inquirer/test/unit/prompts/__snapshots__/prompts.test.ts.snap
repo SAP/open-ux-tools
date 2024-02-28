@@ -1,0 +1,165 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getQuestions getQuestions, no options 1`] = `
+[
+  {
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": true,
+      "hint": "The name of the module for this application that will be loaded at runtime. This also determines the directory name of the generated application.",
+      "mandatory": true,
+    },
+    "message": "Module name",
+    "name": "name",
+    "type": "input",
+    "validate": [Function],
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "The title of your application that is displayed in the header of the application.",
+    },
+    "message": "Application title",
+    "name": "title",
+    "type": "input",
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "A unique package name for the application module being created. It should follow the standard Java package notation.",
+    },
+    "message": "Application namespace",
+    "name": "namespace",
+    "type": "input",
+    "validate": [Function],
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "Project description in package.json of your project",
+    },
+    "message": "Description",
+    "name": "description",
+    "type": "input",
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": "Project Path",
+      "mandatory": true,
+    },
+    "guiType": "folder-browser",
+    "message": "Project folder path",
+    "name": "targetFolder",
+    "type": "input",
+    "validate": [Function],
+  },
+  {
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "breadcrumb": "UI5 Version",
+      "hint": "Represents the minimum version of SAPUI5 that this application requires.",
+    },
+    "message": "Minimum SAPUI5 version",
+    "name": "ui5Version",
+    "source": [Function],
+    "type": "list",
+    "when": [Function],
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "breadcrumb": "Deploy Config",
+    },
+    "message": [Function],
+    "name": "addDeployConfig",
+    "type": "confirm",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "FLP Config",
+    },
+    "message": [Function],
+    "name": "addFlpConfig",
+    "type": "confirm",
+    "validate": [Function],
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "hint": "Choosing 'No' will apply defaults",
+    },
+    "message": "Configure advanced options",
+    "name": "showAdvanced",
+    "type": "confirm",
+  },
+  {
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": true,
+    },
+    "message": "UI5 theme",
+    "name": "ui5Theme",
+    "type": "list",
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "Eslint",
+    },
+    "message": "Add Eslint configuration to the project",
+    "name": "enableEslint",
+    "type": "confirm",
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "Code Assist",
+    },
+    "message": "Add code assist libraries to your project",
+    "name": "enableCodeAssist",
+    "type": "confirm",
+    "when": [Function],
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "Skip Annotations",
+    },
+    "message": "Skip generation of associated annotations.cds file",
+    "name": "skipAnnotations",
+    "type": "confirm",
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "Enable NPM Workspaces",
+    },
+    "message": "Generation of this application can update the CAP project to use NPM workspaces and an associated CDS plugin library (cds-plugin-ui5). Do you want to enable this feature? (Note: this is requirement for generating with TypeScript)",
+    "name": "enableNPMWorkspaces",
+    "type": "confirm",
+    "when": [Function],
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": true,
+    },
+    "message": "Enable TypeScript",
+    "name": "enableTypeScript",
+    "type": "confirm",
+    "when": [Function],
+  },
+]
+`;

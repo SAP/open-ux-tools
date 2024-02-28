@@ -81,6 +81,9 @@
       "path": "packages/i18n"
     },
     {
+      "path": "packages/inquirer-common"
+    },
+    {
       "path": "packages/jest-file-matchers"
     },
     {
@@ -136,6 +139,9 @@
     },
     {
       "path": "packages/ui-components"
+    },
+    {
+      "path": "packages/ui5-application-inquirer"
     },
     {
       "path": "packages/ui5-application-writer"

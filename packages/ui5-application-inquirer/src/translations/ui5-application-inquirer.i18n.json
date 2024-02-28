@@ -1,0 +1,47 @@
+{
+    "prompts": {
+        "appNameTooltip": "The name of the module for this application that will be loaded at runtime. This also determines the directory name of the generated application.",
+        "appNameMessage": "Module name",
+        "appNameDefault": "project{{defaultProjectNumber}}",
+        "appTitleTooltip": "The title of your application that is displayed in the header of the application.",
+        "appTitleMessage": "Application title",
+        "appTitleDefault": "App Title",
+        "appNamespaceTooltip": "A unique package name for the application module being created. It should follow the standard Java package notation.",
+        "appNamespaceMessage": "Application namespace",
+        "appDescTooltip": "Project description in package.json of your project",
+        "appDescMessage": "Description",
+        "appDescDefault": "An SAP Fiori application.",
+        "appFolderPathMessage": "Project folder path",
+        "appFolderPathBreadcrumb": "Project Path",
+        "appUi5VersionTooltip": "Represents the minimum version of SAPUI5 that this application requires.",
+        "appUi5VersionMessage": "Minimum SAPUI5 version",
+        "appUi5VersionBreadcrumb": "UI5 Version",
+        "appAddDeployConfigMessage": "Add deployment configuration",
+        "appAddDeployConfigToMtaMessage": "Add deployment configuration to MTA project ({{-path}})",
+        "appAddDeployConfigBreadcrumb": "Deploy Config",
+        "appAddFlpConfigMessage": "Add FLP configuration",
+        "appAddFlpConfigBreadcrumb": "FLP Config",
+        "appUi5ThemeMessage": "UI5 theme",
+        "appEnableEslintMessage": "Add Eslint configuration to the project",
+        "appEnableEslintBreadcrumb": "Eslint",
+        "appEnableCodeAssistMessage": "Add code assist libraries to your project",
+        "appEnableCodeAssistBreadcrumb": "Code Assist",
+        "appSkipAnnotationsMessage": "Skip generation of associated annotations.cds file",
+        "appSkipAnnotationsBreadcrumb": "Skip Annotations",
+        "appEnableNpmWorkspacesMessage": "Generation of this application can update the CAP project to use NPM workspaces and an associated CDS plugin library (cds-plugin-ui5). Do you want to enable this feature? (Note: this is requirement for generating with TypeScript)",
+        "appEnableNpmWorkspacesBreadcrumb": "Enable NPM Workspaces",
+        "appEnableTypeScriptMessage": "Enable TypeScript",
+        "appShowAdvancedOptionsMessage": "Configure advanced options",
+        "appShowAdvancedOptionsHint": "Choosing 'No' will apply defaults"
+
+    },
+    "validators": {
+        "appFolderExistsAtPath": "A module with this name already exists in the folder: {{-path}}"
+    },
+    "ui5VersionLabels": {
+        "maintained": "Maintained",
+        "outOfMaintenance": "Out of maintenance",
+        "version_one": "version",
+        "version_other": "versions"
+    }
+}

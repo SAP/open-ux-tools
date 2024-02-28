@@ -1,0 +1,165 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
+[
+  {
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": true,
+      "hint": "prompts.appNameTooltip",
+      "mandatory": true,
+    },
+    "message": "prompts.appNameMessage",
+    "name": "name",
+    "type": "input",
+    "validate": [Function],
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "prompts.appTitleTooltip",
+    },
+    "message": "prompts.appTitleMessage",
+    "name": "title",
+    "type": "input",
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "prompts.appNamespaceTooltip",
+    },
+    "message": "prompts.appNamespaceMessage",
+    "name": "namespace",
+    "type": "input",
+    "validate": [Function],
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "prompts.appDescTooltip",
+    },
+    "message": "prompts.appDescMessage",
+    "name": "description",
+    "type": "input",
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": "prompts.appFolderPathBreadcrumb",
+      "mandatory": true,
+    },
+    "guiType": "folder-browser",
+    "message": "prompts.appFolderPathMessage",
+    "name": "targetFolder",
+    "type": "input",
+    "validate": [Function],
+  },
+  {
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "breadcrumb": "prompts.appUi5VersionBreadcrumb",
+      "hint": "prompts.appUi5VersionTooltip",
+    },
+    "message": "prompts.appUi5VersionMessage",
+    "name": "ui5Version",
+    "source": [Function],
+    "type": "list",
+    "when": [Function],
+  },
+  {
+    "default": [Function],
+    "guiOptions": {
+      "breadcrumb": "prompts.appAddDeployConfigBreadcrumb",
+    },
+    "message": [Function],
+    "name": "addDeployConfig",
+    "type": "confirm",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "prompts.appAddFlpConfigBreadcrumb",
+    },
+    "message": [Function],
+    "name": "addFlpConfig",
+    "type": "confirm",
+    "validate": [Function],
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "hint": "prompts.appShowAdvancedOptionsHint",
+    },
+    "message": "prompts.appShowAdvancedOptionsMessage",
+    "name": "showAdvanced",
+    "type": "confirm",
+  },
+  {
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": true,
+    },
+    "message": "prompts.appUi5ThemeMessage",
+    "name": "ui5Theme",
+    "type": "list",
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "prompts.appEnableEslintBreadcrumb",
+    },
+    "message": "prompts.appEnableEslintMessage",
+    "name": "enableEslint",
+    "type": "confirm",
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "prompts.appEnableCodeAssistBreadcrumb",
+    },
+    "message": "prompts.appEnableCodeAssistMessage",
+    "name": "enableCodeAssist",
+    "type": "confirm",
+    "when": [Function],
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "prompts.appSkipAnnotationsBreadcrumb",
+    },
+    "message": "prompts.appSkipAnnotationsMessage",
+    "name": "skipAnnotations",
+    "type": "confirm",
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": "prompts.appEnableNpmWorkspacesBreadcrumb",
+    },
+    "message": "prompts.appEnableNpmWorkspacesMessage",
+    "name": "enableNPMWorkspaces",
+    "type": "confirm",
+    "when": [Function],
+  },
+  {
+    "default": false,
+    "guiOptions": {
+      "breadcrumb": true,
+    },
+    "message": "prompts.appEnableTypeScriptMessage",
+    "name": "enableTypeScript",
+    "type": "confirm",
+    "when": [Function],
+  },
+]
+`;

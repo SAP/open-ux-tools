@@ -1,8 +1,12 @@
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { ui5VersionsGrouped, searchChoices } from '../../../src/prompts/utility';
 import type { ListChoiceOptions } from 'inquirer';
+import { initI18nInquirerCommon } from '../../../src/i18n';
 
 describe('utility.ts', () => {
+    beforeAll(async () => {
+        await initI18nInquirerCommon();
+    });
     it('ui5VersionsGrouped', async () => {
         const ui5Vers: UI5Version[] = [
             {
