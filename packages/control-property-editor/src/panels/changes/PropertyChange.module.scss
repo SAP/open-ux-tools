@@ -1,0 +1,20 @@
+.text,
+.timestamp {
+    color: var(--vscode-editor-foreground);
+}
+
+.text {
+    margin-right: 5px;
+    line-height: 18px;
+    display: inline-block;
+}
+
+.timestamp {
+    font-size: 11px;
+    line-height: 15px;
+    opacity: 0.5;
+}
+
+.property {
+    overflow-wrap: anywhere;
+}

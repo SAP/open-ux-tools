@@ -1,0 +1,36 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "targets": {
+                "<%- target %>": {
+                    "options": {
+                        "settings": {
+                            "content": {
+                                "body": {
+                                    "sections": {
+                                        "<%- parentSection %>": {
+                                            "subSections": {
+                                                "<%- name %>": {
+                                                    "template": "<%- ns %>.<%- typeof fragmentFile !== 'undefined' ? fragmentFile : name  %>",
+                                                    <%if (typeof position !== 'undefined') {%>"position": {
+                                                        <% if (position.placement) { %> 
+                                                            "placement": "<%- position.placement %>"<% if (position.anchor) { %>,<% } %>
+                                                        <% } %>
+                                                        <% if (position.anchor) { %> 
+                                                            "anchor": "<%- position.anchor %>" 
+                                                        <% } %>
+                                                    },<% } %>
+                                                    "title": "<%- title %>"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

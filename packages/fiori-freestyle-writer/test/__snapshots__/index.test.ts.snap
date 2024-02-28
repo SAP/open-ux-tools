@@ -29,7 +29,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -41,12 +41,6 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
   }
 }
 ",
@@ -55,7 +49,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -98,7 +92,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -138,7 +132,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -212,7 +206,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"test.me.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -274,14 +268,11 @@ title=My Test App",
         data-sap-ui-resourceroots='{
             \\"test.me\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"test.me\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -1036,7 +1027,8 @@ function (JSONModel, Device) {
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
@@ -1066,7 +1058,7 @@ function (JSONModel, Device) {
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -1079,10 +1071,11 @@ function (JSONModel, Device) {
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
-    "contents": "/*eslint-disable semi, no-console*/
-(function (sap) {
-    var getKeys = function (libOrComp, libOrCompKeysString) {
+  "webapp/test/locate-reuse-libs.js": Object {
+    "contents": "(function (sap) {
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
+        var result = \\"\\";
         // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
         var ui5Libs = [
             \\"sap.apf\\",
@@ -1108,72 +1101,73 @@ function (JSONModel, Device) {
             \\"sap.webanalytics\\",
             \\"sap.zen\\"
         ];
-        Object.keys(libOrComp).forEach(function (libOrCompKey) {
-            // ignore libs or Components that start with SAPUI5 delivered namespaces
-            if (
-                !ui5Libs.some(function (substring) {
-                    return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\");
-                })
-            ) {
-                if (libOrCompKeysString.length > 0) {
-                    libOrCompKeysString = libOrCompKeysString + \\",\\" + libOrCompKey;
-                } else {
-                    libOrCompKeysString = libOrCompKey;
+        function getKeys(libOrComp, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            Object.keys(libOrComp).forEach(function (libOrCompKey) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + libOrCompKey;
+                    } else {
+                        libOrCompKeysStringTmp = libOrCompKey;
+                    }
                 }
-            }
-        });
-        return libOrCompKeysString;
-    };
-
-    var updateManifest = function (manifest) {
-        var result = \\"\\";
-        if (manifest) {
-            if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].dependencies) {
-                if (manifest[\\"sap.ui5\\"].dependencies.libs) {
-                    result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result);
-                }
-                if (manifest[\\"sap.ui5\\"].dependencies.components) {
-                    result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result);
-                }
-            }
-            if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].componentUsages) {
-                result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
-            }
+            });
+            return libOrCompKeysStringTmp;
         }
-        return result;
-    };
-
-    var fioriToolsGetManifestLibs = function (manifestPath) {
-        var url = manifestPath;
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
-                    resolve(updateManifest(manifest));
+                    if (manifest) {
+                        if (
+                            manifest[\\"sap.ui5\\"] &&
+                            manifest[\\"sap.ui5\\"].dependencies
+                        ) {
+                            if (manifest[\\"sap.ui5\\"].dependencies.libs) {
+                                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result);
+                            }
+                            if (manifest[\\"sap.ui5\\"].dependencies.components) {
+                                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result);
+                            }
+                        }
+                        if (
+                            manifest[\\"sap.ui5\\"] &&
+                            manifest[\\"sap.ui5\\"].componentUsages
+                        ) {
+                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                        }
+                    }
+                    resolve(result);
                 })
                 .fail(function () {
                     reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
         });
     };
-
-    var updateModuleDefinition = function (data) {
-        if (data) {
-            Object.keys(data).forEach(function (moduleDefinitionKey) {
-                var moduleDefinition = data[moduleDefinitionKey];
-                if (moduleDefinition && moduleDefinition.dependencies) {
-                    moduleDefinition.dependencies.forEach(function (dependency) {
-                        if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
-                            jQuery.sap.log.info(
-                                \\"Registering Library \\" + dependency.componentId + \\" from server \\" + dependency.url
-                            );
-                            jQuery.sap.registerModulePath(dependency.componentId, dependency.url);
-                        }
-                    });
-                }
-            });
-        }
-    };
-
+    function registerModules(dataFromAppIndex) {
+        Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
+            var moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
+            if (moduleDefinition && moduleDefinition.dependencies) {
+                moduleDefinition.dependencies.forEach(function (dependency) {
+                    if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
+                        sap.ui.require([\\"sap/base/Log\\"], function (Log) {
+                            Log.info(\\"Registering Library \\" +
+                                dependency.componentId +
+                                \\" from server \\" +
+                                dependency.url);
+                        });
+                        var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
+                        var config = {
+                            paths: {
+                            }
+                        };
+                        config.paths[compId] = dependency.url;
+                        sap.ui.loader.config(config);
+                    }
+                });
+            }
+        });
+    }
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -1182,22 +1176,55 @@ function (JSONModel, Device) {
      * the app-index was successful and the module paths were registered.
      */
     sap.registerComponentDependencyPaths = function (manifestPath) {
-        /*eslint-disable semi, consistent-return*/
+
         return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
             if (libs && libs.length > 0) {
                 var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
-                var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
-                if (sapClient && sapClient.length === 3) {
-                    url = url + \\"&sap-client=\\" + sapClient;
-                }
-                return $.ajax(url).done(updateModuleDefinition);
+                var sapClient = \\"\\";
+
+                return new Promise(
+                    function (resolve) {
+                        sap.ui.require([\\"sap/base/util/UriParameters\\"], function (UriParameters) {
+                            sapClient = UriParameters.fromQuery(window.location.search).get(\\"sap-client\\");
+                            if (sapClient && sapClient.length === 3) {
+                                url = url + \\"&sap-client=\\" + sapClient;
+                            }
+                            resolve(url);
+                        });
+                    }).then(function (url2) {
+                        return $.ajax(url2).done(function (data) {
+                            if (data) {
+                                registerModules(data);
+                            }
+                        });
+                    });
+            } else {
+                return undefined;
             }
         });
     };
 })(sap);
 
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
-var scripts = document.getElementsByTagName(\\"script\\");
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -1205,26 +1232,31 @@ if (!currentScript) {
 var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
 var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
 var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
-var bundleResources = function () {
-    jQuery.sap.require(\\"jquery.sap.resources\\");
-    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-    var oBundle = jQuery.sap.resources({
-        url: \\"i18n/i18n.properties\\",
-        locale: sLocale
-    });
-    document.title = oBundle.getText(\\"appTitle\\");
-};
+
 sap.registerComponentDependencyPaths(manifestUri)
     .catch(function (error) {
-        jQuery.sap.log.error(error);
+        sap.ui.require([\\"sap/base/Log\\"], function (Log) {
+            Log.error(error);
+        });
     })
     .finally(function () {
-        // setting the app title with internationalization
-        sap.ui.getCore().attachInit(bundleResources);
+
+        // setting the app title with internationalization 
+        sap.ui.getCore().attachInit(function () {
+            var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+            sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
+                var oResourceBundle = ResourceBundle.create({
+                    url: \\"i18n/i18n.properties\\",
+                    locale: sLocale
+                });
+                document.title = oResourceBundle.getText(\\"appTitle\\");
+            });
+        });
 
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -1236,19 +1268,27 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
-                sap.ui.getCore().attachInit(bundleResources);
+                // setting the app title with the i18n text 
+                sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
+                    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+                    sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
+                        var oResourceBundle = ResourceBundle.create({
+                            url: \\"i18n/i18n.properties\\",
+                            locale: sLocale
+                        });
+                        document.title = oResourceBundle.getText(\\"appTitle\\");
+                    });
+                });
             }
         } else {
             sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
                 // initialize the ushell sandbox component
                 sap.ushell.Container.createRenderer().placeAt(\\"content\\");
             });
         }
-    });
-
-sap.registerComponentDependencyPaths(manifestUri);
-",
+    });",
     "state": "modified",
   },
   "webapp/view/App.view.xml": Object {
@@ -1305,7 +1345,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -1317,12 +1357,6 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
   }
 }
 ",
@@ -1331,7 +1365,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -1374,7 +1408,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -1414,7 +1448,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -1499,7 +1533,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
         getContentDensityClass : function() {
             if (this._sContentDensityClass === undefined) {
                 // check whether FLP has already set the content density class; do nothing in this case
-                // eslint-disable-next-line sap-no-proprietary-browser-api
+                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api, fiori-custom/sap-browser-api-warning
                 if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                     this._sContentDensityClass = \\"\\";
                 } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -1617,7 +1651,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
             var sPreviousHash = History.getInstance().getPreviousHash();
 
             if (sPreviousHash !== undefined) {
-                // eslint-disable-next-line sap-no-history-manipulation
+                // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
                 history.go(-1);
             } else {
                 this.getRouter().navTo(\\"list\\", {}, true);
@@ -1988,7 +2022,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
 
             this.getView().addEventDelegate({
                 onBeforeFirstShow: function () {
-                    this.getOwnerComponent().oListSelector.setBoundMasterList(oList);
+                    this.getOwnerComponent().oListSelector.setBoundList(oList);
                 }.bind(this)
             });
 
@@ -2190,7 +2224,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
          * @public
          */
         onNavBack: function() {
-            // eslint-disable-next-line sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         },
 
@@ -2288,7 +2322,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
     return BaseObject.extend(\\"test.me.controller.ListSelector\\", {
 
         /**
-         * Provides a convenience API for selecting list items. All the functions will wait until the initial load of the a List passed to the instance by the setBoundMasterList
+         * Provides a convenience API for selecting list items. All the functions will wait until the initial load of the a List passed to the instance by the setBoundList
          * function.
          * @class
          * @public
@@ -2299,7 +2333,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
                 this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
             }.bind(this));
             // This promise needs to be created in the constructor, since it is allowed to
-            // invoke selectItem functions before calling setBoundMasterList
+            // invoke selectItem functions before calling setBoundList
             this.oWhenListLoadingIsDone = new Promise(function (fnResolve, fnReject) {
                 this._oWhenListHasBeenSet
                     .then(function (oList) {
@@ -2327,7 +2361,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
          * @param {sap.m.List} oList The list all the select functions will be invoked on.
          * @public
          */
-        setBoundMasterList : function (oList) {
+        setBoundList : function (oList) {
             this._oList = oList;
             this._fnResolveListHasBeenSet(oList);
         },
@@ -2544,14 +2578,11 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"test.me\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"test.me\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -3349,7 +3380,8 @@ function (JSONModel, Device) {
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
@@ -3379,7 +3411,7 @@ function (JSONModel, Device) {
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -3392,10 +3424,11 @@ function (JSONModel, Device) {
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
-    "contents": "/*eslint-disable semi, no-console*/
-(function (sap) {
-    var getKeys = function (libOrComp, libOrCompKeysString) {
+  "webapp/test/locate-reuse-libs.js": Object {
+    "contents": "(function (sap) {
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
+        var result = \\"\\";
         // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
         var ui5Libs = [
             \\"sap.apf\\",
@@ -3421,72 +3454,73 @@ function (JSONModel, Device) {
             \\"sap.webanalytics\\",
             \\"sap.zen\\"
         ];
-        Object.keys(libOrComp).forEach(function (libOrCompKey) {
-            // ignore libs or Components that start with SAPUI5 delivered namespaces
-            if (
-                !ui5Libs.some(function (substring) {
-                    return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\");
-                })
-            ) {
-                if (libOrCompKeysString.length > 0) {
-                    libOrCompKeysString = libOrCompKeysString + \\",\\" + libOrCompKey;
-                } else {
-                    libOrCompKeysString = libOrCompKey;
+        function getKeys(libOrComp, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            Object.keys(libOrComp).forEach(function (libOrCompKey) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + libOrCompKey;
+                    } else {
+                        libOrCompKeysStringTmp = libOrCompKey;
+                    }
                 }
-            }
-        });
-        return libOrCompKeysString;
-    };
-
-    var updateManifest = function (manifest) {
-        var result = \\"\\";
-        if (manifest) {
-            if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].dependencies) {
-                if (manifest[\\"sap.ui5\\"].dependencies.libs) {
-                    result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result);
-                }
-                if (manifest[\\"sap.ui5\\"].dependencies.components) {
-                    result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result);
-                }
-            }
-            if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].componentUsages) {
-                result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
-            }
+            });
+            return libOrCompKeysStringTmp;
         }
-        return result;
-    };
-
-    var fioriToolsGetManifestLibs = function (manifestPath) {
-        var url = manifestPath;
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
-                    resolve(updateManifest(manifest));
+                    if (manifest) {
+                        if (
+                            manifest[\\"sap.ui5\\"] &&
+                            manifest[\\"sap.ui5\\"].dependencies
+                        ) {
+                            if (manifest[\\"sap.ui5\\"].dependencies.libs) {
+                                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result);
+                            }
+                            if (manifest[\\"sap.ui5\\"].dependencies.components) {
+                                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result);
+                            }
+                        }
+                        if (
+                            manifest[\\"sap.ui5\\"] &&
+                            manifest[\\"sap.ui5\\"].componentUsages
+                        ) {
+                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                        }
+                    }
+                    resolve(result);
                 })
                 .fail(function () {
                     reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
         });
     };
-
-    var updateModuleDefinition = function (data) {
-        if (data) {
-            Object.keys(data).forEach(function (moduleDefinitionKey) {
-                var moduleDefinition = data[moduleDefinitionKey];
-                if (moduleDefinition && moduleDefinition.dependencies) {
-                    moduleDefinition.dependencies.forEach(function (dependency) {
-                        if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
-                            jQuery.sap.log.info(
-                                \\"Registering Library \\" + dependency.componentId + \\" from server \\" + dependency.url
-                            );
-                            jQuery.sap.registerModulePath(dependency.componentId, dependency.url);
-                        }
-                    });
-                }
-            });
-        }
-    };
-
+    function registerModules(dataFromAppIndex) {
+        Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
+            var moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
+            if (moduleDefinition && moduleDefinition.dependencies) {
+                moduleDefinition.dependencies.forEach(function (dependency) {
+                    if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
+                        sap.ui.require([\\"sap/base/Log\\"], function (Log) {
+                            Log.info(\\"Registering Library \\" +
+                                dependency.componentId +
+                                \\" from server \\" +
+                                dependency.url);
+                        });
+                        var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
+                        var config = {
+                            paths: {
+                            }
+                        };
+                        config.paths[compId] = dependency.url;
+                        sap.ui.loader.config(config);
+                    }
+                });
+            }
+        });
+    }
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -3495,22 +3529,55 @@ function (JSONModel, Device) {
      * the app-index was successful and the module paths were registered.
      */
     sap.registerComponentDependencyPaths = function (manifestPath) {
-        /*eslint-disable semi, consistent-return*/
+
         return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
             if (libs && libs.length > 0) {
                 var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
-                var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
-                if (sapClient && sapClient.length === 3) {
-                    url = url + \\"&sap-client=\\" + sapClient;
-                }
-                return $.ajax(url).done(updateModuleDefinition);
+                var sapClient = \\"\\";
+
+                return new Promise(
+                    function (resolve) {
+                        sap.ui.require([\\"sap/base/util/UriParameters\\"], function (UriParameters) {
+                            sapClient = UriParameters.fromQuery(window.location.search).get(\\"sap-client\\");
+                            if (sapClient && sapClient.length === 3) {
+                                url = url + \\"&sap-client=\\" + sapClient;
+                            }
+                            resolve(url);
+                        });
+                    }).then(function (url2) {
+                        return $.ajax(url2).done(function (data) {
+                            if (data) {
+                                registerModules(data);
+                            }
+                        });
+                    });
+            } else {
+                return undefined;
             }
         });
     };
 })(sap);
 
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
-var scripts = document.getElementsByTagName(\\"script\\");
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -3518,26 +3585,31 @@ if (!currentScript) {
 var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
 var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
 var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
-var bundleResources = function () {
-    jQuery.sap.require(\\"jquery.sap.resources\\");
-    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-    var oBundle = jQuery.sap.resources({
-        url: \\"i18n/i18n.properties\\",
-        locale: sLocale
-    });
-    document.title = oBundle.getText(\\"appTitle\\");
-};
+
 sap.registerComponentDependencyPaths(manifestUri)
     .catch(function (error) {
-        jQuery.sap.log.error(error);
+        sap.ui.require([\\"sap/base/Log\\"], function (Log) {
+            Log.error(error);
+        });
     })
     .finally(function () {
-        // setting the app title with internationalization
-        sap.ui.getCore().attachInit(bundleResources);
+
+        // setting the app title with internationalization 
+        sap.ui.getCore().attachInit(function () {
+            var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+            sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
+                var oResourceBundle = ResourceBundle.create({
+                    url: \\"i18n/i18n.properties\\",
+                    locale: sLocale
+                });
+                document.title = oResourceBundle.getText(\\"appTitle\\");
+            });
+        });
 
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -3549,19 +3621,27 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
-                sap.ui.getCore().attachInit(bundleResources);
+                // setting the app title with the i18n text 
+                sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
+                    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+                    sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
+                        var oResourceBundle = ResourceBundle.create({
+                            url: \\"i18n/i18n.properties\\",
+                            locale: sLocale
+                        });
+                        document.title = oResourceBundle.getText(\\"appTitle\\");
+                    });
+                });
             }
         } else {
             sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
                 // initialize the ushell sandbox component
                 sap.ushell.Container.createRenderer().placeAt(\\"content\\");
             });
         }
-    });
-
-sap.registerComponentDependencyPaths(manifestUri);
-",
+    });",
     "state": "modified",
   },
   "webapp/view/App.view.xml": Object {
@@ -3897,7 +3977,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -3909,12 +3989,6 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
   }
 }
 ",
@@ -3923,7 +3997,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -3966,7 +4040,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -4006,7 +4080,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: test.me
 type: application
@@ -4089,7 +4163,7 @@ server:
         getContentDensityClass : function() {
             if (this._sContentDensityClass === undefined) {
                 // check whether FLP has already set the content density class; do nothing in this case
-                // eslint-disable-next-line sap-no-proprietary-browser-api
+                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api, fiori-custom/sap-browser-api-warning
                 if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                     this._sContentDensityClass = \\"\\";
                 } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -4339,7 +4413,7 @@ server:
         onNavBack : function() {
             var sPreviousHash = History.getInstance().getPreviousHash();
             if (sPreviousHash !== undefined) {
-                // eslint-disable-next-line sap-no-history-manipulation
+                // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
                 history.go(-1);
             } else {
                 this.getRouter().navTo(\\"worklist\\", {}, true);
@@ -4495,7 +4569,7 @@ server:
          * @public
          */
         onNavBack : function() {
-            // eslint-disable-next-line sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation, fiori-custom/sap-browser-api-warning
             history.go(-1);
         },
 
@@ -4676,14 +4750,11 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"test.me\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"test.me\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -5483,7 +5554,8 @@ function (JSONModel, Device) {
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
@@ -5513,7 +5585,7 @@ function (JSONModel, Device) {
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -5526,10 +5598,11 @@ function (JSONModel, Device) {
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
-    "contents": "/*eslint-disable semi, no-console*/
-(function (sap) {
-    var getKeys = function (libOrComp, libOrCompKeysString) {
+  "webapp/test/locate-reuse-libs.js": Object {
+    "contents": "(function (sap) {
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
+        var result = \\"\\";
         // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
         var ui5Libs = [
             \\"sap.apf\\",
@@ -5555,72 +5628,73 @@ function (JSONModel, Device) {
             \\"sap.webanalytics\\",
             \\"sap.zen\\"
         ];
-        Object.keys(libOrComp).forEach(function (libOrCompKey) {
-            // ignore libs or Components that start with SAPUI5 delivered namespaces
-            if (
-                !ui5Libs.some(function (substring) {
-                    return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\");
-                })
-            ) {
-                if (libOrCompKeysString.length > 0) {
-                    libOrCompKeysString = libOrCompKeysString + \\",\\" + libOrCompKey;
-                } else {
-                    libOrCompKeysString = libOrCompKey;
+        function getKeys(libOrComp, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            Object.keys(libOrComp).forEach(function (libOrCompKey) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + libOrCompKey;
+                    } else {
+                        libOrCompKeysStringTmp = libOrCompKey;
+                    }
                 }
-            }
-        });
-        return libOrCompKeysString;
-    };
-
-    var updateManifest = function (manifest) {
-        var result = \\"\\";
-        if (manifest) {
-            if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].dependencies) {
-                if (manifest[\\"sap.ui5\\"].dependencies.libs) {
-                    result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result);
-                }
-                if (manifest[\\"sap.ui5\\"].dependencies.components) {
-                    result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result);
-                }
-            }
-            if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].componentUsages) {
-                result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
-            }
+            });
+            return libOrCompKeysStringTmp;
         }
-        return result;
-    };
-
-    var fioriToolsGetManifestLibs = function (manifestPath) {
-        var url = manifestPath;
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
-                    resolve(updateManifest(manifest));
+                    if (manifest) {
+                        if (
+                            manifest[\\"sap.ui5\\"] &&
+                            manifest[\\"sap.ui5\\"].dependencies
+                        ) {
+                            if (manifest[\\"sap.ui5\\"].dependencies.libs) {
+                                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result);
+                            }
+                            if (manifest[\\"sap.ui5\\"].dependencies.components) {
+                                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result);
+                            }
+                        }
+                        if (
+                            manifest[\\"sap.ui5\\"] &&
+                            manifest[\\"sap.ui5\\"].componentUsages
+                        ) {
+                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                        }
+                    }
+                    resolve(result);
                 })
                 .fail(function () {
                     reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
         });
     };
-
-    var updateModuleDefinition = function (data) {
-        if (data) {
-            Object.keys(data).forEach(function (moduleDefinitionKey) {
-                var moduleDefinition = data[moduleDefinitionKey];
-                if (moduleDefinition && moduleDefinition.dependencies) {
-                    moduleDefinition.dependencies.forEach(function (dependency) {
-                        if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
-                            jQuery.sap.log.info(
-                                \\"Registering Library \\" + dependency.componentId + \\" from server \\" + dependency.url
-                            );
-                            jQuery.sap.registerModulePath(dependency.componentId, dependency.url);
-                        }
-                    });
-                }
-            });
-        }
-    };
-
+    function registerModules(dataFromAppIndex) {
+        Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
+            var moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
+            if (moduleDefinition && moduleDefinition.dependencies) {
+                moduleDefinition.dependencies.forEach(function (dependency) {
+                    if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
+                        sap.ui.require([\\"sap/base/Log\\"], function (Log) {
+                            Log.info(\\"Registering Library \\" +
+                                dependency.componentId +
+                                \\" from server \\" +
+                                dependency.url);
+                        });
+                        var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
+                        var config = {
+                            paths: {
+                            }
+                        };
+                        config.paths[compId] = dependency.url;
+                        sap.ui.loader.config(config);
+                    }
+                });
+            }
+        });
+    }
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -5629,22 +5703,55 @@ function (JSONModel, Device) {
      * the app-index was successful and the module paths were registered.
      */
     sap.registerComponentDependencyPaths = function (manifestPath) {
-        /*eslint-disable semi, consistent-return*/
+
         return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
             if (libs && libs.length > 0) {
                 var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
-                var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
-                if (sapClient && sapClient.length === 3) {
-                    url = url + \\"&sap-client=\\" + sapClient;
-                }
-                return $.ajax(url).done(updateModuleDefinition);
+                var sapClient = \\"\\";
+
+                return new Promise(
+                    function (resolve) {
+                        sap.ui.require([\\"sap/base/util/UriParameters\\"], function (UriParameters) {
+                            sapClient = UriParameters.fromQuery(window.location.search).get(\\"sap-client\\");
+                            if (sapClient && sapClient.length === 3) {
+                                url = url + \\"&sap-client=\\" + sapClient;
+                            }
+                            resolve(url);
+                        });
+                    }).then(function (url2) {
+                        return $.ajax(url2).done(function (data) {
+                            if (data) {
+                                registerModules(data);
+                            }
+                        });
+                    });
+            } else {
+                return undefined;
             }
         });
     };
 })(sap);
 
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
-var scripts = document.getElementsByTagName(\\"script\\");
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -5652,26 +5759,31 @@ if (!currentScript) {
 var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
 var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
 var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
-var bundleResources = function () {
-    jQuery.sap.require(\\"jquery.sap.resources\\");
-    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-    var oBundle = jQuery.sap.resources({
-        url: \\"i18n/i18n.properties\\",
-        locale: sLocale
-    });
-    document.title = oBundle.getText(\\"appTitle\\");
-};
+
 sap.registerComponentDependencyPaths(manifestUri)
     .catch(function (error) {
-        jQuery.sap.log.error(error);
+        sap.ui.require([\\"sap/base/Log\\"], function (Log) {
+            Log.error(error);
+        });
     })
     .finally(function () {
-        // setting the app title with internationalization
-        sap.ui.getCore().attachInit(bundleResources);
+
+        // setting the app title with internationalization 
+        sap.ui.getCore().attachInit(function () {
+            var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+            sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
+                var oResourceBundle = ResourceBundle.create({
+                    url: \\"i18n/i18n.properties\\",
+                    locale: sLocale
+                });
+                document.title = oResourceBundle.getText(\\"appTitle\\");
+            });
+        });
 
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -5683,19 +5795,27 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
-                sap.ui.getCore().attachInit(bundleResources);
+                // setting the app title with the i18n text 
+                sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
+                    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+                    sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
+                        var oResourceBundle = ResourceBundle.create({
+                            url: \\"i18n/i18n.properties\\",
+                            locale: sLocale
+                        });
+                        document.title = oResourceBundle.getText(\\"appTitle\\");
+                    });
+                });
             }
         } else {
             sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
                 // initialize the ushell sandbox component
                 sap.ushell.Container.createRenderer().placeAt(\\"content\\");
             });
         }
-    });
-
-sap.registerComponentDependencyPaths(manifestUri);
-",
+    });",
     "state": "modified",
   },
   "webapp/view/App.view.xml": Object {

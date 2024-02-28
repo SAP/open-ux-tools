@@ -2,10 +2,21 @@ import type { FioriElementsApp } from '../src';
 import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, feBaseConfig, v4TemplateSettings, v4Service } from './common';
+import {
+    testOutputDir,
+    debug,
+    feBaseConfig,
+    v4TemplateSettings,
+    v4Service,
+    projectChecks,
+    updatePackageJSONDependencyToUseLocalPath
+} from './common';
 import type { FEOPSettings } from '../src/types';
 
 const TEST_NAME = 'feopTemplate';
+if (debug?.enabled) {
+    jest.setTimeout(360000);
+}
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -49,13 +60,16 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         const fs = await generate(testPath, config);
         expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 });

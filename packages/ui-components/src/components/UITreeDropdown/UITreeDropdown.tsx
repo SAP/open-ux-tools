@@ -39,6 +39,11 @@ export interface UITreeDropdownProps extends UIMessagesExtendedProps {
     required?: boolean;
     value?: string;
     items: ItemsProps[];
+    /**
+     * Callback function to handle parameter value changes.
+     *
+     * @param value - The new value of the parameter.
+     */
     onParameterValueChange(value: string): void;
     placeholderText: string;
     valueSeparator?: string;
@@ -46,6 +51,7 @@ export interface UITreeDropdownProps extends UIMessagesExtendedProps {
     maxWidth?: number;
     useTargetWidth?: string;
     errorMessage?: string;
+    readOnly?: boolean;
 }
 
 interface TreeItemInfo {
@@ -186,7 +192,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * @returns {ItemsProps}
      */
     buildSubItems = (item: ItemsProps): ItemsProps => {
-        if (item.children && item.children.length) {
+        if (item.children?.length) {
             item.children = item.children.map((el) => {
                 const regex = new RegExp(item.value, 'ig');
                 const value =
@@ -212,7 +218,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      */
     mapValuesToContextMenu = (items: ItemsProps[], level = 0): IContextualMenuItem[] => {
         return items.map((item: ItemsProps) => {
-            if (item.children && item.children.length) {
+            if (item.children?.length) {
                 item.split = true;
 
                 const refId = this.getRefId(item.value, level);
@@ -367,6 +373,9 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * @param {React.KeyboardEvent<HTMLInputElement>} event
      */
     toggleMenu = (status: boolean, event?: React.KeyboardEvent<HTMLInputElement>): void => {
+        if (this.props.readOnly) {
+            return;
+        }
         this.setState({
             isHidden: status
         });
@@ -420,15 +429,13 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     handleOnChangeValue = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         const query = event.target as HTMLInputElement;
 
-        const list = this.state.originalItems.filter((item) => this.filterElement(query.value, item));
-
-        this.setState({
+        this.setState((prevState) => ({
             hasSelected: false,
             value: query.value,
-            items: list,
+            items: prevState.originalItems.filter((item) => this.filterElement(query.value, item)),
             query: query.value,
             valueChanged: true
-        });
+        }));
 
         if (!this.state.isMenuOpen) {
             this.toggleMenu(false);
@@ -457,10 +464,10 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
             this.props.onParameterValueChange('');
         }
 
-        this.setState({
-            items: this.state.originalItems,
+        this.setState((prevState) => ({
+            items: prevState.originalItems,
             query: ''
-        });
+        }));
 
         this.toggleMenu(true);
         this.originalValue = undefined;
@@ -603,9 +610,9 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * Recursive method finds menu item info object in tree menu items by passed value/key of item.
      *
      * @param {string} [value] Value/key of item.
-     * @param {IContextualMenuItem[]} [items=[]] Menu items.
+     * @param {IContextualMenuItem[]} [items] Menu items.
      * @param {TreeItemInfo} [parent] Item's parent object.
-     * @param {number} [level=0] Level of item in tree structure.
+     * @param {number} [level] Level of item in tree structure.
      * @returns {TreeItemInfo | undefined} Found menu item.
      */
     findItemByValue = (
@@ -658,7 +665,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * Method works with any level menu.
      *
      * @param {string} [value] Value/key of item.
-     * @param {IContextualMenuItem[]} [items=[]] Target menu items.
+     * @param {IContextualMenuItem[]} [items] Target menu items.
      */
     focusItemWithValue = (value?: string, items: IContextualMenuItem[] = []): void => {
         const selectedItem = this.findItemByValue(value, items);
@@ -701,6 +708,24 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     };
 
     /**
+     * Method returns class names for wrapper element depending on props and component state.
+     *
+     * @returns {string} Class names of wrapper element.
+     */
+    private getClassNames(): string {
+        let classNames = `ui-treeDropdown-wrapper ui-treeDropdown-wrapper-menu${
+            this.state.isMenuOpen ? '-open' : '-close'
+        } ui-treeDropdown-wrapper-${this.state.uiidInput}`;
+        if (this.state.isDisabled) {
+            classNames += ' disabled';
+        }
+        if (this.props.readOnly) {
+            classNames += ' readonly';
+        }
+        return classNames;
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
@@ -722,14 +747,11 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
                         {this.props.label}
                     </label>
                 )}
-                <div
-                    className={`ui-treeDropdown-wrapper${this.state.isDisabled ? ' disabled' : ''}
-                        ui-treeDropdown-wrapper-menu${
-                            this.state.isMenuOpen ? '-open' : '-close'
-                        } ui-treeDropdown-wrapper-${this.state.uiidInput}`}>
+                <div className={this.getClassNames()}>
                     <UITextInput
                         componentRef={this.inputRef}
                         disabled={this.state.isDisabled}
+                        readOnly={this.props.readOnly}
                         autoComplete="off"
                         value={this.state.value}
                         placeholder={this.props.placeholderText}

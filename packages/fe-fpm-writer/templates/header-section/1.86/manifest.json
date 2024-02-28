@@ -1,0 +1,45 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "targets": {
+                "<%- target %>": {
+                    "options": {
+                        "settings": {
+                            "content": {
+                                "header": {
+                                    "facets": {
+                                        "<%- name %>": {
+                                            "template": "<%- ns %>.<%- typeof fragmentFile !== 'undefined' ? fragmentFile : name  %>",
+                                            <% if (typeof edit !== 'undefined') { %> 
+                                                "templateEdit": "<%- edit.ns %>.<%- edit.name %>",
+                                            <% } %>
+                                            <%if (typeof position !== 'undefined') {%>"position": {
+                                                <% if (position.placement) { %> 
+                                                    "placement": "<%- position.placement %>"<% if (position.anchor) { %>,<% } %>
+                                                <% } %>
+                                                <% if (position.anchor) { %> 
+                                                    "anchor": "<%- position.anchor %>" 
+                                                <% } %>
+                                            },<% } %>
+                                            "title": "<%- title %>",
+                                            <% if (typeof subTitle !== 'undefined') { %> 
+                                                "subTitle": "<%- subTitle %>",
+                                            <% } %>
+                                            <% if (typeof stashed !== 'undefined') { %> 
+                                                "stashed": <%- stashed %>,
+                                            <% } %>
+                                            "requestGroupId": "<%- requestGroupId %>",
+                                            "flexSettings": {
+                                                "designtime": "<%- flexSettings.designtime %>"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

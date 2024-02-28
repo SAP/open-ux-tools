@@ -1,0 +1,32 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/ui5.d.ts",
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../adp-tooling"
+    },
+    {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../playwright"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../store"
+    }
+  ]
+}

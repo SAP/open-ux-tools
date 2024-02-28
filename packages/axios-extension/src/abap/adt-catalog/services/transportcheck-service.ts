@@ -1,7 +1,7 @@
 import { AdtService } from './adt-service';
 import { LocalPackageText } from '../../types';
 import type { AdtCategory, AdtTransportStatus, TransportRequest } from '../../types';
-import XmlParser from 'fast-xml-parser';
+import { XMLValidator } from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
 
@@ -13,7 +13,7 @@ export class TransportChecksService extends AdtService {
     /**
      * @see AdtService.getAdtCatagory()
      */
-    private static AdtCategory = {
+    private static adtCategory = {
         scheme: 'http://www.sap.com/adt/categories/cts',
         term: 'transportchecks'
     };
@@ -23,8 +23,10 @@ export class TransportChecksService extends AdtService {
      * @returns AdtCategory
      */
     public static getAdtCatagory(): AdtCategory {
-        return TransportChecksService.AdtCategory;
+        return TransportChecksService.adtCategory;
     }
+
+    public static LocalPackageError = 'LocalPackageError';
 
     /**
      * TransportChecksService API function to fetch a list of available transport requests.
@@ -53,7 +55,7 @@ export class TransportChecksService extends AdtService {
                         <DEVCLASS>${packageName}</DEVCLASS>
                         <SUPER_PACKAGE/>
                         <OPERATION>I</OPERATION>
-                        <URI>/sap/bc/adt/filestore/ui5-bsp/objects/${appName}/$create</URI>
+                        <URI>/sap/bc/adt/filestore/ui5-bsp/objects/${encodeURIComponent(appName)}/$create</URI>
                         </DATA>
                     </asx:values>
                 </asx:abap>
@@ -71,7 +73,7 @@ export class TransportChecksService extends AdtService {
      * @returns a list of valid transport requests can be used for deploy config
      */
     private getTransportRequestList(xml: string): TransportRequest[] {
-        if (XmlParser.validate(xml) !== true) {
+        if (XMLValidator.validate(xml) !== true) {
             this.log.warn(`Invalid XML: ${xml}`);
             return [];
         }
@@ -82,9 +84,27 @@ export class TransportChecksService extends AdtService {
             case 'S':
                 return this.getTransportList(doc);
             case 'E':
-            default:
-                this.log.warn(`Error or unkown response content: ${xml}`);
+                this.logErrorMsgs(doc);
                 return [];
+            default:
+                this.log.warn(`Unknown response content: ${xml}`);
+                return [];
+        }
+    }
+
+    /**
+     * Parses the document to find and log the <CTS_MESSAGE> with severity 'E' in <MESSAGES>.
+     *
+     * @param doc document
+     */
+    private logErrorMsgs(doc: Document) {
+        const messages = doc.getElementsByTagName('CTS_MESSAGE');
+
+        for (const msg of Array.from(messages)) {
+            if (msg.getElementsByTagName('SEVERITY')[0]?.textContent === 'E') {
+                const text = msg.getElementsByTagName('TEXT')[0]?.textContent;
+                this.log.error(text);
+            }
         }
     }
 
@@ -93,9 +113,11 @@ export class TransportChecksService extends AdtService {
      * in a ADT CTS request.
      *
      * @param doc document
-     * @returns
-     * - For local package, return [].
-     * - For errors or other unkonwn reasons no transport number found, an error is thrown.
+     * @returns A list of transport requests
+     * @throws For errors or other unkonwn reasons no transport number found, an error is thrown.
+     * If error message equals TransportChecksService.LocalPackageError, it indicates the input
+     * package is a local package and no transport request is required.
+     * @see TransportChecksService.LocalPackageError
      */
     private getTransportList(doc: Document): TransportRequest[] {
         const recording = xpath.select1('//RECORDING/text()', doc)?.toString();
@@ -106,7 +128,7 @@ export class TransportChecksService extends AdtService {
         } else if (locked) {
             return this.getLockedTransport(doc);
         } else if (LocalPackageText.includes(localPackage)) {
-            return [];
+            throw new Error(TransportChecksService.LocalPackageError);
         } else {
             throw new Error('Unable to parse ADT response');
         }

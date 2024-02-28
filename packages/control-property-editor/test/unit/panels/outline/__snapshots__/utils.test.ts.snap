@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`utils getFilteredModel focus commonly used show 1`] = `
+Array [
+  Object {
+    "children": Array [],
+    "controlId": "03",
+    "controlType": "sap.ui.comp.smarttable.SmartTable",
+    "editable": false,
+    "name": "SmartTable",
+    "visible": false,
+  },
+]
+`;
+
+exports[`utils getFilteredModel query query filter 1`] = `
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [],
+        "controlId": "01-01",
+        "controlType": "name.space.first.child.one",
+        "editable": true,
+        "name": "first child of one",
+        "visible": true,
+      },
+    ],
+    "controlId": "01",
+    "controlType": "name.space.one",
+    "editable": true,
+    "name": "one",
+    "visible": true,
+  },
+]
+`;

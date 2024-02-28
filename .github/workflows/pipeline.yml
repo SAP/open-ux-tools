@@ -11,7 +11,7 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest, windows-latest]
-                node-version: [14.x, 16.x, 18.x]
+                node-version: [18.x, 20.x]
         runs-on: ${{ matrix.os }}
         timeout-minutes: 15
         steps:
@@ -20,9 +20,8 @@ jobs:
               with:
                   fetch-depth: 0
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2.2.2
+              uses: pnpm/action-setup@v2.4.0
               with:
-                  version: 7.1.0
                   run_install: true
             - name: Cache pnpm modules
               uses: actions/cache@v3
@@ -43,8 +42,32 @@ jobs:
               run: pnpm run build
             - name: Run unit tests
               run: pnpm run test
+            - name: Cache playwright browsers
+              id: cache-playwright-browsers
+              uses: actions/cache@v3
+              with:
+                path: |
+                  ${{ runner.os == 'Windows' }}:
+                    C:\Users\runneradmin\AppData\Local\ms-playwright
+                  ${{ runner.os != 'Windows' }}:
+                    ~/.cache/ms-playwright
+                key: playwright-browsers-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
+            - name: Install playwright browsers
+              if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
+              run: npx playwright install --with-deps
+            - name: Run integration tests
+              run: pnpm run test:integration
+            - name: Upload playwright reports
+              if: failure()
+              uses: actions/upload-artifact@v3
+              with:
+                name: playwright-reports-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
+                path: |
+                  packages/*/playwright-report
+                  !packages/*/node_modules
+                retention-days: 15
             - name: Run SonarCloud scan
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '14.x'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
               uses: sonarsource/sonarcloud-github-action@master
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
@@ -63,9 +86,8 @@ jobs:
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2.2.2
+              uses: pnpm/action-setup@v2.4.0
               with:
-                  version: 7.1.0
                   run_install: true
             - name: Cache pnpm modules
               uses: actions/cache@v3
@@ -76,10 +98,10 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 14.x
+            - name: Use Node.js 18.x
               uses: actions/setup-node@v3
               with:
-                  node-version: 14.x
+                  node-version: 18.x
             - name: Install pnpm modules
               run: pnpm install
             - name: Apply changesets
@@ -109,9 +131,8 @@ jobs:
             - name: Checkout code repository
               uses: actions/checkout@v3
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2.2.2
+              uses: pnpm/action-setup@v2.4.0
               with:
-                  version: 7.1.0
                   run_install: true
             - name: Cache pnpm modules
               uses: actions/cache@v3
@@ -122,10 +143,10 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 14.x
+            - name: Use Node.js 18.x
               uses: actions/setup-node@v3
               with:
-                  node-version: 14.x
+                  node-version: 18.x
             - name: Install pnpm modules
               run: pnpm install
             - name: Run build
@@ -133,8 +154,26 @@ jobs:
             - name: Setup npmrc with npmjs.com token
               run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
             - name: 'Publish to npmjs'
-              uses: changesets/action@v1.3.0
+              id: changesetPublish
+              uses: changesets/action@v1.4.5
               with:
                   publish: pnpm ci:publish
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
+            - name: Prepare Slack notification message
+              if: steps.changesetPublish.outputs.published == 'true'
+              run: |
+                # Random delimiter required to support multi-line environment variable value
+                EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+                echo "PUBLISHED_PACKAGES_MESSAGE<<$EOF" >> $GITHUB_ENV
+                # publishedPackages JSON format: '[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
+                echo "$(echo '${{ steps.changesetPublish.outputs.publishedPackages }}' | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\\n")')" >> $GITHUB_ENV
+                echo "$EOF" >> $GITHUB_ENV
+            - name: Send Slack notification
+              if: steps.changesetPublish.outputs.published == 'true'
+              uses: slackapi/slack-github-action@v1.24.0
+              with:
+                payload: |
+                  {"text": ":rocket: The following packages were published to npmjs.com:\n${{ env.PUBLISHED_PACKAGES_MESSAGE }}" }
+              env:
+                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

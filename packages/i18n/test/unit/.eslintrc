@@ -1,0 +1,17 @@
+{
+    "extends": ["../../.eslintrc"],
+    "overrides": [
+        {
+            "files": ["**/*.test.ts"],
+            "rules": {
+                "camelcase": [
+                    "warn",
+                    {
+                        "properties": "never"
+                    }
+                ],
+                "max-nested-callbacks": ["warn", 5]
+            }
+        }
+    ]
+}

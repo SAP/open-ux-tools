@@ -1,5 +1,6 @@
 import { ServiceInfo } from '@sap-ux/btp-utils';
-import type { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosHeaders } from 'axios';
+import type { Axios, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
 import type { AbapServiceProvider } from '../abap';
 import { getReentranceTicket } from './reentrance-ticket';
@@ -35,19 +36,24 @@ export function attachUaaAuthInterceptor(
 ): void {
     const uaa = new Uaa(service, provider.log);
     let token: string;
-    // provide function to fetch user infos from UAA if needed
+    const getToken = async (): Promise<string> => {
+        return service.uaa?.username
+            ? await uaa.getAccessTokenWithClientCredentials()
+            : await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb);
+    };
+
+    // provide function to fetch user info from UAA if needed
     provider.user = async () => {
-        token = token ?? (await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb));
+        token = token ?? (await getToken());
         return uaa.getUserInfo(token);
     };
 
-    const oneTimeInterceptorId = provider.interceptors.request.use(async (request: AxiosRequestConfig) => {
-        token = token ?? (await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb));
+    provider.interceptors.request.use(async (request: InternalAxiosRequestConfig) => {
+        token = token ?? (await getToken());
         // add token as auth header
-        request.headers = request.headers ?? {};
+        request.headers = request.headers ?? new AxiosHeaders();
         request.headers.authorization = `bearer ${token}`;
-        // remove this interceptor since it is not needed anymore
-        provider.interceptors.request.eject(oneTimeInterceptorId);
+
         return request;
     });
 }
@@ -82,8 +88,8 @@ export function getReentranceTicketAuthInterceptor({
 }: {
     provider: ServiceProvider;
     ejectCallback: () => void;
-}): (request: AxiosRequestConfig) => Promise<AxiosRequestConfig<any>> {
-    return async (request: AxiosRequestConfig) => {
+}): (request: InternalAxiosRequestConfig) => Promise<InternalAxiosRequestConfig<any>> {
+    return async (request: InternalAxiosRequestConfig) => {
         const { reentranceTicket, apiUrl } = await getReentranceTicket({
             backendUrl: provider.defaults.baseURL,
             logger: provider.log
@@ -96,7 +102,7 @@ export function getReentranceTicketAuthInterceptor({
             );
             provider.defaults.baseURL = apiUrl;
         }
-        request.headers = request.headers ?? {};
+        request.headers = request.headers ?? new AxiosHeaders();
         request.headers.MYSAPSSO2 = reentranceTicket;
         // remove this interceptor since it is not needed anymore
         ejectCallback();

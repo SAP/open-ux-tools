@@ -1,0 +1,19 @@
+specVersion: '2.2'
+metadata:
+  name: "<%= libraryName %>"
+type: library
+framework:
+  name: <%= framework %>
+  version: <%= frameworkVersion %>
+  libraries:
+    - name: sap.ui.core
+    - name: themelib_sap_belize
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        path: test
+        port: 35729
+        delay: 300

@@ -1,0 +1,34 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "../../types/ui5.d.ts",
+    "src"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../project-input-validator"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../system-access"
+    },
+    {
+      "path": "../ui5-config"
+    }
+  ]
+}

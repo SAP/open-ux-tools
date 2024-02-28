@@ -14,7 +14,7 @@ const defaultModelName = 'mainModel'; // UI5 default model name is '' but some f
  * @param odataVersion - may be used to determine the default properties set
  * @returns Updated template settings
  */
-export function setDefaultTemplateSettings<T>(template: Template<T>, odataVersion?: OdataVersion): T {
+export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, odataVersion?: OdataVersion): T {
     const templateSettings = template.settings;
     if (template.type === TemplateType.AnalyticalListPage) {
         const alpSettings: ALPSettings = template.settings as unknown as ALPSettings;
@@ -88,7 +88,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
             feApp.ui5.version ?? TemplateTypeAttributes[feApp.template.type].minimumUi5Version[feApp.service.version]!;
     }
 
-    // if not explictely disabled, enable the SAP Fiori tools
+    // if not explictly disabled, enable the SAP Fiori tools
     feApp.appOptions = feApp.appOptions ?? {};
     if (feApp.appOptions.sapux !== false) {
         feApp.appOptions.sapux = true;

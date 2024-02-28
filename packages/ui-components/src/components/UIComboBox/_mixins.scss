@@ -17,8 +17,16 @@
 @mixin input-disabled() {
     opacity: $dropdown-input-disabled-opacity;
     background-color: $dropdown-input-disabled-background-color;
-    font-style: italic;
     &:after {
         border-color: $dropdown-input-border-color;
     }
 }
+
+@mixin input-readonly() {
+    background-color: $dropdown-input-readonly-background-color;
+    font-style: italic;
+    &:after {
+        border-style: dashed;
+    }
+}
+

@@ -33,15 +33,28 @@ export function setCommonDefaults<T extends CustomElement & Partial<InternalCust
  *      if value is passed then "Button" control with 'press' event would be generated
  *      if value is not passed then "Text" control would be generated
  * @param {boolean} isController - controls if `controller` should be added to handler path
+ * @param {boolean} prefferInput - controls if `input` element should be added to default fragment content
  * @returns default content for fragment
  */
-export function getDefaultFragmentContent(text: string, eventHandler?: string, isController = false): string {
+export function getDefaultFragmentContent(
+    text: string,
+    eventHandler?: string,
+    isController = false,
+    prefferInput = false
+): string {
     let content: string;
     if (eventHandler) {
         const parts = eventHandler.split('.');
         const method = parts.pop();
         const handler = `${parts.join('/')}${isController ? '.controller' : ''}`;
-        content = `<Button core:require="{ handler: '${handler}'}" text="${text}" press="handler.${method}" />`;
+        const requireAttr = `core:require="{ handler: '${handler}'}"`;
+        if (prefferInput) {
+            content = `<Input ${requireAttr} value="${text}" change="handler.${method}" />`;
+        } else {
+            content = `<Button ${requireAttr} text="${text}" press="handler.${method}" />`;
+        }
+    } else if (prefferInput) {
+        content = `<Input value="${text}" />`;
     } else {
         content = `<Text text="${text}" />`;
     }

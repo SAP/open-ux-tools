@@ -1,4 +1,5 @@
 import React from 'react';
+import { divProperties, getNativeProps } from '@fluentui/react';
 import { UISection } from './UISection';
 import type { UISectionProps } from './UISection';
 import { UISplitter, UISplitterType, UISplitterLayoutType } from './UISplitter';
@@ -418,7 +419,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      *
      * @param {number} index Target section index.
      * @param {number} childrenCount Count of children.
-     * @param {boolean} [reverse=false] Reverse calculation(width vs right).
+     * @param {boolean} [reverse] Reverse calculation(width vs right).
      * @returns {number} Size of section in percents. For example 50% => 0.5.
      */
     private getSizePercents(index: number, childrenCount: number, reverse = false): number {
@@ -497,7 +498,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         };
         // Use values from state or calculate initial percents
         const childrenCount = this.getVisibleChildrenCount();
-        const stateSize = this.state.sizes && this.state.sizes[index];
+        const stateSize = this.state.sizes?.[index];
         if (childrenCount === this.props.children.length && stateSize) {
             sectionStyle.style = {
                 ...(stateSize.start !== undefined && { [this.startPositionProperty]: stateSize.start + 'px' }),
@@ -539,13 +540,8 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             visible: false
         };
         // Hidden section when animation is ON
-        let stateSize = this.state.sizes && this.state.sizes[index];
-        if (
-            !stateSize &&
-            this.props.splitterType === UISplitterType.Toggle &&
-            this.props.sizes &&
-            this.props.sizes[index]
-        ) {
+        let stateSize = this.state.sizes?.[index];
+        if (!stateSize && this.props.splitterType === UISplitterType.Toggle && this.props.sizes?.[index]) {
             stateSize = {
                 size: this.props.sizes[index],
                 percentage: false
@@ -789,6 +785,10 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @returns {React.ReactElement}
      */
     render(): React.ReactElement {
+        const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(this.props, divProperties, [
+            'className',
+            'children'
+        ]);
         const sections = [];
         let visibleSections = 0;
         for (let i = 0; i < this.props.children.length; i++) {
@@ -806,6 +806,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
 
         return (
             <div
+                {...divProps}
                 ref={this.rootRef}
                 className={`sections ${this.getClassNames(visibleSections === 1)}`}
                 style={{

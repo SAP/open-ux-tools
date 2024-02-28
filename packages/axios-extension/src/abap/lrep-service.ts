@@ -5,7 +5,10 @@ import { LogLevel } from '@sap-ux/logger';
 import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'fs';
 import { isAxiosError } from '../base/odata-request-error';
+import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { TransportConfig } from './ui5-abap-repository-service';
 
+export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 /**
  * Object structure representing a namespace: containing an id (variant id) and a reference (base application id).
  */
@@ -29,21 +32,36 @@ export type Namespace = NamespaceObject | string;
 /**
  * Required configuration to deploy an adaptation project.
  */
-export interface AdaptationConfig {
+export interface AdaptationConfig extends TransportConfig {
     /**
      * Namespace either as string or object
      */
     namespace: Namespace;
 
     /**
-     * Optional ABAP package name
+     * Optional layer (default: CUSTOMER_BASE)
      */
-    package?: string;
+    layer?: Layer;
+}
 
-    /**
-     * Optional transport request
-     */
-    transport?: string;
+/**
+ * Resulting structure after merging an app descriptor variant with the original app descriptor.
+ */
+export interface MergedAppDescriptor {
+    name: string;
+    url: string;
+    manifest: Manifest;
+    asyncHints: {
+        libs: {
+            name: string;
+            lazy?: boolean;
+            url?: {
+                url: string;
+                final: boolean;
+            };
+        }[];
+        requests?: unknown[];
+    };
 }
 
 /**
@@ -73,12 +91,22 @@ function getNamespaceAsString(namespace: Namespace): string {
 }
 
 /**
+ * Check if a variable is a buffer.
+ *
+ * @param input variable to be checked
+ * @returns true if the input is a buffer
+ */
+function isBuffer(input: string | Buffer): input is Buffer {
+    return (input as Buffer).BYTES_PER_ELEMENT !== undefined;
+}
+
+/**
  * Path suffix for all DTA actions.
  */
 const DTA_PATH_SUFFIX = '/dta_folder/';
 
 /**
- * A class respresenting the design time adaptation service allowing to deploy adaptation projects to an ABAP system.
+ * A class representing the design time adaptation service allowing to deploy adaptation projects to an ABAP system.
  */
 export class LayeredRepositoryService extends Axios implements Service {
     public static readonly PATH = '/sap/bc/lrep';
@@ -86,45 +114,88 @@ export class LayeredRepositoryService extends Axios implements Service {
     public log: Logger;
 
     /**
+     * Simple request to fetch a CSRF token required for all writing operations.
+     *
+     * @returns the response
+     */
+    public async getCsrfToken() {
+        try {
+            return await this.get('/actions/getcsrftoken/');
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Merge a given app descriptor variant with the stord app descriptor.
+     *
+     * @param appDescriptorVariant zip file containing an app descriptor variant
+     * @returns a promise with an object containing merged app descriptors with their id as keys.
+     */
+    public async mergeAppDescriptorVariant(
+        appDescriptorVariant: Buffer
+    ): Promise<{ [key: string]: MergedAppDescriptor }> {
+        try {
+            const response = await this.put('/appdescr_variant_preview/', appDescriptorVariant, {
+                headers: {
+                    'Content-Type': 'application/zip'
+                }
+            });
+            return JSON.parse(response.data);
+        } catch (error) {
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+            }
+            throw error;
+        }
+    }
+
+    /**
      * Check whether a variant with the given namespace already exists.
      *
      * @param namespace either as string or as object
-     * @returns the Axios response object for futher processing
+     * @param [layer] optional layer
+     * @returns the Axios response object for further processing
      */
-    public async isExistingVariant(namespace: Namespace): Promise<AxiosResponse> {
+    public async isExistingVariant(namespace: Namespace, layer: Layer = 'CUSTOMER_BASE'): Promise<AxiosResponse> {
         try {
             const response = await this.get(DTA_PATH_SUFFIX, {
                 params: {
                     name: getNamespaceAsString(namespace),
-                    layer: 'CUSTOMER_BASE' as Layer,
+                    layer,
                     timestamp: Date.now()
                 }
             });
             this.tryLogResponse(response);
             return response;
         } catch (error) {
-            if (isAxiosError(error) && error.response?.status === 404) {
-                return error.response;
-            } else {
-                throw error;
+            if (isAxiosError(error)) {
+                this.tryLogResponse(error.response);
+                if (error.response?.status === 404) {
+                    return error.response;
+                }
             }
+            throw error;
         }
     }
 
     /**
      * Deploy the given archive either by creating a new folder in the layered repository or updating an existing one.
      *
-     * @param archivePath path to a zip archive containing the adaptation project
+     * @param archive path to a zip archive or archive as buffer containing the adaptation project
      * @param config adataption project deployment configuration
      * @returns the Axios response object for futher processing
      */
-    public async deploy(archivePath: string, config: AdaptationConfig): Promise<AxiosResponse> {
-        const archive = readFileSync(archivePath);
+    public async deploy(archive: Buffer | string, config: AdaptationConfig): Promise<AxiosResponse> {
+        const data = isBuffer(archive) ? archive : readFileSync(archive);
 
         const checkResponse = await this.isExistingVariant(config.namespace);
         const params: object = {
             name: getNamespaceAsString(config.namespace),
-            layer: 'CUSTOMER_BASE' as Layer
+            layer: config.layer ?? 'CUSTOMER_BASE'
         };
 
         params['package'] = config.package ?? '$TMP';
@@ -135,7 +206,7 @@ export class LayeredRepositoryService extends Axios implements Service {
         const response = await this.request({
             method: checkResponse.status === 200 ? 'PUT' : 'POST',
             url: DTA_PATH_SUFFIX,
-            data: archive,
+            data,
             params,
             headers: {
                 'Content-Type': 'application/octet-stream'
@@ -149,8 +220,8 @@ export class LayeredRepositoryService extends Axios implements Service {
     /**
      * Undeploy the archive identified by the configuration.
      *
-     * @param config adataption project deployment configuration
-     * @returns the Axios response object for futher processing
+     * @param config adaptation project deployment configuration
+     * @returns the Axios response object for further processing
      */
     public async undeploy(config: AdaptationConfig): Promise<AxiosResponse> {
         const checkResponse = await this.isExistingVariant(config.namespace);
@@ -159,15 +230,25 @@ export class LayeredRepositoryService extends Axios implements Service {
         }
         const params: object = {
             name: getNamespaceAsString(config.namespace),
-            layer: 'CUSTOMER_BASE' as Layer
+            layer: config.layer ?? 'CUSTOMER_BASE'
         };
         if (config.transport) {
             params['changelist'] = config.transport;
         }
-        const response = await this.delete(DTA_PATH_SUFFIX, { params });
-        this.tryLogResponse(response, 'Undeployment successful.');
-
-        return response;
+        try {
+            const response = await this.delete(DTA_PATH_SUFFIX, { params });
+            this.tryLogResponse(response, 'Undeployment successful.');
+            return response;
+        } catch (error) {
+            this.log.error('Undeployment failed');
+            this.log.debug(error);
+            if (isAxiosError(error) && error.response?.status === 405) {
+                this.log.error(
+                    'Newer version of SAP_UI required, please check https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/delete-adaptation-project'
+                );
+            }
+            throw error;
+        }
     }
 
     /**

@@ -2,11 +2,13 @@ import type { FreestyleApp } from '../src';
 import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug } from './common';
+import { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath } from './common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BasicAppSettings } from '../src/types';
+import { projectChecks } from './common';
 
 const TEST_NAME = 'basicTemplate';
+jest.setTimeout(240000); // Needed when debug.enabled
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
@@ -20,7 +22,7 @@ jest.mock('read-pkg-up', () => ({
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
 
-    const commonConfig: FreestyleApp<BasicAppSettings> = {
+    const baseConfig: FreestyleApp<BasicAppSettings> = {
         app: {
             id: 'nods1',
             title: 'App Title',
@@ -54,20 +56,20 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         template: {
             type: TemplateType.Basic,
             settings: {}
-        },
-        // Add a placeholder middleware, required for local run
-        service: {
-            path: '/sap/opu/odata/',
-            url: 'http://localhost',
-            version: OdataVersion.v2,
-            metadata: '<metadata />'
         }
     };
-
+    const commonConfig = { ...baseConfig };
+    // Add a default
+    commonConfig.service = {
+        path: '/sap/opu/odata/',
+        url: 'http://localhost',
+        version: OdataVersion.v2,
+        metadata: '<metadata />'
+    };
     const configuration: Array<{ name: string; config: FreestyleApp<BasicAppSettings>; settings: BasicAppSettings }> = [
         {
             name: 'basic_no_datasource',
-            config: commonConfig,
+            config: baseConfig,
             settings: {}
         },
         {
@@ -108,6 +110,48 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 }
             },
             settings: {}
+        },
+        {
+            name: 'basic_typescript_ui5_1_108',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    loadReuseLibs: false,
+                    typescript: true
+                },
+                ui5: {
+                    version: '1.108.1',
+                    ui5Libs: ['sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.108.1'
+                }
+            },
+            settings: {}
+        },
+        {
+            name: 'basic_typescript_ui5_1_114',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    loadReuseLibs: false,
+                    typescript: true
+                },
+                ui5: {
+                    version: '1.114.0',
+                    ui5Libs: ['sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.114.0'
+                }
+            },
+            settings: {}
+        },
+        {
+            name: 'basic_without_start-noflp',
+            config: {
+                ...commonConfig,
+                appOptions: { generateIndex: false }
+            },
+            settings: {}
         }
     ];
 
@@ -121,13 +165,16 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         const fs = await generate(testPath, config);
         expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 

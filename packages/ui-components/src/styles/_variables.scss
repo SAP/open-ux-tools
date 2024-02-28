@@ -7,18 +7,25 @@ $font-weight-base: var(--vscode-font-weight);
 $base-element-height: 26px;
 $button-font-size: $font-size-base;
 
+// Box shadows
+$box-shadow-small: 0 4px 8px 0 var(--vscode-widget-shadow);
+$box-shadow-medium: 0 6px 12px 0 var(--vscode-widget-shadow);
+$box-shadow-large: 0 10px 20px 0 var(--vscode-widget-shadow);
+
 // Dropdowns
 // colors
 $dropdown-input-height: $base-element-height;
 $dropdown-input-color: var(--vscode-foreground);
+$dropdown-input-placeholder-color: var(--vscode-input-placeholderForeground);
 $dropdown-input-background: var(--vscode-input-background);
 $dropdown-input-border-color: var(--vscode-editorWidget-border);
 $dropdown-input-focus-border-color: var(--vscode-focusBorder);
 // misc
-$dropdown-input-border-radius: 0;
+$dropdown-input-border-radius: 2px;
 $dropdown-input-expand-icon-size: 16px;
 $dropdown-input-text-padding: 0px $dropdown-input-height 0 8px;
 $dropdown-input-border-width: 1px;
 $dropdown-input-border: $dropdown-input-border-width solid $dropdown-input-border-color;
-$dropdown-input-disabled-opacity: 0.4;
+$dropdown-input-disabled-opacity: 0.5;
 $dropdown-input-disabled-background-color: var(--vscode-editor-inactiveSelectionBackground);
+$dropdown-input-readonly-background-color: var(--vscode-editor-background);

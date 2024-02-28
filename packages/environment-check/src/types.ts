@@ -170,6 +170,30 @@ export enum DirName {
 }
 
 export interface ILogger extends Logger {
+    /**
+     * Pushes new messages to the logger.
+     *
+     * @param newMessages - An array of ResultMessage objects representing the new messages to be added.
+     */
     push(...newMessages: ResultMessage[]): void;
+    /**
+     * Retrieves all the messages stored in the logger.
+     *
+     * @returns An array of ResultMessage objects representing the stored messages.
+     */
     getMessages(): ResultMessage[];
 }
+
+export const toolsExtensionListVSCode = new Map<string, string>([
+    ['platform', 'Platform'],
+    ['cloudCli', 'Cloud CLI tools'],
+    ['appWizard', 'Application Wizard'],
+    ['fioriGenVersion', 'SAP Fiori tools - Fiori generator'],
+    ['appMod', 'SAP Fiori tools - Application Modeler'],
+    ['help', 'SAP Fiori tools - Guided Development'],
+    ['serviceMod', 'SAP Fiori tools - Service Modeler'],
+    ['annotationMod', 'SAP Fiori tools - XML Annotation Language Server'],
+    ['xmlToolkit', 'XML Toolkit'],
+    ['cds', 'SAP CDS Language Support'],
+    ['ui5LanguageAssistant', 'UI5 Language Assistant Support']
+]);

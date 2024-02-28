@@ -1,5 +1,65 @@
 # @sap-ux/yaml
 
+## 0.14.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.14.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+## 0.13.9
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+
+## 0.13.8
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
+## 0.13.7
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+
+## 0.13.6
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+
+## 0.13.5
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+
+## 0.13.4
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
+## 0.13.3
+
+### Patch Changes
+
+-   3327a3f: Do not throw exception for multi document yaml
+
+## 0.13.2
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
 ## 0.13.1
 
 ### Patch Changes

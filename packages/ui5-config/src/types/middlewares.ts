@@ -51,3 +51,13 @@ export interface MockserverConfig {
         generateMockData?: boolean;
     }[];
 }
+
+export interface FioriToolsServeStaticPath {
+    path: string;
+    src: string;
+    fallthrough?: boolean;
+}
+
+export interface FioriToolsServeStaticConfig {
+    paths: FioriToolsServeStaticPath[];
+}

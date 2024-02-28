@@ -1,0 +1,457 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`csdlToCds print Annotation content.length <= 0 1`] = `"Core.Description : '$0'"`;
+
+exports[`csdlToCds print Annotation content.length > 0 1`] = `
+"Core.Revisions : [
+    {
+        \\\\$Type : 'Core.RevisionType',
+        Kind : $2,
+        Description : $0,
+    },
+]"
+`;
+
+exports[`csdlToCds print Collection 1`] = `
+"[
+    {
+        \\\\$Type : 'Core.Link',
+        rel : $2,
+        href : $0,
+    },
+]"
+`;
+
+exports[`csdlToCds print Default 1`] = `"'$0'"`;
+
+exports[`csdlToCds print Default boolean true value: Annotation with no value element 1`] = `"UI.Hidden"`;
+
+exports[`csdlToCds print Default boolean true value: PropertyValue with no value element 1`] = `"SomeBooleanProperty"`;
+
+exports[`csdlToCds print Multi line string 1`] = `
+"\`\`\`a
+b\`\`\`"
+`;
+
+exports[`csdlToCds print PropertyValue annotation path 1`] = `
+"Target : '$1',
+Label : $2,
+ID : $0,"
+`;
+
+exports[`csdlToCds print PropertyValue attributes['AnnotationPath'] 1`] = `"Target : '$0'"`;
+
+exports[`csdlToCds print PropertyValue content.length (2) 1`] = `
+"TypeName : $1,
+TypeNamePlural : $2,
+Title : $3,
+Description : $4,
+ImageUrl : $5,
+TypeImageUrl : $6,
+Initials : $0,"
+`;
+
+exports[`csdlToCds print PropertyValue content.length 1`] = `
+"HeadLine : {
+    \\\\$Type : 'UI.DataField',
+    Value : $2,
+}"
+`;
+
+exports[`csdlToCds print PropertyValue else 1`] = `"Value : $1"`;
+
+exports[`csdlToCds print Record 1`] = `
+"{
+    \\\\$Type : 'Core.RevisionType',
+    Kind : $2,
+    Description : $0,
+}"
+`;
+
+exports[`csdlToCds print Record 2`] = `
+"rel : $2,
+href : $0,
+{
+    \\\\$Type : 'UI.ReferencePeriod',
+    $3
+},"
+`;
+
+exports[`csdlToCds print Text 1`] = `"$0"`;
+
+exports[`csdlToCds print complete term 1`] = `
+"UI.Badge : {
+    \\\\$Type : 'UI.BadgeType',
+    HeadLine : {
+        \\\\$Type : 'UI.DataField',
+        Value : $2,
+    },
+    Title : {
+        \\\\$Type : 'UI.DataField',
+        Value : $0,
+    },
+}"
+`;
+
+exports[`csdlToCds print primitive values Bool attribute false 1`] = `"Primitive.Value : false"`;
+
+exports[`csdlToCds print primitive values Bool attribute true 1`] = `"Primitive.Value : true"`;
+
+exports[`csdlToCds print primitive values Bool element false 1`] = `"Primitive.Value : false"`;
+
+exports[`csdlToCds print primitive values Bool element true 1`] = `"Primitive.Value : true"`;
+
+exports[`csdlToCds print primitive values EnumMember attribute Alias.Type/Value 1`] = `"Primitive.Value : #Value"`;
+
+exports[`csdlToCds print primitive values EnumMember element Alias.Type/Value 1`] = `"Primitive.Value : #Value"`;
+
+exports[`csdlToCds print primitive values Int attribute $0 1`] = `"Primitive.Value : $0"`;
+
+exports[`csdlToCds print primitive values Int attribute 1 1`] = `"Primitive.Value : 1"`;
+
+exports[`csdlToCds print primitive values Int element $0 1`] = `"Primitive.Value : $0"`;
+
+exports[`csdlToCds print primitive values Int element 1 1`] = `"Primitive.Value : 1"`;
+
+exports[`csdlToCds print primitive values String attribute abc 1`] = `"Primitive.Value : 'abc'"`;
+
+exports[`csdlToCds print primitive values String element abc 1`] = `"Primitive.Value : 'abc'"`;
+
+exports[`csdlToCds printTarget !childSegments || childSegments.length === 0] 1`] = `
+"annotate AdminService.Books with @(
+    UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : 'Tom''s Sales',
+            ID : 'Sales',
+            Target : 'to_ProductSalesData/@UI.Chart',
+        },
+    ]
+);
+"
+`;
+
+exports[`csdlToCds printTarget Annotating bound Action/Function 1`] = `
+"annotate AdminService.Books with actions {
+    addRating @Common.IsActionCritical #actionAfter : true
+};"
+`;
+
+exports[`csdlToCds printTarget Annotating bound Action/Function paramter 1`] = `
+"annotate AdminService.Books with actions {
+    addRating (
+        stars @UI.ParameterDefaultValue #paramAfter : false
+    )
+};"
+`;
+
+exports[`csdlToCds printTarget Annotating unbound Action/Function parameter 1`] = `
+"annotate AdminService.cancelOrder with {
+    orderID @UI.ParameterDefaultValue #paramAfter : true
+};
+"
+`;
+
+exports[`csdlToCds printTarget Embedded annotation collection 1`] = `
+"annotate AdminService.Books with {
+    Autor @UI.Facets : {
+        $value : [
+            {
+                $Type : 'UI.ReferenceFacet',
+                Label : 'Sales',
+            },
+        ],
+        ![@UI.Importance] : #High,
+    }
+};
+"
+`;
+
+exports[`csdlToCds printTarget Embedded annotation record 1`] = `
+"annotate AdminService.Books with {
+    Autor @UI.HeaderInfo : {
+        $value : {
+            $Type : 'UI.HeaderInfo',
+            TypeName : {
+                $value : 'My Book',
+                ![@Core.Description] #something : 'PropertyValue annotation',
+            },
+            ![@Core.Description] : 'Record annotation',
+        },
+        ![@UI.Importance] : #High,
+    }
+};
+"
+`;
+
+exports[`csdlToCds printTarget childSegments.length === 1] 1`] = `
+"annotate AdminService.Books with {
+    Autor @UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            Label : 'Sales',
+            ID : 'Sales',
+            Target : 'to_ProductSalesData/@UI.Chart',
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget childSegments.length > 1] 1`] = `
+"annotate AdminService.Books with {
+    Autor @(UI.Facets : [
+            {
+                $Type : 'UI.ReferenceFacet',
+                Label : 'Sales',
+                ID : 'Sales',
+                Target : 'to_ProductSalesData/@UI.Chart',
+            },
+        ],
+        UI.Facets #qual1 : [
+            {
+                $Type : 'UI.ReferenceFacet',
+                Label : 'Sales',
+                ID : 'Sales',
+                Target : 'to_ProductSalesData/@UI.Chart',
+            },
+        ]
+)};
+"
+`;
+
+exports[`csdlToCds printTarget multiple terms in single target 1`] = `
+"annotate AdminService.Books with @(
+    UI.Facets : [
+    ],
+    UI.Facets #MyQualifierName : [
+    ]
+);
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as Annotation values AnnotationPath 1`] = `
+"annotate AdminService.Books with {
+    Author @UI.TermAcceptingAnyValue #qual1 : '$1'
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as Annotation values AnnotationPath 2`] = `
+"annotate AdminService.Books with {
+    Author @UI.TermAcceptingAnyValue #qual1 : 'ns1.seg1/seg2/@seg3'
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as Annotation values Boolean 1`] = `
+"annotate AdminService.Books with {
+    Author @UI.TermAcceptingAnyValue #qual1 : true
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as Annotation values Boolean 2`] = `
+"annotate AdminService.Books with {
+    Author @UI.TermAcceptingAnyValue #qual1 : false
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as Annotation values EnumMember 1`] = `
+"annotate AdminService.Books with {
+    Author @UI.TermAcceptingAnyValue #qual1 : #Column
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as Annotation values EnumMember 2`] = `
+"annotate AdminService.Books with {
+    Author @UI.TermAcceptingAnyValue #qual1 : #Column
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as Annotation values Path 1`] = `
+"annotate AdminService.Books with {
+    Author @UI.TermAcceptingAnyValue #qual1 : navProp1.prop2
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as Annotation values Path 2`] = `
+"annotate AdminService.Books with {
+    Author @UI.TermAcceptingAnyValue #qual1 : ![navProp1/@UI.Chart/chartType]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as Annotation values String 1`] = `
+"annotate AdminService.Books with {
+    Author @UI.TermAcceptingAnyValue #qual1 : 'myStringAttribute'
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as Annotation values String 2`] = `
+"annotate AdminService.Books with {
+    Author @UI.TermAcceptingAnyValue #qual1 : 'myStringTextNode'
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues AnnotationPath 1`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : 'ns1.seg1/seg2/@seg3',
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues AnnotationPath 2`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : 'ns1.n2.seg1/seg2/@seg3',
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues Boolean 1`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : true,
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues Boolean 2`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : false,
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues EnumMember 1`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : [ #Column, #Row ],
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues EnumMember 2`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : #Column,
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues Int 1`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : 1,
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues Int 2`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : 2,
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues Null 1`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : null,
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues Path 1`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : navProp1.prop2,
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues Path 2`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : ![navProp1/@UI.Chart/chartType],
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues String 1`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : 'myStringAttribute',
+        },
+    ]
+};
+"
+`;
+
+exports[`csdlToCds printTarget primitive values as PropertyValues String 2`] = `
+"annotate AdminService.Books with {
+    Author @UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : 'myStringTextNode',
+        },
+    ]
+};
+"
+`;

@@ -1,0 +1,261 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ADP writer generate add deploy config 1`] = `
+Object {
+  "package.json": Object {
+    "contents": "{
+    \\"name\\": \\"my-test-app\\",
+    \\"version\\": \\"0.1.0\\",
+    \\"private\\": true,
+    \\"description\\": \\"Adaptation of the.original.app\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"sapui5\\",
+        \\"adaptation-project\\"
+    ],
+    \\"dependencies\\": {},
+    \\"devDependencies\\": {
+        \\"@sap-ux/backend-proxy-middleware\\": \\"^0.7.5\\",
+        \\"@sap-ux/preview-middleware\\": \\"^0.11.1\\",
+        \\"@sap-ux/ui5-proxy-middleware\\": \\"^1.3.0\\",
+        \\"@sap-ux/deploy-tooling\\": \\"^0.11.7\\",
+        \\"@ui5/cli\\": \\"^3.6.0\\"
+    },
+    \\"scripts\\": {
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
+        \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\",
+        \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task abap-deploy-task generateFlexChangesBundle generateComponentPreload --clean-dest && deploy --config ui5-deploy.yaml\\",
+        \\"undeploy\\": \\"undeploy --config ui5-deploy.yaml --lrep \\\\\\"apps/the.original.app/appVariants/my.test.app/\\\\\\"\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.0\\"
+metadata:
+  name: my.test.app
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: abap-deploy-task
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://sap.example
+        app:
+          package: $TMP
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ADP writer generate enable Fiori tools 1`] = `
+Object {
+  "package.json": Object {
+    "contents": "{
+    \\"name\\": \\"my-test-app\\",
+    \\"version\\": \\"0.1.0\\",
+    \\"private\\": true,
+    \\"description\\": \\"Adaptation of the.original.app\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"sapui5\\",
+        \\"adaptation-project\\"
+    ],
+    \\"dependencies\\": {},
+    \\"devDependencies\\": {
+        \\"@sap/ux-ui5-tooling\\": \\"^1.11.4\\",
+        \\"@ui5/cli\\": \\"^3.6.0\\"
+    },
+    \\"scripts\\": {
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
+        \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
+        \\"deploy\\": \\"ui5 build --config ui5-deploy.yaml --exclude-task deploy-to-abap generateFlexChangesBundle generateComponentPreload --clean-dest && fiori deploy --config ui5-deploy.yaml\\",
+        \\"undeploy\\": \\"fiori undeploy --config ui5-deploy.yaml --lrep \\\\\\"apps/the.original.app/appVariants/my.test.app/\\\\\\"\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.0\\"
+metadata:
+  name: my.test.app
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://sap.example
+        app:
+          package: $TMP
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.0\\"
+metadata:
+  name: my.test.app
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        adp:
+          target:
+            url: http://sap.example
+          ignoreCertErrors: false
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
+      configuration:
+        ignoreCertErrors: false
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - url: http://sap.example
+            path: /sap
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ADP writer generate minimal config 1`] = `
+Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.tmp
+.env
+*.zip",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+    \\"name\\": \\"my-test-app\\",
+    \\"version\\": \\"0.1.0\\",
+    \\"private\\": true,
+    \\"description\\": \\"Adaptation of the.original.app\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"sapui5\\",
+        \\"adaptation-project\\"
+    ],
+    \\"dependencies\\": {},
+    \\"devDependencies\\": {
+        \\"@sap-ux/backend-proxy-middleware\\": \\"^0.7.5\\",
+        \\"@sap-ux/preview-middleware\\": \\"^0.11.1\\",
+        \\"@sap-ux/ui5-proxy-middleware\\": \\"^1.3.0\\",
+        \\"@sap-ux/deploy-tooling\\": \\"^0.11.7\\",
+        \\"@ui5/cli\\": \\"^3.6.0\\"
+    },
+    \\"scripts\\": {
+        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest\\",
+        \\"start\\": \\"ui5 serve --open /test/flp.html#app-preview\\",
+        \\"start-editor\\": \\"ui5 serve --open /test/adaptation-editor.html\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.0\\"
+metadata:
+  name: my.test.app
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        adp:
+          target:
+            url: http://sap.example
+          ignoreCertErrors: false
+        rta:
+          editors:
+            - path: /test/adaptation-editor.html
+              developerMode: true
+    - name: ui5-proxy-middleware
+      afterMiddleware: preview-middleware
+    - name: backend-proxy-middleware
+      afterMiddleware: preview-middleware
+      configuration:
+        backend:
+          url: http://sap.example
+          path: /sap
+        options:
+          secure: true
+",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for my.test.app
+
+#Texts for manifest.json
+
+#XTIT: Application name
+my.test.app_sap.app.title=Adaptation of the.original.app",
+    "state": "modified",
+  },
+  "webapp/manifest.appdescr_variant": Object {
+    "contents": "{
+  \\"fileName\\": \\"manifest\\",
+  \\"layer\\": \\"CUSTOMER_BASE\\",
+  \\"fileType\\": \\"appdescr_variant\\",
+  \\"reference\\": \\"the.original.app\\",
+  \\"id\\": \\"my.test.app\\",
+  \\"namespace\\": \\"apps/the.original.app/appVariants/my.test.app/\\",
+  \\"version\\": \\"0.1.0\\",
+  \\"content\\": [
+    {
+      \\"changeType\\": \\"appdescr_app_setTitle\\",
+      \\"content\\": {},
+      \\"texts\\": {
+        \\"i18n\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    {
+      \\"changeType\\": \\"appdescr_ui5_addNewModelEnhanceWith\\",
+      \\"content\\": {
+        \\"modelId\\": \\"i18n\\",
+        \\"bundleUrl\\": \\"i18n/i18n.properties\\",
+        \\"supportedLocales\\": [
+          \\"\\"
+        ],
+        \\"fallbackLocale\\": \\"\\"
+      }
+    }
+  ]
+}
+",
+    "state": "modified",
+  },
+}
+`;

@@ -1,0 +1,43 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "targets": {
+                "<%- target %>": {
+                    "options": {
+                        "settings": {
+                            "content": {
+                                "header": {
+                                    "facets": {
+                                        "<%- name %>": {
+                                            "name": "<%- ns %>.<%- name %>",
+                                            "type": "XMLFragment",
+                                            <%if (typeof position !== 'undefined') {%>"position": {
+                                                <% if (position.placement) { %> 
+                                                    "placement": "<%- position.placement %>"<% if (position.anchor) { %>,<% } %>
+                                                <% } %>
+                                                <% if (position.anchor) { %> 
+                                                    "anchor": "<%- position.anchor %>" 
+                                                <% } %>
+                                            },<% } %>
+                                            "title": "<%- title %>",
+                                            <% if (subTitle) { %> 
+                                                "subTitle": "<%- subTitle %>",
+                                            <% } %>
+                                            <% if (typeof stashed !== 'undefined') { %> 
+                                                "stashed": <%- stashed %>,
+                                            <% } %>
+                                            "requestGroupId": "<%- requestGroupId %>",
+                                            "flexSettings": {
+                                                "designtime": "<%- flexSettings.designtime %>"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

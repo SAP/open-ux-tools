@@ -1,4 +1,3 @@
-import os from 'os';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -8,6 +7,8 @@ import type { CustomView } from '../../src/view/types';
 import * as manifest from './sample/view/webapp/manifest.json';
 import type { Views, EventHandlerConfiguration } from '../../src/common/types';
 import type { Manifest } from '@sap-ux/project-access';
+import { detectTabSpacing } from '../../src/common/file';
+import { getEndOfLinesLength, tabSizingTestCases } from '../common';
 
 const testDir = join(__dirname, 'sample/view');
 
@@ -123,6 +124,24 @@ describe('CustomView', () => {
         expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.controller.js'))).toMatchSnapshot();
     });
 
+    test('without existing views', () => {
+        const testManifest = JSON.parse(JSON.stringify(manifest));
+        testManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'] = {};
+        fs = create(createStorage());
+        fs.delete(testDir);
+        fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(testManifest));
+        const testCustomView: CustomView = {
+            ...customView,
+            control: true
+        };
+        generateCustomView(testDir, testCustomView, fs);
+        updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+        const { views } = getManifestSegments();
+
+        expect(views).toMatchSnapshot();
+        expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+    });
+
     test('with existing views', () => {
         const testManifest = JSON.parse(JSON.stringify(manifest));
         (testManifest['sap.ui5']['routing']['targets']['sample']['options']['settings']['views'] as Views) = {
@@ -151,6 +170,67 @@ describe('CustomView', () => {
 
         expect(views).toMatchSnapshot();
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+    });
+
+    test('with existing views and custom views', () => {
+        const testManifest = JSON.parse(JSON.stringify(manifest));
+        (testManifest['sap.ui5']['routing']['targets']['sample']['options']['settings']['views'] as Views) = {
+            paths: [
+                {
+                    key: 'existingView',
+                    annotationPath: 'com.sap.vocabularies.UI.v1.LineItem'
+                },
+                {
+                    key: 'existingCustomView',
+                    template: 'sample.ext.frg.existingFragment'
+                }
+            ],
+            showCounts: false
+        };
+        fs = create(createStorage());
+        fs.delete(testDir);
+        fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(testManifest));
+        const testCustomView: CustomView = {
+            ...customView,
+            control: true
+        };
+        generateCustomView(testDir, testCustomView, fs);
+        updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+        const { views } = getManifestSegments();
+
+        expect(views).toMatchSnapshot();
+        expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+    });
+
+    test('with existing views, overwrite custom view entry, no view update', () => {
+        const testManifest = JSON.parse(JSON.stringify(manifest));
+        const testData = JSON.parse(JSON.stringify(customView));
+        testData.viewUpdate = false;
+        (testManifest['sap.ui5']['routing']['targets']['sample']['options']['settings']['views'] as Views) = {
+            paths: [
+                {
+                    key: 'existingView',
+                    annotationPath: 'com.sap.vocabularies.UI.v1.LineItem'
+                },
+                {
+                    key: 'viewKey',
+                    template: 'sample.ext.frg.existingFragment'
+                }
+            ],
+            showCounts: false
+        };
+        fs = create(createStorage());
+        fs.delete(testDir);
+        fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(testManifest));
+        const testCustomView: CustomView = {
+            ...customView,
+            control: true
+        };
+        generateCustomView(testDir, testCustomView, fs);
+        updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+        const { views } = getManifestSegments();
+
+        expect(views).toMatchSnapshot();
     });
 
     describe('Test property "eventHandler"', () => {
@@ -204,18 +284,25 @@ describe('CustomView', () => {
             },
             {
                 name: 'absolute position',
-                position: 196 + 8 * os.EOL.length
+                position: 196,
+                endOfLines: 8
             }
         ];
         test.each(positions)(
             '"eventHandler" is object. Append new function to existing js file with $name',
-            ({ position }) => {
+            ({ position, endOfLines }) => {
                 const fileName = 'MyExistingAction';
                 // Create existing file with existing actions
                 const folder = join('extensions', 'custom');
                 const existingPath = join(testDir, 'webapp', folder, `${fileName}.controller.js`);
                 // Generate handler with single method - content should be updated during generating of custom view
-                fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
+                fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, {
+                    eventHandlerFnName: 'onPress'
+                });
+                if (typeof position === 'number' && endOfLines !== undefined) {
+                    const content = fs.read(existingPath);
+                    position += getEndOfLinesLength(endOfLines, content);
+                }
                 const fnName = 'onHandleSecondAction';
 
                 const extension = {
@@ -235,5 +322,19 @@ describe('CustomView', () => {
                 expect(fs.read(existingPath)).toMatchSnapshot();
             }
         );
+    });
+
+    describe('Test property custom "tabSizing"', () => {
+        test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+            generateCustomView(testDir, { ...customView, tabInfo }, fs);
+            let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+            let result = detectTabSpacing(updatedManifest);
+            expect(result).toEqual(expectedAfterSave);
+            // Generate another view and check if new tab sizing recalculated correctly without passing tab size info
+            generateCustomView(testDir, { ...customView, key: 'Second', name: 'Second' }, fs);
+            updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+            result = detectTabSpacing(updatedManifest);
+            expect(result).toEqual(expectedAfterSave);
+        });
     });
 });

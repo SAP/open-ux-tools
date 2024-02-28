@@ -8,9 +8,11 @@ import type {
 import { Dropdown, DropdownMenuItemType, IDropdownOption, ResponsiveMode } from '@fluentui/react';
 
 import { UIIcon } from '../UIIcon';
-import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
+import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
+import { isDropdownEmpty, getCalloutCollisionTransformationProps } from './utils';
+import { CalloutCollisionTransform } from '../UICallout';
 
 import './UIDropdown.scss';
 
@@ -18,16 +20,35 @@ export { IDropdownOption as UIDropdownOption };
 export { DropdownMenuItemType as UIDropdownMenuItemType };
 
 export interface UIDropdownProps extends IDropdownProps, UIMessagesExtendedProps {
+    /**
+     * An optional callback function to handle change.
+     *
+     * @param option - The selected option.
+     * @param index - The index of the selected option.
+     */
     onHandleChange?(option: IDropdownOption, index: number): void;
+    /**
+     * An optional callback function to handle open event.
+     */
     onHandleOpen?(): void;
+    /**
+     * An optional callback function to render the title of the dropdown.
+     *
+     * @param items - The options of the dropdown.
+     * @returns The JSX element representing the title.
+     */
     onHandleRenderTitle?(items: IDropdownOption[] | undefined): JSX.Element;
     useDropdownAsMenuMinWidth?: boolean;
+    readOnly?: boolean;
+    calloutCollisionTransformation?: boolean;
 }
 
 export interface UIDropdownState {
     options: IDropdownOption[];
     isOpen: boolean;
 }
+
+type AccessibilityProps = Partial<IDropdownProps & { ['data-is-focusable']?: boolean }>;
 
 const ERROR_BORDER_COLOR = 'var(--vscode-inputValidation-errorBorder)';
 
@@ -40,6 +61,10 @@ const ERROR_BORDER_COLOR = 'var(--vscode-inputValidation-errorBorder)';
  * @extends {React.Component<UIDropdownProps, UIDropdownState>}
  */
 export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState> {
+    private dropdownDomRef = React.createRef<HTMLDivElement>();
+    private menuDomRef = React.createRef<HTMLDivElement>();
+    private calloutCollisionTransform = new CalloutCollisionTransform(this.dropdownDomRef, this.menuDomRef);
+
     /**
      * Initializes component properties.
      *
@@ -73,14 +98,17 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
     };
 
     onClick = (/* event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number */): void => {
-        this.setState({ isOpen: !this.state.isOpen }, () => {
-            if (this.props.multiSelect && this.props.onHandleOpen) {
-                if (this.state.isOpen) {
-                    this.setState({ isOpen: !this.state.isOpen });
-                    this.props.onHandleOpen();
+        this.setState(
+            (prevState) => ({ isOpen: !prevState.isOpen }),
+            () => {
+                if (this.props.multiSelect && this.props.onHandleOpen) {
+                    if (this.state.isOpen) {
+                        this.setState((prevState) => ({ isOpen: !prevState.isOpen }));
+                        this.props.onHandleOpen();
+                    }
                 }
             }
-        });
+        );
     };
 
     onChange = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption, index?: number): void => {
@@ -115,11 +143,13 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
         return (
             <>
                 {defaultRender?.(props)}
-                <div
-                    onMouseEnter={this.stopEventPropagation.bind(this)}
-                    onMouseLeave={this.stopEventPropagation.bind(this)}
-                    onMouseMove={this.stopEventPropagation.bind(this)}
-                    className="ts-dropdown-item-blocker"></div>
+                {props?.itemType !== DropdownMenuItemType.Header && (
+                    <div
+                        onMouseEnter={this.stopEventPropagation.bind(this)}
+                        onMouseLeave={this.stopEventPropagation.bind(this)}
+                        onMouseMove={this.stopEventPropagation.bind(this)}
+                        className="ts-dropdown-item-blocker"></div>
+                )}
             </>
         );
     };
@@ -168,11 +198,62 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
     }
 
     /**
+     * Method returns class names string depending on props and component state.
+     *
+     * @param {InputValidationMessageInfo} messageInfo Error/warning message if applied
+     * @returns {string} Class names of root dropdown element.
+     */
+    private getClassNames(messageInfo: InputValidationMessageInfo): string {
+        const { className, readOnly, disabled } = this.props;
+        const errorSuffix = messageInfo.message ? MESSAGE_TYPES_CLASSNAME_MAP.get(messageInfo.type) : undefined;
+        let classNames = `ts-SelectBox${messageInfo.message ? ' ts-SelectBox--' + errorSuffix : ''}`;
+        // Readonly
+        if (readOnly && !disabled) {
+            classNames += ' ts-SelectBox--readonly';
+        }
+        // Disabled
+        if (disabled) {
+            classNames += ' ts-SelectBox--disabled';
+        }
+        // Custom external classes
+        if (className) {
+            classNames += ` ${className}`;
+        }
+        // Empty value
+        if (isDropdownEmpty(this.props)) {
+            classNames += ' ts-SelectBox--empty';
+        }
+        return classNames;
+    }
+
+    /**
+     * Method returns additional component properties for accessibility.
+     *
+     * @returns {AccessibilityProps} Additional properties.
+     */
+    private getAccessibilityProps(): AccessibilityProps {
+        const { readOnly, disabled } = this.props;
+        const additionalProps: AccessibilityProps = {};
+        if (readOnly && !disabled) {
+            // Make dropdown focusable
+            additionalProps.tabIndex = 0;
+            additionalProps['data-is-focusable'] = true;
+            // Adjust aria attributes for readonly
+            additionalProps['aria-disabled'] = undefined;
+            additionalProps['aria-readonly'] = true;
+        } else if (disabled) {
+            additionalProps.tabIndex = 0;
+            additionalProps['data-is-focusable'] = true;
+        }
+        return additionalProps;
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
         const messageInfo = getMessageInfo(this.props);
-        const errorSuffix = messageInfo.message ? MESSAGE_TYPES_CLASSNAME_MAP.get(messageInfo.type) : undefined;
+        const additionalProps = this.getAccessibilityProps();
         const dropdownStyles = (): Partial<IDropdownStyles> => ({
             ...{
                 label: {
@@ -195,13 +276,21 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
             }
         });
 
-        const propClassName = this.props.className ? ` ${this.props.className}` : '';
         return (
             <Dropdown
+                ref={this.dropdownDomRef}
                 calloutProps={{
                     calloutMaxHeight: 200,
                     styles: this.props.useDropdownAsMenuMinWidth ? this.getCalloutStylesForUseAsMinWidth : undefined,
-                    className: 'ts-Callout ts-Callout-Dropdown'
+                    className: 'ts-Callout ts-Callout-Dropdown',
+                    popupProps: {
+                        ref: this.menuDomRef
+                    },
+                    ...getCalloutCollisionTransformationProps(
+                        this.calloutCollisionTransform,
+                        this.props.multiSelect,
+                        this.props.calloutCollisionTransformation
+                    )
                 }}
                 onRenderCaretDown={this.onRenderCaretDown}
                 onClick={this.onClick}
@@ -211,9 +300,11 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                 onRenderItem={this.onRenderItem.bind(this)}
                 // Use default responsiveMode as xxxLarge, which does not enter mobile mode.
                 responsiveMode={ResponsiveMode.xxxLarge}
+                disabled={this.props.readOnly}
+                {...additionalProps}
                 {...this.props}
                 styles={dropdownStyles}
-                className={`ts-SelectBox${messageInfo.message ? ' ts-SelectBox--' + errorSuffix : ''}${propClassName}`}
+                className={this.getClassNames(messageInfo)}
                 errorMessage={messageInfo.message}
             />
         );

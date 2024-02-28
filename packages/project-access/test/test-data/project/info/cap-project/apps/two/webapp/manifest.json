@@ -1,0 +1,31 @@
+{
+    "sap.app": {
+        "id": "two",
+        "type": "application",
+        "dataSources": {
+            "main": {
+                "uri": "/sap/opu/odata4/dmo/ODATA_SERVICE/",
+                "type": "OData",
+                "settings": {
+                    "annotations": ["annotation"],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "4.0"
+                }
+            },
+            "annotation": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/annotation.xml",
+                "settings": {
+                    "localUri": "annotations/annotation.xml"
+                }
+            }
+        }
+    },
+    "sap.ui5": {
+        "models": {
+            "": {
+                "dataSource": "main"
+            }
+        }
+    }
+}

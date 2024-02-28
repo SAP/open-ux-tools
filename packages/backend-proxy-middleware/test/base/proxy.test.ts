@@ -120,7 +120,7 @@ describe('proxy', () => {
             expect(mockSetHeader).not.toBeCalled();
 
             onProxyReq({ path: 'hello/Fiorilaunchpad.html', setHeader: mockSetHeader } as ClientRequest);
-            expect(mockSetHeader).toBeCalled();
+            expect(mockSetHeader).toBeCalledWith('accept-encoding', '*');
         });
 
         test('onProxyRes', () => {
@@ -136,13 +136,13 @@ describe('proxy', () => {
             onProxyRes(response);
             expect(response).toEqual({ headers: { 'set-cookie': [] } });
 
-            // cookies are modified i.e. SameSite, Domain, Secure are removed
+            // cookies are modified i.e. SameSite, Domain, Secure, Partitioned are removed
             response.headers['set-cookie'] = [
-                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; secure; Domain=example.com',
-                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; Domain=example.com; secure',
-                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; secure; Domain=example.com; SameSite=None',
-                'SameSite=None; MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; secure; Domain=example.com',
-                'Domain=example.com MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; secure'
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; secure; Domain=example.com Partitioned',
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; Domain=example.com; Partitioned; secure',
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; secure; Domain=example.com; Partitioned; SameSite=None',
+                'SameSite=None; MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; Partitioned; secure; Domain=example.com',
+                'Domain=example.com MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; Partitioned; SameSite=None; secure'
             ];
             onProxyRes(response);
             expect(response.headers['set-cookie']).toEqual([
@@ -316,7 +316,6 @@ describe('proxy', () => {
             };
             const callback = jest.fn();
             await enhanceConfigForSystem(proxyOptions, cloudSystem, true, callback);
-            expect(proxyOptions.headers.cookie).toBe('~cookies');
             expect(mockCreateForAbapOnCloud).toBeCalledWith({
                 environment: AbapCloudEnvironment.Standalone,
                 service: cloudSystem.serviceKeys,
@@ -472,14 +471,9 @@ describe('proxy', () => {
 
         test('throw an error if proxyOptions.target is not defined', async () => {
             const backend = { url: '', path: '/my/path' } as LocalBackendConfig;
-            try {
-                await generateProxyMiddlewareOptions(backend);
-            } catch (error) {
-                expect(error).toBeDefined();
-                expect(error.message).toEqual(
-                    `Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`
-                );
-            }
+            await expect(() => generateProxyMiddlewareOptions(backend)).rejects.toThrow(
+                `Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`
+            );
         });
 
         test('calling onError calls proxyErrorHandler', async () => {
@@ -489,7 +483,6 @@ describe('proxy', () => {
             };
             const proxyOptions = await generateProxyMiddlewareOptions(backend, {}, logger);
             const debugSpy = jest.spyOn(logger, 'debug');
-            debugSpy.mockReset();
             if (typeof proxyOptions?.onError === 'function') {
                 proxyOptions?.onError(undefined as any, {} as any, {} as any);
                 expect(debugSpy).toHaveBeenCalledTimes(1);

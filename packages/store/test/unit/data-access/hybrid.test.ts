@@ -1,13 +1,12 @@
 import 'jest-extended';
 import { sensitiveData, serializable } from '../../../src/decorators';
 import { getFilesystemStore } from '../../../src/data-access/filesystem';
-import { mocked } from 'ts-jest/utils';
 import { getSecureStore } from '../../../src/secure-store';
 import { getHybridStore } from '../../../src/data-access/hybrid';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 
 jest.mock('../../../src/data-access/filesystem');
-const mockFileSystemAccess = mocked(getFilesystemStore);
+const mockFileSystemAccess = jest.mocked(getFilesystemStore);
 const mockFilesystemStore = {
     write: jest.fn(),
     read: jest.fn(),
@@ -18,7 +17,7 @@ const mockFilesystemStore = {
 mockFileSystemAccess.mockReturnValue(mockFilesystemStore);
 
 jest.mock('../../../src/secure-store');
-const mockGetSecureStore = mocked(getSecureStore);
+const mockGetSecureStore = jest.mocked(getSecureStore);
 const mockSecureStore = {
     save: jest.fn(),
     retrieve: jest.fn(),

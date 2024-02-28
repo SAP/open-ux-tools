@@ -47,13 +47,14 @@ export interface Logger {
     transports(): Transport[];
     /**
      * Create a child logger
+     *
      * @param options
      */
     child(options: ChildLoggerOptions): Logger;
 }
 
 /**
- * Follows severity ordering specificed in RFC 5424: https://datatracker.ietf.org/doc/html/rfc5424
+ * Follows severity ordering specified in RFC 5424: https://datatracker.ietf.org/doc/html/rfc5424
  */
 export enum LogLevel {
     Error = 0,
@@ -74,6 +75,7 @@ export interface TransportOptions {
 export abstract class Transport {
     /**
      * A utility copy method to make immutable, deep copies of objects
+     *
      * @param obj
      * @returns  a frozen deep clone of `obj`
      */

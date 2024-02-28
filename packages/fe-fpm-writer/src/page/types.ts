@@ -1,4 +1,4 @@
-import type { CustomElement, InternalCustomElement } from '../common/types';
+import type { CustomElement, InternalCustomElement, WriterConfig } from '../common/types';
 
 /**
  * Incoming navigation configuration.
@@ -20,31 +20,52 @@ export interface Navigation {
     navKey?: boolean;
 }
 
-export interface StandardPageSettings {
+export type StandardPageSettings = {
     enhanceI18n?: string | true;
     variantManagement?: 'Page' | 'None';
-}
+};
 
 /**
  * Support list of settings for a ListReport page
  */
-export interface ListReportSettings extends StandardPageSettings {
+export type ListReportSettings = StandardPageSettings & {
     tableSettings?: {
         type?: 'ResponsiveTable' | 'GridTable';
         selectionMode?: 'None' | 'Single' | 'Multi' | 'Auto';
         condensedTableLayout?: boolean;
     };
-}
+};
 
 /**
- * Configuration options for adding a list report page.
+ * Common settings for any page supporting the Fiori elements flexible programming model.
  */
-export interface ListReport {
+export interface FpmPage {
+    /**
+     * Optional unique id parameter.
+     */
+    id?: string;
     /**
      * Name of the entity used for the custom page.
      */
     entity: string;
 
+    /**
+     * With template or UI5 version 1.94 you can alternatively specify a contextPath that shall be inserted as page option, instead of the entitySet.
+     */
+    contextPath?: string;
+
+    /**
+     * Optional property to define the minimum UI5 version that the generated code must support.
+     * If undefined then the latest version of the template is used.
+     * If nothing can be generated for the given version then an exception is thrown.
+     */
+    minUI5Version?: string;
+}
+
+/**
+ * Configuration options for adding a list report page.
+ */
+export interface ListReport extends FpmPage, WriterConfig {
     /**
      * Optional settings for the ListReport page
      */
@@ -54,12 +75,7 @@ export interface ListReport {
 /**
  * Configuration options for adding an object page.
  */
-export interface ObjectPage {
-    /**
-     * Name of the entity used for the custom page.
-     */
-    entity: string;
-
+export interface ObjectPage extends FpmPage, WriterConfig {
     /**
      * Optional settings for the object page
      */
@@ -74,12 +90,7 @@ export interface ObjectPage {
 /**
  * Configuration options for adding a custom page.
  */
-export interface CustomPage extends CustomElement {
-    /**
-     * Name of the entity used for the custom page.
-     */
-    entity: string;
-
+export interface CustomPage extends FpmPage, CustomElement {
     /**
      * Optional incoming navigation configuration. If provided then a navigation configuration is added to an existing page navigating to this custom page.
      */
@@ -115,10 +126,17 @@ export interface FCL {
 }
 
 /**
+ * Common settings for Fiori elements pages
+ */
+export type InternalFpmPage = FCL & {
+    settings: Record<string, unknown | undefined>;
+};
+
+/**
  * Additional internal configuration options that will be calculated based on the provided input as well as the target application.
  */
-export type InternalCustomPage = CustomPage & InternalCustomElement & FCL;
+export type InternalCustomPage = CustomPage & InternalFpmPage & InternalCustomElement;
 
-export type InternalListReport = ListReport & FCL & { name: 'ListReport'; navigation?: Navigation; settings: any };
+export type InternalListReport = ListReport & InternalFpmPage & { name: 'ListReport'; navigation?: Navigation };
 
-export type InternalObjectPage = ObjectPage & FCL & { name: 'ObjectPage'; settings: any };
+export type InternalObjectPage = ObjectPage & InternalFpmPage & { name: 'ObjectPage' };

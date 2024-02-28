@@ -1,14 +1,23 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["src"],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist",
-        "baseUrl": "./src",
-        "strict": false
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "baseUrl": "./src",
+    "strict": false
+  },
+  "references": [
+    {
+      "path": "../btp-utils"
     },
-    "references": [
-        { "path": "../btp-utils" }, 
-        { "path": "../logger" }
-    ]
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../project-access"
+    }
+  ]
 }

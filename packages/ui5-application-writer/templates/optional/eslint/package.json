@@ -1,10 +1,11 @@
 {
     "scripts": {
-        "lint": "eslint ./ --rulesdir ./node_modules/eslint-plugin-fiori-custom/lib/rules/"
+        "lint": "eslint ./"
     },
     "devDependencies": {
+        "@sap-ux/eslint-plugin-fiori-tools": "^0.2.0",
         "eslint": "7.32.0",
-        "eslint-plugin-fiori-custom": "2.2.1",
+        "eslint-plugin-fiori-custom": "2.6.7",
         "@babel/eslint-parser": "7.14.7"
     }
 }

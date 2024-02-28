@@ -5,6 +5,7 @@ import { checkStoredSystems } from './stored-system';
 import { getDestinationsFromWorkspace } from './workspace';
 import { getLogger } from '../logger';
 import { devspace } from '@sap/bas-sdk';
+import type { Extension } from 'vscode';
 import type {
     CheckEnvironmentOptions,
     Environment,
@@ -21,9 +22,12 @@ import { t } from '../i18n';
 /**
  * Return the environment.
  *
+ * @param extensions - installed extensions passed from vscode
  * @returns environment, including ide, versions, ...
  */
-export async function getEnvironment(): Promise<{ environment: Environment; messages: ResultMessage[] }> {
+export async function getEnvironment(
+    extensions?: readonly Extension<any>[]
+): Promise<{ environment: Environment; messages: ResultMessage[] }> {
     const logger = getLogger();
     const processVersions = await getProcessVersions(logger);
     const environment: Environment = {
@@ -44,7 +48,7 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
         logger.info(t('error.basDevSpace', { error: error.message }));
     }
 
-    const toolsExtensionResults = await getToolsExtensions();
+    const toolsExtensionResults = await getToolsExtensions(extensions);
     environment.toolsExtensions = toolsExtensionResults.toolsExtensions;
     logger.push(...toolsExtensionResults.messages);
 
@@ -88,15 +92,15 @@ function getExtVersions(extensions: { [id: string]: { version: string } }): { [i
 /**
  * Returns the tools and extensions installed.
  *
+ * @param extensions - installed extensions passed from vscode
  * @returns tools and extension versions
  */
-async function getToolsExtensions(): Promise<{
+async function getToolsExtensions(extensions?: readonly Extension<any>[]): Promise<{
     toolsExtensions: ToolsExtensions;
     messages: ResultMessage[];
 }> {
     const logger = getLogger();
-
-    const extensions = await getInstalledExtensions(logger);
+    const installedExtensions = await getInstalledExtensions(extensions, logger);
     const fioriGenVersion = await getFioriGenVersion();
     const cloudCli = await getCFCliToolVersion();
 
@@ -105,8 +109,8 @@ async function getToolsExtensions(): Promise<{
         fioriGenVersion: fioriGenVersion
     };
 
-    if (extensions) {
-        const extVersions = getExtVersions(extensions);
+    if (installedExtensions) {
+        const extVersions = getExtVersions(installedExtensions);
         toolsExtensions = {
             ...toolsExtensions,
             ...extVersions

@@ -2,22 +2,35 @@ import * as React from 'react';
 import * as Enzyme from 'enzyme';
 import type { UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
 import { UIComboBox } from '../../../src/components/UIComboBox';
-import { data as originalData } from '../../__mock__/select-data';
+import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
-import { KeyCodes, ComboBox } from '@fluentui/react';
+import { KeyCodes, ComboBox, Autofill } from '@fluentui/react';
 
 const data = JSON.parse(JSON.stringify(originalData));
+const groupsData = JSON.parse(JSON.stringify(originalGroupsData));
 
 describe('<UIComboBox />', () => {
     let wrapper: Enzyme.ReactWrapper<UIComboBoxProps, UIComboBoxState>;
     const menuDropdownSelector = 'div.ts-Callout-Dropdown';
     const nonHighlighttItemSelector = `${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command .ms-ComboBox-optionText`;
     const highlightItemSelector = `${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command .ts-Menu-option`;
+    const inputSelector = 'input.ms-ComboBox-Input';
+    const headerItemSelector = '.ms-ComboBox-header';
     initIcons();
+
+    const getInputTarget = (value = '') => {
+        return { tagName: 'INPUT', value };
+    };
 
     const openDropdown = (): void => {
         wrapper.find('.ms-ComboBox .ms-Button--icon').simulate('click', document.createEvent('Events'));
+    };
+
+    const triggerSearch = (query: string) => {
+        wrapper.find('input').simulate('input', {
+            target: getInputTarget(query)
+        });
     };
 
     beforeEach(() => {
@@ -136,22 +149,52 @@ describe('<UIComboBox />', () => {
         it('Test "onInput"', () => {
             const query = 'Lat';
             wrapper.find('input').simulate('keyDown', {});
-            wrapper.find('input').simulate('input', {
-                target: {
-                    value: query
-                }
-            });
+            triggerSearch(query);
             expect(wrapper.find('.ts-Menu-option--highlighted').length).toEqual(1);
             expect(wrapper.find('.ts-Menu-option--highlighted').text()).toEqual(query);
         });
 
+        it('Test onInput value selection', async () => {
+            const requestAnimationFrameSpy = jest.spyOn(window, 'requestAnimationFrame');
+            const input = wrapper.find('input');
+
+            input.simulate('input', { target: getInputTarget('test') });
+            await new Promise((resolve) => setTimeout(resolve));
+            const inputDOM = input.getDOMNode() as HTMLInputElement;
+            const selections = inputDOM.selectionEnd;
+            expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(1);
+            expect(selections).toBe(4);
+
+            const event = {
+                target: inputDOM
+            } as unknown as React.FormEvent<IComboBox>;
+            inputDOM.value = 'test01';
+            inputDOM.selectionEnd = inputDOM.selectionStart = 2;
+            input.simulate('input', event);
+            inputDOM.selectionEnd = inputDOM.selectionStart = selections;
+            await new Promise((resolve) => setTimeout(resolve));
+            expect(requestAnimationFrameSpy).toHaveBeenCalledTimes(2);
+            expect((input.getDOMNode() as HTMLInputElement).selectionEnd).toBe(2);
+        });
+
+        it('Test onClick value selection', async () => {
+            wrapper.setProps({ selectedKey: 'AU' });
+            const input = wrapper.find('input');
+            const inputDOM = input.getDOMNode() as HTMLInputElement;
+            const event = {
+                target: inputDOM
+            } as unknown as React.FormEvent<IComboBox>;
+
+            inputDOM.selectionEnd = inputDOM.selectionStart = 2;
+            input.simulate('click', event);
+            inputDOM.selectionEnd = inputDOM.selectionStart = 5;
+            await new Promise((resolve) => setTimeout(resolve));
+            expect((input.getDOMNode() as HTMLInputElement).selectionEnd).toBe(2);
+        });
+
         it('Test "reserQuery"', () => {
             openDropdown();
-            wrapper.find('input').simulate('input', {
-                target: {
-                    value: 'Au'
-                }
-            });
+            triggerSearch('Au');
             expect(wrapper.find(menuDropdownSelector).length).toEqual(1);
             let hiddenItemsExist = wrapper.props().options.some((option) => {
                 return option.hidden;
@@ -169,19 +212,11 @@ describe('<UIComboBox />', () => {
         it('Test list visibility', () => {
             expect(wrapper.state().isListHidden).toBeFalsy();
             wrapper.find('input').simulate('keyDown', {});
-            wrapper.find('input').simulate('input', {
-                target: {
-                    value: 'Lat'
-                }
-            });
+            triggerSearch('Lat');
             // List should be visible - there is some occurrences
             expect(wrapper.state().isListHidden).toBeFalsy();
             // List should be hidden - there any occurrence
-            wrapper.find('input').simulate('input', {
-                target: {
-                    value: '404'
-                }
-            });
+            triggerSearch('404');
             expect(wrapper.state().isListHidden).toBeTruthy();
         });
     });
@@ -317,9 +352,7 @@ describe('<UIComboBox />', () => {
                 .find('input')
                 .at(0)
                 .simulate('input', {
-                    target: {
-                        value: query
-                    }
+                    target: getInputTarget(query)
                 });
             expect(wrapper.find('.ts-Menu-option--highlighted').length).toEqual(1);
             expect(wrapper.find('.ts-Menu-option--highlighted').text()).toEqual(query);
@@ -423,7 +456,7 @@ describe('<UIComboBox />', () => {
                 }
                 // Open callout
                 openDropdown();
-                const input = wrapper.find('input.ms-ComboBox-Input');
+                const input = wrapper.find(inputSelector);
                 input.simulate('keyDown', { which: KeyCodes.down });
                 // Mock element
                 const element: HTMLElement = wrapper.find('.ts-ComboBox--selected').getDOMNode();
@@ -527,6 +560,236 @@ describe('<UIComboBox />', () => {
                 expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
                 wrapper.find('input').simulate('click');
                 expect(wrapper.find(menuDropdownSelector).length).toEqual(testCase.expectOpen ? 1 : 0);
+            });
+        }
+    });
+
+    describe('Test "isForceEnabled" property', () => {
+        const testCases = [true, false];
+        for (const testCase of testCases) {
+            it(`isForceEnabled=${testCase}`, () => {
+                wrapper.setProps({
+                    options: [],
+                    isForceEnabled: testCase
+                });
+                expect(wrapper.find(ComboBox).prop('disabled')).toEqual(!testCase);
+            });
+        }
+    });
+
+    it('Test "disabled" property', () => {
+        wrapper.setProps({
+            disabled: true
+        });
+        const inputProps = wrapper.find(inputSelector)?.props();
+        expect(inputProps?.disabled).toEqual(undefined);
+        expect(inputProps?.readOnly).toEqual(true);
+        expect(inputProps?.tabIndex).toEqual(undefined);
+        expect(inputProps?.['aria-disabled']).toEqual(true);
+    });
+
+    describe('Test "readonly" property', () => {
+        const testCases = [
+            {
+                readOnly: true,
+                expected: {
+                    readOnly: true,
+                    tabIndex: undefined
+                }
+            },
+            {
+                readOnly: true,
+                tabIndex: 4,
+                expected: {
+                    readOnly: true,
+                    tabIndex: 4
+                }
+            },
+            {
+                readOnly: true,
+                disabled: true,
+                expected: {
+                    readOnly: true,
+                    tabIndex: undefined
+                }
+            },
+            {
+                readOnly: undefined,
+                expected: {
+                    readOnly: false,
+                    tabIndex: undefined
+                }
+            },
+            {
+                readOnly: false,
+                expected: {
+                    readOnly: false,
+                    tabIndex: undefined
+                }
+            }
+        ];
+        for (const testCase of testCases) {
+            it(`"readOnly=${testCase.readOnly}", "tabIndex=${testCase.tabIndex}", "disabled=${testCase.disabled}"`, () => {
+                const { expected } = testCase;
+                wrapper.setProps({
+                    readOnly: testCase.readOnly,
+                    ...(testCase.tabIndex && { tabIndex: testCase.tabIndex }),
+                    ...(testCase.disabled && { disabled: testCase.disabled })
+                });
+                const autofill = wrapper.find(Autofill);
+                expect(autofill.length).toEqual(1);
+                const autofillProps = autofill.props();
+                expect(autofillProps.readOnly).toEqual(expected.readOnly);
+                expect(autofillProps.tabIndex).toEqual(expected.tabIndex);
+                const className = wrapper.find('.ts-ComboBox').prop('className');
+                expect(className?.includes('ts-ComboBox--readonly')).toEqual(
+                    !testCase.disabled ? !!expected.readOnly : false
+                );
+                expect(className?.includes('ts-ComboBox--disabled')).toEqual(!!testCase.disabled);
+                // Additional properties
+                if (!testCase.disabled && expected.readOnly) {
+                    expect(autofillProps['aria-readonly']).toEqual(true);
+                    expect('aria-disabled' in autofillProps).toEqual(true);
+                    expect(autofillProps['aria-disabled']).toEqual(undefined);
+                } else {
+                    expect('aria-readonly' in autofillProps).toEqual(false);
+                    expect(autofillProps['aria-disabled']).toEqual(!!testCase.disabled);
+                }
+            });
+        }
+    });
+
+    describe('Empty combobox classname', () => {
+        const testCases = [
+            {
+                text: undefined,
+                selectedKey: 'EE',
+                expected: false
+            },
+            {
+                text: undefined,
+                selectedKey: ['EE'],
+                expected: false
+            },
+            {
+                text: 'Dummy',
+                selectedKey: undefined,
+                expected: false
+            },
+            {
+                text: undefined,
+                selectedKey: undefined,
+                expected: true
+            },
+            {
+                text: undefined,
+                selectedKey: [],
+                expected: true
+            }
+        ];
+        for (const testCase of testCases) {
+            it(`"text=${testCase.text}", "selectedKey=${
+                Array.isArray(testCase.selectedKey) ? JSON.stringify(testCase.selectedKey) : testCase.selectedKey
+            }"`, () => {
+                wrapper.setProps({
+                    text: testCase.text,
+                    selectedKey: testCase.selectedKey
+                });
+                expect(wrapper.find('div.ts-ComboBox--empty').length).toEqual(testCase.expected ? 1 : 0);
+            });
+        }
+    });
+
+    describe('Combobox items with group headers', () => {
+        beforeEach(() => {
+            wrapper.setProps({
+                highlight: true,
+                options: groupsData
+            });
+            wrapper.update();
+        });
+
+        it('Test css selectors which are used in scss - with highlight', () => {
+            openDropdown();
+            expect(wrapper.find(headerItemSelector).length).toEqual(7);
+            // Search items and hide group header if no matching children
+            wrapper.find('input').simulate('keyDown', {});
+            triggerSearch('Est');
+            expect(wrapper.find(headerItemSelector).length).toEqual(1);
+            expect(wrapper.find(headerItemSelector).text()).toEqual('Europe');
+            // Search and match first group
+            triggerSearch('gypt');
+            expect(wrapper.find(headerItemSelector).length).toEqual(1);
+            expect(wrapper.find(headerItemSelector).text()).toEqual('Africa');
+            // Search and match last group
+            triggerSearch('dumy');
+            expect(wrapper.find(headerItemSelector).length).toEqual(1);
+            expect(wrapper.find(headerItemSelector).text()).toEqual('Unknown');
+            // Search and match multiple groups
+            triggerSearch('la');
+            expect(wrapper.find(headerItemSelector).length).toEqual(3);
+            // Search without matching
+            triggerSearch('404');
+            expect(wrapper.find(headerItemSelector).length).toEqual(0);
+            // Reset search
+            triggerSearch('');
+            expect(wrapper.find(headerItemSelector).length).toEqual(7);
+        });
+    });
+
+    it('Handle "onPendingValueChanged"', () => {
+        const onPendingValueChanged = jest.fn();
+        wrapper.setProps({
+            highlight: true,
+            onPendingValueChanged
+        });
+        expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+        // Open callout
+        expect(onPendingValueChanged).not.toBeCalled();
+        wrapper.find('input').simulate('keyDown', { which: KeyCodes.down });
+        expect(onPendingValueChanged).toBeCalled();
+        const callArgs = onPendingValueChanged.mock.calls[0];
+        expect(callArgs[0].key).toEqual('LV');
+        expect(callArgs[1]).toEqual(35);
+    });
+
+    describe('Test "calloutCollisionTransformation" property', () => {
+        const testCases = [
+            {
+                multiSelect: true,
+                enabled: true,
+                expected: true
+            },
+            {
+                multiSelect: false,
+                enabled: true,
+                expected: false
+            },
+            {
+                multiSelect: true,
+                enabled: false,
+                expected: false
+            }
+        ];
+        for (const testCase of testCases) {
+            const { multiSelect, enabled, expected } = testCase;
+            it(`calloutCollisionTransformation=${enabled}, multiSelect=${multiSelect}`, () => {
+                wrapper.setProps({
+                    multiSelect: testCase.multiSelect,
+                    calloutCollisionTransformation: testCase.enabled
+                });
+                const dropdown = wrapper.find(ComboBox);
+                expect(dropdown.length).toEqual(1);
+                const calloutProps = dropdown.prop('calloutProps');
+                if (expected) {
+                    expect(calloutProps?.preventDismissOnEvent).toBeDefined();
+                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeDefined();
+                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeDefined();
+                } else {
+                    expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
+                    expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
+                    expect(calloutProps?.layerProps?.onLayerWillUnmount).toBeUndefined();
+                }
             });
         }
     });

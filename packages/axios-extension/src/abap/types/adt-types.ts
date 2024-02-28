@@ -74,11 +74,20 @@ export enum TenantType {
     Customer = 'CUSTOMER'
 }
 
-/**
- * Possible values for operations type property: (C)loud and on-(P)remise.
- */
 export type OperationsType = 'C' | 'P';
 
+/**
+ * ATO Settings properties
+ *
+ * @typedef AtoSettings
+ * @property {string} developmentPackage Local package name i.e YY1_TEST_PACKAGE
+ * @property {string} developmentPrefix Describes a custom prefix that is used for your packages and transports i.e.YY1_ | ZZ1_
+ * @property {OperationsType} operationsType Hosting type i.e. Cloud | onPremise
+ * @property {boolean} isExtensibilityDevelopmentSystem Whether target system is a extensible development tenant, true | false
+ * @property {TenantType} tenantType Type of tenant exposed i.e. SAP | CUSTOMER
+ * @property {boolean} isTransportRequestRequired Whether Transport Request (TR) is required during deployment, true | false
+ * @property {boolean} isConfigured Whether ATO is enabled on target system, true | false
+ */
 export interface AtoSettings {
     developmentPackage?: string;
     developmentPrefix?: string;
@@ -86,6 +95,7 @@ export interface AtoSettings {
     isExtensibilityDevelopmentSystem?: boolean;
     tenantType?: TenantType;
     isTransportRequestRequired?: boolean;
+    isConfigured?: boolean;
 }
 
 // Success | Error
@@ -95,3 +105,25 @@ export type AdtTransportStatus = 'S' | 'E';
 // the <DLVUNIT/> element contain text that indicate it is local package.
 // No transport number required for deploying to local pacakge.
 export const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
+
+export interface ArchiveFileNode {
+    /**
+     * file or folder name only
+     */
+    basename: string;
+    /**
+     * Path to the file or folder. Ready to be passed to the `path`
+     * argument of FileStoreService.getAppArchiveContent() method.
+     *
+     * @see FileStoreService.getAppArchiveContent
+     */
+    path: string;
+    /**
+     * 'file' | 'folder'
+     */
+    type: ArchiveFileNodeType;
+}
+
+export type ArchiveFileNodeType = 'file' | 'folder';
+
+export type ArchiveFileContentType<T> = T extends 'file' ? string : T extends 'folder' ? ArchiveFileNode[] : never;

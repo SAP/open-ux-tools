@@ -6,15 +6,15 @@
                 "type": "OData",
                 "settings": {
                     "annotations": [<%if (locals.annotations && annotations.technicalName) {%>
-                        "<%- annotations.technicalName %>"<% if (locals.localAnnotationsName) {%>,<%}%><% } %><% if (locals.localAnnotationsName) { %>
+                        "<%- annotations.name %>"<% if (locals.localAnnotationsName) {%>,<%}%><% } %><% if (locals.localAnnotationsName) { %>
                         "<%- localAnnotationsName %>"<% } %>
-                    ],
-                    "localUri": "localService/metadata.xml"<%if (version === '4') {%>,
+                    ]<% if (locals.metadata) { %>,
+                    "localUri": "localService/metadata.xml" <% } %><%if (version === '4') {%>,
                     "odataVersion": "4.0"<% } %><%if (version === '2') {%>,
                     "odataVersion": "2.0"<% } %>
                 }
             }<%if (locals.annotations && annotations.technicalName) {%>,
-            "<%- annotations.technicalName %>": {
+            "<%- annotations.name %>": {
                 "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(annotations.technicalName) %>',Version='0001')/$value/",
                 "type": "ODataAnnotation",
                 "settings": {

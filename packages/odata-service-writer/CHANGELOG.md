@@ -1,5 +1,191 @@
 # @sap-ux/odata-service-writer
 
+## 0.16.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-config@0.21.1
+
+## 0.16.0
+
+### Minor Changes
+
+-   446f290c: adds new service type
+
+## 0.15.1
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+
+## 0.15.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+
+## 0.14.36
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
+## 0.14.35
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+
+## 0.14.34
+
+### Patch Changes
+
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-config@0.19.4
+
+## 0.14.33
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/ui5-config@0.19.3
+
+## 0.14.32
+
+### Patch Changes
+
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-config@0.19.2
+
+## 0.14.31
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+
+## 0.14.30
+
+### Patch Changes
+
+-   f50523da: TechnicalName key might not be present in all scenarios
+
+## 0.14.29
+
+### Patch Changes
+
+-   98d40960: Technical Name key to be schema valid
+
+## 0.14.28
+
+### Patch Changes
+
+-   6e403f27: fix(deps): update dependency fast-xml-parser to v4.2.7
+
+## 0.14.27
+
+### Patch Changes
+
+-   Updated dependencies [375ca861]
+    -   @sap-ux/ui5-config@0.19.0
+
+## 0.14.26
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/ui5-config@0.18.2
+
+## 0.14.25
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+-   Updated dependencies [d9355692]
+    -   @sap-ux/ui5-config@0.18.1
+
+## 0.14.24
+
+### Patch Changes
+
+-   Updated dependencies [59863d93]
+    -   @sap-ux/ui5-config@0.18.0
+
+## 0.14.23
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/ui5-config@0.17.1
+
+## 0.14.22
+
+### Patch Changes
+
+-   e4f9748b: Upgrade vulnerable module fast-xml-parser
+
+## 0.14.21
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-config@0.17.0
+
+## 0.14.20
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/ui5-config@0.16.6
+
+## 0.14.19
+
+### Patch Changes
+
+-   Updated dependencies [e7614e5]
+    -   @sap-ux/ui5-config@0.16.5
+
+## 0.14.18
+
+### Patch Changes
+
+-   35d1e15: tbi: Support @ui5/cli v3 in the generated projects
+
+## 0.14.17
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/ui5-config@0.16.4
+
+## 0.14.16
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+
+## 0.14.15
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/ui5-config@0.16.2
+
 ## 0.14.14
 
 ### Patch Changes

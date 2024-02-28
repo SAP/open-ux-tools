@@ -31,15 +31,22 @@ function readManifest(fs: Editor, basePath: string): Manifest {
  * Retrieves the application type of the main datasource (FreeStyle, FE V2 or FE V4).
  *
  * @param manifest - the app descriptor of the app
- * @returns the application type. An exception is thrown if it can't be found or if it's not supported
+ * @returns {{ applicationType: string, hideFilterBar: boolean }} An object containing the application type and hideFilterBar flag. An exception is thrown if it can't be found or if it's not supported
  */
-function getAppTypeFromManifest(manifest: Manifest): string {
+function getAppTypeAndHideFilterBarFromManifest(manifest: Manifest): {
+    applicationType: string;
+    hideFilterBar: boolean;
+} {
     const appTargets = manifest['sap.ui5']?.routing?.targets;
+    let hideFilterBar: boolean = false;
     let isFEV4 = false;
     for (const targetKey in appTargets) {
         const target = appTargets[targetKey] as FEV4ManifestTarget;
         if (target.type === 'Component' && target.name && target.name in SupportedPageTypes) {
             isFEV4 = true;
+            if (SupportedPageTypes[target.name] === 'ListReport') {
+                hideFilterBar = target.options?.settings?.hideFilterBar ?? false;
+            }
         }
     }
 
@@ -47,7 +54,7 @@ function getAppTypeFromManifest(manifest: Manifest): string {
         throw new ValidationError(t('error.badApplicationType'));
     }
 
-    return 'v4'; // For the time being, only FE V4 is supported
+    return { applicationType: 'v4', hideFilterBar }; // For the time being, only FE V4 is supported
 }
 
 /**
@@ -86,17 +93,23 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
         target?.name &&
         target.name in SupportedPageTypes &&
         target?.id &&
-        target?.options?.settings?.entitySet
+        (target?.options?.settings?.entitySet || target?.options?.settings?.contextPath)
     ) {
-        return {
+        const pageConfig: FEV4OPAPageConfig = {
             appPath,
             appID,
             targetKey,
             componentID: target.id,
-            entitySet: target.options.settings.entitySet,
             template: SupportedPageTypes[target.name],
             isStartup: false
         };
+
+        if (target.options.settings.contextPath) {
+            pageConfig.contextPath = target.options.settings.contextPath;
+        } else if (target.options.settings.entitySet) {
+            pageConfig.entitySet = target.options.settings.entitySet;
+        }
+        return pageConfig;
     } else {
         return undefined;
     }
@@ -108,10 +121,16 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
  * @param manifest - the app descriptor of the target app
  * @param opaConfig - parameters for the generation
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
+ * @param opaConfig.htmlTarget - the name of the html file that will be used in the OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
+ * @param hideFilterBar - whether the filter bar should be hidden in the generated tests
  * @returns OPA test configuration object
  */
-function createConfig(manifest: Manifest, opaConfig: { scriptName?: string; appID?: string }): FEV4OPAConfig {
+function createConfig(
+    manifest: Manifest,
+    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
+    hideFilterBar: boolean
+): FEV4OPAConfig {
     // General application info
     const { appID, appPath } = getAppFromManifest(manifest, opaConfig.appID);
 
@@ -119,7 +138,9 @@ function createConfig(manifest: Manifest, opaConfig: { scriptName?: string; appI
         appID,
         appPath,
         pages: [],
-        opaJourneyFileName: opaConfig.scriptName || 'FirstJourney'
+        opaJourneyFileName: opaConfig.scriptName ?? 'FirstJourney',
+        htmlTarget: opaConfig.htmlTarget ?? 'index.html',
+        hideFilterBar
     };
 
     // Identify startup targets from the routes
@@ -237,21 +258,22 @@ function writePageObject(
  * @param basePath - the absolute target path where the application will be generated
  * @param opaConfig - parameters for the generation
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
+ * @param opaConfig.htmlTarget - the name of the html that will be used in OPA journey file. If not specified, 'index.html' will be used
  * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
 export function generateOPAFiles(
     basePath: string,
-    opaConfig: { scriptName?: string; appID?: string },
+    opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
     fs?: Editor
 ): Editor {
     const editor = fs || create(createStorage());
 
     const manifest = readManifest(editor, basePath);
-    const applicationType = getAppTypeFromManifest(manifest);
+    const { applicationType, hideFilterBar } = getAppTypeAndHideFilterBarFromManifest(manifest);
 
-    const config = createConfig(manifest, opaConfig);
+    const config = createConfig(manifest, opaConfig, hideFilterBar);
 
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
     const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
@@ -282,7 +304,8 @@ export function generateOPAFiles(
     const journeyParams = {
         startPages,
         startLR: LROP.pageLR?.targetKey,
-        navigatedOP: LROP.pageOP?.targetKey
+        navigatedOP: LROP.pageOP?.targetKey,
+        hideFilterBar: config.hideFilterBar
     };
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration/FirstJourney.js'),
@@ -316,7 +339,7 @@ export function generatePageObjectFile(
     const editor = fs || create(createStorage());
 
     const manifest = readManifest(editor, basePath);
-    const applicationType = getAppTypeFromManifest(manifest);
+    const { applicationType } = getAppTypeAndHideFilterBarFromManifest(manifest);
 
     const pageConfig = createPageConfig(manifest, pageObjectParameters.targetKey, pageObjectParameters.appID);
     if (pageConfig) {

@@ -1,0 +1,34 @@
+.UIActionCallout-callout {
+    margin-top: 12px;
+    max-height: 51px;
+    cursor: pointer;
+    box-sizing: revert;
+    background-color: var(--vscode-editor-background);
+
+    &:hover {
+        .ms-Callout-main,
+        .ms-Callout-beak {
+            background: var(--vscode-list-hoverBackground);
+        }
+        .UIActionCallout-link {
+            text-decoration: none;
+        }
+    }
+    .ms-Callout-beak {
+        left: 12px !important;
+        box-shadow: none;
+    }
+}
+
+.UIActionCallout-subText {
+    padding-top: 5px;
+    font-size: 13px;
+}
+
+.UIActionCallout-link {
+    vertical-align: top;
+    padding-left: 5px;
+    font-size: 13px;
+    font-weight: 700;
+    pointer-events: none;
+}

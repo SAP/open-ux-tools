@@ -8,8 +8,9 @@ import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults
 import type { Manifest } from '../common/types';
 import { validateVersion, validateBasePath } from '../common/validate';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
+import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
-import { coerce } from 'semver';
+import { coerce, gte } from 'semver';
 
 /**
  * Get the template folder for the given UI5 version.
@@ -19,9 +20,9 @@ import { coerce } from 'semver';
  */
 export function getManifestRoot(ui5Version?: string): string {
     const minVersion = coerce(ui5Version);
-    if (!minVersion || minVersion.minor >= 86) {
+    if (!minVersion || gte(minVersion, '1.86.0')) {
         return getTemplatePath('/column/1.86');
-    } else if (minVersion.minor >= 85) {
+    } else if (gte(minVersion, '1.85.0')) {
         return getTemplatePath('/column/1.85');
     } else {
         return getTemplatePath('column/1.84');
@@ -49,7 +50,10 @@ function enhanceConfig(
 
     // Apply event handler
     if (config.eventHandler) {
-        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, false, config.typescript);
+        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, {
+            controllerSuffix: false,
+            typescript: config.typescript
+        });
     }
 
     // generate column content
@@ -86,10 +90,14 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(customColumn.minUI5Version);
     const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeColumn, {});
-    fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
+    extendJSON(fs, {
+        filepath: manifestPath,
+        content: filledTemplate,
+        tabInfo: customColumn.tabInfo
+    });
 
     // add fragment
-    const viewPath = join(completeColumn.path, `${completeColumn.name}.fragment.xml`);
+    const viewPath = join(completeColumn.path, `${completeColumn.fragmentFile ?? completeColumn.name}.fragment.xml`);
     if (completeColumn.control || !fs.exists(viewPath)) {
         fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeColumn);
     }

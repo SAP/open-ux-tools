@@ -2,15 +2,12 @@
     "sap.ui5": {
         "routing": {
             "targets": {
-                "<%- entity %><%- name %>": {
+                "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>": {
                     "viewId": "<%- name %>View",
                     "viewName": "<%- ns %>.<%- name %>",<%if (locals.controlAggregation) {%>
                     "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
                     "options": {
-                        "settings": {
-                            "entitySet": "<%- entity %>",
-                            "navigation": { }
-                        }
+                        "settings": <%- JSON.stringify(settings) %>
                     }
                 }<%if (locals.navigation) {%>,
                 "<%- navigation.sourcePage %>": {
@@ -19,7 +16,7 @@
                             "navigation": {
                                 "<%- navigation.navEntity %>": {
                                     "detail": {
-                                        "route": "<%- entity %><%- name %>"
+                                        "route": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>"
                                     }
                                 }
                             }

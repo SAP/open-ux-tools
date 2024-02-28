@@ -2,10 +2,17 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 
+export interface TabInfo {
+    // Spaces size
+    size?: number;
+    // Use '\t' symbol instead of space
+    useTabSymbol?: boolean;
+}
+
 /**
  * Common properties for any custom element of the flexible programming model.
  */
-export interface CustomElement {
+export interface CustomElement extends WriterConfig {
     /**
      * Name of the custom element that is to be added to the application.
      */
@@ -67,7 +74,7 @@ export interface ViewVariant {
     /**
      * The annotationPath of a specific variant.
      */
-    annotationPath: string;
+    annotationPath?: string;
     /**
      * View title, is shown in the tab item.
      */
@@ -148,6 +155,10 @@ export interface EventHandlerConfiguration {
      * If file exists, then existing file should be appended with passed script fragment.
      */
     insertScript?: TextFragmentInsertion;
+    /**
+     * Controller extension prefix.
+     */
+    controllerPrefix?: '.extension';
 }
 
 export interface EventHandler {
@@ -159,4 +170,19 @@ export interface EventHandler {
      * 2. Pass non-default function name(default is "onPress");
      */
     eventHandler?: true | string | EventHandlerConfiguration;
+}
+
+export interface WriterConfig {
+    /**
+     * Tab size info.
+     * Currently is used only for 'manifest.json' update.
+     */
+    tabInfo?: TabInfo;
+}
+
+export interface CustomFragment {
+    /**
+     * Name of the custom element fragment.
+     */
+    fragmentFile?: string;
 }

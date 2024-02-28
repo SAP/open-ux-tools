@@ -283,8 +283,8 @@ describe('<UIDialog />', () => {
                   },
                   "backgroundColor": "var(--vscode-editorWidget-background)",
                   "border": "1px solid var(--vscode-editorWidget-border)",
-                  "borderRadius": 0,
-                  "boxShadow": "0px 4px 10px rgba(0, 0, 0, 0.3)",
+                  "borderRadius": 4,
+                  "boxShadow": "var(--ui-box-shadow-medium)",
                   "minHeight": 100,
                   "overflow": "hidden",
                 }
@@ -350,8 +350,8 @@ describe('<UIDialog />', () => {
                 Object {
                   "backgroundColor": "var(--vscode-editorWidget-background)",
                   "border": "1px solid var(--vscode-editorWidget-border)",
-                  "borderRadius": 0,
-                  "boxShadow": "0px 4px 10px rgba(0, 0, 0, 0.3)",
+                  "borderRadius": 4,
+                  "boxShadow": "var(--ui-box-shadow-medium)",
                   "minHeight": 100,
                 }
             `);
@@ -433,5 +433,52 @@ describe('<UIDialog />', () => {
             expect(titleElement.length).toEqual(1);
             expect(focusSpy).toBeCalledTimes(0);
         });
+    });
+
+    describe('Property "isOpenAnimated"', () => {
+        const getRootStyles = (): React.CSSProperties => {
+            const dialog = wrapper.find(Dialog);
+            const dialogProps = dialog.props();
+            return (dialogProps.styles as IDialogStyles).root as React.CSSProperties;
+        };
+        const testCases = [
+            {
+                value: true,
+                expectOpacity: 0
+            },
+            {
+                value: undefined,
+                expectOpacity: 0
+            },
+            {
+                value: false,
+                expectOpacity: undefined
+            }
+        ];
+        for (const testCase of testCases) {
+            it(`Open with "isOpenAnimated=${testCase.value}"`, () => {
+                wrapper = Enzyme.mount(
+                    <UIDialog
+                        acceptButtonText="Yes"
+                        cancelButtonText="No"
+                        onAccept={onAcceptSpy}
+                        onCancel={onRejectSpy}
+                        isOpen={false}
+                        isOpenAnimated={testCase.value}>
+                        <div className="dummy"></div>
+                    </UIDialog>
+                );
+                let styles = getRootStyles();
+                // Opacity before opened
+                expect(styles.opacity).toEqual(testCase.expectOpacity);
+                // Open dialog to simulate opacity update
+                wrapper.setProps({
+                    isOpen: true
+                });
+                wrapper.update();
+                styles = getRootStyles();
+                expect(styles.opacity).toEqual(undefined);
+            });
+        }
     });
 });

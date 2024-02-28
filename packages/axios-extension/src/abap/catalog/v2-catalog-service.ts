@@ -91,16 +91,25 @@ export class V2CatalogService extends CatalogService {
      * @returns service information matching the given filter
      */
     protected async findService({ title, path }: FilterOptions): Promise<ODataServiceV2Info> {
+        let version = 1;
         if (!title) {
-            title = path.replace(/\/$/, '').split('/').pop().toUpperCase();
+            const titleWithParameters = path.replace(/\/$/, '').split('/').pop().split(';');
+            title = titleWithParameters[0].toUpperCase();
             if (!title) {
                 throw new Error(`Cannot determine service title from path: ${path}`);
             }
+            const segParams = titleWithParameters.slice(1);
+            segParams.forEach((parameter) => {
+                const [key, value] = parameter.split('=');
+                if (key === 'v') {
+                    version = parseInt(value, 10);
+                }
+            });
         }
 
         const params = {
             $format: 'json',
-            $filter: `Title eq '${title}'`
+            $filter: `Title eq '${title}' and TechnicalServiceVersion eq ${version}`
         };
         const response = await this.get<ODataServiceV2Info[]>(`/${this.entitySet}`, { params });
         const services = response.odata();

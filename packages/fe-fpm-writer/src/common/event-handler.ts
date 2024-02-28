@@ -5,6 +5,20 @@ import type { TextFragmentInsertion, EventHandlerConfiguration, InternalCustomEl
 import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../common/utils';
 
 /**
+ * Interface to describe event handler configuration options used during creation.
+ */
+interface EventHandlerConfigurationOptions {
+    // append controller suffix to new file, default value is "false"
+    controllerSuffix?: boolean;
+    // whether create Typescript file instead of Javascript
+    typescript?: boolean;
+    // path to the template without the extension, default value is "common/EventHandler"
+    templatePath?: string;
+    // event handler function name - 'onPress' is default, default value is "onPress"
+    eventHandlerFnName?: string;
+}
+
+/**
  * Interface to describe the input parameters for the generated event handler function.
  */
 export interface EventHandlerTypescriptParameters {
@@ -40,8 +54,7 @@ export const contextParameter: EventHandlerTypescriptParameters = {
  * @param fs - the memfs editor instance
  * @param config - configuration
  * @param eventHandler - eventHandler for creation
- * @param controllerSuffix - append controller suffix to new file
- * @param typescript - create Typescript file instead of Javascript
+ * @param eventHandlerOptions - eventHandler options
  * @param parameters - parameter configurations for the event handler
  * @returns {string} full namespace path to method
  */
@@ -49,19 +62,19 @@ export function applyEventHandlerConfiguration(
     fs: Editor,
     config: Partial<InternalCustomElement>,
     eventHandler: EventHandlerConfiguration | true | string,
-    controllerSuffix = false,
-    typescript?: boolean,
+    eventHandlerOptions: EventHandlerConfigurationOptions,
     parameters: EventHandlerTypescriptParameters = defaultParameter
 ): string {
+    const { controllerSuffix, typescript, templatePath = 'common/EventHandler' } = eventHandlerOptions;
+    let { eventHandlerFnName = 'onPress' } = eventHandlerOptions;
     if (typeof eventHandler === 'string') {
         // Existing event handler is passed - no need for file creation/update
         return eventHandler;
     }
-    // New event handler function name - 'onPress' is default
-    let eventHandlerFnName = 'onPress';
     let insertScript: TextFragmentInsertion | undefined;
-    // By default - use config name for js file name
-    let fileName = `${config.name}`;
+    let controllerPrefix: string | undefined = '';
+    // By default - use config name for created file name
+    let fileName = config.name;
     if (typeof eventHandler === 'object') {
         if (eventHandler.fnName) {
             eventHandlerFnName = eventHandler.fnName;
@@ -71,14 +84,16 @@ export function applyEventHandlerConfiguration(
             // Use passed file name
             fileName = eventHandler.fileName;
         }
+        controllerPrefix = eventHandler.controllerPrefix;
     }
 
     const ext = typescript ? 'ts' : 'js';
     const controllerPath = join(config.path || '', `${fileName}${controllerSuffix ? '.controller' : ''}.${ext}`);
     if (!fs.exists(controllerPath)) {
-        fs.copyTpl(getTemplatePath(`common/EventHandler.${ext}`), controllerPath, {
+        fs.copyTpl(getTemplatePath(`${templatePath}.${ext}`), controllerPath, {
             eventHandlerFnName,
-            parameters
+            parameters,
+            ...config
         });
     } else if (insertScript) {
         // Read current file content
@@ -92,5 +107,6 @@ export function applyEventHandlerConfiguration(
         fs.write(controllerPath, content);
     }
     // Return full namespace path to method
-    return `${config.ns}.${fileName}.${eventHandlerFnName}`;
+    const fullNamespace = `${config.ns}.${fileName}.${eventHandlerFnName}`;
+    return controllerPrefix ? `${controllerPrefix}.${fullNamespace}` : `${fullNamespace}`;
 }

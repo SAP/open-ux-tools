@@ -232,6 +232,51 @@ exports[`CustomView with existing views 2`] = `
 "
 `;
 
+exports[`CustomView with existing views and custom views 1`] = `
+Object {
+  "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "existingView",
+    },
+    Object {
+      "key": "existingCustomView",
+      "template": "sample.ext.frg.existingFragment",
+    },
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+  "showCounts": false,
+}
+`;
+
+exports[`CustomView with existing views and custom views 2`] = `
+"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:u=\\"sap.ui.unified\\">
+    <macros:Table id=\\"NewCustomView\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" displayMode=\\"true\\" />
+</core:FragmentDefinition>
+"
+`;
+
+exports[`CustomView with existing views, overwrite custom view entry, no view update 1`] = `
+Object {
+  "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "existingView",
+    },
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+  "showCounts": false,
+}
+`;
+
 exports[`CustomView with new handler 1`] = `
 Object {
   "sap.ui.controllerExtensions": Object {
@@ -324,5 +369,24 @@ exports[`CustomView with new handler and new table fragment (all properties) 4`]
         }
     };
 });
+"
+`;
+
+exports[`CustomView without existing views 1`] = `
+Object {
+  "paths": Array [
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+}
+`;
+
+exports[`CustomView without existing views 2`] = `
+"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:u=\\"sap.ui.unified\\">
+    <macros:Table id=\\"NewCustomView\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" displayMode=\\"true\\" />
+</core:FragmentDefinition>
 "
 `;

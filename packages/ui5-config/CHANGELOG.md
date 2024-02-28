@@ -1,5 +1,140 @@
 # @sap-ux/ui5-config
 
+## 0.21.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/yaml@0.14.1
+
+## 0.21.0
+
+### Minor Changes
+
+-   3f977f21: Enhanced functionality to support adding customer properties
+
+## 0.20.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/yaml@0.14.0
+
+## 0.19.5
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/yaml@0.13.9
+
+## 0.19.4
+
+### Patch Changes
+
+-   65010b09: fix - use patch version 0 for ui5 types semver for more reliable installs
+
+## 0.19.3
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/yaml@0.13.8
+
+## 0.19.2
+
+### Patch Changes
+
+-   3137514f: use platform independent UI5 CDN URLs
+
+## 0.19.1
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+
+## 0.19.0
+
+### Minor Changes
+
+-   375ca861: publish npm module after failure on PR #1110
+
+## 0.18.2
+
+### Patch Changes
+
+-   4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
+-   Updated dependencies [4ba13898]
+    -   @sap-ux/yaml@0.13.7
+
+## 0.18.1
+
+### Patch Changes
+
+-   d9355692: Upgrade vulnerable modules semver and fast-xml-parser
+
+## 0.18.0
+
+### Minor Changes
+
+-   59863d93: Removed types determination workaround.
+
+## 0.17.1
+
+### Patch Changes
+
+-   25911701: Fix for 'promises must be awaited' sonar issues
+-   Updated dependencies [25911701]
+    -   @sap-ux/yaml@0.13.6
+
+## 0.17.0
+
+### Minor Changes
+
+-   31207b95: abstract ui5-app-writer functions into appropriate modules
+
+## 0.16.6
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/yaml@0.13.5
+
+## 0.16.5
+
+### Patch Changes
+
+-   e7614e5: Add minor types for smartlinks configuration
+
+## 0.16.4
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/yaml@0.13.4
+
+## 0.16.3
+
+### Patch Changes
+
+-   Updated dependencies [3327a3f]
+    -   @sap-ux/yaml@0.13.3
+
+## 0.16.2
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/yaml@0.13.2
+
 ## 0.16.1
 
 ### Patch Changes

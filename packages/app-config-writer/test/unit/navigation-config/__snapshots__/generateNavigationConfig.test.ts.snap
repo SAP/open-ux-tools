@@ -1,0 +1,137 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Unit tests for navigation config generation generate inbound nav config entries 1`] = `
+Object {
+  "_version": "1.38.0",
+  "sap.app": Object {
+    "crossNavigation": Object {
+      "inbounds": Object {
+        "semanticObject1-action1": Object {
+          "action": "action1",
+          "semanticObject": "semanticObject1",
+          "signature": Object {
+            "additionalParameters": "allowed",
+            "parameters": Object {},
+          },
+          "subTitle": "subtitle1",
+          "title": "title1",
+        },
+      },
+    },
+    "id": "testNameSpace.alpv2",
+    "type": "application",
+  },
+}
+`;
+
+exports[`Unit tests for navigation config generation generate inbound nav config entries 2`] = `
+Object {
+  "_version": "1.38.0",
+  "sap.app": Object {
+    "crossNavigation": Object {
+      "inbounds": Object {
+        "semanticObject1-action1": Object {
+          "action": "action1",
+          "semanticObject": "semanticObject1",
+          "signature": Object {
+            "additionalParameters": "allowed",
+            "parameters": Object {},
+          },
+          "subTitle": "{{subtitle1}}",
+          "title": "{{title1}}",
+        },
+      },
+    },
+    "id": "testNameSpace.alpv2",
+    "type": "application",
+  },
+}
+`;
+
+exports[`Unit tests for navigation config generation generate inbound nav config entries 3`] = `
+Object {
+  "_version": "1.38.0",
+  "sap.app": Object {
+    "applicationVersion": Object {
+      "version": "0.0.1",
+    },
+    "crossNavigation": Object {
+      "inbounds": Object {
+        "semanticObject1-action1": Object {
+          "action": "action1",
+          "semanticObject": "semanticObject1",
+          "subTitle": "subtitle1",
+          "title": "title1",
+        },
+        "semanticObject2-action2": Object {
+          "action": "action2",
+          "semanticObject": "semanticObject2",
+          "signature": Object {
+            "additionalParameters": "allowed",
+            "parameters": Object {},
+          },
+          "subTitle": "subtitle2",
+          "title": "title2",
+        },
+      },
+    },
+    "description": "{{appDescription}}",
+    "i18n": "i18n/i18n.properties",
+    "id": "testNameSpace.alpv2",
+    "title": "{{appTitle}}",
+    "type": "application",
+  },
+}
+`;
+
+exports[`Unit tests for navigation config generation generate inbound nav config entries 5`] = `
+Object {
+  "_version": "1.38.0",
+  "sap.app": Object {
+    "applicationVersion": Object {
+      "version": "0.0.1",
+    },
+    "crossNavigation": Object {
+      "inbounds": Object {
+        "semanticObject1-action1": Object {
+          "action": "action1",
+          "semanticObject": "semanticObject1",
+          "signature": Object {
+            "additionalParameters": "allowed",
+            "parameters": Object {},
+          },
+          "subTitle": "subtitle3",
+          "title": "title3",
+        },
+      },
+    },
+    "description": "{{appDescription}}",
+    "i18n": "i18n/i18n.properties",
+    "id": "testNameSpace.alpv2",
+    "title": "{{appTitle}}",
+    "type": "application",
+  },
+}
+`;
+
+exports[`Unit tests for navigation config generation generate inbound nav config entries 6`] = `
+Object {
+  "_version": "1.38.0",
+  "sap.app": Object {
+    "crossNavigation": Object {
+      "inbounds": Object {
+        "semanticObject1-action1": Object {
+          "action": "action1",
+          "semanticObject": "semanticObject1",
+          "signature": Object {
+            "additionalParameters": "allowed",
+            "parameters": Object {},
+          },
+        },
+      },
+    },
+    "id": "testNameSpace.alpv2",
+    "type": "application",
+  },
+}
+`;

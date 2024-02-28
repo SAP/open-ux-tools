@@ -9,7 +9,8 @@ export type FEV4OPAPageConfig = {
     appPath: string;
     template: string;
     componentID: string;
-    entitySet: string;
+    entitySet?: string;
+    contextPath?: string;
     targetKey: string;
     isStartup: boolean;
 };
@@ -19,6 +20,8 @@ export type FEV4OPAConfig = {
     appPath: string;
     pages: FEV4OPAPageConfig[];
     opaJourneyFileName: string;
+    htmlTarget: string;
+    hideFilterBar: boolean;
 };
 
 export type FEV4ManifestTarget = {
@@ -28,6 +31,8 @@ export type FEV4ManifestTarget = {
     options?: {
         settings?: {
             entitySet?: string;
+            contextPath?: string;
+            hideFilterBar?: boolean;
             navigation?: {
                 [id: string]: {
                     detail?: {

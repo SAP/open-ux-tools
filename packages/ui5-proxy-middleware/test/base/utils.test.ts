@@ -2,7 +2,6 @@ import {
     filterCompressedHtmlFiles,
     getCorporateProxyServer,
     getHtmlFile,
-    getManifest,
     getWebAppFolderFromYaml,
     getYamlFile,
     hideProxyCredentials,
@@ -20,8 +19,9 @@ import * as baseUtils from '../../src/base/utils';
 import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
 
-describe('Utils', () => {
+describe('utils', () => {
     const existsMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
     const readFileMock = jest.spyOn(fs, 'readFileSync').mockReturnValue('');
     const logger = new ToolsLogger({
@@ -55,11 +55,11 @@ describe('Utils', () => {
             end: jest.fn()
         };
         const logger = {
-            info: jest.fn()
+            debug: jest.fn()
         };
         proxyRequestHandler(proxyReq as any, res as any, etag, logger as any);
-        expect(logger.info).toHaveBeenCalledTimes(1);
-        expect(logger.info).toHaveBeenCalledWith('/mypath');
+        expect(logger.debug).toHaveBeenCalledTimes(1);
+        expect(logger.debug).toHaveBeenCalledWith('/mypath');
         expect(res.statusCode).toEqual(304);
         expect(res.end).toHaveBeenCalledTimes(1);
     });
@@ -298,85 +298,19 @@ describe('Utils', () => {
     });
 
     test('setHtmlResponse: use res.send()', () => {
-        const mockSend = jest.fn();
-        const mockContentType = jest.fn().mockImplementation(() => {
-            return {
-                send: mockSend
-            };
-        });
-        const mockStatus = jest.fn().mockImplementation(() => {
-            return {
-                contentType: mockContentType
-            };
-        });
         const res = {
-            status: mockStatus
+            writeHead: jest.fn(),
+            write: jest.fn(),
+            end: jest.fn()
         } as unknown as any;
         const html = '<html></html>';
         setHtmlResponse(res, html);
-        expect(mockStatus).toBeCalledTimes(1);
-        expect(mockStatus).toBeCalledWith(200);
-        expect(mockContentType).toBeCalledTimes(1);
-        expect(mockContentType).toBeCalledWith('html');
-        expect(mockSend).toHaveBeenCalledWith(html);
-    });
-
-    test('getManifest: returns manifest.json', async () => {
-        const manifest = {
-            _version: '1.32.0'
-        };
-        readFileMock.mockImplementation((path) =>
-            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
-        );
-        const result = await getManifest([]);
-        expect(result).toEqual(manifest);
-    });
-
-    test('getUI5VersionFromManifest: return undefined if sap.ui5 section is missing in manifest.json', async () => {
-        const manifest = {
-            _version: '1.32.0'
-        };
-        readFileMock.mockImplementation((path) =>
-            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
-        );
-        const result = await baseUtils.getUI5VersionFromManifest([]);
-        expect(result).toBeUndefined();
-    });
-
-    test('getUI5VersionFromManifest: return undefined if sap.ui5.dependencies section is missing in manifest.json', async () => {
-        const manifest = {
-            _version: '1.32.0',
-            'sap.ui5': {}
-        };
-        readFileMock.mockImplementation((path) =>
-            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
-        );
-        const result = await baseUtils.getUI5VersionFromManifest([]);
-        expect(result).toBeUndefined();
-    });
-
-    test('getUI5VersionFromManifest: return undefined if sap.ui5.dependencies.minUI5Version is missing in manifest.json', async () => {
-        const manifest = {
-            _version: '1.32.0',
-            'sap.ui5': { dependencies: {} }
-        };
-        readFileMock.mockImplementation((path) =>
-            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
-        );
-        const result = await baseUtils.getUI5VersionFromManifest([]);
-        expect(result).toBeUndefined();
-    });
-
-    test('getUI5VersionFromManifest: return minUI5Version from manifest.json', async () => {
-        const manifest = {
-            _version: '1.32.0',
-            'sap.ui5': { dependencies: { minUI5Version: '1.86.4' } }
-        };
-        readFileMock.mockImplementation((path) =>
-            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
-        );
-        const result = await baseUtils.getUI5VersionFromManifest([]);
-        expect(result).toBe('1.86.4');
+        expect(res.writeHead).toBeCalledTimes(1);
+        expect(res.writeHead).toBeCalledWith(200, {
+            'Content-Type': 'text/html'
+        });
+        expect(res.write).toHaveBeenCalledWith(html);
+        expect(res.end).toBeCalledTimes(1);
     });
 
     test('setUI5Version: take version from YAML', async () => {
@@ -410,11 +344,8 @@ describe('Utils', () => {
         const manifest = {
             _version: '1.32.0',
             'sap.ui5': { dependencies: { minUI5Version: '1.96.0' } }
-        };
-        readFileMock.mockImplementation((path) =>
-            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
-        );
-        const result = await baseUtils.resolveUI5Version(undefined, log);
+        } as Manifest;
+        const result = await baseUtils.resolveUI5Version(undefined, log, manifest);
         expect(result).toEqual('1.96.0');
         expect(log.info).toBeCalledTimes(1);
         expect(log.info).toHaveBeenCalledWith('Using UI5 version 1.96.0 based on manifest.json');
@@ -525,9 +456,9 @@ describe('Utils', () => {
     describe('injectScripts', () => {
         const nextMock = jest.fn();
         const respMock: Response = {} as Partial<Response> as Response;
-        respMock.status = jest.fn().mockReturnValue(respMock);
-        respMock.contentType = jest.fn().mockReturnValue(respMock);
-        respMock.send = jest.fn().mockReturnValue(respMock);
+        respMock.writeHead = jest.fn();
+        respMock.write = jest.fn();
+        respMock.end = jest.fn();
 
         beforeEach(() => {
             nextMock.mockReset();
@@ -536,9 +467,11 @@ describe('Utils', () => {
         test('HTML is modified and response is sent', async () => {
             readFileMock.mockReturnValue('<html></html>');
             await baseUtils.injectScripts({ baseUrl: 'index.html' } as any, respMock, nextMock, []);
-            expect(respMock.status).toHaveBeenCalledWith(200);
-            expect(respMock.contentType).toHaveBeenCalledWith('html');
-            expect(respMock.send).toHaveBeenCalled();
+            expect(respMock.writeHead).toBeCalledTimes(1);
+            expect(respMock.writeHead).toBeCalledWith(200, {
+                'Content-Type': 'text/html'
+            });
+            expect(respMock.end).toHaveBeenCalled();
             expect(nextMock).not.toHaveBeenCalled();
         });
 

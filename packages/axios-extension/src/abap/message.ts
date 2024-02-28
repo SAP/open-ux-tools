@@ -8,6 +8,7 @@ export interface MessageDetail {
     code: string;
     message: string;
     severity: string;
+    longtext_url?: string;
 }
 
 /**
@@ -39,21 +40,55 @@ export interface ErrorMessage {
 }
 
 /**
+ *
+ * @param severity
+ * @param msg
+ * @param log
+ * @param error
+ */
+function logLevel(severity: string, msg: string, log: Logger, error = false): void {
+    if (severity) {
+        severity = severity.toLowerCase();
+        if (severity === 'success') {
+            log.info(msg);
+        } else {
+            if (severity === 'warning') {
+                severity = 'warn';
+            }
+            log[severity](msg);
+        }
+    } else {
+        error ? log.error(msg) : log.info(msg);
+    }
+}
+
+/**
  * Log a Gateway response.
  *
  * @param options  options
  * @param options.msg message string returned from gateway
  * @param options.log logger to be used
  * @param options.host optional url that should logged as clickable url
+ * @param options.isDest optional destination flag
  */
-export function prettyPrintMessage({ msg, log, host }: { msg: string; log: Logger; host?: string }): void {
+export function prettyPrintMessage({
+    msg,
+    log,
+    host,
+    isDest = false
+}: {
+    msg: string;
+    log: Logger;
+    host?: string;
+    isDest?: boolean;
+}): void {
     try {
         const jsonMsg = JSON.parse(msg) as SuccessMessage;
         log.info(jsonMsg.message);
-        logFullURL({ host, path: jsonMsg['longtext_url'], log });
+        logFullURL({ host, path: jsonMsg['longtext_url'], log, isDest });
         if (jsonMsg.details) {
             jsonMsg.details.forEach((entry) => {
-                log.info(entry.message);
+                logLevel(entry.severity, entry.message, log);
             });
         }
     } catch (error) {
@@ -67,36 +102,60 @@ export function prettyPrintMessage({ msg, log, host }: { msg: string; log: Logge
  * @param root0.host hostname
  * @param root0.path path
  * @param root0.log log
+ * @param root0.isDest destination
  */
-function logFullURL({ host, path, log }: { host: string; path?: string; log: Logger }): void {
+function logFullURL({
+    host,
+    path,
+    log,
+    isDest = false
+}: {
+    host: string;
+    path?: string;
+    log: Logger;
+    isDest?: boolean;
+}): void {
     if (host && path) {
         const base = new URL(host).origin; // We only care for the origin value
         // Add this instruction to the user because of this bug in VS Code: https://github.com/microsoft/vscode/issues/144898
         // It undoes the encoding of special characters in the URL sent to the browser
         log.info('Please copy/paste this URL in a browser for more details:');
+        if (isDest) {
+            log.info(
+                '(Note: You will need to replace the host in the URL with the internal host, if your destination is configured using an On-Premise SAP Cloud Connector)'
+            );
+        }
         log.info(new URL(path, base).href);
     }
 }
 
 /**
- * Log a Gateway error.
+ * Log Gateway errors returned from the S_MGW_ODATA_INNER_ERROR table which is a store of OData Inner Error data. In certain flows,
+ * for example, when test mode is enabled, not all error details should be displayed to the user and need to be restricted.
  *
  * @param  options options
  * @param options.error error message returned from gateway
  * @param options.log logger to be used
  * @param options.host optional host name to pretty print links
+ * @param options.isDest optional value if additional info should be printed
+ * @param showAllMessages optional, show all errors but restrict for certain flows i.e. test mode
  */
-export function prettyPrintError({ error, log, host }: { error: ErrorMessage; log: Logger; host?: string }): void {
+export function prettyPrintError(
+    { error, log, host, isDest }: { error: ErrorMessage; log: Logger; host?: string; isDest?: boolean },
+    showAllMessages = true
+): void {
     if (error) {
-        log.error(error.message?.value || 'An unknown error occurred.');
-        if (error.innererror) {
-            (error.innererror.errordetails || []).forEach((entry) => {
-                if (!entry.message.startsWith('<![CDATA')) {
-                    log.error(entry.message);
-                }
-                logFullURL({ host, path: error['longtext_url'], log });
-            });
-            for (const key in error.innererror.Error_Resolution || {}) {
+        if (showAllMessages) {
+            log.error(error.message?.value || 'An unknown error occurred.');
+        }
+        (error.innererror?.errordetails || []).forEach((entry) => {
+            if (!entry.message.startsWith('<![CDATA')) {
+                logLevel(entry.severity, entry.message, log, true);
+            }
+            logFullURL({ host, path: entry['longtext_url'], log, isDest });
+        });
+        if (showAllMessages && error.innererror?.Error_Resolution) {
+            for (const key in error.innererror.Error_Resolution) {
                 log.error(`${key}: ${error.innererror.Error_Resolution[key]}`);
             }
         }

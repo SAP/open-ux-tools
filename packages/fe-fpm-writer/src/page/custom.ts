@@ -4,13 +4,14 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { CustomPage, InternalCustomPage } from './types';
-import { getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
+import { initializeTargetSettings, getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
 import { setCommonDefaults } from '../common/defaults';
 import type { Manifest } from '../common/types';
 import { validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
-import { coerce } from 'semver';
+import { coerce, gte } from 'semver';
 import { addExtensionTypes } from '../common/utils';
+import { extendJSON } from '../common/file';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -25,6 +26,7 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
 
     // set common defaults
     const config = setCommonDefaults(data, manifestPath, manifest) as InternalCustomPage;
+    config.settings = initializeTargetSettings(data);
 
     // set FCL configuration
     const fclConfig = getFclConfig(manifest, config.navigation);
@@ -47,7 +49,7 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
  */
 export function getTemplateRoot(ui5Version?: string): string {
     const minVersion = coerce(ui5Version);
-    if (!minVersion || minVersion.minor >= 94) {
+    if (!minVersion || gte(minVersion, '1.94.0')) {
         return getTemplatePath('/page/custom/1.94');
     } else {
         return getTemplatePath('/page/custom/1.84');
@@ -77,18 +79,29 @@ export function generate(basePath: string, data: CustomPage, fs?: Editor): Edito
     const root = getTemplateRoot(data.minUI5Version);
 
     // enhance manifest.json
-    fs.extendJSON(
-        manifestPath,
-        JSON.parse(render(fs.read(join(root, `manifest.json`)), config, {})),
-        getManifestJsonExtensionHelper(config)
-    );
+    extendJSON(fs, {
+        filepath: manifestPath,
+        content: render(fs.read(join(root, `manifest.json`)), config, {}),
+        replacer: getManifestJsonExtensionHelper(config),
+        tabInfo: data.tabInfo
+    });
 
     // add extension content
     const viewPath = join(config.path, `${config.name}.view.xml`);
     if (!fs.exists(viewPath)) {
         fs.copyTpl(join(root, 'ext/View.xml'), viewPath, config);
+        // i18n.properties
+        const manifest = fs.readJSON(manifestPath) as Manifest;
+        const defaultI18nPath = 'i18n/i18n.properties';
+        const customI18nPath = manifest?.['sap.ui5']?.models?.i18n?.uri;
+        const i18nPath = join(basePath, 'webapp', customI18nPath ?? defaultI18nPath);
+        const i18TemplatePath = join(root, 'i18n', 'i18n.properties');
+        if (fs.exists(i18nPath)) {
+            fs.append(i18nPath, render(fs.read(i18TemplatePath), config, {}));
+        } else {
+            fs.copyTpl(i18TemplatePath, i18nPath, config);
+        }
     }
-
     const ext = data.typescript ? 'ts' : 'js';
     const controllerPath = join(config.path, `${config.name}.controller.${ext}`);
     if (!fs.exists(controllerPath)) {

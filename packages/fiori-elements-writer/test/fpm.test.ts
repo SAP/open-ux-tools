@@ -2,9 +2,20 @@ import type { FioriElementsApp, FPMSettings } from '../src';
 import { generate, TemplateType, ValidationError } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, feBaseConfig, v4Service, v2Service } from './common';
+import {
+    testOutputDir,
+    debug,
+    feBaseConfig,
+    v4Service,
+    v2Service,
+    projectChecks,
+    updatePackageJSONDependencyToUseLocalPath
+} from './common';
 
 const TEST_NAME = 'fpmTemplates';
+if (debug?.enabled) {
+    jest.setTimeout(360000);
+}
 
 describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -57,13 +68,16 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
         const fs = await generate(testPath, config);
         expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 

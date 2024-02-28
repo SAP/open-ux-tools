@@ -29,7 +29,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -43,12 +43,6 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\"
   },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
-  },
   \\"sapux\\": true
 }
 ",
@@ -57,7 +51,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: fefpmjs
 type: application
@@ -101,7 +95,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: fefpmjs
 type: application
@@ -141,7 +135,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: fefpmjs
 type: application
@@ -256,7 +250,7 @@ server:
   "webapp/ext/main/Main.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"fefpmjs.ext.main.Main\\">
-    <Page id=\\"Main\\" title=\\"Main\\">
+    <Page id=\\"Main\\" title=\\"{i18n>MainTitle}\\">
         <content></content>
     </Page>
 </mvc:View>",
@@ -271,7 +265,9 @@ server:
 appTitle=App \\"Title\\" \\\\\\"
 
 #YDES: Application description
-appDescription=A Fiori application.",
+appDescription=A Fiori application.
+#XTIT: Custom view title
+MainTitle=Main",
     "state": "modified",
   },
   "webapp/index.html": Object {
@@ -294,14 +290,11 @@ appDescription=A Fiori application.",
         data-sap-ui-resourceroots='{
             \\"fefpmjs\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"fefpmjs\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -3333,9 +3326,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"name\\": \\"sap.fe.core.fpm\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"viewName\\": \\"fefpmjs.ext.main.Main\\",
-              \\"entitySet\\": \\"Booking\\",
-              \\"navigation\\": {}
+              \\"navigation\\": {},
+              \\"contextPath\\": \\"/Booking\\",
+              \\"viewName\\": \\"fefpmjs.ext.main.Main\\"
             }
           }
         }
@@ -3386,7 +3379,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
@@ -3414,9 +3408,10 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"fefpmjs\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\">
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -3429,10 +3424,11 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
-    "contents": "/*eslint-disable semi, no-console*/
-(function (sap) {
-    var getKeys = function (libOrComp, libOrCompKeysString) {
+  "webapp/test/locate-reuse-libs.js": Object {
+    "contents": "(function (sap) {
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
+        var result = \\"\\";
         // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
         var ui5Libs = [
             \\"sap.apf\\",
@@ -3458,72 +3454,73 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             \\"sap.webanalytics\\",
             \\"sap.zen\\"
         ];
-        Object.keys(libOrComp).forEach(function (libOrCompKey) {
-            // ignore libs or Components that start with SAPUI5 delivered namespaces
-            if (
-                !ui5Libs.some(function (substring) {
-                    return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\");
-                })
-            ) {
-                if (libOrCompKeysString.length > 0) {
-                    libOrCompKeysString = libOrCompKeysString + \\",\\" + libOrCompKey;
-                } else {
-                    libOrCompKeysString = libOrCompKey;
+        function getKeys(libOrComp, libOrCompKeysString) {
+            var libOrCompKeysStringTmp = libOrCompKeysString;
+            Object.keys(libOrComp).forEach(function (libOrCompKey) {
+                // ignore libs or Components that start with SAPUI5 delivered namespaces
+                if (!ui5Libs.some(function (substring) { return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\"); })) {
+                    if (libOrCompKeysStringTmp.length > 0) {
+                        libOrCompKeysStringTmp = libOrCompKeysStringTmp + \\",\\" + libOrCompKey;
+                    } else {
+                        libOrCompKeysStringTmp = libOrCompKey;
+                    }
                 }
-            }
-        });
-        return libOrCompKeysString;
-    };
-
-    var updateManifest = function (manifest) {
-        var result = \\"\\";
-        if (manifest) {
-            if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].dependencies) {
-                if (manifest[\\"sap.ui5\\"].dependencies.libs) {
-                    result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result);
-                }
-                if (manifest[\\"sap.ui5\\"].dependencies.components) {
-                    result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result);
-                }
-            }
-            if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].componentUsages) {
-                result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
-            }
+            });
+            return libOrCompKeysStringTmp;
         }
-        return result;
-    };
-
-    var fioriToolsGetManifestLibs = function (manifestPath) {
-        var url = manifestPath;
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
-                    resolve(updateManifest(manifest));
+                    if (manifest) {
+                        if (
+                            manifest[\\"sap.ui5\\"] &&
+                            manifest[\\"sap.ui5\\"].dependencies
+                        ) {
+                            if (manifest[\\"sap.ui5\\"].dependencies.libs) {
+                                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result);
+                            }
+                            if (manifest[\\"sap.ui5\\"].dependencies.components) {
+                                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result);
+                            }
+                        }
+                        if (
+                            manifest[\\"sap.ui5\\"] &&
+                            manifest[\\"sap.ui5\\"].componentUsages
+                        ) {
+                            result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+                        }
+                    }
+                    resolve(result);
                 })
                 .fail(function () {
                     reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
         });
     };
-
-    var updateModuleDefinition = function (data) {
-        if (data) {
-            Object.keys(data).forEach(function (moduleDefinitionKey) {
-                var moduleDefinition = data[moduleDefinitionKey];
-                if (moduleDefinition && moduleDefinition.dependencies) {
-                    moduleDefinition.dependencies.forEach(function (dependency) {
-                        if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
-                            jQuery.sap.log.info(
-                                \\"Registering Library \\" + dependency.componentId + \\" from server \\" + dependency.url
-                            );
-                            jQuery.sap.registerModulePath(dependency.componentId, dependency.url);
-                        }
-                    });
-                }
-            });
-        }
-    };
-
+    function registerModules(dataFromAppIndex) {
+        Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
+            var moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
+            if (moduleDefinition && moduleDefinition.dependencies) {
+                moduleDefinition.dependencies.forEach(function (dependency) {
+                    if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
+                        sap.ui.require([\\"sap/base/Log\\"], function (Log) {
+                            Log.info(\\"Registering Library \\" +
+                                dependency.componentId +
+                                \\" from server \\" +
+                                dependency.url);
+                        });
+                        var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
+                        var config = {
+                            paths: {
+                            }
+                        };
+                        config.paths[compId] = dependency.url;
+                        sap.ui.loader.config(config);
+                    }
+                });
+            }
+        });
+    }
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -3532,22 +3529,55 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
      * the app-index was successful and the module paths were registered.
      */
     sap.registerComponentDependencyPaths = function (manifestPath) {
-        /*eslint-disable semi, consistent-return*/
+
         return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
             if (libs && libs.length > 0) {
                 var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
-                var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
-                if (sapClient && sapClient.length === 3) {
-                    url = url + \\"&sap-client=\\" + sapClient;
-                }
-                return $.ajax(url).done(updateModuleDefinition);
+                var sapClient = \\"\\";
+
+                return new Promise(
+                    function (resolve) {
+                        sap.ui.require([\\"sap/base/util/UriParameters\\"], function (UriParameters) {
+                            sapClient = UriParameters.fromQuery(window.location.search).get(\\"sap-client\\");
+                            if (sapClient && sapClient.length === 3) {
+                                url = url + \\"&sap-client=\\" + sapClient;
+                            }
+                            resolve(url);
+                        });
+                    }).then(function (url2) {
+                        return $.ajax(url2).done(function (data) {
+                            if (data) {
+                                registerModules(data);
+                            }
+                        });
+                    });
+            } else {
+                return undefined;
             }
         });
     };
 })(sap);
 
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
-var scripts = document.getElementsByTagName(\\"script\\");
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -3555,26 +3585,31 @@ if (!currentScript) {
 var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
 var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
 var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
-var bundleResources = function () {
-    jQuery.sap.require(\\"jquery.sap.resources\\");
-    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-    var oBundle = jQuery.sap.resources({
-        url: \\"i18n/i18n.properties\\",
-        locale: sLocale
-    });
-    document.title = oBundle.getText(\\"appTitle\\");
-};
+
 sap.registerComponentDependencyPaths(manifestUri)
     .catch(function (error) {
-        jQuery.sap.log.error(error);
+        sap.ui.require([\\"sap/base/Log\\"], function (Log) {
+            Log.error(error);
+        });
     })
     .finally(function () {
-        // setting the app title with internationalization
-        sap.ui.getCore().attachInit(bundleResources);
+
+        // setting the app title with internationalization 
+        sap.ui.getCore().attachInit(function () {
+            var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+            sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
+                var oResourceBundle = ResourceBundle.create({
+                    url: \\"i18n/i18n.properties\\",
+                    locale: sLocale
+                });
+                document.title = oResourceBundle.getText(\\"appTitle\\");
+            });
+        });
 
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -3586,19 +3621,27 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
-                sap.ui.getCore().attachInit(bundleResources);
+                // setting the app title with the i18n text 
+                sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
+                    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+                    sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
+                        var oResourceBundle = ResourceBundle.create({
+                            url: \\"i18n/i18n.properties\\",
+                            locale: sLocale
+                        });
+                        document.title = oResourceBundle.getText(\\"appTitle\\");
+                    });
+                });
             }
         } else {
             sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
                 // initialize the ushell sandbox component
                 sap.ushell.Container.createRenderer().placeAt(\\"content\\");
             });
         }
-    });
-
-sap.registerComponentDependencyPaths(manifestUri);
-",
+    });",
     "state": "modified",
   },
 }
@@ -3608,35 +3651,35 @@ exports[`Flexible Programming Model template: fpmTemplates Generate files for te
 Object {
   ".babelrc.json": Object {
     "contents": "{
-    \\"ignore\\": [\\"**/*.d.ts\\"],
-    \\"presets\\": [\\"transform-ui5\\", \\"@babel/preset-typescript\\"]
+    \\"presets\\": [
+        \\"@babel/preset-env\\",
+        [
+            \\"transform-ui5\\",
+            {
+                \\"overridesToOverride\\": true
+            }
+        ],
+        \\"@babel/preset-typescript\\"
+    ],
+    \\"plugins\\": [
+        \\"transform-remove-console\\",
+        [
+            \\"transform-async-to-promises\\",
+            {
+                \\"inlineHelpers\\": true
+            }
+        ]
+    ],
+    \\"sourceMaps\\": true
 }",
     "state": "modified",
   },
   ".eslintrc": Object {
     "contents": "{
-    \\"root\\": true,
-    \\"env\\": {
-        \\"browser\\": true,
-        \\"es6\\": true,
-        \\"node\\": true
-    },
-    \\"extends\\": [
-        \\"eslint:recommended\\",
-        \\"plugin:@typescript-eslint/recommended\\",
-        \\"plugin:@typescript-eslint/recommended-requiring-type-checking\\"
-    ],
-	\\"ignorePatterns\\": [\\".eslintignore.js\\"],
-    \\"parser\\": \\"@typescript-eslint/parser\\",
-    \\"parserOptions\\": {
-        \\"project\\": [\\"./tsconfig.json\\"],
-        \\"tsconfigRootDir\\": \\".\\",
-        \\"sourceType\\": \\"module\\"
-    },
-    \\"plugins\\": [
-        \\"@typescript-eslint\\"
-    ]
-}",
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
+    \\"root\\": true
+}
+",
     "state": "modified",
   },
   ".gitignore": Object {
@@ -3666,32 +3709,29 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.96.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
-    \\"typescript\\": \\"^4.6.3\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
+    \\"typescript\\": \\"^5.1.6\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmts-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmts-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
+    \\"prestart\\": \\"npm run ts-typecheck\\",
+    \\"prebuild\\": \\"npm run ts-typecheck\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmts-tile\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-transpile\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
   },
   \\"sapux\\": true
 }
@@ -3700,37 +3740,37 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-  \\"compilerOptions\\": {
-    \\"target\\": \\"es2015\\",
-    \\"module\\": \\"es2015\\",
-    \\"skipLibCheck\\": true,
-    \\"preserveConstEnums\\": true,
-    \\"inlineSourceMap\\": true,
-    \\"allowJs\\": true,
-    \\"strict\\": true,
-    \\"strictNullChecks\\": true,
-    \\"strictPropertyInitialization\\": false,
-    \\"moduleResolution\\": \\"node\\",
-    \\"rootDir\\": \\"webapp\\",
-    \\"outDir\\": \\"./dist\\",
-    \\"baseUrl\\": \\"./\\",
-    \\"paths\\": {
-      \\"fefpmts/*\\": [
-        \\"webapp/*\\"
-      ]
+    \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
+        \\"module\\": \\"es2022\\",
+        \\"skipLibCheck\\": true,
+        \\"allowJs\\": true,
+        \\"strict\\": true,
+        \\"strictPropertyInitialization\\": false,
+        \\"moduleResolution\\": \\"node\\",
+        \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
+        \\"baseUrl\\": \\"./\\",
+        \\"paths\\": {
+            \\"fefpmts/*\\": [
+                \\"./webapp/*\\"
+            ]
+        },
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
+        ]
     },
-    \\"types\\": [ \\"@sapui5/ts-types-esm\\" ]
-  },
-  \\"include\\": [
-    \\"webapp/**/*\\"
-  ]
+    \\"include\\": [
+        \\"./webapp/**/*\\"
+    ]
 }",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: fefpmts
 type: application
@@ -3755,8 +3795,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
+        excludePatterns:
+          - /Component-preload.js
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -3780,16 +3820,13 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: fefpmts
 type: application
@@ -3817,8 +3854,8 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
+        excludePatterns:
+          - /Component-preload.js
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -3835,16 +3872,13 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"3.1\\"
 metadata:
   name: fefpmts
 type: application
@@ -3872,22 +3906,19 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
+        excludePatterns:
+          - /Component-preload.js
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
   "webapp/Component.ts": Object {
-    "contents": "import BaseComponent from 'sap/fe/core/AppComponent';
+    "contents": "import BaseComponent from \\"sap/fe/core/AppComponent\\";
 
 /**
  * @namespace fefpmts
@@ -3931,10 +3962,10 @@ export default class Component extends BaseComponent {
     "state": "modified",
   },
   "webapp/ext/main/Main.controller.ts": Object {
-    "contents": "import Controller from 'sap/fe/core/PageController';
+    "contents": "import Controller from \\"sap/fe/core/PageController\\";
 
 /**
- * @namespace fefpmts.ext.main.Main.controller
+ * @namespace fefpmts.ext.main
  */
 export default class Main extends Controller {
 
@@ -3954,7 +3985,7 @@ export default class Main extends Controller {
      */
     // public  onBeforeRendering(): void {
     //
-    //  },
+    //  }
 
     /**
      * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
@@ -3963,7 +3994,7 @@ export default class Main extends Controller {
      */
     // public  onAfterRendering(): void {
     //
-    //  },
+    //  }
 
     /**
      * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
@@ -3978,7 +4009,7 @@ export default class Main extends Controller {
   "webapp/ext/main/Main.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"fefpmts.ext.main.Main\\">
-    <Page id=\\"Main\\" title=\\"Main\\">
+    <Page id=\\"Main\\" title=\\"{i18n>MainTitle}\\">
         <content></content>
     </Page>
 </mvc:View>",
@@ -4040,7 +4071,9 @@ declare module 'sap/fe/core/PageController' {
 appTitle=App \\"Title\\" \\\\\\"
 
 #YDES: Application description
-appDescription=A Fiori application.",
+appDescription=A Fiori application.
+#XTIT: Custom view title
+MainTitle=Main",
     "state": "modified",
   },
   "webapp/index.html": Object {
@@ -7099,9 +7132,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"name\\": \\"sap.fe.core.fpm\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"viewName\\": \\"fefpmts.ext.main.Main\\",
-              \\"entitySet\\": \\"Booking\\",
-              \\"navigation\\": {}
+              \\"navigation\\": {},
+              \\"contextPath\\": \\"/Booking\\",
+              \\"viewName\\": \\"fefpmts.ext.main.Main\\"
             }
           }
         }
@@ -7152,7 +7185,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
@@ -7180,7 +7214,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"fefpmts\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\">
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {

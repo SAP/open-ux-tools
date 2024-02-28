@@ -2,10 +2,7 @@ import React from 'react';
 
 import type { ISearchBoxProps, ISearchBoxStyleProps, ISearchBoxStyles } from '@fluentui/react';
 import { SearchBox } from '@fluentui/react';
-
-import { UiIcons } from '../Icons';
-
-const searchIcon = { iconName: UiIcons.Search };
+import { COMMON_INPUT_STYLES } from '../UIInput';
 
 /**
  * UISearchBox component
@@ -37,7 +34,7 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
                         fontSize: 13,
                         backgroundColor: 'var(--vscode-input-background)',
                         border: '1px solid var(--vscode-editorWidget-border)',
-                        borderRadius: 0,
+                        borderRadius: COMMON_INPUT_STYLES.borderRadius,
                         height: 22,
                         width: '100%',
                         boxSizing: 'initial',
@@ -52,7 +49,7 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
                             ':after': {
                                 border: `1px solid var(--vscode-focusBorder)`,
                                 inset: -1,
-                                borderRadius: 0
+                                borderRadius: COMMON_INPUT_STYLES.borderRadius
                             }
                         }
                     },
@@ -61,7 +58,7 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
                         opacity: 0.2,
                         backgroundColor: 'var(--vscode-input-background)',
                         borderColor: 'var(--vscode-input-background)',
-                        borderRadius: 0,
+                        borderRadius: COMMON_INPUT_STYLES.borderRadius,
                         height: 22,
                         maxHeight: 22,
                         minHeight: 22,
@@ -79,6 +76,7 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
                         fontSize: 13,
                         fontWeight: 'normal',
                         boxSizing: 'border-box',
+                        borderRadius: COMMON_INPUT_STYLES.borderRadius,
                         selectors: {
                             '::placeholder': {
                                 color: 'var(--vscode-input-placeholderForeground)'
@@ -117,8 +115,8 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
                         }
                     },
                     props.hasFocus && {
-                        width: 4,
-                        marginLeft: 0
+                        width: 0,
+                        marginLeft: 5
                     }
                 ],
                 clearButton: [
@@ -150,6 +148,6 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
             }
         });
 
-        return <SearchBox {...this.props} styles={searchBoxStyles} iconProps={searchIcon} />;
+        return <SearchBox {...this.props} styles={searchBoxStyles} />;
     }
 }

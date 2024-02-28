@@ -1,4 +1,5 @@
-import { getService } from '@sap-ux/store';
+import { getService, BackendSystemKey } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
 import type { ResultMessage, Endpoint, EndpointResults } from '../types';
 import { getLogger } from '../logger';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
@@ -23,7 +24,25 @@ export async function checkStoredSystem(storedSystem: Endpoint): Promise<{
 }> {
     const logger = getLogger();
 
-    const abapServiceProvider = getServiceProvider(storedSystem);
+    // retrieve system credentials
+    const storeService = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
+    const backendKey = new BackendSystemKey({ url: storedSystem.Url, client: storedSystem.Client });
+    const sapSystem = await storeService.read(backendKey);
+
+    const system = { ...storedSystem };
+
+    system.Url = new URL(storedSystem.Url).origin;
+    system.Credentials =
+        sapSystem?.serviceKeys || sapSystem?.username || sapSystem?.password
+            ? {
+                  serviceKeysContents: sapSystem.serviceKeys as ServiceInfo,
+                  username: sapSystem.username,
+                  password: sapSystem.password,
+                  refreshToken: sapSystem.refreshToken
+              }
+            : undefined;
+
+    const abapServiceProvider = getServiceProvider(system);
 
     // catalog service request
     const { messages: catalogMsgs, result: catalogServiceResult } = await checkCatalogServices(
@@ -103,21 +122,11 @@ function transformStoredSystems(systems): Endpoint[] {
     const sapSystems: Endpoint[] = [];
 
     for (const s of systems) {
-        const url = new URL(s.url).origin;
         const answerDestination: Endpoint = {
             Name: s.name,
-            Url: url,
+            Url: s.url,
             Client: s.client,
             UserDisplayName: s.userDisplayName,
-            Credentials:
-                s.serviceKeys || s.username || s.password
-                    ? {
-                          serviceKeysContents: s.serviceKeys as ServiceInfo,
-                          username: s.username,
-                          password: s.password,
-                          refreshToken: s.refreshToken
-                      }
-                    : undefined,
             Scp: !!s.serviceKeys
         };
         sapSystems.push(answerDestination);

@@ -4,7 +4,7 @@
 * @param value value to be formatted
 * @returns formatted currency value with 2 digits
 */
-export function currencyValue(value: string): string {
+export function numberUnit(value: string): string {
     if (!value) {
         return "";
     }

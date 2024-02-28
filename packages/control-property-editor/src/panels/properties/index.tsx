@@ -1,0 +1,1 @@
+export { PropertiesPanel } from './PropertiesPanel';

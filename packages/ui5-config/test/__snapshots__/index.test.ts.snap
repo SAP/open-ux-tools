@@ -1,5 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`UI5Config add/find/removeCustomTask addCustomTask 1`] = `
+"builder:
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: my-archive
+"
+`;
+
+exports[`UI5Config add/find/removeCustomTask removeCustomTask 1`] = `
+"builder:
+  customTasks: []
+"
+`;
+
 exports[`UI5Config add/find/update/removeCustomMiddleware addCustomMiddleware 1`] = `
 "server:
   customMiddleware:
@@ -19,22 +35,6 @@ exports[`UI5Config add/find/update/removeCustomMiddleware addCustomMiddleware 1`
 exports[`UI5Config add/find/update/removeCustomMiddleware removeMiddleware 1`] = `
 "server:
   customMiddleware: []
-"
-`;
-
-exports[`UI5Config add/find/removeCustomTask addCustomTask 1`] = `
-"builder:
-  customTasks:
-    - name: ui5-task-zipper
-      afterTask: generateCachebusterInfo
-      configuration:
-        archiveName: my-archive
-"
-`;
-
-exports[`UI5Config add/find/removeCustomTask removeCustomTask 1`] = `
-"builder:
-  customTasks: []
 "
 `;
 
@@ -68,9 +68,9 @@ exports[`UI5Config add/find/update/removeCustomMiddleware updateMiddleware that 
 exports[`UI5Config addAbapDeployTask AppStudio + Steampunk settings 1`] = `
 "builder:
   resources:
-    - excludes:
-        - /test/**
-        - /localService/**
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: deploy-to-abap
       afterTask: generateCachebusterInfo
@@ -80,7 +80,7 @@ exports[`UI5Config addAbapDeployTask AppStudio + Steampunk settings 1`] = `
           scp: true
         app:
           name: ~name
-          desription: ~description
+          description: ~description
           package: ~package
           transport: ~transport
 "
@@ -89,9 +89,9 @@ exports[`UI5Config addAbapDeployTask AppStudio + Steampunk settings 1`] = `
 exports[`UI5Config addAbapDeployTask local settings 1`] = `
 "builder:
   resources:
-    - excludes:
-        - /test/**
-        - /localService/**
+    excludes:
+      - /test/**
+      - /localService/**
   customTasks:
     - name: deploy-to-abap
       afterTask: generateCachebusterInfo
@@ -101,7 +101,46 @@ exports[`UI5Config addAbapDeployTask local settings 1`] = `
           client: '012'
         app:
           name: ~name
-          desription: ~description
+          description: ~description
+          package: ~package
+          transport: ~transport
+"
+`;
+
+exports[`UI5Config addAbapDeployTask minimal adp settings 1`] = `
+"builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://localhost:8080
+          client: '012'
+        app:
+          package: $TMP
+"
+`;
+
+exports[`UI5Config addAbapDeployTask use open source task 1`] = `
+"builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: abap-deploy-task
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://localhost:8080
+          client: '012'
+        app:
+          name: ~name
+          description: ~description
           package: ~package
           transport: ~transport
 "
