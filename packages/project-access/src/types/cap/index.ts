@@ -116,6 +116,12 @@ interface Entity extends Struct {
 }
 
 interface LinkedDefinition {
+    /**
+     * Checks if the definition is of the specified kind or has the 'Association' or 'Composition' kind.
+     *
+     * @param {kind | 'Association' | 'Composition'} kind - The kind to check for.
+     * @returns {boolean} - True if the definition is of the specified kind or has the 'Association' or 'Composition' kind, false otherwise.
+     */
     is(kind: kind | 'Association' | 'Composition'): boolean;
     name: string;
 }

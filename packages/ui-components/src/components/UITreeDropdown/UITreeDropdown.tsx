@@ -39,6 +39,11 @@ export interface UITreeDropdownProps extends UIMessagesExtendedProps {
     required?: boolean;
     value?: string;
     items: ItemsProps[];
+    /**
+     * Callback function to handle parameter value changes.
+     *
+     * @param value - The new value of the parameter.
+     */
     onParameterValueChange(value: string): void;
     placeholderText: string;
     valueSeparator?: string;
