@@ -2,13 +2,7 @@ import { sep } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 
-import {
-    GeneratorName,
-    type AnnotationsData,
-    type PropertyValueType,
-    ChangeTypes,
-    AnnotationFileSelectType
-} from '../../../src';
+import { type AnnotationsData, type PropertyValueType, ChangeTypes, AnnotationFileSelectType } from '../../../src';
 import {
     findChangeWithInboundId,
     getGenericChange,
@@ -117,10 +111,9 @@ describe('Change Utils', () => {
         const mockContent = { key: 'value' };
 
         it('should return the correct change object structure', () => {
-            const result = getGenericChange<AnnotationsData>(
+            const result = getGenericChange(
                 mockData as AnnotationsData,
                 mockContent,
-                GeneratorName.ADD_ANNOTATIONS_TO_ODATA,
                 ChangeTypes.ADD_ANOTATIONS_TO_DATA
             );
 
@@ -132,7 +125,7 @@ describe('Change Utils', () => {
                 creation: expect.any(String),
                 packageName: '$TMP',
                 reference: mockData.projectData.id,
-                support: { generator: GeneratorName.ADD_ANNOTATIONS_TO_ODATA },
+                support: { generator: '@sap-ux/adp-tooling' },
                 changeType: ChangeTypes.ADD_ANOTATIONS_TO_DATA,
                 content: mockContent
             });
@@ -201,10 +194,8 @@ describe('Change Utils', () => {
 
         const mockProjectPath = '/mock/project/path';
         const mockData = {
-            answers: {
-                targetAnnotationFileSelectOption: AnnotationFileSelectType.NewEmptyFile,
-                targetAnnotationFilePath: '/mock/path/to/annotation/file.xml'
-            },
+            annotationFileSelectOption: AnnotationFileSelectType.NewEmptyFile,
+            annotationFilePath: '/mock/path/to/annotation/file.xml',
             timestamp: '123456789',
             annotationFileName: 'mockAnnotation.xml'
         };
@@ -235,7 +226,7 @@ describe('Change Utils', () => {
         });
 
         it('should copy the annotation file to the correct directory if not creating a new empty file', () => {
-            mockData.answers.targetAnnotationFileSelectOption = AnnotationFileSelectType.ExistingFile;
+            mockData.annotationFileSelectOption = AnnotationFileSelectType.ExistingFile;
 
             writeAnnotationChange(
                 mockProjectPath,
@@ -245,14 +236,14 @@ describe('Change Utils', () => {
             );
 
             expect(copySpy).toHaveBeenCalledWith(
-                mockData.answers.targetAnnotationFilePath,
+                mockData.annotationFilePath,
                 expect.stringContaining('mockAnnotation.xml')
             );
         });
 
         it('should not copy the annotation file if the selected directory is the same as the target', () => {
-            mockData.answers.targetAnnotationFileSelectOption = AnnotationFileSelectType.ExistingFile;
-            mockData.answers.targetAnnotationFilePath = `${sep}mock${sep}project${sep}path${sep}webapp${sep}changes${sep}annotations${sep}mockAnnotation.xml`;
+            mockData.annotationFileSelectOption = AnnotationFileSelectType.ExistingFile;
+            mockData.annotationFilePath = `${sep}mock${sep}project${sep}path${sep}webapp${sep}changes${sep}annotations${sep}mockAnnotation.xml`;
 
             writeAnnotationChange(
                 mockProjectPath,
@@ -265,8 +256,8 @@ describe('Change Utils', () => {
         });
 
         it('should throw error when write operation fails', () => {
-            mockData.answers.targetAnnotationFileSelectOption = AnnotationFileSelectType.NewEmptyFile;
-            mockData.answers.targetAnnotationFilePath = '/mock/path/to/annotation/file.xml';
+            mockData.annotationFileSelectOption = AnnotationFileSelectType.NewEmptyFile;
+            mockData.annotationFilePath = '/mock/path/to/annotation/file.xml';
 
             mockFs.write.mockImplementation(() => {
                 throw new Error('Failed to write JSON');

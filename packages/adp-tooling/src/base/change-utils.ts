@@ -1,17 +1,10 @@
-import type { Editor } from 'mem-fs-editor';
-import path, { posix, sep } from 'path';
-
-import type {
-    AnnotationsData,
-    ChangeTypes,
-    GeneratorName,
-    BaseData,
-    InboundContent,
-    PropertyValueType
-} from '../types';
-import { FolderTypes, AnnotationFileSelectType } from '../types';
 import type { Dirent } from 'fs';
+import path, { sep } from 'path';
+import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'fs';
+
+import type { AdpProjectData, AnnotationsData, ChangeTypes, InboundContent, PropertyValueType } from '../types';
+import { FolderTypes, AnnotationFileSelectType } from '../types';
 
 type InboundChangeData = { filePath: string; changeWithInboundId: InboundChange | undefined };
 type InboundChange = { content?: InboundContent };
@@ -27,7 +20,7 @@ type InboundChange = { content?: InboundContent };
  */
 export function writeAnnotationChange(projectPath: string, data: AnnotationsData, change: object, fs: Editor): void {
     try {
-        const { answers, timestamp, annotationFileName } = data;
+        const { timestamp, annotationFileName } = data;
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, FolderTypes.WEBAPP, FolderTypes.CHANGES);
         const manifestFolderPath = path.join(changesFolderPath, FolderTypes.MANIFEST);
@@ -35,12 +28,12 @@ export function writeAnnotationChange(projectPath: string, data: AnnotationsData
 
         writeChangeToFile(`${manifestFolderPath}${sep}${changeFileName}`, change, fs);
 
-        if (answers.targetAnnotationFileSelectOption === AnnotationFileSelectType.NewEmptyFile) {
+        if (data.annotationFileSelectOption === AnnotationFileSelectType.NewEmptyFile) {
             fs.write(`${annotationsFolderPath}${sep}${annotationFileName}`, '');
         } else {
-            const selectedDir = answers.targetAnnotationFilePath.replace(`${sep}${annotationFileName}`, '');
+            const selectedDir = data.annotationFilePath.replace(`${sep}${annotationFileName}`, '');
             if (selectedDir !== annotationsFolderPath) {
-                fs.copy(answers.targetAnnotationFilePath, `${annotationsFolderPath}${sep}${annotationFileName}`);
+                fs.copy(data.annotationFilePath, `${annotationsFolderPath}${sep}${annotationFileName}`);
             }
         }
     } catch (e) {
@@ -135,7 +128,12 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
     let changeObj: InboundChange | undefined;
     let filePath = '';
 
-    const pathToInboundChangeFiles = path.join(projectPath, '/webapp/changes/manifest');
+    const pathToInboundChangeFiles = path.join(
+        projectPath,
+        FolderTypes.WEBAPP,
+        FolderTypes.CHANGES,
+        FolderTypes.MANIFEST
+    );
 
     if (!existsSync(pathToInboundChangeFiles)) {
         return {
@@ -173,30 +171,28 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
  *
  * @param {T} data - The base data associated with the change, including project data and timestamp.
  * @param {object} content - The content of the change to be applied.
- * @param {GeneratorName} generatorName - The name of the generator creating this change.
  * @param {ChangeTypes} changeType - The type of the change.
  * @returns An object representing the change.
  * @template T - A type parameter extending `BaseData`.
  */
-export function getGenericChange<T extends BaseData>(
-    data: T,
+export function getGenericChange(
+    data: { projectData: AdpProjectData; timestamp: number },
     content: object,
-    generatorName: GeneratorName,
     changeType: ChangeTypes
 ) {
     const { projectData, timestamp } = data;
     const fileName = `id_${timestamp}`;
 
     return {
-        'fileName': fileName,
-        'namespace': posix.join(projectData.namespace, 'changes'),
-        'layer': projectData.layer,
-        'fileType': 'change',
-        'creation': new Date(timestamp).toISOString(),
-        'packageName': '$TMP',
-        'reference': projectData.id,
-        'support': { 'generator': generatorName },
-        'changeType': changeType,
-        'content': content
+        fileName,
+        namespace: [projectData.namespace, FolderTypes.CHANGES].join('/'),
+        layer: projectData.layer,
+        fileType: 'change',
+        creation: new Date(timestamp).toISOString(),
+        packageName: '$TMP',
+        reference: projectData.id,
+        support: { generator: '@sap-ux/adp-tooling' },
+        changeType,
+        content
     };
 }

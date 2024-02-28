@@ -2,20 +2,16 @@ import { sep } from 'path';
 import type { Editor } from 'mem-fs-editor';
 
 import type {
-    AnnotationChangeAnswers,
     AnnotationsData,
-    ComponentUsagesAnswers,
     ComponentUsagesData,
     DataSourceData,
     DataSourceItem,
     IWriter,
-    InboundAnswers,
     InboundContent,
     InboundData,
-    NewModelAnswers,
     NewModelData
 } from '../../types';
-import { AnnotationFileSelectType, ChangeTypes, FolderTypes, GeneratorName } from '../../types';
+import { AnnotationFileSelectType, ChangeTypes, FolderTypes } from '../../types';
 import {
     getGenericChange,
     writeAnnotationChange,
@@ -43,13 +39,13 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      * @returns {object} The constructed content object for the annotation change.
      */
     private constructContent(data: AnnotationsData): object {
-        const { answers, isInternalUsage, annotationFileName } = data;
+        const { isInternalUsage, annotationFileName } = data;
         const annotationFileNameWithoutExtension = annotationFileName?.toLocaleLowerCase().replace('.xml', '');
         const annotationNameSpace = isInternalUsage
             ? `annotation.${annotationFileNameWithoutExtension}`
             : `customer.annotation.${annotationFileNameWithoutExtension}`;
         return {
-            dataSourceId: `${answers.targetODataSource}`,
+            dataSourceId: `${data.oDataSource}`,
             annotations: [annotationNameSpace],
             annotationsInsertPosition: 'END',
             dataSource: {
@@ -64,13 +60,13 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
     /**
      * Determines the appropriate filename for the annotation file based on user answers.
      *
-     * @param {AnnotationChangeAnswers} answers - The answers object containing user choices.
+     * @param {AnnotationChange} answers - The answers object containing user choices.
      * @returns {string | undefined} The determined filename for the annotation file.
      */
-    private getAnnotationFileName(answers: AnnotationChangeAnswers): string | undefined {
-        return answers.targetAnnotationFileSelectOption === AnnotationFileSelectType.NewEmptyFile
+    private getAnnotationFileName(data: AnnotationsData): string | undefined {
+        return data.annotationFileSelectOption === AnnotationFileSelectType.NewEmptyFile
             ? `annotation_${Date.now()}.xml`
-            : answers.targetAnnotationFilePath.split(sep).pop();
+            : data.annotationFilePath.split(sep).pop();
     }
 
     /**
@@ -80,14 +76,9 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: AnnotationsData): Promise<void> {
-        data.annotationFileName = this.getAnnotationFileName(data.answers);
+        data.annotationFileName = this.getAnnotationFileName(data);
         const content = this.constructContent(data);
-        const change = getGenericChange<AnnotationsData>(
-            data,
-            content,
-            GeneratorName.ADD_ANNOTATIONS_TO_ODATA,
-            ChangeTypes.ADD_ANOTATIONS_TO_DATA
-        );
+        const change = getGenericChange(data, content, ChangeTypes.ADD_ANOTATIONS_TO_DATA);
         writeAnnotationChange(this.projectPath, data, change, this.fs);
     }
 }
@@ -105,16 +96,16 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
     /**
      * Constructs the content for an component usages change based on provided data.
      *
-     * @param {ComponentUsagesAnswers} answers - The answers object containing information needed to construct the content property.
+     * @param {ComponentUsagesData} data - The answers object containing information needed to construct the content property.
      * @returns {object} The constructed content object for the component usages change.
      */
-    private constructContent(answers: ComponentUsagesAnswers): object {
+    private constructContent(data: ComponentUsagesData): object {
         const componentUsages = {
-            [answers.targetComponentUsageID]: {
-                name: answers.targetComponentName,
-                lazy: answers.targetIsLazy === 'true',
-                settings: parseStringToObject(answers.targetComponentSettings),
-                componentData: parseStringToObject(answers.targetComponentData)
+            [data.componentUsageID]: {
+                name: data.componentName,
+                lazy: data.isLazy === 'true',
+                settings: parseStringToObject(data.componentSettings),
+                componentData: parseStringToObject(data.componentData)
             }
         };
 
@@ -126,18 +117,18 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
     /**
      * Constructs the content for an library reference change based on provided data.
      *
-     * @param {ComponentUsagesAnswers} answers - The answers object containing information needed to construct the content property.
+     * @param {ComponentUsagesData} data - The answers object containing information needed to construct the content property.
      * @returns {object | undefined} The constructed content object for the library reference change.
      */
-    private constructLibContent(answers: ComponentUsagesAnswers): object | undefined {
-        if (!answers.targetShouldAddComponentLibrary) {
+    private constructLibContent(data: ComponentUsagesData): object | undefined {
+        if (!data.shouldAddComponentLibrary) {
             return undefined;
         }
 
         return {
             libraries: {
-                [answers.targetComponentLibraryReference]: {
-                    lazy: answers.targetLibraryReferenceIsLazy === 'true'
+                [data.componentLibraryReference]: {
+                    lazy: data.libraryReferenceIsLazy === 'true'
                 }
             }
         };
@@ -150,16 +141,11 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: ComponentUsagesData): Promise<void> {
-        const componentUsagesContent = this.constructContent(data.answers);
-        const libRefContent = this.constructLibContent(data.answers);
+        const componentUsagesContent = this.constructContent(data);
+        const libRefContent = this.constructLibContent(data);
 
         const shouldAddLibRef = libRefContent !== undefined;
-        const compUsagesChange = getGenericChange<ComponentUsagesData>(
-            data,
-            componentUsagesContent,
-            GeneratorName.ADD_COMPONENT_USAGES,
-            ChangeTypes.ADD_COMPONENT_USAGES
-        );
+        const compUsagesChange = getGenericChange(data, componentUsagesContent, ChangeTypes.ADD_COMPONENT_USAGES);
 
         writeChangeToFolder(
             this.projectPath,
@@ -171,10 +157,9 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
 
         if (shouldAddLibRef) {
             data.timestamp += 1;
-            const refLibChange = getGenericChange<ComponentUsagesData>(
+            const refLibChange = getGenericChange(
                 data,
                 libRefContent,
-                GeneratorName.ADD_COMPONENT_USAGES,
                 ChangeTypes.ADD_COMPONENT_USAGE_LIBRARY_REFERENCE
             );
 
@@ -202,10 +187,10 @@ export class NewModelWriter implements IWriter<NewModelData> {
     /**
      * Constructs the content for an new model change based on provided data.
      *
-     * @param {NewModelAnswers} answers - The answers object containing information needed to construct the content property.
+     * @param {NewModelData} data - The answers object containing information needed to construct the content property.
      * @returns {object} The constructed content object for the new model change.
      */
-    private constructContent(answers: NewModelAnswers): object {
+    private constructContent(data: NewModelData): object {
         const content: {
             model: {
                 [key: string]: {
@@ -218,39 +203,35 @@ export class NewModelWriter implements IWriter<NewModelData> {
             };
         } = {
             dataSource: {
-                [answers.targetODataServiceName]: {
-                    uri: answers.targetODataServiceURI,
+                [data.oDataServiceName]: {
+                    uri: data.oDataServiceURI,
                     type: 'OData',
                     settings: {
-                        odataVersion: answers.targetODataVersion
+                        odataVersion: data.oDataVersion
                     }
                 }
             },
             model: {
-                [answers.targetODataServiceModelName]: {
-                    dataSource: answers.targetODataServiceName
+                [data.oDataServiceModelName]: {
+                    dataSource: data.oDataServiceName
                 }
             }
         };
 
-        if (answers.targetODataServiceModelSettings && answers.targetODataServiceModelSettings.length !== 0) {
-            content.model[answers.targetODataServiceModelName].settings = parseStringToObject(
-                answers.targetODataServiceModelSettings
-            );
+        if (data.oDataServiceModelSettings && data.oDataServiceModelSettings.length !== 0) {
+            content.model[data.oDataServiceModelName].settings = parseStringToObject(data.oDataServiceModelSettings);
         }
 
-        if (answers.addAnnotationMode) {
-            content.dataSource[answers.targetODataServiceName].settings.annotations = [
-                `${answers.targerODataAnnotationDataSourceName}`
-            ];
-            content.dataSource[answers.targerODataAnnotationDataSourceName] = {
-                uri: answers.targetODataAnnotationDataSourceURI,
+        if (data.addAnnotationMode) {
+            content.dataSource[data.oDataServiceName].settings.annotations = [`${data.oDataAnnotationDataSourceName}`];
+            content.dataSource[data.oDataAnnotationDataSourceName] = {
+                uri: data.oDataAnnotationDataSourceURI,
                 type: 'ODataAnnotation'
             } as DataSourceItem;
 
-            if (answers.targetODataAnnotationSettings && answers.targetODataAnnotationSettings.length !== 0) {
-                content.dataSource[answers.targerODataAnnotationDataSourceName].settings = parseStringToObject(
-                    answers.targetODataAnnotationSettings
+            if (data.oDataAnnotationSettings && data.oDataAnnotationSettings.length !== 0) {
+                content.dataSource[data.oDataAnnotationDataSourceName].settings = parseStringToObject(
+                    data.oDataAnnotationSettings
                 );
             }
         }
@@ -265,13 +246,8 @@ export class NewModelWriter implements IWriter<NewModelData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: NewModelData): Promise<void> {
-        const content = this.constructContent(data.answers);
-        const change = getGenericChange<NewModelData>(
-            data,
-            content,
-            GeneratorName.ADD_NEW_MODEL,
-            ChangeTypes.ADD_NEW_MODEL
-        );
+        const content = this.constructContent(data);
+        const change = getGenericChange(data, content, ChangeTypes.ADD_NEW_MODEL);
         writeChangeToFolder(
             this.projectPath,
             change,
@@ -333,14 +309,9 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: DataSourceData): Promise<void> {
-        const { answers, dataSourcesDictionary } = data;
-        const content = this.constructContent(answers.targetODataSource, answers.oDataSourceURI, answers.maxAge);
-        const change = getGenericChange<DataSourceData>(
-            data,
-            content,
-            GeneratorName.CHANGE_DATA_SOURCE,
-            ChangeTypes.CHANGE_DATA_SOURCE
-        );
+        const { dataSourcesDictionary } = data;
+        const content = this.constructContent(data.oDataSource, data.oDataSourceURI, data.maxAge);
+        const change = getGenericChange(data, content, ChangeTypes.CHANGE_DATA_SOURCE);
 
         writeChangeToFolder(
             this.projectPath,
@@ -350,19 +321,14 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
             FolderTypes.MANIFEST
         );
 
-        const shouldAddAnnotation = answers.oDataAnnotationSourceURI && answers.oDataAnnotationSourceURI.length > 0;
+        const shouldAddAnnotation = data.oDataAnnotationSourceURI && data.oDataAnnotationSourceURI.length > 0;
         if (shouldAddAnnotation) {
             data.timestamp += 1;
             const annotationContent = this.constructContent(
-                dataSourcesDictionary[answers.targetODataSource],
-                answers.oDataAnnotationSourceURI
+                dataSourcesDictionary[data.oDataSource],
+                data.oDataAnnotationSourceURI
             );
-            const annotationChange = getGenericChange<DataSourceData>(
-                data,
-                annotationContent,
-                GeneratorName.CHANGE_DATA_SOURCE,
-                ChangeTypes.CHANGE_DATA_SOURCE
-            );
+            const annotationChange = getGenericChange(data, annotationContent, ChangeTypes.CHANGE_DATA_SOURCE);
 
             writeChangeToFolder(
                 this.projectPath,
@@ -388,16 +354,16 @@ export class InboundWriter implements IWriter<InboundData> {
     /**
      * Constructs the content for an inbound data change based on provided data.
      *
-     * @param {InboundAnswers} answers - The answers object containing information needed to construct the content property.
+     * @param {InboundData} data - The answers object containing information needed to construct the content property.
      * @returns {object} The constructed content object for the inbound data change.
      */
-    private constructContent(answers: InboundAnswers): object {
+    private constructContent(data: InboundData): object {
         const content: InboundContent = {
-            inboundId: answers.inboundId,
+            inboundId: data.inboundId,
             entityPropertyChange: []
         };
 
-        this.getEnhancedContent(answers, content);
+        this.getEnhancedContent(data, content);
 
         return content;
     }
@@ -405,12 +371,12 @@ export class InboundWriter implements IWriter<InboundData> {
     /**
      * Enhances the provided content object based on the values provided in answers.
      *
-     * @param {InboundAnswers} answers - An object containing potential values for title, subTitle, and icon.
+     * @param {InboundData} data - An object containing potential values for title, subTitle, and icon.
      * @param {InboundContent} content - The initial content object to be enhanced.
      * @returns {void}
      */
-    private getEnhancedContent(answers: InboundAnswers, content: InboundContent): void {
-        const { icon, title, subTitle } = answers;
+    private getEnhancedContent(data: InboundData, content: InboundContent): void {
+        const { icon, title, subTitle } = data;
         if (title) {
             content.entityPropertyChange.push({
                 propertyPath: 'title',
@@ -439,14 +405,15 @@ export class InboundWriter implements IWriter<InboundData> {
     /**
      * Processes the provided answers object to parse its properties into the correct format.
      *
-     * @param {InboundAnswers} answers - An object containing raw answers for inboundId, title, subTitle, and icon.
-     * @returns {InboundAnswers} A new answers object with properties modified
+     * @param {InboundData} answers - An object containing raw answers for inboundId, title, subTitle, and icon.
+     * @returns {InboundData} A new answers object with properties modified
      *                           to ensure they are in the correct format for use in content construction.
      */
-    private getModifiedAnswers(answers: InboundAnswers): InboundAnswers {
-        const { inboundId, title, subTitle, icon } = answers;
+    private getModifiedData(data: InboundData): InboundData {
+        const { inboundId, title, subTitle, icon } = data;
 
         return {
+            ...data,
             inboundId,
             title: getParsedPropertyValue(title),
             subTitle: getParsedPropertyValue(subTitle),
@@ -461,17 +428,12 @@ export class InboundWriter implements IWriter<InboundData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: InboundData): Promise<void> {
-        const answers = this.getModifiedAnswers(data.answers);
+        const answers = this.getModifiedData(data);
         const { changeWithInboundId, filePath } = findChangeWithInboundId(this.projectPath, answers.inboundId);
 
         if (!changeWithInboundId) {
             const content = this.constructContent(answers);
-            const change = getGenericChange<InboundData>(
-                data,
-                content,
-                GeneratorName.CHANGE_INBOUND,
-                ChangeTypes.CHANGE_INBOUND
-            );
+            const change = getGenericChange(data, content, ChangeTypes.CHANGE_INBOUND);
 
             writeChangeToFolder(
                 this.projectPath,

@@ -145,7 +145,7 @@ export const enum HttpStatusCodes {
 
 export type Writer = new (fs: Editor, projectPath: string) => IWriter<any>;
 export type IWriterData<T extends GeneratorType> = IWriter<GeneratorData<T>>;
-export interface IWriter<T extends BaseData> {
+export interface IWriter<T> {
     write(data: T): Promise<void>;
 }
 
@@ -155,14 +155,6 @@ export const enum GeneratorType {
     ADD_NEW_MODEL = 'Add New Model',
     CHANGE_DATA_SOURCE = 'Change Data Source',
     CHANGE_INBOUND = 'Change Inbound'
-}
-
-export const enum GeneratorName {
-    ADD_ANNOTATIONS_TO_ODATA = 'add-annotation-files-generator',
-    ADD_COMPONENT_USAGES = 'add-sapui5-component-usage-generator',
-    ADD_NEW_MODEL = 'add-odata-service-and-model-generator',
-    CHANGE_DATA_SOURCE = 'replace-odata-service-generator',
-    CHANGE_INBOUND = 'change-inbound-generator'
 }
 
 export const enum ChangeTypes {
@@ -186,28 +178,57 @@ export type GeneratorData<T extends GeneratorType> = T extends GeneratorType.ADD
     ? InboundData
     : never;
 
-export interface BaseData {
+export interface AnnotationsData {
     projectData: AdpProjectData;
     timestamp: number;
-}
-
-export interface AnnotationsData extends BaseData {
     annotationFileName?: string;
     isInternalUsage: boolean;
-    answers: AnnotationChangeAnswers;
+    oDataSource: string;
+    annotationFileSelectOption: AnnotationFileSelectType;
+    annotationFilePath: string;
 }
-export interface ComponentUsagesData extends BaseData {
-    answers: ComponentUsagesAnswers;
+export interface ComponentUsagesData {
+    projectData: AdpProjectData;
+    timestamp: number;
+    componentUsageID: string;
+    componentName: string;
+    componentData: string;
+    componentSettings: string;
+    isLazy: string;
+    libraryReferenceIsLazy?: string;
+    shouldAddComponentLibrary: boolean;
+    componentLibraryReference: string;
 }
-export interface NewModelData extends BaseData {
-    answers: NewModelAnswers;
+export interface NewModelData {
+    projectData: AdpProjectData;
+    timestamp: number;
+    oDataServiceName: string;
+    oDataServiceURI: string;
+    oDataServiceModelName: string;
+    oDataServiceModelSettings: string;
+    oDataVersion: string;
+    addAnnotationMode: boolean;
+    oDataAnnotationDataSourceName: string;
+    oDataAnnotationDataSourceURI?: string;
+    oDataAnnotationSettings?: string;
 }
-export interface DataSourceData extends BaseData {
-    answers: DataSourceAnswers;
+export interface DataSourceData {
+    projectData: AdpProjectData;
+    timestamp: number;
+    oDataSource: string;
+    oDataSourceURI: string;
+    maxAge?: number;
+    oDataAnnotationSourceURI: string;
     dataSourcesDictionary: { [key: string]: string };
 }
-export interface InboundData extends BaseData {
-    answers: InboundAnswers;
+export interface InboundData {
+    projectData: AdpProjectData;
+    timestamp: number;
+    inboundId: string;
+    title: PropertyValueType;
+    subTitle: PropertyValueType;
+    icon: PropertyValueType;
+    isInSafeMode?: boolean;
 }
 
 export enum AnnotationFileSelectType {
@@ -229,50 +250,6 @@ export type DataSourceItem = {
 };
 
 export type PropertyValueType = 'boolean' | 'number' | 'string' | 'binding' | 'object';
-
-export interface AnnotationChangeAnswers {
-    targetODataSource: string;
-    targetAnnotationFileSelectOption: AnnotationFileSelectType;
-    targetAnnotationFilePath: string;
-}
-
-export interface ComponentUsagesAnswers {
-    targetComponentUsageID: string;
-    targetComponentName: string;
-    targetComponentData: string;
-    targetComponentSettings: string;
-    targetIsLazy: string;
-    targetLibraryReferenceIsLazy?: string;
-    targetShouldAddComponentLibrary: boolean;
-    targetComponentLibraryReference: string;
-}
-
-export interface NewModelAnswers {
-    targetODataServiceName: string;
-    targetODataServiceURI: string;
-    targetODataServiceModelName: string;
-    targetODataServiceModelSettings: string;
-    targetODataVersion: string;
-    addAnnotationMode: boolean;
-    targerODataAnnotationDataSourceName: string;
-    targetODataAnnotationDataSourceURI?: string;
-    targetODataAnnotationSettings?: string;
-}
-
-export interface DataSourceAnswers {
-    targetODataSource: string;
-    oDataSourceURI: string;
-    maxAge?: number;
-    oDataAnnotationSourceURI: string;
-}
-
-export interface InboundAnswers {
-    inboundId: string;
-    title: PropertyValueType;
-    subTitle: PropertyValueType;
-    icon: PropertyValueType;
-    isInSafeMode?: boolean;
-}
 
 export interface AdpProjectData {
     path: string;

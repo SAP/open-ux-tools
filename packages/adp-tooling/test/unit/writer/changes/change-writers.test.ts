@@ -22,7 +22,7 @@ import {
     InboundWriter,
     NewModelWriter
 } from '../../../../src/writer/changes/change-writers';
-import { AnnotationFileSelectType, ChangeTypes, GeneratorName } from '../../../../src';
+import { AnnotationFileSelectType, ChangeTypes } from '../../../../src';
 
 jest.mock('../../../../src/base/change-utils', () => ({
     ...jest.requireActual('../../../../src/base/change-utils'),
@@ -48,11 +48,9 @@ describe('AnnotationsWriter', () => {
 
     it('should correctly construct content and write annotation change', async () => {
         const mockData: AnnotationsData = {
-            answers: {
-                targetODataSource: '/sap/opu/odata/source',
-                targetAnnotationFileSelectOption: AnnotationFileSelectType.ExistingFile,
-                targetAnnotationFilePath: '/mock/path/to/annotation/file.xml'
-            },
+            oDataSource: '/sap/opu/odata/source',
+            annotationFileSelectOption: AnnotationFileSelectType.ExistingFile,
+            annotationFilePath: '/mock/path/to/annotation/file.xml',
             projectData: { namespace: 'apps/mock', layer: 'VENDOR', id: 'mockId' } as AdpProjectData,
             timestamp: Date.now(),
             isInternalUsage: false,
@@ -69,16 +67,14 @@ describe('AnnotationsWriter', () => {
 
 describe('ComponentUsagesWriter', () => {
     const mockData = {
-        answers: {
-            targetComponentUsageID: 'mockID',
-            targetComponentName: 'mockName',
-            targetIsLazy: 'true',
-            targetComponentSettings: '"key": "value"',
-            targetComponentData: '"key": "value"',
-            targetShouldAddComponentLibrary: true,
-            targetComponentLibraryReference: 'mockLibrary',
-            targetLibraryReferenceIsLazy: 'false'
-        },
+        componentUsageID: 'mockID',
+        componentName: 'mockName',
+        isLazy: 'true',
+        componentSettings: '"key": "value"',
+        componentData: '"key": "value"',
+        shouldAddComponentLibrary: true,
+        componentLibraryReference: 'mockLibrary',
+        libraryReferenceIsLazy: 'false',
         timestamp: 1234567890
     };
 
@@ -95,14 +91,12 @@ describe('ComponentUsagesWriter', () => {
         expect(getGenericChangeMock).toHaveBeenCalledWith(
             expect.anything(),
             expect.objectContaining({ componentUsages: expect.anything() }),
-            expect.anything(),
             ChangeTypes.ADD_COMPONENT_USAGES
         );
 
         expect(getGenericChangeMock).toHaveBeenCalledWith(
             expect.anything(),
-            expect.objectContaining({ libraries: expect.anything() }),
-            expect.anything(),
+            expect.objectContaining({ libraries: { mockLibrary: { lazy: false } } }),
             ChangeTypes.ADD_COMPONENT_USAGE_LIBRARY_REFERENCE
         );
 
@@ -110,7 +104,7 @@ describe('ComponentUsagesWriter', () => {
     });
 
     it('should only write component usages changes when library reference is not required', async () => {
-        mockData.answers.targetShouldAddComponentLibrary = false;
+        mockData.shouldAddComponentLibrary = false;
 
         await writer.write(mockData as ComponentUsagesData);
 
@@ -135,26 +129,24 @@ describe('NewModelWriter', () => {
 
     it('should correctly construct content and write new model change', async () => {
         const mockData = {
-            answers: {
-                targetODataServiceName: 'ODataService',
-                targetODataServiceURI: '/sap/opu/odata/custom',
-                targetODataVersion: '4.0',
-                targetODataServiceModelName: 'ODataModel',
-                targetODataServiceModelSettings: '"someSetting": "someValue"',
-                addAnnotationMode: true,
-                targerODataAnnotationDataSourceName: 'ODataAnnotations',
-                targetODataAnnotationDataSourceURI: 'some/path/annotations.xml',
-                targetODataAnnotationSettings: '"anotherSetting": "anotherValue"'
-            },
+            projectData: {} as AdpProjectData,
+            oDataServiceName: 'ODataService',
+            oDataServiceURI: '/sap/opu/odata/custom',
+            oDataVersion: '4.0',
+            oDataServiceModelName: 'ODataModel',
+            oDataServiceModelSettings: '"someSetting": "someValue"',
+            addAnnotationMode: true,
+            oDataAnnotationDataSourceName: 'ODataAnnotations',
+            oDataAnnotationDataSourceURI: 'some/path/annotations.xml',
+            oDataAnnotationSettings: '"anotherSetting": "anotherValue"',
             timestamp: 1234567890
         };
 
-        await writer.write(mockData as NewModelData);
+        await writer.write(mockData);
 
         expect(getGenericChangeMock).toHaveBeenCalledWith(
             expect.anything(),
             expect.any(Object),
-            GeneratorName.ADD_NEW_MODEL,
             ChangeTypes.ADD_NEW_MODEL
         );
 
@@ -170,12 +162,10 @@ describe('NewModelWriter', () => {
 
 describe('DataSourceWriter', () => {
     const mockData: DataSourceData = {
-        answers: {
-            targetODataSource: 'CustomOData',
-            oDataSourceURI: '/sap/opu/odata/custom',
-            oDataAnnotationSourceURI: '',
-            maxAge: 60
-        },
+        oDataSource: 'CustomOData',
+        oDataSourceURI: '/sap/opu/odata/custom',
+        oDataAnnotationSourceURI: '',
+        maxAge: 60,
         projectData: {} as AdpProjectData,
         timestamp: 1234567890,
         dataSourcesDictionary: {
@@ -193,24 +183,23 @@ describe('DataSourceWriter', () => {
     it('should write data source change with provided data', async () => {
         await writer.write(mockData as unknown as DataSourceData);
 
-        expect(getGenericChange).toHaveBeenCalledWith(
+        expect(getGenericChangeMock).toHaveBeenCalledWith(
             expect.anything(),
             expect.objectContaining({
-                dataSourceId: mockData.answers.targetODataSource,
+                dataSourceId: mockData.oDataSource,
                 entityPropertyChange: expect.arrayContaining([
                     expect.objectContaining({
                         propertyPath: 'uri',
                         operation: 'UPDATE',
-                        propertyValue: mockData.answers.oDataSourceURI
+                        propertyValue: mockData.oDataSourceURI
                     }),
                     expect.objectContaining({
                         propertyPath: 'settings/maxAge',
                         operation: 'UPSERT',
-                        propertyValue: mockData.answers.maxAge
+                        propertyValue: mockData.maxAge
                     })
                 ])
             }),
-            expect.anything(),
             expect.anything()
         );
 
@@ -224,7 +213,7 @@ describe('DataSourceWriter', () => {
     });
 
     it('should add annotation change if oDataAnnotationSourceURI is provided', async () => {
-        mockData.answers.oDataAnnotationSourceURI = 'some/path/annotations';
+        mockData.oDataAnnotationSourceURI = 'some/path/annotations';
 
         await writer.write(mockData);
 
@@ -244,12 +233,10 @@ describe('InboundWriter', () => {
 
     it('should create a new inbound change when no existing change is found', async () => {
         const mockData = {
-            answers: {
-                inboundId: 'testInboundId',
-                title: 'Test Title',
-                subTitle: 'Test SubTitle',
-                icon: 'Test Icon'
-            },
+            inboundId: 'testInboundId',
+            title: 'Test Title',
+            subTitle: 'Test SubTitle',
+            icon: 'Test Icon',
             timestamp: 1234567890
         };
 
@@ -263,12 +250,10 @@ describe('InboundWriter', () => {
 
     it('should enhance existing inbound change content when found', async () => {
         const mockData = {
-            answers: {
-                inboundId: 'testInboundId',
-                title: 'New Title',
-                subTitle: 'New SubTitle',
-                icon: 'New Icon'
-            },
+            inboundId: 'testInboundId',
+            title: 'New Title',
+            subTitle: 'New SubTitle',
+            icon: 'New Icon',
             timestamp: 1234567890
         };
 
