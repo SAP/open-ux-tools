@@ -3,6 +3,11 @@ import type { AdtCategory, AdtCollection } from 'abap/types';
 import { Axios } from 'axios';
 
 interface AdtServiceExtension {
+    /**
+     * Attaches an ADT schema to the service.
+     *
+     * @param serviceSchema - The ADT collection to attach.
+     */
     attachAdtSchema(serviceSchema: AdtCollection): void;
 }
 

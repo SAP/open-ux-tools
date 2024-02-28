@@ -1,5 +1,31 @@
 # @sap-ux/ui5-library-writer
 
+## 0.3.16
+
+### Patch Changes
+
+-   Updated dependencies [33ec9ff9]
+    -   @sap-ux/project-access@1.17.5
+    -   @sap-ux/ui5-application-writer@0.26.3
+
+## 0.3.15
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-application-writer@0.26.3
+    -   @sap-ux/project-access@1.17.4
+    -   @sap-ux/ui5-config@0.21.1
+
+## 0.3.14
+
+### Patch Changes
+
+-   Updated dependencies [2eda843d]
+    -   @sap-ux/project-access@1.17.3
+    -   @sap-ux/ui5-application-writer@0.26.2
+
 ## 0.3.13
 
 ### Patch Changes

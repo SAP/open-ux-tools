@@ -1,5 +1,21 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [6ce5b947]
+    -   @sap-ux/ui5-info@0.3.2
+
+## 0.2.4
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/project-input-validator@0.2.2
+    -   @sap-ux/ui5-info@0.3.1
+
 ## 0.2.3
 
 ### Patch Changes

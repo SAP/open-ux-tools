@@ -1,5 +1,27 @@
 # @sap-ux/axios-extension
 
+## 1.11.3
+
+### Patch Changes
+
+-   Updated dependencies [811c4324]
+    -   @sap-ux/btp-utils@0.14.2
+
+## 1.11.2
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/btp-utils@0.14.1
+    -   @sap-ux/logger@0.5.1
+
+## 1.11.1
+
+### Patch Changes
+
+-   efd2f6d4: Support ui5 version 1.71.\* in CPE.
+
 ## 1.11.0
 
 ### Minor Changes
