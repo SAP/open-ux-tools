@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.9
+
+### Patch Changes
+
+-   3c9d8f5d: Fixed namespace for controller event handler
+
 ## 0.24.8
 
 ### Patch Changes
