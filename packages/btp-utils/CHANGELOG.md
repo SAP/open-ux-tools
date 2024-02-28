@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.14.2
+
+### Patch Changes
+
+-   811c4324: Expose types and introduce missing functionality
+
 ## 0.14.1
 
 ### Patch Changes
