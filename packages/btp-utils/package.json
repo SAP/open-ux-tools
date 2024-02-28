@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/btp-utils",
-    "version": "0.14.0",
+    "version": "0.14.1",
     "description": "Library to simplify working with SAP BTP specific features especially in SAP Business Application",
     "repository": {
         "type": "git",
@@ -39,7 +39,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
         "node": ">=18.x"
     }
 }
