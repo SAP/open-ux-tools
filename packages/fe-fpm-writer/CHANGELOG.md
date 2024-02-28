@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.8
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
 ## 0.24.7
 
 ### Patch Changes
