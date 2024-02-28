@@ -1,5 +1,16 @@
 # @sap-ux/adp-tooling
 
+## 0.8.10
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/axios-extension@1.11.2
+    -   @sap-ux/system-access@0.3.15
+    -   @sap-ux/ui5-config@0.21.1
+    -   @sap-ux/logger@0.5.1
+
 ## 0.8.9
 
 ### Patch Changes
