@@ -34,7 +34,15 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     useComboBoxAsMenuMinWidth?: boolean;
     // Default value for "openMenuOnClick" is "true"
     openMenuOnClick?: boolean;
+    /**
+     * An optional callback function for refresh event.
+     */
     onRefresh?(): void;
+    /**
+     * An optional callback function to handle change.
+     *
+     * @param value - The new value of the combo box.
+     */
     onHandleChange?(value: string | number): void;
     tooltipRefreshButton?: string;
     isLoading?: boolean;
