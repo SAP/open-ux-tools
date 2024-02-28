@@ -1,5 +1,11 @@
 # @sap-ux/feature-toggle
 
+## 0.1.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
 ## 0.1.0
 
 ### Minor Changes
