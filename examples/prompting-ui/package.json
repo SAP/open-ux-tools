@@ -1,12 +1,12 @@
 {
-    "name": "@sap-ux/fe-fpm-ui",
-    "version": "0.0.1",
+    "name": "@sap-ux/prompting-ui",
+    "version": "1.12.4",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "examples/fe-fpm-ui"
+        "directory": "examples/prompting-ui"
     },
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Afe-fpm-writer"

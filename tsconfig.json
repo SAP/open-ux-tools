@@ -153,10 +153,10 @@
       "path": "examples/fe-fpm-cli"
     },
     {
-      "path": "examples/fe-fpm-ui"
+      "path": "examples/odata-cli"
     },
     {
-      "path": "examples/odata-cli"
+      "path": "examples/prompting-ui"
     },
     {
       "path": "examples/simple-generator"
