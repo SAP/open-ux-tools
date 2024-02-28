@@ -6,7 +6,7 @@ import packageJson from '../../package.json';
  */
 export const TelemetrySettings = {
     // Target Azure apps insight destination
-    azureInstrumentationKey: '',
+    azureInstrumentationKey: process.env.AZURE_PROD_KEY ?? '',
     // Allow user to opt out from telemetry collection
     telemetryEnabled: true,
     // Module name in telemetry/pacakge.json

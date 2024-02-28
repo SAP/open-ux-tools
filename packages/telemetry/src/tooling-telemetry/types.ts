@@ -9,13 +9,11 @@ export type TelemetryHelperProperties = {
  * Type exposed via telemetry API. The following paramters can be provided by developer who
  * calls telemetry API.
  *
- * - resourceId: Id of cloud telemetry resource (e.g. Azure application insights resource is supported)
  * - consumerModule: name and version of module that uses telemetry library
  * - internalFeature: if UX tooling InternalFeature is enabled
  *
  */
 export type ToolsSuiteTelemetryInitSettings = {
-    resourceId: string;
     consumerModule: ProjectInfo;
     internalFeature: boolean;
 };
