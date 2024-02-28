@@ -138,7 +138,7 @@ class ApplicationAccessImp implements ApplicationAccess {
     /**
      * For a given app in project, retrieves i18n bundles for 'sap.app' namespace,`models` of `sap.ui5` namespace and service for cap services.
      *
-     * @returns i18n bundles or exception
+     * @returns i18n bundles or exception captured in optional errors object
      */
     getI18nBundles(): Promise<I18nBundles> {
         return getI18nBundles(this.project.root, this.app.i18n, this.project.projectType, this.fs);
