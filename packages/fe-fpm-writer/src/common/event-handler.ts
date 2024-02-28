@@ -53,9 +53,9 @@ export const contextParameter: EventHandlerTypescriptParameters = {
  *
  * @param fileName - event handler file name
  * @param controllerPrefix - controller prefix '.extension'
- * @returns {string} full namespace path to method
+ * @returns {string} file name part for namespace
  */
-function getFileNameForController(fileName: string, controllerPrefix?: string): string {
+function getFileName(fileName: string, controllerPrefix?: string): string {
     let resolvedName;
     // For name part in namespace we use passed file name or if it's controller extension, then remove 'controller' part from path
     // 'Handler.controller' should be resolved as 'Handler' in namespace
@@ -105,7 +105,7 @@ export function applyEventHandlerConfiguration(
         if (eventHandler.fileName) {
             // Use passed file name
             fileName = eventHandler.fileName;
-            resolvedName = getFileNameForController(fileName, controllerPrefix);
+            resolvedName = getFileName(fileName, controllerPrefix);
         }
     }
 
