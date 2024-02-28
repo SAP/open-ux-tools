@@ -339,6 +339,28 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
 }
 
 /**
+ * Find and filter libraries with only a `.library` and no `manifest.json`.
+ *
+ * @param pathMap - path to files
+ * @param manifestPaths - paths to manifest.json files
+ * @returns - results as array of found .library projects.
+ */
+async function filterDotLibraries(pathMap: FileMapAndCache, manifestPaths: string[]): Promise<LibraryResults[]> {
+    const dotLibraries: LibraryResults[] = [];
+    const dotLibraryPaths = Object.keys(pathMap)
+        .filter((path) => basename(path) === FileName.Library)
+        .map((path) => dirname(path))
+        .filter((path) => !manifestPaths.map((manifestPath) => dirname(manifestPath)).includes(path));
+    if (dotLibraryPaths) {
+        for (const libraryPath of dotLibraryPaths) {
+            const projectRoot = dirname((await findFileUp(FileName.Package, dirname(libraryPath))) ?? libraryPath);
+            dotLibraries.push({ projectRoot, libraryPath });
+        }
+    }
+    return dotLibraries;
+}
+
+/**
  * Filter extensions projects from a list of files.
  *
  * @param pathMap - path to files
@@ -347,16 +369,7 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
 async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults[]> {
     const results: LibraryResults[] = [];
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
-    const dotLibraryPaths = Object.keys(pathMap)
-        .filter((path) => basename(path) === FileName.Library)
-        .map((path) => dirname(path))
-        .filter((path) => !manifestPaths.map((manifestPath) => dirname(manifestPath)).includes(path));
-    if (dotLibraryPaths) {
-        for (const libraryPath of dotLibraryPaths) {
-            const projectRoot = dirname((await findFileUp(FileName.Package, dirname(libraryPath))) ?? libraryPath);
-            results.push({ projectRoot, libraryPath });
-        }
-    }
+    results.push(...(await filterDotLibraries(pathMap, manifestPaths)));
     for (const manifestPath of manifestPaths) {
         try {
             pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
