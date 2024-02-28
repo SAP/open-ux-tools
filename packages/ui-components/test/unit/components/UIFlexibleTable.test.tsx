@@ -904,6 +904,88 @@ describe('<UIFlexibleTable />', () => {
                 'row-1'
             );
         });
+
+        it('Disabled reorder row', () => {
+            const enabledRowIndex = 0;
+            const disablerRowIndex = 1;
+            wrapper.setProps({
+                rows: rows.map((row, index) => ({ ...row, disabled: index === disablerRowIndex }))
+            });
+            // Check enabled row
+            const enabledRow = wrapper.find('li').at(enabledRowIndex);
+            expect(enabledRow.prop('style')).toEqual(
+                expect.objectContaining({
+                    cursor: 'inherit',
+                    touchAction: 'none',
+                    userSelect: 'none',
+                    pointerEvents: 'all'
+                })
+            );
+            // Check disabled row
+            const disabledRow = wrapper.find('li').at(disablerRowIndex);
+            expect(disabledRow.prop('style')).toEqual(
+                expect.objectContaining({
+                    cursor: 'default',
+                    touchAction: 'auto',
+                    userSelect: 'none',
+                    pointerEvents: 'all'
+                })
+            );
+        });
+
+        describe('Test property "isTouchDragDisabled"', () => {
+            const getNativeEventMock = () => {
+                return {
+                    nativeEvent: {
+                        stopImmediatePropagation: jest.fn()
+                    }
+                };
+            };
+            const testCases = [
+                {
+                    isTouchDragDisabled: true,
+                    stopImmediatePropagation: true
+                },
+                {
+                    isTouchDragDisabled: false,
+                    stopImmediatePropagation: false
+                },
+                {
+                    isTouchDragDisabled: true,
+                    dragDisabled: true,
+                    stopImmediatePropagation: false
+                }
+            ];
+            for (const testCase of testCases) {
+                const { isTouchDragDisabled, stopImmediatePropagation, dragDisabled } = testCase;
+                it(`isTouchDragDisabled=${isTouchDragDisabled}; dragDisabled=${dragDisabled}`, () => {
+                    const rowIndex = 0;
+                    wrapper.setProps({
+                        isTouchDragDisabled,
+                        rows: rows.map((row, index) => ({ ...row, disabled: !!dragDisabled && index === 0 }))
+                    });
+                    // Check styles
+                    const row = wrapper.find('li').at(rowIndex);
+                    expect(row.prop('style')).toEqual(
+                        expect.objectContaining({
+                            touchAction: isTouchDragDisabled ? 'auto' : 'none',
+                            pointerEvents: 'all'
+                        })
+                    );
+                    // Check touch event handling
+                    const touchStartEvent = getNativeEventMock();
+                    row.simulate('touchStart', touchStartEvent);
+                    expect(touchStartEvent.nativeEvent.stopImmediatePropagation).toBeCalledTimes(
+                        stopImmediatePropagation ? 1 : 0
+                    );
+                    const touchEndEvent = getNativeEventMock();
+                    row.simulate('touchEnd', touchEndEvent);
+                    expect(touchEndEvent.nativeEvent.stopImmediatePropagation).toBeCalledTimes(
+                        stopImmediatePropagation ? 1 : 0
+                    );
+                });
+            }
+        });
     });
 
     describe('InlineFlex layout', () => {

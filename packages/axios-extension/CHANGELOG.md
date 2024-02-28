@@ -1,5 +1,188 @@
 # @sap-ux/axios-extension
 
+## 1.11.3
+
+### Patch Changes
+
+-   Updated dependencies [811c4324]
+    -   @sap-ux/btp-utils@0.14.2
+
+## 1.11.2
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/btp-utils@0.14.1
+    -   @sap-ux/logger@0.5.1
+
+## 1.11.1
+
+### Patch Changes
+
+-   efd2f6d4: Support ui5 version 1.71.\* in CPE.
+
+## 1.11.0
+
+### Minor Changes
+
+-   0f6e0e1b: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
+### Patch Changes
+
+-   Updated dependencies [0f6e0e1b]
+    -   @sap-ux/btp-utils@0.14.0
+
+## 1.10.2
+
+### Patch Changes
+
+-   64f9c513: adds more concise logging of error from xml response
+
+## 1.10.1
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+
+## 1.10.0
+
+### Minor Changes
+
+-   ecd5275d: fix log info order, remove showAddInfo
+
+## 1.9.0
+
+### Minor Changes
+
+-   de8a4878: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
+### Patch Changes
+
+-   Updated dependencies [de8a4878]
+    -   @sap-ux/btp-utils@0.13.0
+
+## 1.8.1
+
+### Patch Changes
+
+-   3000e8f4: adds additional log for deployment
+
+## 1.8.0
+
+### Minor Changes
+
+-   62232236: Use token for connecting to ABAP Cloud
+
+## 1.7.3
+
+### Patch Changes
+
+-   286883cb: fix(deps): update dependency axios to v1.6.0 [security]
+-   Updated dependencies [286883cb]
+    -   @sap-ux/btp-utils@0.12.1
+
+## 1.7.2
+
+### Patch Changes
+
+-   db918804: App name with namespace (e.g. /NS/APPNAME) needs to be URI encoded in the UI% ABAP repository delete service request URL.
+
+## 1.7.1
+
+### Patch Changes
+
+-   fa4537b2: cleanup how baseURL is used to deteremine if the service is created with a destination
+
+## 1.7.0
+
+### Minor Changes
+
+-   aa2ff95b: Enhanced LREP and UI5_ABAP_REPO services to support deployment of adaptation projects
+
+## 1.6.1
+
+### Patch Changes
+
+-   3cfaba52: Apply additional logging if the endpoint is a destination
+
+## 1.6.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/btp-utils@0.12.0
+    -   @sap-ux/logger@0.4.0
+
+## 1.5.1
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+
+## 1.5.0
+
+### Minor Changes
+
+-   d7492b53: Instead of returning empty array, `TransportChecksService.getTransportRequests()` now throws a specific error if input package is a local package. Consumer can check if
+    the error message string equals `TransportChecksService.LocalPackageError`. This fix is to correctly identify
+    local package because non-local package that is not associated with any transport request can also return emtpy array.
+
+## 1.4.8
+
+### Patch Changes
+
+-   0760c9f8: Support UAA credentials if available
+
+## 1.4.7
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/btp-utils@0.11.9
+    -   @sap-ux/logger@0.3.8
+
+## 1.4.6
+
+### Patch Changes
+
+-   7b156515: fix(deps): update dependency xpath to v0.0.33
+
+## 1.4.5
+
+### Patch Changes
+
+-   01fa690e: fix(deps): update dependency @xmldom/xmldom to v0.8.10
+
+## 1.4.4
+
+### Patch Changes
+
+-   676f8ba0: Note for customer to replace url with destination url.
+
+## 1.4.3
+
+### Patch Changes
+
+-   6e403f27: fix(deps): update dependency fast-xml-parser to v4.2.7
+
+## 1.4.2
+
+### Patch Changes
+
+-   29e71f68: Remove unnecessary uri encoding on the package name within ADT service query implementation `getTransportRequests`.
+
 ## 1.4.1
 
 ### Patch Changes

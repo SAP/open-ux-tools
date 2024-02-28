@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/environment-check",
-    "version": "0.15.48",
+    "version": "0.16.32",
     "description": "SAP Fiori environment check",
     "license": "Apache-2.0",
     "bin": {
@@ -27,28 +27,27 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "@sap/bas-sdk": "3.1.0",
-        "archiver": "5.3.1",
-        "axios": "1.4.0",
+        "@sap/bas-sdk": "3.7.7",
+        "archiver": "5.3.2",
+        "axios": "1.6.1",
         "glob-gitignore": "1.0.14",
-        "i18next": "20.3.2",
+        "i18next": "20.6.1",
         "ignore": "5.2.4",
-        "minimist": "1.2.6",
+        "minimist": "1.2.8",
         "prompts": "2.4.2",
         "yamljs": "0.3.0"
     },
     "devDependencies": {
-        "@types/archiver": "5.3.1",
+        "@types/archiver": "5.3.4",
         "@types/minimist": "1.2.2",
-        "@types/prompts": "2.0.14",
-        "@types/vscode": "1.39.0"
+        "@types/prompts": "2.4.4",
+        "@types/vscode": "1.73.1"
     },
     "files": [
         "dist",
         "package.json"
     ],
     "engines": {
-        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
-        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+        "node": ">=18.x"
     }
 }

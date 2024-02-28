@@ -1,7 +1,7 @@
 import Controller from "sap/fe/core/PageController";
 
 /**
- * @namespace <%- ns %>.<%- name %>.controller
+ * @namespace <%- ns %>
  */
 export default class <%- name %> extends Controller {
 

@@ -2,6 +2,8 @@
     margin-top: 12px;
     max-height: 51px;
     cursor: pointer;
+    box-sizing: revert;
+    background-color: var(--vscode-editor-background);
 
     &:hover {
         .ms-Callout-main,
@@ -14,12 +16,13 @@
     }
     .ms-Callout-beak {
         left: 12px !important;
+        box-shadow: none;
     }
 }
 
 .UIActionCallout-subText {
     padding-top: 5px;
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .UIActionCallout-link {

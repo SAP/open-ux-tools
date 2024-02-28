@@ -1,5 +1,41 @@
 # @sap-ux/ui5-test-writer
 
+## 0.3.2
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.3.1
+
+### Patch Changes
+
+-   deabc5bd: fix template issues for worklist OPA test
+
+## 0.3.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+## 0.2.1
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
+## 0.2.0
+
+### Minor Changes
+
+-   bf1281ca: Adds support for "contextPath"
+
+## 0.1.11
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 0.1.10
 
 ### Patch Changes

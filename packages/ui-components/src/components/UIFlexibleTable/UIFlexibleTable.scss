@@ -140,7 +140,7 @@ $readonly-labels-opacity: 0.4;
                     // Locked drag by single axis
                     &.locked-axis {
                         .flexible-table-content-table-row-wrapper {
-                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+                            box-shadow: var(--ui-box-shadow-medium);
                         }
                     }
                 }
@@ -228,7 +228,7 @@ $readonly-labels-opacity: 0.4;
 
                 &-item {
                     &-title {
-                        height: 16px;
+                        height: 18px;
                         font-weight: bold;
                         padding: 0 5px;
                         white-space: nowrap;

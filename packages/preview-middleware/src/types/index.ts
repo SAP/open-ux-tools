@@ -22,27 +22,45 @@ export interface App {
     intent?: Intent;
 }
 
+export interface Editor {
+    path: string;
+    developerMode?: boolean;
+    pluginScript?: string;
+    generator?: string;
+}
+
+export interface RtaConfig {
+    layer: UI5FlexLayer;
+    options?: {
+        [key: string]: unknown;
+        baseId?: string;
+        projectId?: string;
+        scenario?: string;
+        appName?: string;
+    };
+    editors: Editor[];
+}
+
 /**
  * FLP preview configuration.
  */
 export interface FlpConfig {
     path: string;
-    intent?: Intent;
-    rta?: {
-        layer?: UI5FlexLayer;
-    };
+    intent: Intent;
     /**
      * Optional: if set to true then a locate-reuse-libs script will be attached to the html
      */
     libs?: boolean;
     apps: App[];
+    theme?: string;
 }
 
 /**
  * Middleware configuration.
  */
-export interface Config {
+export interface MiddlewareConfig {
     flp?: Partial<FlpConfig>;
+    rta?: RtaConfig;
     adp?: AdpPreviewConfig;
     debug?: boolean;
 }

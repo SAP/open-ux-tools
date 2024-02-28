@@ -1,0 +1,309 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MetadataService for XML import() 1`] = `
+Array [
+  Object {
+    "element": Object {
+      "content": Array [
+        Object {
+          "content": Array [],
+          "edmPrimitiveType": "Edm.String",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Property",
+          "name": "Sector",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Sector",
+          "targetKinds": Array [
+            "Property",
+          ],
+        },
+        Object {
+          "content": Array [],
+          "edmPrimitiveType": "Edm.String",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Property",
+          "name": "ID",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ID",
+          "targetKinds": Array [
+            "Property",
+          ],
+        },
+        Object {
+          "content": Array [],
+          "edmPrimitiveType": "Edm.String",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Property",
+          "name": "Name",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Name",
+          "targetKinds": Array [
+            "Property",
+          ],
+        },
+        Object {
+          "content": Array [],
+          "edmPrimitiveType": "Edm.Int32",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Property",
+          "name": "MemberCount",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/MemberCount",
+          "targetKinds": Array [
+            "Property",
+          ],
+        },
+        Object {
+          "content": Array [],
+          "edmPrimitiveType": "Edm.String",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Property",
+          "name": "ManagerID",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ManagerID",
+          "targetKinds": Array [
+            "Property",
+          ],
+        },
+        Object {
+          "content": Array [],
+          "edmPrimitiveType": "Edm.String",
+          "isAnnotatable": true,
+          "isCollectionValued": true,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Property",
+          "name": "Categories",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Categories",
+          "targetKinds": Array [
+            "Property",
+            "Collection",
+          ],
+        },
+      ],
+      "isAnnotatable": true,
+      "isCollectionValued": false,
+      "isComplexType": false,
+      "isEntityType": true,
+      "kind": "EntityType",
+      "location": Object {
+        "range": Object {
+          "end": Object {
+            "character": 5,
+            "line": 5,
+          },
+          "start": Object {
+            "character": 1,
+            "line": 1,
+          },
+        },
+        "uri": "file://metadata.xml",
+      },
+      "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
+      "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
+      "targetKinds": Array [
+        "EntityType",
+      ],
+    },
+  },
+  Object {
+    "element": Object {
+      "content": Array [],
+      "edmPrimitiveType": "Edm.String",
+      "isAnnotatable": true,
+      "isCollectionValued": false,
+      "isComplexType": false,
+      "isEntityType": false,
+      "kind": "Property",
+      "name": "Sector",
+      "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Sector",
+      "targetKinds": Array [
+        "Property",
+      ],
+    },
+  },
+  Object {
+    "element": Object {
+      "content": Array [],
+      "edmPrimitiveType": "Edm.String",
+      "isAnnotatable": true,
+      "isCollectionValued": false,
+      "isComplexType": false,
+      "isEntityType": false,
+      "kind": "Property",
+      "name": "ID",
+      "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ID",
+      "targetKinds": Array [
+        "Property",
+      ],
+    },
+  },
+  Object {
+    "element": Object {
+      "content": Array [],
+      "edmPrimitiveType": "Edm.String",
+      "isAnnotatable": true,
+      "isCollectionValued": false,
+      "isComplexType": false,
+      "isEntityType": false,
+      "kind": "Property",
+      "name": "Name",
+      "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Name",
+      "targetKinds": Array [
+        "Property",
+      ],
+    },
+  },
+  Object {
+    "element": Object {
+      "content": Array [],
+      "edmPrimitiveType": "Edm.Int32",
+      "isAnnotatable": true,
+      "isCollectionValued": false,
+      "isComplexType": false,
+      "isEntityType": false,
+      "kind": "Property",
+      "name": "MemberCount",
+      "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/MemberCount",
+      "targetKinds": Array [
+        "Property",
+      ],
+    },
+  },
+  Object {
+    "element": Object {
+      "content": Array [],
+      "edmPrimitiveType": "Edm.String",
+      "isAnnotatable": true,
+      "isCollectionValued": false,
+      "isComplexType": false,
+      "isEntityType": false,
+      "kind": "Property",
+      "name": "ManagerID",
+      "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ManagerID",
+      "targetKinds": Array [
+        "Property",
+      ],
+    },
+  },
+  Object {
+    "element": Object {
+      "content": Array [],
+      "edmPrimitiveType": "Edm.String",
+      "isAnnotatable": true,
+      "isCollectionValued": true,
+      "isComplexType": false,
+      "isEntityType": false,
+      "kind": "Property",
+      "name": "Categories",
+      "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Categories",
+      "targetKinds": Array [
+        "Property",
+        "Collection",
+      ],
+    },
+  },
+  Object {
+    "element": Object {
+      "content": Array [
+        Object {
+          "content": Array [],
+          "edmPrimitiveType": "Edm.String",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Parameter",
+          "name": "DepartmentName",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)/DepartmentName",
+          "targetKinds": Array [
+            "Parameter",
+          ],
+        },
+      ],
+      "isAnnotatable": true,
+      "isCollectionValued": false,
+      "isComplexType": false,
+      "isEntityType": false,
+      "kind": "Function",
+      "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)",
+      "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)",
+      "targetKinds": Array [
+        "Function",
+      ],
+    },
+  },
+  Object {
+    "element": Object {
+      "content": Array [],
+      "edmPrimitiveType": "Edm.String",
+      "isAnnotatable": true,
+      "isCollectionValued": false,
+      "isComplexType": false,
+      "isEntityType": false,
+      "kind": "Parameter",
+      "name": "DepartmentName",
+      "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)/DepartmentName",
+      "targetKinds": Array [
+        "Parameter",
+      ],
+    },
+  },
+  Object {
+    "element": Object {
+      "content": Array [
+        Object {
+          "content": Array [],
+          "edmPrimitiveType": "Edm.Int16",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Parameter",
+          "name": "DepartmentID",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)/DepartmentID",
+          "targetKinds": Array [
+            "Parameter",
+          ],
+        },
+      ],
+      "isAnnotatable": true,
+      "isCollectionValued": false,
+      "isComplexType": false,
+      "isEntityType": false,
+      "kind": "Function",
+      "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)",
+      "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)",
+      "targetKinds": Array [
+        "Function",
+      ],
+    },
+  },
+  Object {
+    "element": Object {
+      "content": Array [],
+      "edmPrimitiveType": "Edm.Int16",
+      "isAnnotatable": true,
+      "isCollectionValued": false,
+      "isComplexType": false,
+      "isEntityType": false,
+      "kind": "Parameter",
+      "name": "DepartmentID",
+      "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)/DepartmentID",
+      "targetKinds": Array [
+        "Parameter",
+      ],
+    },
+  },
+]
+`;

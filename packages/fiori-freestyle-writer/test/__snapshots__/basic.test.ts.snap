@@ -47,7 +47,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -82,7 +82,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -153,7 +153,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -588,6 +588,25 @@ title=App Title",
     };
 })(sap);
 
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
@@ -620,6 +639,7 @@ sap.registerComponentDependencyPaths(manifestUri)
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -633,6 +653,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
                 // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
                     sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
                         var oResourceBundle = ResourceBundle.create({
@@ -645,6 +666,7 @@ sap.registerComponentDependencyPaths(manifestUri)
             }
         } else {
             sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
                 // initialize the ushell sandbox component
                 sap.ushell.Container.createRenderer().placeAt(\\"content\\");
             });
@@ -681,9 +703,6 @@ exports[`Fiori freestyle template: basicTemplate Generate files for template: ba
 Object {
   ".babelrc.json": Object {
     "contents": "{
-    \\"ignore\\": [
-        \\"**/*.d.ts\\"
-    ],
     \\"presets\\": [
         \\"@babel/preset-env\\",
         [
@@ -745,8 +764,8 @@ archive.zip
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
-    \\"typescript\\": \\"^4.6.3\\",
+    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
+    \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
@@ -780,14 +799,16 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"nods1/*\\": [
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -799,7 +820,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -859,7 +880,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -911,7 +932,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -1322,9 +1343,6 @@ exports[`Fiori freestyle template: basicTemplate Generate files for template: ba
 Object {
   ".babelrc.json": Object {
     "contents": "{
-    \\"ignore\\": [
-        \\"**/*.d.ts\\"
-    ],
     \\"presets\\": [
         \\"@babel/preset-env\\",
         [
@@ -1385,9 +1403,9 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sapui5/ts-types-esm\\": \\"~1.108.1\\",
-    \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
-    \\"typescript\\": \\"^4.6.3\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
+    \\"typescript\\": \\"^5.1.6\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
@@ -1421,14 +1439,16 @@ archive.zip
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
         \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"nods1/*\\": [
                 \\"./webapp/*\\"
             ]
         },
-        \\"types\\": [
-            \\"@sapui5/ts-types-esm\\"
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/ts-types-esm\\"
         ]
     },
     \\"include\\": [
@@ -1440,7 +1460,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -1494,7 +1514,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -1546,7 +1566,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -1947,6 +1967,634 @@ export function createDeviceModel () {
 }
 `;
 
+exports[`Fiori freestyle template: basicTemplate Generate files for template: basic_typescript_ui5_1_114 1`] = `
+Object {
+  ".babelrc.json": Object {
+    "contents": "{
+    \\"presets\\": [
+        \\"@babel/preset-env\\",
+        [
+            \\"transform-ui5\\",
+            {
+                \\"overridesToOverride\\": true
+            }
+        ],
+        \\"@babel/preset-typescript\\"
+    ],
+    \\"plugins\\": [
+        \\"transform-remove-console\\",
+        [
+            \\"transform-async-to-promises\\",
+            {
+                \\"inlineHelpers\\": true
+            }
+        ]
+    ],
+    \\"sourceMaps\\": true
+}",
+    "state": "modified",
+  },
+  ".eslintrc": Object {
+    "contents": "{
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
+    \\"root\\": true
+}
+",
+    "state": "modified",
+  },
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"nods1\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"A Fiori application.\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sapui5/types\\": \\"~1.114.0\\",
+    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
+    \\"typescript\\": \\"^5.1.6\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\",
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
+    \\"ts-typecheck\\": \\"tsc --noEmit\\",
+    \\"prestart\\": \\"npm run ts-typecheck\\",
+    \\"prebuild\\": \\"npm run ts-typecheck\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "tsconfig.json": Object {
+    "contents": "{
+    \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
+        \\"module\\": \\"es2022\\",
+        \\"skipLibCheck\\": true,
+        \\"allowJs\\": true,
+        \\"strict\\": true,
+        \\"strictPropertyInitialization\\": false,
+        \\"moduleResolution\\": \\"node\\",
+        \\"rootDir\\": \\"./webapp\\",
+        \\"outDir\\": \\"./dist\\",
+        \\"baseUrl\\": \\"./\\",
+        \\"paths\\": {
+            \\"nods1/*\\": [
+                \\"./webapp/*\\"
+            ]
+        },
+        \\"typeRoots\\": [
+            \\"./node_modules/@types\\",
+            \\"./node_modules/@sapui5/types\\"
+        ]
+    },
+    \\"include\\": [
+        \\"./webapp/**/*\\"
+    ]
+}",
+    "state": "modified",
+  },
+  "ui5-local.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: nods1
+type: application
+framework:
+  name: SAPUI5
+  version: 1.114.0
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: themelib_sap_horizon
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        excludePatterns:
+          - /Component-preload.js
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://localhost
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+",
+    "state": "modified",
+  },
+  "ui5-mock.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: nods1
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: http://localhost
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        excludePatterns:
+          - /Component-preload.js
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: nods1
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: http://localhost
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        excludePatterns:
+          - /Component-preload.js
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+",
+    "state": "modified",
+  },
+  "webapp/Component.ts": Object {
+    "contents": "import BaseComponent from \\"sap/ui/core/UIComponent\\";
+import { createDeviceModel } from \\"./model/models\\";
+
+/**
+ * @namespace nods1
+ */
+export default class Component extends BaseComponent {
+
+	public static metadata = {
+		manifest: \\"json\\"
+	};
+
+    /**
+     * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
+     * @public
+     * @override
+     */
+	public init() : void {
+		// call the base component's init function
+		super.init();
+
+        // enable routing
+        this.getRouter().initialize();
+
+        // set the device model
+        this.setModel(createDeviceModel(), \\"device\\");
+	}
+}",
+    "state": "modified",
+  },
+  "webapp/controller/App.controller.ts": Object {
+    "contents": "import Controller from \\"sap/ui/core/mvc/Controller\\";
+
+/**
+ * @namespace nods1.controller
+ */
+export default class App extends Controller {
+
+    /*eslint-disable @typescript-eslint/no-empty-function*/
+    public onInit(): void {
+
+    }
+}",
+    "state": "modified",
+  },
+  "webapp/controller/View1.controller.ts": Object {
+    "contents": "import Controller from \\"sap/ui/core/mvc/Controller\\";
+
+/**
+ * @namespace nods1.controller
+ */
+export default class View1 extends Controller {
+
+    /*eslint-disable @typescript-eslint/no-empty-function*/
+    public onInit(): void {
+
+    }
+}",
+    "state": "modified",
+  },
+  "webapp/css/style.css": Object {
+    "contents": "/* Enter your custom styles here */",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for nods1
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=App Title
+
+#YDES: Application description
+appDescription=A Fiori application.
+#XTIT: Main view title
+title=App Title",
+    "state": "modified",
+  },
+  "webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html lang=\\"en\\">
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>App Title</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_horizon\\"
+        data-sap-ui-resourceroots='{
+            \\"nods1\\": \\"./\\"
+        }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"nods1\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"nods1\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/localService/metadata.xml": Object {
+    "contents": "<metadata />",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.53.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"nods1\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"0.0.1\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [],
+          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
+        }
+      }
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"flexEnabled\\": true,
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.114.0\\",
+      \\"libs\\": {
+        \\"sap.m\\": {},
+        \\"sap.ui.core\\": {}
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"bundleName\\": \\"nods1.i18n.i18n\\"
+        }
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {}
+      }
+    },
+    \\"resources\\": {
+      \\"css\\": [
+        {
+          \\"uri\\": \\"css/style.css\\"
+        }
+      ]
+    },
+    \\"routing\\": {
+      \\"config\\": {
+        \\"routerClass\\": \\"sap.m.routing.Router\\",
+        \\"viewType\\": \\"XML\\",
+        \\"async\\": true,
+        \\"viewPath\\": \\"nods1.view\\",
+        \\"controlAggregation\\": \\"pages\\",
+        \\"controlId\\": \\"app\\",
+        \\"clearControlAggregation\\": false
+      },
+      \\"routes\\": [
+        {
+          \\"name\\": \\"RouteView1\\",
+          \\"pattern\\": \\":?query:\\",
+          \\"target\\": [
+            \\"TargetView1\\"
+          ]
+        }
+      ],
+      \\"targets\\": {
+        \\"TargetView1\\": {
+          \\"viewType\\": \\"XML\\",
+          \\"transition\\": \\"slide\\",
+          \\"clearControlAggregation\\": false,
+          \\"viewId\\": \\"View1\\",
+          \\"viewName\\": \\"View1\\"
+        }
+      }
+    },
+    \\"rootView\\": {
+      \\"viewName\\": \\"nods1.view.App\\",
+      \\"type\\": \\"XML\\",
+      \\"async\\": true,
+      \\"id\\": \\"App\\"
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+  "webapp/model/models.ts": Object {
+    "contents": "import JSONModel from \\"sap/ui/model/json/JSONModel\\";
+import Device from \\"sap/ui/Device\\";
+
+export function createDeviceModel () {
+    const model = new JSONModel(Device);
+    model.setDefaultBindingMode(\\"OneWay\\");
+    return model;
+}",
+    "state": "modified",
+  },
+  "webapp/test/flpSandbox.html": Object {
+    "contents": "<!DOCTYPE HTML>
+<html lang=\\"en\\">
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>{{appTitle}}</title>
+
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
+
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
+
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            bootstrapPlugins: {
+                \\"RuntimeAuthoringPlugin\\": {
+                    component: \\"sap.ushell.plugins.rta\\",
+                    config: {
+                        validateAppVersion: false
+                    }
+                }
+            },
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
+                }
+            },
+            applications: {
+                \\"nods1-tile\\": {
+                    title: \\"App Title\\",
+                    description: \\"A Fiori application.\\",
+                    additionalInformation: \\"SAPUI5.Component=nods1\\",
+                    applicationType: \\"URL\\",
+                    url: \\"../\\"
+                }
+            }
+        };
+    </script>
+
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_horizon\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-resourceroots='{\\"nods1\\": \\"../\\"}'
+        data-sap-ui-frameOptions=\\"allow\\">
+    </script>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+        });
+    </script>
+</head>
+
+<!-- UI Content -->
+
+<body class=\\"sapUiBody\\" id=\\"content\\">
+</body>
+
+</html>
+",
+    "state": "modified",
+  },
+  "webapp/view/App.view.xml": Object {
+    "contents": "<mvc:View controllerName=\\"nods1.controller.App\\"
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\" displayBlock=\\"true\\"
+    xmlns=\\"sap.m\\">
+    <App id=\\"app\\">
+    </App>
+</mvc:View>
+",
+    "state": "modified",
+  },
+  "webapp/view/View1.view.xml": Object {
+    "contents": "<mvc:View controllerName=\\"nods1.controller.View1\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\" displayBlock=\\"true\\"
+    xmlns=\\"sap.m\\">
+    <Page id=\\"page\\" title=\\"{i18n>title}\\">
+        <content />
+    </Page>
+</mvc:View>
+",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`Fiori freestyle template: basicTemplate Generate files for template: basic_with_custom_view_name 1`] = `
 Object {
   ".gitignore": Object {
@@ -1996,7 +2644,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -2044,7 +2692,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -2084,7 +2732,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -2158,7 +2806,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -2613,6 +3261,25 @@ title=App Title",
     };
 })(sap);
 
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
@@ -2645,6 +3312,7 @@ sap.registerComponentDependencyPaths(manifestUri)
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -2658,6 +3326,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
                 // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
                     sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
                         var oResourceBundle = ResourceBundle.create({
@@ -2670,6 +3339,7 @@ sap.registerComponentDependencyPaths(manifestUri)
             }
         } else {
             sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
                 // initialize the ushell sandbox component
                 sap.ushell.Container.createRenderer().placeAt(\\"content\\");
             });
@@ -2751,7 +3421,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -2799,7 +3469,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -2839,7 +3509,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -2913,7 +3583,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -3369,6 +4039,25 @@ title=App Title",
     };
 })(sap);
 
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
@@ -3401,6 +4090,7 @@ sap.registerComponentDependencyPaths(manifestUri)
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -3414,6 +4104,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
                 // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
                     sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
                         var oResourceBundle = ResourceBundle.create({
@@ -3426,6 +4117,7 @@ sap.registerComponentDependencyPaths(manifestUri)
             }
         } else {
             sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
                 // initialize the ushell sandbox component
                 sap.ushell.Container.createRenderer().placeAt(\\"content\\");
             });
@@ -3507,7 +4199,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -3555,7 +4247,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -3595,7 +4287,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -3669,7 +4361,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -4066,7 +4758,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -4114,7 +4806,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -4154,7 +4846,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.6\\"
+specVersion: \\"3.1\\"
 metadata:
   name: nods1
 type: application
@@ -4228,7 +4920,7 @@ sap.ui.define([
       \\"use strict\\";
   
       return BaseController.extend(\\"nods1.controller.App\\", {
-        onInit() {
+        onInit: function() {
         }
       });
     }
@@ -4645,6 +5337,25 @@ title=App Title",
     };
 })(sap);
 
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    //Fiori Theme font family and URI
+    var fioriTheme = {
+        fontFamily: \\"SAP-icons-TNT\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/tnt/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(fioriTheme);
+    //SAP Business Suite Theme font family and URI
+    var bSuiteTheme = {
+        fontFamily: \\"BusinessSuiteInAppSymbols\\",
+        fontURI: sap.ui.require.toUrl(\\"sap/ushell/themes/base/fonts/\\")
+    };
+    //Registering to the icon pool
+    IconPool.registerFont(bSuiteTheme);
+    });
+}
+
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
@@ -4677,6 +5388,7 @@ sap.registerComponentDependencyPaths(manifestUri)
         if (componentName && componentName.length > 0) {
             if (useMockserver && useMockserver === \\"true\\") {
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
                         // set up test service for local testing
                         server.init();
@@ -4690,6 +5402,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
                 // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
+                    registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
                     sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
                         var oResourceBundle = ResourceBundle.create({
@@ -4702,6 +5415,7 @@ sap.registerComponentDependencyPaths(manifestUri)
             }
         } else {
             sap.ui.getCore().attachInit(function () {
+                registerSAPFonts();
                 // initialize the ushell sandbox component
                 sap.ushell.Container.createRenderer().placeAt(\\"content\\");
             });

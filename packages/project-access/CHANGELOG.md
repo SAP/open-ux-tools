@@ -1,5 +1,179 @@
 # @sap-ux/project-access
 
+## 1.17.5
+
+### Patch Changes
+
+-   33ec9ff9: fix: enhance `getI18nBundles` to be more tolerant
+
+## 1.17.4
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-config@0.21.1
+    -   @sap-ux/i18n@0.0.4
+
+## 1.17.3
+
+### Patch Changes
+
+-   2eda843d: feat(project-access): expose "toReferenceUri" in package interface
+
+## 1.17.2
+
+### Patch Changes
+
+-   76ce5c2f: fix: expose getI18nPropertiesPaths and export types for browser in @sap-ux/i18n
+-   Updated dependencies [76ce5c2f]
+    -   @sap-ux/i18n@0.0.3
+
+## 1.17.1
+
+### Patch Changes
+
+-   86da13e3: Add i18n support
+-   Updated dependencies [86da13e3]
+    -   @sap-ux/i18n@0.0.2
+
+## 1.17.0
+
+### Minor Changes
+
+-   236146b4: Add retrieval of project structure
+
+## 1.16.3
+
+### Patch Changes
+
+-   e6f454ab: Fix for detecting apps that are part of CAP
+
+## 1.16.2
+
+### Patch Changes
+
+-   d5b99a28: cds.root is now set from passed project root
+
+## 1.16.1
+
+### Patch Changes
+
+-   20a4dbfc: Fix for classification of freestyle apps in CAP Java projects
+
+## 1.16.0
+
+### Minor Changes
+
+-   f7382bd1: Add getAppType() and getProjectType()
+
+## 1.15.5
+
+### Patch Changes
+
+-   f11f9b2c: fix(deps): update dependency @ui5/manifest to v1.61.0
+
+## 1.15.4
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+
+## 1.15.3
+
+### Patch Changes
+
+-   a82759be: Fix for "TypeError: Cannot read properties of undefined (reading 'odata-v4')" which can occur when dynamically loading different @sap/cds verrsions
+
+## 1.15.2
+
+### Patch Changes
+
+-   d7d52155: Find project root of adp by searching for package.json
+
+## 1.15.1
+
+### Patch Changes
+
+-   e4821c0f: SonarCloud code smells
+
+## 1.15.0
+
+### Minor Changes
+
+-   b458bf43: Adding functions getCdsFiles(), getCdsRoots(), getCdsServices()
+
+## 1.14.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+
+## 1.13.8
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+
+## 1.13.7
+
+### Patch Changes
+
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-config@0.19.4
+
+## 1.13.6
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/ui5-config@0.19.3
+
+## 1.13.5
+
+### Patch Changes
+
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-config@0.19.2
+
+## 1.13.4
+
+### Patch Changes
+
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+
+## 1.13.3
+
+### Patch Changes
+
+-   7fd593f0: fix(deps): update dependency @ui5/manifest to v1.59.0
+
+## 1.13.2
+
+### Patch Changes
+
+-   164d52b5: chore(deps): update dependency vscode-uri to v3.0.7
+
+## 1.13.1
+
+### Patch Changes
+
+-   56dc4c59: Fix for leading slashes on Windows
+
+## 1.13.0
+
+### Minor Changes
+
+-   d13264b3: Add function to search for CAP project roots in local folders or workspace
+
 ## 1.12.1
 
 ### Patch Changes

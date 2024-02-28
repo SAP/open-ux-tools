@@ -90,7 +90,7 @@ export function getCellFromCoords(rowIdx: number, columnKey: string, columns: UI
         `.ms-DetailsList .ms-DetailsList-contentWrapper .ms-List-page .ms-DetailsRow[data-item-index="${rowIdx || 0}"]`
     );
     const cols = row?.querySelectorAll('.ms-DetailsRow-cell');
-    return cols && cols.length && cols[selectedIdx];
+    return cols?.length && cols[selectedIdx];
 }
 
 // manual workaround due to the lack of API for selecting columns
@@ -148,22 +148,27 @@ export function scrollToRow(idx = 0, table: IDetailsList | null) {
  * Wait for selector.
  *
  * @param {string} selector
+ * @param {number} count - number of tries, after which the element is considered not found
+ *                          (so that the function doesn't run forever)
  * @returns {Promise<Element>}
  */
-export async function waitFor(selector: string) {
+export async function waitFor(selector: string, count = 10): Promise<Element | void> {
+    if (count === 0) {
+        return Promise.reject(new Error('Element for selector not found: ' + selector));
+    }
+    await sleep();
     const el = document.querySelector(selector);
-    return new Promise((resolve) => {
-        if (el) {
-            resolve(el);
-        } else {
-            setTimeout(async () => {
-                const el2 = await waitFor(selector);
-                if (el2) {
-                    resolve(el2);
-                }
-            }, 100);
-        }
-    });
+    return el ? Promise.resolve(el) : waitFor(selector, count - 1);
+}
+
+/**
+ * Promisified setTimeout.
+ *
+ * @param ms
+ * @returns Promise
+ */
+export function sleep(ms = 200) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**

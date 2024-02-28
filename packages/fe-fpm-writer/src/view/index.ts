@@ -58,7 +58,10 @@ function enhanceConfig(fs: Editor, data: CustomView, manifestPath: string, manif
 
     // apply event handler
     if (config.eventHandler) {
-        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, true, config.typescript);
+        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, {
+            controllerSuffix: true,
+            typescript: config.typescript
+        });
     }
 
     // fill config.views, merge new data into existing views

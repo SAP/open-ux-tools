@@ -1,5 +1,355 @@
 # @sap-ux/deploy-tooling
 
+## 0.14.3
+
+### Patch Changes
+
+-   Updated dependencies [811c4324]
+    -   @sap-ux/btp-utils@0.14.2
+    -   @sap-ux/axios-extension@1.11.3
+    -   @sap-ux/system-access@0.3.16
+
+## 0.14.2
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/project-input-validator@0.2.2
+    -   @sap-ux/axios-extension@1.11.2
+    -   @sap-ux/system-access@0.3.15
+    -   @sap-ux/ui5-config@0.21.1
+    -   @sap-ux/btp-utils@0.14.1
+    -   @sap-ux/logger@0.5.1
+
+## 0.14.1
+
+### Patch Changes
+
+-   Updated dependencies [efd2f6d4]
+    -   @sap-ux/axios-extension@1.11.1
+    -   @sap-ux/system-access@0.3.14
+
+## 0.14.0
+
+### Minor Changes
+
+-   0f6e0e1b: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
+### Patch Changes
+
+-   Updated dependencies [0f6e0e1b]
+    -   @sap-ux/axios-extension@1.11.0
+    -   @sap-ux/btp-utils@0.14.0
+    -   @sap-ux/system-access@0.3.13
+
+## 0.13.4
+
+### Patch Changes
+
+-   Updated dependencies [64f9c513]
+    -   @sap-ux/axios-extension@1.10.2
+    -   @sap-ux/system-access@0.3.12
+
+## 0.13.3
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+    -   @sap-ux/axios-extension@1.10.1
+    -   @sap-ux/system-access@0.3.11
+
+## 0.13.2
+
+### Patch Changes
+
+-   2bedc697: chore(deps): update dependency @types/adm-zip to v0.5.5
+
+## 0.13.1
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.3.10
+
+## 0.13.0
+
+### Minor Changes
+
+-   ecd5275d: fix log info order, remove showAddInfo
+
+### Patch Changes
+
+-   Updated dependencies [ecd5275d]
+    -   @sap-ux/axios-extension@1.10.0
+    -   @sap-ux/system-access@0.3.9
+
+## 0.12.0
+
+### Minor Changes
+
+-   de8a4878: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
+### Patch Changes
+
+-   Updated dependencies [de8a4878]
+    -   @sap-ux/axios-extension@1.9.0
+    -   @sap-ux/btp-utils@0.13.0
+    -   @sap-ux/system-access@0.3.8
+
+## 0.11.10
+
+### Patch Changes
+
+-   Updated dependencies [3000e8f4]
+    -   @sap-ux/axios-extension@1.8.1
+    -   @sap-ux/system-access@0.3.7
+
+## 0.11.9
+
+### Patch Changes
+
+-   Updated dependencies [62232236]
+    -   @sap-ux/axios-extension@1.8.0
+    -   @sap-ux/system-access@0.3.6
+
+## 0.11.8
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/system-access@0.3.5
+
+## 0.11.7
+
+### Patch Changes
+
+-   286883cb: fix(deps): update dependency axios to v1.6.0 [security]
+-   Updated dependencies [286883cb]
+    -   @sap-ux/axios-extension@1.7.3
+    -   @sap-ux/btp-utils@0.12.1
+    -   @sap-ux/system-access@0.3.5
+
+## 0.11.6
+
+### Patch Changes
+
+-   58d48e13: Capitalize $tmp before performing any validations. ADT queries rejects package name that is not in capital letter.
+    The previous fix only caplitalize for list package query. But ADT query for valid transport requests also require
+    caplized capital letters to detect $TMP is local package.
+-   Updated dependencies [db918804]
+    -   @sap-ux/axios-extension@1.7.2
+    -   @sap-ux/system-access@0.3.4
+
+## 0.11.5
+
+### Patch Changes
+
+-   d0e46a5c: Do not validate url if destination is present
+-   Updated dependencies [d0e46a5c]
+    -   @sap-ux/project-input-validator@0.2.1
+
+## 0.11.4
+
+### Patch Changes
+
+-   70bf0627: When validation result is successful, the successful log messages should still be printed on the console.
+
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [d31cfeff]
+    -   @sap-ux/project-input-validator@0.2.0
+
+## 0.11.2
+
+### Patch Changes
+
+-   Updated dependencies [fa4537b2]
+    -   @sap-ux/axios-extension@1.7.1
+    -   @sap-ux/system-access@0.3.3
+
+## 0.11.1
+
+### Patch Changes
+
+-   4568e82b: Ensure provider is updated with credentials after 401 is returned
+
+## 0.11.0
+
+### Minor Changes
+
+-   e0e9bd9e: Support for deployment of adaptation projects to LREP.
+
+## 0.10.2
+
+### Patch Changes
+
+-   aa2ff95b: Replaced yazl with adm-zip
+-   Updated dependencies [aa2ff95b]
+    -   @sap-ux/axios-extension@1.7.0
+    -   @sap-ux/system-access@0.3.2
+
+## 0.10.1
+
+### Patch Changes
+
+-   Updated dependencies [3cfaba52]
+    -   @sap-ux/axios-extension@1.6.1
+    -   @sap-ux/system-access@0.3.1
+
+## 0.10.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/axios-extension@1.6.0
+    -   @sap-ux/system-access@0.3.0
+    -   @sap-ux/ui5-config@0.20.0
+    -   @sap-ux/btp-utils@0.12.0
+    -   @sap-ux/logger@0.4.0
+
+## 0.9.20
+
+### Patch Changes
+
+-   966b396b: - Improve format of reported invalid messages
+    -   Convert $tmp to upper case to pass ADT validation
+-   Updated dependencies [966b396b]
+    -   @sap-ux/project-input-validator@0.1.2
+
+## 0.9.19
+
+### Patch Changes
+
+-   Updated dependencies [cbcad88d]
+    -   @sap-ux/project-input-validator@0.1.1
+    -   @sap-ux/system-access@0.2.11
+
+## 0.9.18
+
+### Patch Changes
+
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+    -   @sap-ux/axios-extension@1.5.1
+    -   @sap-ux/system-access@0.2.10
+    -   @sap-ux/ui5-config@0.19.5
+
+## 0.9.17
+
+### Patch Changes
+
+-   d7492b53: A new feature is introduced to run validators on deploy configuration in `ui5-deploy.yaml` and returns found issues. This new feature is only activated when running deploy in the existing `test` mode. No additional parameter required to include this validation process.
+-   Updated dependencies [d7492b53]
+-   Updated dependencies [d7492b53]
+    -   @sap-ux/axios-extension@1.5.0
+    -   @sap-ux/project-input-validator@0.1.0
+    -   @sap-ux/system-access@0.2.9
+
+## 0.9.16
+
+### Patch Changes
+
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-config@0.19.4
+    -   @sap-ux/axios-extension@1.4.8
+    -   @sap-ux/system-access@0.2.8
+
+## 0.9.15
+
+### Patch Changes
+
+-   Updated dependencies [0760c9f8]
+    -   @sap-ux/axios-extension@1.4.8
+    -   @sap-ux/system-access@0.2.8
+
+## 0.9.14
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/axios-extension@1.4.7
+    -   @sap-ux/btp-utils@0.11.9
+    -   @sap-ux/logger@0.3.8
+    -   @sap-ux/system-access@0.2.7
+    -   @sap-ux/ui5-config@0.19.3
+
+## 0.9.13
+
+### Patch Changes
+
+-   Updated dependencies [7b156515]
+    -   @sap-ux/axios-extension@1.4.6
+    -   @sap-ux/system-access@0.2.6
+
+## 0.9.12
+
+### Patch Changes
+
+-   Updated dependencies [01fa690e]
+-   Updated dependencies [3137514f]
+    -   @sap-ux/axios-extension@1.4.5
+    -   @sap-ux/ui5-config@0.19.2
+    -   @sap-ux/system-access@0.2.5
+
+## 0.9.11
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.2.4
+
+## 0.9.10
+
+### Patch Changes
+
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+    -   @sap-ux/axios-extension@1.4.4
+    -   @sap-ux/system-access@0.2.3
+
+## 0.9.9
+
+### Patch Changes
+
+-   Updated dependencies [676f8ba0]
+    -   @sap-ux/axios-extension@1.4.4
+    -   @sap-ux/system-access@0.2.3
+
+## 0.9.8
+
+### Patch Changes
+
+-   Updated dependencies [6e403f27]
+    -   @sap-ux/axios-extension@1.4.3
+    -   @sap-ux/system-access@0.2.2
+
+## 0.9.7
+
+### Patch Changes
+
+-   Updated dependencies [29e71f68]
+    -   @sap-ux/axios-extension@1.4.2
+    -   @sap-ux/system-access@0.2.1
+
+## 0.9.6
+
+### Patch Changes
+
+-   30a7f6ae: apply exclude param when generating archive zip
+
 ## 0.9.5
 
 ### Patch Changes

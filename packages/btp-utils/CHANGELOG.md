@@ -1,5 +1,51 @@
 # @sap-ux/btp-utils
 
+## 0.14.2
+
+### Patch Changes
+
+-   811c4324: Expose types and introduce missing functionality
+
+## 0.14.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.14.0
+
+### Minor Changes
+
+-   0f6e0e1b: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
+## 0.13.0
+
+### Minor Changes
+
+-   de8a4878: Checks if an ABAP target system is on premise to log additional info when deploying.
+    Change was made for ABAP developers to see a deployment info message indicating if ABAP target system is on premise.
+    So that Developers can update URL to reflect the internal protocol, host and port using on premise configuration
+
+## 0.12.1
+
+### Patch Changes
+
+-   286883cb: fix(deps): update dependency axios to v1.6.0 [security]
+
+## 0.12.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+## 0.11.9
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
 ## 0.11.8
 
 ### Patch Changes

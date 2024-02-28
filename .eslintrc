@@ -32,6 +32,8 @@
                 ],
                 "@typescript-eslint/no-misused-promises": ["error", { "checksVoidReturn": false }],
                 "@typescript-eslint/no-use-before-define": ["error", "nofunc"],
+                "@typescript-eslint/prefer-nullish-coalescing": "warn",
+                "@typescript-eslint/prefer-optional-chain": "warn",
                 "jsdoc/require-param-type": "off",
                 "jsdoc/require-returns-type": "off",
                 "prefer-const": [
@@ -122,7 +124,8 @@
                     "ClassDeclaration": true,
                     "MethodDefinition": true
                 },
-                "exemptEmptyFunctions": true
+                "exemptEmptyFunctions": true,
+                "contexts": ["TSMethodSignature"]
             }
         ],
         "jsdoc/valid-types": "error",

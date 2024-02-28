@@ -1,5 +1,65 @@
 # @sap-ux/store
 
+## 0.4.3
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/logger@0.5.1
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+
+## 0.4.1
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 0.4.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/logger@0.4.0
+
+## 0.3.16
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
+## 0.3.15
+
+### Patch Changes
+
+-   4052822f: Corrected license reference in package.json (no license change)
+-   Updated dependencies [4052822f]
+    -   @sap-ux/logger@0.3.9
+
+## 0.3.14
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/logger@0.3.8
+
+## 0.3.13
+
+### Patch Changes
+
+-   0dbad1b8: chore(deps): update dependency typescript to v4.9.5
+
 ## 0.3.12
 
 ### Patch Changes

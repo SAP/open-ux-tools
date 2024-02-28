@@ -1,0 +1,37 @@
+{
+  "type": "annotation",
+  "range": "[(0,0)..(0,5)]",
+  "term": {
+    "type": "path",
+    "range": "[(0,0)..(0,1)]",
+    "value": "a",
+    "segments": [
+      {
+        "type": "identifier",
+        "range": "[(0,0)..(0,1)]",
+        "value": "a",
+        "quoted": false
+      }
+    ],
+    "separators": []
+  },
+  "colon": {
+    "type": "token",
+    "range": "[(0,1)..(0,2)]",
+    "value": ":"
+  },
+  "value": {
+    "type": "path",
+    "range": "[(0,3)..(0,5)]",
+    "value": "@E",
+    "segments": [
+      {
+        "type": "identifier",
+        "range": "[(0,3)..(0,5)]",
+        "value": "@E",
+        "quoted": false
+      }
+    ],
+    "separators": []
+  }
+}

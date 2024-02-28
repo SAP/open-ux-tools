@@ -98,7 +98,7 @@
         try {
             data = JSON.parse(data);
             // setStories is called when stories initialized
-            return data && data.event && data.event.type === 'setStories';
+            return data && data.event && data.event.type === 'setGlobals';
         } catch (exception) {
             console.error(exception);
             return false;

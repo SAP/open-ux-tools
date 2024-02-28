@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.json",
+    "ts-node": {
+        "files": true
+    },
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src"
+    },
+    "include": ["src", "types"],
+    "references": [
+        {
+            "path": "../odata-annotation-core-types"
+        }
+    ]
+}

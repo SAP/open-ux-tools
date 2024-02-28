@@ -10,6 +10,11 @@ export interface NamespaceAlias {
     alias: string;
 }
 
+export enum ServiceType {
+    EDMX = 'edmx',
+    CDS = 'cds'
+}
+
 export interface OdataService {
     url?: string;
     client?: string;
@@ -17,12 +22,14 @@ export interface OdataService {
         name: string;
         instance?: string;
     };
+    type?: ServiceType;
     path?: string;
     version: OdataVersion;
     name?: string;
     model?: string;
     metadata?: string;
     annotations?: {
+        name?: string;
         technicalName: string;
         xml: string;
     };

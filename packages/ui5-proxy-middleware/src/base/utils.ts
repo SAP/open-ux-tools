@@ -38,7 +38,7 @@ export const proxyRequestHandler = (
     etag: string,
     logger: ToolsLogger
 ): void => {
-    logger.info(proxyReq.path);
+    logger.debug(proxyReq.path);
     if (proxyReq.getHeader('if-none-match') === etag) {
         res.statusCode = 304;
         res.end();
@@ -185,7 +185,11 @@ export const setHtmlResponse = (res: any, html: string): void => {
         res.write(html);
         res.end();
     } else {
-        res.status(200).contentType('html').send(html);
+        res.writeHead(200, {
+            'Content-Type': 'text/html'
+        });
+        res.write(html);
+        res.end();
     }
 };
 

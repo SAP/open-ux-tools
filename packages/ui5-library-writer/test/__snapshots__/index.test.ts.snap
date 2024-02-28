@@ -266,7 +266,7 @@ ANY_TEXT=AnyText
     "state": "modified",
   },
   "com.sap.myui5lib/src/com/sap/myui5lib/themes/base/Example.less": Object {
-    "contents": "/* Theme Parameter Toolbox: https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/theming/webapp/index.html */
+    "contents": "/* Theme Parameter Toolbox: https://sdk.openui5.org/test-resources/sap/m/demokit/theming/webapp/index.html */
 
 .myLibPrefixExample,
 .myLibPrefixExampleHighlight {
@@ -598,12 +598,12 @@ module.exports = function (config) {
     \\"@sapui5/types\\": \\"1.113.0\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
-    \\"@ui5/ts-interface-generator\\": \\"^0.6.2\\",
+    \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
     \\"babel-preset-transform-ui5\\": \\"^7.0.5\\",
     \\"eslint\\": \\"^7.32.0\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
-    \\"typescript\\": \\"^4.6.3\\",
-    \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
+    \\"typescript\\": \\"^5.1.6\\",
+    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\"
   },
   \\"scripts\\": {
@@ -622,9 +622,6 @@ module.exports = function (config) {
   },
   "com.sap.myui5tslib113/src/.babelrc.json": Object {
     "contents": "{
-    \\"ignore\\": [
-        \\"**/*.d.ts\\"
-    ],
     \\"presets\\": [
         \\"@babel/preset-env\\",
         [
@@ -880,7 +877,7 @@ ANY_TEXT=AnyText
     "state": "modified",
   },
   "com.sap.myui5tslib113/src/com/sap/myui5tslib113/themes/base/Example.less": Object {
-    "contents": "/* Theme Parameter Toolbox: https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/theming/webapp/index.html */
+    "contents": "/* Theme Parameter Toolbox: https://sdk.openui5.org/test-resources/sap/m/demokit/theming/webapp/index.html */
 
 .myLibPrefixExample,
 .myLibPrefixExampleHighlight {
@@ -1144,9 +1141,10 @@ sap.ui.define(function() {
       \\"rootDir\\": \\"./\\",
       \\"outDir\\": \\"./dist\\",
       \\"baseUrl\\": \\"./\\",
-      \\"types\\": [
-        \\"@sapui5/types\\"
-    ],
+      \\"typeRoots\\": [
+        \\"./node_modules/@types\\",
+        \\"./node_modules/@sapui5/types\\"
+      ],
       \\"paths\\": {
           \\"com/sap/myui5tslib113/*\\": [
               \\"./src/com/sap/myui5tslib113/*\\"
@@ -1248,12 +1246,12 @@ module.exports = function (config) {
     \\"@sapui5/ts-types-esm\\": \\"1.102.19\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
-    \\"@ui5/ts-interface-generator\\": \\"^0.6.2\\",
+    \\"@ui5/ts-interface-generator\\": \\"^0.8.1\\",
     \\"babel-preset-transform-ui5\\": \\"^7.0.5\\",
     \\"eslint\\": \\"^7.32.0\\",
     \\"npm-run-all\\": \\"^4.1.5\\",
-    \\"typescript\\": \\"^4.6.3\\",
-    \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
+    \\"typescript\\": \\"^5.1.6\\",
+    \\"ui5-tooling-transpile\\": \\"^3.2.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.2.0\\"
   },
   \\"scripts\\": {
@@ -1272,9 +1270,6 @@ module.exports = function (config) {
   },
   "com.sap.myui5tslib/src/.babelrc.json": Object {
     "contents": "{
-    \\"ignore\\": [
-        \\"**/*.d.ts\\"
-    ],
     \\"presets\\": [
         \\"@babel/preset-env\\",
         [
@@ -1530,7 +1525,7 @@ ANY_TEXT=AnyText
     "state": "modified",
   },
   "com.sap.myui5tslib/src/com/sap/myui5tslib/themes/base/Example.less": Object {
-    "contents": "/* Theme Parameter Toolbox: https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/theming/webapp/index.html */
+    "contents": "/* Theme Parameter Toolbox: https://sdk.openui5.org/test-resources/sap/m/demokit/theming/webapp/index.html */
 
 .myLibPrefixExample,
 .myLibPrefixExampleHighlight {
@@ -1794,9 +1789,10 @@ sap.ui.define(function() {
       \\"rootDir\\": \\"./\\",
       \\"outDir\\": \\"./dist\\",
       \\"baseUrl\\": \\"./\\",
-      \\"types\\": [
-        \\"@sapui5/ts-types-esm\\"
-    ],
+      \\"typeRoots\\": [
+        \\"./node_modules/@types\\",
+        \\"./node_modules/@sapui5/ts-types-esm\\"
+      ],
       \\"paths\\": {
           \\"com/sap/myui5tslib/*\\": [
               \\"./src/com/sap/myui5tslib/*\\"

@@ -1,11 +1,11 @@
 import express from 'express';
 import supertest from 'supertest';
 import * as previewMiddleware from '../../../src/ui5/middleware';
-import type { Config } from '../../../src/types';
-import type { Resource } from '@ui5/fs';
+import type { MiddlewareConfig } from '../../../src/types';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import nock from 'nock';
+import type { EnhancedRouter } from '../../../src/base/flp';
 
 jest.mock('@sap-ux/store', () => {
     return {
@@ -18,16 +18,14 @@ jest.mock('@sap-ux/store', () => {
     };
 });
 
-// middleware function wrapper for testing to simplify tests
-async function getTestServer(fixture?: string, configuration: Partial<Config> = {}): Promise<any> {
-    const router = await (previewMiddleware as any).default({
+async function getRouter(fixture?: string, configuration: Partial<MiddlewareConfig> = {}): Promise<EnhancedRouter> {
+    return await (previewMiddleware as any).default({
         options: { configuration },
         resources: {
             rootProject: {
-                byGlob: (glob: string) => {
-                    const files: Partial<Resource>[] = [];
-                    if (glob.includes(fixture === 'adp' ? 'manifest.appdescr_variant' : 'manifest.json') && fixture) {
-                        files.push({
+                byPath: (path: string) => {
+                    if (path === (fixture === 'adp' ? '/manifest.appdescr_variant' : '/manifest.json') && fixture) {
+                        return {
                             getString: () =>
                                 Promise.resolve(
                                     readFileSync(
@@ -40,14 +38,23 @@ async function getTestServer(fixture?: string, configuration: Partial<Config> = 
                                         'utf-8'
                                     )
                                 )
-                        });
+                        };
+                    } else {
+                        return undefined;
                     }
-                    return files;
+                },
+                byGlob: (_glob: string) => {
+                    return [];
                 }
             }
         },
         middlewareUtil: {}
     });
+}
+
+// middleware function wrapper for testing to simplify tests
+async function getTestServer(fixture?: string, configuration: Partial<MiddlewareConfig> = {}): Promise<any> {
+    const router = await getRouter(fixture, configuration);
     const app = express();
     app.use(router);
     return supertest(app);
@@ -79,20 +86,43 @@ describe('ui5/middleware', () => {
     test('no config', async () => {
         const server = await getTestServer('simple-app');
         await server.get('/test/flp.html').expect(200);
-        await server.get('/test/locate-reuse-libs.js').expect(404);
+        await server.get('/preview/client/flp/init.js').expect(200);
     });
 
     test('simple config', async () => {
         const path = '/my/preview/is/here.html';
         const server = await getTestServer('simple-app', { flp: { path, libs: true } });
         await server.get(path).expect(200);
-        await server.get('/my/preview/is/locate-reuse-libs.js').expect(200);
+        await server.get('/preview/client/flp/init.js').expect(200);
         await server.get('/test/flp.html').expect(404);
     });
 
+    test('unsupported editor config', async () => {
+        const path = '/test/editor.html';
+        const server = await getTestServer('simple-app', {
+            rta: {
+                layer: 'CUSTOMER_BASE',
+                editors: [
+                    {
+                        path,
+                        developerMode: true
+                    }
+                ]
+            }
+        });
+        await server.get(path).expect(404);
+    });
+
     test('adp config', async () => {
-        const server = await getTestServer('adp', { adp: { target: { url } } });
+        const server = await getTestServer('adp', {
+            adp: { target: { url } },
+            rta: {
+                layer: 'CUSTOMER_BASE',
+                editors: [{ path: '/adp/editor.html', developerMode: true }]
+            }
+        });
         await server.get('/test/flp.html').expect(200);
+        await server.get('/adp/editor.html').expect(200);
     });
 
     test('invalid adp config', async () => {
@@ -112,5 +142,11 @@ describe('ui5/middleware', () => {
         } catch (error) {
             expect(error).toBeDefined();
         }
+    });
+
+    test('exposed endpoints (for cds-plugin-ui5)', async () => {
+        const router = await getRouter('simple-app');
+        expect(router.getAppPages).toBeDefined();
+        expect(router.getAppPages?.()).toEqual(['/test/flp.html#app-preview']);
     });
 });

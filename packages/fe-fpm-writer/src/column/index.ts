@@ -50,7 +50,10 @@ function enhanceConfig(
 
     // Apply event handler
     if (config.eventHandler) {
-        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, false, config.typescript);
+        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, {
+            controllerSuffix: false,
+            typescript: config.typescript
+        });
     }
 
     // generate column content
@@ -94,7 +97,7 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     });
 
     // add fragment
-    const viewPath = join(completeColumn.path, `${completeColumn.name}.fragment.xml`);
+    const viewPath = join(completeColumn.path, `${completeColumn.fragmentFile ?? completeColumn.name}.fragment.xml`);
     if (completeColumn.control || !fs.exists(viewPath)) {
         fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeColumn);
     }

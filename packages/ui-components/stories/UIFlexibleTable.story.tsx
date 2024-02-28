@@ -35,7 +35,7 @@ const tableIds = ['table1', 'table2'];
 const columns: UIFlexibleTableColumnType[] = Array.from({ length: 10 }).map((item, index) => {
     const col: UIFlexibleTableColumnType = {
         key: `column${index + 1}`,
-        title: `Column ${index + 1}`,
+        title: index === 0 ? 'Beginning Column' : `Column ${index + 1}`,
         tooltip: `Tooltip for column #${index + 1}`
     };
     return col;
@@ -252,6 +252,7 @@ export const InlineFlexTable = (): JSX.Element => {
     const [isLockVertically, setIsLockVertically] = useState(false);
     const [isReverseBackground, setIsReverseBackground] = useState(false);
     const [isRowReorderingDisabled, setIsRowReorderingDisabled] = useState(false);
+    const [isDisabledTouchDrag, setIsDisabledTouchDrag] = useState(true);
 
     // Prevent cell editor click propagation
     const cellRefs = useRef<{ [key: string]: React.RefObject<HTMLDivElement> }>({});
@@ -420,6 +421,7 @@ export const InlineFlexTable = (): JSX.Element => {
                 {option('Is fixed max width', isFixedMaxWidth, setIsFixedMaxWidth)}
                 {option('Lock vertically', isLockVertically, setIsLockVertically)}
                 {option('Reverse background', isReverseBackground, setIsReverseBackground)}
+                {option('Disable drag using touch', isDisabledTouchDrag, setIsDisabledTouchDrag)}
             </div>
             <hr></hr>
             <div>
@@ -502,6 +504,7 @@ export const InlineFlexTable = (): JSX.Element => {
                         onRenderPrimaryTableActions={onRenderPrimatyTableActions}
                         onRenderSecondaryTableActions={onRenderSecondaryTableActions}
                         noDataText={'No data'}
+                        isTouchDragDisabled={isDisabledTouchDrag}
                     />
                 </div>
             </div>
@@ -569,6 +572,7 @@ export const WrappingTable = (): JSX.Element => {
     const [isLockVertically, setIsLockVertically] = useState(false);
     const [isReverseBackground, setIsReverseBackground] = useState(false);
     const [isRowReorderingDisabled, setIsRowReorderingDisabled] = useState(false);
+    const [isDisabledTouchDrag, setIsDisabledTouchDrag] = useState(true);
 
     // Prevent cell editor click propagation
     const cellRefs = useRef<{ [key: string]: React.RefObject<HTMLDivElement> }>({});
@@ -628,7 +632,7 @@ export const WrappingTable = (): JSX.Element => {
         return {
             isDropDisabled
         };
-    };;
+    };
 
     const option = (label: string, value: boolean, setter: (value: React.SetStateAction<boolean>) => void) => (
         <UICheckbox
@@ -748,6 +752,7 @@ export const WrappingTable = (): JSX.Element => {
                 {option('Column highlight', showHighlight, setShowHighlight)}
                 {option('Lock vertically', isLockVertically, setIsLockVertically)}
                 {option('Reverse background', isReverseBackground, setIsReverseBackground)}
+                {option('Disable drag using touch', isDisabledTouchDrag, setIsDisabledTouchDrag)}
             </div>
             <hr></hr>
             <div>
@@ -819,6 +824,7 @@ export const WrappingTable = (): JSX.Element => {
                         reverseBackground={isReverseBackground}
                         onRenderPrimaryTableActions={onRenderPrimatyTableActions}
                         onRenderSecondaryTableActions={onRenderSecondaryTableActions}
+                        isTouchDragDisabled={isDisabledTouchDrag}
                     />
                 </div>
             </div>

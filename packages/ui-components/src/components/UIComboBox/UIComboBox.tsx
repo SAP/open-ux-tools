@@ -17,7 +17,9 @@ import { UiIcons } from '../Icons';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
-import { isDropdownEmpty } from '../UIDropdown';
+import { isDropdownEmpty, getCalloutCollisionTransformationProps } from '../UIDropdown';
+import { CalloutCollisionTransform } from '../UICallout';
+import { isHTMLInputElement } from '../../utilities';
 
 export {
     IComboBoxOption as UIComboBoxOption,
@@ -32,17 +34,25 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     useComboBoxAsMenuMinWidth?: boolean;
     // Default value for "openMenuOnClick" is "true"
     openMenuOnClick?: boolean;
+    /**
+     * An optional callback function for refresh event.
+     */
     onRefresh?(): void;
+    /**
+     * An optional callback function to handle change.
+     *
+     * @param value - The new value of the combo box.
+     */
     onHandleChange?(value: string | number): void;
     tooltipRefreshButton?: string;
     isLoading?: boolean;
     isForceEnabled?: boolean;
     readOnly?: boolean;
+    calloutCollisionTransformation?: boolean;
 }
 export interface UIComboBoxState {
     minWidth?: number;
     isListHidden?: boolean;
-    toggleRefresh: boolean;
 }
 
 interface ComboboxItemInfo {
@@ -76,10 +86,13 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     static defaultProps = { openMenuOnClick: true };
     // Reference to fluent ui combobox
     private comboBox = React.createRef<ComboBoxRef>();
+    private comboboxDomRef = React.createRef<HTMLDivElement>();
+    private menuDomRef = React.createRef<HTMLDivElement>();
     private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
     private query = '';
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
+    private calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
 
     /**
      * Initializes component properties.
@@ -96,7 +109,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.onRenderOption = this.onRenderOption.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onClick = this.onClick.bind(this);
-        this.toggleRefresh = this.toggleRefresh.bind(this);
         this.handleRefreshButton = this.handleRefreshButton.bind(this);
         this.onPendingValueChanged = this.onPendingValueChanged.bind(this);
         this.onMultiSelectChange = this.onMultiSelectChange.bind(this);
@@ -105,9 +117,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
         initializeComponentRef(this);
 
-        this.state = {
-            toggleRefresh: false
-        };
+        this.state = {};
     }
 
     /**
@@ -159,14 +169,33 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
+     * Method prevents cursor from jumping to the end of input.
+     *
+     * @param {React.FormEvent<IComboBox>} event Combobox event object
+     */
+    private setCaretPosition(event: React.FormEvent<IComboBox>) {
+        if (isHTMLInputElement(event.target)) {
+            const input = event.target;
+            const selectionEnd = input.selectionEnd;
+            if (selectionEnd !== input.value.length) {
+                window.requestAnimationFrame(() => {
+                    input.selectionStart = selectionEnd;
+                    input.selectionEnd = selectionEnd;
+                });
+            }
+        }
+    }
+
+    /**
      * Method filters options and hides unmatched options.
      *
      * @param {React.FormEvent<IComboBox>} event Combobox event object
      */
     private onInput(event: React.FormEvent<IComboBox>): void {
         this.isListHidden = false;
-        if (event.target) {
-            const input = event.target as HTMLInputElement;
+        if (isHTMLInputElement(event.target)) {
+            this.setCaretPosition(event);
+            const input = event.target;
             this.query = input.value.trimStart().toLowerCase();
             // Filter options
             const baseCombobox = this.comboBox.current;
@@ -178,8 +207,11 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Method opens menu when user clicks on Combobox (input or button).
+     *
+     * @param event
      */
-    private onClick(): void {
+    private onClick(event: React.FormEvent<IComboBox>): void {
+        this.setCaretPosition(event);
         const baseCombobox = this.comboBox.current;
         const isOpen = baseCombobox && baseCombobox.state.isOpen;
         const isDisabled = this.props.disabled;
@@ -433,16 +465,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Method called only when property 'onRefresh' has been defined.
-     * It is called when the menu Open and Dismiss to handle the toggleRefresh state.
-     */
-    private toggleRefresh(): void {
-        this.setState({
-            toggleRefresh: !this.state.toggleRefresh
-        });
-    }
-
-    /**
-     * Method called only when property 'onRefresh' has been defined.
      * It is called when click on the refresh buttonIcon.
      */
     private handleRefreshButton() {
@@ -593,6 +615,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             <div ref={this.props.wrapperRef} className={this.getClassNames(messageInfo)}>
                 <ComboBox
                     componentRef={this.comboBox}
+                    ref={this.comboboxDomRef}
                     disabled={disabled}
                     iconButtonProps={{
                         iconProps: {
@@ -601,6 +624,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                     }}
                     calloutProps={{
                         calloutMaxHeight: 200,
+                        popupProps: {
+                            ref: this.menuDomRef
+                        },
                         className: 'ts-Callout ts-Callout-Dropdown',
                         styles: {
                             ...(this.props.useComboBoxAsMenuMinWidth && {
@@ -609,7 +635,12 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                                     display: this.state.isListHidden ? 'none' : undefined
                                 }
                             })
-                        }
+                        },
+                        ...getCalloutCollisionTransformationProps(
+                            this.calloutCollisionTransform,
+                            this.props.multiSelect,
+                            this.props.calloutCollisionTransformation
+                        )
                     }}
                     styles={{
                         label: {

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import type { IStackTokens } from '@fluentui/react';
+import type { ISearchBoxProps, IStackTokens } from '@fluentui/react';
 import { Text, Stack } from '@fluentui/react';
 
 import { UISearchBox } from '../src/components/UISearchBox';
 import { initIcons } from '../src/components/Icons';
+import { UICheckbox } from '../src/components';
 
 export default { title: 'Basic Inputs/Search' };
 const stackTokens: IStackTokens = { childrenGap: 40 };
@@ -23,6 +24,19 @@ export const SearchBox = () => {
         setQuery('');
     };
 
+    const updateProps = (name: keyof ISearchBoxProps, value: unknown): void => {
+        setProps({
+            ...props,
+            [name]: value
+        });
+    };
+
+    const [props, setProps] = useState<Omit<ISearchBoxProps, 'ref'>>({
+        value: query,
+        onChange: onSearch,
+        onClear: onSearchClear
+    });
+
     return (
         <Stack
             tokens={stackTokens}
@@ -33,7 +47,23 @@ export const SearchBox = () => {
                 <Text variant="large" className="textColor">
                     UISearchBox
                 </Text>
-                <UISearchBox value={query} onChange={onSearch} onClear={onSearchClear} />
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        flexWrap: 'wrap',
+                        gap: '20px',
+                        maxWidth: '1200px'
+                    }}>
+                    <UICheckbox
+                        label={'Disabled'}
+                        checked={props.disabled}
+                        onChange={(event, value) => {
+                            updateProps('disabled', value);
+                        }}
+                    />
+                </div>
+                <UISearchBox {...props} />
             </Stack>
         </Stack>
     );

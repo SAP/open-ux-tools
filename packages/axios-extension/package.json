@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/axios-extension",
-    "version": "1.4.1",
+    "version": "1.11.3",
     "description": "Extension of the Axios module adding convenience methods to interact with SAP systems especially with OData services.",
     "repository": {
         "type": "git",
@@ -28,20 +28,20 @@
     "dependencies": {
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "axios": "1.4.0",
+        "axios": "1.6.1",
         "detect-content-type": "1.2.0",
-        "fast-xml-parser": "4.2.5",
+        "fast-xml-parser": "4.2.7",
         "lodash": "4.17.21",
         "open": "7.0.3",
         "qs": "6.7.3",
-        "xpath": "0.0.32",
-        "@xmldom/xmldom": "0.8.6"
+        "xpath": "0.0.33",
+        "@xmldom/xmldom": "0.8.10"
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
-        "@types/lodash": "4.14.176",
-        "nock": "13.2.1",
-        "supertest": "6.3.2"
+        "@types/lodash": "4.14.202",
+        "nock": "13.4.0",
+        "supertest": "6.3.3"
     },
     "files": [
         "dist",
@@ -50,7 +50,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
-        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+        "node": ">=18.x"
     }
 }

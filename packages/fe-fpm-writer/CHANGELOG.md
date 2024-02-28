@@ -1,5 +1,128 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.9
+
+### Patch Changes
+
+-   3c9d8f5d: Fixed namespace for controller event handler
+
+## 0.24.8
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.24.7
+
+### Patch Changes
+
+-   392522e8: Added optional `controllerPrefix` property to custom action event handler
+
+## 0.24.6
+
+### Patch Changes
+
+-   9b62f5a1: Added optional `id` property to use as page key in manifest templates
+
+## 0.24.5
+
+### Patch Changes
+
+-   112170a1: fix: use correct namespace when generating typescript controllers of controller extension and custom page controllers
+
+## 0.24.4
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 0.24.3
+
+### Patch Changes
+
+-   b84cb0f3: Added `fragmentFile` property in order to allow to use fragment name different from custom extension key
+
+## 0.24.2
+
+### Patch Changes
+
+-   3c5fa042: fpm localize custom xml view
+
+## 0.24.1
+
+### Patch Changes
+
+-   deabc5bd: Remove hardcode string in XML view templates
+
+## 0.24.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+## 0.23.9
+
+### Patch Changes
+
+-   d880c217: Correction for `stashed` property of header sections in manifest template: Property type is changed from string to boolean
+
+## 0.23.8
+
+### Patch Changes
+
+-   c11f6c02: Correction for `templateEdit` property in manifest which led to parsing errors: Missing comma is added right after `templateEdit` value if it exists
+
+## 0.23.7
+
+### Patch Changes
+
+-   7a2229ff: Fix. Avoid overwrite of existing extension fragment file while creating new filter field.
+
+## 0.23.6
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+
+## 0.23.5
+
+### Patch Changes
+
+-   7b156515: fix(deps): update dependency xpath to v0.0.33
+
+## 0.23.4
+
+### Patch Changes
+
+-   01fa690e: fix(deps): update dependency @xmldom/xmldom to v0.8.10
+-   3137514f: use platform independent UI5 CDN URLs
+
+## 0.23.3
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+
+## 0.23.2
+
+### Patch Changes
+
+-   78e726a6: Custom Filter Field. Property "eventHandler".
+    1. Generated fragment requires js file when no "eventHandler" is passed.
+    2. Wrong reference to js file is generated in fragment, when "eventHandler.fileName" is passed.
+
+## 0.23.1
+
+### Patch Changes
+
+-   da6aed84: Correction for content of generated fragment for `templateEdit` property: Content is wrapped inside `sap.ui.layout.form.FormElement`
+
+## 0.23.0
+
+### Minor Changes
+
+-   c1c9396a: Feature: Custom header sections support for fe-fpm-writer
+
 ## 0.22.3
 
 ### Patch Changes

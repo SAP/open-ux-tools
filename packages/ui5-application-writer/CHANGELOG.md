@@ -1,5 +1,123 @@
 # @sap-ux/ui5-application-writer
 
+## 0.26.3
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-config@0.21.1
+
+## 0.26.2
+
+### Patch Changes
+
+-   f11f9b2c: fix(deps): update dependency @ui5/manifest to v1.61.0
+
+## 0.26.1
+
+### Patch Changes
+
+-   Updated dependencies [3f977f21]
+    -   @sap-ux/ui5-config@0.21.0
+
+## 0.26.0
+
+### Minor Changes
+
+-   1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
+
+### Patch Changes
+
+-   Updated dependencies [1aa0fc43]
+    -   @sap-ux/ui5-config@0.20.0
+
+## 0.25.10
+
+### Patch Changes
+
+-   cbcad88d: fix(deps): update dependencies [i18next]
+
+## 0.25.9
+
+### Patch Changes
+
+-   4087bffb: Allow more flexible @types type loading for TypeScript generate projects
+
+## 0.25.8
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.19.5
+
+## 0.25.7
+
+### Patch Changes
+
+-   65010b09: fix - use patch version 0 for ui5 types semver for more reliable installs
+-   Updated dependencies [65010b09]
+    -   @sap-ux/ui5-config@0.19.4
+
+## 0.25.6
+
+### Patch Changes
+
+-   63c698a8: chore - fix publishing of modules missed in failed release build
+-   Updated dependencies [63c698a8]
+    -   @sap-ux/ui5-config@0.19.3
+
+## 0.25.5
+
+### Patch Changes
+
+-   3137514f: use platform independent UI5 CDN URLs
+-   Updated dependencies [3137514f]
+    -   @sap-ux/ui5-config@0.19.2
+
+## 0.25.4
+
+### Patch Changes
+
+-   7c8a6946: fix(deps): update dependency semver to v7.5.4
+-   Updated dependencies [7c8a6946]
+    -   @sap-ux/ui5-config@0.19.1
+
+## 0.25.3
+
+### Patch Changes
+
+-   7fd593f0: fix(deps): update dependency @ui5/manifest to v1.59.0
+
+## 0.25.2
+
+### Patch Changes
+
+-   a794dad7: Update ui5-tooling-transpile in templates
+
+## 0.25.1
+
+### Patch Changes
+
+-   b63aea83: Update ui5 yaml spec to 3.1
+
+## 0.25.0
+
+### Minor Changes
+
+-   de0b13f2: Update templates to use Typescript version 5
+
+## 0.24.3
+
+### Patch Changes
+
+-   44df3d5c: fix lint warnings in locate-reuse-libs.js
+
+## 0.24.2
+
+### Patch Changes
+
+-   29179b5f: Add SAP icon loading in flpsandbox.html
+
 ## 0.24.1
 
 ### Patch Changes
