@@ -17,6 +17,8 @@ import { getI18nPropertiesPaths } from './i18n/i18n';
 import { findFioriArtifacts } from './search';
 import { getMainService, getServicesAndAnnotations } from './service';
 import { getWebappPath } from './ui5-config';
+import FileSystem from '@ui5/fs/adapters/FileSystem';
+import { createWorkspace } from '@ui5/fs/resourceFactory';
 
 /**
  * Returns the project structure for a given Fiori project.
@@ -211,17 +213,15 @@ export async function getProjectType(projectRoot: string): Promise<ProjectType> 
  * @returns virtually generated manifest.json
  */
 export async function generateLibraryManifest(dotLibraryPath: string): Promise<Manifest> {
-    const FileSystem = await import('@ui5/fs/adapters/FileSystem');
-    const ResourceFactory = await import('@ui5/fs/resourceFactory');
     const generateLibraryManifest = await import('@ui5/builder/tasks/generateLibraryManifest');
 
     const projectName = 'library';
     const virBasePath = `/resources/${projectName}/`;
-    const fs = new FileSystem.default({
+    const fs = new FileSystem({
         virBasePath,
         fsBasePath: dotLibraryPath
     });
-    const workspace = await ResourceFactory.createWorkspace({ reader: fs, name: 'library', virBasePath });
+    const workspace = await createWorkspace({ reader: fs, name: 'library', virBasePath });
     const getProject = () => {
         return { getVersion: () => '1.0.0' };
     };
