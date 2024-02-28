@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.17.5
+
+### Patch Changes
+
+-   33ec9ff9: fix: enhance `getI18nBundles` to be more tolerant
+
 ## 1.17.4
 
 ### Patch Changes

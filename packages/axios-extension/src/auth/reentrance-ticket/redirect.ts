@@ -7,6 +7,12 @@ import type { ABAPSystem } from './abap-system';
 
 interface Redirect {
     server: http.Server;
+    /**
+     * Redirect URL.
+     *
+     * @param port Port number.
+     * @returns Redirect URL.
+     */
     redirectUrl(port: number): string;
 }
 
