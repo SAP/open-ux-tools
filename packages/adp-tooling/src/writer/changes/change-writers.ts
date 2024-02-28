@@ -60,7 +60,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
     /**
      * Determines the appropriate filename for the annotation file based on user answers.
      *
-     * @param {AnnotationChange} answers - The answers object containing user choices.
+     * @param {AnnotationsData} data - The answers object containing user choices.
      * @returns {string | undefined} The determined filename for the annotation file.
      */
     private getAnnotationFileName(data: AnnotationsData): string | undefined {
@@ -405,7 +405,7 @@ export class InboundWriter implements IWriter<InboundData> {
     /**
      * Processes the provided answers object to parse its properties into the correct format.
      *
-     * @param {InboundData} answers - An object containing raw answers for inboundId, title, subTitle, and icon.
+     * @param {InboundData} data - An object containing raw answers for inboundId, title, subTitle, and icon.
      * @returns {InboundData} A new answers object with properties modified
      *                           to ensure they are in the correct format for use in content construction.
      */

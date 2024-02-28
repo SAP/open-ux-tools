@@ -169,7 +169,9 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
 /**
  * Constructs a generic change object based on provided parameters.
  *
- * @param {T} data - The base data associated with the change, including project data and timestamp.
+ * @param data - The base data associated with the change, including project data and timestamp.
+ * @param data.projectData - The project specific data.
+ * @param data.timestamp - The timestamp.
  * @param {object} content - The content of the change to be applied.
  * @param {ChangeTypes} changeType - The type of the change.
  * @returns An object representing the change.

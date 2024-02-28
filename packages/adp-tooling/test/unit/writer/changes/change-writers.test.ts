@@ -12,8 +12,7 @@ import type {
     AnnotationsData,
     ComponentUsagesData,
     DataSourceData,
-    InboundData,
-    NewModelData
+    InboundData
 } from '../../../../src';
 import {
     AnnotationsWriter,
