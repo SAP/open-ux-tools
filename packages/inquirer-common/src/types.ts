@@ -21,8 +21,14 @@ export interface UI5VersionChoice extends ListChoiceOptions {
 }
 
 export interface InquirerAdapter {
+    /**
+     * The prompt function
+     */
     prompt: PromptFunction;
-    promptModule: PromptModule;
+    /**
+     * Plugins will be registered on this prompt module if required
+     */
+    promptModule?: PromptModule;
 }
 
 /**

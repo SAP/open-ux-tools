@@ -78,7 +78,6 @@ function getDefaults(
 ): Partial<UI5ApplicationAnswers> {
     const defaultAnswers: Partial<UI5ApplicationAnswers> = {};
     Object.entries(promptOptions).forEach(([key, promptOpt]) => {
-        //if (promptOpt.advancedOption) {
         const promptKey = key as keyof typeof promptNames;
         // Do we have an answer, if not apply the default, either specified or fallback
         const defaultProperty = (promptOpt as PromptDefaultValue<string | boolean>).default;
