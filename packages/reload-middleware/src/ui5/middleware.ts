@@ -4,6 +4,7 @@ import type { MiddlewareParameters } from '@ui5/server';
 import type { RequestHandler } from 'express';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import { join } from 'path';
+import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from '../base';
 
 module.exports = async ({ options, middlewareUtil }: MiddlewareParameters<ReloaderConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
@@ -26,16 +27,23 @@ module.exports = async ({ options, middlewareUtil }: MiddlewareParameters<Reload
 
         if (Array.isArray(path)) {
             const watchPaths = path.map((localPath) => join(rootPath, localPath));
+            logger.info(`Livereload server started on port ${livereloadPort} for paths ${watchPaths}`);
             livereloadServer.watch(watchPaths);
         } else {
             const watchPath = path ? join(rootPath, path) : sourcePath;
+            logger.info(`Livereload server started on port ${livereloadPort} for path ${watchPath}`);
             livereloadServer.watch(watchPath);
         }
 
         return getConnectLivereload({ ...connectOptions, port: livereloadPort });
     } else {
-        const message = 'No configuration found for the reload-middleware';
-        logger.error(message);
-        throw new Error(message);
+        const message = 'No configuration found for the reload-middleware, using default configuration.';
+        logger.info(message);
+        const livereloadServer = await getLivereloadServer(defaultLiveReloadOpts, httpsOpts, logger);
+        const livereloadPort = livereloadServer.config.port;
+        logger.info(`Livereload server started on port ${livereloadPort} for path ${sourcePath}`);
+        livereloadServer.watch(sourcePath);
+
+        return getConnectLivereload({ ...defaultConnectLivereloadOpts, port: livereloadPort });
     }
 };
