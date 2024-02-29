@@ -75,7 +75,7 @@ export enum UIDialogScrollArea {
  */
 export class UIDialog extends React.Component<DialogProps, DialogState> {
     // Default values for public component properties
-    static defaultProps = { isOpenAnimated: true };
+    static readonly defaultProps = { isOpenAnimated: true };
     /**
      * Initializes component properties.
      *
@@ -233,7 +233,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
             return;
         }
         const dialogFocusZone = (event.target as HTMLElement).closest('.ms-Dialog-main');
-        if (dialogFocusZone && dialogFocusZone.firstChild) {
+        if (dialogFocusZone?.firstChild) {
             const focusPlaceholder = dialogFocusZone.firstChild as HTMLElement;
             focusPlaceholder.focus();
         }

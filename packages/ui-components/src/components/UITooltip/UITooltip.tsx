@@ -42,7 +42,7 @@ export class UITooltip extends React.Component<UITooltipProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const maxWidth = this.props.maxWidth !== undefined ? this.props.maxWidth : 200;
+        const maxWidth = this.props.maxWidth ?? 200;
         const TooltipHostStyles = (): Partial<ITooltipHostStyles> => ({
             ...{
                 root: {
