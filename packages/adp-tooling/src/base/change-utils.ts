@@ -175,7 +175,6 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
  * @param {object} content - The content of the change to be applied.
  * @param {ChangeTypes} changeType - The type of the change.
  * @returns An object representing the change.
- * @template T - A type parameter extending `BaseData`.
  */
 export function getGenericChange(
     data: { projectData: AdpProjectData; timestamp: number },
