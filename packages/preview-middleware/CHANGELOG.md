@@ -1,5 +1,27 @@
 # @sap-ux/preview-middleware
 
+## 0.12.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.11
+
+## 0.12.2
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/adp-tooling@0.8.10
+    -   @sap-ux/logger@0.5.1
+
+## 0.12.1
+
+### Patch Changes
+
+-   Updated dependencies [05953a48]
+    -   @sap-ux/adp-tooling@0.8.9
+
 ## 0.12.0
 
 ### Minor Changes
