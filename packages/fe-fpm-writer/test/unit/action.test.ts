@@ -349,7 +349,8 @@ describe('CustomAction', () => {
             );
 
             test('"eventHandler" is "object", append new function to controller extension', () => {
-                const fileName = 'MyExistingAction';
+                const expectedFileName = 'MyExistingAction';
+                const fileName = `${expectedFileName}.controller`;
                 // Create existing file with existing actions
                 const folder = join('ext', 'fragments');
                 const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
@@ -382,7 +383,9 @@ describe('CustomAction', () => {
                 const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Manifest;
                 const action = getActionByName(manifest, actionName);
                 // Check if action press has controller prefix added
-                expect(action['press']).toEqual(`${controllerPrefix}.my.test.App.ext.fragments.${fileName}.${fnName}`);
+                expect(action['press']).toEqual(
+                    `${controllerPrefix}.my.test.App.ext.fragments.${expectedFileName}.${fnName}`
+                );
                 // Check update js file content
                 expect(fs.read(existingPath)).toMatchSnapshot();
             });
