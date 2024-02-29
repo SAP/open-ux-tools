@@ -5,6 +5,20 @@ import { getDefaultLogger } from '../src/base/utils';
 const logger = getDefaultLogger();
 
 /**
+ * Helper function to detect if env var is provided before returning it.
+ *
+ * @param name Environment variable name
+ * @returns Environment variable value
+ */
+function env(name: string): string {
+    if (process.env[name]) {
+        return process.env[name] as string;
+    } else {
+        throw new Error(`Env var ${name} is required`);
+    }
+}
+
+/**
  * Example function of sending a telemetry event.
  */
 async function sendTelemetryEvent(): Promise<void> {
@@ -25,6 +39,7 @@ async function sendTelemetryEvent(): Promise<void> {
 
 // Init telemetry settings before sending any telemetry event
 initTelemetrySettings({
+    resourceId: env('OpenUxTools_ResourceId'),
     internalFeature: true,
     consumerModule: {
         name: 'OpenUxTools',

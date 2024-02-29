@@ -11,11 +11,13 @@ export type TelemetryHelperProperties = {
  *
  * - consumerModule: name and version of module that uses telemetry library
  * - internalFeature: if UX tooling InternalFeature is enabled
+ * - resourceId: Id of cloud telemetry resource (e.g. Azure application insights resource is supported).
  *
  */
 export type ToolsSuiteTelemetryInitSettings = {
     consumerModule: ProjectInfo;
     internalFeature: boolean;
+    resourceId?: string;
 };
 
 export enum ToolsId {
