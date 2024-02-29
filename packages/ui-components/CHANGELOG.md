@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.15.6
+
+### Patch Changes
+
+-   f6f7111c: UIIconButton. Apply vscode theme variables for UIIconButton when 'checked' property is set as 'true'
+
 ## 1.15.5
 
 ### Patch Changes
