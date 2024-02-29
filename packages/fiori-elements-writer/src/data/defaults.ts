@@ -20,13 +20,13 @@ export function setDefaultTemplateSettings<T extends {}>(template: Template<T>, 
         const alpSettings: ALPSettings = template.settings as unknown as ALPSettings;
 
         Object.assign(templateSettings, {
-            tableType: alpSettings.tableType || TableType.ANALYTICAL // Overrides the UI5 default: ''
+            tableType: alpSettings.tableType ?? TableType.ANALYTICAL // Overrides the UI5 default: ''
         });
 
         if (odataVersion === OdataVersion.v4) {
             const alpV4Settings: ALPSettingsV4 = template.settings as unknown as ALPSettingsV4;
             Object.assign(templateSettings, {
-                selectionMode: alpV4Settings.selectionMode || TableSelectionMode.NONE
+                selectionMode: alpV4Settings.selectionMode ?? TableSelectionMode.NONE
             });
             return templateSettings;
         }
@@ -63,6 +63,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     }
 
     // Generate base UI5 project
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     feApp.app.baseComponent = feApp.app.baseComponent || getBaseComponent(feApp.template.type, feApp.service.version);
 
     // Add ui5 libs for specified template and odata version
