@@ -96,6 +96,30 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
             },
             menuIcon: {
                 display: 'none'
+            },
+            rootChecked: {
+                backgroundColor: 'var(--vscode-button-background)',
+                color: 'var(--vscode-button-foreground)',
+                outline: '1px solid var(--vscode-contrastActiveBorder)',
+                selectors: {
+                    // Move focus border otside of root box, because selection background covers inner border
+                    '.ms-Fabric--isFocusVisible &:focus:after': {
+                        inset: '-1px'
+                    }
+                }
+            },
+            rootCheckedHovered: {
+                backgroundColor: 'var(--vscode-button-hoverBackground)',
+                outline: '1px dashed var(--vscode-contrastActiveBorder)'
+            },
+            iconChecked: {
+                color: 'var(--vscode-button-foreground)',
+                selectors: {
+                    // Inherit color from icon
+                    '> svg *': {
+                        fill: 'currentColor'
+                    }
+                }
             }
         };
     };
