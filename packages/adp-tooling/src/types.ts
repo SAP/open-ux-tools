@@ -146,6 +146,9 @@ export const enum HttpStatusCodes {
 export type Writer = new (fs: Editor, projectPath: string) => IWriter<any>;
 export type IWriterData<T extends GeneratorType> = IWriter<GeneratorData<T>>;
 export interface IWriter<T> {
+    /**
+     *
+     */
     write(data: T): Promise<void>;
 }
 
