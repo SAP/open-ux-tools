@@ -1,5 +1,31 @@
 # @sap-ux/telemetry
 
+## 0.2.12
+
+### Patch Changes
+
+-   Updated dependencies [811c4324]
+    -   @sap-ux/btp-utils@0.14.2
+
+## 0.2.11
+
+### Patch Changes
+
+-   Updated dependencies [33ec9ff9]
+    -   @sap-ux/project-access@1.17.5
+
+## 0.2.10
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/project-access@1.17.4
+    -   @sap-ux/ui5-config@0.21.1
+    -   @sap-ux/btp-utils@0.14.1
+    -   @sap-ux/logger@0.5.1
+    -   @sap-ux/store@0.4.3
+
 ## 0.2.9
 
 ### Patch Changes

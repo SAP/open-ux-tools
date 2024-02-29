@@ -1,5 +1,25 @@
 # @sap-ux/cap-config-writer
 
+## 0.2.17
+
+### Patch Changes
+
+-   c6e79ef1: Adds overloaded API function `checkCdsUi5PluginEnabled` to get more CAP CDS information
+
+## 0.2.16
+
+### Patch Changes
+
+-   Updated dependencies [33ec9ff9]
+    -   @sap-ux/project-access@1.17.5
+
+## 0.2.15
+
+### Patch Changes
+
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/project-access@1.17.4
+
 ## 0.2.14
 
 ### Patch Changes
