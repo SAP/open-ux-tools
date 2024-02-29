@@ -63,6 +63,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         );
 
         await initTelemetrySettings({
+            resourceId: '',
             consumerModule: packageJson,
             internalFeature: false
         });
@@ -81,6 +82,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         );
 
         await initTelemetrySettings({
+            resourceId: '',
             consumerModule: packageJson,
             internalFeature: false
         });
@@ -106,6 +108,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
+            resourceId: '',
             consumerModule: packageJson,
             internalFeature: false
         });
@@ -131,6 +134,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
+            resourceId: '',
             consumerModule: packageJson,
             internalFeature: false
         });
@@ -155,6 +159,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockRejectedValueOnce(new Error('MockError: No file found'));
 
         await initTelemetrySettings({
+            resourceId: '',
             consumerModule: packageJson,
             internalFeature: false
         });
@@ -179,6 +184,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
+            resourceId: '',
             consumerModule: packageJson,
             internalFeature: false
         });
@@ -202,6 +208,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
+            resourceId: '',
             consumerModule: packageJson,
             internalFeature: false
         });
@@ -231,6 +238,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
+            resourceId: '',
             consumerModule: packageJson,
             internalFeature: false
         });

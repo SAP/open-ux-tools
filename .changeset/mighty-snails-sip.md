@@ -2,4 +2,4 @@
 '@sap-ux/telemetry': minor
 ---
 
-no longer accept resource id in initialisation
+no longer require resource id in initialisation
