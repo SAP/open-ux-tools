@@ -24,6 +24,7 @@ describe('properties', () => {
         ];
         afterEach(() => {
             jest.resetAllMocks();
+            jest.restoreAllMocks();
         });
         test('i18n.properties file does not exits - completed with tryAddCsvTexts', async () => {
             // arrange
