@@ -109,10 +109,10 @@ export function scrollToColumn(
     addOneToColIndex = false
 ): void {
     const sidebar = document.querySelector('.data-editor__sidebar');
-    const sidebarWidth = (sidebar?.getBoundingClientRect().width || 0) + (addOneToColIndex ? 20 : 0);
+    const sidebarWidth = (sidebar?.getBoundingClientRect().width ?? 0) + (addOneToColIndex ? 20 : 0);
     const scrollContainer = document.querySelector('.ms-ScrollablePane--contentContainer');
     const cell = getCellFromCoords(selectedRow, columnKey, columns, addOneToColIndex);
-    const box = cell && cell.getBoundingClientRect();
+    const box = cell && cell?.getBoundingClientRect();
 
     if (scrollContainer && box) {
         const left = scrollContainer.scrollLeft + Math.ceil(box.x) - sidebarWidth;
@@ -126,7 +126,7 @@ export function scrollToColumn(
  * @param {number} idx
  * @param {IDetailsList | null} table
  */
-export function scrollToRow(idx = 0, table: IDetailsList | null) {
+export function scrollToRow(idx = 0, table: IDetailsList | null = null) {
     if (!table) {
         return;
     }
