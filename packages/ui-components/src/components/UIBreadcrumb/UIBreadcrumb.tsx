@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { IBreadcrumbProps, IBreadcrumbStyles } from '@fluentui/react';
+import type { IBreadcrumbProps } from '@fluentui/react';
 import { Breadcrumb } from '@fluentui/react';
 
 /**
