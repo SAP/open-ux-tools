@@ -1,5 +1,5 @@
-// Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+// Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
 import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
 import {
     getUI5ThemesChoices,
@@ -96,7 +96,7 @@ function getEnableTypeScriptPrompt(capCdsInfo?: CdsUi5PluginInfo): UI5Applicatio
     return {
         when: (answers): boolean => {
             if (capCdsInfo) {
-                return capCdsInfo.isCdsUi5PluginEnabled || answers?.enableNPMWorkspaces ? true : false;
+                return capCdsInfo.isCdsUi5PluginEnabled || !!answers?.enableNPMWorkspaces;
             }
             return true;
         },
