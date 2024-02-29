@@ -38,8 +38,8 @@ describe('validators', () => {
         // Test that correct message is returned for existing path
         validateModuleNameSpy = jest.spyOn(projectValidators, 'validateModuleName').mockReturnValue(true);
         appPathExistsSpy = jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(true);
-        expect(validateAppName(appName, targetPath)).toMatchInlineSnapshot(
-            `"A module with this name already exists in the folder: /some/path"`
+        expect(validateAppName(appName, targetPath)).toBe(
+            `A module with this name already exists in the folder: ${targetPath}`
         );
     });
 });
