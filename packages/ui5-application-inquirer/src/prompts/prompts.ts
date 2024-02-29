@@ -1,3 +1,5 @@
+// Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
 import {
     getUI5ThemesChoices,
@@ -23,8 +25,6 @@ import { promptNames } from '../types';
 import { defaultAppName, extendWithOptions, hidePrompts, isVersionIncluded, withCondition } from './prompt-helpers';
 import { validateAppName } from './validators';
 
-// Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /**
  * Get the prompts that will provide input for UI5 applcation writing.
  *
@@ -275,9 +275,10 @@ function getAddDeployConfigPrompt(
             breadcrumb: t('prompts.appAddDeployConfigBreadcrumb')
         },
         // If the target directory is a CAP project then only offer `addDeployConfig (addToMta)` if an mta file is found
-        when: async (answers: UI5ApplicationAnswers): Promise<boolean> =>
-            !!((mtaPath = (await getMtaPath(answers?.targetFolder || targetDir))?.mtaPath) && isCapProject) ||
-            !isCapProject,
+        when: async (answers: UI5ApplicationAnswers): Promise<boolean> => {
+            mtaPath = (await getMtaPath(answers?.targetFolder || targetDir))?.mtaPath;
+            return !!(mtaPath && isCapProject) || !isCapProject;
+        },
         message: (): string => {
             return mtaPath
                 ? t('prompts.appAddDeployConfigToMtaMessage', {
