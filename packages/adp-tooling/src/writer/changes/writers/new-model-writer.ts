@@ -51,24 +51,18 @@ export class NewModelWriter implements IWriter<NewModelData> {
         };
 
         if (service.modelSettings && service.modelSettings.length !== 0) {
-            content.model[service.modelName].settings = parseStringToObject(
-                service.modelSettings
-            );
+            content.model[service.modelName].settings = parseStringToObject(service.modelSettings);
         }
 
         if (addAnnotationMode) {
-            content.dataSource[service.name].settings.annotations = [
-                `${annotation.dataSourceName}`
-            ];
+            content.dataSource[service.name].settings.annotations = [`${annotation.dataSourceName}`];
             content.dataSource[annotation.dataSourceName] = {
                 uri: annotation.dataSourceURI,
                 type: 'ODataAnnotation'
             } as DataSourceItem;
 
             if (annotation.settings && annotation.settings.length !== 0) {
-                content.dataSource[annotation.dataSourceName].settings = parseStringToObject(
-                    annotation.settings
-                );
+                content.dataSource[annotation.dataSourceName].settings = parseStringToObject(annotation.settings);
             }
         }
 
