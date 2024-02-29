@@ -6,25 +6,25 @@ import {
     getGenericChange,
     findChangeWithInboundId,
     writeChangeToFile
-} from '../../../../src/base/change-utils';
+} from '../../../../../src/base/change-utils';
 import type {
     AdpProjectData,
     AnnotationsData,
     ComponentUsagesData,
     DataSourceData,
     InboundData
-} from '../../../../src';
+} from '../../../../../src';
 import {
     AnnotationsWriter,
     ComponentUsagesWriter,
     DataSourceWriter,
     InboundWriter,
     NewModelWriter
-} from '../../../../src/writer/changes/change-writers';
-import { AnnotationFileSelectType, ChangeTypes } from '../../../../src';
+} from '../../../../../src/writer/changes/writers';
+import { ChangeType } from '../../../../../src';
 
-jest.mock('../../../../src/base/change-utils', () => ({
-    ...jest.requireActual('../../../../src/base/change-utils'),
+jest.mock('../../../../../src/base/change-utils', () => ({
+    ...jest.requireActual('../../../../../src/base/change-utils'),
     writeAnnotationChange: jest.fn(),
     writeChangeToFolder: jest.fn(),
     getGenericChange: jest.fn().mockReturnValue({}),
@@ -48,7 +48,6 @@ describe('AnnotationsWriter', () => {
     it('should correctly construct content and write annotation change', async () => {
         const mockData: AnnotationsData = {
             oDataSource: '/sap/opu/odata/source',
-            annotationFileSelectOption: AnnotationFileSelectType.ExistingFile,
             annotationFilePath: '/mock/path/to/annotation/file.xml',
             projectData: { namespace: 'apps/mock', layer: 'VENDOR', id: 'mockId' } as AdpProjectData,
             timestamp: Date.now(),
@@ -90,13 +89,13 @@ describe('ComponentUsagesWriter', () => {
         expect(getGenericChangeMock).toHaveBeenCalledWith(
             expect.anything(),
             expect.objectContaining({ componentUsages: expect.anything() }),
-            ChangeTypes.ADD_COMPONENT_USAGES
+            ChangeType.ADD_COMPONENT_USAGES
         );
 
         expect(getGenericChangeMock).toHaveBeenCalledWith(
             expect.anything(),
             expect.objectContaining({ libraries: { mockLibrary: { lazy: false } } }),
-            ChangeTypes.ADD_COMPONENT_USAGE_LIBRARY_REFERENCE
+            ChangeType.ADD_LIBRARY_REFERENCE
         );
 
         expect(writeChangeToFolderMock).toHaveBeenCalledTimes(2);
@@ -146,7 +145,7 @@ describe('NewModelWriter', () => {
         expect(getGenericChangeMock).toHaveBeenCalledWith(
             expect.anything(),
             expect.any(Object),
-            ChangeTypes.ADD_NEW_MODEL
+            ChangeType.ADD_NEW_MODEL
         );
 
         expect(writeChangeToFolderMock).toHaveBeenCalledWith(

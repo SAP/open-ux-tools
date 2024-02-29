@@ -2,7 +2,7 @@ import { sep } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 
-import { type AnnotationsData, type PropertyValueType, ChangeTypes, AnnotationFileSelectType } from '../../../src';
+import { type AnnotationsData, type PropertyValueType, ChangeType } from '../../../src';
 import {
     findChangeWithInboundId,
     getGenericChange,
@@ -114,7 +114,7 @@ describe('Change Utils', () => {
             const result = getGenericChange(
                 mockData as AnnotationsData,
                 mockContent,
-                ChangeTypes.ADD_ANOTATIONS_TO_DATA
+                ChangeType.ADD_ANNOTATIONS_TO_ODATA
             );
 
             expect(result).toEqual({
@@ -126,7 +126,7 @@ describe('Change Utils', () => {
                 packageName: '$TMP',
                 reference: mockData.projectData.id,
                 support: { generator: '@sap-ux/adp-tooling' },
-                changeType: ChangeTypes.ADD_ANOTATIONS_TO_DATA,
+                changeType: ChangeType.ADD_ANNOTATIONS_TO_ODATA,
                 content: mockContent
             });
         });
@@ -194,8 +194,7 @@ describe('Change Utils', () => {
 
         const mockProjectPath = '/mock/project/path';
         const mockData = {
-            annotationFileSelectOption: AnnotationFileSelectType.NewEmptyFile,
-            annotationFilePath: '/mock/path/to/annotation/file.xml',
+            annotationFilePath: '',
             timestamp: '123456789',
             annotationFileName: 'mockAnnotation.xml'
         };
@@ -226,7 +225,7 @@ describe('Change Utils', () => {
         });
 
         it('should copy the annotation file to the correct directory if not creating a new empty file', () => {
-            mockData.annotationFileSelectOption = AnnotationFileSelectType.ExistingFile;
+            mockData.annotationFilePath = `/mock/path/to/annotation/file.xml`;
 
             writeAnnotationChange(
                 mockProjectPath,
@@ -242,7 +241,6 @@ describe('Change Utils', () => {
         });
 
         it('should not copy the annotation file if the selected directory is the same as the target', () => {
-            mockData.annotationFileSelectOption = AnnotationFileSelectType.ExistingFile;
             mockData.annotationFilePath = `${sep}mock${sep}project${sep}path${sep}webapp${sep}changes${sep}annotations${sep}mockAnnotation.xml`;
 
             writeAnnotationChange(
@@ -256,8 +254,7 @@ describe('Change Utils', () => {
         });
 
         it('should throw error when write operation fails', () => {
-            mockData.annotationFileSelectOption = AnnotationFileSelectType.NewEmptyFile;
-            mockData.annotationFilePath = '/mock/path/to/annotation/file.xml';
+            mockData.annotationFilePath = '';
 
             mockFs.write.mockImplementation(() => {
                 throw new Error('Failed to write JSON');

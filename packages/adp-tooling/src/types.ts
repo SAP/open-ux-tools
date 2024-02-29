@@ -144,7 +144,7 @@ export const enum HttpStatusCodes {
 }
 
 export type Writer = new (fs: Editor, projectPath: string) => IWriter<any>;
-export type IWriterData<T extends GeneratorType> = IWriter<GeneratorData<T>>;
+export type IWriterData<T extends ChangeType> = IWriter<GeneratorData<T>>;
 export interface IWriter<T> {
     /**
      * Writer function.
@@ -154,32 +154,26 @@ export interface IWriter<T> {
     write(data: T): Promise<void>;
 }
 
-export const enum GeneratorType {
-    ADD_ANNOTATIONS_TO_ODATA = 'Add Annotations to OData',
-    ADD_COMPONENT_USAGES = 'Add Component Usages',
-    ADD_NEW_MODEL = 'Add New Model',
-    CHANGE_DATA_SOURCE = 'Change Data Source',
-    CHANGE_INBOUND = 'Change Inbound'
-}
-
-export const enum ChangeTypes {
-    ADD_COMPONENT_USAGES = 'appdescr_ui5_addComponentUsages',
+export const enum ChangeType {
     ADD_NEW_MODEL = 'appdescr_ui5_addNewModel',
-    ADD_ANOTATIONS_TO_DATA = 'appdescr_app_addAnnotationsToOData',
+    ADD_ANNOTATIONS_TO_ODATA = 'appdescr_app_addAnnotationsToOData',
     CHANGE_DATA_SOURCE = 'appdescr_app_changeDataSource',
-    ADD_COMPONENT_USAGE_LIBRARY_REFERENCE = 'appdescr_ui5_addLibraries',
+    ADD_COMPONENT_USAGES = 'appdescr_ui5_addComponentUsages',
+    ADD_LIBRARY_REFERENCE = 'appdescr_ui5_addLibraries',
     CHANGE_INBOUND = 'appdescr_app_changeInbound'
 }
 
-export type GeneratorData<T extends GeneratorType> = T extends GeneratorType.ADD_ANNOTATIONS_TO_ODATA
+export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOTATIONS_TO_ODATA
     ? AnnotationsData
-    : T extends GeneratorType.ADD_COMPONENT_USAGES
+    : T extends ChangeType.ADD_COMPONENT_USAGES
     ? ComponentUsagesData
-    : T extends GeneratorType.ADD_NEW_MODEL
+    : T extends ChangeType.ADD_LIBRARY_REFERENCE
+    ? ComponentUsagesData
+    : T extends ChangeType.ADD_NEW_MODEL
     ? NewModelData
-    : T extends GeneratorType.CHANGE_DATA_SOURCE
+    : T extends ChangeType.CHANGE_DATA_SOURCE
     ? DataSourceData
-    : T extends GeneratorType.CHANGE_INBOUND
+    : T extends ChangeType.CHANGE_INBOUND
     ? InboundData
     : never;
 
@@ -189,7 +183,6 @@ export interface AnnotationsData {
     annotationFileName?: string;
     isInternalUsage: boolean;
     oDataSource: string;
-    annotationFileSelectOption: AnnotationFileSelectType;
     annotationFilePath: string;
 }
 export interface ComponentUsagesData {
@@ -234,11 +227,6 @@ export interface InboundData {
     subTitle: PropertyValueType;
     icon: PropertyValueType;
     isInSafeMode?: boolean;
-}
-
-export enum AnnotationFileSelectType {
-    ExistingFile = 0,
-    NewEmptyFile = 1
 }
 
 export interface InboundContent {

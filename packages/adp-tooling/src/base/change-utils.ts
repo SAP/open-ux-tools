@@ -3,8 +3,8 @@ import path, { sep } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
-import type { AdpProjectData, AnnotationsData, ChangeTypes, InboundContent, PropertyValueType } from '../types';
-import { FolderTypes, AnnotationFileSelectType } from '../types';
+import { FolderTypes } from '../types';
+import type { AdpProjectData, AnnotationsData, ChangeType, InboundContent, PropertyValueType } from '../types';
 
 type InboundChangeData = { filePath: string; changeWithInboundId: InboundChange | undefined };
 type InboundChange = { content?: InboundContent };
@@ -28,7 +28,7 @@ export function writeAnnotationChange(projectPath: string, data: AnnotationsData
 
         writeChangeToFile(`${manifestFolderPath}${sep}${changeFileName}`, change, fs);
 
-        if (data.annotationFileSelectOption === AnnotationFileSelectType.NewEmptyFile) {
+        if (!data.annotationFilePath) {
             fs.write(`${annotationsFolderPath}${sep}${annotationFileName}`, '');
         } else {
             const selectedDir = data.annotationFilePath.replace(`${sep}${annotationFileName}`, '');
@@ -99,7 +99,7 @@ export function parseStringToObject(str: string): { [key: string]: string } {
  * Attempts to parse a property value as JSON.
  *
  * @param {string} propertyValue - The property value to be parsed.
- * @returns {PopertyValueType} The parsed value if `propertyValue` is valid JSON; otherwise, returns the original `propertyValue`.
+ * @returns {PropertyValueType} The parsed value if `propertyValue` is valid JSON; otherwise, returns the original `propertyValue`.
  * @example
  * // Returns the object { key: "value" }
  * getParsedPropertyValue('{"key": "value"}');
@@ -173,13 +173,13 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
  * @param data.projectData - The project specific data.
  * @param data.timestamp - The timestamp.
  * @param {object} content - The content of the change to be applied.
- * @param {ChangeTypes} changeType - The type of the change.
+ * @param {ChangeType} changeType - The type of the change.
  * @returns An object representing the change.
  */
 export function getGenericChange(
     data: { projectData: AdpProjectData; timestamp: number },
     content: object,
-    changeType: ChangeTypes
+    changeType: ChangeType
 ) {
     const { projectData, timestamp } = data;
     const fileName = `id_${timestamp}`;

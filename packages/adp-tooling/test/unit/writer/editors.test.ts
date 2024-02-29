@@ -1,5 +1,5 @@
 import type { AnnotationsData } from '../../../src';
-import { GeneratorType, generateChange } from '../../../src';
+import { ChangeType, generateChange } from '../../../src';
 import { WriterFactory } from '../../../src/writer/changes/writer-factory';
 
 describe('generateChange', () => {
@@ -11,12 +11,12 @@ describe('generateChange', () => {
     });
 
     it('should successfully invoke the writer for a given generator type', async () => {
-        const fs = await generateChange('/path/to/project', GeneratorType.ADD_ANNOTATIONS_TO_ODATA, {
+        const fs = await generateChange('/path/to/project', ChangeType.ADD_ANNOTATIONS_TO_ODATA, {
             projectData: {}
         } as AnnotationsData);
 
         expect(WriterFactory.createWriter).toHaveBeenCalledWith(
-            GeneratorType.ADD_ANNOTATIONS_TO_ODATA,
+            ChangeType.ADD_ANNOTATIONS_TO_ODATA,
             expect.anything(),
             '/path/to/project'
         );

@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
-import type { GeneratorData, GeneratorType } from '../types';
+import type { GeneratorData, ChangeType } from '../types';
 import { WriterFactory } from './changes/writer-factory';
 
 /**
@@ -16,9 +16,9 @@ import { WriterFactory } from './changes/writer-factory';
  * @param {GeneratorData<T>} data - The data specific to the type of generator, containing information necessary for making changes.
  * @param {Editor | null} [fs] - The `mem-fs-editor` instance used for file operations.
  * @returns {Promise<Editor>} A promise that resolves to the mem-fs editor instance used for making changes, allowing for further operations or committing changes to disk.
- * @template T - A type parameter extending `GeneratorType`, ensuring the function handles a defined set of generator types.
+ * @template T - A type parameter extending `ChangeType`, ensuring the function handles a defined set of generator types.
  */
-export async function generateChange<T extends GeneratorType>(
+export async function generateChange<T extends ChangeType>(
     projectPath: string,
     type: T,
     data: GeneratorData<T>,
