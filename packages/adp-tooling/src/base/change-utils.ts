@@ -4,23 +4,37 @@ import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
 import { FolderTypes } from '../types';
-import type { AdpProjectData, AnnotationsData, ChangeType, InboundContent, PropertyValueType } from '../types';
+import type {
+    AdpProjectData,
+    AnnotationsData,
+    ChangeType,
+    InboundContent,
+    ManifestChangeProperties,
+    PropertyValueType
+} from '../types';
 
 type InboundChangeData = { filePath: string; changeWithInboundId: InboundChange | undefined };
-type InboundChange = { content?: InboundContent };
+interface InboundChange extends ManifestChangeProperties {
+    content: InboundContent;
+}
 
 /**
  * Writes annotation changes to the specified project path using the provided `mem-fs-editor` instance.
  *
  * @param {string} projectPath - The root path of the project.
  * @param {AnnotationsData} data - The data object containing information about the annotation change.
- * @param {object} change - The annotation data change that will be written.
+ * @param {ManifestChangeProperties} change - The annotation data change that will be written.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
-export function writeAnnotationChange(projectPath: string, data: AnnotationsData, change: object, fs: Editor): void {
+export function writeAnnotationChange(
+    projectPath: string,
+    data: AnnotationsData,
+    change: ManifestChangeProperties,
+    fs: Editor
+): void {
     try {
-        const { timestamp, annotationFileName } = data;
+        const { timestamp, annotation } = data;
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, FolderTypes.WEBAPP, FolderTypes.CHANGES);
         const manifestFolderPath = path.join(changesFolderPath, FolderTypes.MANIFEST);
@@ -28,12 +42,13 @@ export function writeAnnotationChange(projectPath: string, data: AnnotationsData
 
         writeChangeToFile(`${manifestFolderPath}${sep}${changeFileName}`, change, fs);
 
-        if (!data.annotationFilePath) {
-            fs.write(`${annotationsFolderPath}${sep}${annotationFileName}`, '');
+        if (!annotation.filePath) {
+            fs.write(`${annotationsFolderPath}${sep}${annotation.fileName}`, '');
         } else {
-            const selectedDir = data.annotationFilePath.replace(`${sep}${annotationFileName}`, '');
+            const { filePath, fileName } = annotation;
+            const selectedDir = filePath.replace(`${sep}${fileName}`, '');
             if (selectedDir !== annotationsFolderPath) {
-                fs.copy(data.annotationFilePath, `${annotationsFolderPath}${sep}${annotationFileName}`);
+                fs.copy(filePath, `${annotationsFolderPath}${sep}${fileName}`);
             }
         }
     } catch (e) {
@@ -46,13 +61,19 @@ export function writeAnnotationChange(projectPath: string, data: AnnotationsData
  * If an additional subdirectory is specified, the change file is written there.
  *
  * @param {string} projectPath - The root path of the project.
- * @param {object} change - The change data to be written to the file.
+ * @param {ManifestChangeProperties} change - The change data to be written to the file.
  * @param {string} fileName - The name of the file to write the change data to.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @param {string} [dir] - An optional subdirectory within the 'changes' directory where the file will be written.
  * @returns {void}
  */
-export function writeChangeToFolder(projectPath: string, change: object, fileName: string, fs: Editor, dir = ''): void {
+export function writeChangeToFolder(
+    projectPath: string,
+    change: ManifestChangeProperties,
+    fileName: string,
+    fs: Editor,
+    dir = ''
+): void {
     try {
         let targetFolderPath = path.join(projectPath, FolderTypes.WEBAPP, FolderTypes.CHANGES);
 
@@ -71,10 +92,10 @@ export function writeChangeToFolder(projectPath: string, change: object, fileNam
  * writing. This function is used to directly write changes to a file, without specifying a directory.
  *
  * @param {string} path - The root path of the project.
- * @param {object} change - The change data to be written to the file.
+ * @param {ManifestChangeProperties} change - The change data to be written to the file.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  */
-export function writeChangeToFile(path: string, change: object, fs: Editor): void {
+export function writeChangeToFile(path: string, change: ManifestChangeProperties, fs: Editor): void {
     try {
         fs.writeJSON(path, change);
     } catch (e) {
@@ -180,7 +201,7 @@ export function getGenericChange(
     data: { projectData: AdpProjectData; timestamp: number },
     content: object,
     changeType: ChangeType
-) {
+): ManifestChangeProperties {
     const { projectData, timestamp } = data;
     const fileName = `id_${timestamp}`;
 

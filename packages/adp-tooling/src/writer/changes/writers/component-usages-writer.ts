@@ -20,13 +20,14 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
      * @param {ComponentUsagesData} data - The answers object containing information needed to construct the content property.
      * @returns {object} The constructed content object for the component usages change.
      */
-    private constructContent(data: ComponentUsagesData): object {
+    private constructContent({ component }: ComponentUsagesData): object {
+        const { data, usageId, settings, isLazy } = component;
         const componentUsages = {
-            [data.componentUsageID]: {
-                name: data.componentName,
-                lazy: data.isLazy === 'true',
-                settings: parseStringToObject(data.componentSettings),
-                componentData: parseStringToObject(data.componentData)
+            [usageId]: {
+                name: usageId,
+                lazy: isLazy === 'true',
+                settings: parseStringToObject(settings),
+                data: parseStringToObject(data)
             }
         };
 
@@ -42,14 +43,15 @@ export class ComponentUsagesWriter implements IWriter<ComponentUsagesData> {
      * @returns {object | undefined} The constructed content object for the library reference change.
      */
     private constructLibContent(data: ComponentUsagesData): object | undefined {
-        if (!data.shouldAddComponentLibrary) {
+        const library = data.library;
+        if (!library.reference) {
             return undefined;
         }
 
         return {
             libraries: {
-                [data.componentLibraryReference]: {
-                    lazy: data.libraryReferenceIsLazy === 'true'
+                [library.reference]: {
+                    lazy: library.referenceIsLazy === 'true'
                 }
             }
         };

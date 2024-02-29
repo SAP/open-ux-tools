@@ -22,18 +22,21 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      * @returns {object} The constructed content object for the annotation change.
      */
     private constructContent(data: AnnotationsData): object {
-        const { isInternalUsage, annotationFileName } = data;
-        const annotationFileNameWithoutExtension = annotationFileName?.toLocaleLowerCase().replace('.xml', '');
+        const {
+            isInternalUsage,
+            annotation: { dataSource, fileName }
+        } = data;
+        const annotationFileNameWithoutExtension = fileName?.toLocaleLowerCase().replace('.xml', '');
         const annotationNameSpace = isInternalUsage
             ? `annotation.${annotationFileNameWithoutExtension}`
             : `customer.annotation.${annotationFileNameWithoutExtension}`;
         return {
-            dataSourceId: `${data.oDataSource}`,
+            dataSourceId: `${dataSource}`,
             annotations: [annotationNameSpace],
             annotationsInsertPosition: 'END',
             dataSource: {
                 [annotationNameSpace]: {
-                    uri: `../annotations/${annotationFileName}`,
+                    uri: `../annotations/${fileName}`,
                     type: 'ODataAnnotation'
                 }
             }
@@ -46,8 +49,8 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      * @param {AnnotationsData} data - The answers object containing user choices.
      * @returns {string | undefined} The determined filename for the annotation file.
      */
-    private getAnnotationFileName(data: AnnotationsData): string | undefined {
-        return data.annotationFilePath ? data.annotationFilePath.split(sep).pop() : `annotation_${Date.now()}.xml`;
+    private getAnnotationFileName({ annotation }: AnnotationsData): string | undefined {
+        return annotation.filePath ? annotation.filePath.split(sep).pop() : `annotation_${Date.now()}.xml`;
     }
 
     /**
@@ -57,7 +60,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: AnnotationsData): Promise<void> {
-        data.annotationFileName = this.getAnnotationFileName(data);
+        data.annotation.fileName = this.getAnnotationFileName(data);
         const content = this.constructContent(data);
         const change = getGenericChange(data, content, ChangeType.ADD_ANNOTATIONS_TO_ODATA);
         writeAnnotationChange(this.projectPath, data, change, this.fs);

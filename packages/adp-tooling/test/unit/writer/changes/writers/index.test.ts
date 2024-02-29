@@ -47,12 +47,14 @@ describe('AnnotationsWriter', () => {
 
     it('should correctly construct content and write annotation change', async () => {
         const mockData: AnnotationsData = {
-            oDataSource: '/sap/opu/odata/source',
-            annotationFilePath: '/mock/path/to/annotation/file.xml',
+            annotation: {
+                dataSource: '/sap/opu/odata/source',
+                filePath: '/mock/path/to/annotation/file.xml',
+                fileName: 'mockAnnotation.xml'
+            },
             projectData: { namespace: 'apps/mock', layer: 'VENDOR', id: 'mockId' } as AdpProjectData,
             timestamp: Date.now(),
-            isInternalUsage: false,
-            annotationFileName: 'mockAnnotation.xml'
+            isInternalUsage: false
         };
 
         const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
@@ -65,14 +67,17 @@ describe('AnnotationsWriter', () => {
 
 describe('ComponentUsagesWriter', () => {
     const mockData = {
-        componentUsageID: 'mockID',
-        componentName: 'mockName',
-        isLazy: 'true',
-        componentSettings: '"key": "value"',
-        componentData: '"key": "value"',
-        shouldAddComponentLibrary: true,
-        componentLibraryReference: 'mockLibrary',
-        libraryReferenceIsLazy: 'false',
+        component: {
+            usageId: 'mockID',
+            name: 'mockName',
+            isLazy: 'true',
+            settings: '"key": "value"',
+            data: '"key": "value"'
+        },
+        library: {
+            reference: 'mockLibrary',
+            referenceIsLazy: 'false'
+        },
         timestamp: 1234567890
     };
 
@@ -102,7 +107,7 @@ describe('ComponentUsagesWriter', () => {
     });
 
     it('should only write component usages changes when library reference is not required', async () => {
-        mockData.shouldAddComponentLibrary = false;
+        mockData.library.reference = '';
 
         await writer.write(mockData as ComponentUsagesData);
 
@@ -128,15 +133,19 @@ describe('NewModelWriter', () => {
     it('should correctly construct content and write new model change', async () => {
         const mockData = {
             projectData: {} as AdpProjectData,
-            oDataServiceName: 'ODataService',
-            oDataServiceURI: '/sap/opu/odata/custom',
-            oDataVersion: '4.0',
-            oDataServiceModelName: 'ODataModel',
-            oDataServiceModelSettings: '"someSetting": "someValue"',
+            service: {
+                name: 'ODataService',
+                uri: '/sap/opu/odata/custom',
+                version: '4.0',
+                modelName: 'ODataModel',
+                modelSettings: '"someSetting": "someValue"'
+            },
+            annotation: {
+                dataSourceName: 'ODataAnnotations',
+                dataSourceURI: 'some/path/annotations.xml',
+                settings: '"anotherSetting": "anotherValue"'
+            },
             addAnnotationMode: true,
-            oDataAnnotationDataSourceName: 'ODataAnnotations',
-            oDataAnnotationDataSourceURI: 'some/path/annotations.xml',
-            oDataAnnotationSettings: '"anotherSetting": "anotherValue"',
             timestamp: 1234567890
         };
 
@@ -160,10 +169,12 @@ describe('NewModelWriter', () => {
 
 describe('DataSourceWriter', () => {
     const mockData: DataSourceData = {
-        oDataSource: 'CustomOData',
-        oDataSourceURI: '/sap/opu/odata/custom',
-        oDataAnnotationSourceURI: '',
-        maxAge: 60,
+        service: {
+            name: 'CustomOData',
+            uri: '/sap/opu/odata/custom',
+            annotationUri: '',
+            maxAge: 60
+        },
         projectData: {} as AdpProjectData,
         timestamp: 1234567890,
         dataSourcesDictionary: {
@@ -184,17 +195,17 @@ describe('DataSourceWriter', () => {
         expect(getGenericChangeMock).toHaveBeenCalledWith(
             expect.anything(),
             expect.objectContaining({
-                dataSourceId: mockData.oDataSource,
+                dataSourceId: mockData.service.name,
                 entityPropertyChange: expect.arrayContaining([
                     expect.objectContaining({
                         propertyPath: 'uri',
                         operation: 'UPDATE',
-                        propertyValue: mockData.oDataSourceURI
+                        propertyValue: mockData.service.uri
                     }),
                     expect.objectContaining({
                         propertyPath: 'settings/maxAge',
                         operation: 'UPSERT',
-                        propertyValue: mockData.maxAge
+                        propertyValue: mockData.service.maxAge
                     })
                 ])
             }),
@@ -210,8 +221,8 @@ describe('DataSourceWriter', () => {
         );
     });
 
-    it('should add annotation change if oDataAnnotationSourceURI is provided', async () => {
-        mockData.oDataAnnotationSourceURI = 'some/path/annotations';
+    it('should add annotation change if annotationUri is provided', async () => {
+        mockData.service.annotationUri = 'some/path/annotations';
 
         await writer.write(mockData);
 
@@ -232,10 +243,12 @@ describe('InboundWriter', () => {
     it('should create a new inbound change when no existing change is found', async () => {
         const mockData = {
             inboundId: 'testInboundId',
-            title: 'Test Title',
-            subTitle: 'Test SubTitle',
-            icon: 'Test Icon',
-            timestamp: 1234567890
+            timestamp: 1234567890,
+            flp: {
+                title: 'Test Title',
+                subTitle: 'Test SubTitle',
+                icon: 'Test Icon'
+            }
         };
 
         findChangeWithInboundIdMock.mockReturnValue({ changeWithInboundId: null, filePath: '' });
@@ -249,10 +262,12 @@ describe('InboundWriter', () => {
     it('should enhance existing inbound change content when found', async () => {
         const mockData = {
             inboundId: 'testInboundId',
-            title: 'New Title',
-            subTitle: 'New SubTitle',
-            icon: 'New Icon',
-            timestamp: 1234567890
+            timestamp: 1234567890,
+            flp: {
+                title: 'New Title',
+                subTitle: 'New SubTitle',
+                icon: 'New Icon'
+            }
         };
 
         const existingChangeContent = { inboundId: 'testInboundId', entityPropertyChange: [] };

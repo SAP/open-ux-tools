@@ -45,7 +45,7 @@ export class InboundWriter implements IWriter<InboundData> {
      * @returns {void}
      */
     private getEnhancedContent(data: InboundData, content: InboundContent): void {
-        const { icon, title, subTitle } = data;
+        const { icon, title, subTitle } = data.flp;
         if (title) {
             content.entityPropertyChange.push({
                 propertyPath: 'title',
@@ -79,14 +79,15 @@ export class InboundWriter implements IWriter<InboundData> {
      *                           to ensure they are in the correct format for use in content construction.
      */
     private getModifiedData(data: InboundData): InboundData {
-        const { inboundId, title, subTitle, icon } = data;
+        const { title, subTitle, icon } = data.flp;
 
         return {
             ...data,
-            inboundId,
-            title: getParsedPropertyValue(title),
-            subTitle: getParsedPropertyValue(subTitle),
-            icon: getParsedPropertyValue(icon)
+            flp: {
+                title: getParsedPropertyValue(title),
+                subTitle: getParsedPropertyValue(subTitle),
+                icon: getParsedPropertyValue(icon)
+            }
         };
     }
 

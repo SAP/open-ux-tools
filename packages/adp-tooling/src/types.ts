@@ -87,6 +87,19 @@ interface CommonChangeProperties {
     texts: Record<string, unknown>;
 }
 
+export interface ManifestChangeProperties {
+    fileName: string;
+    fileType: string;
+    namespace: string;
+    layer: string;
+    packageName: string;
+    reference: string;
+    support: { generator: string };
+    changeType: string;
+    creation: string;
+    content: object;
+}
+
 export interface AddXMLChange extends CommonChangeProperties {
     changeType: 'addXML';
     creation: string;
@@ -143,17 +156,40 @@ export const enum HttpStatusCodes {
     SERVICE_UNAVAILABLE = 503
 }
 
+/**
+ * Represents a constructor type that creates an instance of IWriter.
+ *
+ * @param fs - An instance of Editor used for file system operations.
+ * @param projectPath - The root path of the project.
+ * @returns An instance of IWriter for handling specific data writing operations.
+ */
 export type Writer = new (fs: Editor, projectPath: string) => IWriter<any>;
+
+/**
+ * Generic interface for handling data associated with specific writer operations.
+ * Allows for the typing of data passed to IWriter implementations based on the change type.
+ *
+ * @template T - The subtype of ChangeType that specifies the kind of change and associated data.
+ */
 export type IWriterData<T extends ChangeType> = IWriter<GeneratorData<T>>;
+
+/**
+ * Defines a generic interface for writer classes, specialized by the type of data they handle.
+ *
+ * @template T - The specific type of data the writer will handle, determined by the associated ChangeType.
+ */
 export interface IWriter<T> {
     /**
-     * Writer function.
+     * Writes the provided data to the project.
      *
-     * @param {T} data - Data needed for the writer function.
+     * @param data - The data needed for the writer function, specific to the type of change being made.
      */
     write(data: T): Promise<void>;
 }
 
+/**
+ * Enumerates the types of changes that can be made, each representing a specific kind of modification.
+ */
 export const enum ChangeType {
     ADD_NEW_MODEL = 'appdescr_ui5_addNewModel',
     ADD_ANNOTATIONS_TO_ODATA = 'appdescr_app_addAnnotationsToOData',
@@ -163,6 +199,12 @@ export const enum ChangeType {
     CHANGE_INBOUND = 'appdescr_app_changeInbound'
 }
 
+/**
+ * Maps a ChangeType to the corresponding data structure needed for that type of change.
+ * This conditional type ensures type safety by linking each change type with its relevant data model.
+ *
+ * @template T - A subtype of ChangeType indicating the specific type of change.
+ */
 export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOTATIONS_TO_ODATA
     ? AnnotationsData
     : T extends ChangeType.ADD_COMPONENT_USAGES
@@ -180,52 +222,99 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
 export interface AnnotationsData {
     projectData: AdpProjectData;
     timestamp: number;
-    annotationFileName?: string;
+    /** Indicates whether the annotation is for internal use only. */
     isInternalUsage: boolean;
-    oDataSource: string;
-    annotationFilePath: string;
+    annotation: {
+        /** Optional name of the annotation file. */
+        fileName?: string;
+        /** Data source associated with the annotation. */
+        dataSource: string;
+        /** Path to the annotation file. */
+        filePath: string;
+    };
 }
+
 export interface ComponentUsagesData {
     projectData: AdpProjectData;
     timestamp: number;
-    componentUsageID: string;
-    componentName: string;
-    componentData: string;
-    componentSettings: string;
-    isLazy: string;
-    libraryReferenceIsLazy?: string;
-    shouldAddComponentLibrary: boolean;
-    componentLibraryReference: string;
+    component: {
+        /** Indicates whether the component is loaded lazily. */
+        isLazy: string;
+        /** Unique ID for the component usage. */
+        usageId: string;
+        /** Name of the component. */
+        name: string;
+        /** Serialized data specific to the component. */
+        data: string;
+        /** Settings related to the component. */
+        settings: string;
+    };
+    library: {
+        /** Reference to the component's library. */
+        reference: string;
+        /** Optional flag indicating if the library reference is lazy. */
+        referenceIsLazy?: string;
+    };
 }
+
 export interface NewModelData {
     projectData: AdpProjectData;
     timestamp: number;
-    oDataServiceName: string;
-    oDataServiceURI: string;
-    oDataServiceModelName: string;
-    oDataServiceModelSettings: string;
-    oDataVersion: string;
+    annotation: {
+        /** Name of the OData annotation data source. */
+        dataSourceName: string;
+        /** Optional URI of the OData annotation data source. */
+        dataSourceURI?: string;
+        /** Optional settings for the OData annotation. */
+        settings?: string;
+    };
+    service: {
+        /** Name of the OData service. */
+        name: string;
+        /** URI of the OData service. */
+        uri: string;
+        /** Name of the OData service model. */
+        modelName: string;
+        /** Version of OData used. */
+        version: string;
+        /** Settings for the OData service model. */
+        modelSettings: string;
+    };
+    /** Indicates whether annotation mode is added. */
     addAnnotationMode: boolean;
-    oDataAnnotationDataSourceName: string;
-    oDataAnnotationDataSourceURI?: string;
-    oDataAnnotationSettings?: string;
 }
+
 export interface DataSourceData {
     projectData: AdpProjectData;
     timestamp: number;
-    oDataSource: string;
-    oDataSourceURI: string;
-    maxAge?: number;
-    oDataAnnotationSourceURI: string;
+    service: {
+        /** Data source identifier. */
+        name: string;
+        /** URI of the data source. */
+        uri: string;
+        /** Optional maximum age for the data source cache. */
+        maxAge?: number;
+        /** URI for the OData annotation source. */
+        annotationUri: string;
+    };
+    /** Dictionary mapping data source keys to their values. */
     dataSourcesDictionary: { [key: string]: string };
 }
+
 export interface InboundData {
     projectData: AdpProjectData;
     timestamp: number;
+    /** Identifier for the inbound navigation data. */
     inboundId: string;
-    title: PropertyValueType;
-    subTitle: PropertyValueType;
-    icon: PropertyValueType;
+    flp: {
+        /** Title associated with the inbound navigation data. */
+        title: PropertyValueType;
+        /** Subtitle associated with the inbound navigation data. */
+        subTitle: PropertyValueType;
+        /** Icon associated with the inbound navigation data. */
+        icon: PropertyValueType;
+    };
+    /** Optional flag indicating if the project is in safe mode. */
     isInSafeMode?: boolean;
 }
 

@@ -55,8 +55,8 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: DataSourceData): Promise<void> {
-        const { dataSourcesDictionary } = data;
-        const content = this.constructContent(data.oDataSource, data.oDataSourceURI, data.maxAge);
+        const { dataSourcesDictionary, service } = data;
+        const content = this.constructContent(service.name, service.uri, service.maxAge);
         const change = getGenericChange(data, content, ChangeType.CHANGE_DATA_SOURCE);
 
         writeChangeToFolder(
@@ -67,12 +67,12 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
             FolderTypes.MANIFEST
         );
 
-        const shouldAddAnnotation = data.oDataAnnotationSourceURI && data.oDataAnnotationSourceURI.length > 0;
+        const shouldAddAnnotation = service.annotationUri && service.annotationUri.length > 0;
         if (shouldAddAnnotation) {
             data.timestamp += 1;
             const annotationContent = this.constructContent(
-                dataSourcesDictionary[data.oDataSource],
-                data.oDataAnnotationSourceURI
+                dataSourcesDictionary[service.name],
+                service.annotationUri
             );
             const annotationChange = getGenericChange(data, annotationContent, ChangeType.CHANGE_DATA_SOURCE);
 
