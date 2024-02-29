@@ -36,7 +36,7 @@ async function prompt(promptOptions?: UI5LibraryPromptOptions, adapter?: Inquire
     const ui5LibPrompts = await exports.getPrompts(promptOptions);
     const pm = adapter ? adapter.promptModule : inquirer;
 
-    if (promptOptions?.useAutocomplete) {
+    if (pm && promptOptions?.useAutocomplete) {
         pm.registerPrompt('autocomplete', autocomplete);
     }
 
