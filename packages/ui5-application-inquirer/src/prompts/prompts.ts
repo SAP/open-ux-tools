@@ -18,11 +18,13 @@ import {
 } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
-import type { UI5ApplicationQuestion } from '../types';
-import { promptNames, type UI5ApplicationAnswers, type UI5ApplicationPromptOptions } from '../types';
+import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
+import { promptNames } from '../types';
 import { defaultAppName, extendWithOptions, hidePrompts, isVersionIncluded, withCondition } from './prompt-helpers';
 import { validateAppName } from './validators';
 
+// Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /**
  * Get the prompts that will provide input for UI5 applcation writing.
  *
@@ -38,9 +40,6 @@ export function getQuestions(
     isCli = true,
     capCdsInfo?: CdsUi5PluginInfo
 ): UI5ApplicationQuestion[] {
-    // Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
-    /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-
     // Set shared defaults
     const appName =
         typeof promptOptions?.[promptNames.name]?.default === 'string'

@@ -57,7 +57,7 @@ export function isVersionIncluded(version: string, minVersion: string): boolean 
     if (ui5SemVer) {
         return gte(ui5SemVer, minVersion);
     }
-    return version === latestVersionString ? true : false;
+    return version === latestVersionString;
 }
 
 /**
@@ -150,7 +150,7 @@ function applyExtensionFunction(
     let extendedFunc;
 
     if (funcName === 'validate' && promptOption.validate) {
-        extendedFunc = extendValidate(question, promptOption.validate!);
+        extendedFunc = extendValidate(question, promptOption.validate);
     }
 
     if (funcName === 'additionalMessages' && promptOption.additionalMessages) {

@@ -333,9 +333,9 @@ describe('getQuestions', () => {
             }
         });
         addDeployConfigQuestion = questions.find((question) => question.name === promptNames.addDeployConfig);
-        expect((addDeployConfigQuestion?.validate as Function)(false));
+        expect((addDeployConfigQuestion?.validate as Function)(false)).toBe(true);
         expect(validatorCbSpy).toHaveBeenCalledWith(false, promptNames.addDeployConfig);
-        expect((addDeployConfigQuestion?.validate as Function)(true));
+        expect((addDeployConfigQuestion?.validate as Function)(true)).toBe(true);
         expect(validatorCbSpy).toHaveBeenCalledWith(true, promptNames.addDeployConfig);
     });
 
@@ -356,9 +356,9 @@ describe('getQuestions', () => {
             }
         });
         addFlpConfigQuestion = questions.find((question) => question.name === promptNames.addFlpConfig);
-        expect((addFlpConfigQuestion?.validate as Function)(false));
+        expect((addFlpConfigQuestion?.validate as Function)(false)).toBe(true);
         expect(validatorCbSpy).toHaveBeenCalledWith(false, promptNames.addFlpConfig);
-        expect((addFlpConfigQuestion?.validate as Function)(true));
+        expect((addFlpConfigQuestion?.validate as Function)(true)).toBe(true);
         expect(validatorCbSpy).toHaveBeenCalledWith(true, promptNames.addFlpConfig);
     });
 

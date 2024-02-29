@@ -72,7 +72,6 @@ type UI5VersionPromptOptions = {
     /**
      * Optionally register the `inquirer-autocomplete-prompt` plugin and use for UI5 version searching.
      * If the default `false` is used then standard prompting will be used that require scrolling to find entries.
-     * // todo: consider removing and referencing if CLI instead
      */
     useAutocomplete?: boolean;
     /**

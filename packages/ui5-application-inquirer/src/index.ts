@@ -5,8 +5,13 @@ import autocomplete from 'inquirer-autocomplete-prompt';
 import cloneDeep from 'lodash/cloneDeep';
 import isNil from 'lodash/isNil';
 import { getQuestions } from './prompts';
-import type { PromptDefaultValue, UI5ApplicationQuestion } from './types';
-import { promptNames, type UI5ApplicationAnswers, type UI5ApplicationPromptOptions } from './types';
+import type {
+    PromptDefaultValue,
+    UI5ApplicationAnswers,
+    UI5ApplicationPromptOptions,
+    UI5ApplicationQuestion
+} from './types';
+import { promptNames } from './types';
 /**
  * Get the inquirer prompts for ui5 library inquirer.
  *
