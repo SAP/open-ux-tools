@@ -27,7 +27,6 @@ export const defaultUsage = (): JSX.Element => {
         btn2: true,
         btn3: true
     });
-    console.log(checked);
 
     const onCallback = (key?: string) => {
         setSelection(key);
