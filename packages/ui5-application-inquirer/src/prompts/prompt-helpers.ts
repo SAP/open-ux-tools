@@ -49,7 +49,7 @@ export function defaultAppName(targetPath: string): string {
  *
  * @param version the version to test
  * @param minVersion the minimum version to test against
- * @returns - true if the specified version is greater than or equal to the minimum version, or the version is not a coercable semver
+ * @returns - true if the specified version is greater than or equal to the minimum version, or the version is not a coercible semver
  */
 export function isVersionIncluded(version: string, minVersion: string): boolean {
     // Extract a usable version, `snapshot`, `latest` etc will be ignored
