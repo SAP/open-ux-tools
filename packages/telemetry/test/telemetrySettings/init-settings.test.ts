@@ -82,7 +82,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         );
 
         await initTelemetrySettings({
-            resourceId: '',
+            resourceId: undefined,
             consumerModule: packageJson,
             internalFeature: false
         });
@@ -91,6 +91,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         expect(TelemetrySettings.telemetryEnabled).toBe(false);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
+        expect(TelemetrySettings.azureInstrumentationKey).toBe('');
     });
 
     /**
@@ -108,7 +109,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         readFileMock.mockReturnValueOnce(Promise.resolve(JSON.stringify(mockSettingFileContent)));
 
         await initTelemetrySettings({
-            resourceId: '',
+            resourceId: 'abc-123',
             consumerModule: packageJson,
             internalFeature: false
         });
@@ -118,6 +119,7 @@ describe('toolsSuiteTelemetrySettings', () => {
         expect(TelemetrySettings.telemetryEnabled).toBe(false);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
+        expect(TelemetrySettings.azureInstrumentationKey).toBe('abc-123');
     });
 
     /**

@@ -234,7 +234,7 @@ export class UISplitter extends React.Component<UISplitterProps> {
         const orientation = vertical ? 'horizontal' : 'vertical';
         let ariaPressed: boolean | undefined;
         if (type === UISplitterType.Toggle) {
-            ariaPressed = hidden ? false : true;
+            ariaPressed = !hidden;
         }
         return (
             <div

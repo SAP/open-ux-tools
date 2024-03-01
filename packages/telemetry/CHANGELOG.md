@@ -1,5 +1,17 @@
 # @sap-ux/telemetry
 
+## 0.3.1
+
+### Patch Changes
+
+-   98d34e8e: fix for assigning resource id in telemetry settings
+
+## 0.3.0
+
+### Minor Changes
+
+-   b2e867bc: no longer require resource id in initialisation
+
 ## 0.2.12
 
 ### Patch Changes
