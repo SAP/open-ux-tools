@@ -76,7 +76,7 @@ export function getQuestions(
     // Hide not applicable prompts based on passed options or if this is a CAP project
     let questions: UI5ApplicationQuestion[] = hidePrompts(keyedPrompts, promptOptions, isCapProject);
 
-    // Add an additonal condition to 'advanced' prompts so they can be shown/hidden at runtime
+    // Add an additional condition to 'advanced' prompts so they can be shown/hidden at runtime
     applyAdvancedOption(questions, promptOptions);
 
     // Apply extended `validate`, `additionalMessages` or override `default` prompt properties
