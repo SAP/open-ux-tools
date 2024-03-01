@@ -92,7 +92,14 @@
 </head>
 
 <!-- UI Content -->
+<% if (scenario === 'OPA5') { %>
+<body id="content" class="sapUiOpaBodyComponent" style="width: 80%; left: 20%; position: absolute">
+<% } else { %>
 <body class="sapUiBody" id="content">
+<% } %>
+<% if (scenario === 'OPA5' || scenario === 'QUNIT') { %>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div><% } %>
 </body>
 
 </html>
