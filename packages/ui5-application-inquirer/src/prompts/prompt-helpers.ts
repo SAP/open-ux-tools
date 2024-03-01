@@ -194,7 +194,7 @@ export function extendWithOptions(
 
 /**
  * Will remove prompts from the specified prompts based on prompt options
- * and applicablilty in the case of CAP projects. Removing prompts is preferable to using `when()`
+ * and applicability in the case of CAP projects. Removing prompts is preferable to using `when()`
  * conditions when prompts are used in a UI to prevent continous re-evaluation.
  *
  * @param prompts Keyed prompts object containing all possible prompts
