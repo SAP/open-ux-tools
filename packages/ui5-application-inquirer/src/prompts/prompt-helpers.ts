@@ -45,7 +45,7 @@ export function defaultAppName(targetPath: string): string {
 
 /**
  * Checks if the specified semantic version string is greater than or equal to the minimum version.
- * If the specified version is not a parseable semantic version, returns true.
+ * If the specified version is not a parsable semantic version, returns true.
  *
  * @param version the version to test
  * @param minVersion the minimum version to test against
