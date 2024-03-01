@@ -191,7 +191,7 @@ export class FlpSandbox {
             basePath: relative(dirname(this.config.path), '/') ?? '.',
             apps: {},
             scenario: this.config.scenario,
-            fioriSandboxConfig: this.config.fioriSandboxConfig,
+            fioriSandboxConfig: this.config.fioriSandboxConfig ?? false,
             customInit: this.config.customInit,
             ui5: {
                 libs: this.getUI5Libs(manifest),
