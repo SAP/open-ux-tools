@@ -126,16 +126,16 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
         super(props);
         this.state = {
             query: '',
-            hasSelected: this.props.value ? true : false,
+            hasSelected: !!this.props.value,
             // value has to be set, otherwise react treats this as "uncontrolled" component
             // and displays warnings when value is set later on
-            value: this.props.value || '',
+            value: this.props.value ?? '',
             isHidden: true,
             originalItems: [],
             items: [],
-            valueSeparator: this.props.valueSeparator || '.',
+            valueSeparator: this.props.valueSeparator ?? '.',
             uiidInput: uuid.v4(),
-            isDisabled: this.props.items.length ? false : true,
+            isDisabled: !this.props.items.length,
             isMenuOpen: false,
             valueChanged: false
         };
@@ -652,7 +652,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     getItemTarget = (container: HTMLElement, item: TreeItemInfo): HTMLElement | undefined => {
         let itemDom: HTMLElement | undefined;
         const listDom = container.querySelector('.ms-ContextualMenu-list');
-        if (listDom && listDom.childNodes[item.index]) {
+        if (listDom?.childNodes[item.index]) {
             const listItemDom = listDom.childNodes[item.index] as HTMLElement;
             const itemElement = listItemDom.firstChild as undefined | HTMLElement;
             itemDom = itemElement;

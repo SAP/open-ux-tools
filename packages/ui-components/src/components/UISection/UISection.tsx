@@ -46,7 +46,7 @@ export class UISection extends React.Component<UISectionProps & Readonly<{ child
     render(): React.ReactElement {
         const scrollable = this.props.scrollable === undefined || this.props.scrollable;
         const style: React.CSSProperties = {};
-        const layout = this.props.layout || UISectionLayout.Standard;
+        const layout = this.props.layout ?? UISectionLayout.Standard;
         if ('height' in this.props) {
             style.height = this.props.height;
         }

@@ -42,7 +42,7 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
     }
 
     protected setStyle = (props: ButtonProps): IButtonStyles => {
-        const sizeType = props.sizeType || UIIconButtonSizes.Default;
+        const sizeType = props.sizeType ?? UIIconButtonSizes.Default;
         const width = sizeType === UIIconButtonSizes.Default ? 16 : 26;
         return {
             root: {
