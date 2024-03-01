@@ -23,7 +23,7 @@ the prompt validation or default functions will not be execute and so there may 
 value or function when hiding prompts that are not specified as advanced option prompts.
 
 Similarly if a prompt is set to be grouped under advanced options by specifying `advancedOption` as `true`, these prompts may not be executed if the end-user chooses not to set them. In this case a default will be provided based on the current fallback defaults or default provided as the property `default`. 
-See [Inquirer.js](https://www.npmjs.com/package/inquirer). for valid default properties.
+See [Inquirer.js](https://www.npmjs.com/package/inquirer) for valid default properties.
 
 ### Inquirer usage example:
 
