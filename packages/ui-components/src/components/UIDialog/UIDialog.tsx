@@ -6,7 +6,7 @@ import { deepMerge } from '../../utilities/DeepMerge';
 
 import '../../styles/_shadows.scss';
 
-interface ComponentProps {
+export interface DialogProps extends IDialogProps {
     // Accept and cancel buttons options
     acceptButtonText?: string;
     cancelButtonText?: string;
@@ -23,6 +23,10 @@ interface ComponentProps {
     // Header render in single or multi lines
     // Default is single line
     multiLineTitle?: boolean;
+    /**
+     * The title text to display at the top of the dialog.
+     */
+    title?: string | JSX.Element;
     // Is dialog open should be animated with fade in animation
     // Default value for "isOpenAnimated" is "true"
     isOpenAnimated?: boolean;
@@ -48,8 +52,6 @@ export const DIALOG_STYLES = {
     }
 };
 
-export type DialogProps = IDialogProps & ComponentProps;
-
 export interface DialogState {
     resizeMaxHeight?: number;
     isMounted?: boolean;
@@ -73,7 +75,7 @@ export enum UIDialogScrollArea {
  */
 export class UIDialog extends React.Component<DialogProps, DialogState> {
     // Default values for public component properties
-    static defaultProps = { isOpenAnimated: true };
+    static readonly defaultProps = { isOpenAnimated: true };
     /**
      * Initializes component properties.
      *
@@ -231,7 +233,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
             return;
         }
         const dialogFocusZone = (event.target as HTMLElement).closest('.ms-Dialog-main');
-        if (dialogFocusZone && dialogFocusZone.firstChild) {
+        if (dialogFocusZone?.firstChild) {
             const focusPlaceholder = dialogFocusZone.firstChild as HTMLElement;
             focusPlaceholder.focus();
         }
