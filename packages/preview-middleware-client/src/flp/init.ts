@@ -243,7 +243,7 @@ export async function init({
 
     // Load custom initialization module
     if (customInit) {
-        await sap.ui.require(customInit);
+        await sap.ui.require([customInit]);
     }
 
     // init
