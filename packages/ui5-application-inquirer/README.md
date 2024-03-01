@@ -1,6 +1,6 @@
 # @sap-ux/ui5-application-inquirer
 
-Provides Inquirer based prompting to allow input and validation of data required to generate a UI5 library
+Provides Inquirer based prompting to allow input and validation of data required to generate a UI5 application
 
 ## Installation
 Npm
