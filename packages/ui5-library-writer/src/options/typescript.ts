@@ -1,5 +1,5 @@
 import { render } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { UI5LibInput, UI5LibInputTS } from '../types';
 import { getFilePaths } from '@sap-ux/project-access';
 import { mergeObjects, UI5Config } from '@sap-ux/ui5-config';

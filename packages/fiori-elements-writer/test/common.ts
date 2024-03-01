@@ -2,7 +2,7 @@ import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { readFileSync } from 'fs';
 import { create as createStore } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join, dirname } from 'path';
 import type { FEOPSettings, FioriElementsApp, LROPSettings, WorklistSettings } from '../src/types';

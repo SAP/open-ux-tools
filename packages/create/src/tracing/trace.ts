@@ -1,5 +1,5 @@
 import { existsSync, promises } from 'fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { extname } from 'path';
 import { compareStrings, compareJson } from './compare';
 import { getLogger } from './logger';

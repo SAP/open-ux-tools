@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Read file asynchronously. Throws error if file does not exist.

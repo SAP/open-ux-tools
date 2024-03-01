@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { App, AppOptions, Package, UI5 } from './types';
 import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';

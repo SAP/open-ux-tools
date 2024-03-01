@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import type { BuildingBlock, BuildingBlockConfig } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';

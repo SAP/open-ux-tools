@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { addAddMockserverConfigCommand } from '../../../../src/cli/add/mockserver-config';
 import * as prompts from 'prompts';

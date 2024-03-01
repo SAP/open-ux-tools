@@ -1,5 +1,5 @@
 import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '../constants';
 import { fileExists, readFile } from '../file';

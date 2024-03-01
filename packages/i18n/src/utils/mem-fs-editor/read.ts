@@ -1,5 +1,5 @@
 import { promises } from 'fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 
 /**
  * Read the entire contents of a file.
@@ -8,7 +8,7 @@ import type { Editor } from 'mem-fs-editor';
  * @param fs optional `mem-fs-editor` instance. If provided, `read` api of `mem-fs-editor` is used.
  * @returns file content
  */
-export async function readFile(filePath: string, fs?: Editor): Promise<string> {
+export async function readFile(filePath: string, fs?: Editor): Promise<string | null> {
     if (fs) {
         return fs.read(filePath);
     }

@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
+import type { MemFsEditor as Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { AdpWriterConfig } from '../types';
 import { UI5Config } from '@sap-ux/ui5-config';
@@ -52,7 +52,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
 
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
-    const baseUi5ConfigContent = fs.read(ui5ConfigPath);
+    const baseUi5ConfigContent = fs.read(ui5ConfigPath) as string;
     const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
     enhanceUI5Yaml(ui5Config, fullConfig);
     fs.write(ui5ConfigPath, ui5Config.toString());
