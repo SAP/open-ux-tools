@@ -1,4 +1,4 @@
-import { Severity } from '@sap-ux/inquirer-common';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { UI5Version, UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import * as ui5Info from '@sap-ux/ui5-info';
 import { createPromptModule } from 'inquirer';

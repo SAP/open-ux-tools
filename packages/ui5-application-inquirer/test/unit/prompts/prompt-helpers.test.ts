@@ -1,5 +1,4 @@
-import type { IMessageSeverity } from '@sap-ux/inquirer-common';
-import { Severity } from '@sap-ux/inquirer-common';
+import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
 import { latestVersionString } from '@sap-ux/ui5-info';
 import type { Answers } from 'inquirer';
 import { join } from 'path';

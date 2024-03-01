@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui5-application-inquirer",
-    "description": "Prompts module that can provide prompts for UI5 library writer",
+    "description": "Prompts module that can prompt users for inputs required for UI5 application writing",
     "version": "0.1.0",
     "repository": {
         "type": "git",
@@ -26,7 +26,6 @@
     "files": [
         "LICENSE",
         "dist",
-        "templates",
         "!dist/*.map",
         "!dist/**/*.map"
     ],
@@ -41,12 +40,13 @@
         "semver": "7.5.4"
     },
     "devDependencies": {
-        "inquirer": "8.2.6",
+        "@sap-devx/yeoman-ui-types": "1.14.4",
         "@sap-ux/cap-config-writer": "workspace:*",
         "@types/inquirer-autocomplete-prompt": "2.0.1",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.202",
-        "@types/semver": "7.5.4"
+        "@types/semver": "7.5.4",
+        "inquirer": "8.2.6"
     },
     "engines": {
         "node": ">=18.x"

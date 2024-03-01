@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/inquirer-common",
-    "description": "Commonly used functionality to support inquirer modules",
+    "description": "Commonly used shared functionality and types to support inquirer modules.",
     "version": "0.1.0",
     "repository": {
         "type": "git",
@@ -26,7 +26,6 @@
     "files": [
         "LICENSE",
         "dist",
-        "templates",
         "!dist/*.map",
         "!dist/**/*.map"
     ],

@@ -135,7 +135,8 @@ function getEnableNPMWorkspacesPrompt(capCdsInfo?: CdsUi5PluginInfo): UI5Applica
 }
 
 /**
- * Get the `skipAnnotations` prompt.
+ * Get the `skipAnnotations` prompt. Skipping annotation generation can be useful for CAP projects
+ * where annotations may have been already created along with the service.
  *
  * @returns The `skipAnnotations` prompt
  */

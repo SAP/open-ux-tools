@@ -1745,6 +1745,9 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer
@@ -7312,7 +7315,6 @@ packages:
 
   /@sap-devx/yeoman-ui-types@1.14.4:
     resolution: {integrity: sha512-HTgMqm3purAJUjirm6m57h8BaoF/Qx6wuXxiB9cy7ZilmriNHVx0aXJV514I1r8GMRdKKHCVixmhZW0/4L02hw==}
-    dev: false
 
   /@sap-ux/fe-fpm-writer@0.24.0:
     resolution: {integrity: sha512-ki2ZazdT8DfuPUgN8P8c+R8SqjT28JDSrYOPAA9EqKR1n24MyjerKq+49mRJ8fjR6iGciMG7UqbNkj6Sy/KCoA==}
