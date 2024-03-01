@@ -3,7 +3,7 @@ import type { ReloaderConfig, HttpsOptions } from '../base';
 import type { MiddlewareParameters } from '@ui5/server';
 import type { RequestHandler } from 'express';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import { join } from 'path';
+import { resolve } from 'path';
 import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from '../base';
 
 module.exports = async ({ options, middlewareUtil }: MiddlewareParameters<ReloaderConfig>): Promise<RequestHandler> => {
@@ -26,11 +26,11 @@ module.exports = async ({ options, middlewareUtil }: MiddlewareParameters<Reload
         const livereloadPort = livereloadServer.config.port;
 
         if (Array.isArray(path)) {
-            const watchPaths = path.map((localPath) => join(rootPath, localPath));
+            const watchPaths = path.map((localPath) => resolve(rootPath, localPath));
             logger.info(`Livereload server started on port ${livereloadPort} for paths ${watchPaths}`);
             livereloadServer.watch(watchPaths);
         } else {
-            const watchPath = path ? join(rootPath, path) : sourcePath;
+            const watchPath = path ? resolve(rootPath, path) : sourcePath;
             logger.info(`Livereload server started on port ${livereloadPort} for path ${watchPath}`);
             livereloadServer.watch(watchPath);
         }
