@@ -86,6 +86,10 @@ export interface LibraryResults {
      * Path to the .library file of the library, if existing.
      */
     libraryPath?: string;
+    /**
+     * Path to the ui5.yaml file of the library, if existing.
+     */
+    ui5YamlPath?: string;
 }
 
 export interface FoundFioriArtifacts {

@@ -1366,6 +1366,9 @@ importers:
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
+      yamljs:
+        specifier: 0.3.0
+        version: 0.3.0
     devDependencies:
       '@sap-ux/logger':
         specifier: workspace:*
@@ -1376,6 +1379,9 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
+      '@types/yamljs':
+        specifier: 0.2.34
+        version: 0.2.34
       '@ui5/manifest':
         specifier: 1.61.0
         version: 1.61.0
@@ -8970,6 +8976,10 @@ packages:
 
   /@types/vscode@1.73.1:
     resolution: {integrity: sha512-eArfOrAoZVV+Ao9zQOCaFNaeXj4kTCD+bGS2gyNgIFZH9xVMuLMlRrEkhb22NyxycFWKV1UyTh03vhaVHmqVMg==}
+    dev: true
+
+  /@types/yamljs@0.2.34:
+    resolution: {integrity: sha512-gJvfRlv9ErxdOv7ux7UsJVePtX54NAvQyd8ncoiFqK8G5aeHIfQfGH2fbruvjAQ9657HwAaO54waS+Dsk2QTUQ==}
     dev: true
 
   /@types/yargs-parser@20.2.1:

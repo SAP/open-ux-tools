@@ -11,10 +11,11 @@ import type {
     WorkspaceFolder
 } from '../types';
 import { FileName } from '../constants';
-import { fileExists, findBy, findFileUp, readJSON } from '../file';
+import { fileExists, findBy, findFileUp, readFile, readJSON } from '../file';
 import { hasDependency } from './dependencies';
 import { getCapProjectType } from './cap';
 import { getWebappPath } from './ui5-config';
+import * as yaml from 'yamljs';
 
 /**
  * Map artifact to file that is specific to the artifact type. Some artifacts can
@@ -26,7 +27,7 @@ const filterFileMap: Record<FioriArtifactTypes, string[]> = {
     applications: [FileName.Manifest],
     adaptations: [FileName.ManifestAppDescrVar],
     extensions: [FileName.ExtConfigJson],
-    libraries: [FileName.Library, FileName.Manifest]
+    libraries: [FileName.Library, FileName.Manifest, FileName.Ui5Yaml]
 };
 
 /**
@@ -339,6 +340,28 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
 }
 
 /**
+ * Find and filter libraries with `ui5.yaml` and `type: library`.
+ *
+ * @param pathMap - path to files
+ * @returns - results as array of found `ui5.yaml` library projects.
+ */
+async function filterUi5Libraries(pathMap: FileMapAndCache): Promise<LibraryResults[]> {
+    const ui5YamlLibraries: LibraryResults[] = [];
+    const ui5YamlPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Ui5Yaml);
+    if (ui5YamlPaths) {
+        for (const yamlLibraryPath of ui5YamlPaths) {
+            const ui5Data = await readFile(join(yamlLibraryPath));
+            const parsedUi5Data = yaml.parse(ui5Data);
+            if (parsedUi5Data?.type === 'library') {
+                const projectRoot = dirname((await findFileUp(FileName.Package, yamlLibraryPath)) ?? yamlLibraryPath);
+                ui5YamlLibraries.push({ projectRoot, ui5YamlPath: yamlLibraryPath });
+            }
+        }
+    }
+    return ui5YamlLibraries;
+}
+
+/**
  * Find and filter libraries with only a `.library` and no `manifest.json`.
  *
  * @param pathMap - path to files
@@ -370,6 +393,7 @@ async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults
     const results: LibraryResults[] = [];
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     results.push(...(await filterDotLibraries(pathMap, manifestPaths)));
+    results.push(...(await filterUi5Libraries(pathMap)));
     for (const manifestPath of manifestPaths) {
         try {
             pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
