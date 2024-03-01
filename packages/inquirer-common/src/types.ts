@@ -10,7 +10,7 @@ import type {
     Question
 } from 'inquirer';
 
-// Re-export for convienient import in consuming modules
+// Re-export for convenient import in consuming modules
 export { type IMessageSeverity, Severity };
 
 export interface UI5VersionChoice extends ListChoiceOptions {
