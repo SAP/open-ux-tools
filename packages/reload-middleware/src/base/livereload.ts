@@ -1,6 +1,6 @@
 import { createServer } from 'livereload';
 import type { LiveReloadServer } from 'livereload';
-import type { RequestHandler, Request, Response, NextFunction } from 'express';
+import type { RequestHandler } from 'express';
 import connectLivereload from 'connect-livereload';
 import type { LiveReloadOptions, HttpsOptions, ConnectLivereloadOptions } from './types';
 import { getAvailablePort } from './utils';
@@ -18,15 +18,15 @@ import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from './constants
  */
 export const getLivereloadServer = async (
     options: LiveReloadOptions,
-    https: HttpsOptions | undefined,
+    https?: HttpsOptions,
     logger: ToolsLogger = new ToolsLogger()
 ): Promise<LiveReloadServer> => {
     options.port = await getAvailablePort(options.port ?? 35729, logger);
 
-    if (https?.key && https?.cert) {
+    if (https?.key && https.cert) {
         options.https = {
-            key: await promises.readFile(https.key),
-            cert: await promises.readFile(https.cert)
+            key: await promises.readFile(https.key, 'utf8'),
+            cert: await promises.readFile(https.cert, 'utf8')
         };
     }
 
@@ -42,9 +42,5 @@ export const getLivereloadServer = async (
  * @returns A connect-livereload instance
  */
 export const getConnectLivereload = (options: ConnectLivereloadOptions): RequestHandler => {
-    if (options.disabled) {
-        return (_req: Request, _res: Response, next: NextFunction) => next();
-    } else {
-        return connectLivereload({ ...defaultConnectLivereloadOpts, ...options }) as RequestHandler;
-    }
+    return connectLivereload({ ...defaultConnectLivereloadOpts, ...options }) as RequestHandler;
 };

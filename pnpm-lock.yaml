@@ -1429,6 +1429,12 @@ importers:
       '@types/livereload':
         specifier: 0.9.5
         version: 0.9.5
+      '@types/supertest':
+        specifier: 2.0.12
+        version: 2.0.12
+      supertest:
+        specifier: 6.3.3
+        version: 6.3.3
 
   packages/serve-static-middleware:
     dependencies:
