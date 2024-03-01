@@ -2,10 +2,10 @@ import { createCapI18nEntries as createI18nEntriesBase, createPropertiesI18nEntr
 import type { NewI18nEntry } from '@sap-ux/i18n';
 import { getCapEnvironment } from '..';
 import type { I18nPropertiesPaths, Manifest } from '../../types';
-import { join, dirname } from 'path';
+import { join } from 'path';
 import { readJSON, writeFile } from '../../file';
-import { mkdir } from 'fs/promises';
-import type { Editor } from 'mem-fs-editor';
+import { create, type Editor } from 'mem-fs-editor';
+import { create as createStore } from 'mem-fs';
 
 /**
  * Maintains new translation entries in CAP i18n files.
@@ -24,8 +24,14 @@ export async function createCapI18nEntries(
     newI18nEntries: NewI18nEntry[],
     fs?: Editor
 ): Promise<boolean> {
+    const memFs = fs ?? create(createStore());
     const env = await getCapEnvironment(root);
-    return createI18nEntriesBase(root, filePath, newI18nEntries, env, fs);
+    const success = createI18nEntriesBase(root, filePath, newI18nEntries, env, memFs);
+    if (!fs && success) {
+        return new Promise((resolve) => memFs.commit((err?) => resolve(!err)));
+    } else {
+        return success;
+    }
 }
 
 /**
@@ -47,21 +53,15 @@ async function createUI5I18nEntriesBase(
     modelKey: string,
     fs?: Editor
 ): Promise<boolean> {
+    const memFs = fs ?? create(createStore());
     const defaultPath = 'i18n/i18n.properties';
     const i18nFilePath = i18nPropertiesPaths.models[modelKey]?.path;
     if (i18nFilePath) {
-        // ensure folder for i18n exists
-        const dirPath = dirname(i18nFilePath);
-        if (!fs) {
-            // create directory when mem-fs-editor is not provided. when mem-fs-editor is provided, directory is created on using `.commit()` API
-            await mkdir(dirPath, { recursive: true });
-        }
-
-        return createPropertiesI18nEntries(i18nFilePath, newEntries, root, fs);
+        return createPropertiesI18nEntries(i18nFilePath, newEntries, memFs, root);
     }
 
     // update manifest.json entry
-    const manifest = await readJSON<Manifest>(manifestPath);
+    const manifest = await readJSON<Manifest>(manifestPath, memFs);
     const models = {
         ...manifest['sap.ui5']?.models
     };
@@ -73,15 +73,13 @@ async function createUI5I18nEntriesBase(
             models
         }
     } as Manifest;
-    await writeFile(manifestPath, JSON.stringify(newContent, undefined, 4), fs);
-
-    // make sure i18n folder exists
-    const dirPath = dirname(defaultPath);
-    if (!fs) {
-        // create directory when mem-fs-editor is not provided. when mem-fs-editor is provided, directory is created on using `.commit()` API
-        await mkdir(join(root, dirPath), { recursive: true });
+    await writeFile(manifestPath, JSON.stringify(newContent, undefined, 4), memFs);
+    const success = await createPropertiesI18nEntries(join(root, defaultPath), newEntries, memFs, root);
+    if (!fs && success) {
+        return new Promise((resolve) => memFs.commit((err?) => resolve(!err)));
+    } else {
+        return success;
     }
-    return createPropertiesI18nEntries(join(root, defaultPath), newEntries, root, fs);
 }
 
 /**
@@ -169,12 +167,12 @@ export async function createManifestI18nEntries(
     newEntries: NewI18nEntry[],
     fs?: Editor
 ): Promise<boolean> {
+    const memFs = fs ?? create(createStore());
     const i18nFilePath = i18nPropertiesPaths['sap.app'];
-    // make sure i18n folder exists
-    const dirPath = dirname(i18nFilePath);
-    if (!fs) {
-        // create directory when mem-fs-editor is not provided. when mem-fs-editor is provided, directory is created on using `.commit()` API
-        await mkdir(dirPath, { recursive: true });
+    const success = await createPropertiesI18nEntries(i18nFilePath, newEntries, memFs, root);
+    if (!fs && success) {
+        return new Promise((resolve) => memFs.commit((err?) => resolve(!err)));
+    } else {
+        return success;
     }
-    return createPropertiesI18nEntries(i18nFilePath, newEntries, root, fs);
 }
