@@ -328,7 +328,7 @@ function getUI5VersionPrompt(
         default: () => {
             // Set the default to be the passed value or the default as defined by ui5 version service
             return (
-                ui5VersionPromptOptions?.defaultChoice?.value ||
+                ui5VersionPromptOptions?.defaultChoice?.value ??
                 ui5Versions.find((ui5Ver) => ui5Ver.default && ui5Ver.version)?.version
             );
         }
