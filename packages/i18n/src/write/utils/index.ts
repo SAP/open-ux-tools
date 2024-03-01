@@ -20,12 +20,16 @@ export async function writeToExistingI18nPropertiesFile(
         .join('');
 
     const content = await readFile(i18nFilePath, fs);
-    const lines = content.split(/\r\n|\n/);
-    // check if file does not end with new line
-    if (lines.length > 0 && lines[lines.length - 1].trim()) {
-        // If there no end line - add new gap line before new content
-        newContent = `\n${newContent}`;
+    if (content) {
+        const lines = content.split(/\r\n|\n/);
+        // check if file does not end with new line
+        if (lines.length > 0 && lines[lines.length - 1].trim()) {
+            // If there no end line - add new gap line before new content
+            newContent = `\n${newContent}`;
+        }
+        await writeFile(i18nFilePath, content.concat(newContent), fs);
+        return true;
+    } else {
+        return false;
     }
-    await writeFile(i18nFilePath, content.concat(newContent), fs);
-    return true;
 }

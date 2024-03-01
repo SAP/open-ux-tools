@@ -29,6 +29,7 @@ describe('API test', () => {
 
     afterEach(() => {
         jest.resetAllMocks();
+        jest.restoreAllMocks();
     });
 
     it('getPrompts, no prompt options', async () => {
