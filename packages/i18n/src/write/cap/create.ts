@@ -22,15 +22,15 @@ import type { Editor } from 'mem-fs-editor';
  * 3. `.csv` file if failed for `.properties` file
  * ```
  */
-export async function createCapI18nEntries(
+export function createCapI18nEntries(
     root: string,
     path: string,
     newI18nEntries: NewI18nEntry[],
     env: CdsEnvironment,
     fs: Editor
-): Promise<boolean> {
+): boolean {
     const { baseFileName } = getI18nConfiguration(env);
-    const i18nFolderPath = await getCapI18nFolder(root, path, env);
+    const i18nFolderPath = getCapI18nFolder(root, path, env);
     const filePath = join(i18nFolderPath, baseFileName);
 
     const updaters = [tryAddJsonTexts, tryAddPropertiesTexts, tryAddCsvTexts];
