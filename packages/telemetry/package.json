@@ -33,7 +33,7 @@
         "@sap/ux-specification": "1.108.18",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "applicationinsights": "2.9.0",
+        "applicationinsights": "2.9.2",
         "axios": "1.6.0",
         "performance-now": "2.1.0",
         "yaml": "2.3.3"
