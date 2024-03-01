@@ -54,6 +54,7 @@ export interface FlpConfig {
     apps: App[];
     theme?: string;
     scenario?: string;
+    fioriSandboxConfig?: boolean;
     customInit?: string;
 }
 
