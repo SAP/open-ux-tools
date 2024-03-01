@@ -26,7 +26,7 @@ import { defaultAppName, extendWithOptions, hidePrompts, isVersionIncluded, with
 import { validateAppName } from './validators';
 
 /**
- * Get the prompts that will provide input for UI5 applcation writing.
+ * Get the prompts that will provide input for UI5 application writing.
  *
  * @param ui5Versions - ui5 versions to prompt for selection
  * @param promptOptions - optional inputs used to pre-populate some prompt choices, default values and other prompting options. See {@link UI5ApplicationPromptOptions}.
