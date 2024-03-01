@@ -22,11 +22,11 @@ import { getWebappPath } from './ui5-config';
  * Further filtering for specific artifact types happens in the filter{Artifact}
  * functions.
  */
-const filterFileMap: Record<FioriArtifactTypes, string> = {
-    applications: FileName.Manifest,
-    adaptations: FileName.ManifestAppDescrVar,
-    extensions: FileName.ExtConfigJson,
-    libraries: FileName.Manifest
+const filterFileMap: Record<FioriArtifactTypes, string[]> = {
+    applications: [FileName.Manifest],
+    adaptations: [FileName.ManifestAppDescrVar],
+    extensions: [FileName.ExtConfigJson],
+    libraries: [FileName.Library, FileName.Manifest]
 };
 
 /**
@@ -339,6 +339,28 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
 }
 
 /**
+ * Find and filter libraries with only a `.library` and no `manifest.json`.
+ *
+ * @param pathMap - path to files
+ * @param manifestPaths - paths to manifest.json files
+ * @returns - results as array of found .library projects.
+ */
+async function filterDotLibraries(pathMap: FileMapAndCache, manifestPaths: string[]): Promise<LibraryResults[]> {
+    const dotLibraries: LibraryResults[] = [];
+    const dotLibraryPaths = Object.keys(pathMap)
+        .filter((path) => basename(path) === FileName.Library)
+        .map((path) => dirname(path))
+        .filter((path) => !manifestPaths.map((manifestPath) => dirname(manifestPath)).includes(path));
+    if (dotLibraryPaths) {
+        for (const libraryPath of dotLibraryPaths) {
+            const projectRoot = dirname((await findFileUp(FileName.Package, dirname(libraryPath))) ?? libraryPath);
+            dotLibraries.push({ projectRoot, libraryPath });
+        }
+    }
+    return dotLibraries;
+}
+
+/**
  * Filter extensions projects from a list of files.
  *
  * @param pathMap - path to files
@@ -347,6 +369,7 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
 async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults[]> {
     const results: LibraryResults[] = [];
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
+    results.push(...(await filterDotLibraries(pathMap, manifestPaths)));
     for (const manifestPath of manifestPaths) {
         try {
             pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
@@ -375,7 +398,7 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
     const uniqueFilterFiles = new Set<string>();
     for (const artifact of artifacts) {
         if (filterFileMap[artifact]) {
-            uniqueFilterFiles.add(filterFileMap[artifact]);
+            filterFileMap[artifact].forEach((artifactFile) => uniqueFilterFiles.add(artifactFile));
         }
     }
     return Array.from(uniqueFilterFiles);
