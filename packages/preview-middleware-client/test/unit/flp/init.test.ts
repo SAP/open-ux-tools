@@ -162,5 +162,15 @@ describe('flp/init', () => {
             await requireCb(initRtaMock, plugnScriptMock);
             expect(initRtaMock).toBeCalledWith(expect.anything(), plugnScriptMock);
         });
+
+        test('custom init module configured & ui5 version is 1.120.9', async () => {
+            const customInit = 'my/app/test/integration/opaTests.qunit';
+            sapMock.ui.version = '1.120.09';
+            await init({ customInit: customInit });
+
+            expect(sapMock.ui.require).toBeCalledWith(customInit);
+
+            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+        });
     });
 });
