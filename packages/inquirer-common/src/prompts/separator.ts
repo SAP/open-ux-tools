@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import figures from 'figures';
 
 /**
- * Separator object. This is a copy of `inquirer@8.2.6` Separator class. Since this is the only implemetation needed
+ * Separator object. This is a copy of `inquirer@8.2.6` Separator class. Since this is the only implementation needed
  * from `inquirer` we have implemeted our own to avoid a heavy dependency.
  *
  * Used to space/separate choices group
