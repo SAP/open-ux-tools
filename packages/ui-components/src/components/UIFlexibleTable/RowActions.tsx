@@ -17,7 +17,7 @@ export interface RowActionsProps<T> {
  * @param {RowActionsProps<T>} props
  * @returns {React.ReactElement}
  */
-export function RowActions<T>(props: RowActionsProps<T>): React.ReactElement {
+export function RowActions<T>(props: Readonly<RowActionsProps<T>>): React.ReactElement {
     const { rowIndex, tableProps } = props;
     const rows = props.tableProps.rows;
     const rowKey = rows[rowIndex].key;
