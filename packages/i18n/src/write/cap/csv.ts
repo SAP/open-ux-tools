@@ -1,5 +1,5 @@
 import type { CdsEnvironment, NewI18nEntry } from '../../types';
-import { csvPath, discoverLineEnding, getI18nConfiguration, doesExist, readFile, writeFile } from '../../utils';
+import { csvPath, discoverLineEnding, getI18nConfiguration } from '../../utils';
 
 import type { TextEdit } from 'vscode-languageserver-textdocument';
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -111,19 +111,14 @@ export function addCsvTexts(text: string, fallbackLocale: string, newEntries: Ne
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
  * @returns boolean
  */
-export async function tryAddCsvTexts(
-    env: CdsEnvironment,
-    path: string,
-    newI18nEntries: NewI18nEntry[],
-    fs?: Editor
-): Promise<boolean> {
+export function tryAddCsvTexts(env: CdsEnvironment, path: string, newI18nEntries: NewI18nEntry[], fs: Editor): boolean {
     const i18nFilePath = csvPath(path);
-    if (!(await doesExist(i18nFilePath))) {
+    if (fs.exists(i18nFilePath)) {
         return false;
     }
     const { defaultLanguage } = getI18nConfiguration(env);
-    const content = await readFile(i18nFilePath, fs);
+    const content = fs.read(i18nFilePath);
     const newContent = addCsvTexts(content, defaultLanguage, newI18nEntries);
-    await writeFile(i18nFilePath, newContent, fs);
+    fs.write(i18nFilePath, newContent);
     return true;
 }

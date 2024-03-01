@@ -100,20 +100,15 @@ export function getCapI18nFiles(root: string, env: CdsEnvironment, filePaths: st
  *
  * @param root project root
  * @param path path to cds file
- * @param env CDS environment configuration,
- * @param fs optional `mem-fs-editor` instance. If provided, a new folder is not created, even if it does not exist
+ * @param env CDS environment configuration
  * @returns i18n folder path
  */
-export async function getCapI18nFolder(root: string, path: string, env: CdsEnvironment, fs?: Editor): Promise<string> {
+export function getCapI18nFolder(root: string, path: string, env: CdsEnvironment): string {
     const { folders } = getI18nConfiguration(env);
     let i18nFolderPath = resolveCapI18nFolderForFile(root, env, join(root, path));
     if (!i18nFolderPath) {
         const folder = folders[0];
         i18nFolderPath = join(root, folder);
-        if (!fs) {
-            // create directory when mem-fs-editor is not provided. when mem-fs-editor is provided, directory is created on using `.commit()` API
-            await promises.mkdir(i18nFolderPath);
-        }
     }
     return i18nFolderPath;
 }

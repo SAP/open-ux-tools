@@ -1,6 +1,6 @@
 export { getI18nConfiguration, getI18nFolderNames } from './config';
 export { getCapI18nFiles, resolveCapI18nFolderForFile, getCapI18nFolder } from './resolve';
-export { csvPath, jsonPath, capPropertiesPath, doesExist } from './path';
+export { csvPath, jsonPath, capPropertiesPath } from './path';
 export { printPropertiesI18nAnnotation, printPropertiesI18nEntry } from './print';
 export {
     getI18nMaxLength,
@@ -12,4 +12,3 @@ export {
     convertToPascalCase
 } from './text';
 export { extractI18nKey, getI18nUniqueKey } from './key';
-export { readFile, writeFile } from './mem-fs-editor';

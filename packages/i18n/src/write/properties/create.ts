@@ -1,5 +1,4 @@
 import type { NewI18nEntry } from '../../types';
-import { doesExist, writeFile } from '../../utils';
 import { writeToExistingI18nPropertiesFile } from '../utils';
 import { basename } from 'path';
 import type { Editor } from 'mem-fs-editor';
@@ -18,15 +17,15 @@ import type { Editor } from 'mem-fs-editor';
 export async function createPropertiesI18nEntries(
     i18nFilePath: string,
     newI18nEntries: NewI18nEntry[],
-    root?: string,
-    fs?: Editor
+    fs: Editor,
+    root?: string
 ): Promise<boolean> {
-    if (!(await doesExist(i18nFilePath))) {
+    if (!fs.exists(i18nFilePath)) {
         let content = '# Resource bundle \n';
         if (root) {
             content = `# This is the resource bundle for ${basename(root)}\n`;
         }
-        await writeFile(i18nFilePath, content, fs);
+        await fs.write(i18nFilePath, content);
     }
     return await writeToExistingI18nPropertiesFile(i18nFilePath, newI18nEntries, fs);
 }

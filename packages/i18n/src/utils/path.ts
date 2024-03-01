@@ -1,4 +1,3 @@
-import { stat } from 'fs';
 import type { CdsEnvironment } from '../types';
 import { getI18nConfiguration } from './config';
 
@@ -32,22 +31,4 @@ export function capPropertiesPath(path: string, env: CdsEnvironment): string {
  */
 export function csvPath(path: string): string {
     return `${path}.csv`;
-}
-
-/**
- * Check if a folder of a file exists.
- *
- * @param path an absolute path to a folder or a file
- * @returns boolean
- */
-export function doesExist(path: string): Promise<boolean> {
-    return new Promise((resolve) => {
-        stat(path, (err) => {
-            if (err) {
-                resolve(false);
-            } else {
-                resolve(true);
-            }
-        });
-    });
 }

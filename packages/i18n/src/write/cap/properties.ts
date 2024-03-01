@@ -1,5 +1,5 @@
 import type { CdsEnvironment, NewI18nEntry } from '../../types';
-import { printPropertiesI18nEntry, capPropertiesPath, doesExist, writeFile } from '../../utils';
+import { printPropertiesI18nEntry, capPropertiesPath } from '../../utils';
 import { tryAddCsvTexts } from './csv';
 import { writeToExistingI18nPropertiesFile } from '../utils';
 import type { Editor } from 'mem-fs-editor';
@@ -15,28 +15,28 @@ import type { Editor } from 'mem-fs-editor';
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
  * @returns boolean
  */
-export async function tryAddPropertiesTexts(
+export function tryAddPropertiesTexts(
     env: CdsEnvironment,
     path: string,
     newI18nEntries: NewI18nEntry[],
-    fs?: Editor
-): Promise<boolean> {
+    fs: Editor
+): boolean {
     const newContent = newI18nEntries
         .map((entry) => printPropertiesI18nEntry(entry.key, entry.value, entry.annotation))
         .join('');
 
     const i18nFilePath = capPropertiesPath(path, env);
-    if (!(await doesExist(i18nFilePath))) {
+    if (!fs.exists(i18nFilePath)) {
         // if `.properties` file does not exit, try csv
-        const completed = await tryAddCsvTexts(env, path, newI18nEntries, fs);
+        const completed = tryAddCsvTexts(env, path, newI18nEntries, fs);
         if (completed) {
             return true;
         }
         //  create a `.properties` file with new content
-        await writeFile(i18nFilePath, newContent, fs);
+        fs.write(i18nFilePath, newContent);
         return true;
     }
 
     // add to existing `.properties` file
-    return await writeToExistingI18nPropertiesFile(i18nFilePath, newI18nEntries, fs);
+    return writeToExistingI18nPropertiesFile(i18nFilePath, newI18nEntries, fs);
 }

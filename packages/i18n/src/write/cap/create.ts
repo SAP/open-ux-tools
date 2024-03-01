@@ -13,7 +13,7 @@ import type { Editor } from 'mem-fs-editor';
  * @param path path to cds file for which translation should be maintained
  * @param newI18nEntries new i18n entries that will be maintained
  * @param env CDS environment configuration
- * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
+ * @param fs `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
  * @returns boolean or exception
  * @description To create new entries, if tries:
  * ```markdown
@@ -27,16 +27,16 @@ export async function createCapI18nEntries(
     path: string,
     newI18nEntries: NewI18nEntry[],
     env: CdsEnvironment,
-    fs?: Editor
+    fs: Editor
 ): Promise<boolean> {
     const { baseFileName } = getI18nConfiguration(env);
-    const i18nFolderPath = await getCapI18nFolder(root, path, env, fs);
+    const i18nFolderPath = await getCapI18nFolder(root, path, env);
     const filePath = join(i18nFolderPath, baseFileName);
 
     const updaters = [tryAddJsonTexts, tryAddPropertiesTexts, tryAddCsvTexts];
 
     for (const update of updaters) {
-        const completed = await update(env, filePath, newI18nEntries, fs);
+        const completed = update(env, filePath, newI18nEntries, fs);
         if (completed) {
             return true;
         }

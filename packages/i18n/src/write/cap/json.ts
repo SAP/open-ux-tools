@@ -1,16 +1,7 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import type { TextEdit } from 'vscode-languageserver-textdocument';
 import type { CdsEnvironment, NewI18nEntry } from '../../types';
-import {
-    getI18nConfiguration,
-    jsonPath,
-    discoverIndent,
-    applyIndent,
-    discoverLineEnding,
-    doesExist,
-    readFile,
-    writeFile
-} from '../../utils';
+import { getI18nConfiguration, jsonPath, discoverIndent, applyIndent, discoverLineEnding } from '../../utils';
 import { Range } from '../../parser/utils';
 import type { Node } from 'jsonc-parser';
 import { parseTree } from 'jsonc-parser';
@@ -152,19 +143,19 @@ export function addJsonTexts(text: string, fallbackLocale: string, newEntries: N
  * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
  * @returns boolean
  */
-export async function tryAddJsonTexts(
+export function tryAddJsonTexts(
     env: CdsEnvironment,
     path: string,
     newI18nEntries: NewI18nEntry[],
-    fs?: Editor
-): Promise<boolean> {
+    fs: Editor
+): boolean {
     const i18nFilePath = jsonPath(path);
-    if (!(await doesExist(i18nFilePath))) {
+    if (!fs.exists(i18nFilePath)) {
         return false;
     }
     const { fallbackLanguage } = getI18nConfiguration(env);
-    const content = await readFile(i18nFilePath, fs);
+    const content = fs.read(i18nFilePath);
     const newContent = addJsonTexts(content, fallbackLanguage, newI18nEntries);
-    await writeFile(i18nFilePath, newContent, fs);
+    fs.write(i18nFilePath, newContent);
     return true;
 }
