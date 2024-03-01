@@ -120,7 +120,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
      */
     render(): JSX.Element {
         const { inlineLabelLeft, labelFlexGrow, size, inlineLabel } = this.props;
-        const sizeInfo: UIToggleSizeInfo | undefined = TOGGLE_SIZES.get(size || UIToggleSize.Standard);
+        const sizeInfo: UIToggleSizeInfo | undefined = TOGGLE_SIZES.get(size ?? UIToggleSize.Standard);
         const messageInfo = getMessageInfo(this.props);
 
         const styles = (styleProps: IToggleStyleProps): Partial<IToggleStyles> => {
