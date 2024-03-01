@@ -29,7 +29,7 @@ export class UIIcon extends React.Component<IIconProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const className = this.props.className ? ` ${this.props.className}` : '';
+        const className = this.props.className ?? '';
         return <Icon {...this.props} className={`ts-icon${className}`} styles={this.setStyle()} />;
     }
 }
