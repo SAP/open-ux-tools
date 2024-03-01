@@ -55,7 +55,8 @@
         data-sap-ui-resourceroots='<%- JSON.stringify(ui5.resources) %>'
         data-sap-ui-frameOptions="allow"
         data-sap-ui-xx-componentPreload="off"<%- ui5.bootstrapOptions %>
-        data-sap-ui-oninit="module:open/ux/preview/client/flp/init"<% if (locals.flex) { %>
+        data-sap-ui-oninit="module:open/ux/preview/client/flp/init"<% if (customInit) { %>
+        data-open-ux-preview-customInit='<%- JSON.stringify(basePath+customInit) %>'<% } if (locals.flex) { %>
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flex) %>'<% } if (locals.locateReuseLibsScript) { %>
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>>
     </script>
@@ -63,16 +64,30 @@
     <script type="text/javascript">
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
-    
+
     <% if (locals.flex && flex?.scenario === 'ADAPTATION_PROJECT') { %>
         <!-- Temporary fix until RTA provides api for enable/disable buttons in main RTA navigation menu -->
     <style>
         .sapUiRtaToolbarActionsSection button[aria-label="Exit"],
-        .sapUiRtaToolbarActionsSection button[id$="fragment--sapUiRta_feedback"], 
+        .sapUiRtaToolbarActionsSection button[id$="fragment--sapUiRta_feedback"],
         .sapUiRtaToolbarActionsSection button[id$="fragment--sapUiRta_actionsToolbar-overflowButton"] {
         display:none;
         }
     </style><% } %>
+
+    <% if (scenario === 'OPA5' || scenario === 'QUNIT') { %>
+    <!-- Bootstrap QUnit -->
+    <script src="/resources/sap/ui/thirdparty/qunit-2.js"></script>
+
+    <!-- Bootstrap SAP specific enhancements of QUnit -->
+    <script src="/resources/sap/ui/qunit/qunit-junit.js"></script>
+
+    <!-- Add QUnit Stylesheet -->
+    <link rel="stylesheet" type="text/css" href="/resources/sap/ui/thirdparty/qunit-2.css"/><% } %>
+
+    <% if (scenario === 'OPA5') { %>
+    <!-- Add SAP specific enhancements to the QUnit Stylesheet -->
+    <link rel="stylesheet" type="text/css" href="/resources/sap/ui/test/OpaCss.css"/><% } %>
 </head>
 
 <!-- UI Content -->
