@@ -121,6 +121,8 @@ export interface TemplateConfig {
         bootstrapOptions: string;
         resources: Record<string, string>;
     };
+    scenario?: string;
+    customInit?: string;
     flex?: {
         [key: string]: unknown;
         layer: UI5FlexLayer;
@@ -158,7 +160,9 @@ export class FlpSandbox {
             intent: config.flp?.intent ?? DEFAULT_INTENT,
             apps: config.flp?.apps ?? [],
             libs: config.flp?.libs,
-            theme: config.flp?.theme
+            theme: config.flp?.theme,
+            scenario: config.flp?.scenario,
+            customInit: config.flp?.customInit
         };
         if (!this.config.path.startsWith('/')) {
             this.config.path = `/${this.config.path}`;
@@ -184,6 +188,8 @@ export class FlpSandbox {
         this.templateConfig = {
             basePath: relative(dirname(this.config.path), '/') ?? '.',
             apps: {},
+            scenario: this.config.scenario,
+            customInit: this.config.customInit,
             ui5: {
                 libs: this.getUI5Libs(manifest),
                 theme: ui5Theme,
