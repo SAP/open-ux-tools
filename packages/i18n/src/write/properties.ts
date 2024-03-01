@@ -1,5 +1,5 @@
-import type { NewI18nEntry } from '../../types';
-import { writeToExistingI18nPropertiesFile } from '../utils';
+import type { NewI18nEntry } from '../types';
+import { writeToExistingI18nPropertiesFile } from './utils';
 import { basename } from 'path';
 import type { Editor } from 'mem-fs-editor';
 
@@ -8,8 +8,8 @@ import type { Editor } from 'mem-fs-editor';
  *
  * @param i18nFilePath absolute path to `i18n.properties` file
  * @param newI18nEntries new i18n entries that will be maintained
+ * @param fs `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
  * @param root project root optionally used in comment if file is newly generated
- * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node
  * @returns boolean or exception
  * @description If `i18n.properties` file does not exits, it tries to create.
  * @description Consumer should maintain respective `manifest.json` entry if needed.
