@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.18.8
+
+### Patch Changes
+
+-   7964a7ba: Adds exports for determining supported ui5 versions for FE templates
+
 ## 0.18.7
 
 ### Patch Changes
