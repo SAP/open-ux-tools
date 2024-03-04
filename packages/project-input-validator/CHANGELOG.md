@@ -1,5 +1,11 @@
 # @sap-ux/project-input-validator
 
+## 0.2.3
+
+### Patch Changes
+
+-   1affcec6: New modules, first release
+
 ## 0.2.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/telemetry
 
+## 0.4.0
+
+### Minor Changes
+
+-   15d6afbe: update init settings, bump azure applicationinsights and stablise tests
+
 ## 0.3.1
 
 ### Patch Changes
