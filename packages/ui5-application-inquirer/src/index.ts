@@ -43,17 +43,17 @@ async function getPrompts(
  *
  * @param adapter - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
  * @param promptOptions - options that can control some of the prompt behavior. See {@link UI5ApplicationPromptOptions} for details
- * @param isCli - since CLI prompting is done serially but UI prompting occurs in parallel this impacts on how some validation is run
- * @param capCdsInfo - the CAP CDS info for the project, if this prompting will add a UI% app to an existing CAP project
+ * @param [capCdsInfo] - the CAP CDS info for the project, if this prompting will add a UI% app to an existing CAP project
+ * @param [isYUI] - optional, default is `false`. Changes the behaviour of some validation since YUI does not re-validate prompts that may be inter-dependant.
  * @returns the prompt answers
  */
 async function prompt(
     adapter: InquirerAdapter,
     promptOptions?: UI5ApplicationPromptOptions,
-    isCli = true,
-    capCdsInfo?: CdsUi5PluginInfo
+    capCdsInfo?: CdsUi5PluginInfo,
+    isYUI = false
 ): Promise<UI5ApplicationAnswers> {
-    const ui5AppPrompts = await exports.getPrompts(promptOptions, isCli, capCdsInfo);
+    const ui5AppPrompts = await exports.getPrompts(promptOptions, capCdsInfo, isYUI);
 
     if (adapter?.promptModule && promptOptions?.ui5Version?.useAutocomplete) {
         const pm = adapter.promptModule;

@@ -5,6 +5,7 @@ import { createPromptModule } from 'inquirer';
 import AutocompletePrompt from 'inquirer-autocomplete-prompt';
 import type { InquirerAdapter, UI5ApplicationAnswers, UI5ApplicationPromptOptions } from '../../src';
 import { getPrompts, prompt, promptNames } from '../../src';
+import * as ui5AppInquirer from '../../src/index';
 import * as ui5AppPrompts from '../../src/prompts';
 
 /**
@@ -187,5 +188,29 @@ describe('ui5-application-inquirer API', () => {
               "ui5Version": "1.64.0",
             }
         `);
+    });
+
+    test('prompt, prompt args are passed correctly applied', async () => {
+        const getPromptsSpy = jest.spyOn(ui5AppInquirer, 'getPrompts');
+        const promptOpts: UI5ApplicationPromptOptions = {
+            [promptNames.name]: {
+                default: 'someName'
+            }
+        };
+
+        const mockPromptsModule = createPromptModule();
+        const mockInquirerAdapter: InquirerAdapter = {
+            prompt: jest.fn().mockResolvedValue({ [promptNames.name]: 'a prompt answer' }),
+            promptModule: mockPromptsModule
+        };
+        const mockCdsInfo = {
+            hasCdsUi5Plugin: true,
+            hasMinCdsVersion: true,
+            isCdsUi5PluginEnabled: true,
+            isWorkspaceEnabled: false
+        };
+        await prompt(mockInquirerAdapter, promptOpts, mockCdsInfo, true);
+
+        expect(getPromptsSpy).toHaveBeenCalledWith(promptOpts, mockCdsInfo, true);
     });
 });
