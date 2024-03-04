@@ -1,5 +1,11 @@
 # @sap-ux/project-input-validator
 
+## 0.2.2
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,0 +1,26 @@
+[
+  {
+    "type": "comment-line",
+    "value": "# To use the delimiter characters inside a key, you need to escape them with a \\.",
+    "range": "[(0,0)..(0,81)]"
+  },
+  {
+    "type": "comment-line",
+    "value": "# However, there is no need to do this in the value.",
+    "range": "[(1,0)..(1,52)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "delimiterCharacters\\:\\=",
+      "range": "[(2,0)..(2,23)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "This is the value for the key \"delimiterCharacters\\:\\=\\\"",
+      "range": "[(2,26)..(2,83)]"
+    },
+    "range": "[(2,0)..(2,83)]"
+  }
+]

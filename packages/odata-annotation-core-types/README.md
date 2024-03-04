@@ -7,10 +7,10 @@ Npm
 `npm install --save @sap-ux/odata-annotation-core-types`
 
 Yarn
-`yarn add @sap-ux/sap-ux/odata-annotation-core-types`
+`yarn add @sap-ux/odata-annotation-core-types`
 
 Pnpm
-`pnpm add @sap-ux/sap-ux/odata-annotation-core-types`
+`pnpm add @sap-ux/odata-annotation-core-types`
 
 ## Usage
 

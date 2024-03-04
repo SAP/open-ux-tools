@@ -22,9 +22,22 @@ const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const defaultUsage = (): JSX.Element => {
     const [selection, setSelection] = useState<string>('');
+    const [checked, setChecked] = useState<{ [key: string]: boolean }>({
+        btn1: true,
+        btn2: true,
+        btn3: true
+    });
 
     const onCallback = (key?: string) => {
         setSelection(key);
+    };
+
+    const onToggleChecked = (id: string) => {
+        const newChecked = {
+            ...checked,
+            [id]: !checked[id]
+        };
+        setChecked(newChecked);
     };
 
     const getMenuItem = (key: string, text: string, icon?: UiIcons): UIContextualMenuItem => {
@@ -166,6 +179,32 @@ export const defaultUsage = (): JSX.Element => {
                         iconProps={{ iconName: UiIcons.Source }}
                         disabled={true}
                         title="Undo"></UIIconButton>
+                </Stack>
+            </Stack>
+            <Stack tokens={stackTokens}>
+                <Text variant={'large'} className="textColor" block>
+                    Icon Button - Checked
+                </Text>
+                <Stack horizontal tokens={stackTokens}>
+                    <UIIconButton
+                        id="btn1"
+                        iconProps={{ iconName: UiIcons.Undo }}
+                        checked={checked.btn1}
+                        onClick={onToggleChecked.bind(window, 'btn1')}
+                        title="Undo"></UIIconButton>
+                    <UIIconButton
+                        id="btn2"
+                        checked={checked.btn2}
+                        iconProps={{ iconName: UiIcons.Add }}
+                        onClick={onToggleChecked.bind(window, 'btn2')}
+                        title="Undo"></UIIconButton>
+                    <UIIconButton
+                        id="btn3"
+                        sizeType={UIIconButtonSizes.Wide}
+                        checked={checked.btn3}
+                        iconProps={{ iconName: UiIcons.QuestionMarkWithChevron }}
+                        onClick={onToggleChecked.bind(window, 'btn3')}
+                        title="QuestionMarkWithChevron"></UIIconButton>
                 </Stack>
             </Stack>
             <Stack tokens={stackTokens}>

@@ -362,7 +362,6 @@ export function getPositionData(annotationFile: AnnotationFile, positionPointer:
     let startString = '';
     let remainingString = '';
     let currentContext: AnyNode | undefined | string = annotationFile;
-    let previousContext: AnyNode | undefined | string;
     for (let i = 0; i < segments.length; i++) {
         const segment = segments[i];
 
@@ -382,12 +381,11 @@ export function getPositionData(annotationFile: AnnotationFile, positionPointer:
             }
         } else if (segment === parseInt(segment, 10).toString() && Array.isArray(currentContext)) {
             path += convertSegment(segment, false);
-            previousContext = currentContext;
-            currentContext = previousContext[segment];
+            const index = parseInt(segment, 10);
+            currentContext = currentContext[index];
         } else if (typeof currentContext === 'object') {
             path += convertSegment(segment);
-            previousContext = currentContext;
-            currentContext = previousContext[segment];
+            currentContext = (currentContext as unknown as { [key: string]: AnyNode })[segment];
         } else {
             found = false;
         }

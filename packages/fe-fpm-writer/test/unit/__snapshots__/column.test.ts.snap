@@ -374,6 +374,50 @@ Object {
 }
 `;
 
+exports[`CustomAction generateCustomColumn version 1.86, with fragmentFile 1`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "NewCustomColumn": Object {
+        "header": "col header",
+        "position": Object {
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumnFragment",
+      },
+    },
+  },
+  "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "ExistingCustomColumn": Object {
+        "availability": "Default",
+        "header": "{i18n>customColumn}",
+        "horizontalAlign": "Center",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "properties": Array [
+          "BooleanProperty",
+          "TextProperty",
+        ],
+        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
+        "width": "15em",
+      },
+    },
+    "tableSettings": Object {
+      "selectionMode": "Single",
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateCustomColumn version 1.86, with fragmentFile 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"Sample Text\\" />
+</core:FragmentDefinition>"
+`;
+
 exports[`CustomAction generateCustomColumn version 1.86, with new handler, all properties 1`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {

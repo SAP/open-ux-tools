@@ -73,7 +73,7 @@ async function generateAdaptationProject(
                 }
             };
         } else {
-            config = await promptGeneratorInput(defaults);
+            config = await promptGeneratorInput(defaults, logger);
         }
         if (!basePath) {
             basePath = join(process.cwd(), config.app.id);

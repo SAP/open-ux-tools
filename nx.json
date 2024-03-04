@@ -7,6 +7,7 @@
           "build",
           "lint",
           "test",
+          "test:integration",
           "build:extension",
           "build:storybook",
           "build:storybook:bundle"
@@ -48,6 +49,17 @@
       ],
       "outputs": [
         "{projectRoot}/coverage"
+      ]
+    },
+    "test:integration": {
+      "inputs": [
+        "default",
+        "^prod",
+        "{workspaceRoot}/jest.base.js",
+        "{projectRoot}/jest.config.js"
+      ],
+      "outputs": [
+        "{projectRoot}/playwright-report"
       ]
     },
     "build:extension": {

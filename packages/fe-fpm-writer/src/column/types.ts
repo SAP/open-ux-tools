@@ -1,4 +1,4 @@
-import type { CustomElement, InternalCustomElement, Position, EventHandler } from '../common/types';
+import type { CustomElement, InternalCustomElement, Position, EventHandler, CustomFragment } from '../common/types';
 
 export enum Availability {
     'Default' = 'Default',
@@ -18,7 +18,7 @@ export type ColumnPropertiesType = string[];
  * Custom Column.
  *
  */
-export interface CustomTableColumn extends CustomElement, EventHandler {
+export interface CustomTableColumn extends CustomElement, EventHandler, CustomFragment {
     /**
      * Name of the routing target
      */

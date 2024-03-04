@@ -295,7 +295,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         let column: UIColumn = {} as UIColumn;
 
         const cells = rowEl?.querySelectorAll('.ms-DetailsRow-fields .ms-DetailsRow-cell');
-        if (!cells || !cells.length) {
+        if (!cells?.length) {
             return;
         }
 

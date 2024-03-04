@@ -1,5 +1,66 @@
 # @sap-ux/project-access
 
+## 1.17.5
+
+### Patch Changes
+
+-   33ec9ff9: fix: enhance `getI18nBundles` to be more tolerant
+
+## 1.17.4
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-config@0.21.1
+    -   @sap-ux/i18n@0.0.4
+
+## 1.17.3
+
+### Patch Changes
+
+-   2eda843d: feat(project-access): expose "toReferenceUri" in package interface
+
+## 1.17.2
+
+### Patch Changes
+
+-   76ce5c2f: fix: expose getI18nPropertiesPaths and export types for browser in @sap-ux/i18n
+-   Updated dependencies [76ce5c2f]
+    -   @sap-ux/i18n@0.0.3
+
+## 1.17.1
+
+### Patch Changes
+
+-   86da13e3: Add i18n support
+-   Updated dependencies [86da13e3]
+    -   @sap-ux/i18n@0.0.2
+
+## 1.17.0
+
+### Minor Changes
+
+-   236146b4: Add retrieval of project structure
+
+## 1.16.3
+
+### Patch Changes
+
+-   e6f454ab: Fix for detecting apps that are part of CAP
+
+## 1.16.2
+
+### Patch Changes
+
+-   d5b99a28: cds.root is now set from passed project root
+
+## 1.16.1
+
+### Patch Changes
+
+-   20a4dbfc: Fix for classification of freestyle apps in CAP Java projects
+
 ## 1.16.0
 
 ### Minor Changes

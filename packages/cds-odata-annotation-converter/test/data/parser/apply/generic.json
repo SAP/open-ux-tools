@@ -1,0 +1,309 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(15,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.A",
+                "valueRange": "[(1,4)..(1,5)]"
+            }
+        },
+        "contentRange": "[(1,6)..(15,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(2,21)..(14,9)]",
+                "name": "Apply",
+                "nameRange": "[(3,12)..(3,18)]",
+                "attributes": {
+                    "Function": {
+                        "type": "attribute",
+                        "name": "Function",
+                        "nameRange": "[(13,12)..(13,21)]",
+                        "value": "odata.fillUriTemplate",
+                        "valueRange": "[(13,24)..(13,47)]"
+                    }
+                },
+                "contentRange": "[(2,22)..(14,8)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(4,16)..(4,23)]",
+                        "name": "String",
+                        "attributes": {},
+                        "contentRange": "[(4,17)..(4,22)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(4,17)..(4,22)]",
+                                "text": "{url}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(5,16)..(11,17)]",
+                        "name": "LabeledElement",
+                        "nameRange": "[(6,20)..(6,35)]",
+                        "attributes": {
+                            "Name": {
+                                "type": "attribute",
+                                "name": "Name",
+                                "nameRange": "[(10,20)..(10,25)]",
+                                "value": "url",
+                                "valueRange": "[(10,28)..(10,33)]"
+                            }
+                        },
+                        "contentRange": "[(5,17)..(11,16)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(6,38)..(9,21)]",
+                                "name": "Apply",
+                                "nameRange": "[(7,24)..(7,30)]",
+                                "attributes": {
+                                    "Function": {
+                                        "type": "attribute",
+                                        "name": "Function",
+                                        "nameRange": "[(8,24)..(8,33)]",
+                                        "value": "odata.uriEncode",
+                                        "valueRange": "[(8,36)..(8,53)]"
+                                    }
+                                },
+                                "contentRange": "[(6,39)..(9,20)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(7,34)..(7,49)]",
+                                        "name": "Path",
+                                        "nameRange": "[(7,35)..(7,40)]",
+                                        "attributes": {},
+                                        "contentRange": "[(7,35)..(7,48)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(7,44)..(7,47)]",
+                                                "text": "url"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(16,4)..(25,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.B",
+                "valueRange": "[(16,4)..(16,5)]"
+            }
+        },
+        "contentRange": "[(16,6)..(25,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(17,19)..(24,9)]",
+                "name": "Apply",
+                "nameRange": "[(18,12)..(18,18)]",
+                "attributes": {
+                    "Function": {
+                        "type": "attribute",
+                        "name": "Function",
+                        "nameRange": "[(23,12)..(23,21)]",
+                        "value": "",
+                        "valueRange": "[(23,23)..(24,8)]"
+                    }
+                },
+                "contentRange": "[(17,20)..(24,8)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(19,16)..(19,35)]",
+                        "name": "Path",
+                        "nameRange": "[(19,17)..(19,22)]",
+                        "attributes": {},
+                        "contentRange": "[(19,17)..(19,34)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(19,26)..(19,33)]",
+                                "text": "product"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(20,16)..(20,19)]",
+                        "name": "String",
+                        "attributes": {},
+                        "contentRange": "[(20,17)..(20,18)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(20,17)..(20,18)]",
+                                "text": "/"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(21,16)..(21,36)]",
+                        "name": "Path",
+                        "nameRange": "[(21,17)..(21,22)]",
+                        "attributes": {},
+                        "contentRange": "[(21,17)..(21,35)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(21,26)..(21,34)]",
+                                "text": "location"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(26,4)..(39,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.C",
+                "valueRange": "[(26,4)..(26,5)]"
+            }
+        },
+        "contentRange": "[(26,6)..(39,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(27,19)..(38,9)]",
+                "name": "Apply",
+                "nameRange": "[(28,12)..(28,18)]",
+                "attributes": {},
+                "contentRange": "[(27,20)..(38,8)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(29,16)..(29,34)]",
+                        "name": "Path",
+                        "nameRange": "[(29,18)..(29,23)]",
+                        "attributes": {},
+                        "contentRange": "[(29,17)..(29,33)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(29,27)..(29,31)]",
+                                "text": "path"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(30,16)..(30,50)]",
+                        "name": "PropertyPath",
+                        "nameRange": "[(30,18)..(30,31)]",
+                        "attributes": {},
+                        "contentRange": "[(30,17)..(30,49)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(30,35)..(30,47)]",
+                                "text": "propertyPath"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(31,16)..(31,54)]",
+                        "name": "AnnotationPath",
+                        "nameRange": "[(31,18)..(31,33)]",
+                        "attributes": {},
+                        "contentRange": "[(31,17)..(31,53)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(31,37)..(31,51)]",
+                                "text": "annotationPath"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(32,16)..(32,58)]",
+                        "name": "ModelElementPath",
+                        "nameRange": "[(32,18)..(32,35)]",
+                        "attributes": {},
+                        "contentRange": "[(32,17)..(32,57)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(32,39)..(32,55)]",
+                                "text": "modelElementPath"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(33,16)..(33,70)]",
+                        "name": "NavigationPropertyPath",
+                        "nameRange": "[(33,18)..(33,41)]",
+                        "attributes": {},
+                        "contentRange": "[(33,17)..(33,69)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(33,45)..(33,67)]",
+                                "text": "navigationPropertyPath"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(34,16)..(34,26)]",
+                        "name": "String",
+                        "attributes": {},
+                        "contentRange": "[(34,17)..(34,25)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(34,17)..(34,25)]",
+                                "text": "constant"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(35,16)..(35,43)]",
+                        "name": "String",
+                        "nameRange": "[(35,18)..(35,25)]",
+                        "attributes": {},
+                        "contentRange": "[(35,17)..(35,42)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(35,28)..(35,40)]",
+                                "text": "other string"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

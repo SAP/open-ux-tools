@@ -75,6 +75,8 @@ export interface MetadataElementProperties {
      * For entities (CDS), entity types (EDMX)
      */
     keys?: ElementName[];
+
+    targetKinds: TargetKind[];
 }
 
 /**

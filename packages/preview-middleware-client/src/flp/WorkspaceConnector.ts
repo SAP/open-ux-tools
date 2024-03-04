@@ -2,40 +2,20 @@ import merge from 'sap/base/util/merge';
 import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import Layer from 'sap/ui/fl/Layer';
 import VersionInfo from 'sap/ui/VersionInfo';
-
-const path = '/preview/api/changes';
-interface Change {
-    support?: {
-        generator?: string;
-    };
-}
-
-function getFlexSettings(): {
-    generator?: string;
-    developerMode?: boolean;
-    scenario?: string;
-} | undefined {
-    let result;
-    const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
-    const flexSetting = bootstrapConfig?.getAttribute('data-open-ux-preview-flex-settings');
-    if (flexSetting) {
-        result = JSON.parse(flexSetting);
-    }
-    return result;
-}
+import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
 
 const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
     storage: {
         _itemsStoredAsObjects: true,
-        setItem: function (_key: string, change: Change) {
+        setItem: function (_key: string, change: FlexChange) {
             const settings = getFlexSettings();
             if (settings) {
                 change.support ??= {};
                 change.support.generator = settings.generator;
             }
 
-            return fetch(path, {
+            return fetch(CHANGES_API_PATH, {
                 method: 'POST',
                 body: JSON.stringify(change, null, 2),
                 headers: {
@@ -44,7 +24,7 @@ const connector = merge({}, ObjectStorageConnector, {
             });
         },
         removeItem: function (key: string) {
-            return fetch(path, {
+            return fetch(CHANGES_API_PATH, {
                 method: 'DELETE',
                 body: JSON.stringify({ fileName: key }),
                 headers: {
@@ -59,7 +39,7 @@ const connector = merge({}, ObjectStorageConnector, {
             // not implemented
         },
         getItems: async function () {
-            const response = await fetch(path, {
+            const response = await fetch(CHANGES_API_PATH, {
                 method: 'GET',
                 headers: {
                     'content-type': 'application/json'

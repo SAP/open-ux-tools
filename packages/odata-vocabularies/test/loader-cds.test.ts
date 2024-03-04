@@ -1,5 +1,5 @@
 import { loadVocabulariesInformation } from '../src/loader';
-import { PROPERTY_KIND } from '../src/types/base-types';
+import { PROPERTY_KIND } from '@sap-ux/odata-annotation-core-types';
 
 declare const expect: jest.Expect;
 

@@ -155,6 +155,10 @@ export interface EventHandlerConfiguration {
      * If file exists, then existing file should be appended with passed script fragment.
      */
     insertScript?: TextFragmentInsertion;
+    /**
+     * Controller extension prefix.
+     */
+    controllerPrefix?: '.extension';
 }
 
 export interface EventHandler {
@@ -174,4 +178,11 @@ export interface WriterConfig {
      * Currently is used only for 'manifest.json' update.
      */
     tabInfo?: TabInfo;
+}
+
+export interface CustomFragment {
+    /**
+     * Name of the custom element fragment.
+     */
+    fragmentFile?: string;
 }

@@ -1,0 +1,563 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(1,42)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Chart",
+                "valueRange": "[(1,4)..(1,9)]"
+            }
+        },
+        "contentRange": "[(1,18)..(1,42)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(1,19)..(1,42)]",
+                "name": "Record",
+                "attributes": {},
+                "contentRange": "[(1,20)..(1,41)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(1,21)..(1,40)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "ChartType",
+                                "valueRange": "[(1,21)..(1,30)]"
+                            }
+                        },
+                        "contentRange": "[(1,32)..(1,40)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(1,33)..(1,40)]",
+                                "name": "EnumMember",
+                                "attributes": {},
+                                "contentRange": "[(1,33)..(1,40)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(1,33)..(1,40)]",
+                                        "text": "com.sap.vocabularies.UI.v1.ChartType/Column",
+                                        "fragmentRanges": ["[(1,33)..(1,40)]"]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(2,4)..(11,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.HeaderFacets",
+                "valueRange": "[(2,4)..(2,16)]"
+            }
+        },
+        "contentRange": "[(2,18)..(11,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(2,19)..(11,5)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(2,20)..(11,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(3,4)..(6,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "nameRange": "[(4,8)..(4,13)]",
+                                "value": "UI.ReferenceFacet",
+                                "valueRange": "[(4,18)..(4,35)]"
+                            }
+                        },
+                        "contentRange": "[(3,5)..(6,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(5,8)..(5,28)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Target",
+                                        "valueRange": "[(5,8)..(5,14)]"
+                                    }
+                                },
+                                "contentRange": "[(5,16)..(5,28)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(5,17)..(5,28)]",
+                                        "name": "AnnotationPath",
+                                        "attributes": {},
+                                        "contentRange": "[(5,18)..(5,27)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(5,18)..(5,27)]",
+                                                "text": "@UI.Chart"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(7,4)..(10,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "nameRange": "[(8,8)..(8,13)]",
+                                "value": "UI.ReferenceFacet",
+                                "valueRange": "[(8,18)..(8,35)]"
+                            }
+                        },
+                        "contentRange": "[(7,5)..(10,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(9,8)..(9,34)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Target",
+                                        "valueRange": "[(9,8)..(9,14)]"
+                                    }
+                                },
+                                "contentRange": "[(9,16)..(9,34)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(9,17)..(9,34)]",
+                                        "name": "AnnotationPath",
+                                        "attributes": {},
+                                        "contentRange": "[(9,17)..(9,34)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(9,17)..(9,34)]",
+                                                "text": "@UI.FieldGroup",
+                                                "fragmentRanges": ["[(9,19)..(9,33)]"]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(12,4)..(20,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.LineItem",
+                "valueRange": "[(12,4)..(12,12)]"
+            }
+        },
+        "contentRange": "[(12,18)..(20,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(12,19)..(20,5)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(12,20)..(20,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(13,4)..(16,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "nameRange": "[(14,8)..(14,13)]",
+                                "value": "UI.DataField",
+                                "valueRange": "[(14,23)..(14,35)]"
+                            }
+                        },
+                        "contentRange": "[(13,5)..(16,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(15,8)..(15,33)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Criticality",
+                                        "valueRange": "[(15,8)..(15,19)]"
+                                    }
+                                },
+                                "contentRange": "[(15,21)..(15,33)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(15,22)..(15,33)]",
+                                        "name": "Path",
+                                        "attributes": {},
+                                        "contentRange": "[(15,22)..(15,33)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(15,22)..(15,33)]",
+                                                "text": "criticality",
+                                                "fragmentRanges": ["[(15,22)..(15,33)]"]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(17,4)..(19,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(17,5)..(19,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(18,8)..(18,26)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(18,8)..(18,13)]"
+                                    }
+                                },
+                                "contentRange": "[(18,15)..(18,26)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(18,16)..(18,26)]",
+                                        "name": "Path",
+                                        "attributes": {},
+                                        "contentRange": "[(18,16)..(18,26)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(18,16)..(18,26)]",
+                                                "text": "stepStatus",
+                                                "fragmentRanges": ["[(18,16)..(18,26)]"]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(21,4)..(25,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.HeaderInfo",
+                "valueRange": "[(21,4)..(21,14)]"
+            }
+        },
+        "contentRange": "[(21,18)..(25,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(21,19)..(25,5)]",
+                "name": "Record",
+                "attributes": {
+                    "Type": {
+                        "type": "attribute",
+                        "name": "Type",
+                        "nameRange": "[(22,8)..(22,13)]",
+                        "value": "UI.HeaderInfoType",
+                        "valueRange": "[(22,26)..(22,43)]"
+                    }
+                },
+                "contentRange": "[(21,20)..(25,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(23,8)..(23,25)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "TypeName",
+                                "valueRange": "[(23,8)..(23,16)]"
+                            }
+                        },
+                        "contentRange": "[(23,24)..(23,25)]",
+                        "content": []
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(24,8)..(24,27)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "TypeNamePlural",
+                                "valueRange": "[(24,8)..(24,22)]"
+                            }
+                        },
+                        "contentRange": "[(24,24)..(24,27)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(24,25)..(24,27)]",
+                                "name": "String",
+                                "attributes": {},
+                                "contentRange": "[(24,26)..(24,26)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(24,26)..(24,26)]",
+                                        "text": ""
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(26,4)..(32,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.FieldGroup",
+                "valueRange": "[(26,4)..(26,14)]"
+            }
+        },
+        "contentRange": "[(26,15)..(32,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(26,16)..(32,5)]",
+                "name": "Record",
+                "attributes": {},
+                "contentRange": "[(26,17)..(32,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(27,8)..(31,9)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "Data",
+                                "valueRange": "[(27,8)..(27,12)]"
+                            }
+                        },
+                        "contentRange": "[(27,14)..(31,9)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(27,15)..(31,9)]",
+                                "name": "Collection",
+                                "attributes": {},
+                                "contentRange": "[(27,16)..(31,8)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(28,12)..(30,13)]",
+                                        "name": "Record",
+                                        "attributes": {
+                                            "Type": {
+                                                "type": "attribute",
+                                                "name": "Type",
+                                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                                            }
+                                        },
+                                        "contentRange": "[(28,13)..(30,12)]",
+                                        "content": [
+                                            {
+                                                "type": "element",
+                                                "range": "[(29,16)..(29,29)]",
+                                                "name": "PropertyValue",
+                                                "attributes": {
+                                                    "Property": {
+                                                        "type": "attribute",
+                                                        "name": "Property",
+                                                        "value": "Value",
+                                                        "valueRange": "[(29,16)..(29,21)]"
+                                                    }
+                                                },
+                                                "contentRange": "[(29,23)..(29,29)]",
+                                                "content": [
+                                                    {
+                                                        "type": "element",
+                                                        "range": "[(29,24)..(29,29)]",
+                                                        "name": "String",
+                                                        "attributes": {},
+                                                        "contentRange": "[(29,25)..(29,28)]",
+                                                        "content": [
+                                                            {
+                                                                "type": "text",
+                                                                "range": "[(29,25)..(29,28)]",
+                                                                "text": "123"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(33,4)..(37,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.DataPoint",
+                "valueRange": "[(33,4)..(33,13)]"
+            }
+        },
+        "contentRange": "[(33,15)..(37,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(33,16)..(37,5)]",
+                "name": "Record",
+                "attributes": {
+                    "Type": {
+                        "type": "attribute",
+                        "name": "Type",
+                        "nameRange": "[(34,8)..(34,13)]",
+                        "value": "UI.DataPointType",
+                        "valueRange": "[(34,15)..(34,31)]"
+                    }
+                },
+                "contentRange": "[(33,17)..(37,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(35,8)..(35,19)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "Value",
+                                "valueRange": "[(35,8)..(35,13)]"
+                            }
+                        },
+                        "contentRange": "[(35,14)..(35,19)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(35,15)..(35,19)]",
+                                "name": "Bool",
+                                "attributes": {},
+                                "contentRange": "[(35,15)..(35,19)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(35,15)..(35,19)]",
+                                        "text": "true"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(36,8)..(36,27)]",
+                        "name": "Annotation",
+                        "attributes": {
+                            "Term": {
+                                "type": "attribute",
+                                "name": "Term",
+                                "value": "UI.Hidden",
+                                "valueRange": "[(36,8)..(36,21)]"
+                            }
+                        },
+                        "contentRange": "[(36,22)..(36,27)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(36,23)..(36,27)]",
+                                "name": "Bool",
+                                "attributes": {},
+                                "contentRange": "[(36,23)..(36,27)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(36,23)..(36,27)]",
+                                        "text": "true"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

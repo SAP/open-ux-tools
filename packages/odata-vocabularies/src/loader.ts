@@ -12,33 +12,34 @@ import type {
 import type { VocabularyAlias, VocabularyNamespace } from './resources';
 import VOCABULARIES, { ALIAS_TO_NAMESPACE, NAMESPACE_TO_ALIAS } from './resources';
 import type {
-    EdmNameType,
-    Constraints,
     BaseVocabularyObject,
     ComplexType,
     EnumType,
     EnumValue,
-    Facets,
     PrimitiveType,
     Term,
     TypeDefinition,
     VocabularyObject,
-    TargetKindValue,
     ComplexTypeProperty,
     Vocabulary,
     AllowedValues,
     VocabulariesInformation
 } from './types';
+import { ENUM_VALUE_KIND, CDS_VOCABULARY_ALIAS, CDS_VOCABULARY_NAMESPACE } from './types';
+import type {
+    FullyQualifiedName,
+    SimpleIdentifier,
+    TargetKindValue,
+    Constraints,
+    Facets
+} from '@sap-ux/odata-annotation-core-types';
 import {
-    ENUM_VALUE_KIND,
     PROPERTY_KIND,
-    CDS_VOCABULARY_ALIAS,
-    CDS_VOCABULARY_NAMESPACE,
     TYPE_DEFINITION_KIND,
     ENUM_TYPE_KIND,
     COMPLEX_TYPE_KIND,
     TERM_KIND
-} from './types';
+} from '@sap-ux/odata-annotation-core-types';
 
 const PROPERTY_PATTERN = /^(\w){1,128}$/;
 
@@ -66,11 +67,12 @@ const SUPPORTED_VOCABULARY_NAMESPACES: Set<VocabularyNamespace> = new Set([
     'com.sap.vocabularies.Hierarchy.v1',
     'com.sap.vocabularies.Session.v1',
     'com.sap.vocabularies.UI.v1',
-    'com.sap.vocabularies.HTML5.v1'
+    'com.sap.vocabularies.HTML5.v1',
+    'com.sap.cds.vocabularies.ObjectModel',
+    'com.sap.cds.vocabularies.AnalyticsDetails'
 ]);
 
-let vocabulariesInformationStatic: VocabulariesInformation | undefined;
-let vocabulariesInformationStaticCds: VocabulariesInformation | undefined;
+const vocabulariesInformationStatic: Map<string, VocabulariesInformation> = new Map();
 
 /**
  *
@@ -200,6 +202,11 @@ function getConstraints(raw: UnboxContent<CSDLAnnotations>): Constraints {
     if (openPropertyTypeConstraints) {
         constraints.openPropertyTypeConstraints = openPropertyTypeConstraints;
     }
+    const applicableTerms = raw['@Org.OData.Validation.V1.ApplicableTerms'];
+    if (applicableTerms?.length) {
+        constraints.applicableTerms = applicableTerms;
+    }
+
     return constraints;
 }
 
@@ -280,6 +287,10 @@ function parseComplexType(name: string, raw: CSDLComplexType): ComplexType {
         complexType.isOpenType = !!raw.$OpenType;
     }
 
+    const constraints = getConstraints(raw);
+    if (Object.keys(constraints).length) {
+        complexType.constraints = constraints;
+    }
     // collect properties
     Object.keys(raw)
         .filter((key) => !isValidKey(key))
@@ -382,136 +393,271 @@ function parseSchemaElements(identifier: string, element: SchemaElement): Vocabu
 }
 
 /**
+ * Finds out if namespace belongs to cds analytics.
  *
- * @param includeCds Flag indicating if CDS vocabularies should be loaded
- * @returns Vocabularies
+ * @param namespace
+ * @returns boolean value
  */
-export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesInformation => {
-    // try to use cache
-    if (includeCds && vocabulariesInformationStaticCds) {
-        return vocabulariesInformationStaticCds;
-    } else if (!includeCds && vocabulariesInformationStatic) {
-        return vocabulariesInformationStatic;
-    }
+function isCdsAnalyticsNamespace(namespace: string): boolean {
+    return namespace.startsWith('com.sap.cds.vocabularies');
+}
 
-    const dictionary: Map<EdmNameType.FullyQualifiedName, VocabularyObject> = new Map();
-    const byTarget: Map<TargetKindValue | '', Set<EdmNameType.FullyQualifiedName>> = new Map();
-    const supportedVocabularies: Map<VocabularyNamespace, Vocabulary> = new Map();
-    const namespaceByDefaultAlias: Map<EdmNameType.SimpleIdentifier, VocabularyNamespace> = new Map();
-    const derivedTypesPerType: Map<
-        EdmNameType.FullyQualifiedName,
-        Map<EdmNameType.FullyQualifiedName, boolean>
-    > = new Map();
-    const upperCaseNameMap: Map<string, string | Map<string, string>> = new Map();
-
-    const addToUpperCaseNameMap = (name: string, propertyName?: string): void => {
-        const upperCaseName = name.toUpperCase();
-        const currentEntry = upperCaseNameMap.get(upperCaseName);
-        if (!propertyName) {
-            if (!currentEntry || typeof currentEntry === 'string') {
-                upperCaseNameMap.set(upperCaseName, name);
-            } else if (typeof currentEntry === 'object') {
-                upperCaseNameMap.set(upperCaseName, Object.assign(currentEntry, { $Self: name }));
-            }
+/**
+ * Appends name and property name to the given uppercase names map.
+ *
+ * @param upperCaseNameMap map where keys are names in uppercase and value is the original name itself or a map with properties names where keys are property names in uppercase and values are original property names
+ * @param name vocabulary object name
+ * @param propertyName vocabulary object property name
+ */
+const addToUpperCaseNameMap = (
+    upperCaseNameMap: Map<string, string | Map<string, string>>,
+    name: string,
+    propertyName?: string
+): void => {
+    const upperCaseName = name.toUpperCase();
+    const currentEntry = upperCaseNameMap.get(upperCaseName);
+    if (!propertyName) {
+        if (!currentEntry || typeof currentEntry === 'string') {
+            upperCaseNameMap.set(upperCaseName, name);
+        } else if (typeof currentEntry === 'object') {
+            upperCaseNameMap.set(upperCaseName, Object.assign(currentEntry, { $Self: name }));
+        }
+    } else {
+        let newEntry: Map<string, string> = new Map();
+        if (!currentEntry) {
+            newEntry.set('$Self', name);
+        } else if (typeof currentEntry === 'string') {
+            newEntry.set('$Self', currentEntry);
         } else {
-            const upperCasePropName = propertyName.toUpperCase();
-            if (!currentEntry) {
-                upperCaseNameMap.set(upperCaseName, new Map([['$Self', name]]));
-            } else if (typeof currentEntry === 'string') {
-                upperCaseNameMap.set(upperCaseName, new Map([['$Self', currentEntry]]));
+            newEntry = currentEntry;
+        }
+        newEntry.set(propertyName.toUpperCase(), propertyName);
+        upperCaseNameMap.set(upperCaseName, newEntry);
+    }
+};
+
+/**
+ * Extracts vocabulary url from links provided in the given vocabulary information.
+ *
+ * @param vocabulary vocabulary information object
+ * @returns url
+ */
+const getVocabularyUri = (vocabulary: any): string => {
+    const links: { rel?: string; href?: string }[] = vocabulary?.['@Org.OData.Core.V1.Links'] ?? [];
+    const linkMap: Map<string, string> = new Map();
+    for (const link of links) {
+        linkMap.set(link.rel ?? '', link.href ?? '');
+    }
+    // get url pointing to latest version xml - if not available use alternative
+    const latestVersion = linkMap.get('latest-version');
+    const alternate = linkMap.get('alternate');
+    if (latestVersion?.endsWith('.xml')) {
+        return latestVersion;
+    } else if (alternate?.endsWith('.xml')) {
+        return alternate;
+    } else if (latestVersion) {
+        return latestVersion;
+    } else if (alternate) {
+        return alternate;
+    }
+    return '';
+};
+
+/**
+ * Prepares vocabulary object data loader.
+ *
+ * @param maps object with maps where data is loaded
+ * @param maps.byTarget definitions names grouped by target kind
+ * @param maps.derivedTypesPerType map with types derivation information
+ * @param maps.dictionary main vocabulary object map
+ * @param maps.upperCaseNameMap map with names in upperCase representation
+ * @param vocabulary vocabulary definitions
+ * @returns loader function
+ */
+const getVocabularyObjectLoader =
+    (
+        maps: {
+            byTarget: Map<TargetKindValue | '', Set<FullyQualifiedName>>;
+            derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>;
+            dictionary: Map<FullyQualifiedName, VocabularyObject>;
+            upperCaseNameMap: Map<string, string | Map<string, string>>;
+        },
+        vocabulary: any
+    ) =>
+    /**
+     * Collects data of the given vocabulary object.
+     *
+     * @param vocabularyObject object to process
+     * @param fqName fully qualified object name
+     */
+    (vocabularyObject: VocabularyObject, fqName: string): void => {
+        const { byTarget, derivedTypesPerType, dictionary, upperCaseNameMap } = maps;
+        dictionary.set(fqName, vocabularyObject);
+        addToUpperCaseNameMap(upperCaseNameMap, fqName);
+        switch (vocabularyObject.kind) {
+            case TERM_KIND: {
+                for (const targetKind of vocabularyObject.appliesTo ?? ['']) {
+                    byTarget.set(targetKind, byTarget.get(targetKind) ?? new Set());
+                    byTarget.get(targetKind)?.add(fqName);
+                }
+                break;
             }
-            (upperCaseNameMap.get(upperCaseName) as Map<string, string>).set(upperCasePropName, propertyName);
+            case COMPLEX_TYPE_KIND: {
+                (vocabularyObject as ComplexType).properties.forEach((property) => {
+                    addToUpperCaseNameMap(upperCaseNameMap, fqName, property.name);
+                });
+                const baseType = (vocabularyObject as ComplexType).baseType;
+                if (!baseType) {
+                    break;
+                }
+                const baseName = baseType.split('.').pop() ?? '';
+                const baseElement = vocabulary[baseName];
+                if (baseElement) {
+                    const vocabularyBaseObject = parseSchemaElements(baseType, baseElement);
+                    // add property of baseType to fqName
+                    if (vocabularyBaseObject?.kind === COMPLEX_TYPE_KIND) {
+                        vocabularyBaseObject.properties.forEach((property) => {
+                            addToUpperCaseNameMap(upperCaseNameMap, fqName, property.name);
+                        });
+                    }
+                }
+                derivedTypesPerType.set(baseType, derivedTypesPerType.get(baseType) ?? new Map());
+                derivedTypesPerType.get(baseType)?.set(fqName, !!vocabularyObject.isAbstract);
+                break;
+            }
+            case ENUM_TYPE_KIND: {
+                vocabularyObject.values.forEach((value) => {
+                    addToUpperCaseNameMap(upperCaseNameMap, fqName, value.name);
+                });
+                break;
+            }
+            default: {
+                return;
+            }
         }
     };
 
-    const getVocabularyUri = (vocabulary: any): string => {
-        const links: { rel?: string; href?: string }[] = vocabulary?.['@Org.OData.Core.V1.Links'] ?? [];
-        const linkMap: Map<string, string> = new Map();
-        for (const link of links) {
-            linkMap.set(link.rel ?? '', link.href ?? '');
-        }
-        // get url pointing to latest version xml - if not available use alternative
-        const latestVersion = linkMap.get('latest-version');
-        const alternate = linkMap.get('alternate');
-        if (latestVersion?.endsWith('.xml')) {
-            return latestVersion;
-        } else if (alternate?.endsWith('.xml')) {
-            return alternate;
-        } else if (latestVersion) {
-            return latestVersion;
-        } else if (alternate) {
-            return alternate;
-        }
-        return '';
-    };
+/**
+ * Prepares vocabulary data loader.
+ *
+ * @param maps object with maps where data is loaded
+ * @param maps.byTarget definitions names grouped by target kind
+ * @param maps.derivedTypesPerType map with types derivation information
+ * @param maps.dictionary main vocabulary object map
+ * @param maps.supportedVocabularies map of supported vocabularies
+ * @param maps.upperCaseNameMap map with names in upperCase representation
+ * @param options options object
+ * @param options.includeCds flag indicating if CDS vocabularies should be loaded
+ * @param options.includeCdsAnalytics flag indicating if additional vocabularies for CDS analytics should be loaded
+ * @returns loader function
+ */
+const getVocabularyLoader =
+    (
+        maps: {
+            byTarget: Map<TargetKindValue | '', Set<FullyQualifiedName>>;
+            derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>;
+            dictionary: Map<FullyQualifiedName, VocabularyObject>;
+            supportedVocabularies: Map<VocabularyNamespace, Vocabulary>;
+            upperCaseNameMap: Map<string, string | Map<string, string>>;
+        },
+        options: { includeCds?: boolean; includeCdsAnalytics?: boolean }
+    ) =>
+    /**
+     * Vocabulary data loader for a specific namespace.
+     *
+     * @param namespace namespace name
+     */
+    (namespace: VocabularyNamespace): void => {
+        const { includeCds, includeCdsAnalytics } = options;
+        const { supportedVocabularies } = maps;
 
-    NAMESPACE_TO_ALIAS.forEach((alias, namespace) => {
-        if (!includeCds && alias === CDS_VOCABULARY_ALIAS) {
+        const isCdsAnalyticsNs = isCdsAnalyticsNamespace(namespace);
+        if (!includeCds && (namespace === CDS_VOCABULARY_NAMESPACE || isCdsAnalyticsNs)) {
             return;
         }
-        addToUpperCaseNameMap(alias);
-        addToUpperCaseNameMap(namespace);
+        if (!includeCdsAnalytics && isCdsAnalyticsNs) {
+            return;
+        }
+        const alias = NAMESPACE_TO_ALIAS.get(namespace);
+        if (!alias) {
+            return;
+        }
+        const document: CSDL = VOCABULARIES[namespace];
+        if (!document) {
+            return;
+        }
+        const vocabulary = document[namespace];
+        supportedVocabularies.set(namespace, {
+            namespace,
+            defaultAlias: alias,
+            defaultUri: getVocabularyUri(vocabulary)
+        });
+
+        const objectLoader = getVocabularyObjectLoader(maps, vocabulary);
+
+        const properties = Object.keys(vocabulary);
+        for (const identifier of properties.filter((property) => PROPERTY_PATTERN.test(property))) {
+            const fqName = namespace + '.' + identifier;
+            const element = vocabulary[identifier];
+            const vocabularyObject = parseSchemaElements(fqName, element);
+            if (!vocabularyObject) {
+                continue;
+            }
+            objectLoader(vocabularyObject, fqName);
+        }
+    };
+
+/**
+ * Loads vocabulary information.
+ *
+ * @param includeCds Flag indicating if CDS vocabularies should be loaded
+ * @param includeCdsAnalytics flag indicating if additional vocabularies for CDS analytics should be loaded
+ * @returns Vocabularies
+ */
+export const loadVocabulariesInformation = (
+    includeCds?: boolean,
+    includeCdsAnalytics?: boolean
+): VocabulariesInformation => {
+    // try to use cache
+    let cacheKey = includeCds ? 'withCDS' : '';
+    if (includeCds && includeCdsAnalytics) {
+        cacheKey += 'IncludingAnalytics';
+    }
+    const cachedData = vocabulariesInformationStatic.get(cacheKey);
+    if (cachedData) {
+        return cachedData;
+    }
+
+    const dictionary: Map<FullyQualifiedName, VocabularyObject> = new Map();
+    const byTarget: Map<TargetKindValue | '', Set<FullyQualifiedName>> = new Map();
+    const supportedVocabularies: Map<VocabularyNamespace, Vocabulary> = new Map();
+    const namespaceByDefaultAlias: Map<SimpleIdentifier, VocabularyNamespace> = new Map();
+    const derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>> = new Map();
+    const upperCaseNameMap: Map<string, string | Map<string, string>> = new Map();
+
+    NAMESPACE_TO_ALIAS.forEach((alias, namespace) => {
+        const isCdsNs = isCdsAnalyticsNamespace(namespace);
+        if (!includeCds && (alias === CDS_VOCABULARY_ALIAS || isCdsNs)) {
+            return;
+        }
+        if (!includeCdsAnalytics && isCdsNs) {
+            return;
+        }
+        addToUpperCaseNameMap(upperCaseNameMap, alias);
+        addToUpperCaseNameMap(upperCaseNameMap, namespace);
         namespaceByDefaultAlias.set(alias, namespace);
     });
 
+    const vocabularyLoader = getVocabularyLoader(
+        { byTarget, derivedTypesPerType, dictionary, supportedVocabularies, upperCaseNameMap },
+        { includeCds, includeCdsAnalytics }
+    );
+
     for (const namespace of SUPPORTED_VOCABULARY_NAMESPACES) {
-        if (!includeCds && namespace === CDS_VOCABULARY_NAMESPACE) {
-            continue;
-        }
-        const alias = NAMESPACE_TO_ALIAS.get(namespace);
-        if (alias) {
-            const document: CSDL = VOCABULARIES[alias];
-            if (document) {
-                const vocabulary = document[namespace];
-                supportedVocabularies.set(namespace, {
-                    namespace: namespace,
-                    defaultAlias: alias,
-                    defaultUri: getVocabularyUri(vocabulary)
-                });
-                const properties = Object.keys(vocabulary);
-                for (const identifier of properties.filter((property) => PROPERTY_PATTERN.test(property))) {
-                    const fqName = namespace + '.' + identifier;
-                    const element = vocabulary[identifier];
-                    const vocabularyObject = parseSchemaElements(fqName, element);
-                    if (vocabularyObject) {
-                        dictionary.set(fqName, vocabularyObject);
-                        addToUpperCaseNameMap(fqName);
-                        if (vocabularyObject.kind === TERM_KIND) {
-                            for (const targetKind of vocabularyObject.appliesTo ?? ['']) {
-                                byTarget.set(targetKind, byTarget.get(targetKind) ?? new Set());
-                                byTarget.get(targetKind)?.add(fqName);
-                            }
-                        } else if (vocabularyObject.kind === COMPLEX_TYPE_KIND) {
-                            vocabularyObject.properties.forEach((property) => {
-                                addToUpperCaseNameMap(fqName, property.name);
-                            });
-                            const baseType = vocabularyObject.baseType;
-                            if (baseType) {
-                                const baseName = baseType.split('.').pop() ?? '';
-                                const baseElement = vocabulary[baseName];
-                                if (baseElement) {
-                                    const vocabularyBaseObject = parseSchemaElements(baseType, baseElement);
-                                    // add property of baseType to fqName
-                                    if (vocabularyBaseObject?.kind === COMPLEX_TYPE_KIND) {
-                                        vocabularyBaseObject.properties.forEach((property) => {
-                                            addToUpperCaseNameMap(fqName, property.name);
-                                        });
-                                    }
-                                }
-                                derivedTypesPerType.set(baseType, derivedTypesPerType.get(baseType) ?? new Map());
-                                derivedTypesPerType.get(baseType)?.set(fqName, !!vocabularyObject.isAbstract);
-                            }
-                        }
-                        if (vocabularyObject.kind === ENUM_TYPE_KIND) {
-                            vocabularyObject.values.forEach((value) => {
-                                addToUpperCaseNameMap(fqName, value.name);
-                            });
-                        }
-                    }
-                }
-            }
-        }
+        vocabularyLoader(namespace);
     }
+    propagateConstraints(dictionary, derivedTypesPerType);
+
     const vocabulariesInformation: VocabulariesInformation = {
         dictionary,
         byTarget,
@@ -520,14 +666,63 @@ export const loadVocabulariesInformation = (includeCds?: boolean): VocabulariesI
         namespaceByDefaultAlias,
         upperCaseNameMap
     };
+
     // fill cache
-    if (includeCds) {
-        vocabulariesInformationStaticCds = vocabulariesInformation;
-    } else {
-        vocabulariesInformationStatic = vocabulariesInformation;
-    }
+    vocabulariesInformationStatic.set(cacheKey, vocabulariesInformation);
     return vocabulariesInformation;
 };
+
+/**
+ * Propagates constraints from base types to derived types.
+ *
+ * @param dictionary dictionary map
+ * @param derivedTypesPerType map with types derivation information
+ */
+function propagateConstraints(
+    dictionary: Map<FullyQualifiedName, VocabularyObject>,
+    derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>
+): void {
+    for (const typeName of derivedTypesPerType.keys()) {
+        propagateConstraintsForType(typeName, dictionary, derivedTypesPerType);
+    }
+}
+
+/**
+ * Recursively propagates constraints of the given base type to its derived types based on derived types map.
+ *
+ * @param typeName base type name
+ * @param dictionary dictionary map
+ * @param derivedTypesPerType map with types derivation information
+ */
+function propagateConstraintsForType(
+    typeName: FullyQualifiedName,
+    dictionary: Map<FullyQualifiedName, VocabularyObject>,
+    derivedTypesPerType: Map<FullyQualifiedName, Map<FullyQualifiedName, boolean>>
+): void {
+    const mergeConstraints = (constraints: Constraints, derivationMap: Map<FullyQualifiedName, boolean>) => {
+        for (const derivedTypeName of derivationMap.keys()) {
+            const derivedType = dictionary.get(derivedTypeName);
+            if (derivedType?.kind === COMPLEX_TYPE_KIND) {
+                // merge base type constraints into the current type constraints
+                derivedType.constraints = { ...constraints, ...(derivedType.constraints ?? {}) };
+            }
+            if (derivedTypesPerType.has(derivedTypeName)) {
+                propagateConstraintsForType(derivedTypeName, dictionary, derivedTypesPerType);
+            }
+        }
+    };
+
+    const typeDef = dictionary.get(typeName);
+    const derivationMap = derivedTypesPerType.get(typeName);
+    if (
+        typeDef?.kind === COMPLEX_TYPE_KIND &&
+        typeDef.constraints &&
+        Object.keys(typeDef.constraints).length &&
+        derivationMap
+    ) {
+        mergeConstraints(typeDef.constraints, derivationMap);
+    }
+}
 
 /**
  *

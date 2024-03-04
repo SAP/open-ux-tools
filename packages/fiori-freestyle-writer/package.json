@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-freestyle-writer",
     "description": "SAP Fiori freestyle application writer",
-    "version": "0.21.2",
+    "version": "0.21.4",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -46,13 +46,12 @@
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@types/ejs": "3.1.2",
         "@types/fs-extra": "9.0.13",
-        "@types/lodash": "4.14.198",
+        "@types/lodash": "4.14.202",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
         "fs-extra": "10.0.0"
     },
     "engines": {
-        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
         "node": ">=18.x"
     }
 }

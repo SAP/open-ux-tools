@@ -92,6 +92,14 @@ describe('UAA', () => {
 
             await expect(uaaInstance().getAccessToken()).resolves.toEqual(accessToken);
         });
+
+        it('calls refreshTokenCb with refresh token and access token', async () => {
+            jest.spyOn(axios, 'request').mockResolvedValueOnce(mockedResponse);
+            const mockCb = jest.fn();
+            await uaaInstance().getAccessToken(refreshToken, mockCb);
+            expect(mockCb).toBeCalled();
+            expect(mockCb).toBeCalledWith(undefined, accessToken);
+        });
     });
 
     describe('getAccessTokenWithClientCredentials', () => {

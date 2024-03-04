@@ -15,7 +15,7 @@ describe('StringEditor', () => {
             name: 'testProperty',
             value
         };
-        render(<StringEditor property={...props} controlId={controlId} />);
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe('StringEditor', () => {
             name: 'testProperty',
             value
         };
-        render(<StringEditor property={...props} controlId={controlId} />);
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -57,7 +57,7 @@ describe('StringEditor', () => {
             type: 'integer'
         };
 
-        render(<StringEditor property={...props} controlId={controlId} />);
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -65,6 +65,47 @@ describe('StringEditor', () => {
         fireEvent.change(textBox, { target: { value: 'testName1' } });
         expect((textBox as any).value).toBe('1');
     });
+    test('integer value onBlur', () => {
+        const value = '1234';
+        const props: any = {
+            icons: [],
+            isEnabled: false,
+            isIcon: false,
+            name: 'testProperty',
+            value,
+            type: 'integer'
+        };
+
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+
+        const textBox = screen.getByDisplayValue(value);
+        expect(textBox).toBeInTheDocument();
+        expect((textBox as any).value).toBe(value);
+        fireEvent.change(textBox, { target: { value: '12345' } });
+        fireEvent.blur(textBox);
+        expect((textBox as any).value).toBe('12345');
+    });
+    test('integer value onPress "Enter"', () => {
+        const value = '1234';
+        const props: any = {
+            icons: [],
+            isEnabled: false,
+            isIcon: false,
+            name: 'testProperty',
+            value,
+            type: 'integer'
+        };
+
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+
+        const textBox = screen.getByDisplayValue(value);
+        expect(textBox).toBeInTheDocument();
+        expect((textBox as any).value).toBe(value);
+        fireEvent.change(textBox, { target: { value: '12345' } });
+        fireEvent.keyPress(textBox, { key: 'Enter', code: 'Enter', charCode: 13 });
+        expect((textBox as any).value).toBe('12345');
+    });
+
     test('float value', () => {
         const value = '0.12345';
         const props: any = {
@@ -76,7 +117,7 @@ describe('StringEditor', () => {
             type: 'float'
         };
 
-        render(<StringEditor property={...props} controlId={controlId} />);
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
@@ -84,7 +125,6 @@ describe('StringEditor', () => {
         fireEvent.change(textBox, { target: { value: '5.3f04f.23' } });
         expect((textBox as any).value).toBe('5.30423');
     });
-
     test('float value onBlur', () => {
         const value = '5.300';
         const props: any = {
@@ -96,12 +136,31 @@ describe('StringEditor', () => {
             type: 'float'
         };
 
-        render(<StringEditor property={...props} controlId={controlId} />);
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
         expect((textBox as any).value).toBe('5.300');
         fireEvent.blur(textBox);
+        expect((textBox as any).value).toBe('5.3');
+    });
+    test('float value onPress "Enter"', () => {
+        const value = '5.300';
+        const props: any = {
+            icons: [],
+            isEnabled: false,
+            isIcon: false,
+            name: 'testProperty',
+            value,
+            type: 'float'
+        };
+
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+
+        const textBox = screen.getByDisplayValue(value);
+        expect(textBox).toBeInTheDocument();
+        expect((textBox as any).value).toBe('5.300');
+        fireEvent.keyPress(textBox, { key: 'Enter', code: 'Enter', charCode: 13 });
         expect((textBox as any).value).toBe('5.3');
     });
 });

@@ -55,7 +55,10 @@ export const ProxyEventHandlers = {
         const header = proxyRes?.headers?.['set-cookie'];
         if (header?.length) {
             for (let i = header.length - 1; i >= 0; i--) {
-                const cookie = header[i].replace(/\s?Domain=[^\s]*\s?|\s?SameSite=[^\s]*\s?|\s?Secure[^\s]*\s?/gi, '');
+                const cookie = header[i].replace(
+                    /\s?Domain=[^\s]*\s?|\s?SameSite=[^\s]*\s?|\s?Secure[^\s]*\s?|\s?Partitioned[^\s]*\s?/gi,
+                    ''
+                );
                 header[i] = cookie;
             }
         }
@@ -253,9 +256,8 @@ export async function enhanceConfigForSystem(
                 refreshToken: system.refreshToken,
                 refreshTokenChangedCb: tokenChangedCallback
             });
-            // sending a request to the backend to get cookies
+            // sending a request to the backend to get token
             await provider.getAtoInfo();
-            proxyOptions.headers['cookie'] = provider.cookies.toString();
         } else {
             throw new Error('Cannot connect to ABAP Environment on BTP without service keys.');
         }
@@ -322,12 +324,24 @@ export async function generateProxyMiddlewareOptions(
                 new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
             );
             if (system) {
-                await enhanceConfigForSystem(proxyOptions, system, backend.scp, (refreshToken?: string) => {
-                    if (refreshToken) {
-                        logger.info('Updating refresh token for: ' + localBackend.url);
-                        systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
+                await enhanceConfigForSystem(
+                    proxyOptions,
+                    system,
+                    backend.scp,
+                    (refreshToken?: string, accessToken?: string) => {
+                        if (refreshToken) {
+                            logger.info('Updating refresh token for: ' + localBackend.url);
+                            systemStore.write({ ...system, refreshToken }).catch((error) => logger.error(error));
+                        }
+
+                        if (accessToken) {
+                            logger.info('Setting access token');
+                            proxyOptions.headers['authorization'] = `bearer ${accessToken}`;
+                        } else {
+                            logger.warn('Setting of access token failed.');
+                        }
                     }
-                });
+                );
             }
         } catch (error) {
             logger.warn('Accessing the credentials store failed.');

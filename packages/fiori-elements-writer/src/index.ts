@@ -4,7 +4,7 @@ import { render } from 'ejs';
 import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
-import { generate as addOdataService, OdataVersion } from '@sap-ux/odata-service-writer';
+import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
@@ -12,7 +12,12 @@ import type { FioriElementsApp, FPMSettings } from './types';
 import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
-import type { TemplateOptions } from './data/templateAttributes';
+import {
+    type TemplateOptions,
+    TemplateTypeAttributes,
+    minSupportedUI5Version,
+    minSupportedUI5VersionV4
+} from './data/templateAttributes';
 import { changesPreviewToVersion, escapeFLPText } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
@@ -141,11 +146,13 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     extendManifestJson(fs, basePath, rootTemplatesPath, feApp);
 
     const packageJson: Package = JSON.parse(fs.read(packagePath));
-    // Add tests only if v4, for now, and we have metadata (and therefore a mock server config)
+    // Add tests only if v4, for now, and we have metadata (and therefore a mock server config) or has a cds service
     const addTest =
-        !!feApp.appOptions.addTests && feApp.service?.version === OdataVersion.v4 && !!feApp.service?.metadata;
+        !!feApp.appOptions.addTests &&
+        feApp.service?.version === OdataVersion.v4 &&
+        (!!feApp.service?.metadata || feApp.service.type === ServiceType.CDS);
 
-    packageJson.scripts = Object.assign(packageJson.scripts || {}, {
+    packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
         ...getPackageJsonTasks({
             localOnly: !feApp.service?.url,
             addMock: !!feApp.service?.metadata,
@@ -175,5 +182,5 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     return fs;
 }
 
-export { generate, FioriElementsApp, App };
+export { generate, FioriElementsApp, App, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
 export * from './types';

@@ -1,0 +1,1208 @@
+{
+  "name": "declaration",
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "children": {
+          "path": [
+            {
+              "name": "path",
+              "children": {
+                "pathSegment": [
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "image": "UI",
+                          "startOffset": 0,
+                          "endOffset": 1,
+                          "startLine": 1,
+                          "endLine": 1,
+                          "startColumn": 1,
+                          "endColumn": 2,
+                          "tokenTypeIdx": 8,
+                          "tokenType": {
+                            "name": "Identifier",
+                            "PATTERN": {},
+                            "tokenTypeIdx": 8,
+                            "CATEGORIES": [],
+                            "categoryMatches": [],
+                            "categoryMatchesMap": {},
+                            "isParent": false,
+                            "LONGER_ALT": {
+                              "name": "TermCastIdentifier",
+                              "PATTERN": {},
+                              "tokenTypeIdx": 7,
+                              "CATEGORIES": [],
+                              "categoryMatches": [],
+                              "categoryMatchesMap": {},
+                              "isParent": false
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 0,
+                      "startLine": 1,
+                      "startColumn": 1,
+                      "endOffset": 1,
+                      "endLine": 1,
+                      "endColumn": 2
+                    }
+                  },
+                  {
+                    "name": "pathSegment",
+                    "children": {
+                      "Identifier": [
+                        {
+                          "image": "LineItem",
+                          "startOffset": 3,
+                          "endOffset": 10,
+                          "startLine": 1,
+                          "endLine": 1,
+                          "startColumn": 4,
+                          "endColumn": 11,
+                          "tokenTypeIdx": 8,
+                          "tokenType": {
+                            "name": "Identifier",
+                            "PATTERN": {},
+                            "tokenTypeIdx": 8,
+                            "CATEGORIES": [],
+                            "categoryMatches": [],
+                            "categoryMatchesMap": {},
+                            "isParent": false,
+                            "LONGER_ALT": {
+                              "name": "TermCastIdentifier",
+                              "PATTERN": {},
+                              "tokenTypeIdx": 7,
+                              "CATEGORIES": [],
+                              "categoryMatches": [],
+                              "categoryMatchesMap": {},
+                              "isParent": false
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 3,
+                      "startLine": 1,
+                      "startColumn": 4,
+                      "endOffset": 10,
+                      "endLine": 1,
+                      "endColumn": 11
+                    }
+                  }
+                ],
+                "PathSegmentSeparator": [
+                  {
+                    "image": ".",
+                    "startOffset": 2,
+                    "endOffset": 2,
+                    "startLine": 1,
+                    "endLine": 1,
+                    "startColumn": 3,
+                    "endColumn": 3,
+                    "tokenTypeIdx": 21,
+                    "tokenType": {
+                      "name": "PathSegmentSeparator",
+                      "PATTERN": {},
+                      "tokenTypeIdx": 21,
+                      "CATEGORIES": [],
+                      "categoryMatches": [],
+                      "categoryMatchesMap": {},
+                      "isParent": false
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 0,
+                "startLine": 1,
+                "startColumn": 1,
+                "endOffset": 10,
+                "endLine": 1,
+                "endColumn": 11
+              }
+            }
+          ],
+          "Colon": [
+            {
+              "image": ":",
+              "startOffset": 12,
+              "endOffset": 12,
+              "startLine": 1,
+              "endLine": 1,
+              "startColumn": 13,
+              "endColumn": 13,
+              "tokenTypeIdx": 19,
+              "tokenType": {
+                "name": "Colon",
+                "PATTERN": ":",
+                "tokenTypeIdx": 19,
+                "CATEGORIES": [],
+                "categoryMatches": [],
+                "categoryMatchesMap": {},
+                "isParent": false
+              }
+            }
+          ],
+          "value": [
+            {
+              "name": "value",
+              "children": {
+                "collection": [
+                  {
+                    "name": "collection",
+                    "children": {
+                      "LBracket": [
+                        {
+                          "image": "[",
+                          "startOffset": 14,
+                          "endOffset": 14,
+                          "startLine": 1,
+                          "endLine": 1,
+                          "startColumn": 15,
+                          "endColumn": 15,
+                          "tokenTypeIdx": 25,
+                          "tokenType": {
+                            "name": "LBracket",
+                            "PATTERN": "[",
+                            "tokenTypeIdx": 25,
+                            "CATEGORIES": [],
+                            "categoryMatches": [],
+                            "categoryMatchesMap": {},
+                            "isParent": false
+                          }
+                        }
+                      ],
+                      "collectionValue": [
+                        {
+                          "name": "collectionValue",
+                          "children": {
+                            "struct": [
+                              {
+                                "name": "struct",
+                                "children": {
+                                  "LCurly": [
+                                    {
+                                      "image": "{",
+                                      "startOffset": 21,
+                                      "endOffset": 21,
+                                      "startLine": 2,
+                                      "endLine": 2,
+                                      "startColumn": 5,
+                                      "endColumn": 5,
+                                      "tokenTypeIdx": 27,
+                                      "tokenType": {
+                                        "name": "LCurly",
+                                        "PATTERN": "{",
+                                        "tokenTypeIdx": 27,
+                                        "CATEGORIES": [],
+                                        "categoryMatches": [],
+                                        "categoryMatchesMap": {},
+                                        "isParent": false
+                                      }
+                                    }
+                                  ],
+                                  "assignment": [
+                                    {
+                                      "name": "assignment",
+                                      "children": {
+                                        "path": [
+                                          {
+                                            "name": "path",
+                                            "children": {
+                                              "pathSegment": [
+                                                {
+                                                  "name": "pathSegment",
+                                                  "children": {
+                                                    "Identifier": [
+                                                      {
+                                                        "image": "$Type",
+                                                        "startOffset": 32,
+                                                        "endOffset": 36,
+                                                        "startLine": 3,
+                                                        "endLine": 3,
+                                                        "startColumn": 9,
+                                                        "endColumn": 13,
+                                                        "tokenTypeIdx": 8,
+                                                        "tokenType": {
+                                                          "name": "Identifier",
+                                                          "PATTERN": {},
+                                                          "tokenTypeIdx": 8,
+                                                          "CATEGORIES": [],
+                                                          "categoryMatches": [],
+                                                          "categoryMatchesMap": {},
+                                                          "isParent": false,
+                                                          "LONGER_ALT": {
+                                                            "name": "TermCastIdentifier",
+                                                            "PATTERN": {},
+                                                            "tokenTypeIdx": 7,
+                                                            "CATEGORIES": [],
+                                                            "categoryMatches": [],
+                                                            "categoryMatchesMap": {},
+                                                            "isParent": false
+                                                          }
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  "location": {
+                                                    "startOffset": 32,
+                                                    "startLine": 3,
+                                                    "startColumn": 9,
+                                                    "endOffset": 36,
+                                                    "endLine": 3,
+                                                    "endColumn": 13
+                                                  }
+                                                }
+                                              ]
+                                            },
+                                            "location": {
+                                              "startOffset": 32,
+                                              "startLine": 3,
+                                              "startColumn": 9,
+                                              "endOffset": 36,
+                                              "endLine": 3,
+                                              "endColumn": 13
+                                            }
+                                          }
+                                        ],
+                                        "Colon": [
+                                          {
+                                            "image": ":",
+                                            "startOffset": 44,
+                                            "endOffset": 44,
+                                            "startLine": 3,
+                                            "endLine": 3,
+                                            "startColumn": 21,
+                                            "endColumn": 21,
+                                            "tokenTypeIdx": 19,
+                                            "tokenType": {
+                                              "name": "Colon",
+                                              "PATTERN": ":",
+                                              "tokenTypeIdx": 19,
+                                              "CATEGORIES": [],
+                                              "categoryMatches": [],
+                                              "categoryMatchesMap": {},
+                                              "isParent": false
+                                            }
+                                          }
+                                        ],
+                                        "value": [
+                                          {
+                                            "name": "value",
+                                            "children": {
+                                              "string": [
+                                                {
+                                                  "name": "string",
+                                                  "children": {
+                                                    "SingleQuote": [
+                                                      {
+                                                        "image": "'",
+                                                        "startOffset": 46,
+                                                        "endOffset": 46,
+                                                        "startLine": 3,
+                                                        "endLine": 3,
+                                                        "startColumn": 23,
+                                                        "endColumn": 23,
+                                                        "tokenTypeIdx": 22,
+                                                        "tokenType": {
+                                                          "name": "SingleQuote",
+                                                          "PATTERN": "'",
+                                                          "tokenTypeIdx": 22,
+                                                          "CATEGORIES": [],
+                                                          "categoryMatches": [],
+                                                          "categoryMatchesMap": {},
+                                                          "isParent": false,
+                                                          "PUSH_MODE": "string_mode"
+                                                        }
+                                                      }
+                                                    ],
+                                                    "String": [
+                                                      {
+                                                        "image": "UI.DataField",
+                                                        "startOffset": 47,
+                                                        "endOffset": 58,
+                                                        "startLine": 3,
+                                                        "endLine": 3,
+                                                        "startColumn": 24,
+                                                        "endColumn": 35,
+                                                        "tokenTypeIdx": 14,
+                                                        "tokenType": {
+                                                          "name": "String",
+                                                          "PATTERN": {},
+                                                          "tokenTypeIdx": 14,
+                                                          "CATEGORIES": [],
+                                                          "categoryMatches": [],
+                                                          "categoryMatchesMap": {},
+                                                          "isParent": false
+                                                        }
+                                                      }
+                                                    ],
+                                                    "StringExit": [
+                                                      {
+                                                        "image": "'",
+                                                        "startOffset": 59,
+                                                        "endOffset": 59,
+                                                        "startLine": 3,
+                                                        "endLine": 3,
+                                                        "startColumn": 36,
+                                                        "endColumn": 36,
+                                                        "tokenTypeIdx": 15,
+                                                        "tokenType": {
+                                                          "name": "StringExit",
+                                                          "PATTERN": {},
+                                                          "tokenTypeIdx": 15,
+                                                          "CATEGORIES": [],
+                                                          "categoryMatches": [],
+                                                          "categoryMatchesMap": {},
+                                                          "isParent": false,
+                                                          "POP_MODE": true
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  "location": {
+                                                    "startOffset": 46,
+                                                    "startLine": 3,
+                                                    "startColumn": 23,
+                                                    "endOffset": 59,
+                                                    "endLine": 3,
+                                                    "endColumn": 36
+                                                  }
+                                                }
+                                              ]
+                                            },
+                                            "location": {
+                                              "startOffset": 46,
+                                              "startLine": 3,
+                                              "startColumn": 23,
+                                              "endOffset": 59,
+                                              "endLine": 3,
+                                              "endColumn": 36
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "location": {
+                                        "startOffset": 32,
+                                        "startLine": 3,
+                                        "startColumn": 9,
+                                        "endOffset": 59,
+                                        "endLine": 3,
+                                        "endColumn": 36
+                                      }
+                                    },
+                                    {
+                                      "name": "assignment",
+                                      "children": {
+                                        "path": [
+                                          {
+                                            "name": "path",
+                                            "children": {
+                                              "pathSegment": [
+                                                {
+                                                  "name": "pathSegment",
+                                                  "children": {
+                                                    "Identifier": [
+                                                      {
+                                                        "image": "Value",
+                                                        "startOffset": 73,
+                                                        "endOffset": 77,
+                                                        "startLine": 5,
+                                                        "endLine": 5,
+                                                        "startColumn": 9,
+                                                        "endColumn": 13,
+                                                        "tokenTypeIdx": 8,
+                                                        "tokenType": {
+                                                          "name": "Identifier",
+                                                          "PATTERN": {},
+                                                          "tokenTypeIdx": 8,
+                                                          "CATEGORIES": [],
+                                                          "categoryMatches": [],
+                                                          "categoryMatchesMap": {},
+                                                          "isParent": false,
+                                                          "LONGER_ALT": {
+                                                            "name": "TermCastIdentifier",
+                                                            "PATTERN": {},
+                                                            "tokenTypeIdx": 7,
+                                                            "CATEGORIES": [],
+                                                            "categoryMatches": [],
+                                                            "categoryMatchesMap": {},
+                                                            "isParent": false
+                                                          }
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  "location": {
+                                                    "startOffset": 73,
+                                                    "startLine": 5,
+                                                    "startColumn": 9,
+                                                    "endOffset": 77,
+                                                    "endLine": 5,
+                                                    "endColumn": 13
+                                                  }
+                                                }
+                                              ]
+                                            },
+                                            "location": {
+                                              "startOffset": 73,
+                                              "startLine": 5,
+                                              "startColumn": 9,
+                                              "endOffset": 77,
+                                              "endLine": 5,
+                                              "endColumn": 13
+                                            }
+                                          }
+                                        ],
+                                        "Colon": [
+                                          {
+                                            "image": ":",
+                                            "startOffset": 78,
+                                            "endOffset": 78,
+                                            "startLine": 5,
+                                            "endLine": 5,
+                                            "startColumn": 14,
+                                            "endColumn": 14,
+                                            "tokenTypeIdx": 19,
+                                            "tokenType": {
+                                              "name": "Colon",
+                                              "PATTERN": ":",
+                                              "tokenTypeIdx": 19,
+                                              "CATEGORIES": [],
+                                              "categoryMatches": [],
+                                              "categoryMatchesMap": {},
+                                              "isParent": false
+                                            }
+                                          }
+                                        ],
+                                        "value": [
+                                          {
+                                            "name": "value",
+                                            "children": {
+                                              "path": [
+                                                {
+                                                  "name": "path",
+                                                  "children": {
+                                                    "pathSegment": [
+                                                      {
+                                                        "name": "pathSegment",
+                                                        "children": {
+                                                          "Identifier": [
+                                                            {
+                                                              "image": "title",
+                                                              "startOffset": 80,
+                                                              "endOffset": 84,
+                                                              "startLine": 5,
+                                                              "endLine": 5,
+                                                              "startColumn": 16,
+                                                              "endColumn": 20,
+                                                              "tokenTypeIdx": 8,
+                                                              "tokenType": {
+                                                                "name": "Identifier",
+                                                                "PATTERN": {},
+                                                                "tokenTypeIdx": 8,
+                                                                "CATEGORIES": [],
+                                                                "categoryMatches": [],
+                                                                "categoryMatchesMap": {},
+                                                                "isParent": false,
+                                                                "LONGER_ALT": {
+                                                                  "name": "TermCastIdentifier",
+                                                                  "PATTERN": {},
+                                                                  "tokenTypeIdx": 7,
+                                                                  "CATEGORIES": [],
+                                                                  "categoryMatches": [],
+                                                                  "categoryMatchesMap": {},
+                                                                  "isParent": false
+                                                                }
+                                                              }
+                                                            }
+                                                          ]
+                                                        },
+                                                        "location": {
+                                                          "startOffset": 80,
+                                                          "startLine": 5,
+                                                          "startColumn": 16,
+                                                          "endOffset": 84,
+                                                          "endLine": 5,
+                                                          "endColumn": 20
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  "location": {
+                                                    "startOffset": 80,
+                                                    "startLine": 5,
+                                                    "startColumn": 16,
+                                                    "endOffset": 84,
+                                                    "endLine": 5,
+                                                    "endColumn": 20
+                                                  }
+                                                }
+                                              ]
+                                            },
+                                            "location": {
+                                              "startOffset": 80,
+                                              "startLine": 5,
+                                              "startColumn": 16,
+                                              "endOffset": 84,
+                                              "endLine": 5,
+                                              "endColumn": 20
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "location": {
+                                        "startOffset": 73,
+                                        "startLine": 5,
+                                        "startColumn": 9,
+                                        "endOffset": 84,
+                                        "endLine": 5,
+                                        "endColumn": 20
+                                      }
+                                    }
+                                  ],
+                                  "Comma": [
+                                    {
+                                      "image": ",",
+                                      "startOffset": 60,
+                                      "endOffset": 60,
+                                      "startLine": 3,
+                                      "endLine": 3,
+                                      "startColumn": 37,
+                                      "endColumn": 37,
+                                      "tokenTypeIdx": 20,
+                                      "tokenType": {
+                                        "name": "Comma",
+                                        "PATTERN": ",",
+                                        "tokenTypeIdx": 20,
+                                        "CATEGORIES": [],
+                                        "categoryMatches": [],
+                                        "categoryMatchesMap": {},
+                                        "isParent": false
+                                      }
+                                    },
+                                    {
+                                      "image": ",",
+                                      "startOffset": 85,
+                                      "endOffset": 85,
+                                      "startLine": 5,
+                                      "endLine": 5,
+                                      "startColumn": 21,
+                                      "endColumn": 21,
+                                      "tokenTypeIdx": 20,
+                                      "tokenType": {
+                                        "name": "Comma",
+                                        "PATTERN": ",",
+                                        "tokenTypeIdx": 20,
+                                        "CATEGORIES": [],
+                                        "categoryMatches": [],
+                                        "categoryMatchesMap": {},
+                                        "isParent": false
+                                      }
+                                    }
+                                  ],
+                                  "RCurly": [
+                                    {
+                                      "image": "}",
+                                      "startOffset": 92,
+                                      "endOffset": 92,
+                                      "startLine": 6,
+                                      "endLine": 6,
+                                      "startColumn": 5,
+                                      "endColumn": 5,
+                                      "tokenTypeIdx": 28,
+                                      "tokenType": {
+                                        "name": "RCurly",
+                                        "PATTERN": "}",
+                                        "tokenTypeIdx": 28,
+                                        "CATEGORIES": [],
+                                        "categoryMatches": [],
+                                        "categoryMatchesMap": {},
+                                        "isParent": false
+                                      }
+                                    }
+                                  ]
+                                },
+                                "location": {
+                                  "startOffset": 21,
+                                  "startLine": 2,
+                                  "startColumn": 5,
+                                  "endOffset": 92,
+                                  "endLine": 6,
+                                  "endColumn": 5
+                                }
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 21,
+                            "startLine": 2,
+                            "startColumn": 5,
+                            "endOffset": 92,
+                            "endLine": 6,
+                            "endColumn": 5
+                          }
+                        },
+                        {
+                          "name": "collectionValue",
+                          "children": {
+                            "struct": [
+                              {
+                                "name": "struct",
+                                "children": {
+                                  "LCurly": [
+                                    {
+                                      "image": "{",
+                                      "startOffset": 100,
+                                      "endOffset": 100,
+                                      "startLine": 7,
+                                      "endLine": 7,
+                                      "startColumn": 5,
+                                      "endColumn": 5,
+                                      "tokenTypeIdx": 27,
+                                      "tokenType": {
+                                        "name": "LCurly",
+                                        "PATTERN": "{",
+                                        "tokenTypeIdx": 27,
+                                        "CATEGORIES": [],
+                                        "categoryMatches": [],
+                                        "categoryMatchesMap": {},
+                                        "isParent": false
+                                      }
+                                    }
+                                  ],
+                                  "assignment": [
+                                    {
+                                      "name": "assignment",
+                                      "children": {
+                                        "path": [
+                                          {
+                                            "name": "path",
+                                            "children": {
+                                              "pathSegment": [
+                                                {
+                                                  "name": "pathSegment",
+                                                  "children": {
+                                                    "Identifier": [
+                                                      {
+                                                        "image": "$Type",
+                                                        "startOffset": 111,
+                                                        "endOffset": 115,
+                                                        "startLine": 8,
+                                                        "endLine": 8,
+                                                        "startColumn": 9,
+                                                        "endColumn": 13,
+                                                        "tokenTypeIdx": 8,
+                                                        "tokenType": {
+                                                          "name": "Identifier",
+                                                          "PATTERN": {},
+                                                          "tokenTypeIdx": 8,
+                                                          "CATEGORIES": [],
+                                                          "categoryMatches": [],
+                                                          "categoryMatchesMap": {},
+                                                          "isParent": false,
+                                                          "LONGER_ALT": {
+                                                            "name": "TermCastIdentifier",
+                                                            "PATTERN": {},
+                                                            "tokenTypeIdx": 7,
+                                                            "CATEGORIES": [],
+                                                            "categoryMatches": [],
+                                                            "categoryMatchesMap": {},
+                                                            "isParent": false
+                                                          }
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  "location": {
+                                                    "startOffset": 111,
+                                                    "startLine": 8,
+                                                    "startColumn": 9,
+                                                    "endOffset": 115,
+                                                    "endLine": 8,
+                                                    "endColumn": 13
+                                                  }
+                                                }
+                                              ]
+                                            },
+                                            "location": {
+                                              "startOffset": 111,
+                                              "startLine": 8,
+                                              "startColumn": 9,
+                                              "endOffset": 115,
+                                              "endLine": 8,
+                                              "endColumn": 13
+                                            }
+                                          }
+                                        ],
+                                        "Colon": [
+                                          {
+                                            "image": ":",
+                                            "startOffset": 117,
+                                            "endOffset": 117,
+                                            "startLine": 8,
+                                            "endLine": 8,
+                                            "startColumn": 15,
+                                            "endColumn": 15,
+                                            "tokenTypeIdx": 19,
+                                            "tokenType": {
+                                              "name": "Colon",
+                                              "PATTERN": ":",
+                                              "tokenTypeIdx": 19,
+                                              "CATEGORIES": [],
+                                              "categoryMatches": [],
+                                              "categoryMatchesMap": {},
+                                              "isParent": false
+                                            }
+                                          }
+                                        ],
+                                        "value": [
+                                          {
+                                            "name": "value",
+                                            "children": {
+                                              "string": [
+                                                {
+                                                  "name": "string",
+                                                  "children": {
+                                                    "SingleQuote": [
+                                                      {
+                                                        "image": "'",
+                                                        "startOffset": 119,
+                                                        "endOffset": 119,
+                                                        "startLine": 8,
+                                                        "endLine": 8,
+                                                        "startColumn": 17,
+                                                        "endColumn": 17,
+                                                        "tokenTypeIdx": 22,
+                                                        "tokenType": {
+                                                          "name": "SingleQuote",
+                                                          "PATTERN": "'",
+                                                          "tokenTypeIdx": 22,
+                                                          "CATEGORIES": [],
+                                                          "categoryMatches": [],
+                                                          "categoryMatchesMap": {},
+                                                          "isParent": false,
+                                                          "PUSH_MODE": "string_mode"
+                                                        }
+                                                      }
+                                                    ],
+                                                    "String": [
+                                                      {
+                                                        "image": "UI.DataField",
+                                                        "startOffset": 120,
+                                                        "endOffset": 131,
+                                                        "startLine": 8,
+                                                        "endLine": 8,
+                                                        "startColumn": 18,
+                                                        "endColumn": 29,
+                                                        "tokenTypeIdx": 14,
+                                                        "tokenType": {
+                                                          "name": "String",
+                                                          "PATTERN": {},
+                                                          "tokenTypeIdx": 14,
+                                                          "CATEGORIES": [],
+                                                          "categoryMatches": [],
+                                                          "categoryMatchesMap": {},
+                                                          "isParent": false
+                                                        }
+                                                      }
+                                                    ],
+                                                    "StringExit": [
+                                                      {
+                                                        "image": "'",
+                                                        "startOffset": 132,
+                                                        "endOffset": 132,
+                                                        "startLine": 8,
+                                                        "endLine": 8,
+                                                        "startColumn": 30,
+                                                        "endColumn": 30,
+                                                        "tokenTypeIdx": 15,
+                                                        "tokenType": {
+                                                          "name": "StringExit",
+                                                          "PATTERN": {},
+                                                          "tokenTypeIdx": 15,
+                                                          "CATEGORIES": [],
+                                                          "categoryMatches": [],
+                                                          "categoryMatchesMap": {},
+                                                          "isParent": false,
+                                                          "POP_MODE": true
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  "location": {
+                                                    "startOffset": 119,
+                                                    "startLine": 8,
+                                                    "startColumn": 17,
+                                                    "endOffset": 132,
+                                                    "endLine": 8,
+                                                    "endColumn": 30
+                                                  }
+                                                }
+                                              ]
+                                            },
+                                            "location": {
+                                              "startOffset": 119,
+                                              "startLine": 8,
+                                              "startColumn": 17,
+                                              "endOffset": 132,
+                                              "endLine": 8,
+                                              "endColumn": 30
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "location": {
+                                        "startOffset": 111,
+                                        "startLine": 8,
+                                        "startColumn": 9,
+                                        "endOffset": 132,
+                                        "endLine": 8,
+                                        "endColumn": 30
+                                      }
+                                    },
+                                    {
+                                      "name": "assignment",
+                                      "children": {
+                                        "path": [
+                                          {
+                                            "name": "path",
+                                            "children": {
+                                              "pathSegment": [
+                                                {
+                                                  "name": "pathSegment",
+                                                  "children": {
+                                                    "Identifier": [
+                                                      {
+                                                        "image": "Value",
+                                                        "startOffset": 144,
+                                                        "endOffset": 148,
+                                                        "startLine": 9,
+                                                        "endLine": 9,
+                                                        "startColumn": 9,
+                                                        "endColumn": 13,
+                                                        "tokenTypeIdx": 8,
+                                                        "tokenType": {
+                                                          "name": "Identifier",
+                                                          "PATTERN": {},
+                                                          "tokenTypeIdx": 8,
+                                                          "CATEGORIES": [],
+                                                          "categoryMatches": [],
+                                                          "categoryMatchesMap": {},
+                                                          "isParent": false,
+                                                          "LONGER_ALT": {
+                                                            "name": "TermCastIdentifier",
+                                                            "PATTERN": {},
+                                                            "tokenTypeIdx": 7,
+                                                            "CATEGORIES": [],
+                                                            "categoryMatches": [],
+                                                            "categoryMatchesMap": {},
+                                                            "isParent": false
+                                                          }
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  "location": {
+                                                    "startOffset": 144,
+                                                    "startLine": 9,
+                                                    "startColumn": 9,
+                                                    "endOffset": 148,
+                                                    "endLine": 9,
+                                                    "endColumn": 13
+                                                  }
+                                                }
+                                              ]
+                                            },
+                                            "location": {
+                                              "startOffset": 144,
+                                              "startLine": 9,
+                                              "startColumn": 9,
+                                              "endOffset": 148,
+                                              "endLine": 9,
+                                              "endColumn": 13
+                                            }
+                                          }
+                                        ],
+                                        "Colon": [
+                                          {
+                                            "image": ":",
+                                            "startOffset": 150,
+                                            "endOffset": 150,
+                                            "startLine": 9,
+                                            "endLine": 9,
+                                            "startColumn": 15,
+                                            "endColumn": 15,
+                                            "tokenTypeIdx": 19,
+                                            "tokenType": {
+                                              "name": "Colon",
+                                              "PATTERN": ":",
+                                              "tokenTypeIdx": 19,
+                                              "CATEGORIES": [],
+                                              "categoryMatches": [],
+                                              "categoryMatchesMap": {},
+                                              "isParent": false
+                                            }
+                                          }
+                                        ],
+                                        "value": [
+                                          {
+                                            "name": "value",
+                                            "children": {
+                                              "path": [
+                                                {
+                                                  "name": "path",
+                                                  "children": {
+                                                    "pathSegment": [
+                                                      {
+                                                        "name": "pathSegment",
+                                                        "children": {
+                                                          "Identifier": [
+                                                            {
+                                                              "image": "stepStatus",
+                                                              "startOffset": 152,
+                                                              "endOffset": 161,
+                                                              "startLine": 9,
+                                                              "endLine": 9,
+                                                              "startColumn": 17,
+                                                              "endColumn": 26,
+                                                              "tokenTypeIdx": 8,
+                                                              "tokenType": {
+                                                                "name": "Identifier",
+                                                                "PATTERN": {},
+                                                                "tokenTypeIdx": 8,
+                                                                "CATEGORIES": [],
+                                                                "categoryMatches": [],
+                                                                "categoryMatchesMap": {},
+                                                                "isParent": false,
+                                                                "LONGER_ALT": {
+                                                                  "name": "TermCastIdentifier",
+                                                                  "PATTERN": {},
+                                                                  "tokenTypeIdx": 7,
+                                                                  "CATEGORIES": [],
+                                                                  "categoryMatches": [],
+                                                                  "categoryMatchesMap": {},
+                                                                  "isParent": false
+                                                                }
+                                                              }
+                                                            }
+                                                          ]
+                                                        },
+                                                        "location": {
+                                                          "startOffset": 152,
+                                                          "startLine": 9,
+                                                          "startColumn": 17,
+                                                          "endOffset": 161,
+                                                          "endLine": 9,
+                                                          "endColumn": 26
+                                                        }
+                                                      }
+                                                    ]
+                                                  },
+                                                  "location": {
+                                                    "startOffset": 152,
+                                                    "startLine": 9,
+                                                    "startColumn": 17,
+                                                    "endOffset": 161,
+                                                    "endLine": 9,
+                                                    "endColumn": 26
+                                                  }
+                                                }
+                                              ]
+                                            },
+                                            "location": {
+                                              "startOffset": 152,
+                                              "startLine": 9,
+                                              "startColumn": 17,
+                                              "endOffset": 161,
+                                              "endLine": 9,
+                                              "endColumn": 26
+                                            }
+                                          }
+                                        ]
+                                      },
+                                      "location": {
+                                        "startOffset": 144,
+                                        "startLine": 9,
+                                        "startColumn": 9,
+                                        "endOffset": 161,
+                                        "endLine": 9,
+                                        "endColumn": 26
+                                      }
+                                    }
+                                  ],
+                                  "Comma": [
+                                    {
+                                      "image": ",",
+                                      "startOffset": 133,
+                                      "endOffset": 133,
+                                      "startLine": 8,
+                                      "endLine": 8,
+                                      "startColumn": 31,
+                                      "endColumn": 31,
+                                      "tokenTypeIdx": 20,
+                                      "tokenType": {
+                                        "name": "Comma",
+                                        "PATTERN": ",",
+                                        "tokenTypeIdx": 20,
+                                        "CATEGORIES": [],
+                                        "categoryMatches": [],
+                                        "categoryMatchesMap": {},
+                                        "isParent": false
+                                      }
+                                    }
+                                  ],
+                                  "RCurly": [
+                                    {
+                                      "image": "}",
+                                      "startOffset": 168,
+                                      "endOffset": 168,
+                                      "startLine": 10,
+                                      "endLine": 10,
+                                      "startColumn": 5,
+                                      "endColumn": 5,
+                                      "tokenTypeIdx": 28,
+                                      "tokenType": {
+                                        "name": "RCurly",
+                                        "PATTERN": "}",
+                                        "tokenTypeIdx": 28,
+                                        "CATEGORIES": [],
+                                        "categoryMatches": [],
+                                        "categoryMatchesMap": {},
+                                        "isParent": false
+                                      }
+                                    }
+                                  ]
+                                },
+                                "location": {
+                                  "startOffset": 100,
+                                  "startLine": 7,
+                                  "startColumn": 5,
+                                  "endOffset": 168,
+                                  "endLine": 10,
+                                  "endColumn": 5
+                                }
+                              }
+                            ]
+                          },
+                          "location": {
+                            "startOffset": 100,
+                            "startLine": 7,
+                            "startColumn": 5,
+                            "endOffset": 168,
+                            "endLine": 10,
+                            "endColumn": 5
+                          }
+                        }
+                      ],
+                      "Comma": [
+                        {
+                          "image": ",",
+                          "startOffset": 93,
+                          "endOffset": 93,
+                          "startLine": 6,
+                          "endLine": 6,
+                          "startColumn": 6,
+                          "endColumn": 6,
+                          "tokenTypeIdx": 20,
+                          "tokenType": {
+                            "name": "Comma",
+                            "PATTERN": ",",
+                            "tokenTypeIdx": 20,
+                            "CATEGORIES": [],
+                            "categoryMatches": [],
+                            "categoryMatchesMap": {},
+                            "isParent": false
+                          }
+                        },
+                        {
+                          "image": ",",
+                          "startOffset": 169,
+                          "endOffset": 169,
+                          "startLine": 10,
+                          "endLine": 10,
+                          "startColumn": 6,
+                          "endColumn": 6,
+                          "tokenTypeIdx": 20,
+                          "tokenType": {
+                            "name": "Comma",
+                            "PATTERN": ",",
+                            "tokenTypeIdx": 20,
+                            "CATEGORIES": [],
+                            "categoryMatches": [],
+                            "categoryMatchesMap": {},
+                            "isParent": false
+                          }
+                        }
+                      ],
+                      "RBracket": [
+                        {
+                          "image": "]",
+                          "startOffset": 172,
+                          "endOffset": 172,
+                          "startLine": 11,
+                          "endLine": 11,
+                          "startColumn": 1,
+                          "endColumn": 1,
+                          "tokenTypeIdx": 26,
+                          "tokenType": {
+                            "name": "RBracket",
+                            "PATTERN": "]",
+                            "tokenTypeIdx": 26,
+                            "CATEGORIES": [],
+                            "categoryMatches": [],
+                            "categoryMatchesMap": {},
+                            "isParent": false
+                          }
+                        }
+                      ]
+                    },
+                    "location": {
+                      "startOffset": 14,
+                      "startLine": 1,
+                      "startColumn": 15,
+                      "endOffset": 172,
+                      "endLine": 11,
+                      "endColumn": 1
+                    }
+                  }
+                ]
+              },
+              "location": {
+                "startOffset": 14,
+                "startLine": 1,
+                "startColumn": 15,
+                "endOffset": 172,
+                "endLine": 11,
+                "endColumn": 1
+              }
+            }
+          ]
+        },
+        "location": {
+          "startOffset": 0,
+          "startLine": 1,
+          "startColumn": 1,
+          "endOffset": 172,
+          "endLine": 11,
+          "endColumn": 1
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": 0,
+    "startLine": 1,
+    "startColumn": 1,
+    "endOffset": 172,
+    "endLine": 11,
+    "endColumn": 1
+  }
+}

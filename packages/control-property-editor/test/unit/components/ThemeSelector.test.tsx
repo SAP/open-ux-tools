@@ -62,7 +62,7 @@ test('change theme to light and navigate via keyboard for dark to have focus', a
     const button = screen.getByRole('button');
     button.click();
     // Wait for callout open
-    jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+    jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => {
         cb(1);
         return 1;
     });

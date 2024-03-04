@@ -1,0 +1,39 @@
+UI: {
+    A: {
+        "$edmJson" : ,
+    },
+    B: {
+        "$edmJson" : {  }
+    },
+    C: {
+        "$edmJson" : { $Apply: [] }
+    },
+    D: {
+        "$edmJson" : { $Apply: ['',   ] }
+    },
+    E: {
+        "$edmJS" : { $Apply: ['',   ] }
+    },
+    F: {
+        "$edmJson1" : { $Apply: ['',   ] }
+    },
+    G: {
+        "$edmJson" : { $Apply: {},  }
+    },
+    H: {
+        "$edmJson" : { $Apply: {}, $Path: 'description' }
+    },
+    I: {
+        "$edmJson" : { $Path: 'description1' }
+    },
+    J: {
+        "$edmJson" : { $If : [
+            { $Eq : [
+                {   $Path : 'IsActiveEntity' },
+                false
+            ]},
+            0,
+            10
+        ]}
+    },
+}

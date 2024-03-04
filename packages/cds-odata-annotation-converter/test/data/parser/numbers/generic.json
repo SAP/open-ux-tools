@@ -1,0 +1,660 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(26,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.LineItem",
+                "valueRange": "[(1,4)..(1,12)]"
+            }
+        },
+        "contentRange": "[(1,13)..(26,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(1,14)..(26,5)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(1,15)..(26,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(2,8)..(4,9)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(2,9)..(4,8)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(3,12)..(3,20)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(3,12)..(3,17)]"
+                                    }
+                                },
+                                "contentRange": "[(3,18)..(3,20)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(3,19)..(3,20)]",
+                                        "name": "Int",
+                                        "attributes": {},
+                                        "contentRange": "[(3,19)..(3,20)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(3,19)..(3,20)]",
+                                                "text": "1"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(5,8)..(7,9)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(5,9)..(7,8)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(6,12)..(6,22)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(6,12)..(6,17)]"
+                                    }
+                                },
+                                "contentRange": "[(6,18)..(6,22)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(6,19)..(6,22)]",
+                                        "name": "Int",
+                                        "attributes": {},
+                                        "contentRange": "[(6,19)..(6,22)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(6,19)..(6,22)]",
+                                                "text": "1"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(8,8)..(10,9)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(8,9)..(10,8)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(9,12)..(9,22)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(9,12)..(9,17)]"
+                                    }
+                                },
+                                "contentRange": "[(9,18)..(9,22)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(9,19)..(9,22)]",
+                                        "name": "Decimal",
+                                        "attributes": {},
+                                        "contentRange": "[(9,19)..(9,22)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(9,19)..(9,22)]",
+                                                "text": "1.5"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(11,8)..(13,9)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(11,9)..(13,8)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(12,12)..(12,24)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(12,12)..(12,17)]"
+                                    }
+                                },
+                                "contentRange": "[(12,18)..(12,24)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(12,19)..(12,24)]",
+                                        "name": "Int",
+                                        "attributes": {},
+                                        "contentRange": "[(12,19)..(12,24)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(12,19)..(12,24)]",
+                                                "text": "12300000"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(14,8)..(16,9)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(14,9)..(16,8)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(15,12)..(15,26)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(15,12)..(15,17)]"
+                                    }
+                                },
+                                "contentRange": "[(15,18)..(15,26)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(15,19)..(15,26)]",
+                                        "name": "String",
+                                        "attributes": {},
+                                        "contentRange": "[(15,19)..(15,26)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(15,19)..(15,26)]",
+                                                "text": "123e500"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(17,8)..(19,9)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(17,9)..(19,8)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(18,12)..(18,27)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(18,12)..(18,17)]"
+                                    }
+                                },
+                                "contentRange": "[(18,18)..(18,27)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(18,19)..(18,27)]",
+                                        "name": "Int",
+                                        "attributes": {},
+                                        "contentRange": "[(18,19)..(18,27)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(18,19)..(18,27)]",
+                                                "text": "0"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(20,8)..(22,9)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(20,9)..(22,8)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(21,12)..(21,27)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(21,12)..(21,17)]"
+                                    }
+                                },
+                                "contentRange": "[(21,18)..(21,27)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(21,19)..(21,27)]",
+                                        "name": "String",
+                                        "attributes": {},
+                                        "contentRange": "[(21,19)..(21,27)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(21,19)..(21,27)]",
+                                                "text": "-123e500"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(23,8)..(25,9)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(23,9)..(25,8)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(24,12)..(24,28)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(24,12)..(24,17)]"
+                                    }
+                                },
+                                "contentRange": "[(24,18)..(24,28)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(24,19)..(24,28)]",
+                                        "name": "Int",
+                                        "attributes": {},
+                                        "contentRange": "[(24,19)..(24,28)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(24,19)..(24,28)]",
+                                                "text": "0"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(27,4)..(30,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.DataPoint",
+                "valueRange": "[(27,4)..(27,13)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "a",
+                "valueRange": "[(27,15)..(27,16)]"
+            }
+        },
+        "contentRange": "[(27,17)..(30,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(27,18)..(30,5)]",
+                "name": "Record",
+                "attributes": {},
+                "contentRange": "[(27,19)..(30,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(28,8)..(28,31)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "MinimumValue",
+                                "valueRange": "[(28,8)..(28,20)]"
+                            }
+                        },
+                        "contentRange": "[(28,22)..(28,31)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(28,23)..(28,31)]",
+                                "name": "Decimal",
+                                "attributes": {},
+                                "contentRange": "[(28,23)..(28,31)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(28,23)..(28,31)]",
+                                        "text": "-123e500"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(29,8)..(29,30)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "MaximumValue",
+                                "valueRange": "[(29,8)..(29,20)]"
+                            }
+                        },
+                        "contentRange": "[(29,22)..(29,30)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(29,23)..(29,30)]",
+                                "name": "Decimal",
+                                "attributes": {},
+                                "contentRange": "[(29,23)..(29,30)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(29,23)..(29,30)]",
+                                        "text": "123e500"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(31,4)..(34,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.DataPoint",
+                "valueRange": "[(31,4)..(31,13)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "b",
+                "valueRange": "[(31,15)..(31,16)]"
+            }
+        },
+        "contentRange": "[(31,17)..(34,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(31,18)..(34,5)]",
+                "name": "Record",
+                "attributes": {},
+                "contentRange": "[(31,19)..(34,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(32,8)..(32,32)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "MinimumValue",
+                                "valueRange": "[(32,8)..(32,20)]"
+                            }
+                        },
+                        "contentRange": "[(32,22)..(32,32)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(32,23)..(32,32)]",
+                                "name": "Decimal",
+                                "attributes": {},
+                                "contentRange": "[(32,23)..(32,32)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(32,23)..(32,32)]",
+                                        "text": "0"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(33,8)..(33,31)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "MaximumValue",
+                                "valueRange": "[(33,8)..(33,20)]"
+                            }
+                        },
+                        "contentRange": "[(33,22)..(33,31)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(33,23)..(33,31)]",
+                                "name": "Decimal",
+                                "attributes": {},
+                                "contentRange": "[(33,23)..(33,31)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(33,23)..(33,31)]",
+                                        "text": "0"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(35,4)..(38,5)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.DataPoint",
+                "valueRange": "[(35,4)..(35,13)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "c",
+                "valueRange": "[(35,15)..(35,16)]"
+            }
+        },
+        "contentRange": "[(35,17)..(38,5)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(35,18)..(38,5)]",
+                "name": "Record",
+                "attributes": {},
+                "contentRange": "[(35,19)..(38,4)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(36,8)..(36,27)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "MinimumValue",
+                                "valueRange": "[(36,8)..(36,20)]"
+                            }
+                        },
+                        "contentRange": "[(36,22)..(36,27)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(36,23)..(36,27)]",
+                                "name": "Decimal",
+                                "attributes": {},
+                                "contentRange": "[(36,23)..(36,27)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(36,23)..(36,27)]",
+                                        "text": "-0.5"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(37,8)..(37,26)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "MaximumValue",
+                                "valueRange": "[(37,8)..(37,20)]"
+                            }
+                        },
+                        "contentRange": "[(37,22)..(37,26)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(37,23)..(37,26)]",
+                                "name": "Decimal",
+                                "attributes": {},
+                                "contentRange": "[(37,23)..(37,26)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(37,23)..(37,26)]",
+                                        "text": "2.5"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

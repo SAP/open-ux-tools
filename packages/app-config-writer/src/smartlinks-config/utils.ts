@@ -137,7 +137,7 @@ async function getTargetMappings(
     logger?: ToolsLogger
 ): Promise<{ [key: string]: TargetMapping }> {
     const response: SystemDetailsResponse | undefined = await sendRequest(config, logger);
-    if (!response || !response.targetMappings) {
+    if (!response?.targetMappings) {
         throw Error(t('error.noTarget'));
     }
     return response.targetMappings;

@@ -14,7 +14,13 @@
       "path": "../adp-tooling"
     },
     {
+      "path": "../axios-extension"
+    },
+    {
       "path": "../logger"
+    },
+    {
+      "path": "../playwright"
     },
     {
       "path": "../project-access"

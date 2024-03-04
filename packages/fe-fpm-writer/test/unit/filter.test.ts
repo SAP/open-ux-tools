@@ -6,7 +6,7 @@ import type { CustomFilter } from '../../src/filter/types';
 import { generateCustomFilter } from '../../src/filter';
 import type { EventHandlerConfiguration, FileContentPosition } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
-import os from 'os';
+import { getEndOfLinesLength } from '../common';
 
 describe('CustomFilter', () => {
     describe('generateCustomFilter', () => {
@@ -187,12 +187,13 @@ describe('CustomFilter', () => {
                     {
                         line: 18,
                         character: 9
-                    }
+                    },
+                    undefined
                 ],
-                ['absolute position', 870 + 18 * os.EOL.length]
+                ['absolute position', 870, 18]
             ])(
                 '"eventHandler" is object. Append new function to existing js file with %s',
-                (_desc: string, position: number | FileContentPosition) => {
+                (_desc: string, position: number | FileContentPosition, appendLines?: number) => {
                     const fileName = 'MyExistingFilter';
                     // Create existing file with existing filters
                     const folder = join('ext', 'fragments');
@@ -202,6 +203,10 @@ describe('CustomFilter', () => {
                         ...filter,
                         eventHandlerFnName: 'filterItems'
                     });
+                    if (typeof position === 'number' && appendLines !== undefined) {
+                        const content = fs.read(existingPath);
+                        position += getEndOfLinesLength(appendLines, content);
+                    }
                     // Create third action - append existing js file
                     const filterName = 'CustomFilter2';
                     const fnName = 'onHandleSecondAction';

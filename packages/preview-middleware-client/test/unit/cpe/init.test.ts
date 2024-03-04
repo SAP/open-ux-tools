@@ -118,14 +118,10 @@ describe('main', () => {
         // assert
         expect(applyChangeSpy).toBeCalledWith({ rta: rta }, payload);
         expect(sendActionMock).toHaveBeenNthCalledWith(1, {
-            type: '[ext] scenario-loaded',
-            payload: 'UI_ADAPTATION'
-        });
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] icons-loaded',
             payload: mockIconResult
         });
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] change-stack-modified',
             payload: { saved: [], pending: [] }
         });

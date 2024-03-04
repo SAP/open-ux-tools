@@ -1,15 +1,19 @@
 import * as common from '@sap-ux-private/control-property-editor-common';
-import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import init from '../../../src/adp/init';
 import { fetchMock } from 'mock/window';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import * as outline from '../../../src/cpe/outline';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
+import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 describe('adp', () => {
     const addMenuItemSpy = jest.fn();
     let initOutlineSpy: jest.SpyInstance;
     const sendActionMock = jest.fn();
+    const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+
     rtaMock.attachUndoRedoStackModified = jest.fn();
     rtaMock.attachSelectionChange = jest.fn();
     rtaMock.getFlexSettings.mockReturnValue({
@@ -62,7 +66,7 @@ describe('adp', () => {
         });
         VersionInfo.load.mockResolvedValue({ version: '1.118.1' });
 
-        await init(rtaMock);
+        await init(rtaMock as unknown as RuntimeAuthoring);
 
         expect(initOutlineSpy).toBeCalledTimes(1);
         expect(addMenuItemSpy).toBeCalledTimes(2);
@@ -89,14 +93,9 @@ describe('adp', () => {
 
         VersionInfo.load.mockResolvedValue({ version: '1.70.0' });
 
-        await init(rtaMock);
+        await init(rtaMock as unknown as RuntimeAuthoring);
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
-            type: '[ext] scenario-loaded',
-            payload: 'ADAPTATION_PROJECT'
-        });
-
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] show-dialog-message',
             payload:
                 'The current SAPUI5 version set for this Adaptation project is 1.70.0. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71'

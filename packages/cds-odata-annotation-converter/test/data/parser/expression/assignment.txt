@@ -1,0 +1,109 @@
+UI.LineItem : [
+    // unary  operators
+    {
+        Value: ( not isPostponed )
+    },
+    {
+        Value: ( -delayInDays )
+    },
+    // binary operators
+    {
+        Value: ( delay + offset )
+    },
+    {
+        Value: ( delay + 1 )
+    },
+    {
+        Value: ( delay - 1 )
+    },
+    {
+        Value: ( delay * 2 )
+    },
+    {
+        Value: ( delay / 2 )
+    },
+    {
+        Value: ( delay - 1 )
+    },
+    {
+        Value: ( delay >= offset )
+    },
+    {
+        Value: ( delay != offset )
+    },
+    {
+        Value: ( delay <> offset )
+    },
+    // ternary operators
+    {
+        Value: ( isCritical ? 'Important!' : '' )
+    },
+    // chained expressions
+    {
+        Value: ( delay / 2 - offset )
+    },
+    {
+        Value: ( id = 'special' ? 'SpecialText' : text )
+    },
+    {
+        Value: ( description != 'some string' and isCritical or isInteresting )
+    },
+    // hana operators translating into odata functions
+    {
+        Value: ( 'Hallo ' || description )
+    },
+    {
+        Value: ( description like 'odata.%' ) // Hana wildcard - would need to be converted to regex
+    },
+    {
+        Value: ( description not like 'odata.%' ) // Hana wildcard - would need to be converted to regex
+    },
+    // (still) unsupported hana operators
+    {
+        Value: ( description is null )
+    },
+    {
+        Value: ( description is not null )
+    },
+    {
+        Value: ( number between 10 and 20 )
+    },
+    {
+        Value: ( number not between 30 and 40 )
+    },
+    // (completely) unknown operator
+    {
+        Value: ( nope description )
+    },
+    {
+        Value: ( delay gt offset )
+    },
+    // nested expressions (correct)
+    {
+        Value: ( description != 'some string' and (isCritical or isInteresting) )
+    },
+    // nested expressions (incorrect in correct)
+    {
+        Value: ( description != 'some string' and (isCritical or ) )
+    },
+    // nested expressions (correct in incorrect)
+    {
+        Value: ( description !=  and (isCritical or isInteresting) )
+    },
+    // nested expressions (unsupported in correct)
+    {
+        Value: ( description != 'some string' and (isCritical is null) )
+    },
+    // nested expressions (correct in unsupported)
+    {
+        Value: ( description is null and (isCritical or isInteresting) )
+    },
+    // nested expressions (unsupported in incorrect)
+    {
+        Value: ( description !=  and (isCritical is null) )
+    },
+    // nested expressions (incorrect in unsupported)
+    {
+        Value: ( description is null and (isCritical or ) )
+    },
+]

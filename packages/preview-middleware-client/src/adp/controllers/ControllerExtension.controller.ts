@@ -37,7 +37,7 @@ import {
 import BaseDialog from './BaseDialog.controller';
 
 interface ControllerExtensionService {
-    add: (codeRef: string, viewId: string) => Promise<unknown>;
+    add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
 }
 
 interface ControllerInfo {
@@ -57,16 +57,18 @@ export default class ControllerExtension extends BaseDialog {
     }
 
     /**
-     * Initializes controller, fills model with data and opens the dialog
+     * Setups the Dialog and the JSON Model
+     *
+     * @param {Dialog} dialog - Dialog instance
      */
-    async onInit() {
-        this.dialog = this.byId('controllerExtensionDialog') as unknown as Dialog;
+    async setup(dialog: Dialog): Promise<void> {
+        this.dialog = dialog;
 
         this.setEscapeHandler();
 
         await this.buildDialogData();
 
-        this.getView()?.setModel(this.model);
+        this.dialog.setModel(this.model);
 
         this.dialog.open();
     }
@@ -80,7 +82,7 @@ export default class ControllerExtension extends BaseDialog {
         const input = event.getSource<Input>();
         const beginBtn = this.dialog.getBeginButton();
 
-        const controllerName: string = input.getValue().trim();
+        const controllerName: string = input.getValue();
         const controllerList: { controllerName: string }[] = this.model.getProperty('/controllersList');
 
         const updateDialogState = (valueState: ValueState, valueStateText = '') => {
@@ -199,10 +201,12 @@ export default class ControllerExtension extends BaseDialog {
         this.model.setProperty('/controllerPath', controllerPath);
         this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
 
-        const form = this.byId('controllerExtensionDialog_Form') as SimpleForm;
+        const content = this.dialog.getContent();
+
+        const form = content[0] as SimpleForm;
         form.setVisible(false);
 
-        const messageForm = this.byId('controllerExtensionDialog_Form--existingController') as SimpleForm;
+        const messageForm = content[1] as SimpleForm;
         messageForm.setVisible(true);
 
         this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
@@ -266,6 +270,7 @@ export default class ControllerExtension extends BaseDialog {
             const service = await this.rta.getService<ControllerExtensionService>('controllerExtension');
 
             const change = await service.add(controllerRef.codeRef, controllerRef.viewId);
+            change.creation = new Date().toISOString();
 
             await writeChange(change);
             MessageToast.show(`Controller extension with name '${controllerName}' was created.`);

@@ -2,8 +2,10 @@ import type { Service } from '../base/service-provider';
 import { Axios } from 'axios';
 import type { Logger } from '@sap-ux/logger';
 
-export interface App {
+export interface App extends Record<string, unknown> {
     'sap.app/id': string;
+    'sap.app/title': string;
+    'sap.fiori/registrationIds': string[];
     url: string;
 }
 

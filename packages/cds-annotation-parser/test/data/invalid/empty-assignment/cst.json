@@ -1,0 +1,21 @@
+{
+  "name": "declaration",
+  "recoveredNode": true,
+  "children": {
+    "assignment": [
+      {
+        "name": "assignment",
+        "recoveredNode": true,
+        "children": {},
+        "location": {
+          "startOffset": -1,
+          "endOffset": -1
+        }
+      }
+    ]
+  },
+  "location": {
+    "startOffset": -1,
+    "endOffset": -1
+  }
+}

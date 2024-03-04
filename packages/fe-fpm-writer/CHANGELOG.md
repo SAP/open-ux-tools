@@ -1,5 +1,47 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.9
+
+### Patch Changes
+
+-   3c9d8f5d: Fixed namespace for controller event handler
+
+## 0.24.8
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.24.7
+
+### Patch Changes
+
+-   392522e8: Added optional `controllerPrefix` property to custom action event handler
+
+## 0.24.6
+
+### Patch Changes
+
+-   9b62f5a1: Added optional `id` property to use as page key in manifest templates
+
+## 0.24.5
+
+### Patch Changes
+
+-   112170a1: fix: use correct namespace when generating typescript controllers of controller extension and custom page controllers
+
+## 0.24.4
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 0.24.3
+
+### Patch Changes
+
+-   b84cb0f3: Added `fragmentFile` property in order to allow to use fragment name different from custom extension key
+
 ## 0.24.2
 
 ### Patch Changes

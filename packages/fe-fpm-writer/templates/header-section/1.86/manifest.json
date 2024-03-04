@@ -9,7 +9,7 @@
                                 "header": {
                                     "facets": {
                                         "<%- name %>": {
-                                            "template": "<%- ns %>.<%- name %>",
+                                            "template": "<%- ns %>.<%- typeof fragmentFile !== 'undefined' ? fragmentFile : name  %>",
                                             <% if (typeof edit !== 'undefined') { %> 
                                                 "templateEdit": "<%- edit.ns %>.<%- edit.name %>",
                                             <% } %>

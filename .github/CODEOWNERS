@@ -1,5 +1,14 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
+# Module: cds-odata-annotation-parser
+/packages/cds-annotation-parser/ @SAP/ux-tools-annotations
+
+# Module: cds-odata-annotation-converter
+/packages/cds-odata-annotation-converter/ @SAP/ux-tools-annotations
+
+# Module: i18n
+/packages/i18n/ @SAP/ux-tools-i18n
+
 # Module: create
 /packages/create/ @SAP/ux-tools-create
 
@@ -60,6 +69,9 @@
 # Module: preview-middleware-client
 /packages/preview-middleware-client/ @SAP/ux-tools-middlewares-and-tasks
 
+# Module: serve-static-middleware
+/packages/serve-static-middleware/ @SAP/ux-tools-middlewares-and-tasks
+
 # Module: adp-tooling
 /packages/adp-tooling/ @SAP/ux-tools-adp
 
@@ -74,6 +86,9 @@
 
 # Module: odata-vocabularies
 /packages/odata-vocabularies @SAP/ux-tools-annotations
+
+# Module: xml-odata-annotation-converter
+/packages/xml-odata-annotation-converter/ @SAP/ux-tools-annotations
 
 # Module: odata-entity-model
 /packages/odata-entity-model/ @SAP/ux-tools-annotations

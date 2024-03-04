@@ -11,7 +11,8 @@ import type { AbapDeployConfig } from '../types';
 import { getConfigForLogging, isBspConfig, throwConfigMissingError } from './config';
 import { promptConfirmation } from './prompt';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
-import { validateBeforeDeploy, formatSummary } from './validate';
+import { getAppDescriptorVariant } from './archive';
+import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem } from './validate';
 
 /**
  * Internal deployment commands
@@ -240,15 +241,16 @@ async function tryDeployToLrep(
     archive: Buffer
 ) {
     logger.debug('No BSP name provided, checking if it is an adaptation project');
-    if (config.adaptation) {
+    const descriptor = getAppDescriptorVariant(archive);
+    if (descriptor) {
         if (config.test) {
             throw new Error('Deployment in test mode not supported for deployments to the layered repository.');
         } else {
             logger.debug('Deploying an adaptation project to LREP');
             const service = getDeployService(provider.getLayeredRepository.bind(provider), config, logger);
             await service.deploy(archive, {
-                namespace: config.adaptation.namespace,
-                layer: config.adaptation.layer,
+                namespace: descriptor.namespace,
+                layer: descriptor.layer,
                 package: config.app.package,
                 transport: config.app.transport
             });
@@ -278,7 +280,7 @@ async function tryDeploy(
             // Reset as we don't want other flows kicking it off again!
             config.createTransport = false;
         }
-        // Check if deployment of BSP is requested
+        // check if deployment of BSP is requested
         if (isBspConfig(config.app)) {
             if (config.test === true) {
                 const validateOutput = await validateBeforeDeploy(config, provider, logger);
@@ -289,7 +291,12 @@ async function tryDeploy(
                 );
             }
             const service = getDeployService(provider.getUi5AbapRepository.bind(provider), config, logger);
-            await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
+            await service.deploy({
+                archive,
+                bsp: config.app,
+                testMode: config.test,
+                safeMode: config.safe
+            });
         } else {
             await tryDeployToLrep(provider, config, logger, archive);
         }
@@ -299,6 +306,11 @@ async function tryDeploy(
             );
         } else {
             logger.info('Deployment Successful.');
+            if (await showAdditionalInfoForOnPrem(`${config.target.destination}`)) {
+                logger.info(
+                    '(Note: As the destination is configured using an On-Premise SAP Cloud Connector, you will need to replace the host in the URL above with the internal host)'
+                );
+            }
         }
     } catch (error) {
         await handleError(tryDeploy, error, provider, config, logger, archive);
@@ -366,6 +378,6 @@ async function tryUndeploy(provider: AbapServiceProvider, config: AbapDeployConf
  */
 export async function undeploy(config: AbapDeployConfig, logger: Logger): Promise<void> {
     const provider = await createProvider(config, logger);
-    logger.info(`Starting to undeploy${config.test === true ? ' in test mode' : ''}.`);
+    logger.info(`Starting to undeploy ${config.test === true ? ' in test mode' : ''}.`);
     await tryUndeploy(provider, config, logger);
 }

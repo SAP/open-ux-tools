@@ -13,6 +13,7 @@ import {
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath
 } from './common';
+import { ServiceType } from '@sap-ux/odata-service-writer';
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
@@ -87,6 +88,27 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     }
                 }),
                 service: v4Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lrop_v4_addtests_cds',
+            config: {
+                ...Object.assign(feBaseConfig('lrop_v4_addtests_cds'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    },
+                    appOptions: {
+                        ...feBaseConfig('lrop_v4_addtests_cds').appOptions,
+                        generateIndex: true,
+                        addTests: true
+                    }
+                }),
+                service: {
+                    ...v4Service,
+                    metadata: undefined,
+                    type: ServiceType.CDS
+                }
             } as FioriElementsApp<LROPSettings>
         },
         {
