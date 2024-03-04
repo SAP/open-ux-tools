@@ -174,7 +174,7 @@ describe('flp/init', () => {
         });
 
         test('opa5 test framework configured & ui5 version is 1.120.9', async () => {
-            const testSettings = '{"framework":"QUNIT"}';
+            const testSettings = '{"framework":"OPA5"}';
             sapMock.ui.version = '1.120.09';
             await init({ test: testSettings });
 
