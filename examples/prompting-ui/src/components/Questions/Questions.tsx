@@ -1,6 +1,8 @@
 import type { CheckboxQuestion, InputQuestion, ListQuestion } from 'inquirer';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
+import type { AnswerValue } from '../Question/Question';
+import { getDependantQuestions, updateAnswer } from '../utils';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
@@ -26,15 +28,38 @@ export type IQuestion = (ListQuestion | InputQuestion | CheckboxQuestion) & Addi
 
 export interface QuestionsProps {
     questions: Array<Question>;
-    answers: Record<string, string | number>;
+    answers: Record<string, AnswerValue>;
     choices: DynamicChoices;
-    onChoiceRequest: (name: string) => void;
-    onChange: (name: string, answer: string | number | boolean | undefined, dependantPromptNames?: string[]) => void;
+    onChoiceRequest: (names: string[], answers: Record<string, AnswerValue>) => void;
+    onChange: (
+        answers: Record<string, AnswerValue>,
+        name: string,
+        answer: AnswerValue,
+        dependantPromptNames?: string[]
+    ) => void;
     layoutType?: PromptsLayoutType;
 }
 
 export const Questions = (props: QuestionsProps) => {
     const { questions, onChoiceRequest, onChange, answers, choices, layoutType } = props;
+    const [localAnswers, setLocalAnswers] = useState(answers);
+    useEffect(() => {
+        setLocalAnswers(answers);
+    }, [answers]);
+    const onAnswerChange = useCallback(
+        (name: string, answer?: AnswerValue, _dependantPromptNames?: string[]) => {
+            const updatedAnswers = updateAnswer(localAnswers, questions, name, answer);
+            setLocalAnswers(updatedAnswers);
+            // Callback with onchange
+            onChange(updatedAnswers, name, answer);
+            // Request dynamic choices for dependant questions
+            const deps = getDependantQuestions(questions, name);
+            if (deps.length) {
+                onChoiceRequest(deps, updatedAnswers);
+            }
+        },
+        [localAnswers, onChange]
+    );
     return (
         <div>
             {/* ToDo remove */}
@@ -45,12 +70,11 @@ export const Questions = (props: QuestionsProps) => {
                     <Question
                         key={`${question.name}-${index}`}
                         question={question}
-                        answers={answers}
-                        onChange={onChange}
+                        answers={localAnswers}
+                        onChange={onAnswerChange}
                         choices={externalChoices}
                         onChoiceRequest={(name: string) => {
-                            console.log(`REQUEST -> ${name}`);
-                            onChoiceRequest(name);
+                            onChoiceRequest([name], localAnswers);
                         }}
                     />
                 );

@@ -9,23 +9,6 @@ import { Answers } from 'inquirer';
 initIcons();
 getWebSocket();
 
-function _updateAnswers(
-    answers: Answers,
-    name: string,
-    answer: string | number | boolean | undefined,
-    dependantPromptNames: string[] = []
-) {
-    let newAnswers = {
-        ...answers,
-        [name]: answer
-    };
-    dependantPromptNames.forEach((name) => {
-        // Reset the values of dependant prompts
-        newAnswers = _updateAnswers(newAnswers, name, '');
-    });
-    return newAnswers;
-}
-
 export const BuildingBlockQuestions = (props: {
     type: SupportedBuildingBlocks;
     visibleQuestions?: string[];
@@ -36,17 +19,8 @@ export const BuildingBlockQuestions = (props: {
     const choices = useChoices();
     const questions = useQuestions(type, visibleQuestions);
 
-    function updateAnswers(
-        name: string,
-        answer: string | number | boolean | undefined,
-        dependantPromptNames: string[] = []
-    ) {
-        const newAnswers = _updateAnswers(answers, name, answer, dependantPromptNames);
-        dependantPromptNames.forEach((name) => {
-            // refresh the choices in dependant prompts
-            getChoices(name, type, newAnswers);
-        });
-        setAnswers(newAnswers);
+    function updateAnswers(answers: Answers) {
+        setAnswers(answers);
     }
 
     function handleApply() {
@@ -72,8 +46,8 @@ export const BuildingBlockQuestions = (props: {
             }}>
             <Questions
                 questions={questions}
-                onChoiceRequest={(name: string) => {
-                    getChoices(name, type, answers);
+                onChoiceRequest={(names: string[], latestAnswers: Answers) => {
+                    getChoices(names, type, latestAnswers);
                 }}
                 onChange={updateAnswers}
                 answers={answers || {}}

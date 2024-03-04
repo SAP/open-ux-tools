@@ -1,6 +1,7 @@
 import type { FilterBarPromptsAnswer, ChartPromptsAnswer, TablePromptsAnswer } from '@sap-ux/fe-fpm-writer';
 import type { Question, Answers } from 'inquirer';
 import { AddonActions } from '../../.storybook/addons/types';
+import type { DynamicChoices } from '../../src/components';
 
 export type Actions =
     | GetQuestions
@@ -48,15 +49,14 @@ export interface ResetAnswers {
 
 export interface GetChoices {
     type: typeof GET_CHOICES;
-    name: string;
+    names: string[];
     answers: any;
     buildingBlockType: SupportedBuildingBlocks;
 }
 
 export interface SetChoices {
     type: typeof SET_CHOICES;
-    name: string;
-    choices: unknown[];
+    choices: DynamicChoices;
 }
 export interface GetQuestions {
     type: typeof GET_QUESTIONS;

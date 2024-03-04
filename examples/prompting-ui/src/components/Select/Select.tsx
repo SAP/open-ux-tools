@@ -5,7 +5,7 @@ import type { UIComboBoxOption } from '@sap-ux/ui-components';
 import { useValue } from '../../utilities';
 
 export interface SelectProps extends ListQuestion {
-    value?: string | number;
+    value?: string | number | boolean;
     // onChoiceRequest: (name: string) => void;
     selectType: 'static' | 'dynamic';
     onChange: (name: string, value: string | number | undefined, dependantPromptNames?: string[]) => void;
@@ -27,7 +27,7 @@ export const Select = (props: SelectProps) => {
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
             required={required}
-            selectedKey={value}
+            selectedKey={value.toString()}
             onChange={(_, option) => {
                 setValue(option?.key ?? '');
                 if (name) {

@@ -4,8 +4,8 @@ import { UITextInput } from '@sap-ux/ui-components';
 import { useValue } from '../../utilities';
 
 export interface InputProps extends InputQuestion {
-    value?: string | number;
-    onChange: (name: string, value?: string | number) => void;
+    value?: string | number | boolean;
+    onChange: (name: string, value?: string | number | boolean) => void;
     required?: boolean;
 }
 

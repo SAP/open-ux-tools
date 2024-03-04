@@ -24,7 +24,7 @@ import {
     UPDATE_CODE_SNIPPET,
     UpdateCodeSnippet
 } from '../../stories/utils/types';
-import { Actions, GET_CODE_SNIPPET, ResetAnswers, SetChoices } from '../../stories/utils/types';
+import { Actions, GET_CODE_SNIPPET, ResetAnswers, SetChoices, GetChoices } from '../../stories/utils/types';
 import { fpmWriterApi, getSerializeContent } from './writerApi';
 import { AddonActions } from '../addons/types';
 import { handleAction as handleAddonAction } from '../addons/project';
@@ -38,6 +38,7 @@ import {
     UPDATE_PROJECT_PATH_RESULT,
     UpdateProjectPathResult
 } from '../addons/project/types';
+import { DynamicChoices } from '../../src/components';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 
@@ -135,13 +136,21 @@ async function handleAction(action: Actions): Promise<void> {
                 break;
             }
             case GET_CHOICES: {
-                const { name, buildingBlockType, answers } = action;
-                const choices = await getBuildingBlockChoices(buildingBlockType as any, name, answers, currentAppPath);
+                const { names, buildingBlockType, answers } = action as GetChoices;
+                const result: DynamicChoices = {};
+                for (const name of names) {
+                    const choices = await getBuildingBlockChoices(
+                        buildingBlockType as any,
+                        name,
+                        answers,
+                        currentAppPath
+                    );
+                    result[name] = choices;
+                }
 
                 const responseAction: SetChoices = {
                     type: SET_CHOICES,
-                    name,
-                    choices
+                    choices: result
                 };
                 sendMessage(responseAction);
                 break;

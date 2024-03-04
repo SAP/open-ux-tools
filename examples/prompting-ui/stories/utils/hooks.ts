@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { getQuestions, subscribeOnChoicesUpdate, unsubscribeOnChoicesUpdate } from './communication';
-import { Choice, DynamicChoices, IQuestion } from '../../src/components';
+import { DynamicChoices, IQuestion } from '../../src/components';
 import { SupportedBuildingBlocks } from './types';
 
 export function useChoices(): DynamicChoices {
@@ -8,10 +8,12 @@ export function useChoices(): DynamicChoices {
     const internalChoices = useRef<DynamicChoices>({});
 
     useEffect(() => {
-        function onChoicesReceived(name: string, newChoices: Choice[]) {
+        function onChoicesReceived(newChoices: DynamicChoices) {
+            console.log('onChoicesReceived');
+            console.log(newChoices);
             internalChoices.current = {
                 ...internalChoices.current,
-                [name]: newChoices
+                ...newChoices
             };
             setChoices(internalChoices.current);
         }

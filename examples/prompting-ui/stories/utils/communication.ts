@@ -7,7 +7,7 @@ import {
     UpdateProjectPath,
     UpdateProjectPathResultPayload
 } from '../../.storybook/addons/project/types';
-import type { Choice, IQuestion } from '../../src/components';
+import type { Choice, DynamicChoices, IQuestion } from '../../src/components';
 import type { Actions, GetChoices, GetCodeSnippet } from './types';
 import {
     APPLY_ANSWERS,
@@ -104,20 +104,20 @@ export function getQuestions(type: SupportedBuildingBlocks): Promise<IQuestion[]
     });
 }
 
-export function getChoices(name: string, buildingBlockType: SupportedBuildingBlocks, answers: unknown): void {
+export function getChoices(names: string[], buildingBlockType: SupportedBuildingBlocks, answers: unknown): void {
     const getAction: GetChoices = {
         type: GET_CHOICES,
         answers,
         buildingBlockType,
-        name
+        names
     };
     sendMessage(getAction);
 }
 
-export function subscribeOnChoicesUpdate(cb: (name: string, choices: Choice[]) => void): Listener {
+export function subscribeOnChoicesUpdate(cb: (choices: DynamicChoices) => void): Listener {
     const handleMessage = (action: Actions) => {
-        if ('name' in action && 'choices' in action && Array.isArray(action.choices)) {
-            cb(action.name as any, action.choices);
+        if ('choices' in action) {
+            cb(action.choices);
         }
     };
     onMessageAttach(SET_CHOICES, handleMessage);

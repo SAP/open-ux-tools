@@ -9,7 +9,7 @@ import { Input } from '../Input';
 import { Select } from '../Select';
 import { MultiSelect } from '../MultiSelect';
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
-import { Choice } from '../Questions';
+import type { Choice } from '../Questions';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
@@ -20,8 +20,8 @@ export interface AdditionalQuestionProperties {
 export type ListQuestion = _ListQuestion & AdditionalQuestionProperties;
 export type InputQuestion = _InputQuestion;
 export type MultiSelectQuestion = _CheckboxQuestion & AdditionalQuestionProperties;
-
 export type Question = ListQuestion | InputQuestion | MultiSelectQuestion;
+export type AnswerValue = string | number | boolean | undefined;
 
 const isInputType = (question: Question): question is InputQuestion => {
     return question.type === 'input';
@@ -29,9 +29,9 @@ const isInputType = (question: Question): question is InputQuestion => {
 
 export interface QuestionProps {
     question: Question;
-    answers: Record<string, string | number>;
+    answers: Record<string, AnswerValue>;
     onChoiceRequest: (name: string) => void;
-    onChange: (name: string, answer: string | number | boolean | undefined, dependantPromptNames?: string[]) => void;
+    onChange: (name: string, answer: AnswerValue, dependantPromptNames?: string[]) => void;
     choices?: Choice[];
 }
 
