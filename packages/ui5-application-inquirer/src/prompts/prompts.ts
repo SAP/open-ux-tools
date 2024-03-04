@@ -30,15 +30,15 @@ import { validateAppName } from './validators';
  *
  * @param ui5Versions - ui5 versions to prompt for selection
  * @param promptOptions - optional inputs used to pre-populate some prompt choices, default values and other prompting options. See {@link UI5ApplicationPromptOptions}.
- * @param [isCli] - optional, default is `true`. Changes the behaviour of some prompts as CLI executes prompts serially
  * @param [capCdsInfo] - optional, additional information about CAP projects
+ * @param [isYUI] - optional, default is `false`. Changes the behaviour of some validation since YUI does not re-validate prompts that may be inter-dependant.
  * @returns the prompts
  */
 export function getQuestions(
     ui5Versions: UI5Version[],
     promptOptions?: UI5ApplicationPromptOptions,
-    isCli = true,
-    capCdsInfo?: CdsUi5PluginInfo
+    capCdsInfo?: CdsUi5PluginInfo,
+    isYUI = false
 ): UI5ApplicationQuestion[] {
     // Set shared defaults
     const appName =
@@ -52,7 +52,7 @@ export function getQuestions(
     const isCapProject = !!capCdsInfo;
 
     const keyedPrompts: Record<promptNames, UI5ApplicationQuestion> = {
-        [promptNames.name]: getNamePrompt(targetDir, isCapProject, appName, !isCli),
+        [promptNames.name]: getNamePrompt(targetDir, isCapProject, appName, isYUI),
         [promptNames.title]: getTitlePrompt(),
         [promptNames.namespace]: getNamespacePrompt(appName),
         [promptNames.description]: getDescriptionPrompt(),

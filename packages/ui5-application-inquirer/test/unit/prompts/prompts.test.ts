@@ -43,7 +43,7 @@ describe('getQuestions', () => {
 
     test('getQuestions, parameter `capCdsInfo` specified', () => {
         // Prompt: `targetFolder` should not returned for CAP projects
-        expect(getQuestions([], undefined, undefined, mockCdsInfo)).not.toEqual(
+        expect(getQuestions([], undefined, mockCdsInfo)).not.toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.targetFolder })])
         );
 
@@ -73,8 +73,8 @@ describe('getQuestions', () => {
                     default: '/cap/specific/target/path1'
                 }
             },
-            false,
-            mockCdsInfo
+            mockCdsInfo,
+            true
         );
         expect(
             (questions.find((question) => question.name === promptNames.name)?.validate as Function)('project1', {})
@@ -88,7 +88,8 @@ describe('getQuestions', () => {
                     default: '/cap/specific/target/path1'
                 }
             },
-            false
+            undefined,
+            true
         );
         expect(
             (questions.find((question) => question.name === promptNames.name)?.validate as Function)('project1', {})
@@ -294,7 +295,7 @@ describe('getQuestions', () => {
         jest.spyOn(process, 'cwd').mockReturnValueOnce(mockCwd);
 
         // 'addDeployConfig' is always returned based on static inputs, it is the 'when' condition that determines its presence
-        let questions = getQuestions([], undefined, undefined, mockCdsInfo);
+        let questions = getQuestions([], undefined, mockCdsInfo);
         let addDeployConfigQuestion = questions.find((question) => question.name === promptNames.addDeployConfig);
         expect(questions).toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.addDeployConfig })])
@@ -306,7 +307,7 @@ describe('getQuestions', () => {
         );
 
         getMtaPathSpy.mockResolvedValue({ mtaPath: 'any/path', hasRoot: false });
-        questions = getQuestions([], undefined, undefined, mockCdsInfo);
+        questions = getQuestions([], undefined, mockCdsInfo);
         addDeployConfigQuestion = questions.find((question) => question.name === promptNames.addDeployConfig);
         expect(await (addDeployConfigQuestion?.when as Function)()).toEqual(true);
         expect(getMtaPathSpy).toHaveBeenCalledWith(mockCwd);
@@ -469,7 +470,7 @@ describe('getQuestions', () => {
         // when condition
         expect((enableNPMWorkspacesQuestion?.when as Function)()).toEqual(false);
 
-        enableNPMWorkspacesQuestion = getQuestions([], undefined, undefined, mockCdsInfo).find(
+        enableNPMWorkspacesQuestion = getQuestions([], undefined, mockCdsInfo).find(
             (question) => question.name === promptNames.enableNPMWorkspaces
         );
         expect((enableNPMWorkspacesQuestion?.when as Function)()).toEqual(true);
@@ -496,17 +497,17 @@ describe('getQuestions', () => {
             isWorkspaceEnabled: false,
             hasMinCdsVersion: false
         };
-        enableTypeScriptQuestion = getQuestions([], undefined, undefined, mockCdsInfoFalse).find(
+        enableTypeScriptQuestion = getQuestions([], undefined, mockCdsInfoFalse).find(
             (question) => question.name === promptNames.enableTypeScript
         );
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(false);
 
-        enableTypeScriptQuestion = getQuestions([], undefined, undefined, mockCdsInfoFalse).find(
+        enableTypeScriptQuestion = getQuestions([], undefined, mockCdsInfoFalse).find(
             (question) => question.name === promptNames.enableTypeScript
         );
         expect((enableTypeScriptQuestion?.when as Function)({ [promptNames.enableNPMWorkspaces]: true })).toEqual(true);
 
-        enableTypeScriptQuestion = getQuestions([], undefined, undefined, {
+        enableTypeScriptQuestion = getQuestions([], undefined, {
             hasCdsUi5Plugin: true,
             isCdsUi5PluginEnabled: true,
             isWorkspaceEnabled: true,
@@ -530,7 +531,7 @@ describe('getQuestions', () => {
                 advancedOption: true
             }
         };
-        const questions = getQuestions([], advancedOptions, undefined, mockCdsInfo);
+        const questions = getQuestions([], advancedOptions, mockCdsInfo);
 
         Object.keys(advancedOptions).forEach((questionName) => {
             const question = questions.find(({ name }) => name === questionName);

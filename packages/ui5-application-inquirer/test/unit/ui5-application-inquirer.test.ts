@@ -61,7 +61,7 @@ describe('ui5-application-inquirer API', () => {
             minSupportedUI5Version: undefined
         };
         expect(getUI5VersionsSpy).toHaveBeenCalledWith(filterOptions);
-        expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, undefined, true, undefined);
+        expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, undefined, undefined, false);
         getUI5VersionsSpy.mockClear();
         getQuestionsSpy.mockClear();
 
@@ -71,9 +71,9 @@ describe('ui5-application-inquirer API', () => {
             isCdsUi5PluginEnabled: true,
             isWorkspaceEnabled: false
         };
-        prompts = await getPrompts(undefined, false, cdsInfo);
+        prompts = await getPrompts(undefined, cdsInfo, true);
 
-        expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, undefined, false, cdsInfo);
+        expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, undefined, cdsInfo, true);
     });
 
     test('getPrompts, prompt options specified', async () => {
@@ -98,7 +98,7 @@ describe('ui5-application-inquirer API', () => {
         };
 
         await getPrompts(promptOpts);
-        expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, promptOpts, true, undefined);
+        expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, promptOpts, undefined, false);
     });
 
     test('getPrompts, with `minUI5Version` specified', async () => {

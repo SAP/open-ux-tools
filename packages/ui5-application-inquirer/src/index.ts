@@ -16,14 +16,14 @@ import { promptNames } from './types';
  * Get the inquirer prompts for ui5 library inquirer.
  *
  * @param promptOptions See {@link UI5ApplicationPromptOptions} for details
- * @param [isCli] Changes some prompt logic for YUI execution otherwise prompts will be executed serially in a command line environment
  * @param [capCdsInfo] - optional, additional information about CAP projects which if provided will be used instead of detecting and parsing CAP projects from the file system
+ * @param [isYUI] - optional, default is `false`. Changes the behaviour of some validation since YUI does not re-validate prompts that may be inter-dependant.
  * @returns the prompts used to provide input for ui5 library generation
  */
 async function getPrompts(
     promptOptions?: UI5ApplicationPromptOptions,
-    isCli = true,
-    capCdsInfo?: CdsUi5PluginInfo
+    capCdsInfo?: CdsUi5PluginInfo,
+    isYUI = false
 ): Promise<UI5ApplicationQuestion[]> {
     const filterOptions: UI5VersionFilterOptions = {
         useCache: true,
@@ -35,7 +35,7 @@ async function getPrompts(
 
     const promptOptionsClean = cloneDeep(promptOptions);
 
-    return getQuestions(ui5Versions, promptOptionsClean, isCli, capCdsInfo);
+    return getQuestions(ui5Versions, promptOptionsClean, capCdsInfo, isYUI);
 }
 
 /**
