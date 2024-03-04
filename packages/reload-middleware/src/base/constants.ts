@@ -18,5 +18,5 @@ export const defaultLiveReloadOpts: LiveReloadOptions = {
 
 export const defaultConnectLivereloadOpts: ConnectLivereloadOptions = {
     port: 35729,
-    include: [/.*\.html/]
+    include: ['.html']
 };
