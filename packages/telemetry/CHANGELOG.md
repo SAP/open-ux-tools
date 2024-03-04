@@ -1,5 +1,11 @@
 # @sap-ux/telemetry
 
+## 0.3.1
+
+### Patch Changes
+
+-   98d34e8e: fix for assigning resource id in telemetry settings
+
 ## 0.3.0
 
 ### Minor Changes
