@@ -1,10 +1,14 @@
-import { getLivereloadServer, getConnectLivereload } from '../base';
+import {
+    getLivereloadServer,
+    getConnectLivereload,
+    defaultLiveReloadOpts,
+    defaultConnectLivereloadOpts
+} from '../base';
 import type { ReloaderConfig, HttpsOptions } from '../base';
 import type { MiddlewareParameters } from '@ui5/server';
 import type { RequestHandler } from 'express';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import { resolve } from 'path';
-import { defaultLiveReloadOpts, defaultConnectLivereloadOpts } from '../base';
 
 module.exports = async ({ options, middlewareUtil }: MiddlewareParameters<ReloaderConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
