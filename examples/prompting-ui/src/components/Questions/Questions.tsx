@@ -2,7 +2,7 @@ import type { CheckboxQuestion, InputQuestion, ListQuestion } from 'inquirer';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
 import type { AnswerValue } from '../Question/Question';
-import { getDependantQuestions, updateAnswer } from '../utils';
+import { getDependantQuestions, getDynamicQuestions, updateAnswer } from '../utils';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
@@ -42,10 +42,21 @@ export interface QuestionsProps {
 
 export const Questions = (props: QuestionsProps) => {
     const { questions, onChoiceRequest, onChange, answers, choices, layoutType } = props;
-    const [localAnswers, setLocalAnswers] = useState(answers);
+    const [localAnswers, setLocalAnswers] = useState({ ...answers });
+    // ToDo, pending requests???
+    // const [pendingRequests, setPendingRequests] = useState<{ [key: string]: boolean }>({});
+    // Store local answers
     useEffect(() => {
-        setLocalAnswers(answers);
+        setLocalAnswers({ ...answers });
     }, [answers]);
+    // Request dynamic choices
+    useEffect(() => {
+        const dynamicChoices = getDynamicQuestions(questions);
+        if (dynamicChoices.length) {
+            onChoiceRequest(dynamicChoices, localAnswers);
+        }
+    }, [questions]);
+    // Change callback
     const onAnswerChange = useCallback(
         (name: string, answer?: AnswerValue, _dependantPromptNames?: string[]) => {
             const updatedAnswers = updateAnswer(localAnswers, questions, name, answer);
@@ -73,9 +84,6 @@ export const Questions = (props: QuestionsProps) => {
                         answers={localAnswers}
                         onChange={onAnswerChange}
                         choices={externalChoices}
-                        onChoiceRequest={(name: string) => {
-                            onChoiceRequest([name], localAnswers);
-                        }}
                     />
                 );
             })}

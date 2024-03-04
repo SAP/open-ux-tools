@@ -1,4 +1,4 @@
-import type { AnswerValue, Question } from '../Question';
+import type { AnswerValue, InputQuestion, Question } from '../Question';
 
 export function getDependantQuestions(
     questions: Question[],
@@ -14,6 +14,14 @@ export function getDependantQuestions(
         });
     }
     return dependantPromptNames;
+}
+
+export function getDynamicQuestions(questions: Question[]): string[] {
+    const dynamicQuestions = questions.filter(
+        (question): question is Required<Pick<Question, 'name'>> =>
+            'selectType' in question && question.selectType === 'dynamic' && !!question.name
+    );
+    return dynamicQuestions.map((question) => question.name);
 }
 
 export function updateAnswer(
@@ -32,4 +40,8 @@ export function updateAnswer(
         updatedAnswers[dependantName] = '';
     });
     return updatedAnswers;
+}
+
+export function isInputType(question: Question): question is InputQuestion {
+    return question.type === 'input';
 }

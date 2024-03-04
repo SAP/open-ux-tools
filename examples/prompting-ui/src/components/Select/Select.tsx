@@ -6,7 +6,6 @@ import { useValue } from '../../utilities';
 
 export interface SelectProps extends ListQuestion {
     value?: string | number | boolean;
-    // onChoiceRequest: (name: string) => void;
     selectType: 'static' | 'dynamic';
     onChange: (name: string, value: string | number | undefined, dependantPromptNames?: string[]) => void;
     dependantPromptNames?: string[];
@@ -27,6 +26,7 @@ export const Select = (props: SelectProps) => {
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
             required={required}
+            // isLoading={true}
             selectedKey={value.toString()}
             onChange={(_, option) => {
                 setValue(option?.key ?? '');

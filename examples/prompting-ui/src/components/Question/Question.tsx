@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import type {
     InputQuestion as _InputQuestion,
     ListQuestion as _ListQuestion,
@@ -8,8 +8,8 @@ import { Input } from '../Input';
 // import { Checkbox } from '../Checkbox';
 import { Select } from '../Select';
 import { MultiSelect } from '../MultiSelect';
-import type { UIComboBoxOption } from '@sap-ux/ui-components';
 import type { Choice } from '../Questions';
+import { useOptions } from '../utils';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
@@ -23,42 +23,20 @@ export type MultiSelectQuestion = _CheckboxQuestion & AdditionalQuestionProperti
 export type Question = ListQuestion | InputQuestion | MultiSelectQuestion;
 export type AnswerValue = string | number | boolean | undefined;
 
-const isInputType = (question: Question): question is InputQuestion => {
-    return question.type === 'input';
-};
-
 export interface QuestionProps {
     question: Question;
     answers: Record<string, AnswerValue>;
-    onChoiceRequest: (name: string) => void;
     onChange: (name: string, answer: AnswerValue, dependantPromptNames?: string[]) => void;
+    isLoading?: boolean;
     choices?: Choice[];
 }
 
 export const Question = (props: QuestionProps) => {
-    const { question, onChoiceRequest, onChange, answers, choices } = props;
+    const { question, onChange, answers, choices } = props;
     let questionInput: JSX.Element;
     const value = (question.name && answers?.[question.name]) ?? '';
-    const [options, setOptions] = useState<UIComboBoxOption[]>([]);
-    useEffect(() => {
-        // For type safety
-        if (!isInputType(question)) {
-            const resolvedChoices = choices ?? question.choices;
-            if (Array.isArray(resolvedChoices)) {
-                setOptions(
-                    resolvedChoices.map((choice) => {
-                        const { name, value } = choice;
-                        return {
-                            key: value,
-                            text: typeof name === 'string' ? name : ''
-                        };
-                    }) ?? []
-                );
-            } else {
-                onChoiceRequest(question?.name ?? '');
-            }
-        }
-    }, [question, choices]);
+    // ToDo -> move to MultiSelect and Select?
+    const options = useOptions(question, choices);
 
     switch (question?.type) {
         case 'input': {
