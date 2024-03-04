@@ -52,7 +52,7 @@ export function getQuestions(
     const isCapProject = !!capCdsInfo;
 
     const keyedPrompts: Record<promptNames, UI5ApplicationQuestion> = {
-        [promptNames.name]: getNamePrompt(targetDir, isCli, isCapProject, appName),
+        [promptNames.name]: getNamePrompt(targetDir, isCapProject, appName, !isCli),
         [promptNames.title]: getTitlePrompt(),
         [promptNames.namespace]: getNamespacePrompt(appName),
         [promptNames.description]: getDescriptionPrompt(),
@@ -428,16 +428,16 @@ function getTitlePrompt(): UI5ApplicationQuestion {
  * Gets the `name` prompt.
  *
  * @param targetDir the directory path to search for exiting apps with the same name
- * @param isCli if this prompt is to be executed on the CLI the validator will ensure the app name is unique for the target dir (usually `cwd`)
  * @param isCapProject if the app is to be generated in a CAP project ensure that the name is unique within the CAP apps folder path
  * @param appName the default app name, if not provided a default app name will be suggested
+ * @param isYUI If true, do not use `targetFolder` value when validating the name for existence, since YUI will not re-validate when `targetFolder` is updated.
  * @returns the UI5 application `name` prompt
  */
 function getNamePrompt(
     targetDir: string,
-    isCli: boolean,
     isCapProject: boolean,
-    appName?: string
+    appName?: string,
+    isYUI?: boolean
 ): UI5ApplicationQuestion {
     return {
         type: 'input',
@@ -451,7 +451,7 @@ function getNamePrompt(
         message: t('prompts.appNameMessage'),
         default: (answers: UI5ApplicationAnswers) => answers.name || appName || defaultAppName(targetDir),
         validate: (name, answers: UI5ApplicationAnswers): boolean | string => {
-            if (isCli || isCapProject) {
+            if (!isYUI || isCapProject) {
                 return validateAppName(name, answers.targetFolder || targetDir);
             } else {
                 return validateModuleName(name);
