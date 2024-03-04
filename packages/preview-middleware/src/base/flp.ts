@@ -121,7 +121,9 @@ export interface TemplateConfig {
         bootstrapOptions: string;
         resources: Record<string, string>;
     };
-    scenario?: string;
+    test?: {
+        framework?: string;
+    };
     fioriSandboxConfig?: boolean;
     customInit?: string;
     flex?: {
@@ -162,7 +164,9 @@ export class FlpSandbox {
             apps: config.flp?.apps ?? [],
             libs: config.flp?.libs,
             theme: config.flp?.theme,
-            scenario: config.flp?.scenario,
+            test: {
+                framework: config.flp?.test?.framework
+            },
             fioriSandboxConfig: config.flp?.fioriSandboxConfig,
             customInit: config.flp?.customInit
         };
@@ -190,7 +194,9 @@ export class FlpSandbox {
         this.templateConfig = {
             basePath: relative(dirname(this.config.path), '/') ?? '.',
             apps: {},
-            scenario: this.config.scenario,
+            test: {
+                framework: this.config.test?.framework
+            },
             fioriSandboxConfig: this.config.fioriSandboxConfig ?? false,
             customInit: this.config.customInit,
             ui5: {

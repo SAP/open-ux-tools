@@ -57,7 +57,8 @@
         data-sap-ui-frameOptions="allow"
         data-sap-ui-xx-componentPreload="off"<%- ui5.bootstrapOptions %>
         data-sap-ui-oninit="module:open/ux/preview/client/flp/init"<% if (customInit) { %>
-        data-open-ux-preview-customInit='<%- customInit %>'<% } if (locals.flex) { %>
+        data-open-ux-preview-customInit='<%- customInit %>'<% } if (locals.test) { %>
+        data-open-ux-preview-test-settings='<%- JSON.stringify(test) %>'<% } if (locals.flex) { %>
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flex) %>'<% } if (locals.locateReuseLibsScript) { %>
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>>
     </script>
@@ -76,7 +77,7 @@
         }
     </style><% } %>
 
-    <% if (scenario === 'OPA5' || scenario === 'QUNIT') { %>
+    <% if (test.framework === 'OPA5' || test.framework === 'QUNIT') { %>
     <!-- Bootstrap QUnit -->
     <script src="/resources/sap/ui/thirdparty/qunit-2.js"></script>
 
@@ -86,18 +87,18 @@
     <!-- Add QUnit Stylesheet -->
     <link rel="stylesheet" type="text/css" href="/resources/sap/ui/thirdparty/qunit-2.css"/><% } %>
 
-    <% if (scenario === 'OPA5') { %>
+    <% if (test.framework === 'OPA5') { %>
     <!-- Add SAP specific enhancements to the QUnit Stylesheet -->
     <link rel="stylesheet" type="text/css" href="/resources/sap/ui/test/OpaCss.css"/><% } %>
 </head>
 
 <!-- UI Content -->
-<% if (scenario === 'OPA5') { %>
+<% if (test.framework === 'OPA5') { %>
 <body id="content" class="sapUiOpaBodyComponent" style="width: 80%; left: 20%; position: absolute">
 <% } else { %>
 <body class="sapUiBody" id="content">
 <% } %>
-<% if (scenario === 'OPA5' || scenario === 'QUNIT') { %>
+<% if (test.framework === 'OPA5' || test.framework === 'QUNIT') { %>
 <div id="qunit"></div>
 <div id="qunit-fixture"></div><% } %>
 </body>
