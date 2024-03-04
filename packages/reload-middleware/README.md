@@ -20,6 +20,13 @@ It can be used either with the `ui5 serve` or the `fiori run` commands.
 ### [Minimal configuration](#minimal-configuration)
 In order to use the middleware this is the minimal configuration that you need to provide in the `ui5.yaml` of your application. By default all files under the `webapp` folder with the following extensions `['html', 'js', 'ts', 'json','xml', 'properties', 'change', 'variant', 'ctrl_variant', 'ctrl_variant_change', 'ctrl_variant_management_change']` will be watched. The `livereload` server is started on port `35729`.
 
+```YAML
+server:
+  customMiddleware:
+  - name: reload-middleware
+    afterMiddleware: compression
+```
+
 ### [Using configuration properties](#using-configuration-properties)
 The following configuration defines that port `33333` will be used and only files with extension `xml` and `js` under the `webapp` folder will be watched. Additionally a delay of `500ms` is specified, which means that the reload will be triggered 500ms after a change has happen.
 ```YAML
