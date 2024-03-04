@@ -120,7 +120,10 @@ export const initTelemetrySettings = async (options: ToolsSuiteTelemetryInitSett
         });
 
         await readEnableTelemetry(storeService);
-        watchTelemetrySettingStore(storeService);
+
+        if (options.watchTelemetrySettingStore) {
+            watchTelemetrySettingStore(storeService);
+        }
     } catch (err) {
         reportRuntimeError(err);
     }
