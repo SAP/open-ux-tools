@@ -1432,6 +1432,9 @@ importers:
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
+      axios:
+        specifier: 1.6.1
+        version: 1.6.1
       supertest:
         specifier: 6.3.3
         version: 6.3.3

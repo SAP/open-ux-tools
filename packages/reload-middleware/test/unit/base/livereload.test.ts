@@ -1,4 +1,4 @@
-import { getLivereloadServer, getConnectLivereload } from '../../../src/base';
+import { getLivereloadServer, getConnectLivereload } from '../../../src';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import livereload from 'livereload';
 import * as connectLivereload from 'connect-livereload';
