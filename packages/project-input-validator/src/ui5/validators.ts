@@ -133,11 +133,11 @@ export function validateModuleName(moduleName: string): boolean | string {
         [moduleName + ' is a blocklisted name']: t('ui5.nameBlocklisted', { moduleName }),
         [moduleName + ' is a core module name']: t('ui5.nameIsCoreModule', { moduleName }),
         'name can no longer contain more than 214 characters': t('ui5.nameTooLong', { length: 214 }),
-        'name can no longer contain capital letters': t('ui5.INPUT_VALUE_CONTAINS_CAPITAL', {
+        'name can no longer contain capital letters': t('ui5.inputValueContainsCapital', {
             promptName: 'Module'
         }),
-        'name can no longer contain special characters ("~\'!()*")': t('ui5.NAME_CONTAINS_SPECIAL_CHARACTERS'),
-        'name can only contain URL-friendly characters': t('ui5.NAME_NOT_URL_FRIENDLY')
+        'name can no longer contain special characters ("~\'!()*")': t('ui5.nameContainsSpecialCharacters'),
+        'name can only contain URL-friendly characters': t('ui5.nameNotUrlFriendly')
     };
     const valid = validateNpmPackageName(moduleName);
     if (valid.validForNewPackages && valid.validForOldPackages) {
