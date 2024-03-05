@@ -2,7 +2,6 @@ import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import { getDefaultUI5Theme, getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import autocomplete from 'inquirer-autocomplete-prompt';
-import cloneDeep from 'lodash/cloneDeep';
 import isNil from 'lodash/isNil';
 import { getQuestions } from './prompts';
 import type {
@@ -33,9 +32,7 @@ async function getPrompts(
     };
     const ui5Versions = await getUI5Versions(filterOptions);
 
-    const promptOptionsClean = cloneDeep(promptOptions);
-
-    return getQuestions(ui5Versions, promptOptionsClean, capCdsInfo, isYUI);
+    return getQuestions(ui5Versions, promptOptions, capCdsInfo, isYUI);
 }
 
 /**
@@ -53,7 +50,7 @@ async function prompt(
     capCdsInfo?: CdsUi5PluginInfo,
     isYUI = false
 ): Promise<UI5ApplicationAnswers> {
-    const ui5AppPrompts = await exports.getPrompts(promptOptions, capCdsInfo, isYUI);
+    const ui5AppPrompts = await getPrompts(promptOptions, capCdsInfo, isYUI);
 
     if (adapter?.promptModule && promptOptions?.ui5Version?.useAutocomplete) {
         const pm = adapter.promptModule;

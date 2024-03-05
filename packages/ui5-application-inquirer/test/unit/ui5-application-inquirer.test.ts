@@ -5,7 +5,6 @@ import { createPromptModule } from 'inquirer';
 import AutocompletePrompt from 'inquirer-autocomplete-prompt';
 import type { InquirerAdapter, UI5ApplicationAnswers, UI5ApplicationPromptOptions } from '../../src';
 import { getPrompts, prompt, promptNames } from '../../src';
-import * as ui5AppInquirer from '../../src/index';
 import * as ui5AppPrompts from '../../src/prompts';
 
 /**
@@ -191,7 +190,7 @@ describe('ui5-application-inquirer API', () => {
     });
 
     test('prompt, prompt args are passed correctly applied', async () => {
-        const getPromptsSpy = jest.spyOn(ui5AppInquirer, 'getPrompts');
+        const getQuestionsSpy = jest.spyOn(ui5AppPrompts, 'getQuestions');
         const promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.name]: {
                 default: 'someName'
@@ -211,6 +210,6 @@ describe('ui5-application-inquirer API', () => {
         };
         await prompt(mockInquirerAdapter, promptOpts, mockCdsInfo, true);
 
-        expect(getPromptsSpy).toHaveBeenCalledWith(promptOpts, mockCdsInfo, true);
+        expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, promptOpts, mockCdsInfo, true);
     });
 });
