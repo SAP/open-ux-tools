@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.2.1
+
+### Patch Changes
+
+-   af4c945c: Fix for wrong behaviour when calling prompt with CapCdsInfo
+
 ## 0.2.0
 
 ### Minor Changes

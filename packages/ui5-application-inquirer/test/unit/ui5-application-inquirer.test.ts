@@ -188,4 +188,28 @@ describe('ui5-application-inquirer API', () => {
             }
         `);
     });
+
+    test('prompt, prompt args are passed correctly applied', async () => {
+        const getQuestionsSpy = jest.spyOn(ui5AppPrompts, 'getQuestions');
+        const promptOpts: UI5ApplicationPromptOptions = {
+            [promptNames.name]: {
+                default: 'someName'
+            }
+        };
+
+        const mockPromptsModule = createPromptModule();
+        const mockInquirerAdapter: InquirerAdapter = {
+            prompt: jest.fn().mockResolvedValue({ [promptNames.name]: 'a prompt answer' }),
+            promptModule: mockPromptsModule
+        };
+        const mockCdsInfo = {
+            hasCdsUi5Plugin: true,
+            hasMinCdsVersion: true,
+            isCdsUi5PluginEnabled: true,
+            isWorkspaceEnabled: false
+        };
+        await prompt(mockInquirerAdapter, promptOpts, mockCdsInfo, true);
+
+        expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, promptOpts, mockCdsInfo, true);
+    });
 });
