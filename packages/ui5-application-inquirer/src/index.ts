@@ -2,7 +2,6 @@ import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import { getDefaultUI5Theme, getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import autocomplete from 'inquirer-autocomplete-prompt';
-import cloneDeep from 'lodash/cloneDeep';
 import isNil from 'lodash/isNil';
 import { getQuestions } from './prompts';
 import type {
@@ -33,9 +32,7 @@ async function getPrompts(
     };
     const ui5Versions = await getUI5Versions(filterOptions);
 
-    const promptOptionsClean = cloneDeep(promptOptions);
-
-    return getQuestions(ui5Versions, promptOptionsClean, capCdsInfo, isYUI);
+    return getQuestions(ui5Versions, promptOptions, capCdsInfo, isYUI);
 }
 
 /**
@@ -43,17 +40,17 @@ async function getPrompts(
  *
  * @param adapter - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
  * @param promptOptions - options that can control some of the prompt behavior. See {@link UI5ApplicationPromptOptions} for details
- * @param isCli - since CLI prompting is done serially but UI prompting occurs in parallel this impacts on how some validation is run
- * @param capCdsInfo - the CAP CDS info for the project, if this prompting will add a UI% app to an existing CAP project
+ * @param [capCdsInfo] - the CAP CDS info for the project, if this prompting will add a UI% app to an existing CAP project
+ * @param [isYUI] - optional, default is `false`. Changes the behaviour of some validation since YUI does not re-validate prompts that may be inter-dependant.
  * @returns the prompt answers
  */
 async function prompt(
     adapter: InquirerAdapter,
     promptOptions?: UI5ApplicationPromptOptions,
-    isCli = true,
-    capCdsInfo?: CdsUi5PluginInfo
+    capCdsInfo?: CdsUi5PluginInfo,
+    isYUI = false
 ): Promise<UI5ApplicationAnswers> {
-    const ui5AppPrompts = await exports.getPrompts(promptOptions, isCli, capCdsInfo);
+    const ui5AppPrompts = await getPrompts(promptOptions, capCdsInfo, isYUI);
 
     if (adapter?.promptModule && promptOptions?.ui5Version?.useAutocomplete) {
         const pm = adapter.promptModule;
