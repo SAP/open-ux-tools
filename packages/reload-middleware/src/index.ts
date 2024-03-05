@@ -4,5 +4,7 @@ export {
     ReloaderConfig,
     LiveReloadOptions,
     ConnectLivereloadOptions,
-    HttpsOptions
+    HttpsOptions,
+    defaultConnectLivereloadOpts,
+    defaultLiveReloadOpts
 } from './base';
