@@ -207,7 +207,7 @@ export function getGenericChange(
 
     return {
         fileName,
-        namespace: [projectData.namespace, FolderTypes.CHANGES].join('/'),
+        namespace: path.posix.join(projectData.namespace, FolderTypes.CHANGES),
         layer: projectData.layer,
         fileType: 'change',
         creation: new Date(timestamp).toISOString(),
