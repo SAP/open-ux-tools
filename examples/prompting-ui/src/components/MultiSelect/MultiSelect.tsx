@@ -12,10 +12,11 @@ export interface MultiSelectProps extends CheckboxQuestion {
     required?: boolean;
     type: 'checkbox';
     options: UIComboBoxOption[];
+    pending?: boolean;
 }
 
 export const MultiSelect = (props: MultiSelectProps) => {
-    const { name = '', message, onChange, dependantPromptNames, required, options } = props;
+    const { name = '', message, onChange, dependantPromptNames, required, options, pending } = props;
     const [value, setValue] = useValue('', props.value?.toString());
 
     return (
@@ -27,6 +28,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
             required={required}
+            isLoading={pending}
             selectedKey={value?.split(',').map((v) => v.trim())}
             multiSelect
             onChange={(_, option) => {

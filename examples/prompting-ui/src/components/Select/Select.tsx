@@ -11,10 +11,11 @@ export interface SelectProps extends ListQuestion {
     dependantPromptNames?: string[];
     required?: boolean;
     options: UIComboBoxOption[];
+    pending?: boolean;
 }
 
 export const Select = (props: SelectProps) => {
-    const { name = '', message, onChange, dependantPromptNames, required, options } = props;
+    const { name = '', message, onChange, dependantPromptNames, required, options, pending } = props;
     const [value, setValue] = useValue('', props.value);
 
     return (
@@ -26,7 +27,7 @@ export const Select = (props: SelectProps) => {
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
             required={required}
-            // isLoading={true}
+            isLoading={pending}
             selectedKey={value.toString()}
             onChange={(_, option) => {
                 setValue(option?.key ?? '');

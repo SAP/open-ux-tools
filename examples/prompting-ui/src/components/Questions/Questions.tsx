@@ -4,6 +4,7 @@ import { Question } from '../Question/Question';
 import type { AnswerValue } from '../Question/Question';
 import { getDependantQuestions, getDynamicQuestions, updateAnswer } from '../utils';
 import './Questions.scss';
+import { useRequestedChoices } from '../../utilities';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
@@ -44,8 +45,18 @@ export interface QuestionsProps {
 export const Questions = (props: QuestionsProps) => {
     const { questions, onChoiceRequest, onChange, answers, choices, layoutType } = props;
     const [localAnswers, setLocalAnswers] = useState({ ...answers });
-    // ToDo, pending requests???
-    // const [pendingRequests, setPendingRequests] = useState<{ [key: string]: boolean }>({});
+    const [pendingRequests, setRequestedChoices] = useRequestedChoices({}, choices);
+    const requestChoices = useCallback(
+        (names: string[], answers: Record<string, AnswerValue>) => {
+            // Call external callback
+            if (names.length) {
+                onChoiceRequest(names, answers);
+            }
+            // Mark pending requests locally
+            setRequestedChoices(names);
+        },
+        [onChoiceRequest]
+    );
     // Store local answers
     useEffect(() => {
         setLocalAnswers({ ...answers });
@@ -53,9 +64,7 @@ export const Questions = (props: QuestionsProps) => {
     // Request dynamic choices
     useEffect(() => {
         const dynamicChoices = getDynamicQuestions(questions);
-        if (dynamicChoices.length) {
-            onChoiceRequest(dynamicChoices, localAnswers);
-        }
+        requestChoices(dynamicChoices, localAnswers);
     }, [questions]);
     // Change callback
     const onAnswerChange = useCallback(
@@ -66,9 +75,7 @@ export const Questions = (props: QuestionsProps) => {
             onChange(updatedAnswers, name, answer);
             // Request dynamic choices for dependant questions
             const deps = getDependantQuestions(questions, name);
-            if (deps.length) {
-                onChoiceRequest(deps, updatedAnswers);
-            }
+            requestChoices(deps, updatedAnswers);
         },
         [localAnswers, onChange]
     );
@@ -87,14 +94,21 @@ export const Questions = (props: QuestionsProps) => {
                 }>
                 {questions.map((question: Question, index: number) => {
                     const externalChoices = question.name !== undefined ? choices[question.name] : undefined;
+                    const name = question.name;
+                    if (!name) {
+                        return <></>;
+                    }
                     return (
-                        <Question
-                            key={`${question.name}-${index}`}
-                            question={question}
-                            answers={localAnswers}
-                            onChange={onAnswerChange}
-                            choices={externalChoices}
-                        />
+                        <>
+                            <Question
+                                key={`${question.name}-${index}`}
+                                question={question}
+                                answers={localAnswers}
+                                onChange={onAnswerChange}
+                                choices={externalChoices}
+                                pending={pendingRequests[name]}
+                            />
+                        </>
                     );
                 })}
             </div>

@@ -30,10 +30,11 @@ export interface QuestionProps {
     onChange: (name: string, answer: AnswerValue, dependantPromptNames?: string[]) => void;
     isLoading?: boolean;
     choices?: Choice[];
+    pending?: boolean;
 }
 
 export const Question = (props: QuestionProps) => {
-    const { question, onChange, answers, choices } = props;
+    const { question, onChange, answers, choices, pending } = props;
     let questionInput: JSX.Element;
     const value = (question.name && answers?.[question.name]) ?? '';
     // ToDo -> move to MultiSelect and Select?
@@ -64,6 +65,7 @@ export const Question = (props: QuestionProps) => {
                     {...question}
                     onChange={onChange}
                     options={options}
+                    pending={pending}
                 />
             );
             break;
