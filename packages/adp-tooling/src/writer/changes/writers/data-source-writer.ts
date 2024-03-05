@@ -70,10 +70,7 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
         const shouldAddAnnotation = service.annotationUri && service.annotationUri.length > 0;
         if (shouldAddAnnotation) {
             data.timestamp += 1;
-            const annotationContent = this.constructContent(
-                dataSourcesDictionary[service.name],
-                service.annotationUri
-            );
+            const annotationContent = this.constructContent(dataSourcesDictionary[service.name], service.annotationUri);
             const annotationChange = getGenericChange(data, annotationContent, ChangeType.CHANGE_DATA_SOURCE);
 
             writeChangeToFolder(
