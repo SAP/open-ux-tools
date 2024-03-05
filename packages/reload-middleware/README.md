@@ -4,6 +4,16 @@ The `@sap-ux/reload-middleware` is a [Custom UI5 Server Middleware](https://sap.
 
 It can be used either with the `ui5 serve` or the `fiori run` commands.
 
+When this middleware is used together with the `preview-middleware`, then the order in which the middlewares are loaded is important. The `reload-middleware` needs to be loaded before the `preview-middleware`. Hence the configuration in the `ui5.yaml` needs to look e.g. like this:
+
+```
+- name: reload-middleware
+  afterMiddleware: compression
+- name: preview-middleware
+  afterMiddleware: reload-middleware
+```
+
+
 ## Configuration Options
 
 | Option       | Type | Description |
@@ -11,8 +21,8 @@ It can be used either with the `ui5 serve` or the `fiori run` commands.
 | `path`        | `string \| string[]`      | path or list of paths that should be watched for changes by the reload-middleware. |
 | `[livereload options]`    | `string \| string[] \| number \| boolean`   | Configuration options of [livereload](https://www.npmjs.com/package/livereload#server-api). |
 |`https`| `object`| Configuration for starting the livereload server over https. The middleware supports automatically HTTP/2, when the UI5 server is started with the `--h2` option. In this case it uses by default `$HOME/.ui5/server/server.key` and `$HOME/.ui5/server/server.crt` |
-|`https.key`| `string`| Local filesystem path to the private key for https |
-|`https.cert`| `string`| Local filesystem path to the certificate for https |
+|`https.key`| `string`| Local filesystem path to the private key for https. Alternatively you can set this also as the enviroment variable `FIORI_TOOLS_SSL_KEY`. |
+|`https.cert`| `string`| Local filesystem path to the certificate for https. Alternatively you can set this also as the enviroment variable `FIORI_TOOLS_SSL_CERT`. |
 |`[connectOptions]`| `string \| string[] \| number \| boolean`| Configuration options of [connect-livereload](https://www.npmjs.com/package/connect-livereload#options) |
 
 ## Configuration Examples
