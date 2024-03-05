@@ -121,6 +121,11 @@ export interface TemplateConfig {
         bootstrapOptions: string;
         resources: Record<string, string>;
     };
+    test?: {
+        framework?: string;
+    };
+    fioriSandboxConfig?: boolean;
+    customInit?: string;
     flex?: {
         [key: string]: unknown;
         layer: UI5FlexLayer;
@@ -158,7 +163,12 @@ export class FlpSandbox {
             intent: config.flp?.intent ?? DEFAULT_INTENT,
             apps: config.flp?.apps ?? [],
             libs: config.flp?.libs,
-            theme: config.flp?.theme
+            theme: config.flp?.theme,
+            test: {
+                framework: config.flp?.test?.framework
+            },
+            fioriSandboxConfig: config.flp?.fioriSandboxConfig,
+            customInit: config.flp?.customInit
         };
         if (!this.config.path.startsWith('/')) {
             this.config.path = `/${this.config.path}`;
@@ -184,6 +194,11 @@ export class FlpSandbox {
         this.templateConfig = {
             basePath: relative(dirname(this.config.path), '/') ?? '.',
             apps: {},
+            test: {
+                framework: this.config.test?.framework
+            },
+            fioriSandboxConfig: this.config.fioriSandboxConfig ?? false,
+            customInit: this.config.customInit,
             ui5: {
                 libs: this.getUI5Libs(manifest),
                 theme: ui5Theme,

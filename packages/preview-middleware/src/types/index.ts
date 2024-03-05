@@ -53,6 +53,11 @@ export interface FlpConfig {
     libs?: boolean;
     apps: App[];
     theme?: string;
+    test?: {
+        framework?: string;
+    };
+    fioriSandboxConfig?: boolean;
+    customInit?: string;
 }
 
 /**

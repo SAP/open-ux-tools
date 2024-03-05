@@ -185,9 +185,21 @@ export function setI18nTitle(i18nKey = 'appTitle') {
  * @param params init parameters read from the script tag
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
+ * @param params.customInit path to the custom init module to be called
+ * @param params.test JSON containing the test configuration
  * @returns promise
  */
-export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: string | null }): Promise<void> {
+export async function init({
+    appUrls,
+    flex,
+    customInit,
+    test
+}: {
+    appUrls?: string | null;
+    flex?: string | null;
+    customInit?: string | null;
+    test?: string | null;
+}): Promise<void> {
     // Register RTA if configured
     if (flex) {
         sap.ushell.Container.attachRendererCreatedEvent(async function () {
@@ -232,17 +244,30 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
         await registerComponentDependencyPaths(JSON.parse(appUrls));
     }
 
+    // Load custom initialization module
+    if (customInit) {
+        await sap.ui.require([customInit]);
+    }
+
     // init
     setI18nTitle();
     registerSAPFonts();
-    const renderer = await sap.ushell.Container.createRenderer(undefined, true);
-    renderer.placeAt('content');
+
+    const testSettings = JSON.parse(test ?? "{}");
+
+    // Create renderer depending on test settings
+    if (testSettings?.framework !== "QUNIT") {
+        const renderer = await sap.ushell.Container.createRenderer(undefined, true);
+        renderer.placeAt('content');
+    }
 }
 
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
-        flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings')
+        flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
+        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
+        test: bootstrapConfig.getAttribute('data-open-ux-preview-test-settings')
     }).catch(() => Log.error('Sandbox initialization failed.'));
 }
