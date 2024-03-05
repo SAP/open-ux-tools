@@ -10,6 +10,7 @@ import { Select } from '../Select';
 import { MultiSelect } from '../MultiSelect';
 import type { Choice } from '../Questions';
 import { useOptions } from '../utils';
+import './Question.scss';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
@@ -72,5 +73,5 @@ export const Question = (props: QuestionProps) => {
             break;
         }
     }
-    return <div>{questionInput}</div>;
+    return <div className="prompt-entry">{questionInput}</div>;
 };

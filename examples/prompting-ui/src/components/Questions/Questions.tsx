@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
 import type { AnswerValue } from '../Question/Question';
 import { getDependantQuestions, getDynamicQuestions, updateAnswer } from '../utils';
+import './Questions.scss';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
@@ -72,21 +73,31 @@ export const Questions = (props: QuestionsProps) => {
         [localAnswers, onChange]
     );
     return (
-        <div>
+        <div
+            className={
+                layoutType === PromptsLayoutType.MultiColumn
+                    ? 'prompt-entries-wrapper-multi'
+                    : 'prompt-entries-wrapper-single'
+            }>
             {/* ToDo remove */}
             <div>{layoutType}</div>
-            {questions.map((question: Question, index: number) => {
-                const externalChoices = question.name !== undefined ? choices[question.name] : undefined;
-                return (
-                    <Question
-                        key={`${question.name}-${index}`}
-                        question={question}
-                        answers={localAnswers}
-                        onChange={onAnswerChange}
-                        choices={externalChoices}
-                    />
-                );
-            })}
+            <div
+                className={
+                    layoutType === PromptsLayoutType.MultiColumn ? 'prompt-entries-multi' : 'prompt-entries-single'
+                }>
+                {questions.map((question: Question, index: number) => {
+                    const externalChoices = question.name !== undefined ? choices[question.name] : undefined;
+                    return (
+                        <Question
+                            key={`${question.name}-${index}`}
+                            question={question}
+                            answers={localAnswers}
+                            onChange={onAnswerChange}
+                            choices={externalChoices}
+                        />
+                    );
+                })}
+            </div>
         </div>
     );
 };
