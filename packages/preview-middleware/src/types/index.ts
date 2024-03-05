@@ -56,7 +56,6 @@ export interface FlpConfig {
     test?: {
         framework?: string;
     };
-    fioriSandboxConfig?: boolean;
     customInit?: string;
 }
 
