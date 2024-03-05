@@ -86,8 +86,6 @@ export const Questions = (props: QuestionsProps) => {
                     ? 'prompt-entries-wrapper-multi'
                     : 'prompt-entries-wrapper-single'
             }>
-            {/* ToDo remove */}
-            <div>{layoutType}</div>
             <div
                 className={
                     layoutType === PromptsLayoutType.MultiColumn ? 'prompt-entries-multi' : 'prompt-entries-single'
