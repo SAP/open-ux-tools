@@ -253,10 +253,10 @@ export async function init({
     setI18nTitle();
     registerSAPFonts();
 
-    const testSettings = JSON.parse(test ?? "{}");
+    const testSettings = JSON.parse(test ?? '{}');
 
     // Create renderer depending on test settings
-    if (testSettings?.framework !== "QUNIT") {
+    if (testSettings?.framework !== 'QUNIT') {
         const renderer = await sap.ushell.Container.createRenderer(undefined, true);
         renderer.placeAt('content');
     }
