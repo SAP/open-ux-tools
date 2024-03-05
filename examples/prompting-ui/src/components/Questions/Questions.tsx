@@ -2,7 +2,7 @@ import type { CheckboxQuestion, InputQuestion, ListQuestion } from 'inquirer';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
 import type { AnswerValue } from '../Question/Question';
-import { getDependantQuestions, getDynamicQuestions, updateAnswer } from '../utils';
+import { getDependantQuestions, getDynamicQuestions, updateAnswer } from '../../utilities';
 import './Questions.scss';
 import { useRequestedChoices } from '../../utilities';
 

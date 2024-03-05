@@ -9,7 +9,7 @@ import { Input } from '../Input';
 import { Select } from '../Select';
 import { MultiSelect } from '../MultiSelect';
 import type { Choice } from '../Questions';
-import { useOptions } from '../utils';
+import { useOptions } from '../../utilities';
 import './Question.scss';
 
 export interface AdditionalQuestionProperties {

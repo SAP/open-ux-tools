@@ -1,4 +1,4 @@
-import type { AnswerValue, InputQuestion, Question } from '../Question';
+import type { AnswerValue, InputQuestion, Question } from '../components/Question';
 
 export function getDependantQuestions(
     questions: Question[],
