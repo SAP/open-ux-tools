@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.15.8
+
+### Patch Changes
+
+-   75653b31: UIIconButton. Some icons(which are not 16x16) are not centered within UIIconButton
+
 ## 1.15.7
 
 ### Patch Changes

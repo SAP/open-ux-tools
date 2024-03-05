@@ -86,7 +86,10 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
             icon: {
                 height: 16,
                 width: width,
-                lineHeight: 16
+                lineHeight: 16,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
             },
             iconHovered: {
                 backgroundColor: 'transparent'

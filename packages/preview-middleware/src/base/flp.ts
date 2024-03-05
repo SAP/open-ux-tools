@@ -2,7 +2,7 @@ import type { ReaderCollection } from '@ui5/fs';
 import { render } from 'ejs';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
-import { dirname, join, relative } from 'path';
+import { dirname, join, posix } from 'path';
 import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
@@ -182,7 +182,7 @@ export class FlpSandbox {
         const ui5Theme =
             this.config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
         this.templateConfig = {
-            basePath: relative(dirname(this.config.path), '/') ?? '.',
+            basePath: posix.relative(posix.dirname(this.config.path), '/') ?? '.',
             apps: {},
             ui5: {
                 libs: this.getUI5Libs(manifest),
