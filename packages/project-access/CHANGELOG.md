@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.17.6
+
+### Patch Changes
+
+-   c381d32f: feat(project-access): detect libraries with `.library`
+
 ## 1.17.5
 
 ### Patch Changes
