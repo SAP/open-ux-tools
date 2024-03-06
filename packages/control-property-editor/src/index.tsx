@@ -13,11 +13,12 @@ import { store } from './store';
 import type { ThemeName } from './components';
 import { setThemeOnDocument } from './components';
 import { registerAppIcons } from './icons';
-import { setProjectScenario } from './slice';
+import { initializeLivereload, setProjectScenario } from './slice';
 
 export interface StartOptions {
     previewUrl: string;
     rootElementId: string;
+    livereloadPort: number;
     telemetry?: boolean;
     scenario: Scenario;
 }
@@ -40,6 +41,7 @@ export function start(options: StartOptions): void {
     setThemeOnDocument(theme as ThemeName);
 
     store.dispatch(setProjectScenario(scenario));
+    store.dispatch(initializeLivereload(35729)); // TODO: use port from options
 
     ReactDOM.render(
         <React.StrictMode>

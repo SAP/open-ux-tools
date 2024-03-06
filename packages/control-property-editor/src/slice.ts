@@ -96,6 +96,7 @@ export const changePreviewScaleMode = createAction<'fit' | 'fixed'>('app/change-
 export const changeDeviceType = createAction<DeviceType>('app/change-device-type');
 export const filterNodes = createAction<FilterOptions[]>('app/filter-nodes');
 export const fileChanged = createAction<string[]>('app/file-changed');
+export const initializeLivereload = createAction<number>('app/initialize-livereload');
 export const initialState: SliceState = {
     deviceType: DeviceType.Desktop,
     scale: 1.0,
