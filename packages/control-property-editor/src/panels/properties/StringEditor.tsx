@@ -49,8 +49,12 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
         );
     };
     const dispatch = useDispatch();
+    let previousValue: string;
 
     const handlеChange = (e: React.FocusEvent | React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if (previousValue === e.target.value) {
+            return;
+        }
         reportTelemetry({ category: 'Property Change', propertyName: name }).catch((error) => {
             console.error(`Error in reporting telemetry`, error);
         });
@@ -70,9 +74,14 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
         }
     };
 
+    const handleFocus = (e: React.FocusEvent) => {
+        previousValue = e.target.value;
+    };
+
     const inputProps: UITextInputProps = {};
 
     inputProps.onBlur = (e) => handlеChange(e);
+    inputProps.onFocus = (e) => handleFocus(e);
 
     inputProps.onKeyPress = (e) => {
         if (e.key === 'Enter') {

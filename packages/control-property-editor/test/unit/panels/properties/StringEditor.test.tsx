@@ -2,6 +2,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import { render } from '../../utils';
 import React from 'react';
 import { StringEditor } from '../../../../src/panels/properties/StringEditor';
+import * as slice from '../../../../src/slice';
 
 describe('StringEditor', () => {
     const controlId = 'testControlId';
@@ -85,6 +86,28 @@ describe('StringEditor', () => {
         fireEvent.blur(textBox);
         expect((textBox as any).value).toBe('12345');
     });
+
+    test('Do not change property when no change exist (onFocus and onBlur)', () => {
+        const value = '1234';
+        const props: any = {
+            icons: [],
+            isEnabled: false,
+            isIcon: false,
+            name: 'testProperty',
+            value,
+            type: 'integer'
+        };
+        const spyChangeProperty = jest.spyOn(slice, 'changeProperty');
+        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+
+        const textBox = screen.getByDisplayValue(value);
+        expect(textBox).toBeInTheDocument();
+        expect((textBox as any).value).toBe(value);
+        fireEvent.focus(textBox);
+        fireEvent.blur(textBox);
+        expect(spyChangeProperty).toHaveBeenCalledTimes(0);
+    });
+
     test('integer value onPress "Enter"', () => {
         const value = '1234';
         const props: any = {
