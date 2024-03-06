@@ -1,4 +1,4 @@
-import { sep } from 'path';
+import path, { sep } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 
@@ -61,7 +61,7 @@ describe('Change Utils', () => {
                 throw new Error(errMsg);
             });
 
-            const expectedPath = `${sep}project${sep}webapp${sep}changes/something.change`;
+            const expectedPath = path.join(`${sep}project`, 'webapp', 'changes', fileName);
 
             expect(() => {
                 writeChangeToFolder(
@@ -259,7 +259,15 @@ describe('Change Utils', () => {
         });
 
         it('should not copy the annotation file if the selected directory is the same as the target', () => {
-            mockData.annotation.filePath = `${sep}mock${sep}project${sep}path${sep}webapp${sep}changes${sep}annotations${sep}mockAnnotation.xml`;
+            mockData.annotation.filePath = path.join(
+                `${sep}mock`,
+                'project',
+                'path',
+                'webapp',
+                'changes',
+                'annotations',
+                'mockAnnotation.xml'
+            );
 
             writeAnnotationChange(
                 mockProjectPath,
