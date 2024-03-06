@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.9.0
+
+### Minor Changes
+
+-   cf842794: Adds writer functionality for Adaptation Project's manifest change editors
+
 ## 0.8.11
 
 ### Patch Changes

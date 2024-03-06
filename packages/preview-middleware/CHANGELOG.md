@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.12.6
+
+### Patch Changes
+
+-   cf842794: Adds writer functionality for Adaptation Project's manifest change editors
+-   Updated dependencies [cf842794]
+    -   @sap-ux/adp-tooling@0.9.0
+
 ## 0.12.5
 
 ### Patch Changes
