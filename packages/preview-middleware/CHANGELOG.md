@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.12.5
+
+### Patch Changes
+
+-   6c5dba8e: Add reload-middleware
+
 ## 0.12.4
 
 ### Patch Changes

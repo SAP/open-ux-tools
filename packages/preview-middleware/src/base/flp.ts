@@ -294,7 +294,10 @@ export class FlpSandbox {
             }
 
             this.router.get(previewUrl, (_req: Request, res: Response) => {
-                const html = this.generateSandboxForEditor(rta, editor);
+                const html = this.generateSandboxForEditor(rta, editor).replace(
+                    '</body>',
+                    `</body>\n<!-- livereload disabled for editor </body>-->`
+                );
                 res.status(200).contentType('html').send(html);
             });
         }
@@ -308,22 +311,15 @@ export class FlpSandbox {
         this.router.use(PREVIEW_URL.client.url, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox.html
-        this.router.get(this.config.path, (async (req: Request, res: Response & { _livereload?: boolean }) => {
+        this.router.get(this.config.path, (async (_req: Request, res: Response) => {
             // warn the user if a file with the same name exists in the filesystem
             const file = await this.project.byPath(this.config.path);
             if (file) {
                 this.logger.warn(`HTML file returned at ${this.config.path} is NOT loaded from the file system.`);
             }
-
             const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
             const html = render(template, this.templateConfig);
-            // if livereload is enabled, don't send it but let other middleware modify the content
-            if (res._livereload) {
-                res.write(html);
-                res.end();
-            } else {
-                res.status(200).contentType('html').send(html);
-            }
+            res.status(200).contentType('html').send(html);
         }) as RequestHandler);
     }
 
