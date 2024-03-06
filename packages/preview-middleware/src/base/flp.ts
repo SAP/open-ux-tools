@@ -420,6 +420,9 @@ export class FlpSandbox {
      */
     private addTestRoutes(id: string) {
         for (const testConfiguration of this.config.test ?? []) {
+            if (!testConfiguration.path.startsWith('/')) {
+                testConfiguration.path = `/${testConfiguration.path}`;
+            }
             this.logger.debug(`Add test route: ${testConfiguration.path}`);
             // add route for the sandbox.html
             this.router.get(testConfiguration.path, (async (
