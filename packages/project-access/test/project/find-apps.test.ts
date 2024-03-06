@@ -210,12 +210,8 @@ describe('Test findFioriArtifacts()', () => {
         ]);
         expect(result.libraries).toEqual([
             {
-                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/dot-library'),
-                libraryPath: join(testDataRoot, 'project/find-all-apps/libraries/dot-library/src/com/sap/library')
-            },
-            {
-                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/yaml-library'),
-                ui5YamlPath: join(testDataRoot, 'project/find-all-apps/libraries/yaml-library/ui5.yaml')
+                libraryPath: join(testDataRoot, 'project/find-all-apps/libraries/dot-library/src/com/sap/library'),
+                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/dot-library')
             },
             {
                 manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library/src/manifest.json'),
@@ -239,12 +235,8 @@ describe('Test findFioriArtifacts()', () => {
         expect(result.extensions).toBeUndefined();
         expect(result.libraries).toEqual([
             {
-                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/dot-library'),
-                libraryPath: join(testDataRoot, 'project/find-all-apps/libraries/dot-library/src/com/sap/library')
-            },
-            {
-                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/yaml-library'),
-                ui5YamlPath: join(testDataRoot, 'project/find-all-apps/libraries/yaml-library/ui5.yaml')
+                libraryPath: join(testDataRoot, 'project/find-all-apps/libraries/dot-library/src/com/sap/library'),
+                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/dot-library')
             },
             {
                 manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library/src/manifest.json'),
