@@ -78,10 +78,11 @@ export function writeChangeToFolder(
         let targetFolderPath = path.join(projectPath, FolderTypes.WEBAPP, FolderTypes.CHANGES);
 
         if (dir) {
-            targetFolderPath = targetFolderPath.concat(`/${dir}`);
+            targetFolderPath = path.join(targetFolderPath, dir);
         }
 
-        writeChangeToFile(`${targetFolderPath}/${fileName}`, change, fs);
+        const filePath = path.join(targetFolderPath, fileName);
+        writeChangeToFile(filePath, change, fs);
     } catch (e) {
         throw new Error(`Could not write change to folder. Reason: ${e.message}`);
     }
