@@ -1,5 +1,5 @@
 import type { Dirent } from 'fs';
-import path, { sep } from 'path';
+import path from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
@@ -37,18 +37,18 @@ export function writeAnnotationChange(
         const { timestamp, annotation } = data;
         const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, FolderTypes.WEBAPP, FolderTypes.CHANGES);
-        const manifestFolderPath = path.join(changesFolderPath, FolderTypes.MANIFEST);
+        const changeFilePath = path.join(changesFolderPath, FolderTypes.MANIFEST, changeFileName);
         const annotationsFolderPath = path.join(changesFolderPath, FolderTypes.ANNOTATIONS);
 
-        writeChangeToFile(`${manifestFolderPath}${sep}${changeFileName}`, change, fs);
+        writeChangeToFile(changeFilePath, change, fs);
 
         if (!annotation.filePath) {
-            fs.write(`${annotationsFolderPath}${sep}${annotation.fileName}`, '');
+            fs.write(path.join(annotationsFolderPath, annotation.fileName ?? ''), '');
         } else {
             const { filePath, fileName } = annotation;
-            const selectedDir = filePath.replace(`${sep}${fileName}`, '');
+            const selectedDir = path.dirname(filePath);
             if (selectedDir !== annotationsFolderPath) {
-                fs.copy(filePath, `${annotationsFolderPath}${sep}${fileName}`);
+                fs.copy(filePath, path.join(annotationsFolderPath, fileName ?? ''));
             }
         }
     } catch (e) {

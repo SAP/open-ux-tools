@@ -1,4 +1,4 @@
-import { sep } from 'path';
+import path from 'path';
 import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
@@ -50,7 +50,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      * @returns {string | undefined} The determined filename for the annotation file.
      */
     private getAnnotationFileName({ annotation }: AnnotationsData): string | undefined {
-        return annotation.filePath ? annotation.filePath.split(sep).pop() : `annotation_${Date.now()}.xml`;
+        return annotation.filePath ? path.basename(annotation.filePath) : `annotation_${Date.now()}.xml`;
     }
 
     /**
