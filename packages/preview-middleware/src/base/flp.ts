@@ -122,7 +122,9 @@ export interface TemplateConfig {
         resources: Record<string, string>;
     };
     test?: {
-        framework?: string;
+        framework: string;
+        path: string;
+        customInit?: string;
     };
     customInit?: string;
     flex?: {
@@ -163,9 +165,7 @@ export class FlpSandbox {
             apps: config.flp?.apps ?? [],
             libs: config.flp?.libs,
             theme: config.flp?.theme,
-            test: {
-                framework: config.flp?.test?.framework
-            },
+            test: config.flp?.test ?? [],
             customInit: config.flp?.customInit
         };
         if (!this.config.path.startsWith('/')) {
@@ -192,9 +192,6 @@ export class FlpSandbox {
         this.templateConfig = {
             basePath: posix.relative(posix.dirname(this.config.path), '/') ?? '.',
             apps: {},
-            test: {
-                framework: this.config.test?.framework
-            },
             customInit: this.config.customInit,
             ui5: {
                 libs: this.getUI5Libs(manifest),
@@ -222,6 +219,7 @@ export class FlpSandbox {
             this.rta.options.appName = id;
             this.addEditorRoutes(this.rta);
         }
+        this.addTestRoutes(id);
         this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
@@ -413,6 +411,54 @@ export class FlpSandbox {
                 res.status(500).send(error.message);
             }
         }) as RequestHandler);
+    }
+
+    /**
+     * Add routes for html and scripts required for a local test FLP.
+     *
+     * @param {string} id application id from manifest
+     */
+    private addTestRoutes(id: string) {
+        for (const testConfiguration of this.config.test ?? []) {
+            this.logger.debug(`Add test route: ${testConfiguration.path}`);
+            // add route for the sandbox.html
+            this.router.get(testConfiguration.path, (async (
+                req: Request,
+                res: Response & { _livereload?: boolean }
+            ) => {
+                this.logger.debug(`Serving test route: ${testConfiguration.path}`);
+
+                // warn the user if a file with the same name exists in the filesystem
+                const file = await this.project.byPath(testConfiguration.path);
+                if (file) {
+                    this.logger.warn(`HTML file returned at ${this.config.path} is NOT loaded from the file system.`);
+                }
+
+                // override properties of the given this.templateConfig to fit the needs of this specific test
+                const config = { ...this.templateConfig };
+                config.basePath = posix.relative(posix.dirname(testConfiguration.path), '/') ?? '.';
+                config.ui5.resources[id] = config.basePath;
+                for (const app of Object.entries(config.apps)) {
+                    if (app[1].additionalInformation === `SAPUI5.Component=${id}`) {
+                        app[1].url = config.basePath;
+                    }
+                }
+                config.test = testConfiguration;
+                config.customInit = testConfiguration.customInit;
+
+                this.logger.debug(`Test config: ${JSON.stringify(config)}`);
+
+                const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
+                const html = render(template, config);
+                // if livereload is enabled, don't send it but let other middleware modify the content
+                if (res._livereload) {
+                    res.write(html);
+                    res.end();
+                } else {
+                    res.status(200).contentType('html').send(html);
+                }
+            }) as RequestHandler);
+        }
     }
 
     /**

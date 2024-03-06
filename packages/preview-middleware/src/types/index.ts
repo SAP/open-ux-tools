@@ -54,8 +54,10 @@ export interface FlpConfig {
     apps: App[];
     theme?: string;
     test?: {
-        framework?: string;
-    };
+        framework: string;
+        path: string;
+        customInit?: string;
+    }[];
     customInit?: string;
 }
 
