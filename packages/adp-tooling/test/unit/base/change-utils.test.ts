@@ -1,4 +1,4 @@
-import path, { sep } from 'path';
+import path from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { readFileSync, existsSync, readdirSync } from 'fs';
 
@@ -25,7 +25,7 @@ describe('Change Utils', () => {
             jest.clearAllMocks();
         });
 
-        const projectPath = '/project';
+        const projectPath = 'project';
         const change = { key: 'value' };
         const fileName = 'something.change';
         const writeJsonSpy = jest.fn();
@@ -61,7 +61,7 @@ describe('Change Utils', () => {
                 throw new Error(errMsg);
             });
 
-            const expectedPath = path.join(`${sep}project`, 'webapp', 'changes', fileName);
+            const expectedPath = path.join('project', 'webapp', 'changes', fileName);
 
             expect(() => {
                 writeChangeToFolder(
@@ -208,7 +208,7 @@ describe('Change Utils', () => {
             jest.clearAllMocks();
         });
 
-        const mockProjectPath = '/mock/project/path';
+        const mockProjectPath = 'mock/project/path';
         const mockData = {
             timestamp: 123456789,
             annotation: {
@@ -243,7 +243,7 @@ describe('Change Utils', () => {
         });
 
         it('should copy the annotation file to the correct directory if not creating a new empty file', () => {
-            mockData.annotation.filePath = `/mock/path/to/annotation/file.xml`;
+            mockData.annotation.filePath = `mock/path/to/annotation/file.xml`;
 
             writeAnnotationChange(
                 mockProjectPath,
@@ -260,7 +260,7 @@ describe('Change Utils', () => {
 
         it('should not copy the annotation file if the selected directory is the same as the target', () => {
             mockData.annotation.filePath = path.join(
-                `${sep}mock`,
+                'mock',
                 'project',
                 'path',
                 'webapp',
