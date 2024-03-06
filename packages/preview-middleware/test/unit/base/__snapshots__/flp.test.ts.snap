@@ -37,6 +37,7 @@ Object {
     },
   },
   "basePath": "..",
+  "customInit": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
@@ -86,6 +87,7 @@ Object {
     },
   },
   "basePath": "..",
+  "customInit": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
@@ -133,6 +135,7 @@ Object {
     },
   },
   "basePath": "..",
+  "customInit": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
@@ -182,6 +185,7 @@ Object {
     },
   },
   "basePath": "..",
+  "customInit": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
@@ -283,8 +287,8 @@ exports[`FlpSandbox router editor with config 1`] = `
     <script type=\\"text/javascript\\">
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
-    
-    
+
+
 </head>
 
 <!-- UI Content -->
@@ -359,8 +363,8 @@ exports[`FlpSandbox router rta 1`] = `
     <script type=\\"text/javascript\\">
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
-    
-    
+
+
 </head>
 
 <!-- UI Content -->
@@ -468,8 +472,8 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
     <script type=\\"text/javascript\\">
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
-    
-    
+
+
 </head>
 
 <!-- UI Content -->
@@ -548,8 +552,8 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
     <script type=\\"text/javascript\\">
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
-    
-    
+
+
 </head>
 
 <!-- UI Content -->
@@ -624,8 +628,8 @@ exports[`FlpSandbox router test/flp.html 1`] = `
     <script type=\\"text/javascript\\">
         (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
     </script>
-    
-    
+
+
 </head>
 
 <!-- UI Content -->
