@@ -52,7 +52,7 @@ describe('Change Utils', () => {
                 dir
             );
 
-            expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(`subdir/${fileName}`), change);
+            expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(path.join(dir, fileName)), change);
         });
 
         it('should throw error when writing json fails', () => {
