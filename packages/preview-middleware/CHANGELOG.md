@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.12.4
+
+### Patch Changes
+
+-   5448433a: FIX: preview path on windows
+
 ## 0.12.3
 
 ### Patch Changes
