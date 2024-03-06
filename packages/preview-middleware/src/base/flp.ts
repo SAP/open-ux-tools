@@ -419,6 +419,7 @@ export class FlpSandbox {
      * @param {string} id application id from manifest
      */
     private addTestRoutes(id: string) {
+        const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
         for (const testConfiguration of this.config.test ?? []) {
             if (!testConfiguration.path.startsWith('/')) {
                 testConfiguration.path = `/${testConfiguration.path}`;
@@ -451,7 +452,6 @@ export class FlpSandbox {
 
                 this.logger.debug(`Test config: ${JSON.stringify(config)}`);
 
-                const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
                 const html = render(template, config);
                 // if livereload is enabled, don't send it but let other middleware modify the content
                 if (res._livereload) {
