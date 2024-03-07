@@ -141,14 +141,16 @@ export class AdpPreview {
      *
      * Usage:
      * ```ts
-     * const express = require('express');
+     * import express from "express";
+     *
+     * const app = express();
      * const router = express.Router();
      *
      * // Ensure express.json() middleware is applied to the router or app
      * router.use(express.json());
      *
-     * const apiHandler = new ApiHandler();
-     * await apiHandler.addApis(router);
+     * const adp = new AdpPreview();
+     * adp.addApis(router);
      *
      * app.use('/', router);
      * ```
