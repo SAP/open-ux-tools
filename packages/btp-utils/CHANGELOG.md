@@ -1,5 +1,17 @@
 # @sap-ux/btp-utils
 
+## 0.14.2
+
+### Patch Changes
+
+-   811c4324: Expose types and introduce missing functionality
+
+## 0.14.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
 ## 0.14.0
 
 ### Minor Changes

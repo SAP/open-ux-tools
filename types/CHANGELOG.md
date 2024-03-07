@@ -1,5 +1,11 @@
 # @sap-ux/types
 
+## 1.1.3
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
 ## 1.1.2
 
 ### Patch Changes

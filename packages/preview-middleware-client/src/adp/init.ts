@@ -8,13 +8,16 @@ import {
     showMessage,
     startPostMessageCommunication
 } from '@sap-ux-private/control-property-editor-common';
+
 import { ActionHandler } from '../cpe/types';
-import ExtensionPointService from './extension-point';
 import VersionInfo from 'sap/ui/VersionInfo';
 import { getUI5VersionValidationMessage } from './ui5-version-utils';
 
 export default async function (rta: RuntimeAuthoring) {
-    const extPointService = new ExtensionPointService(rta);
+    const { version } = (await VersionInfo.load()) as { version: string };
+    const versionParts = version.split('.');
+    const minor = parseInt(versionParts[1], 10);
+
     const actionHandlers: ActionHandler[] = [];
     /**
      *
@@ -26,7 +29,7 @@ export default async function (rta: RuntimeAuthoring) {
 
     const { sendAction } = startPostMessageCommunication<ExternalAction>(
         window.parent,
-        async function onAction(action) {
+        async function onAction(action: ExternalAction) {
             for (const handler of actionHandlers) {
                 try {
                     await handler(action);
@@ -39,13 +42,18 @@ export default async function (rta: RuntimeAuthoring) {
 
     // initialize fragment content menu entry
     initDialogs(rta);
+
     // initialize extension point service
-    extPointService.init(subscribe);
+    if (minor > 77) {
+        const ExtensionPointService = (await import('open/ux/preview/client/adp/extension-point')).default;
+        const extPointService = new ExtensionPointService(rta);
+        extPointService.init(subscribe);
+    }
+
     // also initialize the editor
     init(rta);
 
-    const ui5Version = (await VersionInfo.load()) as { version: string };
-    const ui5VersionValidationMsg = getUI5VersionValidationMessage(ui5Version.version);
+    const ui5VersionValidationMsg = getUI5VersionValidationMessage(version);
 
     if (ui5VersionValidationMsg) {
         sendAction(showMessage(ui5VersionValidationMsg));

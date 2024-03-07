@@ -411,9 +411,6 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      i18next:
-        specifier: 20.6.1
-        version: 20.6.1
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1011,6 +1008,31 @@ importers:
         specifier: 10.9.2
         version: 10.9.2(@types/node@18.11.9)(typescript@5.3.3)
 
+  packages/inquirer-common:
+    dependencies:
+      '@sap-ux/ui5-info':
+        specifier: workspace:*
+        version: link:../ui5-info
+      chalk:
+        specifier: 4.1.2
+        version: 4.1.2
+      figures:
+        specifier: 3.2.0
+        version: 3.2.0
+      fuzzy:
+        specifier: 0.1.3
+        version: 0.1.3
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+    devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+
   packages/jest-file-matchers:
     dependencies:
       chalk:
@@ -1246,7 +1268,7 @@ importers:
         specifier: 1.39.0
         version: 1.39.0
       '@sap-ux/logger':
-        specifier: 0.5.0
+        specifier: 0.5.1
         version: link:../logger
       '@types/folder-hash':
         specifier: 4.0.4
@@ -1289,8 +1311,11 @@ importers:
         specifier: workspace:@sap-ux-private/preview-middleware-client@*
         version: link:../preview-middleware-client
       '@sap-ux-private/playwright':
-        specifier: 0.0.2
+        specifier: 0.0.3
         version: link:../playwright
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -1386,8 +1411,8 @@ importers:
   packages/project-input-validator:
     dependencies:
       i18next:
-        specifier: 20.6.1
-        version: 20.6.1
+        specifier: 23.5.1
+        version: 23.5.1
       validate-npm-package-name:
         specifier: 5.0.0
         version: 5.0.0
@@ -1407,37 +1432,34 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      chokidar:
-        specifier: 3.6.0
-        version: 3.6.0
-      express:
-        specifier: '4'
-        version: 4.18.2
-      ui5-middleware-websocket:
-        specifier: 3.0.1
-        version: 3.0.1
-      ws:
-        specifier: 8.16.0
-        version: 8.16.0
+      connect-livereload:
+        specifier: 0.6.1
+        version: 0.6.1
+      livereload:
+        specifier: 0.9.3
+        version: 0.9.3
+      portfinder:
+        specifier: 1.0.32
+        version: 1.0.32
     devDependencies:
-      '@sap-ux-private/playwright':
-        specifier: 0.0.2
-        version: link:../playwright
+      '@types/connect-livereload':
+        specifier: 0.6.3
+        version: 0.6.3
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
+      '@types/livereload':
+        specifier: 0.9.5
+        version: 0.9.5
       '@types/supertest':
         specifier: 2.0.12
         version: 2.0.12
-      '@types/ws':
-        specifier: 8.5.10
-        version: 8.5.10
-      copyfiles:
-        specifier: 2.4.1
-        version: 2.4.1
-      npm-run-all:
-        specifier: 4.1.5
-        version: 4.1.5
+      axios:
+        specifier: 1.6.1
+        version: 1.6.1
+      express:
+        specifier: 4.18.2
+        version: 4.18.2
       supertest:
         specifier: 6.3.3
         version: 6.3.3
@@ -1566,8 +1588,8 @@ importers:
         specifier: 1.108.18
         version: 1.108.18
       applicationinsights:
-        specifier: 2.9.0
-        version: 2.9.0
+        specifier: 2.9.2
+        version: 2.9.2
       axios:
         specifier: 1.6.0
         version: 1.6.0
@@ -1733,6 +1755,55 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
 
+  packages/ui5-application-inquirer:
+    dependencies:
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
+      '@sap-ux/ui5-info':
+        specifier: workspace:*
+        version: link:../ui5-info
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      inquirer-autocomplete-prompt:
+        specifier: 2.0.1
+        version: 2.0.1(inquirer@8.2.6)
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
+    devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@sap-ux/cap-config-writer':
+        specifier: workspace:*
+        version: link:../cap-config-writer
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/inquirer-autocomplete-prompt':
+        specifier: 2.0.1
+        version: 2.0.1
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
+      '@types/semver':
+        specifier: 7.5.4
+        version: 7.5.4
+      inquirer:
+        specifier: 8.2.6
+        version: 8.2.6
+
   packages/ui5-application-writer:
     dependencies:
       '@sap-ux/ui5-config':
@@ -1831,21 +1902,18 @@ importers:
 
   packages/ui5-library-inquirer:
     dependencies:
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
       '@sap-ux/project-input-validator':
         specifier: workspace:*
         version: link:../project-input-validator
       '@sap-ux/ui5-info':
         specifier: workspace:*
         version: link:../ui5-info
-      fuzzy:
-        specifier: 0.1.3
-        version: 0.1.3
       i18next:
         specifier: 23.5.1
         version: 23.5.1
-      inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.6)
@@ -1856,6 +1924,9 @@ importers:
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
+      inquirer:
+        specifier: 8.2.6
+        version: 8.2.6
 
   packages/ui5-library-writer:
     dependencies:
@@ -7279,6 +7350,10 @@ packages:
       rollup: 3.29.1
     dev: true
 
+  /@sap-devx/yeoman-ui-types@1.14.4:
+    resolution: {integrity: sha512-HTgMqm3purAJUjirm6m57h8BaoF/Qx6wuXxiB9cy7ZilmriNHVx0aXJV514I1r8GMRdKKHCVixmhZW0/4L02hw==}
+    dev: true
+
   /@sap-ux/fe-fpm-writer@0.24.0:
     resolution: {integrity: sha512-ki2ZazdT8DfuPUgN8P8c+R8SqjT28JDSrYOPAA9EqKR1n24MyjerKq+49mRJ8fjR6iGciMG7UqbNkj6Sy/KCoA==}
     engines: {node: '>=18.x', pnpm: '>=6.26.1 < 7.0.0 || >=7.1.0'}
@@ -7792,7 +7867,7 @@ packages:
       util: 0.12.5
       util-deprecate: 1.0.2
       watchpack: 2.4.0
-      ws: 8.16.0
+      ws: 8.13.0
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -8425,6 +8500,12 @@ packages:
       '@types/node': 18.11.9
     dev: true
 
+  /@types/connect-livereload@0.6.3:
+    resolution: {integrity: sha512-CaWami/rQdycHKnOR+UIfBNxNeqLC5f1KqMdclbsf+TsiLgXwYm2/+KlAefcR3ODom7Fuz4bvWazDMsmfaV5gw==}
+    dependencies:
+      '@types/connect': 3.4.35
+    dev: true
+
   /@types/connect@3.4.35:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
@@ -8697,6 +8778,12 @@ packages:
 
   /@types/linkify-it@3.0.3:
     resolution: {integrity: sha512-pTjcqY9E4nOI55Wgpz7eiI8+LzdYnw3qxXCfHyBDdPbYvbyLgWLJGh8EdPvqawwMK1Uo1794AUkkR38Fr0g+2g==}
+    dev: true
+
+  /@types/livereload@0.9.5:
+    resolution: {integrity: sha512-2RXcRKdivPmn67pwjytvHoRv46AeXaLYVUWA0zkel1XSAOH5i71G0KfUdE5u3g80T155gR3Fo3ilVaqparLsVA==}
+    dependencies:
+      '@types/ws': 8.5.10
     dev: true
 
   /@types/lodash@4.14.202:
@@ -10043,8 +10130,8 @@ packages:
     resolution: {integrity: sha512-jlpIfsOoNoafl92Sz//64uQHGSyMrD2vYG5d8o2a4qGvyNCvXur7bzIsWtAC/6flI2RYAp3kv8rsfBtaLm7w0g==}
     dev: true
 
-  /applicationinsights@2.9.0:
-    resolution: {integrity: sha512-W90WNjtvZ10GUInpkyNM0xBGe2qRYChHhdb44SE5KU7hXtCZLxs3IZjWw1gJINQem0qGAgtZlxrVvKPj5SlTbQ==}
+  /applicationinsights@2.9.2:
+    resolution: {integrity: sha512-wlDiD7v0BQNM8oNzsf9C836R5ze25u+CuCEZsbA5xMIXYYBxkqkWE/mo9GFJM7rsKaiGqpxEwWmePHKD2Lwy2w==}
     engines: {node: '>=8.0.0'}
     peerDependencies:
       applicationinsights-native-metrics: '*'
@@ -10064,7 +10151,7 @@ packages:
       cls-hooked: 4.2.2
       continuation-local-storage: 3.2.1
       diagnostic-channel: 1.1.1
-      diagnostic-channel-publishers: 1.0.7(diagnostic-channel@1.1.1)
+      diagnostic-channel-publishers: 1.0.8(diagnostic-channel@1.1.1)
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -10886,7 +10973,7 @@ packages:
     dev: true
 
   /bytes@3.0.0:
-    resolution: {integrity: sha512-pMhOfFDPiv9t5jjIXkHosWmkSyQbvsgEVNkz0ERHbuLh2T/7j4Mqqpz523Fe8MVY89KC6Sh/QfS2sM+SjgFDcw==}
+    resolution: {integrity: sha1-0ygVQE1olpn4Wk6k+odV3ROpYEg=}
     engines: {node: '>= 0.8'}
     dev: true
 
@@ -11105,21 +11192,6 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
-
-  /chokidar@3.6.0:
-    resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
-    engines: {node: '>= 8.10.0'}
-    dependencies:
-      anymatch: 3.1.2
-      braces: 3.0.2
-      glob-parent: 5.1.2
-      is-binary-path: 2.1.0
-      is-glob: 4.0.3
-      normalize-path: 3.0.0
-      readdirp: 3.6.0
-    optionalDependencies:
-      fsevents: 2.3.2
 
   /chownr@1.1.4:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
@@ -11193,7 +11265,6 @@ packages:
   /cli-width@3.0.0:
     resolution: {integrity: sha512-FxqpkPPwu1HjuN93Omfm4h8uIanXofW0RxVEW3k5RKx+mJJYSthzNhp32Kzxxy3YAEZ/Dc/EWN1vZRY0+kOhbw==}
     engines: {node: '>= 10'}
-    dev: false
 
   /cliui@6.0.0:
     resolution: {integrity: sha512-t6wbgtoCXvAzst7QgXxJYqPt0usEfbgQdftEPbLL/cvv6HPE5VgvqCuAIDR0NgU52ds6rFwqrgakNLrHEjCbrQ==}
@@ -11462,6 +11533,10 @@ packages:
       xdg-basedir: 5.1.0
     dev: true
 
+  /connect-livereload@0.6.1:
+    resolution: {integrity: sha512-3R0kMOdL7CjJpU66fzAkCe6HNtd3AavCS4m+uW4KtJjrdGPT0SQEZieAYd+cm+lJoBznNQ4lqipYWkhBMgk00g==}
+    dev: false
+
   /console-control-strings@1.1.0:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}
     dev: false
@@ -11497,7 +11572,7 @@ packages:
     dev: true
 
   /cookie-signature@1.0.6:
-    resolution: {integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==}
+    resolution: {integrity: sha1-4wOogrNCzD7oylE6eZmXNNqzriw=}
 
   /cookie@0.5.0:
     resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
@@ -11986,8 +12061,8 @@ packages:
       wrappy: 1.0.2
     dev: true
 
-  /diagnostic-channel-publishers@1.0.7(diagnostic-channel@1.1.1):
-    resolution: {integrity: sha512-SEECbY5AiVt6DfLkhkaHNeshg1CogdLLANA8xlG/TKvS+XUgvIKl7VspJGYiEdL5OUyzMVnr7o0AwB7f+/Mjtg==}
+  /diagnostic-channel-publishers@1.0.8(diagnostic-channel@1.1.1):
+    resolution: {integrity: sha512-HmSm9hXxSPxA9BaLGY98QU1zsdjeCk113KjAYGPCen1ZP6mhVaTPzHd6UYv5r21DnWANi+f+NyPOHruGT9jpqQ==}
     peerDependencies:
       diagnostic-channel: '*'
     dependencies:
@@ -12165,7 +12240,7 @@ packages:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
   /ee-first@1.1.1:
-    resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
+    resolution: {integrity: sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=}
 
   /ejs@3.1.7:
     resolution: {integrity: sha512-BIar7R6abbUxDA3bfXrO4DSgwo8I+fB5/1zgujl3HLLjwd6+9iOnrT+t3grn2qbk9vOgBubXOFwX2m9axoFaGw==}
@@ -13497,8 +13572,8 @@ packages:
     dependencies:
       reusify: 1.0.4
 
-  /fb-watchman@2.0.2:
-    resolution: {integrity: sha512-p5161BqbuCaSnB8jIbzQHOlpgsPmK5rJVDfDKO91Axs5NC1uu3HRQm6wt9cd9/+GtQQIO53JdGXXoyDpTAsgYA==}
+  /fb-watchman@2.0.1:
+    resolution: {integrity: sha512-DkPJKQeY6kKwmuMretBhr7G6Vodr7bFwDYTXIkfG1gjvNpaxBTQV3PbXg6bR1c1UP4jPOX0jHUbbHANL9vRjVg==}
     dependencies:
       bser: 2.1.1
     dev: true
@@ -13761,7 +13836,7 @@ packages:
     dependencies:
       '@babel/code-frame': 7.23.5
       chalk: 4.1.2
-      chokidar: 3.6.0
+      chokidar: 3.5.3
       cosmiconfig: 7.0.1
       deepmerge: 4.2.2
       fs-extra: 10.0.0
@@ -13921,6 +13996,7 @@ packages:
 
   /function-bind@1.1.1:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
+    dev: true
 
   /function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
@@ -14357,7 +14433,7 @@ packages:
     resolution: {integrity: sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==}
     engines: {node: '>= 0.4.0'}
     dependencies:
-      function-bind: 1.1.1
+      function-bind: 1.1.2
 
   /hasown@2.0.0:
     resolution: {integrity: sha512-vUptKVTpIJhcczKBbgnS+RtcuYMB8+oNzPK2/Hp3hanz8JmpATdmmgLgSaadVREkDm+e2giHwY3ZRkyjSIDDFA==}
@@ -14807,7 +14883,6 @@ packages:
       strip-ansi: 6.0.1
       through: 2.3.8
       wrap-ansi: 6.2.0
-    dev: false
 
   /internal-slot@1.0.5:
     resolution: {integrity: sha512-Y+R5hJrzs52QCG2laLn4udYVnxsfny9CpOhNhUvk/SSSVyF6T27FzRbF0sroPidSu3X8oEAkOn2K804mjpt6UQ==}
@@ -15569,7 +15644,7 @@ packages:
       '@types/graceful-fs': 4.1.5
       '@types/node': 18.11.9
       anymatch: 3.1.2
-      fb-watchman: 2.0.2
+      fb-watchman: 2.0.1
       graceful-fs: 4.2.11
       jest-regex-util: 29.4.3
       jest-util: 29.7.0
@@ -16013,7 +16088,7 @@ packages:
       whatwg-encoding: 2.0.0
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
-      ws: 8.16.0
+      ws: 8.13.0
       xml-name-validator: 4.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -16214,6 +16289,24 @@ packages:
     dependencies:
       uc.micro: 1.0.6
     dev: true
+
+  /livereload-js@3.4.1:
+    resolution: {integrity: sha512-5MP0uUeVCec89ZbNOT/i97Mc+q3SxXmiUGhRFOTmhrGPn//uWVQdCvcLJDy64MSBR5MidFdOR7B9viumoavy6g==}
+    dev: false
+
+  /livereload@0.9.3:
+    resolution: {integrity: sha512-q7Z71n3i4X0R9xthAryBdNGVGAO2R5X+/xXpmKeuPMrteg+W2U8VusTKV3YiJbXZwKsOlFlHe+go6uSNjfxrZw==}
+    engines: {node: '>=8.0.0'}
+    hasBin: true
+    dependencies:
+      chokidar: 3.5.3
+      livereload-js: 3.4.1
+      opts: 2.0.2
+      ws: 7.5.9
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
 
   /load-json-file@4.0.0:
     resolution: {integrity: sha512-Kx8hMakjX03tiGTLAIdJ+lL0htKnXjEZN6hk/tozf/WOuYGdZBJrZ+rCJRbVCugsjB3jMLn9746NsQIf5VjBMw==}
@@ -16571,7 +16664,7 @@ packages:
     dev: true
 
   /media-typer@0.3.0:
-    resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
+    resolution: {integrity: sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=}
     engines: {node: '>= 0.6'}
 
   /mem-fs-editor@9.4.0(mem-fs@2.1.0):
@@ -16649,7 +16742,7 @@ packages:
     dev: true
 
   /merge-descriptors@1.0.1:
-    resolution: {integrity: sha512-cCi6g3/Zr1iqQi6ySbseM1Xvooa98N0w31jzUYrXPX2xqObmFGHJ0tQ5u74H3mVh7wLouTseZyYIq39g8cNp1w==}
+    resolution: {integrity: sha1-sAqqVW3YtEVoFQ7J0blT8/kMu2E=}
 
   /merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
@@ -16926,7 +17019,6 @@ packages:
 
   /mute-stream@0.0.8:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
-    dev: false
 
   /nanoid@3.3.6:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
@@ -17639,6 +17731,10 @@ packages:
       prelude-ls: 1.2.1
       type-check: 0.4.0
     dev: true
+
+  /opts@2.0.2:
+    resolution: {integrity: sha512-k41FwbcLnlgnFh69f4qdUfvDQ+5vaSDnVPFI/y5XuhKRq97EnVVneO9F1ESVCdiVu4fCS2L8usX3mU331hB7pg==}
+    dev: false
 
   /ora@5.4.1:
     resolution: {integrity: sha512-5b6Y85tPxZZ7QytO+BQzysW31HJku27cRIlkbAXaNx+BdcVi+LlRFmVXzeF6a7JCwJpyw5c4b+YSVImQIrBpuQ==}
@@ -19384,7 +19480,6 @@ packages:
   /run-async@2.4.1:
     resolution: {integrity: sha512-tvVnVv01b8c1RrA6Ep7JkStj85Guv/YrMcwqYQnwjsAS2cTmmPGBBjAjpCW7RrSodNSoE2/qg9O4bceNvUuDgQ==}
     engines: {node: '>=0.12.0'}
-    dev: false
 
   /run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -19484,7 +19579,7 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
-      chokidar: 3.6.0
+      chokidar: 3.5.3
       immutable: 4.1.0
       source-map-js: 1.0.2
     dev: true
@@ -20850,16 +20945,6 @@ packages:
     dev: true
     optional: true
 
-  /ui5-middleware-websocket@3.0.1:
-    resolution: {integrity: sha512-9Y4qSW8KtokAAcQj4/9rZ8q1bDFgNIc15B+CfsWV26mZlv9njuxBX5LWlQTQE1r1bE+fSwjiR1hG1embp8+BBA==}
-    dependencies:
-      ui5-utils-express: 1.2.1
-      ws: 8.16.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
   /ui5-tooling-modules@3.0.5:
     resolution: {integrity: sha512-6H6+DWIA+iiMnW2T7SjeEf9ztghYzsAO+t5uK/eZEA3G/MeAncFg+W299TaZh0EdnWe3juLPxEBp82ZDimg6Hg==}
     dependencies:
@@ -20899,10 +20984,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
-
-  /ui5-utils-express@1.2.1:
-    resolution: {integrity: sha512-XOci8ELI9+Ude+4iAdQrF3gm9ega0dfy7p8nH1tmP/BAlr+mNTjJkQeAgArDE9oQ2D6LYAcD183yRqBlvp1tHA==}
-    dev: false
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
@@ -20998,7 +21079,7 @@ packages:
     engines: {node: '>= 10.0.0'}
 
   /unpipe@1.0.0:
-    resolution: {integrity: sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw=}
+    resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
   /untildify@4.0.0:
@@ -21633,23 +21714,9 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-    dev: true
 
   /ws@8.13.0:
     resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: false
-
-  /ws@8.16.0:
-    resolution: {integrity: sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1

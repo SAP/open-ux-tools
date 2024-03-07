@@ -89,6 +89,11 @@ describe('getSecureStore', () => {
             jest.mock('vscode', () => undefined, { virtual: true });
             expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
         });
+        it('returns DummyStore if environment variable FIORI_TOOLS_DISABLE_SECURE_STORE is set', () => {
+            process.env.FIORI_TOOLS_DISABLE_SECURE_STORE = 'true';
+            expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
+            delete process.env.FIORI_TOOLS_DISABLE_SECURE_STORE;
+        });
         it('returns DummyStore when all else fails', () => {
             jest.mock('keytar', () => {
                 throw new Error();

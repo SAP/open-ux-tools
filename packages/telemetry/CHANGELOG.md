@@ -1,5 +1,70 @@
 # @sap-ux/telemetry
 
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [e443e534]
+    -   @sap-ux/store@0.5.0
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [c381d32f]
+    -   @sap-ux/project-access@1.17.6
+
+## 0.4.0
+
+### Minor Changes
+
+-   15d6afbe: update init settings, bump azure applicationinsights and stablise tests
+
+## 0.3.1
+
+### Patch Changes
+
+-   98d34e8e: fix for assigning resource id in telemetry settings
+
+## 0.3.0
+
+### Minor Changes
+
+-   b2e867bc: no longer require resource id in initialisation
+
+## 0.2.12
+
+### Patch Changes
+
+-   Updated dependencies [811c4324]
+    -   @sap-ux/btp-utils@0.14.2
+
+## 0.2.11
+
+### Patch Changes
+
+-   Updated dependencies [33ec9ff9]
+    -   @sap-ux/project-access@1.17.5
+
+## 0.2.10
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/project-access@1.17.4
+    -   @sap-ux/ui5-config@0.21.1
+    -   @sap-ux/btp-utils@0.14.1
+    -   @sap-ux/logger@0.5.1
+    -   @sap-ux/store@0.4.3
+
+## 0.2.9
+
+### Patch Changes
+
+-   Updated dependencies [2eda843d]
+    -   @sap-ux/project-access@1.17.3
+
 ## 0.2.8
 
 ### Patch Changes

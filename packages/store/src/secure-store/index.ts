@@ -39,7 +39,7 @@ function getKeytar(log: Logger): typeof Keytar | undefined {
  * Create an instance of a store
  */
 export const getSecureStore = (log: Logger): SecureStore => {
-    if (isAppStudio()) {
+    if (isAppStudio() || process.env.FIORI_TOOLS_DISABLE_SECURE_STORE) {
         return new DummyStore(log);
     } else {
         const keytar = getKeytar(log);

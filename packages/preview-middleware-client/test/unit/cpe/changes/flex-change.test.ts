@@ -3,7 +3,9 @@ import type { UI5AdaptationOptions } from '../../../../src/cpe/types';
 import type { PropertyChange } from '@sap-ux-private/control-property-editor-common';
 import { sapCoreMock } from 'mock/window';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
-import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 describe('flexChange', () => {
     // prepare
@@ -20,6 +22,7 @@ describe('flexChange', () => {
         }
     };
     const pushAndExecuteMock = jest.fn();
+    const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
     rtaMock.getCommandStack.mockReturnValue({
         pushAndExecute: pushAndExecuteMock
     });
@@ -31,7 +34,7 @@ describe('flexChange', () => {
     rtaMock.getFlexSettings.mockReturnValue(flexSettings);
 
     const testOptions: UI5AdaptationOptions = {
-        rta: rtaMock
+        rta: rtaMock as unknown as RuntimeAuthoring
     };
     const mockCommand = {
         command: 'testCommand'

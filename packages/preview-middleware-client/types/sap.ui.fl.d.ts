@@ -44,10 +44,12 @@ declare module 'sap/ui/fl/Scenario' {
 declare module 'sap/ui/fl/Utils' {
     import type ManagedObject from 'sap/ui/base/ManagedObject';
     import type Controller from 'sap/ui/core/mvc/Controller';
+    import type Control from 'sap/ui/core/Control';
 
     interface Utils {
         checkControlId(control: ManagedObject): boolean;
         getViewForControl(control: ManagedObject): ControlView;
+        getAppComponentForControl(control: Control): Control;
     }
 
     interface ControlView {

@@ -9,6 +9,12 @@ export interface UIToolbarProps {
     breakPointLarge?: number;
     breakPointMedium?: number;
     breakPointSmall?: number;
+    /**
+     * An optional callback function triggered when the toolbar is resized.
+     *
+     * @param {number} width - The new width of the toolbar.
+     * @param {string} widthName - The name of the width.
+     */
     onResize?(width: number, widthName: string): void;
 }
 
