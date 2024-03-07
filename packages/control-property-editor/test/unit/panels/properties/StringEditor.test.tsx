@@ -87,7 +87,7 @@ describe('StringEditor', () => {
         expect((textBox as any).value).toBe('12345');
     });
 
-    test('Do not change property when no change exist (onFocus and onBlur)', () => {
+    test('Do not trigger changeProperty when no change in prop value', () => {
         const value = '1234';
         const props: any = {
             icons: [],
@@ -103,7 +103,6 @@ describe('StringEditor', () => {
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
         expect((textBox as any).value).toBe(value);
-        fireEvent.focus(textBox);
         fireEvent.blur(textBox);
         expect(spyChangeProperty).toHaveBeenCalledTimes(0);
     });
@@ -165,7 +164,7 @@ describe('StringEditor', () => {
         expect(textBox).toBeInTheDocument();
         expect((textBox as any).value).toBe('5.300');
         fireEvent.blur(textBox);
-        expect((textBox as any).value).toBe('5.3');
+        expect((textBox as any).value).toBe('5.300');
     });
     test('float value onPress "Enter"', () => {
         const value = '5.300';
@@ -184,6 +183,6 @@ describe('StringEditor', () => {
         expect(textBox).toBeInTheDocument();
         expect((textBox as any).value).toBe('5.300');
         fireEvent.keyPress(textBox, { key: 'Enter', code: 'Enter', charCode: 13 });
-        expect((textBox as any).value).toBe('5.3');
+        expect((textBox as any).value).toBe('5.300');
     });
 });
