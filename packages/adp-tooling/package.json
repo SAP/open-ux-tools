@@ -64,6 +64,9 @@
     "peerDependencies": {
         "express": "4"
     },
+    "optionalDependencies": {
+        "express": "4"
+    },
     "engines": {
         "node": ">=18.x"
     }
