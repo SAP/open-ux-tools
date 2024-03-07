@@ -1,2 +1,0 @@
-# @sap-ux/reload-middleware
-

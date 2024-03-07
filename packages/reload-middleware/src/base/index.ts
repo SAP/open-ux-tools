@@ -1,1 +1,0 @@
-export { FileWatcher } from './watcher';
