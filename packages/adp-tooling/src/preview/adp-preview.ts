@@ -1,4 +1,3 @@
-import express from 'express';
 import ZipFile from 'adm-zip';
 import type { ReaderCollection } from '@ui5/fs';
 import type { MiddlewareUtils } from '@ui5/server';
@@ -135,18 +134,34 @@ export class AdpPreview {
     /**
      * Add additional APIs to the router that are required for adaptation projects only.
      *
-     * @param router router that is to be enhanced with the API
+     * This method sets up various GET and POST routes for handling fragments, controllers,
+     * and code extensions. For POST routes to work correctly, ensure that the router is
+     * using the **express.json()** middleware. This middleware is responsible for parsing
+     * incoming requests with JSON payloads and is based on body-parser.
+     *
+     * Usage:
+     * ```ts
+     * const express = require('express');
+     * const router = express.Router();
+     *
+     * // Ensure express.json() middleware is applied to the router or app
+     * router.use(express.json());
+     *
+     * const apiHandler = new ApiHandler();
+     * await apiHandler.addApis(router);
+     *
+     * app.use('/', router);
+     * ```
+     *
+     * @param {Router} router - The router that is to be enhanced with the API.
+     * @returns {void} A promise that resolves when the APIs have been added.
      */
     addApis(router: Router): void {
         router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
-        router.post(ApiRoutes.FRAGMENT, express.json(), this.routesHandler.handleWriteFragment as RequestHandler);
+        router.post(ApiRoutes.FRAGMENT, this.routesHandler.handleWriteFragment as RequestHandler);
 
         router.get(ApiRoutes.CONTROLLER, this.routesHandler.handleReadAllControllers as RequestHandler);
-        router.post(
-            ApiRoutes.CONTROLLER,
-            express.json(),
-            this.routesHandler.handleWriteControllerExt as RequestHandler
-        );
+        router.post(ApiRoutes.CONTROLLER, this.routesHandler.handleWriteControllerExt as RequestHandler);
 
         router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
     }
