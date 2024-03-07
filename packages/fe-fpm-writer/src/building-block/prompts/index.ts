@@ -27,6 +27,9 @@ export interface BuildingBlockTypePromptsAnswer extends Answers {
     buildingBlockType: BuildingBlockType;
 }
 
+const TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID = 'tableBuildingBlockProperties';
+const TABLE_VISUALIZATION_PROPERTIES_GROUP_ID = 'tableVisualizationProperties';
+
 /**
  * Gets building block choices.
  *
@@ -185,6 +188,12 @@ export interface TablePromptsAnswer extends Table, Answers {
     tableHeaderText: string;
 }
 
+export interface PromptsGroup {
+    id: string;
+    title: string;
+    description: string;
+}
+
 /**
  * Returns a list of prompts required to generate a table building block.
  *
@@ -195,76 +204,108 @@ export interface TablePromptsAnswer extends Table, Answers {
 export async function getTableBuildingBlockPrompts(
     basePath: string,
     fs: Editor
-): Promise<Question<TablePromptsAnswer>[]> {
+): Promise<{ questions: Question<TablePromptsAnswer>[]; groups?: PromptsGroup[] }> {
     await initI18n();
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.table.');
     const projectProvider = await ProjectProvider.createProject(basePath, fs);
-    return [
-        getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate'), [
-            'aggregationPath'
-        ]),
-        getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
-        getBindingContextTypePrompt(t('bindingContextType')),
-        getEntityPrompt(t('entity'), projectProvider, ['qualifier']),
-
-        getAnnotationPathQualifierPrompt('qualifier', t('qualifier'), projectProvider, [UIAnnotationTerms.LineItem]),
-        getAggregationPathPrompt(t('aggregation'), fs),
-        getFilterBarIdPrompt(t('filterBar')),
+    const groups: PromptsGroup[] = [
         {
-            type: 'list',
-            name: 'type',
-            message: t('tableType.message'),
-            choices: [
-                // ResponsiveTable | GridTable
-                { name: 'Responsive Table', value: 'ResponsiveTable' },
-                { name: 'Grid Table', value: 'GridTable' }
-            ]
-        } as ListQuestion,
+            id: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+            title: t('tableBuildingBlockPropertiesTitle'),
+            description: t('tableBuildingBlockPropertiesDescription')
+        },
         {
-            type: 'list',
-            name: 'selectionMode',
-            message: t('selectionMode.message'),
-            choices: [
-                // None, Single, Multi or Auto
-                { name: t('selectionMode.choices.single'), value: 'Single' },
-                { name: t('selectionMode.choices.multiple'), value: 'Multi' },
-                { name: t('selectionMode.choices.auto'), value: 'Auto' },
-                { name: t('selectionMode.choices.none'), value: 'None' }
-            ]
-        } as ListQuestion,
-        getBooleanPrompt('displayHeader', t('displayHeader')),
-        {
-            type: 'input',
-            name: 'header',
-            message: t('tableHeaderText')
-        } as InputQuestion,
-        {
-            type: 'checkbox',
-            name: 'personalization',
-            message: t('personalization.message'),
-            choices: [
-                { name: t('personalization.choices.Sort'), value: 'Sort' },
-                { name: t('personalization.choices.Column'), value: 'Column' },
-                { name: t('personalization.choices.Filter'), value: 'Filter' }
-            ]
-        } as CheckboxQuestion,
-        {
-            type: 'list',
-            name: 'variantManagement',
-            message: t('tableVariantManagement'),
-            choices: [
-                { name: 'Page', value: 'Page' },
-                { name: 'Control', value: 'Control' },
-                { name: 'None', value: 'None' }
-            ]
-        } as ListQuestion,
-        getBooleanPrompt('readOnly', t('readOnlyMode')),
-        getBooleanPrompt('enableAutoColumnWidth', t('autoColumnWidth')),
-        getBooleanPrompt('enableExport', t('dataExport')),
-        getBooleanPrompt('enableFullScreen', t('fullScreenMode')),
-        getBooleanPrompt('enablePaste', t('pasteFromClipboard')),
-        getBooleanPrompt('isSearchable', t('tableSearchableToggle'))
+            id: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID,
+            title: t('tableVisualizationPropertiesTitle'),
+            description: t('tableVisualizationPropertiesDescription')
+        }
     ];
+    return {
+        groups,
+        questions: [
+            getViewOrFragmentFilePrompt(
+                fs,
+                basePath,
+                t('viewOrFragmentFile.message'),
+                t('viewOrFragmentFile.validate'),
+                ['aggregationPath'],
+                TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+            ),
+            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
+            getBindingContextTypePrompt(t('bindingContextType'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
+            getEntityPrompt(t('entity'), projectProvider, ['qualifier'], TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
+
+            getAnnotationPathQualifierPrompt(
+                'qualifier',
+                t('qualifier'),
+                projectProvider,
+                [UIAnnotationTerms.LineItem],
+                TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+            ),
+            getAggregationPathPrompt(t('aggregation'), fs, TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
+            getFilterBarIdPrompt(t('filterBar'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
+            {
+                type: 'list',
+                name: 'type',
+                message: t('tableType.message'),
+                choices: [
+                    // ResponsiveTable | GridTable
+                    { name: 'Responsive Table', value: 'ResponsiveTable' },
+                    { name: 'Grid Table', value: 'GridTable' }
+                ],
+                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+            } as ListQuestion,
+            {
+                type: 'list',
+                name: 'selectionMode',
+                message: t('selectionMode.message'),
+                choices: [
+                    // None, Single, Multi or Auto
+                    { name: t('selectionMode.choices.single'), value: 'Single' },
+                    { name: t('selectionMode.choices.multiple'), value: 'Multi' },
+                    { name: t('selectionMode.choices.auto'), value: 'Auto' },
+                    { name: t('selectionMode.choices.none'), value: 'None' }
+                ],
+                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+            } as ListQuestion,
+
+            getBooleanPrompt('displayHeader', t('displayHeader')),
+            {
+                type: 'input',
+                name: 'header',
+                message: t('tableHeaderText'),
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            } as InputQuestion,
+            {
+                type: 'checkbox',
+                name: 'personalization',
+                message: t('personalization.message'),
+                choices: [
+                    { name: t('personalization.choices.Sort'), value: 'Sort' },
+                    { name: t('personalization.choices.Column'), value: 'Column' },
+                    { name: t('personalization.choices.Filter'), value: 'Filter' }
+                ],
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            } as CheckboxQuestion,
+            {
+                type: 'list',
+                name: 'variantManagement',
+                message: t('tableVariantManagement'),
+                choices: [
+                    { name: 'Page', value: 'Page' },
+                    { name: 'Control', value: 'Control' },
+                    { name: 'None', value: 'None' }
+                ],
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            } as ListQuestion,
+            getBooleanPrompt('readOnly', t('readOnlyMode'), TABLE_VISUALIZATION_PROPERTIES_GROUP_ID),
+            getBooleanPrompt('enableAutoColumnWidth', t('autoColumnWidth'), TABLE_VISUALIZATION_PROPERTIES_GROUP_ID),
+            getBooleanPrompt('enableExport', t('dataExport'), TABLE_VISUALIZATION_PROPERTIES_GROUP_ID),
+            getBooleanPrompt('enableFullScreen', t('fullScreenMode'), TABLE_VISUALIZATION_PROPERTIES_GROUP_ID),
+            getBooleanPrompt('enablePaste', t('pasteFromClipboard'), TABLE_VISUALIZATION_PROPERTIES_GROUP_ID),
+            getBooleanPrompt('isSearchable', t('tableSearchableToggle'), TABLE_VISUALIZATION_PROPERTIES_GROUP_ID)
+        ]
+    };
 }
 
 export interface FilterBarPromptsAnswer extends FilterBar, Answers {

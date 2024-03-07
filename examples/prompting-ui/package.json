@@ -36,6 +36,7 @@
     "dependencies": {
         "@sap-ux/ui-components": "workspace:*",
         "prettier": "3.1.1",
+        "react-markdown": "9.0.1",
         "sanitize-html": "2.7.3"
     },
     "peerDependencies": {

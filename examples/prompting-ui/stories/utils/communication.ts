@@ -8,6 +8,7 @@ import {
     UpdateProjectPathResultPayload
 } from '../../.storybook/addons/project/types';
 import type { Choice, DynamicChoices, IQuestion } from '../../src/components';
+import { PromptsGroup } from '../../src/components/Question';
 import type { Actions, GetChoices, GetCodeSnippet } from './types';
 import {
     APPLY_ANSWERS,
@@ -83,7 +84,9 @@ const QUESTIONS_TYPE_MAP = new Map([
     [SupportedBuildingBlocks.FilterBar, SET_FILTERBAR_QUESTIONS]
 ]);
 
-export function getQuestions(type: SupportedBuildingBlocks): Promise<IQuestion[]> {
+export function getQuestions(
+    type: SupportedBuildingBlocks
+): Promise<{ questions: IQuestion[]; groups?: PromptsGroup[] }> {
     return new Promise((resolve, error) => {
         const getAction: GetQuestions = {
             type: GET_QUESTIONS,
@@ -97,7 +100,7 @@ export function getQuestions(type: SupportedBuildingBlocks): Promise<IQuestion[]
         const handleMessage = (action: Actions) => {
             if ('questions' in action && Array.isArray(action.questions)) {
                 onMessageDetach(expectedActionType, handleMessage);
-                resolve(action.questions as IQuestion[]);
+                resolve({ questions: action.questions as IQuestion[], groups: action.groups });
             }
         };
         onMessageAttach(expectedActionType, handleMessage);

@@ -1,6 +1,6 @@
 .prompt-entries-wrapper-multi {
     margin: 0 5px 15px 0;
-    max-width: 850px;
+    max-width: 900px;
 }
 
 .prompt-entries-multi {
@@ -12,7 +12,27 @@
     margin-block-end: 2px;
 }
 
-.prompt-entries-group-multi {
+.prompt-entries-group {
     @extend .prompt-entries-multi;
     margin-left: 12px;
+}
+
+.prompts-group-description {
+    max-width: 800px;
+    margin-left: 25px;
+    white-space: pre-line;
+}
+
+.prompts-group-title-container {
+    display: flex;
+    flex-direction: row;
+    vertical-align: middle;
+    margin-bottom: 12px;
+    margin-top: 8px;
+}
+
+.prompts-group-title {
+    font-weight: bold;
+    text-indent: -1.5px;
+    padding-right: 10px;
 }

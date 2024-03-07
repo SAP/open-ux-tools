@@ -100,7 +100,7 @@ export const validateProject = async (): Promise<string | undefined> => {
         const fs = await getEditor(true);
         const currentAppPath = getProjectPath();
         // Call API to get table questions - it should validate of path is supported
-        const questions = await getTableBuildingBlockPrompts(currentAppPath, fs);
+        const { groups, questions } = await getTableBuildingBlockPrompts(currentAppPath, fs);
         const entityQuestion = questions.find((question) => question.name === 'entity');
         if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
             await entityQuestion.choices();
@@ -118,9 +118,9 @@ async function handleAction(action: Actions): Promise<void> {
             case GET_QUESTIONS: {
                 let responseAction: Actions | undefined;
                 if (action.value === SupportedBuildingBlocks.Table) {
-                    const prompts = await getTableBuildingBlockPrompts(currentAppPath, fs);
+                    const { groups, questions } = await getTableBuildingBlockPrompts(currentAppPath, fs);
                     // Post processing
-                    responseAction = { type: SET_TABLE_QUESTIONS, questions: prompts };
+                    responseAction = { type: SET_TABLE_QUESTIONS, questions, groups };
                 } else if (action.value === SupportedBuildingBlocks.Chart) {
                     const prompts = await getChartBuildingBlockPrompts(currentAppPath, fs);
                     // Post processing
@@ -188,7 +188,7 @@ async function handleAction(action: Actions): Promise<void> {
                     }
                     fs = await getEditor(true);
                     // Call API to get table questions - it should validate of path is supported
-                    const questions = await getTableBuildingBlockPrompts(currentAppPath, fs);
+                    const { groups, questions } = await getTableBuildingBlockPrompts(currentAppPath, fs);
                     const entityQuestion = questions.find((question) => question.name === 'entity');
                     if (entityQuestion && 'choices' in entityQuestion && typeof entityQuestion.choices === 'function') {
                         await entityQuestion.choices();

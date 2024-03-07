@@ -60,6 +60,10 @@
             "aggregation": "Select the Aggregation Path"
         },
         "table": {
+            "tableBuildingBlockPropertiesTitle": "Table Building Block Properties",
+            "tableBuildingBlockPropertiesDescription": "Select the `View or Fragment File` where you would like to insert the table building block and provide a `Building Block ID` to identify the table. \n Select an `Entity Type`, an optional `Navigation Path`, and a `Line Item Qualifier` you would like to use for the table building block. \n Select an `Aggregation Path` to determine where you would like the table to be placed on the page. \n If you would like to link the table to an existing filter bar, provide the `Associated Filter Bar ID`.",
+            "tableVisualizationPropertiesTitle": "Table Visualization Properties",
+            "tableVisualizationPropertiesDescription": "Configure your table using the properties below.",
             "viewOrFragmentFile": {
                 "message": "Select a View or Fragment file name",
                 "validation": "A View or Fragment is required to generate the table building block"

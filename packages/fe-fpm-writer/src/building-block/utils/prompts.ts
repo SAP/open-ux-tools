@@ -13,7 +13,7 @@ import { getAnnotationPathQualifiers, getEntityTypes } from './service';
  * @param message - The message to display in the prompt
  * @returns a boolean prompt
  */
-export function getBooleanPrompt(name: string, message: string): ListQuestion {
+export function getBooleanPrompt(name: string, message: string, groupId?: string): ListQuestion {
     return {
         type: 'list',
         name,
@@ -22,7 +22,8 @@ export function getBooleanPrompt(name: string, message: string): ListQuestion {
         choices: [
             { name: 'False', value: false },
             { name: 'True', value: true }
-        ]
+        ],
+        groupId
     } as ListQuestion;
 }
 
@@ -39,7 +40,8 @@ export function getAnnotationPathQualifierPrompt(
     name: string,
     message: string,
     projectProvider: ProjectProvider,
-    annotationTerm: UIAnnotationTerms[]
+    annotationTerm: UIAnnotationTerms[],
+    groupId?: string
 ): ListQuestion {
     return {
         type: 'list',
@@ -59,7 +61,8 @@ export function getAnnotationPathQualifierPrompt(
                 );
             }
             return choices;
-        }
+        },
+        groupId
     } as ListQuestion;
 }
 
@@ -78,7 +81,8 @@ export function getViewOrFragmentFilePrompt(
     basePath: string,
     message: string,
     validationErrorMessage: string,
-    dependantPromptNames = ['aggregationPath'] // dependent prompts
+    dependantPromptNames = ['aggregationPath'], // dependent prompts
+    groupId?: string
 ): ListQuestion {
     return {
         type: 'list',
@@ -98,7 +102,8 @@ export function getViewOrFragmentFilePrompt(
                 value: file
             }));
         },
-        validate: (value: string) => (value ? true : validationErrorMessage)
+        validate: (value: string) => (value ? true : validationErrorMessage),
+        groupId
     } as ListQuestion;
 }
 
@@ -113,7 +118,8 @@ export function getViewOrFragmentFilePrompt(
 export function getEntityPrompt(
     message: string,
     projectProvider: ProjectProvider,
-    dependantPromptNames?: string[]
+    dependantPromptNames?: string[],
+    groupId?: string
 ): ListQuestion {
     return {
         type: 'list',
@@ -127,7 +133,8 @@ export function getEntityPrompt(
                 throw new Error('Failed while fetching the entities');
             }
             return choices;
-        }
+        },
+        groupId
     } as ListQuestion;
 }
 /**
@@ -137,7 +144,7 @@ export function getEntityPrompt(
  * @param fs - The file system object for reading files
  * @returns A ListQuestion object representing the prompt
  */
-export function getAggregationPathPrompt(message: string, fs: Editor): ListQuestion {
+export function getAggregationPathPrompt(message: string, fs: Editor, groupId?: string): ListQuestion {
     return {
         type: 'list',
         name: 'aggregationPath',
@@ -150,7 +157,8 @@ export function getAggregationPathPrompt(message: string, fs: Editor): ListQuest
                 throw new Error('Failed while fetching the aggregation path.');
             }
             return choices;
-        }
+        },
+        groupId
     } as ListQuestion;
 }
 
@@ -232,11 +240,12 @@ function getErrorMessage(error: Error): string {
  * @param message - prompt message
  * @returns a Input Prompt
  */
-export function getFilterBarIdPrompt(message: string): InputQuestion {
+export function getFilterBarIdPrompt(message: string, groupId?: string): InputQuestion {
     return {
         type: 'input',
         name: 'filterBar',
-        message
+        message,
+        groupId
     } as InputQuestion;
 }
 
@@ -246,7 +255,7 @@ export function getFilterBarIdPrompt(message: string): InputQuestion {
  * @param message - prompt message
  * @returns a List Prompt
  */
-export function getBindingContextTypePrompt(message: string): ListQuestion {
+export function getBindingContextTypePrompt(message: string, groupId?: string): ListQuestion {
     return {
         type: 'list',
         name: 'bindingContextType',
@@ -255,7 +264,8 @@ export function getBindingContextTypePrompt(message: string): ListQuestion {
         choices: [
             { name: 'Relative', value: 'relative' },
             { name: 'Absolute', value: 'absolute' }
-        ]
+        ],
+        groupId
     } as ListQuestion;
 }
 
@@ -266,11 +276,16 @@ export function getBindingContextTypePrompt(message: string): ListQuestion {
  * @param validationErrorMessage - The error message to show if ID validation fails
  * @returns An InputPrompt object for getting the building block ID
  */
-export function getBuildingBlockIdPrompt(message: string, validationErrorMessage: string): InputQuestion {
+export function getBuildingBlockIdPrompt(
+    message: string,
+    validationErrorMessage: string,
+    groupId?: string
+): InputQuestion {
     return {
         type: 'input',
         name: 'id',
         message,
-        validate: (value: any) => (value ? true : validationErrorMessage)
+        validate: (value: any) => (value ? true : validationErrorMessage),
+        groupId
     } as InputQuestion;
 }

@@ -13,11 +13,12 @@ export const BuildingBlockQuestions = (props: {
     type: SupportedBuildingBlocks;
     visibleQuestions?: string[];
     layout?: PromptsLayoutType;
+    showDescriptions?: boolean;
 }): JSX.Element => {
-    const { type, visibleQuestions, layout = PromptsLayoutType.MultiColumn } = props;
+    const { type, visibleQuestions, layout = PromptsLayoutType.MultiColumn, showDescriptions = true } = props;
     const [answers, setAnswers] = useState<Answers>({});
     const choices = useChoices();
-    const questions = useQuestions(type, visibleQuestions);
+    const { groups, questions } = useQuestions(type, visibleQuestions);
 
     function updateAnswers(answers: Answers) {
         setAnswers(answers);
@@ -45,6 +46,7 @@ export const BuildingBlockQuestions = (props: {
                 minWidth: '500px'
             }}>
             <Questions
+                groups={groups}
                 questions={questions}
                 onChoiceRequest={(names: string[], latestAnswers: Answers) => {
                     getChoices(names, type, latestAnswers);
@@ -53,6 +55,7 @@ export const BuildingBlockQuestions = (props: {
                 answers={answers || {}}
                 choices={choices}
                 layoutType={layout as PromptsLayoutType}
+                showDescriptions={showDescriptions}
             />
             {/* Disable the button if there is no answers for the 'required' question */}
             <div className="cta">
