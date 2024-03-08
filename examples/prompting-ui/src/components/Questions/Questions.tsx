@@ -31,7 +31,7 @@ export const enum PromptsLayoutType {
 export type IQuestion = (ListQuestion | InputQuestion | CheckboxQuestion) & AdditionalQuestionProperties;
 
 export interface QuestionsProps {
-    questions: Array<Question>;
+    questions: Array<IQuestion>;
     answers: Record<string, AnswerValue>;
     choices: DynamicChoices;
     onChoiceRequest: (names: string[], answers: Record<string, AnswerValue>) => void;

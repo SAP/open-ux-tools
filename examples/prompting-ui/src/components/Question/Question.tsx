@@ -2,8 +2,7 @@ import React from 'react';
 import type {
     InputQuestion as _InputQuestion,
     ListQuestion as _ListQuestion,
-    CheckboxQuestion as _CheckboxQuestion,
-    PromptsGroup as _PromptsGroup
+    CheckboxQuestion as _CheckboxQuestion
 } from 'inquirer';
 import { Input } from '../Input';
 // import { Checkbox } from '../Checkbox';
@@ -17,13 +16,18 @@ export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
     dependantPromptNames?: string[];
     required?: boolean;
+    guideId?: string;
 }
 
 export type ListQuestion = _ListQuestion & AdditionalQuestionProperties;
 export type InputQuestion = _InputQuestion;
 export type MultiSelectQuestion = _CheckboxQuestion & AdditionalQuestionProperties;
 export type Question = ListQuestion | InputQuestion | MultiSelectQuestion;
-export type PromptsGroup = _PromptsGroup;
+export interface PromptsGroup {
+    id: string;
+    title: string;
+    description: string;
+}
 export type AnswerValue = string | number | boolean | undefined;
 
 export interface QuestionProps {
