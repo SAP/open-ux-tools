@@ -45,7 +45,13 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     useComboBoxAsMenuMinWidth?: boolean;
     // Default value for "openMenuOnClick" is "true"
     openMenuOnClick?: boolean;
+    /**
+     *
+     */
     onRefresh?(): void;
+    /**
+     *
+     */
     onHandleChange?(value: string | number): void;
     tooltipRefreshButton?: string;
     /**
