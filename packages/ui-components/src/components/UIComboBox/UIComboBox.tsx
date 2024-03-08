@@ -48,6 +48,12 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     onRefresh?(): void;
     onHandleChange?(value: string | number): void;
     tooltipRefreshButton?: string;
+    /**
+     * Show loading indicator(s).
+     * Supported places:
+     * 1. List - loader within dropdown list
+     * 2. Input - loader within input
+     */
     isLoading?: boolean | UIComboBoxLoaderType[];
     isForceEnabled?: boolean;
     readOnly?: boolean;
@@ -606,6 +612,12 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         return autofill;
     }
 
+    /**
+     * Method returns if loader should be displayed for passed type.
+     *
+     * @param type Loader's place
+     * @returns True if loader should be displayed for passed type.
+     */
     private isLoaderApplied(type: UIComboBoxLoaderType): boolean {
         const { isLoading } = this.props;
         if (Array.isArray(isLoading)) {
@@ -615,6 +627,14 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         return !!isLoading && type === UIComboBoxLoaderType.List;
     }
 
+    /**
+     * Method renders dropdown expand icon.
+     * Overwritten renderer to replace expand icon with loader when combobox has laoding property set.
+     *
+     * @param props Button properties
+     * @param defaultRender Default icon renderer
+     * @returns React element to render.
+     */
     private onRenderIcon(
         props?: IButtonProps,
         defaultRender?: (props?: IButtonProps) => JSX.Element | null
