@@ -28,18 +28,18 @@ describe('Test getCapProjectType() & isCapProject()', () => {
     test('Test if valid CAP Node.js project is recognized', async () => {
         const capPath = join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix');
         expect(await getCapProjectType(capPath)).toBe('CAPNodejs');
-        expect(await isCapProject(capPath)).toBeTruthy();
+        expect(await isCapProject(capPath)).toBe(true);
     });
 
     test('Test if valid CAP Java project is recognized', async () => {
         const capPath = join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPJava_mix');
         expect(await getCapProjectType(capPath)).toBe('CAPJava');
-        expect(await isCapProject(capPath)).toBeTruthy();
+        expect(await isCapProject(capPath)).toBe(true);
     });
 
     test('Test if invalid CAP project is recognized', async () => {
         expect(await getCapProjectType('INVALID_PROJECT')).toBeUndefined();
-        expect(await isCapProject('INVALID_PROJECT')).toBeFalsy();
+        expect(await isCapProject('INVALID_PROJECT')).toBe(false);
     });
 });
 
