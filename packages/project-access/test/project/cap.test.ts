@@ -14,7 +14,8 @@ import {
     getCapModelAndServices,
     getCapProjectType,
     readCapServiceMetadataEdmx,
-    toReferenceUri
+    toReferenceUri,
+    isCapProject
 } from '../../src';
 import * as file from '../../src/file';
 import os from 'os';
@@ -23,25 +24,22 @@ import type { Logger } from '@sap-ux/logger';
 jest.mock('child_process');
 const childProcessMock = jest.mocked(childProcess, { shallow: true });
 
-describe('Test getCapProjectType()', () => {
+describe('Test getCapProjectType() & isCapProject()', () => {
     test('Test if valid CAP Node.js project is recognized', async () => {
-        expect(
-            await getCapProjectType(
-                join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix')
-            )
-        ).toBe('CAPNodejs');
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix');
+        expect(await getCapProjectType(capPath)).toBe('CAPNodejs');
+        expect(await isCapProject(capPath)).toBeTruthy();
     });
 
     test('Test if valid CAP Java project is recognized', async () => {
-        expect(
-            await getCapProjectType(
-                join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPJava_mix')
-            )
-        ).toBe('CAPJava');
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPJava_mix');
+        expect(await getCapProjectType(capPath)).toBe('CAPJava');
+        expect(await isCapProject(capPath)).toBeTruthy();
     });
 
     test('Test if invalid CAP project is recognized', async () => {
         expect(await getCapProjectType('INVALID_PROJECT')).toBeUndefined();
+        expect(await isCapProject('INVALID_PROJECT')).toBeFalsy();
     });
 });
 

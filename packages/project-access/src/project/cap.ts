@@ -41,6 +41,10 @@ interface ServiceInfo {
     runtime?: string;
 }
 
+export const CAP_APPS_FOLDER = 'app';
+export const CAP_SERVICES_FOLDER = 'srv';
+export const CAP_DB_FOLDER = 'db';
+
 /**
  * Returns true if the project is a CAP Node.js project.
  *
@@ -90,6 +94,16 @@ export async function getCapProjectType(projectRoot: string): Promise<CapProject
 }
 
 /**
+ * Returns true if the project is either a CAP Node.js or a CAP Java project.
+ *
+ * @param projectRoot - the root path of the project
+ * @returns - true if the project is a CAP project
+ */
+export async function isCapProject(projectRoot: string): Promise<boolean> {
+    return !!(await getCapProjectType(projectRoot));
+}
+
+/**
  * Get CAP CDS project custom paths for project root.
  *
  * @param capProjectPath - project root of cap project
@@ -97,9 +111,9 @@ export async function getCapProjectType(projectRoot: string): Promise<CapProject
  */
 export async function getCapCustomPaths(capProjectPath: string): Promise<CapCustomPaths> {
     const result: CapCustomPaths = {
-        app: 'app/',
-        db: 'db/',
-        srv: 'srv/'
+        app: `${CAP_APPS_FOLDER}/`,
+        db: `${CAP_DB_FOLDER}/`,
+        srv: `${CAP_SERVICES_FOLDER}/`
     };
     try {
         const cdsCustomPaths = await getCapEnvironment(capProjectPath);

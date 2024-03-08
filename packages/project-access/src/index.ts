@@ -1,6 +1,9 @@
 export { FileName } from './constants';
 export { getFilePaths } from './file';
 export {
+    CAP_APPS_FOLDER,
+    CAP_SERVICES_FOLDER,
+    CAP_DB_FOLDER,
     createApplicationAccess,
     createProjectAccess,
     findAllApps,
@@ -24,6 +27,7 @@ export {
     getProject,
     getProjectType,
     getWebappPath,
+    isCapProject,
     isCapJavaProject,
     isCapNodeJsProject,
     loadModuleFromProject,
