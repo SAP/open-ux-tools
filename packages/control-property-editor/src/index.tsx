@@ -41,7 +41,7 @@ export function start(options: StartOptions): void {
     setThemeOnDocument(theme as ThemeName);
 
     store.dispatch(setProjectScenario(scenario));
-    store.dispatch(initializeLivereload(35729)); // TODO: use port from options
+    store.dispatch(initializeLivereload(options.livereloadPort));
 
     ReactDOM.render(
         <React.StrictMode>
