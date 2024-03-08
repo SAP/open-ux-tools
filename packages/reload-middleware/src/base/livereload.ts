@@ -31,6 +31,8 @@ export const getLivereloadServer = async (
     }
 
     const livereload = createServer({ ...defaultLiveReloadOpts, ...options });
+    // Set the livereload port as an environment variable to be used by the preview middleware
+    process.env.FIORI_TOOLS_LIVERELOAD_PORT = livereload.config.port?.toString();
 
     return livereload;
 };
