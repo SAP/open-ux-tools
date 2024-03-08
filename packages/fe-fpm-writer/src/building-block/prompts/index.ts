@@ -223,6 +223,7 @@ export async function getTableBuildingBlockPrompts(
     return {
         groups,
         questions: [
+            //first prompt group
             getViewOrFragmentFilePrompt(
                 fs,
                 basePath,
@@ -234,7 +235,6 @@ export async function getTableBuildingBlockPrompts(
             getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
             getBindingContextTypePrompt(t('bindingContextType'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
             getEntityPrompt(t('entity'), projectProvider, ['qualifier'], TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
-
             getAnnotationPathQualifierPrompt(
                 'qualifier',
                 t('qualifier'),
@@ -243,6 +243,8 @@ export async function getTableBuildingBlockPrompts(
                 TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
             ),
             getAggregationPathPrompt(t('aggregation'), fs, TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
+
+            //second prompt group
             getFilterBarIdPrompt(t('filterBar'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
             {
                 type: 'list',
@@ -253,7 +255,7 @@ export async function getTableBuildingBlockPrompts(
                     { name: 'Responsive Table', value: 'ResponsiveTable' },
                     { name: 'Grid Table', value: 'GridTable' }
                 ],
-                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             } as ListQuestion,
             {
                 type: 'list',
@@ -266,9 +268,8 @@ export async function getTableBuildingBlockPrompts(
                     { name: t('selectionMode.choices.auto'), value: 'Auto' },
                     { name: t('selectionMode.choices.none'), value: 'None' }
                 ],
-                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             } as ListQuestion,
-
             getBooleanPrompt('displayHeader', t('displayHeader')),
             {
                 type: 'input',
