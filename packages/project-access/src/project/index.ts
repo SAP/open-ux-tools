@@ -1,7 +1,7 @@
 export {
-    CAP_APPS_FOLDER,
-    CAP_SERVICES_FOLDER,
-    CAP_DB_FOLDER,
+    capAppsFolder,
+    capServicesFolder,
+    capDbFolder,
     getCapCustomPaths,
     getCapModelAndServices,
     getCapProjectType,

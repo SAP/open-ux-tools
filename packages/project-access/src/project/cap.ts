@@ -41,9 +41,9 @@ interface ServiceInfo {
     runtime?: string;
 }
 
-export const CAP_APPS_FOLDER = 'app';
-export const CAP_SERVICES_FOLDER = 'srv';
-export const CAP_DB_FOLDER = 'db';
+export const capAppsFolder = 'app';
+export const capServicesFolder = 'srv';
+export const capDbFolder = 'db';
 
 /**
  * Returns true if the project is a CAP Node.js project.
@@ -111,9 +111,9 @@ export async function isCapProject(projectRoot: string): Promise<boolean> {
  */
 export async function getCapCustomPaths(capProjectPath: string): Promise<CapCustomPaths> {
     const result: CapCustomPaths = {
-        app: `${CAP_APPS_FOLDER}/`,
-        db: `${CAP_DB_FOLDER}/`,
-        srv: `${CAP_SERVICES_FOLDER}/`
+        app: `${capAppsFolder}/`,
+        db: `${capDbFolder}/`,
+        srv: `${capServicesFolder}/`
     };
     try {
         const cdsCustomPaths = await getCapEnvironment(capProjectPath);
