@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ListQuestion } from 'inquirer';
-import { UIComboBox } from '@sap-ux/ui-components';
+import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
 import { useValue } from '../../utilities';
 
@@ -27,8 +27,9 @@ export const Select = (props: SelectProps) => {
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
             required={required}
-            isLoading={pending}
+            isLoading={pending ? [UIComboBoxLoaderType.Input, UIComboBoxLoaderType.List] : undefined}
             selectedKey={value.toString()}
+            disabled={false}
             onChange={(_, option) => {
                 setValue(option?.key ?? '');
                 if (name) {

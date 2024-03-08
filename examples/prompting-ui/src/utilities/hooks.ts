@@ -41,12 +41,7 @@ function getOptions(question: Question, choices?: Choice[]): UIComboBoxOption[] 
         });
     }
     // Default options
-    return [
-        {
-            key: '',
-            text: ''
-        }
-    ];
+    return [];
 }
 
 export function useOptions(question: Question, choices?: Choice[]): UIComboBoxOption[] {

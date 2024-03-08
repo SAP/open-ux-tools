@@ -28,9 +28,10 @@ export const MultiSelect = (props: MultiSelectProps) => {
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
             required={required}
-            isLoading={pending}
+            isLoading={pending ? [UIComboBoxLoaderType.Input, UIComboBoxLoaderType.List] : undefined}
             selectedKey={value?.split(',').map((v) => v.trim())}
             multiSelect
+            disabled={false}
             onChange={(_, option) => {
                 let updatedValue: string | undefined;
                 if (option?.selected) {
