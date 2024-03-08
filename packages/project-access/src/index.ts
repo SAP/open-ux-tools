@@ -1,9 +1,6 @@
 export { FileName } from './constants';
 export { getFilePaths } from './file';
 export {
-    capAppsFolder,
-    capServicesFolder,
-    capDbFolder,
     createApplicationAccess,
     createProjectAccess,
     findAllApps,
