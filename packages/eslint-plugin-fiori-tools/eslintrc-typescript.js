@@ -5,7 +5,17 @@ const overrides = [
     {
         'plugins': ['@typescript-eslint'],
         'files': [`./${sourceCodePath}/*.ts`, `./${sourceCodePath}/**/*.ts`],
-        'excludedFiles': ['*.d.ts', '**/*.d.ts'],
+        'excludedFiles': [
+            'target/**',
+            `${sourceCodePath}/test/changes_loader.ts`,
+            `${sourceCodePath}/test/changes_preview.ts`,
+            `${sourceCodePath}/localservice/**`,
+            `${sourceCodePath}/localService/**`,
+            `${testCodePath}/**/Example.qunit.ts`,
+            'backup/**',
+            '*.d.ts',
+            '**/*.d.ts'
+        ],
         'parser': '@typescript-eslint/parser',
         'extends': ['plugin:@typescript-eslint/recommended'],
         'parserOptions': {
