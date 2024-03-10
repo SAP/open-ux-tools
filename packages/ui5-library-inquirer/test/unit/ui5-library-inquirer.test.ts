@@ -1,11 +1,12 @@
 import type { UI5Version } from '@sap-ux/ui5-info';
+import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import { getPrompts, prompt } from '../../src/index';
-import type { InquirerAdapter, UI5LibraryAnswers } from '../../src/types';
+import type { UI5LibraryAnswers } from '../../src/types';
+import { initI18n } from '../../src/i18n';
 import * as ui5LibInqApi from '../../src/index';
 import * as ui5Info from '@sap-ux/ui5-info';
 import * as prompting from '../../src/prompts/prompts';
-import type { Answers, ListQuestion } from 'inquirer';
-import inquirer, { createPromptModule } from 'inquirer';
+import inquirer, { createPromptModule, type Answers, type ListQuestion } from 'inquirer';
 
 /**
  * Tests the exported ui5-library-inquirer APIs
@@ -27,8 +28,15 @@ describe('API test', () => {
         }
     ];
 
+    beforeAll(async () => {
+        // Wait for i18n to bootstrap
+        await initI18n();
+    });
+
     afterEach(() => {
-        jest.resetAllMocks();
+        // Reset all spys (not mocks)
+        // jest.restoreAllMocks() only works when the mock was created with jest.spyOn().
+        jest.restoreAllMocks();
     });
 
     it('getPrompts, no prompt options', async () => {

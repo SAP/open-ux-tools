@@ -3,6 +3,15 @@
 The `@sap-ux/preview-middleware` is a [Custom UI5 Server Middleware](https://sap.github.io/ui5-tooling/pages/extensibility/CustomServerMiddleware) for previewing an application in a local Fiori launchpad . It can be used either with the `ui5 serve` or the `fiori run` commands.
 It hosts a local Fiori launchpad based on your configuration as well as offers an API to modify flex changes in your project. The API is available at `/preview/api` and additional client code required for the preview is available at `/preview/client`.
 
+When this middleware is used together with the `reload-middleware`, then the order in which the middlewares are loaded is important. The `reload-middleware` needs to be loaded before the `preview-middleware`. Hence the configuration in the `ui5.yaml` needs to look e.g. like this:
+
+```
+- name: reload-middleware
+  afterMiddleware: compression
+- name: preview-middleware
+  afterMiddleware: reload-middleware
+```
+
 ## Configuration Options
 | Option                 | Type      | Default Value    | Description                                                                                                                         |
 | ---------------------- | --------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------- |

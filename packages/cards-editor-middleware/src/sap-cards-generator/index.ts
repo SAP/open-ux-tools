@@ -1,14 +1,10 @@
 import type { RequestHandler, Request, Response } from 'express';
-import { Router } from 'express';
+import { json, Router } from 'express';
 import * as utils from '../common/utils';
 import * as constants from '../common/constants';
 import { join, dirname } from 'path';
 import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'fs';
-import bodyParser from 'body-parser';
 import { CARD_TYPES } from '../common/constants';
-
-import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-
 import type { MiddlewareParameters } from '@ui5/server';
 import { render } from 'ejs';
 
@@ -28,11 +24,8 @@ const generatorConfig: Configuration = {
 };
 
 module.exports = async ({ resources, options }: MiddlewareParameters<any>): Promise<RequestHandler> => {
-    const _logger = new ToolsLogger({
-        transports: [new UI5ToolingTransport({ moduleName: 'sap-cards-generator' })],
-        logLevel: options.configuration?.debug ? LogLevel.Debug : LogLevel.Info
-    });
     const router = Router();
+    router.use(json());
 
     const manifest = await resources.rootProject.byPath('/manifest.json');
     if (!manifest) {
@@ -55,8 +48,6 @@ module.exports = async ({ resources, options }: MiddlewareParameters<any>): Prom
             })
         );
     });
-
-    router.use(bodyParser.json());
 
     router.use(generatorConfig.storeCard as string, (req: Request, res: Response) => {
         try {

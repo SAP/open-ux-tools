@@ -1,5 +1,13 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.2.3
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-config@0.21.1
+
 ## 0.2.2
 
 ### Patch Changes

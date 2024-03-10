@@ -25,9 +25,8 @@ function updatePackageJson(basePath: string, fs: Editor, isOvp?: boolean) {
     packageJson.devDependencies['@sap-ux/cards-editor-middleware'] ??= '*';
 
     packageJson.scripts ??= {};
-    packageJson.scripts['start-cards-generator'] = `fiori run --open \"test/flpGeneratorSandbox.html${
-        isOvp ? '?mode=myInsight&sap-theme=sap_horizon' : ''
-    }#Cards-generator\"`;
+    packageJson.scripts['start-cards-generator'] = `fiori run --open \"test/flpGeneratorSandbox.html${isOvp ? '?mode=myInsight&sap-theme=sap_horizon' : ''
+        }#Cards-generator\"`;
 
     if (!packageJson.devDependencies['@ui5/cli']?.startsWith('3')) {
         packageJson.ui5 ??= {};
@@ -53,11 +52,13 @@ async function updateYaml(basePath: string, fs: Editor, middlewares: string[]) {
     }
     const config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
     config.addCustomMiddleware(
-        middlewares.map((name) => ({
-            name,
-            afterMiddleware: 'compression',
-            configuration: undefined
-        }))
+        middlewares
+            .filter((name) => !config.findCustomMiddleware(name))
+            .map((name) => ({
+                name,
+                afterMiddleware: 'compression',
+                configuration: undefined
+            }))
     );
     fs.write(ui5ConfigPath, config.toString());
 }

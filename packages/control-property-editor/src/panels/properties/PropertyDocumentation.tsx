@@ -18,6 +18,12 @@ export interface PropertyDocumentationProps {
     description: string;
     propertyName: string;
     propertyType: string | undefined;
+    /**
+     * Optional callback function for delete event.
+     *
+     * @param controlId - The ID of the control.
+     * @param propertyName - The name of the property.
+     */
     onDelete?(controlId: string, propertyName: string): void;
 }
 /**

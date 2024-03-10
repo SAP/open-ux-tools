@@ -28,6 +28,7 @@ export {
     isCapNodeJsProject,
     loadModuleFromProject,
     readCapServiceMetadataEdmx,
-    readUi5Yaml
+    readUi5Yaml,
+    toReferenceUri
 } from './project';
 export * from './types';

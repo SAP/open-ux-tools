@@ -146,7 +146,7 @@ export const projectChecks = async (
     config: FioriElementsApp<unknown>,
     debugFull = false
 ): Promise<void> => {
-    if (debugFull && (config.appOptions?.typescript || config.appOptions?.eslint)) {
+    if (debugFull && (config.appOptions?.typescript ?? config.appOptions?.eslint)) {
         // Do additonal checks on generated projects
         const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
         let npmResult;

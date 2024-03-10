@@ -1,5 +1,23 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.24.9
+
+### Patch Changes
+
+-   3c9d8f5d: Fixed namespace for controller event handler
+
+## 0.24.8
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.24.7
+
+### Patch Changes
+
+-   392522e8: Added optional `controllerPrefix` property to custom action event handler
+
 ## 0.24.6
 
 ### Patch Changes

@@ -121,9 +121,11 @@ export class AdpPreview {
         } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
         } else {
-            const files = await this.project.byGlob(req.path);
+            // check if the requested file exists in the file system (replace .js with .* for typescript)
+            const files = await this.project.byGlob(req.path.replace('.js', '.*'));
             if (files.length === 1) {
-                res.status(200).send(await files[0].getString());
+                // redirect to the exposed path so that other middlewares can handle it
+                res.redirect(302, req.path);
             } else {
                 next();
             }

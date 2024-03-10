@@ -1,12 +1,11 @@
 import type { RequestHandler, Request, Response } from 'express';
-import { Router } from 'express';
+import { json, Router } from 'express';
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { MiddlewareParameters } from '@ui5/server';
 import * as utils from '../common/utils';
 import * as constants from '../common/constants';
 import { join, dirname } from 'path';
 import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'fs';
-import bodyParser from 'body-parser';
 import os from 'os';
 
 export interface Configuration {
@@ -30,12 +29,12 @@ module.exports = ({ options }: MiddlewareParameters<any>): RequestHandler => {
         transports: [new UI5ToolingTransport({ moduleName: 'ovp-cards-generator' })],
         logLevel: options.configuration?.debug ? LogLevel.Debug : LogLevel.Info
     });
-    const router = Router();
+    const router = new Router();
     const config = {
         ...defaultConfig,
         ...options.configuration
     };
-    router.use(bodyParser.json());
+    router.use(json());
     router.use(config.path, (req: Request, res: Response) => {
         try {
             const folder = join(config.target, dirname(req.path));
@@ -106,8 +105,8 @@ module.exports = ({ options }: MiddlewareParameters<any>): RequestHandler => {
             writeFileSync(filePath, output.join(os.EOL), { encoding: 'utf8' });
 
             res.status(201).send(`i18n file updated.`);
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            logger.error(`${(error as Error).message}`);
             res.status(500).send(`File could not be updated.`);
         }
     });

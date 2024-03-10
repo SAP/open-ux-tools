@@ -9,11 +9,5 @@
         "libraryEnableTypeScriptLabel": "Enable TypeScript (Experimental)",
         "libraryFolderLabel": "Library folder path",
         "libraryFolderTooltip": "The generated library's folder will be a combination of the library's namespace and module name"
-    },
-    "ui5VersionLabels": {
-        "maintained": "Maintained",
-        "outOfMaintenance": "Out of maintenance",
-        "version_one": "version",
-        "version_other": "versions"
     }
 }

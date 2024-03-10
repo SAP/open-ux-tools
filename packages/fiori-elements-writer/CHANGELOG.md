@@ -1,5 +1,37 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.18.8
+
+### Patch Changes
+
+-   7964a7ba: Adds exports for determining supported ui5 versions for FE templates
+
+## 0.18.7
+
+### Patch Changes
+
+-   Updated dependencies [3c9d8f5d]
+    -   @sap-ux/fe-fpm-writer@0.24.9
+
+## 0.18.6
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-application-writer@0.26.3
+    -   @sap-ux/odata-service-writer@0.16.1
+    -   @sap-ux/ui5-test-writer@0.3.2
+    -   @sap-ux/fe-fpm-writer@0.24.8
+    -   @sap-ux/ui5-config@0.21.1
+
+## 0.18.5
+
+### Patch Changes
+
+-   Updated dependencies [392522e8]
+    -   @sap-ux/fe-fpm-writer@0.24.7
+
 ## 0.18.4
 
 ### Patch Changes
