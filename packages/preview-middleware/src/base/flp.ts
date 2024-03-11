@@ -3,7 +3,7 @@ import { render } from 'ejs';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, posix } from 'path';
-import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
+import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
@@ -143,6 +143,7 @@ export class FlpSandbox {
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
     public readonly rta?: RtaConfig;
+    public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
 
     /**
@@ -165,14 +166,14 @@ export class FlpSandbox {
             apps: config.flp?.apps ?? [],
             libs: config.flp?.libs,
             theme: config.flp?.theme,
-            test: config.flp?.test ?? [],
             customInit: config.flp?.customInit
         };
         if (!this.config.path.startsWith('/')) {
             this.config.path = `/${this.config.path}`;
         }
+        this.test = config.test;
         this.rta = config.rta;
-        logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta })}`);
+        logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
     }
 
@@ -219,7 +220,10 @@ export class FlpSandbox {
             this.rta.options.appName = id;
             this.addEditorRoutes(this.rta);
         }
-        this.addTestRoutes(id);
+        if (this.test) {
+            this.addTestRoutes(this.test, id);
+        }
+
         this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
@@ -416,49 +420,50 @@ export class FlpSandbox {
     /**
      * Add routes for html and scripts required for a local test FLP.
      *
-     * @param {string} id application id from manifest
+     * @param configs test configurations
+     * @param id application id from manifest
      */
-    private addTestRoutes(id: string) {
-        const template = readFileSync(join(__dirname, '../../templates/flp/sandbox.html'), 'utf-8');
-        for (const testConfiguration of this.config.test ?? []) {
-            if (!testConfiguration.path.startsWith('/')) {
-                testConfiguration.path = `/${testConfiguration.path}`;
+    private addTestRoutes(configs: TestConfig[], id: string) {
+        const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.html'), 'utf-8');
+        const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.js'), 'utf-8');
+        for (const config of configs) {
+            config.path ??= config.framework === 'OPA' ? '/test/opaTests.qunit.html' : '/test/unitTests.qunit.html';
+            if (!config.path.startsWith('/')) {
+                config.path = `/${config.path}`;
             }
-            this.logger.debug(`Add test route: ${testConfiguration.path}`);
-            // add route for the sandbox.html
-            this.router.get(testConfiguration.path, (async (
-                req: Request,
-                res: Response & { _livereload?: boolean }
-            ) => {
-                this.logger.debug(`Serving test route: ${testConfiguration.path}`);
+            const htmlPath = config.path;
+            const initPath = config.path.replace('.html', 'js');
+            this.logger.debug(`Add test route: ${config.path}`);
+            // add route for the *.qunit.html
+            this.router.get(htmlPath, (async (_req, res, next) => {
+                this.logger.debug(`Serving test route: ${htmlPath}`);
 
-                // warn the user if a file with the same name exists in the filesystem
-                const file = await this.project.byPath(testConfiguration.path);
+                const file = await this.project.byPath(htmlPath);
                 if (file) {
-                    this.logger.warn(`HTML file returned at ${this.config.path} is NOT loaded from the file system.`);
-                }
-
-                // override properties of the given this.templateConfig to fit the needs of this specific test
-                const config = { ...this.templateConfig };
-                config.basePath = posix.relative(posix.dirname(testConfiguration.path), '/') ?? '.';
-                config.ui5.resources[id] = config.basePath;
-                for (const app of Object.entries(config.apps)) {
-                    if (app[1].additionalInformation === `SAPUI5.Component=${id}`) {
-                        app[1].url = config.basePath;
-                    }
-                }
-                config.test = testConfiguration;
-                config.customInit = testConfiguration.customInit;
-
-                this.logger.debug(`Test config: ${JSON.stringify(config)}`);
-
-                const html = render(template, config);
-                // if livereload is enabled, don't send it but let other middleware modify the content
-                if (res._livereload) {
-                    res.write(html);
-                    res.end();
+                    this.logger.warn(`HTML file returned at ${htmlPath} is loaded from the file system.`);
+                    next();
                 } else {
+                    const templateConfig = {
+                        framework: config.framework,
+                        basePath: posix.relative(posix.dirname(htmlPath), '/') ?? '.',
+                        initPath: `${id.replace('.', '/')}${config.path?.replace('.html', '')}`
+                    };
+                    const html = render(htmlTemplate, templateConfig);
                     res.status(200).contentType('html').send(html);
+                }
+            }) as RequestHandler);
+            // add route for the *.qunit.html
+            this.router.get(initPath, (async (_req, res, next) => {
+                this.logger.debug(`Serving test init script: ${initPath}`);
+
+                const file = await this.project.byPath(initPath.replace('.js', '.*s'));
+                if (file) {
+                    this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
+                    next();
+                } else {
+                    const templateConfig = { test: [] };
+                    const html = render(initTemplate, templateConfig);
+                    res.status(200).contentType('application/javascript').send(html);
                 }
             }) as RequestHandler);
         }

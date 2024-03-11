@@ -53,12 +53,18 @@ export interface FlpConfig {
     libs?: boolean;
     apps: App[];
     theme?: string;
-    test?: {
-        framework: string;
-        path: string;
-        customInit?: string;
-    }[];
+    /**
+     * Optional: allows to specify a custom init script
+     */
     customInit?: string;
+}
+
+export interface TestConfig {
+    framework: 'OPA' | 'QUnit';
+    /**
+     * Optional: path hosting the main test page
+     */
+    path?: string;
 }
 
 /**
@@ -66,6 +72,7 @@ export interface FlpConfig {
  */
 export interface MiddlewareConfig {
     flp?: Partial<FlpConfig>;
+    test?: TestConfig[];
     rta?: RtaConfig;
     adp?: AdpPreviewConfig;
     debug?: boolean;
