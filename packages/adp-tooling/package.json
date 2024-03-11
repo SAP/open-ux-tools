@@ -61,12 +61,6 @@
         "rimraf": "5.0.1",
         "supertest": "6.3.3"
     },
-    "peerDependencies": {
-        "express": "4"
-    },
-    "optionalDependencies": {
-        "express": "4"
-    },
     "engines": {
         "node": ">=18.x"
     }
