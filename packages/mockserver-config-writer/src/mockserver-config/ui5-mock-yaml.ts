@@ -88,6 +88,7 @@ async function generateUi5MockYamlBasedOnUi5Yaml(fs: Editor, basePath: string, p
  *
  * @param appId - application id
  * @param [path] - optional url path the mockserver listens to
+ * @param annotationsConfig
  * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
  */
 async function generateNewUi5MockYamlConfig(
