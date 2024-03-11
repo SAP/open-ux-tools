@@ -2,7 +2,6 @@ import { screen, fireEvent } from '@testing-library/react';
 import { render } from '../../utils';
 import React from 'react';
 import { StringEditor } from '../../../../src/panels/properties/StringEditor';
-import * as slice from '../../../../src/slice';
 
 describe('StringEditor', () => {
     const controlId = 'testControlId';
@@ -97,14 +96,13 @@ describe('StringEditor', () => {
             value,
             type: 'integer'
         };
-        const spyChangeProperty = jest.spyOn(slice, 'changeProperty');
-        render(<StringEditor property={{ ...props }} controlId={controlId} />);
+        const { dispatch } = render(<StringEditor property={{ ...props }} controlId={controlId} />);
 
         const textBox = screen.getByDisplayValue(value);
         expect(textBox).toBeInTheDocument();
         expect((textBox as any).value).toBe(value);
         fireEvent.blur(textBox);
-        expect(spyChangeProperty).toHaveBeenCalledTimes(0);
+        expect(dispatch).toBeCalledTimes(0);
     });
 
     test('integer value onPress "Enter"', () => {
