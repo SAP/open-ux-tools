@@ -71,10 +71,10 @@ export const BuildingBlockQuestions = (props: {
                     borderBottom: '3px solid var(--vscode-button-secondaryHoverBackground)'
                 }}>
                 <UISmallButton onClick={toggleLayout.bind(window, 'multiColumn')}>
-                    {layoutSettings.multiColumn ? 'Multi column' : 'Single column'}
+                    {layoutSettings.multiColumn ? 'Single column' : 'Multi column'}
                 </UISmallButton>
                 <UISmallButton onClick={toggleLayout.bind(window, 'showDescriptions')}>
-                    {layoutSettings.showDescriptions ? 'Show descriptions' : 'Hide descriptions'}
+                    {layoutSettings.showDescriptions ? 'Hide descriptions' : 'Show descriptions'}
                 </UISmallButton>
             </div>
             <div
