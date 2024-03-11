@@ -12,7 +12,12 @@ jest.mock('connect-livereload', () => ({
 }));
 
 describe('Livereload', () => {
-    const livereloadSpy = jest.spyOn(livereload, 'createServer').mockImplementation(jest.fn());
+    const livereloadSpy = jest.spyOn(livereload, 'createServer').mockImplementation((): any => {
+        return {
+            watch: jest.fn(),
+            config: { port: 35729 }
+        };
+    });
     jest.spyOn(portfinder, 'getPort').mockImplementation((options, callback) => {
         //@ts-expect-error - ignore for testing purposes
         callback(null, options.port);
@@ -35,6 +40,8 @@ describe('Livereload', () => {
         await getLivereloadServer(options);
         expect(livereloadSpy).toHaveBeenCalledTimes(1);
         expect(livereloadSpy).toHaveBeenCalledWith({ port: 35729, ...defaultLiveReloadOpts });
+        expect(process.env.FIORI_TOOLS_LIVERELOAD_PORT).toBeDefined();
+        expect(process.env.FIORI_TOOLS_LIVERELOAD_PORT).toBe('35729');
     });
 
     test('livereload server with custom port', async () => {

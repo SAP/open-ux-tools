@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.14
+
+### Patch Changes
+
+-   373b9052: fix empty changes added on focus out
+
 ## 0.4.13
 
 ### Patch Changes

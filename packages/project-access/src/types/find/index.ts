@@ -76,12 +76,16 @@ export interface LibraryResults {
     /**
      * Path to the manifest.json of the library.
      */
-    manifestPath: string;
+    manifestPath?: string;
     /**
      * Parsed content of the manifest.json to avoid multiple reads when working with
      * the search results.
      */
-    manifest: Manifest;
+    manifest?: Manifest;
+    /**
+     * Path to the .library file of the library, if existing.
+     */
+    libraryPath?: string;
 }
 
 export interface FoundFioriArtifacts {
