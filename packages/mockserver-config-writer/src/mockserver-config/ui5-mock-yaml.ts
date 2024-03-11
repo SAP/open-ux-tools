@@ -37,13 +37,18 @@ export async function enhanceYaml(
     let mockConfig;
     const manifest = fs.readJSON(join(webappPath, 'manifest.json')) as Partial<Manifest> as Manifest;
     const mockserverPath = config?.path || getMainServiceDataSource(manifest)?.uri;
+    const annotations = getMainServiceDataSource(manifest)?.settings?.annotations || [];
+    const annotationsConfig = annotations.map((annotation) => ({
+        localPath: manifest['sap.app'].dataSources?.[annotation]?.settings?.localUri || '',
+        urlPath: manifest['sap.app'].dataSources?.[annotation]?.uri || ''
+    }));
 
     if (fs.exists(ui5MockYamlPath)) {
         mockConfig = await updateUi5MockYamlConfig(fs, ui5MockYamlPath, mockserverPath);
     } else {
         mockConfig = fs.exists(join(basePath, 'ui5.yaml'))
             ? await generateUi5MockYamlBasedOnUi5Yaml(fs, basePath, mockserverPath)
-            : await generateNewUi5MockYamlConfig(manifest['sap.app']?.id || '', mockserverPath);
+            : await generateNewUi5MockYamlConfig(manifest['sap.app']?.id || '', mockserverPath, annotationsConfig);
     }
     const yaml = mockConfig.toString();
     fs.write(ui5MockYamlPath, yaml);
@@ -85,7 +90,11 @@ async function generateUi5MockYamlBasedOnUi5Yaml(fs: Editor, basePath: string, p
  * @param [path] - optional url path the mockserver listens to
  * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
  */
-async function generateNewUi5MockYamlConfig(appId: string, path?: string): Promise<UI5Config> {
+async function generateNewUi5MockYamlConfig(
+    appId: string,
+    path?: string,
+    annotationsConfig?: MockserverConfig['annotations']
+): Promise<UI5Config> {
     const ui5MockYaml = await UI5Config.newInstance(
         '# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json\n\nspecVersion: "2.5"'
     );
@@ -93,7 +102,7 @@ async function generateNewUi5MockYamlConfig(appId: string, path?: string): Promi
     ui5MockYaml.setType('application');
     ui5MockYaml.addFioriToolsProxydMiddleware({ ui5: {} });
     ui5MockYaml.addFioriToolsAppReloadMiddleware();
-    ui5MockYaml.addMockServerMiddleware(path);
+    ui5MockYaml.addMockServerMiddleware(path, annotationsConfig);
     return ui5MockYaml;
 }
 
