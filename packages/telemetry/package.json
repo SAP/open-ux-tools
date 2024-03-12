@@ -30,7 +30,6 @@
         "@sap-ux/store": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
-        "@sap/ux-specification": "1.108.18",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "applicationinsights": "2.9.2",
