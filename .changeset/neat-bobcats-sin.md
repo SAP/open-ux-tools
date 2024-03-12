@@ -3,4 +3,4 @@
 '@sap-ux/adp-tooling': patch
 ---
 
-Express package installation required for adp-tooling even if the preview module is not used
+Removed unnecessary peer dependency of the adp-tooling and corrected the integration into the preview-middleware
