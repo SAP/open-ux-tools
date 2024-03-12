@@ -15,7 +15,7 @@ export default {
             'RESTRICTION': 1,
             'RESTRICTION@Org.OData.Core.V1.Description': 'Restricted measure',
             'CALCULATION': 2,
-            'CALCULATION@Org.OData.Core.V1.Description': 'Calculated measure (formula)'
+            'CALCULATION@Org.OData.Core.V1.Description': 'Calculated measure (formula) after aggregation'
         },
         'exceptionAggregationSteps': {
             '$Kind': 'Term',
@@ -80,7 +80,7 @@ export default {
             '@Org.OData.Core.V1.Description': 'Defines the specifics of the variable.',
             'usageType': {
                 '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.VariableUsageTypeEnumeration',
-                '@Org.OData.Core.V1.Description': 'Describes how the variable is used.'
+                '@Org.OData.Core.V1.Description': 'Describes how the variable is used. It is a mandatory classification corresponding to the terminology Parameter Variable, Filter Variable, Formula Variable.'
             },
             'referenceElement': {
                 '$Type': 'Edm.PropertyPath',
@@ -110,7 +110,7 @@ export default {
                 '$Collection': true,
                 '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.RangeType',
                 '@Org.OData.Core.V1.Description':
-                    'Specifies the default for a variable with selection type #RANGE. The logic follows the ABAP-range logic with sub fields "sign", "option", "low", and "high".'
+                    'Specifies a complex default filter in combination with the selectionType #RANGE (or #SINGLE / #INTERVAL in combinaton with "multipleSelections: true"). The default value ranges must comply to the combination of selectionType and multipleSelections.'
             },
             'selectionType': {
                 '$Nullable': true,
