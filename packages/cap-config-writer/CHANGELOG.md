@@ -1,5 +1,12 @@
 # @sap-ux/cap-config-writer
 
+## 0.2.19
+
+### Patch Changes
+
+-   Updated dependencies [e6da2117]
+    -   @sap-ux/project-access@1.18.0
+
 ## 0.2.18
 
 ### Patch Changes

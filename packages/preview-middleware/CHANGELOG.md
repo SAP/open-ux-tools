@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.12.8
+
+### Patch Changes
+
+-   dcd3324e: fix on-blur no change for cpe
+
 ## 0.12.7
 
 ### Patch Changes
