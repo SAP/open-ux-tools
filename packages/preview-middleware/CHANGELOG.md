@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.12.10
+
+### Patch Changes
+
+-   fc76be56: do not trigger empty change on focus out
+
 ## 0.12.9
 
 ### Patch Changes
