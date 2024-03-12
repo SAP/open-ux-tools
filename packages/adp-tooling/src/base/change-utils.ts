@@ -176,6 +176,7 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
             if (change.content?.inboundId === inboundId) {
                 changeObj = change;
                 filePath = pathToFile;
+                break;
             }
         }
 
