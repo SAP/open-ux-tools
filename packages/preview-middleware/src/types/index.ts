@@ -60,11 +60,16 @@ export interface FlpConfig {
 }
 
 export interface TestConfig {
-    framework: 'OPA' | 'QUnit';
+    framework: 'OPA5' | 'QUnit';
     /**
      * Optional: path hosting the main test page
      */
     path?: string;
+
+    /**
+     * Optional: pattern to match the test files
+     */
+    pattern?: string;
 }
 
 /**

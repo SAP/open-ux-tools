@@ -10,6 +10,7 @@ import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import { generateImportList, mergeTestConfigDefaults } from './test';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -424,44 +425,45 @@ export class FlpSandbox {
      * @param id application id from manifest
      */
     private addTestRoutes(configs: TestConfig[], id: string) {
+        const ns = id.replace(/\./g, '/');
         const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.html'), 'utf-8');
         const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.js'), 'utf-8');
-        for (const config of configs) {
-            config.path ??= config.framework === 'OPA' ? '/test/opaTests.qunit.html' : '/test/unitTests.qunit.html';
-            if (!config.path.startsWith('/')) {
-                config.path = `/${config.path}`;
-            }
+        for (const testConfig of configs) {
+            const config = mergeTestConfigDefaults(testConfig);
             const htmlPath = config.path;
-            const initPath = config.path.replace('.html', 'js');
-            this.logger.debug(`Add test route: ${config.path}`);
+            const initPath = config.path.replace('.html', '.js');
+            this.logger.debug(`Add route for ${htmlPath}`);
             // add route for the *.qunit.html
             this.router.get(htmlPath, (async (_req, res, next) => {
                 this.logger.debug(`Serving test route: ${htmlPath}`);
-
                 const file = await this.project.byPath(htmlPath);
                 if (file) {
                     this.logger.warn(`HTML file returned at ${htmlPath} is loaded from the file system.`);
                     next();
                 } else {
                     const templateConfig = {
+                        id,
                         framework: config.framework,
                         basePath: posix.relative(posix.dirname(htmlPath), '/') ?? '.',
-                        initPath: `${id.replace('.', '/')}${config.path?.replace('.html', '')}`
+                        initPath: `${ns}${config.path?.replace('.html', '')}`
                     };
                     const html = render(htmlTemplate, templateConfig);
                     res.status(200).contentType('html').send(html);
                 }
             }) as RequestHandler);
-            // add route for the *.qunit.html
+            // add route for the *.qunit.js
+            this.logger.debug(`Add route for ${initPath}`);
             this.router.get(initPath, (async (_req, res, next) => {
                 this.logger.debug(`Serving test init script: ${initPath}`);
 
-                const file = await this.project.byPath(initPath.replace('.js', '.*s'));
+                const file = await this.project.byPath(initPath.replace('.js', '.*'));
+                // TODO: that check doesn't work as expected
                 if (file) {
                     this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
                     next();
                 } else {
-                    const templateConfig = { test: [] };
+                    const testFiles = await this.project.byGlob(config.pattern);
+                    const templateConfig = { tests: generateImportList(ns, testFiles) };
                     const html = render(initTemplate, templateConfig);
                     res.status(200).contentType('application/javascript').send(html);
                 }
