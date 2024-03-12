@@ -16,7 +16,7 @@ export interface AdditionalQuestionProperties {
 
 export interface Choice {
     name: string;
-    value: string;
+    value: string | number | boolean;
 }
 
 export interface DynamicChoices {
@@ -134,15 +134,14 @@ export const Questions = (props: QuestionsProps) => {
                 {layoutType === PromptsLayoutType.MultiColumn && groups?.length
                     ? groupsWithQuestions.map((group) => {
                           return (
-                              <div className="prompts-group">
+                              <div key={group.id} className="prompts-group">
                                   <div className="prompts-group-title-container">
                                       <li className="prompts-group-title">{group.title}</li>
                                   </div>
                                   {showDescriptions && (
-                                      <ReactMarkdown
-                                          className="prompts-group-description"
-                                          children={group.description}
-                                      />
+                                      <ReactMarkdown className="prompts-group-description">
+                                          {group.description}
+                                      </ReactMarkdown>
                                   )}
                                   <div className="prompt-entries-group">{renderQuestions(group.questions)}</div>
                               </div>

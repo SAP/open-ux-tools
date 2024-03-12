@@ -33,7 +33,8 @@ export const Select = (props: SelectProps) => {
             onChange={(_, option) => {
                 setValue(option?.key ?? '');
                 if (name) {
-                    onChange(name, option?.key, dependantPromptNames);
+                    // ToDo - avoid any? -> option?.data.value
+                    onChange(name, option?.data.value, dependantPromptNames);
                 }
             }}
         />

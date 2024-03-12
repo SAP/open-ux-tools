@@ -35,8 +35,10 @@ function getOptions(question: Question, choices?: Choice[]): UIComboBoxOption[] 
         return resolvedChoices.map((choice) => {
             const { name, value } = choice;
             return {
-                key: value,
-                text: typeof name === 'string' ? name : ''
+                key: value.toString(),
+                text: typeof name === 'string' ? name : '',
+                // ToDo create new type
+                data: choice
             };
         });
     }
