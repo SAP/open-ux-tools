@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.18.0
+
+### Minor Changes
+
+-   e6da2117: adds iscapproject function
+
 ## 1.17.6
 
 ### Patch Changes

@@ -24,6 +24,7 @@ export {
     getProject,
     getProjectType,
     getWebappPath,
+    isCapProject,
     isCapJavaProject,
     isCapNodeJsProject,
     loadModuleFromProject,
