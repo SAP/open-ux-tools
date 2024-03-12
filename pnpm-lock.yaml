@@ -1584,9 +1584,6 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
-      '@sap/ux-specification':
-        specifier: 1.108.18
-        version: 1.108.18
       applicationinsights:
         specifier: 2.9.2
         version: 2.9.2
@@ -7348,24 +7345,6 @@ packages:
     resolution: {integrity: sha512-HTgMqm3purAJUjirm6m57h8BaoF/Qx6wuXxiB9cy7ZilmriNHVx0aXJV514I1r8GMRdKKHCVixmhZW0/4L02hw==}
     dev: true
 
-  /@sap-ux/fe-fpm-writer@0.24.0:
-    resolution: {integrity: sha512-ki2ZazdT8DfuPUgN8P8c+R8SqjT28JDSrYOPAA9EqKR1n24MyjerKq+49mRJ8fjR6iGciMG7UqbNkj6Sy/KCoA==}
-    engines: {node: '>=18.x', pnpm: '>=6.26.1 < 7.0.0 || >=7.1.0'}
-    dependencies:
-      '@xmldom/xmldom': 0.8.10
-      ejs: 3.1.9
-      mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      semver: 7.5.4
-      xml-formatter: 2.6.1
-      xpath: 0.0.33
-    dev: false
-
-  /@sap-ux/vocabularies-types@0.10.0:
-    resolution: {integrity: sha512-uTQ2tJJes9qGGAn8e/Npvy0grIul3mAVHzjxsj10U3lF+RZsoFawsdYGxvb6sJYkhY+YEsQzL8GTL6tyYpMv8g==}
-    engines: {node: '>=18.0.0 < 19.0.0 || >=20.0.0 < 21.0.0', pnpm: '>=8'}
-    dev: false
-
   /@sap/bas-sdk@3.7.7:
     resolution: {integrity: sha512-kl43080dwR1sexefIfQ+kVSw8/0qXq4CODLK1fPrZMpCqWxMsrQUXtzibvgFFy38x02prgm9IStgLREOvNL3ng==}
     dependencies:
@@ -7439,14 +7418,6 @@ packages:
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
       '@sap/cds-compiler': 4.4.4
       vscode-languageserver-types: 3.17.2
-    dev: false
-
-  /@sap/ux-specification@1.108.18:
-    resolution: {integrity: sha512-S+Qf54NKbCiMgZqRBPm6m/2OzvAQHPHKjlkpugUklHFk7jAmLCvJyb5gLvcqt4QIWcdVpFer+Xtw1szQO6K+Zw==}
-    engines: {node: '>= 18.0.0 < 19.0.0 || >= 20.0.0 < 21.0.0 || >= 22.0.0', yarn: '>=1.22.19 < 2'}
-    dependencies:
-      '@sap-ux/fe-fpm-writer': 0.24.0
-      '@sap-ux/vocabularies-types': 0.10.0
     dev: false
 
   /@sapui5/types@1.120.5:
