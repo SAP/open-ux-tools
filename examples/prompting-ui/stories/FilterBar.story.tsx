@@ -3,8 +3,23 @@ import { PromptsLayoutType } from '../src/components';
 import { SupportedBuildingBlocks } from './utils';
 import { BuildingBlockQuestions } from './BuildingBlock';
 
-export default { title: 'Building Blocks' };
+export default { title: 'Building Blocks/FilterBar' };
 
-export const FilterBar = (): JSX.Element => {
-    return <BuildingBlockQuestions type={SupportedBuildingBlocks.FilterBar} layout={PromptsLayoutType.SingleColumn} />;
+export const Standard = (): JSX.Element => {
+    return <BuildingBlockQuestions type={SupportedBuildingBlocks.FilterBar} />;
+};
+
+export const WithDefaults = (): JSX.Element => {
+    return (
+        <BuildingBlockQuestions
+            type={SupportedBuildingBlocks.FilterBar}
+            answers={{
+                id: 'FilterBar',
+                filterChanged: 'onFilterChanged',
+                search: 'onSearch',
+                entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
+                qualifier: '@com.sap.vocabularies.UI.v1.SelectionFields'
+            }}
+        />
+    );
 };

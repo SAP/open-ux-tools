@@ -3,8 +3,34 @@ import { PromptsLayoutType } from '../src/components';
 import { SupportedBuildingBlocks } from './utils';
 import { BuildingBlockQuestions } from './BuildingBlock';
 
-export default { title: 'Building Blocks' };
+export default { title: 'Building Blocks/Table' };
 
-export const Table = (): JSX.Element => {
-    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Table} layout={PromptsLayoutType.SingleColumn} />;
+export const Standard = (): JSX.Element => {
+    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Table} />;
+};
+
+export const WithDefaults = (): JSX.Element => {
+    return (
+        <BuildingBlockQuestions
+            type={SupportedBuildingBlocks.Table}
+            answers={{
+                id: 'Table',
+                filterBar: 'FilterBar',
+                bindingContextType: 'absolute',
+                entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
+                qualifier: '@com.sap.vocabularies.UI.v1.LineItem#test',
+                type: 'GridTable',
+                selectionMode: 'Multiple',
+                header: 'Table header',
+                personalization: ['Item', 'Sort'],
+                variantManagement: ['Control'],
+                readOnly: true,
+                enableAutoColumnWidth: false,
+                enableExport: false,
+                enableFullScreen: false,
+                enablePaste: true,
+                isSearchable: false
+            }}
+        />
+    );
 };

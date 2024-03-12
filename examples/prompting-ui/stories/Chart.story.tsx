@@ -3,8 +3,26 @@ import { PromptsLayoutType } from '../src/components';
 import { SupportedBuildingBlocks } from './utils';
 import { BuildingBlockQuestions } from './BuildingBlock';
 
-export default { title: 'Building Blocks' };
+export default { title: 'Building Blocks/Chart' };
 
-export const Chart = (): JSX.Element => {
-    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Chart} layout={PromptsLayoutType.SingleColumn} />;
+export const Standard = (): JSX.Element => {
+    return <BuildingBlockQuestions type={SupportedBuildingBlocks.Chart} />;
+};
+
+export const WithDefaults = (): JSX.Element => {
+    return (
+        <BuildingBlockQuestions
+            type={SupportedBuildingBlocks.Chart}
+            answers={{
+                id: 'Chart',
+                filterBar: 'FilterBar',
+                personalization: ['Item', 'Sort'],
+                entity: 'C_CUSTOMER_OP_SRV.C_CustomerOPType',
+                qualifier: '@com.sap.vocabularies.UI.v1.Chart',
+                selectionChange: 'onSelectionChange',
+                bindingContextType: 'absolute',
+                selectionMode: 'Multiple'
+            }}
+        />
+    );
 };

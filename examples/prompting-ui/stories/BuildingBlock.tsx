@@ -19,16 +19,16 @@ const STYLE_FULL_HEIGHT = {
 };
 
 const STYLE_FLEX = {
-    display: 'flex',
+    display: 'flex'
 };
 
 export const BuildingBlockQuestions = (props: {
     type: SupportedBuildingBlocks;
     visibleQuestions?: string[];
-    layout?: PromptsLayoutType;
+    answers?: Answers;
 }): JSX.Element => {
-    const { type, visibleQuestions, layout = PromptsLayoutType.MultiColumn } = props;
-    const [answers, setAnswers] = useState<Answers>({});
+    const { type, visibleQuestions, answers: externalAnswers = {} } = props;
+    const [answers, setAnswers] = useState<Answers>(externalAnswers);
     const [layoutSettings, setLayoutSettings] = useState<CustomizationSettings>({
         multiColumn: true,
         showDescriptions: true
@@ -43,7 +43,7 @@ export const BuildingBlockQuestions = (props: {
     function handleApply() {
         // Call API to apply changes
         console.log('Applying changes... FPM Writer');
-        applyAnswers(type, answers).then(({ buildingBlockType }) => {});
+        applyAnswers(type, answers).then(({ buildingBlockType }) => setAnswers({}));
     }
 
     function toggleLayout(name: keyof CustomizationSettings): void {
@@ -58,11 +58,12 @@ export const BuildingBlockQuestions = (props: {
     }, [answers]);
 
     return (
-        <div style={{
-            ...STYLE_FULL_HEIGHT,
-            ...STYLE_FLEX,
-            flexDirection: 'column',
-        }}>
+        <div
+            style={{
+                ...STYLE_FULL_HEIGHT,
+                ...STYLE_FLEX,
+                flexDirection: 'column'
+            }}>
             <div
                 style={{
                     ...STYLE_FLEX,

@@ -10,8 +10,6 @@ export function useChoices(): DynamicChoices {
 
     useEffect(() => {
         function onChoicesReceived(newChoices: DynamicChoices) {
-            console.log('onChoicesReceived');
-            console.log(newChoices);
             internalChoices.current = {
                 ...internalChoices.current,
                 ...newChoices
