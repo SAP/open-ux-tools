@@ -165,11 +165,11 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
     }
 
     try {
-        const file: Dirent | undefined = readdirSync(pathToInboundChangeFiles, { withFileTypes: true }).find(
-            (dirent: Dirent) => dirent.isFile() && dirent.name.includes('changeInbound')
+        const files: Dirent[] = readdirSync(pathToInboundChangeFiles, { withFileTypes: true }).filter(
+            (dirent) => dirent.isFile() && dirent.name.includes('changeInbound')
         );
 
-        if (file) {
+        for (const file of files) {
             const pathToFile = path.join(pathToInboundChangeFiles, file.name);
             const change: InboundChange = JSON.parse(readFileSync(pathToFile, 'utf-8'));
 
