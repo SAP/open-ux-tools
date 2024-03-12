@@ -93,6 +93,7 @@ export interface GetCodeSnippet {
 export interface UpdateCodeSnippetPayload {
     buildingBlockType: SupportedBuildingBlocks;
     codeSnippet: string;
+    answers: unknown;
 }
 export interface UpdateCodeSnippet extends UpdateCodeSnippetPayload {
     type: typeof UPDATE_CODE_SNIPPET;

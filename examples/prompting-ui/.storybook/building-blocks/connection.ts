@@ -217,7 +217,8 @@ async function handleAction(action: Actions): Promise<void> {
                 const responseAction: UpdateCodeSnippet = {
                     type: UPDATE_CODE_SNIPPET,
                     buildingBlockType,
-                    codeSnippet
+                    codeSnippet,
+                    answers
                 };
                 sendMessage(responseAction);
                 break;

@@ -1,4 +1,4 @@
-import { AddonPanel, SyntaxHighlighter } from '@storybook/components';
+import { AddonPanel, Form, SyntaxHighlighter } from '@storybook/components';
 import React, { useEffect, useState } from 'react';
 import { Actions, UPDATE_CODE_SNIPPET, getWebSocket, onMessageAttach } from '../../../stories/utils';
 
@@ -6,12 +6,24 @@ getWebSocket(false);
 
 export const render = (props: { active?: boolean }): React.ReactElement => {
     const { active = false } = props;
-    const [code, setCode] = useState('');
+    const [preview, setPreview] = useState<{ code: string; answers: unknown }>({
+        answers: {},
+        code: ''
+    });
 
     useEffect(function () {
         const handleMessage = (responseAction: Actions) => {
             if (responseAction.type === UPDATE_CODE_SNIPPET) {
-                setCode(responseAction.codeSnippet);
+                let answersPreview: string;
+                try {
+                    answersPreview = JSON.stringify(responseAction.answers, undefined, 4);
+                } catch (e) {
+                    answersPreview = '{}';
+                }
+                setPreview({
+                    code: responseAction.codeSnippet,
+                    answers: answersPreview
+                });
             }
         };
         onMessageAttach(UPDATE_CODE_SNIPPET, handleMessage);
@@ -19,7 +31,12 @@ export const render = (props: { active?: boolean }): React.ReactElement => {
 
     return (
         <AddonPanel key="panel" active={active}>
-            <SyntaxHighlighter language="html">{code}</SyntaxHighlighter>
+            <Form.Field label="XML">
+                <SyntaxHighlighter language="html">{preview.code}</SyntaxHighlighter>
+            </Form.Field>
+            <Form.Field label="Answers">
+                <SyntaxHighlighter language="json">{preview.answers}</SyntaxHighlighter>
+            </Form.Field>
         </AddonPanel>
     );
 };
