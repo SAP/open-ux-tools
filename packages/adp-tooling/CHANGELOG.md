@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.9.2
+
+### Patch Changes
+
+-   212d54ed: Removed unnecessary peer dependency of the adp-tooling and corrected the integration into the preview-middleware
+
 ## 0.9.1
 
 ### Patch Changes
