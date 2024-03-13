@@ -17,7 +17,7 @@ import type { Logger } from '@sap-ux/logger';
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
     linked: (model: csn) => LinkedModel;
-    load: (paths: string | string[]) => Promise<csn>;
+    load: (paths: string | string[], options?: { root?: string }) => Promise<csn>;
     compile: {
         to: {
             serviceinfo: (model: csn, options?: { root?: string }) => ServiceInfo[];
@@ -146,7 +146,6 @@ export async function getCapModelAndServices(
 
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.home': ${cds.home}`);
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.version': ${cds.version}`);
-    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.root': ${cds.root}`);
 
     const capProjectPaths = await getCapCustomPaths(_projectRoot);
     const modelPaths = [
@@ -154,7 +153,7 @@ export async function getCapModelAndServices(
         join(_projectRoot, capProjectPaths.srv),
         join(_projectRoot, capProjectPaths.db)
     ];
-    const model = await cds.load(modelPaths);
+    const model = await cds.load(modelPaths, { root: _projectRoot });
     let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
     if (services.map) {
         services = services.map((value) => {
@@ -190,7 +189,7 @@ export async function getCdsFiles(
         envRoot ??= await getCdsRoots(projectRoot);
         try {
             const cds = await loadCdsModuleFromProject(projectRoot);
-            csn = await cds.load(envRoot);
+            csn = await cds.load(envRoot, { root: projectRoot });
             cdsFiles = [...(csn['$sources'] ?? [])];
         } catch (e) {
             if (ignoreErrors && e.model?.sources && typeof e.model.sources === 'object') {
@@ -249,7 +248,7 @@ export async function getCdsServices(projectRoot: string, ignoreErrors = true): 
         const roots: string[] = await getCdsRoots(projectRoot);
         let model;
         try {
-            model = await cds.load(roots);
+            model = await cds.load(roots, { root: projectRoot });
         } catch (e) {
             if (ignoreErrors && e.model) {
                 model = e.model;
@@ -404,8 +403,7 @@ async function loadCdsModuleFromProject(capProjectPath: string): Promise<CdsFaca
     if (global) {
         global.cds = cds;
     }
-    // Ensure we use a known root path, otherwise `cwd` is used which varies between invocations.
-    cds.root = capProjectPath;
+
     return cds;
 }
 
