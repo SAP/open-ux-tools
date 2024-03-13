@@ -122,12 +122,7 @@ export interface TemplateConfig {
         bootstrapOptions: string;
         resources: Record<string, string>;
     };
-    test?: {
-        framework: string;
-        path: string;
-        customInit?: string;
-    };
-    customInit?: string;
+    init?: string;
     flex?: {
         [key: string]: unknown;
         layer: UI5FlexLayer;
@@ -194,7 +189,7 @@ export class FlpSandbox {
         this.templateConfig = {
             basePath: posix.relative(posix.dirname(this.config.path), '/') ?? '.',
             apps: {},
-            customInit: this.config.init,
+            init: this.config.init,
             ui5: {
                 libs: this.getUI5Libs(manifest),
                 theme: ui5Theme,
