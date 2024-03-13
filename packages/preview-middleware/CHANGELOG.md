@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.12.11
+
+### Patch Changes
+
+-   874187b9: Using inbound navigation writer to generate appropriate change files does not produce correct results
+-   Updated dependencies [874187b9]
+    -   @sap-ux/adp-tooling@0.9.3
+
 ## 0.12.10
 
 ### Patch Changes
