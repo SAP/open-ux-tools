@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.15
+
+### Patch Changes
+
+-   fc76be56: do not trigger empty change on focus out
+
 ## 0.4.14
 
 ### Patch Changes

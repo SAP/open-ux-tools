@@ -572,6 +572,7 @@ export async function initAdp(
 
         await flp.init(manifest, name, adp.resources);
         flp.router.use(adp.descriptor.url, adp.proxy.bind(adp) as RequestHandler);
+        flp.router.use(json());
         adp.addApis(flp.router);
     } else {
         throw new Error('ADP configured but no manifest.appdescr_variant found.');
