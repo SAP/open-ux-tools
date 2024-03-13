@@ -2,7 +2,13 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 export const enum ODataSourceType {
     ODataAnnotation = 'ODataAnnotation',
-    OData = 'OData'
+    OData = 'OData',
+    INA = 'INA',
+    XML = 'XML',
+    JSON = 'JSON',
+    FHIR = 'FHIR',
+    WebSocket = 'WebSocket',
+    http = 'http'
 }
 
 /**
@@ -33,17 +39,12 @@ export function getMainServiceDataSource(manifest: Manifest): ManifestNamespace.
  */
 export function getODataSources(
     manifest: Manifest,
-    dataSourceType?: ODataSourceType
+    dataSourceType = ODataSourceType.OData
 ): { [k: string]: ManifestNamespace.DataSource } {
     const result: { [k: string]: ManifestNamespace.DataSource } = {};
     const dataSources = manifest['sap.app']?.dataSources || {};
     for (const dataSource in dataSources) {
-        if (
-            dataSources[dataSource].uri &&
-            (dataSourceType
-                ? dataSources[dataSource].type === dataSourceType
-                : dataSources[dataSource].type === ODataSourceType.OData)
-        ) {
+        if (dataSources[dataSource].uri && dataSources[dataSource].type === dataSourceType) {
             result[dataSource] = dataSources[dataSource];
         }
     }
