@@ -17,6 +17,50 @@ describe('Test enhanceYaml()', () => {
         jest.clearAllMocks();
     });
 
+    test('Create new ui5-mock.yaml with annotations from mock manifest.json', async () => {
+        const mockManifestJson = `{
+            "sap.app": {
+                "id": "mockserverv2",
+                "dataSources": {
+                    "mainService": {
+                        "uri": "/sap/opu/odata/sap/SEPMRA_PROD_MAN/"
+                    },
+                    "SEPMRA_PROD_MAN": {
+                        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/",
+                        "type": "ODataAnnotation",
+                        "settings": {
+                            "localUri": "localService/SEPMRA_PROD_MAN.xml"
+                        }
+                    },
+                    "annotation": {
+                        "type": "ODataAnnotation",
+                        "uri": "annotations/annotation.xml",
+                        "settings": {
+                            "localUri": "annotations/annotation.xml"
+                        }
+                    }
+                }
+            }
+        }`;
+
+        const fs = getFs({ [manifestJsonPath]: mockManifestJson });
+        await enhanceYaml(fs, basePath, webappPath, { path: '/path/for/new/config' });
+
+        expect(fs.read(ui5MockYamlPath)).toMatchSnapshot();
+
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        const mockserverConfig = ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
+        expect(mockserverConfig?.configuration.services?.[0].urlPath).toBe('/path/for/new/config');
+        expect(mockserverConfig?.configuration.annotations).toEqual([
+            {
+                localPath:
+                    "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/",
+                urlPath: 'localService/SEPMRA_PROD_MAN.xml'
+            },
+            { localPath: 'annotations/annotation.xml', urlPath: 'annotations/annotation.xml' }
+        ]);
+    });
+
     test('Update ui5-mock.yaml, path from manifest', async () => {
         const fs = getFsWithUi5MockYaml(manifestWithMainService);
         await enhanceYaml(fs, basePath, webappPath);

@@ -23,13 +23,19 @@ export function getMainServiceDataSource(manifest: Manifest): ManifestNamespace.
  * Get the data sources of type 'OData' from manifest.
  *
  * @param manifest - the parsed manifest.json
+ * @param dataSourceType
  * @returns data sources of type 'OData'
  */
-export function getODataSources(manifest: Manifest): { [k: string]: ManifestNamespace.DataSource } {
+export function getODataSources(
+    manifest: Manifest,
+    dataSourceType?: string
+): { [k: string]: ManifestNamespace.DataSource } {
     const result: { [k: string]: ManifestNamespace.DataSource } = {};
     const dataSources = manifest['sap.app']?.dataSources || {};
     for (const dataSource in dataSources) {
-        if (dataSources[dataSource].uri && dataSources[dataSource].type === 'OData') {
+        if (dataSources[dataSource].type === dataSourceType) {
+            result[dataSource] = dataSources[dataSource];
+        } else if (dataSources[dataSource].uri && dataSources[dataSource].type === 'OData') {
             result[dataSource] = dataSources[dataSource];
         }
     }

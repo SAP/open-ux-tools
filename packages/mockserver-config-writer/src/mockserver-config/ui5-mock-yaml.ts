@@ -5,7 +5,7 @@ import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Ui5MockYamlConfig } from '../types';
 import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
-import { getMainServiceDataSource } from '../app-info';
+import { getMainServiceDataSource, getODataSources } from '../app-info';
 
 /**
  * Enhance or create the ui5-mock.yaml with mockserver config.
@@ -37,10 +37,10 @@ export async function enhanceYaml(
     let mockConfig;
     const manifest = fs.readJSON(join(webappPath, 'manifest.json')) as Partial<Manifest> as Manifest;
     const mockserverPath = config?.path || getMainServiceDataSource(manifest)?.uri;
-    const annotations = getMainServiceDataSource(manifest)?.settings?.annotations || [];
-    const annotationsConfig = annotations.map((annotation) => ({
-        localPath: manifest['sap.app'].dataSources?.[annotation]?.settings?.localUri || '',
-        urlPath: manifest['sap.app'].dataSources?.[annotation]?.uri || ''
+    const annotationSource = Object.values(getODataSources(manifest, 'ODataAnnotation'));
+    const annotationsConfig = annotationSource.map((annotation) => ({
+        localPath: annotation.uri ?? '',
+        urlPath: annotation.settings?.localUri ?? ''
     }));
 
     if (fs.exists(ui5MockYamlPath)) {
@@ -88,6 +88,7 @@ async function generateUi5MockYamlBasedOnUi5Yaml(fs: Editor, basePath: string, p
  *
  * @param appId - application id
  * @param [path] - optional url path the mockserver listens to
+ * @param annotationsConfig
  * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
  */
 async function generateNewUi5MockYamlConfig(
