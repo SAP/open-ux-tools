@@ -46,6 +46,10 @@ export const BuildingBlockQuestions = (props: {
         applyAnswers(type, answers).then(({ buildingBlockType }) => setAnswers({}));
     }
 
+    function handleReset() {
+        setAnswers(externalAnswers);
+    }
+
     function toggleLayout(name: keyof CustomizationSettings): void {
         setLayoutSettings({
             ...layoutSettings,
@@ -111,9 +115,18 @@ export const BuildingBlockQuestions = (props: {
                     />
                 </div>
                 {/* Disable the button if there is no answers for the 'required' question */}
-                <div className="cta">
+                <div
+                    className="cta"
+                    style={{
+                        ...STYLE_FLEX,
+                        gap: '10px',
+                        padding: '10px 10px'
+                    }}>
                     <UIDefaultButton primary={true} onClick={handleApply}>
                         Apply
+                    </UIDefaultButton>
+                    <UIDefaultButton primary={false} onClick={handleReset}>
+                        Reset
                     </UIDefaultButton>
                 </div>
             </div>
