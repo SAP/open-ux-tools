@@ -51,7 +51,7 @@ export const Question = (props: QuestionProps) => {
 
     switch (question?.type) {
         case 'input': {
-            questionInput = <Input value={value} {...question} onChange={onChange} />;
+            questionInput = <Input value={value} {...question} onChange={onChange} additionalInfo={additionalInfo} />;
             break;
         }
         case 'checkbox': {
@@ -62,6 +62,7 @@ export const Question = (props: QuestionProps) => {
                     {...question}
                     onChange={onChange}
                     options={options}
+                    additionalInfo={additionalInfo}
                 />
             );
             break;
@@ -75,6 +76,7 @@ export const Question = (props: QuestionProps) => {
                     onChange={onChange}
                     options={options}
                     pending={pending}
+                    additionalInfo={additionalInfo}
                 />
             );
             break;
@@ -84,24 +86,5 @@ export const Question = (props: QuestionProps) => {
             break;
         }
     }
-    return (
-        <div className="prompt-entry">
-            <div className="prompt-tooltip-wrapper">
-                {additionalInfo && (
-                    <div className="prompt-tooltip">
-                        <UIIcon
-                            iconName="Info"
-                            title={additionalInfo}
-                            styles={{
-                                root: {
-                                    fill: 'var(--vscode-button-background)'
-                                }
-                            }}
-                        />
-                    </div>
-                )}
-            </div>
-            {questionInput}
-        </div>
-    );
+    return <div className="prompt-entry">{questionInput}</div>;
 };

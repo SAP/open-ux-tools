@@ -76,22 +76,3 @@
         }
     }
 }
-
-.prompt-tooltip-wrapper {
-    position: absolute;
-    display: flex;
-    right: 0;
-}
-
-.prompt-tooltip {
-    svg > path,
-    svg > rect,
-    svg > g > path {
-        fill: var(--vscode-button-background);
-    }
-    > i {
-        display: inline-block;
-        height: 16px;
-        line-height: 16px;
-    }
-}

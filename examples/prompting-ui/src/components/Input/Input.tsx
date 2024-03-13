@@ -2,15 +2,17 @@ import React, { useEffect } from 'react';
 import type { InputQuestion } from 'inquirer';
 import { UITextInput } from '@sap-ux/ui-components';
 import { useValue } from '../../utilities';
+import { getLabelRenderer } from '../../utilities/renderUtils';
 
 export interface InputProps extends InputQuestion {
     value?: string | number | boolean;
     onChange: (name: string, value?: string | number | boolean) => void;
     required?: boolean;
+    additionalInfo?: string;
 }
 
 export const Input = (props: InputProps) => {
-    const { name = '', onChange, required } = props;
+    const { name = '', onChange, required, additionalInfo } = props;
     const [value, setValue] = useValue('', props.value);
     const onLiveChange = (event: React.FormEvent, newValue?: string | undefined) => {
         setValue(newValue ?? '');
@@ -20,5 +22,13 @@ export const Input = (props: InputProps) => {
         return () => clearTimeout(id);
     }, [name, value]);
 
-    return <UITextInput required={required} label={name} value={value.toString()} onChange={onLiveChange} />;
+    return (
+        <UITextInput
+            onRenderLabel={getLabelRenderer(additionalInfo)}
+            required={required}
+            label={name}
+            value={value.toString()}
+            onChange={onLiveChange}
+        />
+    );
 };

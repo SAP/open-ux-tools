@@ -3,6 +3,7 @@ import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
 import type { CheckboxQuestion } from 'inquirer';
 import React from 'react';
 import { useValue } from '../../utilities';
+import { getLabelRenderer } from '../../utilities/renderUtils';
 
 export interface MultiSelectProps extends CheckboxQuestion {
     value?: string | number | boolean;
@@ -13,10 +14,11 @@ export interface MultiSelectProps extends CheckboxQuestion {
     type: 'checkbox';
     options: UIComboBoxOption[];
     pending?: boolean;
+    additionalInfo?: string;
 }
 
 export const MultiSelect = (props: MultiSelectProps) => {
-    const { name = '', message, onChange, dependantPromptNames, required, options, pending } = props;
+    const { name = '', message, onChange, dependantPromptNames, required, options, pending, additionalInfo } = props;
     const [value, setValue] = useValue('', props.value?.toString());
 
     return (
@@ -42,6 +44,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
                 setValue(updatedValue);
                 onChange(name, updatedValue, dependantPromptNames);
             }}
+            onRenderLabel={getLabelRenderer(additionalInfo)}
         />
     );
 };

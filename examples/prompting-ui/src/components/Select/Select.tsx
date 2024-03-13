@@ -3,6 +3,7 @@ import type { ListQuestion } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
 import { useValue } from '../../utilities';
+import { getLabelRenderer } from '../../utilities/renderUtils';
 
 export interface SelectProps extends ListQuestion {
     value?: string | number | boolean;
@@ -12,10 +13,11 @@ export interface SelectProps extends ListQuestion {
     required?: boolean;
     options: UIComboBoxOption[];
     pending?: boolean;
+    additionalInfo?: string;
 }
 
 export const Select = (props: SelectProps) => {
-    const { name = '', message, onChange, dependantPromptNames, required, options, pending } = props;
+    const { name = '', message, onChange, dependantPromptNames, required, options, pending, additionalInfo } = props;
     const [value, setValue] = useValue('', props.value);
 
     return (
@@ -37,6 +39,7 @@ export const Select = (props: SelectProps) => {
                     onChange(name, option?.data.value, dependantPromptNames);
                 }
             }}
+            onRenderLabel={getLabelRenderer(additionalInfo)}
         />
     );
 };
