@@ -37,7 +37,7 @@ Object {
     },
   },
   "basePath": "..",
-  "customInit": undefined,
+  "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
@@ -87,7 +87,7 @@ Object {
     },
   },
   "basePath": "..",
-  "customInit": undefined,
+  "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
@@ -135,7 +135,7 @@ Object {
     },
   },
   "basePath": "..",
-  "customInit": undefined,
+  "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
@@ -185,7 +185,7 @@ Object {
     },
   },
   "basePath": "..",
-  "customInit": undefined,
+  "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
