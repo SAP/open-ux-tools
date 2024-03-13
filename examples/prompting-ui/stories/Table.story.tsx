@@ -5,11 +5,11 @@ import { BuildingBlockQuestions } from './BuildingBlock';
 
 export default { title: 'Building Blocks/Table' };
 
-export const Standard = (): JSX.Element => {
+export const Default = (): JSX.Element => {
     return <BuildingBlockQuestions type={SupportedBuildingBlocks.Table} />;
 };
 
-export const WithDefaults = (): JSX.Element => {
+export const ExternalValues = (): JSX.Element => {
     return (
         <BuildingBlockQuestions
             type={SupportedBuildingBlocks.Table}
