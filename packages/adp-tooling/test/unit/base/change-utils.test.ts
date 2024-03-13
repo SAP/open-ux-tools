@@ -180,7 +180,7 @@ describe('Change Utils', () => {
         it('should return the change object and file path if a matching file is found', () => {
             existsSyncMock.mockReturnValue(true);
             readdirSyncMock.mockReturnValue([
-                { name: 'id_addAnnotationsToOData', isFile: () => true },
+                { name: 'id_addAnnotationsToOData.change', isFile: () => true },
                 { name: 'id_changeInbound.change', isFile: () => true }
             ]);
             readFileSyncMock.mockReturnValue(JSON.stringify({ content: { inboundId: mockInboundId } }));
