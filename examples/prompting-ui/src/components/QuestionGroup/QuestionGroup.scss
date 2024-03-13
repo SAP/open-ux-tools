@@ -1,0 +1,25 @@
+.prompt-entries-group {
+    display: flex;
+    flex-flow: row wrap;
+    margin-left: 25px;
+}
+
+.prompts-group-title-container {
+    display: flex;
+    flex-direction: row;
+    vertical-align: middle;
+    margin-bottom: 12px;
+    margin-top: 8px;
+}
+
+.prompts-group-title {
+    font-weight: bold;
+    text-indent: -1.5px;
+    padding-right: 10px;
+}
+
+.prompts-group-description {
+    max-width: 800px;
+    margin-left: 25px;
+    white-space: pre-line;
+}

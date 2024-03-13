@@ -5,7 +5,7 @@ import type { AnswerValue, PromptsGroup } from '../Question/Question';
 import { getDependantQuestions, getDynamicQuestions, updateAnswer } from '../../utilities';
 import './Questions.scss';
 import { useRequestedChoices } from '../../utilities';
-import ReactMarkdown from 'react-markdown';
+import { QuestionGroup } from '../QuestionGroup';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
@@ -129,24 +129,17 @@ export const Questions = (props: QuestionsProps) => {
                     ? 'prompt-entries-wrapper-multi'
                     : 'prompt-entries-wrapper-single'
             }>
-            <div
-                className={
-                    layoutType === PromptsLayoutType.MultiColumn ? 'prompt-entries-multi' : 'prompt-entries-single'
-                }>
+            <div className="prompt-entries">
                 {layoutType === PromptsLayoutType.MultiColumn && groups?.length
                     ? groupsWithQuestions.map((group) => {
                           return (
-                              <div key={group.id} className="prompts-group">
-                                  <div className="prompts-group-title-container">
-                                      <li className="prompts-group-title">{group.title}</li>
-                                  </div>
-                                  {showDescriptions && (
-                                      <ReactMarkdown className="prompts-group-description">
-                                          {group.description}
-                                      </ReactMarkdown>
-                                  )}
-                                  <div className="prompt-entries-group">{renderQuestions(group.questions)}</div>
-                              </div>
+                              <QuestionGroup
+                                  id={group.id}
+                                  title={group.title}
+                                  description={group.description}
+                                  showDescription={showDescriptions}>
+                                  {renderQuestions(group.questions)}
+                              </QuestionGroup>
                           );
                       })
                     : renderQuestions(questions)}
