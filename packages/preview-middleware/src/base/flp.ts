@@ -167,7 +167,7 @@ export class FlpSandbox {
             apps: config.flp?.apps ?? [],
             libs: config.flp?.libs,
             theme: config.flp?.theme,
-            customInit: config.flp?.customInit
+            init: config.flp?.init
         };
         if (!this.config.path.startsWith('/')) {
             this.config.path = `/${this.config.path}`;
@@ -194,7 +194,7 @@ export class FlpSandbox {
         this.templateConfig = {
             basePath: posix.relative(posix.dirname(this.config.path), '/') ?? '.',
             apps: {},
-            customInit: this.config.customInit,
+            customInit: this.config.init,
             ui5: {
                 libs: this.getUI5Libs(manifest),
                 theme: ui5Theme,
@@ -430,35 +430,32 @@ export class FlpSandbox {
         const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.js'), 'utf-8');
         for (const testConfig of configs) {
             const config = mergeTestConfigDefaults(testConfig);
-            const htmlPath = config.path;
-            const initPath = config.path.replace('.html', '.js');
-            this.logger.debug(`Add route for ${htmlPath}`);
+            this.logger.debug(`Add route for ${config.path}`);
             // add route for the *.qunit.html
-            this.router.get(htmlPath, (async (_req, res, next) => {
-                this.logger.debug(`Serving test route: ${htmlPath}`);
-                const file = await this.project.byPath(htmlPath);
+            this.router.get(config.path, (async (_req, res, next) => {
+                this.logger.debug(`Serving test route: ${config.path}`);
+                const file = await this.project.byPath(config.path);
                 if (file) {
-                    this.logger.warn(`HTML file returned at ${htmlPath} is loaded from the file system.`);
+                    this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
                     next();
                 } else {
                     const templateConfig = {
                         id,
                         framework: config.framework,
-                        basePath: posix.relative(posix.dirname(htmlPath), '/') ?? '.',
-                        initPath: `${ns}${config.path?.replace('.html', '')}`
+                        basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
+                        initPath: `${ns}${config.init.replace('.js', '')}`
                     };
                     const html = render(htmlTemplate, templateConfig);
                     res.status(200).contentType('html').send(html);
                 }
             }) as RequestHandler);
-            // add route for the *.qunit.js
-            this.logger.debug(`Add route for ${initPath}`);
-            this.router.get(initPath, (async (_req, res, next) => {
-                this.logger.debug(`Serving test init script: ${initPath}`);
+            // add route for the init file
+            this.logger.debug(`Add route for ${config.init}`);
+            this.router.get(config.init, (async (_req, res, next) => {
+                this.logger.debug(`Serving test init script: ${config.init}`);
 
-                const file = await this.project.byPath(initPath.replace('.js', '.*'));
-                // TODO: that check doesn't work as expected
-                if (file) {
+                const files = await this.project.byGlob(config.init.replace('.js', '.*'));
+                if (files?.length > 0) {
                     this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
                     next();
                 } else {

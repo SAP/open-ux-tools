@@ -54,23 +54,33 @@ export interface FlpConfig {
     apps: App[];
     theme?: string;
     /**
-     * Optional: allows to specify a custom init script
+     * Optional: allows to specify a custom init script executed in addition to the default one
      */
-    customInit?: string;
+    init?: string;
 }
 
-export interface TestConfig {
-    framework: 'OPA5' | 'QUnit';
+interface OptionalTestConfig {
     /**
      * Optional: path hosting the main test page
      */
-    path?: string;
+    path: string;
+
+    /**
+     * Optional: path to the init script
+     */
+    init: string;
 
     /**
      * Optional: pattern to match the test files
      */
-    pattern?: string;
+    pattern: string;
 }
+
+export interface TestConfig extends Partial<OptionalTestConfig> {
+    framework: 'OPA5' | 'QUnit';
+}
+
+export type InternalTestConfig = TestConfig & OptionalTestConfig;
 
 /**
  * Middleware configuration.

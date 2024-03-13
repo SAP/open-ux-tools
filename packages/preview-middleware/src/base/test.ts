@@ -1,14 +1,16 @@
 import type { Resource } from '@ui5/fs';
-import type { TestConfig } from '../types';
+import type { InternalTestConfig, TestConfig } from '../types';
 
-const DEFAULTS: Record<string, TestConfig & { pattern: string; path: string }> = {
+const DEFAULTS: Record<string, InternalTestConfig> = {
     qunit: {
         path: '/test/unitTests.qunit.html',
+        init: '/test/unitTests.qunit.js',
         pattern: '/test/**/*Test.*',
         framework: 'QUnit'
     },
     opa5: {
         path: '/test/opaTests.qunit.html',
+        init: '/test/opaTests.qunit.js',
         pattern: '/test/**/*Journey.*',
         framework: 'OPA5'
     }
@@ -26,9 +28,13 @@ export function mergeTestConfigDefaults(config: TestConfig) {
     if (config.path && !config.path.startsWith('/')) {
         config.path = `/${config.path}`;
     }
+    if (config.init && !config.init.startsWith('/')) {
+        config.init = `/${config.init}`;
+    }
     return {
         framework: defaults.framework ?? config.framework,
         path: config.path ?? defaults.path,
+        init: config.init ?? defaults.init,
         pattern: config.pattern ?? defaults.pattern
     };
 }
