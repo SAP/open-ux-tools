@@ -186,10 +186,12 @@ export class FlpSandbox {
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         const ui5Theme =
             this.config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
+        const id = manifest['sap.app'].id;
+        const ns = id.replace(/\./g, '/');
         this.templateConfig = {
             basePath: posix.relative(posix.dirname(this.config.path), '/') ?? '.',
             apps: {},
-            init: this.config.init,
+            init: this.config.init ? ns + this.config.init : undefined,
             ui5: {
                 libs: this.getUI5Libs(manifest),
                 theme: ui5Theme,
@@ -202,7 +204,7 @@ export class FlpSandbox {
             },
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
-        const id = manifest['sap.app'].id;
+
         this.addApp(manifest, {
             componentId,
             target: resources[componentId ?? id] ?? this.templateConfig.basePath,
