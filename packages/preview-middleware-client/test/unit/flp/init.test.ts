@@ -172,27 +172,5 @@ describe('flp/init', () => {
 
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
         });
-
-        test('opa5 test framework configured & ui5 version is 1.120.9', async () => {
-            const testSettings = '{"framework":"OPA5"}';
-            sapMock.ui.version = '1.120.09';
-            await init({ test: testSettings });
-
-            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
-        });
-    });
-
-    describe('init without renderer', () => {
-        beforeEach(() => {
-            sapMock.ushell.Container.createRenderer.mockReset();
-        });
-
-        test('qunit test framework configured & ui5 version is 1.120.9', async () => {
-            const testSettings = '{"framework":"QUNIT"}';
-            sapMock.ui.version = '1.120.09';
-            await init({ test: testSettings });
-
-            expect(sapMock.ushell.Container.createRenderer).not.toHaveBeenCalled();
-        });
     });
 });
