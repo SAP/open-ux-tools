@@ -5,6 +5,7 @@
             display: block;
             margin-right: 14px;
             margin-bottom: 10px;
+            position: relative;
 
             label {
                 margin-top: 0 !important;
@@ -73,5 +74,24 @@
                 width: 234px;
             }
         }
+    }
+}
+
+.prompt-tooltip-wrapper {
+    position: absolute;
+    display: flex;
+    right: 0;
+}
+
+.prompt-tooltip {
+    svg > path,
+    svg > rect,
+    svg > g > path {
+        fill: var(--vscode-button-background);
+    }
+    > i {
+        display: inline-block;
+        height: 16px;
+        line-height: 16px;
     }
 }

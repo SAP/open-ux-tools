@@ -170,7 +170,14 @@ export async function getChartBuildingBlockPrompts(
         } as InputQuestion,
         getAggregationPathPrompt(t('aggregation'), fs),
         getEntityPrompt(t('entity'), projectProvider, ['qualifier']),
-        getAnnotationPathQualifierPrompt('qualifier', t('qualifier'), projectProvider, [UIAnnotationTerms.Chart])
+        getAnnotationPathQualifierPrompt(
+            'qualifier',
+            t('qualifier'),
+            projectProvider,
+            [UIAnnotationTerms.Chart],
+            undefined,
+            t('valuesDependentOnEntityTypeInfo')
+        )
     ];
 }
 
@@ -240,7 +247,8 @@ export async function getTableBuildingBlockPrompts(
                 t('qualifier'),
                 projectProvider,
                 [UIAnnotationTerms.LineItem],
-                TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+                TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                t('valuesDependentOnEntityTypeInfo')
             ),
             getAggregationPathPrompt(t('aggregation'), fs, TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
 
@@ -337,9 +345,14 @@ export async function getFilterBarBuildingBlockPrompts(
         getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
         getAggregationPathPrompt(t('aggregation'), fs),
         getEntityPrompt(t('entity'), projectProvider, ['qualifier']),
-        getAnnotationPathQualifierPrompt('qualifier', t('qualifier'), projectProvider, [
-            UIAnnotationTerms.SelectionFields
-        ]),
+        getAnnotationPathQualifierPrompt(
+            'qualifier',
+            t('qualifier'),
+            projectProvider,
+            [UIAnnotationTerms.SelectionFields],
+            undefined,
+            t('valuesDependentOnEntityTypeInfo')
+        ),
         {
             type: 'input',
             name: 'filterChanged',

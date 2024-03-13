@@ -41,7 +41,8 @@
                 }
             },
             "selectionChange": "Enter a function to be called when the selection has changed",
-            "qualifier": "Select the Chart Qualifier"
+            "qualifier": "Select the Chart Qualifier",
+            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type"
         },
         "filterBar": {
             "id": {
@@ -57,7 +58,8 @@
             "filterChanged": "Enter a function to be called when the filter value has changed",
             "search": "Enter a function to be called when the go button is pressed",
             "qualifier": "Select the Selection Fields Qualifier",
-            "aggregation": "Select the Aggregation Path"
+            "aggregation": "Select the Aggregation Path",
+            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type"
         },
         "table": {
             "tableBuildingBlockPropertiesTitle": "Table Building Block Properties",
@@ -105,7 +107,8 @@
             "dataExport": "Enable Data Export",
             "fullScreenMode": "Enable Full Screen Mode",
             "pasteFromClipboard": "Enable Paste From Clipboard",
-            "tableSearchableToggle": "Table Searchable Toggle"
+            "tableSearchableToggle": "Table Searchable Toggle",
+            "valuesDependentOnEntityTypeInfo": "Values are dependent on entity type"
         }
     }
 }

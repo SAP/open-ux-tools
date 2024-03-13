@@ -11,12 +11,14 @@ import { MultiSelect } from '../MultiSelect';
 import type { Choice } from '../Questions';
 import { useOptions } from '../../utilities';
 import './Question.scss';
+import { UIIcon } from '@sap-ux/ui-components';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
     dependantPromptNames?: string[];
     required?: boolean;
     guideId?: string;
+    additionalInfo?: string;
 }
 
 export type ListQuestion = _ListQuestion & AdditionalQuestionProperties;
@@ -37,10 +39,11 @@ export interface QuestionProps {
     isLoading?: boolean;
     choices?: Choice[];
     pending?: boolean;
+    additionalInfo?: string;
 }
 
 export const Question = (props: QuestionProps) => {
-    const { question, onChange, answers, choices, pending } = props;
+    const { question, onChange, answers, choices, pending, additionalInfo } = props;
     let questionInput: JSX.Element;
     const value = (question.name && answers?.[question.name]) ?? '';
     // ToDo -> move to MultiSelect and Select?
@@ -81,5 +84,24 @@ export const Question = (props: QuestionProps) => {
             break;
         }
     }
-    return <div className="prompt-entry">{questionInput}</div>;
+    return (
+        <div className="prompt-entry">
+            <div className="prompt-tooltip-wrapper">
+                {additionalInfo && (
+                    <div className="prompt-tooltip">
+                        <UIIcon
+                            iconName="Info"
+                            title={additionalInfo}
+                            styles={{
+                                root: {
+                                    fill: 'var(--vscode-button-background)'
+                                }
+                            }}
+                        />
+                    </div>
+                )}
+            </div>
+            {questionInput}
+        </div>
+    );
 };

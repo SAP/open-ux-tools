@@ -12,6 +12,7 @@ export interface AdditionalQuestionProperties {
     dependantPromptNames?: string[];
     required?: boolean;
     groupId?: string;
+    additionalInfo?: string;
 }
 
 export interface Choice {
@@ -115,6 +116,7 @@ export const Questions = (props: QuestionsProps) => {
                         onChange={onAnswerChange}
                         choices={externalChoices}
                         pending={pendingRequests[name]}
+                        additionalInfo={(question as IQuestion).additionalInfo}
                     />
                 </>
             );

@@ -41,7 +41,8 @@ export function getAnnotationPathQualifierPrompt(
     message: string,
     projectProvider: ProjectProvider,
     annotationTerm: UIAnnotationTerms[],
-    groupId?: string
+    groupId?: string,
+    additionalInfo?: string
 ): ListQuestion {
     return {
         type: 'list',
@@ -62,7 +63,8 @@ export function getAnnotationPathQualifierPrompt(
             }
             return choices;
         },
-        groupId
+        groupId,
+        additionalInfo
     } as ListQuestion;
 }
 
