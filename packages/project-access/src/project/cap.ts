@@ -143,10 +143,6 @@ export async function getCapModelAndServices(
     }
 
     const cds = await loadCdsModuleFromProject(_projectRoot);
-
-    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.home': ${cds.home}`);
-    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.version': ${cds.version}`);
-
     const capProjectPaths = await getCapCustomPaths(_projectRoot);
     const modelPaths = [
         join(_projectRoot, capProjectPaths.app),
@@ -154,6 +150,11 @@ export async function getCapModelAndServices(
         join(_projectRoot, capProjectPaths.db)
     ];
     const model = await cds.load(modelPaths, { root: _projectRoot });
+
+    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.home': ${cds.home}`);
+    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.version': ${cds.version}`);
+    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.root': ${cds.root}`);
+
     let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
     if (services.map) {
         services = services.map((value) => {

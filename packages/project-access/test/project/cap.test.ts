@@ -204,6 +204,7 @@ describe('Test getCapModelAndServices()', () => {
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: projectRoot });
         expect(loggerSpy).toHaveBeenNthCalledWith(1, expect.stringContaining("'cds.home': /cds/home/path"));
         expect(loggerSpy).toHaveBeenNthCalledWith(2, expect.stringContaining("'cds.version': 7.4.2"));
+        expect(loggerSpy).toHaveBeenNthCalledWith(3, expect.stringContaining("'cds.root':"));
     });
 });
 
