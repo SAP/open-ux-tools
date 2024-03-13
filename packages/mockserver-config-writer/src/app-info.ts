@@ -1,5 +1,10 @@
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
+export const enum ODataSourceType {
+    ODataAnnotation = 'ODataAnnotation',
+    OData = 'OData'
+}
+
 /**
  * Get the main service data source entry from manifest.json.
  *
@@ -23,19 +28,22 @@ export function getMainServiceDataSource(manifest: Manifest): ManifestNamespace.
  * Get the data sources of type 'OData' from manifest.
  *
  * @param manifest - the parsed manifest.json
- * @param dataSourceType
+ * @param dataSourceType - optional to specify the type of OData sources to filter
  * @returns data sources of type 'OData'
  */
 export function getODataSources(
     manifest: Manifest,
-    dataSourceType?: string
+    dataSourceType?: ODataSourceType
 ): { [k: string]: ManifestNamespace.DataSource } {
     const result: { [k: string]: ManifestNamespace.DataSource } = {};
     const dataSources = manifest['sap.app']?.dataSources || {};
     for (const dataSource in dataSources) {
-        if (dataSources[dataSource].type === dataSourceType) {
-            result[dataSource] = dataSources[dataSource];
-        } else if (dataSources[dataSource].uri && dataSources[dataSource].type === 'OData') {
+        if (
+            dataSources[dataSource].uri &&
+            (dataSourceType
+                ? dataSources[dataSource].type === dataSourceType
+                : dataSources[dataSource].type === ODataSourceType.OData)
+        ) {
             result[dataSource] = dataSources[dataSource];
         }
     }

@@ -274,7 +274,7 @@ export class UI5Config {
      * Adds a instance of the mockserver middleware to the config.
      *
      * @param path option path that is to be mocked
-     * @param annotationsConfig
+     * @param annotationsConfig optional annotations config that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */

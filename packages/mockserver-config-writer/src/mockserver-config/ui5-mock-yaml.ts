@@ -5,7 +5,7 @@ import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Ui5MockYamlConfig } from '../types';
 import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
-import { getMainServiceDataSource, getODataSources } from '../app-info';
+import { ODataSourceType, getMainServiceDataSource, getODataSources } from '../app-info';
 
 /**
  * Enhance or create the ui5-mock.yaml with mockserver config.
@@ -37,7 +37,7 @@ export async function enhanceYaml(
     let mockConfig;
     const manifest = fs.readJSON(join(webappPath, 'manifest.json')) as Partial<Manifest> as Manifest;
     const mockserverPath = config?.path || getMainServiceDataSource(manifest)?.uri;
-    const annotationSource = Object.values(getODataSources(manifest, 'ODataAnnotation'));
+    const annotationSource = Object.values(getODataSources(manifest, ODataSourceType.ODataAnnotation));
     const annotationsConfig = annotationSource.map((annotation) => ({
         localPath: annotation.uri ?? '',
         urlPath: annotation.settings?.localUri ?? ''
@@ -88,7 +88,7 @@ async function generateUi5MockYamlBasedOnUi5Yaml(fs: Editor, basePath: string, p
  *
  * @param appId - application id
  * @param [path] - optional url path the mockserver listens to
- * @param annotationsConfig
+ * @param annotationsConfig - optional annotations config to add to mockserver middleware
  * @returns {*}  {Promise<UI5Config>} - Update Yaml Doc
  */
 async function generateNewUi5MockYamlConfig(

@@ -1,5 +1,5 @@
 import type { Manifest } from '@sap-ux/project-access';
-import { getMainServiceDataSource, getODataSources } from '../../src/app-info';
+import { ODataSourceType, getMainServiceDataSource, getODataSources } from '../../src/app-info';
 
 describe('Tests for getMainServiceDataSource()', () => {
     test('Empty manifest.json, should return undefined', () => {
@@ -135,7 +135,7 @@ describe('Tests for getODataSources()', () => {
                 }
             }
         } as unknown as Manifest;
-        expect(getODataSources(manifestJson, 'ODataAnnotation')).toEqual({
+        expect(getODataSources(manifestJson, ODataSourceType.ODataAnnotation)).toEqual({
             'SEPMRA_PROD_MAN': {
                 'uri': "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/",
                 'type': 'ODataAnnotation',
