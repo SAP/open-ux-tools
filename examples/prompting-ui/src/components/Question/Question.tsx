@@ -11,7 +11,6 @@ import { MultiSelect } from '../MultiSelect';
 import type { Choice } from '../Questions';
 import { useOptions } from '../../utilities';
 import './Question.scss';
-import { UIIcon } from '@sap-ux/ui-components';
 
 export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
