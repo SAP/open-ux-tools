@@ -50,7 +50,7 @@ export default {
             '$Kind': 'Term',
             '$Type': 'com.sap.cds.vocabularies.ObjectModel.ForeignKeyType',
             '$AppliesTo': ['Property'],
-            '@Org.OData.Core.V1.Description': 'Points to a value list entity for the annotated element.'
+            '@Org.OData.Core.V1.Description': '(CDS annotation) Points to a value list entity for the annotated element.'
         },
         'ForeignKeyType': {
             '$Kind': 'ComplexType',

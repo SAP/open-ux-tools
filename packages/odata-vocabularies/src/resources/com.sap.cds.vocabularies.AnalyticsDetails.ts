@@ -23,7 +23,7 @@ export default {
             '$Collection': true,
             '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.ExceptionAggregationStepType',
             '@Org.OData.Core.V1.Description':
-                'Used to define different (to the default aggregation) aggregation behavior for specified elements. In general there can be multiple elements in which a measure has to be aggregated differently. Therefore a list of ExceptionAggregationSteps can be assigned.'
+                '(CDS annotation)  Used to define different (to the default aggregation) aggregation behavior for specified elements. In general there can be multiple elements in which a measure has to be aggregated differently. Therefore a list of ExceptionAggregationSteps can be assigned.'
         },
         'ExceptionAggregationStepType': {
             '$Kind': 'ComplexType',
@@ -73,7 +73,7 @@ export default {
             '$AppliesTo': ['Parameter'],
             '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.VariableType',
             '@Org.OData.Core.V1.Description':
-                'Annotation for a parameter, only supported in analytics. With this annotation a parameter can become a variable which represents an interval or a range. It can also become optional or can represent multiple values.'
+                '(CDS annotation) Annotation for a parameter, only supported in analytics. With this annotation a parameter can become a variable which represents an interval or a range. It can also become optional or can represent multiple values.'
         },
         'VariableType': {
             '$Kind': 'ComplexType',
