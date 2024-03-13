@@ -32,19 +32,15 @@ export const MultiSelect = (props: MultiSelectProps) => {
             selectedKey={value?.split(',').map((v) => v.trim())}
             multiSelect
             disabled={false}
-            onChange={(_, option) => {
-                let updatedValue: string | undefined;
-                if (option?.selected) {
-                    const selectedKeyz = value.split(',').filter((str) => !!str) ?? [];
-                    selectedKeyz.push(option.key.toString());
-                    updatedValue = selectedKeyz.join(',');
+            onChange={(_, changedOption) => {
+                let updatedValue: string | undefined = '';
+                if (changedOption?.selected) {
+                    updatedValue = [value.split(',') ?? [], changedOption.key].join();
                 } else {
-                    updatedValue = (value.split(',') ?? [])
-                        .filter((str) => str.includes(option?.key?.toString() ?? ''))
-                        .join(', ');
+                    updatedValue = (value.split(',') ?? []).filter((option) => option !== changedOption?.key).join();
                 }
                 setValue(updatedValue);
-                onChange(name, value, dependantPromptNames);
+                onChange(name, updatedValue, dependantPromptNames);
             }}
         />
     );
