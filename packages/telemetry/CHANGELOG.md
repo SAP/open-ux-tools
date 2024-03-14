@@ -1,5 +1,25 @@
 # @sap-ux/telemetry
 
+## 0.4.5
+
+### Patch Changes
+
+-   Updated dependencies [a4f00f7c]
+    -   @sap-ux/project-access@1.19.0
+
+## 0.4.4
+
+### Patch Changes
+
+-   e05c129b: Remove unused dependency
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [e6da2117]
+    -   @sap-ux/project-access@1.18.0
+
 ## 0.4.2
 
 ### Patch Changes

@@ -5,6 +5,7 @@ export {
     getCdsFiles,
     getCdsRoots,
     getCdsServices,
+    isCapProject,
     isCapJavaProject,
     isCapNodeJsProject,
     getCapEnvironment,
