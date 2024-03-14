@@ -15,7 +15,7 @@ export default {
             'RESTRICTION': 1,
             'RESTRICTION@Org.OData.Core.V1.Description': 'Restricted measure',
             'CALCULATION': 2,
-            'CALCULATION@Org.OData.Core.V1.Description': 'Calculated measure (formula)'
+            'CALCULATION@Org.OData.Core.V1.Description': 'Calculated measure (formula) after aggregation'
         },
         'exceptionAggregationSteps': {
             '$Kind': 'Term',
@@ -23,7 +23,7 @@ export default {
             '$Collection': true,
             '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.ExceptionAggregationStepType',
             '@Org.OData.Core.V1.Description':
-                'Used to define different (to the default aggregation) aggregation behavior for specified elements. In general there can be multiple elements in which a measure has to be aggregated differently. Therefore a list of ExceptionAggregationSteps can be assigned.'
+                '(CDS annotation)  Used to define different (to the default aggregation) aggregation behavior for specified elements. In general there can be multiple elements in which a measure has to be aggregated differently. Therefore a list of ExceptionAggregationSteps can be assigned.'
         },
         'ExceptionAggregationStepType': {
             '$Kind': 'ComplexType',
@@ -73,14 +73,14 @@ export default {
             '$AppliesTo': ['Parameter'],
             '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.VariableType',
             '@Org.OData.Core.V1.Description':
-                'Annotation for a parameter, only supported in analytics. With this annotation a parameter can become a variable which represents an interval or a range. It can also become optional or can represent multiple values.'
+                '(CDS annotation) Annotation for a parameter, only supported in analytics. With this annotation a parameter can become a variable which represents an interval or a range. It can also become optional or can represent multiple values.'
         },
         'VariableType': {
             '$Kind': 'ComplexType',
             '@Org.OData.Core.V1.Description': 'Defines the specifics of the variable.',
             'usageType': {
                 '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.VariableUsageTypeEnumeration',
-                '@Org.OData.Core.V1.Description': 'Describes how the variable is used.'
+                '@Org.OData.Core.V1.Description': 'Describes how the variable is used. It is a mandatory classification corresponding to the terminology Parameter Variable, Filter Variable, Formula Variable.'
             },
             'referenceElement': {
                 '$Type': 'Edm.PropertyPath',
@@ -110,7 +110,7 @@ export default {
                 '$Collection': true,
                 '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.RangeType',
                 '@Org.OData.Core.V1.Description':
-                    'Specifies the default for a variable with selection type #RANGE. The logic follows the ABAP-range logic with sub fields "sign", "option", "low", and "high".'
+                    'Specifies a complex default filter in combination with the selectionType #RANGE (or #SINGLE / #INTERVAL in combinaton with "multipleSelections: true"). The default value ranges must comply to the combination of selectionType and multipleSelections.'
             },
             'selectionType': {
                 '$Nullable': true,
