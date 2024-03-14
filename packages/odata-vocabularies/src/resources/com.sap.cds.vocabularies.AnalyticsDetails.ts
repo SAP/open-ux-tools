@@ -23,7 +23,7 @@ export default {
             '$Collection': true,
             '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.ExceptionAggregationStepType',
             '@Org.OData.Core.V1.Description':
-                '(CDS annotation)  Used to define different (to the default aggregation) aggregation behavior for specified elements. In general there can be multiple elements in which a measure has to be aggregated differently. Therefore a list of ExceptionAggregationSteps can be assigned.'
+                '(CDS annotation) Used to define different (to the default aggregation) aggregation behavior for specified elements. In general there can be multiple elements in which a measure has to be aggregated differently. Therefore a list of ExceptionAggregationSteps can be assigned.'
         },
         'ExceptionAggregationStepType': {
             '$Kind': 'ComplexType',
