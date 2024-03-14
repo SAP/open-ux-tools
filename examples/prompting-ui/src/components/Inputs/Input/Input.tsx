@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import type { InputQuestion } from 'inquirer';
 import { UITextInput } from '@sap-ux/ui-components';
-import { useValue } from '../../utilities';
-import { getLabelRenderer } from '../../utilities/renderUtils';
+import { useValue, getLabelRenderer } from '../../../utilities';
 
 export interface InputProps extends InputQuestion {
     value?: string | number | boolean;

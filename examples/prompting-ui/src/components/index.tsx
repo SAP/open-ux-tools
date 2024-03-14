@@ -1,4 +1,2 @@
-export * from './MultiSelect';
-export * from './Input';
-export * from './Select';
+export * from './Inputs';
 export * from './Questions';

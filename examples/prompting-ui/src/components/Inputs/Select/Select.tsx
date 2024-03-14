@@ -2,8 +2,7 @@ import React from 'react';
 import type { ListQuestion } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
 import type { UIComboBoxOption } from '@sap-ux/ui-components';
-import { useValue } from '../../utilities';
-import { getLabelRenderer } from '../../utilities/renderUtils';
+import { useValue, getLabelRenderer } from '../../../utilities';
 
 export interface SelectProps extends ListQuestion {
     value?: string | number | boolean;

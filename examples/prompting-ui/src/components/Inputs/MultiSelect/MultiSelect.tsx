@@ -2,8 +2,7 @@ import type { UIComboBoxOption } from '@sap-ux/ui-components';
 import { UIComboBox, UIComboBoxLoaderType } from '@sap-ux/ui-components';
 import type { CheckboxQuestion } from 'inquirer';
 import React from 'react';
-import { useValue } from '../../utilities';
-import { getLabelRenderer } from '../../utilities/renderUtils';
+import { useValue, getLabelRenderer } from '../../../utilities';
 
 export interface MultiSelectProps extends CheckboxQuestion {
     value?: string | number | boolean;

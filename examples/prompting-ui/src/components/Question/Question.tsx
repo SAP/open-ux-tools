@@ -4,10 +4,7 @@ import type {
     ListQuestion as _ListQuestion,
     CheckboxQuestion as _CheckboxQuestion
 } from 'inquirer';
-import { Input } from '../Input';
-// import { Checkbox } from '../Checkbox';
-import { Select } from '../Select';
-import { MultiSelect } from '../MultiSelect';
+import { Input, Select, MultiSelect } from '../Inputs';
 import type { Choice } from '../Questions';
 import { useOptions } from '../../utilities';
 import './Question.scss';
