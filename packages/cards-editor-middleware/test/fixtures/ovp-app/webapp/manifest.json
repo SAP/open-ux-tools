@@ -1,0 +1,226 @@
+{
+  "_version": "1.60.0",
+  "start_url": "start.html",
+  "sap.app": {
+    "_version": "1.20.0",
+    "id": "procurement.overview",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.2.2"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "dataSources": {
+      "salesShare": {
+        "uri": "/sap/opu/odata/sap/salesshare_srv/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "annotations": [
+            "salesShareAnno"
+          ]
+        }
+      },
+      "salesShareAnno": {
+        "uri": "/sap/opu/odata/sap/salesshare_srv;v=2/Annotations*",
+        "type": "ODataAnnotation",
+        "settings": {}
+      }
+    }
+  },
+  "sap.ui": {
+    "_version": "1.2.0",
+    "technology": "UI5",
+    "icons": {
+      "icon": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    },
+    "supportedThemes": [
+      "sap_hcb",
+      "sap_belize"
+    ]
+  },
+  "sap.ui5": {
+    "_version": "1.1.0",
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "dependencies": {
+      "minUI5Version": "${sap.ui5.dist.version}",
+      "libs": {
+        "sap.ovp": {}
+      }
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      },
+      "@i18n": {
+        "preload": true,
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      },
+      "salesShare": {
+        "dataSource": "salesShare",
+        "settings": {}
+      }
+    },
+    "extends": {}
+  },
+  "sap.ovp": {
+    "globalFilterModel": "salesShare",
+    "globalFilterEntityType": "SalesShareType",
+    "bHeaderExpanded": false,
+    "showBasicSearch": true,
+    "containerLayout": "resizable",
+    "cards": {
+      "card001": {
+        "model": "salesShare",
+        "template": "sap.ovp.cards.charts.analytical",
+        "settings": {
+          "title": "{{donutChartWithStableColors}}",
+          "entitySet": "SalesShareDonut",
+          "valueSelectionInfo": "{{productCategory}}",
+          "customParams": "getParameters",
+          "chartAnnotationPath": "com.sap.vocabularies.UI.v1.Chart#Eval_by_Currency_Donut",
+          "value": "Stable Coloring",
+          "navigation": "headerNav",
+          "bEnableStableColors": true,
+          "colorPalette": [
+            {
+              "dimensionValue": "PC Power Station",
+              "color": "sapUiChartPaletteSemanticBad"
+            },
+            {
+              "dimensionValue": "ITelO FlexTop I9100",
+              "color": "sapUiChartPaletteSemanticGood"
+            },
+            {
+              "dimensionValue": "Portable DVD Player with 9 LCD Monitor",
+              "color": "sapUiChartPaletteSemanticBad"
+            },
+            {
+              "dimensionValue": "Notebook Basic 15",
+              "color": "sapUiChartPaletteSemanticGood"
+            },
+            {
+              "dimensionValue": "Silverberry",
+              "color": "sapUiChartPaletteSemanticBad"
+            },
+            {
+              "dimensionValue": "Blueberry",
+              "color": "sapUiChartPaletteSemanticGood"
+            },
+            {
+              "dimensionValue": "Apple",
+              "color": "sapUiChartPaletteSemanticBad"
+            },
+            {
+              "dimensionValue": "MicroMax",
+              "color": "sapUiChartPaletteSemanticGood"
+            },
+            {
+              "dimensionValue": "Thalaivar",
+              "color": "sapUiChartPaletteSemanticBad"
+            },
+            {
+              "dimensionValue": "Thalapathi",
+              "color": "sapUiChartPaletteSemanticGood"
+            },
+            {
+              "dimensionValue": "Master",
+              "color": "sapUiChartPaletteSemanticBad"
+            },
+            {
+              "dimensionValue": "MasterBlaster",
+              "color": "sapUiChartPaletteSemanticGood"
+            },
+            {
+              "dimensionValue": "PCS",
+              "color": "sapUiChartPaletteSemanticBad"
+            },
+            {
+              "dimensionValue": "ITelO",
+              "color": "sapUiChartPaletteSemanticGood"
+            },
+            {
+              "dimensionValue": "Portable",
+              "color": "sapUiChartPaletteSemanticBad"
+            },
+            {
+              "dimensionValue": "B15",
+              "color": "sapUiChartPaletteSemanticGood"
+            },
+            {
+              "dimensionValue": "Thala",
+              "color": "sapUiChartPaletteSemanticBad"
+            },
+            {
+              "dimensionValue": "Mass",
+              "color": "sapUiChartPaletteSemanticGood"
+            },
+            {
+              "dimensionValue": "Blaster",
+              "color": "sapUiChartPaletteSemanticBad"
+            },
+            {
+              "dimensionValue": "Ale",
+              "color": "sapUiChartPaletteSemanticBad"
+            }
+          ]
+        }
+      },
+      "card002": {
+        "model": "salesShare",
+        "template": "sap.ovp.cards.charts.analytical",
+        "settings": {
+          "dataStep": "11",
+          "title": "{{salesByCountryAndRegion}}",
+          "subTitle": "{{displaySalesByCountryAndRegion}}",
+          "entitySet": "SalesShareColumnStacked",
+          "tabs": [
+            {
+              "selectionAnnotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#Eval_by_Currency_ColumnStacked",
+              "chartAnnotationPath": "com.sap.vocabularies.UI.v1.Chart#Eval_by_Currency_ColumnStacked",
+              "presentationAnnotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant#Eval_by_Currency_ColumnStacked",
+              "dataPointAnnotationPath": "com.sap.vocabularies.UI.v1.DataPoint#Eval_by_Currency-Generic",
+              "value": "Without palette"
+            },
+            {
+              "selectionAnnotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#Eval_by_Currency_ColumnStacked",
+              "chartAnnotationPath": "com.sap.vocabularies.UI.v1.Chart#Eval_by_Currency_ColumnStacked",
+              "presentationAnnotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant#Eval_by_Currency_ColumnStacked",
+              "dataPointAnnotationPath": "com.sap.vocabularies.UI.v1.DataPoint#Eval_by_Currency-Generic",
+              "value": "With palette",
+              "colorPalette": {
+                "0": {
+                  "color": "sapUiChartPaletteSemanticNeutral",
+                  "legendText": "{{OTHERS}}"
+                },
+                "1": {
+                  "color": "sapUiChartPaletteSemanticBadDark1",
+                  "legendText": "{{BAD}}"
+                },
+                "2": {
+                  "color": "sapUiChartPaletteSemanticCriticalDark2",
+                  "legendText": "{{CRITICAL}}"
+                },
+                "3": {
+                  "color": "sapUiChartPaletteSemanticCritical",
+                  "legendText": "{{GOOD}}"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -25,8 +25,9 @@ function updatePackageJson(basePath: string, fs: Editor, isOvp?: boolean) {
     packageJson.devDependencies['@sap-ux/cards-editor-middleware'] ??= '*';
 
     packageJson.scripts ??= {};
-    packageJson.scripts['start-cards-generator'] = `fiori run --open \"test/flpGeneratorSandbox.html${isOvp ? '?mode=myInsight&sap-theme=sap_horizon' : ''
-        }#Cards-generator\"`;
+    packageJson.scripts['start-cards-generator'] = `fiori run --open \"test/flpGeneratorSandbox.html${
+        isOvp ? '?mode=myInsight&sap-theme=sap_horizon' : ''
+    }#Cards-generator\"`;
 
     if (!packageJson.devDependencies['@ui5/cli']?.startsWith('3')) {
         packageJson.ui5 ??= {};

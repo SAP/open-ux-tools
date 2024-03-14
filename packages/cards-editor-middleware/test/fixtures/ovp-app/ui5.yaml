@@ -1,0 +1,27 @@
+specVersion: '3.0'
+metadata:
+  name: procurement-overview
+type: application
+server:
+  customMiddleware:
+  - name: sap-fe-mockserver
+    mountPath: /
+    afterMiddleware: compression
+    configuration:
+      annotations:
+      - localPath: './webapp/localService/annotations.xml'
+        urlPath: '/sap/opu/odata/sap/salesshare_srv;v=2/Annotations*'
+      services:
+      - urlPath: '/sap/opu/odata/sap/salesshare_srv'
+        metadataPath: './webapp/localService/metadata.xml'
+        generateMockData: true
+  - name: fiori-tools-proxy
+    afterMiddleware: compression
+    configuration:
+      ui5:
+        path:
+        - /resources
+        - /test-resources
+        url: https://ui5.sap.com
+  - name: ovp-card-generator
+    afterMiddleware: compression
