@@ -32,11 +32,11 @@ export function mergeTestConfigDefaults(config: TestConfig) {
         config.init = `/${config.init}`;
     }
     return {
-        framework: defaults.framework ?? config.framework,
+        framework: config.framework,
         path: config.path ?? defaults.path,
         init: config.init ?? defaults.init,
         pattern: config.pattern ?? defaults.pattern
-    };
+    } satisfies TestConfig;
 }
 
 /**
