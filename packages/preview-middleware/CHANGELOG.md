@@ -1,5 +1,33 @@
 # @sap-ux/preview-middleware
 
+## 0.12.11
+
+### Patch Changes
+
+-   874187b9: Using inbound navigation writer to generate appropriate change files does not produce correct results
+-   Updated dependencies [874187b9]
+    -   @sap-ux/adp-tooling@0.9.3
+
+## 0.12.10
+
+### Patch Changes
+
+-   fc76be56: do not trigger empty change on focus out
+
+## 0.12.9
+
+### Patch Changes
+
+-   212d54ed: Removed unnecessary peer dependency of the adp-tooling and corrected the integration into the preview-middleware
+-   Updated dependencies [212d54ed]
+    -   @sap-ux/adp-tooling@0.9.2
+
+## 0.12.8
+
+### Patch Changes
+
+-   dcd3324e: fix on-blur no change for cpe
+
 ## 0.12.7
 
 ### Patch Changes
