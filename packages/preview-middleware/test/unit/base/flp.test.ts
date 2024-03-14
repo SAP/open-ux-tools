@@ -192,7 +192,7 @@ describe('FlpSandbox', () => {
                         {
                             framework: 'OPA5',
                             path: '/test/integration/opaTests.qunit.html',
-                            init: '/test/integration/opaTests.qunit'
+                            init: '/test/integration/opaTests.qunit.js'
                         }
                     ],
                     rta: {
@@ -304,14 +304,23 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
         });
 
-        test('test/unitTest.qunit.html', async () => {
+        test('default Qunit path test/unitTests.qunit.html', async () => {
             const response = await server.get('/test/unitTests.qunit.html').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
-        test('test/integration/opaTest.qunit.html', async () => {
+        test('default Qunit init test/unitTests.qunit.js', async () => {
+            const response = await server.get('/test/unitTests.qunit.js').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('custom opa5 path test/integration/opaTests.qunit.html', async () => {
             const response = await server.get('/test/integration/opaTests.qunit.html').expect(200);
             expect(response.text).toMatchSnapshot();
+        });
+
+        test('no route for custom init', async () => {
+            await server.get('/test/integration/opaTests.qunit.js').expect(404);
         });
     });
 });
