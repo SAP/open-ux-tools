@@ -24,7 +24,12 @@ describe('test', () => {
         });
 
         test('Qunit with custom config', () => {
-            const result = mergeTestConfigDefaults({ framework: 'QUnit', path: 'custom/path.html', init: 'custom/path.js', pattern: 'custom/pattern' });
+            const result = mergeTestConfigDefaults({
+                framework: 'QUnit',
+                path: 'custom/path.html',
+                init: 'custom/path.js',
+                pattern: 'custom/pattern'
+            });
             expect(result).toEqual({
                 framework: 'QUnit',
                 path: '/custom/path.html',
@@ -34,7 +39,12 @@ describe('test', () => {
         });
 
         test('opa5 with custom config', () => {
-            const result = mergeTestConfigDefaults({ framework: 'OPA5', path: 'custom/path.html', init: 'custom/path.js', pattern: 'custom/pattern' });
+            const result = mergeTestConfigDefaults({
+                framework: 'OPA5',
+                path: 'custom/path.html',
+                init: 'custom/path.js',
+                pattern: 'custom/pattern'
+            });
             expect(result).toEqual({
                 framework: 'OPA5',
                 path: '/custom/path.html',
