@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.9.3
+
+### Patch Changes
+
+-   874187b9: Using inbound navigation writer to generate appropriate change files does not produce correct results
+
 ## 0.9.2
 
 ### Patch Changes
