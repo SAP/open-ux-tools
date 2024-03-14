@@ -19,7 +19,7 @@ const overrides = [
         'parser': '@typescript-eslint/parser',
         'extends': ['plugin:@typescript-eslint/recommended'],
         'parserOptions': {
-            'project': ['./tsconfig.json']
+            'project': true // uses local tsconfig.json nearest to file being linted. Especially important for monorepos
         }
     }
 ];
