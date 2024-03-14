@@ -638,3 +638,59 @@ exports[`FlpSandbox router test/flp.html 1`] = `
 
 </html>"
 `;
+
+exports[`FlpSandbox router test/integration/opaTest.qunit.html 1`] = `
+"<!DOCTYPE html>
+<html>
+<head>
+	<title>OPA5 tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script
+		src=\\"../../resources/sap-ui-core.js\\"
+		data-sap-ui-theme='sap_fiori_3'
+		data-sap-ui-resourceroots='{
+			\\"test.fe.v2.app\\": \\"../..\\"
+		}'
+		data-sap-ui-animation=\\"false\\"
+		data-sap-ui-compatVersion=\\"edge\\"
+		data-sap-ui-async=\\"true\\"
+		data-sap-ui-oninit=\\"module:test/fe/v2/app/test/integration/opaTests.qunit\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>"
+`;
+
+exports[`FlpSandbox router test/unitTest.qunit.html 1`] = `
+"<!DOCTYPE html>
+<html>
+<head>
+	<title>QUnit tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script
+		src=\\"../resources/sap-ui-core.js\\"
+		data-sap-ui-theme='sap_fiori_3'
+		data-sap-ui-resourceroots='{
+			\\"test.fe.v2.app\\": \\"..\\"
+		}'
+		data-sap-ui-animation=\\"false\\"
+		data-sap-ui-compatVersion=\\"edge\\"
+		data-sap-ui-async=\\"true\\"
+		data-sap-ui-oninit=\\"module:test/fe/v2/app/test/unitTests.qunit\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../resources/sap/ui/thirdparty/qunit-2.css\\">
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>"
+`;
