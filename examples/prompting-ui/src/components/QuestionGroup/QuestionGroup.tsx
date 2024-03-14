@@ -3,7 +3,6 @@ import './QuestionGroup.scss';
 import ReactMarkdown from 'react-markdown';
 
 export interface QuestionGroupProps {
-    id: string;
     title: string;
     description?: string;
     showDescription?: boolean;
@@ -11,10 +10,10 @@ export interface QuestionGroupProps {
 }
 
 export const QuestionGroup = (props: QuestionGroupProps) => {
-    const { id, title, description, showDescription, children } = props;
+    const { title, description, showDescription, children } = props;
 
     return (
-        <div key={id} className="prompts-group">
+        <div className="prompts-group">
             <div className="prompts-group-title-container">
                 <li className="prompts-group-title">{title}</li>
             </div>

@@ -134,7 +134,7 @@ export const Questions = (props: QuestionsProps) => {
                     ? groupsWithQuestions.map((group) => {
                           return (
                               <QuestionGroup
-                                  id={group.id}
+                                  key={group.id}
                                   title={group.title}
                                   description={group.description}
                                   showDescription={showDescriptions}>
