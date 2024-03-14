@@ -16,7 +16,7 @@ export default {
                 'Annotated entity represents the master data of an analytical cube. Usually should be accompanied by supportedCapabilities "ANALYTICAL_DIMENSION".',
             'ANALYTICAL_FACT': 1,
             'ANALYTICAL_FACT@Org.OData.Core.V1.Description':
-               'Annotated entity contains transactional data and the relationship to master data entities. Usually should be accompanied by supportedCapabilities "DATA_STRUCTURE".',
+                'Annotated entity contains transactional data and the relationship to master data entities. Usually should be accompanied by supportedCapabilities "DATA_STRUCTURE".',
             'ANALYTICAL_CUBE': 2,
             'ANALYTICAL_CUBE@Org.OData.Core.V1.Description':
                 'Describes star schema as an analytical cube. Usually accompanied by supportedCapabilities "ANALYTICAL_PROVIDER" to expose the entity for reporting tools.',
@@ -50,7 +50,8 @@ export default {
             '$Kind': 'Term',
             '$Type': 'com.sap.cds.vocabularies.ObjectModel.ForeignKeyType',
             '$AppliesTo': ['Property'],
-            '@Org.OData.Core.V1.Description': '(CDS annotation) Points to a value list entity for the annotated element.'
+            '@Org.OData.Core.V1.Description':
+                '(CDS annotation) Points to a value list entity for the annotated element.'
         },
         'ForeignKeyType': {
             '$Kind': 'ComplexType',

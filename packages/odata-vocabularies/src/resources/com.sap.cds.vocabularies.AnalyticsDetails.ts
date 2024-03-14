@@ -80,7 +80,8 @@ export default {
             '@Org.OData.Core.V1.Description': 'Defines the specifics of the variable.',
             'usageType': {
                 '$Type': 'com.sap.cds.vocabularies.AnalyticsDetails.VariableUsageTypeEnumeration',
-                '@Org.OData.Core.V1.Description': 'Describes how the variable is used. It is a mandatory classification corresponding to the terminology Parameter Variable, Filter Variable, Formula Variable.'
+                '@Org.OData.Core.V1.Description':
+                    'Describes how the variable is used. It is a mandatory classification corresponding to the terminology Parameter Variable, Filter Variable, Formula Variable.'
             },
             'referenceElement': {
                 '$Type': 'Edm.PropertyPath',
