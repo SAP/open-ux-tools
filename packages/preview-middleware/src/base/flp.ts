@@ -446,6 +446,10 @@ export class FlpSandbox {
                     res.status(200).contentType('html').send(html);
                 }
             }) as RequestHandler);
+            if (testConfig.init !== undefined) {
+                this.logger.debug(`Skip serving test init script in favor of provided script: ${testConfig.init}`);
+                continue;
+            }
             // add route for the init file
             this.logger.debug(`Add route for ${config.init}`);
             this.router.get(config.init, (async (_req, res, next) => {
