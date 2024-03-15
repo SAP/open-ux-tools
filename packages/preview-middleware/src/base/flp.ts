@@ -11,7 +11,8 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import {getPropertiesI18nBundle, I18nBundle} from '@sap-ux/i18n';
+import type { I18nBundle } from '@sap-ux/i18n';
+import { getPropertiesI18nBundle } from '@sap-ux/i18n';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
