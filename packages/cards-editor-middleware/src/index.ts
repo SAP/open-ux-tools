@@ -1,7 +1,7 @@
 import type { RequestHandler, Request, Response } from 'express';
 import type { MiddlewareParameters } from '@ui5/server';
 import { json, Router } from 'express';
-import { join, dirname } from 'path';
+import path, { join } from 'path';
 import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'fs';
 import { render } from 'ejs';
 import * as utils from './utilities';
@@ -39,15 +39,27 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
             const floorplan = req.body.floorplan;
             const localPath = req.body.localPath;
             const fileName = req.body.fileName || 'manifest.json';
-            const folder = join('./webapp', dirname(localPath + '/' + fileName));
-            const file = utils.prepareFileName(localPath + '/' + fileName);
-
-            if (!existsSync(folder)) {
-                mkdirSync(folder, { recursive: true });
-            }
             const multipleCards = utils.prepareCardTypesForSaving(req.body.manifests);
-            writeFileSync(join(folder, file), multipleCards.integration);
-            writeFileSync(join(folder, 'adaptive-' + file), multipleCards.adaptive);
+            const BASE_PATH = '/webapp';
+            const resolvedPath = path.resolve(BASE_PATH, localPath);
+
+            if (!resolvedPath.startsWith(BASE_PATH)) {
+                throw new Error('Invalid path');
+            }
+
+            const file = utils.prepareFileName(localPath + '/' + fileName);
+            const fullPath = resolvedPath.startsWith('/') ? resolvedPath.slice(1) : resolvedPath;
+
+            if (!existsSync(fullPath)) {
+                try {
+                    mkdirSync(fullPath, { recursive: true });
+                } catch (err) {
+                    res.status(403).send(`Files could not be created/updated.`);
+                }
+            }
+
+            writeFileSync(join(fullPath, file), multipleCards.integration);
+            writeFileSync(join(fullPath, 'adaptive-' + file), multipleCards.adaptive);
 
             const manifestPath = './webapp/manifest.json';
             const oManifest = JSON.parse(await manifest.getString());
@@ -66,11 +78,13 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
             oManifest['sap.cards.ap'].embeds[floorplan]['manifests'] ??= {};
             oManifest['sap.cards.ap'].embeds[floorplan]['manifests'][entitySet] ??= [
                 {
-                    'localUri': folder
+                    'localUri': fullPath
                 }
             ];
             writeFileSync(manifestPath, JSON.stringify(oManifest, null, 2));
-            res.status(201).send(`${join(folder, file)} and ${join(folder, 'adaptive-' + file)} created or updated.`);
+            res.status(201).send(
+                `${join(fullPath, file)} and ${join(fullPath, 'adaptive-' + file)} created or updated.`
+            );
         } catch (err) {
             res.status(500).send(`Files could not be created/updated.`);
         }
