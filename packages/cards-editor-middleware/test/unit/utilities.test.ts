@@ -8,6 +8,7 @@ import {
     traverseI18nProperties
 } from '../../src/utilities';
 import { readFileSync, readdirSync, statSync } from 'fs';
+import { join } from 'path';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -95,7 +96,10 @@ describe('Common utils', () => {
         mockReaddirSync.mockReturnValueOnce(['file2.txt']);
         mockStatSync.mockReturnValueOnce({ isDirectory: () => false });
 
-        expect(getDirectoriesRecursive('path/to/folder')).toEqual(['path/to/folder', 'path/to/folder/folder1']);
+        expect(getDirectoriesRecursive('path/to/folder')).toEqual([
+            'path/to/folder',
+            join('path/to/folder', 'folder1')
+        ]);
     });
 
     test('getAllManifests', () => {
