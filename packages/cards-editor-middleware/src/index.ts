@@ -36,16 +36,16 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
 
     router.post(ApiRoutes.cardsStore, async (req: Request, res: Response) => {
         try {
-            const floorplan = req.query.floorplan;
-            const localPath = req.query.localPath;
-            const fileName = req.query.fileName || 'manifest.json';
+            const floorplan = req.body.floorplan;
+            const localPath = req.body.localPath;
+            const fileName = req.body.fileName || 'manifest.json';
             const folder = join('./webapp', dirname(localPath + '/' + fileName));
             const file = utils.prepareFileName(localPath + '/' + fileName);
 
             if (!existsSync(folder)) {
                 mkdirSync(folder, { recursive: true });
             }
-            const multipleCards = utils.prepareCardTypesForSaving(req.body);
+            const multipleCards = utils.prepareCardTypesForSaving(req.body.manifests);
             writeFileSync(join(folder, file), multipleCards.integration);
             writeFileSync(join(folder, 'adaptive-' + file), multipleCards.adaptive);
 
@@ -55,7 +55,7 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
             if (!oManifest['sap.cards.ap']) {
                 oManifest['sap.cards.ap'] = {};
             }
-            const integrationCard = req.body.find((card: any) => card.type === 'integration');
+            const integrationCard = req.body.manifests.find((card: any) => card.type === 'integration');
             const entitySet = integrationCard.entitySet;
             oManifest['sap.cards.ap'].embeds ??= {};
             oManifest['sap.cards.ap'].embeds[floorplan] ??= {

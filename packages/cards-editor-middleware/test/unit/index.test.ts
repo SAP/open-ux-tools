@@ -80,28 +80,25 @@ describe('sap-cards-generator', () => {
             const payload = {
                 floorplan: 'ObjectPage',
                 localPath: 'cards/op/op1',
-                fileName: 'manifest.json'
+                fileName: 'manifest.json',
+                manifests: [
+                    {
+                        type: 'integration',
+                        manifest: {},
+                        default: true,
+                        entitySet: 'op1'
+                    },
+                    {
+                        type: 'adaptive',
+                        manifest: {},
+                        default: true,
+                        entitySet: 'op1'
+                    }
+                ]
             };
-            const multipleManifests = [
-                {
-                    type: 'integration',
-                    manifest: {},
-                    default: true,
-                    entitySet: 'op1'
-                },
-                {
-                    type: 'adaptive',
-                    manifest: {},
-                    default: true,
-                    entitySet: 'op1'
-                }
-            ];
+
             const server = await getTestServer('lrop-v4');
-            const response = await server
-                .post(
-                    `${sapCardsGenerator.ApiRoutes.cardsStore}?floorplan=${payload.floorplan}&localPath=${payload.localPath}&fileName=${payload.fileName}`
-                )
-                .send(multipleManifests);
+            const response = await server.post(sapCardsGenerator.ApiRoutes.cardsStore).send(payload);
             expect(response.status).toBe(201);
             expect(mockWriteFileSync).toHaveBeenCalledTimes(3);
         });
