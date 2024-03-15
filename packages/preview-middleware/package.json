@@ -43,7 +43,8 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/control-property-editor-sources": "workspace:@sap-ux/control-property-editor@*",
-        "ejs": "3.1.9"
+        "ejs": "3.1.9",
+        "@sap-ux/i18n": "workspace:*"
     },
     "devDependencies": {
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",

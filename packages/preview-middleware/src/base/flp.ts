@@ -11,6 +11,7 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { generateImportList, mergeTestConfigDefaults } from './test';
+import {getPropertiesI18nBundle, I18nBundle} from '@sap-ux/i18n';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -205,7 +206,7 @@ export class FlpSandbox {
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
 
-        this.addApp(manifest, {
+        await this.addApp(manifest, {
             componentId,
             target: resources[componentId ?? id] ?? this.templateConfig.basePath,
             local: '.',
@@ -222,7 +223,7 @@ export class FlpSandbox {
             this.addTestRoutes(this.test, id);
         }
 
-        this.addRoutesForAdditionalApps();
+        await this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
@@ -336,11 +337,11 @@ export class FlpSandbox {
     /**
      * Add additional routes for apps also to be shown in the local FLP.
      */
-    private addRoutesForAdditionalApps() {
+    private async addRoutesForAdditionalApps() {
         for (const app of this.config.apps) {
             if (app.local) {
                 const manifest = JSON.parse(readFileSync(join(app.local, 'webapp/manifest.json'), 'utf-8'));
-                this.addApp(manifest, app);
+                await this.addApp(manifest, app);
                 this.router.use(app.target, serveStatic(join(app.local, 'webapp')));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
             }
@@ -475,7 +476,7 @@ export class FlpSandbox {
      * @param manifest manifest of the additional target app
      * @param app configuration for the preview
      */
-    addApp(manifest: Manifest, app: App) {
+    async addApp(manifest: Manifest, app: App) {
         const id = manifest['sap.app'].id;
         app.intent ??= {
             object: id.replace(/\./g, ''),
@@ -483,13 +484,71 @@ export class FlpSandbox {
         };
         this.templateConfig.ui5.resources[id] = app.target;
         this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
-            title: manifest['sap.app'].title ?? id,
-            description: manifest['sap.app'].description ?? '',
+            title: await this.getAppTitle(manifest, app.local),
+            description: await this.getAppDescription(manifest, app.local),
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
             url: app.target,
             applicationDependencies: { manifest: true }
         };
+    }
+
+    /**
+     * Get the i18n properties bundle.
+     *
+     * @param projectRoot absolute path to the project root
+     * @returns i18n properties bundle
+     * @private
+     */
+    private async getPropertiesI18nBundle(projectRoot: string) {
+        //todo: consider relative path from manifest['sap.app'].i18n
+        //todo: consider locale
+        const i18nFilePath = join(projectRoot, 'webapp', 'i18n', 'i18n.properties');
+        let bundle: I18nBundle | undefined;
+        try {
+            bundle = await getPropertiesI18nBundle(i18nFilePath);
+        } catch (e) {
+            this.logger.warn(`Failed to load i18n properties bundle from ${i18nFilePath}`);
+        }
+        return bundle;
+    }
+
+    /**
+     * Get the title of the application from the i18n properties file.
+     *
+     * @param manifest application manifest
+     * @param projectRoot absolute path to the project root
+     * @returns title of the application
+     * @private
+     */
+    private async getAppTitle(manifest: Manifest, projectRoot: string): Promise<string> {
+        const bundle = await this.getPropertiesI18nBundle(projectRoot);
+        const title = manifest['sap.app'].title;
+        const titleI18nKey = title?.substring(2, title.length - 2);
+        let titleText = title ?? manifest['sap.app'].id;
+        if (bundle) {
+            titleText = bundle[titleI18nKey]?.[0]?.['value']?.value ?? titleText;
+        }
+        return titleText;
+    }
+
+    /**
+     * Get the description of the application from the i18n properties file.
+     *
+     * @param manifest application manifest
+     * @param projectRoot absolute path to the project root
+     * @returns description of the application
+     * @private
+     */
+    private async getAppDescription(manifest: Manifest, projectRoot: string): Promise<string> {
+        const bundle = await this.getPropertiesI18nBundle(projectRoot);
+        const description = manifest['sap.app'].description;
+        let descriptionText = description ?? '';
+        if (description && bundle) {
+            const descriptionI18nKey = description.substring(2, description.length - 2);
+            descriptionText = bundle[descriptionI18nKey]?.[0]?.['value']?.value ?? '';
+        }
+        return descriptionText;
     }
 
     /**

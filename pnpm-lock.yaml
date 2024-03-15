@@ -1300,6 +1300,9 @@ importers:
       '@sap-ux/control-property-editor-sources':
         specifier: workspace:@sap-ux/control-property-editor@*
         version: link:../control-property-editor
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
