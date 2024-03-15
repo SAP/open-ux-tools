@@ -17,16 +17,16 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "devDependencies": {
-        "eslint": "7.32.0"
+        "eslint": "8.57.0"
     },
     "dependencies": {
         "eslint-plugin-fiori-custom": "^2.6.7",
         "yaml": "2.2.2"
     },
     "peerDependencies": {
-        "eslint": ">=7",
-        "@typescript-eslint/eslint-plugin": ">=5.59.0",
-        "@typescript-eslint/parser": ">=5.59.0"
+        "eslint": ">=8",
+        "@typescript-eslint/eslint-plugin": ">=7.1.1",
+        "@typescript-eslint/parser": ">=5.62.0"
     },
     "engines": {
         "node": ">=18.x"
