@@ -43,7 +43,7 @@
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
         "@types/prompts": "2.4.4",
-        "rimraf": "5.0.1"
+        "rimraf": "5.0.5"
     },
     "engines": {
         "node": ">=18.x"
