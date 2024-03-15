@@ -4,16 +4,16 @@ Adds or removes configuration for the experimental middleware module `@sap-ux/ca
 
 ## Installation
 Npm
-`npm install --save @sap-ux/cards-editor-middleware`
+`npm install --save @sap-ux/cards-editor-config-writer`
 
 Yarn
-`yarn add @sap-ux/cards-editor-middleware`
+`yarn add @sap-ux/cards-editor-config-writer`
 
 Pnpm
-`pnpm add @sap-ux/cards-editor-middleware`
+`pnpm add @sap-ux/cards-editor-config-writer`
 
 ## Usage
-TBD
+npx @sap-ux/cards-editor-config-writer@latest
 
 See more complex example in [`/test/unit`](./test/unit)
 
