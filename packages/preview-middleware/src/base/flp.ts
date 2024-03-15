@@ -485,8 +485,8 @@ export class FlpSandbox {
         };
         this.templateConfig.ui5.resources[id] = app.target;
         this.templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
-            title: await this.getAppTitle(manifest, app.local),
-            description: await this.getAppDescription(manifest, app.local),
+            title: (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].title)) ?? manifest['sap.app'].id,
+            description: (await this.getI18nTextFromProperty(app.local, manifest['sap.app'].description)) ?? '',
             additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
             applicationType: 'URL',
             url: app.target,
@@ -515,41 +515,25 @@ export class FlpSandbox {
     }
 
     /**
-     * Get the title of the application from the i18n properties file.
+     * Get the i18n text of the given property.
      *
-     * @param manifest application manifest
      * @param projectRoot absolute path to the project root
-     * @returns title of the application
+     * @param propertyValue value of the property
+     * @returns i18n text of the property
      * @private
      */
-    private async getAppTitle(manifest: Manifest, projectRoot: string): Promise<string> {
-        const bundle = await this.getPropertiesI18nBundle(projectRoot);
-        const title = manifest['sap.app'].title;
-        const titleI18nKey = title?.substring(2, title.length - 2);
-        let titleText = title ?? manifest['sap.app'].id;
-        if (bundle) {
-            titleText = bundle[titleI18nKey]?.[0]?.['value']?.value ?? titleText;
+    private async getI18nTextFromProperty(projectRoot: string, propertyValue: string | undefined) {
+        // find i18n propertyValue in the format {{key}}
+        const regex = /{{[A-z]*}}/g;
+        if (propertyValue?.search(regex) === -1) {
+            return propertyValue;
         }
-        return titleText;
-    }
-
-    /**
-     * Get the description of the application from the i18n properties file.
-     *
-     * @param manifest application manifest
-     * @param projectRoot absolute path to the project root
-     * @returns description of the application
-     * @private
-     */
-    private async getAppDescription(manifest: Manifest, projectRoot: string): Promise<string> {
         const bundle = await this.getPropertiesI18nBundle(projectRoot);
-        const description = manifest['sap.app'].description;
-        let descriptionText = description ?? '';
-        if (description && bundle) {
-            const descriptionI18nKey = description.substring(2, description.length - 2);
-            descriptionText = bundle[descriptionI18nKey]?.[0]?.['value']?.value ?? '';
+        if (propertyValue && bundle) {
+            const propertyI18nKey = (propertyValue.match(regex) ?? '').toString();
+            return bundle[propertyI18nKey]?.[0]?.['value']?.value ?? '';
         }
-        return descriptionText;
+        return propertyValue;
     }
 
     /**
