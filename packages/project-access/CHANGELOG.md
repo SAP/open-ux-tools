@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.19.0
+
+### Minor Changes
+
+-   a4f00f7c: Remove setting of cds.root. Set the project in cds.load() instead.
+
 ## 1.18.0
 
 ### Minor Changes

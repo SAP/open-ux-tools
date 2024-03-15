@@ -3,13 +3,14 @@ import { render } from 'ejs';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, posix } from 'path';
-import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig } from '../types';
+import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import { generateImportList, mergeTestConfigDefaults } from './test';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
@@ -121,6 +122,7 @@ export interface TemplateConfig {
         bootstrapOptions: string;
         resources: Record<string, string>;
     };
+    init?: string;
     flex?: {
         [key: string]: unknown;
         layer: UI5FlexLayer;
@@ -137,6 +139,7 @@ export class FlpSandbox {
     protected templateConfig: TemplateConfig;
     public readonly config: FlpConfig;
     public readonly rta?: RtaConfig;
+    public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
 
     /**
@@ -158,13 +161,15 @@ export class FlpSandbox {
             intent: config.flp?.intent ?? DEFAULT_INTENT,
             apps: config.flp?.apps ?? [],
             libs: config.flp?.libs,
-            theme: config.flp?.theme
+            theme: config.flp?.theme,
+            init: config.flp?.init
         };
         if (!this.config.path.startsWith('/')) {
             this.config.path = `/${this.config.path}`;
         }
+        this.test = config.test;
         this.rta = config.rta;
-        logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta })}`);
+        logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
     }
 
@@ -181,9 +186,12 @@ export class FlpSandbox {
         const supportedThemes: string[] = (manifest['sap.ui5']?.supportedThemes as []) ?? [DEFAULT_THEME];
         const ui5Theme =
             this.config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
+        const id = manifest['sap.app'].id;
+        const ns = id.replace(/\./g, '/');
         this.templateConfig = {
             basePath: posix.relative(posix.dirname(this.config.path), '/') ?? '.',
             apps: {},
+            init: this.config.init ? ns + this.config.init : undefined,
             ui5: {
                 libs: this.getUI5Libs(manifest),
                 theme: ui5Theme,
@@ -196,7 +204,7 @@ export class FlpSandbox {
             },
             locateReuseLibsScript: this.config.libs ?? (await this.hasLocateReuseLibsScript())
         };
-        const id = manifest['sap.app'].id;
+
         this.addApp(manifest, {
             componentId,
             target: resources[componentId ?? id] ?? this.templateConfig.basePath,
@@ -210,6 +218,10 @@ export class FlpSandbox {
             this.rta.options.appName = id;
             this.addEditorRoutes(this.rta);
         }
+        if (this.test) {
+            this.addTestRoutes(this.test, id);
+        }
+
         this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
@@ -401,6 +413,60 @@ export class FlpSandbox {
                 res.status(500).send(error.message);
             }
         }) as RequestHandler);
+    }
+
+    /**
+     * Add routes for html and scripts required for a local test FLP.
+     *
+     * @param configs test configurations
+     * @param id application id from manifest
+     */
+    private addTestRoutes(configs: TestConfig[], id: string) {
+        const ns = id.replace(/\./g, '/');
+        const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.html'), 'utf-8');
+        const initTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.js'), 'utf-8');
+        for (const testConfig of configs) {
+            const config = mergeTestConfigDefaults(testConfig);
+            this.logger.debug(`Add route for ${config.path}`);
+            // add route for the *.qunit.html
+            this.router.get(config.path, (async (_req, res, next) => {
+                this.logger.debug(`Serving test route: ${config.path}`);
+                const file = await this.project.byPath(config.path);
+                if (file) {
+                    this.logger.warn(`HTML file returned at ${config.path} is loaded from the file system.`);
+                    next();
+                } else {
+                    const templateConfig = {
+                        id,
+                        framework: config.framework,
+                        basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
+                        initPath: `${ns}${config.init.replace('.js', '')}`
+                    };
+                    const html = render(htmlTemplate, templateConfig);
+                    res.status(200).contentType('html').send(html);
+                }
+            }) as RequestHandler);
+            if (testConfig.init !== undefined) {
+                this.logger.debug(`Skip serving test init script in favor of provided script: ${testConfig.init}`);
+                continue;
+            }
+            // add route for the init file
+            this.logger.debug(`Add route for ${config.init}`);
+            this.router.get(config.init, (async (_req, res, next) => {
+                this.logger.debug(`Serving test init script: ${config.init}`);
+
+                const files = await this.project.byGlob(config.init.replace('.js', '.*'));
+                if (files?.length > 0) {
+                    this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
+                    next();
+                } else {
+                    const testFiles = await this.project.byGlob(config.pattern);
+                    const templateConfig = { tests: generateImportList(ns, testFiles) };
+                    const html = render(initTemplate, templateConfig);
+                    res.status(200).contentType('application/javascript').send(html);
+                }
+            }) as RequestHandler);
+        }
     }
 
     /**
