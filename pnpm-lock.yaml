@@ -1188,6 +1188,34 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
 
+  packages/odata-service-inquirer:
+    dependencies:
+      '@sap-ux/btp-utils':
+        specifier: 0.14.2
+        version: link:../btp-utils
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
+    devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
+
   packages/odata-service-writer:
     dependencies:
       '@sap-ux/ui5-config':

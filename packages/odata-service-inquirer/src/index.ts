@@ -1,4 +1,3 @@
-import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
 import type { InquirerAdapter, YUIQuestion } from '@sap-ux/inquirer-common';
 import isNil from 'lodash/isNil';
 import { getQuestions } from './prompts';
@@ -24,9 +23,7 @@ function getPrompts(promptOptions?: OdataServicePromptOptions): YUIQuestion[] {
  */
 async function prompt(
     adapter: InquirerAdapter,
-    promptOptions?: OdataServicePromptOptions,
-    capCdsInfo?: CdsUi5PluginInfo,
-    isYUI = false
+    promptOptions?: OdataServicePromptOptions
 ): Promise<OdataServiceAnswers> {
     const ui5AppPrompts = getPrompts(promptOptions);
 
