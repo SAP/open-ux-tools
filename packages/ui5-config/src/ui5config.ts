@@ -278,7 +278,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): UI5Config {
+    public addMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
         this.document.appendTo({
             path: 'server.customMiddleware',
             value: getMockServerMiddlewareConfig(path, annotationsConfig)

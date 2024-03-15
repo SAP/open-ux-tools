@@ -39,7 +39,7 @@ export async function enhanceYaml(
     const mockserverPath = config?.path || getMainServiceDataSource(manifest)?.uri;
     const annotationSource = Object.values(getODataSources(manifest, ODataSourceType.ODataAnnotation));
     const annotationsConfig = annotationSource.map((annotation) => ({
-        localPath: `./webapp/${annotation.settings?.localUri}` ?? '',
+        localPath: annotation.settings?.localUri ? `./webapp/${annotation.settings.localUri}` : '',
         urlPath: annotation.uri ?? ''
     }));
 
