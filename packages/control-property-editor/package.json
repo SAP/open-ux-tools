@@ -12,7 +12,7 @@
     },
     "private": false,
     "scripts": {
-        "clean": "rimraf dist coverage *.tsbuildinfo",
+        "clean": "rimraf --glob dist coverage *.tsbuildinfo",
         "build": "npm-run-all -l -s clean -p build:compile build:webapp",
         "build:compile": "tsc  --build ./tsconfig.json --pretty --dry",
         "build:webapp": "node esbuild.js",
