@@ -1,0 +1,34 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../cap-config-writer"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../odata-service-writer"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../project-input-validator"
+    },
+    {
+      "path": "../ui5-info"
+    }
+  ]
+}
