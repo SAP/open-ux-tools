@@ -95,7 +95,7 @@ export const getMockServerMiddlewareConfig = (
                     generateMockData: true
                 }
             ],
-            annotations: annotationsConfig
+            annotations: annotationsConfig ?? []
         }
     };
 };
