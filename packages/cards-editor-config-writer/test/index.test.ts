@@ -3,14 +3,13 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
-function createTestFs(basePath: string, ovp?: boolean) {
+function createTestFs(basePath: string) {
     const fs = create(createStorage());
     fs.writeJSON(join(basePath, 'webapp/manifest.json'), {
         'sap.app': {
             id: 'test.id',
             title: 'Test App'
-        },
-        'sap.ovp': ovp ? {} : undefined
+        }
     });
     fs.writeJSON(join(basePath, 'package.json'), {});
     fs.write(join(basePath, 'ui5.yaml'), '');
@@ -21,15 +20,6 @@ describe('enableCardEditor', () => {
     test('Valid LROP', async () => {
         const basePath = '.tmp/lrop';
         const fs = createTestFs(basePath);
-        await enableCardEditor(basePath, fs);
-
-        expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
-        expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
-    });
-
-    test('Valid OVP', async () => {
-        const basePath = '.tmp/ovp';
-        const fs = createTestFs(basePath, true);
         await enableCardEditor(basePath, fs);
 
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();

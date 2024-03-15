@@ -4,7 +4,7 @@ import { json, Router } from 'express';
 import { join, dirname } from 'path';
 import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'fs';
 import { render } from 'ejs';
-import * as utils from '../common/utils';
+import * as utils from './utilities';
 import os from 'os';
 
 export const enum ApiRoutes {
@@ -25,7 +25,7 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
     router.get(ApiRoutes.previewGeneratorSandbox, async (_req, res: Response) => {
         const app = JSON.parse(await manifest.getString())['sap.app'];
         res.status(200).send(
-            render(readFileSync(join(__dirname, '../../templates/editor.html'), 'utf-8'), {
+            render(readFileSync(join(__dirname, '../templates/editor.html'), 'utf-8'), {
                 templateModel: {
                     appTitle: app.title || 'Card Editor Preview',
                     component: app.id
@@ -82,27 +82,25 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
             const i18nFilePath = oManifest['sap.app'].i18n || '/i18n/i18n.properties';
             const filePath = join('./webapp', i18nFilePath);
             const entries = req.body || [];
-            // Add new line if file is not empty and last line is not empty and there are new entries
             const { lines, updatedEntries, output } = utils.traverseI18nProperties(filePath, entries);
-            // check if file does not end with new line
+
+            // Add a new line if file is not empty and last line is not empty and there are new entries
             if (lines?.length > 0 && lines[lines?.length - 1].trim() && entries?.length) {
-                // If there no end line - add new gap line before new content
                 output.push('');
             }
+
             for (const index in entries) {
                 const ikey = index as any;
                 if (!updatedEntries[ikey]) {
                     const { comment, key, value } = entries[ikey];
-                    // New i18n entry - add it at the end of file
                     if (comment) {
-                        // Add comment only for new entry
-                        output.push(`#${comment}`);
+                        output.push(`#${comment}`); // Add comment only for a new entry
                     }
                     output.push(`${key}=${value}${os.EOL}`);
                 }
             }
-            writeFileSync(filePath, output.join(os.EOL), { encoding: 'utf8' });
 
+            writeFileSync(filePath, output.join(os.EOL), { encoding: 'utf8' });
             res.status(201).send(`i18n file updated.`);
         } catch (err) {
             res.status(500).send(`File could not be updated.`);

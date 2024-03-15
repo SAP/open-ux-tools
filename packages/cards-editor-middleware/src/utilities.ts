@@ -12,7 +12,7 @@ interface MultiCardsStringManifest {
     adaptive: string;
 }
 
-export interface i18nEntry {
+export interface I18nEntry {
     key: string;
     value: string;
     comment?: string;
@@ -128,10 +128,10 @@ export function getAllManifests(folder: string): Array<object> {
  * Traverse the i18n properties file and call the callback function for each property.
  *
  * @param path {string} - Path to the i18n properties file
- * @param entries {Array<i18nEntry>} - Array of entries to be updated
- * @returns {string[]} - Array of lines
+ * @param entries {Array<I18nEntry>} - Array of entries to be updated
+ * @returns {object} - Object containing the lines, updated entries and the output
  */
-export function traverseI18nProperties(path: string, entries: Array<i18nEntry>) {
+export function traverseI18nProperties(path: string, entries: Array<I18nEntry>) {
     const i18nFile: string = readFileSync(path, 'utf8');
     const lines = i18nFile.split(/\r\n|\n/);
     const updatedEntries: { [key: number]: boolean } = {};

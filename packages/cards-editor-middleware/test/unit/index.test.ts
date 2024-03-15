@@ -4,8 +4,8 @@ import type { Router } from 'express';
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import type { SuperTest, Test } from 'supertest';
-import * as sapCardsGenerator from '../../../src/sap-cards-generator';
-import * as utils from '../../../src/common/utils';
+import * as sapCardsGenerator from '../../src';
+import * as utils from '../../src/utilities';
 import os from 'os';
 
 jest.mock('fs', () => ({
@@ -15,7 +15,7 @@ jest.mock('fs', () => ({
     writeFileSync: jest.fn()
 }));
 
-jest.spyOn(utils, "traverseI18nProperties").mockReturnValue({
+jest.spyOn(utils, 'traverseI18nProperties').mockReturnValue({
     lines: ['appTitle=Sales Order'],
     updatedEntries: [],
     output: ['appTitle=Sales Order']
@@ -32,7 +32,7 @@ async function getRouter(fixture?: string, configuration = {}): Promise<Router> 
                             getString: () =>
                                 Promise.resolve(
                                     readFileSync(
-                                        join(__dirname, `../../fixtures/${fixture}/webapp/manifest.json`),
+                                        join(__dirname, `../fixtures/${fixture}/webapp/manifest.json`),
                                         'utf-8'
                                     )
                                 )
@@ -107,7 +107,7 @@ describe('sap-cards-generator', () => {
         });
     });
 
-    describe("Middleware for updating i18n file", () => {
+    describe('Middleware for updating i18n file', () => {
         let mockWriteFileSync: jest.Mock;
 
         beforeAll(() => {
@@ -117,14 +117,21 @@ describe('sap-cards-generator', () => {
             mockWriteFileSync.mockClear();
         });
 
-        test("POST /i18n/store", async () => {
-            const server = await getTestServer("lrop-v4");
-            const response = await server.post(sapCardsGenerator.ApiRoutes.i18nStore).send([{"key":"CardGeneratorGroupPropertyLabel_Groups_0_Items_0","value":"new Entry"}]);
+        test('POST /i18n/store', async () => {
+            const server = await getTestServer('lrop-v4');
+            const response = await server.post(sapCardsGenerator.ApiRoutes.i18nStore).send([
+                {
+                    'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
+                    'value': 'new Entry'
+                }
+            ]);
             expect(response.status).toBe(201);
             expect(mockWriteFileSync).toHaveBeenCalledTimes(1);
             expect(mockWriteFileSync).toHaveBeenCalledWith(
-                join('./webapp/i18n/i18n.properties'), 
-                ['appTitle=Sales Order', '', 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0=new Entry\n'].join(os.EOL),
+                join('./webapp/i18n/i18n.properties'),
+                ['appTitle=Sales Order', '', 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0=new Entry\n'].join(
+                    os.EOL
+                ),
                 { encoding: 'utf8' }
             );
         });

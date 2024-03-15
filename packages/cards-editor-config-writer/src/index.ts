@@ -11,9 +11,8 @@ export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestF
  *
  * @param basePath - The path to the project root
  * @param fs - Mem-fs editor instance
- * @param isOvp - Whether the project is an OVP project or not
  */
-function updatePackageJson(basePath: string, fs: Editor, isOvp?: boolean) {
+function updatePackageJson(basePath: string, fs: Editor) {
     const packageJsonPath = join(basePath, 'package.json');
     if (!fs.exists(packageJsonPath)) {
         throw new Error('package.json not found');
@@ -25,9 +24,7 @@ function updatePackageJson(basePath: string, fs: Editor, isOvp?: boolean) {
     packageJson.devDependencies['@sap-ux/cards-editor-middleware'] ??= '*';
 
     packageJson.scripts ??= {};
-    packageJson.scripts['start-cards-generator'] = `fiori run --open \"test/flpGeneratorSandbox.html${
-        isOvp ? '?mode=myInsight&sap-theme=sap_horizon' : ''
-    }#Cards-generator\"`;
+    packageJson.scripts['start-cards-generator'] = `fiori run --open \"test/flpGeneratorSandbox.html#Cards-generator\"`;
 
     if (!packageJson.devDependencies['@ui5/cli']?.startsWith('3')) {
         packageJson.ui5 ??= {};
@@ -80,15 +77,9 @@ export async function enableCardEditor(basePath: string, fs?: Editor): Promise<E
     if (!fs.exists(manifestFilePath)) {
         throw new Error(`No manifest found at ${manifestFilePath}`);
     }
-    const manifest = fs.readJSON(manifestFilePath) as Manifest;
 
-    if (manifest.hasOwnProperty('sap.ovp')) {
-        updatePackageJson(basePath, fs, true);
-        await updateYaml(basePath, fs, ['ovp-card-generator']);
-    } else {
-        updatePackageJson(basePath, fs);
-        await updateYaml(basePath, fs, ['sap-cards-generator']);
-    }
+    updatePackageJson(basePath, fs);
+    await updateYaml(basePath, fs, ['sap-cards-generator']);
 
     return fs;
 }

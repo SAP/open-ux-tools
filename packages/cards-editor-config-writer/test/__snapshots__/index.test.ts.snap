@@ -79,28 +79,3 @@ exports[`enableCardEditor Valid LROP 2`] = `
       afterMiddleware: compression
 "
 `;
-
-exports[`enableCardEditor Valid OVP 1`] = `
-"{
-  \\"devDependencies\\": {
-    \\"@sap-ux/cards-editor-middleware\\": \\"*\\"
-  },
-  \\"scripts\\": {
-    \\"start-cards-generator\\": \\"fiori run --open \\\\\\"test/flpGeneratorSandbox.html?mode=myInsight&sap-theme=sap_horizon#Cards-generator\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap-ux/cards-editor-middleware\\"
-    ]
-  }
-}
-"
-`;
-
-exports[`enableCardEditor Valid OVP 2`] = `
-"server:
-  customMiddleware:
-    - name: ovp-card-generator
-      afterMiddleware: compression
-"
-`;
