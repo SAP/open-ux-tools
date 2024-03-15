@@ -117,8 +117,6 @@ export function extendWithOptions(questions: YUIQuestion[], promptOptions: Odata
  * @param options - optionally include some of the supported datasource type choices
  * @param options.includeNone - Include the `NONE` option in the datasource type prompt
  * @param options.includeProjectSpecificDest - Include the `PROJECT_SPECIFIC_DESTINATION` option in the datasource type prompt
- * @param requiredOdataVersion.includeNone
- * @param requiredOdataVersion.includeProjectSpecificDest
  * @returns The datasource type choices
  */
 export function getDatasourceTypeChoices({
