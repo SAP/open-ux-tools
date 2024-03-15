@@ -47,7 +47,7 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
                 throw new Error('Invalid path');
             }
 
-            const file = utils.prepareFileName(localPath + '/' + fileName);
+            const file = utils.prepareFileName(resolvedPath + '/' + fileName);
             const fullPath = resolvedPath.startsWith('/') ? resolvedPath.slice(1) : resolvedPath;
 
             if (!existsSync(fullPath)) {
