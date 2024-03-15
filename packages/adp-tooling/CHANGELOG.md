@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.9.4
+
+### Patch Changes
+
+-   4b29ddcc: Update TypeScript templates, eslint config and ui5 devDependencies
+
 ## 0.9.3
 
 ### Patch Changes
