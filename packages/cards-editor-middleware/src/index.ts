@@ -82,7 +82,7 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
                 }
             ];
             writeFileSync(manifestPath, JSON.stringify(oManifest, null, 2));
-            res.status(201).send(`${fullPath}/${file} and ${fullPath}'/adaptive-' + ${file} created or updated.`);
+            res.status(201).send(`Files were updated/created`);
         } catch (err) {
             res.status(500).send(`Files could not be created/updated.`);
         }
