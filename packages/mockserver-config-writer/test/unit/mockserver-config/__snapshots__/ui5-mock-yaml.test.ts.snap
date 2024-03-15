@@ -64,9 +64,9 @@ server:
             mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations:
-          - localPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-            urlPath: localService/SEPMRA_PROD_MAN.xml
-          - localPath: annotations/annotation.xml
+          - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+          - localPath: ./webapp/annotations/annotation.xml
             urlPath: annotations/annotation.xml
 "
 `;

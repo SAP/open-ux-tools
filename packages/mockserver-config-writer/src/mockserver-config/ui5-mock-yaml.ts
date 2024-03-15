@@ -39,8 +39,8 @@ export async function enhanceYaml(
     const mockserverPath = config?.path || getMainServiceDataSource(manifest)?.uri;
     const annotationSource = Object.values(getODataSources(manifest, ODataSourceType.ODataAnnotation));
     const annotationsConfig = annotationSource.map((annotation) => ({
-        localPath: annotation.uri ?? '',
-        urlPath: annotation.settings?.localUri ?? ''
+        localPath: `./webapp/${annotation.settings?.localUri}` ?? '',
+        urlPath: annotation.uri ?? ''
     }));
 
     if (fs.exists(ui5MockYamlPath)) {

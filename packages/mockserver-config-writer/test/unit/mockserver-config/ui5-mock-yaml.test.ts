@@ -53,11 +53,11 @@ describe('Test enhanceYaml()', () => {
         expect(mockserverConfig?.configuration.services?.[0].urlPath).toBe('/path/for/new/config');
         expect(mockserverConfig?.configuration.annotations).toEqual([
             {
-                localPath:
-                    "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/",
-                urlPath: 'localService/SEPMRA_PROD_MAN.xml'
+                localPath: './webapp/localService/SEPMRA_PROD_MAN.xml',
+                urlPath:
+                    "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/"
             },
-            { localPath: 'annotations/annotation.xml', urlPath: 'annotations/annotation.xml' }
+            { localPath: './webapp/annotations/annotation.xml', urlPath: 'annotations/annotation.xml' }
         ]);
     });
 
