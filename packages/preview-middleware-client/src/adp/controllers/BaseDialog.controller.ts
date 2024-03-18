@@ -7,8 +7,15 @@ import { ValueState } from 'sap/ui/core/library';
 import Controller from 'sap/ui/core/mvc/Controller';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import CommandExecutor from '../command-executor';
+
+interface FragmentChange {
+    content: {
+        fragmentPath: string;
+    };
+}
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
@@ -54,7 +61,7 @@ export default abstract class BaseDialog extends Controller {
      *
      * @param event Event
      */
-    onFragmentNameInputChange(event: Event) {
+    async onFragmentNameInputChange(event: Event): Promise<void> {
         const input = event.getSource<Input>();
         const beginBtn = this.dialog.getBeginButton();
 
@@ -94,8 +101,33 @@ export default abstract class BaseDialog extends Controller {
             return;
         }
 
+        const changeExists = await this.checkForExistingChange(fragmentName);
+
+        if (changeExists) {
+            updateDialogState(
+                ValueState.Error,
+                'Enter a different name. The fragment name entered matches the name of an unsaved fragment.'
+            );
+            return;
+        }
+
         updateDialogState(ValueState.Success);
         this.model.setProperty('/newFragmentName', fragmentName);
+    }
+
+    /**
+     * Checks for the existence of a change associated with a specific fragment name in the RTA command stack.
+     *
+     * @param {string} fragmentName - The name of the fragment to check for existing changes.
+     * @returns {Promise<boolean>} A promise that resolves to `true` if a matching change is found, otherwise `false`.
+     */
+    async checkForExistingChange(fragmentName: string): Promise<boolean> {
+        const allCommands = this.rta.getCommandStack().getCommands();
+
+        return allCommands.some((command: FlexCommand) => {
+            const change = command.getPreparedChange().getDefinition() as unknown as FragmentChange;
+            return change.content?.fragmentPath?.includes(`${fragmentName}.fragment.xml`) || false;
+        });
     }
 
     /**

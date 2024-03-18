@@ -23,7 +23,7 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
-import { getFragments, writeFragment } from '../api-handler';
+import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 
 interface CreateFragmentProps {
@@ -142,7 +142,9 @@ export default class AddFragment extends BaseDialog {
             targetAggregation
         };
 
-        await this.createNewFragment(fragmentData);
+        await this.createFragmentChange(fragmentData);
+
+        this.notifyUserOfFragment(fragmentName);
 
         this.handleDialogClose();
     }
@@ -246,25 +248,14 @@ export default class AddFragment extends BaseDialog {
     }
 
     /**
-     * Creates a new fragment for the specified control
+     * Displays a message to the user indicating that an XML fragment will be created upon saving a change.
      *
-     * @param fragmentData Fragment Data
-     * @param fragmentData.index Index for XML Fragment placement
-     * @param fragmentData.fragmentName Fragment name
-     * @param fragmentData.targetAggregation Target aggregation for control
+     * @param {string} fragmentName The name of the fragment that will be created.
      */
-    private async createNewFragment(fragmentData: CreateFragmentProps): Promise<void> {
-        const { fragmentName, index, targetAggregation } = fragmentData;
-        try {
-            await writeFragment<unknown>({ fragmentName });
-            MessageToast.show(`Fragment with name '${fragmentName}' was created.`);
-        } catch (e) {
-            // In case of error when creating a new fragment, we should not create a change file
-            MessageToast.show(e.message);
-            throw new Error(e.message);
-        }
-
-        await this.createFragmentChange({ fragmentName, index, targetAggregation });
+    private notifyUserOfFragment(fragmentName: string) {
+        MessageToast.show(`Note: The '${fragmentName}' fragment will be created once you save the change.`, {
+            duration: 8000
+        });
     }
 
     /**
