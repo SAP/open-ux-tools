@@ -530,7 +530,7 @@ export class FlpSandbox {
         const bundle = await this.getPropertiesI18nBundle(projectRoot);
         if (propertyValue && bundle) {
             const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
-            return bundle[propertyI18nKey]?.[0]?.['value']?.value ?? '';
+            return bundle[propertyI18nKey]?.[0]?.value?.value ?? '';
         }
         return propertyValue;
     }

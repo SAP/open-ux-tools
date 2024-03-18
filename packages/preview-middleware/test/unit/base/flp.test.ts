@@ -13,6 +13,8 @@ import express from 'express';
 import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
+import * as i18n from '@sap-ux/i18n';
+import type { I18nBundle, I18nEntry } from '@sap-ux/i18n';
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -321,6 +323,24 @@ describe('FlpSandbox', () => {
 
         test('no route for custom init', async () => {
             await server.get('/test/integration/opaTests.qunit.js').expect(404);
+        });
+    });
+
+    describe('i18n bundle', () => {
+        const i18nBundleMock = jest.spyOn(i18n, 'getPropertiesI18nBundle').mockImplementation(() => {
+            return Promise.resolve({
+                'title': [{ value: { value: 'My App' } } as I18nEntry],
+                'description': [{ value: { value: 'My App Description' } } as I18nEntry]
+            } as I18nBundle);
+        });
+
+        test('i18n bundle: get manifest title and description', async () => {
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            const manifest = {
+                'sap.app': { id: 'my.id', title: '{i18n>myTitle}', description: '{{i18n>myDescription}}' }
+            } as Manifest;
+            await flp.init(manifest);
+            expect(i18nBundleMock).toBeCalled();
         });
     });
 });
