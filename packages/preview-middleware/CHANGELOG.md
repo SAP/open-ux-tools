@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 0.12.13
+
+### Patch Changes
+
+-   Updated dependencies [4b29ddcc]
+    -   @sap-ux/adp-tooling@0.9.4
+
+## 0.12.12
+
+### Patch Changes
+
+-   6d76e076: Enhance `preview-middleware` to allow running QUnit and OPA5 tests.
+
 ## 0.12.11
 
 ### Patch Changes
