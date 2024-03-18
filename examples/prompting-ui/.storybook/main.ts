@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { createWebSocketConnection } from './building-blocks';
+import { createWebSocketConnection } from './backend';
 
 module.exports = {
     stories: ['../stories/*.story.tsx'],
