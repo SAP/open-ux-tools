@@ -258,15 +258,6 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             .addMatcher(reloadApplication.match, (state): void => {
                 state.fileChanges = [];
             })
-            .addMatcher(
-                deletePropertyChanges.match,
-                (state, action: ReturnType<typeof deletePropertyChanges>): void => {
-                    const fileName = action.payload.fileName;
-                    if (fileName) {
-                        state.changes.pendingChangeIds.push(fileName);
-                    }
-                }
-            )
             .addMatcher(storageFileChanged.match, (state, action: ReturnType<typeof storageFileChanged>): void => {
                 const fileName = action.payload;
                 if (fileName) {

@@ -42,7 +42,7 @@ export function FileChange({ hasUnsavedChanges }: Readonly<FileChangeProps>): Re
                             <a href="#" className={styles.textLink} onClick={handleSaveAndReload}>
                                 {t(hasUnsavedChanges ? 'SAVE_AND_RELOAD' : 'RELOAD')}
                             </a>
-                            <span> the editor to show those changes</span>
+                            <span>{t('SHOW_CHANGES')}</span>
                         </Text>
                     </Stack.Item>
                 </Stack>

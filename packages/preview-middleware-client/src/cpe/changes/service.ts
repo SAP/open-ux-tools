@@ -129,14 +129,15 @@ export class ChangeService {
             } else if (deletePropertyChanges.match(action)) {
                 await this.deleteChange(action.payload.controlId, action.payload.propertyName, action.payload.fileName);
             } else if (reloadApplication.match(action)) {
-                await this.options.rta.stop(false, false);
+                await this.options.rta.stop(false, true);
             }
         });
 
         await this.fetchSavedChanges();
         this.updateStack();
         this.options.rta.attachStop(() => {
-            window.history.go(0);
+            // eslint-disable-next-line fiori-custom/sap-no-location-reload
+            location.reload();
         });
         this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
     }
