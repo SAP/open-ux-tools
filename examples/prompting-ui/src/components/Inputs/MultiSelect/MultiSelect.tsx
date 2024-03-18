@@ -36,9 +36,11 @@ export const MultiSelect = (props: MultiSelectProps) => {
             onChange={(_, changedOption) => {
                 let updatedValue: string | undefined = '';
                 if (changedOption?.selected) {
-                    updatedValue = [value.split(',') ?? [], changedOption.key].join();
+                    updatedValue = [...(value.split(',').filter((option) => option) ?? []), changedOption.key].join();
                 } else {
-                    updatedValue = (value.split(',') ?? []).filter((option) => option !== changedOption?.key).join();
+                    updatedValue = (value.split(',') ?? [])
+                        .filter((option) => option && option !== changedOption?.key)
+                        .join();
                 }
                 setValue(updatedValue);
                 onChange(name, updatedValue, dependantPromptNames);
