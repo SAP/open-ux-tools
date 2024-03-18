@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { TemplateFileName } from '../types';
+import { TemplateFileName, FolderTypes } from '../types';
 import type { AddXMLChange, CommonChangeProperties, CodeExtChange } from '../types';
 import { join } from 'path';
 import type { Logger } from '@sap-ux/logger';
@@ -45,15 +45,27 @@ export function isAddXMLChange(change: CommonChangeProperties): change is AddXML
 }
 
 /**
- * Adds an XML fragment to the file system.
+ * Asynchronously adds an XML fragment to the project if it doesn't already exist.
  *
- * @param basePath - the base path of the project
- * @param change - the change containing the fragment path
- * @param fs - the mem-fs editor
- * @param logger - the logger instance
+ * @param {string} basePath - The base path of the project.
+ * @param {AddXMLChange} change - The change data, including the fragment path.
+ * @param {Editor} fs - The mem-fs-editor instance.
+ * @param {Logger} logger - The logging instance.
  */
-export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Editor, logger: Logger) {
-    const fragmentTemplatePath = join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
-    fs.copy(fragmentTemplatePath, join(basePath, 'changes', change.content.fragmentPath));
-    logger.info(`XML Fragment "${change.content.fragmentPath}" was created`);
+export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Editor, logger: Logger): void {
+    const fragmentPath = change.content.fragmentPath;
+    const path = join(basePath, FolderTypes.CHANGES, fragmentPath);
+
+    if (fs.exists(path)) {
+        logger.info(`XML Fragment "${fragmentPath}" already exists.`);
+        return;
+    }
+
+    try {
+        const fragmentTemplatePath = join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
+        fs.copy(fragmentTemplatePath, path);
+        logger.info(`XML Fragment "${fragmentPath}" was created`);
+    } catch (error) {
+        logger.error(`Failed to create XML Fragment "${fragmentPath}": ${error}`);
+    }
 }

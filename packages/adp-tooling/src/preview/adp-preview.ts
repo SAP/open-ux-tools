@@ -162,7 +162,6 @@ export class AdpPreview {
      */
     addApis(router: Router): void {
         router.get(ApiRoutes.FRAGMENT, this.routesHandler.handleReadAllFragments as RequestHandler);
-        router.post(ApiRoutes.FRAGMENT, this.routesHandler.handleWriteFragment as RequestHandler);
 
         router.get(ApiRoutes.CONTROLLER, this.routesHandler.handleReadAllControllers as RequestHandler);
         router.post(ApiRoutes.CONTROLLER, this.routesHandler.handleWriteControllerExt as RequestHandler);
@@ -171,11 +170,13 @@ export class AdpPreview {
     }
 
     /**
+     * Handles different types of change requests to project files.
      *
-     * @param type
-     * @param change
-     * @param fs
-     * @param logger
+     * @param {string} type - The type of change request.
+     * @param {CommonChangeProperties} change - An object containing properties common to all change types.
+     * @param {Editor} fs - An instance of an editor interface for file system operations.
+     * @param {Logger} logger - An instance of a logging interface for message logging.
+     * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     async onChangeRequest(
         type: 'read' | 'write' | 'delete',
