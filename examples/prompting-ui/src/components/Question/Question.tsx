@@ -41,7 +41,12 @@ export interface QuestionProps {
 export const Question = (props: QuestionProps) => {
     const { question, onChange, answers, choices, pending, additionalInfo } = props;
     let questionInput: JSX.Element;
-    const value = (question.name && answers?.[question.name]) ?? '';
+    let value: AnswerValue = '';
+    if (question.name && answers?.[question.name] !== undefined) {
+        value = answers?.[question.name];
+    } else if (question.default !== undefined) {
+        value = question.default;
+    }
     // ToDo -> move to MultiSelect and Select?
     const options = useOptions(question, choices);
 

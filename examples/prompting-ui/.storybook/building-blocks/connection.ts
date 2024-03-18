@@ -122,13 +122,13 @@ async function handleAction(action: Actions): Promise<void> {
                     // Post processing
                     responseAction = { type: SET_TABLE_QUESTIONS, questions, groups };
                 } else if (action.value === SupportedBuildingBlocks.Chart) {
-                    const prompts = await getChartBuildingBlockPrompts(currentAppPath, fs);
+                    const { groups, questions } = await getChartBuildingBlockPrompts(currentAppPath, fs);
                     // Post processing
-                    responseAction = { type: SET_CHART_QUESTIONS, questions: prompts };
+                    responseAction = { type: SET_CHART_QUESTIONS, questions, groups };
                 } else if (action.value === SupportedBuildingBlocks.FilterBar) {
-                    const prompts = await getFilterBarBuildingBlockPrompts(currentAppPath, fs);
+                    const { groups, questions } = await getFilterBarBuildingBlockPrompts(currentAppPath, fs);
                     // Post processing
-                    responseAction = { type: SET_FILTERBAR_QUESTIONS, questions: prompts };
+                    responseAction = { type: SET_FILTERBAR_QUESTIONS, questions, groups };
                 }
                 if (responseAction) {
                     sendMessage(responseAction);

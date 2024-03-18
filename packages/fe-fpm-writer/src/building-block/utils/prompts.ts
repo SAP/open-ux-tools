@@ -13,7 +13,7 @@ import { getAnnotationPathQualifiers, getEntityTypes } from './service';
  * @param message - The message to display in the prompt
  * @returns a boolean prompt
  */
-export function getBooleanPrompt(name: string, message: string, groupId?: string): ListQuestion {
+export function getBooleanPrompt(name: string, message: string, defaultValue?: string, groupId?: string): ListQuestion {
     return {
         type: 'list',
         name,
@@ -23,6 +23,7 @@ export function getBooleanPrompt(name: string, message: string, groupId?: string
             { name: 'False', value: false },
             { name: 'True', value: true }
         ],
+        default: defaultValue,
         groupId
     } as ListQuestion;
 }
@@ -257,7 +258,7 @@ export function getFilterBarIdPrompt(message: string, groupId?: string): InputQu
  * @param message - prompt message
  * @returns a List Prompt
  */
-export function getBindingContextTypePrompt(message: string, groupId?: string): ListQuestion {
+export function getBindingContextTypePrompt(message: string, defaultValue?: string, groupId?: string): ListQuestion {
     return {
         type: 'list',
         name: 'bindingContextType',
@@ -267,6 +268,7 @@ export function getBindingContextTypePrompt(message: string, groupId?: string): 
             { name: 'Relative', value: 'relative' },
             { name: 'Absolute', value: 'absolute' }
         ],
+        default: defaultValue,
         groupId
     } as ListQuestion;
 }
@@ -281,6 +283,7 @@ export function getBindingContextTypePrompt(message: string, groupId?: string): 
 export function getBuildingBlockIdPrompt(
     message: string,
     validationErrorMessage: string,
+    defaultValue?: string,
     groupId?: string
 ): InputQuestion {
     return {
@@ -288,6 +291,7 @@ export function getBuildingBlockIdPrompt(
         name: 'id',
         message,
         validate: (value: any) => (value ? true : validationErrorMessage),
-        groupId
+        groupId,
+        default: defaultValue
     } as InputQuestion;
 }

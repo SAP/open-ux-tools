@@ -13,7 +13,7 @@ export const ExternalValues = (): JSX.Element => {
     return (
         <BuildingBlockQuestions
             type={SupportedBuildingBlocks.Table}
-            answers={{
+            externalAnswers={{
                 id: 'Table',
                 filterBar: 'FilterBar',
                 bindingContextType: 'absolute',

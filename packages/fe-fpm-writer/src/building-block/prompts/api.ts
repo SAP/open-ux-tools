@@ -122,55 +122,63 @@ export async function getBuildingBlockTypePrompts(): Promise<Question<BuildingBl
  * @param {Editor} fs the memfs editor instance
  * @returns {Promise<PromptObject<keyof ChartPromptsAnswer>[]>}
  */
-export async function getChartBuildingBlockPrompts(
-    basePath: string,
-    fs: Editor
-): Promise<Question<ChartPromptsAnswer>[]> {
+export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor): Promise<Prompts<ChartPromptsAnswer>> {
     await initI18n();
     const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
     const projectProvider = await ProjectProvider.createProject(basePath, fs);
-    return [
-        getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate')),
-        getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
-        getBindingContextTypePrompt(t('bindingContextType')),
-        getFilterBarIdPrompt(t('filterBar')),
-        {
-            type: 'checkbox',
-            name: 'personalization',
-            message: t('personalization.message'),
-            selectType: 'static',
-            choices: [
-                { name: t('personalization.choices.type'), value: 'Type' },
-                { name: t('personalization.choices.item'), value: 'Item' },
-                { name: t('personalization.choices.sort'), value: 'Sort' }
-            ]
-        } as CheckboxQuestion,
-        {
-            type: 'list',
-            selectType: 'static',
-            name: 'selectionMode',
-            message: t('selectionMode.message'),
-            choices: [
-                { name: t('selectionMode.choices.single'), value: 'Single' },
-                { name: t('selectionMode.choices.multiple'), value: 'Multiple' }
-            ]
-        } as ListQuestion,
-        {
-            type: 'input',
-            name: 'selectionChange',
-            message: t('selectionChange')
-        } as InputQuestion,
-        getAggregationPathPrompt(t('aggregation'), fs),
-        getEntityPrompt(t('entity'), projectProvider, ['qualifier']),
-        getAnnotationPathQualifierPrompt(
-            'qualifier',
-            t('qualifier'),
-            projectProvider,
-            [UIAnnotationTerms.Chart],
-            undefined,
-            t('valuesDependentOnEntityTypeInfo')
-        )
-    ];
+    const defaultAnswers: Answers = {
+        id: 'Chart',
+        bindingContextType: 'relative'
+    };
+    return {
+        questions: [
+            getViewOrFragmentFilePrompt(
+                fs,
+                basePath,
+                t('viewOrFragmentFile.message'),
+                t('viewOrFragmentFile.validate')
+            ),
+            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id),
+            getBindingContextTypePrompt(t('bindingContextType'), defaultAnswers.bindingContextType),
+            getFilterBarIdPrompt(t('filterBar')),
+            {
+                type: 'checkbox',
+                name: 'personalization',
+                message: t('personalization.message'),
+                selectType: 'static',
+                choices: [
+                    { name: t('personalization.choices.type'), value: 'Type' },
+                    { name: t('personalization.choices.item'), value: 'Item' },
+                    { name: t('personalization.choices.sort'), value: 'Sort' }
+                ]
+            } as CheckboxQuestion,
+            {
+                type: 'list',
+                selectType: 'static',
+                name: 'selectionMode',
+                message: t('selectionMode.message'),
+                choices: [
+                    { name: t('selectionMode.choices.single'), value: 'Single' },
+                    { name: t('selectionMode.choices.multiple'), value: 'Multiple' }
+                ]
+            } as ListQuestion,
+            {
+                type: 'input',
+                name: 'selectionChange',
+                message: t('selectionChange')
+            } as InputQuestion,
+            getAggregationPathPrompt(t('aggregation'), fs),
+            getEntityPrompt(t('entity'), projectProvider, ['qualifier']),
+            getAnnotationPathQualifierPrompt(
+                'qualifier',
+                t('qualifier'),
+                projectProvider,
+                [UIAnnotationTerms.Chart],
+                undefined,
+                t('valuesDependentOnEntityTypeInfo')
+            )
+        ]
+    };
 }
 
 /**
@@ -196,6 +204,20 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
             description: t('tableVisualizationPropertiesDescription')
         }
     ];
+    const defaultAnswers: Answers = {
+        id: 'Table',
+        bindingContextType: 'relative',
+        type: 'ResponsiveTable',
+        selectionMode: 'Single',
+        displayHeader: true,
+        variantManagement: 'None',
+        readOnly: false,
+        enableAutoColumnWidth: false,
+        enableExport: false,
+        enableFullScreen: false,
+        enablePaste: false,
+        isSearchable: true
+    };
     return {
         groups,
         questions: [
@@ -208,8 +230,17 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                 ['aggregationPath'],
                 TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
             ),
-            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
-            getBindingContextTypePrompt(t('bindingContextType'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
+            getBuildingBlockIdPrompt(
+                t('id.message'),
+                t('id.validation'),
+                defaultAnswers.id,
+                TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+            ),
+            getBindingContextTypePrompt(
+                t('bindingContextType'),
+                defaultAnswers.bindingContextType,
+                TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+            ),
             getEntityPrompt(t('entity'), projectProvider, ['qualifier'], TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
             getAnnotationPathQualifierPrompt(
                 'qualifier',
@@ -220,9 +251,9 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                 t('valuesDependentOnEntityTypeInfo')
             ),
             getAggregationPathPrompt(t('aggregation'), fs, TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
+            getFilterBarIdPrompt(t('filterBar'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
 
             //second prompt group
-            getFilterBarIdPrompt(t('filterBar'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
             {
                 type: 'list',
                 name: 'type',
@@ -232,6 +263,7 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                     { name: 'Responsive Table', value: 'ResponsiveTable' },
                     { name: 'Grid Table', value: 'GridTable' }
                 ],
+                default: defaultAnswers.type,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             } as ListQuestion,
             {
@@ -245,9 +277,15 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                     { name: t('selectionMode.choices.auto'), value: 'Auto' },
                     { name: t('selectionMode.choices.none'), value: 'None' }
                 ],
+                default: defaultAnswers.selectionMode,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             } as ListQuestion,
-            getBooleanPrompt('displayHeader', t('displayHeader')),
+            getBooleanPrompt(
+                'displayHeader',
+                t('displayHeader'),
+                defaultAnswers.displayHeader,
+                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            ),
             {
                 type: 'input',
                 name: 'header',
@@ -274,14 +312,45 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                     { name: 'Control', value: 'Control' },
                     { name: 'None', value: 'None' }
                 ],
+                default: defaultAnswers.variantManagement,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             } as ListQuestion,
-            getBooleanPrompt('readOnly', t('readOnlyMode'), TABLE_VISUALIZATION_PROPERTIES_GROUP_ID),
-            getBooleanPrompt('enableAutoColumnWidth', t('autoColumnWidth'), TABLE_VISUALIZATION_PROPERTIES_GROUP_ID),
-            getBooleanPrompt('enableExport', t('dataExport'), TABLE_VISUALIZATION_PROPERTIES_GROUP_ID),
-            getBooleanPrompt('enableFullScreen', t('fullScreenMode'), TABLE_VISUALIZATION_PROPERTIES_GROUP_ID),
-            getBooleanPrompt('enablePaste', t('pasteFromClipboard'), TABLE_VISUALIZATION_PROPERTIES_GROUP_ID),
-            getBooleanPrompt('isSearchable', t('tableSearchableToggle'), TABLE_VISUALIZATION_PROPERTIES_GROUP_ID)
+            getBooleanPrompt(
+                'readOnly',
+                t('readOnlyMode'),
+                defaultAnswers.readOnly,
+                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            ),
+            getBooleanPrompt(
+                'enableAutoColumnWidth',
+                t('autoColumnWidth'),
+                defaultAnswers.enableAutoColumnWidth,
+                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            ),
+            getBooleanPrompt(
+                'enableExport',
+                t('dataExport'),
+                defaultAnswers.enableExport,
+                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            ),
+            getBooleanPrompt(
+                'enableFullScreen',
+                t('fullScreenMode'),
+                defaultAnswers.enableFullScreen,
+                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            ),
+            getBooleanPrompt(
+                'enablePaste',
+                t('pasteFromClipboard'),
+                defaultAnswers.enablePaste,
+                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            ),
+            getBooleanPrompt(
+                'isSearchable',
+                t('tableSearchableToggle'),
+                defaultAnswers.isSearchable,
+                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            )
         ]
     };
 }
@@ -296,35 +365,43 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
 export async function getFilterBarBuildingBlockPrompts(
     basePath: string,
     fs: Editor
-): Promise<Question<FilterBarPromptsAnswer>[]> {
+): Promise<Prompts<FilterBarPromptsAnswer>> {
     await initI18n();
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.filterBar.');
     const projectProvider = await ProjectProvider.createProject(basePath, fs);
-
-    return [
-        getViewOrFragmentFilePrompt(fs, basePath, t('viewOrFragmentFile.message'), t('viewOrFragmentFile.validate'), [
-            'aggregationPath'
-        ]),
-        getBuildingBlockIdPrompt(t('id.message'), t('id.validation')),
-        getAggregationPathPrompt(t('aggregation'), fs),
-        getEntityPrompt(t('entity'), projectProvider, ['qualifier']),
-        getAnnotationPathQualifierPrompt(
-            'qualifier',
-            t('qualifier'),
-            projectProvider,
-            [UIAnnotationTerms.SelectionFields],
-            undefined,
-            t('valuesDependentOnEntityTypeInfo')
-        ),
-        {
-            type: 'input',
-            name: 'filterChanged',
-            message: t('filterChanged')
-        },
-        {
-            type: 'input',
-            name: 'search',
-            message: t('search')
-        }
-    ];
+    const defaultAnswers: Answers = {
+        id: 'FilterBar'
+    };
+    return {
+        questions: [
+            getViewOrFragmentFilePrompt(
+                fs,
+                basePath,
+                t('viewOrFragmentFile.message'),
+                t('viewOrFragmentFile.validate'),
+                ['aggregationPath']
+            ),
+            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id),
+            getAggregationPathPrompt(t('aggregation'), fs),
+            getEntityPrompt(t('entity'), projectProvider, ['qualifier']),
+            getAnnotationPathQualifierPrompt(
+                'qualifier',
+                t('qualifier'),
+                projectProvider,
+                [UIAnnotationTerms.SelectionFields],
+                undefined,
+                t('valuesDependentOnEntityTypeInfo')
+            ),
+            {
+                type: 'input',
+                name: 'filterChanged',
+                message: t('filterChanged')
+            },
+            {
+                type: 'input',
+                name: 'search',
+                message: t('search')
+            }
+        ]
+    };
 }

@@ -74,13 +74,15 @@ export const Questions = (props: QuestionsProps) => {
     // Change callback
     const onAnswerChange = useCallback(
         (name: string, answer?: AnswerValue, _dependantPromptNames?: string[]) => {
-            const updatedAnswers = updateAnswer(localAnswers, questions, name, answer);
-            setLocalAnswers(updatedAnswers);
-            // Callback with onchange
-            onChange(updatedAnswers, name, answer);
-            // Request dynamic choices for dependant questions
-            const deps = getDependantQuestions(questions, name);
-            requestChoices(deps, updatedAnswers);
+            if ((localAnswers[name] || '') !== answer) {
+                const updatedAnswers = updateAnswer(localAnswers, questions, name, answer);
+                setLocalAnswers(updatedAnswers);
+                // Callback with onchange
+                onChange(updatedAnswers, name, answer);
+                // Request dynamic choices for dependant questions
+                const deps = getDependantQuestions(questions, name);
+                requestChoices(deps, updatedAnswers);
+            }
         },
         [localAnswers, onChange]
     );

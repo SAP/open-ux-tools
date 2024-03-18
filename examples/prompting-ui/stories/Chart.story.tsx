@@ -1,5 +1,4 @@
 import React from 'react';
-import { PromptsLayoutType } from '../src/components';
 import { SupportedBuildingBlocks } from './utils';
 import { BuildingBlockQuestions } from './BuildingBlock';
 
@@ -13,7 +12,7 @@ export const ExternalValues = (): JSX.Element => {
     return (
         <BuildingBlockQuestions
             type={SupportedBuildingBlocks.Chart}
-            answers={{
+            externalAnswers={{
                 id: 'Chart',
                 filterBar: 'FilterBar',
                 personalization: ['Item', 'Sort'],
