@@ -523,14 +523,13 @@ export class FlpSandbox {
      * @private
      */
     private async getI18nTextFromProperty(projectRoot: string, propertyValue: string | undefined) {
-        // find i18n propertyValue in the format {{key}}
-        const regex = /{{[A-z]*}}/g;
-        if (propertyValue?.search(regex) === -1) {
+        //i18n model format could be {{key}} or {i18n>key}
+        if (!propertyValue || propertyValue.search(/{{.*}}|{i18n>.*}/g) === -1) {
             return propertyValue;
         }
         const bundle = await this.getPropertiesI18nBundle(projectRoot);
         if (propertyValue && bundle) {
-            const propertyI18nKey = (propertyValue.match(regex) ?? '').toString();
+            const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
             return bundle[propertyI18nKey]?.[0]?.['value']?.value ?? '';
         }
         return propertyValue;
