@@ -20,7 +20,6 @@ import {
     showMessage,
     scenario,
     reloadApplication,
-    deletePropertyChanges,
     storageFileChanged
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';

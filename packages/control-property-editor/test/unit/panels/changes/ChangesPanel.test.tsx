@@ -408,10 +408,10 @@ describe('ChangePanel', () => {
         render(<ChangesPanel />, { initialState });
 
         // check unsaved changes
-        const externalChangesTitle = screen.getByText(/External changes detected!/i);
+        const externalChangesTitle = screen.getByText(/Changes detected!/i);
         expect(externalChangesTitle).toBeInTheDocument();
         expect(externalChangesTitle.title.split('\n')).toEqual([
-            'External changes in files:',
+            'Changes in files:',
             'example1.changes',
             'example2.changes'
         ]);

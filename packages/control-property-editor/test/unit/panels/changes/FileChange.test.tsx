@@ -25,7 +25,7 @@ describe('FileChange', () => {
         const saveAndReloadLink = screen.getByText(/Save and Reload/i);
         expect(saveAndReloadLink).toBeInTheDocument();
 
-        const detailLinkText = screen.getByText(/the editor to show those changes/i);
+        const detailLinkText = screen.getByText(/the app preview to show those changes\./i);
         expect(detailLinkText).toBeInTheDocument();
 
         saveAndReloadLink.click();
@@ -44,7 +44,7 @@ describe('FileChange', () => {
         const saveAndReloadLink = screen.getByText(/Reload/i);
         expect(saveAndReloadLink).toBeInTheDocument();
 
-        const detailLinkText = screen.getByText(/the editor to show those changes/i);
+        const detailLinkText = screen.getByText(/the app preview to show those changes\./i);
         expect(detailLinkText).toBeInTheDocument();
     });
 });
