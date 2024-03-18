@@ -2,7 +2,7 @@ import { UIDefaultButton, UISmallButton, initIcons } from '@sap-ux/ui-components
 import React, { useEffect, useState } from 'react';
 import { SupportedBuildingBlocks } from './utils';
 import { applyAnswers, getChoices, getCodeSnippet, getWebSocket } from './utils/communication';
-import { Questions, PromptsLayoutType } from '../src/components';
+import { Questions, PromptsLayoutType, IQuestion } from '../src/components';
 import { useChoices, useQuestions } from './utils/hooks';
 import { Answers } from 'inquirer';
 
@@ -22,12 +22,20 @@ const STYLE_FLEX = {
     display: 'flex'
 };
 
+const getDefaultAnswers = (questions: IQuestion[]) =>
+    questions.reduce((acc: Answers, q: IQuestion) => {
+        if (q.name) {
+            acc = { ...acc, [q.name]: q.default };
+        }
+        return acc;
+    }, {});
+
 export const BuildingBlockQuestions = (props: {
     type: SupportedBuildingBlocks;
     visibleQuestions?: string[];
-    answers?: Answers;
+    externalAnswers?: Answers;
 }): JSX.Element => {
-    const { type, visibleQuestions, answers: externalAnswers = {} } = props;
+    const { type, visibleQuestions, externalAnswers = {} } = props;
     const [answers, setAnswers] = useState<Answers>(externalAnswers);
     const [layoutSettings, setLayoutSettings] = useState<CustomizationSettings>({
         multiColumn: true,
@@ -36,8 +44,11 @@ export const BuildingBlockQuestions = (props: {
     const choices = useChoices();
     const { groups, questions } = useQuestions(type, visibleQuestions);
 
-    function updateAnswers(answers: Answers) {
-        setAnswers(answers);
+    function updateAnswers(newAnswers: Answers) {
+        setAnswers({
+            ...getDefaultAnswers(questions),
+            ...newAnswers
+        });
     }
 
     function handleApply() {
@@ -47,7 +58,7 @@ export const BuildingBlockQuestions = (props: {
     }
 
     function handleReset() {
-        setAnswers(externalAnswers);
+        setAnswers(getDefaultAnswers(questions));
     }
 
     function toggleLayout(name: keyof CustomizationSettings): void {
@@ -106,7 +117,7 @@ export const BuildingBlockQuestions = (props: {
                             getChoices(names, type, latestAnswers);
                         }}
                         onChange={updateAnswers}
-                        answers={answers || {}}
+                        answers={answers}
                         choices={choices}
                         layoutType={
                             layoutSettings.multiColumn ? PromptsLayoutType.MultiColumn : PromptsLayoutType.SingleColumn
