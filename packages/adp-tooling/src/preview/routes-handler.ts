@@ -95,59 +95,6 @@ export default class RoutesHandler {
     };
 
     /**
-     * Handler for writing a fragment file to the workspace.
-     *
-     * @param _req Request
-     * @param res Response
-     * @param _next Next Function
-     */
-    public handleWriteFragment = async (_req: Request, res: Response, _next: NextFunction) => {
-        this.logger.info('Not creating a fragment beforehand anymore.');
-        const message = 'XML Fragment created';
-        res.status(HttpStatusCodes.CREATED).send(message);
-        /*
-        try {
-            const data = req.body as WriteFragmentBody;
-
-            const fragmentName = sanitize(data.fragmentName);
-
-            const sourcePath = this.util.getProject().getSourcePath();
-
-            if (!fragmentName) {
-                res.status(HttpStatusCodes.BAD_REQUEST).send('Fragment name was not provided!');
-                this.logger.debug('Bad request. Fragment name was not provided!');
-                return;
-            }
-
-            const fullPath = path.join(sourcePath, FolderTypes.CHANGES, FolderTypes.FRAGMENTS);
-            const filePath = path.join(fullPath, `${fragmentName}.fragment.xml`);
-
-            if (!fs.existsSync(fullPath)) {
-                fs.mkdirSync(fullPath, { recursive: true });
-            }
-
-            if (fs.existsSync(filePath)) {
-                res.status(HttpStatusCodes.CONFLICT).send(`Fragment with name "${fragmentName}" already exists`);
-                this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
-                return;
-            }
-
-            // Copy the template XML Fragment to the project's workspace
-            const fragmentTemplatePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
-            fs.copyFileSync(fragmentTemplatePath, filePath);
-
-            const message = 'XML Fragment created';
-            res.status(HttpStatusCodes.CREATED).send(message);
-            this.logger.debug(`XML Fragment with name "${fragmentName}" was created`);
-        } catch (e) {
-            const sanitizedMsg = sanitize(e.message);
-            this.logger.error(sanitizedMsg);
-            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
-            next(e);
-        }*/
-    };
-
-    /**
      * Handler for reading all controller extension files from the workspace.
      *
      * @param _ Request
