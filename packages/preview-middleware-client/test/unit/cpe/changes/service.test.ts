@@ -1,6 +1,10 @@
 import * as flexChange from '../../../../src/cpe/changes/flex-change';
 import { ChangeService } from '../../../../src/cpe/changes/service';
-import { changeProperty, deletePropertyChanges,reloadApplication } from '@sap-ux-private/control-property-editor-common';
+import {
+    changeProperty,
+    deletePropertyChanges,
+    reloadApplication
+} from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
@@ -586,7 +590,7 @@ describe('SelectionService', () => {
 
         await service.init(sendActionMock, subscribeMock);
         await subscribeMock.mock.calls[0][0](reloadApplication());
-        expect(rtaMock.stop).toHaveBeenNthCalledWith(1, false, false);
+        expect(rtaMock.stop).toHaveBeenNthCalledWith(1, false, true);
     });
 
     test('attach stop callback check', async () => {
@@ -603,11 +607,20 @@ describe('SelectionService', () => {
         );
 
         rtaMock.attachStop.mockClear();
+        const reloadSpy = jest.fn();
+        const location = window.location;
+        Object.defineProperty(window, 'location', {
+            value: {
+                reload: reloadSpy
+            }
+        });
         await service.init(sendActionMock, subscribeMock);
         expect(rtaMock.attachStop).toBeCalledTimes(1);
-        const spy = jest.spyOn(window.history, 'go').mockReturnValue();
+
         rtaMock.attachStop.mock.calls[0][0]();
-        expect(spy).toHaveBeenCalledWith(0);
-        spy.mockRestore();
+        expect(reloadSpy).toHaveBeenCalled();
+        Object.defineProperty(window, 'location', {
+            value: location
+        });
     });
 });
