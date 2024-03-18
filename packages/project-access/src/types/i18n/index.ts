@@ -15,4 +15,8 @@ export interface I18nBundles {
      * i18n bundle for cap services
      */
     service: I18nBundle;
+    /**
+     * Optional errors object containing error records of i18n bundles
+     */
+    errors?: Record<string, Error>;
 }

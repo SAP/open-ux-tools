@@ -44,7 +44,7 @@ function getCellTitleElement<T>(
  * @param {RowDataCellsProps<T>} props
  * @returns {Array<React.ReactNode>}
  */
-function getRowDataCells<T>(props: RowDataCellsProps<T>): Array<React.ReactNode> {
+function getRowDataCells<T>(props: Readonly<RowDataCellsProps<T>>): Array<React.ReactNode> {
     const { isInRowLayout, row, rowIndex, tableProps } = props;
     const result: Array<React.ReactNode> = [];
 

@@ -1,5 +1,111 @@
 # @sap-ux/create
 
+## 0.5.46
+
+### Patch Changes
+
+-   Updated dependencies [4b29ddcc]
+    -   @sap-ux/adp-tooling@0.9.4
+
+## 0.5.45
+
+### Patch Changes
+
+-   Updated dependencies [a4f00f7c]
+    -   @sap-ux/project-access@1.19.0
+    -   @sap-ux/adp-tooling@0.9.3
+    -   @sap-ux/app-config-writer@0.3.35
+    -   @sap-ux/cap-config-writer@0.2.20
+    -   @sap-ux/mockserver-config-writer@0.2.3
+
+## 0.5.44
+
+### Patch Changes
+
+-   Updated dependencies [874187b9]
+    -   @sap-ux/adp-tooling@0.9.3
+
+## 0.5.43
+
+### Patch Changes
+
+-   Updated dependencies [212d54ed]
+    -   @sap-ux/adp-tooling@0.9.2
+
+## 0.5.42
+
+### Patch Changes
+
+-   Updated dependencies [e6da2117]
+    -   @sap-ux/project-access@1.18.0
+    -   @sap-ux/adp-tooling@0.9.1
+    -   @sap-ux/app-config-writer@0.3.34
+    -   @sap-ux/cap-config-writer@0.2.19
+    -   @sap-ux/mockserver-config-writer@0.2.3
+
+## 0.5.41
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.1
+-   @sap-ux/app-config-writer@0.3.33
+
+## 0.5.40
+
+### Patch Changes
+
+-   Updated dependencies [cf842794]
+    -   @sap-ux/adp-tooling@0.9.0
+
+## 0.5.39
+
+### Patch Changes
+
+-   Updated dependencies [c381d32f]
+    -   @sap-ux/project-access@1.17.6
+    -   @sap-ux/adp-tooling@0.8.11
+    -   @sap-ux/app-config-writer@0.3.32
+    -   @sap-ux/cap-config-writer@0.2.18
+    -   @sap-ux/mockserver-config-writer@0.2.3
+
+## 0.5.38
+
+### Patch Changes
+
+-   Updated dependencies [c6e79ef1]
+    -   @sap-ux/cap-config-writer@0.2.17
+
+## 0.5.37
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.3.31
+-   @sap-ux/adp-tooling@0.8.11
+
+## 0.5.36
+
+### Patch Changes
+
+-   Updated dependencies [33ec9ff9]
+    -   @sap-ux/project-access@1.17.5
+    -   @sap-ux/adp-tooling@0.8.10
+    -   @sap-ux/app-config-writer@0.3.30
+    -   @sap-ux/cap-config-writer@0.2.16
+    -   @sap-ux/mockserver-config-writer@0.2.3
+
+## 0.5.35
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/mockserver-config-writer@0.2.3
+    -   @sap-ux/app-config-writer@0.3.29
+    -   @sap-ux/project-access@1.17.4
+    -   @sap-ux/adp-tooling@0.8.10
+    -   @sap-ux/logger@0.5.1
+    -   @sap-ux/cap-config-writer@0.2.15
+
 ## 0.5.34
 
 ### Patch Changes

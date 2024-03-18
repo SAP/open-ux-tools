@@ -136,7 +136,18 @@ const getMessageType = (props?: UIComponentMessagesProps): ErrorMessageType => {
  * @returns {string | undefined} Message string.
  */
 const getErrorMessage = (props?: UIComponentMessagesProps): string | undefined => {
-    return props?.errorMessage || props?.warningMessage || props?.infoMessage;
+    // Find first message with priority - 1. error, 2. warning, 3. info.
+    const propertyNames: Array<'errorMessage' | 'warningMessage' | 'infoMessage'> = [
+        'errorMessage',
+        'warningMessage',
+        'infoMessage'
+    ];
+    for (const name of propertyNames) {
+        if (props?.[name]) {
+            return props[name];
+        }
+    }
+    return undefined;
 };
 
 /**

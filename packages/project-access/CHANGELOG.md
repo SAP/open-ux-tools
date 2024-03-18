@@ -1,5 +1,38 @@
 # @sap-ux/project-access
 
+## 1.19.0
+
+### Minor Changes
+
+-   a4f00f7c: Remove setting of cds.root. Set the project in cds.load() instead.
+
+## 1.18.0
+
+### Minor Changes
+
+-   e6da2117: adds iscapproject function
+
+## 1.17.6
+
+### Patch Changes
+
+-   c381d32f: feat(project-access): detect libraries with `.library`
+
+## 1.17.5
+
+### Patch Changes
+
+-   33ec9ff9: fix: enhance `getI18nBundles` to be more tolerant
+
+## 1.17.4
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-config@0.21.1
+    -   @sap-ux/i18n@0.0.4
+
 ## 1.17.3
 
 ### Patch Changes
