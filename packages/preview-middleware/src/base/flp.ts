@@ -524,7 +524,7 @@ export class FlpSandbox {
      */
     private async getI18nTextFromProperty(projectRoot: string, propertyValue: string | undefined) {
         //i18n model format could be {{key}} or {i18n>key}
-        if (!propertyValue || propertyValue.search(/{{.*}}|{i18n>.*}/g) === -1) {
+        if (!propertyValue || propertyValue.search(/{{[A-Za-z0-9_]+}}|{i18n>[A-Za-z0-9_]+}/g) === -1) {
             return propertyValue;
         }
         const bundle = await this.getPropertiesI18nBundle(projectRoot);
