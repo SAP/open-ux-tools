@@ -2,12 +2,15 @@ import nock from 'nock';
 import { join } from 'path';
 import express from 'express';
 import supertest from 'supertest';
-import { ToolsLogger } from '@sap-ux/logger';
+import type { Editor } from 'mem-fs-editor';
+import { type Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import type { SuperTest, Test } from 'supertest';
 import { readFileSync, existsSync, writeFileSync } from 'fs';
 
 import { AdpPreview } from '../../../src/preview/adp-preview';
+import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
+import { addXmlFragment, tryFixChange } from '../../../src/preview/change-handler';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -30,6 +33,12 @@ jest.mock('os', () => ({
     platform: jest.fn().mockImplementation(() => 'win32')
 }));
 
+jest.mock('../../../src/preview/change-handler', () => ({
+    ...jest.requireActual('../../../src/preview/change-handler'),
+    tryFixChange: jest.fn(),
+    addXmlFragment: jest.fn()
+}));
+
 jest.mock('@sap-ux/store', () => {
     return {
         ...jest.requireActual('@sap-ux/store'),
@@ -40,6 +49,9 @@ jest.mock('@sap-ux/store', () => {
         )
     };
 });
+
+const tryFixChangeMock = tryFixChange as jest.Mock;
+const addXmlFragmentMock = addXmlFragment as jest.Mock;
 
 const mockProject = {
     byGlob: jest.fn().mockResolvedValue([])
@@ -213,6 +225,51 @@ describe('AdaptationProject', () => {
             expect(next).toBeCalled();
         });
     });
+
+    describe('onChangeRequest', () => {
+        const mockFs = {} as unknown as Editor;
+        const mockLogger = { info: jest.fn(), warn: jest.fn(), error: jest.fn() } as unknown as Logger;
+
+        const adp = new AdpPreview(
+            {} as AdpPreviewConfig,
+            mockProject as unknown as ReaderCollection,
+            middlewareUtil,
+            logger
+        );
+
+        const addXMLChange = {
+            changeType: 'addXML',
+            content: {
+                fragmentPath: 'fragments/share.fragment.xml'
+            },
+            reference: 'some.reference'
+        } as unknown as CommonChangeProperties;
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should fix the change if type is "read" and conditions meet', async () => {
+            await adp.onChangeRequest('read', addXMLChange, mockFs, mockLogger);
+
+            expect(tryFixChangeMock).toHaveBeenCalledWith(addXMLChange, mockLogger);
+        });
+
+        it('should add an XML fragment if type is "write" and change is AddXMLChange', async () => {
+            await adp.onChangeRequest('write', addXMLChange, mockFs, mockLogger);
+
+            expect(addXmlFragmentMock).toHaveBeenCalledWith('/adp.project/webapp', addXMLChange, mockFs, mockLogger);
+        });
+
+        it('should not perform any action if type is "delete"', async () => {
+            const change = { changeType: 'delete', content: {} } as unknown as CommonChangeProperties;
+            await adp.onChangeRequest('delete', change, mockFs, mockLogger);
+
+            expect(tryFixChange).not.toHaveBeenCalled();
+            expect(addXmlFragment).not.toHaveBeenCalled();
+        });
+    });
+
     describe('addApis', () => {
         let server: SuperTest<Test>;
         beforeAll(async () => {
