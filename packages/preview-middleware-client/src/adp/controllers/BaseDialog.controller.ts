@@ -101,7 +101,7 @@ export default abstract class BaseDialog extends Controller {
             return;
         }
 
-        const changeExists = await this.checkForExistingChange(fragmentName);
+        const changeExists = this.checkForExistingChange(fragmentName);
 
         if (changeExists) {
             updateDialogState(
@@ -121,7 +121,7 @@ export default abstract class BaseDialog extends Controller {
      * @param {string} fragmentName - The name of the fragment to check for existing changes.
      * @returns {Promise<boolean>} A promise that resolves to `true` if a matching change is found, otherwise `false`.
      */
-    async checkForExistingChange(fragmentName: string): Promise<boolean> {
+    checkForExistingChange(fragmentName: string): boolean {
         const allCommands = this.rta.getCommandStack().getCommands();
 
         return allCommands.some((command: FlexCommand) => {

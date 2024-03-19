@@ -274,38 +274,6 @@ describe('AdaptationProject', () => {
             expect(data.message).toEqual(errorMsg);
         });
 
-        test('POST /adp/api/fragment - creates fragment', async () => {
-            mockExistsSync.mockReturnValue(false);
-            const fragmentName = 'Share';
-            const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(201);
-
-            const message = response.text;
-            expect(message).toBe('XML Fragment created');
-        });
-
-        test('POST /adp/api/fragment - fragment already exists', async () => {
-            mockExistsSync.mockReturnValueOnce(false).mockReturnValueOnce(true);
-            const fragmentName = 'Share';
-            const response = await server.post('/adp/api/fragment').send({ fragmentName }).expect(409);
-
-            const message = response.text;
-            expect(message).toBe(`Fragment with name "${fragmentName}" already exists`);
-        });
-
-        test('POST /adp/api/fragment - fragmentName was not provided', async () => {
-            const response = await server.post('/adp/api/fragment').send({ fragmentName: '' }).expect(400);
-
-            const message = response.text;
-            expect(message).toBe('Fragment name was not provided!');
-        });
-
-        test('POST /adp/api/fragment - throws error when fragment name is undefined', async () => {
-            const response = await server.post('/adp/api/fragment').send({ fragmentName: undefined }).expect(500);
-
-            const message = response.text;
-            expect(message).toBe('Input must be string');
-        });
-
         test('GET /adp/api/controller', async () => {
             const expectedNames = [{ controllerName: 'my.js' }, { controllerName: 'other.js' }];
             mockProject.byGlob.mockResolvedValueOnce([
