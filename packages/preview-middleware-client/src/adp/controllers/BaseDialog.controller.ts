@@ -61,7 +61,7 @@ export default abstract class BaseDialog extends Controller {
      *
      * @param event Event
      */
-    async onFragmentNameInputChange(event: Event): Promise<void> {
+    onFragmentNameInputChange(event: Event): void {
         const input = event.getSource<Input>();
         const beginBtn = this.dialog.getBeginButton();
 
