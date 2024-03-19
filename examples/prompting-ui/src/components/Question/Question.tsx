@@ -24,7 +24,7 @@ export type Question = ListQuestion | InputQuestion | MultiSelectQuestion;
 export interface PromptsGroup {
     id: string;
     title: string;
-    description: string;
+    description: string[];
 }
 export type AnswerValue = string | number | boolean | undefined;
 

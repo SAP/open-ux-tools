@@ -16,6 +16,11 @@
         input {
             width: 260px;
         }
+        label {
+            width: 244px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
         select {
             width: 260px;
         }

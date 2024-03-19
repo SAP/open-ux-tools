@@ -104,8 +104,8 @@ export const Questions = (props: QuestionsProps) => {
 
     const renderQuestions = (questions: Question[]) =>
         questions.map((question: Question, index: number) => {
-            const externalChoices = question.name !== undefined ? choices[question.name] : undefined;
             const name = question.name;
+            const externalChoices = name !== undefined ? choices[name] : undefined;
             if (!name) {
                 return <></>;
             }
