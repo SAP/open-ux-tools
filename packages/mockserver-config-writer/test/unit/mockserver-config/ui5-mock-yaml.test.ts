@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
+import path, { join } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
 import { enhanceYaml } from '../../../src/mockserver-config/ui5-mock-yaml';
@@ -53,11 +53,17 @@ describe('Test enhanceYaml()', () => {
         expect(mockserverConfig?.configuration.services?.[0].urlPath).toBe('/path/for/new/config');
         expect(mockserverConfig?.configuration.annotations).toEqual([
             {
-                localPath: 'webapp/localService/SEPMRA_PROD_MAN.xml',
+                localPath: `webapp/localService/SEPMRA_PROD_MAN.xml`.replace(/\//g, path.sep),
                 urlPath:
-                    "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/"
+                    `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`.replace(
+                        /\//g,
+                        path.sep
+                    )
             },
-            { localPath: 'webapp/annotations/annotation.xml', urlPath: 'annotations/annotation.xml' }
+            {
+                localPath: `webapp/annotations/annotation.xml`.replace(/\//g, path.sep),
+                urlPath: `annotations/annotation.xml`.replace(/\//g, path.sep)
+            }
         ]);
     });
 
