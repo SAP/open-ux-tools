@@ -11,7 +11,7 @@ export interface InputProps extends InputQuestion {
 }
 
 export const Input = (props: InputProps) => {
-    const { name = '', onChange, required, additionalInfo } = props;
+    const { name = '', onChange, required, additionalInfo, message } = props;
     const [value, setValue] = useValue('', props.value);
     const onLiveChange = (event: React.FormEvent, newValue?: string | undefined) => {
         setValue(newValue ?? '');
@@ -25,7 +25,7 @@ export const Input = (props: InputProps) => {
         <UITextInput
             onRenderLabel={getLabelRenderer(additionalInfo)}
             required={required}
-            label={name}
+            label={typeof message === 'string' ? message : name}
             value={value.toString()}
             onChange={onLiveChange}
         />
