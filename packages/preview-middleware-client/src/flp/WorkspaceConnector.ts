@@ -16,10 +16,9 @@ const connector = merge({}, ObjectStorageConnector, {
                 change.support.generator = settings.generator;
             }
 
-
             if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
                 try {
-                    this.fileChangeRequestNotifier(change.fileName);
+                    this.fileChangeRequestNotifier(change.fileName, 'create',  change.changeType);
                 } catch (e) {
                     // exceptions in the listener call are ignored
                 }
@@ -36,7 +35,7 @@ const connector = merge({}, ObjectStorageConnector, {
         removeItem: function (key: string) {
             if (typeof this.fileChangeRequestNotifier === 'function') {
                 try {
-                    this.fileChangeRequestNotifier(key);
+                    this.fileChangeRequestNotifier(key, 'delete');
                 } catch (e) {
                     // exceptions in the listener call are ignored
                 }

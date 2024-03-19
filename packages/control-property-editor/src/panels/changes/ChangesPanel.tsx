@@ -62,7 +62,7 @@ export function ChangesPanel(): ReactElement {
         if (pending.length + saved.length + fileChanges.length === 0) {
             return <Text className={styles.noData}>{t('NO_CONTROL_CHANGES_FOUND')}</Text>;
         }
-        const fileChangesTooltip = t('EXTERNAL_CHANGES_IN_FILES') + '\n' + fileChanges.join('\n');
+        const fileChangesTooltip = t('CHANGES_IN_FILES') + '\n' + fileChanges.join('\n');
         return (
             <>
                 {fileChanges.length > 0 && (
@@ -75,7 +75,7 @@ export function ChangesPanel(): ReactElement {
                             fontSize={defaultFontSize}
                             tooltip={fileChangesTooltip}
                             isMessageHeader={true}
-                            text={t('EXTERNAL_CHANGES_DETECTED')}
+                            text={t('CHANGES_DETECTED')}
                         />
                         <FileChange key="file-change-informer" hasUnsavedChanges={pending?.length > 0} />
                     </>

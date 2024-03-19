@@ -133,11 +133,10 @@ describe('Test getCapModelAndServices()', () => {
                 }
             ]
         });
-        expect(cdsMock.load).toBeCalledWith([
-            join('PROJECT_ROOT', 'APP'),
-            join('PROJECT_ROOT', 'SRV'),
-            join('PROJECT_ROOT', 'DB')
-        ]);
+        expect(cdsMock.load).toBeCalledWith(
+            [join('PROJECT_ROOT', 'APP'), join('PROJECT_ROOT', 'SRV'), join('PROJECT_ROOT', 'DB')],
+            { root: 'PROJECT_ROOT' }
+        );
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
     });
 
@@ -170,7 +169,7 @@ describe('Test getCapModelAndServices()', () => {
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
     });
 
-    test('Get model and service, project root sets `cds.root`', async () => {
+    test('Get model and service', async () => {
         // Mock setup
         const cdsMock = {
             env: {
@@ -205,7 +204,7 @@ describe('Test getCapModelAndServices()', () => {
         expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: projectRoot });
         expect(loggerSpy).toHaveBeenNthCalledWith(1, expect.stringContaining("'cds.home': /cds/home/path"));
         expect(loggerSpy).toHaveBeenNthCalledWith(2, expect.stringContaining("'cds.version': 7.4.2"));
-        expect(loggerSpy).toHaveBeenNthCalledWith(3, expect.stringContaining("'cds.root': /some/test/path"));
+        expect(loggerSpy).toHaveBeenNthCalledWith(3, expect.stringContaining("'cds.root':"));
     });
 });
 
@@ -565,7 +564,10 @@ describe('Test getCdsFiles()', () => {
 
         // Check results
         expect(cdsFiles).toEqual(['file1', 'file2']);
-        expect(cdsMock.load).toBeCalledWith([join('db/'), join('srv/'), join('app/'), 'schema', 'services']);
+        expect(cdsMock.load).toBeCalledWith(
+            [join('db/'), join('srv/'), join('app/'), 'schema', 'services'],
+            expect.any(Object)
+        );
     });
 
     test('Get CDS files from project, but no $sources', async () => {
@@ -637,7 +639,7 @@ describe('Test getCdsFiles()', () => {
 
         // Check results
         expect(cdsFiles).toEqual([`${sep}file1`]);
-        expect(cdsMock.load).toBeCalledWith('envroot');
+        expect(cdsMock.load).toBeCalledWith('envroot', expect.any(Object));
     });
 
     test('Get CDS files from project with envRoot and ignoreErrors true and model data in exception', async () => {
@@ -656,7 +658,7 @@ describe('Test getCdsFiles()', () => {
 
         // Check results
         expect(cdsFiles).toEqual([`${sep}file1`, `${sep}file2`]);
-        expect(cdsMock.load).toBeCalledWith('envroot');
+        expect(cdsMock.load).toBeCalledWith('envroot', expect.any(Object));
     });
 });
 

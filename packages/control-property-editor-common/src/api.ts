@@ -227,8 +227,8 @@ export const propertyChanged = createExternalAction<PropertyChanged>('property-c
 export const propertyChangeFailed = createExternalAction<PropertyChangeFailed>('change-property-failed');
 export const changeStackModified = createExternalAction<ChangeStackModified>('change-stack-modified');
 export const showMessage = createExternalAction<string>('show-dialog-message');
-export const reloadApplication = createExternalAction<void>('app/reload-application');
-export const storageFileChanged = createExternalAction<string>('storageFileChanged');
+export const reloadApplication = createExternalAction<void>('reload-application');
+export const storageFileChanged = createExternalAction<string>('storage-file-changed');
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
     | ReturnType<typeof controlSelected>

@@ -2,6 +2,7 @@ import { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 
 export interface FlexChange {
     [key: string]: string | object | undefined;
+    changeType: string;
     fileName: string;
     support: {
         generator?: string;

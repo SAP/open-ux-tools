@@ -31,7 +31,7 @@ describe('flp/WorkspaceConnector', () => {
 
         test('setItem (fileChange)', async () => {
             connector.storage.fileChangeRequestNotifier = jest.fn();
-            const change = { data: '~Data', fileName: 'dummyFile' };
+            const change = { data: '~Data', fileName: 'dummyFile', changeType: 'property' };
             await connector.storage.setItem('~notUsed', change);
 
             expect(fetch).toHaveBeenCalledWith(
@@ -41,7 +41,7 @@ describe('flp/WorkspaceConnector', () => {
                     body: JSON.stringify(change, null, 2)
                 })
             );
-            expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith('dummyFile');
+            expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith('dummyFile', 'create', 'property');
         });
 
         test('setItem, generator - tool-variant', async () => {
@@ -66,7 +66,7 @@ describe('flp/WorkspaceConnector', () => {
                     body: JSON.stringify({ fileName: key })
                 })
             );
-            expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith(key);
+            expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith(key, 'delete');
         });
 
         test('getItems', async () => {
