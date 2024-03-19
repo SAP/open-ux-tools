@@ -51,7 +51,7 @@ export function StringEditor(propertyInputProps: PropertyInputProps): ReactEleme
     const dispatch = useDispatch();
 
     const handlеChange = (e: React.FocusEvent | React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        if (value && value.toString() === e.target.value) {
+        if (value?.toString() === e.target.value) {
             return;
         }
         reportTelemetry({ category: 'Property Change', propertyName: name }).catch((error) => {
