@@ -6,15 +6,15 @@ import { render } from 'ejs';
 import type { Request, RequestHandler, Response, Router } from 'express';
 import { readFileSync } from 'fs';
 import { dirname, join, posix } from 'path';
-import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
-import { deleteChange, readChanges, writeChange } from './flex';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
-import type { CommonChangeProperties } from '@sap-ux/adp-tooling';
-import { AdpPreview, type AdpPreviewConfig } from '@sap-ux/adp-tooling';
+import { AdpPreview, type AdpPreviewConfig, type CommonChangeProperties } from '@sap-ux/adp-tooling';
+
+import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
+import type { App, Editor, FlpConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 
 const DEVELOPER_MODE_CONFIG = new Map([
     // Run application in design time mode
