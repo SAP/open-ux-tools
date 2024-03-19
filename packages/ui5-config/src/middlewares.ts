@@ -79,7 +79,7 @@ export function getFioriToolsProxyMiddlewareConfig(
 
 export const getMockServerMiddlewareConfig = (
     path?: string,
-    annotationsConfig?: MockserverConfig['annotations']
+    annotationsConfig: MockserverConfig['annotations'] = []
 ): CustomMiddleware<MockserverConfig> => {
     path = path?.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
     return {
@@ -95,7 +95,7 @@ export const getMockServerMiddlewareConfig = (
                     generateMockData: true
                 }
             ],
-            annotations: annotationsConfig ?? []
+            annotations: annotationsConfig
         }
     };
 };
