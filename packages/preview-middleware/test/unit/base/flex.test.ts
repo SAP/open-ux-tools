@@ -2,7 +2,7 @@ import type { ReaderCollection } from '@ui5/fs';
 import { ToolsLogger } from '@sap-ux/logger';
 import { tmpdir } from 'os';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 
 import { readChanges, writeChange } from '../../../src/base/flex';
