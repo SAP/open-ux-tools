@@ -1,5 +1,11 @@
 # @sap-ux/telemetry
 
+## 0.4.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.1
+
 ## 0.4.5
 
 ### Patch Changes
