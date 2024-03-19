@@ -196,12 +196,12 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
         {
             id: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
             title: t('tableBuildingBlockPropertiesTitle'),
-            description: t('tableBuildingBlockPropertiesDescription')
+            description: t('tableBuildingBlockPropertiesDescription', { returnObjects: true })
         },
         {
             id: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID,
             title: t('tableVisualizationPropertiesTitle'),
-            description: t('tableVisualizationPropertiesDescription')
+            description: t('tableVisualizationPropertiesDescription', { returnObjects: true })
         }
     ];
     const defaultAnswers: Answers = {
@@ -251,7 +251,7 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                 t('valuesDependentOnEntityTypeInfo')
             ),
             getAggregationPathPrompt(t('aggregation'), fs, TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
-            getFilterBarIdPrompt(t('filterBar'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
+            getFilterBarIdPrompt(t('filterBar.message'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
 
             //second prompt group
             {
@@ -289,7 +289,7 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
             {
                 type: 'input',
                 name: 'header',
-                message: t('tableHeaderText'),
+                message: t('header.message'),
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             } as InputQuestion,
             {
