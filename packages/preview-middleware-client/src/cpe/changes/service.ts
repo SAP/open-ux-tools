@@ -9,7 +9,8 @@ import {
     changeStackModified,
     deletePropertyChanges,
     propertyChangeFailed,
-    FlexChangesEndPoints
+    FlexChangesEndPoints,
+    reloadApplication
 } from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
 import type { SelectionService } from '../selection';
@@ -127,12 +128,17 @@ export class ChangeService {
                 }
             } else if (deletePropertyChanges.match(action)) {
                 await this.deleteChange(action.payload.controlId, action.payload.propertyName, action.payload.fileName);
+            } else if (reloadApplication.match(action)) {
+                await this.options.rta.stop(false, true);
             }
         });
 
         await this.fetchSavedChanges();
         this.updateStack();
-
+        this.options.rta.attachStop(() => {
+            // eslint-disable-next-line fiori-custom/sap-no-location-reload
+            location.reload();
+        });
         this.options.rta.attachUndoRedoStackModified(this.createOnStackChangeHandler());
     }
 
@@ -300,6 +306,7 @@ export class ChangeService {
                 value = command.getProperty('newBinding');
                 break;
         }
+        const { fileName } = command.getPreparedChange().getDefinition();
         if (changeType === 'propertyChange' || changeType === 'propertyBindingChange') {
             result = {
                 type: 'pending',
@@ -308,7 +315,8 @@ export class ChangeService {
                 propertyName: command.getProperty('propertyName'),
                 isActive: index >= inactiveCommandCount,
                 value,
-                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? ''
+                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? '',
+                fileName
             };
         } else {
             result = {
@@ -319,7 +327,8 @@ export class ChangeService {
                 controlName:
                     changeType === 'addXMLAtExtensionPoint'
                         ? command.getSelector().name ?? ''
-                        : command.getElement().getMetadata().getName().split('.').pop() ?? ''
+                        : command.getElement().getMetadata().getName().split('.').pop() ?? '',
+                fileName
             };
         }
 

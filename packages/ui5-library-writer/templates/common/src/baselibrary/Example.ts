@@ -61,5 +61,5 @@ export default class Example extends Control {
 
 	onclick = () => {
 		this.firePress();
-	}
+	};
 }

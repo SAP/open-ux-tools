@@ -17,6 +17,7 @@ When this middleware is used together with the `reload-middleware`, then the ord
 | ---------------------- | --------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | `flp`                  |           |                  | Optional configuration object for the local Fiori launchpad                                                                         |
 | `flp.path`             | `string`  | `/test/flp.html` | The mount point of the local Fiori launchpad.                                                                                       |
+| `flp.init`             | `string`  | `undefined`      | Optional UI5 module/script to be executed after the standard initialization                                                         |
 | `flp.intent`           |           |                  | Optional intent to be used for the application                                                                                      |
 | `flp.intent.object`    | `string`  | `app`            | Optional intent object                                                                                                              |
 | `flp.intent.action`    | `string`  | `preview`        | Optional intent action                                                                                                              |
@@ -28,6 +29,7 @@ When this middleware is used together with the `reload-middleware`, then the ord
 | `rta`                  |           |                  | Optional configuration allowing to add mount points for runtime adaptation                                                          |
 | `rta.layer`            | `string`  | `(calculated)`   | Optional property for defining the runtime adaptation layer for changes (default is `CUSTOMER_BASE` or read from the project for adaptation projects) |
 | `rta.editors`          | `array`   | `undefined`      | Optional list of mount points for editing                                                                                           |
+| `test`                 | `array`   | `undefined`      | Optional list of configurations for automated testing                                                                               |
 | `debug`                | `boolean` | `false`          | Enables debug output                                                                                                                |
 
 ### `flp.apps`
@@ -53,6 +55,14 @@ Array of additional application configurations:
 | --------------- | -------------------| -----------------------------------------------------------------------------------------------|
 | `path`          | `string` mandatory | The mount point to be used for the editor.                                                     |
 | `developerMode` | `boolean` optional | Enables/disables the runtime adaptation developer mode (only supported for adaptation projects) |
+
+### `test`
+| Option          | Type               | Description                                                                                    |
+| --------------- | -------------------| -----------------------------------------------------------------------------------------------|
+| `framework`     | `string` mandatory | Currently `OPA5` and `QUnit` are supported                                                     |
+| `path`          | `string` optional  | The mount point to be used for test suite                                                      |
+| `init`          | `string` optional  | The mount point to be used for test runner script                                              |
+| `pattern`       | `string` optional  | Optional glob pattern to find the tests. By default `/test/**/*Journey.*` is used for `OPA5` and `/test/**/*Test.*` is used for `QUnit`|
 
 
 ## Usage
@@ -109,6 +119,18 @@ server:
           - path: /test/variant-editor.html
 ```
 
+### Test Suites
+If you want to also generate generic test suites and test runners for QUnit or OPA5 tests then you can use the following minimum configurations
+```Yaml
+server:
+  customMiddleware:
+  - name: preview-middleware
+    afterMiddleware: compression
+    configuration:
+      test:
+        - framework: QUnit
+        - framework: OPA5
+```
 
 ### Adaptation Project
 If you want to use the middleware in an adaption project, the additional `adp` object needs to be configured. This example would preview a local adaptation project merged with its reference application from the target system at `http://sap.example` and it will ignore certification validation errors. For adaptation projects, it is also recommended to add the `rta` configuration allowing to edit the project.
