@@ -4,7 +4,7 @@ import type { BuildingBlockType, Chart, FilterBar, Table } from '../types';
 export interface PromptsGroup {
     id: string;
     title: string;
-    description: string;
+    description: string[];
 }
 
 export interface Prompts<T extends Answers> {
