@@ -156,7 +156,6 @@ describe('ExtensionPoint', () => {
 
             fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue([]),
-                text: jest.fn().mockReturnValue('XML Fragment was created!'),
                 ok: true
             });
 
@@ -168,6 +167,7 @@ describe('ExtensionPoint', () => {
 
             expect(resolveSpy).toHaveBeenCalledWith({
                 extensionPointName,
+                fragment: "<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>",
                 fragmentPath: 'fragments/Share.fragment.xml'
             });
         });

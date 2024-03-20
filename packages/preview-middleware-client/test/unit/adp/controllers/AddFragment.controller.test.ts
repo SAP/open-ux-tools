@@ -347,11 +347,59 @@ describe('AddFragment', () => {
                 }
             };
             const command = {
+                getProperty: jest.fn().mockReturnValue(''),
                 getPreparedChange: jest.fn().mockReturnValue({ getDefinition: jest.fn().mockReturnValue(change) })
             };
 
             rtaMock.getCommandStack.mockReturnValue({
                 getCommands: jest.fn().mockReturnValue([command])
+            });
+
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                {} as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring
+            );
+
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    getValue: jest.fn().mockReturnValue('New'),
+                    setValueState: valueStateSpy
+                })
+            };
+
+            addFragment.model = testModel;
+
+            addFragment.dialog = {
+                getBeginButton: jest
+                    .fn()
+                    .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
+            } as unknown as Dialog;
+
+            addFragment.onFragmentNameInputChange(event as unknown as Event);
+
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
+        });
+
+        test('sets error when the fragment name already exists in command stack (command is "composite")', () => {
+            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+            const change = {
+                content: {
+                    fragmentPath: 'fragments/New.fragment.xml'
+                }
+            };
+            const command = {
+                getProperty: jest.fn().mockReturnValue('addXMLAtExtensionPoint'),
+                getPreparedChange: jest.fn().mockReturnValue({ getDefinition: jest.fn().mockReturnValue(change) })
+            };
+            const compositeCommand = {
+                getProperty: jest.fn().mockReturnValue('composite'),
+                getCommands: jest.fn().mockReturnValue([command])
+            };
+
+            rtaMock.getCommandStack.mockReturnValue({
+                getCommands: jest.fn().mockReturnValue([compositeCommand])
             });
 
             const addFragment = new AddFragment(
