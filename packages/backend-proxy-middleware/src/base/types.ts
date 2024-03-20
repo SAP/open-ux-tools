@@ -19,7 +19,7 @@ export interface BaseBackendConfig {
     scp?: boolean;
 
     /**
-     * Authentication mechanism to be used.
+     * Authentication mechanism to be used. Currently supported: "ReentranceTicket"
      */
     authenticationType?: string;
 
