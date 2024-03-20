@@ -54,6 +54,8 @@ const UI5_LIBS = [
     'sap.zen'
 ];
 
+const DEFAULT_LIVERELOAD_PORT = 35729;
+
 /**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
  */
@@ -298,11 +300,15 @@ export class FlpSandbox {
                         templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
                     }
                     const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
+                    const envPort = process.env.FIORI_TOOLS_LIVERELOAD_PORT;
+                    let livereloadPort: number = envPort ? parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
+                    livereloadPort = isNaN(livereloadPort) ? DEFAULT_LIVERELOAD_PORT : livereloadPort;
                     const html = render(template, {
                         previewUrl: templatePreviewUrl,
                         telemetry: rta.options?.telemetry ?? false,
                         appName: rta.options?.appName,
-                        scenario
+                        scenario,
+                        livereloadPort
                     });
                     res.status(200).contentType('html').send(html);
                 });

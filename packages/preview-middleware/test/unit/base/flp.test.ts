@@ -250,8 +250,18 @@ describe('FlpSandbox', () => {
         test('rta with developerMode=true', async () => {
             let response = await server.get('/my/editor.html').expect(200);
             expect(response.text).toMatchSnapshot();
+            expect(response.text.includes('livereloadPort: 35729')).toBe(true);
             response = await server.get('/my/editor.html.inner.html').expect(200);
             expect(response.text).toMatchSnapshot();
+        });
+
+        test('livereload port from environment', async () => {
+            process.env.FIORI_TOOLS_LIVERELOAD_PORT = '8080';
+            let response = await server.get('/my/editor.html').expect(200);
+            expect(response.text.includes('livereloadPort: 8080')).toBe(true);
+            process.env.FIORI_TOOLS_LIVERELOAD_PORT = 'wrongPort';
+            response = await server.get('/my/editor.html').expect(200);
+            expect(response.text.includes('livereloadPort: 35729')).toBe(true);
         });
 
         test('rta with developerMode=true and plugin', async () => {
