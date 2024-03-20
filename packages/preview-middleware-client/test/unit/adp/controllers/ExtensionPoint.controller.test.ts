@@ -167,7 +167,7 @@ describe('ExtensionPoint', () => {
 
             expect(resolveSpy).toHaveBeenCalledWith({
                 extensionPointName,
-                fragment: "<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>",
+                fragment: '<core:FragmentDefinition xmlns:core=\'sap.ui.core\'></core:FragmentDefinition>',
                 fragmentPath: 'fragments/Share.fragment.xml'
             });
         });
