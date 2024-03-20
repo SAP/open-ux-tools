@@ -5,7 +5,7 @@ import { join } from 'path';
 import type { Logger } from '@sap-ux/logger';
 
 /**
- * Map of change type specific correction functions.
+ * A mapping object that defines how to extract change content data from changes based on their type.
  */
 export const moduleNameContentMap: { [key: string]: (change: CommonChangeProperties) => string } = {
     codeExt: (change) => ((change as CodeExtChange).content?.codeRef ?? '').replace('.js', ''),
@@ -20,10 +20,11 @@ export const moduleNameContentMap: { [key: string]: (change: CommonChangePropert
  */
 
 /**
- * Fix existing old changes by setting the moduleName property when being read.
+ * Attempts to fix a change object by setting its moduleName based on its reference and changeType
+ * to also support old changes with newer UI5 versions.
  *
- * @param change - the change to be fixed
- * @param logger - the logger instance
+ * @param {CommonChangeProperties} change - The change object to be fixed.
+ * @param {Logger} logger - An instance for logging warnings, errors, or informational messages.
  */
 export function tryFixChange(change: CommonChangeProperties, logger: Logger) {
     try {
@@ -35,10 +36,11 @@ export function tryFixChange(change: CommonChangeProperties, logger: Logger) {
 }
 
 /**
- * Checks if the change is of type AddXMLChange.
+ * Determines whether a given change is of type `AddXMLChange`.
  *
- * @param change - the change to be checked
- * @returns true if the change is of type AddXMLChange
+ * @param {CommonChangeProperties} change - The change object to check.
+ * @returns {boolean} `true` if the `changeType` is either 'addXML' or 'addXMLAtExtensionPoint',
+ *          indicating the change is of type `AddXMLChange`.
  */
 export function isAddXMLChange(change: CommonChangeProperties): change is AddXMLChange {
     return change.changeType === 'addXML' || change.changeType === 'addXMLAtExtensionPoint';

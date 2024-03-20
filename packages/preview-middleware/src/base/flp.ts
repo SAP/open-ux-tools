@@ -188,10 +188,11 @@ export class FlpSandbox {
     }
 
     /**
+     * Registers a handler function to be called when a change request occurs.
      *
-     * @param handler
+     * @param {OnChangeRequestHandler} handler - The function to be executed when a change request occurs.
      */
-    public addOnChangeRequestHandler(handler: OnChangeRequestHandler) {
+    public addOnChangeRequestHandler(handler: OnChangeRequestHandler): void {
         this.onChangeRequest = handler;
     }
 
