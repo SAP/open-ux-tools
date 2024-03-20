@@ -237,7 +237,7 @@ async function getSystemPrefix(
         const atoSettings = await adtService.getAtoInfo();
         return atoSettings?.developmentPrefix;
     } catch (e) {
-        logger.error(e);
+        logger.error(e.message);
         output.summary.push({
             message: summaryMessage.atoAdtAccessError,
             status: SummaryStatus.Unknown
