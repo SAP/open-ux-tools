@@ -1,5 +1,19 @@
 # @sap-ux/ui5-application-writer
 
+## 0.26.4
+
+### Patch Changes
+
+-   4b29ddcc: Update TypeScript templates, eslint config and ui5 devDependencies
+
+## 0.26.3
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-config@0.21.1
+
 ## 0.26.2
 
 ### Patch Changes

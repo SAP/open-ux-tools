@@ -1,5 +1,23 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.21.5
+
+### Patch Changes
+
+-   4b29ddcc: Update TypeScript templates, eslint config and ui5 devDependencies
+-   Updated dependencies [4b29ddcc]
+    -   @sap-ux/ui5-application-writer@0.26.4
+
+## 0.21.4
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-application-writer@0.26.3
+    -   @sap-ux/odata-service-writer@0.16.1
+    -   @sap-ux/ui5-config@0.21.1
+
 ## 0.21.3
 
 ### Patch Changes

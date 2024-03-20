@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.3.2
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
 ## 0.3.1
 
 ### Patch Changes

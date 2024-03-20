@@ -1,5 +1,159 @@
 # @sap-ux/app-config-writer
 
+## 0.3.36
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.1
+-   @sap-ux/axios-extension@1.11.3
+
+## 0.3.35
+
+### Patch Changes
+
+-   Updated dependencies [a4f00f7c]
+    -   @sap-ux/project-access@1.19.0
+    -   @sap-ux/axios-extension@1.11.3
+
+## 0.3.34
+
+### Patch Changes
+
+-   Updated dependencies [e6da2117]
+    -   @sap-ux/project-access@1.18.0
+    -   @sap-ux/axios-extension@1.11.3
+
+## 0.3.33
+
+### Patch Changes
+
+-   Updated dependencies [e443e534]
+    -   @sap-ux/store@0.5.0
+
+## 0.3.32
+
+### Patch Changes
+
+-   Updated dependencies [c381d32f]
+    -   @sap-ux/project-access@1.17.6
+    -   @sap-ux/axios-extension@1.11.3
+
+## 0.3.31
+
+### Patch Changes
+
+-   Updated dependencies [811c4324]
+    -   @sap-ux/btp-utils@0.14.2
+    -   @sap-ux/axios-extension@1.11.3
+
+## 0.3.30
+
+### Patch Changes
+
+-   Updated dependencies [33ec9ff9]
+    -   @sap-ux/project-access@1.17.5
+    -   @sap-ux/axios-extension@1.11.2
+
+## 0.3.29
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/axios-extension@1.11.2
+    -   @sap-ux/project-access@1.17.4
+    -   @sap-ux/ui5-config@0.21.1
+    -   @sap-ux/btp-utils@0.14.1
+    -   @sap-ux/logger@0.5.1
+    -   @sap-ux/store@0.4.3
+
+## 0.3.28
+
+### Patch Changes
+
+-   Updated dependencies [2eda843d]
+    -   @sap-ux/project-access@1.17.3
+    -   @sap-ux/axios-extension@1.11.1
+
+## 0.3.27
+
+### Patch Changes
+
+-   Updated dependencies [efd2f6d4]
+    -   @sap-ux/axios-extension@1.11.1
+
+## 0.3.26
+
+### Patch Changes
+
+-   Updated dependencies [0f6e0e1b]
+    -   @sap-ux/axios-extension@1.11.0
+    -   @sap-ux/btp-utils@0.14.0
+
+## 0.3.25
+
+### Patch Changes
+
+-   Updated dependencies [64f9c513]
+    -   @sap-ux/axios-extension@1.10.2
+
+## 0.3.24
+
+### Patch Changes
+
+-   Updated dependencies [76ce5c2f]
+    -   @sap-ux/project-access@1.17.2
+    -   @sap-ux/axios-extension@1.10.1
+
+## 0.3.23
+
+### Patch Changes
+
+-   Updated dependencies [86da13e3]
+    -   @sap-ux/project-access@1.17.1
+    -   @sap-ux/axios-extension@1.10.1
+
+## 0.3.22
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+    -   @sap-ux/axios-extension@1.10.1
+    -   @sap-ux/project-access@1.17.0
+    -   @sap-ux/store@0.4.2
+
+## 0.3.21
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+-   Updated dependencies [eb0b7b37]
+    -   @sap-ux/store@0.4.1
+
+## 0.3.20
+
+### Patch Changes
+
+-   Updated dependencies [ecd5275d]
+    -   @sap-ux/axios-extension@1.10.0
+
+## 0.3.19
+
+### Patch Changes
+
+-   Updated dependencies [de8a4878]
+    -   @sap-ux/axios-extension@1.9.0
+    -   @sap-ux/btp-utils@0.13.0
+
+## 0.3.18
+
+### Patch Changes
+
+-   Updated dependencies [236146b4]
+    -   @sap-ux/project-access@1.17.0
+    -   @sap-ux/axios-extension@1.8.1
+
 ## 0.3.17
 
 ### Patch Changes

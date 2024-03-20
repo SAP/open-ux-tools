@@ -7,18 +7,10 @@ export const PROJECT_INPUT_VALIDATOR_NS = 'project-input-validator';
 /**
  * Initialize i18next with the translations for this module.
  */
-export async function initI18n(): Promise<void> {
-    await i18next.init({
-        resources: {
-            en: {
-                [PROJECT_INPUT_VALIDATOR_NS]: i18ntranslations
-            }
-        },
-        lng: 'en',
-        fallbackLng: 'en',
-        defaultNS: PROJECT_INPUT_VALIDATOR_NS,
-        ns: [PROJECT_INPUT_VALIDATOR_NS]
-    });
+export async function initI18nProjectValidators(): Promise<void> {
+    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
+        i18next.addResourceBundle('en', PROJECT_INPUT_VALIDATOR_NS, i18ntranslations)
+    );
 }
 
 /**
@@ -35,6 +27,6 @@ export function t(key: string, options?: TOptions): string {
     return i18next.t(key, options);
 }
 
-initI18n().catch(() => {
+initI18nProjectValidators().catch(() => {
     // needed by lint
 });

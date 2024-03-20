@@ -1,0 +1,207 @@
+[
+    {
+        "type": "element",
+        "range": "[(0,0)..(16,1)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.LineItem",
+                "valueRange": "[(0,0)..(0,11)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "a",
+                "valueRange": "[(0,14)..(0,15)]"
+            }
+        },
+        "contentRange": "[(0,17)..(16,1)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(0,18)..(16,1)]",
+                "name": "Collection",
+                "attributes": {},
+                "contentRange": "[(0,19)..(16,0)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(1,4)..(4,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "nameRange": "[(2,8)..(2,13)]",
+                                "value": "UI.DataField",
+                                "valueRange": "[(2,23)..(2,35)]"
+                            }
+                        },
+                        "contentRange": "[(1,5)..(4,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(3,8)..(3,33)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Criticality",
+                                        "valueRange": "[(3,8)..(3,19)]"
+                                    }
+                                },
+                                "contentRange": "[(3,21)..(3,33)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(3,22)..(3,33)]",
+                                        "name": "Path",
+                                        "attributes": {},
+                                        "contentRange": "[(3,22)..(3,33)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(3,22)..(3,33)]",
+                                                "text": "criticality",
+                                                "fragmentRanges": ["[(3,22)..(3,33)]"]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(5,4)..(7,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "value": "com.sap.vocabularies.UI.v1.DataField"
+                            }
+                        },
+                        "contentRange": "[(5,5)..(7,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(6,8)..(6,26)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(6,8)..(6,13)]"
+                                    }
+                                },
+                                "contentRange": "[(6,15)..(6,26)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(6,16)..(6,26)]",
+                                        "name": "Path",
+                                        "attributes": {},
+                                        "contentRange": "[(6,16)..(6,26)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(6,16)..(6,26)]",
+                                                "text": "stepStatus",
+                                                "fragmentRanges": ["[(6,16)..(6,26)]"]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(8,4)..(11,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "nameRange": "[(9,8)..(9,13)]",
+                                "value": "",
+                                "valueRange": "[(9,23)..(9,23)]"
+                            }
+                        },
+                        "contentRange": "[(8,5)..(11,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(10,8)..(10,26)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Criticality",
+                                        "valueRange": "[(10,8)..(10,19)]"
+                                    }
+                                },
+                                "contentRange": "[(10,21)..(10,26)]",
+                                "content": [
+                                    {
+                                        "type": "element",
+                                        "range": "[(10,22)..(10,26)]",
+                                        "name": "Path",
+                                        "attributes": {},
+                                        "contentRange": "[(10,22)..(10,26)]",
+                                        "content": [
+                                            {
+                                                "type": "text",
+                                                "range": "[(10,22)..(10,26)]",
+                                                "text": "code",
+                                                "fragmentRanges": ["[(10,22)..(10,26)]"]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "element",
+                        "range": "[(12,4)..(15,5)]",
+                        "name": "Record",
+                        "attributes": {
+                            "Type": {
+                                "type": "attribute",
+                                "name": "Type",
+                                "nameRange": "[(13,8)..(13,13)]",
+                                "value": "",
+                                "valueRange": "[(13,23)..(13,23)]"
+                            }
+                        },
+                        "contentRange": "[(12,5)..(15,4)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(14,8)..(14,16)]",
+                                "name": "PropertyValue",
+                                "attributes": {
+                                    "Property": {
+                                        "type": "attribute",
+                                        "name": "Property",
+                                        "value": "Value",
+                                        "valueRange": "[(14,8)..(14,13)]"
+                                    }
+                                },
+                                "contentRange": "[(14,15)..(14,16)]",
+                                "content": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

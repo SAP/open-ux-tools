@@ -45,6 +45,9 @@
       "path": "packages/cds-annotation-parser"
     },
     {
+      "path": "packages/cds-odata-annotation-converter"
+    },
+    {
       "path": "packages/control-property-editor-common"
     },
     {
@@ -66,10 +69,25 @@
       "path": "packages/fe-fpm-writer"
     },
     {
+      "path": "packages/feature-toggle"
+    },
+    {
       "path": "packages/fiori-elements-writer"
     },
     {
       "path": "packages/fiori-freestyle-writer"
+    },
+    {
+      "path": "packages/i18n"
+    },
+    {
+      "path": "packages/inquirer-common"
+    },
+    {
+      "path": "packages/jest-file-matchers"
+    },
+    {
+      "path": "packages/jest-runner-puppeteer"
     },
     {
       "path": "packages/logger"
@@ -108,6 +126,12 @@
       "path": "packages/project-input-validator"
     },
     {
+      "path": "packages/reload-middleware"
+    },
+    {
+      "path": "packages/serve-static-middleware"
+    },
+    {
       "path": "packages/store"
     },
     {
@@ -118,6 +142,9 @@
     },
     {
       "path": "packages/ui-components"
+    },
+    {
+      "path": "packages/ui5-application-inquirer"
     },
     {
       "path": "packages/ui5-application-writer"

@@ -3,7 +3,6 @@ import { prettyPrintError, prettyPrintMessage } from './message';
 import type { ErrorMessage } from './message';
 import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
-
 /**
  * Required configuration a transportable object.
  */
@@ -205,11 +204,6 @@ export class Ui5AbapRepositoryService extends ODataService {
                 const query = this.defaults.params?.['sap-client']
                     ? '?sap-client=' + this.defaults.params['sap-client']
                     : '';
-                if (this.isDest) {
-                    this.log.info(
-                        '(Note: You will need to replace the host in the URL with the internal host, if your destination is configured using an On-Premise SAP Cloud Connector)'
-                    );
-                }
                 this.log.info(`App available at ${frontendUrl}${path}${query}`);
             } else {
                 // Test mode returns a HTTP response code of 403 so we dont want to show all error messages

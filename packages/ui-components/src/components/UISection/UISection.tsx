@@ -1,4 +1,6 @@
 import React from 'react';
+import { divProperties, getNativeProps } from '@fluentui/react';
+
 import './UISection.scss';
 
 export enum UISectionLayout {
@@ -44,12 +46,18 @@ export class UISection extends React.Component<UISectionProps & Readonly<{ child
     render(): React.ReactElement {
         const scrollable = this.props.scrollable === undefined || this.props.scrollable;
         const style: React.CSSProperties = {};
-        const layout = this.props.layout || UISectionLayout.Standard;
+        const layout = this.props.layout ?? UISectionLayout.Standard;
         if ('height' in this.props) {
             style.height = this.props.height;
         }
+        const divProps = getNativeProps<React.HTMLAttributes<HTMLDivElement>>(this.props, divProperties, [
+            'onScroll',
+            'className',
+            'children'
+        ]);
         return (
             <div
+                {...divProps}
                 className={`section${this.props.className ? ' ' + this.props.className : ''} section--${layout}${
                     scrollable ? ' section--scrollable' : ''
                 }${this.props.cleanPadding ? ' section--clean' : ''}${this.props.hidden ? ' section--hidden' : ''}`}

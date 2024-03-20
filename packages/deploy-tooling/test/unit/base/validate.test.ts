@@ -1,16 +1,22 @@
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { formatSummary, summaryMessage, validateBeforeDeploy } from '../../../src/base/validate';
+import {
+    formatSummary,
+    showAdditionalInfoForOnPrem,
+    summaryMessage,
+    validateBeforeDeploy
+} from '../../../src/base/validate';
 import { mockedProvider, mockedAdtService } from '../../__mocks__';
 import { green, red, yellow } from 'chalk';
 import { TransportChecksService } from '@sap-ux/axios-extension';
 import { t } from '@sap-ux/project-input-validator/src/i18n';
+import { isAppStudio, isOnPremiseDestination, listDestinations } from '@sap-ux/btp-utils';
 
 const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
 
-import { isAppStudio } from '@sap-ux/btp-utils';
-
 jest.mock('@sap-ux/btp-utils');
 const mockIsAppStudio = isAppStudio as jest.Mock;
+const mockListDestinations = listDestinations as jest.Mock;
+const mockisOnPremiseDestination = isOnPremiseDestination as jest.Mock;
 
 describe('deploy-test validation', () => {
     // default app for testing
@@ -446,5 +452,31 @@ describe('deploy-test validation', () => {
                 `${yellow('?')} ${summaryMessage.adtServiceUndefined} for TransportChecksService`
             );
         });
+    });
+
+    describe('Validate show additional info', () => {
+        const destinationsMock = { 'ABC123': {} };
+        test.each([
+            ['Show additional info', true, destinationsMock, true, 'ABC123', true],
+            ['If not in App Studio', false, destinationsMock, true, 'ABC123', false],
+            ['If destination not provided', true, destinationsMock, true, '', false],
+            ['If non-onPremise destination', true, destinationsMock, false, 'ABC123', false]
+        ])(
+            '%s',
+            async (
+                desc,
+                isAppStudio,
+                listDestinationsMock,
+                isOnPremiseDestinationMock,
+                destinationMock,
+                expectedResult
+            ) => {
+                mockIsAppStudio.mockReturnValue(isAppStudio);
+                mockListDestinations.mockResolvedValue(listDestinationsMock);
+                mockisOnPremiseDestination.mockResolvedValue(isOnPremiseDestinationMock);
+                const result = await showAdditionalInfoForOnPrem(destinationMock);
+                expect(result).toBe(expectedResult);
+            }
+        );
     });
 });

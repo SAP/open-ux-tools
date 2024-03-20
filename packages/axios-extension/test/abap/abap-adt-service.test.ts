@@ -14,6 +14,17 @@ import type { ArchiveFileNode } from '../../src/abap/types';
 import fs from 'fs';
 import cloneDeep from 'lodash/cloneDeep';
 import { Uaa } from '../../src/auth/uaa';
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as Logger from '@sap-ux/logger';
+
+const loggerMock: ToolsLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+} as Partial<ToolsLogger> as ToolsLogger;
+
+jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 jest.mock('open');
 
@@ -172,6 +183,7 @@ describe('Transport checks', () => {
     afterAll(() => {
         nock.cleanAll();
         nock.enableNetConnect();
+        jest.clearAllMocks();
     });
 
     const provider = createForAbap(config);
@@ -186,7 +198,19 @@ describe('Transport checks', () => {
         expect(await transportChecksService?.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
     });
 
-    test('Unexpected response - error or unknown XML', async () => {
+    test('Unexpected response - error in XML', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_CHECKS)
+            .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-6.xml'));
+        const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+        expect(await transportChecksService?.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
+        expect(loggerMock.error).toHaveBeenNthCalledWith(1, 'This is the first error message');
+        expect(loggerMock.error).toHaveBeenNthCalledWith(2, 'This is the second error message');
+    });
+
+    test('Unexpected response - unknown XML', async () => {
         nock(server)
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))

@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.9.2
+
+### Patch Changes
+
+-   6d76e076: Enhance `preview-middleware` to allow running QUnit and OPA5 tests.
+
+## 0.9.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+
+## 0.9.0
+
+### Minor Changes
+
+-   efd2f6d4: Support ui5 version 1.71.\* in CPE.
+
+## 0.8.14
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
 ## 0.8.13
 
 ### Patch Changes

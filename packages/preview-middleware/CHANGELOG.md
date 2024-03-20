@@ -1,5 +1,168 @@
 # @sap-ux/preview-middleware
 
+## 0.12.13
+
+### Patch Changes
+
+-   Updated dependencies [4b29ddcc]
+    -   @sap-ux/adp-tooling@0.9.4
+
+## 0.12.12
+
+### Patch Changes
+
+-   6d76e076: Enhance `preview-middleware` to allow running QUnit and OPA5 tests.
+
+## 0.12.11
+
+### Patch Changes
+
+-   874187b9: Using inbound navigation writer to generate appropriate change files does not produce correct results
+-   Updated dependencies [874187b9]
+    -   @sap-ux/adp-tooling@0.9.3
+
+## 0.12.10
+
+### Patch Changes
+
+-   fc76be56: do not trigger empty change on focus out
+
+## 0.12.9
+
+### Patch Changes
+
+-   212d54ed: Removed unnecessary peer dependency of the adp-tooling and corrected the integration into the preview-middleware
+-   Updated dependencies [212d54ed]
+    -   @sap-ux/adp-tooling@0.9.2
+
+## 0.12.8
+
+### Patch Changes
+
+-   dcd3324e: fix on-blur no change for cpe
+
+## 0.12.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.9.1
+
+## 0.12.6
+
+### Patch Changes
+
+-   cf842794: Adds writer functionality for Adaptation Project's manifest change editors
+-   Updated dependencies [cf842794]
+    -   @sap-ux/adp-tooling@0.9.0
+
+## 0.12.5
+
+### Patch Changes
+
+-   6c5dba8e: Add reload-middleware
+
+## 0.12.4
+
+### Patch Changes
+
+-   5448433a: FIX: preview path on windows
+
+## 0.12.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.11
+
+## 0.12.2
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/adp-tooling@0.8.10
+    -   @sap-ux/logger@0.5.1
+
+## 0.12.1
+
+### Patch Changes
+
+-   Updated dependencies [05953a48]
+    -   @sap-ux/adp-tooling@0.8.9
+
+## 0.12.0
+
+### Minor Changes
+
+-   efd2f6d4: Support ui5 version 1.71.\* in CPE.
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.8
+
+## 0.11.36
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.7
+
+## 0.11.35
+
+### Patch Changes
+
+-   c05fd77a: Add express in devDependencies
+
+## 0.11.34
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.6
+
+## 0.11.33
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+    -   @sap-ux/adp-tooling@0.8.5
+
+## 0.11.32
+
+### Patch Changes
+
+-   Updated dependencies [2bedc697]
+    -   @sap-ux/adp-tooling@0.8.4
+
+## 0.11.31
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+    -   @sap-ux/adp-tooling@0.8.3
+
+## 0.11.30
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.2
+
+## 0.11.29
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.8.1
+
+## 0.11.28
+
+### Patch Changes
+
+-   b817c8d5: Property change is created (unsaved) on the key press but should be on blur for the adaptation projects
+
+## 0.11.27
+
+### Patch Changes
+
+-   52265581: Fix styling for the funnel icon on Outline Panel
+
 ## 0.11.26
 
 ### Patch Changes

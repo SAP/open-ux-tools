@@ -1,0 +1,17 @@
+UI.LineItem  #a : [
+    {
+        $Type       : 'UI.DataField',
+        Criticality : criticality
+    },
+    {
+        Value : stepStatus
+    },
+    {
+        $Type       : '',
+        Criticality : code
+    },
+    {
+        $Type       : '',
+        Value : ,
+    },
+]

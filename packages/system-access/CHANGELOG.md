@@ -1,5 +1,84 @@
 # @sap-ux/system-access
 
+## 0.3.17
+
+### Patch Changes
+
+-   Updated dependencies [e443e534]
+    -   @sap-ux/store@0.5.0
+
+## 0.3.16
+
+### Patch Changes
+
+-   Updated dependencies [811c4324]
+    -   @sap-ux/btp-utils@0.14.2
+    -   @sap-ux/axios-extension@1.11.3
+
+## 0.3.15
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/axios-extension@1.11.2
+    -   @sap-ux/btp-utils@0.14.1
+    -   @sap-ux/logger@0.5.1
+    -   @sap-ux/store@0.4.3
+
+## 0.3.14
+
+### Patch Changes
+
+-   Updated dependencies [efd2f6d4]
+    -   @sap-ux/axios-extension@1.11.1
+
+## 0.3.13
+
+### Patch Changes
+
+-   Updated dependencies [0f6e0e1b]
+    -   @sap-ux/axios-extension@1.11.0
+    -   @sap-ux/btp-utils@0.14.0
+
+## 0.3.12
+
+### Patch Changes
+
+-   Updated dependencies [64f9c513]
+    -   @sap-ux/axios-extension@1.10.2
+
+## 0.3.11
+
+### Patch Changes
+
+-   Updated dependencies [2e0b1a6d]
+    -   @sap-ux/logger@0.5.0
+    -   @sap-ux/axios-extension@1.10.1
+    -   @sap-ux/store@0.4.2
+
+## 0.3.10
+
+### Patch Changes
+
+-   Updated dependencies [eb0b7b37]
+    -   @sap-ux/store@0.4.1
+
+## 0.3.9
+
+### Patch Changes
+
+-   Updated dependencies [ecd5275d]
+    -   @sap-ux/axios-extension@1.10.0
+
+## 0.3.8
+
+### Patch Changes
+
+-   Updated dependencies [de8a4878]
+    -   @sap-ux/axios-extension@1.9.0
+    -   @sap-ux/btp-utils@0.13.0
+
 ## 0.3.7
 
 ### Patch Changes

@@ -185,6 +185,16 @@ describe('FlpSandbox', () => {
                             }
                         ]
                     },
+                    test: [
+                        {
+                            framework: 'QUnit'
+                        },
+                        {
+                            framework: 'OPA5',
+                            path: '/test/integration/opaTests.qunit.html',
+                            init: '/test/integration/opaTests.qunit.js'
+                        }
+                    ],
                     rta: {
                         layer: 'CUSTOMER_BASE',
                         editors: [
@@ -240,8 +250,18 @@ describe('FlpSandbox', () => {
         test('rta with developerMode=true', async () => {
             let response = await server.get('/my/editor.html').expect(200);
             expect(response.text).toMatchSnapshot();
+            expect(response.text.includes('livereloadPort: 35729')).toBe(true);
             response = await server.get('/my/editor.html.inner.html').expect(200);
             expect(response.text).toMatchSnapshot();
+        });
+
+        test('livereload port from environment', async () => {
+            process.env.FIORI_TOOLS_LIVERELOAD_PORT = '8080';
+            let response = await server.get('/my/editor.html').expect(200);
+            expect(response.text.includes('livereloadPort: 8080')).toBe(true);
+            process.env.FIORI_TOOLS_LIVERELOAD_PORT = 'wrongPort';
+            response = await server.get('/my/editor.html').expect(200);
+            expect(response.text.includes('livereloadPort: 35729')).toBe(true);
         });
 
         test('rta with developerMode=true and plugin', async () => {
@@ -293,6 +313,25 @@ describe('FlpSandbox', () => {
             const response = await server.get('/test/flp.html').expect(200);
             expect(response.text).toMatchSnapshot();
         });
+
+        test('default Qunit path test/unitTests.qunit.html', async () => {
+            const response = await server.get('/test/unitTests.qunit.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('default Qunit init test/unitTests.qunit.js', async () => {
+            const response = await server.get('/test/unitTests.qunit.js').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('custom opa5 path test/integration/opaTests.qunit.html', async () => {
+            const response = await server.get('/test/integration/opaTests.qunit.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('no route for custom init', async () => {
+            await server.get('/test/integration/opaTests.qunit.js').expect(404);
+        });
     });
 });
 
@@ -306,7 +345,10 @@ describe('initAdp', () => {
             descriptor: {
                 manifest: {},
                 name: 'descriptorName',
-                url
+                url,
+                asyncHints: {
+                    requests: []
+                }
             },
             resources: [],
             proxy: jest.fn(),

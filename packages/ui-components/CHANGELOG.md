@@ -1,5 +1,77 @@
 # @sap-ux/ui-components
 
+## 1.15.9
+
+### Patch Changes
+
+-   d188f765: Upgrading version of `sanitize-html` due to medium priority security issue
+
+## 1.15.8
+
+### Patch Changes
+
+-   75653b31: UIIconButton. Some icons(which are not 16x16) are not centered within UIIconButton
+
+## 1.15.7
+
+### Patch Changes
+
+-   942b8f2f: Fixes for SonarQube issues:
+    1. Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.
+    1. Refactor this code to not use nested template literals.
+    1. Remove this property or method or refactor "Class", as "method" is not used inside component body
+    1. Move this component definition out of the parent component and pass data as props.
+    1. The signature '(from: number, length?: number | undefined): string' of 'text.substr' is deprecated.
+    1. Mark the props of the component as read-only.
+    1. Make this public static property readonly.
+    1. Prefer using an optional chain expression instead, as it's more concise and easier to read.
+    1. '{property}' is deprecated.
+    1. Unnecessary use of boolean literals in conditional expression.
+    1. useState call is not destructured into value + setter pair
+    1. Remove this commented out code.
+
+## 1.15.6
+
+### Patch Changes
+
+-   f6f7111c: UIIconButton. Apply vscode theme variables for UIIconButton when 'checked' property is set as 'true'
+
+## 1.15.5
+
+### Patch Changes
+
+-   80fae216: Addition of Icon for App Info Page. Needed for new dev efforts
+
+## 1.15.4
+
+### Patch Changes
+
+-   eb0b7b37: Chore - TypeScript 5 upgrade
+
+## 1.15.3
+
+### Patch Changes
+
+-   13dcde74: Update Icons.tsx to fix typo
+
+## 1.15.2
+
+### Patch Changes
+
+-   ccf2767a: Update Icons - Expand/Collapse Groups & 3 Layout options (Layout Centre, Left. & Right)
+
+## 1.15.1
+
+### Patch Changes
+
+-   601f6389: fix: Allow to pass custom `data-*` attributes for `UISections`, `UISection`, `UIToolbar` and `UIToolbarColumn` components.
+
+## 1.15.0
+
+### Minor Changes
+
+-   ea1ed433: feat: New component UIQuickNavigation to allow focus through groups using keyboard shortcuts
+
 ## 1.14.2
 
 ### Patch Changes

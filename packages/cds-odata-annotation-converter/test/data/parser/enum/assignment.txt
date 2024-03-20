@@ -1,0 +1,20 @@
+Communication : {
+    Contact : {
+        $Type:'Communication.ContactType',
+        url : [
+            {
+                $Type:'Communication.UrlType',
+                type : [#home, #preferred ],
+            },
+        ],
+    },
+    Contact #two: {
+        $Type:'Communication.ContactType',
+        url : [
+            {
+                $Type:'Communication.UrlType',
+                type : [],
+            },
+        ],
+    },
+}

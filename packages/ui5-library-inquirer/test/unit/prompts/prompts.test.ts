@@ -1,15 +1,22 @@
 import { getQuestions } from '../../../src/prompts';
-import * as utility from '../../../src/prompts/utility';
 import { t } from '../../../src/i18n';
 import { join } from 'path';
-import type { UI5VersionChoice } from '../../../src/types';
 import type { Separator } from 'inquirer';
 import * as projectInputValidators from '@sap-ux/project-input-validator';
+import type { UI5VersionChoice } from '@sap-ux/inquirer-common';
+import * as utility from '@sap-ux/inquirer-common';
 
 jest.mock('@sap-ux/project-input-validator', () => {
     return {
         __esModule: true,
         ...jest.requireActual('@sap-ux/project-input-validator')
+    };
+});
+
+jest.mock('@sap-ux/inquirer-common', () => {
+    return {
+        __esModule: true,
+        ...jest.requireActual('@sap-ux/inquirer-common')
     };
 });
 
