@@ -263,12 +263,15 @@ export async function enhanceConfigForSystem(
         }
     } else if (system?.authenticationType === AuthenticationType.ReentranceTicket) {
         const provider = createForAbapOnCloud({
+            ignoreCertErrors: proxyOptions.secure === false,
             environment: AbapCloudEnvironment.EmbeddedSteampunk,
             url: system.url
         });
         // sending a request to the backend to get cookies
-        await provider.getAtoInfo();
-        proxyOptions.headers['cookie'] = provider.cookies.toString();
+        const ato = await provider.getAtoInfo();
+        if (ato) {
+            proxyOptions.headers['cookie'] = provider.cookies.toString();
+        }
     } else if (system?.username && system.password) {
         proxyOptions.auth = `${system.username}:${system.password}`;
     }
