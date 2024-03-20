@@ -16,7 +16,7 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { getFragments, writeFragment } from '../api-handler';
+import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
 
