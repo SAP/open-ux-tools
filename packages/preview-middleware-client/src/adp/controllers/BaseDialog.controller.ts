@@ -10,12 +10,7 @@ import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import CommandExecutor from '../command-executor';
-
-interface FragmentChange {
-    content: {
-        fragmentPath: string;
-    };
-}
+import { matchesFragmentName } from '../utils';
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
@@ -125,8 +120,15 @@ export default abstract class BaseDialog extends Controller {
         const allCommands = this.rta.getCommandStack().getCommands();
 
         return allCommands.some((command: FlexCommand) => {
-            const change = command.getPreparedChange().getDefinition() as unknown as FragmentChange;
-            return change.content?.fragmentPath?.includes(`${fragmentName}.fragment.xml`) || false;
+            if (command?.getProperty('name') === 'composite') {
+                const addXmlCommand = command
+                    .getCommands()
+                    .find((c: FlexCommand) => c?.getProperty('name') === 'addXMLAtExtensionPoint');
+
+                return addXmlCommand && matchesFragmentName(addXmlCommand, fragmentName);
+            } else {
+                return matchesFragmentName(command, fragmentName);
+            }
         });
     }
 

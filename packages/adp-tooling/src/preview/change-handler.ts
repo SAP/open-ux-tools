@@ -41,7 +41,7 @@ export function tryFixChange(change: CommonChangeProperties, logger: Logger) {
  * @returns true if the change is of type AddXMLChange
  */
 export function isAddXMLChange(change: CommonChangeProperties): change is AddXMLChange {
-    return change.changeType === 'addXML';
+    return change.changeType === 'addXML' || change.changeType === 'addXMLAtExtensionPoint';
 }
 
 /**
@@ -53,17 +53,17 @@ export function isAddXMLChange(change: CommonChangeProperties): change is AddXML
  * @param {Logger} logger - The logging instance.
  */
 export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Editor, logger: Logger): void {
-    const fragmentPath = change.content.fragmentPath;
-    const path = join(basePath, FolderTypes.CHANGES, fragmentPath);
-
-    if (fs.exists(path)) {
-        logger.info(`XML Fragment "${fragmentPath}" already exists.`);
-        return;
-    }
+    const { fragmentPath } = change.content;
+    const fullPath = join(basePath, FolderTypes.CHANGES, fragmentPath);
 
     try {
+        if (fs.exists(fullPath)) {
+            logger.info(`XML Fragment "${fragmentPath}" already exists.`);
+            return;
+        }
+
         const fragmentTemplatePath = join(__dirname, '../../templates/rta', TemplateFileName.Fragment);
-        fs.copy(fragmentTemplatePath, path);
+        fs.copy(fragmentTemplatePath, fullPath);
         logger.info(`XML Fragment "${fragmentPath}" was created`);
     } catch (error) {
         logger.error(`Failed to create XML Fragment "${fragmentPath}": ${error}`);

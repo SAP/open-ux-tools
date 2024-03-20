@@ -1,7 +1,15 @@
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+
 export interface Deferred<T> {
     promise: Promise<T>;
     resolve: (value: T | PromiseLike<T>) => void;
     reject: (reason?: unknown) => void;
+}
+
+export interface FragmentChange {
+    content: {
+        fragmentPath: string;
+    };
 }
 
 /**
@@ -25,4 +33,17 @@ export function createDeferred<T>(): Deferred<T> {
     }
 
     return { promise, resolve, reject };
+}
+
+/**
+ * Checks if the fragment name associated with a command matches the specified fragment name.
+ *
+ * @param {FlexCommand} command - The command object containing the prepared change to be examined.
+ * @param {string} fragmentName - The name of the fragment to match against the command's change.
+ * @returns {boolean} Returns true if the command's change contains a fragment path that matches
+ *                    the specified fragment name; otherwise, returns false.
+ */
+export function matchesFragmentName(command: FlexCommand, fragmentName: string): boolean {
+    const change = command.getPreparedChange().getDefinition() as unknown as FragmentChange;
+    return change.content?.fragmentPath?.includes(`${fragmentName}.fragment.xml`) || false;
 }
