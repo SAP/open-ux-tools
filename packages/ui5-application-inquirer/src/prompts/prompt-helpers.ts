@@ -1,4 +1,5 @@
-import type { PromptSeverityMessage, YUIQuestion, validate } from '@sap-ux/inquirer-common';
+import type { YUIQuestion, validate } from '@sap-ux/inquirer-common';
+import { extendAdditionalMessages } from '@sap-ux/inquirer-common';
 import { existsSync } from 'fs';
 import type { Answers, Question } from 'inquirer';
 import { join } from 'path';
@@ -116,24 +117,6 @@ function extendValidate(
     };
 }
 
-/**
- * Extends an additionalMessages function.
- *
- * @param question - the question to which the validate function will be applied
- * @param addMsgFunc - the additional messages function which will be applied to the question
- * @returns the extended additional messages function
- */
-function extendAdditionalMessages(question: YUIQuestion, addMsgFunc: PromptSeverityMessage): PromptSeverityMessage {
-    const addMsgs = question.additionalMessages;
-    return (value: unknown, previousAnswers?: UI5ApplicationAnswers | undefined): ReturnType<PromptSeverityMessage> => {
-        const extMsg = addMsgFunc(value, previousAnswers);
-        if (extMsg) {
-            return extMsg; // Extended prompt message is returned first
-        }
-        // Defer to the original function if a valid message was not returned from the extended version
-        return typeof addMsgs === 'function' ? addMsgs(value, previousAnswers) : undefined;
-    };
-}
 /**
  * Extend the existing prompt property function with the one specified in prompt options or add as new.
  *
