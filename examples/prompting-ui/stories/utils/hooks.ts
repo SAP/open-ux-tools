@@ -47,13 +47,6 @@ export function useQuestions(
                 }
                 questions = resolvedQuestions;
             }
-            // initialize the required property - better logic?
-            questions.forEach((question) => {
-                question.required = !!(
-                    (question.dependantPromptNames && question.dependantPromptNames?.length > 0) ||
-                    question.selectType === 'dynamic'
-                );
-            });
             setQuestions({ groups, questions });
         });
     }, []);

@@ -1,4 +1,4 @@
-import type { CheckboxQuestion, InputQuestion, ListQuestion } from 'inquirer';
+import type { Answers, CheckboxQuestion, InputQuestion, ListQuestion } from 'inquirer';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Question } from '../Question/Question';
 import type { AnswerValue, PromptsGroup } from '../Question/Question';
@@ -31,10 +31,13 @@ export const enum PromptsLayoutType {
 
 export type IQuestion = (ListQuestion | InputQuestion | CheckboxQuestion) & AdditionalQuestionProperties;
 
+export type ValidationResults = { [questionName: string]: { isValid: boolean; errorMessage?: string } };
+
 export interface QuestionsProps {
     questions: Array<IQuestion>;
     answers: Record<string, AnswerValue>;
     choices: DynamicChoices;
+    validation: ValidationResults;
     onChoiceRequest: (names: string[], answers: Record<string, AnswerValue>) => void;
     onChange: (
         answers: Record<string, AnswerValue>,
@@ -48,7 +51,17 @@ export interface QuestionsProps {
 }
 
 export const Questions = (props: QuestionsProps) => {
-    const { groups = [], questions, onChoiceRequest, onChange, answers, choices, layoutType, showDescriptions } = props;
+    const {
+        groups = [],
+        questions,
+        onChoiceRequest,
+        onChange,
+        answers,
+        choices,
+        layoutType,
+        showDescriptions,
+        validation = {}
+    } = props;
     const [localAnswers, setLocalAnswers] = useState({ ...answers });
     const [pendingRequests, setRequestedChoices] = useRequestedChoices({}, choices);
     const requestChoices = useCallback(
@@ -114,6 +127,7 @@ export const Questions = (props: QuestionsProps) => {
                     <Question
                         key={`${question.name}-${index}`}
                         question={question}
+                        validation={validation}
                         answers={localAnswers}
                         onChange={onAnswerChange}
                         choices={externalChoices}

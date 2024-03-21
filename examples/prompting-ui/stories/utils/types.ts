@@ -24,6 +24,7 @@ export const GET_CHOICES = 'GET_CHOICES';
 export const SET_CHOICES = 'SET_CHOICES';
 export const APPLY_ANSWERS = 'APPLY_ANSWERS';
 export const RESET_ANSWERS = 'RESET_ANSWERS';
+export const SET_VALIDATION_RESULTS = 'SET_VALIDATION_RESULTS';
 
 /**
  * Building block type.
@@ -79,6 +80,11 @@ export interface SetChartQuestions extends SetQuestions<ChartPromptsAnswer> {
 
 export interface SetFilterBarQuestions extends SetQuestions<FilterBarPromptsAnswer> {
     type: typeof SET_FILTERBAR_QUESTIONS;
+}
+
+export interface SetValidationResults {
+    type: typeof SET_VALIDATION_RESULTS;
+    validationResults: { [questionName: string]: { isValid: boolean; errorMessage?: string } };
 }
 
 // Move to addon?

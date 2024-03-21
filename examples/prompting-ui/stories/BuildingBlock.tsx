@@ -1,10 +1,11 @@
 import { UIDefaultButton, UISmallButton, initIcons } from '@sap-ux/ui-components';
 import React, { useEffect, useState } from 'react';
 import { SupportedBuildingBlocks } from './utils';
-import { applyAnswers, getChoices, getCodeSnippet, getWebSocket } from './utils/communication';
-import { Questions, PromptsLayoutType, IQuestion } from '../src/components';
+import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers } from './utils/communication';
+import { Questions, PromptsLayoutType, IQuestion, ValidationResults } from '../src/components';
 import { useChoices, useQuestions } from './utils/hooks';
 import { Answers } from 'inquirer';
+import { AnswerValue } from '../src/components/Question';
 
 initIcons();
 getWebSocket();
@@ -43,22 +44,35 @@ export const BuildingBlockQuestions = (props: {
     });
     const choices = useChoices();
     const { groups, questions } = useQuestions(type, visibleQuestions);
+    const [validation, setValidation] = useState<ValidationResults>({});
 
-    function updateAnswers(newAnswers: Answers) {
+    async function updateAnswers(newAnswers: Answers, name: string, answer: AnswerValue) {
         setAnswers({
             ...getDefaultAnswers(questions),
             ...newAnswers
         });
+        await validateAnswers(type, [{ name } as IQuestion], { [name]: answer }).then((validationResults) =>
+            setValidation({ ...validation, ...validationResults })
+        );
     }
 
-    function handleApply() {
-        // Call API to apply changes
-        console.log('Applying changes... FPM Writer');
-        applyAnswers(type, answers).then(({ buildingBlockType }) => setAnswers({}));
+    async function handleApply() {
+        await validateAnswers(type, questions, answers).then((validationResults) => {
+            setValidation(validationResults);
+            // Call API to apply changes
+            console.log('Applying changes... FPM Writer');
+            if (!Object.values(validationResults).some((result) => result.isValid === false)) {
+                applyAnswers(type, answers).then(({ buildingBlockType }) => {
+                    setAnswers({});
+                    setValidation({});
+                });
+            }
+        });
     }
 
     function handleReset() {
         setAnswers(getDefaultAnswers(questions));
+        setValidation({});
     }
 
     function toggleLayout(name: keyof CustomizationSettings): void {
@@ -119,6 +133,7 @@ export const BuildingBlockQuestions = (props: {
                         onChange={updateAnswers}
                         answers={answers}
                         choices={choices}
+                        validation={validation}
                         layoutType={
                             layoutSettings.multiColumn ? PromptsLayoutType.MultiColumn : PromptsLayoutType.SingleColumn
                         }

@@ -22,7 +22,9 @@ import {
     APPLY_ANSWERS,
     RESET_ANSWERS,
     UPDATE_CODE_SNIPPET,
-    UpdateCodeSnippet
+    UpdateCodeSnippet,
+    SET_VALIDATION_RESULTS,
+    SetValidationResults
 } from '../../stories/utils/types';
 import { Actions, GET_CODE_SNIPPET, ResetAnswers, SetChoices, GetChoices } from '../../stories/utils/types';
 import { fpmWriterApi, getSerializeContent } from './writerApi';
@@ -36,9 +38,11 @@ import {
     SetProjectPath,
     UPDATE_PROJECT_PATH,
     UPDATE_PROJECT_PATH_RESULT,
-    UpdateProjectPathResult
+    UpdateProjectPathResult,
+    VALIDATE_ANSWERS
 } from '../addons/project/types';
 import { DynamicChoices } from '../../src/components';
+import { validateAnswers } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 
@@ -219,6 +223,23 @@ async function handleAction(action: Actions): Promise<void> {
                     buildingBlockType,
                     codeSnippet,
                     answers
+                };
+                sendMessage(responseAction);
+                break;
+            }
+            case VALIDATE_ANSWERS: {
+                const fs = await getEditor(true);
+                const currentAppPath = getProjectPath();
+                const validationResult = await validateAnswers(
+                    currentAppPath,
+                    fs,
+                    action.questions,
+                    action.answers,
+                    action.value
+                );
+                const responseAction: SetValidationResults = {
+                    type: SET_VALIDATION_RESULTS,
+                    validationResults: validationResult
                 };
                 sendMessage(responseAction);
                 break;

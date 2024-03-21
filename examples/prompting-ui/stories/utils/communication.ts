@@ -1,3 +1,4 @@
+import { Answers } from 'inquirer';
 import {
     GET_PROJECT_PATH,
     GetProjectPath,
@@ -5,9 +6,11 @@ import {
     UPDATE_PROJECT_PATH,
     UPDATE_PROJECT_PATH_RESULT,
     UpdateProjectPath,
-    UpdateProjectPathResultPayload
+    UpdateProjectPathResultPayload,
+    VALIDATE_ANSWERS,
+    ValidateAnswers
 } from '../../.storybook/addons/project/types';
-import type { Choice, DynamicChoices, IQuestion } from '../../src/components';
+import type { DynamicChoices, IQuestion, ValidationResults } from '../../src/components';
 import { PromptsGroup } from '../../src/components/Question';
 import type { Actions, GetChoices, GetCodeSnippet } from './types';
 import {
@@ -20,6 +23,7 @@ import {
     SET_CHOICES,
     SET_FILTERBAR_QUESTIONS,
     SET_TABLE_QUESTIONS,
+    SET_VALIDATION_RESULTS,
     SupportedBuildingBlocks
 } from './types';
 
@@ -143,6 +147,27 @@ export function applyAnswers(
         };
         sendMessage(getAction);
         resolve({ buildingBlockType: buildingBlockType });
+    });
+}
+
+export function validateAnswers(
+    value: SupportedBuildingBlocks,
+    questions: IQuestion[],
+    answers: Answers
+): Promise<ValidationResults> {
+    return new Promise((resolve, error) => {
+        const getAction: ValidateAnswers = {
+            type: VALIDATE_ANSWERS,
+            value,
+            questions,
+            answers
+        };
+        sendMessage(getAction);
+        const handleMessage = (action: Actions) => {
+            onMessageDetach(SET_VALIDATION_RESULTS, handleMessage);
+            resolve({ ...action.validationResults });
+        };
+        onMessageAttach(SET_VALIDATION_RESULTS, handleMessage);
     });
 }
 
