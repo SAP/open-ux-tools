@@ -39,6 +39,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
         "sanitize-filename": "1.6.3",
         "ejs": "3.1.9",
         "mem-fs": "2.1.0",
