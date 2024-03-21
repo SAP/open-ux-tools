@@ -17,7 +17,12 @@ describe('ControllerExtension', () => {
         fetchMock.mockResolvedValue({
             json: jest
                 .fn()
-                .mockReturnValueOnce({ controllerExists: false, controllerPath: '', controllerPathFromRoot: '' })
+                .mockReturnValueOnce({
+                    controllerExists: false,
+                    controllerPath: '',
+                    controllerPathFromRoot: '',
+                    isRunningInBAS: false
+                })
                 .mockReturnValueOnce({ controllers: [] }),
             text: jest.fn(),
             ok: true
