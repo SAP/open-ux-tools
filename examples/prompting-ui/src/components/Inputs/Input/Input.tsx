@@ -8,10 +8,11 @@ export interface InputProps extends InputQuestion {
     onChange: (name: string, value?: string | number | boolean) => void;
     required?: boolean;
     additionalInfo?: string;
+    errorMessage?: string;
 }
 
 export const Input = (props: InputProps) => {
-    const { name = '', onChange, required, additionalInfo, message } = props;
+    const { name = '', onChange, required, additionalInfo, message, errorMessage } = props;
     const [value, setValue] = useValue('', props.value);
     const onLiveChange = (event: React.FormEvent, newValue?: string | undefined) => {
         setValue(newValue ?? '');
@@ -28,6 +29,7 @@ export const Input = (props: InputProps) => {
             label={typeof message === 'string' ? message : name}
             value={value.toString()}
             onChange={onLiveChange}
+            errorMessage={errorMessage}
         />
     );
 };

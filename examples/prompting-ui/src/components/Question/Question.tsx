@@ -5,7 +5,7 @@ import type {
     CheckboxQuestion as _CheckboxQuestion
 } from 'inquirer';
 import { Input, Select, MultiSelect } from '../Inputs';
-import type { Choice } from '../Questions';
+import type { Choice, ValidationResults } from '../Questions';
 import { useOptions } from '../../utilities';
 import './Question.scss';
 
@@ -13,7 +13,7 @@ export interface AdditionalQuestionProperties {
     selectType: 'static' | 'dynamic';
     dependantPromptNames?: string[];
     required?: boolean;
-    guideId?: string;
+    groupId?: string;
     additionalInfo?: string;
 }
 
@@ -36,23 +36,35 @@ export interface QuestionProps {
     choices?: Choice[];
     pending?: boolean;
     additionalInfo?: string;
+    validation: ValidationResults;
 }
 
 export const Question = (props: QuestionProps) => {
-    const { question, onChange, answers, choices, pending, additionalInfo } = props;
+    const { question, onChange, answers, choices, pending, additionalInfo, validation = {} } = props;
     let questionInput: JSX.Element;
     let value: AnswerValue = '';
+    let errorMessage = '';
     if (question.name && answers?.[question.name] !== undefined) {
         value = answers?.[question.name];
     } else if (question.default !== undefined) {
         value = question.default;
     }
+    if (question.name && validation[question.name]?.isValid === false && validation[question.name]?.errorMessage) {
+        errorMessage = validation[question.name].errorMessage!;
+    }
     // ToDo -> move to MultiSelect and Select?
     const options = useOptions(question, choices);
-
     switch (question?.type) {
         case 'input': {
-            questionInput = <Input value={value} {...question} onChange={onChange} additionalInfo={additionalInfo} />;
+            questionInput = (
+                <Input
+                    value={value}
+                    {...question}
+                    onChange={onChange}
+                    additionalInfo={additionalInfo}
+                    errorMessage={errorMessage}
+                />
+            );
             break;
         }
         case 'checkbox': {
@@ -64,6 +76,7 @@ export const Question = (props: QuestionProps) => {
                     onChange={onChange}
                     options={options}
                     additionalInfo={additionalInfo}
+                    errorMessage={errorMessage}
                 />
             );
             break;
@@ -78,6 +91,7 @@ export const Question = (props: QuestionProps) => {
                     options={options}
                     pending={pending}
                     additionalInfo={additionalInfo}
+                    errorMessage={errorMessage}
                 />
             );
             break;

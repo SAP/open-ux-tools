@@ -14,10 +14,21 @@ export interface MultiSelectProps extends CheckboxQuestion {
     options: UIComboBoxOption[];
     pending?: boolean;
     additionalInfo?: string;
+    errorMessage?: string;
 }
 
 export const MultiSelect = (props: MultiSelectProps) => {
-    const { name = '', message, onChange, dependantPromptNames, required, options, pending, additionalInfo } = props;
+    const {
+        name = '',
+        message,
+        onChange,
+        dependantPromptNames,
+        required,
+        options,
+        pending,
+        additionalInfo,
+        errorMessage
+    } = props;
     const [value, setValue] = useValue('', props.value?.toString());
 
     return (
@@ -46,6 +57,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
                 onChange(name, updatedValue, dependantPromptNames);
             }}
             onRenderLabel={getLabelRenderer(additionalInfo)}
+            errorMessage={errorMessage}
         />
     );
 };

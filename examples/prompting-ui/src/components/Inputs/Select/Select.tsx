@@ -13,10 +13,21 @@ export interface SelectProps extends ListQuestion {
     options: UIComboBoxOption[];
     pending?: boolean;
     additionalInfo?: string;
+    errorMessage?: string;
 }
 
 export const Select = (props: SelectProps) => {
-    const { name = '', message, onChange, dependantPromptNames, required, options, pending, additionalInfo } = props;
+    const {
+        name = '',
+        message,
+        onChange,
+        dependantPromptNames,
+        required,
+        options,
+        pending,
+        additionalInfo,
+        errorMessage
+    } = props;
     const [value, setValue] = useValue('', props.value);
 
     return (
@@ -39,6 +50,7 @@ export const Select = (props: SelectProps) => {
                 }
             }}
             onRenderLabel={getLabelRenderer(additionalInfo)}
+            errorMessage={errorMessage}
         />
     );
 };

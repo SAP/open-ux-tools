@@ -32,5 +32,16 @@
                 width: 234px;
             }
         }
+
+        .ms-TextField {
+            width: 262px;
+        }
+
+        [role='alert'] {
+            display: block;
+            width: auto;
+            white-space: nowrap;
+            overflow: hidden;
+        }
     }
 }
