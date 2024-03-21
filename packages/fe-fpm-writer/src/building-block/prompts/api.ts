@@ -4,7 +4,6 @@ import type { Answers, CheckboxQuestion, InputQuestion, ListQuestion, Question }
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { i18nNamespaces, initI18n, translate } from '../../i18n';
-import type { Chart, FilterBar, Table } from '../types';
 import { BuildingBlockType } from '../types';
 import ProjectProvider from '../utils/project';
 import {
@@ -28,7 +27,8 @@ import type {
     PromptsGroup,
     TablePromptsAnswer,
     BuildingBlockTypePromptsAnswer,
-    FilterBarPromptsAnswer
+    FilterBarPromptsAnswer,
+    ValidationResults
 } from './types';
 
 const TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID = 'tableBuildingBlockProperties';
@@ -136,11 +136,13 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
                 fs,
                 basePath,
                 t('viewOrFragmentFile.message'),
-                t('viewOrFragmentFile.validate')
+                t('viewOrFragmentFile.validate'),
+                [],
+                { required: true }
             ),
-            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id),
-            getBindingContextTypePrompt(t('bindingContextType'), defaultAnswers.bindingContextType),
-            getFilterBarIdPrompt(t('filterBar')),
+            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, { required: true }),
+            getBindingContextTypePrompt(t('bindingContextType'), defaultAnswers.bindingContextType, { required: true }),
+            getFilterBarIdPrompt(t('filterBar'), { required: true }),
             {
                 type: 'checkbox',
                 name: 'personalization',
@@ -167,16 +169,12 @@ export async function getChartBuildingBlockPrompts(basePath: string, fs: Editor)
                 name: 'selectionChange',
                 message: t('selectionChange')
             } as InputQuestion,
-            getAggregationPathPrompt(t('aggregation'), fs),
-            getEntityPrompt(t('entity'), projectProvider, ['qualifier']),
-            getAnnotationPathQualifierPrompt(
-                'qualifier',
-                t('qualifier'),
-                projectProvider,
-                [UIAnnotationTerms.Chart],
-                undefined,
-                t('valuesDependentOnEntityTypeInfo')
-            )
+            getAggregationPathPrompt(t('aggregation'), fs, { required: true }),
+            getEntityPrompt(t('entity'), projectProvider, ['qualifier'], { required: true }),
+            getAnnotationPathQualifierPrompt('qualifier', t('qualifier'), projectProvider, [UIAnnotationTerms.Chart], {
+                additionalInfo: t('valuesDependentOnEntityTypeInfo'),
+                required: true
+            })
         ]
     };
 }
@@ -228,30 +226,37 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                 t('viewOrFragmentFile.message'),
                 t('viewOrFragmentFile.validate'),
                 ['aggregationPath'],
-                TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+                { groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID, required: true }
             ),
-            getBuildingBlockIdPrompt(
-                t('id.message'),
-                t('id.validation'),
-                defaultAnswers.id,
-                TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
-            ),
-            getBindingContextTypePrompt(
-                t('bindingContextType'),
-                defaultAnswers.bindingContextType,
-                TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
-            ),
-            getEntityPrompt(t('entity'), projectProvider, ['qualifier'], TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
+            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, {
+                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                required: true
+            }),
+            getBindingContextTypePrompt(t('bindingContextType'), defaultAnswers.bindingContextType, {
+                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+            }),
+            getEntityPrompt(t('entity'), projectProvider, ['qualifier'], {
+                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                required: true
+            }),
             getAnnotationPathQualifierPrompt(
                 'qualifier',
                 t('qualifier'),
                 projectProvider,
                 [UIAnnotationTerms.LineItem],
-                TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
-                t('valuesDependentOnEntityTypeInfo')
+                {
+                    additionalInfo: t('valuesDependentOnEntityTypeInfo'),
+                    groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                    required: true
+                }
             ),
-            getAggregationPathPrompt(t('aggregation'), fs, TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
-            getFilterBarIdPrompt(t('filterBar.message'), TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID),
+            getAggregationPathPrompt(t('aggregation'), fs, {
+                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID,
+                required: true
+            }),
+            getFilterBarIdPrompt(t('filterBar.message'), {
+                groupId: TABLE_BUILDING_BLOCK_PROPERTIES_GROUP_ID
+            }),
 
             //second prompt group
             {
@@ -280,12 +285,9 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                 default: defaultAnswers.selectionMode,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             } as ListQuestion,
-            getBooleanPrompt(
-                'displayHeader',
-                t('displayHeader'),
-                defaultAnswers.displayHeader,
-                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-            ),
+            getBooleanPrompt('displayHeader', t('displayHeader'), defaultAnswers.displayHeader, {
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            }),
             {
                 type: 'input',
                 name: 'header',
@@ -315,42 +317,24 @@ export async function getTableBuildingBlockPrompts(basePath: string, fs: Editor)
                 default: defaultAnswers.variantManagement,
                 groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
             } as ListQuestion,
-            getBooleanPrompt(
-                'readOnly',
-                t('readOnlyMode'),
-                defaultAnswers.readOnly,
-                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-            ),
-            getBooleanPrompt(
-                'enableAutoColumnWidth',
-                t('autoColumnWidth'),
-                defaultAnswers.enableAutoColumnWidth,
-                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-            ),
-            getBooleanPrompt(
-                'enableExport',
-                t('dataExport'),
-                defaultAnswers.enableExport,
-                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-            ),
-            getBooleanPrompt(
-                'enableFullScreen',
-                t('fullScreenMode'),
-                defaultAnswers.enableFullScreen,
-                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-            ),
-            getBooleanPrompt(
-                'enablePaste',
-                t('pasteFromClipboard'),
-                defaultAnswers.enablePaste,
-                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-            ),
-            getBooleanPrompt(
-                'isSearchable',
-                t('tableSearchableToggle'),
-                defaultAnswers.isSearchable,
-                TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
-            )
+            getBooleanPrompt('readOnly', t('readOnlyMode'), defaultAnswers.readOnly, {
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            }),
+            getBooleanPrompt('enableAutoColumnWidth', t('autoColumnWidth'), defaultAnswers.enableAutoColumnWidth, {
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            }),
+            getBooleanPrompt('enableExport', t('dataExport'), defaultAnswers.enableExport, {
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            }),
+            getBooleanPrompt('enableFullScreen', t('fullScreenMode'), defaultAnswers.enableFullScreen, {
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            }),
+            getBooleanPrompt('enablePaste', t('pasteFromClipboard'), defaultAnswers.enablePaste, {
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            }),
+            getBooleanPrompt('isSearchable', t('tableSearchableToggle'), defaultAnswers.isSearchable, {
+                groupId: TABLE_VISUALIZATION_PROPERTIES_GROUP_ID
+            })
         ]
     };
 }
@@ -379,18 +363,18 @@ export async function getFilterBarBuildingBlockPrompts(
                 basePath,
                 t('viewOrFragmentFile.message'),
                 t('viewOrFragmentFile.validate'),
-                ['aggregationPath']
+                ['aggregationPath'],
+                { required: true }
             ),
-            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id),
-            getAggregationPathPrompt(t('aggregation'), fs),
-            getEntityPrompt(t('entity'), projectProvider, ['qualifier']),
+            getBuildingBlockIdPrompt(t('id.message'), t('id.validation'), defaultAnswers.id, { required: true }),
+            getAggregationPathPrompt(t('aggregation'), fs, { required: true }),
+            getEntityPrompt(t('entity'), projectProvider, ['qualifier'], { required: true }),
             getAnnotationPathQualifierPrompt(
                 'qualifier',
                 t('qualifier'),
                 projectProvider,
                 [UIAnnotationTerms.SelectionFields],
-                undefined,
-                t('valuesDependentOnEntityTypeInfo')
+                { additionalInfo: t('valuesDependentOnEntityTypeInfo'), required: true }
             ),
             {
                 type: 'input',
@@ -405,3 +389,48 @@ export async function getFilterBarBuildingBlockPrompts(
         ]
     };
 }
+
+/**
+ * Validates answers: checks if required prompts have values and runs validate() if exists on prompt
+ *
+ * @param basePath
+ * @param fs
+ * @param questions
+ * @param answers
+ * @param type
+ * @returns {ValidationResults} Object with question names and question validation results
+ */
+export const validateAnswers = async (
+    basePath: string,
+    fs: Editor,
+    questions: Question[],
+    answers: Answers,
+    type: BuildingBlockType
+): Promise<ValidationResults> => {
+    let blockPrompts: { questions: any[]; groups?: PromptsGroup[] } = { questions: [] };
+    if (type === BuildingBlockType.Table) {
+        blockPrompts = await getTableBuildingBlockPrompts(basePath, fs);
+    } else if (type === BuildingBlockType.Chart) {
+        blockPrompts = await getChartBuildingBlockPrompts(basePath, fs);
+    } else if (type === BuildingBlockType.FilterBar) {
+        blockPrompts = await getFilterBarBuildingBlockPrompts(basePath, fs);
+    }
+    let result: ValidationResults = {};
+    questions.forEach((q) => {
+        const question = blockPrompts.questions.find((blockQuestion) => q.name === blockQuestion.name);
+        if (question.required && (answers[question.name] === undefined || answers[question.name] === '')) {
+            result = { ...result, [question.name]: { isValid: false, errorMessage: 'Please enter a value!' } };
+        } else {
+            result = { ...result, [question.name]: { isValid: true } };
+            if (question && question.name && typeof question.validate === 'function') {
+                const validationResult = question.validate(answers[question.name]);
+                if (typeof validationResult === 'string') {
+                    result = { ...result, [question.name]: { isValid: false, errorMessage: validationResult } };
+                } else {
+                    result = { ...result, [question.name]: { isValid: true } };
+                }
+            }
+        }
+    });
+    return result;
+};

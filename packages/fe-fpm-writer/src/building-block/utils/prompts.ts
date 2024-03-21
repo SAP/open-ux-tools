@@ -6,6 +6,7 @@ import type { Editor } from 'mem-fs-editor';
 import { relative } from 'path';
 import type ProjectProvider from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
+import { AdditionalPromptProperties } from '../prompts';
 /**
  * Returns a Prompt to choose a boolean value.
  *
@@ -13,7 +14,13 @@ import { getAnnotationPathQualifiers, getEntityTypes } from './service';
  * @param message - The message to display in the prompt
  * @returns a boolean prompt
  */
-export function getBooleanPrompt(name: string, message: string, defaultValue?: string, groupId?: string): ListQuestion {
+export function getBooleanPrompt(
+    name: string,
+    message: string,
+    defaultValue?: string,
+    additionalProperties: AdditionalPromptProperties = {}
+): ListQuestion {
+    const { required, groupId, additionalInfo } = additionalProperties;
     return {
         type: 'list',
         name,
@@ -24,7 +31,9 @@ export function getBooleanPrompt(name: string, message: string, defaultValue?: s
             { name: 'True', value: true }
         ],
         default: defaultValue,
-        groupId
+        groupId,
+        required,
+        additionalInfo
     } as ListQuestion;
 }
 
@@ -42,9 +51,9 @@ export function getAnnotationPathQualifierPrompt(
     message: string,
     projectProvider: ProjectProvider,
     annotationTerm: UIAnnotationTerms[],
-    groupId?: string,
-    additionalInfo?: string
+    additionalProperties: AdditionalPromptProperties = {}
 ): ListQuestion {
+    const { required, groupId, additionalInfo } = additionalProperties;
     return {
         type: 'list',
         name,
@@ -65,6 +74,7 @@ export function getAnnotationPathQualifierPrompt(
             return choices;
         },
         groupId,
+        required,
         additionalInfo
     } as ListQuestion;
 }
@@ -85,8 +95,9 @@ export function getViewOrFragmentFilePrompt(
     message: string,
     validationErrorMessage: string,
     dependantPromptNames = ['aggregationPath'], // dependent prompts
-    groupId?: string
+    additionalProperties: AdditionalPromptProperties = {}
 ): ListQuestion {
+    const { required, groupId, additionalInfo } = additionalProperties;
     return {
         type: 'list',
         selectType: 'dynamic',
@@ -106,7 +117,9 @@ export function getViewOrFragmentFilePrompt(
             }));
         },
         validate: (value: string) => (value ? true : validationErrorMessage),
-        groupId
+        groupId,
+        required,
+        additionalInfo
     } as ListQuestion;
 }
 
@@ -122,8 +135,9 @@ export function getEntityPrompt(
     message: string,
     projectProvider: ProjectProvider,
     dependantPromptNames?: string[],
-    groupId?: string
+    additionalProperties: AdditionalPromptProperties = {}
 ): ListQuestion {
+    const { required, groupId, additionalInfo } = additionalProperties;
     return {
         type: 'list',
         name: 'entity',
@@ -137,7 +151,9 @@ export function getEntityPrompt(
             }
             return choices;
         },
-        groupId
+        groupId,
+        required,
+        additionalInfo
     } as ListQuestion;
 }
 /**
@@ -147,7 +163,12 @@ export function getEntityPrompt(
  * @param fs - The file system object for reading files
  * @returns A ListQuestion object representing the prompt
  */
-export function getAggregationPathPrompt(message: string, fs: Editor, groupId?: string): ListQuestion {
+export function getAggregationPathPrompt(
+    message: string,
+    fs: Editor,
+    additionalProperties: AdditionalPromptProperties = {}
+): ListQuestion {
+    const { required, groupId, additionalInfo } = additionalProperties;
     return {
         type: 'list',
         name: 'aggregationPath',
@@ -161,7 +182,9 @@ export function getAggregationPathPrompt(message: string, fs: Editor, groupId?: 
             }
             return choices;
         },
-        groupId
+        groupId,
+        required,
+        additionalInfo
     } as ListQuestion;
 }
 
@@ -243,12 +266,18 @@ function getErrorMessage(error: Error): string {
  * @param message - prompt message
  * @returns a Input Prompt
  */
-export function getFilterBarIdPrompt(message: string, groupId?: string): InputQuestion {
+export function getFilterBarIdPrompt(
+    message: string,
+    additionalProperties: AdditionalPromptProperties = {}
+): InputQuestion {
+    const { required, groupId, additionalInfo } = additionalProperties;
     return {
         type: 'input',
         name: 'filterBar',
         message,
-        groupId
+        groupId,
+        required,
+        additionalInfo
     } as InputQuestion;
 }
 
@@ -258,7 +287,12 @@ export function getFilterBarIdPrompt(message: string, groupId?: string): InputQu
  * @param message - prompt message
  * @returns a List Prompt
  */
-export function getBindingContextTypePrompt(message: string, defaultValue?: string, groupId?: string): ListQuestion {
+export function getBindingContextTypePrompt(
+    message: string,
+    defaultValue?: string,
+    additionalProperties: AdditionalPromptProperties = {}
+): ListQuestion {
+    const { required, groupId, additionalInfo } = additionalProperties;
     return {
         type: 'list',
         name: 'bindingContextType',
@@ -269,7 +303,9 @@ export function getBindingContextTypePrompt(message: string, defaultValue?: stri
             { name: 'Absolute', value: 'absolute' }
         ],
         default: defaultValue,
-        groupId
+        groupId,
+        required,
+        additionalInfo
     } as ListQuestion;
 }
 
@@ -284,14 +320,17 @@ export function getBuildingBlockIdPrompt(
     message: string,
     validationErrorMessage: string,
     defaultValue?: string,
-    groupId?: string
+    additionalProperties: AdditionalPromptProperties = {}
 ): InputQuestion {
+    const { required, groupId, additionalInfo } = additionalProperties;
     return {
         type: 'input',
         name: 'id',
         message,
         validate: (value: any) => (value ? true : validationErrorMessage),
         groupId,
+        required,
+        additionalInfo,
         default: defaultValue
     } as InputQuestion;
 }

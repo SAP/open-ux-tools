@@ -47,3 +47,11 @@ export interface FilterBarPromptsAnswer extends FilterBar, Answers {
     entity: string;
     viewOrFragmentFile: string;
 }
+
+export type ValidationResults = { [questionName: string]: { isValid: boolean; errorMessage?: string } };
+
+export interface AdditionalPromptProperties {
+    required?: boolean;
+    groupId?: string;
+    additionalInfo?: string;
+}
