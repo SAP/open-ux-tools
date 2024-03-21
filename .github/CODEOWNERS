@@ -72,7 +72,7 @@
 # Module: serve-static-middleware
 /packages/serve-static-middleware/ @SAP/ux-tools-middlewares-and-tasks
 
-# Module: serve-static-middleware
+# Module: reload-middleware
 /packages/reload-middleware/ @SAP/ux-tools-middlewares-and-tasks
 
 # Module: adp-tooling

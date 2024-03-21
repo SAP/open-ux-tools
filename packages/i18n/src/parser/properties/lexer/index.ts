@@ -206,7 +206,8 @@ class PropertiesTokenizer {
      */
     consumeComment() {
         const start = this.offset;
-        while (!isEndOfLine(this.peek())) {
+        // first check there is another character
+        while (this.peek() && !isEndOfLine(this.peek())) {
             this.next();
         }
         const end = this.offset;

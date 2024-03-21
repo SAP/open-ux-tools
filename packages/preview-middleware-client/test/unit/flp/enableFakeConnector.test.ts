@@ -55,6 +55,7 @@ describe('flp/FakeLrepConnector', () => {
         test('calls the API to save changes', async () => {
             const change = {
                 changeType: 'propertyChange',
+                fileName: 'dummyFileName',
                 support: {
                     generator: 'sap.ui.rta.command'
                 }
