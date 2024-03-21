@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.4.16
+
+### Patch Changes
+
+-   6a477fba: feat: Replace auto-refresh with message in case of manual flex file changes
+
 ## 0.4.15
 
 ### Patch Changes
