@@ -25,6 +25,7 @@ import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
+import { notifyUser } from '../utils';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -144,7 +145,7 @@ export default class AddFragment extends BaseDialog {
 
         await this.createFragmentChange(fragmentData);
 
-        this.notifyUserOfFragment(fragmentName);
+        notifyUser(`Note: The '${fragmentName}' fragment will be created once you save the change.`, 8000);
 
         this.handleDialogClose();
     }
@@ -245,17 +246,6 @@ export default class AddFragment extends BaseDialog {
             });
         }
         return indexArray;
-    }
-
-    /**
-     * Displays a message to the user indicating that an XML fragment will be created upon saving a change.
-     *
-     * @param {string} fragmentName The name of the fragment that will be created.
-     */
-    private notifyUserOfFragment(fragmentName: string) {
-        MessageToast.show(`Note: The '${fragmentName}' fragment will be created once you save the change.`, {
-            duration: 8000
-        });
     }
 
     /**

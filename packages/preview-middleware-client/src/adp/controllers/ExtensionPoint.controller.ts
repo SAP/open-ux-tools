@@ -19,6 +19,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
+import { notifyUser } from '../utils';
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
@@ -62,6 +63,8 @@ export default class ExtensionPoint extends BaseDialog {
         const fragmentName = this.model.getProperty('/newFragmentName');
 
         await this.createExtensionPointFragmentChange(fragmentName);
+
+        notifyUser(`Note: The '${fragmentName}' fragment will be created once you save the change.`, 8000);
 
         this.handleDialogClose();
     }

@@ -1,3 +1,4 @@
+import MessageToast from 'sap/m/MessageToast';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 export interface Deferred<T> {
@@ -46,4 +47,16 @@ export function createDeferred<T>(): Deferred<T> {
 export function matchesFragmentName(command: FlexCommand, fragmentName: string): boolean {
     const change = command.getPreparedChange().getDefinition() as unknown as FragmentChange;
     return change.content?.fragmentPath?.includes(`${fragmentName}.fragment.xml`) || false;
+}
+
+/**
+ * Displays a message to the user indicating that an XML fragment will be created upon saving a change.
+ *
+ * @param {string} message - The message to be shown in the message toast.
+ * @param {number} duration - The duration during which message toast will be active.
+ */
+export function notifyUser(message: string, duration: number = 5000) {
+    MessageToast.show(message, {
+        duration
+    });
 }

@@ -1,5 +1,8 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import { createDeferred, matchesFragmentName } from '../../../src/adp/utils';
+
+import MessageToast from 'mock/sap/m/MessageToast';
+
+import { createDeferred, matchesFragmentName, notifyUser } from '../../../src/adp/utils';
 
 describe('utils', () => {
     describe('createDeferred', () => {
@@ -77,6 +80,31 @@ describe('utils', () => {
             const command = createMockCommand('') as unknown as FlexCommand;
 
             expect(matchesFragmentName(command, fragmentName)).toBe(false);
+        });
+    });
+
+    describe('notifyUser', () => {
+        beforeEach(() => {
+            MessageToast.show.mockClear();
+        });
+
+        it('displays the message with default duration if no duration is provided', () => {
+            const message = 'Hello, world!';
+            notifyUser(message);
+
+            expect(MessageToast.show).toHaveBeenCalledWith(message, {
+                duration: 5000
+            });
+        });
+
+        it('displays the message with specified duration', () => {
+            const message = 'Goodbye, world!';
+            const duration = 3000;
+            notifyUser(message, duration);
+
+            expect(MessageToast.show).toHaveBeenCalledWith(message, {
+                duration
+            });
         });
     });
 });
