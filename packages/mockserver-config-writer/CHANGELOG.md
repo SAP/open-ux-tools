@@ -1,5 +1,16 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.3.0
+
+### Minor Changes
+
+-   ec509c40: dynamically appends annotations from manifest.json for mockserver middleware config
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+
 ## 0.2.3
 
 ### Patch Changes

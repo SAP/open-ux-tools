@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.15.10
+
+### Patch Changes
+
+-   edc3a166: UIComboBox. Extender 'isLoading' property with option to set loading within combobox input.
+
 ## 1.15.9
 
 ### Patch Changes
