@@ -1,3 +1,4 @@
+import type { AuthenticationType } from '@sap-ux/store';
 import type { Options } from 'http-proxy-middleware';
 
 export interface BaseBackendConfig {
@@ -21,7 +22,7 @@ export interface BaseBackendConfig {
     /**
      * Authentication mechanism to be used. Currently supported: "ReentranceTicket"
      */
-    authenticationType?: string;
+    authenticationType?: AuthenticationType;
 
     /**
      * If set to true then the proxy will connect to the SAP API Business Hub
