@@ -1,5 +1,11 @@
 # @sap-ux/odata-vocabularies
 
+## 0.3.6
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+
 ## 0.3.5
 
 ### Patch Changes

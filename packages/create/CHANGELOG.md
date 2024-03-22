@@ -1,5 +1,14 @@
 # @sap-ux/create
 
+## 0.5.49
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/app-config-writer@0.3.38
+    -   @sap-ux/adp-tooling@0.9.6
+
 ## 0.5.48
 
 ### Patch Changes

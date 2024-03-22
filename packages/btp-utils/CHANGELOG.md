@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.14.3
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+
 ## 0.14.2
 
 ### Patch Changes

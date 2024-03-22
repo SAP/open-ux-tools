@@ -1,5 +1,22 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.2.8
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/ui5-info@0.3.3
+    -   @sap-ux/inquirer-common@0.2.2
+
+## 0.2.7
+
+### Patch Changes
+
+-   9da2dbb8: export extendAdditionalMessages from inquirer common module
+-   Updated dependencies [9da2dbb8]
+    -   @sap-ux/inquirer-common@0.2.1
+
 ## 0.2.6
 
 ### Patch Changes

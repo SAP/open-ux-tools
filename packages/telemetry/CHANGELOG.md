@@ -1,5 +1,13 @@
 # @sap-ux/telemetry
 
+## 0.4.8
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/btp-utils@0.14.3
+
 ## 0.4.7
 
 ### Patch Changes
