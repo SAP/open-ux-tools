@@ -1,5 +1,20 @@
 # @sap-ux/preview-middleware
 
+## 0.12.15
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/adp-tooling@0.9.6
+
+## 0.12.14
+
+### Patch Changes
+
+-   6a477fba: feat: Replace auto-refresh with message in case of manual flex file changes
+    -   @sap-ux/adp-tooling@0.9.5
+
 ## 0.12.13
 
 ### Patch Changes

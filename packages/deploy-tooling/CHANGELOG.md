@@ -1,5 +1,24 @@
 # @sap-ux/deploy-tooling
 
+## 0.14.7
+
+### Patch Changes
+
+-   61b46bc8: Security upgrade fixes
+-   Updated dependencies [61b46bc8]
+    -   @sap-ux/axios-extension@1.11.4
+    -   @sap-ux/btp-utils@0.14.3
+    -   @sap-ux/system-access@0.3.18
+
+## 0.14.6
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+    -   @sap-ux/axios-extension@1.11.3
+    -   @sap-ux/system-access@0.3.17
+
 ## 0.14.5
 
 ### Patch Changes
