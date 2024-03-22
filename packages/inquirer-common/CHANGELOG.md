@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.2.3
+
+### Patch Changes
+
+-   c17bc130: When passing a default UI5 version its availability will be verified before offering as a choice
+
 ## 0.2.2
 
 ### Patch Changes

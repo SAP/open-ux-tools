@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/inquirer-common",
     "description": "Commonly used shared functionality and types to support inquirer modules.",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -34,11 +34,13 @@
         "fuzzy": "0.1.3",
         "i18next": "23.5.1",
         "chalk": "4.1.2",
-        "figures": "3.2.0"
+        "figures": "3.2.0",
+        "semver": "7.5.4"
     },
     "devDependencies": {
         "@sap-devx/yeoman-ui-types": "1.14.4",
-        "@types/inquirer": "8.2.6"
+        "@types/inquirer": "8.2.6",
+        "@types/semver": "7.5.4"
     },
     "engines": {
         "node": ">=18.x"
