@@ -34,14 +34,13 @@ When this middleware is used together with the `reload-middleware`, then the ord
 
 ### `flp.apps`
 Array of additional application configurations:
-| Option          | Type     | Default Value  | Description                                                                                          |
-| --------------- | -------- | -------------- | ---------------------------------------------------------------------------------------------------- |
-| `target`        | `string` |                | Target path of the additional application                                                            |
-| `local`         | `string` |  `undefined`   | Optional local path to the folder containing the application, if not provided then a `componentId` is required |
-| `componentId`   | `string` |  `undefined`   | Optional `componentId` of the remote app if no local path is provided                                |
-| `intent`        |          |                | Optional intent to be used for the application                                                       |
-| `intent.object` | `string` | `(calculated)` | Optional intent object, if it is not provided then it will be calculated based on the application id |
-| `intent.action` | `string` | `preview`      | Optional intent action                                                                               |
+| Option                   | Type     | Default Value  | Description                                                                                                   |
+| ------------------------ | -------- | -------------- | ------------------------------------------------------------------------------------------------------------- |
+| `target`                 | `string` |                | Target path of the additional application                                                                     |
+| `local` ot `componentId` | `string` |                | Either a local path to a folder containing the application or the `componentId` of a remote app is required   |
+| `intent`                 |          |                | Optional intent to be used for the application                                                                |
+| `intent.object`          | `string` | `(calculated)` | Optional intent object, if it is not provided then it will be calculated based on the application id          |
+| `intent.action`          | `string` | `preview`      | Optional intent action                                                                                        |
 
 ### `adp.target`
 | Option        | Type                           | Description                                                                                                                                     |
