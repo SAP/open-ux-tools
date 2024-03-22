@@ -3,7 +3,8 @@ import {
     getTableBuildingBlockPrompts,
     getChartBuildingBlockPrompts,
     getFilterBarBuildingBlockPrompts,
-    getBuildingBlockChoices
+    getBuildingBlockChoices,
+    validateAnswers
 } from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'util';
 import { create as createStorage } from 'mem-fs';
@@ -42,7 +43,6 @@ import {
     VALIDATE_ANSWERS
 } from '../addons/project/types';
 import { DynamicChoices } from '../../src/components';
-import { validateAnswers } from '@sap-ux/fe-fpm-writer/src/building-block/prompts';
 
 const sampleAppPath = join(__dirname, '../../../fe-fpm-cli/sample/fe-app');
 

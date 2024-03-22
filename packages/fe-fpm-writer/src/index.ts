@@ -31,7 +31,8 @@ export {
     getFilterBarBuildingBlockPrompts,
     getTableBuildingBlockPrompts,
     getBuildingBlockChoices,
-    TablePromptsAnswer
+    TablePromptsAnswer,
+    validateAnswers
 } from './building-block/prompts';
 
 export { ControllerExtension, ControllerExtensionPageType } from './controller-extension/types';
