@@ -4,6 +4,7 @@ import { t } from '../i18n';
 import { getUi5Themes, type UI5Theme, type UI5Version } from '@sap-ux/ui5-info';
 import type { UI5VersionChoice } from '../types';
 import { Separator } from './separator';
+import { coerce, lte, eq } from 'semver';
 
 /**
  * Get the UI5 themes as prompt choices applicable for the specified UI5 version.
@@ -97,4 +98,41 @@ export function ui5VersionsGrouped(
         versionChoices.unshift(defaultChoice);
     }
     return versionChoices;
+}
+
+/**
+ * Get the default UI5 version choice that should be selected based on the provided default choice.
+ * Note that if the default choice is not found in the provided versions, the closest maintained version is returned.
+ *
+ * @param ui5Versions - UI5 versions ordered by version descending latest first
+ * @param [defaultChoice] - optional default choice to use if found in the provided versions, otherwise the closest maintained version is returned
+ * @returns The default UI5 version choice that is closest to the provided default choice or the latest maintained version
+ */
+export function getDefaultUI5VersionChoice(
+    ui5Versions: UI5Version[],
+    defaultChoice?: UI5VersionChoice
+): UI5VersionChoice | undefined {
+    if (defaultChoice) {
+        const defaultChoiceVersion = coerce(defaultChoice.value);
+        if (defaultChoiceVersion !== null) {
+            const version = ui5Versions.find((ui5Ver) => lte(ui5Ver.version, defaultChoiceVersion));
+            if (version) {
+                // if the versions are an exact match use the name (UI label) from the default choice as this may use a custom name
+                return {
+                    name: eq(version.version, defaultChoice.value) ? defaultChoice.name : version.version,
+                    value: version.version
+                };
+            }
+        }
+    }
+    // defaultChoice was not coercable, not found or not provided, return the latest maintained version
+    const defaultVersion = ui5Versions.find((ui5Ver) => ui5Ver.default && ui5Ver.version)?.version;
+
+    if (defaultVersion) {
+        return {
+            name: defaultVersion,
+            value: defaultVersion
+        };
+    }
+    return undefined;
 }

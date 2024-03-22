@@ -1029,6 +1029,9 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
+      semver:
+        specifier: 7.5.4
+        version: 7.5.4
     devDependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
@@ -1036,6 +1039,9 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
+      '@types/semver':
+        specifier: 7.5.4
+        version: 7.5.4
 
   packages/jest-file-matchers:
     dependencies:
