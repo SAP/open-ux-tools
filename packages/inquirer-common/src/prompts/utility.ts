@@ -102,11 +102,11 @@ export function ui5VersionsGrouped(
 
 /**
  * Get the default UI5 version choice that should be selected based on the provided default choice.
- * Note that if the default choice is not found in the provided versions, the closest maintained version is returned.
+ * Note that if the default choice is not found in the provided versions, the closest provided version is returned.
  *
  * @param ui5Versions - UI5 versions ordered by version descending latest first
- * @param [defaultChoice] - optional default choice to use if found in the provided versions, otherwise the closest maintained version is returned
- * @returns The default UI5 version choice that is closest to the provided default choice or the latest maintained version
+ * @param [defaultChoice] - optional default choice to use if found in the provided versions, otherwise the closest provided version is returned
+ * @returns The default UI5 version choice that is closest to the provided default choice or the latest provided version
  */
 export function getDefaultUI5VersionChoice(
     ui5Versions: UI5Version[],
@@ -125,7 +125,7 @@ export function getDefaultUI5VersionChoice(
             }
         }
     }
-    // defaultChoice was not coercable, not found or not provided, return the latest maintained version
+    // defaultChoice was not coercable, not found or not provided, return the latest version from the ui5 versions provided
     const defaultVersion = ui5Versions.find((ui5Ver) => ui5Ver.default && ui5Ver.version)?.version;
 
     if (defaultVersion) {
