@@ -37,7 +37,7 @@ Array of additional application configurations:
 | Option                   | Type     | Default Value  | Description                                                                                                   |
 | ------------------------ | -------- | -------------- | ------------------------------------------------------------------------------------------------------------- |
 | `target`                 | `string` |                | Target path of the additional application                                                                     |
-| `local` ot `componentId` | `string` |                | Either a local path to a folder containing the application or the `componentId` of a remote app is required   |
+| `local` or `componentId` | `string` |                | Either a local path to a folder containing the application or the `componentId` of a remote app is required   |
 | `intent`                 |          |                | Optional intent to be used for the application                                                                |
 | `intent.object`          | `string` | `(calculated)` | Optional intent object, if it is not provided then it will be calculated based on the application id          |
 | `intent.action`          | `string` | `preview`      | Optional intent action                                                                                        |
