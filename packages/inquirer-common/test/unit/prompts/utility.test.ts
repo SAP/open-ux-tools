@@ -2,7 +2,12 @@ import * as ui5Info from '@sap-ux/ui5-info';
 import { ui5ThemeIds, type UI5Version } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
 import { initI18nInquirerCommon } from '../../../src/i18n';
-import { getUI5ThemesChoices, searchChoices, ui5VersionsGrouped } from '../../../src/prompts/utility';
+import {
+    getDefaultUI5VersionChoice,
+    getUI5ThemesChoices,
+    searchChoices,
+    ui5VersionsGrouped
+} from '../../../src/prompts/utility';
 
 describe('utility.ts', () => {
     beforeAll(async () => {
@@ -134,7 +139,7 @@ describe('utility.ts', () => {
             }
         ];
 
-        // SIngle result
+        // Single result
         expect(searchChoices('2', searchList)).toMatchInlineSnapshot(`
             [
               {
@@ -226,5 +231,75 @@ describe('utility.ts', () => {
             }
         ]);
         expect(getUI5ThemesSpy).toHaveBeenCalledWith(testUI5Version);
+    });
+
+    it('getDefaultUI5VersionChoice', () => {
+        const mockUI5Versions = [
+            {
+                version: '1.118.0',
+                maintained: true,
+                default: true
+            },
+            {
+                version: '1.117.1',
+                maintained: true
+            },
+            {
+                version: '1.117.0',
+                maintained: true
+            },
+            {
+                version: '1.116.0',
+                maintained: false
+            }
+        ];
+        let testUI5Version = '1.117.1';
+
+        // Test exact match
+        expect(getDefaultUI5VersionChoice(mockUI5Versions, { name: testUI5Version, value: testUI5Version })).toEqual({
+            'name': '1.117.1',
+            'value': '1.117.1'
+        });
+
+        // Closest maintained version
+        testUI5Version = '1.119.1';
+        expect(getDefaultUI5VersionChoice(mockUI5Versions, { name: testUI5Version, value: testUI5Version })).toEqual({
+            'name': '1.118.0',
+            'value': '1.118.0'
+        });
+
+        // Not valid semver
+        testUI5Version = '1.116.1-SNAPSHOT';
+        expect(getDefaultUI5VersionChoice(mockUI5Versions, { name: testUI5Version, value: testUI5Version })).toEqual({
+            'name': '1.116.0',
+            'value': '1.116.0'
+        });
+
+        expect(getDefaultUI5VersionChoice(mockUI5Versions)).toEqual({
+            'name': '1.118.0',
+            'value': '1.118.0'
+        });
+
+        const noDefaultUI5Versions = [
+            {
+                version: '1.118.0',
+                maintained: true
+            },
+            {
+                version: '1.117.1',
+                maintained: true
+            },
+            {
+                version: '1.117.0',
+                maintained: true
+            },
+            {
+                version: '1.116.0',
+                maintained: false
+            }
+        ];
+
+        // No default, returns undefined
+        expect(getDefaultUI5VersionChoice(noDefaultUI5Versions)).toBe(undefined);
     });
 });
