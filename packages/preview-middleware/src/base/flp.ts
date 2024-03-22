@@ -361,7 +361,9 @@ export class FlpSandbox {
                 this.addApp(manifest, app);
                 this.logger.info(`Adding additional intent: ${app.intent?.object}-${app.intent?.action}`);
             } else {
-                this.logger.info(`Invalid application config: ${app}`);
+                this.logger.info(
+                    `Invalid application config for route ${app.target} because neither componentId nor local folder provided.`
+                );
             }
         }
     }
