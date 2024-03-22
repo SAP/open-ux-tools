@@ -1,5 +1,92 @@
 # @sap-ux/adp-tooling
 
+## 0.9.5
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+    -   @sap-ux/axios-extension@1.11.3
+    -   @sap-ux/system-access@0.3.17
+
+## 0.9.4
+
+### Patch Changes
+
+-   4b29ddcc: Update TypeScript templates, eslint config and ui5 devDependencies
+
+## 0.9.3
+
+### Patch Changes
+
+-   874187b9: Using inbound navigation writer to generate appropriate change files does not produce correct results
+
+## 0.9.2
+
+### Patch Changes
+
+-   212d54ed: Removed unnecessary peer dependency of the adp-tooling and corrected the integration into the preview-middleware
+
+## 0.9.1
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.3.17
+
+## 0.9.0
+
+### Minor Changes
+
+-   cf842794: Adds writer functionality for Adaptation Project's manifest change editors
+
+## 0.8.11
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.11.3
+-   @sap-ux/system-access@0.3.16
+
+## 0.8.10
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/axios-extension@1.11.2
+    -   @sap-ux/system-access@0.3.15
+    -   @sap-ux/ui5-config@0.21.1
+    -   @sap-ux/logger@0.5.1
+
+## 0.8.9
+
+### Patch Changes
+
+-   05953a48: FIX: preview of controller extensions in typescript
+
+## 0.8.8
+
+### Patch Changes
+
+-   Updated dependencies [efd2f6d4]
+    -   @sap-ux/axios-extension@1.11.1
+    -   @sap-ux/system-access@0.3.14
+
+## 0.8.7
+
+### Patch Changes
+
+-   Updated dependencies [0f6e0e1b]
+    -   @sap-ux/axios-extension@1.11.0
+    -   @sap-ux/system-access@0.3.13
+
+## 0.8.6
+
+### Patch Changes
+
+-   Updated dependencies [64f9c513]
+    -   @sap-ux/axios-extension@1.10.2
+    -   @sap-ux/system-access@0.3.12
+
 ## 0.8.5
 
 ### Patch Changes

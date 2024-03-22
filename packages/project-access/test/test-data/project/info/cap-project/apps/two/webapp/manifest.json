@@ -1,6 +1,7 @@
 {
     "sap.app": {
         "id": "two",
+        "type": "application",
         "dataSources": {
             "main": {
                 "uri": "/sap/opu/odata4/dmo/ODATA_SERVICE/",

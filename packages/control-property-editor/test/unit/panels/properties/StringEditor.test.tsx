@@ -85,6 +85,26 @@ describe('StringEditor', () => {
         fireEvent.blur(textBox);
         expect((textBox as any).value).toBe('12345');
     });
+
+    test('Do not trigger changeProperty when no change in prop value', () => {
+        const value = '1234';
+        const props: any = {
+            icons: [],
+            isEnabled: false,
+            isIcon: false,
+            name: 'testProperty',
+            value,
+            type: 'integer'
+        };
+        const { dispatch } = render(<StringEditor property={{ ...props }} controlId={controlId} />);
+
+        const textBox = screen.getByDisplayValue(value);
+        expect(textBox).toBeInTheDocument();
+        expect((textBox as any).value).toBe(value);
+        fireEvent.blur(textBox);
+        expect(dispatch).toBeCalledTimes(0);
+    });
+
     test('integer value onPress "Enter"', () => {
         const value = '1234';
         const props: any = {
@@ -142,7 +162,7 @@ describe('StringEditor', () => {
         expect(textBox).toBeInTheDocument();
         expect((textBox as any).value).toBe('5.300');
         fireEvent.blur(textBox);
-        expect((textBox as any).value).toBe('5.3');
+        expect((textBox as any).value).toBe('5.300');
     });
     test('float value onPress "Enter"', () => {
         const value = '5.300';
@@ -161,6 +181,6 @@ describe('StringEditor', () => {
         expect(textBox).toBeInTheDocument();
         expect((textBox as any).value).toBe('5.300');
         fireEvent.keyPress(textBox, { key: 'Enter', code: 'Enter', charCode: 13 });
-        expect((textBox as any).value).toBe('5.3');
+        expect((textBox as any).value).toBe('5.300');
     });
 });

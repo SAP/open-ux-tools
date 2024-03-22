@@ -24,7 +24,7 @@ export const MESSAGE_ICONS_MAP = new Map<ErrorMessageType | undefined, UiIcons>(
  * @param props
  * @returns {React.ReactElement}
  */
-export function MessageWrapper(props: MessageWrapperProps): React.ReactElement {
+export function MessageWrapper(props: Readonly<MessageWrapperProps>): React.ReactElement {
     const { children, message } = props;
     const errorSuffix = message.message ? MESSAGE_TYPES_CLASSNAME_MAP.get(message.type) : undefined;
     const icon = MESSAGE_ICONS_MAP.get(message.type);

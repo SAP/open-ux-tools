@@ -1,5 +1,79 @@
 # @sap-ux/cap-config-writer
 
+## 0.2.22
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.2
+
+## 0.2.21
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.1
+
+## 0.2.20
+
+### Patch Changes
+
+-   Updated dependencies [a4f00f7c]
+    -   @sap-ux/project-access@1.19.0
+
+## 0.2.19
+
+### Patch Changes
+
+-   Updated dependencies [e6da2117]
+    -   @sap-ux/project-access@1.18.0
+
+## 0.2.18
+
+### Patch Changes
+
+-   Updated dependencies [c381d32f]
+    -   @sap-ux/project-access@1.17.6
+
+## 0.2.17
+
+### Patch Changes
+
+-   c6e79ef1: Adds overloaded API function `checkCdsUi5PluginEnabled` to get more CAP CDS information
+
+## 0.2.16
+
+### Patch Changes
+
+-   Updated dependencies [33ec9ff9]
+    -   @sap-ux/project-access@1.17.5
+
+## 0.2.15
+
+### Patch Changes
+
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/project-access@1.17.4
+
+## 0.2.14
+
+### Patch Changes
+
+-   Updated dependencies [2eda843d]
+    -   @sap-ux/project-access@1.17.3
+
+## 0.2.13
+
+### Patch Changes
+
+-   Updated dependencies [76ce5c2f]
+    -   @sap-ux/project-access@1.17.2
+
+## 0.2.12
+
+### Patch Changes
+
+-   Updated dependencies [86da13e3]
+    -   @sap-ux/project-access@1.17.1
+
 ## 0.2.11
 
 ### Patch Changes

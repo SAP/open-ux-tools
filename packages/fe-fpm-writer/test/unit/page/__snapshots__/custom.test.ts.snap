@@ -256,6 +256,50 @@ Object {
 }
 `;
 
+exports[`CustomPage generateCustomPage: different navigations simple inbound navigation, plus optional page id 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "TestObjectPage",
+      "pattern": ":?query:",
+      "target": "TestObjectPage",
+    },
+    Object {
+      "name": "DummyPage",
+      "pattern": "ChildEntity({navToChildEntityKey}):?query:",
+      "target": "DummyPage",
+    },
+  ],
+  "targets": Object {
+    "DummyPage": Object {
+      "id": "DummyPage",
+      "name": "sap.fe.core.fpm",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/ChildEntity",
+          "navigation": Object {},
+          "viewName": "my.test.App.ext.customPage.CustomPage",
+        },
+      },
+      "type": "Component",
+    },
+    "TestObjectPage": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "navToChildEntity": Object {
+              "detail": Object {
+                "route": "DummyPage",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
 exports[`CustomPage generateCustomPage: different versions or target folder latest version with contextPath 1`] = `
 Object {
   "sap.app": Object {
@@ -663,6 +707,50 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
 "
 `;
 
+exports[`CustomPage generateCustomPage: different versions or target folder latest version with minimal input, plus optional page id 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "TestObjectPage",
+          "pattern": ":?query:",
+          "target": "TestObjectPage",
+        },
+        Object {
+          "name": "DummyPage",
+          "pattern": "RootEntity:?query:",
+          "target": "DummyPage",
+        },
+      ],
+      "targets": Object {
+        "DummyPage": Object {
+          "id": "DummyPage",
+          "name": "sap.fe.core.fpm",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/RootEntity",
+              "navigation": Object {},
+              "viewName": "my.test.App.ext.customPage.CustomPage",
+            },
+          },
+          "type": "Component",
+        },
+        "TestObjectPage": Object {},
+      },
+    },
+  },
+}
+`;
+
 exports[`CustomPage generateCustomPage: different versions or target folder with existing target files 1`] = `
 Object {
   "sap.app": Object {
@@ -805,6 +893,48 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
     }
 );
 "
+`;
+
+exports[`CustomPage generateCustomPage: different versions or target folder with older but supported UI5 version, plus optional page id 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "TestObjectPage",
+          "pattern": ":?query:",
+          "target": "TestObjectPage",
+        },
+        Object {
+          "name": "DummyPage",
+          "pattern": "RootEntity:?query:",
+          "target": "DummyPage",
+        },
+      ],
+      "targets": Object {
+        "DummyPage": Object {
+          "options": Object {
+            "settings": Object {
+              "entitySet": "RootEntity",
+              "navigation": Object {},
+            },
+          },
+          "viewId": "CustomPageView",
+          "viewName": "my.test.App.ext.customPage.CustomPage",
+        },
+        "TestObjectPage": Object {},
+      },
+    },
+  },
+}
 `;
 
 exports[`CustomPage generateCustomPage: only page, no others FCL enabled single page app 1`] = `

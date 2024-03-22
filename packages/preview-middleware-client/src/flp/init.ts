@@ -1,6 +1,7 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
-import type { RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import UriParameters from 'sap/base/util/UriParameters';
@@ -184,29 +185,53 @@ export function setI18nTitle(i18nKey = 'appTitle') {
  * @param params init parameters read from the script tag
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
+ * @param params.customInit path to the custom init module to be called
  * @returns promise
  */
-export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: string | null }): Promise<void> {
+export async function init({
+    appUrls,
+    flex,
+    customInit
+}: {
+    appUrls?: string | null;
+    flex?: string | null;
+    customInit?: string | null;
+}): Promise<void> {
     // Register RTA if configured
     if (flex) {
         sap.ushell.Container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await sap.ushell.Container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
+                const version = sap.ui.version;
+                const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
-                const libs = ['sap/ui/rta/api/startAdaptation'];
                 const flexSettings = JSON.parse(flex);
+                const pluginScript = flexSettings.pluginScript ?? '';
+
+                let libs: string[] = [];
+                if (minor > 71) {
+                    libs.push('sap/ui/rta/api/startAdaptation');
+                } else {
+                    libs.push('open/ux/preview/client/flp/initRta');
+                }
+
                 if (flexSettings.pluginScript) {
-                    libs.push(flexSettings.pluginScript);
+                    libs.push(pluginScript);
                     delete flexSettings.pluginScript;
                 }
-                sap.ui.require(libs, function (startAdaptation: StartAdaptation, pluginScript?: RTAPlugin) {
-                    const options = {
-                        rootControl: view,
-                        validateAppVersion: false,
-                        flexSettings
-                    };
-                    startAdaptation(options, pluginScript);
-                });
+
+                const options: RTAOptions = {
+                    rootControl: view,
+                    validateAppVersion: false,
+                    flexSettings
+                };
+
+                sap.ui.require(
+                    libs,
+                    async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
+                        await startAdaptation(options, pluginScript);
+                    }
+                );
             });
         });
     }
@@ -214,6 +239,11 @@ export async function init({ appUrls, flex }: { appUrls?: string | null; flex?: 
     // Load custom library paths if configured
     if (appUrls) {
         await registerComponentDependencyPaths(JSON.parse(appUrls));
+    }
+
+    // Load custom initialization module
+    if (customInit) {
+        sap.ui.require([customInit]);
     }
 
     // init
@@ -227,6 +257,7 @@ const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
-        flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings')
+        flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
+        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
     }).catch(() => Log.error('Sandbox initialization failed.'));
 }

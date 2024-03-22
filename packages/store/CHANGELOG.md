@@ -1,5 +1,19 @@
 # @sap-ux/store
 
+## 0.5.0
+
+### Minor Changes
+
+-   e443e534: Allow to disable access to secure storage via environment variable FIORI_TOOLS_DISABLE_SECURE_STORE
+
+## 0.4.3
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/logger@0.5.1
+
 ## 0.4.2
 
 ### Patch Changes

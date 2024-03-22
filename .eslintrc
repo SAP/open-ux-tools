@@ -124,7 +124,8 @@
                     "ClassDeclaration": true,
                     "MethodDefinition": true
                 },
-                "exemptEmptyFunctions": true
+                "exemptEmptyFunctions": true,
+                "contexts": ["TSMethodSignature"]
             }
         ],
         "jsdoc/valid-types": "error",

@@ -1,5 +1,19 @@
 # @sap-ux/ui5-config
 
+## 0.22.0
+
+### Minor Changes
+
+-   ec509c40: dynamically appends annotations from manifest.json for mockserver middleware config
+
+## 0.21.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/yaml@0.14.1
+
 ## 0.21.0
 
 ### Minor Changes

@@ -40,7 +40,7 @@
         "nameContainsSpecialCharacters": "Module name cannot contain special characters (\"~'!()*)",
         "nameNotUrlFriendly": "Module name can only contain URL-friendly characters",
         "invalidModuleName": "Invalid module name",
-        "moduleAlreadyExists": "The folder: {{folderName}} already exists at the specified path"
+        "moduleAlreadyExists": "The module folder named: {{folderName}} already exists at the specified path"
     },
     "general": {
         "invalidUrl": "Invalid URL: [{{-input}}]",
