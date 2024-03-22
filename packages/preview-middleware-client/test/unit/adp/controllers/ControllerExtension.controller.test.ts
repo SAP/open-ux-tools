@@ -76,7 +76,7 @@ describe('ControllerExtension', () => {
             expect(openSpy).toHaveBeenCalledTimes(1);
         });
 
-        test('fills json model with data (controller exists: true)', async () => {
+        test('fills json model with data (controller exists: true | env: VS Code)', async () => {
             const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
@@ -98,7 +98,8 @@ describe('ControllerExtension', () => {
                 json: jest.fn().mockReturnValue({
                     controllerExists: true,
                     controllerPath: 'C:/users/projects/adp.app/webapp/changes/coding/share.js',
-                    controllerPathFromRoot: 'adp.app/webapp/changes/coding/share.js'
+                    controllerPathFromRoot: 'adp.app/webapp/changes/coding/share.js',
+                    isRunningInBAS: false
                 }),
                 text: jest.fn(),
                 ok: true
@@ -125,6 +126,57 @@ describe('ControllerExtension', () => {
 
             expect(openSpy).toHaveBeenCalledTimes(1);
             expect(setEnabledSpy).toHaveBeenCalledWith(true);
+            expect(setTextSpy).toHaveBeenCalledWith('Close');
+        });
+
+        test('fills json model with data (controller exists: true | env: BAS)', async () => {
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const overlayControl = {
+                getElement: jest.fn().mockReturnValue({
+                    getId: jest.fn().mockReturnValue('::Toolbar')
+                })
+            };
+            sapCoreMock.byId.mockReturnValue(overlayControl);
+
+            const controllerExt = new ControllerExtension(
+                'adp.extension.controllers.ControllerExtension',
+                overlays as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    controllerExists: true,
+                    controllerPath: 'C:/users/projects/adp.app/webapp/changes/coding/share.js',
+                    controllerPathFromRoot: 'adp.app/webapp/changes/coding/share.js',
+                    isRunningInBAS: true
+                }),
+                text: jest.fn(),
+                ok: true
+            });
+
+            const openSpy = jest.fn();
+            const setTextSpy = jest.fn();
+            const setVisibleSpy = jest.fn();
+
+            controllerExt.byId = jest.fn().mockReturnValueOnce({}).mockReturnValue({
+                setVisible: jest.fn()
+            });
+
+            await controllerExt.setup({
+                open: openSpy,
+                getBeginButton: jest.fn().mockReturnValue({ setVisible: setVisibleSpy }),
+                getEndButton: jest.fn().mockReturnValue({ setText: setTextSpy }),
+                setEscapeHandler: jest.fn(),
+                setModel: jest.fn(),
+                getContent: jest.fn().mockReturnValue([{ setVisible: jest.fn() }, { setVisible: jest.fn() }])
+            } as unknown as Dialog);
+
+            expect(openSpy).toHaveBeenCalledTimes(1);
+            expect(setVisibleSpy).toHaveBeenCalledWith(false);
             expect(setTextSpy).toHaveBeenCalledWith('Close');
         });
 
