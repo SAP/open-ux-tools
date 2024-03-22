@@ -12,7 +12,12 @@ import type { FioriElementsApp, FPMSettings } from './types';
 import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
-import type { TemplateOptions } from './data/templateAttributes';
+import {
+    type TemplateOptions,
+    TemplateTypeAttributes,
+    minSupportedUI5Version,
+    minSupportedUI5VersionV4
+} from './data/templateAttributes';
 import { changesPreviewToVersion, escapeFLPText } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
@@ -147,7 +152,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         feApp.service?.version === OdataVersion.v4 &&
         (!!feApp.service?.metadata || feApp.service.type === ServiceType.CDS);
 
-    packageJson.scripts = Object.assign(packageJson.scripts || {}, {
+    packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
         ...getPackageJsonTasks({
             localOnly: !feApp.service?.url,
             addMock: !!feApp.service?.metadata,
@@ -177,5 +182,5 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     return fs;
 }
 
-export { generate, FioriElementsApp, App };
+export { generate, FioriElementsApp, App, TemplateTypeAttributes, minSupportedUI5Version, minSupportedUI5VersionV4 };
 export * from './types';

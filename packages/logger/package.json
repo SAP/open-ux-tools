@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/logger",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "description": "A simple logging module",
     "repository": {
         "type": "git",
@@ -45,7 +45,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
         "node": ">=18.x"
     }
 }

@@ -1,5 +1,20 @@
 # @sap-ux/odata-service-writer
 
+## 0.16.2
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+
+## 0.16.1
+
+### Patch Changes
+
+-   c15435b6: fix: remove engines pnpm from package.json
+-   Updated dependencies [c15435b6]
+    -   @sap-ux/ui5-config@0.21.1
+
 ## 0.16.0
 
 ### Minor Changes

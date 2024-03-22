@@ -44,7 +44,8 @@ initTelemetrySettings({
     consumerModule: {
         name: 'OpenUxTools',
         version: '0.1.0'
-    }
+    },
+    watchTelemetrySettingStore: false
 })
     .then(sendTelemetryEvent)
     .catch((error) => {

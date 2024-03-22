@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`bundle getPropertiesI18nBundle - mem-fs-editor 1`] = `
+Object {
+  "Properties": Array [
+    Object {
+      "annotation": undefined,
+      "filePath": "app/properties-csv/_i18n/i18n.properties",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 10,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 0,
+          },
+        },
+        "value": "Properties",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 37,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 13,
+            "line": 0,
+          },
+        },
+        "value": "Properties wins over CSV",
+      },
+    },
+  ],
+}
+`;
+
+exports[`bundle getPropertiesI18nBundle 1`] = `
+Object {
+  "Properties": Array [
+    Object {
+      "annotation": undefined,
+      "filePath": "app/properties-csv/_i18n/i18n.properties",
+      "key": Object {
+        "range": Object {
+          "end": Object {
+            "character": 10,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 0,
+            "line": 0,
+          },
+        },
+        "value": "Properties",
+      },
+      "value": Object {
+        "range": Object {
+          "end": Object {
+            "character": 37,
+            "line": 0,
+          },
+          "start": Object {
+            "character": 13,
+            "line": 0,
+          },
+        },
+        "value": "Properties wins over CSV",
+      },
+    },
+  ],
+}
+`;

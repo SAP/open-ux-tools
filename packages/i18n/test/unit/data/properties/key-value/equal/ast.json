@@ -1,0 +1,44 @@
+[
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "website",
+      "range": "[(0,0)..(0,7)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "https://en.wikipedia.org/",
+      "range": "[(0,10)..(0,35)]"
+    },
+    "range": "[(0,0)..(0,35)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "hello",
+      "range": "[(1,0)..(1,5)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "hello",
+      "range": "[(1,6)..(1,11)]"
+    },
+    "range": "[(1,0)..(1,11)]"
+  },
+  {
+    "type": "key-element-line",
+    "key": {
+      "type": "key",
+      "value": "hello",
+      "range": "[(2,0)..(2,5)]"
+    },
+    "element": {
+      "type": "value",
+      "value": "Hello",
+      "range": "[(2,8)..(2,13)]"
+    },
+    "range": "[(2,0)..(2,13)]"
+  }
+]

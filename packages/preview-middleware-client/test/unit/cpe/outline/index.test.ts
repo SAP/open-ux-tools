@@ -1,7 +1,9 @@
 import { sapCoreMock } from 'mock/window';
 import { initOutline } from '../../../../src/cpe/outline/index';
 import * as nodes from '../../../../src/cpe/outline/nodes';
-import rtaMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import Log from 'sap/base/Log';
 
 jest.useFakeTimers();
@@ -28,6 +30,7 @@ describe('index', () => {
             return 'Share';
         }
     });
+    const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
     rtaMock.getService.mockReturnValue({
         attachEvent: mockAttachEvent,
         get: jest.fn().mockResolvedValue('mockViewNodes')
@@ -48,7 +51,7 @@ describe('index', () => {
                 visible: true
             }
         ]);
-        await initOutline(rtaMock, mockSendAction);
+        await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction);
         expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
         expect(mockSendAction).toMatchInlineSnapshot(`
             [MockFunction] {
@@ -76,12 +79,12 @@ describe('index', () => {
                 },
               ],
             }
-        `);        
+        `);
     });
 
     test('initOutline - exception', async () => {
         transformNodesSpy.mockRejectedValue('error');
-        await initOutline(rtaMock, mockSendAction);
+        await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction);
         // transformNodesSpy called but rejected.
         expect(transformNodesSpy).toHaveBeenCalled();
         expect(mockSendAction).not.toHaveBeenCalled();
@@ -100,8 +103,8 @@ describe('index', () => {
             }
         ]);
         transformNodesSpy.mockRejectedValue('error');
-       
-        await initOutline(rtaMock, mockSendAction);
+
+        await initOutline(rtaMock as unknown as RuntimeAuthoring, mockSendAction);
         expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
     });
 });

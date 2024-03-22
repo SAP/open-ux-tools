@@ -37,14 +37,20 @@ Object {
     },
   },
   "basePath": "..",
+  "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
         "custom": true,
-        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "writeConnector": "custom.connectors.WorkspaceConnector",
       },
       Object {
         "connector": "LocalStorageConnector",
@@ -81,14 +87,20 @@ Object {
     },
   },
   "basePath": "..",
+  "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
         "custom": true,
-        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "writeConnector": "custom.connectors.WorkspaceConnector",
       },
       Object {
         "connector": "LocalStorageConnector",
@@ -123,14 +135,20 @@ Object {
     },
   },
   "basePath": "..",
+  "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
         "custom": true,
-        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "writeConnector": "custom.connectors.WorkspaceConnector",
       },
       Object {
         "connector": "LocalStorageConnector",
@@ -167,14 +185,20 @@ Object {
     },
   },
   "basePath": "..",
+  "init": undefined,
   "locateReuseLibsScript": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
       Object {
-        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "custom.connectors.WorkspaceConnector",
         "custom": true,
-        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "writeConnector": "custom.connectors.WorkspaceConnector",
       },
       Object {
         "connector": "LocalStorageConnector",
@@ -195,6 +219,71 @@ Object {
 `;
 
 exports[`FlpSandbox router GET /preview/api/changes 1`] = `"{\\"sap.ui.fl.myid\\":{\\"id\\":\\"myId\\"}}"`;
+
+exports[`FlpSandbox router custom opa5 path test/integration/opaTests.qunit.html 1`] = `
+"<!DOCTYPE html>
+<html>
+<head>
+	<title>OPA5 tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script
+		src=\\"../../resources/sap-ui-core.js\\"
+		data-sap-ui-theme='sap_fiori_3'
+		data-sap-ui-resourceroots='{
+			\\"test.fe.v2.app\\": \\"../..\\"
+		}'
+		data-sap-ui-animation=\\"false\\"
+		data-sap-ui-compatVersion=\\"edge\\"
+		data-sap-ui-async=\\"true\\"
+		data-sap-ui-oninit=\\"module:test/fe/v2/app/test/integration/opaTests.qunit\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>"
+`;
+
+exports[`FlpSandbox router default Qunit init test/unitTests.qunit.js 1`] = `
+"sap.ui.define([
+    'sap/ui/thirdparty/qunit-2'
+], function() {
+        sap.ui.require([]);
+    }
+);"
+`;
+
+exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
+"<!DOCTYPE html>
+<html>
+<head>
+	<title>QUnit tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script
+		src=\\"../resources/sap-ui-core.js\\"
+		data-sap-ui-theme='sap_fiori_3'
+		data-sap-ui-resourceroots='{
+			\\"test.fe.v2.app\\": \\"..\\"
+		}'
+		data-sap-ui-animation=\\"false\\"
+		data-sap-ui-compatVersion=\\"edge\\"
+		data-sap-ui-async=\\"true\\"
+		data-sap-ui-oninit=\\"module:test/fe/v2/app/test/unitTests.qunit\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../resources/sap/ui/thirdparty/qunit-2.css\\">
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>"
+`;
 
 exports[`FlpSandbox router editor with config 1`] = `
 "<!DOCTYPE HTML>
@@ -250,7 +339,7 @@ exports[`FlpSandbox router editor with config 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -259,6 +348,12 @@ exports[`FlpSandbox router editor with config 1`] = `
         data-sap-ui-xx-viewCache=\\"false\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
+
+    <script type=\\"text/javascript\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
+    </script>
+
+
 </head>
 
 <!-- UI Content -->
@@ -322,18 +417,25 @@ exports[`FlpSandbox router rta 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>
     </script>
+
+    <script type=\\"text/javascript\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
+    </script>
+
+
 </head>
 
 <!-- UI Content -->
 <body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
+<!-- livereload disabled for editor </body>-->
 
 </html>"
 `;
@@ -358,10 +460,12 @@ exports[`FlpSandbox router rta with developerMode=true 1`] = `
                 previewUrl: '/my/editor.html.inner.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#app-preview',
                 telemetry: false,
                 rootElementId: 'root',
-                scenario: ''
+                scenario: '',
+                livereloadPort: 35729
             });
         </script>
     </body>
+    <!-- livereload disabled for editor </body>-->
 </html>
 "
 `;
@@ -420,7 +524,7 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -430,11 +534,18 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
     </script>
+
+    <script type=\\"text/javascript\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
+    </script>
+
+
 </head>
 
 <!-- UI Content -->
 <body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
+<!-- livereload disabled for editor </body>-->
 
 </html>"
 `;
@@ -493,7 +604,7 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
@@ -503,11 +614,18 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
     </script>
+
+    <script type=\\"text/javascript\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
+    </script>
+
+
 </head>
 
 <!-- UI Content -->
 <body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
+<!-- livereload disabled for editor </body>-->
 
 </html>"
 `;
@@ -566,12 +684,18 @@ exports[`FlpSandbox router test/flp.html 1`] = `
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"/preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
+
+    <script type=\\"text/javascript\\">
+        (() => sap.ui.require(['open/ux/preview/client/flp/initConnectors']))()
+    </script>
+
+
 </head>
 
 <!-- UI Content -->

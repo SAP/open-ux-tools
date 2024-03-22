@@ -1,4 +1,4 @@
-import { createAbapServiceProvider } from '../../../src/base/connect';
+import { createAbapServiceProvider, isUrlTarget } from '../../../src/base/connect';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { mockedStoreService, mockIsAppStudio, mockListDestinations, mockReadFileSync } from '../../__mocks__';
 import type { Destination } from '@sap-ux/btp-utils';
@@ -129,6 +129,13 @@ describe('service', () => {
                     expect(error).toStrictEqual(new Error(`Destination ${destination} not found on subaccount`));
                 }
             });
+        });
+    });
+
+    describe('isUrlTarget', () => {
+        test('validate input parameters', () => {
+            expect(isUrlTarget(target)).toBe(true);
+            expect(isUrlTarget({} as AbapTarget)).toBe(false);
         });
     });
 });

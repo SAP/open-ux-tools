@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/project-access",
-    "version": "1.17.0",
+    "version": "1.19.2",
     "description": "Library to access SAP Fiori tools projects",
     "repository": {
         "type": "git",
@@ -29,10 +29,10 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
         "node": ">=18.x"
     },
     "dependencies": {
+        "@sap-ux/i18n": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "findit2": "2.2.3",
         "mem-fs": "2.1.0",
