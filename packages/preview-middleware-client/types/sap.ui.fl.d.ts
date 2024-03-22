@@ -19,6 +19,7 @@ declare module 'sap/ui/fl/Change' {
         support: {
             generator: string;
         };
+        fileName: string;
     }
     interface Change {
         getDefinition: () => ChangeDefinition;
@@ -77,6 +78,7 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
         clear(): void;
         getItem(key: string): unknown;
         getItems(): Promise<unknown[]>;
+        fileChangeRequestNotifier: ((fileName: string, kind: 'create' | 'delete', changeType?: string) => void) | undefined;
     }
 
     class ObjectStorageConnector {
