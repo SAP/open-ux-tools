@@ -8,11 +8,20 @@ const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
     storage: {
         _itemsStoredAsObjects: true,
+        fileChangeRequestNotifier: undefined,
         setItem: function (_key: string, change: FlexChange) {
             const settings = getFlexSettings();
             if (settings) {
                 change.support ??= {};
                 change.support.generator = settings.generator;
+            }
+
+            if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
+                try {
+                    this.fileChangeRequestNotifier(change.fileName, 'create',  change.changeType);
+                } catch (e) {
+                    // exceptions in the listener call are ignored
+                }
             }
 
             return fetch(CHANGES_API_PATH, {
@@ -24,6 +33,14 @@ const connector = merge({}, ObjectStorageConnector, {
             });
         },
         removeItem: function (key: string) {
+            if (typeof this.fileChangeRequestNotifier === 'function') {
+                try {
+                    this.fileChangeRequestNotifier(key, 'delete');
+                } catch (e) {
+                    // exceptions in the listener call are ignored
+                }
+            }
+
             return fetch(CHANGES_API_PATH, {
                 method: 'DELETE',
                 body: JSON.stringify({ fileName: key }),
@@ -48,7 +65,7 @@ const connector = merge({}, ObjectStorageConnector, {
             const changes = await response.json();
             return changes;
         }
-    },
+    } as typeof ObjectStorageConnector.storage,
     loadFeatures: async function () {
         const features = await ObjectStorageConnector.loadFeatures();
 
