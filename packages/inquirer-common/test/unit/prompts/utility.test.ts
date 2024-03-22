@@ -1,8 +1,20 @@
-import type { UI5Version } from '@sap-ux/ui5-info';
-import { ui5VersionsGrouped, searchChoices } from '../../../src/prompts/utility';
+import * as ui5Info from '@sap-ux/ui5-info';
+import { ui5ThemeIds, type UI5Version } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
+import { initI18nInquirerCommon } from '../../../src/i18n';
+import { getUI5ThemesChoices, searchChoices, ui5VersionsGrouped } from '../../../src/prompts/utility';
 
 describe('utility.ts', () => {
+    beforeAll(async () => {
+        await initI18nInquirerCommon();
+    });
+
+    afterEach(() => {
+        // Reset all spys (not mocks)
+        // jest.restoreAllMocks() only works when the mock was created with jest.spyOn().
+        jest.restoreAllMocks();
+    });
+
     it('ui5VersionsGrouped', async () => {
         const ui5Vers: UI5Version[] = [
             {
@@ -64,6 +76,30 @@ describe('utility.ts', () => {
 
         // No versions provided
         expect(ui5VersionsGrouped([])).toEqual([]);
+
+        const defaultChoice = { name: '9.999.9-snapshot', value: '9.999.9-snapshot' };
+        const ui5VersWithAdditonalChoice = ui5VersionsGrouped(ui5Vers, false, defaultChoice);
+        expect(ui5VersWithAdditonalChoice[0]).toEqual(defaultChoice);
+        expect(ui5VersWithAdditonalChoice).toMatchInlineSnapshot(`
+            [
+              {
+                "name": "9.999.9-snapshot",
+                "value": "9.999.9-snapshot",
+              },
+              {
+                "name": "1.118.0 - (Maintained version)",
+                "value": "1.118.0",
+              },
+              {
+                "name": "1.117.0 - (Maintained version)",
+                "value": "1.117.0",
+              },
+              {
+                "name": "1.116.0 - (Out of maintenance version)",
+                "value": "1.116.0",
+              },
+            ]
+        `);
     });
 
     it('searchChoices', async () => {
@@ -164,5 +200,31 @@ describe('utility.ts', () => {
               },
             ]
         `);
+    });
+
+    it('getUI5ThemeChoices', () => {
+        const mockThemes = [
+            {
+                id: ui5ThemeIds.SAP_HORIZON,
+                label: 'Morning Horizon'
+            },
+            {
+                id: ui5ThemeIds.SAP_FIORI_3,
+                label: 'Quartz Light'
+            }
+        ];
+        const testUI5Version = '1.1.1';
+        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockReturnValue(mockThemes);
+        expect(getUI5ThemesChoices(testUI5Version)).toEqual([
+            {
+                'name': 'Morning Horizon',
+                'value': 'sap_horizon'
+            },
+            {
+                'name': 'Quartz Light',
+                'value': 'sap_fiori_3'
+            }
+        ]);
+        expect(getUI5ThemesSpy).toHaveBeenCalledWith(testUI5Version);
     });
 });

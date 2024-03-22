@@ -195,16 +195,16 @@ export const defaultUsage = (): JSX.Element => {
                     <UIIconButton
                         id="btn2"
                         checked={checked.btn2}
-                        iconProps={{ iconName: UiIcons.Add }}
+                        iconProps={{ iconName: UiIcons.LayoutLeft }}
                         onClick={onToggleChecked.bind(window, 'btn2')}
-                        title="Undo"></UIIconButton>
+                        title="LayoutLeft"></UIIconButton>
                     <UIIconButton
                         id="btn3"
                         sizeType={UIIconButtonSizes.Wide}
                         checked={checked.btn3}
                         iconProps={{ iconName: UiIcons.QuestionMarkWithChevron }}
                         onClick={onToggleChecked.bind(window, 'btn3')}
-                        title="QuestionMarkWithChevron"></UIIconButton>
+                        title="Wide"></UIIconButton>
                 </Stack>
             </Stack>
             <Stack tokens={stackTokens}>

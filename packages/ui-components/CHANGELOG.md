@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.15.10
+
+### Patch Changes
+
+-   edc3a166: UIComboBox. Extender 'isLoading' property with option to set loading within combobox input.
+
+## 1.15.9
+
+### Patch Changes
+
+-   d188f765: Upgrading version of `sanitize-html` due to medium priority security issue
+
+## 1.15.8
+
+### Patch Changes
+
+-   75653b31: UIIconButton. Some icons(which are not 16x16) are not centered within UIIconButton
+
 ## 1.15.7
 
 ### Patch Changes

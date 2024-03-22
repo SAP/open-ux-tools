@@ -1,5 +1,59 @@
 # @sap-ux/telemetry
 
+## 0.4.7
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+    -   @sap-ux/project-access@1.19.2
+
+## 0.4.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.1
+
+## 0.4.5
+
+### Patch Changes
+
+-   Updated dependencies [a4f00f7c]
+    -   @sap-ux/project-access@1.19.0
+
+## 0.4.4
+
+### Patch Changes
+
+-   e05c129b: Remove unused dependency
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [e6da2117]
+    -   @sap-ux/project-access@1.18.0
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [e443e534]
+    -   @sap-ux/store@0.5.0
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [c381d32f]
+    -   @sap-ux/project-access@1.17.6
+
+## 0.4.0
+
+### Minor Changes
+
+-   15d6afbe: update init settings, bump azure applicationinsights and stablise tests
+
 ## 0.3.1
 
 ### Patch Changes

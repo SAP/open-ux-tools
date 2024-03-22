@@ -1,5 +1,53 @@
 # @sap-ux/ui5-library-writer
 
+## 0.3.22
+
+### Patch Changes
+
+-   Updated dependencies [ec509c40]
+    -   @sap-ux/ui5-config@0.22.0
+    -   @sap-ux/project-access@1.19.2
+    -   @sap-ux/ui5-application-writer@0.26.5
+
+## 0.3.21
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.19.1
+-   @sap-ux/ui5-application-writer@0.26.4
+
+## 0.3.20
+
+### Patch Changes
+
+-   4b29ddcc: Update TypeScript templates, eslint config and ui5 devDependencies
+-   Updated dependencies [4b29ddcc]
+    -   @sap-ux/ui5-application-writer@0.26.4
+
+## 0.3.19
+
+### Patch Changes
+
+-   Updated dependencies [a4f00f7c]
+    -   @sap-ux/project-access@1.19.0
+    -   @sap-ux/ui5-application-writer@0.26.3
+
+## 0.3.18
+
+### Patch Changes
+
+-   Updated dependencies [e6da2117]
+    -   @sap-ux/project-access@1.18.0
+    -   @sap-ux/ui5-application-writer@0.26.3
+
+## 0.3.17
+
+### Patch Changes
+
+-   Updated dependencies [c381d32f]
+    -   @sap-ux/project-access@1.17.6
+    -   @sap-ux/ui5-application-writer@0.26.3
+
 ## 0.3.16
 
 ### Patch Changes

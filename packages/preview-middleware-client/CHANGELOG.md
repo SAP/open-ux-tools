@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.9.3
+
+### Patch Changes
+
+-   6a477fba: feat: Replace auto-refresh with message in case of manual flex file changes
+
+## 0.9.2
+
+### Patch Changes
+
+-   6d76e076: Enhance `preview-middleware` to allow running QUnit and OPA5 tests.
+
 ## 0.9.1
 
 ### Patch Changes
