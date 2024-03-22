@@ -238,6 +238,7 @@ async function getSystemPrefix(
         return atoSettings?.developmentPrefix;
     } catch (e) {
         logger.error(e.message);
+        logger.debug(e);
         output.summary.push({
             message: summaryMessage.atoAdtAccessError,
             status: SummaryStatus.Unknown

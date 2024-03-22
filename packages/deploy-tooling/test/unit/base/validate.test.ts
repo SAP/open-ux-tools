@@ -483,7 +483,8 @@ describe('deploy-test validation', () => {
     describe('Validate error does not show full stack trace', () => {
         jest.resetAllMocks();
         const mockLogger = {
-            error: jest.fn()
+            error: jest.fn(),
+            debug: jest.fn()
         };
         jest.mock('@sap-ux/logger', () => {
             const sapUxLogger = jest.requireActual('@sap-ux/logger');
