@@ -433,9 +433,6 @@ importers:
 
   packages/cards-editor-config-writer:
     dependencies:
-      '@sap-ux/logger':
-        specifier: workspace:*
-        version: link:../logger
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
