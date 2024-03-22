@@ -42,7 +42,9 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
     const basePath = testAppPath;
 
     const answers: FilterBarPromptsAnswer = (await inquirer.prompt(
-        await getFilterBarBuildingBlockPrompts(basePath, fs)
+        (
+            await getFilterBarBuildingBlockPrompts(basePath, fs)
+        ).questions
     )) as FilterBarPromptsAnswer;
     const { aggregationPath, viewOrFragmentFile, qualifier } = answers;
 
@@ -72,7 +74,9 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
 
     const answers: ChartPromptsAnswer = (await inquirer.prompt(
-        await getChartBuildingBlockPrompts(basePath, fs)
+        (
+            await getChartBuildingBlockPrompts(basePath, fs)
+        ).questions
     )) as ChartPromptsAnswer;
 
     const { aggregationPath, viewOrFragmentFile, entity, qualifier, bindingContextType } = answers;
