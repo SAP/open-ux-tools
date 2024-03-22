@@ -233,7 +233,7 @@ describe('utility.ts', () => {
         expect(getUI5ThemesSpy).toHaveBeenCalledWith(testUI5Version);
     });
 
-    it.only('getDefaultUI5VersionChoice', () => {
+    it('getDefaultUI5VersionChoice', () => {
         const mockUI5Versions = [
             {
                 version: '1.118.0',
