@@ -119,7 +119,9 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
     const basePath = testAppPath;
 
     const answers: TablePromptsAnswer = (await inquirer.prompt(
-        await getTableBuildingBlockPrompts(basePath, fs)
+        (
+            await getTableBuildingBlockPrompts(basePath, fs)
+        ).questions
     )) as TablePromptsAnswer;
 
     const { aggregationPath, viewOrFragmentFile, entity, qualifier, bindingContextType } = answers;
