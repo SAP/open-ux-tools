@@ -126,6 +126,21 @@ describe('FlpSandbox', () => {
                                     object: 'myObject',
                                     action: 'action'
                                 }
+                            },
+                            {
+                                target: '/a/remote/app',
+                                componentId: 'myRemoteComponent',
+                                intent: {
+                                    object: 'myRemoteObject',
+                                    action: 'action'
+                                }
+                            },
+                            {
+                                target: '/an/invalid/app/config',
+                                intent: {
+                                    object: 'INVALID',
+                                    action: 'action'
+                                }
                             }
                         ]
                     }
