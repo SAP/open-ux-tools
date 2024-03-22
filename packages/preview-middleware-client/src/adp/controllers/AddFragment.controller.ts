@@ -145,7 +145,7 @@ export default class AddFragment extends BaseDialog {
 
         await this.createFragmentChange(fragmentData);
 
-        notifyUser(`Note: The '${fragmentName}' fragment will be created once you save the change.`, 8000);
+        notifyUser(`Note: The '${fragmentName}.fragment.xml' fragment will be created once you save the change.`, 8000);
 
         this.handleDialogClose();
     }
