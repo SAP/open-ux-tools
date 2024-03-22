@@ -68,7 +68,7 @@ async function updateYaml(basePath: string, fs: Editor, middlewares: string[]) {
  * @param fs - optional mem-fs editor instance
  * @returns updated mem-fs editor instance
  */
-export async function enableCardEditor(basePath: string, fs?: Editor): Promise<Editor> {
+export async function enableCardsEditor(basePath: string, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }

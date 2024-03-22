@@ -1,4 +1,4 @@
-import { enableCardEditor } from '../src';
+import { enableCardsEditor } from '../src';
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
@@ -20,7 +20,7 @@ describe('enableCardEditor', () => {
     test('Valid LROP', async () => {
         const basePath = '.tmp/lrop';
         const fs = createTestFs(basePath);
-        await enableCardEditor(basePath, fs);
+        await enableCardsEditor(basePath, fs);
 
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
@@ -29,7 +29,7 @@ describe('enableCardEditor', () => {
     test('V4 LROP with CLI 3.0', async () => {
         const basePath = join(__dirname, 'fixtures/lrop-v4');
         const fs = create(createStorage());
-        await enableCardEditor(basePath, fs);
+        await enableCardsEditor(basePath, fs);
 
         if (process.env.UX_DEBUG) {
             fs.commit(() => {});

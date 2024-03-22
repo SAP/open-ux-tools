@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
-import { enableCardEditor } from '.';
+import { enableCardsEditor } from '.';
+import { ToolsLogger } from '@sap-ux/logger';
 
-enableCardEditor(process.cwd())
+const logger = new ToolsLogger();
+enableCardsEditor(process.cwd())
     .then((fs) => {
-        fs.commit(() => console.log('Done'));
+        fs.commit(() => logger.info('Done'));
     })
     .catch((err) => {
-        console.error(err);
+        logger.error(err);
     });
