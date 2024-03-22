@@ -1,6 +1,6 @@
 import type { RequestHandler, Request, Response } from 'express';
 import type { MiddlewareParameters } from '@ui5/server';
-import { json, Router } from 'express';
+import { json, Router as createRouter } from 'express';
 import path, { join } from 'path';
 import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'fs';
 import { render } from 'ejs';
@@ -14,7 +14,7 @@ export const enum ApiRoutes {
 }
 
 module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<RequestHandler> => {
-    const router = Router();
+    const router = createRouter();
     router.use(json());
 
     const manifest = await resources.rootProject.byPath('/manifest.json');
