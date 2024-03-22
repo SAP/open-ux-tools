@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.14.8
+
+### Patch Changes
+
+-   4c7d71eb: Adjust logging in validation for deploy-test to not log full stack trace, but only the message.
+
 ## 0.14.7
 
 ### Patch Changes
