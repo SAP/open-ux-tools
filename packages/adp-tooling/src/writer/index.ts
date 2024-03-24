@@ -18,7 +18,9 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         target: { ...config.target },
         ui5: { ...config.ui5 },
         deploy: config.deploy ? { ...config.deploy } : undefined,
-        options: { ...config.options }
+        options: { ...config.options },
+        flp: config.flp ? { ...config.flp } : undefined,
+        customConfig: { ...config.customConfig }
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
     configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
@@ -42,11 +44,11 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     if (!fs) {
         fs = create(createStorage());
     }
-    const tmplPath = join(__dirname, '../../templates/project');
+    const tmplPath = join(__dirname, '../../templates/projects/abap');
     const fullConfig = setDefaults(config);
 
     fs.copyTpl(join(tmplPath, '**/*.*'), join(basePath), fullConfig, undefined, {
-        globOptions: { dot: true },
+        globOptions: { dot: true, ignore: config.options?.isRunningInBAS ? [] : ["**/pom.xml"] },
         processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
     });
 

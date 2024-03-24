@@ -1,0 +1,50 @@
+{
+    "name": "<%= package.name %>",
+    "version": "0.1.0",<% if (locals.options?.isRunningInBAS && locals.options?.isCloudProject) { %>
+    "main": "index.js",<% } %> 
+    "private": true,
+    "description": "<%= package.description %>",
+    "keywords": [
+        "ui5",
+        "sapui5",
+        "adaptation-project"
+    ],
+    "dependencies": {},
+    "devDependencies": {
+        <%if (locals.options?.fioriTools) {%>"@sap/ux-ui5-tooling": "^1.11.4"<%} else {%>"@sap-ux/backend-proxy-middleware": "^0.7.5",
+        "@sap-ux/preview-middleware": "^0.11.1",
+        "@sap-ux/ui5-proxy-middleware": "^1.3.0",
+        "@sap-ux/deploy-tooling": "^0.11.7"<%}%>,<% if (locals.options?.isRunningInBAS && locals.options?.isCloudProject) { %>
+        "@sap/ui5-builder-webide-extension": "1.0.x",
+        "@sapui5/ts-types": "^1.85.1",
+        "@types/js-yaml": "^4.0.5",
+        "@types/semver": "^7.3.13",
+        "@ui5/task-adaptation": "^1.0.10",
+        "bestzip": "2.1.4",
+        "rimraf": "3.0.2",<% } %>
+        "@ui5/cli": "^3.6.0"
+    },<% if (locals.options?.isRunningInBAS && locals.options?.isCloudProject) { %>
+    "dependencies": {
+        "dotenv": "^16.0.3",
+        "inquirer": "^8.2.5",
+        "json-diff": "^1.0.6",
+        "prompt-sync": "^4.2.0",
+        "prompts": "^2.4.2",
+        "xml-js": "^1.6.11"
+    },<% } %>
+    "scripts": {<% if (locals.options?.isCloudProject) { %>
+        "build": "ui5 build --include-task=generateCachebusterInfo && npm run zip",
+        "prebuild": "npm run clean",
+        "zip": "cd dist && npx bestzip ../<%= projectname %>.zip *",
+        "clean": "npx rimraf <%= projectname %>.zip dist",
+        "build-ui5": "npm explore @ui5/task-adaptation && npm run rollup",
+        "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip",
+        "undeploy": "fiori undeploy --config ui5-deploy.yaml",
+        "deploy-test": "npm run build && fiori deploy --config ui5-deploy.yaml --testMode true"<% } else { %>
+        "build": "ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload --clean-dest",
+        "start": "<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/flp.html#app-preview",
+        "start-editor": "<%= locals.options?.fioriTools ? 'fiori run' : 'ui5 serve' %> --open /test/adaptation-editor.html"<%if (locals.deploy) {%>,
+        "deploy": "ui5 build --config ui5-deploy.yaml --exclude-task <%= locals.options?.fioriTools ? 'deploy-to-abap' : 'abap-deploy-task' %> generateFlexChangesBundle generateComponentPreload --clean-dest && <%= locals.options?.fioriTools ? 'fiori deploy' : 'deploy' %> --config ui5-deploy.yaml",
+        "undeploy": "<%= locals.options?.fioriTools ? 'fiori undeploy' : 'undeploy' %> --config ui5-deploy.yaml --lrep \"apps/<%= app.reference %>/appVariants/<%= app.id %>/\""<%}%><% } %>
+    }
+}

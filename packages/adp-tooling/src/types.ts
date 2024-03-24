@@ -1,6 +1,6 @@
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
-import type { Adp } from '@sap-ux/ui5-config';
+import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
 
 export interface DescriptorVariant {
@@ -35,20 +35,48 @@ export interface AdpWriterConfig {
     target: AbapTarget;
     ui5?: {
         minVersion?: string;
+        ui5Version?: string;
+        ui5EndpointUrl?: string;
     };
     package?: {
         name?: string;
         description?: string;
     };
+    flp?: {
+        flpTitle?: string;
+        flpSubtitle?: string;
+        inboundId?: string;
+        bspName?: string;
+        languages?: []
+    };
+    customConfig?: AdpCustomConfig;
     /**
      * Optional: configuration for deployment to ABAP
      */
-    deploy?: Adp;
+    deploy?: Adp | BspApp;
     options?: {
         /**
          * Optional: if set to true then the generated project will be recognized by the SAP Fiori tools
          */
         fioriTools?: boolean;
+        isRunningInBAS?: boolean;
+        isCloudProject?: boolean;
+    };
+}
+
+export interface AdpCfWriterConfig {
+    safeMode: boolean;
+    projectname: string;
+    client: {
+        username: string;
+        password: string;
+        url: string;
+        client: string;
+    }
+    systemUrl?: string;
+    package?: {
+        name?: string;
+        description?: string;
     };
 }
 
@@ -347,3 +375,9 @@ export interface AdpProjectData {
     reference: string;
     id: string;
 }
+
+export interface AdpCustomConfig {
+    adp?: {
+        safeMode?: boolean
+    }
+};

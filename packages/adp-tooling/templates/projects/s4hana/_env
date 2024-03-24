@@ -1,0 +1,2 @@
+ABAP_USERNAME=<%= username %>
+ABAP_PASSWORD=<%= password %>
