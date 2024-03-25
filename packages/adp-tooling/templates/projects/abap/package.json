@@ -8,8 +8,16 @@
         "ui5",
         "sapui5",
         "adaptation-project"
-    ],
-    "dependencies": {},
+    ],<% if (locals.options?.isRunningInBAS && locals.options?.isCloudProject) { %>
+	"repository": {
+		"type": "git",
+		"build": "ui5.js build --verbose --include-task generateCachebusterInfo"
+	},
+	"author": "",
+	"license": "ISC",
+	"ui5": {
+		"dependencies": ["@sap/ui5-builder-webide-extension", "@ui5/task-adaptation"]
+	},<% } %>
     "devDependencies": {
         <%if (locals.options?.fioriTools) {%>"@sap/ux-ui5-tooling": "^1.11.4"<%} else {%>"@sap-ux/backend-proxy-middleware": "^0.7.5",
         "@sap-ux/preview-middleware": "^0.11.1",
@@ -35,8 +43,8 @@
     "scripts": {<% if (locals.options?.isCloudProject) { %>
         "build": "ui5 build --include-task=generateCachebusterInfo && npm run zip",
         "prebuild": "npm run clean",
-        "zip": "cd dist && npx bestzip ../<%= projectname %>.zip *",
-        "clean": "npx rimraf <%= projectname %>.zip dist",
+        "zip": "cd dist && npx bestzip ../<%= package.name %>.zip *",
+        "clean": "npx rimraf <%= package.name %>.zip dist",
         "build-ui5": "npm explore @ui5/task-adaptation && npm run rollup",
         "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip",
         "undeploy": "fiori undeploy --config ui5-deploy.yaml",
