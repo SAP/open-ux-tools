@@ -63,7 +63,11 @@
     "pnpm": {
         "overrides": {
             "@testing-library/jest-dom>@adobe/css-tools@<4.3.2": ">=4.3.2",
-            "nx-cloud>axios@<1.6.0": ">=1.6.0"
+            "nx-cloud>axios@<1.6.8": ">=1.6.8",
+            "@sap/bas-sdk>axios@<1.6.8": ">=1.6.8",
+            "http-proxy>follow-redirects@<1.15.6": ">=1.15.6",
+            "socks-proxy-agent>socks@<2.8.1": ">=2.8.1",
+            "ip@<2.0.1": ">=2.0.1"
         }
     }
 }
