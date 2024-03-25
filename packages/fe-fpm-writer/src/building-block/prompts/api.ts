@@ -13,12 +13,13 @@ import {
     getBooleanPrompt,
     getBuildingBlockIdPrompt,
     getChoices,
+    getEntityChoices,
     getEntityPrompt,
     getFilterBarIdPrompt,
     getViewOrFragmentFilePrompt,
     getXPathStringsForXmlFile
 } from '../utils/prompts';
-import { getAnnotationPathQualifiers, getEntityTypes } from '../utils/service';
+import { getAnnotationPathQualifiers } from '../utils/service';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import { relative } from 'path';
 import type {
@@ -56,7 +57,7 @@ export async function getBuildingBlockChoices<T extends Answers>(
         const annotationTerms: UIAnnotationTerms[] = [];
         switch (fieldName) {
             case 'entity':
-                return getChoices((await getEntityTypes(projectProvider)).map((e) => e.fullyQualifiedName));
+                return getEntityChoices(projectProvider);
             case 'aggregationPath': {
                 if (!answers.viewOrFragmentFile) {
                     return [];

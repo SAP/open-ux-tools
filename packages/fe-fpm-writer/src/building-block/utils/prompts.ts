@@ -7,6 +7,7 @@ import { relative } from 'path';
 import type ProjectProvider from './project';
 import { getAnnotationPathQualifiers, getEntityTypes } from './service';
 import { AdditionalPromptProperties } from '../prompts';
+
 /**
  * Returns a Prompt to choose a boolean value.
  *
@@ -144,18 +145,33 @@ export function getEntityPrompt(
         selectType: 'dynamic',
         dependantPromptNames,
         message,
-        choices: async () => {
-            const choices = getChoices((await getEntityTypes(projectProvider)).map((e) => e.fullyQualifiedName));
-            if (!choices.length) {
-                throw new Error('Failed while fetching the entities');
-            }
-            return choices;
-        },
+        choices: getEntityChoices.bind(null, projectProvider),
         groupId,
         required,
         additionalInfo
     } as ListQuestion;
 }
+
+/**
+ * Method returns choices for entity type selection.
+ *
+ * @param projectProvider - The project provider
+ * @returns entity question
+ */
+// ToDo - recheck types fr choices
+export async function getEntityChoices(
+    projectProvider: ProjectProvider
+): Promise<Array<{ name: string; value: string }>> {
+    const entityTypes = await getEntityTypes(projectProvider);
+    const entityTypeMap: { [key: string]: string } = {};
+    for (const entityType of entityTypes) {
+        const value = entityType.fullyQualifiedName;
+        const qualifierParts = value.split('.');
+        entityTypeMap[qualifierParts[qualifierParts.length - 1]] = value;
+    }
+    return getChoices(entityTypeMap);
+}
+
 /**
  * Return a Prompt for choosing the aggregation path.
  *
